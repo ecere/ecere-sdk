@@ -606,7 +606,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
    // Check if it contains any code
    if((!body.compound.declarations || !body.compound.declarations->count) && (!body.compound.statements || body.compound.statements->count <= 1))
    {
-      Class moduleClass = eSystem_FindClass(object.instance._class.module, "Module");
+      // Class moduleClass = eSystem_FindClass(object.instance._class.module, "Module");
       Statement stmt = body.compound.statements ? body.compound.statements->first : null;
       Type dataType = method.dataType;
       Type returnType = dataType.returnType;
@@ -618,7 +618,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
       confirmation = false;
 
       // Check if default function should be calling base class:
-      if(object.instance._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
+      if(object.instance._class._vTbl[method.vid] == null /*moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]*/) // Temp Check for DefaultFunction
       {
          if(returnType.kind != voidType)
          {
@@ -4365,7 +4365,7 @@ class CodeEditor : Window
                }
                else
                {
-                  Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
+                  // Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
 
                   // ADDING METHOD HERE
                   f.Printf("\n      ");
@@ -4394,7 +4394,7 @@ class CodeEditor : Window
                   f.Printf(")\n");
                   f.Printf("      %c\n\n", OpenBracket);
 
-                  if(control._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
+                  if(control._class._vTbl[method.vid] == null /*moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]*/) // Temp Check for DefaultFunction
                   {
                      if(returnType.kind == classType && !strcmp(returnType._class.string, "bool"))
                         f.Printf("         return true;\n");
@@ -4978,7 +4978,7 @@ class CodeEditor : Window
                   Type dataType = method.dataType;
                   Type returnType = dataType.returnType;
                   Type param;
-                  Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
+                  // Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
 
                   f.Printf("\n\n");
                   f.Printf("   ");
@@ -5004,7 +5004,7 @@ class CodeEditor : Window
                   f.Printf(")\n");
                   f.Printf("   %c\n\n", OpenBracket);
 
-                  if(test._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
+                  if(test._class._vTbl[method.vid] == null /*moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]*/) // Temp Check for DefaultFunction
                   {
                      if(returnType && returnType.kind == classType && !strcmp(returnType._class.string, "bool"))
                         f.Printf("      return true;\n");
@@ -6374,7 +6374,7 @@ class CodeEditor : Window
          Type dataType = method.dataType;
          Type returnType = dataType.returnType;
          Type param;
-         Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
+         // Class moduleClass = eSystem_FindClass(this.privateModule, "Module");
 
          if(insideDef.prev)
              f.Printf("\n\n");
@@ -6416,7 +6416,7 @@ class CodeEditor : Window
 
          if(!_class ||
             (
-               (isInstance ? _class : _class.base)._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad] ||
+               (isInstance ? _class : _class.base)._vTbl[method.vid] == null /*moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]*/ ||
                (isInstance ? _class : _class.base)._vTbl[method.vid] == DummyMethod)) // Temp Check for DefaultFunction
          {
             if(returnType && returnType.kind == classType && !strcmp(returnType._class.string, "bool"))

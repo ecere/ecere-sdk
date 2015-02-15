@@ -1985,22 +1985,32 @@ if(symbol->__anon2.__anon1.structExternal)
 struct TopoEdge * e;
 struct __ecereNameSpace__ecere__com__Instance * __internalLinkList = symbol->__anon2.__anon1.structExternal->incoming;
 
-for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = (struct TopoEdge *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = (struct TopoEdge *)(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __internalLinkList;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 __ecereMethod_External_CreateUniqueEdge(external, e->from, e->breakable);
 }
 {
 struct TopoEdge * e;
 struct __ecereNameSpace__ecere__com__Instance * __internalLinkList = symbol->__anon2.__anon1.structExternal->outgoing;
 
-for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = (struct TopoEdge *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = (struct TopoEdge *)(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __internalLinkList;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 __ecereMethod_External_CreateUniqueEdge(e->to, external, e->breakable);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), symbol->__anon2.__anon1.structExternal);

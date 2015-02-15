@@ -1607,11 +1607,16 @@ ReadDataMembers(regClass, (((void *)0)), f);
 }
 else if(!strcmp(line, "[Template Parameters]"))
 {
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+while(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f) : (unsigned int)1;
+})))
 {
 char name[1024];
 int type = 0;
@@ -1960,11 +1965,16 @@ struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__
 if(firstModule)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_);
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(uintptr_t)(firstModule));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(list, (uint64)(uintptr_t)(firstModule)) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
@@ -1989,11 +1999,16 @@ if(loadedModule)
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->importType = importType;
 module->dllOnly = 0;
 if(list)
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(uintptr_t)(loadedModule));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(list, (uint64)(uintptr_t)(loadedModule)) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 }
 }
 }

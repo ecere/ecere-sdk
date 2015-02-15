@@ -731,11 +731,16 @@ struct __ecereNameSpace__ecere__com__Instance * f;
 
 if((f = __ecereNameSpace__ecere__sys__FileOpen(__ecereNameSpace__ecere__sys__globalSystem.logFile, 3)))
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, text);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, text) : (unsigned int)1;
+}));
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
 break;

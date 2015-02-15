@@ -9872,7 +9872,10 @@ class WindowControllerInterface : ControllableWindow
    {
       bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyDown)((Window)controller.controlled, controller, key, ch);
       if(result)
-         result = ((bool (*)(Window, Key, unichar))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown])(controller.window, key, ch);
+      {
+         bool (* onKeyDown)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown];
+         result = onKeyDown ? onKeyDown(controller.window, key, ch) : true;
+      }
       return result;
    }
 
@@ -9880,7 +9883,10 @@ class WindowControllerInterface : ControllableWindow
    {
       bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyUp)((Window)controller.controlled, controller, key, ch);
       if(result)
-         result = ((bool(*)(Window, Key, unichar))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp])(controller.window, key, ch);
+      {
+         bool (* onKeyUp)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp];
+         result = onKeyUp ? onKeyUp(controller.window, key, ch) : true;
+      }
       return result;
    }
 
@@ -9888,7 +9894,10 @@ class WindowControllerInterface : ControllableWindow
    {
       bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyHit)((Window)controller.controlled, controller, key, ch);
       if(result)
-         result = ((bool(*)(Window, Key, unichar))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit])(controller.window, key, ch);
+      {
+         bool (* onKeyHit)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit];
+         result = onKeyHit ? onKeyHit(controller.window, key, ch) : true;
+      }
       return result;
    }
 
@@ -10029,7 +10038,7 @@ public:
                for(c = 0; c < size; c++)
                {
                   void * function = class(WindowControllerInterface)._vTbl[c];
-                  if(function != DefaultFunction)
+                  if(function && function != DefaultFunction)
                      value._vTbl[c] = function;
                   else
                      value._vTbl[c] = windowVTbl[c];

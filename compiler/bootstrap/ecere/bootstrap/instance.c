@@ -2734,7 +2734,7 @@ void * oldFunction = _class->_vTbl[method->vid];
 if(method->vid >= _class->vTblSize)
 printf("error: virtual methods overriding failure\n");
 else
-_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (((void *)0));
 for(deriv = _class->derivatives.first; deriv; deriv = deriv->next)
 {
 struct __ecereNameSpace__ecere__com__Class * derivClass = deriv->data;
@@ -2773,7 +2773,7 @@ return method;
 }
 if(!base)
 {
-struct __ecereNameSpace__ecere__com__Method * method = (method = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Method)), method->name = __ecereNameSpace__ecere__sys__CopyString(name), method->function = function ? function : (void *)(__ecereNameSpace__ecere__com__DefaultFunction), method->_class = _class, method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), method->memberAccess = declMode, method);
+struct __ecereNameSpace__ecere__com__Method * method = (method = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Method)), method->name = __ecereNameSpace__ecere__sys__CopyString(name), method->function = function ? function : (((void *)0)), method->_class = _class, method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), method->memberAccess = declMode, method);
 
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
 return method;
@@ -2906,7 +2906,12 @@ return (((void *)0));
 
 const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this)
 {
-return ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass___ecereNameSpace__ecere__com__Platform, (void *)&this, (((void *)0)), (((void *)0)), (((void *)0)));
+return (__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__Platform, (void *)&this, (((void *)0)), (((void *)0)), (((void *)0))) : (const char * )1;
+}));
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_classDesigner(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -2947,7 +2952,7 @@ if(method->type == 1)
 if(method->vid >= _class->vTblSize)
 printf("error: virtual methods overriding failure\n");
 else
-_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (((void *)0));
 }
 else
 base = (((void *)0));
@@ -2956,13 +2961,13 @@ return method;
 }
 if(!base)
 {
-struct __ecereNameSpace__ecere__com__Method * method = (method = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Method)), method->name = __ecereNameSpace__ecere__sys__CopyString(name), method->function = function ? function : (void *)(__ecereNameSpace__ecere__com__DefaultFunction), method->type = 1, method->_class = _class, method->vid = _class->vTblSize++, method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), method->memberAccess = declMode, method);
+struct __ecereNameSpace__ecere__com__Method * method = (method = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Method)), method->name = __ecereNameSpace__ecere__sys__CopyString(name), method->function = function ? function : (((void *)0)), method->type = 1, method->_class = _class, method->vid = _class->vTblSize++, method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), method->memberAccess = declMode, method);
 
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
-_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (((void *)0));
 if(_class->derivatives.first || _class->templatized.first)
-__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, method->vid, function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction, type);
+__ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, method->vid, function ? function : (((void *)0)), type);
 return method;
 }
 }
@@ -3380,7 +3385,7 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl ==
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = __ecereNameSpace__ecere__com___malloc(sizeof(void *) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->vTblSize);
 memcpy(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->_vTbl, sizeof(int (*)()) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->vTblSize);
 }
-((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
+((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl[method->vid] = function ? function : (((void *)0));
 }
 }
 }

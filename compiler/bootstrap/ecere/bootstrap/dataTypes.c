@@ -694,24 +694,63 @@ else
 {
 int c;
 int last = 0;
+unsigned int checkFor1 = 1, checkFor9 = 1;
 int numDigits = 7, num = 1;
+int first9 = 0;
 char format[10];
+char * dot;
+int len;
 
 while(numDigits && (float)num < f)
 numDigits--, num *= 10;
 sprintf(format, "%%.%df", numDigits);
 sprintf(string, format, f);
-c = strlen(string) - 1;
+dot = strchr(string, '.');
+len = strlen(string);
+c = len - 1;
 for(; c >= 0; c--)
 {
-if(string[c] != '0')
+char ch = string[c];
+
+if(ch != '0' && dot)
+{
+if(ch == '1' && string + c - dot >= 6 && c == len - 1 && checkFor1)
+checkFor1 = 0;
+else if(ch == '9' && string + c - dot >= 6 && c == len - 1 && checkFor9)
+first9 = c;
+else
+{
 last = ((last > c) ? last : c);
-if(string[c] == '.')
+checkFor9 = 0;
+checkFor1 = 0;
+}
+}
+if(ch == '.')
 {
 if(last == c)
 string[c] = 0;
 else
+{
 string[last + 1] = 0;
+if(first9)
+{
+while(--first9 > 0)
+{
+if(first9 != c)
+if(string[first9] < '9')
+{
+string[first9]++;
+break;
+}
+}
+if(first9 < c)
+{
+string[c - 1] = '1';
+first9 = c;
+}
+string[first9] = 0;
+}
+}
 break;
 }
 }
@@ -1173,22 +1212,42 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(class, data, this) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(class, data, this) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(class, data, this) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(class, data, this) : (void)1;
+}));
 }
 
 const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
@@ -1460,7 +1519,12 @@ void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ec
 int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen, struct __ecereNameSpace__ecere__com__Class * class, const void * object, va_list args)
 {
 int len = 0;
-const char * result = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))class->_vTbl[__ecereVMethodID_class_OnGetString])(class, object, buffer, (((void *)0)), (((void *)0)));
+const char * result = (__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))class->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(class, object, buffer, (((void *)0)), (((void *)0))) : (const char * )1;
+}));
 
 if(result)
 {
@@ -1530,20 +1594,30 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 void __ecereNameSpace__ecere__com__Byte_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, data, 1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (unsigned int)1;
+}));
 }
 
 void __ecereNameSpace__ecere__com__Byte_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, data, 1) != 1)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (unsigned int)1;
+})) != 1)
 *data = 0;
 }
 
@@ -1556,11 +1630,16 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((*data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((*data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+}));
 }
 
 void __ecereNameSpace__ecere__com__IntPtr32_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, int data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -1572,22 +1651,32 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+}));
 }
 
 void __ecereNameSpace__ecere__com__Int_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, int * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[4];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+})) == 4)
 *data = (unsigned int)(((bytes)[0] << 24) | ((bytes)[1] << 16) | ((bytes)[2] << 8) | (bytes)[3]);
 else
 *data = 0;
@@ -1606,11 +1695,16 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((*data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((*data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+}));
 }
 
 static void __ecereNameSpace__ecere__com__IntPtr64_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, long long data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -1626,22 +1720,32 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+}));
 }
 
 void __ecereNameSpace__ecere__com__Int64_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[8];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+})) == 8)
 *data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << 16) | ((bytes)[6] << 8) | (bytes)[7]);
 else
 *data = 0;
@@ -1654,22 +1758,32 @@ unsigned char bytes[2];
 (bytes)[0] = (unsigned char)(((*data) >> 8) & 0xFF);
 (bytes)[1] = (unsigned char)(((*data)) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 2);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (unsigned int)1;
+}));
 }
 
 void __ecereNameSpace__ecere__com__Word_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned short * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[2];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 2) == 2)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (unsigned int)1;
+})) == 2)
 *data = (unsigned short)(((bytes)[0] << 8) | (bytes)[1]);
 else
 *data = 0;
@@ -1684,22 +1798,32 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((*(unsigned int *)data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((*(unsigned int *)data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+}));
 }
 
 static void __ecereNameSpace__ecere__com__Float_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, float * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[4];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+})) == 4)
 *(unsigned int *)data = (unsigned int)(((bytes)[0] << 24) | ((bytes)[1] << 16) | ((bytes)[2] << 8) | (bytes)[3]);
 else
 *data = 0;
@@ -1718,22 +1842,32 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((*(uint64 *)data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((*(uint64 *)data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+}));
 }
 
 static void __ecereNameSpace__ecere__com__Double_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, double * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[8];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+})) == 8)
 *(uint64 *)data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << 16) | ((bytes)[6] << 8) | (bytes)[7]);
 else
 *data = 0;
@@ -1743,11 +1877,16 @@ void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct
 {
 unsigned int len = this ? strlen(this->string) : 0;
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, this ? this->string : "", len + 1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, this ? this->string : "", len + 1) : (unsigned int)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -1756,11 +1895,16 @@ if(this)
 {
 int c;
 
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+for(c = 0; (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*this).string[c], 1) : (unsigned int)1;
+})) && (*this).string[c]; c++)
 ;
 (*this).string[c++] = '\0';
 }
@@ -1770,11 +1914,16 @@ static void __ecereNameSpace__ecere__com__String_OnSerialize(struct __ecereNameS
 {
 int len = string ? strlen(string) : 0;
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, string ? string : "", len + 1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, string ? string : "", len + 1) : (unsigned int)1;
+}));
 }
 
 static void __ecereNameSpace__ecere__com__String_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, char ** string, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -1785,11 +1934,16 @@ int c;
 unsigned int size = 64;
 
 *string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (size));
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+for(c = 0; (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*string)[c], 1) && (*string)[c]; c++)
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*string)[c], 1) : (unsigned int)1;
+})) && (*string)[c]; c++)
 {
 if(c == size - 1)
 {
@@ -2190,19 +2344,54 @@ int __internalValue001;
 int __internalValue000;
 int a;
 
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, 0, 0, 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnFree])(__ecereClass_int, (void *)&a);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, (void *)&a, __extension__ ({
+(__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * );
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnFree]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a) : (void)1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const void * newData);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, __extension__ ({
 __internalValue000 = 0;
 &__internalValue000;
+})) : (void)1;
 }));
-((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, (void *)&a, __extension__ ({
+(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const void * object);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, __extension__ ({
 __internalValue001 = 0;
 &__internalValue001;
+})) : (int)1;
 }));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit])(__ecereClass_int, (void *)&a, (((void *)0)), 0);
-((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, (void *)&a, (((void *)0)));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * window, void *  object);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0)), 0) : (unsigned int)1;
+}));
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0) : (struct __ecereNameSpace__ecere__com__Instance *)1;
+}));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (unsigned int)1;
+}));
 }
 
 static const char * __ecereNameSpace__ecere__com__OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)

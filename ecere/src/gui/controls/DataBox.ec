@@ -60,7 +60,8 @@ public:
 
    bool SaveData()      // TODO: Clear this up, along with Saving DataBox
    {
-      if(editor && ((bool (*)(void *, void *, Window, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSaveEdit])(type, data, editor, null))
+      bool (* onSaveEdit)(void *, void *, Window, void *) = (void *)type._vTbl[__ecereVMethodID_class_OnSaveEdit];
+      if(editor && (!onSaveEdit || onSaveEdit(type, data, editor, null)))
       {
          Refresh();
          NotifyChanged(master, this, false);
