@@ -737,7 +737,7 @@ class ProjectView : Window
             //logBox.Logf("%s\n", makefileName);
             logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
 
-            if(!project.GenerateMakefile(null, false, null, config))
+            if(!project.GenerateMakefile(null, false, null, config, compiler.ldCommand))
                ide.outputView.buildBox.Logf($"Error generating makefile (Is the project directory writable?)\n");
 
             ide.statusBar.text = null;
@@ -1611,7 +1611,7 @@ class ProjectView : Window
       return result;
    }
 
-   void GoToError(const char * line, const bool noParsing)
+   void GoToError(const char * line, const bool noParsing, const char * objectFileExt)
    {
       char * colon;
 
@@ -1764,7 +1764,7 @@ class ProjectView : Window
                         for(prj : ide.workspace.projects; prj.lastBuildConfigName)
                         {
                            if((config = prj.GetConfig(prj.lastBuildConfigName)))
-                              node = prj.FindNodeByObjectFileName(moduleName, type, dotMain, config);
+                              node = prj.FindNodeByObjectFileName(moduleName, type, dotMain, config, objectFileExt);
                            if(node)
                               break;
                         }
@@ -1777,10 +1777,11 @@ class ProjectView : Window
                         if(compiler)
                         {
                            int bitDepth = ide.workspace.bitDepth;
+                           const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
                            DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
                            strcpy(filePath, project.topNode.path);
                            PathCatSlash(filePath, objDir.dir);
-                           node.GetObjectFileName(name, project.configsNameCollisions[config ? config.name : ""], type, dotMain);
+                           node.GetObjectFileName(name, project.configsNameCollisions[config ? config.name : ""], type, dotMain, objectFileExt);
                            PathCatSlash(filePath, name);
                            delete objDir;
                         }
@@ -1798,7 +1799,7 @@ class ProjectView : Window
             {
                CodeEditor codeEditor = null;
 
-               if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath))
+               if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath, objectFileExt))
                {
                   codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                }

@@ -11,6 +11,18 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+define ecpDefaultCommand = "ecp";
+define eccDefaultCommand = "ecc";
+define ecsDefaultCommand = "ecs";
+define earDefaultCommand = "ear";
+define cppDefaultCommand = "gcc"; // As per #624 we decided to default to "gcc"...
+define ccDefaultCommand = "gcc";
+define cxxDefaultCommand = "g++";
+//define ldDefaultCommand = "gcc";
+define arDefaultCommand = "ar";
+define objectDefaultFileExt = "o";
+define outputDefaultFileExt = "";
+
 import "StringsBox"
 
 import "OldIDESettings"
@@ -217,7 +229,9 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
       earDefaultCommand,
       cppDefaultCommand,
       ccDefaultCommand,
-      cxxDefaultCommand
+      cxxDefaultCommand,
+      arDefaultCommand
+      //ldDefaultCommand
    };
    incref defaultCompiler;
    return defaultCompiler;
@@ -376,13 +390,31 @@ private:
       FileGetSize(settingsFilePath, &settingsFileSize);
       if(data.compilerConfigs)
       {
-         for(c : data.compilerConfigs)
+         for(ccfg : data.compilerConfigs)
          {
-            CompilerConfig compiler = c;
-            char * cxxCommand = compiler.cxxCommand;
-            if(!cxxCommand || !cxxCommand[0])
-               compiler.cxxCommand = cxxDefaultCommand;
-            incref compiler;
+            if(!ccfg.ecpCommand || !ccfg.ecpCommand[0])
+               ccfg.ecpCommand = ecpDefaultCommand;
+            if(!ccfg.eccCommand || !ccfg.eccCommand[0])
+               ccfg.eccCommand = eccDefaultCommand;
+            if(!ccfg.ecsCommand || !ccfg.ecsCommand[0])
+               ccfg.ecsCommand = ecsDefaultCommand;
+            if(!ccfg.earCommand || !ccfg.earCommand[0])
+               ccfg.earCommand = earDefaultCommand;
+            if(!ccfg.cppCommand || !ccfg.cppCommand[0])
+               ccfg.cppCommand = cppDefaultCommand;
+            if(!ccfg.ccCommand || !ccfg.ccCommand[0])
+               ccfg.ccCommand = ccDefaultCommand;
+            if(!ccfg.cxxCommand || !ccfg.cxxCommand[0])
+               ccfg.cxxCommand = cxxDefaultCommand;
+            /*if(!ccfg.ldCommand || !ccfg.ldCommand[0])
+               ccfg.ldCommand = ldDefaultCommand;*/
+            if(!ccfg.arCommand || !ccfg.arCommand[0])
+               ccfg.arCommand = arDefaultCommand;
+            if(!ccfg.objectFileExt || !ccfg.objectFileExt[0])
+               ccfg.objectFileExt = objectDefaultFileExt;
+            /*if(!ccfg.outputFileExt || !ccfg.outputFileExt[0])
+               ccfg.outputFileExt = outputDefaultFileExt;*/
+            incref ccfg;
          }
       }
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
@@ -867,6 +899,30 @@ public:
       get { return cxxCommand; }
       isset { return cxxCommand && cxxCommand[0]; }
    }
+   property const char * arCommand
+   {
+      set { delete arCommand; if(value && value[0]) arCommand = CopyString(value); }
+      get { return arCommand; }
+      isset { return arCommand && arCommand[0]; }
+   }
+   property const char * ldCommand
+   {
+      set { delete ldCommand; if(value && value[0]) ldCommand = CopyString(value); }
+      get { return ldCommand; }
+      isset { return ldCommand && ldCommand[0]; }
+   }
+   property const char * objectFileExt
+   {
+      set { delete objectFileExt; if(value && value[0]) objectFileExt = CopyString(value); }
+      get { return objectFileExt && objectFileExt[0] ? objectFileExt : objectDefaultFileExt ; }
+      isset { return objectFileExt && objectFileExt[0] && strcmp(objectFileExt, objectDefaultFileExt); }
+   }
+   property const char * outputFileExt
+   {
+      set { delete outputFileExt; if(value && value[0]) outputFileExt = CopyString(value); }
+      get { return outputFileExt; }
+      isset { return outputFileExt && outputFileExt[0]; }
+   }
    property const char * executableLauncher
    {
       set { delete executableLauncher; if(value && value[0]) executableLauncher = CopyString(value); }
@@ -1057,6 +1113,10 @@ private:
    char * cppCommand;
    char * ccCommand;
    char * cxxCommand;
+   char * ldCommand;
+   char * arCommand;
+   char * objectFileExt;
+   char * outputFileExt;
    char * executableLauncher;
    char * distccHosts;
    char * gnuToolchainPrefix;
@@ -1077,6 +1137,10 @@ private:
       delete cppCommand;
       delete ccCommand;
       delete cxxCommand;
+      delete ldCommand;
+      delete arCommand;
+      delete objectFileExt;
+      delete outputFileExt;
       delete makeCommand;
       delete executableLauncher;
       delete distccHosts;
@@ -1111,6 +1175,10 @@ public:
          cppCommand,
          ccCommand,
          cxxCommand,
+         arCommand,
+         ldCommand,
+         objectFileExt,
+         outputFileExt,
          executableLauncher,
          ccacheEnabled,
          distccEnabled,

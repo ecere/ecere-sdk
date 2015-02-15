@@ -1061,9 +1061,10 @@ class Debugger
    void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, const char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel, bool oldImplementation)
    {
       char relativeFilePath[MAX_LOCATION];
+      const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
       _ChangeUserAction(runToCursor);
-      ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null);
+      ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null, objectFileExt);
 
       if(bpRunToCursor && bpRunToCursor.inserted && symbols)
       {
@@ -1339,8 +1340,9 @@ class Debugger
       {
          Project owner;
          char relativePath[MAX_LOCATION];
+         const char * objectFileExt = currentCompiler ? currentCompiler.objectFileExt : objectDefaultFileExt;
 
-         ide.workspace.GetRelativePath(absolutePath, relativePath, &owner);
+         ide.workspace.GetRelativePath(absolutePath, relativePath, &owner, objectFileExt);
 
          if(!owner && !FileExists(absolutePath))
          {
@@ -2100,7 +2102,8 @@ class Debugger
       GdbExecCommon();
       if(absoluteFilePath)
       {
-         ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null);
+         const char * objectFileExt = currentCompiler ? currentCompiler.objectFileExt : objectDefaultFileExt;
+         ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null, objectFileExt);
          if(!GdbCommand(0.1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
@@ -2126,7 +2129,8 @@ class Debugger
       GdbExecCommon();
       if(lineNumber)
       {
-         ide.workspace.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
+         const char * objectFileExt = currentCompiler ? currentCompiler.objectFileExt : objectDefaultFileExt;
+         ide.workspace.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null, objectFileExt);
          if(!GdbCommand(0.1, true, "advance %s:%d", relativeFilePath, lineNumber)) // should use -exec-advance -- GDB/MI implementation missing
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
@@ -4822,7 +4826,7 @@ class Breakpoint : struct
          {
             if(!strcmp(prjName, prj.name))
             {
-               if(prj.GetAbsoluteFromRelativePath(filePath, fullPath))
+               if(prj.GetAbsoluteFromRelativePath(filePath, fullPath, null))
                {
                   property::absoluteFilePath = fullPath;
                   project = prj;
@@ -4836,7 +4840,7 @@ class Breakpoint : struct
       else
       {
          Project prj = ide.project;
-         if(prj.GetAbsoluteFromRelativePath(filePath, fullPath))
+         if(prj.GetAbsoluteFromRelativePath(filePath, fullPath, null))
          {
             property::absoluteFilePath = fullPath;
             project = prj;
