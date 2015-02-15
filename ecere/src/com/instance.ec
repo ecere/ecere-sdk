@@ -1308,6 +1308,7 @@ static void * _myrealloc(void * pointer, unsigned int size)
             TOTAL_MEM += size - newBlock.size;
             OUTSIDE_MEM += size - newBlock.size;
             newPointer = ((struct MemBlock *)newBlock + 1);
+            newBlock.size = size;
          }
       }
    }
