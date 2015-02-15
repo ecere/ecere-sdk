@@ -467,7 +467,7 @@ public:
       return nodes;
    }
 
-   Project GetFileOwner(const char * absolutePath)
+   Project GetFileOwner(const char * absolutePath, const char * objectFileExt)
    {
       Project owner = null;
       for(prj : projects)
@@ -479,13 +479,13 @@ public:
          }
       }
       if(!owner)
-         GetObjectFileNode(absolutePath, &owner, null);
+         GetObjectFileNode(absolutePath, &owner, null, objectFileExt);
       return owner;
    }
 
-   void GetRelativePath(const char * absolutePath, char * relativePath, Project * owner)
+   void GetRelativePath(const char * absolutePath, char * relativePath, Project * owner, const char * objectFileExt)
    {
-      Project prj = GetFileOwner(absolutePath);
+      Project prj = GetFileOwner(absolutePath, objectFileExt);
       if(owner)
          *owner = prj;
       if(!prj)
@@ -499,7 +499,7 @@ public:
          relativePath[0] = '\0';
    }
 
-   ProjectNode GetObjectFileNode(const char * filePath, Project * project, char * fullPath)
+   ProjectNode GetObjectFileNode(const char * filePath, Project * project, char * fullPath, const char * objectFileExt)
    {
       ProjectNode node = null;
       char ext[MAX_EXTENSION];
@@ -516,7 +516,7 @@ public:
                DotMain dotMain = DotMain::FromFileName(fileName);
                for(prj : ide.workspace.projects)
                {
-                  if((node = prj.FindNodeByObjectFileName(fileName, type, dotMain, null)))
+                  if((node = prj.FindNodeByObjectFileName(fileName, type, dotMain, null, objectFileExt)))
                   {
                      if(project)
                         *project = prj;
@@ -528,7 +528,7 @@ public:
                         DirExpression objDir = prj.GetObjDir(compiler, prj.config, bitDepth);
                         strcpy(fullPath, prj.topNode.path);
                         PathCatSlash(fullPath, objDir.dir);
-                        node.GetObjectFileName(name, prj.configsNameCollisions[cfgName], type, dotMain);
+                        node.GetObjectFileName(name, prj.configsNameCollisions[cfgName], type, dotMain, objectFileExt);
                         PathCatSlash(fullPath, name);
                         delete objDir;
                         delete compiler;

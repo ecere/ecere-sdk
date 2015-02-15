@@ -439,12 +439,16 @@ class IDEWorkSpace : Window
 
       void OnGotoError(const char * line, bool noParsing)
       {
-         ide.GoToError(line, noParsing);
+         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.compiler) : null;
+         const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
+         ide.GoToError(line, noParsing, objectFileExt);
       }
 
       void OnCodeLocationParseAndGoTo(const char * line)
       {
-         ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir);
+         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.compiler) : null;
+         const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
+         ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
       }
 
       bool OnKeyDown(Key key, unichar ch)
@@ -2662,13 +2666,13 @@ class IDEWorkSpace : Window
       return true;
    }
 
-   void GoToError(const char * line, bool noParsing)
+   void GoToError(const char * line, bool noParsing, const char * objectFileExt)
    {
       if(projectView)
-         projectView.GoToError(line, noParsing);
+         projectView.GoToError(line, noParsing, objectFileExt);
    }
 
-   FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, Project prj, ProjectNode * node, char * selectedPath)
+   FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, Project prj, ProjectNode * node, char * selectedPath, const char * objectFileExt)
    {
       FileAttribs result { };
       FileAttribs fileAttribs;
@@ -2715,7 +2719,7 @@ class IDEWorkSpace : Window
                      }
                   }
                }
-               if(!n && (n = workspace.GetObjectFileNode(filePath, &project, selectedPath)) && project &&
+               if(!n && (n = workspace.GetObjectFileNode(filePath, &project, selectedPath, objectFileExt)) && project &&
                      (fileAttribs = FileExists(selectedPath)).isFile)
                {
                   if(node) *node = n;
@@ -2727,7 +2731,7 @@ class IDEWorkSpace : Window
       return result;
    }
 
-   void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
+   void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir, const char * objectFileExt)
    {
       char *s = null;
       const char *path = text;
@@ -2822,7 +2826,7 @@ class IDEWorkSpace : Window
          strcpy(filePath, path);
       }
 
-      if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath)))
+      if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath, objectFileExt)))
          CodeLocationGoTo(completePath, fileAttribs, line, col);
    }
 
@@ -2835,7 +2839,8 @@ class IDEWorkSpace : Window
          strlwr(ext);
          if(binaryDocExt.Find(ext))
             ShellOpen(path);
-         else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
+         else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "bc") ||
+               !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
          {
             char dirPath[MAX_LOCATION];
             StripLastDirectory(path, dirPath);
@@ -3303,17 +3308,21 @@ class IDEWorkSpace : Window
 
       for(item : compiler.executableDirs)
       {
+         DirExpression dirExpr { };
+         dirExpr.Evaluate(item, null, compiler, null, 0);
          found = false;
+
          for(p : newExePaths)
          {
-            if(!fstrcmp(p, item))
+            if(!fstrcmp(p, dirExpr.dir))
             {
                found = true;
                break;
             }
          }
          if(!found)
-            newExePaths.Add(CopySystemPath(item));
+            newExePaths.Add(CopySystemPath(dirExpr.dir));
+         delete dirExpr;
       }
 
       GetEnvironment("PATH", oldList, maxPathLen);

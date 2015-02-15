@@ -529,13 +529,14 @@ private:
       return buffer;
    }
 
-   char * GetObjectFileName(char * buffer, Map<String, NameCollisionInfo> namesInfo, IntermediateFileType type, bool dotMain)
+   char * GetObjectFileName(char * buffer, Map<String, NameCollisionInfo> namesInfo, IntermediateFileType type, bool dotMain, const char * objectFileExt)
    {
       if(buffer && (this.type == file || (this.type == project && dotMain == true)))
       {
          bool collision;
          char extension[MAX_EXTENSION];
          char moduleName[MAX_FILENAME];
+         const char * objFileExt = objectFileExt ? objectFileExt : objectDefaultFileExt;
          NameCollisionInfo info;
 
          GetExtension(name, extension);
@@ -567,9 +568,12 @@ private:
          if(type == o)
          {
             if(collision)
-               strcat(buffer, ".o");
+            {
+               strcat(buffer, ".");
+               strcat(buffer, objFileExt);
+            }
             else
-               ChangeExtension(buffer, "o", buffer);
+               ChangeExtension(buffer, objFileExt, buffer);
          }
       }
       return buffer;
@@ -1129,13 +1133,13 @@ private:
       return result;
    }
 
-   ProjectNode FindByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo)
+   ProjectNode FindByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo, const char * objectFileExt)
    {
       char p[MAX_LOCATION];
       ProjectNode result = null;
       if(dotMain == true && this.type == project)
       {
-         GetObjectFileName(p, namesInfo, type, dotMain);
+         GetObjectFileName(p, namesInfo, type, dotMain, objectFileExt);
          if(!fstrcmp(p, fileName))
             result = this;
       }
@@ -1143,11 +1147,11 @@ private:
       {
          for(child : files; child.type != resources)
          {
-            if(child.type != file && (result = child.FindByObjectFileName(fileName, type, dotMain, namesInfo)))
+            if(child.type != file && (result = child.FindByObjectFileName(fileName, type, dotMain, namesInfo, objectFileExt)))
                break;
             else if(child.type == file && child.name)
             {
-               child.GetObjectFileName(p, namesInfo, type, dotMain);
+               child.GetObjectFileName(p, namesInfo, type, dotMain, objectFileExt);
                if(!fstrcmp(p, fileName))
                {
                   result = child;
@@ -1570,7 +1574,7 @@ private:
                StripExtension(moduleName);
                info = namesInfo[moduleName];
                collision = info ? info.IsExtensionColliding(extension) : false;
-               sprintf(s, "%s$(OBJ)%s%s%s.o%s", ts.a, moduleName, collision ? "." : "", collision ? extension : "", ts.b);
+               sprintf(s, "%s$(OBJ)%s%s%s$(O)%s", ts.a, moduleName, collision ? "." : "", collision ? extension : "", ts.b);
                items.Add(CopyString(s));
                if(containsCXX && (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
                   *containsCXX = true;
@@ -2060,10 +2064,11 @@ private:
                OpenRulesPlatformExclusionIfs(f, &ifCount, platforms);
 
             if(!strcmpi(extension, "ec"))
-               f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
+               f.Printf("$(OBJ)%s$(O): $(OBJ)%s.c\n", moduleName, moduleName);
             else
-               f.Printf("$(OBJ)%s%s%s.o: %s%s.%s\n", moduleName,
-                     collision ? "." : "", collision ? extension : "", modulePath, moduleName, extension);
+               f.Printf("$(OBJ)%s%s%s$(O): %s%s.%s\n",
+                     moduleName, collision ? "." : "", collision ? extension : "",
+                     modulePath, moduleName, extension);
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
                f.Printf("\t$(CXX)");
             else if(!strcmpi(extension, "rc"))
@@ -2077,7 +2082,8 @@ private:
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
-                  f.Printf(" $(FVISIBILITY) -c $(call quote_path,$(OBJ)%s.c) -o $(call quote_path,$@)\n", moduleName);
+                  f.Printf(" $(FVISIBILITY) -c $(call quote_path,$(OBJ)%s.c) -o $(call quote_path,$@)\n",
+                        moduleName);
                else
                   f.Printf(" -c $(call quote_path,%s%s.%s) -o $(call quote_path,$@)\n",
                         modulePath, moduleName, !strcmpi(extension, "ec") ? "c" : extension);
@@ -2351,7 +2357,6 @@ private:
                nodeECFlagsMapping[(intptr)this] = nodeECFlagsMapping[(intptr)parent];
             }
          }
-
       }
       if(files)
       {
@@ -2406,7 +2411,7 @@ private:
       return platforms;
    }
 
-   void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, DynamicString output)
+   void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, const char * objectFileExt, DynamicString output)
    {
       char moduleName[MAX_FILENAME];
       if(type == file)
@@ -2461,7 +2466,8 @@ private:
                strcat(moduleName, ".");
                strcat(moduleName, extension);
             }
-            strcat(moduleName, ".o");
+            strcat(moduleName, ".");
+            strcat(moduleName, objectFileExt);
             output.concat(moduleName);
             output.concat("\"");
          }
@@ -2497,7 +2503,7 @@ private:
          for(child : files)
          {
             if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               child.GetTargets(prjConfig, namesInfo, objDir, output);
+               child.GetTargets(prjConfig, namesInfo, objDir, objectFileExt, output);
          }
       }
    }
@@ -2507,6 +2513,7 @@ private:
       if(type == file)
       {
          bool collision;
+         const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          char extension[MAX_EXTENSION];
          char fileName[MAX_FILENAME];
          char moduleName[MAX_FILENAME];
@@ -2538,9 +2545,12 @@ private:
          }
 
          if(collision)
-            strcat(fileName, ".o");
+         {
+            strcat(fileName, ".");
+            strcat(fileName, objectFileExt);
+         }
          else
-            ChangeExtension(fileName, "o", fileName);
+            ChangeExtension(fileName, objectFileExt, fileName);
          if(FileExists(fileName)) DeleteFile(fileName);
 
          delete objDir;

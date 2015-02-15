@@ -195,13 +195,14 @@ else
 endif
 
 # PREFIXES AND EXTENSIONS
-.SUFFIXES: .c .ec .sym .imp .bowl .o .a
 EC := .ec
 S := .sym
 I := .imp
 B := .bowl
 C := .c
+ifndef O
 O := .o
+endif
 A := .a
 E := $(if $(WINDOWS_TARGET),.exe,)
 SO := $(if $(WINDOWS_TARGET),.dll,$(if $(OSX_TARGET),.dylib,.so))
@@ -209,6 +210,7 @@ LP := $(if $(WINDOWS_TARGET),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 HOST_E := $(if $(WINDOWS_HOST),.exe,)
 HOST_SO := $(if $(WINDOWS_HOST),.dll,$(if $(OSX_HOST),.dylib,.so))
 HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
+.SUFFIXES: .c .ec .sym .imp .bowl $(O) $(A)
 
 # TARGET VERSION
 VER := $(if $(LINUX_TARGET),$(if $(LINUX_HOST),$(if $(VERSION),.$(VERSION),),),)

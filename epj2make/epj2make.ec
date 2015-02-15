@@ -359,7 +359,7 @@ class epj2makeApp : GuiApplication
                   {
                      project.GenerateCompilerCf(defaultCompiler, project.topNode.ContainsFilesWithExtension("ec", project.config));
                      project.GenerateCrossPlatformMk(null);
-                     if(project.GenerateMakefile(makePath, noResources, includemkPath, project.config))
+                     if(project.GenerateMakefile(makePath, noResources, includemkPath, project.config, defaultCompiler.ldCommand))
                      {
                         if(makePath)
                            printf("%s\n", makePath);

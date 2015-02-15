@@ -1038,7 +1038,7 @@ private:
       return result;
    }
 
-   ProjectNode FindNodeByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config)
+   ProjectNode FindNodeByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config, const char * objectFileExt)
    {
       ProjectNode result;
       const char * cfgName;
@@ -1047,7 +1047,7 @@ private:
       cfgName = config ? config.name : "";
       if(!configsNameCollisions[cfgName])
          ProjectLoadLastBuildNamesInfo(this, config);
-      result = topNode.FindByObjectFileName(fileName, type, dotMain, configsNameCollisions[cfgName]);
+      result = topNode.FindByObjectFileName(fileName, type, dotMain, configsNameCollisions[cfgName], objectFileExt);
       return result;
    }
 
@@ -1349,7 +1349,7 @@ private:
    }
 
 #ifndef MAKEFILE_GENERATOR
-   ProjectNode GetObjectFileNode(const char * filePath)
+   ProjectNode GetObjectFileNode(const char * filePath, const char * objectFileExt)
    {
       ProjectNode node = null;
       char ext[MAX_EXTENSION];
@@ -1364,18 +1364,18 @@ private:
             if(fileName[0])
             {
                DotMain dotMain = DotMain::FromFileName(fileName);
-               node = FindNodeByObjectFileName(fileName, type, dotMain, null);
+               node = FindNodeByObjectFileName(fileName, type, dotMain, null, objectFileExt);
             }
          }
       }
       return node;
    }
 
-   bool GetAbsoluteFromRelativePath(const char * relativePath, char * absolutePath)
+   bool GetAbsoluteFromRelativePath(const char * relativePath, char * absolutePath, const char * objectFileExt)
    {
       ProjectNode node = topNode.FindWithPath(relativePath, false);
       if(!node)
-         node = GetObjectFileNode(relativePath);
+         node = GetObjectFileNode(relativePath, objectFileExt);
       if(node)
       {
          strcpy(absolutePath, node.project.topNode.path);
@@ -2101,6 +2101,7 @@ private:
       char command[MAX_F_STRING*4];
       char * compilerName = CopyString(compiler.name);
       Map<String, NameCollisionInfo> cfgNameCollisions;
+      const char * objFileExt = strcmp(compiler.objectFileExt, objectDefaultFileExt) != 0 ? compiler.objectFileExt : null;
 
       delete lastBuildConfigName;
       lastBuildConfigName = CopyString(config ? config.name : "Common");
@@ -2139,14 +2140,15 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s%s%s objdir -C \"%s\"%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                      /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
-
-                     compilerName, topNode.path, justPrint ? " -n" : "", makeFilePath);
+                     compilerName,
+                     objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
+                     topNode.path, justPrint ? " -n" : "", makeFilePath);
                if(justPrint)
                   ide.outputView.buildBox.Logf("%s\n", command);
                Execute(command);
@@ -2162,7 +2164,7 @@ private:
                {
                   if(!eC_Debug)
                      node.DeleteIntermediateFiles(compiler, config, bitDepth, cfgNameCollisions, mode == cObject ? true : false);
-                  node.GetTargets(config, cfgNameCollisions, objDirExp.dir, makeTargets);
+                  node.GetTargets(config, cfgNameCollisions, objDirExp.dir, compiler.objectFileExt, makeTargets);
                }
             }
          }
@@ -2197,7 +2199,7 @@ private:
          GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s %s%s%s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
 #if defined(__WIN32__)
                "",
 #else
@@ -2212,7 +2214,9 @@ private:
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                ide.workspace.useValgrind ? " DISABLED_POOLING=1" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
-               compilerName, eC_Debug ? "--always-make " : "",
+               compilerName,
+               objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
+               eC_Debug ? "--always-make " : "",
                ccVersion == post4_8 ? "GCC_CC_FLAGS=-fno-diagnostics-show-caret " : "",
                cxxVersion == post4_8 ? "GCC_CXX_FLAGS=-fno-diagnostics-show-caret " : "",
                numJobs,
@@ -2289,6 +2293,7 @@ private:
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != __runtimePlatform);
       const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
+      const char * objFileExt = strcmp(compiler.objectFileExt, objectDefaultFileExt) ? compiler.objectFileExt : null;
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -2323,11 +2328,12 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s%s%s %sclean%s -C \"%s\"%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                compilerName,
+               objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
                topNode.path, justPrint ? " -n": "", makeFilePath);
          if(justPrint)
@@ -2410,18 +2416,7 @@ private:
       if(targetType == staticLibrary || targetType == sharedLibrary)
          strcat(fileName, "$(LP)");
       strcat(fileName, GetTargetFileName(config));
-      switch(targetType)
-      {
-         case executable:
-            strcat(fileName, "$(E)");
-            break;
-         case sharedLibrary:
-            strcat(fileName, "$(SO)$(VER)");
-            break;
-         case staticLibrary:
-            strcat(fileName, "$(A)");
-            break;
-      }
+      strcat(fileName, "$(OUT)");
    }
 
    bool GenerateCrossPlatformMk(File altCrossPlatformMk)
@@ -2512,13 +2507,21 @@ private:
                f.Puts("\n");
                for(e : compiler.environmentVars)
                {
+                  ChangeCh(e.string, '\\', '/');
                   f.Printf("export %s := %s\n", e.name, e.string);
+                  ChangeCh(e.string, '/', '\\');
                }
                f.Puts("\n");
             }
 
             f.Puts("# TOOLCHAIN\n");
             f.Puts("\n");
+
+            f.Puts("# EXTENSIONS\n");
+            if(compiler.outputFileExt)
+               f.Printf("OUT := %s\n", compiler.outputFileExt);
+            else
+               f.Puts("OUT := $(if $(STATIC_LIBRARY_TARGET),$(A),$(if $(SHARED_LIBRARY_TARGET),$(SO)$(VER),$(if $(EXECUTABLE_TARGET),$(E),.x)))\n");
 
             if(gnuToolchainPrefix && gnuToolchainPrefix[0])
             {
@@ -2552,8 +2555,8 @@ private:
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
-            f.Puts("LD := $(GCC_PREFIX)ld\n");
-            f.Puts("AR := $(GCC_PREFIX)ar\n");
+            f.Printf("LD := $(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_LD_FLAGS),$(space)$(GCC_LD_FLAGS),)\n", compiler.ldCommand);
+            f.Printf("AR := $(GCC_PREFIX)%s\n", compiler.arCommand);
             f.Puts("STRIP := $(GCC_PREFIX)strip\n");
             f.Puts("ifdef WINDOWS_TARGET\n");
             f.Puts("WINDRES := $(GCC_PREFIX)windres\n");
@@ -2664,7 +2667,7 @@ private:
       return result;
    }
 
-   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config)
+   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config, const char * ldCommand)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
@@ -3366,7 +3369,7 @@ private:
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
 
-         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC");
+         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n", ldCommand && ldCommand[0] ? "LD" : containsCXX ? "CXX" : "CC");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
@@ -3544,7 +3547,7 @@ private:
          f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          if(numCObjects)
          {
-            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
+            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
             f.Printf("\t$(call rmq,$(OBJ)symbols.lst)\n");
          }
          f.Printf("\t$(call rmq,$(OBJ)objects.lst)\n");

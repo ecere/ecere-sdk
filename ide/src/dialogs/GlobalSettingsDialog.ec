@@ -16,7 +16,7 @@ class GlobalSettingsDialog : Window
    hasClose = true;
    borderStyle = sizable;
    text = $"Global Settings";
-   minClientSize = { 560, 506 };
+   minClientSize = { 560, 542 };
    nativeDecorations = true;
 
    IDESettings ideSettings;
@@ -718,10 +718,22 @@ class CompilerToolchainTab : CompilersSubTab
       text = $"Ecere Archiver", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
    Label cppLabel { this, position = { 8, 116 }, labeledWindow = cpp, tabCycle = false, inactive = true };
-   PathBox cpp
+   EditBox cpp
    {
       this, anchor = { left = margin, top = 112, right = 8 };
-      text = $"C Preprocessor", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      //text = $"C Preprocessor", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"C Preprocessor";//, NotifyModified = NotifyModifiedDocument;
+      bool NotifyModified(EditBox editBox)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.cppCommand = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
    };
    Label ccLabel { this, position = { 8, 142 }, labeledWindow = cc, tabCycle = false, inactive = true };
    PathBox cc
@@ -735,28 +747,40 @@ class CompilerToolchainTab : CompilersSubTab
       this, anchor = { left = margin, top = 164, right = 8 };
       text = $"C++ Compiler", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label makeLabel { this, position = { 8, 194 }, labeledWindow = make, tabCycle = false, inactive = true };
-   PathBox make
+   Label arLabel { this, position = { 8, 194 }, labeledWindow = ar, tabCycle = false, inactive = true };
+   PathBox ar
    {
       this, anchor = { left = margin, top = 190, right = 8 };
-      text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"AR", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label gnuToolchainPrefixLabel { this, position = { 8, 220 }, labeledWindow = gnuToolchainPrefix, tabCycle = false, inactive = true };
-   PathBox gnuToolchainPrefix
+   Label ldLabel { this, position = { 8, 220 }, labeledWindow = ld, tabCycle = false, inactive = true };
+   PathBox ld
    {
       this, anchor = { left = margin, top = 216, right = 8 };
-      text = $"GNU Toolchain Prefix", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"Linker", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label sysrootLabel { this, position = { 8, 246 }, labeledWindow = sysroot, tabCycle = false, inactive = true };
-   PathBox sysroot
+   Label makeLabel { this, position = { 8, 246 }, labeledWindow = make, tabCycle = false, inactive = true };
+   PathBox make
    {
       this, anchor = { left = margin, top = 242, right = 8 };
-      text = $"SYSROOT", typeExpected = directory, browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+      text = $"GNU Make", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
-   Label executableLauncherLabel { this, position = { 8, 272 }, labeledWindow = executableLauncher, tabCycle = false, inactive = true };
-   PathBox executableLauncher
+   Label gnuToolchainPrefixLabel { this, position = { 8, 272 }, labeledWindow = gnuToolchainPrefix, tabCycle = false, inactive = true };
+   PathBox gnuToolchainPrefix
    {
       this, anchor = { left = margin, top = 268, right = 8 };
+      text = $"GNU Toolchain Prefix", typeExpected = directory, browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
+   Label sysrootLabel { this, position = { 8, 298 }, labeledWindow = sysroot, tabCycle = false, inactive = true };
+   PathBox sysroot
+   {
+      this, anchor = { left = margin, top = 294, right = 8 };
+      text = $"SYSROOT", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
+   };
+   Label executableLauncherLabel { this, position = { 8, 324 }, labeledWindow = executableLauncher, tabCycle = false, inactive = true };
+   PathBox executableLauncher
+   {
+      this, anchor = { left = margin, top = 320, right = 8 };
       text = $"Executable Launcher", browseDialog = toolchainFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
@@ -774,16 +798,20 @@ class CompilerToolchainTab : CompilersSubTab
             compiler.ecsCommand = pathBox.slashPath;
          else if(pathBox == ear)
             compiler.earCommand = pathBox.slashPath;
-         else if(pathBox == cpp)
-            compiler.cppCommand = pathBox.slashPath;
+         /*else if(pathBox == cpp)
+            compiler.cppCommand = pathBox.slashPath;*/
          else if(pathBox == cc)
             compiler.ccCommand = pathBox.slashPath;
          else if(pathBox == cxx)
             compiler.cxxCommand = pathBox.slashPath;
+         else if(pathBox == ld)
+            compiler.ldCommand = pathBox.slashPath;
+         else if(pathBox == ar)
+            compiler.arCommand = pathBox.slashPath;
          else if(pathBox == make)
             compiler.makeCommand = pathBox.slashPath;
          else if(pathBox == executableLauncher)
-            compiler.execPrefixCommand = pathBox.slashPath;
+            compiler.executableLauncher = pathBox.slashPath;
          else if(pathBox == gnuToolchainPrefix)
             compiler.gccPrefix = pathBox.slashPath;
          else if(pathBox == sysroot)
@@ -805,9 +833,12 @@ class CompilerToolchainTab : CompilersSubTab
          ecc.path = compiler.eccCommand;
          ecs.path = compiler.ecsCommand;
          ear.path = compiler.earCommand;
-         cpp.path = compiler.cppCommand;
+         //cpp.path = compiler.cppCommand;
+         cpp.contents = compiler.cppCommand;
          cc.path = compiler.ccCommand;
          cxx.path = compiler.cxxCommand;
+         ld.path = compiler.ldCommand;
+         ar.path = compiler.arCommand;
          make.path = compiler.makeCommand;
          executableLauncher.path = compiler.executableLauncher;
          gnuToolchainPrefix.path = compiler.gnuToolchainPrefix;
@@ -820,6 +851,7 @@ class CompilerToolchainTab : CompilersSubTab
          cppLabel.disabled = cpp.disabled = isVC || disabled;
          cxxLabel.disabled = cxx.disabled = isVC || disabled;
          ccLabel.disabled = cc.disabled = isVC || disabled;
+         ldLabel.disabled = cxx.disabled = isVC || disabled;
          makeLabel.disabled = make.disabled = disabled;
          executableLauncherLabel.disabled = executableLauncher.disabled = disabled;
          gnuToolchainPrefixLabel.disabled = gnuToolchainPrefix.disabled = disabled;
@@ -1084,6 +1116,44 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
+   Label objectFileExtLabel { this, position = { 8, 276 }, labeledWindow = objectFileExt };
+   EditBox objectFileExt
+   {
+      this, text = $"Object file extension";//, hotKey = altH;
+      position = { 168, 274 }, size = { 80, 22 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.objectFileExt = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
+   Label outputFileExtLabel { this, position = { 8, 306 }, labeledWindow = outputFileExt };
+   EditBox outputFileExt
+   {
+      this, text = $"Output file extension";//, hotKey = altH;
+      position = { 168, 304 }, size = { 80, 22 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.outputFileExt = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
    CompilerOptionsTab()
    {
       Platform p;
@@ -1114,6 +1184,8 @@ class CompilerOptionsTab : CompilersSubTab
          eCcompilerFlags.strings = compiler.eCcompilerFlags;
          compilerFlags.strings = compiler.compilerFlags;
          linkerFlags.strings = compiler.linkerFlags;
+         objectFileExt.contents = compiler.objectFileExt;
+         outputFileExt.contents = compiler.outputFileExt;
 
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;

@@ -52,7 +52,7 @@ class DirExpression : struct
       {
          int c, d;
          const char * configName = config && config.name && config.name[0] ? config.name : "Common";
-         const char * moduleName = project.moduleName ? project.moduleName : "";
+         const char * moduleName = project && project.moduleName ? project.moduleName : "";
          const char * compilerName = (compiler && compiler.name) ? compiler.name : defaultCompilerName;
          const char * targetPlatformName = compiler && compiler.targetPlatform ? compiler.targetPlatform : "";
          char buffer[MAX_LOCATION];
@@ -61,6 +61,7 @@ class DirExpression : struct
             if(expr[c] == '$' && c < len - 1 && expr[c + 1] == '(')
             {
                int i;
+               bool matched = false;
                for(i = c + 2; i < len; i++)
                {
                   if(expr[i] == ')')
@@ -75,6 +76,7 @@ class DirExpression : struct
                            CamelCase(&buffer[d]);
                            d += strlen(configName);
                            c = i;
+                           matched = true;
                         }
                         else if(!strnicmp(&expr[c + 2], "Module", n) || !strnicmp(&expr[c + 2], "Project", n))
                         {
@@ -83,6 +85,7 @@ class DirExpression : struct
                            //CamelCase(&buffer[d]);
                            d += strlen(moduleName);
                            c = i;
+                           matched = true;
                         }
                         else if(!strnicmp(&expr[c + 2], "Platform", n))
                         {
@@ -91,6 +94,7 @@ class DirExpression : struct
                            CamelCase(&buffer[d]);
                            d += strlen(targetPlatformName);
                            c = i;
+                           matched = true;
                         }
                         else if(!strnicmp(&expr[c + 2], "Compiler", n))
                         {
@@ -99,11 +103,13 @@ class DirExpression : struct
                            CamelCase(&buffer[d]);
                            d += strlen(compilerName);
                            c = i;
+                           matched = true;
                         }
                         else if(!strnicmp(&expr[c + 2], "Debug_Suffix", n))
                         {
                            // We don't support .debug from the IDE yet...
                            c = i;
+                           matched = true;
                         }
                         else if(!strnicmp(&expr[c + 2], "Compiler_Suffix", n))
                         {
@@ -129,11 +135,25 @@ class DirExpression : struct
                               }
                            }
                            c = i;
+                           matched = true;
                         }
-                        else
+                        else if(compiler && compiler.environmentVars && compiler.environmentVars.count)
                         {
-                           buffer[d++] = expr[c];
+                           for(ev : compiler.environmentVars;
+                                 ev.name && ev.string && ev.name[0] && ev.string[0] && !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
+                           {
+                              buffer[d] = '\0';
+                              ChangeCh(ev.string, '\\', '/');
+                              strcat(buffer, ev.string);
+                              ChangeCh(ev.string, '/', '\\');
+                              d += strlen(ev.string);
+                              c = i;
+                              matched = true;
+                              break;
+                           }
                         }
+                        if(!matched)
+                           buffer[d++] = expr[c];
                      }
                      else
                      {
