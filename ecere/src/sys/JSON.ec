@@ -878,9 +878,15 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    {
       WriteArray(f, type, value.p, indent);
    }
-   else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || type.type == bitClass)
+   else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
       _WriteJSONObject(f, type, value.p, indent);
+   }
+   else if(type.type == bitClass)
+   {
+      Class dataType;
+      dataType = eSystem_FindClass(__thisModule, type.dataTypeString);
+      WriteNumber(f, dataType, value, indent);
    }
    else if(type.type == systemClass)
    {
