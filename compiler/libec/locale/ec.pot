@@ -86,7 +86,7 @@ msgstr "Member with same name already exists %s in class %s\n"
 msgid "Member with same name already exists %s in member %s\n"
 msgstr "Member with same name already exists %s in member %s\n"
 
-#: ./src/dbpass.ec:1085
+#: ./src/dbpass.ec:1099
 msgid "Multiple field index requires a name\n"
 msgstr "Multiple field index requires a name\n"
 
