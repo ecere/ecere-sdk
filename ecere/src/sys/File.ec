@@ -659,7 +659,10 @@ public:
       while(true)
       {
          if(!Getc(&ch))
+         {
             result = false;
+            break;
+         }
          if( (ch!='\n') && (ch!='\r') && (ch!=' ') && (ch!=',') && (ch!='\t'))
             break;
          if(Eof()) break;
