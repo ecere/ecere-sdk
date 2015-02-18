@@ -71,7 +71,7 @@ License: BSD-3-clause
 
 Files: extras/md5.ec
 Copyright: Copyright 1991-1992, RSA Data Security, Inc
-License:
+License: RSA-MD5
  Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All rights reserved.
  .
  License to copy and use this software is granted provided that it is identified as the
@@ -153,7 +153,7 @@ License: MIT
 
 Files: ecere/res/*/*.png
 Copyright: (some) Tango Project
-License: public domain
+License: public-domain
  Terms Of Use
  .
  The Tango base icon theme is released to the Public Domain. The palette is in public domain.
@@ -164,7 +164,7 @@ License: public domain
 
 Files: eda/drivers/sqlite/sqlite3.c eda/drivers/sqlite/sqlite3.h eda/drivers/sqlite/shell.c
 Copyright: SQLite Project
-License: public domain
+License: public-domain
  /************** Begin file sqliteInt.h ***************************************/
  /*
  ** 2001 September 15
