@@ -22,7 +22,7 @@ Build-Depends: debhelper (>= 9~),
                linux-libc-dev,
                upx-ucl,
                zlib1g-dev
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Homepage: http://ecere.org/
 
 Package: ecere-sdk
