@@ -1,0 +1,3 @@
+samples/ linguist-vendored=false
+compiler/bootstrap linguist-vendored
+deps/ linguist-vendored
