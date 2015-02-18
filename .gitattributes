@@ -1,4 +1,4 @@
-/ecere/src/gfx/drivers/harfbuzz linguist-vendored=true
-/compiler/bootstrap linguist-vendored=true
-/deps/ linguist-vendored=true
-/samples/ linguist-vendored=false
+/ecere/src/gfx/drivers/harfbuzz/* linguist-vendored=true
+/compiler/bootstrap/* linguist-vendored=true
+/deps/* linguist-vendored=true
+/samples/* linguist-vendored=false
