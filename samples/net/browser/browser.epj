@@ -52,10 +52,10 @@
       {
          "Folder" : "extras",
          "Files" : [
-            "../../../../ecere-sdk/extras/html/htmlParser.ec",
-            "../../../../ecere-sdk/extras/html/HTMLView.ec",
-            "../../../../ecere-sdk/extras/html/lines.ec",
-            "../../../../ecere-sdk/extras/html/tables.ec"
+            "../../../extras/html/htmlParser.ec",
+            "../../../extras/html/HTMLView.ec",
+            "../../../extras/html/lines.ec",
+            "../../../extras/html/tables.ec"
          ]
       },
       "browser.ec",
