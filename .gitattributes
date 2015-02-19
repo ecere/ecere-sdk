@@ -1,4 +1,9 @@
 ecere/src/gfx/drivers/harfbuzz/* linguist-vendored
+eda/drivers/sqlite/shell.c linguist-vendored
+eda/drivers/sqlite/sqlite3.c linguist-vendored
+eda/drivers/sqlite/sqlite3.h linguist-vendored
+eda/drivers/sqliteCipher/sqlite3.c linguist-vendored
+eda/drivers/sqliteCipher/sqlite3.h linguist-vendored
 compiler/bootstrap/* linguist-vendored
 deps/* linguist-vendored
 samples/* linguist-vendored=false
