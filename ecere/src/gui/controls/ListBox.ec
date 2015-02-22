@@ -489,13 +489,13 @@ public:
 
             if(!after || after.index < index)
             {
-               if(after == listBox.firstRowShown.prev)
+               if((after && after == listBox.firstRowShown.prev) || (!after && !parent && listBox.firstRowShown.prev))
                   listBox.firstRowShown = this;
 
                // All rows between AFTER (exclusive) and ROW (exclusive) are incremented by one
                // ROW is equal to AFTER's index + 1
 
-               for(search = after ? after.next : listBox.rows.first; search && search != this; search = search.GetNextRow())
+               for(search = after ? after.next : (parent ? parent.subRows.first : listBox.rows.first); search && search != this; search = search.GetNextRow())
                   search.index += ixCount;
 
                if(after && after.subRows.first && !after.collapsed)
@@ -504,7 +504,7 @@ public:
                   index = search.index + 1;
                }
                else
-                  index = after ? (after.index + 1) : 0;
+                  index = after ? (after.index + 1) : parent ? parent.index + 1 : 0;
 
                // Fix indices of sub rows
                if(!collapsed)
@@ -516,10 +516,12 @@ public:
             }
             else
             {
-               DataRow nextRow = GetNextRow();
+               DataRow nextRow;
+               int afterIXCount = 1;
+
+               nextRow = GetNextRow();
                if(this == listBox.firstRowShown)
                   listBox.firstRowShown = nextRow;
-               index = after.index;
 
                // All rows between ROW (exclusive) and AFTER (inclusive) are decremented by one
                // ROW is equal to AFTER's index
@@ -529,8 +531,33 @@ public:
                   search.index -= ixCount;
                   if(search == after) break;
                }
+
+               // Fix up's after's sub rows
+               if(after && !after.collapsed)
+               {
+                  DataRow last = after.GetLastRow();
+                  if(last != after)
+                  {
+                     int ix = after.index+1;
+                     for(search = after.GetNextRow(); search; search = search.GetNextRow())
+                     {
+                        afterIXCount++;
+                        search.index = ix++;
+                        if(search == last) break;
+                     }
+                  }
+               }
+               index = after.index + afterIXCount;
+
+               // Fix indices of sub rows
+               if(!collapsed)
+               {
+                  int c, ix = index+1;
+                  for(c = 1, search = GetNextRow(); search && c < ixCount; c++, search = search.GetNextRow())
+                     search.index = ix++;
+               }
             }
-            listBox.rows.Move(this, after);
+            (parent ? parent.subRows : listBox.rows).Move(this, after);
 
 #ifdef _DEBUG
             listBox.CheckConsistency();
@@ -2493,6 +2520,10 @@ private:
                   foreground = this.background;
                }
 
+#ifdef _DEBUG
+               // surface.WriteTextf(x + 100, y,  "ix: %d", row.index);
+#endif
+
                x += width;// + EXTRA_SPACE;
 
                if(row.header) break;
@@ -3920,14 +3951,42 @@ private:
                   // Switch row first: move before
                   if(row == switchRow)
                   {
-                     if(NotifyMove(master, this, switchRow.prev, mods))
-                        dragRow.Move(switchRow.prev);
+                     DataRow actualMoveRow;
+
+                     if(!switchRow.prev && switchRow.parent == dragRow.parent)
+                        actualMoveRow = null;
+                     else
+                     {
+                        actualMoveRow = switchRow.prev ? switchRow.prev : switchRow;
+                        while(actualMoveRow && actualMoveRow.parent != dragRow.parent && actualMoveRow.parent)
+                           actualMoveRow = actualMoveRow.parent;
+                     }
+
+                     if(!actualMoveRow || (actualMoveRow && actualMoveRow.parent == dragRow.parent))
+                        if(NotifyMove(master, this, actualMoveRow, mods))
+                        {
+                           dragRow.Move(actualMoveRow);
+                        }
                   }
                   // Dragged row first: move after
                   else
                   {
-                     if(NotifyMove(master, this, switchRow, mods))
-                        dragRow.Move(switchRow);
+                     DataRow actualMoveRow = switchRow;
+                     DataRow nextRow = switchRow.GetNextRow();
+
+                     while(nextRow && nextRow.parent != dragRow.parent)
+                        nextRow = nextRow.parent ? nextRow.parent.next : null;
+                     if(nextRow)
+                        actualMoveRow = nextRow.prev;
+
+                     if(!nextRow)
+                        actualMoveRow = dragRow.parent ? dragRow.parent.subRows.last : rows.last;
+
+                     if(!actualMoveRow || (actualMoveRow != dragRow && actualMoveRow.parent == dragRow.parent))
+                        if(NotifyMove(master, this, actualMoveRow, mods))
+                        {
+                           dragRow.Move(actualMoveRow);
+                        }
                   }
                }
             }
