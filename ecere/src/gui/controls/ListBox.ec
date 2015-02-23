@@ -1131,6 +1131,7 @@ public:
    virtual bool Window::NotifyKeyHit(ListBox listBox, DataRow row, Key key, unichar ch);
    virtual bool Window::NotifyModified(ListBox listBox, DataRow row);
    virtual bool Window::NotifyEditing(ListBox listBox, DataRow row);
+   virtual void Window::NotifyMoved(ListBox listBox, DataRow row, Modifiers mods);
 
 #ifdef _DEBUG
    private void CheckConsistency()
@@ -3966,6 +3967,7 @@ private:
                         if(NotifyMove(master, this, actualMoveRow, mods))
                         {
                            dragRow.Move(actualMoveRow);
+                           NotifyMoved(master, this, actualMoveRow, mods);
                         }
                   }
                   // Dragged row first: move after
@@ -3986,6 +3988,7 @@ private:
                         if(NotifyMove(master, this, actualMoveRow, mods))
                         {
                            dragRow.Move(actualMoveRow);
+                           NotifyMoved(master, this, actualMoveRow, mods);
                         }
                   }
                }
