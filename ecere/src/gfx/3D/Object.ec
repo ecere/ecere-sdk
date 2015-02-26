@@ -1515,7 +1515,7 @@ private:
    Vector3Df pivot;
 
    public Transform transform;
-   Matrix matrix;
+   public Matrix matrix;
    Matrix localMatrix;
    void * tag;
    Vector3Df min, max, center;
