@@ -1348,7 +1348,8 @@ void GLBindBuffer(int target, uint buffer)
 #endif
       glBindBufferARB(target, buffer);
 #endif
-   currentVertexBuffer = buffer;
+   if(target == GL_ARRAY_BUFFER_ARB)
+      currentVertexBuffer = buffer;
 }
 
 public void GLVertexPointer(int numCoords, int glType, int stride, void *ptr, int numVertices)
