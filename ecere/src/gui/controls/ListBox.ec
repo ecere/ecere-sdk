@@ -3011,7 +3011,7 @@ private:
          if(!visible)
          {
             ReleaseCapture();
-            this.rolledOver = this.dragging = false;
+            rolledOver = dragging = false;
          }
          /*else
             Capture();*/
@@ -3207,16 +3207,16 @@ private:
       }
 
       // ADDED THIS CHECK FOR FieldDropBox LEAKS
-      if(/*!mods.isSideEffect && */(this.rolledOver || !this.dragging))
+      if(/*!mods.isSideEffect && */(rolledOver || !dragging))
       {
          int rowY = (style.header) ? rowHeight : 0;
-         DataRow row = null;
+         DataRow row = null, nextRow;
          int rowIndex;
 
          mouseX = x;
          mouseY = y;
 
-         if(this.dragging &&
+         if(dragging &&
             ((vertScroll && vertScroll.visible &&
              (y < 0 || y >= clientSize.h)) ||
              (horzScroll && horzScroll.visible &&
@@ -3239,15 +3239,20 @@ private:
          // This must be done after the scrolling took place
          rowIndex = firstRowShown ? firstRowShown.index : -1;
          y = Max(y, 0);
-         y = Min(y, clientSize.h-1);
-         for(row = firstRowShown; row; row = row.GetNextRow(), rowIndex ++)
+         y = Min(y, clientSize.h-rowHeight-1);
+         for(row = firstRowShown; row; row = nextRow, rowIndex ++)
          {
+            nextRow = row.GetNextRow();
             rowY += rowHeight;
-            if(rowY > y)
+            if(rowY > y || !nextRow)
             {
                break;
             }
          }
+         if(row && row == currentRow)
+            row = row.GetNextRow();
+         if(row && row.parent == currentRow)
+            row = row.GetNextRow();
 
          if(row && currentRow != row)
          {
@@ -3273,7 +3278,7 @@ private:
                   this.movedRow = true;
                }
             }
-            else if((style.freeSelect  || this.dragging) && ((realX>= 0 && realY >= 0 && realX< clientSize.w && realY < clientSize.h) || this.rolledOver))
+            else if((style.freeSelect  || this.dragging) && ((realX>= 0 && realY >= 0 && realX< clientSize.w && realY < clientSize.h) || rolledOver))
             {
                if(!(style.multiSelect))
                {
@@ -3331,8 +3336,8 @@ private:
 
    bool OnMouseOver(int x, int y, Modifiers mods)
    {
-      if(this.dragging)
-         this.rolledOver = true;
+      if(dragging)
+         rolledOver = true;
       return true;
    }
 
@@ -3650,6 +3655,8 @@ private:
                      this.dragRow = currentRow;
                      this.dropIndex = -1;
                      this.movedRow = false;
+
+                     Capture();
                   }
                   if(editData && editData.visible && style.alwaysEdit)
                   {
@@ -3812,11 +3819,11 @@ private:
       {
          if(!style.noDragging)
          {
-            this.dragging = true;
+            dragging = true;
             Capture();
          }
          if(x >= 0 && y >= 0 && x < clientSize.w && y < clientSize.h)
-            this.rolledOver = true;
+            rolledOver = true;
          Update(null);
       }
       else
@@ -3845,6 +3852,7 @@ private:
       {
          DataRow row, switchRow = rows.last;
          int rowY = (style.header) ? rowHeight : 0;
+         while(switchRow.lastRow) switchRow = switchRow.lastRow;
          for(row = firstRowShown; row; row = row.GetNextRow())
          {
             rowY += rowHeight;
@@ -3995,6 +4003,8 @@ private:
                }
             }
          }
+         if(dragRow)
+            ReleaseCapture();
          dragRow = null;
          editRow = null;
          movedRow = false;
@@ -4003,11 +4013,11 @@ private:
       }
 
       timer.Stop();
-      if(this.dragging || style.freeSelect)
+      if(dragging || style.freeSelect)
       {
-         if(this.dragging)
+         if(dragging)
          {
-            this.rolledOver = this.dragging = false;
+            rolledOver = dragging = false;
          }
          if(x >= 0 && y >= 0 && x < clientSize.w && y < clientSize.h && currentRow && style.freeSelect)
          {
@@ -4161,7 +4171,7 @@ private:
       }
       else if(key == escape)
       {
-         if(resizingField || this.movingFields || (editData && editData.visible) || this.dragRow)
+         if(resizingField || this.movingFields || (editData && editData.visible) || dragRow)
          {
             if(editData && editData.visible && style.alwaysEdit && !editData.active)
                return true;
@@ -4174,10 +4184,13 @@ private:
                resizingField = null;
                ReleaseCapture();
             }
-            this.dragRow = null;
-            if(this.dragging)
+            if(dragRow)
+               ReleaseCapture();
+
+            dragRow = null;
+            if(dragging)
             {
-               this.dragging = false;
+               dragging = false;
                ReleaseCapture();
             }
 
