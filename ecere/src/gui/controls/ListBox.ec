@@ -277,7 +277,7 @@ public:
             if(parent.IsExpanded())
             {
                DataRow search;
-               int index;
+               int ix;
 
                if(value)
                {
@@ -302,10 +302,10 @@ public:
                   }
                }
 
-               index = this.index+1;
+               ix = index+1;
                for(search = GetNextRow(); search; search = search.GetNextRow())
-                  search.index = index++;
-               listBox.rowCount = index;
+                  search.index = ix++;
+               listBox.rowCount = ix;
 
                listBox.HideEditBox(false, false, true);
 
@@ -908,9 +908,9 @@ private:
 
          {
             DataRow search;
-            int index = this.index;
+            int ix = index;
             for(search = this; search; search = search.GetNextRow())
-               search.index = index++;
+               search.index = ix++;
          }
          if(scrollToCurrent)
          {
@@ -1314,7 +1314,7 @@ public:
          for(search = row.GetNextRow(); search; search = search.GetNextRow())
             search.index++;
 
-         this.rowCount++;
+         rowCount++;
          row.cells.Clear();
 
          firstRowShown = row;
@@ -1423,7 +1423,7 @@ public:
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
                search.index++;
 
-            this.rowCount++;
+            rowCount++;
             row.cells.Clear();
             for(c = 0; c<fields.count; c++)
             {
@@ -1520,7 +1520,7 @@ public:
          {
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
                search.index--;
-            this.rowCount--;
+            rowCount--;
          }
 
          HideEditBox(false, false, true);
@@ -1553,8 +1553,8 @@ public:
          //HideEditBox(false, false, true);
 
          SetScrollArea(
-            this.width,
-            (this.rowCount * rowHeight) +
+            width,
+            (rowCount * rowHeight) +
             ((style.header) ? rowHeight : 0) -
             ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
 
@@ -1781,11 +1781,11 @@ public:
             currentRow.Edit(currentField);
 
 
-         this.rowCount = 0;
+         rowCount = 0;
 
          SetScrollArea(
-               this.width,
-               (this.rowCount * rowHeight) +
+               width,
+               (rowCount * rowHeight) +
                ((style.header) ? rowHeight : 0) -
                ((rowHeight && !((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
          Update(null);
@@ -2196,7 +2196,6 @@ private:
       Font font = fontObject;
       Font boldFont = this.boldFont.font;
 
-
       // Draw gray grid
       if(style.alwaysEdit && style.fullRowSelect)
       {
@@ -2574,17 +2573,17 @@ private:
             break;
       }
       if(firstRowShown) surface.Clip(null);
-      if(this.dragRow && this.dropIndex != -1)
+      if(dragRow && dropIndex != -1)
       {
-         int dropIndex = this.dropIndex;
+         int ix = dropIndex;
          int y;
 
-         if(!style.multiSelect && currentRow.index < this.dropIndex)
-            dropIndex++;
+         if(!style.multiSelect && currentRow.index < dropIndex)
+            ix++;
          surface.DrawingChar(223);
 
          y = style.header ? rowHeight : 0;
-         y += dropIndex * rowHeight - scroll.y;
+         y += ix * rowHeight - scroll.y;
 
          surface.SetForeground(Color { 85, 85, 255 });
          surface.HLine(0, clientSize.w-1, y);
@@ -2594,11 +2593,11 @@ private:
 
    void OnDrawOverChildren(Surface surface)
    {
-      if(draggingField && this.dropField)
+      if(draggingField && dropField)
       {
-         int position = this.dropField.x;
+         int position = dropField.x;
          if(draggingField.x < position)
-            position += this.dropField.width + EXTRA_SPACE;
+            position += dropField.width + EXTRA_SPACE;
 
          surface.SetForeground(Color { 85, 85, 255 });
          surface.VLine(0, rowHeight - 1, position - scroll.x - 2);
@@ -2775,9 +2774,9 @@ private:
 
          if(field.fixed) return false;
          resizingField = field;
-         this.resizeX = x + control.position.x;
-         this.startWidth = field.width;
-         this.oldX = x - scroll.x;
+         resizeX = x + control.position.x;
+         startWidth = field.width;
+         oldX = x - scroll.x;
          return false;
       }
       else if(field)
@@ -2804,15 +2803,15 @@ private:
          x += control.position.x;
 
          // Tweak to prevent shrinking field if we're actually moving right
-         if(x - scroll.x > this.oldX &&
-            this.startWidth + x - this.resizeX < field.width)
+         if(x - scroll.x > oldX &&
+            startWidth + x - resizeX < field.width)
          {
-            this.oldX = x - scroll.x;
+            oldX = x - scroll.x;
             return true;
          }
-         this.oldX = x - scroll.x;
+         oldX = x - scroll.x;
 
-         field.width = this.startWidth + x - this.resizeX;
+         field.width = startWidth + x - resizeX;
          field.width = Max(field.width, - EXTRA_SPACE);
 
          AdaptToFieldWidth(field, true);
@@ -2846,9 +2845,9 @@ private:
                   SetScrollPosition(field.x, scroll.y);
                field = null;
             }
-            if(this.dropField != field)
+            if(dropField != field)
             {
-               this.dropField = field;
+               dropField = field;
                if(field)
                {
                   int position = field.x;
@@ -2866,7 +2865,7 @@ private:
                         SetScrollPosition(position, scroll.y);
                   }
 
-                  this.movingFields = true;
+                  movingFields = true;
                }
                Update(null);
             }
@@ -2930,7 +2929,7 @@ private:
                      break;
                   }
                }
-               if(switchField && draggingField != switchField && this.dropField)
+               if(switchField && draggingField != switchField && dropField)
                {
                   for(field = fields.first; field; field = field.next)
                   {
@@ -2962,7 +2961,7 @@ private:
 
    bool HeaderClicked(Button control, int x, int y, Modifiers mods)
    {
-      if(style.header && !this.dropField && style.sortable)
+      if(style.header && !dropField && style.sortable)
       {
          DataField field = (DataField)(intptr)control.id;
          if(sortField == field)
@@ -3125,7 +3124,7 @@ private:
          }
          if(!*h)
          {
-            *h = Min(this.maxShown, this.rowCount) * rowHeight;
+            *h = Min(maxShown, rowCount) * rowHeight;
          }
       }
       else
@@ -3164,7 +3163,7 @@ private:
       {
         // Resize left
          DataField field = resizingField;
-         field.width = this.startWidth + x - this.resizeX;
+         field.width = startWidth + x - resizeX;
          field.width = Max(field.width, - EXTRA_SPACE);
 
          AdaptToFieldWidth(field, true);
@@ -3201,8 +3200,8 @@ private:
 
       if(x == MAXINT && y == MAXINT)
       {
-         x = this.mouseX;
-         y = this.mouseY;
+         x = mouseX;
+         y = mouseY;
          isTimer = true;
       }
 
@@ -3261,7 +3260,7 @@ private:
 
          if(row && currentRow != row)
          {
-            if(this.dragRow && style.moveRows)
+            if(dragRow && style.moveRows)
             {
                if(row.selectedFlag == selected || row.selectedFlag == tempSelected)
                   rowIndex = -1;
@@ -3275,15 +3274,15 @@ private:
                   if(thisRow != row)
                      rowIndex++;
                }
-               if(this.dropIndex != rowIndex)
+               if(dropIndex != rowIndex)
                {
-                  this.dropIndex = rowIndex;
-                  this.editRow = null;
+                  dropIndex = rowIndex;
+                  editRow = null;
                   Update(null);
-                  this.movedRow = true;
+                  movedRow = true;
                }
             }
-            else if((style.freeSelect  || this.dragging) && ((realX>= 0 && realY >= 0 && realX< clientSize.w && realY < clientSize.h) || rolledOver))
+            else if((style.freeSelect  || dragging) && ((realX>= 0 && realY >= 0 && realX< clientSize.w && realY < clientSize.h) || rolledOver))
             {
                if(!(style.multiSelect))
                {
@@ -3391,8 +3390,8 @@ private:
                if(Abs(x - vx) < 2)
                {
                   resizingField = field.prev;
-                  this.resizeX = x;
-                  this.startWidth = resizingField.width;
+                  resizeX = x;
+                  startWidth = resizingField.width;
                   Capture();
                   SetMouseRangeToClient();
                   break;
@@ -3474,7 +3473,7 @@ private:
                         for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
                            selRow.selectedFlag = unselected;
                         clickedRow = row;
-                        //this.clickedRowIndex = rowIndex;
+                        //clickedRowIndex = rowIndex;
                      }
                      else if(style.moveRows && !(mods.shift) &&
                         (row.selectedFlag == selected || row.selectedFlag == tempSelected) &&
@@ -3492,7 +3491,7 @@ private:
                               row.selectedFlag = selected;
                            }
                            clickedRow = row;
-                           //this.clickedRowIndex = rowIndex;
+                           //clickedRowIndex = rowIndex;
                         }
                         else
                         {
@@ -3567,7 +3566,7 @@ private:
                               else
                                  row.selectedFlag = tempSelected;
                               clickedRow = row;
-                              //this.clickedRowIndex = rowIndex;
+                              //clickedRowIndex = rowIndex;
                            }
                         }
                      }
@@ -3657,9 +3656,9 @@ private:
                {
                   if(style.moveRows)
                   {
-                     this.dragRow = currentRow;
-                     this.dropIndex = -1;
-                     this.movedRow = false;
+                     dragRow = currentRow;
+                     dropIndex = -1;
+                     movedRow = false;
 
                      Capture();
                   }
@@ -3697,7 +3696,7 @@ private:
                      }
                   }
                   else if(!(mods.ctrl) && numSelected <= 1)
-                     this.editRow = currentRow;
+                     editRow = currentRow;
 
                   if(style.noDragging && newCurrentRow)
                     NotifyReclick(master, this, newCurrentRow, mods);
@@ -3833,7 +3832,7 @@ private:
       }
       else
       {
-         this.dragging = false;
+         dragging = false;
          OnLeftButtonUp(x, y, mods);
       }
       return result;
@@ -3867,7 +3866,7 @@ private:
                break;
             }
          }
-         if(this.editRow == switchRow && y >= 0)
+         if(editRow == switchRow && y >= 0)
          {
             // Find which field
             DataField field;
@@ -3893,9 +3892,9 @@ private:
          }
          else if(style.moveRows && switchRow)
          {
-            if(this.dragRow == switchRow && this.movedRow == false)
+            if(dragRow == switchRow && movedRow == false)
             {
-               DataRow row = this.dragRow;
+               DataRow row = dragRow;
                DataRow selRow;
                if(!(mods.ctrl))
                {
@@ -3959,7 +3958,7 @@ private:
                {
                   for(row = rows.first; row; row = row.GetNextRow())
                   {
-                     if(row == switchRow || row == this.dragRow)
+                     if(row == switchRow || row == dragRow)
                         break;
                   }
 
@@ -4152,9 +4151,9 @@ private:
                looped = true;
             }
             typingTimer.Stop();
-            if(this.typingTimeOut && !keyHit)
+            if(typingTimeOut && !keyHit)
                typingTimer.Start();
-            if(!result || !this.typingTimeOut || keyHit)
+            if(!result || !typingTimeOut || keyHit)
                typedString[len-1] = '\0';
          }
          if(!checkNextField || result) break;
@@ -4176,7 +4175,7 @@ private:
       }
       else if(key == escape)
       {
-         if(resizingField || this.movingFields || (editData && editData.visible) || dragRow)
+         if(resizingField || movingFields || (editData && editData.visible) || dragRow)
          {
             if(editData && editData.visible && style.alwaysEdit && !editData.active)
                return true;
@@ -4184,7 +4183,7 @@ private:
             HideEditBox(false, false, false);
             if(resizingField)
             {
-               resizingField.width = this.startWidth;
+               resizingField.width = startWidth;
                AdaptToFieldWidth(resizingField, true);
                resizingField = null;
                ReleaseCapture();
@@ -4199,7 +4198,7 @@ private:
                ReleaseCapture();
             }
 
-            this.movingFields = false;
+            movingFields = false;
             draggingField = null;
             Update(null);
             return false;
