@@ -3249,10 +3249,15 @@ private:
                break;
             }
          }
-         if(row && row == currentRow)
-            row = row.GetNextRow();
-         if(row && row.parent == currentRow)
-            row = row.GetNextRow();
+
+         if(dragRow && style.moveRows)
+         {
+            if(row && row == currentRow)
+               row = row.GetNextRow();
+
+            if(row && row.parent == currentRow)
+               row = row.GetNextRow();
+         }
 
          if(row && currentRow != row)
          {
