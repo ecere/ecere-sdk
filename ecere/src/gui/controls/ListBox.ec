@@ -490,7 +490,7 @@ public:
 
             if(!after || after.index < index)
             {
-               if((after && after == listBox.firstRowShown.prev) || (!after && !parent && listBox.firstRowShown.prev))
+               if((after && after == listBox.firstRowShown.prev) || (!after && !parent /*&& listBox.firstRowShown.prev*/))
                   listBox.firstRowShown = this;
 
                // All rows between AFTER (exclusive) and ROW (exclusive) are incremented by one
