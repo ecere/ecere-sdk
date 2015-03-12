@@ -3237,7 +3237,7 @@ private:
          // This must be done after the scrolling took place
          rowIndex = firstRowShown ? firstRowShown.index : -1;
          y = Max(y, 0);
-         y = Min(y, clientSize.h-rowHeight-1);
+         y = Min(y, clientSize.h - ((dragRow && style.moveRows) ? rowHeight : 0)-1);
          for(row = firstRowShown; row; row = nextRow, rowIndex ++)
          {
             nextRow = row.GetNextRow();
