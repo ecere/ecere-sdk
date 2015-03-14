@@ -572,18 +572,25 @@ public class TabControl : Window
 
    public void AddTab(Tab tab)
    {
-      tab.parent = this;
+      if(tab.parent != this)
+      {
+         tab.parent = this;
+         return;
+      }
       tab.autoCreate = false;
       tab.id = numTabs;
-      tab.button = TabButton
+      if(!tab.button)
       {
-         parent = tabButtons,
-         master = this, stayDown = true,
-         text = tab.text, id = (int64)(intptr)tab, NotifyClicked = NotifyClicked,
-         tab = tab,
-         background = background;
-      };
-      incref tab.button;
+         tab.button = TabButton
+         {
+            parent = tabButtons,
+            master = this, stayDown = true,
+            text = tab.text, id = (int64)(intptr)tab, NotifyClicked = NotifyClicked,
+            tab = tab,
+            background = background;
+         };
+         incref tab.button;
+      }
 
       if(created)
       {
@@ -614,7 +621,7 @@ public class TabControl : Window
    {
       Window child;
       Tab fallbackTab = null;
-      tab.parent = null;
+      // tab.parent = null;
       for(child = tabButtons.children.first; child; child = child.next)
       {
          if(child._class == class(TabButton))
@@ -623,7 +630,10 @@ public class TabControl : Window
             if(button.id == (int64)(intptr)tab)
             {
                if(button.created)
+               {
                   button.Destroy(0);
+                  numTabs--;
+               }
                break;
             }
             else
@@ -636,12 +646,13 @@ public class TabControl : Window
             fallbackTab = tabButtons.children.first ? ((TabButton)tabButtons.children.first).tab : null;
          if(fallbackTab)
             fallbackTab.SelectTab();
+         else
+            curTab = null;
          /*curTab = fallbackTab;
          curButton = curTab.button;
          curButton.checked = true;
          curTab.autoCreate = true;*/
       }
-      numTabs--;
    }
 
    ~TabControl()
