@@ -1080,6 +1080,7 @@ public:
                nextChild = child.next;
                children.Remove(child);
                child.Free(displaySystem);
+               delete child;
             }
 
             mesh.ApplyTranslucency(this);
