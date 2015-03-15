@@ -121,6 +121,17 @@ private:
    ~GuiConfigData()
    {
       timer.Stop();
+
+      if(windows)
+      {
+         windows.Free();
+         delete windows;
+      }
+      if(paneSplitters)
+      {
+         paneSplitters.Free();
+         delete paneSplitters;
+      }
    }
 
    Timer timer
