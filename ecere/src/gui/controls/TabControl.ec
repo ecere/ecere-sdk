@@ -595,7 +595,9 @@ public class TabControl : Window
       if(created)
       {
          tab.button.Create();
-         incref tab;
+         // This was causing leaks with RemoveTab / AddTab usage in Cartographer...
+         // RemoveTab() does not dec'ref...
+         // incref tab;
       }
 
       numTabs++;
