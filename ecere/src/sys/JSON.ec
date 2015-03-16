@@ -61,7 +61,7 @@ public:
             {
                value.p = string;
             }
-            else if(type && (type.type == enumClass || type.type == unitClass))
+            else if(type && (type.type == enumClass /*|| type.type == unitClass*/))
             {
                if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
                   result = success;
@@ -671,6 +671,49 @@ public:
          value.i = strtol(buffer, null, 10);
          result = success;
       }
+
+      if(result == success && type.type == unitClass)
+      {
+         // Convert to reference unit
+         Class dataType;
+         Property prop;
+         for(prop = type.conversions.first; prop; prop = prop.next)
+         {
+            bool refProp = false;
+            Class c;
+            if(!strcmp(prop.name, type.base.fullName))
+               refProp = true;
+            else if( (c = eSystem_FindClass(type.module, prop.name) ) )
+            {
+               Property p;
+               for(p = c.conversions.first; p; p = p.next)
+               {
+                  if(!strcmp(p.name, type.base.fullName) && !p.Set && !p.Get)
+                  {
+                     refProp = true;
+                     break;
+                  }
+               }
+            }
+            if(refProp)
+            {
+               if(prop.Set && prop.Get)
+               {
+                  const String dts = type.base.dataTypeString;
+                  if(!strcmp(dts, "double"))
+                     value.d = ((double(*)(double))(void *)prop.Get)(value.d);
+                  else if(!strcmp(dts, "float"))
+                     value.f = ((float(*)(float))(void *)prop.Get)(value.f);
+                  else if(!strcmp(dts, "int"))
+                     value.i = ((int(*)(int))(void *)prop.Get)(value.i);
+                  else if(!strcmp(dts, "int64"))
+                     value.i64 = ((int64(*)(int64))(void *)prop.Get)(value.i64);
+               }
+               else
+                  break;
+            }
+         }
+      }
       return result;
    }
 }
@@ -875,7 +918,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       else
          f.Puts("unset");
    }
-   else if(type.type == enumClass || type.type == unitClass)
+   else if(type.type == enumClass) // || type.type == unitClass)
    {
       f.Puts("\"");
       WriteNumber(f, type, value, indent);
@@ -899,7 +942,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       dataType = eSystem_FindClass(__thisModule, type.dataTypeString);
       WriteNumber(f, dataType, value, indent);
    }
-   else if(type.type == systemClass)
+   else if(type.type == systemClass || type.type == unitClass)
    {
       WriteNumber(f, type, value, indent);
    }
