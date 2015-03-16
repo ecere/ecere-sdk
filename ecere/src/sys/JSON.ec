@@ -1010,6 +1010,11 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         {
                            value.c = ((char (*)(void *))(void *)prop.Get)(object);
                         }
+                        else if(type.type == structClass)
+                        {
+                           value.p = new byte[type.structSize];
+                           ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
+                        }
                         else
                         {
                            value.p = ((void *(*)(void *))(void *)prop.Get)(object);
@@ -1024,6 +1029,8 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         f.Puts("\" : ");
                         WriteValue(f, type, value, indent);
                         isFirst = false;
+                        if(type.type == structClass)
+                           delete value.p;
                      }
                   }
                }
