@@ -200,6 +200,8 @@ public:
                arrayType = type.templateArgs[0].dataTypeClass;
             }
 
+            if(arrayType && arrayType.type == structClass)
+               value.p = new byte[arrayType.structSize];
             itemResult = GetValue(arrayType, value);
             if(itemResult == success)
             {
@@ -243,6 +245,9 @@ public:
                   t = (uint64)(uintptr)value.p;
                }
                ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
+
+               if(arrayType && arrayType.type == structClass)
+                  delete value.p;
             }
             else
             {
@@ -653,7 +658,12 @@ public:
       }
       else if(type == class(uint64) || !strcmp(type.dataTypeString, "uint64"))
       {
-         value.ui64 = strtol(buffer, null, 10);  // TOFIX: 64 bit support
+         value.ui64 = strtoul(buffer, null, 10);  // TOFIX: 64 bit support
+         result = success;
+      }
+      else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int"))
+      {
+         value.ui = strtoul(buffer, null, 10);  // TOFIX: 64 bit support
          result = success;
       }
       else
