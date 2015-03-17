@@ -201,7 +201,7 @@ public:
             }
 
             if(arrayType && arrayType.type == structClass)
-               value.p = new byte[arrayType.structSize];
+               value.p = new0 byte[arrayType.structSize];
             itemResult = GetValue(arrayType, value);
             if(itemResult == success)
             {
@@ -481,7 +481,15 @@ public:
 
                   if(type && type.type == structClass)
                   {
-                     value.p = (byte *)*object + offset;
+                     if(member)
+                     {
+                        value.p = (byte *)*object + offset;
+                        memset(value.p, 0, type.structSize);
+                     }
+                     else if(prop)
+                     {
+                        value.p = new0 byte[type.structSize];
+                     }
                   }
                   ch = 0;
                   SkipEmpty();
@@ -603,6 +611,11 @@ public:
                   }
                   else
                      result = syntaxError;
+
+                  if(prop && type.type == structClass)
+                  {
+                     delete value.p;
+                  }
                }
             }
             else if(ch && ch != '}' && ch != ',')
@@ -675,7 +688,6 @@ public:
       if(result == success && type.type == unitClass)
       {
          // Convert to reference unit
-         Class dataType;
          Property prop;
          for(prop = type.conversions.first; prop; prop = prop.next)
          {
@@ -708,6 +720,10 @@ public:
                      value.i = ((int(*)(int))(void *)prop.Get)(value.i);
                   else if(!strcmp(dts, "int64"))
                      value.i64 = ((int64(*)(int64))(void *)prop.Get)(value.i64);
+                  else if(!strcmp(dts, "unsigned int"))
+                     value.ui = ((uint(*)(uint))(void *)prop.Get)(value.ui);
+                  else if(!strcmp(dts, "uint64"))
+                     value.ui64 = ((uint64(*)(uint64))(void *)prop.Get)(value.ui64);
                }
                else
                   break;
@@ -1065,7 +1081,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         }
                         else if(type.type == structClass)
                         {
-                           value.p = new byte[type.structSize];
+                           value.p = new0 byte[type.structSize];
                            ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
                         }
                         else
