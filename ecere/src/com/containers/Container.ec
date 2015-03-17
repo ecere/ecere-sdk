@@ -147,6 +147,34 @@ public:
       }
    }
 
+   int OnCompare(Container<T> b)
+   {
+      IteratorPointer ia, ib;
+      Class Dclass = class(D);
+      bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+      int (* onCompare)(void *, const void *, const void *) = (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare];
+
+      if(this && !b) return 1;
+      if(b && !this) return -1;
+      if(GetCount() > b.GetCount()) return 1;
+      if(GetCount() < b.GetCount()) return -1;
+
+      ia = GetFirst();
+      ib = b.GetFirst();
+      while(ia && ib)
+      {
+         D dataA = GetData(ia);
+         D dataB = b.GetData(ib);
+         int r = onCompare(Dclass, byRef ? &dataA : (const void *)(uintptr)dataA, byRef ? &dataB : (const void *)(uintptr)dataB);
+         if(r) return r;
+         ia = GetNext(ia);
+         ib = b.GetNext(ib);
+      }
+      if(ia) return 1;
+      if(ib) return -1;
+      return 0;
+   }
+
    void OnCopy(Container<T> source)
    {
       if(source)
@@ -168,12 +196,15 @@ public:
    {
       IteratorPointer i;
       Class Dclass = class(D);
-      if(((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass))
+      bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+      int (* onCompare)(void *, const void *, const void *) = (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare];
+
+      if(byRef)
       {
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value, &data);
+            int result = onCompare(Dclass, &value, &data);
             if(!result)
                return i;
          }
@@ -183,7 +214,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (const void *)(uintptr) value, (const void *)(uintptr) data);
+            int result = onCompare(Dclass, (const void *)(uintptr) value, (const void *)(uintptr) data);
             if(!result)
                return i;
          }
