@@ -2912,7 +2912,7 @@ class Debugger
                   {
                      Expression memberExp = exp.member.exp;
                      Identifier memberID = exp.member.member;
-                     Type type = memberExp.expType;
+                     Type type = memberExp ? memberExp.expType : null;
                      Class _class = (type && memberID) ? (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null) : null;
                      if(_class && memberID && memberID.string)
                         snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation for \"%s\" in class \"%s\"", memberID.string, _class.name);

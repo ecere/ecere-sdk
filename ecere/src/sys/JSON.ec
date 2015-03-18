@@ -61,7 +61,7 @@ public:
             {
                value.p = string;
             }
-            else if(type && (type.type == enumClass /*|| type.type == unitClass*/))
+            else if(type && (type.type == enumClass || type.type == unitClass))
             {
                if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
                   result = success;
@@ -843,6 +843,7 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
 {
    char buffer[1024];
    bool needClass = false;
+   bool quote;
    buffer[0] = 0;
    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &needClass);
@@ -864,7 +865,11 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
+
+   quote = (type.type == unitClass && ((buffer[0] != '.' && !isdigit(buffer[0])) || strchr(buffer, ' ')));
+   if(quote) f.Puts("\"");
    f.Puts(buffer);
+   if(quote) f.Puts("\"");
    return true;
 }
 
@@ -934,7 +939,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       else
          f.Puts("unset");
    }
-   else if(type.type == enumClass) // || type.type == unitClass)
+   else if(type.type == enumClass)
    {
       f.Puts("\"");
       WriteNumber(f, type, value, indent);
