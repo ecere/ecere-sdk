@@ -158,11 +158,46 @@ private:
    };
 
    bool inAutoSize;
+   bool needScrollers;
+
+   bool NeedScrollers(int width, int height)
+   {
+      bool result = false;
+      if(bits.scrollable && bits.endButtons)
+      {
+         int y = margin, c;
+         bool r = bits.reverse;
+         int inc = bits.reverse ? -1 : 1;
+         Window flip = null;
+
+         for(c = r ? controls.count-1 : 0; c<controls.count && c>-1; c += inc)
+         {
+            Window child = controls[c];
+            if(flip && child == flip) break;
+            if(child.nonClient || !child.visible) continue;
+            if(direction == vertical)
+               y += child.size.h + gap;
+            else
+               y += child.size.w + gap;
+
+            // If this child is the flipper, we flip
+            if(flipper && !flip && child == flipper)
+            {
+               flip = child;
+               if(r) { r = false; inc = 1; c = -1; }
+               else  { r = true;  inc =-1; c = controls.count; }
+               y = margin;
+            }
+         }
+         result = (y > ((direction == horizontal) ? width : height));
+      }
+      return result;
+   }
 
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
       Window::GetDecorationsSize(w, h);
-      if(bits.scrollable && bits.endButtons && left.visible)
+      if(needScrollers)
       {
          if(direction == vertical) *h += left.size.h + right.size.h + 8; else *w += left.size.w + right.size.w + 8;
       }
@@ -170,8 +205,9 @@ private:
 
    void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
+      needScrollers = NeedScrollers(*w, *h);
       Window::SetWindowArea(x, y, w, h, cw, ch);
-      if(bits.scrollable && bits.endButtons && left.visible)
+      if(needScrollers)
       {
          if(direction == vertical) *y += left.size.h + 4; else *x += left.size.w + 4;
       }
@@ -196,17 +232,21 @@ private:
       if(direction == vertical)
       {
          left.bitmap = { "<:ecere>elements/arrowUp.png" };
+         left.size.h = 10;
          left.anchor = { top = 2, left = 2, right = 2 };
 
          right.bitmap = { "<:ecere>elements/arrowDown.png" };
+         right.size.h = 10;
          right.anchor = { bottom = 2, left = 2, right = 2 };
       }
       else
       {
          left.bitmap = { "<:ecere>elements/arrowLeft.png" };
+         left.size.w = 10;
          left.anchor = { left = 2, top = 2, bottom = 2 };
 
          right.bitmap = { "<:ecere>elements/arrowRight.png" };
+         right.size.w = 10;
          right.anchor = { right = 2, top = 2, bottom = 2 };
       }
       return true;
@@ -244,17 +284,17 @@ private:
             }
          }
          if(!bits.holdChildMonitoring)
-            DoResize(size.w, size.h);
+            DoResize(clientSize.w, clientSize.h);
       }
    }
    void OnChildVisibilityToggled(Window child, bool visible)
    {
-      DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+      DoResize(clientSize.w, clientSize.h); // todo: improve with DoPartialResize(size.w, size.h, client);
       // size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
    }
    void OnChildResized(Window child, int x, int y, int w, int h)
    {
-      DoResize(size.w, size.h); // todo: improve with DoPartialResize(size.w, size.h, client);
+      DoResize(clientSize.w, clientSize.h); // todo: improve with DoPartialResize(size.w, size.h, client);
       // size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
    }
 
@@ -304,14 +344,6 @@ private:
 
    void DoResize(int width, int height)
    {
-      if(left.visible)
-      {
-         // Take into consideration the space we would gain back by getting rid of the scrolling buttons
-         if(direction == horizontal)
-            width += 2 * (left.size.w + 4);
-         else
-            height += 2 * (left.size.h + 4);
-      }
       // TOIMPROVE: this needs to maintain an order and allow for dynamically adding
       //            children. inserting in the order should also be possible.
       // TOIMPROVE: in Window.ec... it should be possible to change the order of children
@@ -370,6 +402,25 @@ private:
             }
          }
 
+         if(needScrollers) //y > ((direction == horizontal) ? size.w : size.h))
+         {
+            scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
+            if(bits.endButtons && !left.visible)
+            {
+               left.visible = true;
+               right.visible = true;
+            }
+         }
+         else
+         {
+            if(left.visible)
+            {
+               left.visible = false;
+               right.visible = false;
+            }
+            scrollArea = { 0, 0 };
+         }
+
          if(flip)
          {
             if(bits.flipSpring)
@@ -396,22 +447,6 @@ private:
                //this.clientSize.w = y - gap + margin;
                this.size.w = y - gap + margin + (this.size.w - this.clientSize.w);
             inAutoSize = false;
-         }
-
-         if(bits.scrollable && y > ((direction == horizontal) ? width : height))
-         {
-            scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
-            if(bits.endButtons)
-            {
-               left.visible = true;
-               right.visible = true;
-            }
-         }
-         else
-         {
-            left.visible = false;
-            right.visible = false;
-            scrollArea = { 0, 0 };
          }
 
          if(bits.scrollable)
