@@ -162,7 +162,7 @@ private:
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
       Window::GetDecorationsSize(w, h);
-      if(bits.scrollable && bits.endButtons)
+      if(bits.scrollable && bits.endButtons && left.visible)
       {
          if(direction == vertical) *h += left.size.h + right.size.h + 8; else *w += left.size.w + right.size.w + 8;
       }
@@ -171,7 +171,7 @@ private:
    void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
       Window::SetWindowArea(x, y, w, h, cw, ch);
-      if(bits.scrollable && bits.endButtons)
+      if(bits.scrollable && bits.endButtons && left.visible)
       {
          if(direction == vertical) *y += left.size.h + 4; else *x += left.size.w + 4;
       }
@@ -304,6 +304,14 @@ private:
 
    void DoResize(int width, int height)
    {
+      if(left.visible)
+      {
+         // Take into consideration the space we would gain back by getting rid of the scrolling buttons
+         if(direction == horizontal)
+            width += 2 * (left.size.w + 4);
+         else
+            height += 2 * (left.size.h + 4);
+      }
       // TOIMPROVE: this needs to maintain an order and allow for dynamically adding
       //            children. inserting in the order should also be possible.
       // TOIMPROVE: in Window.ec... it should be possible to change the order of children
