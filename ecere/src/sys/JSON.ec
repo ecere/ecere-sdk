@@ -649,6 +649,7 @@ public:
       }
       buffer[c] = 0;
       //if(strchr(buffer, '.'))
+      if(!type) return success;
 
       // TOFIX: How to swiftly handle classes with base data type?
       if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -675,12 +676,12 @@ public:
       }
       else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int"))
       {
-         value.ui = strtoul(buffer, null, 10);  // TOFIX: 64 bit support
+         value.ui = (uint)strtoul(buffer, null, 10);  // TOFIX: 64 bit support
          result = success;
       }
       else
       {
-         value.i = strtol(buffer, null, 10);
+         value.i = (int)strtol(buffer, null, 10);
          result = success;
       }
 
