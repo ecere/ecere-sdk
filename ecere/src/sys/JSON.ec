@@ -166,7 +166,8 @@ public:
             }
             else if(!strcmpi(buffer, "null"))
             {
-               value.p = 0;
+               if(type.type != structClass)
+                  value.p = 0;
             }
             else
                result = typeMismatch;
@@ -564,35 +565,42 @@ public:
                                     if(!isKey)
                                        delete value.p;
                                  }
-                                 // TOFIX: How to swiftly handle classes with base data type?
-                                 else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                                 else if(type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass)
                                  {
-                                    ((void (*)(void *, double))(void *)prop.Set)(*object, value.d);
-                                 }
-                                 else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-                                 {
-                                    ((void (*)(void *, float))(void *)prop.Set)(*object, value.f);
-                                 }
-                                 else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
-                                    !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
-                                 {
-                                    ((void (*)(void *, uint64))(void *)prop.Set)(*object, value.ui64);
-                                 }
-                                 else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
-                                    !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
-                                 {
-                                    ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
-                                 }
-                                 else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
-                                    !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
-                                    !strcmp(type.dataTypeString, "int16"))
-                                 {
-                                    ((void (*)(void *, short))(void *)prop.Set)(*object, value.s);
-                                 }
-                                 else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
-                                    !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
-                                 {
-                                    ((void (*)(void *, char))(void *)prop.Set)(*object, value.c);
+                                    // TOFIX: How to swiftly handle classes with base data type?
+                                    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                                    {
+                                       ((void (*)(void *, double))(void *)prop.Set)(*object, value.d);
+                                    }
+                                    else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
+                                    {
+                                       ((void (*)(void *, float))(void *)prop.Set)(*object, value.f);
+                                    }
+                                    else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
+                                       !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
+                                    {
+                                       ((void (*)(void *, uint64))(void *)prop.Set)(*object, value.ui64);
+                                    }
+                                    else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
+                                       !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
+                                    {
+                                       ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
+                                    }
+                                    else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                                       !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
+                                       !strcmp(type.dataTypeString, "int16"))
+                                    {
+                                       ((void (*)(void *, short))(void *)prop.Set)(*object, value.s);
+                                    }
+                                    else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
+                                       !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
+                                    {
+                                       ((void (*)(void *, char))(void *)prop.Set)(*object, value.c);
+                                    }
+                                    else
+                                    {
+                                       ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
+                                    }
                                  }
                                  else
                                  {
