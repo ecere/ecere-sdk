@@ -183,7 +183,7 @@ msgstr "Referencia de la API"
 #: src/dialogs/FindInFilesDialog.ec:982 src/dialogs/FindInFilesDialog.ec:987
 #: src/dialogs/FindInFilesDialog.ec:992 src/dialogs/FindInFilesDialog.ec:996
 msgid "Aborted"
-msgstr "Interrumpido"
+msgstr "Abortado"
 
 #: src/about.ec:20
 msgid "About the Ecere SDK"
@@ -195,7 +195,7 @@ msgstr "Acerca de..."
 
 #: src/dialogs/NodeProperties.ec:30
 msgid "Absolute Path"
-msgstr "Ruta absoluta"
+msgstr "Ruta Absoluta"
 
 #: src/ide.ec:316
 msgid "Active Bit Length"
@@ -1941,11 +1941,11 @@ msgstr "Paso a paso por procedimientos evitando puntos de interrupción"
 
 #: src/ide.ec:263 src/ide.ec:1078
 msgid "Stop"
-msgstr "Parar"
+msgstr "Detener"
 
 #: src/ide.ec:1993 src/ide.ec:2027
 msgid "Stop Build"
-msgstr "Parar Contrucción"
+msgstr "Detener Construcción"
 
 #: src/ProjectSettings.ec:2018
 msgid "Strict Name Spaces"
