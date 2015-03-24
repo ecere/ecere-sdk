@@ -75,6 +75,10 @@ public:
                result = success;
                delete string;
             }
+            else if(type && eClass_IsDerived(type, class(ColorAlpha)))
+            {
+               result = GetColorAlpha(string, value);
+            }
             else if(type && (type.type == structClass))
             {
                if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, value.p, string))
@@ -740,6 +744,38 @@ public:
       }
       return result;
    }
+
+   JSONResult GetColorAlpha(String string, DataValue value)
+   {
+      ColorAlpha color = 0;
+      DefinedColor c = 0;
+      if(string)
+      {
+         if(string[0] == '0' && string[1] == 'x')
+            color = (uint)strtoul(string, null, 0);
+         else
+         {
+            char *d;
+            byte a = 255;
+            if((d = strchr(string, ',')))
+            {
+               a = (byte)atoi(string);
+               d += 2;
+            }
+            else
+               d = string;
+            if(c.class::OnGetDataFromString(d))
+            {
+               color.a = a;
+               color.color = c;
+            }
+            else
+               color = (uint)strtoul(string, null, 16);
+         }
+      }
+      value.i = color;
+      return success;
+   }
 }
 
 bool WriteMap(File f, Class type, Map map, int indent)
@@ -881,6 +917,32 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
    return true;
 }
 
+public bool WriteColorAlpha(File f, Class type, DataValue value, int indent)
+{
+   char buffer[1024];
+   char * string = buffer;
+   ColorAlpha color = value.i;
+   int a = color.a;
+   int len;
+   DefinedColor c = color;
+   buffer[0] = '\0';
+   if(a != 255)
+   {
+      a.class::OnGetString(buffer, null, null);
+      len = strlen(buffer);
+      buffer[len++] = ',';
+      buffer[len++] = ' ';
+      buffer[len] = '\0';
+      string += len;
+   }
+   if(!c.class::OnGetString(string, null, null))
+      sprintf(buffer, "0x%x", color);
+   f.Puts("\"");
+   f.Puts(buffer);
+   f.Puts("\"");
+   return true;
+}
+
 bool WriteValue(File f, Class type, DataValue value, int indent)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
@@ -964,6 +1026,10 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
       _WriteJSONObject(f, type, value.p, indent);
+   }
+   else if(eClass_IsDerived(type, class(ColorAlpha)))
+   {
+      WriteColorAlpha(f, type, value, indent);
    }
    else if(type.type == bitClass)
    {
