@@ -843,8 +843,8 @@ class GlyphPack : BTNode
          int y1 = (timesBigger*pCellHeight - pCellHeight) / 2,  y2 = y1 + pCellHeight-1;
          ox = -Max(0, x1 - minX1);
          oy = -Max(0, y1 - minY1);
-         cellWidth  = pCellWidth  - ox + Max(0, maxX2 - x2);
-         cellHeight = pCellHeight - oy + Max(0, maxY2 - y2);
+         cellWidth  = pCellWidth  - ox + Max(0, (maxX2 > x2) ? (maxX2 - x2) : 0);
+         cellHeight = pCellHeight - oy + Max(0, (maxY2 > y2) ? (maxY2 - y2) : 0);
       }
 
       width = cellWidth * 16;
