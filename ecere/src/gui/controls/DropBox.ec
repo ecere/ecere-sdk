@@ -238,12 +238,14 @@ public:
 
    virtual void OnCloseDropDown(Window pullDown)
    {
+      incref this;
       listBox.visible = false;
       if(style.editText)
       {
          editBox.ActivateEx(true, false, false, false, null, null);
          editBox.SelectAll();
       }
+      delete this;
    }
 
    // Methods
@@ -868,6 +870,8 @@ private:
 
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
+         bool result = true;
+         incref this;
          Update(null);
 
          // Add code to set text to list box contents if it has an editbox
@@ -879,7 +883,10 @@ private:
             button.checked = false;
             mods.closingDropDown = true;
             if(!NotifyClose(master, this))
+            {
+               delete this;
                return false;
+            }
          }
          currentRow = (row && !row.noneRow) ? row : null;
          if(style.editText && style.changeContents)
@@ -896,7 +903,9 @@ private:
                editBox.SelectAll();
          }
          button.Deactivate();
-         return NotifySelect(master, this, currentRow, mods);
+         result = NotifySelect(master, this, currentRow, mods);
+         delete this;
+         return result;
       }
 
       bool NotifyHighlight(ListBox control, DataRow row, Modifiers mods)
