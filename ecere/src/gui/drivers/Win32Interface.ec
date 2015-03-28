@@ -535,6 +535,13 @@ class Win32Interface : Interface
                      // That check causes a problem with the OpenGL driver which seems to popup a window of a different class
                      if(window.displaySystem && window.displaySystem.driver == class(OpenGLDisplayDriver))
                         windowLong = (void *)ApplicationWindow;
+                     else
+                     {
+                        Window master = window.master;
+                        Window rootWindow = master.rootWindow;
+                        if(rootWindow.displaySystem && rootWindow.displaySystem.driver == class(OpenGLDisplayDriver))
+                           windowLong = (void *)ApplicationWindow;
+                     }
 #endif
                      if(id != GetCurrentProcessId() || windowLong != (void *)ApplicationWindow)
                         window.ExternalActivate(false, true, window, null);
