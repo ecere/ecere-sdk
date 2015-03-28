@@ -1129,35 +1129,38 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
                      else
                      {
-                        // TOFIX: How to swiftly handle classes with base data type?
-                        if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                        if(type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass)
                         {
-                           value.d = ((double (*)(void *))(void *)prop.Get)(object);
-                        }
-                        else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-                        {
-                           value.f = ((float (*)(void *))(void *)prop.Get)(object);
-                        }
-                        else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
-                           !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
-                        {
-                           value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
-                        }
-                        else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
-                           !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
-                        {
-                           value.i = ((int (*)(void *))(void *)prop.Get)(object);
-                        }
-                        else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
-                           !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
-                           !strcmp(type.dataTypeString, "int16"))
-                        {
-                           value.s = ((short (*)(void *))(void *)prop.Get)(object);
-                        }
-                        else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
-                           !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
-                        {
-                           value.c = ((char (*)(void *))(void *)prop.Get)(object);
+                           // TOFIX: How to swiftly handle classes with base data type?
+                           if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                           {
+                              value.d = ((double (*)(void *))(void *)prop.Get)(object);
+                           }
+                           else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
+                           {
+                              value.f = ((float (*)(void *))(void *)prop.Get)(object);
+                           }
+                           else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
+                              !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
+                           {
+                              value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
+                           }
+                           else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
+                              !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
+                           {
+                              value.i = ((int (*)(void *))(void *)prop.Get)(object);
+                           }
+                           else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                              !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
+                              !strcmp(type.dataTypeString, "int16"))
+                           {
+                              value.s = ((short (*)(void *))(void *)prop.Get)(object);
+                           }
+                           else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
+                              !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
+                           {
+                              value.c = ((char (*)(void *))(void *)prop.Get)(object);
+                           }
                         }
                         else if(type.type == structClass)
                         {
