@@ -7,6 +7,10 @@ import "Container"
 // #define MEMTRACKING
 #endif
 
+default:
+extern int __ecereVMethodID_class_OnUnserialize;
+private:
+
 public class Array : Container
 {
    class_fixed
@@ -19,6 +23,22 @@ public:
    ~Array()
    {
       delete array;
+   }
+
+   void OnUnserialize(IOChannel channel)
+   {
+      Array array = eInstance_New(_class.fullName);
+      uint count, c;
+      Class Dclass = class(D);
+      channel.Get(count);
+      //printf("%d %ss\n", count, Dclass.name);
+      if(count > 10000)
+         printf("Bug");
+      array.size = count;
+      for(c = 0; c < count; c++)
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])
+            (Dclass, ((byte *)array.array) + Dclass.typeSize * c, channel);
+      this = array;
    }
 
    // Generic iterator support
