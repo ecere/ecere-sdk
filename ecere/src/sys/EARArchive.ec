@@ -1123,6 +1123,7 @@ class EARArchiveDir : ArchiveDir
                   compressed = new byte[destLen];
                   if(compressed)
                   {
+                     if(compression > 9 || compression < 0) compression = 9;
                      compress2(compressed, &destLen, uncompressed, entry.size, compression);
                      entry.cSize = (FileSize)destLen;
                   }
