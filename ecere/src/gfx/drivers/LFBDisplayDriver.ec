@@ -74,7 +74,7 @@ static void ComputeOutline(byte *out, byte *src, uint w, uint h, float size, flo
    float inv_rw = 1/(rb-ra);
 
    for(i = 0; i < numPixels; i++)
-      data[i] = src[i] / 255;
+      data[i] = src[i] / 255.0f;
 
    computegradient(data, w, h, gx, gy);
    edtaa3(data, gx, gy, w, h, distx, disty, dist);
@@ -147,81 +147,6 @@ static void MeasureOutline(byte * image, int w, int h, int * _x1, int * _y1, int
 }
 
 #endif
-
-/*
-static byte * MakeDistanceMap( byte *out, byte *img, uint width, uint height, int k, int t )
-{
-    short * xdist = new short[ width * height];
-    short * ydist = new short[ width * height];
-    float * gx   = new float[ width * height];
-    float * gy      = new float[ width * height];
-    float * data    = new float[ width * height];
-    float * outside = new float[ width * height];
-    float * inside  = new float[ width * height];
-    int i;
-    k = 80;
-    t = 0;
-
-    // Convert img into float (data)
-    float img_min = 255, img_max = -255;
-    for( i=0; i<width*height; ++i)
-    {
-        float v = img[i];
-        data[i] = v;
-        if (v > img_max) img_max = v;
-        if (v < img_min) img_min = v;
-    }
-
-    if(img_max > 0)
-    {
-       // Rescale image levels between 0 and 1
-       for( i=0; i<width*height; ++i)
-       {
-           data[i] = (img[i]-img_min)/img_max;
-       }
-
-       // Compute outside = edtaa3(bitmap); % Transform background (0's)
-       computegradient( data, width, height, gx, gy);
-       edtaa3(data, gx, gy, width, height, xdist, ydist, outside);
-       for( i=0; i<width*height; ++i)
-           if( outside[i] < 0 )
-               outside[i] = 0.0;
-
-       // Compute inside = edtaa3(1-bitmap); % Transform foreground (1's)
-       memset(gx, 0, sizeof(float)*width*height );
-       memset(gy, 0, sizeof(float)*width*height );
-       for( i=0; i<width*height; ++i)
-           data[i] = 1 - data[i];
-       computegradient( data, width, height, gx, gy);
-       edtaa3(data, gx, gy, width, height, xdist, ydist, inside);
-       for( i=0; i<width*height; ++i)
-           if( inside[i] < 0 )
-               inside[i] = 0.0;
-
-       // distmap = outside - inside; % Bipolar distance field
-       for( i=0; i<width*height; ++i)
-       {
-           outside[i] -= inside[i];
-           outside[i] = t+outside[i]* k;
-           if( outside[i] < 0 ) outside[i] = 0;
-           if( outside[i] > 255 ) outside[i] = 255;
-           out[i] = 255 - (byte) outside[i];
-           //out[i] = (byte) outside[i];
-       }
-    }
-    else
-      memset(out, 0, width * height);
-
-    delete xdist;
-    delete ydist;
-    delete gx;
-    delete gy;
-    delete data;
-    delete outside;
-    delete inside;
-    return out;
-}
-*/
 
 #define MAX_FONT_LINK_ENTRIES   10
 
@@ -916,7 +841,7 @@ class GlyphPack : BTNode
             if(flags)
                strcat(fileName, "Bold");
             */
-            sprintf(fileName, "font%d", fid++);
+            sprintf(fileName, "outline%d", fid++);
             ChangeExtension(fileName, "pcx", fileName);
 
             outline.bitmap.Save(fileName, null, 0);
