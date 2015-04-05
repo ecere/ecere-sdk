@@ -70,7 +70,7 @@ static void ComputeOutline(byte *out, byte *src, uint w, uint h, float size, flo
    uint i, numPixels = w * h;
    short * distx = new short[2 * numPixels], * disty = distx + numPixels;
    float * data = new0 float[4 * numPixels], * gx = data + numPixels, * gy = gx + numPixels, * dist = gy + numPixels;
-   float rb = Max(1.5f, size), ra = rb - (rb-1)*fade - 1;
+   float rb = Max(1.5f, size), ra = rb - (rb-1)*fade*4 - 1;
    float inv_rw = 1/(rb-ra);
 
    for(i = 0; i < numPixels; i++)
