@@ -162,17 +162,56 @@ COMPILER_SUFFIX = .$(COMPILER)$(ARCH_SUFFIX)
 endif
 endif
 
-# MISC STRING TOOLS
+# STRING TOOLS
 empty :=
 esc := $(empty)$(empty)
 space := $(empty) $(empty)
 comma := ,
+quote := "
 slash := $(empty)/$(empty)
 backslash := $(empty)\$(empty)
 escspace = $(subst $(space),$(backslash)$(space),$(subst $(backslash)$(space),$(space),$(1)))
 hidspace = $(subst $(space),$(esc),$(subst $(backslash)$(space),$(esc),$(1)))
 shwspace = $(subst $(esc),$(backslash)$(space),$(1))
 unescp_all = $(subst $(esc),$(backslash),$(subst $(backslash),,$(subst $(backslash)$(backslash),$(esc),$(1))))
+
+# HIDDEN SPACE STRING TOOLS
+temporaty_token := _+;:;+_:;+;:_:+;+:_
+hidden_space := $(empty)$(empty)
+hs_hide = $(subst $(space),$(hidden_space),$(1))
+hs_unhide = $(subst $(hidden_space),$(space),$(1))
+hs_escape = $(subst $(hidden_space),$(backslash)$(space),$(1))
+hs_process = $(subst $(space),$(hidden_space),$(subst $(backslash)$(space),$(hidden_space),$(1)))
+hs_quote_all = $(foreach item,$(1),"$(call hs_unhide,$(item))")
+hs_quote_each = $(foreach item,$(1),$(if $(findstring $(esc),$(item)),"$(call hs_unhide,$(item))",$(item)))
+
+# FILE PATH TOOLS
+fp_unquote = $(subst $(quote),,$(1))
+fp_opt_quotes = $(if $(findstring $(space),$(1)),"$(1)",$(1))
+fp_no_parent_dir = $(foreach item,$(1),$(if $(findstring ..,$(item)),,$(item)))
+
+# FILE SYSTEM TOOLS
+# hs_ls doc
+#     usage: $(hs_ls) | $(hs_ls_dir) | $(hs_ls_files)
+#     result:
+#      -      for hs_ls: a list of files and directories in the current dir
+#                        i.e.: fileA dir1/ fileB fileC dir2/ dir3/
+#      -  for hs_ls_dir: a list of directories in the current dir
+#                        i.e.: dir1 dir2 dir3
+#      - for hs_ls_file: a list of files in the current dir
+#                        i.e.: fileA fileB fileC
+#     notes:
+#      - hs_ls* functions work in current dir, you can't specify a directory
+#      - hs_ls* functions do not report hidden files and directories because wildcard doesn't
+#        you would never get such a list: .fileA .dir1/
+hs_ls = $(subst $(temporaty_token),$(space),$(subst ./,,$(call hs_hide,$(subst $(space)./,$(temporaty_token),$(wildcard ./*/)))))
+hs_ls_dir = $(subst /,,$(foreach item,$(hs_ls),$(if $(findstring /,$(item)),$(item),)))
+hs_ls_file = $(foreach item,$(hs_ls),$(if $(findstring /,$(item)),,$(item)))
+
+# CONTROL FLOW TOOLS
+# hs_crossloop usage: $(call hs_crossloop,<list>,<command_function>)
+#                     hs_crossloop will call <command_function> with the item as first parameter ($(1))
+hs_crossloop = $(call hs_unsafe_crossloop,$(call fp_no_parent_dir,$(1)),$(2))
 
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS_HOST
@@ -243,6 +282,7 @@ ifeq ($(D),1)
    DEBUG_IS_ON := defined
 endif
 ifdef WIN_SHELL_COMMANDS
+   cd = @cd
    nullerror = 2>NUL
    echo = $(if $(1),echo $(1))
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
@@ -252,7 +292,9 @@ ifdef WIN_SHELL_COMMANDS
    rmr = $(if $(1),-rmdir /s$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
    mkdir = $(if $(1),-mkdir $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
    rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
+   hs_unsafe_crossloop = ${if $(1),${if $(2),@cmd /c "for %%I in (${call hs_quote_each,$(1)}) do ${call $(2),%%I}",},}
 else
+   cd = cd
    nullerror = 2>/dev/null
    echo = $(if $(1),echo "$(1)")
    touch = $(if $(1),touch $(1))
@@ -262,6 +304,7 @@ else
    rmr = $(if $(1),-rm -fr$(if $(SILENT_IS_ON),,v) $(1))
    mkdir = $(if $(1),-mkdir -p$(if $(SILENT_IS_ON),,v) $(1))
    rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON),, -v) $(1))
+   hs_unsafe_crossloop = ${if $(1),${if $(2),for item in ${call hs_quote_each,$(1)}; do ${call $(2),"$$item"}; done,},}
 endif
 
 # potential common use variables

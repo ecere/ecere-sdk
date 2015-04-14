@@ -40,11 +40,7 @@ ifdef EDASQLiteCipher
 endif
 
 distclean:
-	cd libeda && $(MAKE) distclean
-	cd drivers && cd sqlite && $(MAKE) distclean
-ifdef EDASQLiteCipher
-	cd drivers && cd sqliteCipher && $(MAKE) distclean
-endif
+	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;

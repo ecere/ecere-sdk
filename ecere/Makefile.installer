@@ -1862,8 +1862,8 @@ clean: cleantarget
 realclean: cleantarget
 	$(call rmr,$(OBJ))
 
-distclean: cleantarget
-	$(call rmr,obj/)
+distclean:
+	+$(call cdmake,./,-f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs)
 
 Makefile.installer: ;
 $(_CF_DIR)crossplatform.mk: ;
