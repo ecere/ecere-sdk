@@ -41,12 +41,7 @@ realclean:
 	cd libffi-3.0.11 && $(MAKE) realclean
 
 distclean:
-	cd freetype-2.3.12 && $(MAKE) distclean
-	cd libpng-1.6.12 && $(MAKE) distclean
-	cd zlib-1.2.8 && $(MAKE) distclean
-	cd jpeg-9a && $(MAKE) distclean
-	cd libungif-4.1.1 && $(MAKE) distclean
-	cd libffi-3.0.11 && $(MAKE) distclean
+	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;

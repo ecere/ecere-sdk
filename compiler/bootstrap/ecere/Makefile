@@ -213,8 +213,8 @@ clean: objdir
 realclean: objdir
 	$(call rmr,$(OBJ))
 
-distclean: objdir
-	$(call rmr,obj/)
+distclean:
+	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;

@@ -38,13 +38,8 @@ realclean: cleantarget
 	cd ecc && $(MAKE) realclean
 	cd ecs && $(MAKE) realclean
 
-distclean: cleantarget
-	$(call rmr,obj/)
-	cd ecere && $(MAKE) distclean
-	cd libec && $(MAKE) distclean
-	cd ecp && $(MAKE) distclean
-	cd ecc && $(MAKE) distclean
-	cd ecs && $(MAKE) distclean
+distclean:
+	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;

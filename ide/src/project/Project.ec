@@ -3610,6 +3610,9 @@ private:
             f.Printf("\t$(call rmdir,%s)\n", targetDirExpNoSpaces);
          if(!relObjDir)
             f.Puts("\t$(call rmr,obj/)\n");
+         f.Puts("\t$(call rmr,.configs/)\n");
+         f.Puts("\t$(call rm,*.ews)\n");
+         f.Puts("\t$(call rm,*.Makefile)\n");
 
          delete f;
 

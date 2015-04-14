@@ -54,11 +54,7 @@ realclean:
 	cd ecs && $(MAKE) realclean
 
 distclean:
-	cd bootstrap && $(MAKE) distclean
-	cd libec && $(MAKE) distclean
-	cd ecp && $(MAKE) distclean
-	cd ecc && $(MAKE) distclean
-	cd ecs && $(MAKE) distclean
+	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;
