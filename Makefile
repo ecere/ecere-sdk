@@ -3,6 +3,8 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
+_CF_DIR =
+
 include crossplatform.mk
 include default.cf
 
@@ -465,24 +467,8 @@ endif
 	$(call rmr,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
-distclean: outputdirs
-ifndef LINUX_TARGET
-	cd deps && $(_MAKE) distclean
-endif
-	cd ecere && $(_MAKE) distclean
-	cd compiler && $(_MAKE) distclean
-	cd ear && $(_MAKE) distclean
-	cd epj2make && $(_MAKE) distclean
-	cd ide && $(_MAKE) distclean
-	cd documentor && $(_MAKE) distclean
-ifneq ($(ECERE_AUDIO),n)
-	cd audio && $(_MAKE) distclean
-endif
-ifdef CodeGuard
-	cd codeGuard && $(_MAKE) distclean
-endif
-	cd eda && $(_MAKE) distclean
-	$(call rmr,obj/)
+distclean:
+	$(_MAKE) -f Cleanfile distclean distclean_all_subdirs
 	@$(call echo,Done.)
 
 DOC = doc

@@ -1,0 +1,46 @@
+.PHONY: distclean distclean_all_subdirs
+ifneq ($(V),1)
+.SILENT:
+endif
+
+_cf = Cleanfile
+_d1 = ../
+_d2 = $(_d1)../
+_d3 = $(_d2)../
+_d4 = $(_d3)../
+_d5 = $(_d4)../
+_d6 = $(_d5)../
+_d7 = $(_d6)../
+_d8 = $(_d7)../
+find_sdk_src_root = $(if $(wildcard $(_cf)),,$(if $(wildcard $(_d1)$(_cf)),$(_d1),$(if $(wildcard $(_d2)$(_cf)),$(_d2),$(if $(wildcard $(_d3)$(_cf)),$(_d3),$(if $(wildcard $(_d4)$(_cf)),$(_d4),$(if $(wildcard $(_d5)$(_cf)),$(_d5),$(if $(wildcard $(_d6)$(_cf)),$(_d6),$(if $(wildcard $(_d7)$(_cf)),$(_d7),$(if $(wildcard $(_d8)$(_cf)),$(_d8),)))))))))
+
+ifneq ($(wildcard $(_CF_DIR)Cleanfile),)
+   _SDK_SRC_ROOT = $(_CF_DIR)
+endif
+ifeq ($(wildcard $(_SDK_SRC_ROOT)Cleanfile),)
+   _SDK_SRC_ROOT = $(find_sdk_src_root)
+endif
+
+$(_SDK_SRC_ROOT)Cleanfile: ;
+$(_SDK_SRC_ROOT)crossplatform.mk: ;
+
+include $(_SDK_SRC_ROOT)crossplatform.mk
+
+subdirs := $(sort $(filter-out obj,$(hs_ls_dir)))
+
+cd_make_distclean_all_subdirs = $(cd) $(call fp_opt_quotes,$(1)) && $(_MAKE) -f $(_SDK_SRC_ROOT)../Cleanfile _SDK_SRC_ROOT=$(_SDK_SRC_ROOT)../ $(if $(BUILD_DIR),BUILD_DIR=$(BUILD_DIR)$(1)/ ,) distclean distclean_all_subdirs && cd ..
+
+distclean_all_subdirs:
+ifdef _SDK_SRC_ROOT
+	$(call hs_crossloop,$(subdirs),cd_make_distclean_all_subdirs)
+endif
+
+distclean:
+ifdef _SDK_SRC_ROOT
+	$(call rmr,obj/)
+	$(call rmr,.configs/)
+ ifndef KEEP_EWS_FILES
+	$(call rm,*.ews)
+ endif
+	$(call rm,*.Makefile)
+endif
