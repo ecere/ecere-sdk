@@ -9795,7 +9795,23 @@ private:
    property subclass(DisplayDriver) _displayDriver  { get { return !formDesigner ? dispDriver : null; } }
 
    WindowController controller;
-   public property WindowController controller { get { return controller; } set { delete controller; controller = value; if(controller) incref controller; } }
+
+   public property WindowController controller
+   {
+      get { return controller; }
+      set
+      {
+         if(controller)
+            controller.setWindow(null);
+         delete controller;
+         controller = value;
+         if(controller)
+         {
+            incref controller;
+            controller.setWindow(this);
+         }
+      }
+   }
 };
 
 public class CommonControl : Window
@@ -9984,7 +10000,7 @@ class WindowControllerInterface : ControllableWindow
 
    bool OnMouseMove(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMouseMove)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnMouseMove ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMouseMove)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
       {
          bool(* onMouseMove)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove];
@@ -10174,37 +10190,41 @@ class WindowControllerInterface : ControllableWindow
 
 public class WindowController<class V>
 {
+   void setWindow(Window value)
+   {
+      uint size = class(Window).vTblSize;
+      if(value)
+      {
+         delete windowVTbl;
+         windowVTbl = new void *[size];
+         memcpy(windowVTbl, value._vTbl, size * sizeof(void *));
+         if(value._vTbl == value._class._vTbl)
+         {
+            value._vTbl = new void *[value._class.vTblSize];
+            memcpy(value._vTbl + size, value._class._vTbl + size, (value._class.vTblSize - size) * sizeof(void *));
+         }
+         {
+            int c;
+            for(c = 0; c < size; c++)
+            {
+               void * function = class(WindowControllerInterface)._vTbl[c];
+               if(function && function != DefaultFunction)
+                  value._vTbl[c] = function;
+               else
+                  value._vTbl[c] = windowVTbl[c];
+            }
+         }
+      }
+      else if(window)
+      {
+         memcpy(window._vTbl, windowVTbl, class(Window).vTblSize * sizeof(void *));
+         delete windowVTbl;
+      }
+      window = value;
+   }
 public:
    property Window window
    {
-      set
-      {
-         uint size = class(Window).vTblSize;
-         if(value)
-         {
-            windowVTbl = new void *[size];
-            memcpy(windowVTbl, value._vTbl, size * sizeof(void *));
-            if(value._vTbl == value._class._vTbl)
-            {
-               value._vTbl = new void *[value._class.vTblSize];
-               memcpy(value._vTbl + size, value._class._vTbl + size, (value._class.vTblSize - size) * sizeof(void *));
-            }
-            {
-               int c;
-               for(c = 0; c < size; c++)
-               {
-                  void * function = class(WindowControllerInterface)._vTbl[c];
-                  if(function && function != DefaultFunction)
-                     value._vTbl[c] = function;
-                  else
-                     value._vTbl[c] = windowVTbl[c];
-               }
-            }
-         }
-         else
-            memcpy(value._vTbl, windowVTbl, class(Window).vTblSize * sizeof(void *));
-         window = value;
-      }
       get { return window; }
    }
    property V controlled
@@ -10233,7 +10253,7 @@ public:
    virtual void V::OnUnloadGraphics(WindowController controller);
 
 private:
-   int (** windowVTbl)();
+   public int (** windowVTbl)();
    V controlled;
    Window window;
 
