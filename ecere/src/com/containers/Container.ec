@@ -288,19 +288,21 @@ public:
 
    void OnSerialize(IOChannel channel)
    {
-      uint count = GetCount();
+      // NOTE: Null containers currently get serialized as empty
+      uint count = this ? GetCount() : 0;
       IteratorPointer i;
       Class Dclass = class(D);
       bool isNormalClass = (Dclass.type == normalClass) && Dclass.structSize;
 
       channel.Put(count);
-      for(i = GetFirst(); i; i = GetNext(i))
-      {
-         D data = GetData(i);
-         Class Eclass = isNormalClass ? ((Instance)data)._class : Dclass;
-         ((void (*)(void *, void *, void *))(void *)Eclass._vTbl[__ecereVMethodID_class_OnSerialize])(Eclass,
-            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
-      }
+      if(this)
+         for(i = GetFirst(); i; i = GetNext(i))
+         {
+            D data = GetData(i);
+            Class Eclass = isNormalClass ? ((Instance)data)._class : Dclass;
+            ((void (*)(void *, void *, void *))(void *)Eclass._vTbl[__ecereVMethodID_class_OnSerialize])(Eclass,
+               ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
+         }
    }
 
    void OnUnserialize(IOChannel channel)
