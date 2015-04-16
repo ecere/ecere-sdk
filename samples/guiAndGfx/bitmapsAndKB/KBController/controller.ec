@@ -90,7 +90,7 @@ class MainWindow : Window
    hasClose = true;
    size = { 576, 432 };
 
-   controller = WorldObjectController { this };
+   controller = WorldObjectController { };
 
    bool OnCreate()
    {
