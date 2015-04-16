@@ -129,35 +129,3 @@ public class Distance      : double;
 public class Meters        : Distance { public property Distance {} };
 public class Centimeters   : Distance { public property Meters { set { return value * 100.0f;  } get { return this / 100.0f; } } };
 public class Feet          : Distance { public property Meters { set { return value / 0.3048f; } get { return this * 0.3048f; } } };
-public class NauticalMiles : Distance { public property Meters { set { return value / 1852; }    get { return this * 1852; } } };
-
-public struct WorldPoint
-{
-   NauticalMiles x, y;
-};
-
-public struct PolarPoint
-{
-   Degrees angle;
-   NauticalMiles distance;
-
-   property WorldPoint
-   {
-      set
-      {
-         angle = atan2(value.y, value.x);
-         distance = Distance { sqrt((double)(Distance)value.x * (Distance)value.x + (double)(Distance)value.y * (Distance)value.y) };
-      }
-
-      get
-      {
-         value.x = cos(angle) * distance;
-         value.y = sin(angle) * distance;
-      }
-   }
-};
-
-public struct GeoPoint
-{
-   Degrees lat, lon;
-};
