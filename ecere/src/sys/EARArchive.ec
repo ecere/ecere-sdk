@@ -1611,14 +1611,17 @@ class EARFileSystem : FileSystem
                   archive.totalSize = header.totalSize;
 
                   archive.f.Seek(archive.rootDir, start);
-                  if(flags.buffered)
+                  if(flags.writeAccess)
                   {
-                     archive.freeBlocks.Add(FreeBlock { start = archive.rootDir + 2 * sizeof(uint), end = MAXDWORD });
-                     archive.SubtractUsedBlocks();
-                  }
-                  else
-                  {
-                     archive.freeBlocks.Add(FreeBlock { start = archive.archiveStart + (archiveSize - sizeof(uint)), end = MAXDWORD });
+                     if(flags.buffered)
+                     {
+                        archive.freeBlocks.Add(FreeBlock { start = archive.rootDir + 2 * sizeof(uint), end = MAXDWORD });
+                        archive.SubtractUsedBlocks();
+                     }
+                     else
+                     {
+                        archive.freeBlocks.Add(FreeBlock { start = archive.archiveStart + (archiveSize - sizeof(uint)), end = MAXDWORD });
+                     }
                   }
 
                   /*
