@@ -1303,7 +1303,7 @@ private:
          // Cameras / Spot Lights must update their target first
          if(flags.camera && cameraTarget && cameraTarget.flags.transform)
             cameraTarget.UpdateTransform();
-         else if(flags.light && light.flags.spot && light.target.flags.transform)
+         else if(flags.light && light.flags.spot && light.target && light.target.flags.transform)
             light.target._UpdateTransform();
 
          if(flags.camera && cameraTarget)
@@ -1324,14 +1324,18 @@ private:
 
          if(flags.light && light.flags.spot)
          {
-            // DeterMine angle to look at target
+            // Determine angle to look at target
             Vector3D position;
             if(flags.root || !parent)
                position = transform.position;
             else
                position.MultMatrix(transform.position, parent.matrix);
 
-            light.direction.Subtract((Vector3D *) light.target.matrix.m[3], position);
+            if(light.target)
+               light.direction.Subtract((Vector3D *) light.target.matrix.m[3], position);
+            else
+               light.direction = position; // TOCHECK: Why does this happen?
+
             light.direction.Normalize(light.direction);
             transform.orientation.RotationDirection(light.direction);
          }
