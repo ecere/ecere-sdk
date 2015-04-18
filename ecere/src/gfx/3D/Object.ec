@@ -767,7 +767,7 @@ public:
    {
       bool result = false;
 
-      if(!children.first && this.flags.ownMesh)
+      if(!this.flags.mesh || (!children.first && this.flags.ownMesh))
          result = true;
       else
       {
