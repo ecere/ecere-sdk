@@ -1094,7 +1094,25 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                   if(memberType.type == noHeadClass || memberType.type == normalClass || memberType.type == structClass)
                      ((void (*)(void *, void *))(void *)((Property)thisMember).Set)(data, value.p);
                   else
-                     ((void (*)(void *, int))(void *)((Property)thisMember).Set)(data, value.i);
+                  {
+                     // TODO: Complete and improve this type of stuff throughout
+                     if(!strcmp(memberType.dataTypeString, "float"))
+                     {
+                        ((void (*)(void *, float))(void *)((Property)thisMember).Set)(data, value.f);
+                     }
+                     else if(!strcmp(memberType.dataTypeString, "double"))
+                     {
+                        ((void (*)(void *, double))(void *)((Property)thisMember).Set)(data, value.d);
+                     }
+                     else if(!strcmp(memberType.dataTypeString, "int64"))
+                     {
+                        ((void (*)(void *, int64))(void *)((Property)thisMember).Set)(data, value.i64);
+                     }
+                     else
+                     {
+                        ((void (*)(void *, int))(void *)((Property)thisMember).Set)(data, value.i);
+                     }
+                  }
                }
             }
          }
