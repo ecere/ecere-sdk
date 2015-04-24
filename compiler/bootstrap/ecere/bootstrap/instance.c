@@ -170,6 +170,8 @@ break;
 current = current * 3 / 2;
 if(current == 1)
 current = 2;
+if(current & 7)
+current += 8 - (current & 7);
 }
 return pos;
 }
@@ -184,6 +186,8 @@ for(pos = 0; pos < number; pos++)
 current = current * 3 / 2;
 if(current == 1)
 current = 2;
+if(current & 7)
+current += 8 - (current & 7);
 }
 return (unsigned int)current;
 }
@@ -200,6 +204,8 @@ return (unsigned int)current;
 current = current * 3 / 2;
 if(current == 1)
 current = 2;
+if(current & 7)
+current += 8 - (current & 7);
 }
 return (unsigned int)current;
 }
@@ -580,6 +586,10 @@ byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 byteDest[d] = 0;
 return d;
+}
+
+void __ecereNameSpace__ecere__com__queryMemInfo(char * string)
+{
 }
 
 struct __ecereNameSpace__ecere__sys__OldList
@@ -3247,7 +3257,10 @@ else if(!pointerAlignment && alignment >= 8)
 _class->pointerAlignment = 0;
 _class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
 if(_class->offset % alignment)
+{
+_class->structSize += alignment - (_class->offset % alignment);
 _class->offset += alignment - (_class->offset % alignment);
+}
 if(_class->memberOffset % alignment)
 _class->memberOffset += alignment - (_class->memberOffset % alignment);
 }
@@ -6867,5 +6880,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8GetChar"
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16Buffer", "int ecere::sys::UTF8toUTF16Buffer(const char * source, uint16 * dest, int max)", __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF32toUTF8Len", "int ecere::sys::UTF32toUTF8Len(const unichar * source, int count, char * dest, int max)", __ecereNameSpace__ecere__sys__UTF32toUTF8Len, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16", "uint16 * ecere::sys::UTF8toUTF16(const char * source, int * wordCount)", __ecereNameSpace__ecere__sys__UTF8toUTF16, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::queryMemInfo", "void ecere::com::queryMemInfo(char * string)", __ecereNameSpace__ecere__com__queryMemInfo, module, 4);
 }
 
