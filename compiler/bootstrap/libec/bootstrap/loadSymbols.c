@@ -1982,7 +1982,7 @@ loadedModules, 0
 };
 
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(uintptr_t)(name)), 1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)((uintptr_t)(list))));
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, (uint64)(uintptr_t)(list));
 });
 }
 else

@@ -657,7 +657,7 @@ __ecereNameSpace__ecere__moduleMaps, 0
 };
 
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(uintptr_t)(name)), 1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)((uintptr_t)(textMap = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_)))));
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, (uint64)(uintptr_t)(textMap = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_)));
 });
 for(c = 0; c < numStrings; c++)
 {
@@ -788,7 +788,7 @@ textMap, 0
 };
 
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(uintptr_t)(original)), 1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)((uintptr_t)(translated))));
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, (uint64)(uintptr_t)(translated));
 });
 }
 else

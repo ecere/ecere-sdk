@@ -592,8 +592,11 @@ static void ProcessExpression(Expression exp)
                Class c = memberExp.index.exp.expType._class.registered;
                if(strcmp((c.templateClass ? c.templateClass : c).name, "Array"))
                {
-                  exp.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(exp.op.exp2)));
-                  exp.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(exp.op.exp2)))));
+                  if(exp.op.exp2 && exp.op.op == '=')
+                  {
+                     modifyPassAsTemplate(&exp.op.exp2.destType, true);
+                     CheckTemplateTypes(exp.op.exp2);
+                  }
                   isIndexedContainerAssignment = true;
                }
 
@@ -800,6 +803,22 @@ static void ProcessExpression(Expression exp)
                                  value.expType = memberExp.expType;
                                  memberExp.expType.refCount++;
                                  value.usage.usageArg = true;
+
+                                 if(isIndexedContainerAssignment)
+                                 {
+                                    value.op.exp1.usage.usageGet = true;
+                                    value.op.exp2.usage.usageGet = true;
+                                    modifyPassAsTemplate(&value.op.exp1.destType, false);
+                                    modifyPassAsTemplate(&value.op.exp2.destType, false);
+                                    CheckTemplateTypes(value.op.exp1);
+                                    CheckTemplateTypes(value.op.exp2);
+
+                                    modifyPassAsTemplate(&value.expType, false);
+                                    value.destType = value.expType;
+                                    value.expType.refCount++;
+                                    modifyPassAsTemplate(&value.destType, true);
+                                    CheckTemplateTypes(value);
+                                 }
                               }
                               else if(value)
                               {
@@ -813,7 +832,10 @@ static void ProcessExpression(Expression exp)
                               DeclareProperty(curExternal, prop, setName, getName);
 
                               if(memberExp.member.exp)
+                              {
                                  ProcessExpression(memberExp.member.exp);
+                                 CheckTemplateTypes(memberExp.member.exp);
+                              }
 
                               // If get flag present
                               if(exp.usage.usageGet &&
@@ -2258,6 +2280,21 @@ static void ProcessExpression(Expression exp)
                                     PrintTypeNoConst(e.expType, typeString, false, true);
                                     decl = SpecDeclFromString(typeString, specs, null);
                                     newExp.destType = ProcessType(specs, decl);
+                                    if(newExp.destType && e.expType && e.expType.passAsTemplate)
+                                    {
+                                       Expression nbExp = GetNonBracketsExp(newExp);
+                                       if(nbExp.type == castExp)
+                                       {
+                                          // Because we're correcting this after the cast was added from the argument for loop at the beginning of this case block
+                                          // (CheckTemplateTypes() already called), we'll revert the cast to generic uint64 template type
+                                          FreeTypeName(nbExp.cast.typeName);
+                                          nbExp.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), null);
+                                       }
+
+                                       newExp.expType = newExp.destType;
+                                       newExp.destType.refCount++;
+                                       modifyPassAsTemplate(&newExp.expType, true);
+                                    }
 
                                     curContext = context;
                                     e.type = extensionCompoundExp;
@@ -2273,6 +2310,7 @@ static void ProcessExpression(Expression exp)
                                        curCompound.compound.declarations->Insert(null, MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null))));
                                        ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
                                        ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+                                       CheckTemplateTypes(newExp);
                                        e.compound = MkCompoundStmt(null, stmts);
                                     }
                                     else

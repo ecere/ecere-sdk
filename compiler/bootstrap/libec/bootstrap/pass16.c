@@ -481,6 +481,8 @@ extern struct Type * MkClassType(const char *  name);
 
 extern void CopyTypeInto(struct Type * type, struct Type * src);
 
+extern void modifyPassAsTemplate(struct Type **  typePtr, unsigned int value);
+
 extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
 
 struct Initializer;
@@ -3347,6 +3349,8 @@ if(!e->next)
 e->usage |= (exp->usage & ((((unsigned int)(1)) | (((unsigned int)(1)) << 2))));
 }
 ProcessExpression(e);
+if(!e->next && e->expType && e->expType->passAsTemplate && exp->expType && !exp->expType->passAsTemplate)
+modifyPassAsTemplate(&exp->expType, 1);
 exp->tempCount = (__simpleStruct2 = exp->tempCount, __simpleStruct3 = e->tempCount, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
 }
 break;
