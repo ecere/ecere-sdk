@@ -2972,7 +2972,24 @@ else if(thisMember->isProperty && ((struct __ecereNameSpace__ecere__com__Propert
 if(memberType->type == 5 || memberType->type == 0 || memberType->type == 1)
 ((void (*)(void *, void *))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.p);
 else
+{
+if(!strcmp(memberType->dataTypeString, "float"))
+{
+((void (*)(void *, float))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.f);
+}
+else if(!strcmp(memberType->dataTypeString, "double"))
+{
+((void (*)(void *, double))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.d);
+}
+else if(!strcmp(memberType->dataTypeString, "int64"))
+{
+((void (*)(void *, long long))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.i64);
+}
+else
+{
 ((void (*)(void *, int))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.i);
+}
+}
 }
 }
 }
