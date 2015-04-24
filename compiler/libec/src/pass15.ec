@@ -3758,6 +3758,9 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                {
                   ((Conversion)(conversions.last)).resultType = dest;
                   dest.refCount++;
+
+                  // This fixes passing unit as template to a double
+                  modifyPassAsTemplate(&((Conversion)(conversions.last)).resultType, false);
                }
 
                FreeType(sourceExp.expType);
@@ -6528,6 +6531,18 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
    return result;
 }
 
+void modifyPassAsTemplate(Type * typePtr, bool value)
+{
+   if(*typePtr && typePtr->passAsTemplate != value)
+   {
+      Type type { refCount = 1 };
+      CopyTypeInto(type, *typePtr);
+      type.passAsTemplate = value;
+      FreeType(*typePtr);
+      *typePtr = type;
+   }
+}
+
 void CheckTemplateTypes(Expression exp)
 {
    /*
@@ -6570,8 +6585,8 @@ void CheckTemplateTypes(Expression exp)
             }
             else
             {
-               // If we're looking for value:
-               // ({ union { double d; uint64 i; } u; u.i = [newExp]; u.d; })
+               // We want to pass as a template argument
+               // ({ union { double d; uint64 i; } u; u.d = [newExp]; u.i; })
                OldList * specs;
                OldList * unionDefs = MkList();
                OldList * statements = MkList();
@@ -6580,12 +6595,52 @@ void CheckTemplateTypes(Expression exp)
                ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
                specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
                exp.type = extensionCompoundExp;
+
+               modifyPassAsTemplate(&exp.expType, true);
+               modifyPassAsTemplate(&newExp.destType, false);
+               modifyPassAsTemplate(&newExp.expType, false);
+
                exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
                ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")), '=', newExp))));
                ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")))));
                exp.compound.compound.context = context;
                PopContext(context);
             }
+            break;
+         case floatType:
+            if(exp.destType.classObjectType)
+            {
+               // We need to pass the address, just pass it along (Undo what was done above)
+               if(exp.destType) exp.destType.refCount--;
+               if(exp.expType)  exp.expType.refCount--;
+               delete newExp;
+            }
+            else
+            {
+               // We want to pass as a template argument
+               // ({ union { float f; uint64 i; } u; u.f = [newExp]; u.i; })
+               OldList * specs;
+               OldList * unionDefs = MkList();
+               OldList * statements = MkList();
+               context = PushContext();
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(FLOAT)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("f"))), null)));
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
+               specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
+               exp.type = extensionCompoundExp;
+               exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
+
+               modifyPassAsTemplate(&exp.expType, true);
+               modifyPassAsTemplate(&newExp.destType, false);
+               modifyPassAsTemplate(&newExp.expType, false);
+
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("f")), '=', newExp))));
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")))));
+               exp.compound.compound.context = context;
+               PopContext(context);
+            }
+            break;
+         case voidType:
+            // Generated code already processed...
             break;
          default:
             exp.type = castExp;
@@ -6643,8 +6698,45 @@ void CheckTemplateTypes(Expression exp)
                specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
                exp.type = extensionCompoundExp;
                exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
+
+               modifyPassAsTemplate(&exp.expType, false);
+               modifyPassAsTemplate(&newExp.destType, true);
+               modifyPassAsTemplate(&newExp.expType, true);
+
                ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")), '=', newExp))));
                ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")))));
+               exp.compound.compound.context = context;
+               PopContext(context);
+            }
+            break;
+         case floatType:
+            if(exp.destType.classObjectType)
+            {
+               // We need to pass the address, just pass it along (Undo what was done above)
+               if(exp.destType) exp.destType.refCount--;
+               if(exp.expType)  exp.expType.refCount--;
+               delete newExp;
+            }
+            else
+            {
+               // If we're looking for value:
+               // ({ union { float f; uint64 i; } u; u.i = [newExp]; u.f; })
+               OldList * specs;
+               OldList * unionDefs = MkList();
+               OldList * statements = MkList();
+               context = PushContext();
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(FLOAT)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("f"))), null)));
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
+               specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
+               exp.type = extensionCompoundExp;
+               exp.compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), null)))),statements);
+
+               modifyPassAsTemplate(&exp.expType, false);
+               modifyPassAsTemplate(&newExp.destType, true);
+               modifyPassAsTemplate(&newExp.expType, true);
+
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")), '=', newExp))));
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("f")))));
                exp.compound.compound.context = context;
                PopContext(context);
             }

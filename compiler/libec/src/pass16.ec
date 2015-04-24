@@ -1302,6 +1302,8 @@ static void ProcessExpression(Expression exp)
                e.usage |= (exp.usage & (ExpUsage { usageGet = true, usageArg = true }));
             }
             ProcessExpression(e);
+            if(!e.next && e.expType && e.expType.passAsTemplate && exp.expType && !exp.expType.passAsTemplate)
+               modifyPassAsTemplate(&exp.expType, true);
             exp.tempCount = Max(exp.tempCount, e.tempCount);
          }
          break;

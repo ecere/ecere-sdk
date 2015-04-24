@@ -277,6 +277,8 @@ extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__Ol
 
 extern struct Expression * QMkExpId(const char *  id);
 
+extern void CheckTemplateTypes(struct Expression * exp);
+
 extern struct Expression * MkExpConstant(const char *  string);
 
 extern struct Expression * MkExpString(const char *  string);
@@ -432,6 +434,8 @@ unsigned int isWatchable;
 } ecere_gcc_struct;
 
 extern struct Type * MkClassType(const char *  name);
+
+extern void modifyPassAsTemplate(struct Type **  typePtr, unsigned int value);
 
 extern void FreeType(struct Type * type);
 
@@ -1983,8 +1987,11 @@ struct __ecereNameSpace__ecere__com__Class * c = memberExp->__anon1.index.exp->e
 
 if(strcmp((c->templateClass ? c->templateClass : c)->name, "Array"))
 {
-exp->__anon1.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)));
-exp->__anon1.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)))));
+if(exp->__anon1.op.exp2 && exp->__anon1.op.op == '=')
+{
+modifyPassAsTemplate(&exp->__anon1.op.exp2->destType, 1);
+CheckTemplateTypes(exp->__anon1.op.exp2);
+}
 isIndexedContainerAssignment = 1;
 }
 ProcessExpression(memberExp);
@@ -2176,6 +2183,20 @@ exp2 = (((void *)0));
 value->expType = memberExp->expType;
 memberExp->expType->refCount++;
 value->usage = (value->usage & ~0x4) | (((unsigned int)(1)) << 2);
+if(isIndexedContainerAssignment)
+{
+value->__anon1.op.exp1->usage = (value->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(1)) << 0);
+value->__anon1.op.exp2->usage = (value->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
+modifyPassAsTemplate(&value->__anon1.op.exp1->destType, 0);
+modifyPassAsTemplate(&value->__anon1.op.exp2->destType, 0);
+CheckTemplateTypes(value->__anon1.op.exp1);
+CheckTemplateTypes(value->__anon1.op.exp2);
+modifyPassAsTemplate(&value->expType, 0);
+value->destType = value->expType;
+value->expType->refCount++;
+modifyPassAsTemplate(&value->destType, 1);
+CheckTemplateTypes(value);
+}
 }
 else if(value)
 {
@@ -2185,7 +2206,10 @@ if(value)
 value->usage = (value->usage & ~0x4) | (((unsigned int)(1)) << 2);
 DeclareProperty(curExternal, prop, setName, getName);
 if(memberExp->__anon1.member.exp)
+{
 ProcessExpression(memberExp->__anon1.member.exp);
+CheckTemplateTypes(memberExp->__anon1.member.exp);
+}
 if(((unsigned int)((exp->usage & 0x1) >> 0)) && ((!convertTo && prop->Get) || (convertTo && prop->Set)))
 {
 int __simpleStruct0, __simpleStruct1;
@@ -3231,6 +3255,19 @@ newExp->expType = (((void *)0));
 PrintTypeNoConst(e->expType, typeString, 0, 1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
+if(newExp->destType && e->expType && e->expType->passAsTemplate)
+{
+struct Expression * nbExp = GetNonBracketsExp(newExp);
+
+if(nbExp->type == 11)
+{
+FreeTypeName(nbExp->__anon1.cast.typeName);
+nbExp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0)));
+}
+newExp->expType = newExp->destType;
+newExp->destType->refCount++;
+modifyPassAsTemplate(&newExp->expType, 1);
+}
 curContext = context;
 e->type = 23;
 if(curCompound)
@@ -3244,6 +3281,7 @@ curCompound->__anon1.compound.declarations = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*curCompound->__anon1.compound.declarations), (((void *)0)), MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))))));
 ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', newExp))));
 ListAdd(stmts, MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier(name)))));
+CheckTemplateTypes(newExp);
 e->__anon1.compound = MkCompoundStmt((((void *)0)), stmts);
 }
 else
