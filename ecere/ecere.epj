@@ -453,6 +453,24 @@ from wherever you obtained them.
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic"
          }
+      },
+      {
+         "Name" : "StaticGLES",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "_GLES",
+               "ECERE_STATIC",
+               "ECERE_NOSSL"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic",
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse4"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [
@@ -710,6 +728,12 @@ from wherever you obtained them.
                               },
                               {
                                  "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              },
+                              {
+                                 "Name" : "StaticGLES",
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
