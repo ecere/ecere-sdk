@@ -1,4 +1,8 @@
-import "ecere"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import "ecere"
+#endif
 
 // source file line number printf (sflnprintf)
 
