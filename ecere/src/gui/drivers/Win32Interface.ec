@@ -539,7 +539,7 @@ class Win32Interface : Interface
                      {
                         Window master = window.master;
                         Window rootWindow = master.rootWindow;
-                        if(rootWindow.displaySystem && rootWindow.displaySystem.driver == class(OpenGLDisplayDriver))
+                        if(rootWindow && rootWindow.displaySystem && rootWindow.displaySystem.driver == class(OpenGLDisplayDriver))
                            windowLong = (void *)ApplicationWindow;
                      }
 #endif
@@ -1922,7 +1922,7 @@ class Win32Interface : Interface
       // WARNING -- putting this here as it is right after CreateRootWindow
       // Take out Layered flag if we're not in 24 bit
       {
-         if(window.alphaBlend && window.display.pixelFormat != pixelFormat888)
+         if(window.alphaBlend && window.display && window.display.pixelFormat != pixelFormat888)
          {
 #ifndef ECERE_NOBLENDING
             DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
