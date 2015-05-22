@@ -440,6 +440,24 @@ from wherever you obtained them.
                "_GLES"
             ]
          }
+      },
+      {
+         "Name" : "StaticGLES",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "_GLES",
+               "ECERE_STATIC",
+               "ECERE_NOSSL"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic",
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse4"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [
@@ -694,6 +712,12 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
