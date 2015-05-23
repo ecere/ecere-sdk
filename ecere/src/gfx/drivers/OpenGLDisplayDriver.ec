@@ -3452,12 +3452,12 @@ class OpenGLDisplayDriver : DisplayDriver
       return font;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
@@ -3469,8 +3469,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(surface.textOpacity)
       {
-         int w, h;
-         FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+         int w, h, adv;
+         FontExtent(display.displaySystem, surface.font, text, len, &w, &h, 0, null, &adv);
+         w += adv;
          display.displaySystem.driver.Area(display, surface,x,y,x+w-1,y+h-1);
       }
 
@@ -3479,7 +3480,7 @@ class OpenGLDisplayDriver : DisplayDriver
       glEnable(GL_TEXTURE_2D);
       glColor4fv(oglSurface.foreground);
 
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
       oglSurface.writingText = false;
       oglSystem.loadingFont = false;
 
@@ -3499,12 +3500,12 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.opaqueText = opaque;
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
       oglSystem.loadingFont = true;
-      FontExtent(display.displaySystem, oglSurface.font, text, len, width, height);
+      FontExtent(display.displaySystem, oglSurface.font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
       oglSystem.loadingFont = false;
    }
 

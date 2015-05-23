@@ -825,7 +825,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       SetBkMode(gdiSurface.hdc, opaque ? OPAQUE : TRANSPARENT);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       int wordCount;
@@ -834,7 +834,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       delete u16text;
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       SIZE space, size;
@@ -849,6 +849,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
       // UNICODE FIX: proper space computation
       if(width) *width = size.cx + (wordCount - realLen) * space.cx;
+      if(adv) *adv = 0;
       if(height)
       {
          if(realLen)
@@ -858,7 +859,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       Win32BitmapPrinterSystem gdiSystem = displaySystem.driverData;
       if(gdiSystem.tmpDC)
@@ -870,13 +871,14 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
          gdiSurface.hdc = gdiSystem.tmpDC;
 
          SelectObject(gdiSurface.hdc, font);
-         TextExtent(null, surface, text, len, width, height);
+         TextExtent(null, surface, text, len, width, height, prevGlyph, rPrevGlyph, adv);
 
          delete surface;
          delete gdiSurface;
       }
       else
       {
+         if(adv) *adv = 0;
          if(width) *width = 0;
          if(height) *height = 0;
       }

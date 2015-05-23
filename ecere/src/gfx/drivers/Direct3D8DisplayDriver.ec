@@ -998,12 +998,12 @@ class Direct3D8DisplayDriver : DisplayDriver
       d3dSurface.opaqueText = opaque;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
@@ -1011,8 +1011,9 @@ class Direct3D8DisplayDriver : DisplayDriver
 
       if(surface.textOpacity)
       {
-         int w, h;
-         FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+         int w, h, adv;
+         FontExtent(display.displaySystem, surface.font, text, len, &w, &h, prevGlyph, rPrevGlyph, &adv);
+         w += adv;
 
          {
             int x1 = x, y1 = y, x2 = x+w-1, y2 = y+h-1;
@@ -1034,7 +1035,7 @@ class Direct3D8DisplayDriver : DisplayDriver
       IDirect3DDevice8_SetTextureStageState(d3dSystem.d3dDevice, 0, D3DTSS_MIPFILTER, D3DTEXF_NONE);
       d3dSurface.writingText = true;
 
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
 
       d3dSurface.writingText = false;
       IDirect3DDevice8_SetTextureStageState(d3dSystem.d3dDevice, 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
@@ -1042,9 +1043,9 @@ class Direct3D8DisplayDriver : DisplayDriver
       IDirect3DDevice8_SetTextureStageState(d3dSystem.d3dDevice, 0, D3DTSS_MIPFILTER, D3DTEXF_LINEAR); //NONE);
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
    void DrawingChar(Display display, Surface surface, byte character)

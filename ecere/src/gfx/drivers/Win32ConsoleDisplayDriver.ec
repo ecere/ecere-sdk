@@ -356,7 +356,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextOpacity(display, surface, opaque);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       CONDisplay conDisplay = display.driverData;
       LFBSurface conSurface = surface.driverData;
@@ -385,14 +385,14 @@ class Win32ConsoleDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
-      FontExtent(display.displaySystem, null, text, len, width, height);
+      FontExtent(display.displaySystem, null, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
    void DrawingChar(Display display, Surface surface, char character)

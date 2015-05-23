@@ -982,13 +982,13 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       return font;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       printf("CocoaOpenGLDisplayDriver:FontExtent() %s:%i\n", __FILE__, __LINE__);
-      LFBDisplayDriver::FontExtent(displaySystem, font, text, len, width, height);
+      LFBDisplayDriver::FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       SurfaceData surfaceData = surface.driverData;
       SystemData systemData = display.displaySystem.driverData;
@@ -1000,7 +1000,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       if(surface.textOpacity)
       {
          int w, h;
-         FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+         FontExtent(display.displaySystem, surface.font, text, len, &w, &h, prevGlyph, rPrevGlyph);
          Area(display, surface,x,y,x+w-1,y+h-1);
       }
 
@@ -1011,7 +1011,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       glColor4fv(surfaceData.foreground);
       CocoaGlAssert();
 
-      LFBDisplayDriver::WriteText(display, surface, x, y, text, len);
+      LFBDisplayDriver::WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
       surfaceData.writingText = false;
       systemData.loadingFont = false;
 
@@ -1032,12 +1032,12 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       printf("CocoaOpenGLDisplayDriver:TextOpacity(%i) %s:%i\n", opaque, __FILE__, __LINE__);
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       SurfaceData surfaceData = surface.driverData;
       SystemData systemData = display.displaySystem.driverData;
       systemData.loadingFont = true;
-      FontExtent(display.displaySystem, surfaceData.font, text, len, width, height);
+      FontExtent(display.displaySystem, surfaceData.font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
       systemData.loadingFont = false;
 
       printf("CocoaOpenGLDisplayDriver:TextExtent STUB! %s:%i\n", __FILE__, __LINE__);

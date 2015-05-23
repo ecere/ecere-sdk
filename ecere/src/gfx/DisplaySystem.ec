@@ -112,7 +112,22 @@ public:
    void FontExtent(Font font, const char * text, int len, int * width, int * height)
    {
       if(this && text)
-         driver.FontExtent(this, font, text, len, width, height);
+      {
+         int advance = 0;
+         driver.FontExtent(this, font, text, len, width, height, 0, null, &advance);
+         if(width) *width += advance;
+      }
+      else
+      {
+         if(width) *width = 0;
+         if(height) *height = 0;
+      }
+   }
+
+   void FontExtent2(Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * overHang)
+   {
+      if(this && text)
+         driver.FontExtent(this, font, text, len, width, height, prevGlyph, rPrevGlyph, overHang);
       else
       {
          if(width) *width = 0;

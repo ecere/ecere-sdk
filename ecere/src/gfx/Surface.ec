@@ -281,12 +281,26 @@ public:
    void WriteText(int x, int y, const char * text, int len)
    {
       if(text)
-         driver.WriteText(display, this, x,y, text, len);
+         driver.WriteText(display, this, x,y, text, len, 0, null); //, null);
+   }
+
+   void WriteText2(int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
+   {
+      if(text)
+         driver.WriteText(display, this, x,y, text, len, prevGlyph, rPrevGlyph);
    }
 
    void TextExtent(const char * text, int len, int * width, int * height)
    {
-      driver.TextExtent(display, this, text, len, width, height);
+      int advance = 0;
+      driver.TextExtent(display, this, text, len, width, height, 0, null, &advance);
+      if(width)
+         *width += advance;
+   }
+
+   void TextExtent2(const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * overHang)
+   {
+      driver.TextExtent(display, this, text, len, width, height, prevGlyph, rPrevGlyph, overHang);
    }
 
    void WriteTextf(int x, int y, const char * format, ...)
@@ -298,7 +312,8 @@ public:
          va_start(args, format);
          vsnprintf(text, sizeof(text), format, args);
          text[sizeof(text)-1] = 0;
-         driver.WriteText(display, this, x,y, text, strlen(text));
+         if(driver)
+            driver.WriteText(display, this, x,y, text, strlen(text), 0, null);
          va_end(args);
       }
    }
@@ -310,14 +325,15 @@ public:
          char text[MAX_F_STRING];
          va_list args;
          int len;
-         int w, h;
+         int w, h, oh;
          va_start(args, format);
          vsnprintf(text, sizeof(text), format, args);
          text[sizeof(text)-1] = 0;
          len = strlen(text);
 
-         driver.TextExtent(display, this, text, len, &w, &h);
-         driver.WriteText(display, this, x - w/2, y, text, len);
+         driver.TextExtent(display, this, text, len, &w, &h, 0, null, &oh);
+         w += oh;
+         driver.WriteText(display, this, x - w/2, y, text, len, 0, null);
          va_end(args);
       }
    }

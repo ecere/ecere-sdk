@@ -148,9 +148,9 @@ public:
    virtual void ::FilterDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
    virtual void ::TextFont(Display, Surface, Font);
    virtual void ::TextOpacity(Display, Surface, bool);
-   virtual void ::WriteText(Display, Surface, int x, int y, const String text, int len);
-   virtual void ::TextExtent(Display, Surface, const String text, int len, int * tw, int * th);
-   virtual void ::FontExtent(DisplaySystem, Font, const String text, int len, int * tw, int * th);
+   virtual void ::WriteText(Display, Surface, int x, int y, const String text, int len, int prevGlyph, int * rPrevGlyph);
+   virtual void ::TextExtent(Display, Surface, const String text, int len, int * tw, int * th, int prevGlyph, int * rPrevGlyph, int * overHang);
+   virtual void ::FontExtent(DisplaySystem, Font, const String text, int len, int * tw, int * th, int prevGlyph, int * rPrevGlyph, int * overHang);
    virtual void ::DrawingChar(Display, Surface, char ch);
    virtual void ::NextPage(Display);
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
@@ -506,6 +506,13 @@ public:
 
    void FontExtent(Font font, const char * text, int len, int * width, int * height)
    {
+      int overHang;
+      FontExtent2(font, text, len, width, height, 0, null, &overHang);
+      if(width) *width += overHang;
+   }
+
+   void FontExtent2(Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * overHang)
+   {
       // Fix for OnLoadGraphics time alpha blended window text extent on GDI
 #if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
       if(this && alphaBlend && pixelFormat == pixelFormat888 &&
@@ -515,14 +522,14 @@ public:
          if(s)
          {
             s.font = font;
-            s.TextExtent(text, len, width, height);
+            s.TextExtent2(text, len, width, height, prevGlyph, rPrevGlyph, overHang);
             delete s;
          }
       }
       else
 #endif
          // TODO: Should really pass display here...
-         DisplaySystem::FontExtent(this ? displaySystem : null, font, text, len, width, height);
+         DisplaySystem::FontExtent2(this ? displaySystem : null, font, text, len, width, height, prevGlyph, rPrevGlyph, overHang);
    }
 
    void SetPalette(ColorAlpha * palette, bool colorMatch)

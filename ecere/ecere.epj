@@ -1645,7 +1645,9 @@ if distributed with the Ecere SDK Windows installer.
                   "DisplaySystem.ec",
                   "FontResource.ec",
                   "Resource.ec",
-                  "Surface.ec"
+                  "Surface.ec",
+                  "fontManagement.ec",
+                  "fontRendering.ec"
                ],
                "Configurations" : [
                   {
