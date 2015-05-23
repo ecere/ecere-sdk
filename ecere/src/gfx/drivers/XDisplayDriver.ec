@@ -21,6 +21,7 @@ default:
 #define Time      X11Time
 #define KeyCode   X11KeyCode
 #define Picture   X11Picture
+#define Glyph     X11Glyph
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -37,6 +38,7 @@ default:
 #undef Time
 #undef KeyCode
 #undef Picture
+#undef Glyph
 
 #undef uint
 #undef new
@@ -1683,13 +1685,14 @@ class XDisplayDriver : DisplayDriver
    #define CHAR_WIDTH   6
    #define CHAR_HEIGHT  14
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       XSurface xSurface = surface.driverData;
       //XDisplay xDisplay = display.driverData;
-      int tw, th;
+      int tw, th, adv;
 
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, &tw, &th);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, &tw, &th, prevGlyph, rPrevGlyph, &adv);
+      tw += adv;
       if(xSurface.opaque)
       {
 #if 0
@@ -1718,10 +1721,10 @@ class XDisplayDriver : DisplayDriver
          x + surface.offset.x, y + surface.offset.y + 12, text, len);
       */
 
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       XSurface xSurface = surface.driverData;
       /*
@@ -1731,16 +1734,16 @@ class XDisplayDriver : DisplayDriver
       if(height) *height = CHAR_HEIGHT;
       */
 
-      FontExtent(display.displaySystem, xSurface.font, text, len, width, height);
+      FontExtent(display.displaySystem, xSurface.font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       /*
       if(width) *width = len * CHAR_WIDTH;
       if(height) *height = CHAR_HEIGHT;
       */
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    }
 
    void DrawingChar(Display display, Surface surface, byte character)

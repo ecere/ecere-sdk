@@ -978,7 +978,7 @@ private:
 
    bool modified;
 
-   void (* FontExtent)(Display display, Font font, const char * text, int len, int * width, int * height);
+   void (* FontExtent)(Display display, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * overHang);
 
    Color backColor;
    bool rightButtonDown;
@@ -1211,7 +1211,7 @@ private:
          colorScheme.keywordColors = [ blue, blue ];
       }
 
-      FontExtent = Display::FontExtent;
+      FontExtent = Display::FontExtent2;
       font = fontObject;
       lines.offset = (uint)(uintptr)&((EditLine)0).prev;
 
@@ -1267,7 +1267,7 @@ private:
       lines.Free(EditLine::Free);
    }
 
-   void FlushBuffer(Surface surface, EditLine line, int wc, int * renderStart, int * x, int y, int numSpaces, bool drawSpaces, Box box)
+   void FlushBuffer(Surface surface, EditLine line, int wc, int * renderStart, int * x, int y, int * previousGlyph, int * oh, int numSpaces, bool drawSpaces, Box box)
    {
       int count = wc - *renderStart;
       if(count)
@@ -1278,18 +1278,24 @@ private:
 
             if(!numSpaces)
             {
+               int coh;
                //FontExtent(display, font, line.buffer + *renderStart, count, &w, null);
                surface.TextFont(font);
-               surface.TextExtent(line.buffer + *renderStart, count, &w, null);
-               if(*x + w + XOFFSET > 0)
-                  surface.WriteText(XOFFSET + *x,y, line.buffer + *renderStart, count);
+               surface.TextExtent2(line.buffer + *renderStart, count, &w, null, *previousGlyph, null, &coh);
+
+               if(*x + w + coh + XOFFSET > 0)
+               {
+                  surface.WriteText2(XOFFSET + *x,y, line.buffer + *renderStart, count, *previousGlyph, previousGlyph);
+                  *oh = coh;
+                  //surface.WriteText(XOFFSET + *x,y, line.buffer + *renderStart, count);
+               }
                *x += w;
             }
             else
             {
                w = numSpaces; // * space.w;
-               if(*x + w + XOFFSET > 0 && (drawSpaces || surface.GetTextOpacity()))
-                  surface.Area(XOFFSET + *x - 1, y, XOFFSET + *x + w, y + space.h-1);
+               if(*x + w + XOFFSET > 0 && (drawSpaces))
+                  surface.Area(XOFFSET + *x /*- 1*/ + *oh, y, XOFFSET + *x + w, y + space.h-1);
                   // WHATS UP WITH THIS...  surface.Area(XOFFSET + *x, y, XOFFSET + *x + w, y + space.h-1);
                *x += w;
             }
@@ -1478,6 +1484,25 @@ private:
       }
    }*/
 
+   static inline int countTabsExtraSpaces(char * buffer, int tabSize, int start, int end)
+   {
+      // TODO: Handle tabs position properly with UTF-8 (and everywhere else)
+      int p = 0, i, extra = 0;
+      for(i = 0; i < end; i++)
+      {
+         if(buffer[i] == '\t')
+         {
+            int t = tabSize - (p % tabSize);
+            p += t;
+            if(i >= start)
+               extra += t-1;
+         }
+         else
+            p++;
+      }
+      return extra;
+   }
+
    void OnRedraw(Surface surface)
    {
       EditLine line;
@@ -1511,6 +1536,13 @@ private:
       bool continuedQuotes = style.continuedQuotes;
       bool wasInMultiLine = style.wasInMultiLine;
       // ****** ************* ******
+
+      // For drawing selection background
+      EditLine selStartLine = this.y < this.selY ? this.line : this.selLine;
+      EditLine selEndLine   = this.y < this.selY ? this.selLine : this.line;
+      int selStartX = this.y < this.selY || (this.y == this.selY && this.x < this.selX) ? this.x : this.selX;
+      int selEndX   = this.y > this.selY || (this.y == this.selY && this.x > this.selX) ? this.x : this.selX;
+      ///////////////////////////////////
 
       if(!isEnabled)
          defaultTextColor = Color { 85, 85, 85 };
@@ -1562,7 +1594,7 @@ private:
    */
       surface.SetForeground(foreground);
       surface.SetBackground(background);
-      surface.TextOpacity(opacity);
+      surface.TextOpacity(false);
 
       surface.GetBox(box);
 
@@ -1574,7 +1606,7 @@ private:
          int start = 0;
          Color newTextColor = textColor = defaultTextColor;
          bool lineComplete = false;
-
+         int overHang = 0;
 
          // ****** SYNTAX HIGHLIGHTING ******
          bool lastWasStar = false;
@@ -1600,6 +1632,61 @@ private:
             surface.SetBackground(selected ? SELECTION_COLOR|0xFF000000 : BLACK|0xFF000000);
          }
    */
+
+         // Draw Selection Background all at once here
+         if(selected || line == this.line || line == this.selLine)
+         {
+            int sx = XOFFSET + x, sy = y;
+            int tw, th;
+            int oh = 0;
+            char * buffer = line.buffer;
+            if(line != this.line && line != this.selLine)
+            {
+               if(style.freeCaret)
+               {
+                  tw = clientSize.w - sx;
+                  th = space.h;
+               }
+               else
+                  surface.TextExtent2(buffer, line.count, &tw, &th, 0, null, &oh);
+            }
+            else if(line == selStartLine)
+            {
+               int prevGlyph;
+               int start = Min(line.count, selStartX);
+               int end   = Min(line.count, selEndX);
+               surface.TextExtent2(buffer, start, &tw, &th, 0, &prevGlyph, null);
+               sx += tw;
+               sx += countTabsExtraSpaces(buffer, tabSize, 0, start) * space.w;
+               if(selStartX > start) sx += space.w * (selStartX - start);
+               if(style.freeCaret && line != selEndLine)
+               {
+                  tw = clientSize.w - sx;
+                  th = space.h;
+               }
+               else if(line != selEndLine)
+               {
+                  surface.TextExtent2(buffer + start, line.count - start, &tw, &th, prevGlyph, null, &oh);
+                  tw += countTabsExtraSpaces(buffer, tabSize, start, line.count) * space.w;
+               }
+               else
+               {
+                  surface.TextExtent2(buffer + start, end - start, &tw, &th, prevGlyph, null, &oh);
+                  tw += countTabsExtraSpaces(buffer, tabSize, start, end) * space.w;
+                  end = Max(end, selStartX);
+                  if(selEndX > end) { tw += space.w * (selEndX - end); th = space.h; }
+               }
+            }
+            else if(line == selEndLine)
+            {
+               int end = Min(line.count, selEndX);
+               surface.TextExtent2(buffer, end, &tw, &th, 0, null, &oh);
+               tw += countTabsExtraSpaces(buffer, tabSize, 0, end) * space.w;
+               if(selEndX - end) { tw += space.w * (selEndX - end); th = space.h; }
+            }
+            tw += oh;
+            surface.Area(sx, sy, sx + tw-1, sy + th-1);
+         }
 
          if(line == this.selLine && line == this.line)
          {
@@ -1937,7 +2024,8 @@ private:
                      //if(!numSpaces)
                      {
                         int tw;
-                        FontExtent(display, font, line.buffer + start, bufferLen + wordLen, &tw, null);
+                        int oh;
+                        FontExtent(display, font, line.buffer + start, bufferLen + wordLen, &tw, null, 0, null, &oh);
                         w = tw;
                      }
                      /*else
@@ -1966,6 +2054,7 @@ private:
                bool flagTrailingSpace = false;
                int numSpaces = 0;
                int wc;
+               int previousGlyph = 0;
 
                // Render checking if we need to split because of selection or to find where to draw insert caret
                for(wc = start; wc < start + bufferLen; wc++)
@@ -1982,7 +2071,8 @@ private:
                   {
                      flagTrailingSpace = numSpaces && trailingSpace && style.syntax && start + bufferLen == line.count && line != this.line;
                      if(flagTrailingSpace) surface.SetBackground(red);
-                     FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, flagTrailingSpace, box);
+                     FlushBuffer(surface, line, wc, &renderStart, &x, y, &previousGlyph, &overHang, numSpaces, flagTrailingSpace, box);
+                     if(flagTrailingSpace) surface.SetBackground(background);
                      if(overWrite == 1)
                      {
                         overWriteX = x;
@@ -1991,8 +2081,6 @@ private:
                      }
                      numSpaces = 0;
 
-                     surface.TextOpacity(opacity);
-                     surface.SetBackground(background);
                      surface.SetForeground(foreground);
 
                      flush = false;
@@ -2012,7 +2100,8 @@ private:
                }
                flagTrailingSpace = numSpaces && trailingSpace && style.syntax && start + bufferLen == line.count && line != this.line;
                if(flagTrailingSpace) surface.SetBackground(red);
-               FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, flagTrailingSpace, box);
+               FlushBuffer(surface, line, wc, &renderStart, &x, y, &previousGlyph, &overHang, numSpaces, flagTrailingSpace, box);
+               if(flagTrailingSpace) surface.SetBackground(background);
                start += bufferLen;
             }
          }
@@ -2027,26 +2116,10 @@ private:
                overWriteCh = ' ';
                overWrite = 2;
             }
-            surface.TextOpacity(opacity);
             surface.SetBackground(background);
             surface.SetForeground(foreground);
          }
 
-         if(style.freeCaret && selected)
-         {
-            surface.SetBackground(selectionBackground);
-            surface.Area(x + XOFFSET - 1,y,clientSize.w-1,y+this.space.h-1);
-            // TEST: surface.Area(x + XOFFSET,y,clientSize.w-1,y+this.space.h-1);
-         }
-
-
-         /*
-         if(style.freeCaret && selected)
-         {
-            surface.SetBackground(selectionBackground);
-            surface.Area(x + XOFFSET - 1,y,clientSize.w-1,y+this.space.h-1);
-         }
-         */
          if(line.count && line.text[line.count - 1] == '\\')
          {
             continuedSingleLineComment = inSingleLineComment;
@@ -2137,7 +2210,10 @@ private:
                len = 1;
             }
             else
-               FontExtent(display, font, line.buffer + start, len, &w, null);
+            {
+               int oh;
+               FontExtent(display, font, line.buffer + start, len, &w, null, 0, null, &oh);
+            }
          }
          else
          {
@@ -2526,8 +2602,9 @@ private:
             }
             else
             {
+               int oh;
                numBytes = UTF8_NUM_BYTES(*string);
-               FontExtent(display, this.font, string, numBytes, &w, null);
+               FontExtent(display, this.font, string, numBytes, &w, null, 0, null, &oh);
             }
             x += w;
 
@@ -2900,7 +2977,10 @@ private:
                         len = 1;
                      }
                      else
-                        FontExtent(display, this.font, line.buffer + start, len, &w, null);
+                     {
+                        int oh;
+                        FontExtent(display, this.font, line.buffer + start, len, &w, null, 0, null, &oh);
+                     }
                   }
                   else
                   {
@@ -3005,7 +3085,10 @@ private:
                len = 1;
             }
             else
-               FontExtent(display, font, line.buffer + start, len, &w, null);
+            {
+               int oh;
+               FontExtent(display, font, line.buffer + start, len, &w, null, 0, null, &oh);
+            }
          }
          else
          {
@@ -3030,7 +3113,10 @@ private:
                else
                   a--;
                if(a > start)
-                  FontExtent(display, font, line.buffer + start, a - start, &w, null);
+               {
+                  int oh;
+                  FontExtent(display, font, line.buffer + start, a - start, &w, null, 0, null, &oh);
+               }
                else
                   w = 0;
                if(position > x + (half ? ((w + lastW) / 2) : lastW)) break;
@@ -3550,8 +3636,9 @@ private:
    {
       if(FontExtent)
       {
-         FontExtent(display, font, " ", 1, (int *)&space.w, (int *)&space.h);
-         FontExtent(display, font, "W", 1, (int *)&large.w, (int *)&large.h);
+         int oh;
+         FontExtent(display, font, " ", 1, (int *)&space.w, (int *)&space.h, 0, null, &oh);
+         FontExtent(display, font, "W", 1, (int *)&large.w, (int *)&large.h, 0, null, &oh);
 
          space.w = Max(space.w, 1);
          large.w = Max(large.w, 1);
@@ -3576,7 +3663,7 @@ private:
 
    bool OnLoadGraphics()
    {
-      FontExtent = Display::FontExtent;
+      FontExtent = Display::FontExtent2;
       font = fontObject;
       ComputeFont();
       // UpdateCaretPosition(true);

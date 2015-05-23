@@ -633,7 +633,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
    #ifdef USE_GDI_FONT
       DDrawDisplay ddrawDisplay = display.driverData;
@@ -662,8 +662,9 @@ class DirectDrawDisplayDriver : DisplayDriver
          TextOut(ddrawDisplay.hdc, x + surface.offset.x, y + surface.offset.y, u16text, wordCount);
          if(display.alphaBlend)
          {
-            int w, h;
-            FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+            int w, h, oh;
+            FontExtent(display.displaySystem, surface.font, text, len, &w, &h, prevGlyph, rPrevGlyph, &oh);
+            w += oh;
             surface.writeColor = false;
             SetBackground(display, surface, surface.foreground);
             Area(display, surface,x-2,y-2,x+w+1,y+h+1);
@@ -678,19 +679,20 @@ class DirectDrawDisplayDriver : DisplayDriver
    #else
       if(surface.textOpacity)
       {
-         int w, h;
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+         int w, h, adv;
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(display.displaySystem, surface.font, text, len, &w, &h, prevGlyph, rPrevGlyph, &adv);
+         w += adv;
          Area(display, surface, x, y, x+w-1, y+h-1);
       }
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x,y, text, len);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x,y, text, len, prevGlyph, rPrevGlyph);
    #endif
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
    #ifdef USE_GDI_FONT
       if(false) //display.alphaBlend)
-        ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+        ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
       else
       {
          if(tmpDC)
@@ -702,6 +704,7 @@ class DirectDrawDisplayDriver : DisplayDriver
          {
             if(width) *width = 0;
             if(height) *height = 0;
+            if(adv) *adv = 0;
          }
       }
       /*
@@ -724,15 +727,15 @@ class DirectDrawDisplayDriver : DisplayDriver
       }
       */
    #else
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    #endif
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
    #ifdef USE_GDI_FONT
       /*if(display && display.alphaBlend)
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, prevGlyph, rPrevGlyph, width, height, adv);
       else*/
 
       {
@@ -750,6 +753,7 @@ class DirectDrawDisplayDriver : DisplayDriver
 
          // UNICODE FIX: proper space computation
          if(width) *width = size.cx + (wordCount - realLen) * space.cx;
+         if(adv) *adv = 0;
          if(height)
          {
             if(realLen)
@@ -777,7 +781,7 @@ class DirectDrawDisplayDriver : DisplayDriver
       }
       */
    #else
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height, prevGlyph, rPrevGlyph, adv);
    #endif
    }
 

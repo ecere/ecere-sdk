@@ -117,6 +117,8 @@ _ECSOURCES2 = \
 	src/gfx/FontResource.ec \
 	src/gfx/Resource.ec \
 	src/gfx/Surface.ec \
+	src/gfx/fontManagement.ec \
+	src/gfx/fontRendering.ec \
 	src/gui/controls/Button.ec \
 	src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec \
@@ -812,6 +814,12 @@ $(OBJ)Resource.sym: src/gfx/Resource.ec
 $(OBJ)Surface.sym: src/gfx/Surface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Surface.ec -o $(OBJ)Surface.sym
 
+$(OBJ)fontManagement.sym: src/gfx/fontManagement.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontRendering.sym: src/gfx/fontRendering.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@)
+
 $(OBJ)Button.sym: src/gui/controls/Button.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.sym
 
@@ -1223,6 +1231,12 @@ $(OBJ)Resource.c: src/gfx/Resource.ec $(OBJ)Resource.sym | $(SYMBOLS)
 
 $(OBJ)Surface.c: src/gfx/Surface.ec $(OBJ)Surface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Surface.ec -o $(OBJ)Surface.c -symbols $(OBJ)
+
+$(OBJ)fontManagement.c: src/gfx/fontManagement.ec $(OBJ)fontManagement.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontRendering.c: src/gfx/fontRendering.ec $(OBJ)fontRendering.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.c -symbols $(OBJ)
@@ -1701,6 +1715,12 @@ $(OBJ)Resource.o: $(OBJ)Resource.c
 
 $(OBJ)Surface.o: $(OBJ)Surface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Surface.c -o $(OBJ)Surface.o
+
+$(OBJ)fontManagement$(O): $(OBJ)fontManagement.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontManagement.c) -o $(call quote_path,$@)
+
+$(OBJ)fontRendering$(O): $(OBJ)fontRendering.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRendering.c) -o $(call quote_path,$@)
 
 $(OBJ)Button.o: $(OBJ)Button.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Button.c -o $(OBJ)Button.o

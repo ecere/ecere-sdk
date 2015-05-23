@@ -69,11 +69,13 @@ class GDIBitmap : struct
    HDC memDC;
 };
 
-static class GDIFont
+static class GDIFont : struct
 {
    char faceName[512];
    FontFlags flags;
    float size;
+   int ascent, descent;
+   float scale;
 
    void * gdiFont;
    Font font;
@@ -855,9 +857,11 @@ class GDIDisplayDriver : DisplayDriver
       {
          GDIFont font { };
          HDC hdc = GetDC(null);
+         TEXTMETRIC tm;
          int pixels = GetDeviceCaps(hdc, LOGPIXELSY);
          strcpy(font.faceName, faceName);
          font.size = size;
+         font.scale = 1;
          font.flags = flags;
          font.gdiFont = CreateFontA(-(int)((float)size * pixels / 72 + 0.5),
             0,0,0, flags.bold ? FW_BOLD : FW_NORMAL, flags.italic ? TRUE : FALSE,
@@ -865,6 +869,10 @@ class GDIDisplayDriver : DisplayDriver
                            OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
                            DEFAULT_PITCH|FF_DONTCARE, faceName);
 
+         SelectObject(hdc, font.gdiFont);
+         GetTextMetrics(hdc, &tm);
+         font.ascent = tm.tmAscent;
+         font.descent = tm.tmDescent;
          ReleaseDC(null, hdc);
          return (Font)font;
       }
@@ -914,7 +922,7 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
       if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
@@ -926,11 +934,12 @@ class GDIDisplayDriver : DisplayDriver
          }
          if(surface.textOpacity)
          {
-            int w, h;
-            ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(display.displaySystem, gdiFont.font, text, len, &w, &h);
+            int w, h, adv;
+            ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(display.displaySystem, gdiFont.font, text, len, &w, &h, prevGlyph, rPrevGlyph, &adv);
+            w += adv;
             Area(display, surface, x, y, x+w-1, y+h-1);
          }
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
       }
       else
       {
@@ -941,8 +950,9 @@ class GDIDisplayDriver : DisplayDriver
          TextOut(gdiSurface.hdc, x + surface.offset.x, y + surface.offset.y, u16text, wordCount);
          if(display.alphaBlend && display.pixelFormat == pixelFormat888)
          {
-            int w, h;
-            FontExtent(display.displaySystem, surface.font, text, len, &w, &h);
+            int w, h, adv;
+            FontExtent(display.displaySystem, surface.font, text, len, &w, &h, prevGlyph, rPrevGlyph, &adv);
+            w += adv;
             surface.writeColor = false;
             SetBackground(display, surface, surface.foreground);
             Area(display, surface,x-2,y-2,x+w+1,y+h+1);
@@ -953,10 +963,10 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       if(display && display.alphaBlend && display.pixelFormat == pixelFormat888)
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height, prevGlyph, rPrevGlyph, adv);
       else
       {
          GDISurface gdiSurface = surface.driverData;
@@ -965,9 +975,21 @@ class GDIDisplayDriver : DisplayDriver
          int wordCount;
          uint16 * u16text = UTF8toUTF16Len(text, len, &wordCount);
 
-         for(realLen = 0; realLen<wordCount && u16text[realLen]; realLen++);
+         for(realLen = 0; realLen < wordCount && u16text[realLen]; realLen++);
          GetTextExtentPoint32A(gdiSurface.hdc, " ", 1, &space);
          GetTextExtentPoint32(gdiSurface.hdc, u16text, realLen, &size);
+
+         if(adv) *adv = 0;
+         if(adv && realLen > 0)
+         {
+            ABC abc;
+            if(GetCharABCWidths(gdiSurface.hdc, u16text[realLen - 1], u16text[realLen - 1], &abc))
+            {
+               if(abc.abcC < 0)
+                  *adv = -abc.abcC;
+            }
+         }
+
          delete u16text;
 
          // UNICODE FIX: proper space computation
@@ -982,10 +1004,10 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * adv)
    {
       if(false) //display.alphaBlend)
-        ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
+        ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height, prevGlyph, rPrevGlyph, adv);
       else
       {
          GDISystem gdiSystem = displaySystem.driverData;
@@ -999,7 +1021,7 @@ class GDIDisplayDriver : DisplayDriver
             gdiSurface.hdc = gdiSystem.tmpDC;
 
             SelectObject(gdiSurface.hdc, gdiFont ? gdiFont.gdiFont : null);
-            TextExtent(null, surface, text, len, width, height);
+            TextExtent(null, surface, text, len, width, height, prevGlyph, rPrevGlyph, adv);
 
             delete surface;
             delete gdiSurface;
@@ -1008,6 +1030,7 @@ class GDIDisplayDriver : DisplayDriver
          {
             if(width) *width = 0;
             if(height) *height = 0;
+            if(adv) *adv = 0;
          }
       }
    }
