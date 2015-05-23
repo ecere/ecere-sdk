@@ -3454,6 +3454,8 @@ public class LFBDisplayDriver : DisplayDriver
          int fontEntryNum = 0;
          int glyphScript = 0;
          FontEntry curFontEntry;
+         GlyphInfo * lastGlyph = null;
+         int lastAX = 0;
 
          pack.bitmap.alphaBlend = true;
 
@@ -3811,9 +3813,19 @@ public class LFBDisplayDriver : DisplayDriver
                if(callback)
                   callback(surface, display, ((*x) >> 6), y + (oy >> 6), glyph, (outline ? outline : pack).bitmap);
                *x += ax;
+
+               lastGlyph = glyph;
+               lastAX = ax;
             }
             if(numGlyphs && (rightToLeft ? (glyphIndex < 0) : (glyphIndex == numGlyphs)))
                numGlyphs = 0;
+         }
+         if(lastGlyph)
+         {
+            int w = (lastGlyph->w * lastGlyph->left) * (1 << 6);
+            // Fix for advance != width + left (e.g. italic fonts)
+            if(w > lastAX)
+               *x += w - lastAX;
          }
       }
       if(surface)
