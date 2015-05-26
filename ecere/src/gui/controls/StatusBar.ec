@@ -4,7 +4,7 @@ import "Window"
 
 #include <stdarg.h>
 
-#define MIN_INFO_WIDTH  300
+define defaultMinInfoWidth = 300;
 
 public class StatusBar : Window
 {
@@ -14,8 +14,15 @@ public class StatusBar : Window
    nonClient = true;
    inactive = true;
    anchor = Anchor { left = 0, right = 0, bottom = 0 };
+   minInfoWidth = defaultMinInfoWidth;
 
 public:
+   property int minInfoWidth
+   {
+      set { minInfoWidth = value; }
+      get { return minInfoWidth; }
+   }
+
    void AddField(StatusField field)
    {
       if(this && field)
@@ -82,8 +89,8 @@ private:
    void OnRedraw(Surface surface)
    {
       StatusField field;
-      int position = Max(clientSize.w, MIN_INFO_WIDTH + width)-1-2;
-      Box clip { 2, 2, MIN_INFO_WIDTH, statusBarHeight-1 };
+      int position = Max(clientSize.w, minInfoWidth + width)-1-2;
+      Box clip { 2, 2, minInfoWidth, statusBarHeight-1 };
       Window parent = this.parent;
 
       if(!guiApp.textMode)
@@ -145,6 +152,7 @@ private:
    const char * text;
    OldList fields;
    int width;
+   int minInfoWidth;
 };
 
 public class StatusField
