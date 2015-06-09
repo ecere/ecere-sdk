@@ -89,7 +89,7 @@ private:
 
 #if defined(__ANDROID__)
 
-default const char * AndroidInterface_GetLibLocation();
+default const char * AndroidInterface_GetLibLocation(Module m);
 
 #include <android/log.h>
 #include <android/native_activity.h>
@@ -5499,7 +5499,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
       {
          const char * libLocation = null;
 #if defined(__ANDROID__)
-         libLocation = AndroidInterface_GetLibLocation();
+         libLocation = AndroidInterface_GetLibLocation(fromModule.application);
 #endif
          library = Instance_Module_Load(libLocation, name, &Load, &Unload);
       }

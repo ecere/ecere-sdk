@@ -41,6 +41,14 @@ typedef struct in_addr IN_ADDR;
 
 import "network"
 
+#ifdef __ANDROID__
+// TOFIX:
+#undef ntohs
+#undef htons
+#define ntohs(x) (x)
+#define htons(x) (x)
+#endif
+
 #define GETLEDWORD(b) (uint32)(((b)[3] << 24) | ((b)[2] << 16) | ((b)[1] << 8) | (b)[0])
 
 #define PUTLEDWORD(b, d) \

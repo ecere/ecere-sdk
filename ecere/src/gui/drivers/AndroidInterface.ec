@@ -10,6 +10,7 @@ import "Condition"
 #include <locale.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/prctl.h>
 
 #include <android/configuration.h>
 #include <android/looper.h>
@@ -199,7 +200,7 @@ private:
 
    void pre_exec_cmd(AppCommand cmd)
    {
-      PrintLn("pre_exec_cmd: ", cmd);
+      //PrintLn("pre_exec_cmd: ", cmd);
       switch(cmd)
       {
          case inputChanged:
@@ -242,7 +243,7 @@ private:
 
    void post_exec_cmd(AppCommand cmd)
    {
-      PrintLn("post_exec_cmd: ", cmd);
+      //PrintLn("post_exec_cmd: ", cmd);
       switch(cmd)
       {
          case termWindow:
@@ -477,6 +478,8 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    __thisModule = null;
    __androidCurrentModule = null;
 
+   prctl(PR_SET_DUMPABLE, 1);
+
    LOGI("Creating: %p\n", activity);
 
    //(*activity->vm)->AttachCurrentThread(activity->vm, &env, 0);
@@ -495,12 +498,14 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    eModule_Load(__androidCurrentModule, "ecere", publicAccess);
 
 
+   /*
    if(activity->internalDataPath) PrintLn("internalDataPath is ", activity->internalDataPath);
    if(activity->externalDataPath) PrintLn("externalDataPath is ", activity->externalDataPath);
    {
       char tmp[256];
       PrintLn("cwd is ", GetWorkingDir(tmp, sizeof(tmp)));
    }
+   */
 
    ANativeActivity_setWindowFlags(activity, AWINDOW_FLAG_FULLSCREEN|AWINDOW_FLAG_KEEP_SCREEN_ON, 0 );
    app = AndroidActivity { activity = activity, moduleName = moduleName };
@@ -903,15 +908,12 @@ struct SavedState
 
 static AndroidActivity androidActivity;
 
-default const char * AndroidInterface_GetLibLocation()
+default const char * AndroidInterface_GetLibLocation(Application a)
 {
-   if(androidActivity)
-   {
-      static char loc[MAX_LOCATION];
-      sprintf(loc, "/data/data/com.ecere.%s/lib/lib", androidActivity.moduleName);
-      return loc;
-   }
-   return null;
+   static char loc[MAX_LOCATION];
+   // sprintf(loc, "/data/data/com.ecere.%s/lib/lib", a.argv[0]);
+   sprintf(loc, "/data/app/com.ecere.%s-1/lib/arm64/lib", a.argv[0]);
+   return loc;
 }
 
 static bool gotInit;

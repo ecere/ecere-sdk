@@ -44,6 +44,14 @@ typedef struct in_addr IN_ADDR;
 
 import "network"
 
+#ifdef __ANDROID__
+// TOFIX:
+#undef ntohs
+#undef htons
+#define ntohs(x) (x)
+#define htons(x) (x)
+#endif
+
 public class Service
 {
 public:
