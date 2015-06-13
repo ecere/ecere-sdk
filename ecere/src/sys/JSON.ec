@@ -438,6 +438,7 @@ public:
                Property prop = null;
                Class type = null;
                bool isKey = false;
+               bool isTemplateArg = false;
                uint offset = 0;
 
                if(objectType)
@@ -447,12 +448,14 @@ public:
                   {
                      prop = eClass_FindProperty(objectType, "key", objectType.module);
                      type = mapKeyClass;
+                     isTemplateArg = true;
                      isKey = true;
                   }
                   else if(mapDataClass && !strcmp(string, "value"))
                   {
                      prop = eClass_FindProperty(objectType, "value", objectType.module);
                      type = mapDataClass;
+                     isTemplateArg = true;
                   }
                   else
                   {
@@ -608,7 +611,10 @@ public:
                                  }
                                  else
                                  {
-                                    ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
+                                    if(isTemplateArg)
+                                       ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
+                                    else
+                                       ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
                                  }
                               }
                            }
@@ -1114,14 +1120,22 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   if(!prop.conversion && (!prop.IsSet || prop.IsSet(object)))
                   {
                      DataValue value { };
+                     bool isTemplateArg = false;
                      Class type;
 
                      if(mapKeyClass && !strcmp(prop.name, "key"))
+                     {
+                        isTemplateArg = true;
                         type = mapKeyClass;
+                     }
                      else if(mapDataClass && !strcmp(prop.name, "value"))
+                     {
+                        isTemplateArg = true;
                         type = mapDataClass;
+                     }
                      else
                         type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+
                      if(!type)
                         type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
                      if(!type)
@@ -1168,7 +1182,10 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         }
                         else
                         {
-                           value.p = ((void *(*)(void *))(void *)prop.Get)(object);
+                           if(isTemplateArg)
+                              value.p = (void *)(uintptr)((uint64 (*)(void *))(void *)prop.Get)(object);
+                           else
+                              value.p = ((void *(*)(void *))(void *)prop.Get)(object);
                         }
 
                         if(!isFirst) f.Puts(",\n");
