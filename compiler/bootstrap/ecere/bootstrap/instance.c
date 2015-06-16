@@ -4025,6 +4025,9 @@ while((deriv = template->derivatives.first))
 ((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&template->derivatives, deriv);
 }
+if(template->module)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)template->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, template);
+else
 __ecereNameSpace__ecere__com___free(template);
 }
 
@@ -4795,6 +4798,7 @@ if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && 
 _class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
 memmove(_class->_vTbl + mod->base->vTblSize, _class->_vTbl + baseClass->vTblSize, (_class->vTblSize - mod->vTblSize) * sizeof(void *));
+memcpy(_class->_vTbl + baseClass->vTblSize, mod->_vTbl + baseClass->vTblSize, (mod->base->vTblSize - baseClass->vTblSize) * sizeof(void *));
 updateStart = baseClass->vTblSize;
 updateEnd = updateStart + mod->base->vTblSize - baseClass->vTblSize;
 for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = next)
@@ -5008,6 +5012,11 @@ templatedClass->templateArgs = (((void *)0));
 templatedClass->numParams = 0;
 templatedClass->derivatives = __simpleStruct0;
 templatedClass->templatized = __simpleStruct1;
+templatedClass->module = module;
+templatedClass->count = 0;
+templatedClass->prev = (((void *)0));
+templatedClass->next = (((void *)0));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, templatedClass);
 __ecereNameSpace__ecere__com__ComputeClassParameters(templatedClass, templateParams, module);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templatized, __extension__ ({
 struct __ecereNameSpace__ecere__sys__OldLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink));

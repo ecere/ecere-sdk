@@ -746,7 +746,7 @@ node = (struct __ecereNameSpace__ecere__com__MapNode *)__ecereNameSpace__ecere__
 else
 {
 node = __extension__ ({
-struct __ecereNameSpace__ecere__com__MapNode * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__MapNode));
+struct __ecereNameSpace__ecere__com__MapNode * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__MapNode) + sizeof(struct __ecereNameSpace__ecere__com__AVLNode));
 
 __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(__ecereInstance1, pos), __ecereInstance1;
 });
