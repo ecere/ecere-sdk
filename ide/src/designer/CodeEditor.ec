@@ -2185,9 +2185,6 @@ class CodeEditor : Window
          classes.Delete(oClass);
       }
 
-      if(windowClass && windowClass.data)
-         UnapplySkin(windowClass);
-
       FreeParser();
 
       if(sheet.codeEditor == this)
@@ -2626,19 +2623,25 @@ class CodeEditor : Window
    ****************************************************************************/
    void FreeParser()
    {
+      {
+         Class windowClass = eSystem_FindClass(privateModule, "ecere::gui::Window");
+         if(windowClass && windowClass.data)
+            UnapplySkin(windowClass);
+      }
+
       SetCurrentNameSpace(null);
-      if(ast != null)
+      if(ast)
       {
          FreeASTTree(ast);
          ast = null;
       }
-      this.defines.Free(FreeModuleDefine);
-      this.imports.Free(FreeModuleImport);   // Moved this after FreeAST because Debug printing causes ModuleImports to be created
+      defines.Free(FreeModuleDefine);
+      imports.Free(FreeModuleImport);   // Moved this after FreeAST because Debug printing causes ModuleImports to be created
 
-      FreeExcludedSymbols(this.excludedSymbols);
-      FreeContext(this.globalContext);
+      FreeExcludedSymbols(excludedSymbols);
+      FreeContext(globalContext);
       FreeIncludeFiles();
-      FreeGlobalData(&this.globalData);
+      FreeGlobalData(&globalData);
       FindCtx_Terminate();
       FindParams_Terminate();
 
@@ -2654,11 +2657,26 @@ class CodeEditor : Window
          SetPrivateModule(null);
       }
 
+      // Note: This code should probably be merged with FreeParser()
+      if(ast)
+      {
+         FreeASTTree(ast);
+         ast = null;
+         //SetAST(null);
+      }
+      defines.Free(FreeModuleDefine);
+      imports.Free(FreeModuleImport);
+
+      FreeContext(this.globalContext);
+      FreeExcludedSymbols(this.excludedSymbols);
+
+      FreeIncludeFiles();
+      FreeGlobalData(&this.globalData);
+
       if(this.privateModule)
       {
          FreeTypeData(this.privateModule);
          delete this.privateModule;
-         this.privateModule = null;
       }
    }
 
@@ -2720,18 +2738,6 @@ class CodeEditor : Window
       }
 
       editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
-
-      FindCtx_Terminate();
-      FindParams_Terminate();
-
-      SetGlobalData(&globalData);
-      SetGlobalContext(globalContext);
-      SetExcludedSymbols(&excludedSymbols);
-      SetTopContext(globalContext);
-      SetCurrentContext(globalContext);
-      SetDefines(&defines);
-      SetImports(&imports);
-      SetCurrentNameSpace(null);
 
       /*
       sprintf(command, "C:\\Program Files\\Microsoft Visual Studio\\VC98\\Bin\\cl "
@@ -2821,38 +2827,21 @@ class CodeEditor : Window
          this.oClass = null;
       }
 
-      {
-         Class windowClass = eSystem_FindClass(this.privateModule, "ecere::gui::Window");
-         if(windowClass && windowClass.data)
-            UnapplySkin(windowClass);
-      }
-
       designer = backDesigner;
 
       SetEchoOn(true);
       fileInput = editFile = EditBoxStream { editBox = editBox };
       SetFileInput(fileInput);
 
-      if(ast)
-      {
-         FreeASTTree(ast);
-         ast = null;
-         //SetAST(null);
-      }
-      defines.Free(FreeModuleDefine);
-      imports.Free(FreeModuleImport);
+      FreeParser();
 
-      FreeContext(this.globalContext);
-      FreeExcludedSymbols(this.excludedSymbols);
-
-      FreeIncludeFiles();
-      FreeGlobalData(&this.globalData);
-
-      if(this.privateModule)
-      {
-         FreeTypeData(this.privateModule);
-         delete this.privateModule;
-      }
+      SetGlobalData(&globalData);
+      SetGlobalContext(globalContext);
+      SetExcludedSymbols(&excludedSymbols);
+      SetTopContext(globalContext);
+      SetCurrentContext(globalContext);
+      SetDefines(&defines);
+      SetImports(&imports);
 
 #ifdef _TIMINGS
       startTime = GetTime();
