@@ -2991,7 +2991,10 @@ static void FreeTemplate(Class template)
       template.derivatives.Delete(deriv);
    }
 
-   _free(template);
+   if(template.module)
+      template.module.classes.Delete(template);
+   else
+      _free(template);
 }
 
 static void FreeTemplates(Class _class)
@@ -3406,6 +3409,12 @@ public dllexport Class eSystem_FindClass(Module module, const char * name)
                templatedClass.numParams = 0;
                templatedClass.derivatives = { };
                templatedClass.templatized = { };
+               templatedClass.module = module;
+               templatedClass.count = 0; // TOCHECK: Keeping track of individual templatized classes?
+               templatedClass.prev = null;
+               templatedClass.next = null;
+
+               module.classes.Add(templatedClass);
 
                ComputeClassParameters(templatedClass, templateParams, module);
 

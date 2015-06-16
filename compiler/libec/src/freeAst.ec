@@ -1243,6 +1243,8 @@ void FreeModuleData(Module module)
       Method method;
       ClassTemplateParameter param;
 
+      if(_class.templateClass) continue;
+
       if(_class.dataType)
       {
          FreeType(_class.dataType);
