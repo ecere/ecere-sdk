@@ -1510,7 +1510,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                // int64 value
                {
                   char * temp;
-                  if(!strcmp(regClass.dataTypeString, "uint64"))
+                  if(regClass.dataTypeString && !strcmp(regClass.dataTypeString, "uint64"))  // regClass.dataTypeString was null for TokenType in 'enum TokenType : ExpOperator'
                      temp = PrintUInt64(value.data);
                   else
                      temp = PrintInt64(value.data);

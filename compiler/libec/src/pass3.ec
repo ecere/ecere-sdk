@@ -674,7 +674,8 @@ static void InstDeclPassExpression(Expression exp)
          InstDeclPassExpression(exp.cond.cond);
          for(e = exp.cond.exp->first; e; e = e.next)
             InstDeclPassExpression(e);
-         InstDeclPassExpression(exp.cond.elseExp);
+         if(exp.cond.elseExp)
+            InstDeclPassExpression(exp.cond.elseExp);
          break;
       }
       case extensionCompoundExp:
