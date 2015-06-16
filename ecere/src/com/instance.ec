@@ -2145,6 +2145,7 @@ static void FixDerivativesBase(Class base, Class mod)
             _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
             // memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (mod.base.vTblSize - baseClass.vTblSize) * sizeof(void *));
             memmove(_class._vTbl + mod.base.vTblSize, _class._vTbl + baseClass.vTblSize, (_class.vTblSize - mod.vTblSize) * sizeof(void *));
+            memcpy(_class._vTbl + baseClass.vTblSize, mod._vTbl + baseClass.vTblSize, (mod.base.vTblSize - baseClass.vTblSize) * sizeof(void *));
 
             updateStart = baseClass.vTblSize;
             updateEnd = updateStart + mod.base.vTblSize - baseClass.vTblSize;
