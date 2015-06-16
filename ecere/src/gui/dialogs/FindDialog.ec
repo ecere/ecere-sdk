@@ -10,6 +10,7 @@ public class FindDialog : Window
    borderStyle = fixed;
    background = formColor;
    minClientSize = { 400, 112 };
+   autoCreate = false;
 
 public:
    property EditBox editBox { set { editBox = value; } };
