@@ -3091,9 +3091,12 @@ static void ProcessExpression(Expression exp)
             if(!e.next && exp.usage.usageGet) e.usage.usageGet = true;
             ProcessExpression(e);
          }
-         if(exp.usage.usageGet)
-            exp.cond.elseExp.usage.usageGet = true;
-         ProcessExpression(exp.cond.elseExp);
+         if(exp.cond.elseExp)
+         {
+            if(exp.usage.usageGet)
+               exp.cond.elseExp.usage.usageGet = true;
+            ProcessExpression(exp.cond.elseExp);
+         }
          break;
       }
       case classExp:

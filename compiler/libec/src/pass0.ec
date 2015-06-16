@@ -428,7 +428,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
    classType = regClass.type;
 
    // PUBLISHING CHECK ON BASE CLASS
-   if(inCompiler)
+   if(inCompiler && regClass.base)  // The base check saves a crash trying to inherit from itself
    {
       yylloc = loc;
 
