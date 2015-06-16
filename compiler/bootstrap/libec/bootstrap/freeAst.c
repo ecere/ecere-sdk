@@ -2086,6 +2086,8 @@ struct __ecereNameSpace__ecere__com__DataMember * dataMember;
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
 
+if(_class->templateClass)
+continue;
 if(_class->dataType)
 {
 FreeType(_class->dataType);
