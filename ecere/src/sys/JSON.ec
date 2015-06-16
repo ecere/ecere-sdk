@@ -465,6 +465,8 @@ public:
                      {
                         type = eSystem_FindClass(__thisModule, member.dataTypeString);
                         if(!type)
+                           type = eSystem_FindClass(objectType.module, member.dataTypeString);
+                        if(!type)
                            type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
 
                         offset = member._class.offset + member.offset;
@@ -475,6 +477,8 @@ public:
                         if(prop)
                         {
                            type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                           if(!type)
+                              type = eSystem_FindClass(objectType.module, prop.dataTypeString);
                            if(!type)
                               type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
                         }
@@ -630,7 +634,7 @@ public:
                   else
                      result = syntaxError;
 
-                  if(prop && type.type == structClass)
+                  if(prop && type && type.type == structClass)
                   {
                      delete value.p;
                   }
@@ -711,18 +715,23 @@ public:
          for(prop = type.conversions.first; prop; prop = prop.next)
          {
             bool refProp = false;
-            Class c;
             if(!strcmp(prop.name, type.base.fullName))
                refProp = true;
-            else if( (c = eSystem_FindClass(type.module, prop.name) ) )
+            else
             {
-               Property p;
-               for(p = c.conversions.first; p; p = p.next)
+               Class c = eSystem_FindClass(type.module, prop.name);
+               if(!c)
+                  c = eSystem_FindClass(type.module.application, prop.name);
+               if(c)
                {
-                  if(!strcmp(p.name, type.base.fullName) && !p.Set && !p.Get)
+                  Property p;
+                  for(p = c.conversions.first; p; p = p.next)
                   {
-                     refProp = true;
-                     break;
+                     if(!strcmp(p.name, type.base.fullName) && !p.Set && !p.Get)
+                     {
+                        refProp = true;
+                        break;
+                     }
                   }
                }
             }
@@ -1042,6 +1051,10 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    {
       Class dataType;
       dataType = eSystem_FindClass(__thisModule, type.dataTypeString);
+      if(!dataType)
+         dataType = eSystem_FindClass(type.module, type.dataTypeString);
+      if(!dataType)
+         dataType = eSystem_FindClass(__thisModule.application, type.dataTypeString);
       WriteNumber(f, dataType, value, indent);
    }
    else if(type.type == systemClass || type.type == unitClass)
@@ -1138,6 +1151,8 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         type = eSystem_FindClass(__thisModule, prop.dataTypeString);
 
                      if(!type)
+                        type = eSystem_FindClass(objectType.module, prop.dataTypeString);
+                     if(!type)
                         type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
                      if(!type)
                         PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
@@ -1209,6 +1224,8 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   DataValue value { };
                   uint offset;
                   Class type = eSystem_FindClass(__thisModule, member.dataTypeString);
+                  if(!type)
+                     type = eSystem_FindClass(objectType.module, member.dataTypeString);
                   if(!type)
                      type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
 
