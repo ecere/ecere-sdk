@@ -1072,6 +1072,7 @@ class AndroidActivity : AndroidAppGlue
 
    int onInputEvent(AInputEvent* event)
    {
+      static Time lastTime = 0;
       Window window = guiApp.desktop;
       uint type = AInputEvent_getType(event);
       if(type == AINPUT_EVENT_TYPE_MOTION)
@@ -1111,9 +1112,18 @@ class AndroidActivity : AndroidAppGlue
                break;
                */
             case AMOTION_EVENT_ACTION_DOWN:
+            {
+               Time time = GetTime();
+               bool result = true;
+               if(Abs(x - mouseX) < 40 && Abs(y - mouseY) < 40 && time - lastTime < 0.3)
+                  if(!window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick, x, y, &keyFlags, false, true))
+                     result = false;
+               lastTime = time;
                mouseX = x, mouseY = y;
-               window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
+               if(result)
+                  window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
                break;
+            }
             case AMOTION_EVENT_ACTION_UP:
                mouseX = x, mouseY = y;
                window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, x, y, &keyFlags, false, true);
