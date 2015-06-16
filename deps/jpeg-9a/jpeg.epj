@@ -32,10 +32,8 @@
          "Folder" : "headers",
          "Files" : [
             "./cderror.h",
-            "./jchuff.h",
             "./jconfig.h",
             "./jdct.h",
-            "./jdhuff.h",
             "./jerror.h",
             "./jinclude.h",
             "./jmemsys.h",
