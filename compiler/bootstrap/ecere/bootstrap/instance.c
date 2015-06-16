@@ -3664,6 +3664,7 @@ void __ecereNameSpace__ecere__com__eInstance_Evolve(struct __ecereNameSpace__ece
 if(_class && instancePtr && *instancePtr)
 {
 unsigned int wasApp = 0, wasGuiApp = 0;
+struct __ecereNameSpace__ecere__com__Instance * oldInstance = *instancePtr;
 struct __ecereNameSpace__ecere__com__Instance * instance = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eSystem_Renew(*instancePtr, sizeof(unsigned char) * (_class->structSize));
 struct __ecereNameSpace__ecere__com__Class * fromClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class;
 
@@ -3744,6 +3745,7 @@ for(templateLink = _class->templatized.first; templateLink; templateLink = templ
 {
 struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
 
+if(template->module == oldInstance)
 template->module = _class->module;
 }
 }
@@ -3752,12 +3754,14 @@ for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app 
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes.first; _class; _class = _class->next)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
+struct __ecereNameSpace__ecere__com__Instance * oldModule = _class->module;
 
 _class->module = module;
 for(templateLink = _class->templatized.first; templateLink; templateLink = templateLink->next)
 {
 struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
 
+if(template->module == oldModule)
 template->module = _class->module;
 }
 }
