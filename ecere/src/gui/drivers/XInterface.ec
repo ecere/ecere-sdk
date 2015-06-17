@@ -1769,7 +1769,7 @@ class XInterface : Interface
                   Modifiers keyFlags = 0;
                   bool doubleClick;
                   uint button, buttonDouble, whichButton;
-                  uint buttonMask;
+                  uint buttonMask = 0;
                   int x = event->x_root, y = event->y_root;
                   timeStamp = event->time;
                   if(event->button == Button1)
@@ -1797,7 +1797,7 @@ class XInterface : Interface
                      keyFlags.right = true;
                      buttonsState.right = true;
                   }
-                  else
+                  else if(event->button == Button2)
                   {
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown;
                      buttonDouble = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick;
@@ -1809,14 +1809,17 @@ class XInterface : Interface
                   if(event->state & buttonMask)
                      break;
 
-                  doubleClick = event->time - lastTime[whichButton] < DBLCLICK_DELAY &&
-                     window == lastWindow[whichButton] &&
-                     Abs(event->x_root - lastPos[whichButton].x) < DBLCLICK_DELTA &&
-                     Abs(event->y_root - lastPos[whichButton].y) < DBLCLICK_DELTA;
-                  lastTime[whichButton] = doubleClick ? 0 : event->time;
-                  lastWindow[whichButton] = window;
-                  lastPos[whichButton].x = event->x_root;
-                  lastPos[whichButton].y = event->y_root;
+                  if(buttonMask)
+                  {
+                     doubleClick = event->time - lastTime[whichButton] < DBLCLICK_DELAY &&
+                        window == lastWindow[whichButton] &&
+                        Abs(event->x_root - lastPos[whichButton].x) < DBLCLICK_DELTA &&
+                        Abs(event->y_root - lastPos[whichButton].y) < DBLCLICK_DELTA;
+                     lastTime[whichButton] = doubleClick ? 0 : event->time;
+                     lastWindow[whichButton] = window;
+                     lastPos[whichButton].x = event->x_root;
+                     lastPos[whichButton].y = event->y_root;
+                  }
 
                   if(event->state & ShiftMask)     keyFlags.shift = true;
                   if(event->state & ControlMask)   keyFlags.ctrl = true;
