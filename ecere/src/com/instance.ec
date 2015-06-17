@@ -4645,6 +4645,7 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
    if(_class && instancePtr && *instancePtr)
    {
       bool wasApp = false, wasGuiApp = false;
+      Instance oldInstance = *instancePtr;
       Instance instance = (Instance)renew *instancePtr byte[_class.structSize];
       Class fromClass = instance._class;
       *instancePtr = instance;
@@ -4713,7 +4714,8 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
             for(templateLink = _class.templatized.first; templateLink; templateLink = templateLink.next)
             {
                Class template = templateLink.data;
-               template.module = _class.module;
+               if(template.module == oldInstance)
+                  template.module = _class.module;
             }
          }
 
@@ -4722,11 +4724,13 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
             for(_class = module.classes.first; _class; _class = _class.next)
             {
                OldLink templateLink;
+               Module oldModule = _class.module;
                _class.module = module;
                for(templateLink = _class.templatized.first; templateLink; templateLink = templateLink.next)
                {
                   Class template = templateLink.data;
-                  template.module = _class.module;
+                  if(template.module == oldModule)
+                     template.module = _class.module;
                }
             }
          }
