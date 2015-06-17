@@ -1829,7 +1829,7 @@ class XInterface : Interface
                   incref window;
                   if(event->button == Button4 || event->button == Button5)
                   {
-                     window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, (event->button == Button4) ? wheelUp : wheelDown, 0);
+                     window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, { modifiers = keyFlags, code = (event->button == Button4) ? wheelUp : wheelDown }, 0);
                   }
                   else
                   {
