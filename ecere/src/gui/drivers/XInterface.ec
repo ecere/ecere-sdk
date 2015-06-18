@@ -1759,8 +1759,8 @@ class XInterface : Interface
                   static Point lastPos[3];
 
                   Modifiers keyFlags = 0;
-                  bool doubleClick;
-                  uint button, buttonDouble, whichButton;
+                  bool doubleClick = false;
+                  uint button = 0, buttonDouble = 0, whichButton;
                   uint buttonMask = 0;
                   int x = event->x_root, y = event->y_root;
                   timeStamp = event->time;
@@ -1826,7 +1826,7 @@ class XInterface : Interface
                   {
                      window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, { modifiers = keyFlags, code = (event->button == Button4) ? wheelUp : wheelDown }, 0);
                   }
-                  else
+                  else if(button)
                   {
                      if(doubleClick)
                      {
