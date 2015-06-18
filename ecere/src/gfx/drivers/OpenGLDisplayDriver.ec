@@ -1381,12 +1381,16 @@ public struct GLAB
 
    void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
    {
+#ifdef _GLES
       if(curArrayBuffer != ((this != null) ? buffer : 0))
          GLBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       if(type == GL_INT)
          glVertexPointeri(n, stride, pointer, count);
       else if(type == GL_DOUBLE)
          glVertexPointerd(n, stride, pointer, count);
+#else
+      use(vertex, n, type, stride, pointer);
+#endif
    }
 };
 
