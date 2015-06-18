@@ -1,7 +1,7 @@
 namespace gui::drivers;
 
 import "instance"
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)
 import "OpenGLDisplayDriver"
 #endif
 
@@ -58,7 +58,7 @@ typedef int X11Bool;
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 #include <fcntl.h>
-#if !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
+#if !defined(ECERE_NO3D) && !defined(ECERE_NOGL) //&& !defined(__ODROID__)
 #if defined(__EMSCRIPTEN__)
 #include <GL/glfw.h>
 #else
@@ -2456,7 +2456,7 @@ class XInterface : Interface
       attributes.override_redirect = (window.interim || (!atomsSupported[_net_wm_state] && !window.nativeDecorations)) ? True : False;
       attributes.event_mask = EVENT_MASK;
       //printf("%s\n", guiApp.defaultDisplayDriver);
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)
       if(window.dispDriver == class(OpenGLDisplayDriver) || !strcmp(guiApp.defaultDisplayDriver, "OpenGL"))
       {
          int samples;
@@ -2545,6 +2545,20 @@ class XInterface : Interface
       }
       if(!visualInfo)
       {
+         int attrList[] =
+         {
+            GLX_USE_GL, GLX_DEPTH_SIZE, 1,
+            GLX_RGBA,
+            GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
+            GLX_DOUBLEBUFFER,
+            None
+         };
+         visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrList);
+      }
+#elif defined(__ODROID__)
+      if(!visualInfo)
+      {
+         // System visual not working on ODROID?
          int attrList[] =
          {
             GLX_USE_GL, GLX_DEPTH_SIZE, 1,
