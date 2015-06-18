@@ -1350,12 +1350,9 @@ public struct GLAB
       if(this != null)
       {
          if(!buffer)
-            glGenBuffers(1, &buffer);
+            GLGenBuffers(1, this);
          if(curArrayBuffer != buffer)
-         {
-            glBindBuffer(GL_ARRAY_BUFFER, buffer);
-            curArrayBuffer = buffer;
-         }
+            GLBindBuffer(GL_ARRAY_BUFFER, buffer);
          glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
       }
    }
@@ -1364,7 +1361,7 @@ public struct GLAB
    {
       if(this != null)
       {
-         glDeleteBuffers(1, &buffer);
+         GLDeleteBuffers(1, this);
          buffer = 0;
       }
    }
@@ -1372,10 +1369,7 @@ public struct GLAB
    void use(GLBufferContents contents, int n, int type, uint stride, void * pointer)
    {
       if(curArrayBuffer != ((this != null) ? buffer : 0))
-      {
-         glBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-         curArrayBuffer = ((this != null) ? buffer : 0);
-      }
+         GLBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       switch(contents)
       {
          case normal:   glNormalPointer(type, stride, pointer); break;
@@ -1399,13 +1393,10 @@ public struct GLEAB
       if(this != null)
       {
          if(!buffer)
-            glGenBuffers(1, &buffer);
+            GLGenBuffers(1, (GLAB *)this);
 
          if(curElementBuffer != buffer)
-         {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-            curElementBuffer = buffer;
-         }
+            GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
          glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
       }
    }
@@ -1414,7 +1405,7 @@ public struct GLEAB
    {
       if(this != null)
       {
-         glDeleteBuffers(1, &buffer);
+         GLDeleteBuffers(1, (GLAB *)this);
          buffer = 0;
       }
    }
@@ -1422,10 +1413,7 @@ public struct GLEAB
    void draw(int primType, int count, int type, void * indices)
    {
       if(curElementBuffer != ((this != null) ? buffer : 0))
-      {
-         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-         curElementBuffer = ((this != null) ? buffer : 0);
-      }
+         GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       glDrawElements(primType, count, type, indices);
    }
 };
@@ -1444,6 +1432,15 @@ public void GLGenBuffers(int count, GLAB * buffers)
 
 public void GLDeleteBuffers(int count, GLAB * buffers)
 {
+   int i;
+   for(i = 0; i < count; i++)
+   {
+      uint buffer = buffers[i].buffer;
+      if(buffer == curArrayBuffer)
+         GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
+      else if(buffer == curElementBuffer)
+         GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+   }
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
    glDeleteBuffers(count, (GLuint *)buffers);
 #else
