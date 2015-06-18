@@ -553,7 +553,8 @@ static int curStack = 0;
       glesLoadIdentity();
       glOrtho(0,w,h,0,0.0,1.0);
 
-      currentVertexBuffer = 0;
+      curArrayBuffer = 0;
+      curElementBuffer = 0;
       return true;
    }
 
@@ -684,19 +685,18 @@ public void glesEnd(void)
    if(mode == GL_QUADS)        mode = GL_TRIANGLES;
    else if(mode == GL_POLYGON) mode = GL_TRIANGLE_FAN;
 
-   GLSelectVBO(0);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-   glTexCoordPointer(2, GL_FLOAT,  vertexStride * sizeof(float), vertexPointer);
+   noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
    if(vertexColorValues)
    {
       glEnableClientState(GL_COLOR_ARRAY);
-      glColorPointer(4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
+      noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
    }
-   glVertexPointer  (numVertexCoords, GL_FLOAT, (vertexStride)*sizeof(float),vertexPointer+vertexOffset);
+   noAB.use(vertex, numVertexCoords, GL_FLOAT, (vertexStride)*sizeof(float),vertexPointer+vertexOffset);
    if(normalCount && normalCount == vertexCount)
    {
       glEnableClientState(GL_NORMAL_ARRAY);
-      glNormalPointer  (GL_FLOAT, 3*sizeof(float),normalPointer);
+      noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
    }
 
    glDrawArrays(mode, 0, vertexCount);
@@ -1209,8 +1209,6 @@ void (APIENTRY * glDeleteBuffersARB) (GLsizei n, const GLuint *buffers);
 void (APIENTRY * glBufferDataARB) (GLenum target, int size, const GLvoid *data, GLenum usage);
 #endif
 
-static int currentVertexBuffer;
-
 public void GLLoadMatrix(Matrix matrix)
 {
    float m[16] =
@@ -1223,38 +1221,122 @@ public void GLLoadMatrix(Matrix matrix)
    glLoadMatrixf(m);
 }
 
-bool GLSelectVBO(uint vbo)
-{
-   if(currentVertexBuffer != vbo)
-   {
-      GLBindBuffer(GL_ARRAY_BUFFER, vbo);
-      currentVertexBuffer = vbo;
-      return true;
-   }
-   return false;
-}
+public enum GLBufferContents { vertex, normal, texCoord, color };
 
-void GLGenBuffers(int count, uint * buffer)
+public define noAB = GLAB { 0 };
+
+static uint curArrayBuffer;
+
+public struct GLAB
 {
-#ifdef __ANDROID__
-   glGenBuffers(count, buffer);
+   uint buffer;
+
+   void upload(uint size, void * data)
+   {
+      if(this != null)
+      {
+         if(!buffer)
+            glGenBuffers(1, &buffer);
+         if(curArrayBuffer != buffer)
+         {
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            curArrayBuffer = buffer;
+         }
+         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+      }
+   }
+
+   void free()
+   {
+      if(this != null)
+      {
+         glDeleteBuffers(1, &buffer);
+         buffer = 0;
+      }
+   }
+
+   void use(GLBufferContents contents, int n, int type, uint stride, void * pointer)
+   {
+      if(curArrayBuffer != ((this != null) ? buffer : 0))
+      {
+         glBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         curArrayBuffer = ((this != null) ? buffer : 0);
+      }
+      switch(contents)
+      {
+         case normal:   glNormalPointer(type, stride, pointer); break;
+         case vertex:   glVertexPointer(n, type, stride, pointer); break;
+         case texCoord: glTexCoordPointer(n, type, stride, pointer); break;
+         case color:    glColorPointer(n, type, stride, pointer); break;
+      }
+   }
+};
+
+static uint curElementBuffer;
+
+public define noEAB = GLEAB { 0 };
+
+public struct GLEAB
+{
+   uint buffer;
+
+   void upload(uint size, void * data)
+   {
+      if(this != null)
+      {
+         if(!buffer)
+            glGenBuffers(1, &buffer);
+
+         if(curElementBuffer != buffer)
+         {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+            curElementBuffer = buffer;
+         }
+         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+      }
+   }
+
+   void free()
+   {
+      if(this != null)
+      {
+         glDeleteBuffers(1, &buffer);
+         buffer = 0;
+      }
+   }
+
+   void draw(int primType, int count, int type, void * indices)
+   {
+      if(curElementBuffer != ((this != null) ? buffer : 0))
+      {
+         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         curElementBuffer = ((this != null) ? buffer : 0);
+      }
+      glDrawElements(primType, count, type, indices);
+   }
+};
+
+public void GLGenBuffers(int count, GLAB * buffers)
+{
+#if defined(__ANDROID__)
+   glGenBuffers(count, (GLuint *)buffers);
 #else
 #if defined(__WIN32__)
    if(glGenBuffersARB)
 #endif
-      glGenBuffersARB(count, buffer);
+      glGenBuffersARB(count, (GLuint *)buffers);
 #endif
 }
 
-void GLDeleteBuffers(int count, GLuint * buffer)
+public void GLDeleteBuffers(int count, GLAB * buffers)
 {
-#ifdef __ANDROID__
-   glDeleteBuffers(count, buffer);
+#if defined(__ANDROID__)
+   glDeleteBuffers(count, (GLuint *)buffers);
 #else
 #if defined(__WIN32__)
    if(glDeleteBuffersARB)
 #endif
-      glDeleteBuffersARB(count, buffer);
+      glDeleteBuffersARB(count, (GLuint *)buffers);
 #endif
 }
 
@@ -1269,7 +1351,9 @@ void GLBindBuffer(int target, uint buffer)
       glBindBufferARB(target, buffer);
 #endif
    if(target == GL_ARRAY_BUFFER_ARB)
-      currentVertexBuffer = buffer;
+      curArrayBuffer = buffer;
+   else if(target == GL_ELEMENT_ARRAY_BUFFER_ARB)
+      curElementBuffer = buffer;
 }
 
 public void GLVertexPointer(int numCoords, int glType, int stride, void *ptr, int numVertices)
@@ -1407,17 +1491,17 @@ class OGLSurface : struct
 
 class OGLMesh : struct
 {
-   uint vertices;
-   uint normals;
-   uint texCoords;
-   uint texCoords2;
-   uint colors;
+   GLAB vertices;
+   GLAB normals;
+   GLAB texCoords;
+   GLAB texCoords2;
+   GLAB colors;
 };
 
 class OGLIndices : struct
 {
    uint16 * indices;
-   uint buffer;
+   GLEAB buffer;
    uint nIndices;
 };
 
@@ -3614,7 +3698,6 @@ class OpenGLDisplayDriver : DisplayDriver
          glPopMatrix();
       }
 
-      GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
    }
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
@@ -3702,49 +3785,28 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          if(!mesh.flags.vertices)
          {
-            if(oglMesh.vertices)
-            {
-               GLDeleteBuffers(1, &oglMesh.vertices);
-               oglMesh.vertices = 0;
-            }
+            oglMesh.vertices.free();
             delete mesh.vertices;
          }
          if(!mesh.flags.normals)
          {
-            if(oglMesh.normals)
-            {
-               GLDeleteBuffers(1, &oglMesh.normals);
-               oglMesh.normals = 0;
-            }
+            oglMesh.normals.free();
             delete mesh.normals;
          }
          if(!mesh.flags.texCoords1)
          {
-            if(oglMesh.texCoords)
-            {
-               GLDeleteBuffers(1, &oglMesh.texCoords);
-               oglMesh.texCoords = 0;
-            }
+            oglMesh.texCoords.free();
             delete mesh.texCoords;
          }
          if(!mesh.flags.texCoords2)
          {
-            if(oglMesh.texCoords2)
-            {
-               GLDeleteBuffers(1, &oglMesh.texCoords2);
-               oglMesh.texCoords2 = 0;
-            }
-            /*
-            delete mesh.texCoords2;
-            */
+            oglMesh.texCoords2.free();
+            // delete mesh.texCoords2;
          }
          if(!mesh.flags.colors)
          {
-            if(oglMesh.colors)
-            {
-               GLDeleteBuffers(1, &oglMesh.colors);
-               oglMesh.colors = 0;
-            }
+            oglMesh.colors.free();
+            delete mesh.colors;
          }
          if(!mesh.flags)
          {
@@ -3839,38 +3901,20 @@ class OpenGLDisplayDriver : DisplayDriver
       if(vboAvailable)
       {
          if(flags.vertices)
-         {
-            if(!oglMesh.vertices)
-               GLGenBuffers(1, &oglMesh.vertices);
-            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices);
-            GLBufferData( mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, GL_STATIC_DRAW_ARB );
-         }
+            oglMesh.vertices.upload(
+               mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices); //, GL_STATIC_DRAW_ARB );
 
          if(flags.normals)
-         {
-            if(!oglMesh.normals)
-               GLGenBuffers(1, &oglMesh.normals);
-            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
-            GLBufferData( mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, GL_STATIC_DRAW_ARB );
-         }
+            oglMesh.normals.upload(
+               mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals); //, GL_STATIC_DRAW_ARB );
 
          if(flags.texCoords1)
-         {
-            if(!oglMesh.texCoords)
-               GLGenBuffers(1, &oglMesh.texCoords);
-            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
-            GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(Pointf), mesh.texCoords, GL_STATIC_DRAW_ARB );
-         }
+            oglMesh.texCoords.upload(
+               mesh.nVertices * sizeof(Pointf), mesh.texCoords); //, GL_STATIC_DRAW_ARB );
 
          if(flags.colors)
-         {
-            if(!oglMesh.colors)
-               GLGenBuffers( 1, &oglMesh.colors);
-            GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
-            GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, GL_STATIC_DRAW_ARB );
-         }
-
-         GLBindBuffer( GL_ARRAY_BUFFER_ARB, 0);
+            oglMesh.colors.upload(
+               mesh.nVertices * sizeof(ColorRGBAf), mesh.colors); //, GL_STATIC_DRAW_ARB );
       }
    }
 
@@ -3885,8 +3929,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(oglIndices)
       {
-         if(oglIndices.buffer)
-            GLDeleteBuffers(1, &oglIndices.buffer);
+         oglIndices.buffer.free();
          delete oglIndices.indices;
          delete oglIndices;
       }
@@ -3898,7 +3941,6 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglIndices)
       {
          oglIndices.indices = (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
-         GLGenBuffers( 1, &oglIndices.buffer);
          oglIndices.nIndices = nIndices;
       }
       return oglIndices;
@@ -3908,10 +3950,9 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(vboAvailable)
       {
-         GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
-         GLBufferData( indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
-            oglIndices.indices, GL_STATIC_DRAW_ARB);
-         GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+         oglIndices.buffer.upload(
+            nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
+            oglIndices.indices); //GL_STATIC_DRAW_ARB);
       }
    }
 
@@ -3942,18 +3983,13 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnableClientState(GL_VERTEX_ARRAY);
          if(!display.display3D.collectingHits && oglMesh)
          {
-            GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices );
-            if(mesh.flags.doubleVertices)
-               glVertexPointerd(3, 0, oglMesh.vertices ? null : (double *)mesh.vertices, mesh.nVertices);
-            else
-               glVertexPointer(3, GL_FLOAT, 0, oglMesh.vertices ? null : mesh.vertices);
+            oglMesh.vertices.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
-               GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
-               glNormalPointer(/*mesh.flags.doubleNormals ? GL_DOUBLE : */GL_FLOAT, 0, oglMesh.normals ? null : mesh.normals);
+               oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
             }
             else
                glDisableClientState(GL_NORMAL_ARRAY);
@@ -3962,8 +3998,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.texCoords || mesh.flags.texCoords1)
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-               GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
-               glTexCoordPointer(2, GL_FLOAT, 0, oglMesh.texCoords ? null : mesh.texCoords);
+               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
             }
             else
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -3972,37 +4007,32 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.colors || mesh.flags.colors)
             {
                glEnableClientState(GL_COLOR_ARRAY);
-               GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
-               glColorPointer(4, GL_FLOAT, 0, oglMesh.colors ? null : mesh.colors);
+               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
             }
             else
                glDisableClientState(GL_COLOR_ARRAY);
          }
          else
          {
-            GLBindBuffer( GL_ARRAY_BUFFER_ARB, 0);
-            if(mesh.flags.doubleVertices)
-               glVertexPointerd(3, 0, (double *)mesh.vertices, mesh.nVertices);
-            else
-               glVertexPointer(3, GL_FLOAT, 0, mesh.vertices);
+            noAB.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
             if((mesh.normals || mesh.flags.normals) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
-               glNormalPointer(/*mesh.flags.doubleNormals ? GL_DOUBLE : */GL_FLOAT, 0, mesh.normals);
+               noAB.use(normal, 3, GL_FLOAT, 0, mesh.normals);
             }
             else
                glDisableClientState(GL_NORMAL_ARRAY);
             if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-               glTexCoordPointer(2, GL_FLOAT, 0, mesh.texCoords);
+               noAB.use(texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
             }
             else
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_COLOR_ARRAY);
-               glColorPointer(4, GL_FLOAT, 0, mesh.colors);
+               noAB.use(color, 4, GL_FLOAT, 0, mesh.colors);
             }
             else
                glDisableClientState(GL_COLOR_ARRAY);
@@ -4018,8 +4048,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #endif
       }
-      else
-         GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
    }
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
@@ -4060,12 +4088,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
             if(!display.display3D.collectingHits && vboAvailable && oglIndices)
             {
-               GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
                if(primitive->type.indices32bit)
-                  glDrawElementsi(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 0);
+                  ; //oglIndices.buffer.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, 0);
                else
-                  glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, 0);
-               GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+                  oglIndices.buffer.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, 0);
             }
             else
             {
