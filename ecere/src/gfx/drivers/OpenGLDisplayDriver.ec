@@ -2758,6 +2758,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
          glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
+#endif
 
          glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
