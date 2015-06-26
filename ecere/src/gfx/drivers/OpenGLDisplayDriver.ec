@@ -1426,6 +1426,9 @@ public struct GLEAB
    {
       if(curElementBuffer != ((this != null) ? buffer : 0))
          GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+#ifdef _GLES
+      type = GL_UNSIGNED_SHORT;
+#endif
       glDrawElements(primType, count, type, indices);
    }
 };
@@ -2071,6 +2074,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_BLEND);
 
          glMatrixMode(GL_MODELVIEW);
+         glLoadIdentity(); // For setting up GLES stack
          glScaled(1.0, 1.0, -1.0);
          // glTranslatef(0.375f, 0.375f, 0.0f);
          // glTranslatef(-0.625f, -0.625f, 0.0f);
@@ -2463,6 +2467,7 @@ class OpenGLDisplayDriver : DisplayDriver
       result = false;
 
       glViewport(0,0,width,height);
+      glMatrixMode(GL_PROJECTION);
       glLoadIdentity();
       glOrtho(0,width,height,0,0.0,1.0);
       displayWidth = display.width = width;
@@ -3753,10 +3758,10 @@ class OpenGLDisplayDriver : DisplayDriver
          glViewport(x, y, w, h);
 
          // *** Projection Matrix ***
+         glMatrixMode(GL_PROJECTION);
          if(!display.display3D.camera)
             glPushMatrix();
-         else
-            glMatrixMode(GL_PROJECTION);
+
          if(display.display3D.collectingHits)
          {
             float pickX = display.display3D.pickX + surface.offset.x;
@@ -4081,6 +4086,17 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(vboAvailable)
       {
+#ifdef _GLES
+         if(indices32bit)
+         {
+            if(!oglIndices.buffer.buffer)
+               GLGenBuffers(1, (GLAB *)&oglIndices.buffer);
+            if(curElementBuffer != oglIndices.buffer.buffer)
+               GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oglIndices.buffer.buffer);
+            glesBufferDatai(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32) * nIndices, oglIndices.indices, GL_STATIC_DRAW_ARB);
+         }
+         else
+#endif
          oglIndices.buffer.upload(
             nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
             oglIndices.indices); //GL_STATIC_DRAW_ARB);
@@ -4214,25 +4230,15 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else*/
 #endif
+
          {
             OGLIndices oglIndices = primitive->data;
+            GLEAB eab = ((!display.display3D.collectingHits && oglIndices) ? oglIndices.buffer : noEAB);
 
-            if(!display.display3D.collectingHits && vboAvailable && oglIndices)
-            {
-               if(primitive->type.indices32bit)
-                  ; //oglIndices.buffer.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, 0);
-               else
-                  oglIndices.buffer.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, 0);
-            }
-            else
-            {
-               if(primitive->type.indices32bit)
-                  glDrawElementsi(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
-                     oglIndices ? oglIndices.indices : primitive->indices);
-               else
-                  glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
-                     GL_UNSIGNED_SHORT, oglIndices ? oglIndices.indices : primitive->indices);
-            }
+            eab.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
+               primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
+               eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));
+            GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
          }
       }
    }

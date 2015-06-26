@@ -2,7 +2,7 @@ namespace gfx3D::models;
 
 import "Object"
 
-#if !defined(__ANDROID__)
+#if !defined(_GLES)
 #define USE_32_BIT_INDICES true
 #define indicesMember indices32
 #define uintindex uint32
