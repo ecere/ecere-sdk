@@ -20,7 +20,7 @@ public class ObjectFormat
 public class ObjectFlags
 {
 public:
-   bool root:1, viewSpace:1, ownMesh:1, translucent:1, flipWindings:1, keysLoaded:1, transform:1, mesh:1, light:1, camera:1;
+   bool root:1, viewSpace:1, ownMesh:1, translucent:1, flipWindings:1, keysLoaded:1, transform:1, mesh:1, light:1, camera:1, localMatrixSet:1;
    int hierarchy:16:16;
 };
 
@@ -606,17 +606,23 @@ public:
          name = CopyString(model.name);
          flags = model.flags;
          flags.ownMesh = false;
+         flags.transform = false;
          mesh = model.mesh;
          /*
          min = model.min;
          max = model.max;
          radius = model.radius;
          */
-         transform = model.transform;
+         if(parent && !flags.root)
+            matrix.Multiply(localMatrix, parent.matrix);
+         else
+            matrix = localMatrix;
 
          for(modelChild = model.children.first; modelChild; modelChild = modelChild.next)
          {
             Object child { parent = this };
+            child.localMatrix = modelChild.localMatrix;
+            child.transform = modelChild.transform;
             child.Duplicate(modelChild);
             children.AddName(child);
          }
@@ -828,14 +834,21 @@ public:
             {
                Matrix matrix, normalMatrix;
 
+               matrix = child.localMatrix;
+               /*
                matrix.Identity();
                matrix.Scale(child.transform.scaling.x, child.transform.scaling.y, child.transform.scaling.z);
-
                matrix.Rotate(child.transform.orientation);
+               */
 
                normalMatrix = matrix;
 
-               matrix.Translate(child.transform.position.x, child.transform.position.y, child.transform.position.z);
+               normalMatrix.m[3][0] = 0;
+               normalMatrix.m[3][1] = 0;
+               normalMatrix.m[3][2] = 0;
+
+               // matrix.Translate(child.transform.position.x, child.transform.position.y, child.transform.position.z);
+
                if(child.mesh)
                {
                   for(c = 0; c<child.mesh.nVertices; c++)
@@ -1278,6 +1291,7 @@ private:
       transform.scaling = { 1, 1, 1 };
       transform.orientation = { 1,0,0,0 };
       flags.transform = true;
+      localMatrix.Identity();
    }
 
    ~Object()
@@ -1298,7 +1312,6 @@ private:
       if(flags.transform)
       {
          Object child;
-         Matrix matrix;
 
          // Cameras / Spot Lights must update their target first
          if(flags.camera && cameraTarget && cameraTarget.flags.transform)
@@ -1340,18 +1353,19 @@ private:
             transform.orientation.RotationDirection(light.direction);
          }
 
-         matrix.Identity();
-         matrix.Scale(transform.scaling.x, transform.scaling.y, transform.scaling.z);
-         matrix.Rotate(transform.orientation);
-         matrix.Translate(transform.position.x, transform.position.y, transform.position.z);
-
-         localMatrix = matrix;
+         if(!flags.localMatrixSet)
+         {
+            localMatrix.Identity();
+            localMatrix.Scale(transform.scaling.x, transform.scaling.y, transform.scaling.z);
+            localMatrix.Rotate(transform.orientation);
+            localMatrix.Translate(transform.position.x, transform.position.y, transform.position.z);
+         }
 
          // Compute transform (with ancestors)
          if(flags.root || !parent)
-            this.matrix = matrix;
+            matrix = localMatrix;
          else
-            this.matrix.Multiply(matrix, parent.matrix);
+            matrix.Multiply(localMatrix, parent.matrix);
 
          flags.transform = false;
 
@@ -1509,8 +1523,8 @@ private:
 
    Object prev, next;
    char * name;
-   Object parent;
-   OldList children;
+   public Object parent;
+   public OldList children;
 
    ObjectFlags flags;
 
@@ -1521,7 +1535,7 @@ private:
 
    public Transform transform;
    public Matrix matrix;
-   Matrix localMatrix;
+   public Matrix localMatrix;
    void * tag;
    Vector3Df min, max, center;
    Vector3D wmin, wmax, wcenter;
