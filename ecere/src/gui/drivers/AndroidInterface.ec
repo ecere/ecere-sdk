@@ -437,6 +437,7 @@ static void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* wi
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
    LOGI("NativeWindowDestroyed: %p -- %p\n", activity, window);
+   app.window = null;
    app.set_window(null);
 }
 
@@ -505,7 +506,7 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    ANativeActivity_setWindowFlags(activity, AWINDOW_FLAG_FULLSCREEN|AWINDOW_FLAG_KEEP_SCREEN_ON, 0 );
    app = AndroidActivity { activity = activity, moduleName = moduleName };
    incref app;
-   app.setSavedState(savedState, savedStateSize);
+   app.setSavedState(savedState, (uint)savedStateSize);
    activity->callbacks->onDestroy = onDestroy;
    activity->callbacks->onStart = onStart;
    activity->callbacks->onResume = onResume;
@@ -1056,6 +1057,22 @@ static Key keyCodeTable[] =
 // Why don't we have this in the NDK :(
 // default int32_t AKeyEvent_getUnichar(const AInputEvent* key_event);
 
+static Array<TouchPointerInfo> buildPointerInfo(AInputEvent * event)
+{
+   uint count = (uint)AMotionEvent_getPointerCount(event);
+   Array<TouchPointerInfo> infos { size = count };
+   int i;
+   for(i = 0; i < count; i++)
+   {
+      infos[i].x = (int)AMotionEvent_getX(event, i);
+      infos[i].y = (int)AMotionEvent_getY(event, i);
+      infos[i].id = (int)AMotionEvent_getPointerId(event, i);
+      infos[i].pressure = AMotionEvent_getPressure(event, i);
+      infos[i].size = AMotionEvent_getSize(event, i);
+   }
+   return infos;
+}
+
 class AndroidActivity : AndroidAppGlue
 {
    AndroidPollSource source;
@@ -1120,20 +1137,48 @@ class AndroidActivity : AndroidAppGlue
                mouseX = x, mouseY = y;
                if(result)
                   window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
+               if(result)
+               {
+                  Array<TouchPointerInfo> infos = buildPointerInfo(event);
+                  window.MultiTouchMessage(down, infos, &keyFlags, false, true);
+                  delete infos;
+               }
                break;
             }
             case AMOTION_EVENT_ACTION_UP:
                mouseX = x, mouseY = y;
-               window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, x, y, &keyFlags, false, true);
+               if(window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, x, y, &keyFlags, false, true))
+               {
+                  Array<TouchPointerInfo> infos = buildPointerInfo(event);
+                  window.MultiTouchMessage(up, infos, &keyFlags, false, true);
+                  delete infos;
+               }
                break;
             case AMOTION_EVENT_ACTION_MOVE:
                mouseX = x, mouseY = y;
-               window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, x, y, &keyFlags, false, true);
+               if(window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, x, y, &keyFlags, false, true))
+               {
+                  Array<TouchPointerInfo> infos = buildPointerInfo(event);
+                  window.MultiTouchMessage(move, infos, &keyFlags, false, true);
+                  delete infos;
+               }
                break;
             case AMOTION_EVENT_ACTION_CANCEL: break;
             case AMOTION_EVENT_ACTION_OUTSIDE: break;
-            case AMOTION_EVENT_ACTION_POINTER_DOWN: break;
-            case AMOTION_EVENT_ACTION_POINTER_UP: break;
+            case AMOTION_EVENT_ACTION_POINTER_DOWN:
+            {
+               Array<TouchPointerInfo> infos = buildPointerInfo(event);
+               window.MultiTouchMessage(pointerDown, infos, &keyFlags, false, true);
+               delete infos;
+               break;
+            }
+            case AMOTION_EVENT_ACTION_POINTER_UP:
+            {
+               Array<TouchPointerInfo> infos = buildPointerInfo(event);
+               window.MultiTouchMessage(pointerUp, infos, &keyFlags, false, true);
+               delete infos;
+               break;
+            }
          }
          return 1;
       }

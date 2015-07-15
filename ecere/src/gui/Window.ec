@@ -491,6 +491,15 @@ private class HotKeySlot : struct
    Key key;
 };
 
+public struct TouchPointerInfo
+{
+   int id;
+   int x, y;
+   float size, pressure;
+};
+
+public enum TouchPointerEvent { move, up, down, pointerUp, pointerDown };
+
 public class Window
 {
 private:
@@ -4032,6 +4041,59 @@ private:
          }
       }
       reEntrancy = false;
+   }
+
+   public bool MultiTouchMessage(TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers * mods, bool consequential, bool activate)
+   {
+      bool result = true;
+      if(infos.count)
+      {
+         Window w = null;
+         while(result && w != this)
+         {
+            // TODO: How to handle this?
+            int x = infos[0].x;
+            int y = infos[0].y;
+            Window msgWindow = GetAtPosition(x,y, false, true, w);
+            Window window;
+            delete w;
+            w = msgWindow;
+            if(w) incref w;
+            window = (w && !w.disabled) ? w : null;
+
+            if(consequential) mods->isSideEffect = true;
+            if(!result || (window && window.destroyed)) window = null;
+
+            if(window)
+            {
+               if(window.OnMultiTouch && !window.disabled)
+               {
+                  Array<TouchPointerInfo> in { size = infos.size };
+                  memcpy(in.array, infos.array, sizeof(TouchPointerInfo) * infos.size);
+
+                  for(i : in)
+                  {
+                     i.x -= (window.absPosition.x + window.clientStart.x);
+                     i.y -= (window.absPosition.y + window.clientStart.y);
+
+                     i.x = Max(Min(i.x, 32767),-32768);
+                     i.y = Max(Min(i.y, 32767),-32768);
+                  }
+
+                  incref window;
+                  if(!window.OnMultiTouch(event, in, *mods))
+                     result = false;
+
+                  delete in;
+                  delete window;
+               }
+            }
+            if(!result || !w || !w.clickThrough)
+               break;
+         }
+         delete w;
+      }
+      return result;
    }
 
    public bool MouseMessage(uint method, int x, int y, Modifiers * mods, bool consequential, bool activate)
@@ -7911,6 +7973,7 @@ public:
    virtual bool OnMiddleButtonDown(int x, int y, Modifiers mods);
    virtual bool OnMiddleButtonUp(int x, int y, Modifiers mods);
    virtual bool OnMiddleDoubleClick(int x, int y, Modifiers mods);
+   virtual bool OnMultiTouch(TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers mods);
    virtual void OnMouseCaptureLost(void);
    virtual void OnHScroll(ScrollBarAction action, int position, Key key);
    virtual void OnVScroll(ScrollBarAction action, int position, Key key);
@@ -9987,6 +10050,18 @@ class WindowControllerInterface : ControllableWindow
       return result;
    }
 
+   bool OnMultiTouch(TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers mods)
+   {
+      bool result = controller.OnMultiTouch ? ((bool(*)(Window, WindowController, TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers))(void *)controller.OnMultiTouch)((Window)controller.controlled, controller, event, infos, mods) : true;
+      if(result)
+      {
+         bool(* onMultiTouch)(Window, TouchPointerEvent, Array<TouchPointerInfo>, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMultiTouch];
+         if(onMultiTouch)
+            onMultiTouch(controller.window, event, infos, mods);
+      }
+      return result;
+   }
+
    void OnResize(int width, int height)
    {
       ((void(*)(Window, WindowController, int, int))(void *)controller.OnResize)((Window)controller.controlled, controller, width, height);
@@ -10075,6 +10150,7 @@ public:
    virtual bool V::OnMiddleButtonDown(WindowController controller, int x, int y, Modifiers mods);
    virtual bool V::OnMiddleButtonUp(WindowController controller, int x, int y, Modifiers mods);
    virtual bool V::OnMiddleDoubleClick(WindowController controller, int x, int y, Modifiers mods);
+   virtual bool V::OnMultiTouch(WindowController controller, TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers mods);
    virtual void V::OnResize(WindowController controller, int width, int height);
    virtual void V::OnRedraw(WindowController controller, Surface surface);
    virtual bool V::OnCreate(WindowController controller);
