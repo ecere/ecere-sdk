@@ -259,7 +259,7 @@ private:
                DataRow r = null;
                ProjectNode node = prj.topNode;
                char filePath[MAX_LOCATION];
-               prj.topNode.GetFullFilePath(filePath);
+               prj.topNode.GetFullFilePath(filePath, false);
                lastSelectionProject = CopyString(filePath);
                findWherePrjNode.Clear();
                ListProjectNodeFolders(node, null);
@@ -318,7 +318,7 @@ private:
             if(node)
             {
                char filePath[MAX_LOCATION];
-               node.GetFullFilePath(filePath);
+               node.GetFullFilePath(filePath, true);
                lastSelectionProjectNode = CopyString(filePath);
             }
          }
@@ -466,7 +466,7 @@ private:
                Project p = (Project)(intptr)row.tag;
                if(p)
                {
-                  p.topNode.GetFullFilePath(filePath);
+                  p.topNode.GetFullFilePath(filePath, false);
                   if(!fstrcmp(filePath, lastSelectionProject))
                      break;
                }

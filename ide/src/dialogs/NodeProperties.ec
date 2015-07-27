@@ -183,7 +183,7 @@ class NodeProperties : Window
             {
                char filePath[MAX_LOCATION];
                Window document;
-               node.GetFullFilePath(filePath);
+               node.GetFullFilePath(filePath, true);
                if(FileExists(filePath))
                   ide.projectView.OpenNode(node, key.ctrl && key.shift);
                else
