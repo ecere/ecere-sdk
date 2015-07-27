@@ -1805,7 +1805,7 @@ class Debugger
                            {
                               char path[MAX_LOCATION];
                               char relative[MAX_LOCATION];
-                              node.GetFullFilePath(path);
+                              node.GetFullFilePath(path, false);
                               bp.absoluteFilePath = path;
                               MakePathRelative(path, prj.topNode.path, relative);
                               bp.relativeFilePath = relative;

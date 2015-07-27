@@ -688,6 +688,15 @@ CompilerConfig GetCompilerConfig()
 #endif
 }
 
+int GetBitDepth()
+{
+#ifdef MAKEFILE_GENERATOR
+   return 0; // todo: improve this somehow? add bit depth command line option?
+#else
+   return ide.workspace.bitDepth;
+#endif
+}
+
 define localTargetType = config && config.options && config.options.targetType ?
             config.options.targetType : options && options.targetType ?
             options.targetType : TargetTypes::executable;

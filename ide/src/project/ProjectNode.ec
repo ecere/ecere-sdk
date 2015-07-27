@@ -10,7 +10,7 @@ import "ecere"
 import "Project"
 
 static define app = ((GuiApplication)__thisModule);
-#endif
+#endif // #ifndef MAKEFILE_GENERATOR
 
 #define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
 
@@ -20,7 +20,7 @@ static void OutputLog(const char * string)
    printf("%s", string);
 #else
    ide.outputView.buildBox.Log(string);
-#endif
+#endif // #ifdef MAKEFILE_GENERATOR
 }
 
 bool eString_PathInsideOfMore(const char * path, const char * of, char * pathRest)
@@ -518,13 +518,32 @@ private:
       }
    }
 
-   char * GetFullFilePath(char * buffer)
+   char * GetFullFilePath(char * buffer, bool resolveVars)
    {
       if(buffer)
       {
          strcpy(buffer, root.path);
-         PathCatSlash(buffer, path);
-         PathCatSlash(buffer, name);
+         if(resolveVars)
+         {
+            if(path && path[0])
+            {
+               DirExpression pathExp { };
+               Project project = property::project;
+               CompilerConfig compiler = GetCompilerConfig();
+               ProjectConfig config = project.config;
+               int bitDepth = GetBitDepth();
+               pathExp.Evaluate(path, project, compiler, config, bitDepth);
+               PathCatSlash(buffer, pathExp.dir);
+               delete compiler;
+               delete pathExp;
+            }
+            PathCatSlash(buffer, name);
+         }
+         else
+         {
+            PathCatSlash(buffer, path);
+            PathCatSlash(buffer, name);
+         }
       }
       return buffer;
    }
@@ -1118,7 +1137,7 @@ private:
                else if(child.name && !fstrcmp(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
-                  child.GetFullFilePath(p);
+                  child.GetFullFilePath(p, true);
                   if(!fstrcmp(p, path))
                   {
                      result = child;
@@ -1403,7 +1422,7 @@ private:
          }
       }
    }
-#endif
+#endif // #ifndef MAKEFILE_GENERATOR
 
    int OnCompare(ProjectNode b)
    {
@@ -2434,7 +2453,7 @@ private:
             if(!strcmpi(extension, &h2s))
             {
                char filePath[MAX_LOCATION];
-               GetFullFilePath(filePath);
+               GetFullFilePath(filePath, false);
                OutputLog($"No compilation required for header file "); OutputLog(filePath); OutputLog("\n");
                ChangeExtension(moduleName, h2s, moduleName);
                if(prj.topNode.Find(moduleName, false))

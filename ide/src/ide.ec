@@ -2712,7 +2712,7 @@ class IDEWorkSpace : Window
                {
                   if((n = p.topNode.Find(filePath, false)))
                   {
-                     n.GetFullFilePath(selectedPath);
+                     n.GetFullFilePath(selectedPath, true);
                      if((fileAttribs = FileExists(selectedPath)).isFile)
                      {
                         if(node) *node = n;
