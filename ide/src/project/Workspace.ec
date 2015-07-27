@@ -385,7 +385,7 @@ public:
       }
       if(prj)
       {
-         node.GetFullFilePath(absolute);
+         node.GetFullFilePath(absolute, false);
          return CopyString(absolute);
       }
 
