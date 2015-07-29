@@ -57,7 +57,7 @@ public class CheckBool : bool
 {
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
-      Button button = dataBox.keepEditor ? (Button)obsolete : null;
+      Button button = dataBox.keepEditor ? (Button)dataBox.editor : null;
       if(!button)
       {
          button = Button
