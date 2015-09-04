@@ -540,12 +540,12 @@ public class TabControl : Window
 
    bool NotifyClicked(Button button, int x, int y, Modifiers mods)
    {
-      if(curTab == (Tab)(intptr)button.id)
+      if(curTab == (Tab)(intptr)button.id && curTab.created)
          return true;
       //curButton.Activate();
       curButton.MakeActive();
 
-      if(curTab.Destroy(0))
+      if(!curTab || curTab == (Tab)(intptr)button.id || curTab.Destroy(0))
       {
          curButton.checked = false;
          button.checked = true;
@@ -638,18 +638,21 @@ public class TabControl : Window
                }
                break;
             }
-            else
+            else if(button.created)
                fallbackTab = button.tab;
          }
       }
-      if(curTab == tab)
+      if(curTab == tab && curTab.created)
       {
          if(!fallbackTab)
             fallbackTab = tabButtons.children.first ? ((TabButton)tabButtons.children.first).tab : null;
-         if(fallbackTab)
+         if(fallbackTab && fallbackTab.button.created)
             fallbackTab.SelectTab();
          else
+         {
+            curTab.Destroy(0);
             curTab = null;
+         }
          /*curTab = fallbackTab;
          curButton = curTab.button;
          curButton.checked = true;
@@ -748,6 +751,11 @@ public class Tab : Window
    public void SelectTab()
    {
       button.NotifyClicked(button.master, button, 0, 0, 0);
+   }
+
+   public property bool isAdded
+   {
+      get { return button && button.created; }
    }
 
    watch(caption)
