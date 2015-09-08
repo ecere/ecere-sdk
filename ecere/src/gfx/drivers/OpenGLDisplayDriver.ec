@@ -2979,7 +2979,9 @@ class OpenGLDisplayDriver : DisplayDriver
       else
          GLSetupTexturing(false);
 
-#if defined(EM_MODE) || defined(SHADERS)
+#if defined(SHADERS)
+      shader_setMaterial(material, mesh.flags.colors);
+#elif defined(EM_MODE)
       glimtkColor4f(material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity);
 #else
       if(mesh.flags.colors)
