@@ -16,6 +16,13 @@ int uMVMatrix;
 int uTextureMatrix;
 int uColor;
 int uTexturingOn;
+int uLightingOn;
+int uGlobalAmbient;
+int uLightsOn[8];
+int uLightsPos[8];
+int uLightsDiffuse[8];
+int uLightsAmbient[8];
+int uLightsSpecular[8];
 
 void shader_LoadMatrixf(MatrixMode mode, float * m)
 {
@@ -27,14 +34,143 @@ void shader_LoadMatrixf(MatrixMode mode, float * m)
       glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);
 }
 
+void shader_setGlobalAmbient(float r, float g, float b, float a)
+{
+   glUniform4f(uGlobalAmbient, r, g, b, a);
+}
+
 void shader_color(float r, float g, float b, float a)
 {
    glUniform4f(uColor, r, g, b, a);
 }
 
+void shader_lighting(bool on)
+{
+   glUniform1ui(uLightingOn, on);
+}
+
 void shader_texturing(bool on)
 {
    glUniform1ui(uTexturingOn, on);
+}
+
+void shader_setLight(Display display, uint id, Light light)
+{
+   if(light != null)
+   {
+      Object lightObject = light.lightObject;
+      float multiplier = light.multiplier;
+
+      glUniform1i(uLightsOn[id], 1);
+
+      if(!multiplier) multiplier = 1.0f;
+
+      glUniform4f(uLightsDiffuse[id],
+         light.diffuse.r * multiplier,
+         light.diffuse.g * multiplier,
+         light.diffuse.b * multiplier, 1.0);
+
+      glUniform4f(uLightsAmbient[id],
+         light.ambient.r * multiplier,
+         light.ambient.g * multiplier,
+         light.ambient.b * multiplier, 1.0);
+
+      glUniform4f(uLightsSpecular[id],
+         light.specular.r * multiplier,
+         light.specular.g * multiplier,
+         light.specular.b * multiplier, 1.0);
+
+      if(lightObject)
+      {
+         /*
+         Vector3D positionVector;
+         if(light.flags.spot)
+         {
+            if(lightObject.flags.root || !lightObject.parent)
+            {
+               positionVector = lightObject.transform.position;
+               positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+            }
+            else
+            {
+               positionVector.MultMatrix(lightObject.transform.position, lightObject.parent.matrix);
+               if(display.display3D.camera)
+                  positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+            }
+            position[3] = 1;
+         }
+         else
+         {
+            if(!light.direction.x && !light.direction.y && !light.direction.z)
+            {
+               Vector3Df vector { 0,0,-1 };
+               Matrix mat;
+               mat.RotationQuaternion(light.orientation);
+               positionVector.MultMatrixf(vector, mat);
+            }
+            else
+            {
+               positionVector = light.direction;
+               position[3] = 1;
+            }
+         }
+
+         position[0] = (float)positionVector.x;
+         position[1] = (float)positionVector.y;
+         position[2] = (float)positionVector.z;
+
+         glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
+
+         if(light.flags.attenuation)
+         {
+            glLightf(GL_LIGHT0 + id, GL_CONSTANT_ATTENUATION, light.Kc);
+            glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, light.Kl);
+            glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
+         }
+
+         if(light.flags.spot)
+         {
+            float exponent = 0;
+            #define MAXLIGHT  0.9
+            float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
+            // Figure out exponent out of the hot spot
+            exponent = (float)(log(MAXLIGHT) / log(cos((light.hotSpot / 2))));
+
+            glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, direction);
+            glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)(light.fallOff / 2));
+            glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, exponent);
+         }
+         */
+      }
+      else
+      {
+         Vector3Df l;
+         Vector3Df vector { 0,0,-1 };
+         Vector3Df direction;
+         Matrix mat;
+
+         mat.RotationQuaternion(light.orientation);
+         direction.MultMatrix(vector, mat);
+
+         if(!display.display3D || !display.display3D.camera)
+         {
+            // Light in View Space (SetLight before setting camera)
+            l.Normalize(direction);
+            l.z *= -1;
+         }
+         else
+         {
+            // Light in World Space (SetLight after setting camera)
+            Matrix m = display.display3D.camera.viewMatrix;
+            m.Scale(1,1,-1);
+            vector.MultMatrix(direction, m);
+            l.Normalize(vector);
+         }
+         glUniform4f(uLightsPos[id], l.x, l.y, l.z, 0);
+      }
+   }
+   else
+      glUniform1i(uLightsOn[id], 0);
 }
 
 void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
@@ -94,6 +230,7 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       int fShader = glCreateShader(GL_FRAGMENT_SHADER);
       const char * vptr[1] = { vsSource };
       const char * fptr[1] = { psSource };
+      int i;
 
       glShaderSource(vShader, 1, vptr, &vsLen);
       glShaderSource(fShader, 1, fptr, &fsLen);
@@ -138,6 +275,28 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
       uColor         = glGetUniformLocation(program, "current_color");
       uTexturingOn   = glGetUniformLocation(program, "texturingOn");
+      uLightingOn    = glGetUniformLocation(program, "lightingOn");
+      uGlobalAmbient = glGetUniformLocation(program, "globalAmbient");
+
+      for(i = 0; i < 8; i++)
+      {
+         char name[100];
+
+         sprintf(name, "lightsOn[%d]", i);
+         uLightsOn [i] = glGetUniformLocation(program, name);
+
+         sprintf(name, "lightsPos[%d]", i);
+         uLightsPos[i] = glGetUniformLocation(program, name);
+
+         sprintf(name, "lightsDiffuse[%d]", i);
+         uLightsDiffuse[i] = glGetUniformLocation(program, name);
+
+         sprintf(name, "lightsAmbient[%d]", i);
+         uLightsAmbient[i] = glGetUniformLocation(program, name);
+
+         sprintf(name, "lightsSpecular[%d]", i);
+         uLightsSpecular[i] = glGetUniformLocation(program, name);
+      }
 
       shadingProgram = program;
 
