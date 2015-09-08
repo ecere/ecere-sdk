@@ -1055,7 +1055,9 @@ if distributed with the Ecere SDK Windows installer.
                                     }
                                  ]
                               },
-                              "gl_compat_4_4.h"
+                              "gl_compat_4_4.h",
+                              "fixed.frag",
+                              "fixed.vertex"
                            ]
                         },
                         {
