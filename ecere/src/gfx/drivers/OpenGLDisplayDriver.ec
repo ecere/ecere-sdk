@@ -666,6 +666,8 @@ class OpenGLDisplayDriver : DisplayDriver
       //previous = oglSystem.glContext;
    #endif
 #endif
+      GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       return true;
    }
 
@@ -697,6 +699,8 @@ class OpenGLDisplayDriver : DisplayDriver
       glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
    #endif
 #endif
+      GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       return true;
    }
 
@@ -1083,6 +1087,8 @@ class OpenGLDisplayDriver : DisplayDriver
          loadShaders("<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
          #endif
          glEnableClientState(GL_VERTEX_ARRAY);
+         GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 #if defined(__WIN32__)
          if(glBlendFuncSeparate)
