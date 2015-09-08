@@ -1109,7 +1109,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #if !defined(EM_MODE) && !defined(SHADERS)
          glShadeModel(GL_FLAT);
 
-         // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, true);
+         // #define GL_LIGHT_MODEL_LOCAL_VIEWER 0x0B51
+
+         // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
          glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
@@ -2620,7 +2622,9 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case ambient:
          {
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if defined(SHADERS)
+            shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
+#elif !defined(EM_MODE)
             float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
             glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 #endif
@@ -2643,7 +2647,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SetLight(Display display, int id, Light light)
    {
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if defined(SHADERS)
+      shader_setLight(display, id, light);
+#elif !defined(EM_MODE)
       //Logf("SetLight\n");
 
       if(light != null)
@@ -2778,7 +2784,6 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
          {
-
             Vector3Df vector { 0,0,-1 };
             Vector3Df direction;
             Matrix mat;
@@ -2868,7 +2873,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glEnable(GL_DEPTH_TEST);
 
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if defined(SHADERS)
+         shader_lighting(true);
+#elif !defined(EM_MODE)
          glEnable(GL_LIGHTING);
          glShadeModel(GL_SMOOTH);
 #endif
@@ -2885,7 +2892,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
          GLSetupTexturing(false);
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if defined(SHADERS)
+         shader_lighting(false);
+#elif !defined(EM_MODE)
          glDisable(GL_LIGHTING);
          glDisable(GL_FOG);
          glShadeModel(GL_FLAT);
