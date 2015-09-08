@@ -20,9 +20,18 @@ int uLightingOn;
 int uGlobalAmbient;
 int uLightsOn[8];
 int uLightsPos[8];
+int uLightsPosI[8];
 int uLightsDiffuse[8];
 int uLightsAmbient[8];
 int uLightsSpecular[8];
+int uPerVertexColor;
+int uMatDiffuse;
+int uMatAmbient;
+int uMatSpecular;
+int uMatEmissive;
+int uMatPower;
+int uMatOpacity;
+int uMatTwoSided;
 
 void shader_LoadMatrixf(MatrixMode mode, float * m)
 {
@@ -36,7 +45,7 @@ void shader_LoadMatrixf(MatrixMode mode, float * m)
 
 void shader_setGlobalAmbient(float r, float g, float b, float a)
 {
-   glUniform4f(uGlobalAmbient, r, g, b, a);
+   glUniform3f(uGlobalAmbient, r, g, b);
 }
 
 void shader_color(float r, float g, float b, float a)
@@ -54,6 +63,18 @@ void shader_texturing(bool on)
    glUniform1ui(uTexturingOn, on);
 }
 
+void shader_setMaterial(Material material, bool perVertexColor)
+{
+   glUniform1ui(uPerVertexColor, perVertexColor);
+   glUniform1ui(uMatTwoSided, !material.flags.singleSideLight);
+   glUniform3f(uMatDiffuse, material.diffuse.r, material.diffuse.g, material.diffuse.b);
+   glUniform3f(uMatAmbient, material.ambient.r, material.ambient.g, material.ambient.b);
+   glUniform3f(uMatSpecular, material.specular.r, material.specular.g, material.specular.b);
+   glUniform3f(uMatEmissive, material.emissive.r, material.emissive.g, material.emissive.b);
+   glUniform1f(uMatPower, material.power);
+   glUniform1f(uMatOpacity, material.opacity);
+}
+
 void shader_setLight(Display display, uint id, Light light)
 {
    if(light != null)
@@ -65,20 +86,20 @@ void shader_setLight(Display display, uint id, Light light)
 
       if(!multiplier) multiplier = 1.0f;
 
-      glUniform4f(uLightsDiffuse[id],
+      glUniform3f(uLightsDiffuse[id],
          light.diffuse.r * multiplier,
          light.diffuse.g * multiplier,
-         light.diffuse.b * multiplier, 1.0);
+         light.diffuse.b * multiplier);
 
-      glUniform4f(uLightsAmbient[id],
+      glUniform3f(uLightsAmbient[id],
          light.ambient.r * multiplier,
          light.ambient.g * multiplier,
-         light.ambient.b * multiplier, 1.0);
+         light.ambient.b * multiplier);
 
-      glUniform4f(uLightsSpecular[id],
+      glUniform3f(uLightsSpecular[id],
          light.specular.r * multiplier,
          light.specular.g * multiplier,
-         light.specular.b * multiplier, 1.0);
+         light.specular.b * multiplier);
 
       if(lightObject)
       {
@@ -144,19 +165,24 @@ void shader_setLight(Display display, uint id, Light light)
       }
       else
       {
-         Vector3Df l;
+         Vector3Df l, li;
          Vector3Df vector { 0,0,-1 };
-         Vector3Df direction;
+         Vector3Df vectorI { 0,0, 1 };
+         Vector3Df direction, directionI;
          Matrix mat;
 
          mat.RotationQuaternion(light.orientation);
          direction.MultMatrix(vector, mat);
+         directionI.MultMatrix(vectorI, mat);
 
          if(!display.display3D || !display.display3D.camera)
          {
             // Light in View Space (SetLight before setting camera)
             l.Normalize(direction);
             l.z *= -1;
+
+            li.Normalize(directionI);
+            li.z *= -1;
          }
          else
          {
@@ -165,8 +191,12 @@ void shader_setLight(Display display, uint id, Light light)
             m.Scale(1,1,-1);
             vector.MultMatrix(direction, m);
             l.Normalize(vector);
+
+            vectorI.MultMatrix(directionI, m);
+            li.Normalize(vectorI);
          }
          glUniform4f(uLightsPos[id], l.x, l.y, l.z, 0);
+         glUniform4f(uLightsPosI[id], li.x, li.y, li.z, 0);
       }
    }
    else
@@ -277,6 +307,14 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       uTexturingOn   = glGetUniformLocation(program, "texturingOn");
       uLightingOn    = glGetUniformLocation(program, "lightingOn");
       uGlobalAmbient = glGetUniformLocation(program, "globalAmbient");
+      uPerVertexColor  = glGetUniformLocation(program, "perVertexColor");
+      uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
+      uMatAmbient       = glGetUniformLocation(program, "matAmbient");
+      uMatSpecular      = glGetUniformLocation(program, "matSpecular");
+      uMatEmissive      = glGetUniformLocation(program, "matEmissive");
+      uMatPower         = glGetUniformLocation(program, "matPower");
+      uMatOpacity       = glGetUniformLocation(program, "matOpacity");
+      uMatTwoSided      = glGetUniformLocation(program, "matTwoSided");
 
       for(i = 0; i < 8; i++)
       {
@@ -287,6 +325,9 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
 
          sprintf(name, "lightsPos[%d]", i);
          uLightsPos[i] = glGetUniformLocation(program, name);
+
+         sprintf(name, "lightsPosI[%d]", i);
+         uLightsPosI[i] = glGetUniformLocation(program, name);
 
          sprintf(name, "lightsDiffuse[%d]", i);
          uLightsDiffuse[i] = glGetUniformLocation(program, name);
