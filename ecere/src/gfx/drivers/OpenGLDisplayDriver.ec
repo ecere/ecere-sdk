@@ -9,7 +9,7 @@ namespace gfx::drivers;
 #define GL_BGRA_EXT  0x80E1
 
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#  if 0 //defined(SHADERS)
+#  if defined(SHADERS)
 #     include "gl_core_3_3.h"
 #  else
 #     include "gl_compat_4_4.h"
@@ -399,7 +399,9 @@ public void glesLineStipple( int i, unsigned short j )
       glGenTextures(1, &stippleTexture);
    glBindTexture(GL_TEXTURE_2D, stippleTexture);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 16, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
-   glEnable(GL_TEXTURE_2D);
+
+   // TOOD: Special shading code for stippling?
+   GLSetupTexturing(true);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -414,7 +416,7 @@ public void glesLineStipple( int i, unsigned short j )
 
 public void glesLightModeli( unsigned int pname, int param )
 {
-#if !defined(EM_MODE)
+#if !defined(EM_MODE) && !defined(SHADERS)
    if(pname == GL_LIGHT_MODEL_TWO_SIDE)
       glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
 #endif
@@ -450,6 +452,15 @@ static int primitiveTypes[RenderPrimitiveType] =
    GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GLIMTKMode::quads, GLIMTKMode::quadStrip, GL_LINE_STRIP
 };
 #endif
+
+public void GLSetupTexturing(bool enable)
+{
+#ifdef SHADERS
+   shader_texturing(enable);
+#else
+   (enable ? glEnable : glDisable)(GL_TEXTURE_2D);
+#endif
+}
 
 
 // Non OpenGL ES friendly stuff
@@ -1019,19 +1030,6 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             wglShareLists(oglSystem.glrc, oglDisplay.glrc);
             wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
-
-            // Had to recreate the context here ? (Alpha blending visual)
-
-            ogl_LoadFunctions();
-            CheckExtensions(oglSystem);
-            vboAvailable = glBindBuffer != null;
-
-            setupDebugging();
-            #ifdef SHADERS
-            loadShaders("<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
-            #endif
-            glEnableClientState(GL_VERTEX_ARRAY);
-
             result = true;
          }
          else
@@ -1109,15 +1107,15 @@ class OpenGLDisplayDriver : DisplayDriver
          // glTranslatef(0.375f, 0.375f, 0.0f);
          // glTranslatef(-0.625f, -0.625f, 0.0f);
          glMatrixMode(MatrixMode::projection);
+#if !defined(EM_MODE) && !defined(SHADERS)
          glShadeModel(GL_FLAT);
 
          // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, true);
-#if !defined(EM_MODE)
          glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-#endif
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
          glEnable(GL_NORMALIZE);
+#endif
          glDepthFunc(GL_LESS);
          glClearDepth(1.0);
          glDisable(GL_MULTISAMPLE_ARB);
@@ -1700,7 +1698,9 @@ class OpenGLDisplayDriver : DisplayDriver
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+#if !defined(SHADERS)
       glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+#endif
 
       mipMap.Allocate(null, w, h, w, pixelFormatRGBA, false);
 
@@ -1787,7 +1787,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
 #endif
 
+#if !defined(SHADERS)
          glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+#endif
 
          result = true;
 
@@ -2176,7 +2178,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(!oglSurface.writingText)
       {
          // glTranslatef(-0.375f, -0.375f, 0.0f);
-         glEnable(GL_TEXTURE_2D);
+         GLSetupTexturing(true);
          glColor4fv(oglSurface.bitmapMult);
       }
       else if(oglSurface.xOffset)
@@ -2222,7 +2224,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(!oglSurface.writingText)
       {
-         glDisable(GL_TEXTURE_2D);
+         GLSetupTexturing(false);
 
          //glTranslate(0.375, 0.375, 0.0);
       }
@@ -2236,7 +2238,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       //glTranslate(-0.375, -0.375, 0.0);
 
-      glEnable(GL_TEXTURE_2D);
+      GLSetupTexturing(true);
       glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
 
       glColor4fv(oglSurface.bitmapMult);
@@ -2274,7 +2276,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glEnd();
 
-      glDisable(GL_TEXTURE_2D);
+      GLSetupTexturing(false);
 
       //glTranslate(0.375, 0.375, 0.0);
    }
@@ -2374,10 +2376,12 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
+#if !defined(SHADERS)
          glRasterPos2d(dx,dy);
          //glPixelZoom(flipX ? -s2dw : s2dw, flipY ? s2dh : -s2dh);
          glPixelZoom(s2dw, -s2dh);
          glDrawPixels(sw,sh,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+#endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -2441,9 +2445,11 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
+#if !defined(SHADERS)
          glRasterPos2d(dx,dy);
          glPixelZoom(1,-1);
          glDrawPixels(w,h,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+#endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
@@ -2496,7 +2502,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
       oglSurface.writingText = true;
 
-      glEnable(GL_TEXTURE_2D);
+      GLSetupTexturing(true);
+
       if(surface.font.outlineSize)
       {
          ColorAlpha outlineColor = surface.outlineColor;
@@ -2511,7 +2518,7 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.writingText = false;
       oglSystem.loadingFont = false;
 
-      glDisable(GL_TEXTURE_2D);
+      GLSetupTexturing(false);
 
       //glTranslated(0.375, 0.375, 0.0);
    }
@@ -2557,12 +2564,12 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
-#if defined(ES1_1) || defined(EM_MODE)
+#if defined(ES1_1) || defined(EM_MODE) || defined(SHADERS)
          stippleEnabled = false;
          glMatrixMode(GL_TEXTURE);
          glLoadIdentity();
          glMatrixMode(MatrixMode::projection);
-         glDisable(GL_TEXTURE_2D);
+         GLSetupTexturing(false);   // TODO: Special shading code for stipple?
 #else
          glDisable(GL_LINE_STIPPLE);
 #endif
@@ -2596,19 +2603,23 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case fogColor:
          {
+#if !defined(SHADERS)
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
             glFogfv(GL_FOG_COLOR, (float *)&color);
+#endif
             break;
          }
          case fogDensity:
+#if !defined(SHADERS)
             glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
+#endif
             break;
          case blend:
             if(value) glEnable(GL_BLEND); else glDisable(GL_BLEND);
             break;
          case ambient:
          {
-#if !defined(EM_MODE)
+#if !defined(EM_MODE) && !defined(SHADERS)
             float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
             glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 #endif
@@ -2631,7 +2642,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SetLight(Display display, int id, Light light)
    {
-#if !defined(EM_MODE)
+#if !defined(EM_MODE) && !defined(SHADERS)
       //Logf("SetLight\n");
 
       if(light != null)
@@ -2855,7 +2866,8 @@ class OpenGLDisplayDriver : DisplayDriver
          // ...
 
          glEnable(GL_DEPTH_TEST);
-#if !defined(EM_MODE)
+
+#if !defined(EM_MODE) && !defined(SHADERS)
          glEnable(GL_LIGHTING);
          glShadeModel(GL_SMOOTH);
 #endif
@@ -2871,10 +2883,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
+         GLSetupTexturing(false);
+#if !defined(EM_MODE) && !defined(SHADERS)
          glDisable(GL_LIGHTING);
          glDisable(GL_FOG);
-         glDisable(GL_TEXTURE_2D);
-#if !defined(EM_MODE)
          glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
@@ -2897,30 +2909,32 @@ class OpenGLDisplayDriver : DisplayDriver
       // Basic Properties
       if(material.flags.doubleSided)
       {
-#if !defined(EM_MODE)
+#if !defined(EM_MODE) && !defined(SHADERS)
          glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
       }
       else
       {
-#if !defined(EM_MODE)
+#if !defined(EM_MODE) && !defined(SHADERS)
          glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
          glEnable(GL_CULL_FACE);
       }
 
+#if !defined(SHADERS)
       // Fog
       if(material.flags.noFog)
          glDisable(GL_FOG);
       else
          glEnable(GL_FOG);
+#endif
 
       // Maps
       if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
       {
          Bitmap map = material.baseMap;
-         glEnable(GL_TEXTURE_2D);
+         GLSetupTexturing(true);
          glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)map.driverData);
 
          glMatrixMode(GL_TEXTURE);
@@ -2941,10 +2955,10 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
       else
-         glDisable(GL_TEXTURE_2D);
+         GLSetupTexturing(false);
 
-#ifdef EM_MODE
-      glColor4f(material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity);
+#if defined(EM_MODE) || defined(SHADERS)
+      glimtkColor4f(material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity);
 #else
       if(mesh.flags.colors)
       {
@@ -3274,7 +3288,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(primitive->nIndices < (mesh.nVertices >> 2) && !primitive->type.indices32bit)
          {
             int c;
-            glBegin(primitiveTypes[primitive->type.primitiveType]);
+            glBegin((GLIMTKMode)primitiveTypes[primitive->type.primitiveType]);
             if(primitive->data)
             {
                OGLIndices oglIndices = primitive->data;
