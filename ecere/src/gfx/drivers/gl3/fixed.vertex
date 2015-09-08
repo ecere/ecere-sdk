@@ -4,6 +4,17 @@ uniform mat4 projection_matrix;
 uniform mat4 modelview_matrix;
 uniform vec4 current_color;
 
+// Lights
+uniform bool lightsOn[8];
+uniform vec4 lightsPos[8];
+
+uniform vec4 lightsDiffuse[8];
+uniform vec4 lightsAmbient[8];
+uniform vec4 lightsSpecular[8];
+
+uniform vec4 globalAmbient;
+uniform bool lightingOn;
+
 in vec2 texCoord;
 in vec3 vertex;
 in vec3 normal;
@@ -14,7 +25,25 @@ out vec4 fColor;
 
 void main(void)
 {
+   vec3 n = normalize(mat3x3(modelview_matrix) * normal);
    gl_Position = projection_matrix * modelview_matrix * vec4(vertex, 1.0);
    fTexCoord = texCoord;
-   fColor = current_color * color;
+
+   if(lightingOn)
+   {
+      int i;
+      vec4 diffuseColor = current_color * color;
+      vec4 ambientColor = diffuseColor;
+
+      fColor = vec4(0);
+      for(i = 0; i < 8; i++)
+         if(lightsOn[i])
+         {
+            vec4 l = lightsPos[i];
+            fColor += diffuseColor * min(1, max(0, dot(n, l.xyz))) * lightsDiffuse[i];
+         }
+      fColor += ambientColor * globalAmbient;
+   }
+   else
+      fColor = current_color * color;
 }
