@@ -1656,6 +1656,8 @@ class OpenGLDisplayDriver : DisplayDriver
       //previous = oglSystem.glContext;
    #endif
 #endif
+      GLBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       return true;
    }
 
@@ -1687,6 +1689,8 @@ class OpenGLDisplayDriver : DisplayDriver
       glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
    #endif
 #endif
+      GLBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       return true;
    }
 
@@ -2063,6 +2067,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       if(result)
       {
+         GLBindBuffer(GL_ARRAY_BUFFER, 0);
+         GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 #if defined(__WIN32__)
          if(glBlendFuncSeparate)
             glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
