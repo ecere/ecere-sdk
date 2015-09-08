@@ -13,11 +13,15 @@ int shadingProgram;
 // Uniforms
 int uPrjMatrix;
 int uMVMatrix;
+int uTextureMatrix;
 int uColor;
+int uTexturingOn;
 
 void shader_LoadMatrixf(MatrixMode mode, float * m)
 {
-   if(mode == projection)
+   if(mode == texture)
+      glUniformMatrix4fv(uTextureMatrix, 1, GL_FALSE, m);
+   else if(mode == projection)
       glUniformMatrix4fv(uPrjMatrix, 1, GL_FALSE, m);
    else
       glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);
@@ -26,6 +30,11 @@ void shader_LoadMatrixf(MatrixMode mode, float * m)
 void shader_color(float r, float g, float b, float a)
 {
    glUniform4f(uColor, r, g, b, a);
+}
+
+void shader_texturing(bool on)
+{
+   glUniform1ui(uTexturingOn, on);
 }
 
 void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
@@ -124,12 +133,23 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       puts("--------------------------");
       puts(compileLog[0] ? compileLog : "Success.");
 
-      uPrjMatrix = glGetUniformLocation(program, "projection_matrix");
-      uMVMatrix  = glGetUniformLocation(program, "modelview_matrix");
-      uColor     = glGetUniformLocation(program, "current_color");
+      uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
+      uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
+      uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
+      uColor         = glGetUniformLocation(program, "current_color");
+      uTexturingOn   = glGetUniformLocation(program, "texturingOn");
 
       shadingProgram = program;
 
       glUseProgram(shadingProgram);
+
+      // Initialize uniforms to defaults
+      glmsMatrixMode(texture);
+      glmsLoadIdentity();
+      glmsMatrixMode(projection);
+      glmsLoadIdentity();
+      glmsMatrixMode(modelView);
+      glmsLoadIdentity();
+      shader_color(1.0, 1.0, 1.0, 1.0);
    }
 }

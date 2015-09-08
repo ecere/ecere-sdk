@@ -45,7 +45,7 @@ public union Matrix
 
    void Multiply(Matrix a, Matrix b)
    {
-#ifdef _GLES
+#if 1 // defined(_GLES) || defined(SHADERS)
       // We need a full matrix multiplication for the Projection matrix
       m[0][0]=a.m[0][0]*b.m[0][0] + a.m[0][1]*b.m[1][0] + a.m[0][2]*b.m[2][0] + a.m[0][3]*b.m[3][0];
       m[0][1]=a.m[0][0]*b.m[0][1] + a.m[0][1]*b.m[1][1] + a.m[0][2]*b.m[2][1] + a.m[0][3]*b.m[3][1];

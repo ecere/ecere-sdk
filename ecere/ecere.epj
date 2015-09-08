@@ -1075,7 +1075,9 @@ from wherever you obtained them.
                                     }
                                  ]
                               },
-                              "gl_compat_4_4.h"
+                              "gl_compat_4_4.h",
+                              "fixed.frag",
+                              "fixed.vertex"
                            ]
                         },
                         {
