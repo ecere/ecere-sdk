@@ -75,7 +75,8 @@ from wherever you obtained them.
       "IncludeDirs" : [
          "src/gfx/drivers/harfbuzz",
          "/usr/X11R6/include",
-         "/usr/X11R6/include/freetype2"
+         "/usr/X11R6/include/freetype2",
+         "src/gfx/drivers/gl3"
       ],
       "DefaultNameSpace" : "ecere",
       "TargetType" : "SharedLibrary",
@@ -934,6 +935,147 @@ from wherever you obtained them.
                                     "ExcludeFromBuild" : true
                                  }
                               }
+                           ]
+                        },
+                        {
+                           "Folder" : "gl3",
+                           "Files" : [
+                              {
+                                 "FileName" : "gl_core_3_3.c",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              "gl_core_3_3.h",
+                              {
+                                 "FileName" : "glab.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "FileName" : "immediate.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "FileName" : "matrixStack.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              "wglDefs.h",
+                              "egl.ec",
+                              {
+                                 "FileName" : "shading.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "FileName" : "gl_compat_4_4.c",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              "gl_compat_4_4.h"
                            ]
                         },
                         {
@@ -2508,6 +2650,13 @@ from wherever you obtained them.
                   "ExcludeFromBuild" : true
                }
             }
+         ]
+      },
+      {
+         "Folder" : "shaders",
+         "Files" : [
+            "src/gfx/drivers/gl3/fixed.frag",
+            "src/gfx/drivers/gl3/fixed.vertex"
          ]
       },
       {

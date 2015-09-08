@@ -1,0 +1,20 @@
+#version 150
+
+uniform mat4 projection_matrix;
+uniform mat4 modelview_matrix;
+uniform vec4 current_color;
+
+in vec2 texCoord;
+in vec3 vertex;
+in vec3 normal;
+in vec4 color;
+
+out vec2 fTexCoord;
+out vec4 fColor;
+
+void main(void)
+{
+   gl_Position = projection_matrix * modelview_matrix * vec4(vertex, 1.0);
+   fTexCoord = texCoord;
+   fColor = current_color * color;
+}
