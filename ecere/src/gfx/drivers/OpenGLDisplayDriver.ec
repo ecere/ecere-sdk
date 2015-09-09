@@ -462,6 +462,14 @@ public void GLSetupTexturing(bool enable)
 #endif
 }
 
+public void GLSetupLighting(bool enable)
+{
+#if defined(SHADERS)
+   shader_lighting(enable);
+#elif !defined(EM_MODE)
+   (enable ? glEnable : glDisable)(GL_LIGHTING);
+#endif
+}
 
 // Non OpenGL ES friendly stuff
 
@@ -2873,10 +2881,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glEnable(GL_DEPTH_TEST);
 
-#if defined(SHADERS)
-         shader_lighting(true);
-#elif !defined(EM_MODE)
-         glEnable(GL_LIGHTING);
+         GLSetupLighting(true);
+#if !defined(EM_MODE) && !defined(SHADERS)
          glShadeModel(GL_SMOOTH);
 #endif
          glDepthMask((byte)bool::true);
@@ -2891,11 +2897,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
+
          GLSetupTexturing(false);
-#if defined(SHADERS)
-         shader_lighting(false);
-#elif !defined(EM_MODE)
-         glDisable(GL_LIGHTING);
+         GLSetupLighting(false);
+#if !defined(SHADERS) && !defined(EM_MODE)
          glDisable(GL_FOG);
          glShadeModel(GL_FLAT);
 #endif
