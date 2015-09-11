@@ -20,7 +20,6 @@ int uLightingOn;
 int uGlobalAmbient;
 int uLightsOn[8];
 int uLightsPos[8];
-int uLightsPosI[8];
 int uLightsDiffuse[8];
 int uLightsAmbient[8];
 int uLightsSpecular[8];
@@ -165,38 +164,20 @@ void shader_setLight(Display display, uint id, Light light)
       }
       else
       {
-         Vector3Df l, li;
+         Vector3Df l;
          Vector3Df vector { 0,0,-1 };
-         Vector3Df vectorI { 0,0, 1 };
-         Vector3Df direction, directionI;
+         Vector3Df direction;
          Matrix mat;
+         Matrix m = matrixStack[0][matrixIndex[0]];
+         m.Scale(nearPlane, nearPlane, nearPlane);
 
          mat.RotationQuaternion(light.orientation);
          direction.MultMatrix(vector, mat);
-         directionI.MultMatrix(vectorI, mat);
 
-         if(!display.display3D || !display.display3D.camera)
-         {
-            // Light in View Space (SetLight before setting camera)
-            l.Normalize(direction);
-            l.z *= -1;
+         vector.MultMatrix(direction, m);
+         l.Normalize(vector);
 
-            li.Normalize(directionI);
-            li.z *= -1;
-         }
-         else
-         {
-            // Light in World Space (SetLight after setting camera)
-            Matrix m = display.display3D.camera.viewMatrix;
-            m.Scale(1,1,-1);
-            vector.MultMatrix(direction, m);
-            l.Normalize(vector);
-
-            vectorI.MultMatrix(directionI, m);
-            li.Normalize(vectorI);
-         }
          glUniform4f(uLightsPos[id], l.x, l.y, l.z, 0);
-         glUniform4f(uLightsPosI[id], li.x, li.y, li.z, 0);
       }
    }
    else
@@ -325,9 +306,6 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
 
          sprintf(name, "lightsPos[%d]", i);
          uLightsPos[i] = glGetUniformLocation(program, name);
-
-         sprintf(name, "lightsPosI[%d]", i);
-         uLightsPosI[i] = glGetUniformLocation(program, name);
 
          sprintf(name, "lightsDiffuse[%d]", i);
          uLightsDiffuse[i] = glGetUniformLocation(program, name);

@@ -74,9 +74,9 @@ public void glmsSetNearPlane(double value)
    nearPlane = value;
 }
 
-static Matrix matrixStack[3][32];
-static int matrixIndex[3];
-static int curStack = 0;
+/*static */Matrix matrixStack[3][32];
+/*static */int matrixIndex[3];
+/*static */int curStack = 0;
 
 static void LoadCurMatrix()
 {
