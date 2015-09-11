@@ -7,7 +7,6 @@ uniform vec4 current_color;
 // Lights
 uniform bool lightsOn[8];
 uniform vec4 lightsPos[8];
-uniform vec4 lightsPosI[8];
 
 uniform vec3 lightsDiffuse[8];
 uniform vec3 lightsAmbient[8];
@@ -33,6 +32,7 @@ in vec4 color;
 
 out vec2 fTexCoord;
 out vec4 fColor;
+out vec4 fColorBack;
 
 void main(void)
 {
@@ -47,27 +47,27 @@ void main(void)
       vec3 ambientColor = perVertexColor ? color.xyz : matAmbient;
       float opacity = perVertexColor ? color.w : matOpacity;
       vec3 c = vec3(0);
+      vec3 c2 = vec3(0);
       vec3 ecPosition3 = vec3(gl_Position) / gl_Position.w;
       vec3 eye = vec3(0.0, 0.0, 1.0);
 
       fColor = vec4(0);
+      if(matTwoSided)
+         fColorBack = vec4(0);
       for(i = 0; i < 8; i++)
          if(lightsOn[i])
          {
             vec4 l = lightsPos[i];
             float d = dot(n, l.xyz);
             float pf = 0;
-            if(matTwoSided)
-            {
-               float d2 = dot(n, lightsPosI[i].xyz);
-               if(d2 > d)
-                  d = d2;
-            }
+            vec3 VP = l.xyz;
+            vec3 halfVector;
             if(matPower != 0.0)
             {
-               vec3 VP = l.xyz;
-               vec3 halfVector = normalize(VP + eye);
-               float nDotVP = max(0, dot(n, VP));
+               float nDotVP;
+               VP = l.xyz;
+               halfVector = normalize(VP + eye);
+               nDotVP = max(0, dot(n, VP));
                if(nDotVP != 0.0)
                {
                   float nDotHV = max(0.0, dot(n, halfVector));
@@ -78,11 +78,37 @@ void main(void)
             c += diffuseColor * min(1, max(0, d)) * lightsDiffuse[i];
             c += matSpecular * pf * lightsSpecular[i];
             c += matAmbient * lightsAmbient[i];
+
+            if(matTwoSided)
+            {
+               vec3 iN = -n;
+               float d2 = dot(iN, l.xyz);
+               if(matPower != 0.0)
+               {
+                  float nDotVP = max(0, dot(iN, VP));
+                  if(nDotVP != 0.0)
+                  {
+                     float nDotHV = max(0.0, dot(iN, halfVector));
+                     pf = pow(nDotHV, matPower);
+                  }
+               }
+
+               c2 += diffuseColor * min(1, max(0, d2)) * lightsDiffuse[i];
+               c2 += matSpecular * pf * lightsSpecular[i];
+               c2 += matAmbient * lightsAmbient[i];
+            }
          }
 
       c += ambientColor * globalAmbient;
       c += matEmissive;
       fColor = vec4(c, opacity);
+
+      if(matTwoSided)
+      {
+         c2 += ambientColor * globalAmbient;
+         c2 += matEmissive;
+         fColorBack = vec4(c2, opacity);
+      }
    }
    else
       fColor = current_color * color;
