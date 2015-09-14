@@ -962,7 +962,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
             // Setup Extensions
-            CheckExtensions(oglSystem);
+            // CheckExtensions(oglSystem);
             glXMakeCurrent(xGlobalDisplay, None, null);
             result = true;
          }

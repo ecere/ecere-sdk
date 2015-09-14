@@ -958,6 +958,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -981,6 +987,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1001,6 +1013,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "MemoryGuard",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1029,6 +1047,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1049,6 +1073,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "MemoryGuard",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
