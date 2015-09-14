@@ -94,6 +94,10 @@ _ECSOURCES1 = \
 	src/gfx/bitmaps/PCXFormat.ec \
 	src/gfx/bitmaps/PNGFormat.ec \
 	src/gfx/bitmaps/RGBFormat.ec \
+	src/gfx/drivers/gl3/glab.ec \
+	src/gfx/drivers/gl3/immediate.ec \
+	src/gfx/drivers/gl3/matrixStack.ec \
+	src/gfx/drivers/gl3/shading.ec \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
@@ -239,6 +243,7 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-tibetan.o \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
+	$(OBJ)gl_compat_4_4.o \
 	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
 	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
@@ -268,6 +273,7 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
+	src/gfx/drivers/gl3/gl_compat_4_4.c \
 	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
@@ -384,7 +390,9 @@ RESOURCES3 = \
 	locale/nl.mo \
 	locale/pt_BR.mo \
 	locale/ru.mo \
-	locale/zh_CN.mo
+	locale/zh_CN.mo \
+	src/gfx/drivers/gl3/fixed.frag \
+	src/gfx/drivers/gl3/fixed.vertex
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -420,6 +428,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
+			 -Isrc/gfx/drivers/gl3/ \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
 			 -I/usr/X11R6/include/freetype2 $(FVISIBILITY)
@@ -591,6 +600,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/hu.mo locale/mr.mo locale/nl.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) src/gfx/drivers/gl3/fixed.frag src/gfx/drivers/gl3/fixed.vertex "shaders"
 else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
@@ -726,6 +736,18 @@ $(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
 
 $(OBJ)RGBFormat.sym: src/gfx/bitmaps/RGBFormat.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.sym
+
+$(OBJ)glab.sym: src/gfx/drivers/gl3/glab.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.sym
+
+$(OBJ)immediate.sym: src/gfx/drivers/gl3/immediate.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/immediate.ec -o $(OBJ)immediate.sym
+
+$(OBJ)matrixStack.sym: src/gfx/drivers/gl3/matrixStack.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/matrixStack.ec -o $(OBJ)matrixStack.sym
+
+$(OBJ)shading.sym: src/gfx/drivers/gl3/shading.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.sym
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)Direct3D8DisplayDriver.sym: src/gfx/drivers/Direct3D8DisplayDriver.ec
@@ -1141,6 +1163,18 @@ $(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
 
 $(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.c -symbols $(OBJ)
+
+$(OBJ)glab.c: src/gfx/drivers/gl3/glab.ec $(OBJ)glab.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.c -symbols $(OBJ)
+
+$(OBJ)immediate.c: src/gfx/drivers/gl3/immediate.ec $(OBJ)immediate.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/immediate.ec -o $(OBJ)immediate.c -symbols $(OBJ)
+
+$(OBJ)matrixStack.c: src/gfx/drivers/gl3/matrixStack.ec $(OBJ)matrixStack.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/matrixStack.ec -o $(OBJ)matrixStack.c -symbols $(OBJ)
+
+$(OBJ)shading.c: src/gfx/drivers/gl3/shading.ec $(OBJ)shading.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.c -symbols $(OBJ)
 
 ifneq "$(WINDOWS_TARGET)" ""
 $(OBJ)Direct3D8DisplayDriver.c: src/gfx/drivers/Direct3D8DisplayDriver.ec $(OBJ)Direct3D8DisplayDriver.sym | $(SYMBOLS)
@@ -1865,6 +1899,21 @@ $(OBJ)Timer.o: $(OBJ)Timer.c
 
 $(OBJ)typeEdit.o: $(OBJ)typeEdit.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)typeEdit.c -o $(OBJ)typeEdit.o
+
+$(OBJ)gl_compat_4_4.o: src/gfx/drivers/gl3/gl_compat_4_4.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/gl_compat_4_4.c -o $(OBJ)gl_compat_4_4.o
+
+$(OBJ)glab.o: $(OBJ)glab.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)glab.c -o $(OBJ)glab.o
+
+$(OBJ)immediate.o: $(OBJ)immediate.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)immediate.c -o $(OBJ)immediate.o
+
+$(OBJ)matrixStack.o: $(OBJ)matrixStack.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)matrixStack.c -o $(OBJ)matrixStack.o
+
+$(OBJ)shading.o: $(OBJ)shading.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)shading.c -o $(OBJ)shading.o
 
 $(OBJ)Window.o: $(OBJ)Window.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Window.c -o $(OBJ)Window.o
