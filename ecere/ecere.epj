@@ -984,6 +984,12 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1010,6 +1016,12 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1042,11 +1054,27 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
                               "wglDefs.h",
-                              "egl.ec",
+                              {
+                                 "FileName" : "egl.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
                               {
                                  "FileName" : "shading.ec",
                                  "Configurations" : [
@@ -1070,6 +1098,12 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }

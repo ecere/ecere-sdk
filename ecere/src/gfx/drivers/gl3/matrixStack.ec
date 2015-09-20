@@ -1,10 +1,12 @@
 // Matrix Stack Implementation
 
 #ifndef _GLES
-// #define SHADERS
+ #define SHADERS
 #endif
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+   #include <GLES/gl.h>
+#else
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
 #  else

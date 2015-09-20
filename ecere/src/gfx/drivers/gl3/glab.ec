@@ -3,10 +3,15 @@
 #if defined(_GLES)
  #define ES1_1
 #else
-// #define SHADERS
+ #define SHADERS
 #endif
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+   #include <GLES/gl.h>
+
+   #define GL_INT    0x1404
+   #define GL_DOUBLE 0x140A
+#else
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
 #  else
@@ -14,6 +19,7 @@
 #  endif
 #endif
 
+import "immediate"
 import "Display"
 
 // Kept public for now

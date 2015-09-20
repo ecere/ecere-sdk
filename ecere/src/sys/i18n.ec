@@ -128,7 +128,7 @@ public dllexport void LoadTranslatedStrings(const String moduleName, const char 
       }
    }
 
-   if(0) //f)
+   if(f)
    {
       uint magic = 0;
       f.Read(&magic, sizeof(uint), 1);

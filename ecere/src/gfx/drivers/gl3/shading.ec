@@ -1,6 +1,18 @@
 import "Display"
+import "matrixStack"
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#ifndef _GLES
+#define SHADERS
+#endif
+
+#if defined(SHADERS)
+
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+   #include <GLES/gl.h>
+
+   #define GL_INT    0x1404
+   #define GL_DOUBLE 0x140A
+#else
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
 #  else
@@ -331,3 +343,5 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       shader_color(1.0, 1.0, 1.0, 1.0);
    }
 }
+
+#endif
