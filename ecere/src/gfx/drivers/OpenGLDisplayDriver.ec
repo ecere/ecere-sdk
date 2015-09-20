@@ -3,7 +3,7 @@ namespace gfx::drivers;
 #if defined(_GLES)
 #define ES1_1
 #else
-// #define SHADERS
+ #define SHADERS
 #endif
 
 #define GL_BGRA_EXT  0x80E1
@@ -14,6 +14,10 @@ namespace gfx::drivers;
 #  else
 #     include "gl_compat_4_4.h"
 #  endif
+#endif
+
+#if defined(__ANDROID__) || defined(__ODROID__)
+import "egl"
 #endif
 
 import "glab"
@@ -143,12 +147,7 @@ import "shading"
    #include <GL/gl.h>
 
    //#include <GLES/gl.h>
-   //#include <EGL/egl.h>
-
    //#include <GLES2/gl.h>
-   //#include <EGL/egl.h>
-
-   //#include <GLES2/gl2.h>
    #include <GL/glfw.h>
    #include <emscripten/emscripten.h>
 
@@ -907,11 +906,53 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    #elif defined(__unix__) || defined(__APPLE__)
       vboAvailable = true;
-      #if defined(__ANDROID__)
+      #if defined(__ANDROID__) || defined(__ODROID__)
+         #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
-      #elif defined(__ODROID__)
+         #elif defined(__ODROID__)
          egl_init_display((uint)displaySystem.window);
          CheckExtensions(oglSystem);
+         #endif
+
+         // TODO: Clean this up? Needed here?
+         glEnableClientState(GL_VERTEX_ARRAY);
+         /*
+         // Initialize GL state.
+         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+         glEnable(GL_CULL_FACE);
+         glShadeModel(GL_SMOOTH);
+         glDisable(GL_DEPTH_TEST);
+         */
+         glDisable(GL_CULL_FACE);
+         glDisable(GL_DEPTH_TEST);
+
+         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+         glEnable(GL_BLEND);
+
+         matrixStack[0][0].Identity();
+         matrixStack[1][0].Identity();
+         matrixStack[2][0].Identity();
+
+         glmsMatrixMode(GL_MODELVIEW);
+         glScaled(1.0, 1.0, -1.0);
+         glmsMatrixMode(GL_PROJECTION);
+         glShadeModel(GL_FLAT);
+
+         glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+         glFogi(GL_FOG_MODE, GL_EXP);
+         glFogf(GL_FOG_DENSITY, 0);
+         glEnable(GL_NORMALIZE);
+         glDepthFunc(GL_LESS);
+         glClearDepth(1.0);
+         glDisable(GL_MULTISAMPLE_ARB);
+
+         glViewport(0,0,eglWidth,eglHeight);
+         glmsLoadIdentity();
+         glOrtho(0,eglWidth,eglHeight,0,0.0,1.0);
+
+         glabCurArrayBuffer = 0;
+         glabCurElementBuffer = 0;
+
          result = true;
       #elif defined(__EMSCRIPTEN__)
          if(glfwInit() == GL_TRUE)
@@ -977,6 +1018,11 @@ class OpenGLDisplayDriver : DisplayDriver
    void DestroyDisplaySystem(DisplaySystem displaySystem)
    {
       OGLSystem oglSystem = displaySystem.driverData;
+      if(stippleTexture)
+      {
+         glDeleteTextures(1, &stippleTexture);
+         stippleTexture = 0;
+      }
 
    #if defined(__WIN32__)
       wglMakeCurrent( null, null );
@@ -1136,7 +1182,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       if(result)
       {
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
          ogl_LoadFunctions();
+#endif
          CheckExtensions(oglSystem);
          vboAvailable = glBindBuffer != null;
          setupDebugging();
@@ -1672,7 +1720,7 @@ class OpenGLDisplayDriver : DisplayDriver
          SwapBuffers(oglDisplay.hdc);
 #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__) || defined(__ODROID__)
-         eglSwapBuffers(eglDisplay, eglSurface);
+         egl_swap_buffers();
       #elif defined(__EMSCRIPTEN__)
          glfwSwapBuffers();
       #else

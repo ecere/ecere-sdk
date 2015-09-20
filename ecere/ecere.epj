@@ -964,6 +964,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -990,6 +996,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1022,11 +1034,27 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
                               "wglDefs.h",
-                              "egl.ec",
+                              {
+                                 "FileName" : "egl.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
                               {
                                  "FileName" : "shading.ec",
                                  "Configurations" : [
@@ -1050,6 +1078,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
