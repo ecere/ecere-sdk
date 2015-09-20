@@ -6,14 +6,13 @@ import "ecere"
 enum JoinType { miter, round, bevel };
 enum CapType { butt, round, square };
 
-define joinType = JoinType::bevel;
+define joinType = JoinType::miter;
 define capType = CapType::round;
 
 class ButterburTest : Window
 {
    displayDriver = "OpenGL";
    caption = $"Butterbur's Humble Beginnings";
-   background = formColor;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
@@ -22,7 +21,18 @@ class ButterburTest : Window
 
    BBScene scene { };
 
-   BBRectangle rect { scene, lineColor = { 128, tomato }, fillColor = { 128, skyBlue }, box = { 30, 30, 340, 190 }, cap = capType, join = joinType, lineWidth = 10 };
+   BBRectangle square
+   {
+      scene,
+      box = { 450, 50, 550, 150 },
+      lineColor = { 230, green }, fillColor = { 126, magenta }, cap = capType, join = joinType, lineWidth = 6
+   };
+   BBRectangle rect
+   {
+      scene,
+      box = { 30, 30, 340, 190 }, rx = 20, ry = 20,
+      lineColor = { 230, red }, fillColor = { 126, black }, cap = capType, join = joinType, lineWidth = 4
+   };
    BBCircle circle  { scene, lineColor = { 128, green }, fillColor = { 170, tomato }, center = { 390, 280 }, cap = capType, join = joinType, radius = 100, lineWidth = 8 };
    BBEllipse ell  { scene, lineColor = { 128, yellow }, fillColor = { 100, black }, center = { 250, 310 }, k = 1.3, cap = capType, join = joinType, radius = 100, lineWidth = 4 };
 
@@ -123,9 +133,7 @@ class BBObject
 class BBPath : BBObject
 {
    Array<Pointf> nodes { };
-
-   GLAB fillVBO { };
-   GLAB lineVBO { };
+   GLAB vbo { };
    GLEAB fillIndices { };
    GLEAB lineIndices { };
 
@@ -161,6 +169,7 @@ class BBPath : BBObject
    {
       Pointf * points;
       uint16 * ix;
+      uint16 * ixFill = null;
       uint16 i;
       uint tc = nodes.count;
       uint ixCount;
@@ -179,6 +188,7 @@ class BBPath : BBObject
          ixCount = closed ? (tc * rCount*2 + closed*2) :
             (2*(2*capCount) + ((tc > 2) ? (tc-2) * (2*rCount) : 0));
          ix = new uint16[ixCount];
+         ixFill = new uint16[tc];
 
          for(i = 0; i < tc + (tc == 1); i++)
          {
@@ -286,6 +296,7 @@ class BBPath : BBObject
                   c = (float)(cos(angle) * r/2), s = (float)(sin(angle) * r/2);
 
                   points[startIX] = { p.x - c, p.y - s };
+                  ixFill[i] = startIX;
                   if(rCount > 1)
                   {
                      int t;
@@ -323,13 +334,15 @@ class BBPath : BBObject
          points = nodes.array;
          ixCount = tc + closed;
          ix = new uint16[ixCount];
+         ixFill = ix;
 
          for(i = 0; i < tc; i++)
             ix[i] = i;
          if(closed)
             ix[i] = 0;
       }
-      lineVBO.upload(vboCount*sizeof(Pointf), points);
+      vbo.upload(vboCount*sizeof(Pointf), points);
+
       lineIndices.upload(ixCount * sizeof(uint16), ix);
       lineCount = ixCount;
 
@@ -337,45 +350,40 @@ class BBPath : BBObject
          delete points;
 
       if(closed)
-      {
-         uint16 i;
+         fillIndices.upload(tc * sizeof(uint16), ixFill);
+
+      delete ixFill;
+      if(ixFill != ix)
          delete ix;
-         ix = new uint16[tc + closed];
-
-         for(i = 0; i < tc; i++)
-            ix[i] = i;
-         ix[i] = 0;
-
-         fillVBO.upload(tc*sizeof(Pointf), nodes.array);
-         fillIndices.upload(tc * sizeof(uint16), ix);
-      }
-
-      delete ix;
    }
 
    void render()
    {
+      vbo.use(vertex, 2, glTypeFloat, 0, null);
+
       // Fill
       if(closed)
       {
          glimtkColor4f(fillColor.color.r/255.0f, fillColor.color.g/255.0f, fillColor.color.b/255.0f, fillColor.a/255.0f);
-         fillVBO.use(vertex, 2, glTypeFloat, 0, null);
          fillIndices.draw(GLIMTKMode::triangleFan, nodes.count, glTypeUnsignedShort, null);
       }
 
       // Line
-      glimtkColor4f(lineColor.color.r/255.0f, lineColor.color.g/255.0f, lineColor.color.b/255.0f, lineColor.a/255.0f);
-      lineVBO.use(vertex, 2, glTypeFloat, 0, null);
+      if(lineWidth)
+      {
+         glimtkColor4f(lineColor.color.r/255.0f, lineColor.color.g/255.0f, lineColor.color.b/255.0f, lineColor.a/255.0f);
+         lineIndices.draw(lineWidth > 1 ? GLIMTKMode::triangleStrip : GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
 
-      lineIndices.draw(lineWidth > 1 ? GLIMTKMode::triangleStrip : GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
-
-      glimtkColor4f(1, 0, 0, 1);
-      // lineIndices.draw(GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
+         glimtkColor4f(1, 0, 0, 1);
+         // lineIndices.draw(GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
+      }
    }
 }
 
 class BBRectangle : BBPath
 {
+   float rx, ry;
+
    closed = true;
 
    Box box;
@@ -384,14 +392,62 @@ class BBRectangle : BBPath
       set { box = value; needUpdate = true; }
       get { value = box; }
    }
+   property float rx
+   {
+      set { rx = value; needUpdate = true; }
+      get { return rx; }
+   }
+   property float ry
+   {
+      set { ry = value; needUpdate = true; }
+      get { return ry; }
+   }
 
    void update()
    {
-      nodes.size = 4;
-      nodes[0] = { box.left, box.top };
-      nodes[1] = { box.left, box.bottom };
-      nodes[2] = { box.right, box.bottom };
-      nodes[3] = { box.right, box.top };
+      if(!rx && !ry)
+      {
+         noJoin = false;
+         nodes.size = 4;
+         nodes[0] = { box.left, box.top };
+         nodes[1] = { box.left, box.bottom };
+         nodes[2] = { box.right, box.bottom };
+         nodes[3] = { box.right, box.top };
+      }
+      else
+      {
+         int i;
+         float rx = Min(this.rx, box.right - box.left);
+         float ry = Min(this.ry, box.bottom - box.top);
+         int res = 8;
+
+         noJoin = true;
+         nodes.size = 4*res;
+
+         for(i = 0; i < 4; i++)
+         {
+            int t;
+            Degrees angle;
+            Pointf p, o;
+            switch(i)
+            {
+               case 0: p = { box.left, box.top };     angle = 0; break;
+               case 1: p = { box.left, box.bottom };  angle = 270; break;
+               case 2: p = { box.right, box.bottom }; angle = 180; break;
+               case 3: p = { box.right, box.top };    angle = 90; break;
+            }
+            o = { (float)(p.x + cos(angle) * rx - sin(angle) * rx), (float)(p.y + sin(angle) * ry + cos(angle) * ry) };
+
+            for(t = 0; t < res; t++)
+            {
+               nodes[i*res + t] =
+               {
+                  (float)(o.x - rx * cos(angle + (res-1-t) * Degrees { 90 } / (res-1))),
+                  (float)(o.y - ry * sin(angle + (res-1-t) * Degrees { 90 } / (res-1)))
+               };
+            }
+         }
+      }
 
       BBPath::update();
    }
