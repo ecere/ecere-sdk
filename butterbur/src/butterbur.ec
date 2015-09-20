@@ -144,8 +144,15 @@ class BBPath : BBObject
    CapType cap;
    bool closed;
    bool noJoin;
-   int lineCount;
+   int lineCount, fillCount;
    lineColor = black;
+
+   ~BBPath()
+   {
+      fillIndices.free();
+      lineIndices.free();
+      vbo.free();
+   }
 
    property ColorAlpha lineColor
    {
@@ -350,11 +357,14 @@ class BBPath : BBObject
          delete points;
 
       if(closed)
+      {
          fillIndices.upload(tc * sizeof(uint16), ixFill);
+         fillCount = tc;
+      }
 
-      delete ixFill;
       if(ixFill != ix)
          delete ix;
+      delete ixFill;
    }
 
    void render()
@@ -365,7 +375,7 @@ class BBPath : BBObject
       if(closed)
       {
          glimtkColor4f(fillColor.color.r/255.0f, fillColor.color.g/255.0f, fillColor.color.b/255.0f, fillColor.a/255.0f);
-         fillIndices.draw(GLIMTKMode::triangleFan, nodes.count, glTypeUnsignedShort, null);
+         fillIndices.draw(GLIMTKMode::triangleFan, fillCount, glTypeUnsignedShort, null);
       }
 
       // Line
@@ -450,6 +460,7 @@ class BBRectangle : BBPath
       }
 
       BBPath::update();
+      nodes.Free();
    }
 }
 
@@ -488,6 +499,7 @@ class BBCircle : BBPath
       }
 
       BBPath::update();
+      nodes.Free();
    }
 }
 
@@ -528,5 +540,6 @@ class BBEllipse : BBPath
       }
 
       BBPath::update();
+      nodes.Free();
    }
 }
