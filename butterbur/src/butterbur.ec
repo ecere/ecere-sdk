@@ -9,6 +9,19 @@ enum CapType { butt, round, square };
 define joinType = JoinType::miter;
 define capType = CapType::round;
 
+static double pointsArea(Array<Pointf> points)
+{
+   double area = 0;
+   if(points.count >= 3)
+   {
+      int i;
+      for(i = 0; i < points.count - 1; i++)
+          area += points[i].x * points[i+1].y - points[i+1].x * points[i].y;
+      area += points[i].x * points[0].y - points[0].x * points[i].y;
+   }
+   return area;
+}
+
 class ButterburTest : Window
 {
    displayDriver = "OpenGL";
@@ -25,7 +38,7 @@ class ButterburTest : Window
    {
       scene,
       box = { 450, 50, 550, 150 },
-      lineColor = { 230, green }, fillColor = { 126, magenta }, cap = capType, join = joinType, lineWidth = 6
+      lineColor = { 230, green }, fillColor = { 126, magenta }, cap = capType, join = round, lineWidth = 10
    };
    BBRectangle rect
    {
@@ -40,7 +53,7 @@ class ButterburTest : Window
    {
       scene, lineColor = { 128, blue }, fillColor = { 100, lime }, lineWidth = 20;
       //closed = true;
-      join = miter; //joinType;
+      join = bevel; //miter; //joinType;
       cap = capType;
       nodes.copySrc = [
          // Pointf { 150, 80 },
@@ -64,15 +77,13 @@ class ButterburTest : Window
    };
    BBPath triangle2
    {
-      scene, lineColor = purple, fillColor = { 100, orange }, lineWidth = 9;
+      scene, lineColor = { 128, purple }, fillColor = { 100, orange }, lineWidth = 9;
       closed = true;
       cap = capType;
-      join = joinType;
+      join = round; //joinType;
       nodes.copySrc = [
-         // Pointf { 150, 80 },
-         Pointf { 510, 180 },
-         Pointf { 150, 320 },
-         Pointf { 340, 320 }
+         Pointf { 510, 180 }, Pointf { 150, 320 }, Pointf { 340, 320 }
+         // Pointf { 340, 320 }, Pointf { 150, 320 }, Pointf { 510, 180 }
       ];
    };
 
@@ -81,6 +92,46 @@ class ButterburTest : Window
       scene, lineColor = black, lineWidth = 20;
       cap = square;
       nodes.copySrc = [ Pointf { 300, 300 } ];
+   };
+
+   BBPath concave
+   {
+      scene, lineColor = { 128, black }, fillColor = { 128, orange }, lineWidth = 18;
+      closed = true;
+      needTesselation = true;
+      cap = round;
+      join = round;
+      nodes.copySrc = [
+
+         Pointf { 350, 80 },
+         Pointf { 210, 180 },
+         Pointf { 250, 120 },
+         Pointf { 140, 220 },
+         Pointf { 100, 80 }
+
+/*
+         Pointf { 350, 80 },
+         Pointf { 260, 180 },
+         Pointf { 250, 120 },
+         Pointf { 140, 220 },
+         Pointf { 100, 80 }*/
+      ];
+   };
+
+   BBPath concaveOutline
+   {
+      scene, lineColor = blue, lineWidth = 1;
+      //closed = true;
+      needTesselation = true;
+      cap = butt;
+      join = miter;
+      nodes.copySrc = [
+         Pointf { 350, 80 },
+         Pointf { 210, 180 },
+         Pointf { 250, 120 },
+         Pointf { 140, 220 },
+         Pointf { 100, 80 }
+      ];
    };
 
    void OnRedraw(Surface surface)
@@ -144,6 +195,7 @@ class BBPath : BBObject
    CapType cap;
    bool closed;
    bool noJoin;
+   bool needTesselation;
    int lineCount, fillCount;
    lineColor = black;
 
@@ -188,6 +240,7 @@ class BBPath : BBObject
          int capCount = (cap == round) ? 7 : 1;
          uint16 startIX = 0;
          uint d = 0;
+         bool flip = pointsArea(nodes) > 0;
 
          vboCount = closed ? (tc * (rCount+1)) : (2*(capCount+1) + ((tc > 2) ? (tc-2) * (rCount+1) : 0));
          points = new Pointf[vboCount];
@@ -200,14 +253,21 @@ class BBPath : BBObject
          for(i = 0; i < tc + (tc == 1); i++)
          {
             bool end = false;
+            uint16 ni;
             if(i == tc) { i = 0; end = true; }
+
+            #define DOFLIP(x) (flip ? (uint16)((tc-1)-(x)) : (x))
+
+            ni = DOFLIP(i);
+
             {
                bool isCap = false;
-               Pointf p = nodes[i];
-               Pointf before = i > 0 ? nodes[i-1] : (closed ? nodes[tc-1] : (tc > 1 ? nodes[1] : nodes[0]));
-               Pointf after  = i < tc-1 ? nodes[i+1] : (closed ? nodes[0] : (tc > 1 ? nodes[i-1] : nodes[0]));
+               Pointf p = nodes[ni];
+               Pointf before = i > 0 ? nodes[DOFLIP(i-1)] : (closed ? nodes[DOFLIP(tc-1)] : (tc > 1 ? nodes[DOFLIP(1)] : nodes[DOFLIP(0)]));
+               Pointf after  = i < tc-1 ? nodes[DOFLIP(i+1)] : (closed ? nodes[DOFLIP(0)] : (tc > 1 ? nodes[DOFLIP(i-1)] : nodes[DOFLIP(0)]));
                float ldx = p.x - before.x, ldy = p.y - before.y;
                float rdx = after.x - p.x, rdy = after.y - p.y;
+               bool thisFlip = false;
                double at1 = atan2(ldy, ldx);
                double at2 = atan2(rdy, rdx);
                float c, s;
@@ -220,10 +280,29 @@ class BBPath : BBObject
                if(Abs(diffAngle) >= Pi)
                {
                   simpleMean = false;
+
                   if(diffAngle < 0)
                      diffAngle += 2*Pi;
                   else
-                     diffAngle = diffAngle - 2*Pi;
+                     diffAngle -= 2*Pi;
+               }
+               if(Sgn(diffAngle) > 0)
+               {
+                  // Inside/outside changed (e.g. zig zag patterns)
+                  at1 = atan2(-ldy, -ldx);
+                  at2 = atan2(-rdy, -rdx);
+                  diffAngle = at2 - at1;
+                  simpleMean = true;
+                  thisFlip = true;
+                  if(Abs(diffAngle) >= Pi)
+                  {
+                     simpleMean = false;
+
+                     if(diffAngle < 0)
+                        diffAngle += 2*Pi;
+                     else
+                        diffAngle -= 2*Pi;
+                  }
                }
 
                if(isCap)
@@ -308,7 +387,7 @@ class BBPath : BBObject
                   {
                      int t;
 
-                     p = nodes[i];
+                     p = nodes[ni];
                      r = lineWidth;
                      for(t = 0; t < rCount; t++)
                      {
@@ -319,13 +398,31 @@ class BBPath : BBObject
                   }
                   else
                      points[startIX+1] = { p.x + c, p.y + s };
+
+                  if(thisFlip)
+                  {
+                     r = lineWidth*1.1;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
+                     p = nodes[ni];
+                     angle += Pi/2;
+                     c = (float)(cos(angle) * r/2), s = (float)(sin(angle) * r/2);
+                     points[startIX+1] = { p.x - c, p.y - s };
+                  }
                }
                for(n = 0; n < (isCap ? capCount : rCount); n++)
                {
-                  ix[d++] = startIX;
-                  ix[d++] = (uint16)(startIX+n+1);
+                  if(thisFlip)
+                  {
+                     ix[d++] = (uint16)(startIX+n+1);
+                     ix[d++] = startIX;
+                  }
+                  else
+                  {
+                     ix[d++] = startIX;
+                     ix[d++] = (uint16)(startIX+n+1);
+                  }
                }
                startIX += (uint16)(isCap ? capCount : rCount) + 1;
+
                if(end) break;
             }
          }
