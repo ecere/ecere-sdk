@@ -1,5 +1,7 @@
 import "ecere"
 
+import "tesselation"
+
 #define glTypeUnsignedShort     0x1403
 #define glTypeFloat             0x1406
 
@@ -109,12 +111,7 @@ class ButterburTest : Window
          Pointf { 140, 220 },
          Pointf { 100, 80 }
 
-/*
-         Pointf { 350, 80 },
-         Pointf { 260, 180 },
-         Pointf { 250, 120 },
-         Pointf { 140, 220 },
-         Pointf { 100, 80 }*/
+         // Pointf { 350, 80 }, Pointf { 260, 180 }, Pointf { 250, 120 }, Pointf { 140, 220 }, Pointf { 100, 80 }
       ];
    };
 
@@ -197,6 +194,8 @@ class BBPath : BBObject
    bool noJoin;
    bool needTesselation;
    int lineCount, fillCount;
+   GLIMTKMode fillMode;
+
    lineColor = black;
 
    ~BBPath()
@@ -241,6 +240,7 @@ class BBPath : BBObject
          uint16 startIX = 0;
          uint d = 0;
          bool flip = pointsArea(nodes) > 0;
+         uint estFillCount = tc;
 
          vboCount = closed ? (tc * (rCount+1)) : (2*(capCount+1) + ((tc > 2) ? (tc-2) * (rCount+1) : 0));
          points = new Pointf[vboCount];
@@ -248,7 +248,8 @@ class BBPath : BBObject
          ixCount = closed ? (tc * rCount*2 + closed*2) :
             (2*(2*capCount) + ((tc > 2) ? (tc-2) * (2*rCount) : 0));
          ix = new uint16[ixCount];
-         ixFill = new uint16[tc];
+         ixFill = new uint16[estFillCount];
+         fillCount = 0;
 
          for(i = 0; i < tc + (tc == 1); i++)
          {
@@ -382,7 +383,7 @@ class BBPath : BBObject
                   c = (float)(cos(angle) * r/2), s = (float)(sin(angle) * r/2);
 
                   points[startIX] = { p.x - c, p.y - s };
-                  ixFill[i] = startIX;
+
                   if(rCount > 1)
                   {
                      int t;
@@ -401,12 +402,24 @@ class BBPath : BBObject
 
                   if(thisFlip)
                   {
+                     int t;
+
                      r = lineWidth*1.1;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
                      p = nodes[ni];
                      angle += Pi/2;
                      c = (float)(cos(angle) * r/2), s = (float)(sin(angle) * r/2);
                      points[startIX+1] = { p.x - c, p.y - s };
+                     estFillCount += rCount-1;
+                     ixFill = renew ixFill uint16[estFillCount];
+
+                     ixFill[fillCount] = (uint16)(startIX+1);
+                     for(t = 0; t < rCount-1; t++)
+                        ixFill[fillCount+t+1] = (uint16)(startIX+1+t);
+
+                     fillCount += rCount;
                   }
+                  else
+                     ixFill[fillCount++] = startIX;
                }
                for(n = 0; n < (isCap ? capCount : rCount); n++)
                {
@@ -445,19 +458,117 @@ class BBPath : BBObject
          if(closed)
             ix[i] = 0;
       }
-      vbo.upload(vboCount*sizeof(Pointf), points);
 
+      if(closed)
+      {
+         if(needTesselation)
+         {
+            Array<Pointf> tPoints { };
+            Array<TessPrim> prims = null;
+            Array<Pointf> output = null;
+            uint16 * newFill;
+            uint added;
+            int j;
+
+            tPoints.size = fillCount;
+            for(i = 0; i < fillCount; i++)
+               tPoints[i] = points[ixFill[i]];
+
+            tesselatePolygon(tPoints, &output, &prims);
+
+            added = output.count - tPoints.count;
+            if(added > 0)
+            {
+               points = renew points Pointf[vboCount + added];
+               memcpy(points + vboCount, output.array + tPoints.count, sizeof(Pointf) * added);
+            }
+
+            fillCount = 0;
+            fillMode = triangleStrip;
+            for(j = 0; j < prims.count; j++)
+            {
+               TessPrim * prim = &prims[j];
+               GLIMTKMode type = prim->type;
+               uint count = prim->count;
+               switch(type)
+               {
+                  case triangles:     fillCount += (count/3) * 5; break;
+                  case triangleStrip: fillCount += count + 2; break;
+                  case triangleFan:   fillCount += (count-2)*2 + 3;  break;
+               }
+            }
+
+            newFill = new uint16[fillCount];
+
+            #define FIND_IX(ii) ((prim->indices[ii] < tPoints.count) ? ixFill[prim->indices[ii]] : (uint16)(vboCount + prim->indices[ii] - tPoints.count))
+
+            fillCount = 0;
+            for(j = 0; j < prims.count; j++)
+            {
+               TessPrim * prim = &prims[j];
+               GLIMTKMode type = prim->type;
+               switch(type)
+               {
+                  case triangles:
+                     for(i = 0; i < prim->count; i += 3)
+                     {
+                        newFill[fillCount++] = FIND_IX(i+1);
+                        newFill[fillCount++] = FIND_IX(i+0);
+                        newFill[fillCount++] = FIND_IX(i+2);
+
+                        // Degenerate
+                        newFill[fillCount] = newFill[fillCount-2];
+                        newFill[fillCount+1] = newFill[fillCount-2];
+                        fillCount+=2;
+                     }
+                     break;
+                  case triangleStrip:
+                     for(i = 0; i < prim->count; i++)
+                        newFill[fillCount++] = FIND_IX(i);
+
+                     // Degenerate
+                     newFill[fillCount] = newFill[fillCount-2];
+                     newFill[fillCount+1] = newFill[fillCount-2];
+                     fillCount+=2;
+                     break;
+                  case triangleFan:
+                     newFill[fillCount++] = FIND_IX(1);
+                     for(i = 2; i < prim->count; i++)
+                     {
+                        newFill[fillCount++] = FIND_IX(0);
+                        newFill[fillCount++] = FIND_IX(i);
+                     }
+
+                     // Degenerate
+                     newFill[fillCount] = newFill[fillCount-2];
+                     newFill[fillCount+1] = newFill[fillCount-2];
+                     fillCount+=2;
+                     break;
+               }
+            }
+
+            vboCount += added;
+
+            delete ixFill;
+            ixFill = newFill;
+
+            delete tPoints;
+            prims.Free();
+            delete prims;
+            delete output;
+         }
+         else
+            fillMode = triangleFan;
+
+         fillIndices.upload(fillCount * sizeof(uint16), ixFill);
+      }
+
+      vbo.upload(vboCount*sizeof(Pointf), points);
       lineIndices.upload(ixCount * sizeof(uint16), ix);
       lineCount = ixCount;
 
       if(points != nodes.array)
          delete points;
-
-      if(closed)
-      {
-         fillIndices.upload(tc * sizeof(uint16), ixFill);
-         fillCount = tc;
-      }
 
       if(ixFill != ix)
          delete ix;
@@ -472,7 +583,7 @@ class BBPath : BBObject
       if(closed)
       {
          glimtkColor4f(fillColor.color.r/255.0f, fillColor.color.g/255.0f, fillColor.color.b/255.0f, fillColor.a/255.0f);
-         fillIndices.draw(GLIMTKMode::triangleFan, fillCount, glTypeUnsignedShort, null);
+         fillIndices.draw(fillMode, fillCount, glTypeUnsignedShort, null);
       }
 
       // Line
@@ -481,8 +592,11 @@ class BBPath : BBObject
          glimtkColor4f(lineColor.color.r/255.0f, lineColor.color.g/255.0f, lineColor.color.b/255.0f, lineColor.a/255.0f);
          lineIndices.draw(lineWidth > 1 ? GLIMTKMode::triangleStrip : GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
 
+#ifdef _DEBUG
          glimtkColor4f(1, 0, 0, 1);
+          //fillIndices.draw(GLIMTKMode::lineStrip, fillCount, glTypeUnsignedShort, null);
          // lineIndices.draw(GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
+#endif
       }
    }
 }
