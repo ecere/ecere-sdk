@@ -990,6 +990,12 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1025,6 +1031,12 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1057,6 +1069,12 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "StaticGLES",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1107,6 +1125,12 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1133,6 +1157,12 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "MemoryGuard",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "StaticGLES",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
