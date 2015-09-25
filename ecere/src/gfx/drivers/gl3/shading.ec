@@ -29,6 +29,9 @@ int uTextureMatrix;
 int uColor;
 int uTexturingOn;
 int uLightingOn;
+int uFogOn;
+int uFogDensity;
+int uFogColor;
 int uGlobalAmbient;
 int uLightsOn[8];
 int uLightsPos[8];
@@ -67,6 +70,21 @@ void shader_color(float r, float g, float b, float a)
 void shader_lighting(bool on)
 {
    glUniform1ui(uLightingOn, on);
+}
+
+void shader_fog(bool on)
+{
+   glUniform1ui(uFogOn, on);
+}
+
+void shader_fogDensity(float density)
+{
+   glUniform1f(uFogDensity, density);
+}
+
+void shader_fogColor(float r, float g, float b)
+{
+   glUniform3f(uFogColor, r, g, b);
 }
 
 void shader_texturing(bool on)
@@ -299,6 +317,9 @@ void loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
       uColor         = glGetUniformLocation(program, "current_color");
       uTexturingOn   = glGetUniformLocation(program, "texturingOn");
       uLightingOn    = glGetUniformLocation(program, "lightingOn");
+      uFogOn         = glGetUniformLocation(program, "fogOn");
+      uFogDensity    = glGetUniformLocation(program, "fogDensity");
+      uFogColor      = glGetUniformLocation(program, "fogColor");
       uGlobalAmbient = glGetUniformLocation(program, "globalAmbient");
       uPerVertexColor  = glGetUniformLocation(program, "perVertexColor");
       uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
