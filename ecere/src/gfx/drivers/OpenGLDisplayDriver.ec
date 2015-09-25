@@ -461,6 +461,15 @@ public void GLSetupTexturing(bool enable)
 #endif
 }
 
+public void GLSetupFog(bool enable)
+{
+#ifdef SHADERS
+   shader_fog(enable);
+#elif !defined(EM_MODE)
+   (enable ? glEnable : glDisable)(GL_FOG);
+#endif
+}
+
 public void GLSetupLighting(bool enable)
 {
 #if defined(SHADERS)
@@ -2676,14 +2685,18 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case fogColor:
          {
-#if !defined(SHADERS)
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
+#if defined(SHADERS)
+            shader_fogColor(color[0], color[1], color[2]);
+#else
             glFogfv(GL_FOG_COLOR, (float *)&color);
 #endif
             break;
          }
          case fogDensity:
-#if !defined(SHADERS)
+#if defined(SHADERS)
+            shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
+#else
             glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
             break;
@@ -2954,6 +2967,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else if(surface && display.display3D.camera)
       {
+         nearPlane = 1;
          oglDisplay.depthWrite = false;
          glViewport(0,0,display.width,display.height);
 
@@ -2962,8 +2976,11 @@ class OpenGLDisplayDriver : DisplayDriver
 
          GLSetupTexturing(false);
          GLSetupLighting(false);
+         GLSetupFog(false);
+
+         glDisableClientState(GL_COLOR_ARRAY);
+
 #if !defined(SHADERS) && !defined(EM_MODE)
-         glDisable(GL_FOG);
          glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
@@ -2999,13 +3016,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_CULL_FACE);
       }
 
-#if !defined(SHADERS)
       // Fog
-      if(material.flags.noFog)
-         glDisable(GL_FOG);
-      else
-         glEnable(GL_FOG);
-#endif
+      GLSetupFog(!material.flags.noFog);
 
       // Maps
       if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
