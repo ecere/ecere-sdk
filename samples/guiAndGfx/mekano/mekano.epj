@@ -1,0 +1,112 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "mekano",
+   "Options" : {
+      "Warnings" : "All",
+      "Debug" : false,
+      "Profile" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "mekano",
+      "TargetDirectory" : "",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=\"\""
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=static"
+            ],
+            "Libraries" : [
+               "ecereStatic"
+            ],
+            "LinkerOptions" : [
+               "-static"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/static.win32"
+            ],
+            "Console" : true,
+            "Compress" : true,
+            "FastMath" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "dxguid",
+                     "ddraw",
+                     "dinput",
+                     "winmm",
+                     "opengl32",
+                     "ws2_32",
+                     "kernel32",
+                     "user32",
+                     "gdi32",
+                     "mpr",
+                     "advapi32",
+                     "shell32",
+                     "winspool",
+                     "imm32",
+                     "ungif",
+                     "jpeg",
+                     "png",
+                     "z",
+                     "freetype"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            "./mekano.ec",
+            "./mekanodisplay.ec",
+            "./mekanoobject.ec",
+            "./mekanoobjectfixed.ec",
+            "./mekanoobjectgravity.ec",
+            "./mekanoobjectpolygonal.ec",
+            "./mekanoobjectspring.ec",
+            "./mekanopoint.ec",
+            "./mekanopolygon.ec",
+            "./mekanopolygonalbox.ec",
+            "./mekanosimulation.ec",
+            "./mekanownd.ec",
+            "./vector.ec"
+         ]
+      }
+   ],
+   "ResourcesPath" : "..\\..\\..\\",
+   "Resources" : [
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "shaders",
+               "Files" : [
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.vertex"
+               ]
+            }
+         ]
+      },
+      "data/ecere.bmp"
+   ]
+}
