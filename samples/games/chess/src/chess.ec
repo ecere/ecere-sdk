@@ -55,6 +55,9 @@ class ChessApp : GuiApplication
    }
 }
 
+enum GameAction { newAIGame, newLocalGame, endGame, close, connect, host, stop };
+
+
 #ifdef HIGH_DPI
 define stateWidth = 300;
 define turnWidth = 150;
@@ -66,17 +69,20 @@ define turnWidth = 100;
 class Chess : Window
 {
    background = gray, hasMenuBar = true, hasStatusBar = true,
+   fullRender = true;
    text = APPNAME,
-#ifndef __ANDROID__
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
    hasClose = true, hasMaximize = true, hasMinimize = true,
    borderStyle = sizable,
 #endif
    anchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 };
 
    bool hosting, local, ai;
+#ifndef CHESS_NONET
    Socket sockets[Player];
 
    ChessService service { port = CHESS_PORT, chess = this };
+#endif
 
    MenuItem * driverItems;
 
@@ -139,7 +145,7 @@ class Chess : Window
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         if(EndGame())
+         if(EndGame(newAIGame))
          {
             ai = true;
             chessState.gameRunning = true;
@@ -162,7 +168,7 @@ class Chess : Window
       gameMenu, "New Local Game\tCtrl+L", l, ctrlL;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         if(EndGame())
+         if(EndGame(newLocalGame))
          {
             local = true;
             chessState.gameRunning = true;
@@ -180,24 +186,25 @@ class Chess : Window
       gameMenu, "End Game", e;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         EndGame();
+         EndGame(endGame);
          return true;
       }
    };
 
    MenuItem { gameMenu, "Exit\tAlt+F4", x, NotifySelect = MenuFileExit };
 
+#ifndef CHESS_NONET
    // Network Menu
    MenuItem connectItem
    {
       networkMenu, "Connect...", c;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         if(EndGame())
+         if(EndGame(connect))
          {
             hosting = false;
             service.Stop();
-            ConnectDialog { master = this }.Modal();
+            ConnectDialog { master = this, isModal = true }.Create();
          }
          return true;
       }
@@ -213,7 +220,7 @@ class Chess : Window
       networkMenu, "Host", h;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         if(EndGame())
+         if(EndGame(host))
          {
             if(service.Start())
             {
@@ -230,7 +237,7 @@ class Chess : Window
       networkMenu, "Stop Hosting", s;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         if(EndGame())
+         if(EndGame(stop))
          {
             hosting = false;
             service.Stop();
@@ -239,6 +246,7 @@ class Chess : Window
          return true;
       }
    };
+#endif
 
    // View Menu
    MenuItem fullScreenItem
@@ -272,30 +280,18 @@ class Chess : Window
       helpMenu, "About...\tF1", a, f1;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         AboutChess { master = this }.Modal();
+         AboutChess { master = this, isModal = true }.Create();
          return true;
       }
    };
 
-   // --- Chess Utilities ---
-   bool MakeMove(int x1, int y1, int x2, int y2, PieceType promotion)
+   int cx1, cy1, cx2, cy2;
+
+   bool DoMove(int x1, int y1, int x2, int y2, PieceType promotion)
    {
       bool valid = false;
-
       PieceType type = chessState.board[y1][x1].type;
       Player player = chessState.board[y1][x1].player;
-
-      // Pawn Promotion
-      if(type == Pawn && y2 == ((player == White) ? 7 : 0))
-      {
-         if(chessState.isLocalPlayer[chessState.turn] &&
-            IsMoveValid(x1,y1,x2,y2, chessState, null, true))
-         {
-            chess2D.Update(null);
-            chess3D.Update(null);
-            promotion = (PieceType)Promotion { master = this }.Modal();
-         }
-      }
 
       if(StateMakeMove(chessState, x1,y1,x2,y2, promotion, true, null))
       {
@@ -313,7 +309,9 @@ class Chess : Window
                y2 = (byte)y2,
                promotion = promotion
             };
+#ifndef CHESS_NONET
             sockets[player^(Player)1].Send((byte *)&packet, sizeof(ChessPacket));
+#endif
          }
 
          if(player == Black)
@@ -370,6 +368,44 @@ class Chess : Window
 
       chess2D.Update(null);
       chess3D.Update(null);
+      return valid;
+   }
+
+   // --- Chess Utilities ---
+   bool MakeMove(int x1, int y1, int x2, int y2, PieceType promotion)
+   {
+      bool valid = false;
+
+      PieceType type = chessState.board[y1][x1].type;
+      Player player = chessState.board[y1][x1].player;
+
+      // Pawn Promotion
+      if(type == Pawn && y2 == ((player == White) ? 7 : 0))
+      {
+         valid = true;
+         if(chessState.isLocalPlayer[chessState.turn] &&
+            (valid = IsMoveValid(x1,y1,x2,y2, chessState, null, true)))
+         {
+            valid = false;
+            cx1 = x1, cy1 = y1, cx2 = x2, cy2 = y2;
+            chess2D.Update(null);
+            chess3D.Update(null);
+            promotion = (PieceType)Promotion
+            {
+               master = this;
+               isModal = true;
+
+               void Chess::NotifyDestroyed(Window promotionDlg, DialogResult r)
+               {
+                  DoMove(cx1, cy1, cx2, cy2, (PieceType)r);
+                  if(ai)
+                     aiThread.Play();
+               }
+            }.Create();
+         }
+      }
+      else
+         valid = DoMove(x1, y1, x2, y2, promotion);
       return valid;
    }
 
@@ -566,10 +602,12 @@ class Chess : Window
 
    void EnableMenus()
    {
+#ifndef CHESS_NONET
       stopItem.disabled = !hosting;
       disconnectItem.disabled = !sockets[SERVER_COLOR] && !sockets[CLIENT_COLOR];
-      endGameItem.disabled = !chessState.gameRunning;
       hostItem.disabled = hosting;
+#endif
+      endGameItem.disabled = !chessState.gameRunning;
    }
 
    void SetDriver()
@@ -604,20 +642,16 @@ class Chess : Window
       return true;
    }
 
-   bool EndGame()
+   void DoEndGame(GameAction action)
    {
-      if(chessState.gameRunning &&
-         (chessState.state == Normal || chessState.state == Check))
-      {
-         if(MessageBox { type = okCancel, contents = "Quit current game?",
-            master = this, text = "ECERE Chess" }.Modal() == cancel)
-            return false;
-      }
+#ifndef CHESS_NONET
       if(sockets[SERVER_COLOR])
          sockets[SERVER_COLOR].Disconnect(0);
       else if(sockets[CLIENT_COLOR])
          sockets[CLIENT_COLOR].Disconnect(0);
-      else if(local || ai)
+      else
+#endif
+      if(local || ai)
       {
          if(ai) aiThread.Abort();
          local = ai = false;
@@ -628,21 +662,53 @@ class Chess : Window
       turnField.text = "";
       stateField.text = "";
 
+      switch(action)
+      {
+         case newAIGame:    aiItem.NotifySelect(this, aiItem, 0); break;
+         case newLocalGame: localItem.NotifySelect(this, localItem, 0); break;
+      }
+   }
+
+   GameAction nextAction;
+
+   bool EndGame(GameAction action)
+   {
+      if(chessState.gameRunning &&
+         (chessState.state == Normal || chessState.state == Check))
+      {
+         nextAction = action;
+         MessageBox
+         {
+            type = okCancel, contents = "Quit current game?",
+            master = this, text = "ECERE Chess";
+            isModal = true;
+
+            void Chess::NotifyDestroyed(Window msgBox, DialogResult result)
+            {
+               if(result != cancel)
+                  DoEndGame(nextAction);
+            }
+         }.Create();
+         return false;
+      }
       return true;
    }
 
    bool OnClose(bool parentClosing)
    {
-      return EndGame();
+      return EndGame(close);
    }
 
    void OnDestroy()
    {
+#ifndef CHESS_NONET
       delete sockets[Black];
       delete sockets[White];
+#endif
       delete driverItems;
    }
 
+#ifndef CHESS_NONET
    void Connect(const char * address)
    {
       ChessSocket socket { chess = this };
@@ -655,9 +721,11 @@ class Chess : Window
          chessState.isLocalPlayer[SERVER_COLOR] = false;
       }
    }
+#endif
 }
 
 // --- Chess Communications ---
+#ifndef CHESS_NONET
 class ChessSocket : Socket
 {
    Chess chess;
@@ -740,3 +808,4 @@ class ChessService : Service
       }
    }
 }
+#endif

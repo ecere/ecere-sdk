@@ -1,3 +1,5 @@
+#define _Noreturn
+
 #ifdef __statement
 #undef __statement
 #endif

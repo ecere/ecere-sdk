@@ -1,5 +1,7 @@
 namespace sys;
 
+#define _Noreturn
+
 #define set _set
 #define Date _Date
 #define uint _uint

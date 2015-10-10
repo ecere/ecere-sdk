@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace sys;
 
 #define set _set
@@ -12,7 +14,7 @@ namespace sys;
 #undef Thread
 #else
 #include <pthread.h>
-#ifndef __ANDROID__
+#if !defined(__ANDROID__)
 #include <signal.h>
 #endif
 #endif

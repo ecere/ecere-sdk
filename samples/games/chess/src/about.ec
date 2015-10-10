@@ -22,9 +22,9 @@ class AboutChess : Window
 
    void OnRedraw(Surface surface)
    {
-      surface.WriteTextf(200, 30, "Copyright (c) 1996-2005");
-      surface.WriteTextf(200, 50, "   Jerome Jacovella-St-Louis");
+      surface.WriteTextf(200, 30, "Copyright (c) 1996-2015");
+      surface.WriteTextf(200, 50, "   Jérôme Jacovella-St-Louis");
       surface.WriteTextf(200, 70, "Models Copyright (c) 2004");
-      surface.WriteTextf(200, 90, "   Gaetan Loyer");
+      surface.WriteTextf(200, 90, "   Gaétan Loyer");
    }
 }

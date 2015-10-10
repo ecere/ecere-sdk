@@ -385,8 +385,7 @@ class Chess3D : Window
 
    void OnRedraw(Surface surface)
    {
-      //surface.SetBackground(white);
-      surface.Clear(colorAndDepth);
+      surface.Clear(depthBuffer);
 
       camera.Update();
       display.antiAlias = antiAlias;

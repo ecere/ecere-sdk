@@ -25,9 +25,13 @@ private:
 public:
 
    caption = "Mekano";
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+   anchor = { 0, 0, 0, 0 };
+#else
+   clientSize = { 640, 480 };
    hasMaximize = true, hasMinimize = true, hasClose = true;
    borderStyle = sizable;
-   clientSize = { 640, 480 };
+#endif
    background = slateGray;
 
    BitmapResource bg { ":ecere.bmp", window = this };

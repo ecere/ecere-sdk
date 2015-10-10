@@ -1,5 +1,6 @@
 import "chess.ec"
 
+#ifndef CHESS_NONET
 class ConnectDialog : Window
 {
    minClientSize = Size { 300, 100 };
@@ -36,3 +37,4 @@ class ConnectDialog : Window
       line.text = "localhost"
    };
 }
+#endif

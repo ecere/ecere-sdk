@@ -1,3 +1,5 @@
+#define _Noreturn
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 
@@ -14,7 +16,7 @@ namespace sys;
 #define uint _uint
 #define set _set
 #define String _String
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else

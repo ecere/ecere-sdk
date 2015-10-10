@@ -1,5 +1,7 @@
 namespace sys;
 
+#define _Noreturn
+
 default:
 #define set _set
 #define uint _uint
