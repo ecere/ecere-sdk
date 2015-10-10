@@ -487,7 +487,7 @@ static bool FindMaterialAndType(Mesh mesh, Material material, PrimitiveGroupType
    return false;
 }
 
-public class Object
+public class Object : struct
 {
 public:
    void SetMinMaxRadius(bool processMesh)

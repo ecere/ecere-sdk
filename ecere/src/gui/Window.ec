@@ -824,7 +824,9 @@ private:
             x -= rootWindow.clientStart.x;
             y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
          }
+#if !defined(__EMSCRIPTEN__)
          if(!guiApp.fullScreenMode || is3D)
+#endif
          {
             x -= rootWindow.absPosition.x;
             y -= rootWindow.absPosition.y;
@@ -1801,7 +1803,11 @@ private:
                   if(display && !display.flags.memBackBuffer && changeRootWindow)
                      guiApp.interfaceDriver.PositionRootWindow(this, x, y, w, h, windowMoved, windowResized); //realResized);
 
-               if(!guiApp.fullScreenMode && this != guiApp.desktop && (windowResized || windowMoved))
+               if(
+#if !defined(__EMSCRIPTEN__)
+                  !guiApp.fullScreenMode &&
+#endif
+                  this != guiApp.desktop && (windowResized || windowMoved))
                   for(child = parent.children.first; child && child != this; child = child.next)
                      if(child.rootWindow)
                         guiApp.interfaceDriver.UpdateRootWindow(child.rootWindow);
@@ -3787,7 +3793,10 @@ private:
                         if(activateParent && parent && !parent.active /*parent != parent.parent.activeChild*/)
                            parent.ActivateEx(true, true, moveInactive, activateRoot, external, externalSwap);
                      }
-                     else if(!guiApp.fullScreenMode)
+                     else
+#if !defined(__EMSCRIPTEN__)
+                     if(!guiApp.fullScreenMode)
+#endif
                      {
                         Window modalRoot = FindModal();
                         if(!modalRoot) modalRoot = this;
@@ -4881,8 +4890,12 @@ private:
       Window child;
 
       // Setup relationship with outside world (bb root || !bb)
+#if defined(__EMSCRIPTEN__)
+      if(this == guiApp.desktop)
+#else
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop ||
          (_displayDriver && parent.dispDriver && dispDriver != parent.dispDriver))
+#endif
       {
          rootWindow = this;
          if(!tempExtents)
@@ -4914,7 +4927,11 @@ private:
       bool result = false;
       Window child;
 
+#if defined(__EMSCRIPTEN__)
+      if(this == guiApp.desktop)
+#else
       if((!guiApp.fullScreenMode && parent == guiApp.desktop) || (guiApp.fullScreenMode && (this == guiApp.desktop || (_displayDriver && parent.dispDriver && dispDriver != parent.dispDriver))))
+#endif
       {
          subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
@@ -5020,7 +5037,11 @@ private:
          }
       }
 
-      if(guiApp.fullScreenMode || this != guiApp.desktop)
+      if(
+#if !defined(__EMSCRIPTEN__)
+      guiApp.fullScreenMode ||
+#endif
+         this != guiApp.desktop)
       {
          SetWindowMinimum(&skinMinSize.w, &skinMinSize.h);
          if(display)
@@ -5948,7 +5969,7 @@ private:
    public bool AcquireInput(bool acquired)
    {
       bool result = true;
-      if(acquiredInput != acquired)
+      if((guiApp.acquiredWindow && acquiredInput) != acquired)
       {
          if(active || (!visible && creationActivation == activate))
             result = AcquireInputEx(acquired);
@@ -5981,7 +6002,11 @@ private:
    {
       if(guiApp.driver != null)
       {
+#if !defined(__EMSCRIPTEN__)
          if(guiApp.fullScreenMode && guiApp.desktop.display)
+#else
+         if(true)
+#endif
          {
 #if !defined(__EMSCRIPTEN__)
             guiApp.desktop.mutex.Wait();
@@ -7905,16 +7930,23 @@ public:
 
    bool MenuWindowWindows(MenuItem selection, Modifiers mods)
    {
-      WindowList dialog { master = this };
-      Window document = (Window)(intptr)dialog.Modal();
-      if(document)
+      WindowList
       {
-         if(activeChild.state == maximized)
-            document.SetState(maximized, false, mods);
-         else if(document.state == minimized)
-            document.SetState(normal, false, mods);
-         document.Activate();
-      }
+         master = this; isModal = true;
+
+         void NotifyDestroyed(Window window, DialogResult result)
+         {
+            Window document = (Window)(intptr)result;
+            if(document)
+            {
+               if(activeChild.state == maximized)
+                  document.SetState(maximized, false, 0);
+               else if(document.state == minimized)
+                  document.SetState(normal, false, 0);
+               document.Activate();
+            }
+         }
+      }.Create();
       return true;
    }
 

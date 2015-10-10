@@ -1,3 +1,4 @@
+#define _Noreturn
 namespace gui::drivers;
 
 import "instance"
@@ -5,7 +6,7 @@ import "instance"
 import "OpenGLDisplayDriver"
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX)
 
 #undef __BLOCKS__
 default:

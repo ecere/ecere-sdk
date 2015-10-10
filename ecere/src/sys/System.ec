@@ -1,5 +1,7 @@
 namespace sys;
 
+#define _Noreturn
+
 #if defined(ECERE_BOOTSTRAP)
 #undef __WIN32__
 #undef __unix__

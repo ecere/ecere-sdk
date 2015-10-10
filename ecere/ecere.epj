@@ -760,12 +760,6 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
-                              },
-                              {
-                                 "Name" : "Emscripten",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
                               }
                            ]
                         },
@@ -780,17 +774,7 @@ from wherever you obtained them.
                               }
                            ]
                         },
-                        {
-                           "FileName" : "PNGFormat.ec",
-                           "Configurations" : [
-                              {
-                                 "Name" : "Emscripten",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ]
-                        },
+                        "PNGFormat.ec",
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
@@ -996,6 +980,18 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1034,6 +1030,18 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1090,6 +1098,18 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1131,6 +1151,18 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1163,6 +1195,12 @@ from wherever you obtained them.
                                     },
                                     {
                                        "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Static",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1820,6 +1858,17 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2028,6 +2077,17 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2162,6 +2222,17 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2186,7 +2257,8 @@ from wherever you obtained them.
                                  }
                               }
                            ]
-                        }
+                        },
+                        "test_html5.c"
                      ],
                      "Options" : {
                         "ExcludeFromBuild" : true

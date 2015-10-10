@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace gfx::drivers;
 
 #if (defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER)) && defined(__WIN32__)

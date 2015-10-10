@@ -52,6 +52,28 @@
                "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/android.app.NativeActivity"
             ]
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "CHESS_NONET"
+            ],
+            "TargetFileName" : "chess.html",
+            "Libraries" : [
+               "ecereStatic",
+               "z",
+               "freetype",
+               "jpeg",
+               "png"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [
@@ -105,6 +127,204 @@
    ],
    "ResourcesPath" : "res",
    "Resources" : [
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "actions",
+               "Files" : [
+                  "../../../ecere/res/actions/clean.png",
+                  "../../../ecere/res/actions/docNew.png",
+                  "../../../ecere/res/actions/docSave.png",
+                  "../../../ecere/res/actions/editFind.png",
+                  "../../../ecere/res/actions/folderNew.png",
+                  "../../../ecere/res/actions/goDown.png",
+                  "../../../ecere/res/actions/goHome.png",
+                  "../../../ecere/res/actions/goNext.png",
+                  "../../../ecere/res/actions/goPrevious.png",
+                  "../../../ecere/res/actions/goUp.png",
+                  "../../../ecere/res/actions/listAdd.png",
+                  "../../../ecere/res/actions/listRemove.png",
+                  "../../../ecere/res/actions/viewRefresh.png",
+                  "../../../ecere/res/actions/windowNew.png"
+               ]
+            },
+            {
+               "Folder" : "aqua",
+               "Files" : [
+                  "../../../ecere/res/aqua/back.png",
+                  "../../../ecere/res/aqua/down.png",
+                  "../../../ecere/res/aqua/downLeft.png",
+                  "../../../ecere/res/aqua/downMiddle.png",
+                  "../../../ecere/res/aqua/downRight.png",
+                  "../../../ecere/res/aqua/sDown.png",
+                  "../../../ecere/res/aqua/sUp.png",
+                  "../../../ecere/res/aqua/up.png",
+                  "../../../ecere/res/aqua/upLeft.png",
+                  "../../../ecere/res/aqua/upMiddle.png",
+                  "../../../ecere/res/aqua/upRight.png"
+               ]
+            },
+            {
+               "Folder" : "constructs",
+               "Files" : [
+                  "../../../ecere/res/constructs/class.png",
+                  "../../../ecere/res/constructs/data.png",
+                  "../../../ecere/res/constructs/dataPrivate.png",
+                  "../../../ecere/res/constructs/dataType.png",
+                  "../../../ecere/res/constructs/enum.png",
+                  "../../../ecere/res/constructs/enumValue.png",
+                  "../../../ecere/res/constructs/event.png",
+                  "../../../ecere/res/constructs/library.png",
+                  "../../../ecere/res/constructs/method.png",
+                  "../../../ecere/res/constructs/methodPrivate.png",
+                  "../../../ecere/res/constructs/namespace.png",
+                  "../../../ecere/res/constructs/property.png",
+                  "../../../ecere/res/constructs/propertyPrivate.png"
+               ]
+            },
+            {
+               "Folder" : "controls",
+               "Files" : [
+                  "../../../ecere/res/controls/button.png",
+                  "../../../ecere/res/controls/calendar.png",
+                  "../../../ecere/res/controls/checkBox.png",
+                  "../../../ecere/res/controls/dataBox.png",
+                  "../../../ecere/res/controls/dropBox.png",
+                  "../../../ecere/res/controls/editBox.png",
+                  "../../../ecere/res/controls/groupBox.png",
+                  "../../../ecere/res/controls/label.png",
+                  "../../../ecere/res/controls/listBox.png",
+                  "../../../ecere/res/controls/menu.png",
+                  "../../../ecere/res/controls/optionBox.png",
+                  "../../../ecere/res/controls/progressBar.png",
+                  "../../../ecere/res/controls/scrollBarHorizontal.png",
+                  "../../../ecere/res/controls/scrollBarVertical.png",
+                  "../../../ecere/res/controls/statusBar.png"
+               ]
+            },
+            {
+               "Folder" : "cursors",
+               "Files" : [
+                  "../../../ecere/res/cursors/arrow.png",
+                  "../../../ecere/res/cursors/cross.png",
+                  "../../../ecere/res/cursors/iBeam.png",
+                  "../../../ecere/res/cursors/move.png",
+                  "../../../ecere/res/cursors/sizeEastWest.png",
+                  "../../../ecere/res/cursors/sizeNortEastSouthWest.png",
+                  "../../../ecere/res/cursors/sizeNorthSouth.png",
+                  "../../../ecere/res/cursors/sizeNortWestSouthEast.png"
+               ]
+            },
+            {
+               "Folder" : "devices",
+               "Files" : [
+                  "../../../ecere/res/devices/computer.png",
+                  "../../../ecere/res/devices/driveHardDisk.png",
+                  "../../../ecere/res/devices/driveRemovableMedia.png",
+                  "../../../ecere/res/devices/mediaFloppy.png",
+                  "../../../ecere/res/devices/mediaOptical.png"
+               ]
+            },
+            {
+               "Folder" : "elements",
+               "Files" : [
+                  "../../../ecere/res/elements/areaClose.png",
+                  "../../../ecere/res/elements/areaMaximize.png",
+                  "../../../ecere/res/elements/areaMinimize.png",
+                  "../../../ecere/res/elements/areaRestore.png",
+                  "../../../ecere/res/elements/arrowDown.png",
+                  "../../../ecere/res/elements/arrowLeft.png",
+                  "../../../ecere/res/elements/arrowRight.png",
+                  "../../../ecere/res/elements/arrowUp.png",
+                  "../../../ecere/res/elements/checkBox.png",
+                  "../../../ecere/res/elements/checkBoxChecked.png",
+                  "../../../ecere/res/elements/checkBoxDisabled.png",
+                  "../../../ecere/res/elements/checkBoxDisabledChecked.png",
+                  "../../../ecere/res/elements/optionBoxDisabled.png",
+                  "../../../ecere/res/elements/optionBoxDisabledSelected.png",
+                  "../../../ecere/res/elements/optionBoxDown.png",
+                  "../../../ecere/res/elements/optionBoxSelectedDown.png",
+                  "../../../ecere/res/elements/optionBoxSelectedUp.png",
+                  "../../../ecere/res/elements/optionBoxUp.png",
+                  "../../../ecere/res/elements/orderAscending.png",
+                  "../../../ecere/res/elements/orderCategorized.png",
+                  "../../../ecere/res/elements/orderDescending.png"
+               ]
+            },
+            {
+               "Folder" : "emblems",
+               "Files" : [
+                  "../../../ecere/res/emblems/unreadable.png"
+               ]
+            },
+            {
+               "Folder" : "mimeTypes",
+               "Files" : [
+                  "../../../ecere/res/mimeTypes/brokenFile.png",
+                  "../../../ecere/res/mimeTypes/file.png",
+                  "../../../ecere/res/mimeTypes/image.png",
+                  "../../../ecere/res/mimeTypes/package.png",
+                  "../../../ecere/res/mimeTypes/packageOpticalDisc.png",
+                  "../../../ecere/res/mimeTypes/packageSoftware.png",
+                  "../../../ecere/res/mimeTypes/text.png",
+                  "../../../ecere/res/mimeTypes/textC++Header.png",
+                  "../../../ecere/res/mimeTypes/textC++Source.png",
+                  "../../../ecere/res/mimeTypes/textCHeader.png",
+                  "../../../ecere/res/mimeTypes/textCSource.png",
+                  "../../../ecere/res/mimeTypes/textEcereHeader.png",
+                  "../../../ecere/res/mimeTypes/textEcereProject.png",
+                  "../../../ecere/res/mimeTypes/textEcereSource.png",
+                  "../../../ecere/res/mimeTypes/textEcereWorkspace.png",
+                  "../../../ecere/res/mimeTypes/textHyperTextMarkup.png"
+               ]
+            },
+            {
+               "Folder" : "places",
+               "Files" : [
+                  "../../../ecere/res/places/brokenFolder.png",
+                  "../../../ecere/res/places/driveRemote.png",
+                  "../../../ecere/res/places/folder.png",
+                  "../../../ecere/res/places/folderRemote.png",
+                  "../../../ecere/res/places/networkServer.png",
+                  "../../../ecere/res/places/networkWorkgroup.png"
+               ]
+            },
+            {
+               "Folder" : "status",
+               "Files" : [
+                  "../../../ecere/res/status/audioVolumeHigh.png",
+                  "../../../ecere/res/status/folderOpen.png"
+               ]
+            },
+            {
+               "Folder" : "unicode",
+               "Files" : [
+                  "../../../ecere/res/unicode/derivedGeneralCategoryStripped.txt"
+               ]
+            },
+            {
+               "Folder" : "shaders",
+               "Files" : [
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.vertex"
+               ]
+            },
+            "C:/Windows/Fonts/tahoma.ttf",
+            "C:/Windows/Fonts/tahomabd.ttf"
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Emscripten",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      },
       "aboutPic.jpg",
       "blackBishop.png",
       "blackKing.png",
