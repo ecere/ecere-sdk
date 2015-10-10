@@ -4,8 +4,10 @@
  #define SHADERS
 #endif
 
-#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__ODROID__)
    #include <GLES/gl.h>
+#elif defined(__EMSCRIPTEN__)
+   #include <GLES2/gl2.h>
 #else
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
@@ -15,6 +17,7 @@
 #endif
 
 import "Display"
+import "shading"
 
 #if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
 public union Matrix

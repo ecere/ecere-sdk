@@ -1147,7 +1147,7 @@ private:
 };
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
-private class Display3D
+private class Display3D : struct
 {
    // 3D Display
    int nTriangles;

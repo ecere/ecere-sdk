@@ -2,7 +2,15 @@ namespace gfx3D::models;
 
 import "Object"
 
-#if !defined(_GLES)
+#if defined(__EMSCRIPTEN__)
+#define ES2
+#endif
+
+#if defined(__ANDROID__) || defined(__ODROID__)
+#define ES1_1
+#endif
+
+#if !defined(ES1_1) && !defined(ES2)
 #define USE_32_BIT_INDICES true
 #define indicesMember indices32
 #define uintindex uint32

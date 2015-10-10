@@ -1,4 +1,4 @@
-#version 150
+#version 100
 
 uniform mat4 projection_matrix;
 uniform mat4 modelview_matrix;
@@ -30,6 +30,7 @@ uniform bool fogOn;
 uniform float fogDensity;
 uniform vec3 fogColor;
 
+/*
 in vec2 texCoord;
 in vec3 vertex;
 in vec3 normal;
@@ -38,22 +39,31 @@ in vec4 color;
 out vec2 fTexCoord;
 out vec4 fColor;
 out vec4 fColorBack;
+*/
+
+attribute vec2 texCoord;
+attribute vec3 vertex;
+attribute vec3 normal;
+attribute vec4 color;
+
+varying vec2 fTexCoord;
+varying vec4 fColor;
+varying vec4 fColorBack;
 
 void main(void)
 {
-   float f = 1;
-   vec3 n = normalize(mat3x3(modelview_matrix) * normal);
+   float f = 1.0;
+   vec3 n = normalize(mat3(modelview_matrix) * normal);
    vec4 pos = modelview_matrix * vec4(vertex, 1.0);
 
    gl_Position = projection_matrix * pos;
    fTexCoord = texCoord;
 
    if(fogOn)
-      f = clamp(exp(fogDensity * pos.z), 0, 1);
+      f = clamp(exp(fogDensity * pos.z), 0.0, 1.0);
 
    if(lightingOn)
    {
-      int i;
       vec3 diffuseColor = perVertexColor ? color.xyz : matDiffuse;
       vec3 ambientColor = perVertexColor ? color.xyz : matAmbient;
       float opacity = perVertexColor ? color.w : matOpacity;
@@ -65,12 +75,12 @@ void main(void)
       fColor = vec4(0);
       if(matTwoSided)
          fColorBack = vec4(0);
-      for(i = 0; i < 8; i++)
+      for(int i = 0; i < 8; i++)
          if(lightsOn[i])
          {
             vec4 l = lightsPos[i];
             float d = dot(n, l.xyz);
-            float pf = 0;
+            float pf = 0.0;
             vec3 VP = l.xyz;
             vec3 halfVector;
             if(matPower != 0.0)
@@ -78,7 +88,7 @@ void main(void)
                float nDotVP;
                VP = l.xyz;
                halfVector = normalize(VP + eye);
-               nDotVP = max(0, dot(n, VP));
+               nDotVP = max(0.0, dot(n, VP));
                if(nDotVP != 0.0)
                {
                   float nDotHV = max(0.0, dot(n, halfVector));
@@ -86,7 +96,7 @@ void main(void)
                }
             }
 
-            c += diffuseColor * min(1, max(0, d)) * lightsDiffuse[i];
+            c += diffuseColor * min(1.0, max(0.0, d)) * lightsDiffuse[i];
             c += matSpecular * pf * lightsSpecular[i];
             c += matAmbient * lightsAmbient[i];
 
@@ -96,7 +106,7 @@ void main(void)
                float d2 = dot(iN, l.xyz);
                if(matPower != 0.0)
                {
-                  float nDotVP = max(0, dot(iN, VP));
+                  float nDotVP = max(0.0, dot(iN, VP));
                   if(nDotVP != 0.0)
                   {
                      float nDotHV = max(0.0, dot(iN, halfVector));
@@ -104,7 +114,7 @@ void main(void)
                   }
                }
 
-               c2 += diffuseColor * min(1, max(0, d2)) * lightsDiffuse[i];
+               c2 += diffuseColor * min(1.0, max(0.0, d2)) * lightsDiffuse[i];
                c2 += matSpecular * pf * lightsSpecular[i];
                c2 += matAmbient * lightsAmbient[i];
             }
@@ -115,7 +125,7 @@ void main(void)
       fColor = vec4(c, opacity);
 
       if(fogOn)
-         fColor = f * fColor + (1-f) * vec4(fogColor, 1);
+         fColor = f * fColor + (1.0-f) * vec4(fogColor, 1);
 
       if(matTwoSided)
       {
@@ -124,14 +134,14 @@ void main(void)
          fColorBack = vec4(c2, opacity);
 
          if(fogOn)
-            fColorBack = f * fColorBack + (1-f) * vec4(fogColor, 1);
+            fColorBack = f * fColorBack + (1.0-f) * vec4(fogColor, 1);
       }
    }
    else
    {
-      fColor = current_color * color;
+      fColor = current_color * (perVertexColor ? color : vec4(1,1,1,1));
 
       if(fogOn)
-         fColor = f * fColor + (1-f) * vec4(fogColor, 1);
+         fColor = f * fColor + (1.0-f) * vec4(fogColor, 1);
    }
 }
