@@ -6,8 +6,15 @@
  #define SHADERS
 #endif
 
-#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__ODROID__)
    #include <GLES/gl.h>
+
+   #define GL_INT    0x1404
+   #define GL_DOUBLE 0x140A
+#elif defined(__EMSCRIPTEN__)
+   #include <GLES2/gl2.h>
+
+   #define ES2
 
    #define GL_INT    0x1404
    #define GL_DOUBLE 0x140A
@@ -100,7 +107,7 @@ public struct GLAB
 
    void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
    {
-#if defined(_GLES) || defined(ES1_1)
+#if defined(_GLES) || defined(ES1_1) || defined(ES2)
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0))
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       if(type == GL_INT)
@@ -136,7 +143,10 @@ public struct GLEAB
 
          if(glabCurElementBuffer != buffer)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+         if(size)
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+         else
+            ;
       }
    }
 
@@ -153,7 +163,7 @@ public struct GLEAB
    {
       if(glabCurElementBuffer != ((this != null) ? buffer : 0))
          GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-#if defined(_GLES) || defined(ES1_1)
+#if defined(_GLES) || defined(ES1_1) || defined(ES2)
       type = GL_UNSIGNED_SHORT;
 #endif
       glDrawElements(primType, count, type, indices);

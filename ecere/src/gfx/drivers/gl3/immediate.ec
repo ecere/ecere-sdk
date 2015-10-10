@@ -4,8 +4,10 @@
  #define SHADERS
 #endif
 
-#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__ODROID__)
    #include <GLES/gl.h>
+#elif defined(__EMSCRIPTEN__)
+   #include <GLES2/gl2.h>
 #else
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
@@ -15,6 +17,7 @@
 #endif
 
 import "glab"
+import "shading"
 
 #ifdef SHADERS
 
@@ -151,6 +154,8 @@ public void glimtkVertex2f(float x, float y)
 public void glimtkVertex2i(int x, int y)         { glimtkVertex2f((float)x, (float)y); }
 public void glimtkVertex2d(double x, double y)   { glimtkVertex2f((float)x, (float)y); }
 
+GLAB streamVecAB, streamNorAB;
+
 public void glimtkEnd(void)
 {
    GLIMTKMode mode = beginMode;
@@ -159,20 +164,33 @@ public void glimtkEnd(void)
 
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
+   streamVecAB.upload(vertexStride * sizeof(float) * vertexCount, vertexPointer);
+
+   streamVecAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
+   // noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
 
    if(vertexColorValues)
    {
       glEnableClientState(GL_COLOR_ARRAY);
-      noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
+      streamVecAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
+
+#ifdef SHADERS
+      shader_setPerVertexColor(true);
+#endif
+
+
+      //noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
    }
 
-   noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
+   streamVecAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+   // noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
 
    if(normalCount && normalCount == vertexCount)
    {
       glEnableClientState(GL_NORMAL_ARRAY);
-      noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
+      streamNorAB.upload(3*sizeof(float) * vertexCount, normalPointer);
+      streamNorAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+      // noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
    }
 
    glDrawArrays(mode, 0, vertexCount);
@@ -180,7 +198,14 @@ public void glimtkEnd(void)
    if(normalCount)
       glDisableClientState(GL_NORMAL_ARRAY);
    if(vertexColorValues)
+   {
       glDisableClientState(GL_COLOR_ARRAY);
+
+#ifdef SHADERS
+      shader_setPerVertexColor(false);
+#endif
+
+   }
    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
    normalCount = 0;
