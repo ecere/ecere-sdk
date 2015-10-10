@@ -1,8 +1,8 @@
 namespace gfx::bitmaps;
 
-import "Display"
+#define _Noreturn
 
-#if !defined(__EMSCRIPTEN__)
+import "Display"
 
 #define uint _uint
 #include "png.h"
@@ -309,5 +309,3 @@ class PNGFormat : BitmapFormat
       return result;
    }
 }
-
-#endif // !defined(__EMSCRIPTEN__)

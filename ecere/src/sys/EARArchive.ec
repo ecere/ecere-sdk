@@ -51,7 +51,12 @@ static File EAROpenArchive(const char * archive, EARHeader header)
          name = ((SubModule)__thisModule.application.modules.first).next.module.name;
 #endif
 
-      if(LocateModule(name, moduleName))
+#if defined(__EMSCRIPTEN__)
+      if(!name[0])
+         f = FileOpen("resources.ear", read);
+#endif
+
+      if(!f && LocateModule(name, moduleName))
          f = FileOpen(moduleName, read);
    }
    else
@@ -1429,6 +1434,21 @@ class EARFileSystem : FileSystem
          result = EARGetEntry(f, entry, fileName, null);
          delete f;
       }
+   #ifdef ECERE_STATIC
+      if(!f && archive[0] == ':')
+      {
+         f = EAROpenArchive(":", &header);
+         if(f)
+         {
+            EAREntry entry { };
+            char fn[MAX_LOCATION];
+            strcpy(fn, archive + 1);
+            PathCat(fn, fileName);
+            result = EARGetEntry(f, entry, fn, null);
+         }
+         delete f;
+      }
+   #endif
       return result;
    }
 

@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace sys;
 
 #define set _set
@@ -9,7 +11,7 @@ default:
 #undef __BLOCKS__
 #include <stdlib.h>
 #if !defined(ECERE_BOOTSTRAP) // quick fix for now
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define String _String
 #include <windows.h>

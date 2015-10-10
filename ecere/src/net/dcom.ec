@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace net;
 
 #if defined(__WIN32__)

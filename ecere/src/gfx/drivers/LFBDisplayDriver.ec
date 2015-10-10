@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace gfx::drivers;
 
 #ifdef __MSC__
