@@ -1,3 +1,5 @@
+#define _Noreturn
+
 default:
 #include <errno.h>
 private:

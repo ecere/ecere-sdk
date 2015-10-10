@@ -1,6 +1,6 @@
 import "mekanodisplay"
 
-class MekanoSimulation
+class MekanoSimulation : struct
 {
 private:
    List<MekanoObject> m_Objects { };

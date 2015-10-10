@@ -1,3 +1,5 @@
+#define _Noreturn
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -24,7 +26,7 @@
 #undef bool
 #endif
 
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
 #include <windows.h>
@@ -54,14 +56,14 @@ typedef unsigned long long uint64;
 __declspec(dllexport) int isblank(int c) { return c == '\t' || c == ' '; }
 #endif
 
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 intptr_t stdinHandle, stdoutHandle;
 int osfStdin, osfStdout;
 FILE * fStdIn, * fStdOut;
 #endif
 
 FILE *eC_stdin(void)  {
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
    if(!fStdIn)
    {
       stdinHandle = (intptr_t)GetStdHandle(STD_INPUT_HANDLE);
@@ -137,7 +139,7 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 typedef enum { unknown, win32, tux, apple } Platform;
 
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 Platform runtimePlatform = win32;
 #elif defined(__APPLE__)
 Platform runtimePlatform = apple;
@@ -190,7 +192,7 @@ static bool DualPipe_GetLine(FILE * p, char *s, int max)
 
 bool Instance_LocateModule(const char * name, char * fileName)
 {
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
    HMODULE hModule = null;
    if(name && name[0])
    {
@@ -404,11 +406,11 @@ bool Instance_LocateModule(const char * name, char * fileName)
 
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr)
 {
-#if !defined(__WIN32__) && !defined(__EMSCRIPTEN__) && !defined(ECERE_BOOTSTRAP)
+#if !defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    // Disable stdout buffering on Unix
    setvbuf(stdout, null, _IONBF, 0);
 #endif
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
    *parsedCommand = UTF16toUTF8(GetCommandLineW());
    *argvPtr = eSystem_New0(sizeof(char *) * 512);
    *argcPtr = Tokenize(*parsedCommand, 512,(void*)(char **)(*argvPtr), forArgsPassing);
@@ -454,7 +456,7 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    *Load = null;
    *Unload = null;
 
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
    strcpy(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])
@@ -571,7 +573,7 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
 
 void Instance_Module_Free(void * library)
 {
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
    if(library)
       FreeLibrary(library);
 #elif (defined(__unix__) || defined(__APPLE__)) && !defined(__EMSCRIPTEN__)

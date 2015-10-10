@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace net;
 
 #include <stdarg.h>

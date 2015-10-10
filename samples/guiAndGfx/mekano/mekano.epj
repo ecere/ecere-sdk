@@ -71,6 +71,27 @@
                }
             }
          ]
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=static"
+            ],
+            "TargetFileName" : "mekano.html",
+            "Libraries" : [
+               "ecereStatic",
+               "z",
+               "freetype",
+               "png",
+               "jpeg"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [

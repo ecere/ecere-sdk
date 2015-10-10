@@ -1,7 +1,10 @@
+#define _Noreturn
+
 namespace gui;
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#include <html5.h>
 #endif
 
 #ifdef __EMSCRIPTEN__
@@ -472,7 +475,11 @@ public class GuiApplication : Application
                   desktop.Update(null);
             }
             // When does the desktop have a display in not fullscreen mode?
+#if defined(__EMSCRIPTEN__)
+            if(true)
+#else
             if(!fullScreenMode && !modeSwitching)
+#endif
                desktop.UpdateDisplay();
             desktop.display.Unlock();
          }
@@ -687,6 +694,23 @@ public:
    {
       Window window;
 
+#ifdef __EMSCRIPTEN__
+      {
+         int w = 0, h = 0;
+         double dw = 0, dh = 0;
+
+         emscripten_get_element_css_size(0, &dw, &dh);
+         w = (int)dw, h = (int)dh;
+         if(w && h)
+         {
+            emscripten_set_canvas_size(w, h);
+            guiApp.desktop.ExternalPosition(0,0, w, h);
+            if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
+               guiApp.desktop.display.Resize(w, h);
+         }
+      }
+#endif
+
       if(Init())
       {
          if(desktop)
@@ -707,13 +731,14 @@ public:
          }
 
 #ifdef __EMSCRIPTEN__
-      emscripten_set_main_loop(emscripten_main_loop_callback, 1/*60*/, 1);
+      emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
 #endif
 
          if(desktop)
          {
             int terminated = 0;
             incref desktop;
+
             ProcessInput(true);
             while(desktop && interfaceDriver)
             {
@@ -857,7 +882,11 @@ public:
 
       if(interfaceDriver)
       {
+#if defined(__EMSCRIPTEN__)
+         if(true)
+#else
          if(fullScreenMode && desktop.display)
+#endif
          {
 #if !defined(__EMSCRIPTEN__)
             desktop.mutex.Wait();
@@ -1237,6 +1266,19 @@ public:
          (!refreshRate || refreshRate == fbRefreshRate) &&
          (currentSkin && (!skinName || !strcmp(currentSkin.name, skinName))))
          result = true;
+#if defined(__EMSCRIPTEN__)
+      else if(interfaceDriver && (!driverName || (fbDriver && !strcmp(fbDriver, driverName))) &&
+         fullScreen != fbFullScreen &&
+         (!resolution || resolution == fbResolution) &&
+         (!colorDepth || colorDepth == fbColorDepth) &&
+         (!refreshRate || refreshRate == fbRefreshRate) &&
+         (currentSkin && (!skinName || !strcmp(currentSkin.name, skinName))))
+      {
+         if(inter.ScreenMode(fullScreen, resolution, colorDepth, refreshRate, &textMode))
+            this.fullScreen = fullScreen;
+         result = true;
+      }
+#endif
       else if(inter)
       {
          bool wasFullScreen = fullScreenMode;
@@ -1529,6 +1571,7 @@ public:
    {
       set { timerResolution = value; if(interfaceDriver) interfaceDriver.SetTimerResolution(value); }
    };
+   property Window acquiredWindow { get { return acquiredWindow; } };
 };
 
 #ifdef __EMSCRIPTEN__

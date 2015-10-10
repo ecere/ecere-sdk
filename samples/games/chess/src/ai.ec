@@ -358,9 +358,15 @@ class AIThread : Thread
    void Play()
    {
       abortAI = false;
+#if defined(__EMSCRIPTEN__)
+      Main();
+      chess.MakeMove(aiMove.x1, aiMove.y1, aiMove.x2, aiMove.y2, aiMove.promotion);
+      aiMoveResult = false;
+#else
       app.UpdateDisplay();
       Create();
       aiTimer.Start();
+#endif
    }
 
    void Abort()

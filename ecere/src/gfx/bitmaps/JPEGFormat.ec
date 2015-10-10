@@ -1,5 +1,6 @@
 namespace gfx::bitmaps;
 
+#define _Noreturn
 import "Display"
 
 #include <setjmp.h>

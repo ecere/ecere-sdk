@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace net;
 
 #ifndef ECERE_NONET

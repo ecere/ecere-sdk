@@ -1,3 +1,5 @@
+#define _Noreturn
+
 namespace gui::drivers;
 
 import "Window"

@@ -780,12 +780,6 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
-                              },
-                              {
-                                 "Name" : "Emscripten",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
                               }
                            ]
                         },
@@ -800,17 +794,7 @@ if distributed with the Ecere SDK Windows installer.
                               }
                            ]
                         },
-                        {
-                           "FileName" : "PNGFormat.ec",
-                           "Configurations" : [
-                              {
-                                 "Name" : "Emscripten",
-                                 "Options" : {
-                                    "ExcludeFromBuild" : true
-                                 }
-                              }
-                           ]
-                        },
+                        "PNGFormat.ec",
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
@@ -998,6 +982,18 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1036,6 +1032,18 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "StaticGLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1089,6 +1097,18 @@ if distributed with the Ecere SDK Windows installer.
                                  "Configurations" : [
                                     {
                                        "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1186,6 +1206,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Static",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
@@ -1914,6 +1940,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -2105,6 +2142,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2250,6 +2298,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2274,7 +2333,8 @@ if distributed with the Ecere SDK Windows installer.
                                  }
                               }
                            ]
-                        }
+                        },
+                        "test_html5.c"
                      ],
                      "Options" : {
                         "ExcludeFromBuild" : true
