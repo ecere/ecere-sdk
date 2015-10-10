@@ -3,9 +3,9 @@
 namespace gfx::drivers;
 
 #if defined(_GLES)
-#define ES1_1
+   #define ES1_1
 #else
- #define SHADERS
+   #define SHADERS
 #endif
 
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
@@ -49,11 +49,11 @@ import "shading"
 // #define USEPBUFFER
 #if defined(__unix__) || defined(__APPLE__)
 
-#if !defined(__MINGW32__)
-   #define GL_GLEXT_PROTOTYPES
-#endif
+   #if !defined(__MINGW32__)
+      #define GL_GLEXT_PROTOTYPES
+   #endif
 
-#define pointer _pointer
+   #define pointer _pointer
 
 
    #if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
@@ -97,95 +97,91 @@ import "shading"
 #endif
 
 #if defined(__APPLE__)
-#include <OpenGl/gl.h>
+   #include <OpenGl/gl.h>
 #endif
 
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
-#if defined(__WIN32__)
-   //#define WIN32_LEAN_AND_MEAN
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0502
-   #define String Sting_
-   #include <windows.h>
-   #undef String
-#endif
+   #if defined(__WIN32__)
+      //#define WIN32_LEAN_AND_MEAN
+      #undef _WIN32_WINNT
+      #define _WIN32_WINNT 0x0502
+      #define String Sting_
+      #include <windows.h>
+      #undef String
+   #endif
 
-#if defined(__ANDROID__) || defined(__ODROID__)
+   #if defined(__ANDROID__) || defined(__ODROID__)
+      #if defined(__ODROID__) && !defined(ES1_1)
+         #define ES1_1
+      #endif
 
-#define uint _uint
-#define property _property
-#define new _new
-#define class _class
-#define Window    X11Window
-#define Cursor    X11Cursor
-#define Font      X11Font
-#define Display   X11Display
-#define Time      X11Time
-#define KeyCode   X11KeyCode
-#define Picture   X11Picture
-#define Bool      X11Bool
+      #define uint _uint
+      #define property _property
+      #define new _new
+      #define class _class
+      #define Window    X11Window
+      #define Cursor    X11Cursor
+      #define Font      X11Font
+      #define Display   X11Display
+      #define Time      X11Time
+      #define KeyCode   X11KeyCode
+      #define Picture   X11Picture
+      #define Bool      X11Bool
 
-   #include <GLES/gl.h>
+      #include <GLES/gl.h>
 
-#undef Bool
-#undef Picture
-#undef Window
-#undef Cursor
-#undef Font
-#undef Display
-#undef Time
-#undef KeyCode
-#undef uint
-#undef new
-#undef property
-#undef class
+      #undef Bool
+      #undef Picture
+      #undef Window
+      #undef Cursor
+      #undef Font
+      #undef Display
+      #undef Time
+      #undef KeyCode
+      #undef uint
+      #undef new
+      #undef property
+      #undef class
 
-#elif defined(__EMSCRIPTEN__)
+   #elif defined(__EMSCRIPTEN__)
+      #define ES2
+      // #define ES1_1
 
-   #define property _property
-   #define uint _uint
+      #define property _property
+      #define uint _uint
 
-   #include <GL/gl.h>
+      //#include <GL/gl.h>
+      //#include <GLES/gl.h>
+      #include <GLES2/gl2.h>
 
-   //#include <GLES/gl.h>
-   //#include <GLES2/gl.h>
-   #include <GL/glfw.h>
-   #include <emscripten/emscripten.h>
+      #include <emscripten/emscripten.h>
+      #include <emscripten/html5.h>
 
-   #undef property
-   #undef uint
+      #undef property
+      #undef uint
 
-#else
-   #include <GL/gl.h>
-#endif
+   #else
+      #include <GL/gl.h>
+   #endif
 
-#if defined(__ODROID__) && !defined(ES1_1)
-#define ES1_1
-#endif
+   #undef pointer
 
-#if defined(__EMSCRIPTEN__)
-#define EM_MODE
-// #define ES1_1
-#endif
+   import "Display"
 
-#undef pointer
-
-import "Display"
-
-#if defined(__unix__) || defined(__APPLE__)
+   #if defined(__unix__) || defined(__APPLE__)
 
    #if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
    import "XInterface"
    #endif
 
-#endif
+   #endif
 
-#define glLoadMatrix glLoadMatrixd
-#define glMultMatrix glMultMatrixd
-#define glGetMatrix  glGetDoublev
-#define glTranslate glTranslated
-#define glScale glScaled
+   #define glLoadMatrix glLoadMatrixd
+   #define glMultMatrix glMultMatrixd
+   #define glGetMatrix  glGetDoublev
+   #define glTranslate glTranslated
+   #define glScale glScaled
 
 /*
 #define glVertex3v glVertex3dv
@@ -247,11 +243,16 @@ import "Display"
    static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = null;
    static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = null;
 
-#elif defined(__ANDROID__) || defined(__ODROID__)
+#else
 
+#if defined(__ANDROID__) || defined(__ODROID__)
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
    #define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
    #define GL_COLOR_ATTACHMENT0     GL_COLOR_ATTACHMENT0_OES
+   #define GL_BGRA_EXT           0
+#endif
+
+#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
 
    #define GL_POLYGON_STIPPLE 0xFFFF
    #define GL_LINE_STIPPLE 0xFFFF
@@ -270,7 +271,6 @@ import "Display"
    //#define GL_FILL               0
    //#define GL_LINE               0
    //#define GL_LINE_STIPPLE       0
-   #define GL_BGRA_EXT           0
    #define GL_UNPACK_ROW_LENGTH  0
    #define GL_UNPACK_SKIP_PIXELS 0
    #define GL_UNPACK_SKIP_ROWS   0
@@ -278,6 +278,7 @@ import "Display"
    #define GL_PACK_ROW_LENGTH    0
    #define GL_PACK_SKIP_ROWS     0
    #define GL_PACK_SKIP_PIXELS   0
+#endif
 
 #endif
 
@@ -290,14 +291,16 @@ import "Display"
    #define glGenRenderbuffers       glGenRenderbuffersOES
    #define glDeleteFramebuffers     glDeleteFramebuffersOES
    #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
+#endif
 
+#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
    #define GL_INT                                  0x1404
    #define GL_UNSIGNED_INT                         0x1405
    #define GL_DOUBLE                               0x140A
    #define APIENTRY
 #endif
 
-#if defined(ES1_1) || defined(SHADERS)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
 
    #undef glRecti
    #undef glBegin
@@ -381,7 +384,7 @@ public void glesColorMaterial(int a, int b)
 }
 
 static GLuint stippleTexture;
-#if defined(ES1_1) || defined(SHADERS) || defined(EM_MODE)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
 static bool stippleEnabled;
 #endif
 
@@ -415,14 +418,17 @@ public void glesLineStipple( int i, unsigned short j )
 
 public void glesLightModeli( unsigned int pname, int param )
 {
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if !defined(SHADERS)
    if(pname == GL_LIGHT_MODEL_TWO_SIDE)
       glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
 #endif
 }
 
-#if defined(__ANDROID__) || defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
 void glClearDepth( double depth ) { glClearDepthf((float)depth); }
+#endif
+
+#if defined(__ANDROID__) || defined(__ODROID__)
 void glFogi( unsigned int pname, int param ) { }
 void glPolygonMode( unsigned int i, unsigned int j ) { }
 
@@ -448,7 +454,14 @@ void glDrawPixels(int a, int b, int c, int d, void * e) { }
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 static int primitiveTypes[RenderPrimitiveType] =
 {
-   GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GLIMTKMode::quads, GLIMTKMode::quadStrip, GL_LINE_STRIP
+   GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
+#if defined(SHADERS) || defined(ES1_1) || defined(ES2)
+   GL_TRIANGLE_FAN,     // NOTE: This will only work for single quads
+#else
+   GLIMTKMode::quads,
+#endif
+   GLIMTKMode::quadStrip,
+   GL_LINE_STRIP
 };
 #endif
 
@@ -465,7 +478,7 @@ public void GLSetupFog(bool enable)
 {
 #ifdef SHADERS
    shader_fog(enable);
-#elif !defined(EM_MODE)
+#else
    (enable ? glEnable : glDisable)(GL_FOG);
 #endif
 }
@@ -474,14 +487,14 @@ public void GLSetupLighting(bool enable)
 {
 #if defined(SHADERS)
    shader_lighting(enable);
-#elif !defined(EM_MODE)
+#else
    (enable ? glEnable : glDisable)(GL_LIGHTING);
 #endif
 }
 
 // Non OpenGL ES friendly stuff
 
-#if defined(ES1_1)
+#if defined(ES1_1) || defined(ES2)
 
 //#undef GL_UNSIGNED_INT
 //#undef GL_DOUBLE
@@ -588,7 +601,9 @@ class OGLSystem : struct
    HDC hdc;
    HGLRC glrc;
    HWND hwnd;
-#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#elif defined(__EMSCRIPTEN__)
+   EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glc;
+#elif !defined(__ANDROID__) && !defined(__ODROID__)
    XVisualInfo * visualInfo;
    GLXContext glContext;
    GLXDrawable glxDrawable;
@@ -625,14 +640,16 @@ class OGLIndices : struct
 int current;
 void * previous;
 
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#ifdef _DEBUG
 static void setupDebugging()
 {
-#ifdef _DEBUG
    if(glDebugMessageCallback)
    {
       GLuint unusedIds = 0;
 
       glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+      /*
       glDebugMessageCallback(openglCallbackFunction, null);
       glDebugMessageControl(GL_DONT_CARE,
           GL_DONT_CARE,
@@ -640,9 +657,11 @@ static void setupDebugging()
           0,
           &unusedIds,
           GL_TRUE);
+      */
    }
-#endif
 }
+#endif
+#endif
 
 #if defined(__WIN32__)
 static HGLRC winCreateContext(HDC hdc)
@@ -681,7 +700,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool LockSystem(DisplaySystem displaySystem)
    {
-#if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__)
+      OGLSystem oglSystem = displaySystem.driverData;
+      emscripten_webgl_make_context_current(oglSystem.glc);
+#elif !defined(__ANDROID__) && !defined(__ODROID__)
       OGLSystem oglSystem = displaySystem.driverData;
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -990,19 +1012,35 @@ class OpenGLDisplayDriver : DisplayDriver
 
          result = true;
       #elif defined(__EMSCRIPTEN__)
-         if(glfwInit() == GL_TRUE)
          {
-            const int width = 640, height = 480;
-            if(glfwOpenWindow(width, height, 8, 8, 8, 8, 16, 0, GLFW_WINDOW) == GL_TRUE)
-            {
-               //glfwSwapBuffers();
+            EmscriptenWebGLContextAttributes attribs = { 0 };
+            attribs.depth = 1;
+            attribs.antialias = 1;
+
+            /*
+              EM_BOOL alpha;
+              EM_BOOL depth;
+              EM_BOOL stencil;
+              EM_BOOL antialias;
+              EM_BOOL premultipliedAlpha;
+              EM_BOOL preserveDrawingBuffer;
+              EM_BOOL preferLowPowerToHighPerformance;
+              EM_BOOL failIfMajorPerformanceCaveat;
+              int majorVersion;
+              int minorVersion;
+              EM_BOOL enableExtensionsByDefault;
+              */
+
+            emscripten_webgl_init_context_attributes(&attribs);
+            oglSystem.pow2textures = true;
+            oglSystem.maxTextureSize = 16384;
+            oglSystem.glc = emscripten_webgl_create_context("canvas", &attribs);
+            if(emscripten_webgl_make_context_current(oglSystem.glc) == EMSCRIPTEN_RESULT_SUCCESS)
                result = true;
-            }
-            else
-               printf("glfwOpenWindow() failed\n"); //glfwTerminate();
+
+            /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glEnable(GL_BLEND);*/
          }
-         else
-            printf("glfwInit() failed\n"); //glfwTerminate();
       #else
       {
          X11Window root = RootWindow( xGlobalDisplay, DefaultScreen( xGlobalDisplay ) );
@@ -1059,6 +1097,8 @@ class OpenGLDisplayDriver : DisplayDriver
          stippleTexture = 0;
       }
 
+      glimtkTerminate();
+
    #if defined(__WIN32__)
       wglMakeCurrent( null, null );
 
@@ -1073,7 +1113,7 @@ class OpenGLDisplayDriver : DisplayDriver
       #if defined(__ANDROID__) || defined(__ODROID__)
          egl_term_display();
       #elif defined(__EMSCRIPTEN__)
-         glfwTerminate();
+         emscripten_webgl_destroy_context(oglSystem.glc);
       #else
       if(oglSystem.visualInfo)
       {
@@ -1146,7 +1186,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLDisplay oglDisplay = display.driverData;
-#if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined(__ANDROID__) && !defined(__ODROID__)
       OGLSystem oglSystem = display.displaySystem.driverData;
 #endif
 
@@ -1158,7 +1198,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(!display.alphaBlend)
 #endif
       {
-   #if defined(__WIN32__)
+#if defined(__WIN32__)
          oglDisplay.hdc = GetDC(display.window);
          SetPixelFormat(oglDisplay.hdc, oglSystem.format, &oglSystem.pfd);
          if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc)))
@@ -1169,9 +1209,10 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
             ReleaseDC(display.window, oglDisplay.hdc);
-   #elif defined(__unix__) || defined(__APPLE__)
-      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
-      #else
+#elif defined(__unix__) || defined(__APPLE__)
+#  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+         result = true;
+#  else
          XVisualInfo * visualInfo = ((XWindowData)display.windowDriverData).visual;
          /*
 #if defined(__APPLE__)
@@ -1205,8 +1246,8 @@ class OpenGLDisplayDriver : DisplayDriver
             glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
             result = true;
          }
-      #endif
-   #endif
+#  endif
+#endif
       }
 #if defined(__WIN32__) || defined(USEPBUFFER)
       else
@@ -1222,7 +1263,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #ifdef DIAGNOSTICS
          PrintLn("Calling ogl_LoadFunctions() in CreateDisplay()");
 #endif
-         ogl_LoadFunctions();
+         if(ogl_LoadFunctions() == ogl_LOAD_FAILED)
+            PrintLn("ogl_LoadFunctions() failed!");
+
 #ifdef DIAGNOSTICS
          PrintLn("CheckExtensions()");
 #endif
@@ -1233,12 +1276,17 @@ class OpenGLDisplayDriver : DisplayDriver
          PrintLn("vboAvailable is: ", vboAvailable);
 #endif
 
-#ifdef _DEBUG
+#  ifdef _DEBUG
          setupDebugging();
-         initialDisplaySetup(display);
-#endif
+#  endif
 
 #endif
+
+#if defined(__EMSCRIPTEN__)
+         emscripten_webgl_make_context_current(oglSystem.glc);
+#endif
+
+         initialDisplaySetup(display);
       }
 
       if(!useSingleGLContext)
@@ -1593,9 +1641,11 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
 #elif defined(__unix__) || defined(__APPLE__)
-      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+      #if defined(__ANDROID__) || defined(__ODROID__)
          width = eglWidth;
          height = eglHeight;
+      #elif defined(__EMSCRIPTEN__)
+         emscripten_webgl_make_context_current(oglSystem.glc);
       #else
          glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
       #endif
@@ -1628,7 +1678,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          oglDisplay.flipBufW = width;
          oglDisplay.flipBufH = height;
-#ifdef ES1_1
+#if defined(ES1_1) || defined(ES2)
          result = true;
 #else
          oglDisplay.flippingBuffer = renew oglDisplay.flippingBuffer ColorAlpha [width * height];
@@ -1768,11 +1818,11 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE);
          SwapBuffers(oglDisplay.hdc);
+         //ecere::sys::Sleep(0.1);
 #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__) || defined(__ODROID__)
          egl_swap_buffers();
       #elif defined(__EMSCRIPTEN__)
-         glfwSwapBuffers();
       #else
          glXSwapBuffers(xGlobalDisplay, (GLXDrawable)display.window);
       #endif
@@ -2167,7 +2217,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glColor4fv(oglSurface.foreground);
       glBegin(GL_LINES);
-#if defined(ES1_1) || defined(EM_MODE) || defined(SHADERS)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
       if(stippleEnabled)
       {
          glTexCoord2f(0.5f, 0);
@@ -2200,7 +2250,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("Rectangle\n");
 
       glColor4fv(oglSurface.foreground);
-#if defined(ES1_1) || defined(EM_MODE) || defined(SHADERS)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
       if(stippleEnabled)
       {
          glBegin(GL_LINES);
@@ -2250,17 +2300,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glColor4fv(oglSurface.background);
 
-#ifdef EM_MODE
-      glBegin(GL_QUADS);
-      glVertex2f(x1+surface.offset.x, y1+surface.offset.y);
-      glVertex2f(x1+surface.offset.x, y2+surface.offset.y+1);
-      glVertex2f(x2+surface.offset.x+1, y2+surface.offset.y+1);
-      glVertex2f(x2+surface.offset.x+1, y1+surface.offset.y);
-      glEnd();
-#else
       glRecti(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
-#endif
       /*
       glRectf(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
@@ -2409,7 +2450,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void StretchDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-#if !defined(EM_MODE)
       float s2dw,s2dh,d2sw,d2sh;
       //bool flipX = false, flipY = false;
 
@@ -2508,12 +2548,10 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
-#endif
    }
 
    void BlitDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
-#if !defined(EM_MODE)
       //Logf("BlitDI\n");
 
       //Clip against the edges of the source
@@ -2576,7 +2614,6 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
-#endif
    }
 
    void FilterDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
@@ -2675,7 +2712,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(stipple)
       {
-#if defined(ES1_1) || defined(EM_MODE) || defined(SHADERS)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
          stippleEnabled = true;
          glesLineStipple(1, (uint16)stipple);
 #else
@@ -2685,7 +2722,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
-#if defined(ES1_1) || defined(EM_MODE) || defined(SHADERS)
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
          stippleEnabled = false;
          glMatrixMode(GL_TEXTURE);
          glLoadIdentity();
@@ -2696,6 +2733,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       }
    }
+
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
    void SetRenderState(Display display, RenderState state, uint value)
    {
@@ -2705,13 +2743,15 @@ class OpenGLDisplayDriver : DisplayDriver
       switch(state)
       {
          case antiAlias:
+#ifndef __EMSCRIPTEN__
             if(value)
                glEnable(GL_MULTISAMPLE_ARB);
             else
                glDisable(GL_MULTISAMPLE_ARB);
+#endif
             break;
          case fillMode:
-#if !defined(ES1_1)
+#if !defined(ES1_1) && !defined(ES2)
             glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
 #endif
             break;
@@ -2740,13 +2780,15 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
             break;
          case blend:
+//#if !defined(__EMSCRIPTEN__)
             if(value) glEnable(GL_BLEND); else glDisable(GL_BLEND);
+//#endif
             break;
          case ambient:
          {
 #if defined(SHADERS)
             shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
-#elif !defined(EM_MODE)
+#else
             float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
             glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 #endif
@@ -2771,7 +2813,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
 #if defined(SHADERS)
       shader_setLight(display, id, light);
-#elif !defined(EM_MODE)
+#else
       //Logf("SetLight\n");
 
       if(light != null)
@@ -2996,13 +3038,15 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_DEPTH_TEST);
 
          GLSetupLighting(true);
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if !defined(SHADERS)
          glShadeModel(GL_SMOOTH);
 #endif
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
+#ifndef __EMSCRIPTEN__
          glEnable(GL_MULTISAMPLE_ARB);
+#endif
       }
       else if(surface && display.display3D.camera)
       {
@@ -3013,17 +3057,22 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
 
+
          GLSetupTexturing(false);
          GLSetupLighting(false);
          GLSetupFog(false);
 
          glDisableClientState(GL_COLOR_ARRAY);
 
-#if !defined(SHADERS) && !defined(EM_MODE)
+#if defined(SHADERS)
+         shader_setPerVertexColor(false);
+#else
          glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
+#if !defined(__EMSCRIPTEN__)
          glDisable(GL_MULTISAMPLE_ARB);
+#endif
 
          // *** Restore 2D MODELVIEW Matrix ***
          glPopMatrix();
@@ -3042,14 +3091,14 @@ class OpenGLDisplayDriver : DisplayDriver
       // Basic Properties
       if(material.flags.doubleSided)
       {
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if !defined(SHADERS)
          glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
       }
       else
       {
-#if !defined(EM_MODE) && !defined(SHADERS)
+#if !defined(SHADERS)
          glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
          glEnable(GL_CULL_FACE);
@@ -3087,8 +3136,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if defined(SHADERS)
       shader_setMaterial(material, mesh.flags.colors);
-#elif defined(EM_MODE)
-      glimtkColor4f(material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity);
 #else
       if(mesh.flags.colors)
       {
@@ -3292,7 +3339,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(vboAvailable)
       {
-#ifdef ES1_1
+#if defined(ES1_1) || defined(ES2)
          if(indices32bit)
          {
             if(!oglIndices.buffer.buffer)
@@ -3510,6 +3557,8 @@ IS_GLGetContext(DisplaySystem displaySystem)
 #elif defined(__ANDROID__) || defined(__ODROID__)
       return eglContext;
 #elif defined(__EMSCRIPTEN__)
+      OGLSystem system = displaySystem.driverData;
+      return (void *)system.glc;
 #else
       OGLSystem system = displaySystem.driverData;
       return system.glContext;
