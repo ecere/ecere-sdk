@@ -374,7 +374,7 @@ class Chess : Window
    // --- Chess Utilities ---
    bool MakeMove(int x1, int y1, int x2, int y2, PieceType promotion)
    {
-      bool valid = false;
+      bool makeMove = true;
 
       PieceType type = chessState.board[y1][x1].type;
       Player player = chessState.board[y1][x1].player;
@@ -382,11 +382,10 @@ class Chess : Window
       // Pawn Promotion
       if(type == Pawn && y2 == ((player == White) ? 7 : 0))
       {
-         valid = true;
          if(chessState.isLocalPlayer[chessState.turn] &&
-            (valid = IsMoveValid(x1,y1,x2,y2, chessState, null, true)))
+            IsMoveValid(x1,y1,x2,y2, chessState, null, true))
          {
-            valid = false;
+            makeMove = false;
             cx1 = x1, cy1 = y1, cx2 = x2, cy2 = y2;
             chess2D.Update(null);
             chess3D.Update(null);
@@ -404,9 +403,7 @@ class Chess : Window
             }.Create();
          }
       }
-      else
-         valid = DoMove(x1, y1, x2, y2, promotion);
-      return valid;
+      return makeMove ? DoMove(x1, y1, x2, y2, promotion) : false;
    }
 
    void ProcessUserMove(int x1, int y1, int x2, int y2)
