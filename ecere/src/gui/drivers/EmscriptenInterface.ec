@@ -69,6 +69,14 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
    Modifiers mods { };
    int methodID;
 
+   mods.alt = e->altKey ? true : false;
+   mods.shift = e->shiftKey ? true : false;
+   mods.ctrl = e->ctrlKey ? true : false;
+
+   mods.left = (mouseButtons & 1) ? true : false;
+   mods.right = (mouseButtons & 2) ? true : false;
+   mods.middle = (mouseButtons & 4) ? true : false;
+
    switch(eventType)
    {
       case EMSCRIPTEN_EVENT_MOUSEMOVE:
@@ -126,15 +134,22 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
 static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void *userData)
 {
    Window window = guiApp.desktop;
-   window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit,
-      e->deltaY < 0 ? wheelUp : wheelDown, 0);
+   Key key = (e->deltaY < 0 || e->deltaX < 0) ? wheelUp : wheelDown;
+
+   key.alt = e->mouse.altKey ? true : false;
+   key.shift = e->mouse.shiftKey ? true : false;
+   key.ctrl = e->mouse.ctrlKey ? true : false;
+
    /*
    printf("%s, screen: (%ld,%ld), client: (%ld,%ld),%s%s%s%s button: %hu, buttons: %hu, canvas: (%ld,%ld), delta:(%g,%g,%g), deltaMode:%lu\n",
     emscripten_event_type_to_string(eventType), e->mouse.screenX, e->mouse.screenY, e->mouse.clientX, e->mouse.clientY,
     e->mouse.ctrlKey ? " CTRL" : "", e->mouse.shiftKey ? " SHIFT" : "", e->mouse.altKey ? " ALT" : "", e->mouse.metaKey ? " META" : "",
     e->mouse.button, e->mouse.buttons, e->mouse.canvasX, e->mouse.canvasY,
     (float)e->deltaX, (float)e->deltaY, (float)e->deltaZ, e->deltaMode);
-  */
+   */
+
+   window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, key, 0);
+
   return 0;
 }
 static bool keyStatus[KeyCode];
@@ -323,9 +338,17 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
       case 11: key = keyPadSlash; break;
    }
 
-   key.alt = (bool)e->altKey;
-   key.shift = (bool)e->shiftKey;
-   key.ctrl = (bool)e->ctrlKey;
+   key.alt = e->altKey ? true : false;
+   key.shift = e->shiftKey ? true : false;
+   key.ctrl = e->ctrlKey ? true : false;
+
+   /*
+   key.modifiers.left = (mouseButtons & 1) ? true : false;
+   key.modifiers.right = (mouseButtons & 2) ? true : false;
+   key.modifiers.middle = (mouseButtons & 4) ? true : false;
+   */
+
+
 /*
      printf("%s, key: \"%s\", code: \"%s\", location: %lu,%s%s%s%s repeat: %d, locale: \"%s\", char: \"%s\", charCode: %lu, keyCode: %lu, which: %lu\n",
        emscripten_event_type_to_string(eventType), e->key, e->code, e->location,
@@ -514,7 +537,7 @@ class EmscriptenInterface : Interface
    void * ::CreateRootWindow(Window window)
    {
 
-      return null;
+      return (void *)(uintptr)1;
    }
 
    void ::DestroyRootWindow(Window window)
