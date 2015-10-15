@@ -402,7 +402,8 @@ private:
             }
          }
 
-         if(needScrollers) //y > ((direction == horizontal) ? size.w : size.h))
+         if(needScrollers ||
+            ((bits.scrollable && !bits.endButtons) && (y > ((direction == horizontal) ? size.w : size.h))))
          {
             scrollArea = (direction == horizontal) ? { y, 0 } : { 0, y };
             if(bits.endButtons && !left.visible)
