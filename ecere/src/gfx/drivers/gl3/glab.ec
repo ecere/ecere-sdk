@@ -36,12 +36,16 @@ public void GLABDeleteBuffers(int count, GLAB * buffers)
    for(i = 0; i < count; i++)
    {
       uint buffer = buffers[i].buffer;
-      if(buffer == glabCurArrayBuffer)
-         GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-      else if(buffer == glabCurElementBuffer)
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      if(buffer)
+      {
+         if(buffer == glabCurArrayBuffer)
+            GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+         else if(buffer == glabCurElementBuffer)
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+      }
    }
-   glDeleteBuffers(count, (GLuint *)buffers);
+   if(count && buffers[0].buffer)
+      glDeleteBuffers(count, (GLuint *)buffers);
 }
 
 void GLABBindBuffer(int target, uint buffer)
@@ -77,7 +81,7 @@ public struct GLAB
 
    void free()
    {
-      if(this != null)
+      if(this != null && buffer)
       {
          GLABDeleteBuffers(1, this);
          buffer = 0;
@@ -148,7 +152,7 @@ public struct GLEAB
 
    void free()
    {
-      if(this != null)
+      if(this != null && buffer)
       {
          GLABDeleteBuffers(1, (GLAB *)this);
          buffer = 0;
