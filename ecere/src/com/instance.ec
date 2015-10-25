@@ -716,7 +716,7 @@ private class MemBlock : struct
    MemBlock prev, next;
    MemPart part;
    uint size;
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
    Class _class;
 #endif
 };
@@ -1235,7 +1235,7 @@ static void * _mymalloc(unsigned int size)
          block = pools[p].Add();
          if(block)
          {
-#if defined(_DEBUG) && defined(MEMTRACKING)
+#if defined(MEMTRACKING)
             block._class = null;
 #endif
             block.size = size;
@@ -1250,7 +1250,7 @@ static void * _mymalloc(unsigned int size)
             TOTAL_MEM += sizeof(class MemBlock) + size;
             OUTSIDE_MEM += sizeof(class MemBlock) + size;
             block.part = null;
-#if defined(_DEBUG) && defined(MEMTRACKING)
+#if defined(MEMTRACKING)
             block._class = null;
 #endif
             block.size = size;
@@ -4598,7 +4598,7 @@ public dllexport void * eInstance_New(Class _class)
    memMutex.Release();
 #endif
 
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
       {
          MemBlock block = (MemBlock)((byte *)instance - sizeof(class MemBlock));
          block._class = _class;
@@ -7250,7 +7250,7 @@ public uint16 * UTF8toUTF16(const char * source, int * wordCount)
 
 namespace com;
 
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
 import "Map"
 
 Map<Class, int> blocksByClass { };
@@ -7258,7 +7258,7 @@ Map<Class, int> blocksByClass { };
 
 public void queryMemInfo(char * string)
 {
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING) && !defined(DISABLE_MEMMGR)
    char s[1024];
    int p;
    uint numBlocks = 0;

@@ -72,6 +72,13 @@ public:
             array = renew array T[(int)pos + 1];
          count = (int)pos + 1;
          if(justAdded) *justAdded = true;
+#if !defined(MEMINFO) && defined(MEMTRACKING)
+         if(array)
+         {
+            MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
+            block._class = class(T);
+         }
+#endif
       }
       return ((int)pos < count && array) ? (IteratorPointer)(array + (int)pos) : null;
    }
@@ -154,7 +161,7 @@ public:
             else if(value > count)
                memset((byte *)array + count * class(T).typeSize, 0, (value - count) * class(T).typeSize);
             count = value;
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
             if(array)
             {
                MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
@@ -176,6 +183,13 @@ public:
                array = renew array T[value];
             minAllocSize = value;
          }
+#if !defined(MEMINFO) && defined(MEMTRACKING)
+         if(array)
+         {
+            MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
+            block._class = class(T);
+         }
+#endif
       }
    }
 
@@ -184,6 +198,14 @@ public:
       count = source.GetCount();
       if(count > minAllocSize)
          array = renew array T[count];
+
+#if !defined(MEMINFO) && defined(MEMTRACKING)
+         if(array)
+         {
+            MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
+            block._class = class(T);
+         }
+#endif
 
       // TOFIX: Precomp fails on (BuiltInContainer *)
       if((source._class == class(BuiltInContainer) && ((struct BuiltInContainer *)source)->type.type != structClass ) ||
