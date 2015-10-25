@@ -7,6 +7,10 @@ import "OldList"
 import "String"
 import "dataTypes"
 
+//#define JUST_CHECK_LEAKS
+//#define JUST_CHECK_BOUNDARIES
+
+
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
 #if !defined(ECERE_BOOTSTRAP)
@@ -27,7 +31,9 @@ import "Mutex"
  #define REDZONE   256
 #endif
 */
-#ifndef REDZONE
+
+#if defined(JUST_CHECK_LEAKS) || !defined(REDZONE)
+#undef REDZONE
 #define REDZONE 0
 #endif
 
@@ -1602,6 +1608,12 @@ static void * _realloc(void * pointer, unsigned int size)
 
    if(block)
    {
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+      memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
+      free((byte *)block.key - REDZONE);
+      memBlocks.Remove(block);
+      free(block);
+#else
       if(block.freed)
       {
          memcpy((byte *)pointer + REDZONE, block.oldmem, Min(block.size, size));
@@ -1619,6 +1631,7 @@ static void * _realloc(void * pointer, unsigned int size)
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
+#endif
    }
 
    if(!recurse && !stack.recurse)
@@ -1706,6 +1719,12 @@ static void * _crealloc(void * pointer, unsigned int size)
 
    if(block)
    {
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+      memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
+      free((byte *)block.key - REDZONE);
+      memBlocks.Remove(block);
+      free(block);
+#else
       if(block.freed)
       {
          memcpy((byte *)pointer + REDZONE, block.oldmem, Min(block.size, size));
@@ -1723,6 +1742,7 @@ static void * _crealloc(void * pointer, unsigned int size)
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
+#endif
    }
 
    if(!recurse && !stack.recurse)
@@ -1840,6 +1860,11 @@ static void _free(void * pointer)
             }
 
             block.freed = true;
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+            free((byte *)block.key - REDZONE);
+            memBlocks.Remove(block);
+            free(block);
+#else
             block.oldmem = (byte *)malloc(block.size + REDZONE * 2);
             if(block.oldmem)
             {
@@ -1849,6 +1874,7 @@ static void _free(void * pointer)
             memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
 
             memcpy(block.freeLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
+#endif
          }
          stack.recurse = false;
       }
