@@ -1366,7 +1366,7 @@ class SQLiteRow : DriverRow
          case SQLITE_BLOB:
          case SQLITE_NULL:
          {
-            if((void *)data)
+            if((void *)data && dataType)
             {
                buffer = SerialBuffer { };
                ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, buffer);
@@ -1738,7 +1738,7 @@ class SQLiteRow : DriverRow
    {
       SQLiteField sqlFld = (SQLiteField)fld;
       int num = sqlFld.num + 1;
-      Class dataType = sqlFld.type;
+      Class dataType = *&sqlFld.type;
 
 
       switch(sqlFld.sqliteType)
@@ -1941,6 +1941,94 @@ class SQLiteRow : DriverRow
       }
       sqlite3_reset(queryStatement);
       return BindData(queryStatement, pos, fld, data, null);
+   }
+
+   bool GetQueryData(int num, SQLiteField fld, typed_object & data)
+   {
+      SQLiteField sqlFld = (SQLiteField)fld;
+      Class dataType = *&sqlFld.type;
+
+      switch(sqlFld.sqliteType)
+      {
+         case SQLITE_INTEGER:
+         {
+            switch(dataType.typeSize)
+            {
+               case 8:
+                  if(fld == tbl.primaryKey)
+                     *(int64 *)data = rowID;
+                  else
+                     *(int64 *)data = sqlite3_column_int64(curStatement, num);
+                  break;
+               case 4:
+                  if(fld == tbl.primaryKey)
+                     *(int *)data = (int)(uint)rowID;
+                  else
+                     *(int *)data = sqlite3_column_int(curStatement, num);
+                  break;
+               case 2:
+               {
+                  int value;
+                  if(fld == tbl.primaryKey)
+                     value = (int)(uint)rowID;
+                  else
+                     value = sqlite3_column_int(curStatement, num);
+                  if(value < 0)
+                     *(short *)data = (short)value;
+                  else
+                     *(uint16 *)data = (uint16)value;
+                  break;
+               }
+               case 1:
+               {
+                  int value;
+                  if(fld == tbl.primaryKey)
+                     value = (int)(uint)rowID;
+                  else
+                     value = sqlite3_column_int(curStatement, num);
+                  if(value < 0)
+                     *(char *)data = (char)value;
+                  else
+                     *(byte *)data = (byte)value;
+                  break;
+               }
+            }
+            break;
+         }
+         case SQLITE_FLOAT:
+         {
+            double d = sqlite3_column_double(curStatement, num);
+            if(dataType.typeSize == 8)
+               *(double *)data = d;
+            else
+               *(float *)data = (float)d;
+            break;
+         }
+         case SQLITE_TEXT:
+         {
+            int numBytes = sqlite3_column_bytes(curStatement, num);
+            const char * text = (const char *)sqlite3_column_text(curStatement, num);
+            *(char **)data = text ? new byte[numBytes+1] : null;
+            if(text)
+               memcpy(*(char **)data, text, numBytes+1);
+            break;
+         }
+         case SQLITE_BLOB:
+         {
+            SerialBuffer buffer { };
+            //buffer._buffer = sqlite3_column_blob(curStatement, num);
+            buffer._size = sqlite3_column_bytes(curStatement, num);
+            buffer._buffer = (byte *)sqlite3_column_text(curStatement, num);
+            buffer.count = buffer._size;
+
+            ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, buffer);
+
+            buffer._buffer = null;
+            delete buffer;
+            break;
+         }
+      }
+      return true;
    }
 
    /*char * GetExtraColumn(int paramID)

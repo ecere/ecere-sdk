@@ -6,6 +6,7 @@
       "Warnings" : "All",
       "Optimization" : "None",
       "PreprocessorDefinitions" : [
+         "SQLITE_ENABLE_RTREE=1",
          "SQLITE_DEFAULT_LOCKING_MODE=1",
          "SQLITE_OMIT_AUTHORIZATION"
       ],
@@ -66,6 +67,9 @@
             "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "SQLITE_ENABLE_RTREE=1"
+            ],
             "LibraryDirs" : [
                "../../../obj/$(PLATFORM)/bin",
                "../../../obj/$(PLATFORM)/lib"

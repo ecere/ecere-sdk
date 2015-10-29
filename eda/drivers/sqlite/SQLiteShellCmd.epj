@@ -4,6 +4,9 @@
    "Options" : {
       "Warnings" : "All",
       "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "SQLITE_ENABLE_RTREE=1"
+      ],
       "TargetType" : "Executable",
       "TargetFileName" : "sqlite3",
       "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
