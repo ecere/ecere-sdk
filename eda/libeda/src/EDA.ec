@@ -553,6 +553,7 @@ public:
    bool SetQueryParamObject(int paramID, void * value, Class type) { return row ? row.SetQueryParamObject(paramID, value, type) : false; }
    // TOCHECK: Field is passed here to have sqlite type handy. The API might be nicer without
    bool BindQueryData(int paramID, Field fld, typed_object value) { return row ? row.BindQueryData(paramID, fld, value) : false; }
+   bool GetQueryData(int paramID, Field fld, typed_object & value) { return row ? row.GetQueryData(paramID, fld, value) : false; }
    const char * GetColumn(int paramID) { return row ? row.GetColumn(paramID) : null; }
 
    bool GUIDataRowSetData(DataRow dr, DataField df, Field fld)
@@ -611,6 +612,7 @@ public:
    virtual bool SetQueryParamObject(int paramID, const void * data, Class type);
    virtual const char * GetColumn(int paramID);
    virtual bool BindQueryData(int paramID, Field fld, typed_object value);
+   virtual bool GetQueryData(int paramID, Field fld, typed_object & value);
 };
 
 public class SQLCustomFunction
