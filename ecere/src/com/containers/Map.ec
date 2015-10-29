@@ -135,6 +135,36 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          delete node.key;
    }
 
+   void RemoveAll()
+   {
+      MapNode<MT, V> node = root;
+      while(node)
+      {
+         if(node.left)
+         {
+            MapNode<MT, V> left = node.left;
+            node.left = null;
+            node = left;
+         }
+         else if(node.right)
+         {
+            MapNode<MT, V> right = node.right;
+            node.right = null;
+            node = right;
+         }
+         else
+         {
+            MapNode<MT, V> parent = node.parent;
+            FreeKey(node);
+            delete node;
+
+            node = parent;
+         }
+      }
+      root = null;
+      count = 0;
+   }
+
    void Remove(MapNode<MT, V> node)
    {
       CustomAVLTree::Remove(node);
