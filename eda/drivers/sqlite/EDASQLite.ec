@@ -1840,20 +1840,20 @@ class SQLiteRow : DriverRow
       result = sqlite3_step(updateStatement);
       sqlite3_reset(updateStatement);
       if(fld == tbl.primaryKey)
-         rowID = *(uint *)data;
+         rowID = *(uint64 *)data;
       return result == SQLITE_DONE;
    }
 
-   int GetSysID()
+   uint64 GetSysID()
    {
-      return (int)(uint)rowID;
+      return (int64)rowID;
    }
 
-   bool GoToSysID(uint id)
+   bool GoToSysID(uint64 id)
    {
       //char command[1024];
       int result;
-      rowID = (uint)id;
+      rowID = (int64)id;
       //if(statement)
          //sqlite3_finalize(statement);
       //sprintf(command, "SELECT ROWID, * FROM `%s` WHERE ROWID = ?;", tbl.name);

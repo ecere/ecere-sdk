@@ -30,7 +30,7 @@ __attribute__((unused)) static void UnusedFunction()
 }
 private:
 
-public class Id : uint
+public class Id : uint64
 {
    class_data Table * table;     class_property Table * table     { set { class_data(table) = value; } get { return class_data(table); } };
    //class_data Field * idField; class_property Field * idField { set { class_data(nameField) = value; } get { return class_data(idField); } };
@@ -395,7 +395,7 @@ public:
          int c;
          for(c = 0; c<count; c++)
          {
-            int idA = ids[c], idB = b.ids[c];
+            uint64 idA = ids[c], idB = b.ids[c];
             if(idA > idB) return 1;
             else if(idA < idB) return -1;
          }

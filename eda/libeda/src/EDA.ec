@@ -587,7 +587,7 @@ public:
       return true;
    }
 
-   property uint sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
+   property uint64 sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
 };
 
 public class DriverRow
@@ -603,8 +603,8 @@ public:
 
    virtual bool GetData(Field fld, typed_object &data);
    virtual bool SetData(Field fld, typed_object data);
-   virtual uint GetSysID();
-   virtual bool GoToSysID(uint id);
+   virtual uint64 GetSysID();
+   virtual bool GoToSysID(uint64 id);
    virtual bool Query(const char * queryString);
    virtual bool SetQueryParam(int paramID, int value);
    virtual bool SetQueryParam64(int paramID, int64 value);
