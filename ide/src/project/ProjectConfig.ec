@@ -143,9 +143,13 @@ class DirExpression : struct
                                  ev.name && ev.string && ev.name[0] && ev.string[0] && !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
                            {
                               buffer[d] = '\0';
+#if defined(__WIN32__)
                               ChangeCh(ev.string, '\\', '/');
+#endif
                               strcat(buffer, ev.string);
+#if defined(__WIN32__)
                               ChangeCh(ev.string, '/', '\\');
+#endif
                               d += strlen(ev.string);
                               c = i;
                               matched = true;
