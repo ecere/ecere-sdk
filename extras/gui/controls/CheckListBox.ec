@@ -312,20 +312,16 @@ class CheckListBox : ListBox
       }
    }
 
-   bool NotifyKeyDown(CheckListBox listBox, DataRow row, Key key, unichar ch)
-   {
-      if(key == space)
-      {
-         listBox.ToggleCheck(row);
-         return false;
-      }
-      return true;
-   }
-
    bool OnKeyHit(Key key, unichar ch)
    {
-      if(key == space)
-         return false;
+      if(currentRow)
+      {
+         if(key == space)
+         {
+            ToggleCheck(currentRow);
+            return false;
+         }
+      }
       return ListBox::OnKeyHit(key, ch);
    }
 
