@@ -1593,6 +1593,7 @@ class BuildTab : Tab
       project.topNode.RenameConfig(config.name, *newName);
 
       modifiedDocument = true;
+      Update(null);
       return true;
    }
 
