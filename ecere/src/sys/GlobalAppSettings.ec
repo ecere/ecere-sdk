@@ -297,7 +297,7 @@ private:
             }
             else
                strcpy(name, settingsName);
-            if(runCommandsStyle)
+            if(!settingsExtension && runCommandsStyle)
                strcat(name, "rc");
             else
             {
