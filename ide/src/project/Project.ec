@@ -2508,9 +2508,13 @@ private:
                f.Puts("\n");
                for(e : compiler.environmentVars)
                {
+#if defined(__WIN32__)
                   ChangeCh(e.string, '\\', '/');
+#endif
                   f.Printf("export %s := %s\n", e.name, e.string);
+#if defined(__WIN32__)
                   ChangeCh(e.string, '/', '\\');
+#endif
                }
                f.Puts("\n");
             }
