@@ -40,7 +40,7 @@ class SettingsDialog : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         settings.docDir = pathEditBox.contents; // Store the path entered into the edit box
+         ideSettings.docDir = pathEditBox.contents; // Store the path entered into the edit box
          settingsContainer.Save(); // write that path to the ini file
          Destroy(DialogResult::ok); // close the window
          return true;
@@ -57,5 +57,5 @@ class SettingsDialog : Window
          return true;
       }
    };
-   EditBox pathEditBox { this, size = { 214, 19 }, contents = settings.docDir, anchor = { right = 41, top = 16 } };
+   EditBox pathEditBox { this, size = { 214, 19 }, contents = ideSettings.docDir, anchor = { right = 41, top = 16 } };
 }

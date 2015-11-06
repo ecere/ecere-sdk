@@ -71,6 +71,7 @@ class GlobalSettingsDialog : Window
             bool editorSettingsChanged = false;
             bool compilerSettingsChanged = false;
             bool projectOptionsChanged = false;
+            AVLTree<String> cfgsToWrite = null;
             if(editorTab.modifiedDocument)
             {
                if(editorTab.useFreeCaret.checked != ideSettings.useFreeCaret ||
@@ -88,12 +89,16 @@ class GlobalSettingsDialog : Window
             {
                if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
                   ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
-               ideSettings.compilerConfigs.Free();
-               for(compiler : compilersTab.compilerConfigs)
+               if(compilersTab.compilerConfigs.OnCompare(ideSettings.compilerConfigs))
                {
-                  ideSettings.compilerConfigs.Add(compiler.Copy());
+                  cfgsToWrite = compilersTab.compilerConfigs.getWriteRequiredList(ideSettings.compilerConfigs);
+                  ideSettings.compilerConfigs.Free();
+                  for(compiler : compilersTab.compilerConfigs)
+                  {
+                     ideSettings.compilerConfigs.Add(compiler.Copy());
+                  }
+                  compilerSettingsChanged = true;
                }
-               compilerSettingsChanged = true;
             }
 
             if(projectOptionsTab.modifiedDocument)
@@ -119,10 +124,16 @@ class GlobalSettingsDialog : Window
                }
             }
 
-            settingsContainer.Save();
+            if(editorSettingsChanged || projectOptionsChanged)
+               settingsContainer.Save();
 
             if(compilerSettingsChanged)
+            {
+               ideSettings.compilerConfigs.write(cfgsToWrite);
                OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
+               cfgsToWrite.Free();
+               delete cfgsToWrite;
+            }
             if(editorSettingsChanged)
                OnGlobalSettingChange(GlobalSettingsChange::editorSettings);
             if(projectOptionsChanged)
@@ -326,7 +337,7 @@ class CompilersTab : GlobalSettingsSubTab
    CompilerEnvironmentTab environmentTab { this, tabControl = tabControl };
    CompilerOptionsTab optionsTab { this, tabControl = tabControl };
 
-   List<CompilerConfig> compilerConfigs { };
+   CompilerConfigs compilerConfigs { };
    CompilerConfig activeCompiler;
 
    Label labelCompilers

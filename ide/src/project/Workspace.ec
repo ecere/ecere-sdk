@@ -1095,10 +1095,10 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
             {
                for(c = workspace.openedFiles.count - 1; c >= 0; c--)
                {
-                 char path[MAX_LOCATION];
-                 strcpy(path, workspace.workspaceDir);
-                 PathCatSlash(path, workspace.openedFiles[c].path);
-                 workspace.recentFiles.addRecent(CopyString(path));
+                  char path[MAX_LOCATION];
+                  strcpy(path, workspace.workspaceDir);
+                  PathCatSlash(path, workspace.openedFiles[c].path);
+                  workspace.recentFiles.addRecent(CopyString(path));
                }
             }
          }

@@ -21,8 +21,17 @@ import "StringsBox"
 import "OldIDESettings"
 
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+import "ide"
 import "process"
 #endif
+
+IDESettings ideSettings;
+
+IDESettingsContainer settingsContainer
+{
+   dataOwner = &ideSettings;
+   dataClass = class(IDESettings);
+};
 
 define MaxRecent = 9;
 
@@ -235,20 +244,40 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
 }
 
 #ifdef SETTINGS_TEST
-define settingsName = "ecereIDE-SettingsTest";
+define settingsDir = ".ecereIDE-SettingsTest";
+define ideSettingsName = "ecereIDE-SettingsTest";
 #else
+define settingsDir = ".ecereIDE";
 define ideSettingsName = "ecereIDE";
 #endif
 
 class IDESettingsContainer : GlobalSettings
 {
-   settingsName = ideSettingsName;
-
-   virtual void OnLoad(GlobalSettingsData data);
+   property bool useNewConfigurationFiles
+   {
+      set
+      {
+         if(value)
+         {
+            settingsContainer.driver = "ECON";
+            settingsName = "config";
+            settingsExtension = "econ";
+            settingsDirectory = settingsDir;
+         }
+         else
+         {
+            settingsContainer.driver = "JSON";
+            settingsName = ideSettingsName;
+            settingsExtension = null;
+            settingsDirectory = null;
+         }
+      }
+   }
 
    char moduleLocation[MAX_LOCATION];
 
 private:
+   bool oldConfig;
    FileSize settingsFileSize;
 
    IDESettingsContainer()
@@ -328,9 +357,19 @@ private:
 
    SettingsIOResult Load()
    {
-      SettingsIOResult result = GlobalSettings::Load();
-      IDESettings data = (IDESettings)this.data;
-      CompilerConfig defaultCompiler = null;
+      IDESettings data;
+      SettingsIOResult result;
+      useNewConfigurationFiles = true;
+      result = GlobalSettings::Load();
+      data = (IDESettings)this.data;
+      oldConfig = false;
+      if(result == fileNotFound)
+      {
+         oldConfig = true;
+         useNewConfigurationFiles = false;
+         result = GlobalSettings::Load();
+      }
+      data = (IDESettings)this.data;
       if(!data)
       {
          this.data = IDESettings { };
@@ -377,80 +416,289 @@ private:
             data.caretFollowsScrolling = false; //true;
          }
       }
-      // Ensure we have a default compiler
-      defaultCompiler = data.GetCompilerConfig(defaultCompilerName);
-      if(!defaultCompiler)
-      {
-         defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
-         data.compilerConfigs.Add(defaultCompiler);
-      }
-
-      // We incref the compilers below, so reset refCount to 0
-      defaultCompiler._refCount = 0;
 
       CloseAndMonitor();
       FileGetSize(settingsFilePath, &settingsFileSize);
-      if(data.compilerConfigs)
-      {
-         for(ccfg : data.compilerConfigs)
-         {
-            if(!ccfg.ecpCommand || !ccfg.ecpCommand[0])
-               ccfg.ecpCommand = ecpDefaultCommand;
-            if(!ccfg.eccCommand || !ccfg.eccCommand[0])
-               ccfg.eccCommand = eccDefaultCommand;
-            if(!ccfg.ecsCommand || !ccfg.ecsCommand[0])
-               ccfg.ecsCommand = ecsDefaultCommand;
-            if(!ccfg.earCommand || !ccfg.earCommand[0])
-               ccfg.earCommand = earDefaultCommand;
-            if(!ccfg.cppCommand || !ccfg.cppCommand[0])
-               ccfg.cppCommand = cppDefaultCommand;
-            if(!ccfg.ccCommand || !ccfg.ccCommand[0])
-               ccfg.ccCommand = ccDefaultCommand;
-            if(!ccfg.cxxCommand || !ccfg.cxxCommand[0])
-               ccfg.cxxCommand = cxxDefaultCommand;
-            /*if(!ccfg.ldCommand || !ccfg.ldCommand[0])
-               ccfg.ldCommand = ldDefaultCommand;*/
-            if(!ccfg.arCommand || !ccfg.arCommand[0])
-               ccfg.arCommand = arDefaultCommand;
-            if(!ccfg.objectFileExt || !ccfg.objectFileExt[0])
-               ccfg.objectFileExt = objectDefaultFileExt;
-            /*if(!ccfg.outputFileExt || !ccfg.outputFileExt[0])
-               ccfg.outputFileExt = outputDefaultFileExt;*/
-            incref ccfg;
-         }
-      }
+      CompilerConfigs::fix();
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
-      OnLoad(data);
+
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+      globalSettingsDialog.ideSettings = data;
+      if(oldConfig)
+      {
+         ide.updateRecentMenus();
+         ide.UpdateCompilerConfigs(true);
+      }
+#endif
+
+      if(oldConfig)
+      {
+         useNewConfigurationFiles = true;
+         Save();
+         CompilerConfigs::write(null);
+      }
       return result;
    }
 
    SettingsIOResult Save()
    {
       SettingsIOResult result;
-
-      IDESettings data = (IDESettings)this.data;
+      IDESettings data;
+      useNewConfigurationFiles = true;
+      data = (IDESettings)this.data;
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, false);
       data.ForcePathSeparatorStyle(true);
+      if(oldConfig)
+         settingsFilePath = null;
       result = GlobalSettings::Save();
       if(result != success)
          PrintLn("Error saving IDE settings");
+      else
+         oldConfig = false;
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
+
       CloseAndMonitor();
       FileGetSize(settingsFilePath, &settingsFileSize);
+
       return result;
    }
+}
+
+static Map<String, String> getCompilerConfigFilePathsByName(const char * path)
+{
+   Map<String, String> map { };
+   FileListing fl { path, extensions = "econ" };
+   while(fl.Find())
+   {
+      if(fl.stats.attribs.isFile)
+      {
+         char name[MAX_FILENAME];
+         char * path = CopyString(fl.path);
+         MakeSlashPath(path);
+         GetLastDirectory(path, name);
+         {
+            char * s = strstr(name, ".");
+            if(s) *s = 0;
+         }
+         map[name] = path;
+      }
+   }
+   return map;
+}
+
+static Map<String, CompilerConfig> getCompilerConfigsByName(const char * path)
+{
+   Map<String, CompilerConfig> map { };
+   FileListing fl { path, extensions = "econ" };
+   while(fl.Find())
+   {
+      if(fl.stats.attribs.isFile)
+      {
+         char name[MAX_FILENAME];
+         char * path = CopyString(fl.path);
+         MakeSlashPath(path);
+         GetLastDirectory(path, name);
+         {
+            char * s = strstr(name, ".");
+            if(s) *s = 0;
+         }
+         {
+            CompilerConfig ccfg = CompilerConfig::read(path);
+            if(ccfg)
+               map[name] = ccfg;
+         }
+         delete path;
+      }
+   }
+   return map;
+}
+
+static void getConfigFilePath(char * path, Class _class, char * dir, const char * configName)
+{
+   if(dir) *dir = 0;
+   strcpy(path, settingsContainer.settingsFilePath);
+   StripLastDirectory(path, path);
+   if(settingsContainer.oldConfig)
+      PathCatSlash(path, settingsDir);
+   if(_class == class(CompilerConfig))
+   {
+      PathCatSlash(path, "compilerConfigs");
+      if(dir)
+         strcpy(dir, path);
+      if(configName)
+      {
+         PathCatSlash(path, configName);
+         ChangeExtension(path, "econ", path);
+      }
+   }
+   else if(_class == class(RecentFilesData))
+      PathCatSlash(path, "recentFiles.econ");
+   else if(_class == class(RecentWorkspacesData))
+      PathCatSlash(path, "recentWorkspaces.econ");
+}
+
+static SettingsIOResult writeConfigFile(const char * path, Class dataType, void * data)
+{
+   SettingsIOResult result = error;
+   SafeFile sf;
+   sf = safeWriteFileOpen(path, write);
+   if(sf.file)
+   {
+      WriteECONObject(sf.file, dataType, data, 0);
+      delete sf;
+      result = success;
+   }
+   else
+      PrintLn($"error: could not safely open file for writing configuration: ", path);
+   return result;
+}
+
+static SettingsIOResult readConfigFile(const char * path, Class dataType, void ** data)
+{
+   SettingsIOResult result = error;
+   SafeFile sf;
+   if(!FileExists(path))
+      result = fileNotFound;
+   else if((sf = safeWriteFileOpen(path, read)))
+   {
+      JSONResult jsonResult;
+      {
+         ECONParser parser { f = sf.file };
+         sf.file.Seek(0, start);
+         jsonResult = parser.GetObject(dataType, data);
+         if(jsonResult != success)
+            delete *data;
+         delete parser;
+      }
+      if(jsonResult == success)
+         result = success;
+      else
+      {
+         result = fileNotCompatibleWithDriver;
+         PrintLn($"error: could not parse configuration file: ", path);
+      }
+      delete sf;
+   }
+   return result;
+}
+
+class SafeFile
+{
+   File file;
+   File lock;
+   FileOpenMode mode;
+   char tmp[MAX_LOCATION];
+   char lck[MAX_LOCATION];
+
+   ~SafeFile()
+   {
+      delete file;
+      if(mode == write)
+         DeleteFile(tmp);
+      if(lock)
+      {
+         delete lock;
+         DeleteFile(lck);
+      }
+   }
+}
+
+SafeFile safeWriteFileOpen(const char * path, FileOpenMode mode)
+{
+   SafeFile sf { mode = mode };
+   strcpy(sf.lck, path);
+   strcat(sf.lck, ".lck");
+   strcpy(sf.tmp, path);
+   strcat(sf.tmp, ".tmp");
+   if(mode == write)
+   {
+      sf.lock = FileOpen(sf.lck, write);
+      if(sf.lock && sf.lock.Lock(exclusive, 0, 0, false))
+      {
+         if(sf.tmp && FileExists(path).isFile)
+            MoveFile(path, sf.tmp);
+         sf.file = FileOpen(path, write);
+      }
+      else
+         PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock for writing: ", sf.lck);
+   }
+   else if(mode == read)
+   {
+      int c;
+      bool locked = false;
+      bool failed = false;
+      for(c = 0; c < 10 && !(failed = sf.tmp && FileExists(sf.tmp).isFile); c++) Sleep(0.01);
+      if(failed)
+      {
+         sf.lock = FileOpen(sf.lck, write);
+         if(sf.lock && sf.lock.Lock(exclusive, 0, 0, false))
+         {
+            if(FileExists(sf.tmp).isFile)
+            {
+               if(FileExists(path).isFile)
+                  DeleteFile(path);
+               MoveFile(sf.tmp, path);
+            }
+            else
+               PrintLn($"warning: safeWriteFileOpen: file is gone: ", sf.tmp);
+            delete sf.lock;
+            DeleteFile(sf.lck);
+         }
+         else
+            PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock for failed write repair: ", sf.lck);
+      }
+      sf.lock = FileOpen(sf.lck, write);
+      if(sf.lock) delete sf.lock;
+      sf.lock = FileOpen(sf.lck, read);
+      if(sf.lock)
+      {
+         for(c = 0; c < 10 && !(locked = sf.lock.Lock(shared, 0, 0, false)); c++) Sleep(0.01);
+         if(locked)
+            sf.file = FileOpen(path, read);
+      }
+   }
+   else
+      PrintLn($"warning: safeWriteFileOpen: does not yet support FileOpenMode::", mode);
+   return sf;
+}
+
+class RecentFilesData
+{
+public:
+   RecentFiles recentFiles;
+}
+
+class RecentWorkspacesData
+{
+public:
+   RecentWorkspaces recentWorkspaces;
 }
 
 class IDESettings : GlobalSettingsData
 {
 public:
-   List<CompilerConfig> compilerConfigs { };
-   RecentPaths recentFiles { };
-   RecentPaths recentProjects { };
+   property CompilerConfigs compilerConfigs
+   {
+      set { if(compilerConfigs) compilerConfigs.Free(); delete compilerConfigs; if(value) compilerConfigs = value; }
+      get { return compilerConfigs; }
+      isset { return false; }
+   }
+   property RecentFiles recentFiles
+   {
+      set { if(recentFiles) recentFiles.Free(); delete recentFiles; if(value) recentFiles = value; }
+      get { return recentFiles; }
+      isset { return false; }
+   }
+   property RecentWorkspaces recentProjects
+   {
+      set { if(recentProjects) recentProjects.Free(); delete recentProjects; if(value) recentProjects = value; }
+      get { return recentProjects; }
+      isset { return false; }
+   }
    property const char * docDir
    {
       set { delete docDir; if(value && value[0]) docDir = CopyString(value); }
@@ -516,6 +764,7 @@ public:
    }
 
 private:
+   CompilerConfigs compilerConfigs { };
    char * docDir;
    char * ideFileDialogLocation;
    char * ideProjectFileDialogLocation;
@@ -524,6 +773,8 @@ private:
    char * compilerConfigsDir;
    char * defaultCompiler;
    String language;
+   RecentFiles recentFiles { };
+   RecentWorkspaces recentProjects { };
 
    CompilerConfig GetCompilerConfig(const String compilerName)
    {
@@ -706,8 +957,90 @@ private:
    }
 }
 
+class RecentFiles : RecentPaths
+{
+   void onAdd()
+   {
+      write();
+   }
+
+   void ::read()
+   {
+      char path[MAX_LOCATION];
+      RecentFilesData d = null;
+      Class _class = class(RecentFilesData);
+      getConfigFilePath(path, _class, null, null);
+      readConfigFile(path, _class, &d);
+      if(d && d.recentFiles && d.recentFiles.count)
+      {
+         IDESettings s = (IDESettings)settingsContainer.data;
+         s.property::recentFiles = d.recentFiles;
+         d.recentFiles = null;
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+         ide.updateRecentFilesMenu();
+#endif
+      }
+      delete d;
+   }
+
+   void ::write()
+   {
+      char path[MAX_LOCATION];
+      IDESettings s = (IDESettings)settingsContainer.data;
+      RecentFilesData d { };
+      Class _class = class(RecentFilesData);
+      getConfigFilePath(path, _class, null, null);
+      d.recentFiles = s.recentFiles;
+      writeConfigFile(path, _class, d);
+      d.recentFiles = null;
+      delete d;
+   }
+}
+
+class RecentWorkspaces : RecentPaths
+{
+   void onAdd()
+   {
+      write();
+   }
+
+   void ::read()
+   {
+      char path[MAX_LOCATION];
+      RecentWorkspacesData d = null;
+      Class _class = class(RecentWorkspacesData);
+      getConfigFilePath(path, _class, null, null);
+      readConfigFile(path, _class, &d);
+      if(d && d.recentWorkspaces && d.recentWorkspaces.count)
+      {
+         IDESettings s = (IDESettings)settingsContainer.data;
+         s.property::recentProjects = d.recentWorkspaces;
+         d.recentWorkspaces = null;
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+         ide.updateRecentProjectsMenu();
+#endif
+      }
+      delete d;
+   }
+
+   void ::write()
+   {
+      char path[MAX_LOCATION];
+      IDESettings s = (IDESettings)settingsContainer.data;
+      RecentWorkspacesData d { };
+      Class _class = class(RecentWorkspacesData);
+      getConfigFilePath(path, _class, null, null);
+      d.recentWorkspaces = s.recentProjects;
+      writeConfigFile(path, _class, d);
+      d.recentWorkspaces = null;
+      delete d;
+   }
+}
+
 class RecentPaths : Array<String>
 {
+   virtual void onAdd();
+
    IteratorPointer Add(T value)
    {
       int c;
@@ -728,6 +1061,7 @@ class RecentPaths : Array<String>
    {
       int c;
       char * filePath = (char *)value;
+      IteratorPointer ip;
       ChangeCh(filePath, '\\', '/');
       for(c = 0; c < count; c++)
       {
@@ -739,7 +1073,9 @@ class RecentPaths : Array<String>
       }
       while(count >= MaxRecent)
          Delete(GetLast());
-      return Insert(null, filePath);
+      ip = Insert(null, filePath);
+      onAdd();
+      return ip;
    }
 
    void changeChar(char from, char to)
@@ -835,12 +1171,7 @@ class CompilerConfig
 public:
    property const char * name
    {
-      set
-      {
-         delete name;
-         if(value)
-            name = CopyString(value);
-      }
+      set { delete name; if(value) name = CopyString(value); }
       get { return name; }
    }
    bool readOnly;
@@ -1154,6 +1485,43 @@ private:
       if(linkerFlags) { linkerFlags.Free(); }
    }
 
+   int OnCompare(CompilerConfig b)
+   {
+      int result;
+      if(!(result = name.OnCompare(b.name)) &&
+         !(result = ecpCommand.OnCompare(b.ecpCommand)) &&
+         !(result = eccCommand.OnCompare(b.eccCommand)) &&
+         !(result = ecsCommand.OnCompare(b.ecsCommand)) &&
+         !(result = earCommand.OnCompare(b.earCommand)) &&
+         !(result = cppCommand.OnCompare(b.cppCommand)) &&
+         !(result = ccCommand.OnCompare(b.ccCommand)) &&
+         !(result = cxxCommand.OnCompare(b.cxxCommand)) &&
+         !(result = ldCommand.OnCompare(b.ldCommand)) &&
+         !(result = arCommand.OnCompare(b.arCommand)) &&
+         !(result = objectFileExt.OnCompare(b.objectFileExt)) &&
+         !(result = outputFileExt.OnCompare(b.outputFileExt)) &&
+         !(result = makeCommand.OnCompare(b.makeCommand)) &&
+         !(result = executableLauncher.OnCompare(b.executableLauncher)) &&
+         !(result = distccHosts.OnCompare(b.distccHosts)) &&
+         !(result = gnuToolchainPrefix.OnCompare(b.gnuToolchainPrefix)) &&
+         !(result = sysroot.OnCompare(b.sysroot)))
+         ;
+
+      if(!result &&
+         !(result = includeDirs.OnCompare(b.includeDirs)) &&
+         !(result = libraryDirs.OnCompare(b.libraryDirs)) &&
+         !(result = executableDirs.OnCompare(b.executableDirs)) &&
+         !(result = environmentVars.OnCompare(b.environmentVars)) &&
+         !(result = prepDirectives.OnCompare(b.prepDirectives)) &&
+         !(result = excludeLibs.OnCompare(b.excludeLibs)) &&
+         !(result = eCcompilerFlags.OnCompare(b.eCcompilerFlags)) &&
+         !(result = compilerFlags.OnCompare(b.compilerFlags)) &&
+         !(result = linkerFlags.OnCompare(b.linkerFlags)))
+         ;
+
+      return result;
+   }
+
 public:
    CompilerConfig Copy()
    {
@@ -1197,6 +1565,171 @@ public:
 
       incref copy;
       return copy;
+   }
+
+   CompilerConfig ::read(const char * path)
+   {
+      CompilerConfig d = null;
+      readConfigFile(path, class(CompilerConfig), &d);
+      return d;
+   }
+
+   void write()
+   {
+      char dir[MAX_LOCATION];
+      char path[MAX_LOCATION];
+      const char * settingsFilePath = settingsContainer.settingsFilePath;
+      getConfigFilePath(path, _class, dir, name);
+      if(FileExists(settingsFilePath) && !FileExists(dir))
+      {
+         MakeDir(dir);
+         if(!FileExists(dir))
+            PrintLn($"Error creating compiler configs directory at ", dir, " location.");
+      }
+      writeConfigFile(path, _class, this);
+   }
+}
+
+class CompilerConfigs : List<CompilerConfig>
+{
+   void ::fix()
+   {
+      IDESettings s = (IDESettings)settingsContainer.data;
+      // Ensure we have a default compiler
+      CompilerConfig defaultCompiler = null;
+      defaultCompiler = s.GetCompilerConfig(defaultCompilerName);
+      if(!defaultCompiler)
+      {
+         defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
+         s.compilerConfigs.Insert(null, defaultCompiler);
+         defaultCompiler = null;
+      }
+      delete defaultCompiler;
+
+      if(s.compilerConfigs)
+      {
+         for(ccfg : s.compilerConfigs)
+         {
+            if(!ccfg.ecpCommand || !ccfg.ecpCommand[0])
+               ccfg.ecpCommand = ecpDefaultCommand;
+            if(!ccfg.eccCommand || !ccfg.eccCommand[0])
+               ccfg.eccCommand = eccDefaultCommand;
+            if(!ccfg.ecsCommand || !ccfg.ecsCommand[0])
+               ccfg.ecsCommand = ecsDefaultCommand;
+            if(!ccfg.earCommand || !ccfg.earCommand[0])
+               ccfg.earCommand = earDefaultCommand;
+            if(!ccfg.cppCommand || !ccfg.cppCommand[0])
+               ccfg.cppCommand = cppDefaultCommand;
+            if(!ccfg.ccCommand || !ccfg.ccCommand[0])
+               ccfg.ccCommand = ccDefaultCommand;
+            if(!ccfg.cxxCommand || !ccfg.cxxCommand[0])
+               ccfg.cxxCommand = cxxDefaultCommand;
+            /*if(!ccfg.ldCommand || !ccfg.ldCommand[0])
+               ccfg.ldCommand = ldDefaultCommand;*/
+            if(!ccfg.arCommand || !ccfg.arCommand[0])
+               ccfg.arCommand = arDefaultCommand;
+            if(!ccfg.objectFileExt || !ccfg.objectFileExt[0])
+               ccfg.objectFileExt = objectDefaultFileExt;
+            /*if(!ccfg.outputFileExt || !ccfg.outputFileExt[0])
+               ccfg.outputFileExt = outputDefaultFileExt;*/
+            if(!ccfg._refCount) incref ccfg;
+         }
+      }
+   }
+
+   AVLTree<String> getWriteRequiredList(CompilerConfigs oldConfigs)
+   {
+      AVLTree<String> list { };
+      for(ccfg : this)
+      {
+         for(occfg : oldConfigs)
+         {
+            if(!strcmp(ccfg.name, occfg.name))
+            {
+               if(ccfg.OnCompare(occfg))
+                  list.Add(CopyString(ccfg.name));
+               break;
+            }
+         }
+      }
+      return list;
+   }
+
+   void ::read()
+   {
+      if(settingsContainer.settingsFilePath)
+      {
+         char dir[MAX_LOCATION];
+         char path[MAX_LOCATION];
+         Class _class = class(CompilerConfig);
+         getConfigFilePath(path, _class, dir, null);
+         if(dir[0])
+         {
+            CompilerConfigs ccfgs { };
+            AVLTree<const String> addedConfigs { };
+            IDESettings s = (IDESettings)settingsContainer.data;
+            Map<String, CompilerConfig> compilerConfigsByName = getCompilerConfigsByName(dir);
+            MapIterator<const String, CompilerConfig> it { map = compilerConfigsByName };
+            if(it.Index("Default", false))
+            {
+               CompilerConfig ccfg = it.data;
+               ccfgs.Add(ccfg.Copy());
+               addedConfigs.Add(ccfg.name);
+            }
+            for(ccfg : compilerConfigsByName)
+            {
+               if(!addedConfigs.Find(ccfg.name))
+               {
+                  ccfgs.Add(ccfg.Copy());
+                  addedConfigs.Add(ccfg.name);
+               }
+            }
+            for(ccfg : s.compilerConfigs)
+            {
+               if(!addedConfigs.Find(ccfg.name))
+                  ccfgs.Add(ccfg.Copy());
+            }
+            delete addedConfigs;
+            s.property::compilerConfigs = ccfgs;
+            fix();
+            compilerConfigsByName.Free();
+            delete compilerConfigsByName;
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+            ide.UpdateCompilerConfigs(true);
+#endif
+         }
+      }
+   }
+
+   void ::write(AVLTree<String> cfgsToWrite)
+   {
+      char dir[MAX_LOCATION];
+      char path[MAX_LOCATION];
+      Map<String, String> paths;
+      IDESettings s = (IDESettings)settingsContainer.data;
+      getConfigFilePath(path, class(CompilerConfig), dir, null);
+      paths = getCompilerConfigFilePathsByName(dir);
+      {
+         MapIterator<String, String> it { map = paths };
+         for(c : s.compilerConfigs)
+         {
+            CompilerConfig ccfg = c;
+            if(!cfgsToWrite || cfgsToWrite.Find(ccfg.name))
+               ccfg.write();
+            if(it.Index(ccfg.name, false))
+            {
+               delete it.data;
+               it.Remove();
+            }
+         }
+      }
+      for(p : paths)
+      {
+         const char * path = p;
+         DeleteFile(path);
+      }
+      paths.Free();
+      delete paths;
    }
 }
 

@@ -4269,7 +4269,8 @@ class ValgrindLogThread : Thread
                   memcpy(&dynamicBuffer[pos], output + start, c - start);
                   if(dynamicBuffer.count && dynamicBuffer[dynamicBuffer.count - 1] != '\r')
                      dynamicBuffer.size++;
-                  dynamicBuffer[dynamicBuffer.count - 1] = '\0';
+                  if(dynamicBuffer.count)
+                     dynamicBuffer[dynamicBuffer.count - 1] = '\0';
 #ifdef _DEBUG
                   // printf("%s\n", dynamicBuffer.array);
 #endif

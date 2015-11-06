@@ -444,6 +444,7 @@ class IDEWorkSpace : Window
          CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.GoToError(line, noParsing, objectFileExt);
+         delete compiler;
       }
 
       void OnCodeLocationParseAndGoTo(const char * line)
@@ -451,6 +452,7 @@ class IDEWorkSpace : Window
          CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
+         delete compiler;
       }
 
       bool OnKeyDown(Key key, unichar ch)
@@ -824,7 +826,6 @@ class IDEWorkSpace : Window
                      {
                         ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
                         ide.updateRecentProjectsMenu();
-                        settingsContainer.Save();
                      }
                   }
                }
@@ -1826,7 +1827,6 @@ class IDEWorkSpace : Window
       ideSettings.recentFiles.addRecent(CopyString(fileName));
       ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
-      settingsContainer.Save();
    }
 
    bool Window::OnFileModified(FileChange fileChange, const char * param)
@@ -2574,7 +2574,6 @@ class IDEWorkSpace : Window
             ideSettings.recentFiles.addRecent(CopyString(document.fileName));
          ide.AdjustFileMenus();
          ide.updateRecentFilesMenu();
-         settingsContainer.Save();
 
          return document;
       }
@@ -3171,7 +3170,6 @@ class IDEWorkSpace : Window
                   {
                      ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
                      ide.updateRecentMenus();
-                     settingsContainer.Save();
                   }
                   delete newProjectDialog;
                   // Open only one project
@@ -3666,6 +3664,10 @@ class IDEApp : GuiApplication
          }
       }
 
+      ideSettings.compilerConfigs.read();
+      ideSettings.recentFiles.read();
+      ideSettings.recentProjects.read();
+
       // First count files arg to decide whether to maximize
       {
          bool passThrough = false, debugWorkDir = false;
@@ -3727,6 +3729,8 @@ class IDEApp : GuiApplication
          ide.OpenFile(fullPath, app.argFilesCount > 1, true, null, yes, normal, false);
       }
       */
+
+      globalSettingsDialog.settingsContainer = settingsContainer;
 
       // Default to language specified by environment if no language selected
       if(!ideSettings.language)
