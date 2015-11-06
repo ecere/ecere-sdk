@@ -2,6 +2,9 @@
    "Version" : 0.2,
    "ModuleName" : "documentor",
    "Options" : {
+      "PreprocessorDefinitions" : [
+         "ECERE_DOCUMENTOR"
+      ],
       "TargetFileName" : "documentor",
       "Libraries" : [
          "ecere"

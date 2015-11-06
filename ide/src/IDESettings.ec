@@ -1,10 +1,3 @@
-#if defined(__WIN32__)
-#define MessageBox _MessageBox
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#undef MessageBox
-#endif
-
 #ifdef ECERE_STATIC
 public import static "ecere"
 #else
@@ -26,6 +19,10 @@ define outputDefaultFileExt = "";
 import "StringsBox"
 
 import "OldIDESettings"
+
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+import "process"
+#endif
 
 define MaxRecent = 9;
 
@@ -1203,6 +1200,7 @@ public:
    }
 }
 
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
 struct LanguageOption
 {
    const String name;
@@ -1382,23 +1380,7 @@ bool LanguageRestart(const char * code, Application app, IDESettings settings, I
          settings.language = code;
          settingsContainer.Save();
 
-#if defined(__WIN32__)
-         // Set LANGUAGE environment variable
-         {
-            HKEY key = null;
-            uint16 wLanguage[256];
-            DWORD status;
-            wLanguage[0] = 0;
-
-            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-            if(key)
-            {
-               UTF8toUTF16Buffer(code, wLanguage, sizeof(wLanguage) / sizeof(uint16));
-               RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
-               RegCloseKey(key);
-            }
-         }
-#endif
+         setEcereLanguageInWinRegEnvironment(code);
 
          if(eClass_IsDerived(app._class, class(GuiApplication)))
          {
@@ -1441,3 +1423,4 @@ bool LanguageRestart(const char * code, Application app, IDESettings settings, I
    delete command;
    return restart;
 }
+#endif

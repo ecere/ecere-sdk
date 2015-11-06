@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "MAKEFILE_GENERATOR"
+         "ECERE_EPJ2MAKE"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "epj2make",
