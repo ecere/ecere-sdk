@@ -456,7 +456,7 @@ endif
 	cd ide && $(MAKE) realclean
 	cd documentor && $(MAKE) realclean
 ifneq "$(ECERE_AUDIO)" "n"
-	cd audio && $(MAKE) realclan
+	cd audio && $(MAKE) realclean
 endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) realclean
