@@ -32,25 +32,6 @@ private:
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnFree;
 
-IDESettings ideSettings;
-
-IDESettingsContainer settingsContainer
-{
-   driver = "JSON";
-   dataOwner = &ideSettings;
-   dataClass = class(IDESettings);
-
-   void OnLoad(GlobalSettingsData data)
-   {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-      IDESettings settings = (IDESettings)data;
-      globalSettingsDialog.ideSettings = settings;
-      ide.updateRecentMenus();
-      ide.UpdateCompilerConfigs(true);
-#endif
-   }
-};
-
 #if defined(ECERE_DOCUMENTOR) || defined(ECERE_EPJ2MAKE)
 CompilerConfig defaultCompiler;
 #endif

@@ -46,15 +46,6 @@ static const char * iconNames[CodeObjectType] =
    "<:ecere>constructs/propertyPrivate.png"
 };
 
-IDESettings settings { }; // instantiate the IDESettings class from the IDESettings.ec file. Do this at a global level so that all methods can access settings.
-
-IDESettingsContainer settingsContainer
-{
-   driver = "JSON";
-   data = settings;
-   dataOwner = &settings;
-};
-
 void GetTemplateString(Class c, char * templateString)
 {
    Module m = c.module.application;
@@ -590,7 +581,7 @@ static void FigureFilePath(char * path, Module module, DocumentationType type, v
    ChangeExtension(docPath, "econ", docPath);
 
    path[0] = 0;
-   strcpy(path, settings.docDir);
+   strcpy(path, ideSettings.docDir);
    PathCatSlash(path, docPath);
 }
 
@@ -2637,7 +2628,7 @@ class HelpView : HTMLView
          {
             char docDir[MAX_LOCATION];
             readOnly = true;
-            strcpy(docDir, settings.docDir);
+            strcpy(docDir, ideSettings.docDir);
             if(FileExists(docDir).isDirectory)
             {
                PathCatSlash(docDir, "___docWriteTest");
@@ -4355,9 +4346,9 @@ class Documentor : GuiApplication
 
       SetGlobalData(globalData);
 
-      settingsContainer.dataOwner = &settings;
+      settingsContainer.dataOwner = &ideSettings;
       settingsContainer.Load();
-      if(!settings.docDir || !settings.docDir[0] )
+      if(!ideSettings.docDir || !ideSettings.docDir[0] )
       {
          if(os == win32) // if Windows OS then
          {
@@ -4371,23 +4362,23 @@ class Documentor : GuiApplication
             if(GetEnvironment("ProgramFiles", programFilesDir, MAX_LOCATION))
             {
                PathCat(programFilesDir, "ECERE SDK\\doc");
-               settings.docDir = programFilesDir;
+               ideSettings.docDir = programFilesDir;
             }
             else if(homeDrive[0])
             {
                PathCat(homeDrive, "ECERE SDK\\doc");
-               settings.docDir = homeDrive;
+               ideSettings.docDir = homeDrive;
             }
             else if(winDir[0])
             {
                PathCat(winDir, "..\\ECERE SDK\\doc");
-               settings.docDir = winDir;
+               ideSettings.docDir = winDir;
             }
             else
-               settings.docDir = "C:\\ECERE SDK\\doc";
+               ideSettings.docDir = "C:\\ECERE SDK\\doc";
          }
          else // if Os is Linux, or Mac OSX or something else
-            settings.docDir = "/usr/share/ecere/doc/";
+            ideSettings.docDir = "/usr/share/ecere/doc/";
          settingsContainer.Save();
       }
 
