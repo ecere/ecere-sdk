@@ -4,7 +4,8 @@
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "GDB_DEBUG_GUI"
+         "GDB_DEBUG_GUI",
+         "ECERE_IDE"
       ],
       "IncludeDirs" : [
          "../extras/include"

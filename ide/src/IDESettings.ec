@@ -1,10 +1,3 @@
-#if defined(__WIN32__)
-#define MessageBox _MessageBox
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#undef MessageBox
-#endif
-
 #ifdef ECERE_STATIC
 public import static "ecere"
 #else
@@ -26,6 +19,10 @@ define outputDefaultFileExt = "";
 import "StringsBox"
 
 import "OldIDESettings"
+
+#if defined(ECERE_IDE)
+import "process"
+#endif
 
 define MaxRecent = 9;
 
@@ -379,6 +376,20 @@ private:
             data.caretFollowsScrolling = false; //true;
          }
       }
+
+      {
+         char path[MAX_LOCATION];
+         CompilerConfigsData compilerConfigs = null;
+         GetCompilerConfigsFilePath(path, settingsFilePath);
+         readCompilerConfigs(path, &compilerConfigs);
+         if(compilerConfigs && compilerConfigs.compilers && compilerConfigs.compilers.count)
+         {
+            data.property::compilerConfigs = compilerConfigs.compilers;
+            compilerConfigs.compilers = null;
+         }
+         delete compilerConfigs;
+      }
+
       // Ensure we have a default compiler
       defaultCompiler = data.GetCompilerConfig(defaultCompilerName);
       if(!defaultCompiler)
@@ -441,16 +452,97 @@ private:
          PrintLn("Error saving IDE settings");
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
+
       CloseAndMonitor();
       FileGetSize(settingsFilePath, &settingsFileSize);
+
+      {
+         char path[MAX_LOCATION];
+         CompilerConfigsData compilerConfigs { };
+         delete compilerConfigs.compilers;
+         compilerConfigs.compilers = data.compilerConfigs;
+         GetCompilerConfigsFilePath(path, settingsFilePath);
+         writeCompilerConfigs(path, compilerConfigs);
+         compilerConfigs.compilers = null;
+         delete compilerConfigs;
+      }
+
       return result;
    }
+}
+
+class CompilerConfigsData
+{
+public:
+   List<CompilerConfig> compilers { };
+}
+
+SettingsIOResult writeCompilerConfigs(const char * path, CompilerConfigsData compilerConfigsData)
+{
+   SettingsIOResult result = error;
+   File f = FileOpen(path, write);
+   if(f)
+   {
+      WriteJSONObject(f, class(CompilerConfigsData), compilerConfigsData, 0);
+      delete f;
+      result = success;
+   }
+   else
+      PrintLn($"Error writing compiler configs file to ", path, " location.");
+   return result;
+}
+
+SettingsIOResult readCompilerConfigs(const char * path, CompilerConfigsData * compilerConfigsData/*, bool interactive*/)
+{
+   SettingsIOResult result = error;
+   File f;
+   if(!FileExists(path))
+      result = fileNotFound;
+   else if((f = FileOpen(path, read)))
+   {
+      JSONParser parser { f = f };
+      JSONResult jsonResult = parser.GetObject(class(CompilerConfigsData), compilerConfigsData);
+      if(jsonResult == success)
+         result = success;
+      else
+      {
+#if 0
+         if(jsonResult == syntaxError && (!interactive || MessageBox { type = yesNo, master = cartographer,
+                           caption = $"Corrupt compiler configs file", contents = $"Attempt to load safety copy?" }.Modal() == yes))
+         {
+            char * altPath = new char[MAX_LOCATION]; strcat(altPath, path);
+            delete f;
+            strcat(altPath, ".copy");
+            if((f = FileOpen(altPath, read)))
+            {
+               jsonResult = parser.GetObject(class(CompilerConfigsData), compilerConfigsData);
+               if(jsonResult == success)
+                  result = success;
+            }
+            delete altPath;
+         }
+         else
+#endif
+         {
+            result = fileNotCompatibleWithDriver;
+            PrintLn($"Error reading compiler configs file");
+         }
+      }
+      delete parser;
+      delete f;
+   }
+   return result;
 }
 
 class IDESettings : GlobalSettingsData
 {
 public:
-   List<CompilerConfig> compilerConfigs { };
+   property List<CompilerConfig> compilerConfigs
+   {
+      set { delete compilerConfigs; if(value) compilerConfigs = value; }
+      get { return compilerConfigs; }
+      isset { return false; }
+   }
    Array<String> recentFiles { };
    Array<String> recentProjects { };
    property const char * docDir
@@ -518,6 +610,7 @@ public:
    }
 
 private:
+   List<CompilerConfig> compilerConfigs { };
    char * docDir;
    char * ideFileDialogLocation;
    char * ideProjectFileDialogLocation;
@@ -1208,6 +1301,29 @@ public:
    }
 }
 
+void GetCompilerConfigsFilePath(char * path, const char * settingsFilePath)
+{
+   const char * addendum = "-CompilerConfigs";
+   int s, d, max = Min(strlen(settingsFilePath), MAX_LOCATION-1);
+   int lenS = strlen(ideSettingsName);
+   int lenD = lenS + strlen(addendum);
+   for(s = d = 0; s<max; )
+   {
+      if(strstr(settingsFilePath+s, ideSettingsName) == settingsFilePath+s)
+      {
+         path[d] = '\0';
+         strcat(path, ideSettingsName);
+         strcat(path, addendum);
+         s += lenS;
+         d += lenD;
+      }
+      else
+         path[d++] = settingsFilePath[s++];
+   }
+   path[d] = '\0';
+}
+
+#if defined(ECERE_IDE)
 struct LanguageOption
 {
    const String name;
@@ -1387,23 +1503,7 @@ bool LanguageRestart(const char * code, Application app, IDESettings settings, I
          settings.language = code;
          settingsContainer.Save();
 
-#if defined(__WIN32__)
-         // Set LANGUAGE environment variable
-         {
-            HKEY key = null;
-            uint16 wLanguage[256];
-            DWORD status;
-            wLanguage[0] = 0;
-
-            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-            if(key)
-            {
-               UTF8toUTF16Buffer(code, wLanguage, sizeof(wLanguage) / sizeof(uint16));
-               RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
-               RegCloseKey(key);
-            }
-         }
-#endif
+         setLanguageEnvironmentVariable(code);
 
          if(eClass_IsDerived(app._class, class(GuiApplication)))
          {
@@ -1446,3 +1546,4 @@ bool LanguageRestart(const char * code, Application app, IDESettings settings, I
    delete command;
    return restart;
 }
+#endif

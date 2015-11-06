@@ -212,7 +212,8 @@ PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 $(FVISIBILITY) \
 			 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I../extras/include
+			 -I../extras/include \
+			 -DECERE_IDE
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \

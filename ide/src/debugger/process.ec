@@ -355,3 +355,21 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
    return pid;
 #endif
 }
+
+void setLanguageEnvironmentVariable(const char * code)
+{
+#ifdef __WIN32__
+   HKEY key = null;
+   uint16 wLanguage[256];
+   DWORD status;
+   wLanguage[0] = 0;
+
+   RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   if(key)
+   {
+      UTF8toUTF16Buffer(code, wLanguage, sizeof(wLanguage) / sizeof(uint16));
+      RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
+      RegCloseKey(key);
+   }
+#endif
+}
