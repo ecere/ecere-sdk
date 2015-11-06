@@ -1,4 +1,4 @@
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
 import "ide"
 #else
 #ifdef ECERE_STATIC
@@ -10,17 +10,17 @@ import "ecere"
 import "Project"
 
 static define app = ((GuiApplication)__thisModule);
-#endif // #ifndef MAKEFILE_GENERATOR
+#endif
 
 #define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
 
 static void OutputLog(const char * string)
 {
-#ifdef MAKEFILE_GENERATOR
-   printf("%s", string);
-#else
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    ide.outputView.buildBox.Log(string);
-#endif // #ifdef MAKEFILE_GENERATOR
+#else
+   printf("%s", string);
+#endif
 }
 
 bool eString_PathInsideOfMore(const char * path, const char * of, char * pathRest)
@@ -1318,7 +1318,7 @@ private:
       return node;
    }
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    void OnDisplay(Surface surface, int x, int y, int width, ProjectView projectView, Alignment alignment, DataDisplayFlags displayFlags)
    {
       char label[MAX_FILENAME];
@@ -1422,7 +1422,7 @@ private:
          }
       }
    }
-#endif // #ifndef MAKEFILE_GENERATOR
+#endif
 
    int OnCompare(ProjectNode b)
    {

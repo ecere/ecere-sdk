@@ -85,7 +85,8 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
+			 -DECERE_DOCUMENTOR
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \

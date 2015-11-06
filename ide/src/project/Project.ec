@@ -6,7 +6,7 @@ public import "ecere"
 
 import "DynamicString"
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
 import "ide"
 // We should have the .sln/.vcproj generation even on other platforms
 // e.g. detect from an environment variable pointing to a Windows drive
@@ -42,7 +42,7 @@ IDESettingsContainer settingsContainer
 
    void OnLoad(GlobalSettingsData data)
    {
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
       IDESettings settings = (IDESettings)data;
       globalSettingsDialog.ideSettings = settings;
       ide.updateRecentMenus();
@@ -51,7 +51,7 @@ IDESettingsContainer settingsContainer
    }
 };
 
-#ifdef MAKEFILE_GENERATOR
+#if defined(ECERE_DOCUMENTOR) || defined(ECERE_EPJ2MAKE)
 CompilerConfig defaultCompiler;
 #endif
 
@@ -679,7 +679,7 @@ void CamelCase(char * string)
 
 CompilerConfig GetCompilerConfig()
 {
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    CompilerConfig compiler = null;
    if(ide && ide.workspace)
       compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
@@ -692,10 +692,10 @@ CompilerConfig GetCompilerConfig()
 
 int GetBitDepth()
 {
-#ifdef MAKEFILE_GENERATOR
-   return 0; // todo: improve this somehow? add bit depth command line option?
-#else
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    return ide.workspace ? ide.workspace.bitDepth : 0;
+#else
+   return 0; // todo: improve this somehow? add bit depth command line option?
 #endif
 }
 
@@ -883,7 +883,7 @@ private:
 
    Map<String, Map<String, NameCollisionInfo>> configsNameCollisions { };
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    FileMonitor fileMonitor
    {
       this, FileChange { modified = true };
@@ -1192,7 +1192,7 @@ private:
 
    bool GetConfigIsInActiveDebugSession(ProjectConfig config)
    {
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
 #else
       return false;
@@ -1201,7 +1201,7 @@ private:
 
    bool GetConfigIsInDebugSession(ProjectConfig config)
    {
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
 #else
       return false;
@@ -1210,12 +1210,12 @@ private:
 
    void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
       ide.SetPath(projectsDirs, compiler, config, bitDepth);
 #endif
    }
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    bool Save(const char * fileName)
    {
       File f;
@@ -1356,7 +1356,7 @@ private:
       sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
    }
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    ProjectNode GetObjectFileNode(const char * filePath, const char * objectFileExt)
    {
       ProjectNode node = null;
@@ -4739,7 +4739,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
    return project;
 }
 
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
 static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String compilerCommand)
 {
    GccVersionInfo result = unknown;

@@ -1,4 +1,4 @@
-#ifndef MAKEFILE_GENERATOR
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
 import "ide"
 #endif
 
