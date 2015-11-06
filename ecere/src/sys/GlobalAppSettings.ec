@@ -272,7 +272,7 @@ private:
       {
          if(settingsDirectory)
          {
-            if(dotPrefix)
+            if(dotPrefix && settingsDirectory[0] != '.')
             {
                int len = strlen(settingsDirectory);
                String s = new char[len + 2];
@@ -290,7 +290,7 @@ private:
          if(attribs.isDirectory || attribs.isDrive)
          {
             char * name = new char[strlen(settingsName) + strlen(extension) + 4];
-            if(dotPrefix && !settingsDirectory)
+            if(dotPrefix && !settingsDirectory && settingsName[0] != '.')
             {
                strcpy(name, ".");
                strcat(name, settingsName);
