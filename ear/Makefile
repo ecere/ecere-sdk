@@ -10,25 +10,25 @@ include $(_CF_DIR)default.cf
 
 all:
 	@$(call echo,Building self-extract tool...)
-	cd extract && $(MAKE)
+	+cd extract && $(_MAKE)
 	@$(call echo,Building eAR command line tool...)
-	cd cmd && $(MAKE)
+	+cd cmd && $(_MAKE)
 
 nores:
 	@$(call echo,Building eAR command line tool...)
-	cd cmd && $(MAKE) nores
+	+cd cmd && $(_MAKE) nores
 
 cleantarget:
-	cd extract && $(MAKE) cleantarget
-	cd cmd && $(MAKE) cleantarget
+	+cd extract && $(_MAKE) cleantarget
+	+cd cmd && $(_MAKE) cleantarget
 
 clean:
-	cd extract && $(MAKE) clean
-	cd cmd && $(MAKE) clean
+	+cd extract && $(_MAKE) clean
+	+cd cmd && $(_MAKE) clean
 
 realclean:
-	cd extract && $(MAKE) realclean
-	cd cmd && $(MAKE) realclean
+	+cd extract && $(_MAKE) realclean
+	+cd cmd && $(_MAKE) realclean
 
 distclean:
 	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

@@ -215,9 +215,11 @@ hs_crossloop = $(call hs_unsafe_crossloop,$(call fp_no_parent_dir,$(1)),$(2))
 
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS_HOST
-ifndef MSYSCON
-   WIN_PS_TOOLS := defined
-endif
+   ifneq ($(TERM),cygwin)
+      ifndef MSYSCON
+         WIN_PS_TOOLS := defined
+      endif
+   endif
 endif
 slash_path = $(subst $(backslash),$(slash),$(1))
 ifdef WIN_PS_TOOLS
@@ -269,11 +271,15 @@ _CPP = $(if $(findstring $(space),$(CPP)),"$(CPP)",$(CPP))
 
 _SYSROOT = $(if $(SYSROOT),$(space)--sysroot=$(SYSROOT),)
 
+_MAKE = $(call fp_opt_quotes,$(MAKE))
+
 # SHELL COMMANDS
 ifdef WINDOWS_HOST
-ifndef MSYSCON
-   WIN_SHELL_COMMANDS := defined
-endif
+   ifneq ($(TERM),cygwin)
+      ifndef MSYSCON
+         WIN_SHELL_COMMANDS := defined
+      endif
+   endif
 endif
 ifneq ($(V),1)
    SILENT_IS_ON := defined
