@@ -2033,8 +2033,8 @@ ifdef LINUX_HOST
 endif
 endif
 endif
-	$(MAKE) -f Makefile.ecereCOM cleantarget
-	$(MAKE) -f Makefile.vanilla cleantarget
+	$(_MAKE) -f Makefile.ecereCOM cleantarget
+	$(_MAKE) -f Makefile.vanilla cleantarget
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
@@ -2053,13 +2053,13 @@ clean: cleantarget
 	$(call rm,$(SYMBOLS1))
 	$(call rm,$(SYMBOLS2))
 	$(call rm,$(SYMBOLS3))
-	$(MAKE) -f Makefile.ecereCOM clean
-	$(MAKE) -f Makefile.vanilla clean
+	$(_MAKE) -f Makefile.ecereCOM clean
+	$(_MAKE) -f Makefile.vanilla clean
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
-	$(MAKE) -f Makefile.ecereCOM realclean
-	$(MAKE) -f Makefile.vanilla realclean
+	$(_MAKE) -f Makefile.ecereCOM realclean
+	$(_MAKE) -f Makefile.vanilla realclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
