@@ -9,6 +9,10 @@ import "OldList"
 import "String"
 import "dataTypes"
 
+//#define JUST_CHECK_LEAKS
+//#define JUST_CHECK_BOUNDARIES
+
+
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
 #if !defined(ECERE_BOOTSTRAP)
@@ -35,7 +39,9 @@ import "Mutex"
  #define REDZONE   256
 #endif
 */
-#ifndef REDZONE
+
+#if defined(JUST_CHECK_LEAKS) || !defined(REDZONE)
+#undef REDZONE
 #define REDZONE 0
 #endif
 
@@ -736,7 +742,7 @@ private class MemBlock : struct
    MemBlock prev, next;
    MemPart part;
    uint size;
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
    Class _class;
 #endif
 };
@@ -1258,7 +1264,7 @@ static void * _mymalloc(unsigned int size)
          block = pools[p].Add();
          if(block)
          {
-#if defined(_DEBUG) && defined(MEMTRACKING)
+#if defined(MEMTRACKING)
             block._class = null;
 #endif
             block.size = size;
@@ -1273,7 +1279,7 @@ static void * _mymalloc(unsigned int size)
             TOTAL_MEM += sizeof(class MemBlock) + size;
             OUTSIDE_MEM += sizeof(class MemBlock) + size;
             block.part = null;
-#if defined(_DEBUG) && defined(MEMTRACKING)
+#if defined(MEMTRACKING)
             block._class = null;
 #endif
             block.size = size;
@@ -1631,6 +1637,12 @@ static void * _realloc(void * pointer, unsigned int size)
 
    if(block)
    {
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+      memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
+      free((byte *)block.key - REDZONE);
+      memBlocks.Remove(block);
+      free(block);
+#else
       if(block.freed)
       {
          memcpy((byte *)pointer + REDZONE, block.oldmem, Min(block.size, size));
@@ -1648,6 +1660,7 @@ static void * _realloc(void * pointer, unsigned int size)
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
+#endif
    }
 
    if(!recurse && !stack.recurse)
@@ -1737,6 +1750,12 @@ static void * _crealloc(void * pointer, unsigned int size)
 
    if(block)
    {
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+      memcpy((byte *)pointer + REDZONE, (byte *)block.key, Min(block.size, size));
+      free((byte *)block.key - REDZONE);
+      memBlocks.Remove(block);
+      free(block);
+#else
       if(block.freed)
       {
          memcpy((byte *)pointer + REDZONE, block.oldmem, Min(block.size, size));
@@ -1754,6 +1773,7 @@ static void * _crealloc(void * pointer, unsigned int size)
          memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
          block.freed = true;
       }
+#endif
    }
 
    if(!recurse && !stack.recurse)
@@ -1871,6 +1891,11 @@ static void _free(void * pointer)
             }
 
             block.freed = true;
+#if defined(JUST_CHECK_LEAKS) || defined(JUST_CHECK_BOUNDARIES)
+            free((byte *)block.key - REDZONE);
+            memBlocks.Remove(block);
+            free(block);
+#else
             block.oldmem = (byte *)malloc(block.size + REDZONE * 2);
             if(block.oldmem)
             {
@@ -1880,6 +1905,7 @@ static void _free(void * pointer)
             memset((byte *)block.key - REDZONE, 0xEC, block.size + REDZONE * 2);
 
             memcpy(block.freeLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
+#endif
          }
          stack.recurse = false;
       }
@@ -4642,7 +4668,7 @@ public dllexport void * eInstance_New(Class _class)
 #endif
 #endif
 
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
       {
          MemBlock block = (MemBlock)((byte *)instance - sizeof(class MemBlock));
          block._class = _class;
@@ -7298,7 +7324,7 @@ public uint16 * UTF8toUTF16(const char * source, int * wordCount)
 
 namespace com;
 
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING)
 import "Map"
 
 Map<Class, int> blocksByClass { };
@@ -7307,7 +7333,7 @@ Map<Class, uintsize> sizeByClass { };
 
 public void queryMemInfo(char * string)
 {
-#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+#if !defined(MEMINFO) && defined(MEMTRACKING) && !defined(DISABLE_MEMMGR)
    char s[1024];
    int p;
    uint numBlocks = 0;
