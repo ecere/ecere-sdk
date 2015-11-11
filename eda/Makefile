@@ -45,3 +45,7 @@ distclean:
 ifdef EDASQLiteCipher
 	cd drivers && cd sqliteCipher && $(MAKE) distclean
 endif
+
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;

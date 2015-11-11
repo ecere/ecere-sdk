@@ -487,6 +487,10 @@ endif
 
 DOC = doc
 
+Makefile: ;
+crossplatform.mk: ;
+default.cf: ;
+
 BINARIES = \
 	ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV) \
 	ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV) \

@@ -33,3 +33,7 @@ realclean:
 distclean:
 	cd extract && $(MAKE) distclean
 	cd cmd && $(MAKE) distclean
+
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;

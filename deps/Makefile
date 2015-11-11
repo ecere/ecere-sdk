@@ -48,6 +48,10 @@ distclean:
 	cd libungif-4.1.1 && $(MAKE) distclean
 	cd libffi-3.0.11 && $(MAKE) distclean
 
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;
+
 freetype:
 	@$(call echo,Building FreeType...)
 	cd freetype-2.3.12 && $(MAKE)
