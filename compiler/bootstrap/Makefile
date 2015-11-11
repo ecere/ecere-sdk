@@ -46,6 +46,10 @@ distclean: cleantarget
 	cd ecc && $(MAKE) distclean
 	cd ecs && $(MAKE) distclean
 
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;
+
 ecere:
 	@$(call echo,Building ecere...)
 	cd ecere && $(MAKE)

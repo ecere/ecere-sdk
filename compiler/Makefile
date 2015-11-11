@@ -59,3 +59,7 @@ distclean:
 	cd ecp && $(MAKE) distclean
 	cd ecc && $(MAKE) distclean
 	cd ecs && $(MAKE) distclean
+
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;
