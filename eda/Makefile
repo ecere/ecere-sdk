@@ -3,8 +3,6 @@ ifneq ($(V),1)
 endif
 .PHONY: all cmd cleantarget clean realclean distclean
 
-# CROSS-PLATFORM MAGIC
-
 _CF_DIR = ../
 
 include $(_CF_DIR)crossplatform.mk

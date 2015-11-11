@@ -3,10 +3,10 @@ ifneq ($(V),1)
 endif
 .PHONY: all nores cleantarget clean realclean distclean
 
-# CROSS-PLATFORM MAGIC
+_CF_DIR = ../
 
-include ../crossplatform.mk
-include ../default.cf
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
 
 all:
 	@$(call echo,Building self-extract tool...)

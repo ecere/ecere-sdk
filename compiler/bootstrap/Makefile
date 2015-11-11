@@ -5,8 +5,10 @@ endif
 
 OBJ = obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-include ../../crossplatform.mk
-include ../../default.cf
+_CF_DIR = ../../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
 
 all: bindir ecere libec ecp ecc ecs
 	$(call cpq,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJ))
