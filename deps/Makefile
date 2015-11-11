@@ -1,10 +1,10 @@
 .PHONY: freetype jpeg png gif z ffi cleantarget clean realclean distclean
 .SILENT:
 
-# CROSS-PLATFORM MAGIC
+_CF_DIR = ../
 
-include ../crossplatform.mk
-include ../default.cf
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
 
 ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z
