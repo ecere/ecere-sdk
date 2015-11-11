@@ -1864,3 +1864,7 @@ realclean: cleantarget
 
 distclean: cleantarget
 	$(call rmr,obj/)
+
+Makefile.installer: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;

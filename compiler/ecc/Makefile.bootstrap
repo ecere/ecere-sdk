@@ -132,3 +132,7 @@ realclean: cleantarget
 
 distclean: cleantarget
 	$(call rmr,obj/)
+
+Makefile.bootstrap: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf: ;
