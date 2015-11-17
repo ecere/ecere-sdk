@@ -102,7 +102,7 @@ public class Container<class T, class I = int, class D = T>
 {
 public:
    class_fixed
-   public property Container<T> copySrc { set { Copy(value); } }
+   public property Container<T> copySrc { set { if(value) Copy(value); } }
    property Iterator<T> firstIterator { get { value = { (Container<T>)this, pointer = GetFirst() }; } }
    property Iterator<T> lastIterator  { get { value = { (Container<T>)this, pointer = GetLast() }; } }
 

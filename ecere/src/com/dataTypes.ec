@@ -222,11 +222,15 @@ public:
    }
    if(item)
    {
-      strcpy(tempString, item.name);
-      if(!needClass || !*needClass)
-         tempString[0] = (char)toupper(tempString[0]);
-      return tempString;
-      //return item.name;
+      if(tempString)
+      {
+         strcpy(tempString, item.name);
+         if(!needClass || !*needClass)
+            tempString[0] = (char)toupper(tempString[0]);
+         return tempString;
+      }
+      else
+         return item.name;
    }
    else
       return null;

@@ -237,7 +237,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       {
          IteratorPointer i;
          RemoveAll();
-         if(eClass_IsDerived(value._class, class(Map)))
+         if(value && eClass_IsDerived(value._class, class(Map)))
          {
             for(i = value.GetFirst(); i; i = value.GetNext(i))
             {
