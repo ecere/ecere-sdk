@@ -599,10 +599,10 @@ void OutputCleanActions(File f, const char * name, int parts)
    {
       int c;
       for(c=0; c<parts; c++)
-         f.Printf("\t$(call rmq,$(_%s%d))\n", name, c+1);
+         f.Printf("\t$(call rm,$(_%s%d))\n", name, c+1);
    }
    else
-      f.Printf("\t$(call rmq,$(_%s))\n", name);
+      f.Printf("\t$(call rm,$(_%s))\n", name);
 }
 
 enum LineOutputMethod { inPlace, newLine, lineEach };
@@ -3274,7 +3274,7 @@ private:
 
          f.Puts("objdir:\n");
          if(!relObjDir)
-            f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
+            f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))\n");
          if(numCObjects)
          {
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)\n");
@@ -3332,7 +3332,7 @@ private:
          if(!sameOrRelObjTargetDirs)
          {
             f.Puts("targetdir:\n");
-               f.Printf("\t$(if $(wildcard %s),,$(call mkdirq,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
+               f.Printf("\t$(if $(wildcard %s),,$(call mkdir,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
             f.Puts("\n");
          }
 
@@ -3340,7 +3340,7 @@ private:
          {
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
-            f.Printf("\t@$(call rmq,$(OBJ)symbols.lst)\n");
+            f.Printf("\t@$(call rm,$(OBJ)symbols.lst)\n");
             f.Printf("\t@$(call touch,$(OBJ)symbols.lst)\n");
             OutputFileListActions(f, "SYMBOLS", eCsourcesParts, "$(OBJ)symbols.lst");
             OutputFileListActions(f, "IMPORTS", eCsourcesParts, "$(OBJ)symbols.lst");
@@ -3370,7 +3370,7 @@ private:
          f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
                rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
 
-         f.Printf("\t@$(call rmq,$(OBJ)objects.lst)\n");
+         f.Printf("\t@$(call rm,$(OBJ)objects.lst)\n");
          f.Printf("\t@$(call touch,$(OBJ)objects.lst)\n");
          OutputFileListActions(f, "_OBJECTS", objectsParts, "$(OBJ)objects.lst");
          if(rcSourcesParts)
@@ -3565,17 +3565,17 @@ private:
          f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          if(numCObjects)
          {
-            f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
-            f.Printf("\t$(call rmq,$(OBJ)symbols.lst)\n");
+            f.Printf("\t$(call rm,%s)\n", "$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
+            f.Printf("\t$(call rm,$(OBJ)symbols.lst)\n");
          }
-         f.Printf("\t$(call rmq,$(OBJ)objects.lst)\n");
-         f.Puts("\t$(call rmq,$(TARGET))\n");
+         f.Printf("\t$(call rm,$(OBJ)objects.lst)\n");
+         f.Puts("\t$(call rm,$(TARGET))\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
          f.Puts("ifdef LINUX_HOST\n");
          // TODO?: support symlinks for longer version numbers
-         f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))\n");
-         f.Puts("\t$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))\n");
+         f.Puts("\t$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))\n");
+         f.Puts("\t$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))\n");
          f.Puts("endif\n");
          f.Puts("endif\n");
          f.Puts("endif\n");
@@ -3600,16 +3600,16 @@ private:
          f.Puts("\n");
 
          f.Puts("realclean: cleantarget\n");
-         f.Puts("\t$(call rmrq,$(OBJ))\n");
+         f.Puts("\t$(call rmr,$(OBJ))\n");
          if(!sameOrRelObjTargetDirs)
-            f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
+            f.Printf("\t$(call rmdir,%s)\n", targetDirExpNoSpaces);
          f.Puts("\n");
 
          f.Puts("distclean: cleantarget\n");
          if(!sameOrRelObjTargetDirs)
-            f.Printf("\t$(call rmdirq,%s)\n", targetDirExpNoSpaces);
+            f.Printf("\t$(call rmdir,%s)\n", targetDirExpNoSpaces);
          if(!relObjDir)
-            f.Puts("\t$(call rmrq,obj/)\n");
+            f.Puts("\t$(call rmr,obj/)\n");
 
          delete f;
 

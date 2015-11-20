@@ -50,10 +50,10 @@
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cpq,$(TARGET),../$(SODESTDIR))"
+               "$(call cp,$(TARGET),../$(SODESTDIR))"
             ],
             "InstallCommands" : [
-               "$(call cpq,$(TARGET),\"$(DESTLIBDIR)/\")",
+               "$(call cp,$(TARGET),\"$(DESTLIBDIR)/\")",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO).0)",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO))"
             ]

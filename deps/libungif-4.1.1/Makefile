@@ -73,7 +73,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
@@ -94,13 +94,13 @@ $(OBJ)gifalloc.o: lib/gifalloc.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c lib/gifalloc.c -o $(OBJ)gifalloc.o
 
 cleantarget: objdir
-	$(call rmq,$(TARGET))
+	$(call rm,$(TARGET))
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS))
+	$(call rm,$(_OBJECTS))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

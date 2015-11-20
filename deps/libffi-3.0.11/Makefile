@@ -88,7 +88,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -127,13 +127,13 @@ $(OBJ)closures.o: src/closures.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/closures.c -o $(OBJ)closures.o
 
 cleantarget: objdir
-	$(call rmq,$(TARGET))
+	$(call rm,$(TARGET))
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS))
+	$(call rm,$(_OBJECTS))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

@@ -257,7 +257,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -289,7 +289,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
+	$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
 # SYMBOL RULES
 
@@ -711,32 +711,32 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rmq,$(OBJ)symbols.lst)
-	$(call rmq,$(OBJ)objects.lst)
-	$(call rmq,$(TARGET))
+	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rm,$(OBJ)symbols.lst)
+	$(call rm,$(OBJ)objects.lst)
+	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
 endif
 endif
 endif
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS))
+	$(call rm,$(_OBJECTS))
 ifdef WINDOWS_TARGET
-	$(call rmq,$(RCOBJECTS))
+	$(call rm,$(RCOBJECTS))
 endif
-	$(call rmq,$(ECOBJECTS))
-	$(call rmq,$(COBJECTS))
-	$(call rmq,$(BOWLS))
-	$(call rmq,$(IMPORTS))
-	$(call rmq,$(SYMBOLS))
+	$(call rm,$(ECOBJECTS))
+	$(call rm,$(COBJECTS))
+	$(call rm,$(BOWLS))
+	$(call rm,$(IMPORTS))
+	$(call rm,$(SYMBOLS))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

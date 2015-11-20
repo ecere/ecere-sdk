@@ -161,12 +161,12 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
-	@$(call rmq,$(OBJ)objects.lst)
+	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 	@$(call echo,$(_OBJECTS1)) >> $(OBJ)objects.lst
 	@$(call echo,$(_OBJECTS2)) >> $(OBJ)objects.lst
@@ -339,23 +339,23 @@ $(OBJ)transupp.o: transupp.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,transupp.c) -o $(call quote_path,$@)
 
 cleantarget: objdir
-	$(call rmq,$(OBJ)objects.lst)
-	$(call rmq,$(TARGET))
+	$(call rm,$(OBJ)objects.lst)
+	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
 endif
 endif
 endif
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS1))
-	$(call rmq,$(_OBJECTS2))
+	$(call rm,$(_OBJECTS1))
+	$(call rm,$(_OBJECTS2))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)
