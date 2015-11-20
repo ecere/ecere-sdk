@@ -121,7 +121,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
@@ -207,11 +207,11 @@ $(OBJ)$(MODULE).main$(O): bootstrap/$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 clean: objdir
-	$(call rmq,$(TARGET))
-	$(call rmq,$(OBJECTS))
+	$(call rm,$(TARGET))
+	$(call rm,$(OBJECTS))
 
 realclean: objdir
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: objdir
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

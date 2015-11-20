@@ -11,16 +11,16 @@ include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
 all: bindir ecere libec ecp ecc ecs
-	$(call cpq,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJ))
+	$(call cp,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJ))
 	@$(call echo,All done!)
 
 bindir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 cleantarget: bindir
-	$(call rmq,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
+	$(call rm,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
 ifdef WINDOWS_TARGET
-	$(call rmq,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))
+	$(call rm,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))
 endif
 
 clean: cleantarget
@@ -31,7 +31,7 @@ clean: cleantarget
 	cd ecs && $(MAKE) clean
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 	cd ecere && $(MAKE) realclean
 	cd libec && $(MAKE) realclean
 	cd ecp && $(MAKE) realclean
@@ -39,7 +39,7 @@ realclean: cleantarget
 	cd ecs && $(MAKE) realclean
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)
 	cd ecere && $(MAKE) distclean
 	cd libec && $(MAKE) distclean
 	cd ecp && $(MAKE) distclean

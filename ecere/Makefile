@@ -532,10 +532,10 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	@$(call rmq,$(OBJ)symbols.lst)
+	@$(call rm,$(OBJ)symbols.lst)
 	@$(call touch,$(OBJ)symbols.lst)
 	@$(call echo,$(SYMBOLS1)) >> $(OBJ)symbols.lst
 	@$(call echo,$(SYMBOLS2)) >> $(OBJ)symbols.lst
@@ -559,12 +559,12 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 ifdef WINDOWS_TARGET
-	$(call cpq,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
+	$(call cp,$(TARGET),../compiler/bootstrap/obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
 endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../$(HOST_SODESTDIR))
+	$(call cp,$(TARGET),../$(HOST_SODESTDIR))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_HOST
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
@@ -573,7 +573,7 @@ endif
 endif
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
-	@$(call rmq,$(OBJ)objects.lst)
+	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 	@$(call echo,$(_OBJECTS)) >> $(OBJ)objects.lst
 	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
@@ -611,8 +611,8 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 endif
-	$(call mkdirq,../$(SODESTDIR))
-	$(call cpq,$(TARGET),../$(SODESTDIR))
+	$(call mkdir,../$(SODESTDIR))
+	$(call cp,$(TARGET),../$(SODESTDIR))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
@@ -2018,18 +2018,18 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleaneceretarget: objdir
-	$(call rmq,$(TARGET))
+	$(call rm,$(TARGET))
 
 cleantarget: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rmq,$(OBJ)symbols.lst)
-	$(call rmq,$(OBJ)objects.lst)
-	$(call rmq,$(TARGET))
+	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rm,$(OBJ)symbols.lst)
+	$(call rm,$(OBJ)objects.lst)
+	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
 endif
 endif
 endif
@@ -2037,32 +2037,32 @@ endif
 	$(MAKE) -f Makefile.vanilla cleantarget
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(ECOBJECTS1))
-	$(call rmq,$(ECOBJECTS2))
-	$(call rmq,$(ECOBJECTS3))
-	$(call rmq,$(COBJECTS1))
-	$(call rmq,$(COBJECTS2))
-	$(call rmq,$(COBJECTS3))
-	$(call rmq,$(BOWLS1))
-	$(call rmq,$(BOWLS2))
-	$(call rmq,$(BOWLS3))
-	$(call rmq,$(IMPORTS1))
-	$(call rmq,$(IMPORTS2))
-	$(call rmq,$(IMPORTS3))
-	$(call rmq,$(SYMBOLS1))
-	$(call rmq,$(SYMBOLS2))
-	$(call rmq,$(SYMBOLS3))
+	$(call rm,$(_OBJECTS))
+	$(call rm,$(ECOBJECTS1))
+	$(call rm,$(ECOBJECTS2))
+	$(call rm,$(ECOBJECTS3))
+	$(call rm,$(COBJECTS1))
+	$(call rm,$(COBJECTS2))
+	$(call rm,$(COBJECTS3))
+	$(call rm,$(BOWLS1))
+	$(call rm,$(BOWLS2))
+	$(call rm,$(BOWLS3))
+	$(call rm,$(IMPORTS1))
+	$(call rm,$(IMPORTS2))
+	$(call rm,$(IMPORTS3))
+	$(call rm,$(SYMBOLS1))
+	$(call rm,$(SYMBOLS2))
+	$(call rm,$(SYMBOLS3))
 	$(MAKE) -f Makefile.ecereCOM clean
 	$(MAKE) -f Makefile.vanilla clean
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 	$(MAKE) -f Makefile.ecereCOM realclean
 	$(MAKE) -f Makefile.vanilla realclean
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)
 
 #troubleshoot:
 #	@$(call echo,OBJECTS = $(OBJECTS))

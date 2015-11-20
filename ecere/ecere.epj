@@ -272,11 +272,11 @@ if distributed with the Ecere SDK Windows installer.
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call mkdirq,../$(SODESTDIR))",
-               "$(call cpq,$(TARGET),../$(SODESTDIR))"
+               "$(call mkdir,../$(SODESTDIR))",
+               "$(call cp,$(TARGET),../$(SODESTDIR))"
             ],
             "InstallCommands" : [
-               "$(call cpq,$(TARGET),\"$(DESTLIBDIR)/\")",
+               "$(call cp,$(TARGET),\"$(DESTLIBDIR)/\")",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO).0)",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO))"
             ]
@@ -361,10 +361,10 @@ if distributed with the Ecere SDK Windows installer.
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereVanilla",
             "PostbuildCommands" : [
-               "$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)"
+               "$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)"
             ],
             "InstallCommands" : [
-               "$(if $(WINDOWS_HOST),$(call cpq,$(TARGET),\"$(DESTSLIBDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(DESTSLIBDIR)/$(MODULE)$(A))"
+               "$(if $(WINDOWS_HOST),$(call cp,$(TARGET),\"$(DESTSLIBDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(DESTSLIBDIR)/$(MODULE)$(A))"
             ]
          }
       },
