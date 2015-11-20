@@ -456,7 +456,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -493,7 +493,7 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)
+	$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)
 
 # SYMBOL RULES
 
@@ -1440,35 +1440,35 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rmq,$(OBJ)symbols.lst)
-	$(call rmq,$(OBJ)objects.lst)
-	$(call rmq,$(TARGET))
+	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rm,$(OBJ)symbols.lst)
+	$(call rm,$(OBJ)objects.lst)
+	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
 endif
 endif
 endif
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS1))
-	$(call rmq,$(_OBJECTS2))
-	$(call rmq,$(ECOBJECTS1))
-	$(call rmq,$(ECOBJECTS2))
-	$(call rmq,$(COBJECTS1))
-	$(call rmq,$(COBJECTS2))
-	$(call rmq,$(BOWLS1))
-	$(call rmq,$(BOWLS2))
-	$(call rmq,$(IMPORTS1))
-	$(call rmq,$(IMPORTS2))
-	$(call rmq,$(SYMBOLS1))
-	$(call rmq,$(SYMBOLS2))
+	$(call rm,$(_OBJECTS1))
+	$(call rm,$(_OBJECTS2))
+	$(call rm,$(ECOBJECTS1))
+	$(call rm,$(ECOBJECTS2))
+	$(call rm,$(COBJECTS1))
+	$(call rm,$(COBJECTS2))
+	$(call rm,$(BOWLS1))
+	$(call rm,$(BOWLS2))
+	$(call rm,$(IMPORTS1))
+	$(call rm,$(IMPORTS2))
+	$(call rm,$(SYMBOLS1))
+	$(call rm,$(SYMBOLS2))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

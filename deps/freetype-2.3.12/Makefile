@@ -164,7 +164,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
@@ -308,14 +308,14 @@ $(OBJ)winfnt.o: src/winfonts/winfnt.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/winfonts/winfnt.c -o $(OBJ)winfnt.o
 
 cleantarget: objdir
-	$(call rmq,$(TARGET))
+	$(call rm,$(TARGET))
 
 clean: cleantarget
-	$(call rmq,$(_OBJECTS1))
-	$(call rmq,$(_OBJECTS2))
+	$(call rm,$(_OBJECTS1))
+	$(call rm,$(_OBJECTS2))
 
 realclean: cleantarget
-	$(call rmrq,$(OBJ))
+	$(call rmr,$(OBJ))
 
 distclean: cleantarget
-	$(call rmrq,obj/)
+	$(call rmr,obj/)

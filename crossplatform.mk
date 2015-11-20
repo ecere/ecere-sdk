@@ -237,26 +237,32 @@ ifndef MSYSCON
    WIN_SHELL_COMMANDS := defined
 endif
 endif
+ifneq ($(V),1)
+   SILENT_IS_ON := defined
+endif
+ifeq ($(D),1)
+   DEBUG_IS_ON := defined
+endif
 ifdef WIN_SHELL_COMMANDS
    nullerror = 2>NUL
    echo = $(if $(1),echo $(1))
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
-   cpq = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))" > nul 2>&1)
-   cpv = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))")
-   rmq = $(if $(1),-del /f /q $(call sys_path,$(call sys_path_list,$(1))) > nul 2>&1)
-   rmrq = $(if $(1),-rmdir /q /s $(call sys_path,$(1)) > nul 2>&1)
-   mkdirq = $(if $(1),-mkdir $(call sys_path,$(1)) > nul 2>&1)
-   rmdirq = $(if $(1),-rmdir /q $(call sys_path,$(1)) > nul 2>&1)
+   cp = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))"$(if $(SILENT_IS_ON), > nul,))
+   cpr = $(if $(1),xcopy /y /s$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1))) $(call sys_path,$(2))$(if $(SILENT_IS_ON), > nul,))
+   rm = $(if $(1),-del /f$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1)))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
+   rmr = $(if $(1),-rmdir /s$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
+   mkdir = $(if $(1),-mkdir $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
+   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
 else
    nullerror = 2>/dev/null
    echo = $(if $(1),echo "$(1)")
    touch = $(if $(1),touch $(1))
-   cpq = $(if $(1),cp $(1) $(2))
-   cpv = cp $(1) $(2)
-   rmq = $(if $(1),-rm -f $(1))
-   rmrq = $(if $(1),-rm -f -r $(1))
-   mkdirq = $(if $(1),-mkdir -p $(1))
-   rmdirq = $(if $(1),-rmdir $(1))
+   cp = $(if $(1),cp$(if $(SILENT_IS_ON),, -v) $(1) $(2))
+   cpr = $(if $(1),cp -r$(if $(SILENT_IS_ON),,v) $(1) $(2))
+   rm = $(if $(1),-rm -f$(if $(SILENT_IS_ON),,v) $(1))
+   rmr = $(if $(1),-rm -fr$(if $(SILENT_IS_ON),,v) $(1))
+   mkdir = $(if $(1),-mkdir -p$(if $(SILENT_IS_ON),,v) $(1))
+   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON),, -v) $(1))
 endif
 
 # potential common use variables
