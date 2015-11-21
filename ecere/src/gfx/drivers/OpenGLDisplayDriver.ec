@@ -8,8 +8,6 @@ namespace gfx::drivers;
  #define SHADERS
 #endif
 
-#define GL_BGRA_EXT  0x80E1
-
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
@@ -26,6 +24,8 @@ import "glab"
 import "immediate"
 import "matrixStack"
 import "shading"
+
+#define GL_BGRA_EXT  0x80E1
 
 #ifdef SHADERS
 
@@ -647,6 +647,7 @@ static void setupDebugging()
 #if defined(__WIN32__)
 static HGLRC winCreateContext(HDC hdc)
 {
+   HGLRC result = 0;
 #ifdef SHADERS
    if(wglCreateContextAttribsARB)
    {
@@ -658,11 +659,19 @@ static HGLRC winCreateContext(HDC hdc)
          WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB /*WGL_CONTEXT_CORE_PROFILE_BIT_ARB*/,
          0,0
       };
-      return wglCreateContextAttribsARB(hdc, null, attribs);
+      result = wglCreateContextAttribsARB(hdc, null, attribs);
+      if(!result)
+      {
+         attribs[1] = 2;
+         attribs[3] = 0;
+         attribs[7] = 0;
+         result = wglCreateContextAttribsARB(hdc, null, attribs);
+      }
    }
-   else
 #endif
-      return wglCreateContext(hdc);
+   if(!result)
+      result = wglCreateContext(hdc);
+   return result;
 }
 #endif
 
