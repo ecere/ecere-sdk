@@ -2081,7 +2081,7 @@ class ProjectView : Window
          fileDialog.master = parent;
          while(node)
          {
-            node.GetFullFilePath(path, false);
+            node.GetFullFilePath(path, true);
             while(path[0])
             {
                StripLastDirectory(path, path);

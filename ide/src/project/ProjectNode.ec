@@ -2453,7 +2453,7 @@ private:
             if(!strcmpi(extension, &h2s))
             {
                char filePath[MAX_LOCATION];
-               GetFullFilePath(filePath, false);
+               GetFullFilePath(filePath, true);
                OutputLog($"No compilation required for header file "); OutputLog(filePath); OutputLog("\n");
                ChangeExtension(moduleName, h2s, moduleName);
                if(prj.topNode.Find(moduleName, false))
