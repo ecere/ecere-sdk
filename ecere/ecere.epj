@@ -2150,6 +2150,35 @@ if distributed with the Ecere SDK Windows installer.
                         }
                      ]
                   },
+                  {
+                     "Folder" : "newFonts",
+                     "Files" : [
+                        {
+                           "Folder" : "cc",
+                           "Files" : [
+                              "cc.c",
+                              "cc.h",
+                              "cchybridsort.h",
+                              "ccmergesort.h",
+                              "cpuconfig.h",
+                              "mm.c",
+                              "mm.h",
+                              "mmatomic.h",
+                              "mmthread.h"
+                           ]
+                        },
+                        "atlasBuilder.ec",
+                        "drawManager.ec",
+                        "fontManager.ec",
+                        "fontRenderer.ec",
+                        "textureManager.ec"
+                     ],
+                     "Options" : {
+                        "IncludeDirs" : [
+                           "src/gfx/newFonts/cc"
+                        ]
+                     }
+                  },
                   "Bitmap.ec",
                   "BitmapResource.ec",
                   "Color.ec",
