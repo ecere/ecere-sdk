@@ -6,15 +6,118 @@ import "instance"
 #if defined(_GLES)
    #define ES1_1
 #else
-   //#define SHADERS
+   #define SHADERS
 #endif
 
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
-#     include "gl_core_3_3.h"
+//#     include "gl_core_3_3.h"
+#     include "gl_compat_4_4.h"     // FIXME: no glPushAttrib() in core profile
 #  else
 #     include "gl_compat_4_4.h"
 #  endif
+#endif
+
+#ifdef SHADERS
+
+#undef glEnableClientState
+#undef glDisableClientState
+#undef GL_VERTEX_ARRAY
+#undef GL_NORMAL_ARRAY
+#undef GL_TEXTURE_COORD_ARRAY
+#undef GL_COLOR_ARRAY
+#undef glVertexPointer
+#undef glTexCoordPointer
+#undef glColorPointer
+
+#define glEnableClientState      glEnableVertexAttribArray
+#define glDisableClientState     glDisableVertexAttribArray
+#define GL_VERTEX_ARRAY          GLBufferContents::vertex
+#define GL_NORMAL_ARRAY          GLBufferContents::normal
+#define GL_TEXTURE_COORD_ARRAY   GLBufferContents::texCoord
+#define GL_COLOR_ARRAY           GLBufferContents::color
+#define glVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
+#define glTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
+#define glColorPointer(n, t, s, p)     glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p)
+
+#endif
+
+#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+
+   #undef glRecti
+   #undef glBegin
+   #undef glTexCoord2i
+   #undef glVertex2i
+   #undef glTexCoord2d
+   #undef glVertex2d
+   #undef glTexCoord2f
+   #undef glVertex2f
+   #undef glEnd
+   #undef glColor3f
+   #undef glColor4ub
+   #undef glColor4fv
+   #undef glNormal3fv
+   #undef glNormal3f
+   #undef glTexCoord2fv
+   #undef glVertex3d
+   #undef glVertex3dv
+   #undef glVertex3f
+   #undef glVertex3fv
+
+   #undef glLoadMatrixd
+   #undef glMultMatrixd
+   #undef glFrustum
+   #undef glOrtho
+   #undef glScaled
+   #undef glScalef
+   #undef glTranslated
+   #undef glRotated
+   #undef glMatrixMode
+   #undef glLoadIdentity
+   #undef glPushMatrix
+   #undef glPopMatrix
+
+   #undef glLineStipple
+   #undef glColorMaterial
+   #undef glLightModeli
+
+   #define glRecti               glimtkRecti
+   #define glBegin               glimtkBegin
+   #define glTexCoord2i          glimtkTexCoord2i
+   #define glVertex2i            glimtkVertex2i
+   #define glTexCoord2d          glimtkTexCoord2d
+   #define glVertex2d            glimtkVertex2d
+   #define glTexCoord2f          glimtkTexCoord2f
+   #define glVertex2f            glimtkVertex2f
+   #define glEnd                 glimtkEnd
+   #define glColor3f             glimtkColor3f
+   #define glColor4ub            glimtkColor4ub
+   #define glColor4fv            glimtkColor4fv
+   #define glNormal3fv           glimtkNormal3fv
+   #define glNormal3f            glimtkNormal3f
+   #define glTexCoord2fv         glimtkTexCoord2fv
+   #define glVertex3d            glimtkVertex3d
+   #define glVertex3dv           glimtkVertex3dv
+   #define glVertex3f            glimtkVertex3f
+   #define glVertex3fv           glimtkVertex3fv
+
+   #define glLoadMatrixd         glmsLoadMatrixd
+   #define glMultMatrixd         glmsMultMatrixd
+   #define glFrustum             glmsFrustum
+   #define glOrtho               glmsOrtho
+   #define glScaled              glmsScaled
+   #define glScalef              glmsScaled
+   #define glTranslated          glmsTranslated
+   #define glRotated             glmsRotated
+   #define glMatrixMode          glmsMatrixMode
+   #define glLoadIdentity        glmsLoadIdentity
+   #define glPushMatrix          glmsPushMatrix
+   #define glPopMatrix           glmsPopMatrix
+
+   #define glLineStipple         glesLineStipple
+   #define glColorMaterial       glesColorMaterial
+   #define glLightModeli         glesLightModeli
+
 #endif
 
 #include "cc.h"
@@ -258,6 +361,12 @@ static bool dmCreateProgram( DMProgram *program, const char *vertexsource, const
 
   glAttachShader( program->glProgram, program->vertexShader );
   glAttachShader( program->glProgram, program->fragmentShader );
+
+   glBindAttribLocation(program->glProgram, GLBufferContents::vertex, "vertex");
+   glBindAttribLocation(program->glProgram, GLBufferContents::texCoord, "texCoord");
+   glBindAttribLocation(program->glProgram, GLBufferContents::color, "color");
+   glBindAttribLocation(program->glProgram, GLBufferContents::normal, "normal");
+
   glLinkProgram( program->glProgram );
   glGetProgramiv( program->glProgram, GL_LINK_STATUS, &status );
   if( status != GL_TRUE )
@@ -268,7 +377,7 @@ static bool dmCreateProgram( DMProgram *program, const char *vertexsource, const
     goto error;
   }
 
-  glUseProgram( program->glProgram );
+  // glUseProgram( program->glProgram );
 
   program->matrixloc = glGetUniformLocation( program->glProgram, "uniMatrix" );
   program->vertexloc = glGetAttribLocation( program->glProgram, "inVertex" );
@@ -547,7 +656,7 @@ public:
          program = &shaderprograms[ DM_PROGRAM_ALPHABLEND ];
          if( !( dmCreateProgram( program, dmVertexShaderAlpha, dmFragmentShaderAlpha, 0 ) ) )
             return false;
-         glUseProgram( 0 );
+         // glUseProgram( 0 );
       }
 
       updateCount = 0;
@@ -575,11 +684,16 @@ public:
    void ready( int viewportwidth, int viewportheight )
    {
       glGetIntegerv(GL_CURRENT_PROGRAM, (GLint *)&prevProgram);
-      while(glGetError());
+      // while(glGetError());
+
+      // ERRORCHECK();
 
       // Save OpenGL state
+      // FIXME: no glPushAttrib() in core profile
+//#ifndef SHADERS
       glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
       glPushAttrib( GL_ALL_ATTRIB_BITS );
+//#endif
 
       // Prepare rendering pass
       matrixOrtho( matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0f, 1.0 );
@@ -661,7 +775,7 @@ public:
 
    void flushImages( )
    {
-      bool flushflag, stateBlend;
+     bool flushflag, stateBlend;
      int index, vertexCount, programIndex;
      float vx0, vx1, vx2, vx3, vy0, vy1, vy2, vy3;
    #if DM_ENABLE_IMAGE_ROTATION
@@ -679,177 +793,180 @@ public:
 
      drawBarrierIndex = 0;
      this.orderBarrierMask = drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
-     if( !( imageBufferCount ) )
-       return;
-
-     /* Sort by image type and texture, minimize state changes */
-     dmSortImages( this.imageBuffer, imageBufferTmp, imageBufferCount, (uint32)( (intptr_t)this.imageBuffer >> 4 ) );
-
-     /* Fill a drawBuffer, write vertex and texcoords */
-     drawBuffer = &this.drawBuffer[drawBufferIndex];
-     drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
-     glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-     vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
-     vertexCount = 0;
-
-     glActiveTexture( GL_TEXTURE0 );
-     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-     glDisable( GL_BLEND );
-
-   #if DM_RENDER_IMAGE_DEBUG
-   printf( " Flush %d images\n", (int)imageBufferCount );
-   #endif
-
-     bindimage = 0;
-     bindTexture = 0;
-     stateBlend = 0;
-     programIndex = -1;
-     program = 0;
-     imageBuffer = this.imageBuffer;
-     for( index = 0 ; index < imageBufferCount ; index++, imageBuffer++ )
+     if(imageBufferCount)
      {
-       image = imageBuffer->image;
-       texture = image->texture;
+        /* Sort by image type and texture, minimize state changes */
+        dmSortImages( this.imageBuffer, imageBufferTmp, imageBufferCount, (uint32)( (intptr_t)this.imageBuffer >> 4 ) );
 
-       flushflag = 0;
-       if( image != bindimage )
-       {
-         if( stateBlend != image->flags.blending )
-           flushflag = 1;
-         if( texture != bindTexture )
-           flushflag = 1;
-       }
-       if( vertexCount >= ( drawBuffer->vertexAlloc - 6 ) )
-         flushflag = 1;
+        /* Fill a drawBuffer, write vertex and texcoords */
+        drawBuffer = &this.drawBuffer[drawBufferIndex];
+        drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
+        glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+        vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+        vertexCount = 0;
 
-       if( flushflag )
-       {
-         if( vertexCount )
-         {
-           glUnmapBuffer( GL_ARRAY_BUFFER );
-           // Flush font manager texture updates
-           fm.flushUpdate( );
-           // Render buffered images
-           flushRenderDrawBuffer( drawBuffer, program, vertexCount );
-           drawBuffer = &this.drawBuffer[drawBufferIndex];
-           drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
-           glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-           vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
-           vertexCount = 0;
-         }
+        glActiveTexture( GL_TEXTURE0 );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glDisable( GL_BLEND );
 
-         if( stateBlend != ( image->flags.blending ) )
-         {
-           stateBlend = image->flags.blending;
-           ( stateBlend ? glEnable : glDisable )( GL_BLEND );
-   #if DM_RENDER_IMAGE_DEBUG
-   printf( "  Switch blending %d\n", stateBlend != false );
-   #endif
-         }
-         if( programIndex != image->programIndex )
-         {
-           programIndex = image->programIndex;
-           program = dmFlushUseProgram( programIndex );
-         }
-         if( texture != bindTexture )
-         {
-           bindTexture = texture;
-           glBindTexture( GL_TEXTURE_2D, bindTexture.glTex );
-   #if DM_RENDER_IMAGE_DEBUG
-   printf( "  Switch to texture 0x%x\n", (int)texture.orderMask );
-   #endif
-         }
-         bindimage = image;
-       }
+      #if DM_RENDER_IMAGE_DEBUG
+      printf( " Flush %d images\n", (int)imageBufferCount );
+      #endif
 
-   #if DM_RENDER_IMAGE_DEBUG
-   printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex, texture );
-   #endif
+        bindimage = 0;
+        bindTexture = 0;
+        stateBlend = 0;
+        programIndex = -1;
+        program = 0;
+        imageBuffer = this.imageBuffer;
+        for( index = 0 ; index < imageBufferCount ; index++, imageBuffer++ )
+        {
+          image = imageBuffer->image;
+          texture = image->texture;
 
-   #if DM_ENABLE_IMAGE_ROTATION
-       angsin = (float)imageBuffer->angsin * (1.0f/rotationNormFactor);
-       angcos = (float)imageBuffer->angcos * (1.0f/rotationNormFactor);
-       sizex = (float)imageBuffer->sizex;
-       sizey = (float)imageBuffer->sizey;
-       vx0 = (float)( imageBuffer->offsetx );
-       vy0 = (float)( imageBuffer->offsety );
-       vx1 = vx0 + ( angcos * sizex );
-       vy1 = vy0 + ( angsin * sizex );
-       vx2 = vx0 - ( angsin * sizey );
-       vy2 = vy0 + ( angcos * sizey );
-       vx3 = vx0 + ( angcos * sizex ) - ( angsin * sizey );
-       vy3 = vy0 + ( angsin * sizex ) + ( angcos * sizey );
-   #else
-       vx0 = (float)( imageBuffer->offsetx );
-       vy0 = (float)( imageBuffer->offsety );
-       vx3 = vx0 + (float)( imageBuffer->sizex );
-       vy3 = vy0 + (float)( imageBuffer->sizey );
-       vx1 = vx3;
-       vy1 = vy0;
-       vx2 = vx0;
-       vy2 = vy3;
-   #endif
+          flushflag = 0;
+          if( image != bindimage )
+          {
+            if( stateBlend != image->flags.blending )
+              flushflag = 1;
+            if( texture != bindTexture )
+              flushflag = 1;
+          }
+          if( vertexCount >= ( drawBuffer->vertexAlloc - 6 ) )
+            flushflag = 1;
 
-       tx0 = (float)( image->srcx ) * texture.widthinv;
-       ty0 = (float)( image->srcy ) * texture.heightinv;
-       tx1 = (float)( image->srcx + image->sizex ) * texture.widthinv;
-       ty1 = (float)( image->srcy + image->sizey ) * texture.heightinv;
+          if( flushflag )
+          {
+            if( vertexCount )
+            {
+              glUnmapBuffer( GL_ARRAY_BUFFER );
+              // Flush font manager texture updates
+              fm.flushUpdate( );
+              // Render buffered images
+              flushRenderDrawBuffer( drawBuffer, program, vertexCount );
+              drawBuffer = &this.drawBuffer[drawBufferIndex];
+              drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
+              glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+              vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+              vertexCount = 0;
+            }
 
-       // Write data to VBO
-       vboVertex[0].vertex[0] = vx3;
-       vboVertex[0].vertex[1] = vy3;
-       vboVertex[0].texcoord0[0] = tx1;
-       vboVertex[0].texcoord0[1] = ty1;
-       vboVertex[0].color = imageBuffer->color;
-       vboVertex[1].vertex[0] = vx1;
-       vboVertex[1].vertex[1] = vy1;
-       vboVertex[1].texcoord0[0] = tx1;
-       vboVertex[1].texcoord0[1] = ty0;
-       vboVertex[1].color = imageBuffer->color;
-       vboVertex[2].vertex[0] = vx2;
-       vboVertex[2].vertex[1] = vy2;
-       vboVertex[2].texcoord0[0] = tx0;
-       vboVertex[2].texcoord0[1] = ty1;
-       vboVertex[2].color = imageBuffer->color;
-       vboVertex[3].vertex[0] = vx0;
-       vboVertex[3].vertex[1] = vy0;
-       vboVertex[3].texcoord0[0] = tx0;
-       vboVertex[3].texcoord0[1] = ty0;
-       vboVertex[3].color = imageBuffer->color;
-       vboVertex[4].vertex[0] = vx2;
-       vboVertex[4].vertex[1] = vy2;
-       vboVertex[4].texcoord0[0] = tx0;
-       vboVertex[4].texcoord0[1] = ty1;
-       vboVertex[4].color = imageBuffer->color;
-       vboVertex[5].vertex[0] = vx1;
-       vboVertex[5].vertex[1] = vy1;
-       vboVertex[5].texcoord0[0] = tx1;
-       vboVertex[5].texcoord0[1] = ty0;
-       vboVertex[5].color = imageBuffer->color;
+            if( stateBlend != ( image->flags.blending ) )
+            {
+              stateBlend = image->flags.blending;
+              ( stateBlend ? glEnable : glDisable )( GL_BLEND );
+      #if DM_RENDER_IMAGE_DEBUG
+      printf( "  Switch blending %d\n", stateBlend != false );
+      #endif
+            }
+            if( programIndex != image->programIndex )
+            {
+              programIndex = image->programIndex;
+              program = dmFlushUseProgram( programIndex );
+            }
+            if( texture != bindTexture )
+            {
+              bindTexture = texture;
+              glBindTexture( GL_TEXTURE_2D, bindTexture.glTex );
+      #if DM_RENDER_IMAGE_DEBUG
+      printf( "  Switch to texture 0x%x\n", (int)texture.orderMask );
+      #endif
+            }
+            bindimage = image;
+          }
 
-       vboVertex += 6;
-       vertexCount += 6;
+      #if DM_RENDER_IMAGE_DEBUG
+      printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex, texture );
+      #endif
+
+      #if DM_ENABLE_IMAGE_ROTATION
+          angsin = (float)imageBuffer->angsin * (1.0f/rotationNormFactor);
+          angcos = (float)imageBuffer->angcos * (1.0f/rotationNormFactor);
+          sizex = (float)imageBuffer->sizex;
+          sizey = (float)imageBuffer->sizey;
+          vx0 = (float)( imageBuffer->offsetx );
+          vy0 = (float)( imageBuffer->offsety );
+          vx1 = vx0 + ( angcos * sizex );
+          vy1 = vy0 + ( angsin * sizex );
+          vx2 = vx0 - ( angsin * sizey );
+          vy2 = vy0 + ( angcos * sizey );
+          vx3 = vx0 + ( angcos * sizex ) - ( angsin * sizey );
+          vy3 = vy0 + ( angsin * sizex ) + ( angcos * sizey );
+      #else
+          vx0 = (float)( imageBuffer->offsetx );
+          vy0 = (float)( imageBuffer->offsety );
+          vx3 = vx0 + (float)( imageBuffer->sizex );
+          vy3 = vy0 + (float)( imageBuffer->sizey );
+          vx1 = vx3;
+          vy1 = vy0;
+          vx2 = vx0;
+          vy2 = vy3;
+      #endif
+
+          tx0 = (float)( image->srcx ) * texture.widthinv;
+          ty0 = (float)( image->srcy ) * texture.heightinv;
+          tx1 = (float)( image->srcx + image->sizex ) * texture.widthinv;
+          ty1 = (float)( image->srcy + image->sizey ) * texture.heightinv;
+
+          // Write data to VBO
+          vboVertex[0].vertex[0] = vx3;
+          vboVertex[0].vertex[1] = vy3;
+          vboVertex[0].texcoord0[0] = tx1;
+          vboVertex[0].texcoord0[1] = ty1;
+          vboVertex[0].color = imageBuffer->color;
+          vboVertex[1].vertex[0] = vx1;
+          vboVertex[1].vertex[1] = vy1;
+          vboVertex[1].texcoord0[0] = tx1;
+          vboVertex[1].texcoord0[1] = ty0;
+          vboVertex[1].color = imageBuffer->color;
+          vboVertex[2].vertex[0] = vx2;
+          vboVertex[2].vertex[1] = vy2;
+          vboVertex[2].texcoord0[0] = tx0;
+          vboVertex[2].texcoord0[1] = ty1;
+          vboVertex[2].color = imageBuffer->color;
+          vboVertex[3].vertex[0] = vx0;
+          vboVertex[3].vertex[1] = vy0;
+          vboVertex[3].texcoord0[0] = tx0;
+          vboVertex[3].texcoord0[1] = ty0;
+          vboVertex[3].color = imageBuffer->color;
+          vboVertex[4].vertex[0] = vx2;
+          vboVertex[4].vertex[1] = vy2;
+          vboVertex[4].texcoord0[0] = tx0;
+          vboVertex[4].texcoord0[1] = ty1;
+          vboVertex[4].color = imageBuffer->color;
+          vboVertex[5].vertex[0] = vx1;
+          vboVertex[5].vertex[1] = vy1;
+          vboVertex[5].texcoord0[0] = tx1;
+          vboVertex[5].texcoord0[1] = ty0;
+          vboVertex[5].color = imageBuffer->color;
+
+          vboVertex += 6;
+          vertexCount += 6;
+        }
+
+        glUnmapBuffer( GL_ARRAY_BUFFER );
+        // Flush font manager texture updates
+        fm.flushUpdate( );
+        // Render buffered images
+        flushRenderDrawBuffer( drawBuffer, program, vertexCount );
+        imageBufferCount = 0;
+
+        ERRORCHECK();
+
+      #if 1
+        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glabCurArrayBuffer = 0;
+
+        glUseProgram( prevProgram );
+
+      #endif
      }
-
-     glUnmapBuffer( GL_ARRAY_BUFFER );
-     // Flush font manager texture updates
-     fm.flushUpdate( );
-     // Render buffered images
-     flushRenderDrawBuffer( drawBuffer, program, vertexCount );
-     imageBufferCount = 0;
-
-     ERRORCHECK();
-
-   #if 1
-     glBindBuffer( GL_ARRAY_BUFFER, 0 );
-     glabCurArrayBuffer = 0;
-
-     glUseProgram( prevProgram );
-
-   #endif
       // Restore OpenGL state
+      // FIXME: no glPushAttrib() in core profile
+//#ifndef SHADERS
       glPopAttrib();
       glPopClientAttrib();
+//#endif
    }
 
    void drawBarrier( )
