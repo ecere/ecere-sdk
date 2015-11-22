@@ -10,12 +10,13 @@ import "Color"
 #if defined(_GLES)
    #define ES1_1
 #else
-   //#define SHADERS
+   #define SHADERS
 #endif
 
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
-#     include "gl_core_3_3.h"
+//#     include "gl_core_3_3.h"
+#     include "gl_compat_4_4.h"     // FIXME: no glPushAttrib() in core profile
 #  else
 #     include "gl_compat_4_4.h"
 #  endif
@@ -97,16 +98,21 @@ public:
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
 
+        // FIXME: no glPushAttrib() in core profile
+//#ifndef SHADERS
         glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
         glPushAttrib( GL_TEXTURE_BIT );
+//#endif
         glBindTexture( GL_TEXTURE_2D, texture.glTex );
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
         glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
         glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
         glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
         glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data );
+//#ifndef SHADERS
         glPopAttrib();
         glPopClientAttrib();
+//#endif
 
       #if 0
         IMGImage image;
