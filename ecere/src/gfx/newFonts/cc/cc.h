@@ -820,7 +820,7 @@ static inline uint32_t ccAbs32( int32_t v )
 
 static inline uint64_t ccAbs64( int64_t v )
 {
-  int32_t mask;
+  int64_t mask;
   mask = (int32_t)(v >> 63);
   return ( v ^ mask ) - mask;
 }

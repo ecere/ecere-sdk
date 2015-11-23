@@ -421,15 +421,14 @@ struct FMFreeTypeFont
 #define FM_GLYPH_CODEPOINT_CURSOR (0x1)
 #define FM_GLYPH_CODEPOINT_REPLACEMENT (0xfffd)
 
-#define FM_ALIGN_LEFT (0x0)
-#define FM_ALIGN_CENTER (0x1)
-#define FM_ALIGN_RIGHT (0x2)
+public enum VerticalAlignment { baseline, top, middle, bottom };
 
-#define FM_ALIGN_BASELINE (0x0)
-#define FM_ALIGN_TOP (0x4)
-#define FM_ALIGN_MIDDLE (0x8)
-#define FM_ALIGN_BOTTOM (0x10)
-
+public class FMTextAlignment : uint16
+{
+public:
+   Alignment horzAlignment:2;
+   VerticalAlignment vertAlignment:2;
+};
 
 public struct FMPathDraw
 {
@@ -491,13 +490,13 @@ public class FMFont : struct
 
    ////
 
-   static float getVertAlign( int align, int size )
+   static float getVertAlign( FMTextAlignment align, int size )
    {
-     if( align & FM_ALIGN_TOP )
+     if( align.vertAlignment == top )
        return ascender * size;
-     else if( align & FM_ALIGN_MIDDLE )
+     else if( align.vertAlignment == middle )
        return middleAlign * size;
-     else if( align & FM_ALIGN_BOTTOM )
+     else if( align.vertAlignment == bottom )
        return descender * (float)size;
      return 0.0f;
    }
@@ -521,7 +520,7 @@ struct FMState
 {
    FMFont font;
    uint16 size;
-   uint16 align;
+   FMTextAlignment align;
    uint16 blurradius;
    uint16 blurscale;
 };
@@ -878,7 +877,7 @@ public:
      state->font = 0;
      state->blurradius = 0;
      state->blurscale = 1;
-     state->align = FM_ALIGN_LEFT | FM_ALIGN_BASELINE;
+     state->align = { left, baseline };
    }
 
 
@@ -983,9 +982,9 @@ public:
        stringlength = strlen( string );
 
      // Align horizontally
-     if( state->align & FM_ALIGN_RIGHT )
+     if( state->align.horzAlignment == right )
        x -= getTextWidth(string, stringlength );
-     else if( state->align & FM_ALIGN_CENTER )
+     else if( state->align.horzAlignment == center )
        x -= getTextWidth(string, stringlength ) >> 1;
 
      // Align vertically
@@ -1033,9 +1032,9 @@ public:
        stringlength = strlen( string );
 
      // Align horizontally
-     if( state->align & FM_ALIGN_RIGHT )
+     if( state->align.horzAlignment == right )
        x -= getTextWidth(string, stringlength );
-     else if( state->align & FM_ALIGN_CENTER )
+     else if( state->align.horzAlignment == center )
        x -= getTextWidth(string, stringlength ) >> 1;
 
      // Align vertically
@@ -1102,9 +1101,9 @@ public:
      }
 
      // Align horizontally
-     if( state->align & FM_ALIGN_RIGHT )
+     if( state->align.horzAlignment == right )
        x -= textwidth;
-     else if( state->align & FM_ALIGN_CENTER )
+     else if( state->align.horzAlignment == center )
        x -= textwidth >> 1;
 
      // Align vertically
@@ -1246,12 +1245,12 @@ public:
      advance = x - startx;
 
      /* Align horizontally */
-     if( state->align & FM_ALIGN_RIGHT )
+     if( state->align.horzAlignment == right )
      {
        minx -= advance;
        maxx -= advance;
      }
-     else if( state->align & FM_ALIGN_CENTER )
+     else if( state->align.horzAlignment == center )
      {
        minx -= advance * 0.5f;
        maxx -= advance * 0.5f;
