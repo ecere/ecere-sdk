@@ -714,8 +714,8 @@ public:
      if( imageBufferCount >= imageBufferSize )
      {
        imageBufferSize <<= 1;
-       this.imageBuffer = realloc( this.imageBuffer, imageBufferSize * sizeof(DMImageBuffer) );
-       imageBufferTmp = realloc( imageBufferTmp, imageBufferSize * sizeof(DMImageBuffer) );
+       this.imageBuffer = renew this.imageBuffer DMImageBuffer[imageBufferSize];
+       imageBufferTmp = renew imageBufferTmp DMImageBuffer[imageBufferSize];
      }
 
      imageBuffer = &this.imageBuffer[ imageBufferCount ];
