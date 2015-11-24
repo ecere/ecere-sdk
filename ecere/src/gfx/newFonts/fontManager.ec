@@ -7,6 +7,7 @@ import "LinkList"
 import "File"
 
 import "atlasBuilder"
+import "imgDistMap"
 
 #include <math.h>
 
@@ -242,7 +243,7 @@ public class FontManagerRenderer
 public:
    FontManager fm;
 
-   virtual bool init();
+   virtual bool init(int channelCount);
 
    // Create, resize or update texture data ; rect is [minx,maxx,miny,maxy]
    virtual int createTexture( int width, int height );
@@ -288,12 +289,6 @@ public:
 
 #define FM_ENABLE_HINTING (1)
 #define FM_SUBPIXEL_ROUNDING_RANGE (16)
-#if FM_SUPPORT_GLYPH_ROTATION
- #define FM_TEXTURE_PADDING (1)
-#else
- #define FM_TEXTURE_PADDING (0)
-#endif
-#define FM_DEBUG_WHITERECT (0)
 
 
 #define FM_HASH_TABLE_SIZE (4096)
@@ -373,29 +368,18 @@ struct FMFreeTypeFont
      return 1;
    }
 
-   static void copyGlyphBitmap( byte *dst, int glyphwidth, int glyphheight, int dststride, int glyphindex )
-   {
-     int x, y;
-     byte *dstrow, *src;
-     FT_GlyphSlot glyphslot;
-
-     glyphslot = face->glyph;
-     src = glyphslot->bitmap.buffer;
-     for( y = 0 ; y < glyphslot->bitmap.rows ; y++ )
-     {
-       dstrow = &dst[ y * dststride ];
-       for( x = 0 ; x < glyphslot->bitmap.width ; x++ )
-         dstrow[ x ] = src[ x ];
-       src += glyphslot->bitmap.width;
-     }
-     return;
-   }
-
    static inline int getGlyphKernAdvance( int glyph1, int glyph2 )
    {
      FT_Vector ftKerning;
      FT_Get_Kerning( face, glyph1, glyph2, FT_KERNING_DEFAULT, &ftKerning );
      return ftKerning.x;
+   }
+
+   static inline byte *getGlyphBitmap( int glyphindex )
+   {
+     FT_GlyphSlot glyphslot;
+     glyphslot = face->glyph;
+     return glyphslot->bitmap.buffer;
    }
 };
 
@@ -468,6 +452,72 @@ public class FMFont : struct
    int glyphalloc;
    int glyphcount;
    int hashtable[FM_HASH_TABLE_SIZE];
+   int glyphPaddingWidth;
+
+   void (*processImage)( void *opaquecontext, byte *image, int width, int height, int bytesperpixel, int bytesperline, int paddingwidth );
+   void *processImageContext;
+
+   /*
+   public void setFontImageProcessing(
+      void (*processImage)( byte *image, int width, int height, int bytesperpixel, int bytesperline, int paddingsize, void *opaquecontext ),
+      void *opaquecontext )
+   {
+     this.processImage = processImage;
+     this.processImageContext = opaquecontext;
+   }
+   */
+
+   float outlineRadius;
+   float outlineAlphaFactor;
+   float outlineIntensityFactor;
+
+   static void ::outlineProcessGlyphImage( FMFont font, byte *image, int width, int height, int bytesperpixel, int bytesperline, int paddingwidth )
+   {
+     int x, y;
+     byte *src, *dst, *dstrow;
+     float intensityfactor, alphafactor, range, alpha, intensity, rangeinv, rangebase;
+     float *distancemap, *dmap;
+
+     distancemap = new float[width * height];
+
+     src = &image[0];
+     imgDistMapBuild( distancemap, src, width, height, bytesperpixel, bytesperline );
+
+     alphafactor = font.outlineAlphaFactor; //2.0f;
+     intensityfactor = font.outlineIntensityFactor; // 0.2f;
+     range = (float)font.outlineRadius;
+     rangeinv = 1.0f / range;
+
+     dmap = distancemap;
+     dst = &image[0];
+     for( y = 0 ; y < height ; y++ )
+     {
+       dstrow = dst;
+       for( x = 0 ; x < width ; x++ )
+       {
+         rangebase = ( range - dmap[ x ] ) * rangeinv;
+         alpha = alphafactor * rangebase;
+         intensity = fmaxf( (float)dstrow[0] * (1.0f/255.0f), intensityfactor * rangebase );
+         /* Alpha channel */
+         dstrow[0] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
+         /* Intensity channel */
+         dstrow[1] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
+         dstrow += bytesperpixel;
+       }
+       dst += bytesperline;
+       dmap += width;
+     }
+     delete distancemap;
+   }
+
+   public void setOutline(float intensityFactor, float alphaFactor, float radius)      // TODO: Figure out radius?
+   {
+      outlineIntensityFactor = intensityFactor;
+      outlineAlphaFactor = alphaFactor;
+      outlineRadius = radius;
+      processImage = outlineProcessGlyphImage;
+      processImageContext = this;
+   }
 
    ~FMFont()
    {
@@ -491,12 +541,13 @@ public class FMFont : struct
 
    static float getVertAlign( FMTextAlignment align, int size )
    {
+      float sizef = size;
      if( align.vertAlignment == top )
-       return ascender * size;
+       return ascender * sizef;
      else if( align.vertAlignment == middle )
-       return middleAlign * size;
+       return middleAlign * sizef;
      else if( align.vertAlignment == bottom )
-       return descender * (float)size;
+       return descender * sizef;
      return 0.0f;
    }
 
@@ -529,11 +580,50 @@ struct FMState
 
 static FT_Library ftLibrary2;
 
+static void copyGlyphBitmap1( byte *dst, byte *src, int glyphwidth, int glyphheight, int dststride )
+{
+  int x, y;
+  for( y = 0 ; y < glyphheight ; y++ )
+  {
+    byte *dstrow = &dst[ y * dststride ];
+    for( x = 0 ; x < glyphwidth ; x++ )
+      dstrow[ x ] = src[ x ];
+    src += glyphwidth;
+  }
+}
+
+static void copyGlyphBitmap2( byte *dst, byte *src, int glyphwidth, int glyphheight, int dststride )
+{
+  int x, y;
+  for( y = 0 ; y < glyphheight ; y++ )
+  {
+    byte *dstrow = &dst[ y * dststride ];
+    for( x = 0 ; x < glyphwidth ; x++ )
+      dstrow[ x << 1 ] = src[ x ];
+    src += glyphwidth;
+  }
+}
+
+static void copyGlyphBitmap4( byte *dst, byte *src, int glyphwidth, int glyphheight, int dststride )
+{
+  int x, y;
+  for( y = 0 ; y < glyphheight ; y++ )
+  {
+    byte *dstrow = &dst[ y * dststride ];
+    for( x = 0 ; x < glyphwidth ; x++ )
+      dstrow[ x << 2 ] = src[ x ];
+    src += glyphwidth;
+  }
+}
+
 public class FontManager
 {
   FontManagerRenderer renderer;
   int width, height;
   float widthinv, heightinv;
+  int bytesperpixel;
+  int bytesperline;
+  int channelindex;
 
   AtlasBuilder atlas { };
   byte *texdata;
@@ -544,47 +634,24 @@ public class FontManager
   FMState states[FM_MAX_STATES];
   int nstates;
 
-   #if FM_DEBUG_WHITERECT
-   static void addWhiteRect( int w, int h )
-   {
-     int gx, gy;
-     if( atlas.addRect( w, h, &gx, &gy ) )
-     {
-        // Rasterize
-        byte * dst = &texdata[ gx + ( gy * width ) ];
-        int x, y;
-        for( y = 0 ; y < h ; y++)
-        {
-          for( x = 0 ; x < w ; x++ )
-            dst[x] = 0xff;
-          dst += width;
-        }
+   void (*copyGlyphBitmap)( byte *dst, byte *src, int glyphwidth, int glyphheight, int dststride );
 
-        dirtyrect[0] = Min( dirtyrect[0], gx );
-        dirtyrect[1] = Min( dirtyrect[1], gy );
-        dirtyrect[2] = Max( dirtyrect[2], gx + w );
-        dirtyrect[3] = Max( dirtyrect[3], gy + h );
-     }
-   }
-   #endif
 
    static FMGlyph *getGlyph( FMFont font, unichar codepoint, int size, int subpixel, int blurradius, int blurscale )
    {
-     int i, glyphindex, advance, x0, y0, x1, y1, glyphwidth, glyphheight, gx, gy;
-   #if FM_TEXTURE_PADDING >= 1
-     int x, y;
-   #endif
+     int i, glyphindex, advance, x0, y0, x1, y1, gx, gy;
+     int glyphwidth, glyphheight, glyphareawidth, glyphareaheight;
      uint64 glyphdef;
      FMGlyph *glyph;
      uint32 hashindex;
      int padding, added;
      byte *bdst;
-     byte *dst;
+     byte *dst, *src;
 
      glyph = 0;
      if( size < 0.2 )
        return 0;
-     padding = blurradius + FM_TEXTURE_PADDING;
+     padding = blurradius + font.glyphPaddingWidth;
 
      /* Find code point and size. */
      glyphdef = FM_GLYPH_COMPUTE_DEF( codepoint, size, subpixel, blurradius, blurscale );
@@ -597,7 +664,7 @@ public class FontManager
        i = font.glyphs[i].listnext;
      }
 
-     /* Could not find glyph, create it. */
+     /* Could not find glyph, create it */
      if( codepoint == FM_GLYPH_CODEPOINT_CURSOR )
      {
        glyphindex = -1;
@@ -611,8 +678,7 @@ public class FontManager
    #endif
        y0 = -(int)ceilf( font.limitmaxy * (float)size );
        y1 = -(int)floorf( font.limitminy * (float)size );
-       glyphheight = y1 - y0;
-       i = ( glyphheight - size ) / 3;
+       i = ( (y1 - y0) - size ) / 3;
        y0 += i;
        y1 -= i;
      }
@@ -626,16 +692,18 @@ public class FontManager
          return 0;
        }
      }
-     glyphwidth = ( x1 - x0 ) + ( padding << 1 );
-     glyphheight = ( y1 - y0 ) + ( padding << 1 );
+     glyphwidth = ( x1 - x0 );
+     glyphheight = ( y1 - y0 );
+     glyphareawidth = glyphwidth + (padding << 1);
+     glyphareaheight = glyphheight + (padding << 1);
 
      // Find free spot for the rect in the atlas
-     added = atlas.addRect( glyphwidth, glyphheight, &gx, &gy );
+     added = atlas.addRect( glyphareawidth, glyphareaheight, &gx, &gy );
      if( !( added ) && ( onAtlasFull ) )
      {
        /* Atlas is full, let the user to resize the atlas (or not), and try again. */
        onAtlasFull();
-       added = atlas.addRect( glyphwidth, glyphheight, &gx, &gy );
+       added = atlas.addRect( glyphareawidth, glyphareaheight, &gx, &gy );
      }
      if( !( added ) )
        return 0;
@@ -646,50 +714,59 @@ public class FontManager
      glyph->glyphindex = glyphindex;
      glyph->x0 = (short)gx;
      glyph->y0 = (short)gy;
-     glyph->x1 = (short)( glyph->x0 + glyphwidth );
-     glyph->y1 = (short)( glyph->y0 + glyphheight );
+     glyph->x1 = (short)( glyph->x0 + glyphareawidth );
+     glyph->y1 = (short)( glyph->y0 + glyphareaheight );
      glyph->advance = (short)advance;
      glyph->offsetx = (short)( x0 - padding );
      glyph->offsety = (short)( y0 - padding );
      glyph->listnext = 0;
      glyph->imageIndex = -1;
      if( renderer.registerImage )
-       glyph->imageIndex = renderer.registerImage( gx, gy, glyphwidth, glyphheight );
+       glyph->imageIndex = renderer.registerImage( gx, gy, glyphareawidth, glyphareaheight );
 
-     /* Add char to hash table */
+     // Add char to hash table
      glyph->listnext = font.hashtable[hashindex];
      font.hashtable[hashindex] = font.glyphcount - 1;
 
+     // Clear glyph image area (TODO: wasteful when single channel without prepare callback?)
+     dst = &texdata[ ( glyph->x0 * bytesperpixel ) + ( glyph->y0 * bytesperline ) ];
+     for( i = 0 ; i < glyphareaheight ; i++, dst += bytesperline )
+       memset( dst, 0, glyphareawidth * bytesperpixel );
+
      /* Rasterize */
-     dst = &texdata[ ( glyph->x0 + padding ) + ( ( glyph->y0 + padding ) * this.width ) ];
+     dst = &texdata[ ( glyph->x0 + padding ) * bytesperpixel + ( ( glyph->y0 + padding ) * bytesperline ) + channelindex];
      if( codepoint == FM_GLYPH_CODEPOINT_CURSOR )
-       buildCursorGlyph( dst, glyphwidth - ( padding << 1 ), glyphheight - ( padding << 1 ), this.width );
+     {
+         src = new byte[ glyphwidth * glyphheight ];
+         buildCursorGlyph( src, glyphwidth, glyphheight, glyphwidth );
+         copyGlyphBitmap( dst, src, glyphwidth, glyphheight, bytesperline );
+         delete src;
+     }
      else
-       font.ftFont.copyGlyphBitmap( dst, glyphwidth - ( padding << 1 ), glyphheight - ( padding << 1 ), this.width, glyphindex );
+     {
+        src = font.ftFont.getGlyphBitmap(glyphindex);
+        copyGlyphBitmap( dst, src, glyphwidth, glyphheight, bytesperline );
+     }
 
      /* Blur */
      if( blurradius > 0 )
      {
-       bdst = &texdata[ glyph->x0 + ( glyph->y0 * this.width ) ];
+#if 1
+    printf( "Do NOT use the blur! This will be removed in favor of external image processing\n" );
+#endif
+       bdst = &texdata[ glyph->x0 * bytesperpixel + ( glyph->y0 * bytesperline ) ];
        if( blurscale == 1 )
-         blur(bdst, glyphwidth, glyphheight, this.width, blurradius );
+         blur(bdst, glyphareawidth, glyphareaheight, this.width, blurradius );
        else
-         blurScale(bdst, glyphwidth, glyphheight, this.width, blurradius, blurscale );
+         blurScale(bdst, glyphareawidth, glyphareaheight, this.width, blurradius, blurscale );
      }
 
-   #if FM_TEXTURE_PADDING >= 1
-     dst = &texdata[ glyph->x0 + ( glyph->y0 * this.width ) ];
-     for( y = 0 ; y < glyphheight ; y++ )
+     // User custom font image processing
+     if(font.processImage)
      {
-       dst[ y * this.width] = 0;
-       dst[ ( glyphwidth - 1 ) + ( y * this.width ) ] = 0;
+        dst = &texdata[ ( glyph->x0 * bytesperpixel ) + ( glyph->y0 * bytesperline ) ];
+        font.processImage( font.processImageContext, dst, glyphareawidth, glyphareaheight, bytesperpixel, bytesperline, font.glyphPaddingWidth );
      }
-     for( x = 0 ; x < glyphwidth ; x++ )
-     {
-       dst[ x ] = 0;
-       dst[ x + ( ( glyphheight - 1 ) * this.width ) ] = 0;
-     }
-   #endif
 
      dirtyrect[0] = Min( dirtyrect[0], glyph->x0 );
      dirtyrect[1] = Min( dirtyrect[1], glyph->y0 );
@@ -737,19 +814,27 @@ public:
    virtual void (*onAtlasFull)();
 
    // Create and destroy font manager
-   bool create( int width, int height, FontManagerRenderer renderer)
+   bool create( int width, int height, int channelCount, int channelIndex, FontManagerRenderer renderer)
    {
       bool result = false;
 
+     if( ( channelCount != 1 ) && ( channelCount != 2 ) && ( channelCount != 4 ) )
+       return 0;
+     if( ( width <= 0 ) || ( height <= 0 ) )
+       return 0;
+
       this.renderer = renderer;
       incref renderer;
-      renderer.init();
+      renderer.init(channelCount);
 
       // Initialize implementation library
       if(FMFreeTypeFont::init() )
       {
          this.width = width;
          this.height = height;
+         bytesperpixel = channelCount;
+         bytesperline = width * bytesperpixel;
+         this.channelindex = channelIndex;
          if(renderer.createTexture( width, height ))
          {
             if((atlas.create( this.width, this.height, FM_INIT_ATLAS_NODES )))
@@ -757,20 +842,22 @@ public:
                // Create texture for the cache.
                widthinv = 1.0f / width;
                heightinv = 1.0f / height;
-               texdata = new byte[width * height];
+               texdata = new byte[width * height * bytesperpixel];
                if(texdata)
                {
-                  memset( texdata, 0, width * height );
+                  memset( texdata, 0, height * bytesperline );
 
                   dirtyrect[0] = this.width;
                   dirtyrect[1] = this.height;
                   dirtyrect[2] = 0;
                   dirtyrect[3] = 0;
 
-               // Add white rect at 0,0 for debug drawing.
-               #if FM_DEBUG_WHITERECT
-                 fmAddWhiteRect(2, 2 );
-               #endif
+                  if( bytesperpixel == 1 )
+                    copyGlyphBitmap = copyGlyphBitmap1;
+                  else if( bytesperpixel == 2 )
+                    copyGlyphBitmap = copyGlyphBitmap2;
+                  else
+                    copyGlyphBitmap = copyGlyphBitmap4;
 
                  pushState();
                  clearState();
@@ -851,6 +938,11 @@ public:
      states[ nstates - 1 ].blurscale = (uint16)scale;
    }
 
+   // Set image manipuation callback
+   void setFontImageProcessing( FMFont font, void (*processImage)( byte *image, int width, int height, int bytesperpixel, int bytesperline, int paddingwidth, void *opaquecontext ), void *opaquecontext )
+   {
+
+   }
 
    // State handling
    void pushState( )
@@ -892,7 +984,7 @@ public:
    }
 
    // Add font from file
-   FMFont addFont(const String path )
+   FMFont addFont(const String path, int glyphPaddingWidth )
    {
       FMFont font = null;
       File f = FileOpen(path, read);
@@ -904,7 +996,7 @@ public:
          if(data)
          {
             f.Read(data, 1, dataSize);
-            font = addFontData(data, dataSize );
+            font = addFontData(data, dataSize, glyphPaddingWidth);
             if(!font)
                delete data;
          }
@@ -914,12 +1006,13 @@ public:
    }
 
    // Add font from data ; do not free( data ), the font manager will do that when removing the font
-   FMFont addFontData( byte *data, int dataSize )
+   FMFont addFontData( byte *data, int dataSize, int glyphPaddingWidth )
    {
      FMFont font
      {
         glyphs = new FMGlyph[FM_INIT_GLYPHS];
         glyphalloc = FM_INIT_GLYPHS;
+        glyphPaddingWidth = glyphPaddingWidth;
      };
      if(font)
      {
@@ -1436,7 +1529,7 @@ public:
       }
    }
 
-   void fmGetFontLimits( int *retlimitminy, int *retlimitmaxy )
+   void getFontLimits( int *retlimitminy, int *retlimitmaxy )
    {
      FMFont font;
      FMState *state;
@@ -1525,18 +1618,18 @@ public:
          int i;
 
          // Copy old texture data over.
-         if( !( data = new byte[width * height] ) )
+         if( !( data = new byte[width * bytesperline] ) )
             return false;
          for( i = 0 ; i < this.height ; i++ )
          {
-            byte * dst = &data[ i * width ];
-            byte * src = &this.texdata[ i * this.width ];
-            memcpy( dst, src, this.width );
+            byte * dst = &data[ (i * width) * bytesperpixel ];
+            byte * src = &this.texdata[ i * this.bytesperline ];
+            memcpy( dst, src, bytesperline);
             if( width > this.width )
-               memset( dst+this.width, 0, width - this.width );
+               memset( dst+bytesperline, 0, (width - this.width) * bytesperpixel );
          }
          if( height > this.height )
-            memset( &data[ this.height * width ], 0, ( height - this.height ) * width );
+            memset( &data[ width * this.height * bytesperpixel], 0, ( height - this.height ) *bytesperline );
 
          delete this.texdata;
          texdata = data;
@@ -1552,6 +1645,7 @@ public:
 
          this.width = width;
          this.height = height;
+         this.bytesperline = this.width * bytesperpixel;
          widthinv = 1.0f / this.width;
          heightinv = 1.0f / this.height;
 
@@ -1573,7 +1667,7 @@ public:
          atlas.reset( width, height );
 
          // Clear texture data.
-         texdata = renew texdata byte[width * height];
+         texdata = renew texdata byte[width * height * bytesperpixel];
          if(!texdata) return 0;
          memset( this.texdata, 0, width * height );
 
@@ -1595,13 +1689,9 @@ public:
 
          this.width = width;
          this.height = height;
+         this.bytesperline = width * bytesperpixel;
          this.widthinv = 1.0f / this.width;
          this.heightinv = 1.0f / this.height;
-
-         // Add white rect at 0,0 for debug drawing.
-      #if FM_DEBUG_WHITERECT
-         fmAddWhiteRect(2, 2 );
-      #endif
 
          return true;
       }
