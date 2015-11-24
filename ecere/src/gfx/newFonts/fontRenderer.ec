@@ -34,6 +34,7 @@ public class FontRenderer : FontManagerRenderer
    DrawManager dm;
    Texture texture;
    int textureWidth, textureHeight;
+   int channelcount;
 
    int imagecount;
    int imageAlloc;
@@ -54,6 +55,12 @@ public:
 
    property DrawManager drawManager { set { dm = value; } }
 
+   bool init(int channelCount)
+   {
+      this.channelcount = channelCount;
+      return true;
+   }
+
    ~FontRenderer()
    {
       delete texture;
@@ -64,7 +71,7 @@ public:
    {
       IMGImage image
       {
-         format = { width = width, height = height, type = grayScale, bytesPerPixel = 1, bytesPerLine = width };
+         format = { width = width, height = height, type = grayScale, bytesPerPixel = channelcount, bytesPerLine = width };
       };
 
       delete texture;
@@ -95,8 +102,18 @@ public:
    {
      if(texture)
      {
+        int glformat;
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
+
+        if( channelcount == 1 )
+          glformat = GL_RED;
+        else if( channelcount == 2 )
+          glformat = GL_RG;
+        else if( channelcount == 3 )
+          glformat = GL_RGB;
+        else if( channelcount == 4 )
+          glformat = GL_RGBA;
 
         // FIXME: no glPushAttrib() in core profile
 //#ifndef SHADERS
@@ -108,7 +125,7 @@ public:
         glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
         glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
         glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
-        glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, GL_RED, GL_UNSIGNED_BYTE, data );
+        glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data );
 //#ifndef SHADERS
         glPopAttrib();
         glPopClientAttrib();
@@ -118,8 +135,8 @@ public:
         IMGImage image;
         image.format.width = textureWidth;
         image.format.height = textureHeight;
-        image.format.type = IMG_FORMAT_TYPE_GRAYSCALE;
-        image.format.bytesPerPixel = 1;
+        image.format.type = channelcount == 4 ? IMG_FORMAT_TYPE_RGBA32 : IMG_FORMAT_TYPE_GRAYSCALE;
+        image.format.bytesPerPixel = channelcount;
         image.format.bytesPerLine = image.format.width * image.format.bytesPerPixel;
         image.data = data;
         imgWritePngFile( "zzz2.png", &image, 1.0 );
@@ -146,6 +163,8 @@ public:
 
       image = &imageList[ imageindex ];
    #if 1
+      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY, stateLayer );
+   #elif 1
       image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND, stateLayer );
    #else
       image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_NORMAL, stateLayer );
