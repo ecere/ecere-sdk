@@ -8,7 +8,6 @@ import "File"
 
 import "atlasBuilder"
 
-#include <stdlib.h>
 #include <math.h>
 
 #include "cc.h"
@@ -139,7 +138,7 @@ static void blurScale( byte *dst, int width, int height, int stride, int radius,
       if( scale > ( 1 << SPREC ) )
          scale = 1 << SPREC;
 
-      buffer = malloc( width * height * sizeof(int) );
+      buffer = new int[ width * height ];
       for( y = 0 ; y < height ; y++ )
       {
          dstrow = &dst[y*stride];
@@ -166,7 +165,7 @@ static void blurScale( byte *dst, int width, int height, int stride, int radius,
          for( x = 0 ; x < width ; x++ )
             dstrow[x] = (byte)Min(255, bufferrow[x] >> ZPREC);
       }
-      free( buffer );
+      delete buffer;
    }
 }
 
@@ -1526,7 +1525,7 @@ public:
          int i;
 
          // Copy old texture data over.
-         if( !( data = (byte *)malloc( width * height ) ) )
+         if( !( data = new byte[width * height] ) )
             return false;
          for( i = 0 ; i < this.height ; i++ )
          {
