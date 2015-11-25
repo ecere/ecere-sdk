@@ -29,6 +29,8 @@ import "fontManager"
 import "textureManager"
 import "drawManager"
 
+#define DM_ENABLE_EXT_COLOR (1)
+
 public class FontRenderer : FontManagerRenderer
 {
    DrawManager dm;
@@ -41,6 +43,7 @@ public class FontRenderer : FontManagerRenderer
    DMImage *imageList;
 
    ColorAlpha stateColor;
+   ColorAlpha stateExtColor;
    ColorAlpha stateCursorColor;
    uint32 stateLayer;
 
@@ -163,6 +166,8 @@ public:
 
       image = &imageList[ imageindex ];
    #if 1
+      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR, stateLayer );
+   #elif 1
       image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY, stateLayer );
    #elif 1
       image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND, stateLayer );
@@ -176,13 +181,21 @@ public:
    void drawImage( int targetx, int targety, int imageindex )
    {
       DMImage *image = &imageList[ imageindex ];
+   #if DM_ENABLE_EXT_COLOR
+      dm.drawImageExtColor( image, targetx, targety, image->sizex, image->sizey, stateColor, stateExtColor );
+   #else
       dm.drawImage( image, targetx, targety, image->sizex, image->sizey, stateColor );
+   #endif
    }
 
    void drawImageCursor( int targetx, int targety, int imageindex )
    {
       DMImage *image = &imageList[ imageindex ];
+   #if DM_ENABLE_EXT_COLOR
+      dm.drawImageExtColor( image, targetx, targety, image->sizex, image->sizey, stateCursorColor, stateExtColor );
+   #else
       dm.drawImage( image, targetx, targety, image->sizex, image->sizey, stateCursorColor );
+   #endif
    }
 
    void drawImageAlt( byte *texdata, int targetx, int targety, int offsetx, int offsety, int width, int height )
@@ -196,7 +209,11 @@ public:
 
       /* 0.2588190451, 0.965925826289 */
 
+   #if DM_ENABLE_EXT_COLOR
+      dm.drawImageFloatExtColor( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, stateColor, stateExtColor );
+   #else
       dm.drawImageFloat( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, stateColor );
+   #endif
    }
 
    void resetImages( )
@@ -207,6 +224,11 @@ public:
    void setColor( ColorAlpha color )
    {
       stateColor = { color.a, { color.color.b, color.color.g, color.color.r } };
+   }
+
+   void setExtColor( ColorAlpha color )
+   {
+      stateExtColor = { color.a, { color.color.b, color.color.g, color.color.r } };
    }
 
    void setCursorColor( ColorAlpha color )
