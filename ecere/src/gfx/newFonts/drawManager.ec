@@ -128,6 +128,7 @@ import "textureManager"
 
 
 #define DM_ENABLE_IMAGE_ROTATION (1)
+#define DM_ENABLE_EXT_COLOR (1)
 
 ////
 
@@ -136,6 +137,9 @@ static struct DMDrawVertexFlat
   float vertex[2];
   float texcoord0[2];
   uint32 color;
+#if DM_ENABLE_EXT_COLOR
+  uint32 extcolor;
+#endif
 } __attribute__((aligned(16)));
 
 static struct DMDrawVertex
@@ -143,6 +147,9 @@ static struct DMDrawVertex
   short vertex[2];
   short texcoord0[2];
   uint32 color;
+#if DM_ENABLE_EXT_COLOR
+  uint32 extcolor;
+#endif
 } __attribute__((aligned(16)));
 
 struct DMDrawBuffer
@@ -166,6 +173,9 @@ struct DMProgram
   GLint texcoord0loc;
   GLint texcoord1loc;
   GLint colorloc;
+#if DM_ENABLE_EXT_COLOR
+  GLint extcolorloc;
+#endif
   GLint texbaseloc;
   DMProgramFlags flags;
   int64 lastUpdateCount;
@@ -229,6 +239,9 @@ struct DMImageBuffer
   short angcos;
   short angsin;
 #endif
+#if DM_ENABLE_EXT_COLOR
+  uint32 extcolor;
+#endif
   uint32 color;
   uint32 orderindex;
 };
@@ -288,6 +301,7 @@ define DM_LAYER_TOP = DMLayer::DM_LAYER_15_TOP;
 define DM_PROGRAM_NORMAL = 0;
 define DM_PROGRAM_ALPHABLEND = 1;
 define DM_PROGRAM_ALPHABLEND_INTENSITY = 2;
+define DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR = 3;
 
 #ifdef _DEBUG
 static inline void OpenGLErrorCheck( const char *file, int line )
@@ -304,8 +318,11 @@ static inline void OpenGLErrorCheck( const char *file, int line )
 
 #define DM_IMAGE_ROTATION_NORMFACTOR (32767.0f)
 
-#define DM_VERTEX_VERTEX_NORMFACTOR (4.0f)
-#define DM_VERTEX_TEXCOORD_NORMFACTOR (32767.0)
+#define DM_VERTEX_NORMSHIFT (2)
+#define DM_VERTEX_NORMFACTOR (4.0f)
+
+#define DM_TEXCOORD_NORMSHIFT (13)
+#define DM_TEXCOORD_NORMFACTOR (8192.0f)
 
 static GLuint dmCreateShader( GLenum type, const char *shadersource, const char *optionstring )
 {
@@ -338,72 +355,75 @@ static GLuint dmCreateShader( GLenum type, const char *shadersource, const char 
 }
 
 
-static bool dmCreateProgram( DMProgram *program, const char *vertexsource, const char *fragmentsource, char *optionstring )
+static bool dmCreateProgram( DMProgram program, const char *vertexsource, const char *fragmentsource, char *optionstring )
 {
   GLint status;
   GLsizei loglength;
   char infolog[8192];
 
-  program->glProgram = 0;
-  program->vertexShader = 0;
-  program->fragmentShader = 0;
+  program.glProgram = 0;
+  program.vertexShader = 0;
+  program.fragmentShader = 0;
 
-  program->vertexShader = dmCreateShader( GL_VERTEX_SHADER, vertexsource, optionstring );
-  if( !( program->vertexShader ) )
+  program.vertexShader = dmCreateShader( GL_VERTEX_SHADER, vertexsource, optionstring );
+  if( !( program.vertexShader ) )
   {
     fprintf(stderr, "ERROR: Unable to load vertex shader\n");
     goto error;
   }
-  program->fragmentShader = dmCreateShader( GL_FRAGMENT_SHADER, fragmentsource, optionstring );
-  if( !( program->fragmentShader ) )
+  program.fragmentShader = dmCreateShader( GL_FRAGMENT_SHADER, fragmentsource, optionstring );
+  if( !( program.fragmentShader ) )
   {
     fprintf(stderr, "ERROR: Unable to load fragment shader\n");
     goto error;
   }
-  program->glProgram = glCreateProgram();
-  if( !( program->glProgram ) )
+  program.glProgram = glCreateProgram();
+  if( !( program.glProgram ) )
   {
     fprintf(stderr, "ERROR: Unable to create program\n");
     goto error;
   }
 
-  glAttachShader( program->glProgram, program->vertexShader );
-  glAttachShader( program->glProgram, program->fragmentShader );
+  glAttachShader( program.glProgram, program.vertexShader );
+  glAttachShader( program.glProgram, program.fragmentShader );
 
-   glBindAttribLocation(program->glProgram, GLBufferContents::vertex, "vertex");
-   glBindAttribLocation(program->glProgram, GLBufferContents::texCoord, "texCoord");
-   glBindAttribLocation(program->glProgram, GLBufferContents::color, "color");
-   glBindAttribLocation(program->glProgram, GLBufferContents::normal, "normal");
+   glBindAttribLocation(program.glProgram, GLBufferContents::vertex, "vertex");
+   glBindAttribLocation(program.glProgram, GLBufferContents::texCoord, "texCoord");
+   glBindAttribLocation(program.glProgram, GLBufferContents::color, "color");
+   glBindAttribLocation(program.glProgram, GLBufferContents::normal, "normal");
 
-  glLinkProgram( program->glProgram );
-  glGetProgramiv( program->glProgram, GL_LINK_STATUS, &status );
+  glLinkProgram( program.glProgram );
+  glGetProgramiv( program.glProgram, GL_LINK_STATUS, &status );
   if( status != GL_TRUE )
   {
     fprintf( stderr, "ERROR, failed to link shader program\n" );
-    glGetProgramInfoLog( program->glProgram, 8192, &loglength, infolog );
+    glGetProgramInfoLog( program.glProgram, 8192, &loglength, infolog );
     fprintf( stderr, "ERROR: \n%s\n\n", infolog );
     goto error;
   }
 
-  // glUseProgram( program->glProgram );
+  // glUseProgram( program.glProgram );
 
-  program->matrixloc = glGetUniformLocation( program->glProgram, "uniMatrix" );
-  program->vertexloc = glGetAttribLocation( program->glProgram, "inVertex" );
-  program->texcoord0loc = glGetAttribLocation( program->glProgram, "inTexcoord0" );
-  program->texcoord1loc = glGetAttribLocation( program->glProgram, "inTexcoord1" );
-  program->colorloc = glGetAttribLocation( program->glProgram, "inColor" );
-  program->texbaseloc = glGetUniformLocation( program->glProgram, "texBase" );
-  program->flags.valid = true;
+  program.matrixloc = glGetUniformLocation( program.glProgram, "uniMatrix" );
+  program.vertexloc = glGetAttribLocation( program.glProgram, "inVertex" );
+  program.texcoord0loc = glGetAttribLocation( program.glProgram, "inTexcoord0" );
+  program.texcoord1loc = glGetAttribLocation( program.glProgram, "inTexcoord1" );
+  program.colorloc = glGetAttribLocation( program.glProgram, "inColor" );
+#if DM_ENABLE_EXT_COLOR
+  program.extcolorloc = glGetAttribLocation( program.glProgram, "inExtColor" );
+#endif
+  program.texbaseloc = glGetUniformLocation( program.glProgram, "texBase" );
+  program.flags.valid = true;
 
   return true;
 
   error:
-  if( program->fragmentShader )
-    glDeleteShader( program->fragmentShader );
-  if( program->vertexShader )
-    glDeleteShader( program->vertexShader );
-  if( program->glProgram )
-    glDeleteProgram( program->glProgram );
+  if( program.fragmentShader )
+    glDeleteShader( program.fragmentShader );
+  if( program.vertexShader )
+    glDeleteShader( program.vertexShader );
+  if( program.glProgram )
+    glDeleteProgram( program.glProgram );
   return false;
 }
 
@@ -422,7 +442,7 @@ const char *dmVertexShaderNormal =
 "void main()\n"
 "{\n"
 " \n"
-"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_VERTEX_TEXCOORD_NORMFACTOR) ");\n"
+"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
 "  return;\n"
@@ -435,7 +455,6 @@ const char *dmFragmentShaderNormal =
 "uniform sampler2D texBase;\n"
 "in vec2 varTexcoord0;\n"
 "in vec4 varColor;\n"
-"out vec4 gl_FragColor;\n"
 "void main()\n"
 "{\n"
 "  gl_FragColor = varColor * texture2D( texBase, varTexcoord0 );\n"
@@ -455,7 +474,7 @@ const char *dmVertexShaderAlpha =
 "void main()\n"
 "{\n"
 " \n"
-"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_VERTEX_TEXCOORD_NORMFACTOR) ");\n"
+"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
 "  return;\n"
@@ -468,7 +487,6 @@ const char *dmFragmentShaderAlpha =
 "uniform sampler2D texBase;\n"
 "in vec2 varTexcoord0;\n"
 "in vec4 varColor;\n"
-"out vec4 gl_FragColor;\n"
 "void main()\n"
 "{\n"
 "  gl_FragColor = vec4( varColor.rgb, varColor.a * texture2D( texBase, varTexcoord0 ).r );\n"
@@ -487,7 +505,7 @@ const char *dmVertexShaderAlphaIntensity =
 "void main()\n"
 "{\n"
 " \n"
-"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_VERTEX_TEXCOORD_NORMFACTOR) ");\n"
+"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
 "  return;\n"
@@ -500,7 +518,6 @@ const char *dmFragmentShaderAlphaIntensity =
 "uniform sampler2D texBase;\n"
 "in vec2 varTexcoord0;\n"
 "in vec4 varColor;\n"
-"out vec4 gl_FragColor;\n"
 "void main()\n"
 "{\n"
 "  vec2 tex;\n"
@@ -509,6 +526,46 @@ const char *dmFragmentShaderAlphaIntensity =
 "  return;\n"
 "}\n"
 ;
+
+const char *dmVertexShaderAlphaIntensityExtColor =
+"#version 130\n"
+"uniform mat4 uniMatrix;\n"
+"in vec2 inVertex;\n"
+"in vec2 inTexcoord0;\n"
+"in vec4 inColor;\n"
+"in vec4 inExtColor;\n"
+"out vec2 varTexcoord0;\n"
+"out vec4 varColor;\n"
+"out vec4 varExtColor;\n"
+"void main()\n"
+"{\n"
+" \n"
+"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
+"  varColor = inColor;\n"
+"  varExtColor = inExtColor;\n"
+"  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
+"  return;\n"
+"}\n"
+;
+
+
+const char *dmFragmentShaderAlphaIntensityExtColor =
+"#version 130\n"
+"uniform sampler2D texBase;\n"
+"in vec2 varTexcoord0;\n"
+"in vec4 varColor;\n"
+"in vec4 varExtColor;\n"
+"void main()\n"
+"{\n"
+"  vec2 tex;\n"
+"  tex = texture2D( texBase, varTexcoord0 ).rg;\n"
+"  gl_FragColor = vec4( mix( varExtColor.rgb, varColor.rgb, tex.g ), mix( varExtColor.a, varColor.a, tex.g ) * tex.r );\n"
+"  return;\n"
+"}\n"
+;
+
+////
+
 
 static void matrixOrtho( float *m, float left, float right, float bottom, float top, float nearval, float farval )
 {
@@ -554,7 +611,7 @@ public class DrawManagerFlags : uint32 { bool prehistoricOpenGL:1; }
 public class DrawManager
 {
    DrawManagerFlags flags;
-   DMProgram shaderprograms[DM_PROGRAM_COUNT];
+   DMProgram shaderPrograms[DM_PROGRAM_COUNT];
 
    // Matrix
    float matrix[16];
@@ -577,9 +634,7 @@ public class DrawManager
 
    static DMProgram *flushUseProgram( int programIndex )
    {
-      DMProgram *program;
-
-      program = &this.shaderprograms[ programIndex ];
+      DMProgram *program = &shaderPrograms[ programIndex ];
       if( !program->flags.valid)
       {
          glUseProgram( 0 );
@@ -597,10 +652,10 @@ public class DrawManager
       return program;
    }
 
-   static void flushRenderDrawBufferArchaic( DMDrawBuffer *drawBuffer, DMProgram *program, int vertexCount )
+   static void flushRenderDrawBufferArchaic( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
       glEnable( GL_TEXTURE_2D );
-      glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+      glBindBuffer( GL_ARRAY_BUFFER, drawBuffer.vbo );
       glColor3f( 1.0, 1.0, 1.0 );
 
       glEnableClientState( GL_VERTEX_ARRAY );
@@ -642,7 +697,7 @@ public class DrawManager
      ERRORCHECK();
 
      drawBarrierIndex = 0;
-     this.orderBarrierMask = drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
+     orderBarrierMask = drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
      if(imageBufferCount)
      {
         // Sort by image type and texture, minimize state changes
@@ -734,8 +789,8 @@ public class DrawManager
           angcos = (float)imageBuffer->angcos * (1.0f/DM_IMAGE_ROTATION_NORMFACTOR);
           sizex = (float)imageBuffer->sizex;
           sizey = (float)imageBuffer->sizey;
-          vx0 = (float)( imageBuffer->offsetx );
-          vy0 = (float)( imageBuffer->offsety );
+          vx0 = (float)imageBuffer->offsetx * (1.0f/DM_VERTEX_NORMFACTOR);
+          vy0 = (float)imageBuffer->offsety * (1.0f/DM_VERTEX_NORMFACTOR);
           vx1 = vx0 + ( angcos * sizex );
           vy1 = vy0 + ( angsin * sizex );
           vx2 = vx0 - ( angsin * sizey );
@@ -743,8 +798,8 @@ public class DrawManager
           vx3 = vx0 + ( angcos * sizex ) - ( angsin * sizey );
           vy3 = vy0 + ( angsin * sizex ) + ( angcos * sizey );
       #else
-          vx0 = (float)( imageBuffer->offsetx );
-          vy0 = (float)( imageBuffer->offsety );
+          vx0 = (float)imageBuffer->offsetx * (1.0f/DM_VERTEX_NORMFACTOR);
+          vy0 = (float)imageBuffer->offsety * (1.0f/DM_VERTEX_NORMFACTOR);
           vx3 = vx0 + (float)( imageBuffer->sizex );
           vy3 = vy0 + (float)( imageBuffer->sizey );
           vx1 = vx3;
@@ -764,31 +819,49 @@ public class DrawManager
           vboVertex[0].texcoord0[0] = tx1;
           vboVertex[0].texcoord0[1] = ty1;
           vboVertex[0].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[0].extcolor = imageBuffer->extcolor;
+      #endif
           vboVertex[1].vertex[0] = vx1;
           vboVertex[1].vertex[1] = vy1;
           vboVertex[1].texcoord0[0] = tx1;
           vboVertex[1].texcoord0[1] = ty0;
           vboVertex[1].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[1].extcolor = imageBuffer->extcolor;
+      #endif
           vboVertex[2].vertex[0] = vx2;
           vboVertex[2].vertex[1] = vy2;
           vboVertex[2].texcoord0[0] = tx0;
           vboVertex[2].texcoord0[1] = ty1;
           vboVertex[2].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[2].extcolor = imageBuffer->extcolor;
+      #endif
           vboVertex[3].vertex[0] = vx0;
           vboVertex[3].vertex[1] = vy0;
           vboVertex[3].texcoord0[0] = tx0;
           vboVertex[3].texcoord0[1] = ty0;
           vboVertex[3].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[3].extcolor = imageBuffer->extcolor;
+      #endif
           vboVertex[4].vertex[0] = vx2;
           vboVertex[4].vertex[1] = vy2;
           vboVertex[4].texcoord0[0] = tx0;
           vboVertex[4].texcoord0[1] = ty1;
           vboVertex[4].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[4].extcolor = imageBuffer->extcolor;
+      #endif
           vboVertex[5].vertex[0] = vx1;
           vboVertex[5].vertex[1] = vy1;
           vboVertex[5].texcoord0[0] = tx1;
           vboVertex[5].texcoord0[1] = ty0;
           vboVertex[5].color = imageBuffer->color;
+      #if DM_ENABLE_EXT_COLOR
+          vboVertex[5].extcolor = imageBuffer->extcolor;
+      #endif
 
           vboVertex += 6;
           vertexCount += 6;
@@ -805,49 +878,44 @@ public class DrawManager
 
         ERRORCHECK();
 
-      #if 1
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
-        glabCurArrayBuffer = 0;
-
-        glUseProgram( prevProgram );
-
-      #endif
      }
-      // Restore OpenGL state
-      // FIXME: no glPushAttrib() in core profile
-//#ifndef SHADERS
-      glPopAttrib();
-      glPopClientAttrib();
-//#endif
    }
 
-   void flushRenderDrawBuffer( DMDrawBuffer *drawBuffer, DMProgram *program, int vertexCount )
+   void flushRenderDrawBuffer( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
-      glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-      if( program->vertexloc != -1 )
+      glBindBuffer( GL_ARRAY_BUFFER, drawBuffer.vbo );
+      if( program.vertexloc != -1 )
       {
-         glEnableVertexAttribArray( program->vertexloc );
-         glVertexAttribPointer( program->vertexloc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,vertex) );
+         glEnableVertexAttribArray( program.vertexloc );
+         glVertexAttribPointer( program.vertexloc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,vertex) );
       }
-      if( program->texcoord0loc != -1 )
+      if( program.texcoord0loc != -1 )
       {
-         glEnableVertexAttribArray( program->texcoord0loc );
-         glVertexAttribPointer( program->texcoord0loc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,texcoord0) );
+         glEnableVertexAttribArray( program.texcoord0loc );
+         glVertexAttribPointer( program.texcoord0loc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,texcoord0) );
       }
-      if( program->colorloc != -1 )
+      if( program.colorloc != -1 )
       {
-         glEnableVertexAttribArray( program->colorloc );
-         glVertexAttribPointer( program->colorloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,color) );
+         glEnableVertexAttribArray( program.colorloc );
+         glVertexAttribPointer( program.colorloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,color) );
       }
+
+   #if DM_ENABLE_EXT_COLOR
+      if( program.extcolorloc != -1 )
+      {
+         glEnableVertexAttribArray( program.extcolorloc );
+         glVertexAttribPointer( program.extcolorloc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,extcolor) );
+      }
+   #endif
 
       glDrawArrays( GL_TRIANGLES, 0, vertexCount );
 
-      if( program->vertexloc != -1 )
-         glDisableVertexAttribArray( program->vertexloc );
-      if( program->texcoord0loc != -1 )
-         glDisableVertexAttribArray( program->texcoord0loc );
-      if( program->colorloc != -1 )
-         glDisableVertexAttribArray( program->colorloc );
+      if( program.vertexloc != -1 )
+         glDisableVertexAttribArray( program.vertexloc );
+      if( program.texcoord0loc != -1 )
+         glDisableVertexAttribArray( program.texcoord0loc );
+      if( program.colorloc != -1 )
+         glDisableVertexAttribArray( program.colorloc );
 
    #if DM_FLUSH_EACH_RENDER_DRAW_BUFFER
       glFlush();
@@ -866,13 +934,13 @@ public class DrawManager
       DMImage *image, *bindimage;
       Texture texture, bindtexture;
       DMDrawBuffer *drawBuffer;
-      DMDrawVertex *vbovertex;
+      DMDrawVertex *vboVertex;
       DMProgram *program;
 
       ERRORCHECK();
 
       this.drawBarrierIndex = 0;
-      this.orderBarrierMask = this.drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
+      orderBarrierMask = drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
       if( imageBufferCount )
       {
          /* Sort by image type and texture, minimize state changes */
@@ -882,7 +950,7 @@ public class DrawManager
          drawBuffer = &this.drawBuffer[this.drawBufferIndex];
          this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
          glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-         vbovertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+         vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
          vertexcount = 0;
 
          glActiveTexture( GL_TEXTURE0 );
@@ -928,7 +996,7 @@ public class DrawManager
               drawBuffer = &this.drawBuffer[this.drawBufferIndex];
               this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
               glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-              vbovertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+              vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
               vertexcount = 0;
             }
 
@@ -950,7 +1018,7 @@ public class DrawManager
               bindtexture = texture;
               glBindTexture( GL_TEXTURE_2D, bindtexture.glTex );
       #if DM_RENDER_IMAGE_DEBUG
-              printf( "  Switch to texture 0x%x\n", (int)texture.ordermask );
+              printf( "  Switch to texture 0x%x\n", (int)texture.orderMask );
       #endif
             }
             bindimage = image;
@@ -966,8 +1034,8 @@ public class DrawManager
           angcos = (float)imageBuffer->angcos * (1.0f/DM_IMAGE_ROTATION_NORMFACTOR);
           sizex = (float)imageBuffer->sizex;
           sizey = (float)imageBuffer->sizey;
-          vx0 = (float)( imageBuffer->offsetx );
-          vy0 = (float)( imageBuffer->offsety );
+          vx0 = (float)imageBuffer->offsetx * (1.0f/DM_VERTEX_NORMFACTOR);
+          vy0 = (float)imageBuffer->offsety * (1.0f/DM_VERTEX_NORMFACTOR);
           vx1 = vx0 + ( angcos * sizex );
           vy1 = vy0 + ( angsin * sizex );
           vx2 = vx0 - ( angsin * sizey );
@@ -976,8 +1044,8 @@ public class DrawManager
           vy3 = vy0 + ( angsin * sizex ) + ( angcos * sizey );
       #else
           /* FIXME TODO: Don't go through float, compute texcoord integers directly */
-          vx0 = (float)( imageBuffer->offsetx );
-          vy0 = (float)( imageBuffer->offsety );
+          vx0 = (float)imageBuffer->offsetx * (1.0f/DM_VERTEX_NORMFACTOR);
+          vy0 = (float)imageBuffer->offsety * (1.0f/DM_VERTEX_NORMFACTOR);
           vx3 = vx0 + (float)( imageBuffer->sizex );
           vy3 = vy0 + (float)( imageBuffer->sizey );
           vx1 = vx3;
@@ -994,38 +1062,44 @@ public class DrawManager
 
           /* Write data to VBO */
           /* TODO: write vertex/texcoord all at once with SSE */
-          vbovertex[0].vertex[0] = (short)( vx3 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[0].vertex[1] = (short)( vy3 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[0].texcoord0[0] = (short)( tx1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[0].texcoord0[1] = (short)( ty1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[0].color = imageBuffer->color;
-          vbovertex[1].vertex[0] = (short)( vx1 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[1].vertex[1] = (short)( vy1 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[1].texcoord0[0] = (short)( tx1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[1].texcoord0[1] = (short)( ty0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[1].color = imageBuffer->color;
-          vbovertex[2].vertex[0] = (short)( vx2 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[2].vertex[1] = (short)( vy2 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[2].texcoord0[0] = (short)( tx0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[2].texcoord0[1] = (short)( ty1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[2].color = imageBuffer->color;
-          vbovertex[3].vertex[0] = (short)( vx0 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[3].vertex[1] = (short)( vy0 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[3].texcoord0[0] = (short)( tx0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[3].texcoord0[1] = (short)( ty0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[3].color = imageBuffer->color;
-          vbovertex[4].vertex[0] = (short)( vx2 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[4].vertex[1] = (short)( vy2 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[4].texcoord0[0] = (short)( tx0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[4].texcoord0[1] = (short)( ty1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[4].color = imageBuffer->color;
-          vbovertex[5].vertex[0] = (short)( vx1 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[5].vertex[1] = (short)( vy1 * DM_VERTEX_VERTEX_NORMFACTOR );
-          vbovertex[5].texcoord0[0] = (short)( tx1 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[5].texcoord0[1] = (short)( ty0 * DM_VERTEX_TEXCOORD_NORMFACTOR );
-          vbovertex[5].color = imageBuffer->color;
+          vboVertex[0].vertex[0] = (short)( vx3 * DM_VERTEX_NORMFACTOR );
+          vboVertex[0].vertex[1] = (short)( vy3 * DM_VERTEX_NORMFACTOR );
+          vboVertex[0].texcoord0[0] = (short)( tx1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[0].texcoord0[1] = (short)( ty1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[0].color = imageBuffer->color;
+          vboVertex[0].extcolor = imageBuffer->extcolor;
+          vboVertex[1].vertex[0] = (short)( vx1 * DM_VERTEX_NORMFACTOR );
+          vboVertex[1].vertex[1] = (short)( vy1 * DM_VERTEX_NORMFACTOR );
+          vboVertex[1].texcoord0[0] = (short)( tx1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[1].texcoord0[1] = (short)( ty0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[1].color = imageBuffer->color;
+          vboVertex[1].extcolor = imageBuffer->extcolor;
+          vboVertex[2].vertex[0] = (short)( vx2 * DM_VERTEX_NORMFACTOR );
+          vboVertex[2].vertex[1] = (short)( vy2 * DM_VERTEX_NORMFACTOR );
+          vboVertex[2].texcoord0[0] = (short)( tx0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[2].texcoord0[1] = (short)( ty1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[2].color = imageBuffer->color;
+          vboVertex[2].extcolor = imageBuffer->extcolor;
+          vboVertex[3].vertex[0] = (short)( vx0 * DM_VERTEX_NORMFACTOR );
+          vboVertex[3].vertex[1] = (short)( vy0 * DM_VERTEX_NORMFACTOR );
+          vboVertex[3].texcoord0[0] = (short)( tx0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[3].texcoord0[1] = (short)( ty0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[3].color = imageBuffer->color;
+          vboVertex[3].extcolor = imageBuffer->extcolor;
+          vboVertex[4].vertex[0] = (short)( vx2 * DM_VERTEX_NORMFACTOR );
+          vboVertex[4].vertex[1] = (short)( vy2 * DM_VERTEX_NORMFACTOR );
+          vboVertex[4].texcoord0[0] = (short)( tx0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[4].texcoord0[1] = (short)( ty1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[4].color = imageBuffer->color;
+          vboVertex[4].extcolor = imageBuffer->extcolor;
+          vboVertex[5].vertex[0] = (short)( vx1 * DM_VERTEX_NORMFACTOR );
+          vboVertex[5].vertex[1] = (short)( vy1 * DM_VERTEX_NORMFACTOR );
+          vboVertex[5].texcoord0[0] = (short)( tx1 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[5].texcoord0[1] = (short)( ty0 * DM_TEXCOORD_NORMFACTOR );
+          vboVertex[5].color = imageBuffer->color;
+          vboVertex[5].extcolor = imageBuffer->extcolor;
 
-          vbovertex += 6;
+          vboVertex += 6;
           vertexcount += 6;
         }
 
@@ -1037,21 +1111,7 @@ public class DrawManager
         imageBufferCount = 0;
 
         ERRORCHECK();
-
-      #if 1
-        glBindBuffer( GL_ARRAY_BUFFER, 0 );
-        glabCurArrayBuffer = 0;
-
-        glUseProgram( prevProgram );
-      #endif
       }
-
-      // Restore OpenGL state
-      // FIXME: no glPushAttrib() in core profile
-//#ifndef SHADERS
-      glPopAttrib();
-      glPopClientAttrib();
-//#endif
    }
 
 public:
@@ -1078,18 +1138,21 @@ public:
          DMProgram *program;
          for( programIndex = 0 ; programIndex < DM_PROGRAM_COUNT ; programIndex++ )
          {
-            program = &shaderprograms[ programIndex ];
+            program = &shaderPrograms[ programIndex ];
             program->flags = 0;
             program->lastUpdateCount = -1;
          }
-         program = &shaderprograms[ DM_PROGRAM_NORMAL ];
+         program = &shaderPrograms[ DM_PROGRAM_NORMAL ];
          if( !( dmCreateProgram( program, dmVertexShaderNormal, dmFragmentShaderNormal, 0 ) ) )
             return false;
-         program = &shaderprograms[ DM_PROGRAM_ALPHABLEND ];
+         program = &shaderPrograms[ DM_PROGRAM_ALPHABLEND ];
          if( !( dmCreateProgram( program, dmVertexShaderAlpha, dmFragmentShaderAlpha, 0 ) ) )
             return false;
-         program = &shaderprograms[ DM_PROGRAM_ALPHABLEND_INTENSITY ];
+         program = &shaderPrograms[ DM_PROGRAM_ALPHABLEND_INTENSITY ];
          if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensity, dmFragmentShaderAlphaIntensity, 0 ) ) )
+            return false;
+        program = &shaderPrograms[ DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR ];
+        if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensityExtColor, dmFragmentShaderAlphaIntensityExtColor, 0 ) ) )
             return false;
          // glUseProgram( 0 );
          vertexSize = sizeof(DMDrawVertex);
@@ -1147,7 +1210,7 @@ public:
 
       // Prepare rendering pass
       matrixOrtho( matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0f, 1.0 );
-      norminv = 1.0f / DM_VERTEX_VERTEX_NORMFACTOR;
+      norminv = 1.0f / DM_VERTEX_NORMFACTOR;
       for( mindex = 0 ; mindex < 12 ; mindex += 4 )
       {
         matrix[mindex+0] *= norminv;
@@ -1161,11 +1224,11 @@ public:
       updateCount++;
    }
 
-   void drawImage( DMImage *image, int offsetx, int offsety, int sizex, int sizey, uint32 color )
+   void drawImage( DMImage image, int offsetx, int offsety, int sizex, int sizey, uint32 color )
    {
      DMImageBuffer *imageBuffer;
 
-     if( image->flags.empty || ( sizex <= 0 ) || ( sizey <= 0 ) )
+     if( image.flags.empty || ( sizex <= 0 ) || ( sizey <= 0 ) )
        return;
 
      if( imageBufferCount >= imageBufferSize )
@@ -1177,8 +1240,8 @@ public:
 
      imageBuffer = &this.imageBuffer[ imageBufferCount ];
      imageBuffer->image = image;
-     imageBuffer->offsetx = (short)offsetx;
-     imageBuffer->offsety = (short)offsety;
+     imageBuffer->offsetx = (short)(offsetx << DM_VERTEX_NORMSHIFT);
+     imageBuffer->offsety = (short)(offsety << DM_VERTEX_NORMSHIFT);
      imageBuffer->sizex = (short)sizex;
      imageBuffer->sizey = (short)sizey;
    #if DM_ENABLE_IMAGE_ROTATION
@@ -1186,7 +1249,7 @@ public:
      imageBuffer->angcos = (short)DM_IMAGE_ROTATION_NORMFACTOR;
    #endif
      imageBuffer->color = color;
-     imageBuffer->orderindex = image->orderMask | this.orderBarrierMask;
+     imageBuffer->orderindex = image.orderMask | orderBarrierMask;
 
    #if DM_RENDER_IMAGE_DEBUG
    printf( "  Queue image at %d %d, order 0x%x\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex );
@@ -1195,11 +1258,11 @@ public:
      imageBufferCount++;
    }
 
-   void drawImageFloat( DMImage *image, float offsetx, float offsety, float sizex, float sizey, float angsin, float angcos, uint32 color )
+   void drawImageExtColor( DMImage image, int offsetx, int offsety, int sizex, int sizey, uint32 color, uint32 extcolor )
    {
      DMImageBuffer *imageBuffer;
 
-     if( image->flags.empty || sizex <= 0 || sizey <= 0 )
+     if( ( image.flags.empty ) || ( sizex <= 0 ) || ( sizey <= 0 ) )
        return;
 
      if( imageBufferCount >= imageBufferSize )
@@ -1211,8 +1274,45 @@ public:
 
      imageBuffer = &this.imageBuffer[ imageBufferCount ];
      imageBuffer->image = image;
-     imageBuffer->offsetx = (short)offsetx;
-     imageBuffer->offsety = (short)offsety;
+     imageBuffer->offsetx = (short)(offsetx << DM_VERTEX_NORMSHIFT);
+     imageBuffer->offsety = (short)(offsety << DM_VERTEX_NORMSHIFT);
+     imageBuffer->sizex = (short)sizex;
+     imageBuffer->sizey = (short)sizey;
+   #if DM_ENABLE_IMAGE_ROTATION
+     imageBuffer->angsin = 0;
+     imageBuffer->angcos = (short)DM_IMAGE_ROTATION_NORMFACTOR;
+   #endif
+     imageBuffer->color = color;
+   #if DM_ENABLE_EXT_COLOR
+     imageBuffer->extcolor = extcolor;
+   #endif
+     imageBuffer->orderindex = image.orderMask | orderBarrierMask;
+
+   #if DM_RENDER_IMAGE_DEBUG
+   printf( "  Queue image at %d %d, order 0x%x\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex );
+   #endif
+
+     this.imageBufferCount++;
+   }
+
+   void drawImageFloat( DMImage image, float offsetx, float offsety, float sizex, float sizey, float angsin, float angcos, uint32 color )
+   {
+     DMImageBuffer *imageBuffer;
+
+     if( image.flags.empty || sizex <= 0 || sizey <= 0 )
+       return;
+
+     if( imageBufferCount >= imageBufferSize )
+     {
+       imageBufferSize <<= 1;
+       this.imageBuffer = renew this.imageBuffer DMImageBuffer[imageBufferSize];
+       imageBufferTmp = renew imageBufferTmp DMImageBuffer[imageBufferSize];
+     }
+
+     imageBuffer = &this.imageBuffer[ imageBufferCount ];
+     imageBuffer->image = image;
+     imageBuffer->offsetx = (short)roundf(offsetx * DM_VERTEX_NORMFACTOR);
+     imageBuffer->offsety = (short)roundf(offsety * DM_VERTEX_NORMFACTOR);
      imageBuffer->sizex = (short)sizex;
      imageBuffer->sizey = (short)sizey;
    #if DM_ENABLE_IMAGE_ROTATION
@@ -1220,13 +1320,50 @@ public:
      imageBuffer->angcos = (short)roundf( angcos * DM_IMAGE_ROTATION_NORMFACTOR );
    #endif
      imageBuffer->color = color;
-     imageBuffer->orderindex = image->orderMask | this.orderBarrierMask;
+     imageBuffer->orderindex = image.orderMask | orderBarrierMask;
 
    #if DM_RENDER_IMAGE_DEBUG
    printf( "  Queue image at %d %d, order 0x%x\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex );
    #endif
 
      imageBufferCount++;
+   }
+
+   void drawImageFloatExtColor( DMImage image, float offsetx, float offsety, float sizex, float sizey, float angsin, float angcos, uint32 color, uint32 extcolor )
+   {
+     DMImageBuffer *imageBuffer;
+
+     if( ( image.flags.empty ) || ( sizex <= 0 ) || ( sizey <= 0 ) )
+       return;
+
+     if( this.imageBufferCount >= this.imageBufferSize )
+     {
+       imageBufferSize <<= 1;
+       this.imageBuffer = renew this.imageBuffer DMImageBuffer[imageBufferSize];
+       imageBufferTmp = renew imageBufferTmp DMImageBuffer[imageBufferSize];
+     }
+
+     imageBuffer = &this.imageBuffer[ imageBufferCount ];
+     imageBuffer->image = image;
+     imageBuffer->offsetx = (short)roundf( offsetx * DM_VERTEX_NORMFACTOR );
+     imageBuffer->offsety = (short)roundf( offsety * DM_VERTEX_NORMFACTOR );
+     imageBuffer->sizex = (short)sizex;
+     imageBuffer->sizey = (short)sizey;
+   #if DM_ENABLE_IMAGE_ROTATION
+     imageBuffer->angsin = (short)roundf( angsin * DM_IMAGE_ROTATION_NORMFACTOR );
+     imageBuffer->angcos = (short)roundf( angcos * DM_IMAGE_ROTATION_NORMFACTOR );
+   #endif
+     imageBuffer->color = color;
+   #if DM_ENABLE_EXT_COLOR
+     imageBuffer->extcolor = extcolor;
+   #endif
+     imageBuffer->orderindex = image.orderMask | orderBarrierMask;
+
+   #if DM_RENDER_IMAGE_DEBUG
+   printf( "  Queue image at %d %d, order 0x%x\n", (int)imageBuffer->offsetx, (int)imageBuffer->offsety, (int)imageBuffer->orderindex );
+   #endif
+
+     this.imageBufferCount++;
    }
 
    void flushImages( )
@@ -1235,6 +1372,16 @@ public:
        flushDrawImagesArchaic( );
      else
        flushDrawImages( );
+
+     glBindBuffer( GL_ARRAY_BUFFER, 0 );
+     glabCurArrayBuffer = 0;
+     glUseProgram( prevProgram );
+      // Restore OpenGL state
+      // FIXME: no glPushAttrib() in core profile
+//#ifndef SHADERS
+      glPopAttrib();
+      glPopClientAttrib();
+//#endif
    }
 
    void drawBarrier( )

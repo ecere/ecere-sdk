@@ -808,7 +808,7 @@ public class FontManager
 
 public:
 
-   property FontManagerRenderer renderer { set { renderer = value; } get { return renderer; } }\
+   property FontManagerRenderer renderer { set { renderer = value; } get { return renderer; } }
 
    // When notified of a full atlas, you should call fmExpandAtlas() or fmResetAtlas() within the callback
    virtual void (*onAtlasFull)();
