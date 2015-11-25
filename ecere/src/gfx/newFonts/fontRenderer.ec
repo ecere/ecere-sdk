@@ -102,7 +102,7 @@ public:
    {
      if(texture)
      {
-        int glformat;
+        int glformat = GL_RED;
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
 

@@ -398,7 +398,7 @@ int HASH_DECLARE_DIRECTREADORADDENTRY( void *hashtable, void *readaddentry, int 
 int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int readflag )
 {
   int cmpvalue;
-  uint32_t hashkey, srckey, srcpos, targetpos, targetkey, entrycount;
+  uint32_t hashkey, srckey, srcpos, targetpos = 0, targetkey, entrycount;
   uint32_t delbase;
   void *entry, *srcentry, *targetentry;
   mmHashTable *table;
