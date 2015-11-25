@@ -827,12 +827,12 @@ public class DrawManager
       if( program->vertexloc != -1 )
       {
          glEnableVertexAttribArray( program->vertexloc );
-         glVertexAttribPointer( program->vertexloc, 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,vertex) );
+         glVertexAttribPointer( program->vertexloc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,vertex) );
       }
       if( program->texcoord0loc != -1 )
       {
          glEnableVertexAttribArray( program->texcoord0loc );
-         glVertexAttribPointer( program->texcoord0loc, 2, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,texcoord0) );
+         glVertexAttribPointer( program->texcoord0loc, 2, GL_SHORT, GL_FALSE, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex,texcoord0) );
       }
       if( program->colorloc != -1 )
       {
