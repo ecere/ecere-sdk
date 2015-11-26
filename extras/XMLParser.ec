@@ -66,6 +66,15 @@ class XMLParser
    int xmlDepth;
    bool closingTag;
    bool openingTag;
+   char * characterData;
+   uint charBufSize;
+
+   charBufSize = CHARBUFSIZE;
+
+   ~XMLParser()
+   {
+      delete characterData;
+   }
 
    bool GetWord()
    {
@@ -85,7 +94,7 @@ class XMLParser
       bool commented = false;
       byte lastCh = ' ';
       int stringPos;
-      char characterData[CHARBUFSIZE];
+      char * characterData = this.characterData;
       int charLen = 0;
       int oldDepth = xmlDepth;
       tag[0] = 0;
@@ -261,7 +270,9 @@ class XMLParser
          }
          else
          {
-            if(ch == '<' || charLen == CHARBUFSIZE - 1)
+            if(!characterData)
+               this.characterData = characterData = new byte[charBufSize];
+            if(ch == '<' || charLen == charBufSize - 1)
             {
                ProcessCharacterData(characterData);
                charLen = 0;
