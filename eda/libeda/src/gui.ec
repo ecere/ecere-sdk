@@ -116,14 +116,14 @@ public class TableDropBox : DropBox
    borderStyle = deep;
 
 public:
-   uint filter;
+   Id filter;
    bool filtered;
    Field nameField;
-   uint exclusion;
+   Id exclusion;
    Table table;
    Field filterField;
 
-   property uint filter
+   property Id filter
    {
       set
       {
@@ -133,7 +133,7 @@ public:
       get { return filter; }
    }
    property Field nameField { set { nameField = value; } }
-   property uint exclusion { set { exclusion = value; } }
+   property Id exclusion { set { exclusion = value; } }
    property Table table { set { table = value; if(!nameField && value) nameField = value.FindField(defaultNameField); } }
 
    virtual void Refill()
@@ -301,9 +301,9 @@ public class DropDataBox : DataBox
 
 public:
 
-   property uint filter { set { filtered = true; filter = value; } get { return filter; } }
+   property Id filter { set { filtered = true; filter = value; } get { return filter; } }
    property bool filtered { set { filtered = value; } }
-   property uint exclusion { set { exclusion = value; } }
+   property Id exclusion { set { exclusion = value; } }
    property Field filterField { set { filterField = value; } }
    property Field nameField { set { nameField = value; } }
    virtual void TableDropBox::RefillFunction();
@@ -314,7 +314,7 @@ public:
       if(editor)
       {
          TableDropBox dropBox = (TableDropBox) editor;
-         uint id = data ? *(uint *)data : MAXDWORD;
+         Id id = data ? *(Id *)data : MAXDWORD;
          void * notifyChanged = (void *)NotifyChanged;
 
          OnConfigure(dropBox);
@@ -344,8 +344,8 @@ public:
 private:
    Field nameField;
    Field filterField;
-   uint exclusion;
-   uint filter;
+   Id exclusion;
+   Id filter;
    bool filtered;
    bool showNone;
 }
@@ -570,9 +570,9 @@ public class FieldDropDataBox : FieldDataBox
    showNone = true;
 
 public:
-   property uint filter { set { filtered = true; filter = value; } get { return filter; } }
+   property Id filter { set { filtered = true; filter = value; } get { return filter; } }
    property bool filtered { set { filtered = value; } }
-   property uint exclusion { set { exclusion = value; } }
+   property Id exclusion { set { exclusion = value; } }
    property Field filterField { set { filterField = value; } }
    property Field nameField { set { nameField = value; } }
    virtual void TableDropBox::RefillFunction();
@@ -583,7 +583,7 @@ public:
       if(editor)
       {
          TableDropBox dropBox = (TableDropBox) editor;
-         uint id = data ? *(uint *)data : MAXDWORD;
+         Id id = data ? *(Id *)data : MAXDWORD;
          OnConfigure(dropBox);
          dropBox.Refill();
          if(id != MAXDWORD) dropBox.SelectRow(dropBox.FindSubRow(id));
@@ -606,8 +606,8 @@ public:
 private:
    Field nameField;
    Field filterField;
-   uint exclusion;
-   uint filter;
+   Id exclusion;
+   Id filter;
    bool filtered;
    bool showNone;
 }
@@ -762,7 +762,7 @@ public:
          list.NotifySelect(this, list, null, 0);
          if(!editor.modifiedDocument)
          {
-            uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
+            Id id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
             Row r { table };
 
             if(r.Last())   // this will reuse ids in cases where the item(s) with the last id have been deleted
@@ -885,14 +885,14 @@ public:
       }
    };
 
-   virtual void Window::NotifySelectListRow(ListSection listSection, uint64 id);
+   virtual void Window::NotifySelectListRow(ListSection listSection, Id id);
 
    void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
       if(row)
       {
-         uint64 id = row.tag;
+         Id id = row.tag;
          lastRow = row;
 
          if(list.currentRow != row)

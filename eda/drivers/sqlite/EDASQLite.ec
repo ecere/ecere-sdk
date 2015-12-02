@@ -1573,7 +1573,7 @@ class SQLiteRow : DriverRow
             FieldFindData * fieldFind = &findData[c]; \
             SQLiteField sqlFld = (SQLiteField)findData->field; \
             Class dataType = sqlFld.type; \
-            BindData(stmt, bindId++, sqlFld, (dataType.type == structClass || dataType.type == noHeadClass || dataType.type == normalClass) ? fieldFind->value.p : &fieldFind->value.i, null); \
+            BindData(stmt, bindId++, sqlFld, (dataType.type == structClass || dataType.type == noHeadClass || dataType.type == normalClass) ? fieldFind->value.p : &fieldFind->value.i64, null); \
          }
 
       if(numFields)

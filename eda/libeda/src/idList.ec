@@ -67,8 +67,7 @@ public class Id : uint64
 
             bool DataBox::NotifySelect(DropBox control, DataRow row, Modifiers mods)
             {
-               // TOFIX: Id is still 32 bit
-               uint id = (uint)(row ? row.tag : 0);
+               Id id = (Id)(row ? row.tag : 0);
                SetData(&id, mods.closingDropDown);
                return true;
             }
@@ -155,7 +154,7 @@ public class Id : uint64
       dropBox.Create();
       dropBox.currentRow = dropBox.FindSubRow(this);
       if(!dropBox.currentRow && this)
-         dataBox.SetData((uint *)&this, false);
+         dataBox.SetData((Id *)&this, false);
       {
          DataRow r = dropBox.currentRow;
          if(r)
@@ -234,7 +233,7 @@ public class Id : uint64
          }
          else
          {
-            uint id = this;
+            Id id = this;
             id.OnGetString(tempString, null, null);
          }
       }
@@ -395,7 +394,7 @@ public:
          int c;
          for(c = 0; c<count; c++)
          {
-            uint64 idA = ids[c], idB = b.ids[c];
+            Id idA = ids[c], idB = b.ids[c];
             if(idA > idB) return 1;
             else if(idA < idB) return -1;
          }
@@ -971,7 +970,7 @@ public struct DataList : OldList
             // if(type.type != normalClass || strcmp(type.dataTypeString, "char *"))
             if(type)
             {
-               void * data = ((type.type == normalClass || type.type == noHeadClass || type.type == structClass) ? row.GetData(null) : (void *)(uintptr)*(uint *)row.GetData(null));
+               void * data = ((type.type == normalClass || type.type == noHeadClass || type.type == structClass) ? row.GetData(null) : (void *)(uintptr)*(Id *)row.GetData(null));
                if(!data)
                {
                   //if(strcmp(type.dataTypeString, char *"))

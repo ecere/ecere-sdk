@@ -462,13 +462,13 @@ public:
             {
                Row row { f.lookupFindIndex ? f.lookupFindIndex : f.lookupFindField.table };
                // todo: make this work for all types
-               uint id = 0;
+               Id id = 0;
                editRow.GetData(f.lookupValueField, id);
                // TODO: add alternative class instance for creation when no rows are found via lookup
                for(row.Find(f.lookupFindField, middle, nil, id); !row.nil; row.Next())
                {
                   // todo: make this work for all types, although this is meant to be an id field
-                  uint id = 0;
+                  Id id = 0;
                   TableEditor editor = eInstance_New(f.editorClass);
                   incref editor;
                   editor.parent = f.parentWindow;
@@ -523,7 +523,7 @@ public:
       //list.NotifySelect(this, list, null, 0);
       if(table && editRow && editRow.tbl && !modifiedDocument)
       {
-         uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
+         Id id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
                                // I think the 3 following comment lines apply to the old sqlite driver before many fix we done for wsms
          Row r = editRow;// { table }; // the multipurpose row is buggy with sqlite driver, you can't use the same row to do Row::Last(), Row::Next(), Row::Find(), etc...
          //Row r { editRow.tbl };                    // for example, Row::Last() here is not using the proper sqlite statement and fails to
@@ -2083,7 +2083,7 @@ struct WordEntryBinaryTree : BinaryTree
    void OnSerialize(IOChannel channel)
    {
       WordEntry node;
-      uint id;
+      Id id;
       DebugLn("WordEntryBinaryTree::OnSerialize");
       for(id = 1, node = (WordEntry)root; node;)
       {
@@ -2176,7 +2176,7 @@ class WordEntry : struct
 
    IdList items;
    IdList words;
-   uint id;
+   Id id;
 
    ~WordEntry()
    {
@@ -2199,7 +2199,7 @@ class WordEntry : struct
             channel.Serialize(words.count);
             for(c = 0; c < words.count; c++)
             {
-               uint id = (uint)((WordEntry)(uintptr)words.ids[c]).id;
+               Id id = (Id)((WordEntry)(uintptr)words.ids[c]).id;
                channel.Serialize(id);
             }
          }
@@ -2215,7 +2215,7 @@ class WordEntry : struct
       }
       else
       {
-         uint nothing = 0;
+         Id nothing = 0;
          channel.Serialize(nothing);
       }
 #endif
@@ -2224,7 +2224,7 @@ class WordEntry : struct
    void OnUnserialize(IOChannel channel)
    {
 #ifdef FULL_STRING_SEARCH
-      uint id;
+      Id id;
       channel.Unserialize(id);
       if(id)
       {
