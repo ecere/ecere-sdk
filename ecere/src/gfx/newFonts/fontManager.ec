@@ -903,7 +903,6 @@ public:
      state->align = (uint16)align;
      state->blurradius = (uint16)blurradius;
      state->blurscale = (uint16)blurscale;
-     return;
    }
 
    void setFont( FMFont font )
