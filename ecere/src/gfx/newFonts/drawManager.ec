@@ -2,6 +2,7 @@ import "OpenGLDisplayDriver"
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #if defined(_GLES)
    #define ES1_1
