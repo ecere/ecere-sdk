@@ -54,6 +54,7 @@ private:
 
 public class DataField
 {
+   class_no_expansion;
 public:
    property Class dataType
    {
