@@ -1,0 +1,45 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ear-to-econ-ecdoc",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "EAR_TO_ECON_ECDOC"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "ear-to-econ-ecdoc",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "ear-to-econ-ecdoc.ec",
+      "../src/Documentor.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
