@@ -168,6 +168,7 @@ public class Id : uint64
    {
       if(&this)
       {
+         Id thisID = this;
          // FIXME
          Table tbl = class_data(table) ? *class_data(table) : null;
          if(tbl)
@@ -182,9 +183,9 @@ public class Id : uint64
             }
             r = tbl.cachedIdRow;
 
-            if(this)
+            if(thisID)
             {
-               if(r.Find(idField, middle, nil, this))
+               if(r.Find(idField, middle, nil, thisID))
                {
                   String name = null;
                   Field * nameField = class_data(nameField);
@@ -222,7 +223,15 @@ public class Id : uint64
                   }
                }
                else
-                  sprintf(tempString, "(Invalid %s entry: %d)", tbl.name, this);
+               {
+                 sprintf(tempString, "(Invalid %s entry: "
+                    #if defined(__WIN32__)
+                     "%I64d"
+                    #else
+                     "%lld"
+                    #endif
+                     ")", tbl.name, thisID);
+               }
             }
             else
             {
@@ -233,7 +242,7 @@ public class Id : uint64
          }
          else
          {
-            Id id = this;
+            Id id = thisID;
             id.OnGetString(tempString, null, null);
          }
       }
@@ -424,7 +433,7 @@ public:
                if(row == listBox.lastRow)
                {
                   row = listBox.AddRow();
-                  row.SetData(null, 0);
+                  row.SetData(null, (Id)0);
                   listBox.scroll.y = listBox.scrollArea.h;
                }
                else if(row.next == listBox.lastRow)
@@ -450,7 +459,7 @@ public:
          r.SetData(null, ids[c]);
       }
       r = list.AddRow();
-      r.SetData(null, 0);
+      r.SetData(null, (Id)0);
       list.Create();
       list.modifiedDocument = false;
       return list;
@@ -479,6 +488,67 @@ public:
    ~IdList()
    {
       delete ids;
+   }
+}
+
+public class IdList32 : IdList
+{
+   void OnUnserialize(IOChannel channel)
+   {
+      int c, count;
+
+      this = null;
+
+      channel.Unserialize(count);
+      if(count != MAXDWORD)
+      {
+         IdList idList = eInstance_New(_class);
+         idList.count = count;
+         idList.ids = new Id[count];
+         for(c = 0; c < count; c++)
+         {
+            uint32 id;
+            channel.Unserialize(id);
+            idList.ids[c] = id;
+         }
+         this = idList;
+      }
+   }
+
+   void OnSerialize(IOChannel channel)
+   {
+      if(this)
+      {
+         int c;
+         channel.Serialize(count);
+         for(c = 0; c < count; c++)
+            channel.Serialize((uint32)ids[c]);
+      }
+      else
+      {
+         Id none = MAXDWORD;
+         channel.Serialize((uint32)none);
+      }
+   }
+}
+
+public class IdListIncludes : SQLCustomFunction
+{
+   // Should private methods be added to the component system?
+public:
+   bool function(IdList list, Id id)
+   {
+      return list.Includes(id);
+   }
+}
+
+public class IdList32Includes : SQLCustomFunction
+{
+   // Should private methods be added to the component system?
+public:
+   bool function(IdList32 list, Id id)
+   {
+      return list.Includes(id);
    }
 }
 
@@ -950,7 +1020,7 @@ public struct DataList : OldList
                   if(type.type == normalClass || type.type == structClass || type.type == noHeadClass)
                      listBox.AddRow().SetData(null, null);
                   else
-                     listBox.AddRow().SetData(null, 0);
+                     listBox.AddRow().SetData(null, (Id)0);
                   listBox.scroll.y = listBox.scrollArea.h;
                   listBox.alwaysEdit = true;
                }
@@ -998,7 +1068,7 @@ public struct DataList : OldList
                if(type.type == normalClass || type.type == structClass || type.type == noHeadClass)
                   lastRow.SetData(null, null);
                else
-                  lastRow.SetData(null, 0);
+                  lastRow.SetData(null, (Id)0);
             }
          }
       };
@@ -1026,7 +1096,7 @@ public struct DataList : OldList
       if(type.type == normalClass || type.type == structClass || type.type == noHeadClass)
          r.SetData(null, null);
       else
-         r.SetData(null, 0);
+         r.SetData(null, (Id)0);
       list.Create();
       list.modifiedDocument = false;
       return list;
