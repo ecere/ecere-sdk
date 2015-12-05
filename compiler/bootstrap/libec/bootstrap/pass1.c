@@ -2814,7 +2814,7 @@ ListAdd(args, MkExpString(string));
 {
 char * temp;
 
-if(!strcmp(regClass->dataTypeString, "uint64"))
+if(regClass->dataTypeString && !strcmp(regClass->dataTypeString, "uint64"))
 temp = PrintUInt64(value->data);
 else
 temp = PrintInt64(value->data);

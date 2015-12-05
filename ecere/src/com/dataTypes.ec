@@ -201,13 +201,13 @@ public:
    switch(_class.typeSize)
    {
       case 1:
-         i64Data = !strcmp(_class.dataTypeString, "byte") ? *(byte *)data : *(char *)data;
+         i64Data = !strcmp(_class.dataTypeString, "byte") ? (int64)*(byte *)data : (int64)*(char *)data;
          break;
       case 2:
-         i64Data = !strcmp(_class.dataTypeString, "uint16") ? *(uint16 *)data : *(short *)data;
+         i64Data = !strcmp(_class.dataTypeString, "uint16") ? (int64)*(uint16 *)data : (int64)*(short *)data;
          break;
       case 4:
-         i64Data = !strcmp(_class.dataTypeString, "uint") ? *(uint *)data : *(int *)data;
+         i64Data = !strcmp(_class.dataTypeString, "uint") ? (int64)*(uint *)data : (int64)*(int *)data;
          break;
       case 8:
          i64Data = !strcmp(_class.dataTypeString, "uint64") ? *(int64 *)data : *(int64 *)data;

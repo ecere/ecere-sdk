@@ -1773,7 +1773,7 @@ regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, symbol
 if(!regClass)
 return ;
 classType = regClass->type;
-if(inCompiler)
+if(inCompiler && regClass->base)
 {
 yylloc = *loc;
 if(!NameSpaceContained(regClass->nameSpace, &((struct __ecereNameSpace__ecere__com__Module *)(((char *)regClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace) && regClass->inheritanceAccess == 1)

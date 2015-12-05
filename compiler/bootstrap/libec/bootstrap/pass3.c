@@ -2341,6 +2341,7 @@ struct Expression * e;
 InstDeclPassExpression(exp->__anon1.cond.cond);
 for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 InstDeclPassExpression(e);
+if(exp->__anon1.cond.elseExp)
 InstDeclPassExpression(exp->__anon1.cond.elseExp);
 break;
 }

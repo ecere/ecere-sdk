@@ -3947,9 +3947,12 @@ if(!e->next && ((unsigned int)((exp->usage & 0x1) >> 0)))
 e->usage = (e->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(e);
 }
+if(exp->__anon1.cond.elseExp)
+{
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
 exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.cond.elseExp);
+}
 break;
 }
 case 24:

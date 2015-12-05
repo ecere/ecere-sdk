@@ -1200,13 +1200,13 @@ long long i64Data = 0;
 switch(_class->typeSize)
 {
 case 1:
-i64Data = !strcmp(_class->dataTypeString, "byte") ? *(unsigned char *)data : *(char *)data;
+i64Data = !strcmp(_class->dataTypeString, "byte") ? (long long)*(unsigned char *)data : (long long)*(char *)data;
 break;
 case 2:
-i64Data = !strcmp(_class->dataTypeString, "uint16") ? *(unsigned short *)data : *(short *)data;
+i64Data = !strcmp(_class->dataTypeString, "uint16") ? (long long)*(unsigned short *)data : (long long)*(short *)data;
 break;
 case 4:
-i64Data = !strcmp(_class->dataTypeString, "uint") ? *(unsigned int *)data : *(int *)data;
+i64Data = !strcmp(_class->dataTypeString, "uint") ? (long long)*(unsigned int *)data : (long long)*(int *)data;
 break;
 case 8:
 i64Data = !strcmp(_class->dataTypeString, "uint64") ? *(long long *)data : *(long long *)data;
@@ -1222,10 +1222,15 @@ break;
 }
 if(item)
 {
+if(tempString)
+{
 strcpy(tempString, item->name);
 if(!needClass || !*needClass)
 tempString[0] = (char)toupper(tempString[0]);
 return tempString;
+}
+else
+return item->name;
 }
 else
 return (((void *)0));
@@ -2783,7 +2788,24 @@ else if(thisMember->isProperty && ((struct __ecereNameSpace__ecere__com__Propert
 if(memberType->type == 5 || memberType->type == 0 || memberType->type == 1)
 ((void (*)(void *, void *))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.p);
 else
+{
+if(!strcmp(memberType->dataTypeString, "float"))
+{
+((void (*)(void *, float))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.f);
+}
+else if(!strcmp(memberType->dataTypeString, "double"))
+{
+((void (*)(void *, double))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.d);
+}
+else if(!strcmp(memberType->dataTypeString, "int64"))
+{
+((void (*)(void *, long long))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.i64);
+}
+else
+{
 ((void (*)(void *, int))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.i);
+}
+}
 }
 }
 }
