@@ -293,7 +293,7 @@ public:
                      break;
                   case groupStart:
                      lastDetail = null;
-                     if(report.Advance(report.groupings[level], level ? report.groupings[level - 1].groupId : 0, &dontAdvance))
+                     if(report.Advance(level, &dontAdvance))
                      {
                         report.ExecuteRowData(level);
                         if(report.groupings[level].header)
@@ -349,7 +349,7 @@ public:
                      renderAction = groupStart;
                      break;
                   case actualRows:
-                     if(report.Advance(report.groupings[level], level ? report.groupings[level - 1].groupId : 0, &dontAdvance))
+                     if(report.Advance(level, &dontAdvance))
                      {
                         Detail detail;
                         if(AddDetailToPage(destination, (detail = eInstance_New(report.rowDetail))))
@@ -749,9 +749,10 @@ public:
       return false;
    }
 
-   virtual bool Advance(Id linkId, bool *dontAdvance)
+   virtual bool Advance(Array<Grouping> groupings, int level, bool *dontAdvance)
    {
       bool result;
+      Id linkId = level ? groupings[level - 1].groupId : 0;
       IdList reverseIdList = null;
 
       if(dontAdvance && *dontAdvance)
@@ -800,6 +801,7 @@ public:
          }
          else if(fieldLink)
          {
+            // WARNING: This implementation may not work properly with more than 1 level of grouping
             Id id = 0;
             row.GetData(fieldLink, id);
             if(id != linkId)
@@ -882,9 +884,9 @@ public:
 
    subclass(Detail) rowDetail;
 
-   virtual bool Advance(Grouping grouping, Id linkId, bool *dontAdvance)
+   virtual bool Advance(int level, bool *dontAdvance)
    {
-      return grouping.Advance(linkId, dontAdvance);
+      return groupings[level].Advance(groupings, level, dontAdvance);
    }
 
    virtual bool ExecuteData(Database db)

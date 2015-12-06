@@ -125,7 +125,7 @@ class BorrowerGrouping : Grouping
    bool ShouldSkip()
    {
       RowBorrowers r = (RowBorrowers)row;
-      int id = r.id;
+      Id id = r.id;
       return !rowMovies.Find(dbfield("Movies", borrower), middle, nil, id);
    }
 }
