@@ -14,7 +14,14 @@ public enum RenderPrimitiveType : PrimitiveGroupType
    quads,
    quadStrip,
    lineStrip
+
+   /* ,
+   lineLoop,
+   lineStrip,
+   polygon
+   */
 };
+
 public class MaterialFlags { public bool doubleSided:1, translucent:1, tile:1, noFog:1, singleSideLight:1; };
 public class Material : struct
 {
@@ -54,6 +61,30 @@ public:
 private:
    void * data;
 };
+
+/*
+public class PrimitiveGroupIndices16 : PrimitiveGroup
+{
+   property Array<uint16> indices
+   {
+      set { }
+   }
+}
+
+public class PrimitiveGroupIndices32 : PrimitiveGroup
+{
+   property Array<uint> indices
+   {
+      set { }
+   }
+}
+
+public class PrimitiveGroupVertexRange : PrimitiveGroup
+{
+   property int first { set { } }
+   property int nVertices { set { } }
+}
+*/
 
 public struct PrimitiveSingle
 {
