@@ -10,6 +10,8 @@ namespace gfx::drivers;
    #define GL_GLEXT_PROTOTYPES
 #endif
 
+#define pointer _pointer
+
 #ifdef ECERE_MINIGLX
 
 //#include <GL/miniglx.h>
@@ -84,6 +86,8 @@ namespace gfx::drivers;
    #include <GL/glext.h>
 
 #endif
+
+#undef pointer
 
 import "Display"
 
