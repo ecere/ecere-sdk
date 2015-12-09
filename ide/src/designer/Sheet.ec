@@ -1487,7 +1487,8 @@ public:
                   if(dataType.type == bitClass)
                   {
                      BitMember bitMember = (BitMember)member;
-                     bitValue = (valueData.i & bitMember.mask) >> bitMember.pos;
+                     bitValue = (valueData.ui64 & bitMember.mask) >> bitMember.pos;
+                     // TOCHECK: endian safe?
                      dataPtr = &bitValue;
                   }
                   else
@@ -1592,7 +1593,8 @@ public:
                   if(dataType.type == bitClass)
                   {
                      BitMember bitMember = (BitMember)member;
-                     bitValue = (valueData.i & bitMember.mask) >> bitMember.pos;
+                     bitValue = (valueData.ui64 & bitMember.mask) >> bitMember.pos;
+                     // TOCHECK: endian safe?
                      dataPtr = &bitValue;
                   }
                   else
@@ -1730,7 +1732,7 @@ public:
          void * propObject = null;
          DataValue valueData { 0 };
          DataValue valueSubData { 0 };
-         uint bitValue;
+         uint64 bitValue;
 
          if(!mainDataType)
             mainDataType = prop.dataTypeClass = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, prop.dataTypeString);
@@ -1780,7 +1782,12 @@ public:
             if(subDataType)
             {
                if(dataType.type == bitClass)
+               {
+                  BitMember bitMember = (BitMember)member;
+                  bitValue = (valueData.ui64 & bitMember.mask) >> bitMember.pos;
+                  // TOCHECK: endian safe?
                   dataPtr = &bitValue;
+               }
                else
                   dataPtr = (byte *)dataPtr + member.offset + this.extraOffset;
             }
@@ -1815,8 +1822,8 @@ public:
                if(mainDataType.type == bitClass && this.subMember)
                {
                   BitMember bitMember = (BitMember)this.subMember;
-                  valueData.ui &= ~ (uint)bitMember.mask;
-                  valueData.ui |= bitValue << bitMember.pos;
+                  valueData.ui64 &= ~bitMember.mask;
+                  valueData.ui64 |= bitValue << bitMember.pos;
                }
                if(this.subProperty)
                {
