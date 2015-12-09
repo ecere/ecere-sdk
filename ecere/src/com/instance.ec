@@ -2943,7 +2943,8 @@ static void FreeTemplate(Class template)
    if(template.nameSpace)
    {
       BTNamedLink link = (BTNamedLink)template.nameSpace->classes.FindString(template.name);
-      template.nameSpace->classes.Delete((BTNode)link);
+      if(link)
+         template.nameSpace->classes.Delete((BTNode)link);
    }
    FreeTemplateArgs(template);
 
@@ -2992,6 +2993,22 @@ public dllexport void eClass_Unregister(Class _class)
    OldLink deriv, template;
    ClassProperty classProp;
    ClassTemplateParameter param;
+
+   if(_class.templateClass)
+   {
+      // Unregistering templates... Used in IDE to address crash on Ecere classes templatized with imported modules
+      OldLink templateLink;
+      for(templateLink = _class.templateClass.templatized.first; templateLink; templateLink = templateLink.next)
+      {
+         if(templateLink.data == _class)
+         {
+            _class.templateClass.templatized.Delete(templateLink);
+            break;
+         }
+      }
+      FreeTemplate(_class);
+      return;
+   }
 
    delete _class._vTbl;
 

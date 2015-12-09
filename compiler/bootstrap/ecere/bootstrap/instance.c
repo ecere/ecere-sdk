@@ -3999,6 +3999,7 @@ if(template->nameSpace)
 {
 struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*template->nameSpace).classes, template->name);
 
+if(link)
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*template->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
 }
 __ecereNameSpace__ecere__com__FreeTemplateArgs(template);
@@ -5011,6 +5012,21 @@ struct __ecereNameSpace__ecere__sys__OldLink * deriv, * template;
 struct __ecereNameSpace__ecere__com__ClassProperty * classProp;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
 
+if(_class->templateClass)
+{
+struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
+
+for(templateLink = _class->templateClass->templatized.first; templateLink; templateLink = templateLink->next)
+{
+if(templateLink->data == _class)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templateClass->templatized, templateLink);
+break;
+}
+}
+__ecereNameSpace__ecere__com__FreeTemplate(_class);
+return ;
+}
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->_vTbl), _class->_vTbl = 0);
 __ecereNameSpace__ecere__com__FreeTemplates(_class);
 __ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
