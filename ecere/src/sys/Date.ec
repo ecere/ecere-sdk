@@ -92,6 +92,17 @@ public struct Date
    Month month;
    int day;
 
+   int OnCompare(Date b)
+   {
+      if(year > b.year) return 1;
+      if(year < b.year) return -1;
+      if(month > b.month) return 1;
+      if(month < b.month) return -1;
+      if(day > b.day) return 1;
+      if(day < b.day) return -1;
+      return 0;
+   }
+
    const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(stringOutput)
