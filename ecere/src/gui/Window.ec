@@ -3602,7 +3602,7 @@ private:
 
    void ConsequentialMouseMove(bool kbMoving)
    {
-      if(rootWindow)
+      if(rootWindow && !noConsequential)
       {
          if(kbMoving || !guiApp.windowMoving)
          {
@@ -6462,7 +6462,7 @@ public:
                         }
                      }
 
-                     if(!destroyed)
+                     if(!destroyed && !noConsequential)
                         rootWindow.ConsequentialMouseMove(false);
 
                      result = true;
@@ -9788,6 +9788,7 @@ private:
       bool manageDisplay:1;
       bool formDesigner:1; // True if we this is running in the form editor
       bool requireRemaximize:1;
+      bool noConsequential:1;
    };
 
    // Checks used internally for them not to take effect in FormDesigner
@@ -9811,6 +9812,12 @@ private:
             controller.setWindow(this);
          }
       }
+   }
+
+   public property bool noConsequential
+   {
+      set { noConsequential = value; }
+      get { return noConsequential; }
    }
 };
 

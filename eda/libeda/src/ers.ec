@@ -36,7 +36,7 @@ static define dpi = 100;
 class PreviewPage : Window
 {
    background = dimGray;
-
+   noConsequential = true;
    public property Page page
    {
       set
@@ -111,7 +111,7 @@ public:
       get { return report; }
    }
 
-   Window inside { this };
+   Window inside { this, noConsequential = true };
 
    int headerHeight;
 
@@ -955,6 +955,9 @@ public:
    bool keepTogether;
    bool isLast;
    int level;
+
+   creationActivation = doNothing;
+   noConsequential = true;
 
    subclass(Detail) rowDetail;
 }
