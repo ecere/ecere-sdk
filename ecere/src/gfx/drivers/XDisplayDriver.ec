@@ -5,7 +5,7 @@ namespace gfx::drivers;
 
 import "instance"
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX) && !defined(__EMSCRIPTEN__)
 
 default:
 
@@ -25,8 +25,10 @@ default:
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#if !defined(__EMSCRIPTEN__)
 #include <X11/extensions/shape.h>
 #include <X11/extensions/Xrender.h>
+#endif
 #include <X11/extensions/XShm.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>

@@ -48,7 +48,9 @@ public class FontFlags
 
 __attribute__((unused)) static void DummyFunction()
 {
+#if !defined(__EMSCRIPTEN__)
    Mutex { };
+#endif
 }
 
 public class DisplayDriver
@@ -178,27 +180,6 @@ public:
 
 public enum Alignment { left, right, center };
 public enum ClearType { colorBuffer, depthBuffer, colorAndDepth };
-
-subclass(DisplayDriver) GetDisplayDriver(const char * driverName)
-{
-   if(driverName)
-   {
-      OldLink link;
-      for(link = class(DisplayDriver).derivatives.first; link; link = link.next)
-      {
-         subclass(DisplayDriver) displayDriver = link.data;
-         if(displayDriver && displayDriver.name && !strcmp(displayDriver.name, driverName))
-            return displayDriver;
-      }
-   }
-   return null;
-}
-
-DisplaySystem GetDisplaySystem(const char * driverName)
-{
-   subclass(DisplayDriver) displayDriver = GetDisplayDriver(driverName);
-   return displayDriver ? displayDriver.displaySystem : null;
-}
 
 define textCellW = 8;
 define textCellH = 16;
@@ -556,7 +537,9 @@ public:
       result = displaySystem && displaySystem.Lock();
       if(result && render)
       {
+#if !defined(__EMSCRIPTEN__)
          mutex.Wait();
+#endif
 
          if(!current)
             result = displaySystem.driver.Lock(this);
@@ -582,7 +565,9 @@ public:
          */
          if(!current && displaySystem)
             displaySystem.driver.Unlock(this);
+#if !defined(__EMSCRIPTEN__)
          mutex.Release();
+#endif
       }
       if(displaySystem)
          displaySystem.Unlock();
@@ -1135,7 +1120,9 @@ private:
    DisplaySystem displaySystem;
    void * window;
 
+#if !defined(__EMSCRIPTEN__)
    Mutex mutex { };
+#endif
    int current;
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
@@ -1915,4 +1902,26 @@ public int BestColorMatch(ColorAlpha * palette, int start, int end, Color rgb)
       }
    }
    return best;
+}
+
+// had to move this here due to compiler ordering issue for "get property" symbol
+subclass(DisplayDriver) GetDisplayDriver(const char * driverName)
+{
+   if(driverName)
+   {
+      OldLink link;
+      for(link = class(DisplayDriver).derivatives.first; link; link = link.next)
+      {
+         subclass(DisplayDriver) displayDriver = link.data;
+         if(displayDriver && displayDriver.name && !strcmp(displayDriver.name, driverName))
+            return displayDriver;
+      }
+   }
+   return null;
+}
+
+DisplaySystem GetDisplaySystem(const char * driverName)
+{
+   subclass(DisplayDriver) displayDriver = GetDisplayDriver(driverName);
+   return displayDriver ? displayDriver.displaySystem : null;
 }

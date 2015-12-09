@@ -1,5 +1,6 @@
 namespace com;
 
+import "instance"
 import "Container"
 
 #ifdef _DEBUG

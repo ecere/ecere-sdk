@@ -4,7 +4,7 @@ import "instance"
 
 #undef __BLOCKS__
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__DOS__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__DOS__) && !defined(__EMSCRIPTEN__)
 
 #include <curses.h>
 

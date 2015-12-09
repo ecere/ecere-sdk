@@ -49,7 +49,7 @@ public class Thread
 #if defined(__WIN32__)
    HANDLE handle;
    uint id;
-#else
+#elif !defined(__EMSCRIPTEN__)
    pthread_t id;
    bool dontDetach;
    Semaphore sem { };
@@ -58,6 +58,7 @@ public class Thread
    uint returnCode;
    bool started;
 
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
    uint ThreadCallBack()
 #else
@@ -82,6 +83,7 @@ public class Thread
       return (void *)(uintptr_t)returnCode;
 #endif
    }
+#endif
 
 public:
    virtual uint Main(void);
@@ -91,11 +93,12 @@ public:
       incref this;
       if(!started)
       {
-#if !defined(__WIN32__)
+#if !defined(__WIN32__) && !defined(__EMSCRIPTEN__)
          sem.TryWait();
 #endif
          started = true;
          // printf("Creating %s thread\n", _class.name);
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
          if(!handle)
          {
@@ -112,13 +115,15 @@ public:
             error = pthread_create(&id, null /*&attr*/, ThreadCallBack, this);
             if(error)
                printf("Error %d creating a thread\n", error);
-          }
+         }
+#endif
 #endif
       }
    }
 
    void Kill()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       if(handle)
       {
@@ -129,6 +134,7 @@ public:
       if(started)
          pthread_kill(id, SIGQUIT);
 #endif
+#endif
       if(started)
       {
          started = false;
@@ -138,6 +144,7 @@ public:
 
    void Wait()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       if(WaitForSingleObject(handle, INFINITE /*2000*/) == WAIT_TIMEOUT)
          PrintLn("Thread not returning?\n");
@@ -150,10 +157,12 @@ public:
       if(started)
          sem.Wait();
 #endif
+#endif
    }
 
    void SetPriority(ThreadPriority priority)
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       SetThreadPriority(handle, priority);
 #else
@@ -164,7 +173,9 @@ public:
       pthread_setschedparam(id, policy, &param);
       */
 #endif
+#endif
    }
 
    property bool created { get { return started; } };
 }
+

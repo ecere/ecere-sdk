@@ -2,6 +2,8 @@ namespace sys;
 
 import "System"
 
+#if !defined(__EMSCRIPTEN__)
+
 public class FileChange
 {
 public:
@@ -431,3 +433,5 @@ static class MonitorThread : Thread
       return 0;
    }
 }
+
+#endif // !defined(__EMSCRIPTEN__)

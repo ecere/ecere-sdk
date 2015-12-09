@@ -26,6 +26,8 @@ import "System"
 
 public class Semaphore : struct
 {
+#if !defined(__EMSCRIPTEN__)
+
 #if defined(__WIN32__)
    HANDLE handle;
 #elif defined(__APPLE__)
@@ -35,11 +37,13 @@ public class Semaphore : struct
 #else
    sem_t semaphore;
 #endif
+#endif
 
    int initCount, maxCount;
 
    Semaphore()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       handle = CreateSemaphore(null, 0, 1, null);
 #elif defined(__APPLE__)
@@ -47,12 +51,14 @@ public class Semaphore : struct
 #else
       sem_init(&semaphore, 0, 0);
 #endif
+#endif
       maxCount = 1;
       initCount = 0;
    }
 
    ~Semaphore()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       if(handle) CloseHandle(handle);
 #elif defined(__APPLE__)
@@ -60,12 +66,14 @@ public class Semaphore : struct
 #else
       sem_destroy(&semaphore);
 #endif
+#endif
    }
 
 public:
    bool TryWait(void)
    {
       bool result;
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       result = WaitForSingleObject(handle, 0) != WAIT_TIMEOUT;
 #elif defined(__APPLE__)
@@ -84,11 +92,13 @@ public:
 #else
       result = sem_trywait(&semaphore) != EAGAIN;
 #endif
+#endif
       return result;
    }
 
    void Wait(void)
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       if(WaitForSingleObject(handle, INFINITE /*2000*/) == WAIT_TIMEOUT)
          PrintLn("Semaphore not released?");
@@ -108,10 +118,12 @@ public:
       sem_wait(&semaphore);
 #endif
 #endif
+#endif
    }
 
    void Release(void)
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       ReleaseSemaphore(handle, 1, null);
 #elif defined(__APPLE__)
@@ -125,12 +137,14 @@ public:
       if(count < maxCount)
          sem_post(&semaphore);
 #endif
+#endif
    }
 
    property int initCount
    {
       set
       {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
          if(handle) CloseHandle(handle);
          handle = CreateSemaphore(null, initCount, value, null);
@@ -142,6 +156,7 @@ public:
          sem_destroy(&semaphore);
          sem_init(&semaphore, 0, initCount);
 #endif
+#endif
          initCount = value;
       }
       get { return initCount; }
@@ -150,9 +165,11 @@ public:
    {
       set
       {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
          if(handle) CloseHandle(handle);
          handle = CreateSemaphore(null, value, maxCount, null);
+#endif
 #endif
          maxCount = value;
       }
