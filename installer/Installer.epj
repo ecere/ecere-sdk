@@ -7,7 +7,7 @@
 
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "setup-ecere-0.44.11-win32",
+      "TargetFileName" : "setup-ecere-0.44.12-win32",
       "Libraries" : [
          "ole32",
          "uuid",

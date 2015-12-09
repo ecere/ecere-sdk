@@ -154,6 +154,10 @@ msgstr "Data Access"
 msgid "Database"
 msgstr "Database"
 
+#: ./src/installer.ec:2
+msgid "December 10th, 2015"
+msgstr "December 10th, 2015"
+
 #: ./src/installer.ec:428
 msgid "Desktop Icon"
 msgstr "Desktop Icon"
@@ -185,17 +189,13 @@ msgstr "Ecere Extras"
 
 #: ./src/installer.ec:449
 #: ./src/installer.ec:1197
-msgid "Ecere Software Development Kit Setup - v0.44.11 \"Ryōan-ji\" 64 Bit Edition"
-msgstr "Ecere Software Development Kit Setup - v0.44.11 \"Ryōan-ji\" 64 Bit Edition"
+msgid "Ecere Software Development Kit Setup - v0.44.12 \"Ryōan-ji\" 64 Bit Edition"
+msgstr "Ecere Software Development Kit Setup - v0.44.12 \"Ryōan-ji\" 64 Bit Edition"
 
 #: ./src/installer.ec:314
 #: ./src/installer.ec:315
 msgid "Ecere Vanilla"
 msgstr "Ecere Vanilla"
-
-#: ./src/installer.ec:2
-msgid "February 16th, 2015"
-msgstr "February 16th, 2015"
 
 #: ./src/installer.ec:1833
 msgid "Finish"

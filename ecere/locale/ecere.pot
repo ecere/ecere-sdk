@@ -43,14 +43,14 @@ msgstr "Alt+"
 #: ./src/gui/controls/DropBox.ec:170
 #: ./src/gui/controls/EditBox.ec:799
 #: ./src/gui/controls/Label.ec:47
-#: ./src/gui/controls/ListBox.ec:980
-#: ./src/gui/controls/ListBox.ec:1013
+#: ./src/gui/controls/ListBox.ec:981
 #: ./src/gui/controls/ListBox.ec:1014
-#: ./src/gui/controls/ListBox.ec:1018
-#: ./src/gui/controls/ListBox.ec:1046
+#: ./src/gui/controls/ListBox.ec:1015
+#: ./src/gui/controls/ListBox.ec:1019
 #: ./src/gui/controls/ListBox.ec:1047
 #: ./src/gui/controls/ListBox.ec:1048
 #: ./src/gui/controls/ListBox.ec:1049
+#: ./src/gui/controls/ListBox.ec:1050
 #: ./src/gui/controls/Picture.ec:19
 #: ./src/gui/controls/Picture.ec:39
 #: ./src/gui/controls/ScrollBar.ec:81
@@ -115,17 +115,17 @@ msgstr "August"
 #: ./src/gui/controls/EditBox.ec:801
 #: ./src/gui/controls/EditBox.ec:802
 #: ./src/gui/controls/Label.ec:18
-#: ./src/gui/controls/ListBox.ec:962
-#: ./src/gui/controls/ListBox.ec:1001
-#: ./src/gui/controls/ListBox.ec:1009
+#: ./src/gui/controls/ListBox.ec:963
+#: ./src/gui/controls/ListBox.ec:1002
 #: ./src/gui/controls/ListBox.ec:1010
 #: ./src/gui/controls/ListBox.ec:1011
 #: ./src/gui/controls/ListBox.ec:1012
-#: ./src/gui/controls/ListBox.ec:1044
+#: ./src/gui/controls/ListBox.ec:1013
 #: ./src/gui/controls/ListBox.ec:1045
-#: ./src/gui/controls/ListBox.ec:1050
+#: ./src/gui/controls/ListBox.ec:1046
 #: ./src/gui/controls/ListBox.ec:1051
-#: ./src/gui/controls/ListBox.ec:1055
+#: ./src/gui/controls/ListBox.ec:1052
+#: ./src/gui/controls/ListBox.ec:1056
 #: ./src/gui/controls/ScrollBar.ec:83
 #: ./src/gui/controls/ScrollBar.ec:87
 #: ./src/gui/controls/ScrollBar.ec:98
@@ -163,7 +163,7 @@ msgstr "Behavior"
 #: ./src/gui/dialogs/ColorPicker.ec:730
 #: ./src/gui/dialogs/FileDialog.ec:1270
 #: ./src/gui/dialogs/FileDialog.ec:1564
-#: ./src/gui/dialogs/FindDialog.ec:73
+#: ./src/gui/dialogs/FindDialog.ec:74
 #: ./src/gui/dialogs/MessageBox.ec:88
 #: ./src/gui/dialogs/MessageBox.ec:107
 #: ./src/gui/dialogs/ReplaceDialog.ec:374
@@ -260,7 +260,7 @@ msgstr "Deprecated"
 msgid "Design"
 msgstr "Design"
 
-#: ./src/gui/dialogs/FindDialog.ec:46
+#: ./src/gui/dialogs/FindDialog.ec:47
 msgid "Direction"
 msgstr "Direction"
 
@@ -282,7 +282,7 @@ msgstr "Directory:"
 msgid "Document"
 msgstr "Document"
 
-#: ./src/gui/dialogs/FindDialog.ec:41
+#: ./src/gui/dialogs/FindDialog.ec:42
 msgid "Down"
 msgstr "Down"
 
@@ -347,11 +347,11 @@ msgid "Filter:"
 msgstr "Filter:"
 
 #: ./src/gui/dialogs/FindDialog.ec:7
-#: ./src/gui/dialogs/FindDialog.ec:61
+#: ./src/gui/dialogs/FindDialog.ec:62
 msgid "Find"
 msgstr "Find"
 
-#: ./src/gui/dialogs/FindDialog.ec:51
+#: ./src/gui/dialogs/FindDialog.ec:52
 #: ./src/gui/dialogs/ReplaceDialog.ec:252
 msgid "Find Next"
 msgstr "Find Next"
@@ -364,7 +364,7 @@ msgstr "Find Next\tF3"
 msgid "Find Previous\tShift-F3"
 msgstr "Find Previous\tShift-F3"
 
-#: ./src/gui/dialogs/FindDialog.ec:85
+#: ./src/gui/dialogs/FindDialog.ec:86
 #: ./src/gui/dialogs/ReplaceDialog.ec:379
 msgid "Find what:"
 msgstr "Find what:"
@@ -482,7 +482,7 @@ msgstr "Mar"
 msgid "March"
 msgstr "March"
 
-#: ./src/gui/dialogs/FindDialog.ec:31
+#: ./src/gui/dialogs/FindDialog.ec:32
 #: ./src/gui/dialogs/ReplaceDialog.ec:229
 msgid "Match case"
 msgstr "Match case"
@@ -588,7 +588,7 @@ msgid "Please enter a name."
 msgstr "Please enter a name."
 
 #: ./src/gui/controls/DropBox.ec:95
-#: ./src/gui/controls/ListBox.ec:963
+#: ./src/gui/controls/ListBox.ec:964
 msgid "Private"
 msgstr "Private"
 
@@ -675,7 +675,7 @@ msgstr "Save\tCtrl+S"
 msgid "Search Finished"
 msgstr "Search Finished"
 
-#: ./src/gui/dialogs/FindDialog.ec:61
+#: ./src/gui/dialogs/FindDialog.ec:62
 #: ./src/gui/dialogs/ReplaceDialog.ec:162
 #: ./src/gui/dialogs/ReplaceDialog.ec:346
 msgid "Search string not found."
@@ -805,7 +805,7 @@ msgstr "Type"
 msgid "Undo\tCtrl+Z"
 msgstr "Undo\tCtrl+Z"
 
-#: ./src/gui/dialogs/FindDialog.ec:36
+#: ./src/gui/dialogs/FindDialog.ec:37
 msgid "Up"
 msgstr "Up"
 
@@ -833,7 +833,7 @@ msgstr "Wednesday"
 msgid "Whole File"
 msgstr "Whole File"
 
-#: ./src/gui/dialogs/FindDialog.ec:26
+#: ./src/gui/dialogs/FindDialog.ec:27
 #: ./src/gui/dialogs/ReplaceDialog.ec:223
 msgid "Whole word only"
 msgstr "Whole word only"

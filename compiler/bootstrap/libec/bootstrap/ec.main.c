@@ -271,6 +271,20 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
@@ -279,23 +293,9 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
-
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
-
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
-
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
-
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
-
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
-
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
-
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__TemplateMemberType;
 
@@ -630,6 +630,13 @@ __ecereProp_double_signBit = _property = __ecereNameSpace__ecere__com__eClass_Fi
 __ecereProp_double_Get_signBit = _property->Get;
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
 __ecereClass___ecereNameSpace__ecere__com__Instance = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
+__ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList<TopoEdge, link = in>");
+__ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList<TopoEdge, link = out>");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ClassPropertyValue>");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ecere::com::Module>");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<Location> >");
+__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::List<ecere::com::Module> >");
 __ecereClass___ecereNameSpace__ecere__com__Module = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Module");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "float");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "inf", module);
@@ -665,15 +672,8 @@ __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = __ecereNameSpace__ece
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Iterator");
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
-__ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList<TopoEdge, link = in>");
-__ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList<TopoEdge, link = out>");
 __ecereClass___ecereNameSpace__ecere__com__List = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List");
-__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ClassPropertyValue>");
-__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
-__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ecere::com::Module>");
 __ecereClass___ecereNameSpace__ecere__com__Map = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map");
-__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<Location> >");
-__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::List<ecere::com::Module> >");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_key = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "key", module);
 __ecereProp___ecereNameSpace__ecere__com__MapIterator_map = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "map", module);

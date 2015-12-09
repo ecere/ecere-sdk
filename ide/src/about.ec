@@ -36,8 +36,8 @@ class AboutIDE : Window
       message = PrintString(
             "Ecere Software Development Kit ", strcmp(shortVersion, "unknown") ? "v" : "", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
             "Build " REPOSITORY_VERSION "\n"
-            "Copyright © 2005-2014 Ecere Corporation\n"
-            "Copyright © 1996-2014 Jérôme Jacovella-St-Louis");
+            "Copyright © 2005-2015 Ecere Corporation\n"
+            "Copyright © 1996-2015 Jérôme Jacovella-St-Louis");
       versionCopyright.contents = message;
       delete message;
       delete shortVersion;

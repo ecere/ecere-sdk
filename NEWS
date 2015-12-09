@@ -1,8 +1,14 @@
+Ecere SDK 0.44.12 (December 10, 2015)
+
+   * Bug fix release
+   * Improved JSON Support
+   * Improved CSV support (extras)
+----------------------------------------
 Ecere SDK 0.44.11 (February 16, 2015)
 
    * Bug fix release
    * Fixed crash on writing initial config file on Linux		
-
+----------------------------------------
 Ecere SDK 0.44.10 (August 7, 2014)
 
    * Compiler fixes and optimizations
