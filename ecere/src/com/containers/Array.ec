@@ -2,6 +2,10 @@ namespace com;
 
 import "Container"
 
+#ifdef _DEBUG
+// #define MEMTRACKING
+#endif
+
 default:
 extern int __ecereVMethodID_class_OnUnserialize;
 private:
@@ -150,6 +154,13 @@ public:
             else if(value > count)
                memset((byte *)array + count * class(T).typeSize, 0, (value - count) * class(T).typeSize);
             count = value;
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+            if(array)
+            {
+               MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
+               block._class = class(T);
+            }
+#endif
          }
       }
    }

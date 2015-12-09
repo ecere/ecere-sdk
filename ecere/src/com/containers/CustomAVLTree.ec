@@ -598,6 +598,7 @@ public:
 
    BT GetAtPosition(const KT pos, bool create, bool * justAdded)
    {
+      // TODO: FindEx / AddEx & create nodes if create is true?
       return root ? root.Find(class(KT), pos) : null;
    }
 }

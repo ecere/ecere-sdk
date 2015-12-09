@@ -31,6 +31,11 @@ import "Mutex"
 #define REDZONE 0
 #endif
 
+
+#ifdef _DEBUG
+// #define MEMTRACKING
+#endif
+
 #ifdef MEMINFO
 import "Thread"
 static define MAX_MEMORY_LOC = 40;
@@ -711,6 +716,9 @@ private class MemBlock : struct
    MemBlock prev, next;
    MemPart part;
    uint size;
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+   Class _class;
+#endif
 };
 
 private class MemPart : struct
@@ -1227,6 +1235,9 @@ static void * _mymalloc(unsigned int size)
          block = pools[p].Add();
          if(block)
          {
+#if defined(_DEBUG) && defined(MEMTRACKING)
+            block._class = null;
+#endif
             block.size = size;
             pools[p].usedSpace += size;
          }
@@ -1239,6 +1250,9 @@ static void * _mymalloc(unsigned int size)
             TOTAL_MEM += sizeof(class MemBlock) + size;
             OUTSIDE_MEM += sizeof(class MemBlock) + size;
             block.part = null;
+#if defined(_DEBUG) && defined(MEMTRACKING)
+            block._class = null;
+#endif
             block.size = size;
          }
       }
@@ -4583,6 +4597,14 @@ public dllexport void * eInstance_New(Class _class)
       allocateClass = null;
    memMutex.Release();
 #endif
+
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+      {
+         MemBlock block = (MemBlock)((byte *)instance - sizeof(class MemBlock));
+         block._class = _class;
+      }
+#endif
+
       if(_class.type == normalClass)
       {
          instance._class = _class;
@@ -7227,3 +7249,77 @@ public uint16 * UTF8toUTF16(const char * source, int * wordCount)
 }
 
 namespace com;
+
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+import "Map"
+
+Map<Class, int> blocksByClass { };
+#endif
+
+public void queryMemInfo(char * string)
+{
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+   char s[1024];
+   int p;
+   uint numBlocks = 0;
+   //uintsize nonClassBytes = 0;
+   sprintf(s, "Total System Memory Usage: %.02f\n", TOTAL_MEM / 1048576.0f);
+   strcat(string, s);
+
+   for(p = 0; pools && p < NUM_POOLS; p++)
+   {
+      BlockPool * pool = &pools[p];
+      if(pool->totalSize)
+      {
+         numBlocks += pool->totalSize;
+         sprintf(s, "%8d bytes: %d blocks in %d parts (%.02f mb used; taking up %.02f mb space)\n",
+            pool->blockSize, pool->numBlocks, pool->numParts, pool->usedSpace / 1048576.0f, pool->totalSize * pool->blockSpace / 1048576.0f);
+         strcat(string, s);
+      }
+   }
+/*
+
+   blocksByClass.Free();
+   memMutex.Wait();
+   for(p = 0; pools && p < NUM_POOLS; p++)
+   {
+      BlockPool * pool = &pools[p];
+      MemBlock block;
+      for(block = pool->first; block; block = block.next)
+      {
+         Class c = block._class;
+         blocksByClass[c]++;
+         if(!c)
+            nonClassBytes += block.size;
+      }
+   }
+   memMutex.Release();
+
+   //for(c : blocksByClass)
+   {
+      MapIterator<Class, int> it { map = blocksByClass };
+      while(it.Next())
+      {
+         int c = it.data;
+         Class _class = it.key; //&c;
+         uintsize size = _class ? _class.structSize : nonClassBytes;
+         float totalSize = (float)size * (_class ? c : 1) / 1048576.0f;
+         if(totalSize > 1)
+         {
+            sprintf(s, "%s (%d bytes): %d instances (%.02f mb used)\n", _class ? _class.name : "(none)", (int)size, c, totalSize);
+            strcat(string, s);
+         }
+      }
+   }
+*/
+   sprintf(s, "Non-pooled memory: %.02f\n", OUTSIDE_MEM / 1048576.0f);
+   strcat(string, s);
+   sprintf(s, "Total Blocks Count: %d (%.02f mb overhead)\n", numBlocks, (float)sizeof(struct MemBlock) * numBlocks / 1048576.0f);
+   strcat(string, s);
+#ifdef MEMORYGUARD
+   sprintf(s, "MemoryGuard: %d blocks (%.02f mb RedZone, %.02f mb MemInfo)\n", memBlocks.count,
+      numBlocks * 2 * REDZONE / 1048576.0f, sizeof(struct MemInfo) * memBlocks.count / 1048576.0f);
+   strcat(string, s);
+#endif
+#endif
+}
