@@ -836,7 +836,7 @@ class SQLiteTable : Table
             result = sqlite3_create_collation_v2(db.db, type.fullName, SQLITE_UTF8, type, CollationCompare, null);
          }
       }
-      if(sqliteType != SQLITE_BLOB && eClass_IsDerived(type, class(eda::Id)))
+      if(sqliteType != SQLITE_BLOB && eClass_IsDerived(type, class(eda::Id)) && type != class(eda::Id))
       {
          Table * table = (Table *)(intptr)eClass_GetProperty(type, "table");
          if(table) refTable = *table;
