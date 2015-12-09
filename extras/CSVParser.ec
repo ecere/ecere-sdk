@@ -2,6 +2,39 @@
 
 public import "ecere"
 
+public int UnescapeString(char * d, char * s, int len)
+{
+   int j = 0, k = 0;
+   char ch;
+   while(j < len && (ch = s[j]))
+   {
+      switch(ch)
+      {
+         case '\\':
+            switch((ch = s[++j]))
+            {
+               case 'n': d[k] = '\n'; break;
+               case 't': d[k] = '\t'; break;
+               case 'a': d[k] = '\a'; break;
+               case 'b': d[k] = '\b'; break;
+               case 'f': d[k] = '\f'; break;
+               case 'r': d[k] = '\r'; break;
+               case 'v': d[k] = '\v'; break;
+               case '\\': d[k] = '\\'; break;
+               case '\"': d[k] = '\"'; break;
+               case '\'': d[k] = '\''; break;
+               default: d[k] = '\\'; d[k] = ch;
+            }
+            break;
+         default:
+            d[k] = ch;
+      }
+      j++, k++;
+   }
+   d[k] = '\0';
+   return k;
+}
+
 // to be moved in ecere?
 public class FileHandler
 {
@@ -19,6 +52,8 @@ public struct CSVParserParameters
    char valueQuotes;
    int expectedFieldCount;
    bool tolerateNewLineInValues;
+   bool escaped;
+   bool lastFieldEndsWithNewLine;
    //bool checkNulls;
    //bool checkCurlies;
 };
@@ -63,13 +98,14 @@ public:
    virtual void Process()
    {
       bool quoted = false, status = true;
+      bool escaped = false;
       Array<String> values { };
       bool started = false;
       int start = 0, end = 0;
       int readCount = 0;
       Array<char> buffer { minAllocSize = 4096 };
 
-      //info.charNum = 0;
+      info.charNum = 0;
       info.lineNum = 0;
       info.rowNum = 0;
       info.fieldNum = 0;
@@ -94,11 +130,21 @@ public:
             char ch = buffer[c];
             if(quoted)
             {
-               if(ch == options.valueQuotes)
+               // For Git import...
+               bool inTextQuote = false;
+
+               if(options.lastFieldEndsWithNewLine && info.fieldNum == options.expectedFieldCount - 1 && ch == '\"' && info.charNum > 0)
+                  inTextQuote = true;
+
+               if(!inTextQuote && !escaped && ch == options.valueQuotes)
                {
                   quoted = false;
                   end = c;
                }
+               if(options.escaped && ch == '\\')
+                  escaped = true;
+               else
+                  escaped = false;
             }
             else
             {
@@ -116,8 +162,13 @@ public:
                   {
                      int len = started ? (end-start) : 0;
                      String value = new char[len+1];
-                     memcpy(value, &buffer[start], len);
-                     value[len] = 0;
+                     if(options.escaped)
+                        UnescapeString(value, &buffer[start], len);
+                     else
+                     {
+                        memcpy(value, &buffer[start], len);
+                        value[len] = 0;
+                     }
                      values.Add(value);
                   }
                   start = end = 0;
@@ -129,7 +180,6 @@ public:
                      info.rowNum++;
                      status = OnRowStrings(values);
                      values.Free();
-                     //info.charNum = 0;
                      info.fieldNum = 0;
                   }
                }
@@ -144,15 +194,24 @@ public:
                   end = c+1;
                }
             }
-            //info.charNum++;
+            if(ch == '\r' || ch == '\n')
+               info.charNum = 0;
+            else
+               info.charNum++;
          }
       }
       if(end > start)
       {
          int len = end-start;
+
          String value = new char[len+1];
-         memcpy(value, &buffer[start], len);
-         value[len] = 0;
+         if(options.escaped)
+            UnescapeString(value, &buffer[start], len);
+         else
+         {
+            memcpy(value, &buffer[start], len);
+            value[len] = 0;
+         }
          values.Add(value);
       }
       if(values.count && status)
