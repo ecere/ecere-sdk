@@ -374,7 +374,7 @@ static int curStack = 0;
 #if defined(_GLES)
 
    // OpenGL ES Porting Kit
-
+#if defined(__ANDROID__)
    #define glBindFramebuffer        glBindFramebufferOES
    #define glBindRenderbuffer       glBindRenderbufferOES
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
@@ -386,7 +386,6 @@ static int curStack = 0;
    #define glDeleteFramebuffers     glDeleteFramebuffersOES
    #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
 
-#if defined(__ANDROID__)
    #define GL_POLYGON_STIPPLE 0xFFFF
    #define GL_LINE_STIPPLE 0xFFFF
    #define GL_LINE 0xFFFF
