@@ -15,6 +15,9 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC="
+            ],
             "FastMath" : false
          }
       },
@@ -23,8 +26,28 @@
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : true,
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC="
+            ],
             "Console" : true,
             "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=static"
+            ],
+            "Libraries" : [
+               "ecereStatic",
+               "freetype",
+               "z"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten.x32"
+            ]
          }
       }
    ],

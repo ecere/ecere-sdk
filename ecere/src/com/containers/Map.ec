@@ -1,6 +1,8 @@
 namespace com;
 
+#if !defined(_DEBUG) || defined(MEMINFO)
 import "instance"  // TOFIX: This is required to build Debug on Ubuntu 10.04, GCC 4.4.3
+#endif
 import "CustomAVLTree"
 
 default:

@@ -6,6 +6,8 @@ import "fontManagement"
 #define ECERE_NOTRUETYPE
 #endif
 
+#define _Noreturn
+
 #undef __BLOCKS__
 #define uint _uint
 #define strlen _strlen

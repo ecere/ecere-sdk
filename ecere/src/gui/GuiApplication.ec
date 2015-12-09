@@ -1,6 +1,14 @@
 namespace gui;
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 #define property _property
 #define new _new
 #define class _class
@@ -77,7 +85,7 @@ import "network"
 import "CocoaInterface"
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 import "XInterface"
 #endif
 
@@ -160,9 +168,13 @@ public class GuiApplication : Application
 
    bool processAll;
 
+#if !defined(__EMSCRIPTEN__)
    Mutex waitMutex {};
+#endif
    bool waiting;
+#if !defined(__EMSCRIPTEN__)
    Mutex lockMutex {};
+#endif
 
    Window interimWindow;
    bool caretEnabled;
@@ -179,7 +191,9 @@ public class GuiApplication : Application
    {
       SystemCursor c;
 
+#if !defined(__EMSCRIPTEN__)
       mainThread = GetCurrentThreadID();
+#endif
       if(!guiApp)
          guiApp = this;
 
@@ -194,9 +208,11 @@ public class GuiApplication : Application
       for(c = 0; c<SystemCursor::enumSize; c++)
          systemCursors[c] = Cursor { systemCursor = c; };
 
+#if !defined(__EMSCRIPTEN__)
       globalSystem.eventSemaphore = Semaphore { };
       globalSystem.fileMonitorMutex = Mutex { };
       globalSystem.fileMonitors.offset = (uint)(uintptr)&((FileMonitor)0).prev;
+#endif
       return true;
    }
 
@@ -209,12 +225,12 @@ public class GuiApplication : Application
       delete desktop;
       customCursors.Clear();
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
 
-#if !defined(__ANDROID__)
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       // Because destruction of app won't be from main thread
       if(guiApplicationInitialized)
          lockMutex.Release();
@@ -238,9 +254,11 @@ public class GuiApplication : Application
       Network_Terminate();
 #endif
 
+#if !defined(__EMSCRIPTEN__)
       delete globalSystem.eventSemaphore;
       delete globalSystem.fileMonitorMutex;
       delete globalSystem.fileMonitorThread;
+#endif
 
       UnapplySkin(class(Window));
 
@@ -552,7 +570,9 @@ public class GuiApplication : Application
 
          errorLevel = 2;
 
+#if !defined(__EMSCRIPTEN__)
          lockMutex.Wait();
+#endif
 /*#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
@@ -572,7 +592,9 @@ public class GuiApplication : Application
             desktop.caption = appName;
             *&desktop.visible = true;
             desktop.position = Point { };
+#if !defined(__EMSCRIPTEN__)
             desktop.mutex = Mutex { };
+#endif
             desktop.created = true;
          }
 
@@ -593,6 +615,13 @@ public class GuiApplication : Application
                defaultDriver = "X"; //"CocoaOpenGL";
          }
    #elif defined(__ANDROID__)
+         {
+            if(driver)
+               defaultDriver = driver;
+            else
+               defaultDriver = "OpenGL";
+         }
+   #elif defined(__EMSCRIPTEN__)
          {
             if(driver)
                defaultDriver = driver;
@@ -677,6 +706,10 @@ public:
             }
          }
 
+#ifdef __EMSCRIPTEN__
+      emscripten_set_main_loop(emscripten_main_loop_callback, 1/*60*/, 1);
+#endif
+
          if(desktop)
          {
             int terminated = 0;
@@ -703,15 +736,21 @@ public:
                      break;
                if(!child) break;
 
+#if !defined(__EMSCRIPTEN__)
                for(window = desktop.children.first; window; window = window.next)
                   if(window.mutex) window.mutex.Wait();
+#endif
                UpdateDisplay();
+#if !defined(__EMSCRIPTEN__)
                for(window = desktop.children.first; window; window = window.next)
                   if(window.mutex) window.mutex.Release();
+#endif
                wait = !ProcessInput(true);
+#if !defined(__EMSCRIPTEN__)
 #ifdef _DEBUG
                if(lockMutex.owningThread != GetCurrentThreadID())
                   PrintLn("WARNING: ProcessInput returned unlocked GUI!");
+#endif
 #endif
                if(!Cycle(wait))
                   wait = false;
@@ -720,15 +759,17 @@ public:
                   Wait();
                else
                {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
                   if(xGlobalDisplay)
                      XUnlockDisplay(xGlobalDisplay);
 #endif
 
+#if !defined(__EMSCRIPTEN__)
                   lockMutex.Release();
                   lockMutex.Wait();
+#endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
                   if(xGlobalDisplay)
                      XLockDisplay(xGlobalDisplay);
 #endif
@@ -747,23 +788,27 @@ public:
 
    void Wait(void)
    {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
 
+#if !defined(__EMSCRIPTEN__)
       lockMutex.Release();
 
       waitMutex.Wait();
+#endif
       waiting = true;
       if(interfaceDriver)
          interfaceDriver.Wait();
       waiting = false;
+#if !defined(__EMSCRIPTEN__)
       waitMutex.Release();
 
       lockMutex.Wait();
+#endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -814,7 +859,9 @@ public:
       {
          if(fullScreenMode && desktop.display)
          {
+#if !defined(__EMSCRIPTEN__)
             desktop.mutex.Wait();
+#endif
             if(desktop.active)
             {
                desktop.display.Lock(true);
@@ -836,7 +883,9 @@ public:
 
                desktop.display.Unlock();
             }
+#if !defined(__EMSCRIPTEN__)
             desktop.mutex.Release();
+#endif
          }
          else
          {
@@ -844,7 +893,9 @@ public:
 
             for(window = desktop.children.first; window; window = window.next)
             {
+#if !defined(__EMSCRIPTEN__)
                if(window.mutex) window.mutex.Wait();
+#endif
                if(window.visible && window.dirty)
                {
                   // Logf("Updating %s\n", window.name);
@@ -867,7 +918,9 @@ public:
                   usleep(1000000);
                   */
                }
+#if !defined(__EMSCRIPTEN__)
                if(window.mutex) window.mutex.Release();
+#endif
             }
          }
       }
@@ -875,7 +928,9 @@ public:
 
    void WaitEvent(void)
    {
+#if !defined(__EMSCRIPTEN__)
       globalSystem.eventSemaphore.Wait();
+#endif
    }
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NONET)
@@ -1090,7 +1145,9 @@ public:
 
    void SignalEvent(void)
    {
+#if !defined(__EMSCRIPTEN__)
       globalSystem.eventSemaphore.Release();
+#endif
    }
 
    // TODO: Might want to make this private with simpler public version?
@@ -1282,6 +1339,7 @@ public:
 
    bool ProcessFileNotifications()
    {
+#if !defined(__EMSCRIPTEN__)
       bool activity = false;
       FileMonitor monitor, next;
       static int reentrant = 0;
@@ -1347,24 +1405,31 @@ public:
       // printf("[%d] Releasing in ProcessFileNotifications fileMonitor Mutex %x...\n", (int)GetCurrentThreadID(), globalSystem.fileMonitorMutex);
       globalSystem.fileMonitorMutex.Release();
       return activity;
+#else
+      return false;
+#endif
    }
 
    void Lock(void)
    {
+#if !defined(__EMSCRIPTEN__)
       lockMutex.Wait();
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
+#endif
 #endif
    }
 
    void Unlock(void)
    {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+#if !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
       lockMutex.Release();
+#endif
    }
 
    Cursor GetCursor(SystemCursor cursor)
@@ -1395,7 +1460,9 @@ public:
          return (const char *)(this ? appName : null);
       }
    };
+#if !defined(__EMSCRIPTEN__)
    property Semaphore semaphore { get { return globalSystem.eventSemaphore; } };
+#endif
    property bool alwaysEmptyInput{ set { processAll = value; } get { return processAll; } };
    property bool fullScreen
    {
@@ -1463,3 +1530,12 @@ public:
       set { timerResolution = value; if(interfaceDriver) interfaceDriver.SetTimerResolution(value); }
    };
 };
+
+#ifdef __EMSCRIPTEN__
+private void emscripten_main_loop_callback()
+{
+   guiApp.ProcessInput(false);
+   guiApp.Cycle(false);
+   guiApp.UpdateDisplay();
+}
+#endif

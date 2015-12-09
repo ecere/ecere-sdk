@@ -146,6 +146,7 @@ private:
    SettingsLocationType readType;
    SettingsLocationType writeType;
 
+#if !defined(__EMSCRIPTEN__)
    FileMonitor settingsMonitor
    {
       this, fileChange = { modified = true };
@@ -156,6 +157,7 @@ private:
          return true;
       }
    };
+#endif
    File f;
    bool locked;
 
@@ -380,7 +382,9 @@ public:
       SettingsLocationType type = readType;
       if(!f)
       {
+#if !defined(__EMSCRIPTEN__)
          settingsMonitor.StopMonitoring();
+#endif
 
          if(settingsFilePath)
             FileOpenTryRead(type);
@@ -475,7 +479,9 @@ public:
       {
          locked = false;
 
+#if !defined(__EMSCRIPTEN__)
          settingsMonitor.StopMonitoring();
+#endif
 
          if(settingsFilePath)
             // Don't auto delete settingsFilePath because only want to try another path if we were using a global path
@@ -544,7 +550,9 @@ public:
    {
       if(f)
       {
+#if !defined(__EMSCRIPTEN__)
          settingsMonitor.StopMonitoring();
+#endif
          f.Unlock(0,0,true);
          locked = false;
          delete f;
@@ -556,8 +564,10 @@ public:
       Close();
       if(settingsFilePath && OnAskReloadSettings != GlobalSettings::OnAskReloadSettings)
       {
+#if !defined(__EMSCRIPTEN__)
          settingsMonitor.fileName = settingsFilePath;
          settingsMonitor.StartMonitoring();
+#endif
       }
    }
 }

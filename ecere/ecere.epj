@@ -480,6 +480,18 @@ if distributed with the Ecere SDK Windows installer.
             ],
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "NOBLENDING"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic"
+         }
       }
    ],
    "Files" : [
@@ -740,6 +752,12 @@ if distributed with the Ecere SDK Windows installer.
                                  "Options" : {
                                     "ExcludeFromBuild" : true
                                  }
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -762,6 +780,12 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -776,7 +800,17 @@ if distributed with the Ecere SDK Windows installer.
                               }
                            ]
                         },
-                        "PNGFormat.ec",
+                        {
+                           "FileName" : "PNGFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
@@ -802,6 +836,12 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         }
@@ -2214,6 +2254,17 @@ if distributed with the Ecere SDK Windows installer.
                                  }
                               }
                            ]
+                        },
+                        {
+                           "FileName" : "EmscriptenInterface.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
                         }
                      ],
                      "Options" : {
@@ -2409,6 +2460,12 @@ if distributed with the Ecere SDK Windows installer.
                            }
                         }
                      ]
+                  },
+                  {
+                     "Name" : "Emscripten",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
                   }
                ]
             },

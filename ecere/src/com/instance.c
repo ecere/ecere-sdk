@@ -24,7 +24,7 @@
 #undef bool
 #endif
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
 #include <windows.h>
@@ -54,14 +54,14 @@ typedef unsigned long long uint64;
 __declspec(dllexport) int isblank(int c) { return c == '\t' || c == ' '; }
 #endif
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 intptr_t stdinHandle, stdoutHandle;
 int osfStdin, osfStdout;
 FILE * fStdIn, * fStdOut;
 #endif
 
 FILE *eC_stdin(void)  {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
    if(!fStdIn)
    {
       stdinHandle = (intptr_t)GetStdHandle(STD_INPUT_HANDLE);
@@ -137,7 +137,7 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 typedef enum { unknown, win32, tux, apple } Platform;
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 Platform runtimePlatform = win32;
 #elif defined(__APPLE__)
 Platform runtimePlatform = apple;
@@ -190,7 +190,7 @@ static bool DualPipe_GetLine(FILE * p, char *s, int max)
 
 bool Instance_LocateModule(const char * name, char * fileName)
 {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
    HMODULE hModule = null;
    if(name && name[0])
    {
@@ -248,7 +248,7 @@ bool Instance_LocateModule(const char * name, char * fileName)
    }
 #elif defined(__unix__)
    //File f = FileOpen("/proc/self/maps", read);
-   FILE * f;
+   FILE * f = null;
    char exeName[MAX_FILENAME];
    exeName[0] = 0;
 #if defined(__linux__)
@@ -325,7 +325,7 @@ bool Instance_LocateModule(const char * name, char * fileName)
       }
       fclose(f);
    }
-#if !defined(ECERE_NOFILE) && !defined(__linux__)
+#if !defined(ECERE_NOFILE) && !defined(__linux__) && !defined(__EMSCRIPTEN__)
    if(name && name[0])
    {
       // Couldn't locate libraries with /proc/curmap/map, attempt with ldd
@@ -404,11 +404,11 @@ bool Instance_LocateModule(const char * name, char * fileName)
 
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr)
 {
-#if !defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
+#if !defined(__WIN32__) && !defined(__EMSCRIPTEN__) && !defined(ECERE_BOOTSTRAP)
    // Disable stdout buffering on Unix
    setvbuf(stdout, null, _IONBF, 0);
 #endif
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
    *parsedCommand = UTF16toUTF8(GetCommandLineW());
    *argvPtr = eSystem_New0(sizeof(char *) * 512);
    *argcPtr = Tokenize(*parsedCommand, 512,(void*)(char **)(*argvPtr), forArgsPassing);
@@ -454,7 +454,7 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    *Load = null;
    *Unload = null;
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
    strcpy(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])
@@ -491,7 +491,9 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
       strcat(fileName, ".so");
 #endif
 
+#if !defined(__EMSCRIPTEN__)
    library = dlopen(fileName, RTLD_LAZY);
+#endif
    while(!library && attempts < sizeof(paths)/sizeof(paths[0]))
    {
       if(paths[attempts])
@@ -514,15 +516,19 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
 #else
          strcat(fileName, ".so");
 #endif
+#if !defined(__EMSCRIPTEN__)
       library = dlopen(fileName, RTLD_LAZY);
+#endif
    }
 
    if(library)
    {
       *Load = dlsym(library, "__ecereDll_Load");
       *Unload = dlsym(library, "__ecereDll_Unload");
+#if !defined(__EMSCRIPTEN__)
       if(!*Load)
          dlclose(library);
+#endif
    }
 #elif defined(__APPLE__)
    if(libLocation || strchr(name, '/'))
@@ -565,10 +571,10 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
 
 void Instance_Module_Free(void * library)
 {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
    if(library)
       FreeLibrary(library);
-#elif defined(__unix__) || defined(__APPLE__)
+#elif (defined(__unix__) || defined(__APPLE__)) && !defined(__EMSCRIPTEN__)
    if(library)
       dlclose(library);
 #endif
