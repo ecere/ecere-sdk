@@ -94,7 +94,10 @@ String GetNameString(Row r, Field nameField)
       if(type.type == structClass)
          data = (int64)(intptr)new0 byte[type.structSize];
       ((bool (*)())(void *)r.GetData)(r, nameField, type, (type.type == structClass) ? (void *)(intptr)data : &data);
-      s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)(intptr)data, tempString, null, null));
+      if(type.type == systemClass || type.type == enumClass || type.type == bitClass)
+         s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &data, tempString, null, null));
+      else
+         s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)(intptr)data, tempString, null, null));
       ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
       if(type.type == structClass)
       {
@@ -725,7 +728,8 @@ public:
    {
       if(listSection.fldId && listSection.fldName)
       {
-         bool stringName = !strcmp(listSection.fldName.type.dataTypeString, "char *");
+         Class type = listSection.fldName.type;
+         bool stringName = !strcmp(type.dataTypeString, "char *");
          while(r.Next())
          {
             Id id = 0;
@@ -734,7 +738,10 @@ public:
             if(stringName)
                r.GetData(listSection.fldName, s);
             else
-               s = PrintString("Entry ", id);
+            {
+               s = GetNameString(r, listSection.fldName);
+               // s = PrintString("Entry ", id);
+            }
             listSection.list.AddString(s).tag = id;
             delete s;
          }
