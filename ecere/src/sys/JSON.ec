@@ -35,11 +35,46 @@ public class JSONParser
 {
 public:
    File f;
+   char pch;
    char ch;
+   bool eCON;
 
    void SkipEmpty()
    {
-      while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t'))
+      if(eCON)
+      {
+         char pch;
+         bool lineComment = false;
+         bool comment = false;
+         while(!f.Eof() && (!ch || lineComment || comment || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
+         {
+            pch = ch;
+            f.Getc(&ch);
+            if(!lineComment && !comment && pch == '/')
+            {
+               if(ch == '/')
+                  lineComment = true;
+               else if(ch == '*')
+                  comment = true;
+            }
+            else if(lineComment && ch == '\n')
+               lineComment = false;
+            else if(comment && pch == '*' && ch == '/')
+               comment = false;
+         }
+      }
+      else
+      {
+         while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
+         {
+            f.Getc(&ch);
+         }
+      }
+   }
+
+   void SkipExtraSemicolon()
+   {
+      while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == ';'))
       {
          f.Getc(&ch);
       }
@@ -144,45 +179,109 @@ public:
       }
       else if(isalpha(ch))
       {
-         char buffer[256];
-         int c = 0;
-         while(c < sizeof(buffer)-1 && isalpha(ch))
+         if(eCON)
          {
-            buffer[c++] = ch;
-            if(!f.Getc(&ch)) break;
+            String string;
+            if(GetIdentifier(&string, null))
+            {
+               result = success;
+               if(eCON && (type.type == enumClass || type.type == unitClass))
+               {
+                  // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
+                  if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
+                     result = success;
+                  else
+                     result = typeMismatch;
+               }
+               else if(type && !strcmp(type.name, "bool"))
+               {
+                  if(!strcmpi(string, "false")) value.i = 0;
+                  else if(!strcmpi(string, "true")) value.i = 1;
+                  else
+                     result = typeMismatch;
+               }
+               else if(type && !strcmp(type.name, "SetBool"))
+               {
+                  if(!strcmpi(string, "false")) value.i = SetBool::false;
+                  else if(!strcmpi(string, "true")) value.i = SetBool::true;
+                  else
+                     result = typeMismatch;
+               }
+               else if(type && !strcmpi(string, "null"))
+               {
+                  if(type.type != structClass)
+                     value.p = 0;
+               }
+               else if(isSubclass(string, type))
+               {
+                  void * object = value.p;
+                  Class subtype = eSystem_SuperFindClass(string, type.module);
+                  SkipEmpty();
+                  result = GetObject(subtype, &object);
+                  if(result)
+                  {
+                     if(subtype && subtype.type == structClass);
+                     else if(subtype && (subtype.type == normalClass || subtype.type == noHeadClass || subtype.type == bitClass))
+                     {
+                        value.p = object;
+                     }
+                     else
+                     {
+                        result = typeMismatch;
+                        if(subtype)
+                           ((void (*)(void *, void *))(void *)subtype._vTbl[__ecereVMethodID_class_OnFree])(subtype, object);
+                     }
+                  }
+               }
+               else
+                  result = typeMismatch;
+            }
+            delete string;
          }
-         buffer[c] = 0;
-         result = success;
-
-         if(type)
+         else
          {
-            if(!strcmp(type.name, "bool"))
+            char buffer[256];
+            int c = 0;
+            while(c < sizeof(buffer)-1 && isalpha(ch))
             {
-               if(!strcmpi(buffer, "false")) value.i = 0;
-               else if(!strcmpi(buffer, "true")) value.i = 1;
+               buffer[c++] = ch;
+               if(!f.Getc(&ch)) break;
+            }
+            buffer[c] = 0;
+            result = success;
+
+            if(type)
+            {
+               if(!strcmp(type.name, "bool"))
+               {
+                  if(!strcmpi(buffer, "false")) value.i = 0;
+                  else if(!strcmpi(buffer, "true")) value.i = 1;
+                  else
+                     result = typeMismatch;
+               }
+               else if(!strcmp(type.name, "SetBool"))
+               {
+                  if(!strcmpi(buffer, "false")) value.i = SetBool::false;
+                  else if(!strcmpi(buffer, "true")) value.i = SetBool::true;
+                  else
+                     result = typeMismatch;
+               }
+               else if(!strcmpi(buffer, "null"))
+               {
+                  if(type.type != structClass)
+                     value.p = 0;
+               }
                else
                   result = typeMismatch;
-            }
-            else if(!strcmp(type.name, "SetBool"))
-            {
-               if(!strcmpi(buffer, "false")) value.i = SetBool::false;
-               else if(!strcmpi(buffer, "true")) value.i = SetBool::true;
-               else
-                  result = typeMismatch;
-            }
-            else if(!strcmpi(buffer, "null"))
-            {
-               if(type.type != structClass)
-                  value.p = 0;
             }
             else
                result = typeMismatch;
          }
-         else
-            result = typeMismatch;
       }
       else if(ch == '}' || ch == ']')
          result = noItem;
+      if(result == typeMismatch)
+         PrintLn("Warning: Value type mismatch");
       return result;
    }
 
@@ -351,6 +450,82 @@ public:
       return result;
    }
 
+   JSONResult GetIdentifier(String * string, bool * wasQuoted)
+   {
+      JSONResult result = syntaxError;
+      Array<char> buffer { minAllocSize = 256 };
+      bool comment = false;
+      bool quoted = false;
+
+      *string = null;
+      SkipEmpty();
+      if(ch == '\"')
+         quoted = true;
+      else
+         buffer.Add(ch);
+      result = success;
+      while(f.Getc(&ch))
+      {
+         if(!comment && ch == '/')
+         {
+            if(f.Getc(&ch))
+            {
+               if(ch == '/')
+                  break;
+               else if(ch == '*')
+                  comment = true;
+               else
+               {
+                  result = syntaxError;
+                  break;
+               }
+            }
+            else
+            {
+               result = syntaxError;
+               break;
+            }
+         }
+         else if(comment && ch == '*')
+         {
+            if(f.Getc(&ch))
+            {
+               if(ch == '/')
+               {
+                  comment = false;
+                  ch = 0;
+               }
+            }
+            else
+            {
+               result = syntaxError;
+               break;
+            }
+         }
+         else if(ch == '\"' || (!comment && ch && !isalpha(ch)))
+         {
+            if(quoted && ch == '\"' && wasQuoted)
+               *wasQuoted = true;
+            break;
+         }
+         else if(!comment && ch)
+         {
+            buffer.Add(ch);
+            if(buffer.minAllocSize < buffer.count)
+               buffer.minAllocSize *= 2;
+         }
+      }
+      if(result != syntaxError)
+      {
+         buffer.Add(0);
+         *string = CopyString(buffer.array);
+      }
+      delete buffer;
+      if(ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=')
+         ch = 0;
+      return result;
+   }
+
    JSONResult GetString(String * string)
    {
       JSONResult result = syntaxError;
@@ -359,7 +534,7 @@ public:
 
       *string = null;
       SkipEmpty();
-      if(ch == '\"')
+      if(ch == '\"' || eCON)
       {
          while(f.Getc(&ch))
          {
@@ -385,13 +560,57 @@ public:
                   }
                   escaped = false;
                }
-               else if(ch == '\"')
+               else if(eCON && ch == '\"')
+               {
+                  int seekback = 0;
+                  char pch;
+                  bool lineComment = false;
+                  bool comment = false;
+                  while(!f.Eof())
+                  {
+                     pch = ch;
+                     f.Getc(&ch);
+                     seekback--;
+                     if(!lineComment && !comment && pch == '/')
+                     {
+                        if(ch == '/')
+                           lineComment = true;
+                        else if(ch == '*')
+                           comment = true;
+                     }
+                     else if(lineComment && ch == '\n')
+                        lineComment = false;
+                     else if(comment && pch == '*' && ch == '/')
+                        comment = false;
+                     else if(ch == '=' || ch == ';' || ch == ',' || ch == '}')
+                     {
+                        ch = 0;
+                        seekback = -1;
+                        break;
+                     }
+                     else if(ch == '\"')
+                     {
+                        seekback = 0;
+                        ch = 0;
+                        break;
+                     }
+                  }
+                  if(seekback != 0)
+                  {
+                     f.Seek(seekback, current);
+                     break;
+                  }
+               }
+               else if((!eCON && ch == '\"'))
                {
                   break;
                }
-               buffer.Add(ch);
-               if(buffer.minAllocSize < buffer.count)
-                  buffer.minAllocSize *= 2;
+               if(ch)
+               {
+                  buffer.Add(ch);
+                  if(buffer.minAllocSize < buffer.count)
+                     buffer.minAllocSize *= 2;
+               }
             }
          }
          buffer.Add(0);
@@ -399,7 +618,7 @@ public:
          result = success;
       }
       delete buffer;
-      if(ch != ',' && ch != '}')
+      if(ch != ',' && ch != '}' && (!eCON || (ch != ';' && ch != '/')))
          ch = 0;
       return result;
    }
@@ -413,6 +632,10 @@ public:
       if(ch == '{')
       {
          Class mapKeyClass = null, mapDataClass = null;
+         Class curClass = null;
+         DataMember curMember = null;
+         DataMember subMemberStack[256];
+         int subMemberStackPos = 0;
 
          if(objectType && objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
          {
@@ -433,8 +656,18 @@ public:
          while(result)
          {
             String string;
+            bool wasQuoted = false;
+            int seek;
             ch = 0;
-            if(GetString(&string))
+            if(eCON)
+            {
+               SkipExtraSemicolon();
+               if(ch == '}')
+                  break;
+            }
+            SkipEmpty();
+            seek = f.Tell();
+            if(eCON ? GetIdentifier(&string, &wasQuoted) : GetString(&string))
             {
                DataMember member = null;
                Property prop = null;
@@ -442,8 +675,57 @@ public:
                bool isKey = false;
                bool isTemplateArg = false;
                uint offset = 0;
+               if(eCON)
+               {
+                  SkipEmpty();
+                  prop = null; member = null;
+                  if(ch == '=')
+                  {
+                     while(1)
+                     {
+                        eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
+                        if(!curMember) break;
+                        if(!strcmp(curMember.name, string))
+                           break;
+                     }
+                  }
+                  else
+                     eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
+                  if(curMember)
+                  {
+                     prop = curMember.isProperty ? (Property)curMember : null;
+                     member = curMember.isProperty ? null : curMember;
 
-               if(objectType)
+                     if(mapKeyClass && !strcmp(prop ? prop.name : member.name, "key"))
+                     {
+                        type = mapKeyClass;
+                        isTemplateArg = true;
+                        isKey = true;
+                     }
+                     else if(mapDataClass && !strcmp(prop ? prop.name : member.name, "value"))
+                     {
+                        type = mapDataClass;
+                        isTemplateArg = true;
+                        if(member)
+                           offset = member._class.offset + member.offset;
+                     }
+                     else if(prop)
+                        type = eSystem_SuperFindClass(prop.dataTypeString, objectType.module);
+                     else if(member)
+                     {
+                        type = eSystem_SuperFindClass(member.dataTypeString, objectType.module);
+                        offset = member._class.offset + member.offset;
+                     }
+                  }
+                  else
+                  {
+                     if(ch == '=')
+                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                     else
+                        PrintLn("Warning: default member assignment: no more members");
+                  }
+               }
+               if(objectType && !eCON)
                {
                   string[0] = (char)tolower(string[0]);
                   if(mapKeyClass && !strcmp(string, "key"))
@@ -464,25 +746,14 @@ public:
                      member = eClass_FindDataMember(objectType, string, objectType.module, null, null);
                      if(member)
                      {
-                        type = eSystem_FindClass(__thisModule, member.dataTypeString);
-                        if(!type)
-                           type = eSystem_FindClass(objectType.module, member.dataTypeString);
-                        if(!type)
-                           type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
-
+                        type = eSystem_SuperFindClass(member.dataTypeString, objectType.module);
                         offset = member._class.offset + member.offset;
                      }
                      else if(!member)
                      {
                         prop = eClass_FindProperty(objectType, string, objectType.module);
                         if(prop)
-                        {
-                           type = eSystem_FindClass(__thisModule, prop.dataTypeString);
-                           if(!type)
-                              type = eSystem_FindClass(objectType.module, prop.dataTypeString);
-                           if(!type)
-                              type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
-                        }
+                           type = eSystem_SuperFindClass(prop.dataTypeString, objectType.module);
                         else
                            PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
                      }
@@ -504,9 +775,17 @@ public:
                         value.p = new0 byte[type.structSize];
                      }
                   }
-                  ch = 0;
-                  SkipEmpty();
-                  if(ch == ':')
+                  if(!eCON)
+                  {
+                     ch = 0;
+                     SkipEmpty();
+                  }
+                  if(eCON && ch != '=')
+                  {
+                     f.Seek(seek-1, start);
+                     ch = 0;
+                  }
+                  if(ch == (eCON ? '=' : ':') || (eCON && type && (prop || member)))
                   {
                      JSONResult itemResult = GetValue(type, value);
                      if(itemResult != syntaxError)
@@ -514,9 +793,7 @@ public:
                         if(prop || member)
                         {
                            if(!type)
-                           {
                               PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString);
-                           }
                            else if(itemResult == success)
                            {
                               // Set value
@@ -641,7 +918,7 @@ public:
                   }
                }
             }
-            else if(ch && ch != '}' && ch != ',')
+            else if(ch && ch != '}' && ch != ',' && (!eCON || ch != ';'))
                result = syntaxError;
             delete string;
 
@@ -652,7 +929,7 @@ public:
                {
                   break;
                }
-               else if(ch != ',')
+               else if(ch != ',' && (!eCON || ch != ';'))
                   result = syntaxError;
             }
          }
@@ -663,17 +940,60 @@ public:
 
    JSONResult GetNumber(Class type, DataValue value)
    {
-      JSONResult result = syntaxError;
+      JSONResult result = success;
       char buffer[256];
       int c = 0;
-      while(c < sizeof(buffer)-1 && (ch == '-' || ch == '.' || tolower(ch) == 'e' || ch == '+' || isdigit(ch)))
+      bool comment = false;
+      if(eCON)
       {
-         buffer[c++] = ch;
-         if(!f.Getc(&ch)) break;
+         while(c < sizeof(buffer)-1 && (comment || ch == '-' || ch == '.' || tolower(ch) == 'f' ||
+                     tolower(ch) == 'x' || tolower(ch) == 'e' || ch == '+' || isdigit(ch) || ch == '/'))
+         {
+            if(!comment && ch == '/')
+            {
+               if(f.Getc(&ch))
+               {
+                  if(ch == '*')
+                     comment = true;
+               }
+               else
+               {
+                  result = syntaxError;
+                  break;
+               }
+            }
+            else if(comment && ch == '*')
+            {
+               if(f.Getc(&ch))
+               {
+                  if(ch == '/')
+                     comment = false;
+               }
+               else
+               {
+                  result = syntaxError;
+                  break;
+               }
+            }
+            else if(!comment)
+               buffer[c++] = ch;
+            if(!f.Getc(&ch)) break;
+         }
+      }
+      else
+      {
+         while(c < sizeof(buffer)-1 && (ch == '-' || ch == '.' || tolower(ch) == 'e' || ch == '+' || isdigit(ch)))
+         {
+            buffer[c++] = ch;
+            if(!f.Getc(&ch)) break;
+         }
       }
       buffer[c] = 0;
       //if(strchr(buffer, '.'))
+      if(result == syntaxError)
+         return result;
       if(!type) return success;
+      result = syntaxError;
 
       // TOFIX: How to swiftly handle classes with base data type?
       if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -690,22 +1010,22 @@ public:
       //else if(type == class(int64) || !strcmp(type.dataTypeString, "int64"))
       else if(!strcmp(type.dataTypeString, "int64"))
       {
-         value.i64 = strtol(buffer, null, 10);  // TOFIX: 64 bit support
+         value.i64 = strtol(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
       }
       else if(type == class(uint64) || !strcmp(type.dataTypeString, "uint64"))
       {
-         value.ui64 = strtoul(buffer, null, 10);  // TOFIX: 64 bit support
+         value.ui64 = strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
       }
       else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int"))
       {
-         value.ui = (uint)strtoul(buffer, null, 10);  // TOFIX: 64 bit support
+         value.ui = (uint)strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
       }
       else
       {
-         value.i = (int)strtol(buffer, null, 10);
+         value.i = (int)strtol(buffer, null, eCON ? 0 : 10);
          result = success;
       }
 
@@ -795,7 +1115,7 @@ public:
    }
 }
 
-bool WriteMap(File f, Class type, Map map, int indent)
+bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
 {
    if(map)
    {
@@ -814,7 +1134,7 @@ bool WriteMap(File f, Class type, Map map, int indent)
          else
             isFirst = false;
          for(i = 0; i<indent; i++) f.Puts("   ");
-         _WriteJSONObject(f, mapNodeClass, n, indent);
+         _WriteJSONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false);
       }
       f.Puts("\n");
       indent--;
@@ -826,7 +1146,7 @@ bool WriteMap(File f, Class type, Map map, int indent)
    return true;
 }
 
-bool WriteArray(File f, Class type, Container array, int indent)
+bool WriteArray(File f, Class type, Container array, int indent, bool eCON)
 {
    if(array)
    {
@@ -888,7 +1208,7 @@ bool WriteArray(File f, Class type, Container array, int indent)
             value.p = (void *)(uintptr)t;
          }
          for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteValue(f, arrayType, value, indent);
+         WriteValue(f, arrayType, value, indent, eCON);
       }
       f.Puts("\n");
       indent--;
@@ -900,10 +1220,10 @@ bool WriteArray(File f, Class type, Container array, int indent)
    return true;
 }
 
-bool WriteNumber(File f, Class type, DataValue value, int indent)
+bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON)
 {
    char buffer[1024];
-   bool needClass = false;
+   bool needClass = eCON;
    bool quote;
    buffer[0] = 0;
    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -934,7 +1254,7 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
    return true;
 }
 
-public bool WriteColorAlpha(File f, Class type, DataValue value, int indent)
+public bool WriteColorAlpha(File f, Class type, DataValue value, int indent, bool eCON)
 {
    char buffer[1024];
    char * string = buffer;
@@ -954,13 +1274,15 @@ public bool WriteColorAlpha(File f, Class type, DataValue value, int indent)
    }
    if(!c.class::OnGetString(string, null, null))
       sprintf(buffer, "0x%x", color);
-   f.Puts("\"");
+   if(!eCON)
+      f.Puts("\"");
    f.Puts(buffer);
-   f.Puts("\"");
+   if(!eCON)
+      f.Puts("\"");
    return true;
 }
 
-bool WriteValue(File f, Class type, DataValue value, int indent)
+bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
    {
@@ -970,6 +1292,60 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       {
          f.Puts("\"");
          //if(strchr(value.p, '\"') || strchr(value.p, '\\'))
+         if(eCON)
+         {
+            int c = 0;
+            int b = 0;
+            char buffer[1024];
+            char * string = value.p;
+            char ch;
+            while(true)
+            {
+               ch = string[c++];
+               if(ch == '\"')
+               {
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\\"");
+                  b = 0;
+               }
+               else if(ch == '\\')
+               {
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\\\");
+                  b = 0;
+               }
+               else if(ch == '\t')
+               {
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\t");
+                  b = 0;
+               }
+               else if(ch == '\n')
+               {
+                  int i;
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\n\"\n");
+                  for(i = 0; i<indent; i++) f.Puts("   ");
+                  f.Puts("   \"");
+                  b = 0;
+               }
+               else if(b == sizeof(buffer)-2 || !ch)
+               {
+                  buffer[b++] = ch;
+                  if(ch) buffer[b] = 0;
+                  f.Puts(buffer);
+                  b = 0;
+                  if(!ch) break;
+               }
+               else
+                  buffer[b++] = ch;
+            }
+         }
+         else
          {
             int c = 0;
             int b = 0;
@@ -1028,55 +1404,53 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    }
    else if(type.type == enumClass)
    {
-      f.Puts("\"");
-      WriteNumber(f, type, value, indent);
-      f.Puts("\"");
+      if(!eCON)
+         f.Puts("\"");
+      WriteNumber(f, type, value, indent, eCON);
+      if(!eCON)
+         f.Puts("\"");
    }
    else if(eClass_IsDerived(type, class(Map)))
    {
-      WriteMap(f, type, value.p, indent);
+      WriteMap(f, type, value.p, indent, eCON);
    }
    else if(eClass_IsDerived(type, class(Container)))
    {
-      WriteArray(f, type, value.p, indent);
+      WriteArray(f, type, value.p, indent, eCON);
    }
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      _WriteJSONObject(f, type, value.p, indent);
+      _WriteJSONObject(f, type, value.p, indent, eCON, false);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
    {
-      WriteColorAlpha(f, type, value, indent);
+      WriteColorAlpha(f, type, value, indent, eCON);
    }
    else if(type.type == bitClass)
    {
       Class dataType;
-      dataType = eSystem_FindClass(__thisModule, type.dataTypeString);
-      if(!dataType)
-         dataType = eSystem_FindClass(type.module, type.dataTypeString);
-      if(!dataType)
-         dataType = eSystem_FindClass(__thisModule.application, type.dataTypeString);
-      WriteNumber(f, dataType, value, indent);
+      dataType = eSystem_SuperFindClass(type.dataTypeString, type.module);
+      WriteNumber(f, dataType, value, indent, eCON);
    }
    else if(type.type == systemClass || type.type == unitClass)
    {
-      WriteNumber(f, type, value, indent);
+      WriteNumber(f, type, value, indent, eCON);
    }
    return true;
 }
 
-public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
+public bool WriteJSONObject(File f, Class objectType, void * object, int indent, bool eCON)
 {
    bool result = false;
    if(object)
    {
-      result = _WriteJSONObject(f, objectType, object, indent);
+      result = _WriteJSONObject(f, objectType, object, indent, eCON, false);
       f.Puts("\n");
    }
    return result;
 }
 
-static bool _WriteJSONObject(File f, Class objectType, void * object, int indent)
+static bool _WriteJSONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier)
 {
    if(object)
    {
@@ -1102,6 +1476,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
       }
       else
       {
+         Class _class = eCON ? ((Instance)object)._class : objectType;
          Property prop;
          int c;
          bool isFirst = true;
@@ -1115,10 +1490,16 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
          }
 
+         if(eCON && _class != objectType && eClass_IsDerived(_class, objectType))
+         {
+            f.Puts(_class.name);
+            f.Puts(" ");
+         }
+
          f.Puts("{\n");
          indent++;
 
-         for(baseClass = objectType; baseClass; baseClass = baseClass.base)
+         for(baseClass = _class; baseClass; baseClass = baseClass.base)
          {
             if(baseClass.isInstanceClass || !baseClass.base)
                break;
@@ -1149,12 +1530,8 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         type = mapDataClass;
                      }
                      else
-                        type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                        type = eSystem_SuperFindClass(prop.dataTypeString, _class.module);
 
-                     if(!type)
-                        type = eSystem_FindClass(objectType.module, prop.dataTypeString);
-                     if(!type)
-                        type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
                      if(!type)
                         PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
                      else
@@ -1208,11 +1585,19 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         if(!isFirst) f.Puts(",\n");
                         for(c = 0; c<indent; c++) f.Puts("   ");
 
-                        f.Puts("\"");
-                        f.Putc((char)toupper(prop.name[0]));
-                        f.Puts(prop.name+1);
-                        f.Puts("\" : ");
-                        WriteValue(f, type, value, indent);
+                        if(!eCON)
+                        {
+                           f.Puts("\"");
+                           f.Putc((char)toupper(prop.name[0]));
+                           f.Puts(prop.name+1);
+                           f.Puts("\" : ");
+                        }
+                        else if(!omitDefaultIdentifier)
+                        {
+                           f.Puts(prop.name);
+                           f.Puts(" = ");
+                        }
+                        WriteValue(f, type, value, indent, eCON);
                         isFirst = false;
                         if(type.type == structClass)
                            delete value.p;
@@ -1224,12 +1609,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   DataMember member = (DataMember)prop;
                   DataValue value { };
                   uint offset;
-                  Class type = eSystem_FindClass(__thisModule, member.dataTypeString);
-                  if(!type)
-                     type = eSystem_FindClass(objectType.module, member.dataTypeString);
-                  if(!type)
-                     type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
-
+                  Class type = eSystem_SuperFindClass(member.dataTypeString, _class.module);
                   offset = member._class.offset + member.offset;
 
                   if(type)
@@ -1283,11 +1663,19 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                      if(!isFirst) f.Puts(",\n");
                      for(c = 0; c<indent; c++) f.Puts("   ");
 
-                     f.Puts("\"");
-                     f.Putc((char)toupper(member.name[0]));
-                     f.Puts(member.name+1);
-                     f.Puts("\" : ");
-                     WriteValue(f, type, value, indent);
+                     if(!eCON)
+                     {
+                        f.Puts("\"");
+                        f.Putc((char)toupper(member.name[0]));
+                        f.Puts(member.name+1);
+                        f.Puts("\" : ");
+                     }
+                     else if(!omitDefaultIdentifier)
+                     {
+                        f.Puts(member.name);
+                        f.Puts(" = ");
+                     }
+                     WriteValue(f, type, value, indent, eCON);
                      isFirst = false;
                   }
                }
@@ -1304,4 +1692,22 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
    else
       f.Puts("null");
    return true;
+}
+
+Class eSystem_SuperFindClass(const String name, Module alternativeModule)
+{
+   Class _class = eSystem_FindClass(__thisModule, name);
+   if(!_class && alternativeModule)
+      _class = eSystem_FindClass(alternativeModule, name);
+   if(!_class)
+      _class = eSystem_FindClass(__thisModule.application, name);
+   return _class;
+}
+
+bool isSubclass(const String name, Class type)
+{
+   Class _class = eSystem_SuperFindClass(name, type.module);
+   if(eClass_IsDerived(_class, type))
+      return true;
+   return false;
 }

@@ -42,7 +42,7 @@ public:
    SettingsIOResult ::Save(File f, GlobalSettings globalSettings)
    {
       SettingsIOResult result = error;
-      if(globalSettings && WriteJSONObject(f, globalSettings.data._class, globalSettings.data, 0))
+      if(globalSettings && WriteJSONObject(f, globalSettings.data._class, globalSettings.data, 0, false))
          result = success;
       return result;
    }
