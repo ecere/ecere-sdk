@@ -2381,8 +2381,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glBindTexture(GL_TEXTURE_2D, glBitmap);
          glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
          //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
          //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -2395,9 +2396,11 @@ class OpenGLDisplayDriver : DisplayDriver
 
          result = true;
 
-         for(level = 0; result && (w > 1 || h > 1); level++, w >>= 1, h >>= 1)
+         for(level = 0; result && (w >= 1 || h >= 1); level++, w >>= 1, h >>= 1)
          {
             Bitmap mipMap;
+            if(!w) w = 1;
+            if(!h) h = 1;
             if(bitmap.width != w || bitmap.height != h)
             {
                mipMap = Bitmap { };
