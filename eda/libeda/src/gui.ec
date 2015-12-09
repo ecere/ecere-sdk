@@ -366,6 +366,9 @@ public class FieldDataBox : DataBox
    anchor = { left = 110, right = shadowS + sgs * 2 };
    borderStyle = deep;
 
+   // TOCHECK: Testing this for GenericEditor performance issue?
+   keepEditor = true;
+
 public:
    property Row row
    {

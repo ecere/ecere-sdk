@@ -1830,6 +1830,7 @@ class SQLiteRow : DriverRow
       if(updateStatement)
          sqlite3_finalize(updateStatement);
       sprintf(command, "UPDATE `%s` SET `%s` = ? WHERE ROWID = ?;", tbl.name, sqlFld.name);
+      // TODO: Shouldn't we cache those update statements per field?
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &updateStatement, null);
       sqlite3_bind_int64(updateStatement, 2, (sqlite3_int64)rowID);
       BindData(updateStatement, 1, (SQLiteField)fld, data, null);

@@ -5,6 +5,7 @@ class GenericEditor : Window
    text = " ";
    tabCycle = true;
    size = { 800, 600 };
+   fullRender = true;
 
    Array<FieldDataBox> dataBoxes { };
    Array<Label> labels { };
