@@ -5646,6 +5646,19 @@ static void NameSpace_Free(NameSpace parentNameSpace)
    NameSpace * nameSpace;
    delete (void *)parentNameSpace.name;
 
+         /*   {
+      BTNamedLink n, next;
+      for(n = (BTNamedLink)parentNameSpace.classes.first; n; n = next)
+      {
+         Class c = n.data;
+
+         next = (BTNamedLink)((BTNode)n).next;
+
+         if(c.templateClass)
+            eClass_Unregister(c);
+      }
+   }         */
+
    while((nameSpace = (NameSpace *)parentNameSpace.nameSpaces.first))
    {
       NameSpace_Free(nameSpace);
