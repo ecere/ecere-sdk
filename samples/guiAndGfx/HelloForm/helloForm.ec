@@ -1,4 +1,4 @@
-import "ecere"
+import IMPORT_STATIC "ecere"
 
 class HelloForm : Window
 {

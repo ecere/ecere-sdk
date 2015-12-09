@@ -198,7 +198,7 @@ public class WindowsSkin_Window : Window
          // PrintLn(_class.name, " is at l = ", rcWindow.left, ", r = ", rcWindow.right);
 #else
          Box widths = { 0 };
-#if !defined(__ANDROID__)
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
          XGetBorderWidths(this, widths);
 #endif
          *w += widths.left + widths.right;
@@ -285,7 +285,7 @@ public class WindowsSkin_Window : Window
          *y += client00.y - rcWindow.top;
 #else
          Box widths = { 0 };
-#if !defined(__ANDROID__)
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
          XGetBorderWidths(this, widths);
 #endif
          *x += widths.left;

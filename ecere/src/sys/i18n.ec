@@ -1,3 +1,4 @@
+import "instance"
 #ifndef ECERE_NOFILE
 import "File"
 #endif
@@ -23,7 +24,7 @@ static Map<const String, Map<const String, const String>> moduleMaps { };
 
 public dllexport void LoadTranslatedStrings(const String moduleName, const char * name)
 {
-#ifndef ECERE_NOFILE
+#if !defined(ECERE_NOFILE) && !defined(__EMSCRIPTEN__)
    File f;
    char fileName[MAX_LOCATION];
 

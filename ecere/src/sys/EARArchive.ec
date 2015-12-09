@@ -1200,7 +1200,7 @@ class EARArchiveDir : ArchiveDir
       return true;
    }
 };
-#endif
+#endif // !defined(ECERE_NOARCHIVE) && !defined(ECERE_VANILLA)
 
 // Directory Description for file listing
 class EARDir : struct
@@ -1694,7 +1694,7 @@ class EARFileSystem : FileSystem
       }
       return result;
    }
-#endif
+#endif // !defined(ECERE_NOARCHIVE) && !defined(ECERE_VANILLA)
    bool ::QuerySize(const char * archive, FileSize * size)
    {
       bool result = false;

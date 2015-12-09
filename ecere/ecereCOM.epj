@@ -70,12 +70,23 @@
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereCOMStatic",
-            "TargetDirectory" : "ecereCOMStatic",
             "ObjectsDirectory" : "ecereCOMStatic",
             "Libraries" : [
 
             ],
             "FastMath" : true
+         }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "ECERE_COM_ONLY"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereCOMStatic"
          }
       }
    ],

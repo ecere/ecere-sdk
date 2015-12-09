@@ -54,7 +54,9 @@ static bool Window3D_Setup(Window window, bool positionChildren)
          window.display.driverData = virtualDesktop.display.driverData;
          window.display.current = virtualDesktop.display.current;
 
+#if !defined(__EMSCRIPTEN__)
          window.display.mutex = null;
+#endif
          window.ComputeAnchors(window.stateAnchor, window.stateSizeAnchor, &x,&y,&w,&h);
          virtualDesktop.display.Lock(false);
          window.windowHandle = Setup3DWindow(window, w, h);

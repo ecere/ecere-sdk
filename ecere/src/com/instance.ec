@@ -20,8 +20,10 @@ import "dataTypes"
 
 #undef __BLOCKS__
 
+#if !defined(__EMSCRIPTEN__)
 #if !defined(ECERE_BOOTSTRAP)
 import "Mutex"
+#endif
 #endif
 
 // #define MEMINFO
@@ -43,7 +45,9 @@ import "Mutex"
 #endif
 
 #ifdef MEMINFO
+#if !defined(__EMSCRIPTEN__)
 import "Thread"
+#endif
 static define MAX_MEMORY_LOC = 40;
 static define MAX_STACK_FRAMES = 1000;
 
@@ -190,7 +194,9 @@ public dllexport void MemoryGuard_PushLoc(const char * loc)
 {
 #ifdef MEMINFO
    MemStack stack;
+#if !defined(__EMSCRIPTEN__)
    memMutex.Wait();
+#endif
    stack = (MemStack)memStacks.Find(GetCurrentThreadID());
    if(!stack)
    {
@@ -200,7 +206,9 @@ public dllexport void MemoryGuard_PushLoc(const char * loc)
    }
    if(stack.pos < MAX_STACK_FRAMES)
       stack.frames[stack.pos++] = loc;
+#if !defined(__EMSCRIPTEN__)
    memMutex.Release();
+#endif
 #endif
 }
 
@@ -208,13 +216,17 @@ public dllexport void MemoryGuard_PopLoc()
 {
 #ifdef MEMINFO
    MemStack stack;
+#if !defined(__EMSCRIPTEN__)
    memMutex.Wait();
+#endif
    stack = (MemStack)memStacks.Find(GetCurrentThreadID());
    if(stack && stack.pos > 0)
    {
       stack.pos--;
    }
+#if !defined(__EMSCRIPTEN__)
    memMutex.Release();
+#endif
 #endif
 }
 
@@ -714,8 +726,10 @@ static uint TOTAL_MEM = 0;
 static uint OUTSIDE_MEM = 0;
 #endif
 
+#if !defined(__EMSCRIPTEN__)
 #if !defined(ECERE_BOOTSTRAP)
 static Mutex memMutex { };
+#endif
 #endif
 
 private class MemBlock : struct
@@ -5936,7 +5950,7 @@ static int64 GetEnumSize(Class _class)
 #define strnicmp strncasecmp
 #endif
 
-#if defined(ECERE_BOOTSTRAP) || (defined(__GNUC__) && !defined(__DJGPP__) && !defined(__WIN32__))
+#if defined(ECERE_BOOTSTRAP) || (defined(__GNUC__) && !defined(__DJGPP__) && !defined(__WIN32__) && !defined(__EMSCRIPTEN__))
 #undef strlwr
 #undef strupr
 default dllexport char * strlwr(char *string)

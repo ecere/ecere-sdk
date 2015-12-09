@@ -14,7 +14,7 @@ namespace sys;
 #define uint _uint
 #define set _set
 #define String _String
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
@@ -38,6 +38,8 @@ public int64 GetCurrentThreadID()
 
 public class Mutex : struct
 {
+#if !defined(__EMSCRIPTEN__)
+
 //   class_fixed
 #if defined(__WIN32__)
 #ifdef _DEBUG
@@ -48,6 +50,7 @@ public class Mutex : struct
 #else
    pthread_mutex_t mutex;
 #endif
+#endif
 
 #ifdef _DEBUG
    int64 owningThread;
@@ -56,6 +59,7 @@ public class Mutex : struct
 
    Mutex()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
 #ifdef _DEBUG
       mutex = CreateMutex(null, FALSE, null);
@@ -76,6 +80,8 @@ public class Mutex : struct
       pthread_mutex_init(&mutex, &attr);
       pthread_mutexattr_destroy(&attr);
 #endif
+#endif
+
       lockCount = 0;
 #ifdef _DEBUG
       owningThread = 0;
@@ -85,6 +91,7 @@ public class Mutex : struct
 
    ~Mutex()
    {
+#if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
 #ifdef _DEBUG
       CloseHandle(mutex);
@@ -94,6 +101,7 @@ public class Mutex : struct
 #else
       pthread_mutex_destroy(&mutex);
 #endif
+#endif
    }
 
 public:
@@ -101,6 +109,7 @@ public:
    {
       if(this)
       {
+#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Waiting on Mutex %x\n", (int)GetCurrentThreadID(), this);
@@ -125,6 +134,8 @@ public:
 #endif
 #endif
 
+#endif
+
 #ifdef _DEBUG
          owningThread = GetCurrentThreadID();
 #endif
@@ -136,6 +147,7 @@ public:
    {
       if(this)
       {
+#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Releasing Mutex %x\n", (int)GetCurrentThreadID(), this);
@@ -169,6 +181,8 @@ public:
          pthread_mutex_unlock(&mutex);
 #endif
 #endif
+#endif
+
 #ifdef _DEBUG
          if(lockCount < 0)
             PrintLn("WARNING: lockCount < 0");

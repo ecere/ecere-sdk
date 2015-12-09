@@ -1,8 +1,10 @@
 namespace gfx::bitmaps;
 
-#include "gif_lib.h"
-
 import "Display"
+
+#if !defined(__EMSCRIPTEN__)
+
+#include "gif_lib.h"
 
 static int ReadData(GifFileType * gifFile, GifByteType * bytes, int size)
 {
@@ -129,3 +131,5 @@ class GIFFormat : BitmapFormat
       return result;
    }
 }
+
+#endif // !defined(__EMSCRIPTEN__)
