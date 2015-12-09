@@ -392,11 +392,13 @@ from wherever you obtained them.
       {
          "Name" : "Android",
          "Options" : {
+            "Debug" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_NOFONTCONFIG",
                "HIGH_DPI",
-               "ECERE_NOSSL"
+               "ECERE_NOSSL",
+               "_GLES"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-9a",
@@ -423,13 +425,21 @@ from wherever you obtained them.
                   ],
                   "LibraryDirs" : [
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
-                     "../deps/libpng-1.4.0/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/libpng-1.6.12/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/jpeg-9a/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)"
                   ]
                }
             }
          ]
+      },
+      {
+         "Name" : "GLES",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "_GLES"
+            ]
+         }
       }
    ],
    "Files" : [
