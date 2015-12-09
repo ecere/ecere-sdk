@@ -123,9 +123,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       }
    }
 
-   void Remove(MapNode<MT, V> node)
+   void FreeKey(MapNode<MT, V> node)
    {
-      CustomAVLTree::Remove(node);
       if(class(MT).type == structClass)
       {
          // TODO: Make this easier...
@@ -134,6 +133,12 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       }
       else
          delete node.key;
+   }
+
+   void Remove(MapNode<MT, V> node)
+   {
+      CustomAVLTree::Remove(node);
+      FreeKey(node);
       delete node;
    }
 
@@ -159,6 +164,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             MapNode<MT, V> parent = node.parent;
             V value = GetData(node);
             delete value;
+            FreeKey(node);
             delete node;
 
             node = parent;
@@ -172,6 +178,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    {
       V value = GetData(node);
       delete value;
+      FreeKey(node);
       Remove(node);
    }
 
