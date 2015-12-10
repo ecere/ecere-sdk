@@ -6,6 +6,10 @@ namespace gfx::drivers;
    #define SHADERS
 #endif
 
+#if defined(__ANDROID__)
+#include <android/native_activity.h>
+#endif
+
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
 #     include "gl_core_3_3.h"
@@ -256,7 +260,10 @@ private:
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
    #define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
    #define GL_COLOR_ATTACHMENT0     GL_COLOR_ATTACHMENT0_OES
-   #define GL_BGRA_EXT           0
+
+   // TOFIX: Grab Screen and BlitDI/StretchDI will have wrong colors
+   #undef  GL_BGRA_EXT
+   #define GL_BGRA_EXT               GL_RGBA
 #endif
 
 #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)

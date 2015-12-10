@@ -43,6 +43,25 @@ typedef struct in_addr IN_ADDR;
 
 import "network"
 
+
+#ifdef __ANDROID__
+#include <endian.h>
+#undef ntohs
+#undef htons
+
+#define SWAP_WORD(word) (((uint16)(word) & 0x00ff) << 8) \
+                      | (((uint16)(word) & 0xff00) >> 8)
+
+#if _BYTE_ORDER == _BIG_ENDIAN
+#define ntohs(x)(x)
+#define htons(x)(x)
+#else
+#define ntohs(x) SWAP_WORD(x)
+#define htons(x) SWAP_WORD(x)
+#endif
+
+#endif
+
 #define GETLEDWORD(b) (uint32)(((b)[3] << 24) | ((b)[2] << 16) | ((b)[1] << 8) | (b)[0])
 
 #define PUTLEDWORD(b, d) \

@@ -12,6 +12,7 @@ import "Condition"
 #include <locale.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/prctl.h>
 
 #include <android/configuration.h>
 #include <android/looper.h>
@@ -23,6 +24,8 @@ import "Condition"
 #include <jni.h>
 #undef set
 #undef uint
+
+#define printf(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "ecere-app", __VA_ARGS__))
@@ -49,6 +52,8 @@ public:
    LooperID id;
    virtual void any_object::process();
 };
+
+static const char * packagePath;
 
 class AndroidAppGlue : Thread
 {
@@ -201,7 +206,7 @@ private:
 
    void pre_exec_cmd(AppCommand cmd)
    {
-      PrintLn("pre_exec_cmd: ", cmd);
+      //PrintLn("pre_exec_cmd: ", cmd);
       switch(cmd)
       {
          case inputChanged:
@@ -244,7 +249,7 @@ private:
 
    void post_exec_cmd(AppCommand cmd)
    {
-      PrintLn("post_exec_cmd: ", cmd);
+      //PrintLn("post_exec_cmd: ", cmd);
       switch(cmd)
       {
          case termWindow:
@@ -480,6 +485,8 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    __thisModule = null;
    __androidCurrentModule = null;
 
+   prctl(PR_SET_DUMPABLE, 1);
+
    LOGI("Creating: %p\n", activity);
 
    //(*activity->vm)->AttachCurrentThread(activity->vm, &env, 0);
@@ -487,26 +494,35 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    methodID = (*env)->GetMethodID(env, clazz, "getPackageName", "()Ljava/lang/String;");
    result = (*env)->CallObjectMethod(env, activity->clazz, methodID);
    str = (*env)->GetStringUTFChars(env, (jstring)result, &isCopy);
-   // (*activity->vm)->DetachCurrentThread(activity->vm);
+
    moduleName = strstr(str, "com.ecere.");
    if(moduleName) moduleName += 10;
    androidArgv[0] = moduleName;
+
+   methodID = (*env)->GetMethodID(env, clazz, "getPackageCodePath", "()Ljava/lang/String;");
+   result = (*env)->CallObjectMethod(env, activity->clazz, methodID);
+   str = (*env)->GetStringUTFChars(env, (jstring)result, &isCopy);
+   packagePath = str;
+   // (*activity->vm)->DetachCurrentThread(activity->vm);
+   LOGI("packagePath: %s\n", packagePath);
 
    // Create a base Application class
    __androidCurrentModule = __ecere_COM_Initialize(true, 1, androidArgv);
    // Load up Ecere
    eModule_Load(__androidCurrentModule, "ecere", publicAccess);
 
-
+   /*
    if(activity->internalDataPath) PrintLn("internalDataPath is ", activity->internalDataPath);
    if(activity->externalDataPath) PrintLn("externalDataPath is ", activity->externalDataPath);
    {
       char tmp[256];
       PrintLn("cwd is ", GetWorkingDir(tmp, sizeof(tmp)));
    }
+   */
 
    ANativeActivity_setWindowFlags(activity, AWINDOW_FLAG_FULLSCREEN|AWINDOW_FLAG_KEEP_SCREEN_ON, 0 );
    app = AndroidActivity { activity = activity, moduleName = moduleName };
+
    incref app;
    app.setSavedState(savedState, (uint)savedStateSize);
    activity->callbacks->onDestroy = onDestroy;
@@ -906,15 +922,50 @@ struct SavedState
 
 static AndroidActivity androidActivity;
 
-default const char * AndroidInterface_GetLibLocation()
+default const char * AndroidInterface_GetLibLocation(Application a)
 {
-   if(androidActivity)
+   static char loc[MAX_LOCATION] = "", mod[MAX_LOCATION];
+   bool found = false;
+#if defined(__LP64__)
+   static const char * arch = "arm64";
+#else
+   static const char * arch = "armeabi";
+#endif
+   int i;
+   bool useArch = true;
+
+   while(!found)
    {
-      static char loc[MAX_LOCATION];
-      sprintf(loc, "/data/data/com.ecere.%s/lib/lib", androidActivity.moduleName);
-      return loc;
+      StripLastDirectory(packagePath, loc);
+      strcatf(loc, "/lib/%s/lib", useArch ? arch : "");
+      sprintf(mod, "%s%s.so", loc, a.argv[0]);
+      found = FileExists(mod).isFile;
+      if(!found)
+      {
+         bool useApp = true;
+         while(!found)
+         {
+            for(i = 0; !found && i < 10; i++)
+            {
+               if(i)
+                  sprintf(loc, "/data/%s/com.ecere.%s-%d/lib/%s/lib", useApp ? "app" : "data", a.argv[0], i, useArch ? arch : "");
+               else
+                  sprintf(loc, "/data/%s/com.ecere.%s/lib/%s/lib",    useApp ? "app" : "data", a.argv[0], useArch ? arch : "");
+               sprintf(mod, "%s%s.so", loc, a.argv[0]);
+               found = FileExists(mod).isFile;
+            }
+            if(useApp)
+               useApp = false;
+            else
+               break;
+         }
+      }
+      if(useArch)
+         useArch = false;
+      else
+         break;
    }
-   return null;
+   return loc;
 }
 
 static bool gotInit;
