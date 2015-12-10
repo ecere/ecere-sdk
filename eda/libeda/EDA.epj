@@ -69,7 +69,6 @@
       {
          "Name" : "Static",
          "Options" : {
-            "Debug" : false,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC"
@@ -78,6 +77,11 @@
             "TargetFileName" : "EDAStatic",
             "Libraries" : [
 
+            ],
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse3",
+               "-msse4"
             ],
             "FastMath" : true
          }
