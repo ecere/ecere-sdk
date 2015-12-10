@@ -56,8 +56,12 @@ import "lfbConvert"
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA) && defined(__WIN32__)
 import "OpenGLDisplayDriver"
+
+#if !defined(_GLES) || !defined(ECERE_STATIC)
 import "Direct3D8DisplayDriver"
 import "Direct3D9DisplayDriver"
+#endif
+
 #endif
 
 #if !defined(ECERE_NOTRUETYPE)
@@ -609,9 +613,13 @@ class GlyphPack : BTNode
             displaySystem.Lock();
 #if defined(__WIN32__)
             // Is this check still required?
-            if(displaySystem.driver == class(OpenGLDisplayDriver) ||
-               displaySystem.driver == class(Direct3D8DisplayDriver) ||
-               displaySystem.driver == class(Direct3D9DisplayDriver))
+            if(displaySystem.driver == class(OpenGLDisplayDriver)
+
+#if !defined(_GLES) || !defined(ECERE_STATIC)
+            || displaySystem.driver == class(Direct3D8DisplayDriver)
+            || displaySystem.driver == class(Direct3D9DisplayDriver)
+#endif
+            )
 #endif
                bitmap.MakeDD(displaySystem);
             displaySystem.Unlock();

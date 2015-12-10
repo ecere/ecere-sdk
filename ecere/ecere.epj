@@ -468,6 +468,7 @@ if distributed with the Ecere SDK Windows installer.
             "TargetFileName" : "ecereStatic",
             "CompilerOptions" : [
                "-mmmx",
+               "-msse3",
                "-msse4"
             ],
             "FastMath" : true
@@ -974,6 +975,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1042,6 +1054,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1102,6 +1125,17 @@ if distributed with the Ecere SDK Windows installer.
                               },
                               {
                                  "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1340,6 +1374,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1451,6 +1496,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1500,6 +1556,17 @@ if distributed with the Ecere SDK Windows installer.
                               },
                               {
                                  "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1822,6 +1889,17 @@ if distributed with the Ecere SDK Windows installer.
                               },
                               {
                                  "Name" : "Installer",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "StaticGLES",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
