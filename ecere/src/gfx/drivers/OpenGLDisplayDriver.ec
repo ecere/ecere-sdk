@@ -1,3 +1,5 @@
+// #define DIAGNOSTICS
+
 namespace gfx::drivers;
 
 #if defined(_GLES)
@@ -645,6 +647,7 @@ static void setupDebugging()
 #if defined(__WIN32__)
 static HGLRC winCreateContext(HDC hdc)
 {
+#ifdef SHADERS
    if(wglCreateContextAttribsARB)
    {
       int attribs[] =
@@ -658,6 +661,7 @@ static HGLRC winCreateContext(HDC hdc)
       return wglCreateContextAttribsARB(hdc, null, attribs);
    }
    else
+#endif
       return wglCreateContext(hdc);
 }
 #endif
@@ -796,8 +800,11 @@ class OpenGLDisplayDriver : DisplayDriver
    void ::CheckExtensions(OGLSystem oglSystem)
    {
       const char * extensions = (const char *)glGetString(GL_EXTENSIONS);
-      if(extensions)
-         oglSystem.pow2textures = strstr(extensions, "GL_ARB_texture_non_power_of_two") ? false : true;
+#ifdef DIAGNOSTICS
+      printf("extensions: %s\n", extensions);
+#endif
+
+      oglSystem.pow2textures = (extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two")) ? false : true;
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
    }
 
@@ -805,6 +812,10 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
+
+#ifdef DIAGNOSTICS
+      PrintLn("OpenGL driver's CreateDisplaySystem()");
+#endif
 
    #ifdef __WIN32__
       oglSystem.hwnd = CreateWindow("static", null, 0,0,0,0,0,null,null,null,null);
@@ -898,7 +909,13 @@ class OpenGLDisplayDriver : DisplayDriver
                      SetPixelFormat(oglSystem.hdc, oglSystem.format, &oglSystem.pfd);
                      //Log("Successfully set pixel format\n");
 
+#ifdef DIAGNOSTICS
+                     PrintLn("winCreateContext()");
+#endif
                      oglSystem.glrc = winCreateContext(oglSystem.hdc);
+#ifdef DIAGNOSTICS
+                     PrintLn("wglMakeCurrent()");
+#endif
                      wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
                   }
                }
@@ -1192,12 +1209,27 @@ class OpenGLDisplayDriver : DisplayDriver
       if(result)
       {
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+
+#ifdef DIAGNOSTICS
+         PrintLn("Calling ogl_LoadFunctions() in CreateDisplay()");
+#endif
          ogl_LoadFunctions();
+#ifdef DIAGNOSTICS
+         PrintLn("CheckExtensions()");
 #endif
          CheckExtensions(oglSystem);
          vboAvailable = glBindBuffer != null;
+
+#ifdef DIAGNOSTICS
+         PrintLn("vboAvailable is: ", vboAvailable);
+#endif
+
+#ifdef _DEBUG
          setupDebugging();
          initialDisplaySetup(display);
+#endif
+
+#endif
       }
 
       if(!useSingleGLContext)
