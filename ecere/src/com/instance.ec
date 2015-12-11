@@ -5288,7 +5288,10 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
             _class.structAlignment = Max(_class.structAlignment, alignment);
 
             if(_class.offset % alignment)
+            {
+               _class.structSize += alignment - (_class.offset % alignment);
                _class.offset += alignment - (_class.offset % alignment);
+            }
             if(_class.memberOffset % alignment)
                _class.memberOffset += alignment - (_class.memberOffset % alignment);
          }
