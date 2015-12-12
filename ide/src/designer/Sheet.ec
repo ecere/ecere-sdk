@@ -1638,18 +1638,21 @@ public:
             if(isEditBoxMultiLineContents)
                delete valueData.p;
 
+            dataBox.background = Color { 90, 120, 150 };
+            // dataBox.background = viewsBackground;
             editData.font = { font.faceName, font.size, font.bold };
+
             if(eClass_IsDerived(editData._class, class(DropBox)))
             {
                DropBox db = (DropBox)editData;
                db.selectionColor = sheetSelectionColor;
-               db.selectionText = sheetSelectionText;
+               db.selectionText = viewsBackground;
             }
             else if(eClass_IsDerived(editData._class, class(EditBox)))
             {
                EditBox eb = (EditBox)editData;
                eb.selectionColor = sheetSelectionColor;
-               eb.selectionText = sheetSelectionText;
+               eb.selectionText = viewsBackground;
             }
          }
       }
