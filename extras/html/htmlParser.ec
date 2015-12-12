@@ -437,7 +437,9 @@ class HTMLFile
                      }
                      else if(!strcmpi(keyWord, "br") || (!lastBR && (!strcmpi(keyWord, "div") || !strcmpi(keyWord, "li"))))
                      {
-                        if(!lastBR || (lastCh && lastCh != ' '))
+                        // Commented this if out as it prevents multiple BR from creating spacing
+                        // This was losing spacing in Documentor. This if was originally added by 7948fd17eea7422d19f60845bc0633fe084bbd67
+                        //if(!lastBR || (lastCh && lastCh != ' '))
                         {
                            subBlock = AddBlock(block, BR);
                            lastCh = ' ';
