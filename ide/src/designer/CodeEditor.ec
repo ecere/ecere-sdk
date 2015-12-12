@@ -3356,7 +3356,7 @@ class CodeEditor : Window
                                                                {
                                                                   Property prop = (Property) curMember;
                                                                   Class propertyClass = prop.dataTypeClass;
-                                                                  bool variable = false;
+                                                                  bool variable = true;
                                                                   if(!propertyClass)
                                                                      propertyClass = prop.dataTypeClass = eSystem_FindClass(this.privateModule, prop.dataTypeString);
 
