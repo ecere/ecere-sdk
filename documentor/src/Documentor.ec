@@ -812,7 +812,7 @@ class APIPageNameSpace : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       if(nsName[0])
       {
-         f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
+         f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br>\n", nsName );
          f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
@@ -836,7 +836,7 @@ class APIPageNameSpace : APIPage
          char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, description, null);
          if(desc)
          {
-            f.Printf($"<H3>Description</H3><br><br>\n");
+            f.Printf($"<H3>Description</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -859,7 +859,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, ns, description, null);
             if(first)
             {
-               f.Printf($"<H3>Sub Namespaces</H3><br><br>\n");
+               f.Printf($"<H3>Sub Namespaces</H3><br>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -897,7 +897,7 @@ class APIPageNameSpace : APIPage
 
                if(first)
                {
-                  f.Printf($"<a name=Classes></a><H3>Classes</H3><br><br>\n");
+                  f.Printf($"<a name=Classes></a><H3>Classes</H3><br>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -937,7 +937,7 @@ class APIPageNameSpace : APIPage
             if(name) name += 2; else name = function.name;
             if(first)
             {
-               f.Printf($"<a name=Functions></a><H3>Functions</H3><br><br>\n");
+               f.Printf($"<a name=Functions></a><H3>Functions</H3><br>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -972,7 +972,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
             if(first)
             {
-               f.Printf($"<a name=Definitions></a><H3>Definitions</H3><br><br>\n");
+               f.Printf($"<a name=Definitions></a><H3>Definitions</H3><br>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -1037,7 +1037,7 @@ class APIPageClass : APIPage
       }
       // Generate Class Page
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
-      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
+      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br>\n", name);
 
       f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
@@ -1090,7 +1090,7 @@ class APIPageClass : APIPage
          char * desc = ReadDoc(module, classDoc, cl, description, null);
          if(desc)
          {
-            f.Printf($"<br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><H3>Description</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1112,7 +1112,7 @@ class APIPageClass : APIPage
          {
             NamedLink item;
 
-            f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
+            f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br>\n");
             f.Printf("<TABLE>\n");
 
             for(item = enumeration.values.first; item; item = item.next)
@@ -1181,7 +1181,7 @@ class APIPageClass : APIPage
 
       if(cl.conversions.first)
       {
-         f.Printf($"<a name=Conversions></a><H3>Conversions</H3><br><br>\n");
+         f.Printf($"<a name=Conversions></a><H3>Conversions</H3><br>\n");
          f.Printf("<TABLE>\n");
          for(prop = cl.conversions.first; prop; prop = prop.next)
          {
@@ -1231,7 +1231,7 @@ class APIPageClass : APIPage
             {
                if(first)
                {
-                  f.Printf($"<a name=Members></a><H3>Properties and Members</H3><br><br>\n");
+                  f.Printf($"<a name=Members></a><H3>Properties and Members</H3><br>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1285,7 +1285,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><br>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1323,7 +1323,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><br>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1363,7 +1363,7 @@ class APIPageClass : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, classDoc, cl, usage, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(usageDoc);
                f.Printf("</a>\n");
             }
@@ -1379,7 +1379,7 @@ class APIPageClass : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE>\n");
+            f.Printf("<TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1406,7 +1406,7 @@ class APIPageClass : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, classDoc, cl, remarks, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(remarksDoc);
                f.Printf("</a>\n");
             }
@@ -1450,7 +1450,7 @@ class APIPageClass : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, classDoc, cl, seeAlso, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(seeAlsoDoc);
                f.Printf("</a>\n");
             }
@@ -1498,7 +1498,7 @@ class APIPageMethod : APIPage
       }
 
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
-      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
+      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br>\n", name);
 
       f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
@@ -1524,7 +1524,7 @@ class APIPageMethod : APIPage
          char * desc = ReadDoc(module, methodDoc, method, description, null);
          if(desc)
          {
-            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1542,7 +1542,7 @@ class APIPageMethod : APIPage
       f.Printf("<br><br>\n");
       if(method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType)
       {
-         f.Printf($"<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><br>\n");
       }
       if((method.dataType.returnType && method.dataType.returnType.kind != voidType) ||
          (method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType))
@@ -1623,7 +1623,7 @@ class APIPageMethod : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, methodDoc, method, usage, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(usageDoc);
                f.Printf("</a>\n");
             }
@@ -1639,7 +1639,7 @@ class APIPageMethod : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE>\n");
+            f.Printf("<TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1664,7 +1664,7 @@ class APIPageMethod : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, methodDoc, method, remarks, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(remarksDoc);
                f.Printf("</a>\n");
             }
@@ -1683,7 +1683,7 @@ class APIPageMethod : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, methodDoc, method, seeAlso, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(seeAlsoDoc);
                f.Printf("</a>\n");
             }
@@ -1731,7 +1731,7 @@ class APIPageFunction : APIPage
       }
 
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
-      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
+      f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br>\n", name);
 
       f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
 
@@ -1757,7 +1757,7 @@ class APIPageFunction : APIPage
          char * desc = ReadDoc(module, functionDoc, function, description, null);
          if(desc)
          {
-            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><br>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1774,7 +1774,7 @@ class APIPageFunction : APIPage
       f.Printf("<br><br>\n");
       if(function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType)
       {
-         f.Printf($"<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><br>\n");
       }
       if((function.dataType.returnType && function.dataType.returnType.kind != voidType) ||
          (function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType))
@@ -1855,7 +1855,7 @@ class APIPageFunction : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, functionDoc, function, usage, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(usageDoc);
                f.Printf("</a>\n");
             }
@@ -1871,7 +1871,7 @@ class APIPageFunction : APIPage
          {
             f.Printf($"<H3>Example</H3><br>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
-            f.Printf("<br><TABLE>\n");
+            f.Printf("<TABLE>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1896,7 +1896,7 @@ class APIPageFunction : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, functionDoc, function, remarks, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(remarksDoc);
                f.Printf("</a>\n");
             }
@@ -1915,7 +1915,7 @@ class APIPageFunction : APIPage
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, functionDoc, function, seeAlso, null);
-               f.Printf("<br><a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
+               f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(seeAlsoDoc);
                f.Printf("</a>\n");
             }
