@@ -92,7 +92,7 @@ void shader_texturing(bool on)
    glUniform1ui(uTexturingOn, on);
 }
 
-void shader_setMaterial(Material material, bool perVertexColor)
+public void shader_setMaterial(Material material, bool perVertexColor)
 {
    glUniform1ui(uPerVertexColor, perVertexColor);
    glUniform1ui(uMatTwoSided, !material.flags.singleSideLight);
@@ -102,6 +102,27 @@ void shader_setMaterial(Material material, bool perVertexColor)
    glUniform3f(uMatEmissive, material.emissive.r, material.emissive.g, material.emissive.b);
    glUniform1f(uMatPower, material.power);
    glUniform1f(uMatOpacity, material.opacity);
+}
+
+public void shader_setSimpleMaterial(ColorAlpha color)
+{
+   float opacity = color.a / 255.0f;
+   float r = color.color.r / 255.0f;
+   float g = color.color.g / 255.0f;
+   float b = color.color.b / 255.0f;
+   glUniform1i(uPerVertexColor, 0);
+   glUniform1i(uMatTwoSided, 0);
+   glUniform3f(uMatDiffuse, r, g, b);
+   glUniform3f(uMatAmbient, r, g, b);
+   glUniform3f(uMatSpecular, r, g, b);
+   glUniform3f(uMatEmissive, 0, 0, 0);
+   glUniform1f(uMatPower, 0);
+   glUniform1f(uMatOpacity, opacity);
+}
+
+public void shader_setPerVertexColor(bool perVertexColor)
+{
+   glUniform1i(uPerVertexColor, perVertexColor);
 }
 
 void shader_setLight(Display display, uint id, Light light)
