@@ -613,7 +613,7 @@ public:
             camera.Setup(width, height, null);
 
          // Always calling Update() here had broken interpolation in OrbitWithMouse!
-         if(!camera.cAngle.w)
+         if(!camera.cAngle.w && surface)
             camera.Update();
 
          if(display3D.selection)

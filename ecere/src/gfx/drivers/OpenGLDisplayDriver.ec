@@ -3759,7 +3759,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLDisplay oglDisplay = display.driverData;
       //Logf("SetCamera\n");
 
-      if(camera)
+      if(surface && camera)
       {
          int left = surface.box.left + surface.offset.x;
          int top = surface.box.top  + surface.offset.y;
@@ -3830,7 +3830,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glEnable(GL_MULTISAMPLE_ARB);
       }
-      else if(display.display3D.camera)
+      else if(surface && display.display3D.camera)
       {
          oglDisplay.depthWrite = false;
          glViewport(0,0,display.width,display.height);
