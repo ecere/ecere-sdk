@@ -129,7 +129,8 @@ private:
             if(eClass_IsDerived(editor._class, class(EditBox)))
             {
                ((EditBox)editor).readOnly = readOnly;
-               ((EditBox)editor).autoSize = autoSize;
+               if(autoSize)
+                  ((EditBox)editor).autoSize = autoSize;
                ((EditBox)editor).clickThrough = true;
             }
             else if(eClass_IsDerived(editor._class, class(Button)) && autoSize)
