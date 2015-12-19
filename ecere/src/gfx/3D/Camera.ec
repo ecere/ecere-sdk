@@ -582,6 +582,16 @@ public:
       result.z += cPosition.z;
    }
 
+   public void setViewMatrix(Matrix value)
+   {
+      viewMatrix = value;
+   }
+
+   public void setCPosition(Vector3D value)
+   {
+      cPosition = value;
+   }
+
 private:
    Camera()
    {
