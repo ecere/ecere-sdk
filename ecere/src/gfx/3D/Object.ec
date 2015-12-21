@@ -767,20 +767,15 @@ public:
    {
       bool result = false;
 
-      if(!this.flags.mesh || (!children.first && this.flags.ownMesh))
+      if(!children.first && (!this.flags.mesh || this.flags.ownMesh))
          result = true;
       else
       {
          Object child, nextChild;
          int nVertices = 0;
          MeshFeatures flags = 0;
-         Mesh objectMesh = mesh;
+         Mesh objectMesh = this.flags.mesh ? mesh : null;
          bool freeMesh = this.flags.ownMesh;
-
-         mesh = Mesh { };
-         this.flags.ownMesh = true;
-         this.flags.mesh = true;
-         displaySystem.AddMesh(mesh);
 
          // Count total number of vertices
          if(objectMesh)
@@ -798,6 +793,17 @@ public:
                flags |= child.mesh.flags;
             }
          }
+
+         if(!nVertices)
+            return true;
+
+         if(this.flags.camera)
+            delete camera;
+
+         mesh = Mesh { };
+         this.flags.ownMesh = true;
+         this.flags.mesh = true;
+         displaySystem.AddMesh(mesh);
 
          if(mesh.Allocate(flags, nVertices, displaySystem))
          {
@@ -836,7 +842,7 @@ public:
                normalMatrix = matrix;
 
                matrix.Translate(child.transform.position.x, child.transform.position.y, child.transform.position.z);
-               if(child.mesh)
+               if(child.flags.mesh && child.mesh)
                {
                   for(c = 0; c<child.mesh.nVertices; c++)
                   {
@@ -880,7 +886,7 @@ public:
 
                for(child = children.first; child; child = child.next)
                {
-                  if(child.mesh)
+                  if(child.flags.mesh && child.mesh)
                   {
                      for(group = child.mesh.groups.first; group; group = group.next)
                      {
@@ -931,7 +937,7 @@ public:
 
                      for(child = children.first; child; child = child.next)
                      {
-                        if(child.mesh)
+                        if(child.flags.mesh && child.mesh)
                         {
                            for(group = child.mesh.groups.first; group; group = group.next)
                            {
@@ -980,7 +986,7 @@ public:
 
             for(child = children.first; child; child = child.next)
             {
-               if(child.mesh)
+               if(child.flags.mesh && child.mesh)
                {
                   for(group = child.mesh.groups.first; group; group = group.next)
                   {
@@ -1008,6 +1014,7 @@ public:
                if(child.mesh)
                   nTriangles += child.mesh.nPrimitives;
             }
+
             mesh.primitives = new PrimitiveSingle[nTriangles];
             mesh.nPrimitives = 0;
             vertexOffset = 0;
@@ -1017,57 +1024,57 @@ public:
                {
                   int i;
                   PrimitiveSingle * triangle = &mesh.primitives[mesh.nPrimitives++];
+                  PrimitiveSingle * src = &objectMesh.primitives[c];
 
-                  mesh.AllocatePrimitive(triangle, objectMesh.primitives[c].type, objectMesh.primitives[c].nIndices);
-                  triangle->material = objectMesh.primitives[c].material;
-                  triangle->middle = objectMesh.primitives[c].middle;
-                  triangle->plane = objectMesh.primitives[c].plane;
+                  mesh.AllocatePrimitive(triangle, src->type, src->nIndices);
+                  triangle->material = src->material;
+                  triangle->middle = src->middle;
+                  triangle->plane = src->plane;
 
-                  memcpy(triangle->indices, objectMesh.primitives[c].indices, objectMesh.primitives[c].nIndices * sizeof(uint16));
-
-                  /*
-                  *triangle = objectMesh.primitives[c];
-                  objectMesh.primitives[c].indices = null;
-                  objectMesh.primitives[c].data = null;
-                  */
+                  //*triangle = *src;
+                  //src->indices = null;
+                  //src->data = null;
 
                   if(triangle->type.indices32bit)
                      for(i = 0; i<triangle->nIndices; i++)
-                        triangle->indices32[i] += vertexOffset;
+                        triangle->indices32[i] = src->indices32[i] + vertexOffset;
                   else
                      for(i = 0; i<triangle->nIndices; i++)
-                        triangle->indices[i] += (uint16)vertexOffset;
+                        triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
                   mesh.UnlockPrimitive(triangle);
                }
                vertexOffset += objectMesh.nVertices;
             }
+
             for(child = children.first; child; child = child.next)
             {
-               if(child.mesh)
+               if(child.flags.mesh && child.mesh)
                {
                   for(c = 0; c<child.mesh.nPrimitives; c++)
                   {
                      int i;
                      PrimitiveSingle * triangle = &mesh.primitives[mesh.nPrimitives++];
+                     PrimitiveSingle * src = &child.mesh.primitives[c];
 
-                     mesh.AllocatePrimitive(triangle, child.mesh.primitives[c].type, child.mesh.primitives[c].nIndices);
-                     triangle->material = child.mesh.primitives[c].material ? child.mesh.primitives[c].material : child.material;
-                     triangle->middle = child.mesh.primitives[c].middle;
-                     triangle->plane = child.mesh.primitives[c].plane;
-                     memcpy(triangle->indices, child.mesh.primitives[c].indices, child.mesh.primitives[c].nIndices * sizeof(uint16));
+                     mesh.AllocatePrimitive(triangle, src->type, src->nIndices);
+                     triangle->material = src->material ? src->material : child.material;
+                     triangle->middle = src->middle;
+                     triangle->plane = src->plane;
 
-                     /*
-                     *triangle = child.mesh.primitives[c];
-                     child.mesh.primitives[c].indices = null;
-                     child.mesh.primitives[c].data = null;
-                     */
+                     //*triangle = *src;
+                     //src->indices = null;
+                     //src->data = null;
 
                      if(triangle->type.indices32bit)
+                     {
                         for(i = 0; i<triangle->nIndices; i++)
-                           triangle->indices[i] += (uint16)vertexOffset;
+                           triangle->indices32[i] = src->indices32[i] + vertexOffset;
+                     }
                      else
+                     {
                         for(i = 0; i<triangle->nIndices; i++)
-                           triangle->indices32[i] += vertexOffset;
+                           triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
+                     }
                      mesh.UnlockPrimitive(triangle);
                   }
                   vertexOffset += child.mesh.nVertices;
