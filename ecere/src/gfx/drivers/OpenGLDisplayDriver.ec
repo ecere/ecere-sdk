@@ -2696,9 +2696,15 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData;
+      Bitmap convBitmap = bitmap;
+      if(bitmap.keepData)
+      {
+         convBitmap = { };
+         convBitmap.Copy(bitmap);
+      }
 
       // Pre process the bitmap... First make it 32 bit
-      if(/*bitmap.pixelFormat == pixelFormatRGBA || */bitmap.Convert(null, pixelFormat888, null))
+      if(/*bitmap.pixelFormat == pixelFormatRGBA || */convBitmap.Convert(null, pixelFormat888, null))
       {
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
@@ -2724,11 +2730,11 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                // ((ColorRGBA *)bitmap.picture)[c] = ((ColorAlpha *)bitmap.picture)[c];
                // TODO:
-               ColorAlpha color = ((ColorAlpha *)bitmap.picture)[c];
-               ((ColorRGBA *)bitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
+               ColorAlpha color = ((ColorAlpha *)convBitmap.picture)[c];
+               ((ColorRGBA *)convBitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
             }
          }
-         bitmap.pixelFormat = pixelFormat888;
+         // convBitmap.pixelFormat = pixelFormat888;
 
          glGetError();
          glGenTextures(1, &glBitmap);
@@ -2764,10 +2770,10 @@ class OpenGLDisplayDriver : DisplayDriver
             if(bitmap.width != w || bitmap.height != h)
             {
                mipMap = Bitmap { };
-               if(mipMap.Allocate(null, w, h, w, bitmap.pixelFormat, false))
+               if(mipMap.Allocate(null, w, h, w, convBitmap.pixelFormat, false))
                {
                   Surface mipSurface = mipMap.GetSurface(0,0,null);
-                  mipSurface.Filter(bitmap, 0,0,0,0, w, h, bitmap.width, bitmap.height);
+                  mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
                   delete mipSurface;
                }
                else
@@ -2777,7 +2783,7 @@ class OpenGLDisplayDriver : DisplayDriver
                }
             }
             else
-               mipMap = bitmap;
+               mipMap = convBitmap;
 
             if(result)
             {
@@ -2796,15 +2802,16 @@ class OpenGLDisplayDriver : DisplayDriver
                   result = false;
                }
             }
-            if(mipMap != bitmap)
+            if(mipMap != convBitmap)
                delete mipMap;
             if(!mipMaps) break;
          }
 
-         if(!bitmap.keepData)
-            bitmap.driver.FreeBitmap(bitmap.displaySystem, bitmap);
+         convBitmap.driver.FreeBitmap(convBitmap.displaySystem, convBitmap);
          bitmap.driverData = (void *)(uintptr)glBitmap;
          bitmap.driver = displaySystem.driver;
+         if(bitmap.keepData)
+            delete convBitmap;
 
          if(!result)
             FreeBitmap(displaySystem, bitmap);
