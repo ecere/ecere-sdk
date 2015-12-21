@@ -1357,7 +1357,7 @@ public struct GLAB
 
    void free()
    {
-      if(this != null)
+      if(this != null && buffer)
       {
          GLDeleteBuffers(1, this);
          buffer = 0;
@@ -1415,7 +1415,7 @@ public struct GLEAB
 
    void free()
    {
-      if(this != null)
+      if(this != null && buffer)
       {
          GLDeleteBuffers(1, (GLAB *)this);
          buffer = 0;
@@ -1451,13 +1451,17 @@ public void GLDeleteBuffers(int count, GLAB * buffers)
    for(i = 0; i < count; i++)
    {
       uint buffer = buffers[i].buffer;
-      if(buffer == curArrayBuffer)
-         GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
-      else if(buffer == curElementBuffer)
-         GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+      if(buffer)
+      {
+         if(buffer == curArrayBuffer)
+            GLBindBuffer(GL_ARRAY_BUFFER_ARB, 0);
+         else if(buffer == curElementBuffer)
+            GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+      }
    }
 #if defined(__ANDROID__) || defined(__ODROID__)
-   glDeleteBuffers(count, (GLuint *)buffers);
+   if(count && buffers[0].buffer)
+      glDeleteBuffers(count, (GLuint *)buffers);
 #else
 #if defined(__WIN32__)
    if(glDeleteBuffersARB)
