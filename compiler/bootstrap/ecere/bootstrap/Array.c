@@ -107,8 +107,6 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
-extern int printf(const char * , ...);
-
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 extern void *  memmove(void * , const void * , size_t size);
@@ -468,8 +466,6 @@ unsigned int count, c;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
-if(count > 10000)
-printf("Bug");
 __ecereProp___ecereNameSpace__ecere__com__Array_Set_size(array, count);
 for(c = 0; c < count; c++)
 ((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, ((unsigned char *)((struct __ecereNameSpace__ecere__com__Array *)(((char *)array + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->array) + Dclass->typeSize * c, channel);

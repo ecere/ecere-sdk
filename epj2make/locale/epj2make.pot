@@ -78,15 +78,15 @@ msgstr "      toolchain:\n"
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
-#: ./../ide/src/project/ProjectNode.ec:2440
+#: ./../ide/src/project/ProjectNode.ec:2464
 msgid " instead\n"
 msgstr " instead\n"
 
-#: ./../ide/src/project/ProjectNode.ec:2446
+#: ./../ide/src/project/ProjectNode.ec:2470
 msgid " to compile instead of "
 msgstr " to compile instead of "
 
-#: ./../ide/src/project/ProjectNode.ec:2440
+#: ./../ide/src/project/ProjectNode.ec:2464
 msgid "Compiling source file "
 msgstr "Compiling source file "
 
@@ -102,23 +102,23 @@ msgstr "Error: Project configuration (%s) was not found.\n"
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
-#: ./../ide/src/IDESettings.ec:739
+#: ./../ide/src/IDESettings.ec:775
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./../ide/src/IDESettings.ec:742
+#: ./../ide/src/IDESettings.ec:778
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:743
+#: ./../ide/src/IDESettings.ec:779
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:745
+#: ./../ide/src/IDESettings.ec:781
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./../ide/src/project/ProjectNode.ec:2433
+#: ./../ide/src/project/ProjectNode.ec:2457
 msgid "No compilation required for header file "
 msgstr "No compilation required for header file "
 
@@ -126,7 +126,7 @@ msgstr "No compilation required for header file "
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 
-#: ./../ide/src/IDESettings.ec:741
+#: ./../ide/src/IDESettings.ec:777
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -134,15 +134,15 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Syntax:\n"
 msgstr "Syntax:\n"
 
-#: ./../ide/src/IDESettings.ec:740
+#: ./../ide/src/IDESettings.ec:776
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./../ide/src/project/ProjectNode.ec:2446
+#: ./../ide/src/project/ProjectNode.ec:2470
 msgid "Unable to locate source file "
 msgstr "Unable to locate source file "
 
-#: ./../ide/src/project/ProjectNode.ec:2446
+#: ./../ide/src/project/ProjectNode.ec:2470
 msgid "\n"
 msgstr "\n"
 

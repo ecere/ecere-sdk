@@ -30,9 +30,11 @@ public:
       uint count, c;
       Class Dclass = class(D);
       channel.Get(count);
+#ifdef _DEBUG
       //printf("%d %ss\n", count, Dclass.name);
       if(count > 10000)
          printf("Bug");
+#endif
       array.size = count;
       for(c = 0; c < count; c++)
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])

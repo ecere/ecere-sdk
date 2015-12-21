@@ -155,8 +155,8 @@ msgid "Database"
 msgstr "Database"
 
 #: ./src/installer.ec:2
-msgid "December 10th, 2015"
-msgstr "December 10th, 2015"
+msgid "December 22, 2015"
+msgstr "December 22, 2015"
 
 #: ./src/installer.ec:428
 msgid "Desktop Icon"
@@ -189,8 +189,8 @@ msgstr "Ecere Extras"
 
 #: ./src/installer.ec:449
 #: ./src/installer.ec:1197
-msgid "Ecere Software Development Kit Setup - v0.44.12 \"Ryōan-ji\" 64 Bit Edition"
-msgstr "Ecere Software Development Kit Setup - v0.44.12 \"Ryōan-ji\" 64 Bit Edition"
+msgid "Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition"
+msgstr "Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition"
 
 #: ./src/installer.ec:314
 #: ./src/installer.ec:315
@@ -217,7 +217,7 @@ msgstr "GDB Docs"
 msgid "GNU C Compiler"
 msgstr "GNU C Compiler"
 
-#: ./../ide/src/IDESettings.ec:739
+#: ./../ide/src/IDESettings.ec:775
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -303,15 +303,15 @@ msgstr "License Agreements"
 msgid "Make Docs"
 msgstr "Make Docs"
 
-#: ./../ide/src/IDESettings.ec:742
+#: ./../ide/src/IDESettings.ec:778
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:743
+#: ./../ide/src/IDESettings.ec:779
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:745
+#: ./../ide/src/IDESettings.ec:781
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -331,7 +331,7 @@ msgstr "Networking"
 msgid "Please wait while the Ecere Software Development Kit is being installed."
 msgstr "Please wait while the Ecere Software Development Kit is being installed."
 
-#: ./../ide/src/IDESettings.ec:741
+#: ./../ide/src/IDESettings.ec:777
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -400,7 +400,7 @@ msgstr "This program is based on these free open source software components."
 msgid "Threading"
 msgstr "Threading"
 
-#: ./../ide/src/IDESettings.ec:740
+#: ./../ide/src/IDESettings.ec:776
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 

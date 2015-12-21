@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/idList.ec:230
+#: ./src/idList.ec:238
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
@@ -36,7 +36,7 @@ msgstr "Database file (%s) could not be created.\n"
 msgid "Database file (%s) could not be opened.\n"
 msgstr "Database file (%s) could not be opened.\n"
 
-#: ./src/gui.ec:811
+#: ./src/gui.ec:821
 msgid "Delete"
 msgstr "Delete"
 
@@ -48,7 +48,7 @@ msgstr "EDB: Error getting Name field from tables list table!\n"
 msgid "EDB: Error getting tables list table!\n"
 msgstr "EDB: Error getting tables list table!\n"
 
-#: ./src/gui.ec:944
+#: ./src/gui.ec:954
 msgid "Entry"
 msgstr "Entry"
 
@@ -64,17 +64,17 @@ msgstr "Export as Spreadsheet (CSV)"
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Invalid, corrupted or in use (%s) database file.\n"
 
-#: ./src/gui.ec:648
+#: ./src/gui.ec:654
 msgid "List"
 msgstr "List"
 
-#: ./src/gui.ec:690
-#: ./src/gui.ec:800
+#: ./src/gui.ec:696
+#: ./src/gui.ec:810
 msgid "List Editor"
 msgstr "List Editor"
 
 #: ./src/gui/TableEditor.ec:25
-#: ./src/gui.ec:748
+#: ./src/gui.ec:758
 msgid "New"
 msgstr "New"
 
@@ -86,11 +86,11 @@ msgstr "New|id="
 msgid "Please wait while the report is being generated..."
 msgstr "Please wait while the report is being generated..."
 
-#: ./src/gui.ec:988
+#: ./src/gui.ec:998
 msgid "Revert"
 msgstr "Revert"
 
-#: ./src/gui.ec:977
+#: ./src/gui.ec:987
 msgid "Save"
 msgstr "Save"
 
@@ -116,7 +116,7 @@ msgstr "Unable to detect if table exists!\n"
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
-#: ./src/gui.ec:803
+#: ./src/gui.ec:813
 msgid "You are about to delete an entry.\nDo you wish to continue?"
 msgstr "You are about to delete an entry.\nDo you wish to continue?"
 
@@ -125,16 +125,16 @@ msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
 msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
 
 #: ./src/gui/TableEditor.ec:354
-#: ./src/gui.ec:690
+#: ./src/gui.ec:696
 msgid "You have modified this entry. Would you like to save it before proceeding?"
 msgstr "You have modified this entry. Would you like to save it before proceeding?"
 
-#: ./src/gui.ec:779
-#: ./src/gui.ec:785
+#: ./src/gui.ec:789
+#: ./src/gui.ec:795
 msgid "[New]"
 msgstr "[New]"
 
-#: ./src/idList.ec:230
+#: ./src/idList.ec:238
 msgid "item"
 msgstr "item"
 
