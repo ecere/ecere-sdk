@@ -275,7 +275,8 @@ class SavedConfigWindow : Window
       if(result)
       {
          GuiConfigData data = getGuiConfigData();
-         data.timer.Start();
+         if(data)
+            data.timer.Start();
       }
       return result;
    }
