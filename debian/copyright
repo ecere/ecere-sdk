@@ -71,7 +71,7 @@ License: BSD-3-clause
 
 Files: extras/md5.ec
 Copyright: Copyright 2001 Alexander Peslyak
-License: public domain
+License: public-domain
  An eC adaptation of Alexander Peslyak's public domain MD5 implementation
 
 Files: extras/sha256.ec
@@ -139,7 +139,7 @@ License: MIT
 
 Files: ecere/res/*/*.png
 Copyright: (some) Tango Project
-License: public domain
+License: public-domain
  Terms Of Use
  .
  The Tango base icon theme is released to the Public Domain. The palette is in public domain.
@@ -150,7 +150,7 @@ License: public domain
 
 Files: eda/drivers/sqlite/sqlite3.c eda/drivers/sqlite/sqlite3.h eda/drivers/sqlite/shell.c
 Copyright: SQLite Project
-License: public domain
+License: public-domain
  /************** Begin file sqliteInt.h ***************************************/
  /*
  ** 2001 September 15

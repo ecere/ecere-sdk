@@ -53,7 +53,7 @@ Package: libecere0
 Section: libs
 Architecture: any
 Multi-Arch: same
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Ecere Runtime Library
  This package provides the Linux version
@@ -67,7 +67,7 @@ Package: libecerecom0
 Section: libs
 Architecture: any
 Multi-Arch: same
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: eC Core Runtime Library
  This package provides the bare minimum
@@ -80,7 +80,7 @@ Architecture: any
 Multi-Arch: same
 Replaces: libec0 (<= 0.44.02-1)
 Breaks: libec0 (<= 0.44.02-1)
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libecere0 (= ${binary:Version}),
          ${devel:Depends},
          ${misc:Depends},
@@ -96,7 +96,7 @@ Package: libeda0
 Section: libs
 Architecture: any
 Multi-Arch: same
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Ecere Data Access
  This package provides the Ecere
@@ -109,7 +109,7 @@ Package: libedasqlite0
 Section: libs
 Architecture: any
 Multi-Arch: same
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libeda0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: EDA SQLite Driver
  This package provides SQLite driver
@@ -120,7 +120,7 @@ Package: libecereaudio0
 Section: libs
 Architecture: any
 Multi-Arch: same
-Pre-Depends: multiarch-support
+Pre-Depends: ${misc:Pre-Depends}
 Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Ecere Audio
  This package provides an audio playback and mixer API
