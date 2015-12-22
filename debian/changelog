@@ -1,3 +1,24 @@
+ecere-sdk (0.44.13-1) unstable; urgency=low
+
+   * Packaged Ecere SDK 0.44.13 (Bug fix / Support release)
+   * EDA: 64 bit Id types
+   * EDA/Reports: Optimization of Reports Generation
+   * EDA/Reports: Fixed multi-level grouping issues
+   * Object::Merge(): Fixed problem introduced in 0.44.12
+   * Compiler: Solving alignment issues
+   * Compiler: Solving signature/call mismatch (Emscripten)
+   * Compiler: Fixes for Map/AVLTree with float or double values
+   * ListBox: Fixed Tree View row moving
+   * TabControl: Support to add/remove tabs
+   * Android: Multi-Touch and Double Click support
+   * IDE/Form Designer: Fixed control properties modified when they should not
+   * IDE/Property Sheet: Fixed counter-intuitive selection colors
+   * Documentor: Fixed missing spacing
+   * ODROID Support
+   * samples/guiAndGfx: New 'mekano' sample
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 22 Dec 2015 10:00:00 -0500
+
 ecere-sdk (0.44.11-1) unstable; urgency=low
 
    * Packaged Ecere SDK 0.44.11 (Bug fix release)
