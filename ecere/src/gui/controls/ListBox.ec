@@ -662,8 +662,11 @@ public:
                }
                else
                {
+                  int size = (field.dataType && field.dataType.typeSize) ?
+                     (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                   // Free old data first
                   ((void (*)(void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnFree])(dataType, cell.data);
+                  FillBytes(cell.data, 0, size - (uint)(uintptr)&((ListBoxCell)0).data);
                }
             }
             cell.isSet = false;
