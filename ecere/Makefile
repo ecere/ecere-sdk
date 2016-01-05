@@ -114,6 +114,11 @@ _ECSOURCES2 = \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/atlasBuilder.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/drawManager.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/fontManager.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/fontRenderer.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/textureManager.ec) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -247,6 +252,8 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
 	$(OBJ)gl_compat_4_4.o \
+	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
+	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
 	$(if ,$(OBJ)CocoaEcereBridge.o,) \
 	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
@@ -277,6 +284,8 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	src/gfx/drivers/gl3/gl_compat_4_4.c \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
 	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
@@ -438,6 +447,10 @@ PRJ_CFLAGS += \
 
 CUSTOM1_PRJ_CFLAGS = \
 			 -DECERE_COM_MODULE \
+	 $(PRJ_CFLAGS)
+
+CUSTOM3_PRJ_CFLAGS = \
+			 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
@@ -816,6 +829,21 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
 endif
+
+$(OBJ)atlasBuilder.sym: src/gfx/newFonts/atlasBuilder.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@)
+
+$(OBJ)drawManager.sym: src/gfx/newFonts/drawManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontManager.sym: src/gfx/newFonts/fontManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontManager.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontRenderer.sym: src/gfx/newFonts/fontRenderer.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@)
+
+$(OBJ)textureManager.sym: src/gfx/newFonts/textureManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@)
 
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.sym
@@ -1252,6 +1280,22 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
+
+
+$(OBJ)atlasBuilder.c: src/gfx/newFonts/atlasBuilder.ec $(OBJ)atlasBuilder.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)drawManager.c: src/gfx/newFonts/drawManager.ec $(OBJ)drawManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontManager.c: src/gfx/newFonts/fontManager.ec $(OBJ)fontManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontRenderer.c: src/gfx/newFonts/fontRenderer.ec $(OBJ)fontRenderer.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)textureManager.c: src/gfx/newFonts/textureManager.ec $(OBJ)textureManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
@@ -1739,6 +1783,27 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
+
+$(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/cc.c) -o $(call quote_path,$@)
+
+$(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)
+
+$(OBJ)atlasBuilder$(O): $(OBJ)atlasBuilder.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)atlasBuilder.c) -o $(call quote_path,$@)
+
+$(OBJ)drawManager$(O): $(OBJ)drawManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)drawManager.c) -o $(call quote_path,$@)
+
+$(OBJ)fontManager$(O): $(OBJ)fontManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontManager.c) -o $(call quote_path,$@)
+
+$(OBJ)fontRenderer$(O): $(OBJ)fontRenderer.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRenderer.c) -o $(call quote_path,$@)
+
+$(OBJ)textureManager$(O): $(OBJ)textureManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)textureManager.c) -o $(call quote_path,$@)
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
