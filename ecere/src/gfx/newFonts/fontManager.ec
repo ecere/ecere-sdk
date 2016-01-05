@@ -404,13 +404,13 @@ struct FMFreeTypeFont
 #define FM_GLYPH_CODEPOINT_CURSOR (0x1)
 #define FM_GLYPH_CODEPOINT_REPLACEMENT (0xfffd)
 
-public enum VerticalAlignment { baseline, top, middle, bottom };
+public enum FMVerticalAlignment { baseline, top, middle, bottom };
 
 public class FMTextAlignment : uint16
 {
 public:
    Alignment horzAlignment:2;
-   VerticalAlignment vertAlignment:2;
+   FMVerticalAlignment vertAlignment:2;
 };
 
 public struct FMPathDraw
