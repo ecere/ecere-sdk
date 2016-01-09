@@ -220,6 +220,9 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
+ifdef DEBIAN_PACKAGE
+	touch -r extract.ec $(OBJ)extract.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main.c $(OBJECTS) $(SYMBOLS) $(TARGET)
+endif
 
 # SYMBOL RULES
 
