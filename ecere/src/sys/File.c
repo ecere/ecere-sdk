@@ -354,7 +354,9 @@ bool FILE_FileGetStats(const char * fileName, FileStats * stats)
       }
 #else
       stats->accessed = s.st_atime;
-      stats->created = s.st_ctime;
+      // UNIX st_ctime is 'status change' time, not creation time
+      // Marking created as 0, as ctime changes cause unreproducible builds
+      stats->created = 0;
       stats->modified = s.st_mtime;
 #endif
 /*
