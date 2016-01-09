@@ -2542,7 +2542,6 @@ class HelpView : HTMLView
       }
       {
          TempFile f { };
-         ArchiveDir dir = archive ? archive.OpenDirectory(directory, null, replace) : null;
          Block block;
          bool empty = true;
          for(block = textBlock.parent.subBlocks.first; block; block = block.next)
@@ -2564,9 +2563,14 @@ class HelpView : HTMLView
             }
          }
          f.Seek(0, start);
-         if(dir)
-            dir.AddFromFile(fileName, f, null, replace, 0, null, null);
-         delete dir;
+
+         if(!empty || archive.FileExists(location))
+         {
+            ArchiveDir dir = archive ? archive.OpenDirectory(directory, null, replace) : null;
+            if(dir)
+               dir.AddFromFile(fileName, f, null, replace, 0, null, null);
+            delete dir;
+         }
          delete archive;
          delete f;
          if(empty)
