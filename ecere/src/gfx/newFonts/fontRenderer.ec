@@ -26,7 +26,7 @@ import "Color"
 #include "cc.h"
 #include "mm.h"
 
-import "fontManager"
+import "fmFontManager"
 import "textureManager"
 import "drawManager"
 
