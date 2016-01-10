@@ -116,7 +116,7 @@ _ECSOURCES2 = \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/atlasBuilder.ec) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/drawManager.ec) \
-	$(if $(DISABLE_GL),,src/gfx/newFonts/fontManager.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/fmFontManager.ec) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/fontRenderer.ec) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/textureManager.ec) \
 	src/gfx/Bitmap.ec \
@@ -836,8 +836,8 @@ $(OBJ)atlasBuilder.sym: src/gfx/newFonts/atlasBuilder.ec
 $(OBJ)drawManager.sym: src/gfx/newFonts/drawManager.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@)
 
-$(OBJ)fontManager.sym: src/gfx/newFonts/fontManager.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontManager.ec) -o $(call quote_path,$@)
+$(OBJ)fmFontManager.sym: src/gfx/newFonts/fmFontManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@)
 
 $(OBJ)fontRenderer.sym: src/gfx/newFonts/fontRenderer.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@)
@@ -1288,8 +1288,8 @@ $(OBJ)atlasBuilder.c: src/gfx/newFonts/atlasBuilder.ec $(OBJ)atlasBuilder.sym | 
 $(OBJ)drawManager.c: src/gfx/newFonts/drawManager.ec $(OBJ)drawManager.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)fontManager.c: src/gfx/newFonts/fontManager.ec $(OBJ)fontManager.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)fmFontManager.c: src/gfx/newFonts/fmFontManager.ec $(OBJ)fmFontManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)fontRenderer.c: src/gfx/newFonts/fontRenderer.ec $(OBJ)fontRenderer.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1796,8 +1796,8 @@ $(OBJ)atlasBuilder$(O): $(OBJ)atlasBuilder.c
 $(OBJ)drawManager$(O): $(OBJ)drawManager.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)drawManager.c) -o $(call quote_path,$@)
 
-$(OBJ)fontManager$(O): $(OBJ)fontManager.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontManager.c) -o $(call quote_path,$@)
+$(OBJ)fmFontManager$(O): $(OBJ)fmFontManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fmFontManager.c) -o $(call quote_path,$@)
 
 $(OBJ)fontRenderer$(O): $(OBJ)fontRenderer.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRenderer.c) -o $(call quote_path,$@)
