@@ -2120,7 +2120,7 @@
                         },
                         "atlasBuilder.ec",
                         "drawManager.ec",
-                        "fontManager.ec",
+                        "fmFontManager.ec",
                         "fontRenderer.ec",
                         "textureManager.ec"
                      ],
