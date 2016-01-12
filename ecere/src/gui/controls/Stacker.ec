@@ -452,7 +452,7 @@ private:
 
          if(bits.scrollable)
          {
-            // FOR WHEN SCROLLING OCCURED
+            // FOR WHEN SCROLLING OCCURRED
             for(child : controls; !child.nonClient && child.visible)
                child.anchor = child.anchor;
 

@@ -387,7 +387,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
                fileName[strLen] = '\0';
 
                if(strLen + strlen(directory) > MAX_LOCATION - 3)
-                  return null;   // AN ERROR OCCURED!
+                  return null;   // AN ERROR OCCURRED!
 
                strcat(fileName, directory);
             }
@@ -612,7 +612,7 @@ public char * PathCat(char * string, const char * addedPath)
                fileName[strLen] = '\0';
 
                if(strLen + strlen(directory) > MAX_LOCATION - 3)
-                  return null;   // AN ERROR OCCURED!
+                  return null;   // AN ERROR OCCURRED!
 
                strcat(fileName, directory);
             }

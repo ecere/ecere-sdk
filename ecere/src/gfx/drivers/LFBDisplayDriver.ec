@@ -841,20 +841,20 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
                DWORD type;
                DWORD size = 1024;
                DWORD sizeFileName = 1024;
-               char * occurence;
+               char * occurrence;
                if(RegEnumValue(key, value++, entryName, &size, null, (PDWORD)&type, (LPBYTE)fontFileName, &sizeFileName) != ERROR_SUCCESS)
                   break;
-               if((occurence = SearchString(entryName, 0, (const char *)font->elfFullName, false, false)))
+               if((occurrence = SearchString(entryName, 0, (const char *)font->elfFullName, false, false)))
                {
                   int c;
-                  for(c = (int)(occurence - entryName) - 1; c >= 0; c--)
+                  for(c = (int)(occurrence - entryName) - 1; c >= 0; c--)
                   {
                      char ch = entryName[c];
                      if(ch == '&') { c = -1; break; }
                      else if(ch != ' ') break;
                   }
                   if(c >= 0) continue;
-                  for(c = (int)(occurence - entryName) + strlen((char *)font->elfFullName); ; c++)
+                  for(c = (int)(occurrence - entryName) + strlen((char *)font->elfFullName); ; c++)
                   {
                      char ch = entryName[c];
                      if(ch == 0 || ch == '&' || ch == '(') { c = -1; break; }

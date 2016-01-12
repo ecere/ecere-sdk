@@ -155,7 +155,7 @@ private:
          if(entriesFound)
          {
             char contents[1024];
-            sprintf(contents, $"%d occurences found, %d replaced", entriesFound, entriesReplaced);
+            sprintf(contents, $"%d occurrences found, %d replaced", entriesFound, entriesReplaced);
             MessageBox { type = ok, master = this, text = $"Search Finished", contents = contents }.Modal();
          }
          else
@@ -352,7 +352,7 @@ private:
          else
          {
             char contents[1024];
-            sprintf(contents, $"%d occurences found, %d replaced", entriesFound, entriesReplaced);
+            sprintf(contents, $"%d occurrences found, %d replaced", entriesFound, entriesReplaced);
             MessageBox { type = ok, master = this, text = $"Search Finished", contents = contents }.Modal();
          }
 

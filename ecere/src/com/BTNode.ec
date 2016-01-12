@@ -638,7 +638,7 @@ private:
       if (diffHeight != balanceFactor)
       {
          valid = 0;
-         printf("Height difference %d doesnt match balance-factor of %d at node %d\n", diffHeight, balanceFactor, (int)key);
+         printf("Height difference %d doesn't match balance-factor of %d at node %d\n", diffHeight, balanceFactor, (int)key);
       }
 
       // Verify that search-tree property is satisfied

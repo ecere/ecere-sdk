@@ -12,8 +12,8 @@ msgstr ""
 
 #: ./src/gui/dialogs/ReplaceDialog.ec:158
 #: ./src/gui/dialogs/ReplaceDialog.ec:355
-msgid "%d occurences found, %d replaced"
-msgstr "%d occurences found, %d replaced"
+msgid "%d occurrences found, %d replaced"
+msgstr "%d occurrences found, %d replaced"
 
 #: ./src/gui/dialogs/FileDialog.ec:893
 msgid "All Files"
