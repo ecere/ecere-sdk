@@ -77,9 +77,11 @@ void GetTemplateString(Class c, char * templateString)
             Class pc;
             char * d = templateString + strlen(templateString);
             curName[len] = 0;
+            TrimLSpaces(curName, curName);
+            TrimRSpaces(curName, curName);
             pc = eSystem_FindClass(m, curName);
             if(pc)
-               sprintf(d, "<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", pc, pc.name);
+               sprintf(d, "%s<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", !strncmp(curName, "const ", 6) ? "const " : "", pc, pc.name);
             else
                strcat(d, curName);
          }
@@ -100,7 +102,7 @@ void GetTemplateString(Class c, char * templateString)
          strcat(templateString, curName);
          len = 0;
       }
-      else if(ch != ' ')
+      else
          curName[len++] = ch;
    }
 }
