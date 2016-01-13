@@ -4,8 +4,8 @@ Upstream-Contact: Jerome St-Louis <jerome@ecere.com>
 Source: http://ecere.org/
 
 Files: *
-Copyright: 1996-2015 Jérôme Jacovella-St-Louis
-           2005-2015 Ecere Corporation
+Copyright: 1996-2016 Jérôme Jacovella-St-Louis
+           2005-2016 Ecere Corporation
 License: BSD-3-clause
 
 Files: extras/md5.ec

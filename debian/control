@@ -19,8 +19,8 @@ Build-Depends: debhelper (>= 9~),
                libx11-dev,
                libxext-dev,
                libxrender-dev,
-               linux-libc-dev,
-               upx-ucl,
+               linux-libc-dev [linux-any],
+               upx-ucl [!sparc64 !x32],
                zlib1g-dev
 Standards-Version: 3.9.6
 Homepage: http://ecere.org/

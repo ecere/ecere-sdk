@@ -1,3 +1,17 @@
+ecere-sdk (0.44.14-1) unstable; urgency=low
+
+   * Packaged Ecere SDK 0.44.14
+   * Fixed control file to build if upx-ucl is not available
+   * Made dependency on linux-libc6-dev specific to Linux
+   * Changes:
+      - Addresses build reproducibility issues
+      - Fixed compiler bug causing build to fail on M68K
+      - Documentor: Minor fixes
+      - Spelling fixes
+      - GUI/ListBox: Fixed clearing cell data
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Wed, 13 Jan 2016 22:00:00 -0500
+
 ecere-sdk (0.44.13-1) unstable; urgency=low
 
    * Packaged Ecere SDK 0.44.13 (Bug fix / Support release)
