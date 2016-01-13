@@ -36,8 +36,8 @@ class AboutIDE : Window
       message = PrintString(
             "Ecere Software Development Kit ", strcmp(shortVersion, "unknown") ? "v" : "", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
             "Build " REPOSITORY_VERSION "\n"
-            "Copyright © 2005-2015 Ecere Corporation\n"
-            "Copyright © 1996-2015 Jérôme Jacovella-St-Louis");
+            "Copyright © 2005-2016 Ecere Corporation\n"
+            "Copyright © 1996-2016 Jérôme Jacovella-St-Louis");
       versionCopyright.contents = message;
       delete message;
       delete shortVersion;
@@ -204,7 +204,7 @@ class AboutIDE : Window
 
       bool OnLeftButtonDown(int x, int y, Modifiers mods)
       {
-         ShellOpen("http://www.ecere.com/");
+         ShellOpen("http://ecere.org/");
          return true;
       }
    };

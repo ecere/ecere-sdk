@@ -154,10 +154,6 @@ msgstr "Data Access"
 msgid "Database"
 msgstr "Database"
 
-#: ./src/installer.ec:2
-msgid "December 22, 2015"
-msgstr "December 22, 2015"
-
 #: ./src/installer.ec:428
 msgid "Desktop Icon"
 msgstr "Desktop Icon"
@@ -189,8 +185,8 @@ msgstr "Ecere Extras"
 
 #: ./src/installer.ec:449
 #: ./src/installer.ec:1197
-msgid "Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition"
-msgstr "Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition"
+msgid "Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition"
+msgstr "Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition"
 
 #: ./src/installer.ec:314
 #: ./src/installer.ec:315
@@ -294,6 +290,10 @@ msgstr "Installing Start Menu Icons..."
 #: ./src/installer.ec:1250
 msgid "Installing the Ecere SDK"
 msgstr "Installing the Ecere SDK"
+
+#: ./src/installer.ec:2
+msgid "January 13, 2016"
+msgstr "January 13, 2016"
 
 #: ./../ide/src/licensing.ec:38
 msgid "License Agreements"

@@ -1,5 +1,5 @@
-static define versionString = "Ecere SDK v0.44.13";
-static define dateString = $"December 22, 2015";
+static define versionString = "Ecere SDK v0.44.14";
+static define dateString = $"January 13, 2016";
 static define builtOnString = $"built on ";
 static define withoutMinGW = $" (Without MinGW)";
 
@@ -446,7 +446,7 @@ class Installer : Window
    tabCycle = true;
    clientSize = { 636, 476 };
    icon = { ":icon.png" };
-   caption = $"Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition";
 
    // clientSize = { 796, 576 };
    bool loaded;
@@ -1194,7 +1194,7 @@ class Installer : Window
 
 class InstallProgress : Window
 {
-   caption = $"Ecere Software Development Kit Setup - v0.44.13 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;

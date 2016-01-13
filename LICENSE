@@ -1,6 +1,6 @@
-Ecere SDK v0.44.13 - www.ecere.com
+The Ecere SDK v0.44.14 - http://ecere.org
 
-The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
+The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY
 expressed or implied to the extent permitted by law.
 
 Applications built with it can be distributed both commercially and non
@@ -14,13 +14,15 @@ commercially, along with the supporting Ecere runtime library(ies):
       - Data Access System
    * libEDASQLite.so / EDASQLite.dll
       - SQLite driver for EDA
+   * libEcereAudio.so / EcereAudio.dll
+      - Audio output library (using ALSA / DirectSound)
 
 The Ecere SDK is distributed under the New BSD license:
 
 ================================================================================
 
-   Copyright (c) 1996-2015, Jerome Jacovella-St-Louis
-   Copyright (c) 2005-2015, Ecere Corporation
+   Copyright (c) 1996-2016, Jerome Jacovella-St-Louis
+   Copyright (c) 2005-2016, Ecere Corporation
 
    All rights reserved.
 
@@ -33,7 +35,7 @@ The Ecere SDK is distributed under the New BSD license:
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
     * Neither the name of Ecere Corporation nor the names of its contributors
-      may be used to endorse or promote products derived from this software 
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -50,7 +52,7 @@ The Ecere SDK is distributed under the New BSD license:
 
 ================================================================================
 
-This software makes use of other software components whose licenses may also 
+This software makes use of other software components whose licenses may also
 apply, which are found in their respective source directories (most under
 deps/).
 

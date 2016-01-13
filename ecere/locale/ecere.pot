@@ -43,14 +43,14 @@ msgstr "Alt+"
 #: ./src/gui/controls/DropBox.ec:173
 #: ./src/gui/controls/EditBox.ec:799
 #: ./src/gui/controls/Label.ec:47
-#: ./src/gui/controls/ListBox.ec:1008
-#: ./src/gui/controls/ListBox.ec:1041
-#: ./src/gui/controls/ListBox.ec:1042
-#: ./src/gui/controls/ListBox.ec:1046
-#: ./src/gui/controls/ListBox.ec:1074
-#: ./src/gui/controls/ListBox.ec:1075
-#: ./src/gui/controls/ListBox.ec:1076
+#: ./src/gui/controls/ListBox.ec:1011
+#: ./src/gui/controls/ListBox.ec:1044
+#: ./src/gui/controls/ListBox.ec:1045
+#: ./src/gui/controls/ListBox.ec:1049
 #: ./src/gui/controls/ListBox.ec:1077
+#: ./src/gui/controls/ListBox.ec:1078
+#: ./src/gui/controls/ListBox.ec:1079
+#: ./src/gui/controls/ListBox.ec:1080
 #: ./src/gui/controls/Picture.ec:19
 #: ./src/gui/controls/Picture.ec:39
 #: ./src/gui/controls/ScrollBar.ec:81
@@ -115,17 +115,17 @@ msgstr "August"
 #: ./src/gui/controls/EditBox.ec:801
 #: ./src/gui/controls/EditBox.ec:802
 #: ./src/gui/controls/Label.ec:18
-#: ./src/gui/controls/ListBox.ec:990
-#: ./src/gui/controls/ListBox.ec:1029
-#: ./src/gui/controls/ListBox.ec:1037
-#: ./src/gui/controls/ListBox.ec:1038
-#: ./src/gui/controls/ListBox.ec:1039
+#: ./src/gui/controls/ListBox.ec:993
+#: ./src/gui/controls/ListBox.ec:1032
 #: ./src/gui/controls/ListBox.ec:1040
-#: ./src/gui/controls/ListBox.ec:1072
-#: ./src/gui/controls/ListBox.ec:1073
-#: ./src/gui/controls/ListBox.ec:1078
-#: ./src/gui/controls/ListBox.ec:1079
-#: ./src/gui/controls/ListBox.ec:1083
+#: ./src/gui/controls/ListBox.ec:1041
+#: ./src/gui/controls/ListBox.ec:1042
+#: ./src/gui/controls/ListBox.ec:1043
+#: ./src/gui/controls/ListBox.ec:1075
+#: ./src/gui/controls/ListBox.ec:1076
+#: ./src/gui/controls/ListBox.ec:1081
+#: ./src/gui/controls/ListBox.ec:1082
+#: ./src/gui/controls/ListBox.ec:1086
 #: ./src/gui/controls/ScrollBar.ec:83
 #: ./src/gui/controls/ScrollBar.ec:87
 #: ./src/gui/controls/ScrollBar.ec:98
@@ -588,7 +588,7 @@ msgid "Please enter a name."
 msgstr "Please enter a name."
 
 #: ./src/gui/controls/DropBox.ec:95
-#: ./src/gui/controls/ListBox.ec:991
+#: ./src/gui/controls/ListBox.ec:994
 msgid "Private"
 msgstr "Private"
 

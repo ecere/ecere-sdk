@@ -7,7 +7,7 @@
 
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "setup-ecere-0.44.13-win32",
+      "TargetFileName" : "setup-ecere-0.44.14-win32",
       "Libraries" : [
          "ole32",
          "uuid",
@@ -192,7 +192,7 @@
                   "../doc/ecereCOM.eCdoc",
                   "../doc/EDA.eCdoc",
                   "../LICENSE",
-                  "../README"
+                  "../README.md"
                ]
             },
             {

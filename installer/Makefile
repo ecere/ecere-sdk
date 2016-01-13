@@ -42,7 +42,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/setup-ecere-0.44.13-win32$(E)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/setup-ecere-0.44.14-win32$(E)
 
 _ECSOURCES = \
 	src/installer.ec \
@@ -143,7 +143,7 @@ RESOURCES1 = \
 RESOURCES2 = \
 	../doc/EDA.eCdoc \
 	../LICENSE \
-	../README \
+	../README.md \
 	../doc/tao.pdf \
 	coursework/Chapter\ 1\ -\ Getting\ Started/Lab1.1/helloWorld.ec \
 	coursework/Chapter\ 1\ -\ Getting\ Started/Lab1.1/HelloWorld.epj \
@@ -5442,7 +5442,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/documentor.exe ../obj/win32/bin/ide.exe "ecere-sdk/ide"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/ear.exe ../obj/win32/bin/ec.dll ../obj/win32/bin/ecc.exe ../obj/win32/bin/ecereCOM.dll ../obj/win32/bin/ecp.exe ../obj/win32/bin/ecs.exe ../obj/win32/bin/epj2make.exe "ecere-sdk/compiler"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/EDA.dll ../obj/win32/bin/EDASQLite.dll "ecere-sdk/eda"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../doc/ecere.eCdoc ../doc/ecereCOM.eCdoc ../doc/EDA.eCdoc ../LICENSE ../README "ecere-sdk/doc"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../doc/ecere.eCdoc ../doc/ecereCOM.eCdoc ../doc/EDA.eCdoc ../LICENSE ../README.md "ecere-sdk/doc"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../doc/tao.pdf "ecere-sdk/book"
 	$(EAR) aw$(EARFLAGS) $(TARGET) coursework/Chapter\ 1\ -\ Getting\ Started/answers\ -\ chapter\ 1.odt coursework/Chapter\ 1\ -\ Getting\ Started/exercises\ -\ chapter\ 1.odt "ecere-sdk/coursework/Chapter 1 - Getting Started"
 	$(EAR) aw$(EARFLAGS) $(TARGET) coursework/Chapter\ 1\ -\ Getting\ Started/Lab1.1/helloWorld.ec coursework/Chapter\ 1\ -\ Getting\ Started/Lab1.1/HelloWorld.epj "ecere-sdk/coursework/Chapter 1 - Getting Started/Lab1.1"
