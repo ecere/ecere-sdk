@@ -1203,7 +1203,7 @@ printf("Height difference is %d at node %d\n", diffHeight, (int)this->key);
 if(diffHeight != __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this))
 {
 valid = (unsigned int)0;
-printf("Height difference %d doesnt match balance-factor of %d at node %d\n", diffHeight, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this), (int)this->key);
+printf("Height difference %d doesn't match balance-factor of %d at node %d\n", diffHeight, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this), (int)this->key);
 }
 if(this->left && tree->CompareKey(tree, this->left->key, this->key) > 0)
 {

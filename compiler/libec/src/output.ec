@@ -208,7 +208,7 @@ public void OutputExpression(Expression exp, File f)
       {
          Expression expression;
          if(exp.type == extensionExpressionExp)
-            f.Puts("__extension__ (");
+            f.Puts("__extension__ ");
          f.Puts("(");
          if(exp.list)
          {
