@@ -1,3 +1,45 @@
+ecere-sdk (0.44.14-0ubuntu1) xenial; urgency=low
+
+   * Packaged Ecere SDK 0.44.14
+   * Fixed control file to build if upx-ucl is not available
+   * Made dependency on linux-libc6-dev specific to Linux
+   * Changes:
+      - Addresses build reproducibility issues
+      - Fixed compiler bug causing build to fail on M68K
+      - Documentor: Minor fixes
+      - Spelling fixes
+      - GUI/ListBox: Fixed clearing cell data
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Wed, 13 Jan 2016 22:00:00 -0500
+
+ecere-sdk (0.44.13-0ubuntu1) xenial; urgency=low
+
+   * Packaged Ecere SDK 0.44.13 (Bug fix / Support release)
+   * EDA: 64 bit Id types
+   * EDA/Reports: Optimization of Reports Generation
+   * EDA/Reports: Fixed multi-level grouping issues
+   * Object::Merge(): Fixed problem introduced in 0.44.12
+   * Compiler: Solving alignment issues
+   * Compiler: Solving signature/call mismatch (Emscripten)
+   * Compiler: Fixes for Map/AVLTree with float or double values
+   * ListBox: Fixed Tree View row moving
+   * TabControl: Support to add/remove tabs
+   * Android: Multi-Touch and Double Click support
+   * IDE/Form Designer: Fixed control properties modified when they should not
+   * IDE/Property Sheet: Fixed counter-intuitive selection colors
+   * Documentor: Fixed missing spacing
+   * ODROID Support
+   * samples/guiAndGfx: New 'mekano' sample
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 22 Dec 2015 10:00:00 -0500
+
+ecere-sdk (0.44.11-0ubuntu1) vivid; urgency=low
+
+   * Packaged Ecere SDK 0.44.11 (Bug fix release)
+   * Fixed crash on writing initial config file on Linux
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Mon, 16 Feb 2015 19:33:00 -0500
+
 ecere-sdk (0.44.10-0ubuntu1) utopic; urgency=low
 
    * Closes: #749822 #750066 #750068
