@@ -3553,7 +3553,7 @@ bool GetInstalledFileOrFolder(const char * subDir, const char * name, char * pat
    bool found = false;
    char * v = new char[maxPathLen];
    v[0] = '\0';
-   if(found)
+   if(!found)
    {
       strncpy(path, settingsContainer.moduleLocation, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
       StripLastDirectory(path, path);
@@ -3564,74 +3564,24 @@ bool GetInstalledFileOrFolder(const char * subDir, const char * name, char * pat
 #if defined(__WIN32__)
    if(!found)
    {
-      GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
-      if(v[0])
+      for(s : [ "ECERE_SDK_SRC", "AppData", "ALLUSERSPROFILE", "USERPROFILE", "HOMEPATH", "ProgramData", "ProgramFiles", "ProgramFiles(x86)", "SystemDrive" ])
       {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
-      }
-   }
-   if(!found)
-   {
-      GetEnvironment("AppData", v, maxPathLen);
-      if(v[0])
-      {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, sdkDirName);
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
-      }
-   }
-   if(!found)
-   {
-      GetEnvironment("ProgramData", v, maxPathLen);
-      if(v[0])
-      {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, sdkDirName);
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
-      }
-   }
-   if(!found)
-   {
-      GetEnvironment("ProgramFiles", v, maxPathLen);
-      if(v[0])
-      {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, sdkDirName);
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
-      }
-   }
-   if(!found)
-   {
-      GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
-      if(v[0])
-      {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, sdkDirName);
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
-      }
-   }
-   if(!found)
-   {
-      GetEnvironment("SystemDrive", v, maxPathLen);
-      if(v[0])
-      {
-         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
-         PathCat(path, "Program Files");
-         PathCat(path, sdkDirName);
-         PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
+         GetEnvironment(s, v, maxPathLen);
+         if(v[0])
+         {
+            strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+            if(!strcmp(s, "SystemDrive"))
+               PathCat(path, "Program Files");
+            if(strcmp(s, "ECERE_SDK_SRC"))
+               PathCat(path, sdkDirName);
+            PathCat(path, subDir);
+            if(name) PathCat(path, name);
+            if(FileExists(path) & attribs)
+            {
+               found = true;
+               break;
+            }
+         }
       }
    }
 #else
