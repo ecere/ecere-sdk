@@ -611,7 +611,7 @@ static inline int dmSortImagesCmp( DMImageBuffer *draw0, DMImageBuffer *draw1 )
 ////
 
 // TOFIX: Make this private, have a property
-public class DrawManagerFlags : uint32 { bool prehistoricOpenGL:1; }
+public class DrawManagerFlags : uint32 { public: bool prehistoricOpenGL:1; }
 
 public class DrawManager
 {
@@ -1380,7 +1380,8 @@ public:
 
      glBindBuffer( GL_ARRAY_BUFFER, 0 );
      glabCurArrayBuffer = 0;
-     glUseProgram( prevProgram );
+     if( !flags.prehistoricOpenGL )
+         glUseProgram( prevProgram );
       // Restore OpenGL state
       // FIXME: no glPushAttrib() in core profile
 //#ifndef SHADERS
