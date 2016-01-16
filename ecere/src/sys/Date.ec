@@ -116,6 +116,19 @@ public struct Date
       return stringOutput;
    }
 
+   const char * OnGetStringEn(char * stringOutput, void * fieldData, bool * needClass)
+   {
+      if(stringOutput)
+      {
+         if(day && year)
+            sprintf(stringOutput, "%s, %s %2d, %d",
+               enLongDaysNames[dayOfTheWeek], enLongMonthsNames[month], day, year);
+         else
+            stringOutput[0] = 0;
+      }
+      return stringOutput;
+   }
+
    bool OnGetDataFromString(const char * string)
    {
       char value[256];
