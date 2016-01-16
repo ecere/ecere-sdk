@@ -9,6 +9,7 @@ namespace gfx3D::meshes;
    cube.ec - Translucent Cube 3D Model
 ****************************************************************************/
 import "Display"
+import "Object"   // TOFIX: If this is not here, Cube/Object gets registered as a 'class' rather than class 'struct'
 
 public class Cube : Object
 {
