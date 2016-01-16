@@ -1,6 +1,7 @@
 namespace gfx3D::meshes;
 
 import "Display"
+import "Object" // TOFIX: If this is not here, Cube/Object gets registered as a 'class' rather than class 'struct'
 
 public class Sphere : Object
 {
