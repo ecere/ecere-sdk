@@ -17,10 +17,7 @@
 #define CPUCONF_CHAR_BITS (8)
 #define CPUCONF_SHORT_BITS (16)
 #define CPUCONF_INT_BITS (32)
-#define CPUCONF_LONG_BITS (32)
 #define CPUCONF_LONG_LONG_BITS (64)
-#define CPUCONF_INTPTR_BITS (64)
-#define CPUCONF_POINTER_BITS (64)
 #define CPUCONF_FLOAT_BITS (32)
 #define CPUCONF_DOUBLE_BITS (64)
 #define CPUCONF_LONG_DOUBLE_BITS (128)
@@ -28,10 +25,8 @@
 #define CPUCONF_CHAR_SIZESHIFT (0)
 #define CPUCONF_SHORT_SIZESHIFT (1)
 #define CPUCONF_INT_SIZESHIFT (2)
-#define CPUCONF_LONG_SIZESHIFT (2)
 #define CPUCONF_LONG_LONG_SIZESHIFT (3)
-#define CPUCONF_INTPTR_SIZESHIFT (3)
-#define CPUCONF_POINTER_SIZESHIFT (3)
+
 #define CPUCONF_FLOAT_SIZESHIFT (2)
 #define CPUCONF_DOUBLE_SIZESHIFT (3)
 #define CPUCONF_LONG_DOUBLE_SIZESHIFT (4)
@@ -39,17 +34,59 @@
 #define CPUCONF_CHAR_BITSHIFT (3)
 #define CPUCONF_SHORT_BITSHIFT (4)
 #define CPUCONF_INT_BITSHIFT (5)
-#define CPUCONF_LONG_BITSHIFT (5)
 #define CPUCONF_LONG_LONG_BITSHIFT (6)
-#define CPUCONF_INTPTR_BITSHIFT (6)
-#define CPUCONF_POINTER_BITSHIFT (6)
 #define CPUCONF_FLOAT_BITSHIFT (5)
 #define CPUCONF_DOUBLE_BITSHIFT (6)
 #define CPUCONF_LONG_DOUBLE_BITSHIFT (7)
 
+#if defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN || \
+    defined(__BIG_ENDIAN__) || \
+    defined(__ARMEB__) || \
+    defined(__THUMBEB__) || \
+    defined(__AARCH64EB__) || \
+    defined(_MIBSEB) || defined(__MIBSEB) || defined(__MIBSEB__)
+#define CPUCONF_BIG_ENDIAN
+#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN || \
+    defined(__LITTLE_ENDIAN__) || \
+    defined(__ARMEL__) || \
+    defined(__THUMBEL__) || \
+    defined(__AARCH64EL__) || \
+    defined(_MIPSEL) || defined(__MIPSEL) || defined(__MIPSEL__)
 #define CPUCONF_LITTLE_ENDIAN
-#define CPUCONF_ARCH_AMD64
+#else
+   #define CPUCONF_LITTLE_ENDIAN
+   //#error "Unknown endianness"
+#endif
+
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_WIN64)
+   #define CPUCONF_ARCH_AMD64
+
+   #define CPUCONF_INTPTR_BITS (64)
+   #define CPUCONF_POINTER_BITS (64)
+   #define CPUCONF_INTPTR_SIZESHIFT (3)
+   #define CPUCONF_POINTER_SIZESHIFT (3)
+   #define CPUCONF_INTPTR_BITSHIFT (6)
+   #define CPUCONF_POINTER_BITSHIFT (6)
+
+   #define CPUCONF_LONG_BITSHIFT ((sizeof(long) == 2) ? 5 : 6)
+   #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 2) ? 2 : 3)
+   #define CPUCONF_LONG_BITS (sizeof(long) * 8)
+#else
+   #define CPUCONF_ARCH_IA32
+
+   #define CPUCONF_INTPTR_BITS (32)
+   #define CPUCONF_POINTER_BITS (32)
+   #define CPUCONF_INTPTR_SIZESHIFT (2)
+   #define CPUCONF_POINTER_SIZESHIFT (2)
+   #define CPUCONF_INTPTR_BITSHIFT (5)
+   #define CPUCONF_POINTER_BITSHIFT (5)
+
+   #define CPUCONF_LONG_BITSHIFT (5)
+   #define CPUCONF_LONG_SIZESHIFT (2)
+   #define CPUCONF_LONG_BITS (32)
+#endif
 #define CPUCONF_VENDOR_INTEL
+
 #define CPUCONF_IDENTIFIER "Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz"
 //#define CPUCONF_CLASS_COREI7-AVX2
 #define CPUCONF_SOCKET_LOGICAL_CORES (16)
