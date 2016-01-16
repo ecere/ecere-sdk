@@ -164,33 +164,42 @@ public void glimtkEnd(void)
 
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   streamVecAB.upload(vertexStride * sizeof(float) * vertexCount, vertexPointer);
-
-   streamVecAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
-   // noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
+   if(vboAvailable)
+   {
+      streamVecAB.upload(vertexStride * sizeof(float) * vertexCount, vertexPointer);
+      streamVecAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
+   }
+   else
+      noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
 
    if(vertexColorValues)
    {
       glEnableClientState(GL_COLOR_ARRAY);
-      streamVecAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
+      if(vboAvailable)
+         streamVecAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
+      else
+         noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
 
 #ifdef SHADERS
       shader_setPerVertexColor(true);
 #endif
-
-
-      //noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
    }
 
-   streamVecAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
-   // noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
+   if(vboAvailable)
+      streamVecAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+   else
+      noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
 
    if(normalCount && normalCount == vertexCount)
    {
       glEnableClientState(GL_NORMAL_ARRAY);
-      streamNorAB.upload(3*sizeof(float) * vertexCount, normalPointer);
-      streamNorAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
-      // noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
+      if(vboAvailable)
+      {
+         streamNorAB.upload(3*sizeof(float) * vertexCount, normalPointer);
+         streamNorAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+      }
+      else
+         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
    }
 
    glDrawArrays(mode, 0, vertexCount);

@@ -524,7 +524,7 @@ static int displayWidth, displayHeight;
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
-static bool vboAvailable;
+/*static */bool vboAvailable;
 
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
@@ -846,6 +846,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       oglSystem.pow2textures = (extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two")) ? false : true;
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
+#ifdef DIAGNOSTICS
+      PrintLn("max texture size: ", oglSystem.maxTextureSize);
+#endif
    }
 
    bool CreateDisplaySystem(DisplaySystem displaySystem)
@@ -2811,7 +2814,8 @@ class OpenGLDisplayDriver : DisplayDriver
          case vSync:
          {
 #if defined(__WIN32__)
-            wglSwapIntervalEXT(value ? 1 : 0);
+            if(wglSwapIntervalEXT)
+               wglSwapIntervalEXT(value ? 1 : 0);
 #endif
             break;
          }
@@ -3495,8 +3499,20 @@ class OpenGLDisplayDriver : DisplayDriver
 
          {
             OGLIndices oglIndices = primitive->data;
-            GLEAB eab = ((!display.display3D.collectingHits && oglIndices) ? oglIndices.buffer : noEAB);
-
+            GLEAB eab = ((!display.display3D.collectingHits && oglIndices && vboAvailable) ? oglIndices.buffer : noEAB);
+#if defined(ES1_1) || defined(ES2)
+            if(!vboAvailable && primitive->type.indices32bit)
+            {
+               uint16 * temp = new uint16[primitive->nIndices];
+               uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
+               int i;
+               for(i = 0; i < primitive->nIndices; i++)
+                  temp[i] = (uint16)src[i];
+               eab.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, temp);
+               delete temp;
+            }
+            else
+#endif
             eab.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));
