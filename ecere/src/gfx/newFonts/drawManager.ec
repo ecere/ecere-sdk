@@ -1165,9 +1165,12 @@ public:
          drawBuffer->glType = GL_FLOAT;
          drawBuffer->vertexCount = 0;
          drawBuffer->vertexAlloc = DM_CONTEXT_DRAW_BUFFER_VERTEX_ALLOC;
-         glGenBuffers( 1, &drawBuffer->vbo );
-         glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-         glBufferData( GL_ARRAY_BUFFER, drawBuffer->vertexAlloc * vertexSize, 0, GL_DYNAMIC_DRAW );
+         if(vboAvailable)
+         {
+            glGenBuffers( 1, &drawBuffer->vbo );
+            glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+            glBufferData( GL_ARRAY_BUFFER, drawBuffer->vertexAlloc * vertexSize, 0, GL_DYNAMIC_DRAW );
+         }
          drawBuffer->vertexBuffer = new byte[drawBuffer->vertexAlloc * vertexSize];
       }
 
@@ -1184,7 +1187,8 @@ public:
       for( i = 0 ; i < DM_CONTEXT_DRAW_BUFFER_COUNT ; i++ )
       {
          DMDrawBuffer *db = &drawBuffer[i];
-         glDeleteBuffers( 1, &db->vbo );
+         if(db->vbo)
+            glDeleteBuffers( 1, &db->vbo );
          delete db->vertexBuffer;
       }
 
@@ -1374,7 +1378,8 @@ public:
      else
        flushDrawImages( );
 
-     glBindBuffer( GL_ARRAY_BUFFER, 0 );
+     if(vboAvailable)
+        glBindBuffer( GL_ARRAY_BUFFER, 0 );
      glabCurArrayBuffer = 0;
      if( !flags.prehistoricOpenGL )
          glUseProgram( prevProgram );
