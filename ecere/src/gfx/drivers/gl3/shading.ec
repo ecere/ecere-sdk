@@ -3,7 +3,7 @@ import "matrixStack"
 import "glab"
 
 #ifndef _GLES
-#define SHADERS
+ #define SHADERS
 #endif
 
 #if defined(SHADERS)

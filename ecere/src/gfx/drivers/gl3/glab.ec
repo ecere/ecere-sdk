@@ -32,29 +32,35 @@ import "Display"
 // Kept public for now
 public void GLABDeleteBuffers(int count, GLAB * buffers)
 {
-   int i;
-   for(i = 0; i < count; i++)
+   if(vboAvailable)
    {
-      uint buffer = buffers[i].buffer;
-      if(buffer)
+      int i;
+      for(i = 0; i < count; i++)
       {
-         if(buffer == glabCurArrayBuffer)
-            GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-         else if(buffer == glabCurElementBuffer)
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+         uint buffer = buffers[i].buffer;
+         if(buffer)
+         {
+            if(buffer == glabCurArrayBuffer)
+               GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+            else if(buffer == glabCurElementBuffer)
+               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+         }
       }
+      if(count && buffers[0].buffer)
+         glDeleteBuffers(count, (GLuint *)buffers);
    }
-   if(count && buffers[0].buffer)
-      glDeleteBuffers(count, (GLuint *)buffers);
 }
 
 void GLABBindBuffer(int target, uint buffer)
 {
-   glBindBuffer(target, buffer);
-   if(target == GL_ARRAY_BUFFER)
-      glabCurArrayBuffer = buffer;
-   else if(target == GL_ELEMENT_ARRAY_BUFFER)
-      glabCurElementBuffer = buffer;
+   if(vboAvailable)
+   {
+      glBindBuffer(target, buffer);
+      if(target == GL_ARRAY_BUFFER)
+         glabCurArrayBuffer = buffer;
+      else if(target == GL_ELEMENT_ARRAY_BUFFER)
+         glabCurElementBuffer = buffer;
+   }
 }
 
 public enum GLBufferContents { vertex, normal, texCoord, color };
@@ -71,11 +77,16 @@ public struct GLAB
    {
       if(this != null)
       {
-         if(!buffer)
-            glGenBuffers(1, &buffer);
-         if(glabCurArrayBuffer != buffer)
-            GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
-         glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+         if(vboAvailable)
+         {
+            if(!buffer)
+               glGenBuffers(1, &buffer);
+            if(glabCurArrayBuffer != buffer)
+               GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+         }
+         else
+            buffer = 1;
       }
    }
 
@@ -83,14 +94,15 @@ public struct GLAB
    {
       if(this != null && buffer)
       {
-         GLABDeleteBuffers(1, this);
+         if(vboAvailable)
+            GLABDeleteBuffers(1, this);
          buffer = 0;
       }
    }
 
    void use(GLBufferContents contents, int n, int type, uint stride, void * pointer)
    {
-      if(glabCurArrayBuffer != ((this != null) ? buffer : 0))
+      if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && vboAvailable)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #ifdef SHADERS
       glVertexAttribPointer(contents, n, type, GL_FALSE, stride, pointer);
@@ -108,7 +120,7 @@ public struct GLAB
    void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
    {
 #if defined(_GLES) || defined(ES1_1) || defined(ES2)
-      if(glabCurArrayBuffer != ((this != null) ? buffer : 0))
+      if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && vboAvailable)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       if(type == GL_INT)
          glimtkVertexPointeri(n, stride, pointer, count);
@@ -138,15 +150,20 @@ public struct GLEAB
    {
       if(this != null)
       {
-         if(!buffer)
-            glGenBuffers(1, &buffer);
+         if(vboAvailable)
+         {
+            if(!buffer)
+               glGenBuffers(1, &buffer);
 
-         if(glabCurElementBuffer != buffer)
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-         if(size)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+            if(glabCurElementBuffer != buffer)
+               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+            if(size)
+               glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+            else
+               ;
+         }
          else
-            ;
+            buffer = 1;
       }
    }
 
@@ -154,18 +171,22 @@ public struct GLEAB
    {
       if(this != null && buffer)
       {
-         GLABDeleteBuffers(1, (GLAB *)this);
+         if(vboAvailable)
+            GLABDeleteBuffers(1, (GLAB *)this);
          buffer = 0;
       }
    }
 
    void draw(int primType, int count, int type, void * indices)
    {
-      if(glabCurElementBuffer != ((this != null) ? buffer : 0))
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+      if(vboAvailable || !buffer)
+      {
+         if(glabCurElementBuffer != ((this != null) ? buffer : 0))
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #if defined(_GLES) || defined(ES1_1) || defined(ES2)
-      type = GL_UNSIGNED_SHORT;
+         type = GL_UNSIGNED_SHORT;
 #endif
-      glDrawElements(primType, count, type, indices);
+         glDrawElements(primType, count, type, indices);
+      }
    }
 };
