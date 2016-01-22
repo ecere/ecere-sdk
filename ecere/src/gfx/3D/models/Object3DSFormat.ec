@@ -2116,7 +2116,9 @@ class Object3DSFormat : ObjectFormat
          info.f = FileOpen(fileName, read);
          if(info.f)
          {
-            if(ReadChunks(ReadMain, &info, object) && info.rootObject.children.first)
+            // TOFIX: eC reorders that badly
+            // if(ReadChunks(ReadMain, &info, object) && info.rootObject.children.first)
+            if(ReadChunks(ReadMain, &info, object) && info.rootObject.firstChild)
             {
                object.flags.root = true;
                object.SetMinMaxRadius(true);
