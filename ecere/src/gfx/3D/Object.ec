@@ -793,7 +793,7 @@ public:
          for(child = children.first; child; child = child.next)
          {
             child.Merge(displaySystem);
-            if(child.mesh)
+            if(child.flags.mesh && child.mesh)
             {
                nVertices += child.mesh.nVertices;
                flags |= child.mesh.flags;
@@ -857,7 +857,7 @@ public:
 
                if(child.flags.mesh && child.mesh)
                {
-                  for(c = 0; c<child.mesh.nVertices; c++)
+                  for(c = 0; c < child.mesh.nVertices; c++)
                   {
                      mesh.vertices[nVertices].MultMatrix(child.mesh.vertices[c], matrix);
                      if(child.mesh.normals)
@@ -1024,7 +1024,7 @@ public:
 
             for(child = children.first; child; child = child.next)
             {
-               if(child.mesh)
+               if(child.flags.mesh && child.mesh)
                   nTriangles += child.mesh.nPrimitives;
             }
 
