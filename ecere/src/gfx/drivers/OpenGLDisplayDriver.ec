@@ -245,6 +245,13 @@ import "shading"
 
 #else
 
+#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+default:
+   GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
+   GLAPI void APIENTRY glUnlockArraysEXT (void);
+private:
+#endif
+
 #if defined(__ANDROID__) || defined(__ODROID__)
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
    #define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
