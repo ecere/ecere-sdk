@@ -1291,6 +1291,13 @@ public:
    property OldList * tracks { /* set { tracks = value; } */ get { return &tracks; } };
    property ObjectFlags flags { set { flags = value; } get { return flags; } };
 
+   // TOFIX: 32-bit compiling with 64-bit SDK cannot access public members properly
+   property Object parent          { get { return parent; } }
+   property uint numChildren { get { return children.count; } }
+
+   property Matrix * localMatrixPtr   { get { return &localMatrix; } }
+   property Matrix * matrixPtr        { get { return &matrix; } }
+
 private:
    Object()
    {
@@ -1530,8 +1537,8 @@ private:
 
    Object prev, next;
    char * name;
-   public Object parent;
-   public OldList children;
+   Object parent;
+   OldList children;
 
    ObjectFlags flags;
 
@@ -1541,8 +1548,8 @@ private:
    Vector3Df pivot;
 
    public Transform transform;
-   public Matrix matrix;
-   public Matrix localMatrix;
+   Matrix matrix;
+   Matrix localMatrix;
 
    void * tag;
    Vector3Df min, max, center;
