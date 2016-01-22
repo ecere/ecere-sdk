@@ -359,7 +359,7 @@ struct FMFreeTypeFont
        return 0;
 
      glyphslot = face->glyph;
-     *advance = glyphslot->metrics.horiAdvance;
+     *advance = (int)glyphslot->metrics.horiAdvance;
      *x0 = glyphslot->bitmap_left;
      *x1 = glyphslot->bitmap_left + glyphslot->bitmap.width;
      *y0 = -glyphslot->bitmap_top;
@@ -372,7 +372,7 @@ struct FMFreeTypeFont
    {
      FT_Vector ftKerning;
      FT_Get_Kerning( face, glyph1, glyph2, FT_KERNING_DEFAULT, &ftKerning );
-     return ftKerning.x;
+     return (int)ftKerning.x;
    }
 
    static inline byte *getGlyphBitmap( int glyphindex )
