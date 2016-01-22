@@ -14,134 +14,141 @@ import "Object"
 
 #define MAXNAMELEN   64
 
-// RGB Chunks
-#define RGB_FLOAT             0x0010
-#define RGB_BYTE              0x0011
-#define RGB_BYTE_GAMMA        0x0012
-#define RGB_FLOAT_GAMMA       0x0013
+static enum ChunkID3DS : uint16
+{
+   // RGB Chunks
+   RGB_FLOAT             = 0x0010,
+   RGB_BYTE              = 0x0011,
+   RGB_BYTE_GAMMA        = 0x0012,
+   RGB_FLOAT_GAMMA       = 0x0013,
 
-// Amount Of Chunks
-#define AMOUNT_OF             0x0030
+   // Amount Of Chunks
+   AMOUNT_OF             = 0x0030,
 
-#define MAIN3DS               0x4D4D
-#define EDIT3DS               0x3D3D
-#define EDIT_AMBIENT          0x2100
-#define EDIT_MATERIAL         0xAFFF
-#define EDIT_OBJECT           0x4000
-#define OBJ_HIDDEN            0x4010
-#define OBJ_TRIMESH           0x4100
-#define OBJ_LIGHT             0x4600
-#define OBJ_CAMERA            0x4700
+   MAIN3DS               = 0x4D4D,
+   EDIT3DS               = 0x3D3D,
+   EDIT_AMBIENT          = 0x2100,
+   EDIT_MATERIAL         = 0xAFFF,
+   EDIT_OBJECT           = 0x4000,
+   OBJ_HIDDEN            = 0x4010,
+   OBJ_TRIMESH           = 0x4100,
+   OBJ_LIGHT             = 0x4600,
+   OBJ_CAMERA            = 0x4700,
 
-// Triangular Mesh Chunks
-#define TRI_VERTEXL           0x4110
-#define TRI_FACEL1            0x4120
-#define TRI_MATERIAL          0x4130
-#define TRI_MAPPINGCOORS      0x4140
-#define TRI_SMOOTHING         0x4150
-#define TRI_LOCAL             0x4160
+   // Triangular Mesh Chunks
+   TRI_VERTEXL           = 0x4110,
+   TRI_FACEL1            = 0x4120,
+   TRI_MATERIAL          = 0x4130,
+   TRI_MAPPINGCOORS      = 0x4140,
+   TRI_SMOOTHING         = 0x4150,
+   TRI_LOCAL             = 0x4160,
 
-// Light Chunks
-#define LIT_SPOT              0x4610
-#define LIT_ONOFF             0x4620
-#define LIT_ATTENUATION       0x4625
-#define LIT_START             0x4659
-#define LIT_END               0x465A
-#define LIT_MULTIPLIER        0x465B
+   // Light Chunks
+   LIT_SPOT              = 0x4610,
+   LIT_ONOFF             = 0x4620,
+   LIT_ATTENUATION       = 0x4625,
+   LIT_START             = 0x4659,
+   LIT_END               = 0x465A,
+   LIT_MULTIPLIER        = 0x465B,
 
-// Camera Chunks
-#define CAM_SEECONE           0x4710
-#define CAM_RANGES            0x4720
+   // Camera Chunks
+   CAM_SEECONE           = 0x4710,
+   CAM_RANGES            = 0x4720,
 
-// Material Chunks
-#define MAT_NAME              0xA000
-#define MAT_AMBIENT           0xA010
-#define MAT_DIFFUSE           0xA020
-#define MAT_SPECULAR          0xA030
-#define MAT_SHININESS         0xA040
-#define MAT_SHINSTRENGTH      0xA041
-#define MAT_SHIN3PC           0xA042
-#define MAT_TRANSPARENCY      0xA050
-#define MAT_XPFALL            0xA052
-#define MAT_REFBLUR           0xA053
-#define MAT_SELFILLUM         0xA080
-#define MAT_DOUBLESIDED       0xA081
-#define MAT_ADDITIVE          0xA083
-#define MAT_SELFILPCT         0xA084
-#define MAT_WIRE              0xA085
-#define MAT_SUPERSMP          0xA086
-#define MAT_WIRETHICKNESS     0xA087
-#define MAT_FACEMAP           0xA088
-#define MAT_XPFALLIN          0xA08A
-#define MAT_PHONG             0xA08C
-#define MAT_WIREABS           0xA08E
-#define MAT_SHADING           0xA100
-#define MAT_MAPTEXTURE1       0xA200
-#define MAT_SPECULARMAP       0xA204
-#define MAT_MAPOPACITY        0xA210
-#define MAT_REFLECTIONMAP     0xA220
-#define MAT_BUMPMAP           0xA230
+   // Material Chunks
+   MAT_NAME              = 0xA000,
+   MAT_AMBIENT           = 0xA010,
+   MAT_DIFFUSE           = 0xA020,
+   MAT_SPECULAR          = 0xA030,
+   MAT_SHININESS         = 0xA040,
+   MAT_SHINSTRENGTH      = 0xA041,
+   MAT_SHIN3PC           = 0xA042,
+   MAT_TRANSPARENCY      = 0xA050,
+   MAT_XPFALL            = 0xA052,
+   MAT_REFBLUR           = 0xA053,
+   MAT_SELFILLUM         = 0xA080,
+   MAT_DOUBLESIDED       = 0xA081,
+   MAT_ADDITIVE          = 0xA083,
+   MAT_SELFILPCT         = 0xA084,
+   MAT_WIRE              = 0xA085,
+   MAT_SUPERSMP          = 0xA086,
+   MAT_WIRETHICKNESS     = 0xA087,
+   MAT_FACEMAP           = 0xA088,
+   MAT_XPFALLIN          = 0xA08A,
+   MAT_PHONG             = 0xA08C,
+   MAT_WIREABS           = 0xA08E,
+   MAT_SHADING           = 0xA100,
+   MAT_MAPTEXTURE1       = 0xA200,
+   MAT_SPECULARMAP       = 0xA204,
+   MAT_MAPOPACITY        = 0xA210,
+   MAT_REFLECTIONMAP     = 0xA220,
+   MAT_BUMPMAP           = 0xA230,
 
-// Map Chunks
-#define MAP_FILENAME          0xA300
+   // Map Chunks
+   MAP_FILENAME          = 0xA300,
 
-#define MAT_SHININESSMAP      0xA33C
-#define MAT_EMISSIVEMAP       0xA33D
-#define MAP_OPTIONS           0xA351
-#define MAP_1_U_SCALE   0xA354
-#define MAP_1_V_SCALE   0xA356
-#define MAP_U_OFFSET    0xA358
-#define MAP_V_OFFSET    0xA35A
-#define MAP_ROTATION    0xA35C
+   MAT_SHININESSMAP      = 0xA33C,
+   MAT_EMISSIVEMAP       = 0xA33D,
 
-#define MAP_OPTIONS_DECAL           0x0001      // (related to MAP_OPTIONS_DONTTILE)
-#define MAP_OPTIONS_MIRROR          0x0002
-#define MAP_OPTIONS_NEGATIVE        0x0008
-#define MAP_OPTIONS_DONTTILE        0x0010
-#define MAP_OPTIONS_SUMMEDFILTERING 0x0020
-#define MAP_OPTIONS_USEALPHA        0x0040
-#define MAP_OPTIONS_LUMORALPHATINT  0x0080
-#define MAP_OPTIONS_IGNOREALPHA     0x0100
-#define MAP_OPTIONS_RGBTINT         0x0200
+   MAP_OPTIONS           = 0xA351,
+   MAP_1_U_SCALE         = 0xA354,
+   MAP_1_V_SCALE         = 0xA356,
+   MAP_U_OFFSET          = 0xA358,
+   MAP_V_OFFSET          = 0xA35A,
+   MAP_ROTATION          = 0xA35C,
 
-#define MAP_FILTERBLUR        0xA353
-#define MAP_1_U_SCALE         0xA354
-#define MAP_1_V_SCALE         0xA356
-#define MAP_U_OFFSET          0xA358
-#define MAP_V_OFFSET          0xA35A
-#define MAP_ROTATION          0xA35C
+   MAP_FILTERBLUR        = 0xA353,
+   MAP_1_U_SCALE         = 0xA354,
+   MAP_1_V_SCALE         = 0xA356,
+   MAP_U_OFFSET          = 0xA358,
+   MAP_V_OFFSET          = 0xA35A,
+   MAP_ROTATION          = 0xA35C,
 
-#define MAP_LUMTINT1          0xA360
-#define MAP_LUMTINT2          0xA362
+   MAP_LUMTINT1          = 0xA360,
+   MAP_LUMTINT2          = 0xA362,
 
-#define MAP_TINTR             0xA364
-#define MAP_TINTG             0xA366
-#define MAP_TINTB             0xA368
+   MAP_TINTR             = 0xA364,
+   MAP_TINTG             = 0xA366,
+   MAP_TINTB             = 0xA368,
 
-// Keyframer Chunks
-#define KEYFRAME3DS           0xB000
-#define FRM_AMBIENT           0xB001
-#define FRM_MESHINFO          0xB002
-#define FRM_CAMERA            0xB003
-#define FRM_CAMERATARGET      0xB004
-#define FRM_OMNILIGHT         0xB005
-#define FRM_SPOTLIGHTTARGET   0xB006
-#define FRM_SPOTLIGHT         0xB007
-#define FRM_FRAMES            0xB008
-#define FRM_PARAM             0xB010
-#define FRM_DUMMYNAME         0xB011
-#define FRM_PIVOT             0xB013
-#define FRM_TRACKPOS          0xB020
-#define FRM_TRACKROT          0xB021
-#define FRM_TRACKSCALE        0xB022
-#define FRM_TRACKFOV          0xB023
-#define FRM_TRACKROLL         0xB024
-#define FRM_TRACKCOLOR        0xB025
-#define FRM_TRACKMORPH        0xB026   // What does this do?
-#define FRM_TRACKHOTSPOT      0xB027
-#define FRM_TRACKFALLOFF      0xB028
-#define FRM_TRACKHIDE         0xB029
-#define FRM_HIERARCHY         0xB030
+   // Keyframer Chunks
+   KEYFRAME3DS           = 0xB000,
+   FRM_AMBIENT           = 0xB001,
+   FRM_MESHINFO          = 0xB002,
+   FRM_CAMERA            = 0xB003,
+   FRM_CAMERATARGET      = 0xB004,
+   FRM_OMNILIGHT         = 0xB005,
+   FRM_SPOTLIGHTTARGET   = 0xB006,
+   FRM_SPOTLIGHT         = 0xB007,
+   FRM_FRAMES            = 0xB008,
+   FRM_PARAM             = 0xB010,
+   FRM_DUMMYNAME         = 0xB011,
+   FRM_PIVOT             = 0xB013,
+   FRM_TRACKPOS          = 0xB020,
+   FRM_TRACKROT          = 0xB021,
+   FRM_TRACKSCALE        = 0xB022,
+   FRM_TRACKFOV          = 0xB023,
+   FRM_TRACKROLL         = 0xB024,
+   FRM_TRACKCOLOR        = 0xB025,
+   FRM_TRACKMORPH        = 0xB026,  // What does this do?
+   FRM_TRACKHOTSPOT      = 0xB027,
+   FRM_TRACKFALLOFF      = 0xB028,
+   FRM_TRACKHIDE         = 0xB029,
+   FRM_HIERARCHY         = 0xB030
+};
+
+static class MapOptions : uint32
+{
+   bool decal:1; // (related to dontTile)
+   bool mirror:1;
+   bool negative:1;
+   bool dontTile:1;
+   bool summedFiltering:1;
+   bool useAlpha:1;
+   bool lumOrAlphaTint:1;
+   bool ignoreAlpha:1;
+   bool rgbTint:1;
+};
 
 typedef struct FileInfo FileInfo;
 
@@ -155,14 +162,14 @@ typedef struct
    bool done:1;
 } Face;
 
-struct FileInfo
+static struct FileInfo
 {
    File f;
    DisplaySystem displaySystem;
    Object rootObject;
    const String fileName;
 
-   uint16 chunkId;
+   ChunkID3DS chunkId;
    uint pos, end;
 
    FileInfo * parent;
@@ -240,7 +247,7 @@ static bool ReadChunks(bool (* chunkParser)(FileInfo * info, void * data), FileI
       childInfo.parent = info;
 
       info->f.Seek(info->pos, start);
-      childInfo.chunkId = ReadWORD(info->f);
+      childInfo.chunkId = (ChunkID3DS)ReadWORD(info->f);
       length = ReadDWORD(info->f);
 
       childInfo.pos += sizeof(uint16) + sizeof(uint);
@@ -1113,8 +1120,8 @@ static bool ReadMap(FileInfo * info, Material mat)
       }
       case MAP_OPTIONS:
       {
-         uint16 options = ReadWORD(info->f);
-         if(!(options & MAP_OPTIONS_DONTTILE)) mat.flags.tile = true;
+         MapOptions options = (MapOptions)ReadWORD(info->f);
+         if(!options.dontTile) mat.flags.tile = true;
          break;
       }
       case MAP_1_U_SCALE:
@@ -1508,12 +1515,10 @@ struct ObjectInfoBlock
 };
 
 // Key Framer Chunks
-
-#define ACCFLAG_TENSION    0x00000001
-#define ACCFLAG_CONTINUITY 0x00000002
-#define ACCFLAG_BIAS       0x00000004
-#define ACCFLAG_EASETO     0x00000008
-#define ACCFLAG_EASEFROM   0x00000010
+static class AccelerationFlags : uint32
+{
+   bool tension:1, continuity:1, bias:1, easeTo:1, easeFrom:1;
+};
 
 static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
 {
@@ -1578,21 +1583,21 @@ static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
             track.keys = new0 FrameKey[track.numKeys];
             for(c = 0; c<track.numKeys; c++)
             {
-               uint16 accelerationFlags;
+               AccelerationFlags accelerationFlags;
                FrameKey * key = track.keys + c;
 
                key->frame = ReadDWORD(info->f);
-               accelerationFlags = ReadWORD(info->f);
+               accelerationFlags = (AccelerationFlags)ReadWORD(info->f);
 
-               if(accelerationFlags & ACCFLAG_TENSION)
+               if(accelerationFlags.tension)
                   key->tension = ReadFloat(info->f);
-               if(accelerationFlags & ACCFLAG_CONTINUITY)
+               if(accelerationFlags.continuity)
                   key->continuity = ReadFloat(info->f);
-               if(accelerationFlags & ACCFLAG_BIAS)
+               if(accelerationFlags.bias)
                   key->bias = ReadFloat(info->f);
-               if(accelerationFlags & ACCFLAG_EASETO)
+               if(accelerationFlags.easeTo)
                   key->easeTo = ReadFloat(info->f);
-               if(accelerationFlags & ACCFLAG_EASEFROM)
+               if(accelerationFlags.easeFrom)
                   key->easeFrom = ReadFloat(info->f);
 
                switch(info->chunkId)
