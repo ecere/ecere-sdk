@@ -294,7 +294,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
                   SetMapMode(gdiSystem.hdc, MM_TEXT);
 
                   {
-                     String docName = printingDocumentName ? printingDocumentName : szMessage;
+                     const String docName = printingDocumentName ? printingDocumentName : szMessage;
                      char curDir[MAX_LOCATION];
                      GetWorkingDir(curDir, MAX_LOCATION);
 

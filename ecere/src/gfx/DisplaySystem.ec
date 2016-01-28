@@ -3,9 +3,9 @@ namespace gfx;
 import "Mutex"
 import "Display"
 
-String printingDocumentName;
+const String printingDocumentName;
 
-public void SetPrintingDocumentName(String name)
+public void SetPrintingDocumentName(const String name)
 {
    printingDocumentName = name;
 }
