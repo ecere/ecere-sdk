@@ -536,7 +536,7 @@ public class PrintedReport : ReportDestination
       if(pageCount && display)
          display.NextPage();
       lastPage = page;
-      page.anchor = { left = 0, top = 0, right = 0, bottom = 0};
+      page.anchor = { left = 0, top = 0, right = 0, bottom = 0 };
       page.master = this;
       page.parent = this;
       pageCount++;
