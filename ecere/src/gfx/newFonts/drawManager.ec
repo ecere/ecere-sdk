@@ -317,7 +317,8 @@ static inline void OpenGLErrorCheck( const char *file, int line )
 #define ERRORCHECK()
 #endif
 
-#define DM_IMAGE_ROTATION_NORMFACTOR (32767.0f)
+// Not using 32767.0 ; overflow when converting to int16 due to floating point crud causes problems
+#define DM_IMAGE_ROTATION_NORMFACTOR (24576.0)
 
 #define DM_VERTEX_NORMSHIFT (2)
 #define DM_VERTEX_NORMFACTOR (4.0f)
