@@ -565,7 +565,11 @@ class OGLDisplay : struct
    int x, y;
 };
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+//#define GL_DEBUGGING
+#endif
+
+#ifdef GL_DEBUGGING
 static void APIENTRY openglCallbackFunction(GLenum source,
                                            GLenum type,
                                            GLuint id,
@@ -649,8 +653,7 @@ class OGLIndices : struct
 int current;
 void * previous;
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#ifdef _DEBUG
+#ifdef GL_DEBUGGING
 static void setupDebugging()
 {
    if(glDebugMessageCallback)
@@ -658,7 +661,7 @@ static void setupDebugging()
       GLuint unusedIds = 0;
 
       glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-      /*
+
       glDebugMessageCallback(openglCallbackFunction, null);
       glDebugMessageControl(GL_DONT_CARE,
           GL_DONT_CARE,
@@ -666,10 +669,8 @@ static void setupDebugging()
           0,
           &unusedIds,
           GL_TRUE);
-      */
    }
 }
-#endif
 #endif
 
 #if defined(__WIN32__)
@@ -1288,7 +1289,7 @@ class OpenGLDisplayDriver : DisplayDriver
          PrintLn("vboAvailable is: ", vboAvailable);
 #endif
 
-#  ifdef _DEBUG
+#  ifdef GL_DEBUGGING
          setupDebugging();
 #  endif
 
