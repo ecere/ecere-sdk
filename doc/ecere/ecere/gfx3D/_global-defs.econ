@@ -1,0 +1,4 @@
+{
+   name = "gfx3D",
+   description = "The ecere::gfx3D namespace is for the 3D Graphics API."
+}

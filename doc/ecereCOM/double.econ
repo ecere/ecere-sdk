@@ -1,0 +1,16 @@
+{
+   name = "double",
+   description = "A double precision float data type.\n"
+      "\n"
+      "Memory occupied: 64 bits(or 8 bytes)\n"
+      "\n"
+      "A double data type holds a real number including the portion which follows the decimal point. The minimum precision for a double is 10 decimal digits. A doubles range is from 2.2250738585072014e-308 to 1.7976931348623158e+308.",
+   usage = "Used in the declaration section of code, which is before any statements.",
+   example = "double aDouble; // A stand alone declaration of a double.\n"
+      "double a, b; // Declaring two doubles at the same time.\n"
+      "double c = 12.1234567899; // Declaring and initializing a double at the same time.",
+   remarks = "Unlike other languages, the double data type is actually a class.\n"
+      "\n"
+      "double is equivalent to a double in C.",
+   also = "bool, byte, char, char *, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
+}

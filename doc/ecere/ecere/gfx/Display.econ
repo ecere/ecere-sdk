@@ -1,0 +1,59 @@
+{
+   name = "Display",
+   methods = [
+      {
+         "Grab",
+         {
+            description = "The Grab method is used to copy pixel data from a given rectangular area in the current window display to a bitmap instance.",
+            usage = "Grab is typically called on the display property of a Window instance to grab the content of the window.",
+            example = "void GrabWindowToBitmapFile(Window window, char * filePath, char * format)\n"
+               "{\n"
+               "   Bitmap bitmap { };\n"
+               "   window.display.Grab(bitmap, 0, 0, window.size.w, window.size.h);\n"
+               "   bitmap.Save(filePath, format, null);\n"
+               "   delete bitmap;\n"
+               "}",
+            remarks = "When no memory has been allocated in the bitmap instance to contain the pixel data, Grab will automatically allocate memory according to the size of the rectangular area being copied and to the pixel format of the display. When memory has been pre-allocated, Grab will use the bitmap if it satisfies the required size and pixel format. If the pre-allocated bitmap is not sufficient, Grab will enlarge the allocated memory and change the pixel format appropriately.",
+            also = "Bitmap::Save",
+            parameters = [
+               {
+                  "bitmap",
+                  {
+                     description = "Bitmap instance where the pixel data will be copied.",
+                     position = 1
+                  }
+               },
+               {
+                  "h",
+                  {
+                     description = "Height of the rectangular area.",
+                     position = 5
+                  }
+               },
+               {
+                  "w",
+                  {
+                     description = "Width of the rectangular area.",
+                     position = 4
+                  }
+               },
+               {
+                  "x",
+                  {
+                     description = "Distance from the left of the display to the top-left corner of the rectangular area.",
+                     position = 2
+                  }
+               },
+               {
+                  "y",
+                  {
+                     description = "Distance from the top of the display to the top-left corner of the rectangular area.",
+                     position = 3
+                  }
+               }
+            ],
+            returnValue = "true if pixel data was copied, otherwise false."
+         }
+      }
+   ]
+}

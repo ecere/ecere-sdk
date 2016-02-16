@@ -1,0 +1,17 @@
+{
+   name = "int",
+   description = "An integer data type. \n"
+      "\n"
+      "Memory occupied: 32 bits(or 4 bytes)\n"
+      "\n"
+      "An int data type holds a decimal value between the range of -2 exp 31 and 2 exp 31-1 (or -2,147,483,648 and 2,147,483,647).",
+   usage = "Used in the declaration section of code, which is before any statements.",
+   example = "int thisInt; // A stand alone declaration of an int.\n"
+      "int a, b; // Declaring two ints at the same time.\n"
+      "int c = 64000, d = -10; // Declaring two ints, and initializing them both at the same time.\n"
+      "int anotherInt = 0x54DA; //Declaring and initializing an int with a hexadecimal value.",
+   remarks = "Unlike C or C++ where the int memory space can be either 16 or 32 bits depending on the platform, the eC int is guaranteed to be 32 bits on all platforms. Additionally, unlike other languages the int data type is actually a class.\n"
+      "\n"
+      "int is otherwise equivalent to an int in C.",
+   also = "bool, byte, char, char *, double, enum, float, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
+}

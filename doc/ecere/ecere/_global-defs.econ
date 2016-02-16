@@ -1,0 +1,4 @@
+{
+   name = "ecere",
+   description = "The ecere namespace is for Ecere APIs in general."
+}

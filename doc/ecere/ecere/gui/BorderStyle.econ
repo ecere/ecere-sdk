@@ -1,0 +1,75 @@
+{
+   name = "BorderStyle",
+   description = "The type of Window frame your Window has.",
+   usage = "BorderStyle is generally set within the instantiation of a window or control.",
+   example = "class MyForm : Window { text = \"MyForm\", borderStyle = sizable };",
+   also = "Window",
+   values = [
+      {
+         "bevel",
+         {
+            description = "Non-Sizable. Looks like it is raised out from the screen; like a button that is not pressed."
+         }
+      },
+      {
+         "contour",
+         {
+            description = "Non-Sizable. A single black line tracing the rectangle of the Window. No Title Bar."
+         }
+      },
+      {
+         "deep",
+         {
+            description = "Non-Sizable. Looks like it sinks into the screen; like a button that's been pressed."
+         }
+      },
+      {
+         "deepContour",
+         {
+            description = "Non-Sizable. Looks like it sinks into the screen; like a button that is pressed. A single black line traces the rectangle of the Window. No Title Bar."
+         }
+      },
+      {
+         "fixed",
+         {
+            description = "Non-Sizable. Has Title Bar."
+         }
+      },
+      {
+         "fixedBevel",
+         {
+            description = "Non-Sizable. Has Title Bar. The area not included with the Title Bar looks like it is raised out of the screen; like a button that is not pressed."
+         }
+      },
+      {
+         "fixedDeep",
+         {
+            description = "Non-Sizable. Has Title Bar. The area not included with the Title Bar looks like it sinks into the screen; like a button that is pressed."
+         }
+      },
+      {
+         "none",
+         {
+            description = "Non-Sizable. No Border. No Title Bar."
+         }
+      },
+      {
+         "sizable",
+         {
+            description = "The border can be clicked and dragged to resize it. Has Title Bar."
+         }
+      },
+      {
+         "sizableBevel",
+         {
+            description = "The border can be clicked and dragged to resize it. Has Title Bar. The area not included with the Title Bar looks like it is raised out from the screen; like a button that is not pressed."
+         }
+      },
+      {
+         "sizableDeep",
+         {
+            description = "The border can be clicked and dragged to resize it. Has Title Bar. The area not included with the Title Bar looks like it sinks into the screen; like a button that's been pressed."
+         }
+      }
+   ]
+}

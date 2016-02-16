@@ -1,0 +1,5 @@
+{
+   name = "Font",
+   description = "Opaque data type to hold a loaded font which can be selected on a Surface.",
+   usage = "Fonts can be loaded with Display::LoadFont and unloaded with Display::UnloadFont. They can be set on a surface through the Surface::font property. FontResource provides a higher level object which can be associated with a Window for automated resource management."
+}

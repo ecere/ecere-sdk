@@ -485,7 +485,7 @@ endif
 	$(call rmr,obj/)
 	@$(call echo,Done.)
 
-DOC = doc/ecere.eCdoc doc/ecereCOM.eCdoc doc/EDA.eCdoc
+DOC = doc
 
 BINARIES = \
 	ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV) \
@@ -632,9 +632,7 @@ ifdef CodeGuard
 endif
 	$(call cp,$(OBJLIBDIR)libecereVanilla$(A),"$(DESTSLIBDIR)/")
 	$(call cp,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	$(call cp,doc/ecere.eCdoc,"$(DOCDIR)/")
-	$(call cp,doc/ecereCOM.eCdoc,"$(DOCDIR)/")
-	$(call cp,doc/EDA.eCdoc,"$(DOCDIR)/")
+	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
 endif
 
 ifdef OSX_TARGET
@@ -662,9 +660,7 @@ endif
 	install $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	install doc/ecere.eCdoc $(DOCDIR)/
-	install doc/ecereCOM.eCdoc $(DOCDIR)/
-	install doc/EDA.eCdoc $(DOCDIR)/
+	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
 	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p $(SAMPLESDIR)
@@ -735,11 +731,8 @@ endif
 ifdef BSD_HOST
 	install $(INSTALL_FLAGS) -d $(DOCDIR)
 endif
-	install $(INSTALL_FLAGS) -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
 	install $(INSTALL_FLAGS) -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	install $(INSTALL_FLAGS) -m 644 doc/ecere.eCdoc $(DOCDIR)/ecere.eCdoc
-	install $(INSTALL_FLAGS) -m 644 doc/ecereCOM.eCdoc $(DOCDIR)/ecereCOM.eCdoc
-	install $(INSTALL_FLAGS) -m 644 doc/EDA.eCdoc $(DOCDIR)/EDA.eCdoc
+	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
 	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p $(SAMPLESDIR)
@@ -810,6 +803,9 @@ endif
 	$(call rm,"$(DOCDIR)/ecere.eCdoc")
 	$(call rm,"$(DOCDIR)/ecereCOM.eCdoc")
 	$(call rm,"$(DOCDIR)/EDA.eCdoc")
+	$(call rmr,"$(DOCDIR)/ecere")
+	$(call rmr,"$(DOCDIR)/ecereCOM")
+	$(call rmr,"$(DOCDIR)/EDA")
 ifdef LINUX_TARGET
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecere$(SO).0")
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO).0")

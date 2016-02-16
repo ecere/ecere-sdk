@@ -1,0 +1,47 @@
+{
+   name = "MoveOptions",
+   values = [
+      {
+         "first",
+         {
+            description = "Will match from the first row"
+         }
+      },
+      {
+         "here",
+         {
+            description = "Will match from where it is, but the very first entry, even before the current row"
+         }
+      },
+      {
+         "last",
+         {
+            description = "Will match from the last row or earlier"
+         }
+      },
+      {
+         "middle",
+         {
+            description = "Will match from the root of binary tree"
+         }
+      },
+      {
+         "next",
+         {
+            description = "Ignore the current row and only match the next row or later"
+         }
+      },
+      {
+         "nil",
+         {
+            description = "Will match the current row or later"
+         }
+      },
+      {
+         "previous",
+         {
+            description = "Ignore the current row and only match the previous row or earlier"
+         }
+      }
+   ]
+}

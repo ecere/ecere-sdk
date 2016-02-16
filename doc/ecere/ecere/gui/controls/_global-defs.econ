@@ -1,0 +1,4 @@
+{
+   name = "controls",
+   description = "The ecere::gui::controls namespace is for GUI controls like Button or EditBox."
+}

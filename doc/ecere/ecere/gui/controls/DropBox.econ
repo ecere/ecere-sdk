@@ -1,0 +1,118 @@
+{
+   name = "DropBox",
+   description = "Closely related to the EditBox, this control offers a list of options to choose from which drops down from the EditBox",
+   remarks = "Unlike most properties and members, the selectionColor property can only be adjusted through the property editor, and does not have a code equivalent.",
+   fields = [
+      {
+         "button",
+         {
+            description = "The button which is attached to this control."
+         }
+      }
+   ],
+   properties = [
+      {
+         "activeColor",
+         {
+            description = "When true, the active text in the EditBox portion of this control is highlighted with selectionColor."
+         }
+      },
+      {
+         "activeStipple",
+         {
+            description = "When true, the active text in the EditBox portion of this control is outlined with a dotted line."
+         }
+      },
+      {
+         "alignment",
+         {
+            description = "Sets the alignment of the text. Left, Center, or Right."
+         }
+      },
+      {
+         "changeContents",
+         {
+
+         }
+      },
+      {
+         "contents",
+         {
+            description = "When editText is true, then the EditBox portion of the control displays this string."
+         }
+      },
+      {
+         "editBox",
+         {
+            description = "Allows the users to enter data. This is the EditBox portion of this control."
+         }
+      },
+      {
+         "editText",
+         {
+            description = "When true, allows the user to enter data manually."
+         }
+      },
+      {
+         "maxShown",
+         {
+            description = "The number of items to show in the drop down list.\n"
+               "Example: DropBox dropBox1 { this, maxShown = 2 };"
+         }
+      },
+      {
+         "noHighlight",
+         {
+            description = "When true, only the text alone is highlighted, instead of the entire box."
+         }
+      },
+      {
+         "pullDown",
+         {
+            description = "The window which contains the drop down list."
+         }
+      },
+      {
+         "rowHeight",
+         {
+            description = "The height of each row of the drop down list. One item is listed per row.\n"
+               "Example: DropBox dropBox1 { this, rowHeight = 16 };"
+         }
+      },
+      {
+         "selectionColor",
+         {
+            description = "The color of the highlighting for the EditBox portion of this control."
+         }
+      },
+      {
+         "showButton",
+         {
+            description = "When true, a button is placed at the right side of the DropBox giving a visual clue that there is a drop down list of options to select."
+         }
+      },
+      {
+         "showNone",
+         {
+            description = "When true, \"(none)\" is included in the list of items."
+         }
+      }
+   ],
+   methods = [
+      {
+         "AddString",
+         {
+            description = "Adds a literal string to the listing of the DropBox.",
+            parameters = [
+               {
+                  "string",
+                  {
+                     description = "The literal string to add to the DropBox.",
+                     position = 1
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}

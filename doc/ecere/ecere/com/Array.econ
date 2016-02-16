@@ -1,0 +1,51 @@
+{
+   name = "Array",
+   description = "A storage container allowing for dynamic resizing of allocated space at run time. The data type of the data stored in this container as a typecast at the time of declaration.",
+   usage = "Initially declared in the declaration section of code. The resulting array of data is later accessed through the [] syntax: nameOfArray[arrayElement] = arbitraryValue.\n"
+      "\n"
+      "Be certain that when you instantiate an Array that you have a matching delete statement for it, otherwise potential memory leaks could become a problem.",
+   example = "void Test()\n"
+      "{\n"
+      "   Array<int> points { size = 10 };\n"
+      "   points[0] = { 10, 10 };\n"
+      "   points.size = 20;\n"
+      "   points[19] = { 5, 5 };\n"
+      "   delete points;\n"
+      "}",
+   remarks = "Similar to a C++ Vector. The Array class does come with inevitable overhead required for the purposes of dynamically allocating storage. So if it is not required to have dynamic allocation of storage, it would be recommended to use standard arrays: ie) int thisArray[10];",
+   also = "Container",
+   fields = [
+      {
+         "array",
+         {
+            description = "The actual allocated storage for the Array."
+         }
+      },
+      {
+         "count",
+         {
+            description = "The overall size of the Array."
+         }
+      },
+      {
+         "minAllocSize",
+         {
+            description = "The minimum amount of allocated storage for the Array before a reallocation would be necessary."
+         }
+      }
+   ],
+   properties = [
+      {
+         "minAllocSize",
+         {
+            description = "The property to enable manual changes to the minAllocSize."
+         }
+      },
+      {
+         "size",
+         {
+            description = "The property to enable manual changes to the size of the Array."
+         }
+      }
+   ]
+}
