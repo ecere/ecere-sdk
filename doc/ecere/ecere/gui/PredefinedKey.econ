@@ -1,0 +1,787 @@
+{
+   name = "PredefinedKey",
+   description = "A collection of frequently used key combinations.",
+   also = "Key, KeyCode.",
+   values = [
+      {
+         "alt0",
+         {
+            description = "The Key combination Alt + 0."
+         }
+      },
+      {
+         "alt1",
+         {
+            description = "The Key combination Alt + 1."
+         }
+      },
+      {
+         "alt2",
+         {
+            description = "The Key combination Alt + 2."
+         }
+      },
+      {
+         "alt3",
+         {
+            description = "The Key combination Alt + 3."
+         }
+      },
+      {
+         "alt4",
+         {
+            description = "The Key combination Alt + 4."
+         }
+      },
+      {
+         "alt5",
+         {
+            description = "The Key combination Alt + 5."
+         }
+      },
+      {
+         "alt6",
+         {
+            description = "The Key combination Alt + 6."
+         }
+      },
+      {
+         "alt7",
+         {
+            description = "The Key combination Alt + 7."
+         }
+      },
+      {
+         "alt8",
+         {
+            description = "The Key combination Alt + 8."
+         }
+      },
+      {
+         "alt9",
+         {
+            description = "The Key combination Alt + 9."
+         }
+      },
+      {
+         "altA",
+         {
+            description = "The Key combination Alt + a."
+         }
+      },
+      {
+         "altB",
+         {
+            description = "The Key combination Alt + b."
+         }
+      },
+      {
+         "altC",
+         {
+            description = "The Key combination Alt + c."
+         }
+      },
+      {
+         "altD",
+         {
+            description = "The Key combination Alt + d."
+         }
+      },
+      {
+         "altDown",
+         {
+            description = "The Key combination Alt + Down Arrow."
+         }
+      },
+      {
+         "altE",
+         {
+            description = "The Key combination Alt + e."
+         }
+      },
+      {
+         "altEnd",
+         {
+            description = "The Key combination Alt + End."
+         }
+      },
+      {
+         "altEnter",
+         {
+            description = "The Key combination Alt + Enter."
+         }
+      },
+      {
+         "altF",
+         {
+            description = "The Key combination Alt + f."
+         }
+      },
+      {
+         "altF1",
+         {
+            description = "The Key combination Alt + F1."
+         }
+      },
+      {
+         "altF10",
+         {
+            description = "The Key combination Alt + F10."
+         }
+      },
+      {
+         "altF11",
+         {
+            description = "The Key combination Alt + F11."
+         }
+      },
+      {
+         "altF12",
+         {
+            description = "The Key combination Alt + F12."
+         }
+      },
+      {
+         "altF2",
+         {
+            description = "The Key combination Alt + F2."
+         }
+      },
+      {
+         "altF3",
+         {
+            description = "The Key combination Alt + F3."
+         }
+      },
+      {
+         "altF4",
+         {
+            description = "The Key combination Alt + F4."
+         }
+      },
+      {
+         "altF5",
+         {
+            description = "The Key combination Alt + F5."
+         }
+      },
+      {
+         "altF6",
+         {
+            description = "The Key combination Alt + F6."
+         }
+      },
+      {
+         "altF7",
+         {
+            description = "The Key combination Alt + F7."
+         }
+      },
+      {
+         "altF8",
+         {
+            description = "The Key combination Alt + F8."
+         }
+      },
+      {
+         "altF9",
+         {
+            description = "The Key combination Alt + F9."
+         }
+      },
+      {
+         "altG",
+         {
+            description = "The Key combination Alt + g."
+         }
+      },
+      {
+         "altH",
+         {
+            description = "The Key combination Alt + h."
+         }
+      },
+      {
+         "altHome",
+         {
+            description = "The Key combination Alt + Home."
+         }
+      },
+      {
+         "altI",
+         {
+            description = "The Key combination Alt + i."
+         }
+      },
+      {
+         "altJ",
+         {
+            description = "The Key combination Alt + j."
+         }
+      },
+      {
+         "altK",
+         {
+            description = "The Key combination Alt + k."
+         }
+      },
+      {
+         "altKeyPadEnter",
+         {
+            description = "The Key combination Alt + Enter, on the numeric key pad."
+         }
+      },
+      {
+         "altL",
+         {
+            description = "The Key combination Alt + l."
+         }
+      },
+      {
+         "altLeft",
+         {
+            description = "The Key combination Alt + Left Arrow."
+         }
+      },
+      {
+         "altM",
+         {
+            description = "The Key combination Alt + m."
+         }
+      },
+      {
+         "altMinus",
+         {
+            description = "The Key combination Alt + Minus symbol(-)."
+         }
+      },
+      {
+         "altN",
+         {
+            description = "The Key combination Alt + n."
+         }
+      },
+      {
+         "altO",
+         {
+            description = "The Key combination Alt + o."
+         }
+      },
+      {
+         "altP",
+         {
+            description = "The Key combination Alt + p."
+         }
+      },
+      {
+         "altQ",
+         {
+            description = "The Key combination Alt + q."
+         }
+      },
+      {
+         "altR",
+         {
+            description = "The Key combination Alt + r."
+         }
+      },
+      {
+         "altRight",
+         {
+            description = "The Key combination Alt + Right Arrow."
+         }
+      },
+      {
+         "altS",
+         {
+            description = "The Key combination Alt + s."
+         }
+      },
+      {
+         "altSpace",
+         {
+            description = "The Key combination Alt + Spacebar."
+         }
+      },
+      {
+         "altT",
+         {
+            description = "The Key combination Alt + t."
+         }
+      },
+      {
+         "altU",
+         {
+            description = "The Key combination Alt + u."
+         }
+      },
+      {
+         "altUp",
+         {
+            description = "The Key combination Alt + Up Arrow."
+         }
+      },
+      {
+         "altV",
+         {
+            description = "The Key combination Alt + v."
+         }
+      },
+      {
+         "altW",
+         {
+            description = "The Key combination Alt + w."
+         }
+      },
+      {
+         "altX",
+         {
+            description = "The Key combination Alt + x."
+         }
+      },
+      {
+         "altY",
+         {
+            description = "The Key combination Alt + y."
+         }
+      },
+      {
+         "altZ",
+         {
+            description = "The Key combination Alt + z."
+         }
+      },
+      {
+         "ctrl0",
+         {
+            description = "The Key combination Ctrl + 0."
+         }
+      },
+      {
+         "ctrl1",
+         {
+            description = "The Key combination Ctrl + 1."
+         }
+      },
+      {
+         "ctrl2",
+         {
+            description = "The Key combination Ctrl + 2."
+         }
+      },
+      {
+         "ctrl3",
+         {
+            description = "The Key combination Ctrl + 3."
+         }
+      },
+      {
+         "ctrl4",
+         {
+            description = "The Key combination Ctrl + 4."
+         }
+      },
+      {
+         "ctrl5",
+         {
+            description = "The Key combination Ctrl + 5."
+         }
+      },
+      {
+         "ctrl6",
+         {
+            description = "The Key combination Ctrl + 6."
+         }
+      },
+      {
+         "ctrl7",
+         {
+            description = "The Key combination Ctrl + 7."
+         }
+      },
+      {
+         "ctrl8",
+         {
+            description = "The Key combination Ctrl + 8."
+         }
+      },
+      {
+         "ctrl9",
+         {
+            description = "The Key combination Ctrl + 9."
+         }
+      },
+      {
+         "ctrlA",
+         {
+            description = "The Key combination Ctrl + a."
+         }
+      },
+      {
+         "ctrlB",
+         {
+            description = "The Key combination Ctrl + b."
+         }
+      },
+      {
+         "ctrlC",
+         {
+            description = "The Key combination Ctrl + c."
+         }
+      },
+      {
+         "ctrlD",
+         {
+            description = "The Key combination Ctrl + d."
+         }
+      },
+      {
+         "ctrlDown",
+         {
+            description = "The Key combination Ctrl + Down Arrow."
+         }
+      },
+      {
+         "ctrlE",
+         {
+            description = "The Key combination Ctrl + e."
+         }
+      },
+      {
+         "ctrlEnd",
+         {
+            description = "The Key combination Ctrl + End."
+         }
+      },
+      {
+         "ctrlEnter",
+         {
+            description = "The Key combination Ctrl + Enter."
+         }
+      },
+      {
+         "ctrlF",
+         {
+            description = "The Key combination Ctrl + f."
+         }
+      },
+      {
+         "ctrlF1",
+         {
+            description = "The Key combination Ctrl + F1."
+         }
+      },
+      {
+         "ctrlF10",
+         {
+            description = "The Key combination Ctrl + F10."
+         }
+      },
+      {
+         "ctrlF11",
+         {
+            description = "The Key combination Ctrl + F11."
+         }
+      },
+      {
+         "ctrlF12",
+         {
+            description = "The Key combination Ctrl + F12."
+         }
+      },
+      {
+         "ctrlF2",
+         {
+            description = "The Key combination Ctrl + F2."
+         }
+      },
+      {
+         "ctrlF3",
+         {
+            description = "The Key combination Ctrl + F3."
+         }
+      },
+      {
+         "ctrlF4",
+         {
+            description = "The Key combination Ctrl + F4."
+         }
+      },
+      {
+         "ctrlF5",
+         {
+            description = "The Key combination Ctrl + F5."
+         }
+      },
+      {
+         "ctrlF6",
+         {
+            description = "The Key combination Ctrl + F6."
+         }
+      },
+      {
+         "ctrlF7",
+         {
+            description = "The Key combination Ctrl + F7."
+         }
+      },
+      {
+         "ctrlF8",
+         {
+            description = "The Key combination Ctrl + F8."
+         }
+      },
+      {
+         "ctrlF9",
+         {
+            description = "The Key combination Ctrl + F9."
+         }
+      },
+      {
+         "ctrlG",
+         {
+            description = "The Key combination Ctrl + g."
+         }
+      },
+      {
+         "ctrlH",
+         {
+            description = "The Key combination Ctrl + h."
+         }
+      },
+      {
+         "ctrlHome",
+         {
+            description = "The Key combination Ctrl + Home."
+         }
+      },
+      {
+         "ctrlI",
+         {
+            description = "The Key combination Ctrl + i."
+         }
+      },
+      {
+         "ctrlInsert",
+         {
+            description = "The Key combination Ctrl + Insert."
+         }
+      },
+      {
+         "ctrlJ",
+         {
+            description = "The Key combination Ctrl + j."
+         }
+      },
+      {
+         "ctrlK",
+         {
+            description = "The Key combination Ctrl + k."
+         }
+      },
+      {
+         "ctrlL",
+         {
+            description = "The Key combination Ctrl + l."
+         }
+      },
+      {
+         "ctrlLeft",
+         {
+            description = "The Key combination Ctrl + Left Arrow."
+         }
+      },
+      {
+         "ctrlM",
+         {
+            description = "The Key combination Ctrl + m."
+         }
+      },
+      {
+         "ctrlN",
+         {
+            description = "The Key combination Ctrl + n."
+         }
+      },
+      {
+         "ctrlO",
+         {
+            description = "The Key combination Ctrl + o."
+         }
+      },
+      {
+         "ctrlP",
+         {
+            description = "The Key combination Ctrl + p."
+         }
+      },
+      {
+         "ctrlPageDown",
+         {
+            description = "The Key combination Ctrl + Page Down."
+         }
+      },
+      {
+         "ctrlPageUp",
+         {
+            description = "The Key combination Ctrl + Page Up."
+         }
+      },
+      {
+         "ctrlQ",
+         {
+            description = "The Key combination Ctrl + q."
+         }
+      },
+      {
+         "ctrlR",
+         {
+            description = "The Key combination Ctrl + r."
+         }
+      },
+      {
+         "ctrlRight",
+         {
+            description = "The Key combination Ctrl + Right Arrow."
+         }
+      },
+      {
+         "ctrlS",
+         {
+            description = "The Key combination Ctrl + s."
+         }
+      },
+      {
+         "ctrlT",
+         {
+            description = "The Key combination Ctrl + t."
+         }
+      },
+      {
+         "ctrlU",
+         {
+            description = "The Key combination Ctrl + u."
+         }
+      },
+      {
+         "ctrlUp",
+         {
+            description = "The Key combination Ctrl + Up Arrow."
+         }
+      },
+      {
+         "ctrlV",
+         {
+            description = "The Key combination Ctrl + v."
+         }
+      },
+      {
+         "ctrlW",
+         {
+            description = "The Key combination Ctrl + w."
+         }
+      },
+      {
+         "ctrlX",
+         {
+            description = "The Key combination Ctrl + x."
+         }
+      },
+      {
+         "ctrlY",
+         {
+            description = "The Key combination Ctrl + y."
+         }
+      },
+      {
+         "ctrlZ",
+         {
+            description = "The Key combination Ctrl + z."
+         }
+      },
+      {
+         "shiftF1",
+         {
+            description = "The Key combination Shift + F1."
+         }
+      },
+      {
+         "shiftF10",
+         {
+            description = "The Key combination Shift + F10."
+         }
+      },
+      {
+         "shiftF11",
+         {
+            description = "The Key combination Shift + F11."
+         }
+      },
+      {
+         "shiftF12",
+         {
+            description = "The Key combination Shift + F12."
+         }
+      },
+      {
+         "shiftF2",
+         {
+            description = "The Key combination Shift + F2."
+         }
+      },
+      {
+         "shiftF3",
+         {
+            description = "The Key combination Shift + F3."
+         }
+      },
+      {
+         "shiftF4",
+         {
+            description = "The Key combination Shift + F4."
+         }
+      },
+      {
+         "shiftF5",
+         {
+            description = "The Key combination Shift + F5."
+         }
+      },
+      {
+         "shiftF6",
+         {
+            description = "The Key combination Shift + F6."
+         }
+      },
+      {
+         "shiftF7",
+         {
+            description = "The Key combination Shift + F7."
+         }
+      },
+      {
+         "shiftF8",
+         {
+            description = "The Key combination Shift + F8."
+         }
+      },
+      {
+         "shiftF9",
+         {
+            description = "The Key combination Shift + F9."
+         }
+      },
+      {
+         "shiftInsert",
+         {
+            description = "The Key combination Shift + Insert."
+         }
+      },
+      {
+         "shiftTab",
+         {
+            description = "The Key combination Shift + Tab."
+         }
+      }
+   ]
+}

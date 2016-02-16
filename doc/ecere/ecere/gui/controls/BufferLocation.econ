@@ -1,0 +1,11 @@
+{
+   name = "BufferLocation",
+   fields = [
+      {
+         "line",
+         {
+
+         }
+      }
+   ]
+}

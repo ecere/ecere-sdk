@@ -1,0 +1,7 @@
+{
+   name = "Percentage",
+   description = "A real number between the value of 0 and 1 inclusive. ",
+   usage = "Generally assigned to a variable in which a value between 0% and 100% is desired.",
+   example = "Window { opacity = 0.5, alphaBlend = true }; // Sets the opacity of a window to 50 percent transparency.",
+   also = "Window::opacity"
+}

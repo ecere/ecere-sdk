@@ -1,0 +1,18 @@
+{
+   name = "char",
+   description = "Stores a single ASCII character.\n"
+      "\n"
+      "Memory occupied: 8 bits(or 1 byte)\n"
+      "\n"
+      "A char data type holds a decimal value between the range of -128 and 127. These integer values are used to refer to a particular alphanumeric character in the ASCII set.",
+   usage = "Used in the declaration section of code, which is before any statements.\n"
+      "\n"
+      "A variable declared as being a char can be assigned any single character enclosed between two single quotes (' '), or an integer which is then translated to the ASCII character corresponding to that value, at output.",
+   example = "char thisChar; // A stand alone declaration of a char.\n"
+      "char a, b; // Declaring two chars at the same time.\n"
+      "char c = 'a', d = 98; // Declaring two chars and initializing them at the same time. The 98 is the same as 'b'.",
+   remarks = "Technically, this is an integer data type. Unlike other languages, the char data type is actually a class.\n"
+      "\n"
+      "char is equivalent to a char in C.",
+   also = "bool, byte, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
+}

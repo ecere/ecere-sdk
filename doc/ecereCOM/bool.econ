@@ -1,0 +1,30 @@
+{
+   name = "bool",
+   description = "An enumeration type, capable of storing only two values: true and false.\n"
+      "\n"
+      "Memory occupied: 32 bits(or 4 bytes)\n"
+      "\n"
+      "A bool variable is used for logical purposes, and is used almost exclusively for comparison operations. Ie) Is this statement true? Or is it false?",
+   usage = "Used in the declaration section of code, which is before any statements.",
+   example = "bool thisBool; // A stand alone declaration of a bool.\n"
+      "bool a, b; // Declaring two bools at the same time.\n"
+      "bool c = true, d = false; // Declaring two bools, and initializing them both at the same time.",
+   remarks = "A bool type describes a boolean type variable and can only store a true or false value.\n"
+      "\n"
+      "bool is equivalent to a bool in C.",
+   also = "byte, char, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()",
+   values = [
+      {
+         "false",
+         {
+            description = "One of the only two values that a boolean can be set to."
+         }
+      },
+      {
+         "true",
+         {
+            description = "One of the only two values that a boolean can be set to."
+         }
+      }
+   ]
+}

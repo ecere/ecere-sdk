@@ -1,0 +1,41 @@
+{
+   name = "sys",
+   description = "The ecere::sys namespace is for the extended System API.",
+   functions = [
+      {
+         "GetRandom",
+         {
+            description = "Returns a random integer from lo to hi inclusive.",
+            usage = "Returns a random integer, based on the Random Seed. If no Random Seed is set with RandomSeed(), then GetRandom() returns lo.",
+            example = "      int Rand;\n"
+               "      RandomSeed((uint)(GetTime() * 1000));\n"
+               "      Rand = GetRandom(1, 10);\n"
+               "      printf(\"%d\\n\", Rand);     ",
+            also = "GetTime(), RandomSeed()"
+         }
+      },
+      {
+         "GetTime",
+         {
+            description = "Returns the current system time as a Time object.",
+            example = "      int Rand;\n"
+               "      RandomSeed((uint)(GetTime() * 1000));\n"
+               "      Rand = GetRandom(1, 10);\n"
+               "      printf(\"%d\\n\", Rand);     ",
+            also = "RandomSeed()"
+         }
+      },
+      {
+         "RandomSeed",
+         {
+            description = "This method seeds the random number generator.",
+            usage = "This method needs to be called before any call to GetRandom(), otherwise GetRandom will not retrieve a random number. The seed can be any unsigned integer, however any constant value will produce predictable results each time. For closer to true results, try using GetTime() as the seed.",
+            example = "      int Rand;\n"
+               "      RandomSeed((uint)(GetTime() * 1000));\n"
+               "      Rand = GetRandom(1, 10);\n"
+               "      printf(\"%d\\n\", Rand);     ",
+            also = "GetRandom(), GetTime()"
+         }
+      }
+   ]
+}
