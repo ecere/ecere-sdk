@@ -1,0 +1,4 @@
+{
+   name = "skins",
+   description = "The ecere::gui::skins namespace is for skins that implement the look of the GUI."
+}

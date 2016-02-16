@@ -1,0 +1,42 @@
+{
+   name = "FontResource",
+   description = "Used to store a Font resource to display text with.",
+   properties = [
+      {
+         "bold",
+         {
+            description = "When true, the font is displayed as being darker than normal."
+         }
+      },
+      {
+         "faceName",
+         {
+            description = "The name of the font to load."
+         }
+      },
+      {
+         "font",
+         {
+
+         }
+      },
+      {
+         "italic",
+         {
+            description = "When true, the font is displayed with a slant."
+         }
+      },
+      {
+         "size",
+         {
+            description = "The size to display the font at."
+         }
+      },
+      {
+         "underline",
+         {
+            description = "When true, the font is displayed with underlining."
+         }
+      }
+   ]
+}

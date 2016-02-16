@@ -1,0 +1,91 @@
+{
+   name = "Surface",
+   methods = [
+      {
+         "Blit",
+         {
+            description = "Draws an image from Bitmap to a destination layer.",
+            parameters = [
+               {
+                  "dx",
+                  {
+                     description = "The top left x coordinate of the destination.",
+                     position = 2
+                  }
+               },
+               {
+                  "dy",
+                  {
+                     description = "The top left y coordinate of the destination.",
+                     position = 3
+                  }
+               },
+               {
+                  "h",
+                  {
+                     description = "The height of the image to be written.",
+                     position = 7
+                  }
+               },
+               {
+                  "sx",
+                  {
+                     description = "The top left x coordinate from the source.",
+                     position = 4
+                  }
+               },
+               {
+                  "sy",
+                  {
+                     description = "The top left y coordinate from the source.",
+                     position = 5
+                  }
+               },
+               {
+                  "w",
+                  {
+                     description = "The width of the image to be written.",
+                     position = 6
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "DrawLine",
+         {
+            description = "Draws a line from point(x1, y1) to point(x2, y2).",
+            parameters = [
+               {
+                  "x1",
+                  {
+                     description = "The X coordinate(on the Cartesian Plane) for the first point of the line.",
+                     position = 1
+                  }
+               },
+               {
+                  "x2",
+                  {
+                     description = "The X coordinate(on the Cartesian Plane) for the second point of the line.",
+                     position = 3
+                  }
+               },
+               {
+                  "y1",
+                  {
+                     description = "The Y coordinate(on the Cartesian Plane) for the first point of the line.",
+                     position = 2
+                  }
+               },
+               {
+                  "y2",
+                  {
+                     description = "The Y coordinate(on the Cartesian Plane) for the second point of the line.",
+                     position = 4
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}

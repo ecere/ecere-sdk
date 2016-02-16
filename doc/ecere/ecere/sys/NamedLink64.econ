@@ -1,0 +1,23 @@
+{
+   name = "NamedLink64",
+   fields = [
+      {
+         "name",
+         {
+
+         }
+      },
+      {
+         "next",
+         {
+
+         }
+      },
+      {
+         "prev",
+         {
+
+         }
+      }
+   ]
+}

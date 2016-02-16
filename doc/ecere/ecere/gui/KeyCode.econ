@@ -1,0 +1,799 @@
+{
+   name = "KeyCode",
+   description = "The numerical representation of a key that is being pressed.",
+   also = "PredefinedKey",
+   values = [
+      {
+         "a",
+         {
+            description = "The letter a."
+         }
+      },
+      {
+         "alt",
+         {
+            description = "The Alt key, right or left."
+         }
+      },
+      {
+         "ampersand",
+         {
+            description = "The & symbol, must be checked with shift status."
+         }
+      },
+      {
+         "b",
+         {
+            description = "The letter b."
+         }
+      },
+      {
+         "backQuote",
+         {
+            description = "The ` symbol."
+         }
+      },
+      {
+         "backSlash",
+         {
+            description = "The \\ symbol."
+         }
+      },
+      {
+         "backSpace",
+         {
+            description = "The Backspace key."
+         }
+      },
+      {
+         "bang",
+         {
+            description = "The ! symbol, must be checked with shift status."
+         }
+      },
+      {
+         "c",
+         {
+            description = "The letter c."
+         }
+      },
+      {
+         "capsLock",
+         {
+            description = "The Caps Lock key."
+         }
+      },
+      {
+         "circumflex",
+         {
+            description = "The ^ symbol, must be checked with shift status."
+         }
+      },
+      {
+         "colon",
+         {
+            description = "The : symbol, must be checked with shift status."
+         }
+      },
+      {
+         "comma",
+         {
+            description = "The , symbol."
+         }
+      },
+      {
+         "commercial",
+         {
+            description = "The @ symbol, must be checked with shift status."
+         }
+      },
+      {
+         "control",
+         {
+            description = "The Ctrl key, right or left."
+         }
+      },
+      {
+         "d",
+         {
+            description = "The letter d."
+         }
+      },
+      {
+         "del",
+         {
+            description = "The Delete or Del key."
+         }
+      },
+      {
+         "dollar",
+         {
+            description = "The $ symbol, must be checked with shift status."
+         }
+      },
+      {
+         "doubleQuote",
+         {
+            description = "The \" symbol, must be checked with shift status."
+         }
+      },
+      {
+         "down",
+         {
+            description = "The Down Arrow."
+         }
+      },
+      {
+         "e",
+         {
+            description = "The letter e."
+         }
+      },
+      {
+         "end",
+         {
+            description = "The End key."
+         }
+      },
+      {
+         "enter",
+         {
+            description = "The Enter, or Return key."
+         }
+      },
+      {
+         "equal",
+         {
+            description = "The = symbol."
+         }
+      },
+      {
+         "escape",
+         {
+            description = "The Esc key."
+         }
+      },
+      {
+         "f",
+         {
+            description = "The letter f."
+         }
+      },
+      {
+         "f1",
+         {
+            description = "The first Function key 'F1'."
+         }
+      },
+      {
+         "f10",
+         {
+            description = "The tenth Function key 'F10'."
+         }
+      },
+      {
+         "f11",
+         {
+            description = "The eleventh function key 'F11'."
+         }
+      },
+      {
+         "f12",
+         {
+            description = "The twelfth function key 'F12'."
+         }
+      },
+      {
+         "f2",
+         {
+            description = "The second Function key 'F2'."
+         }
+      },
+      {
+         "f3",
+         {
+            description = "The third Function key 'F3'."
+         }
+      },
+      {
+         "f4",
+         {
+            description = "The fourth Function key 'F4'."
+         }
+      },
+      {
+         "f5",
+         {
+            description = "The fifth Function key 'F5'."
+         }
+      },
+      {
+         "f6",
+         {
+            description = "The sixth Function key 'F6'."
+         }
+      },
+      {
+         "f7",
+         {
+            description = "The seventh Function key 'F7'."
+         }
+      },
+      {
+         "f8",
+         {
+            description = "The eighth Function key 'F8'."
+         }
+      },
+      {
+         "f9",
+         {
+            description = "The ninth Function key 'F9'."
+         }
+      },
+      {
+         "g",
+         {
+            description = "The letter g."
+         }
+      },
+      {
+         "greaterThan",
+         {
+            description = "The > symbol, must be checked with shift status."
+         }
+      },
+      {
+         "h",
+         {
+            description = "The letter h."
+         }
+      },
+      {
+         "home",
+         {
+            description = "The Home key."
+         }
+      },
+      {
+         "i",
+         {
+            description = "The letter i."
+         }
+      },
+      {
+         "insert",
+         {
+            description = "The Insert or Ins key."
+         }
+      },
+      {
+         "j",
+         {
+            description = "The letter j."
+         }
+      },
+      {
+         "k",
+         {
+            description = "The letter k."
+         }
+      },
+      {
+         "k0",
+         {
+            description = "The number 0."
+         }
+      },
+      {
+         "k1",
+         {
+            description = "The number 1."
+         }
+      },
+      {
+         "k2",
+         {
+            description = "The number 2."
+         }
+      },
+      {
+         "k3",
+         {
+            description = "The number 3."
+         }
+      },
+      {
+         "k4",
+         {
+            description = "The number 4."
+         }
+      },
+      {
+         "k5",
+         {
+            description = "The number 5."
+         }
+      },
+      {
+         "k6",
+         {
+            description = "The number 6."
+         }
+      },
+      {
+         "k7",
+         {
+            description = "The number 7."
+         }
+      },
+      {
+         "k8",
+         {
+            description = "The number 8."
+         }
+      },
+      {
+         "k9",
+         {
+            description = "The number 9."
+         }
+      },
+      {
+         "keyPad0",
+         {
+            description = "The number 0, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad1",
+         {
+            description = "The number 1, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad2",
+         {
+            description = "The number 2, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad3",
+         {
+            description = "The number 3, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad4",
+         {
+            description = "The number 4, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad5",
+         {
+            description = "The number 5, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad6",
+         {
+            description = "The number 6, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad7",
+         {
+            description = "The number 7, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad8",
+         {
+            description = "The number 8, on the numeric keypad."
+         }
+      },
+      {
+         "keyPad9",
+         {
+            description = "The number 9, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadDelete",
+         {
+            description = "The Del key, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadDown",
+         {
+            description = "The down arrow, which is the number 2, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadEnd",
+         {
+            description = "The End key, which is the number 1, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadEnter",
+         {
+            description = "The Enter, or Return key, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadHome",
+         {
+            description = "The Home key, which is the number 7, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadInsert",
+         {
+            description = "The Insert key, which is the number 0, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadLeft",
+         {
+            description = "The left arrow, which is the number 4, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadMinus",
+         {
+            description = "The - symbol, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadPageDown",
+         {
+            description = "The Page Down key, which is the number 3, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadPageUp",
+         {
+            description = "The Page Up key, which is the number 9, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadPlus",
+         {
+            description = "The + symbol, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadRight",
+         {
+            description = "The right arrow, which is the number 6, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadSlash",
+         {
+            description = "The / symbol, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadStar",
+         {
+            description = "The * symbol, on the numeric keypad."
+         }
+      },
+      {
+         "keyPadUp",
+         {
+            description = "The up arrow, which is the number 8, on the numeric keypad."
+         }
+      },
+      {
+         "l",
+         {
+            description = "The letter l."
+         }
+      },
+      {
+         "left",
+         {
+            description = "The Left Arrow key."
+         }
+      },
+      {
+         "leftAlt",
+         {
+            description = "The Alt key on the left of the keyboard."
+         }
+      },
+      {
+         "leftBracket",
+         {
+            description = "The [ symbol. If shift status is checked this represents the { symbol."
+         }
+      },
+      {
+         "leftControl",
+         {
+            description = "The Ctrl key on the left side of the keyboard."
+         }
+      },
+      {
+         "leftParanthesis",
+         {
+            description = "The ( symbol, must be checked with shift status."
+         }
+      },
+      {
+         "leftShift",
+         {
+            description = "The Shift key on the left of the keyboard."
+         }
+      },
+      {
+         "m",
+         {
+            description = "The letter m."
+         }
+      },
+      {
+         "minus",
+         {
+            description = "The - symbol."
+         }
+      },
+      {
+         "n",
+         {
+            description = "The letter n."
+         }
+      },
+      {
+         "numLock",
+         {
+            description = "The NumLock key."
+         }
+      },
+      {
+         "o",
+         {
+            description = "The letter o."
+         }
+      },
+      {
+         "p",
+         {
+            description = "The letter p."
+         }
+      },
+      {
+         "pageDown",
+         {
+            description = "The Page Down or PgDn key."
+         }
+      },
+      {
+         "pageUp",
+         {
+            description = "The Page Up or PgUp key."
+         }
+      },
+      {
+         "pauseBreak",
+         {
+            description = "The Pause key. Also the Break key, but need to check the status of Ctrl."
+         }
+      },
+      {
+         "percent",
+         {
+            description = "The % symbol, must be checked with shift status."
+         }
+      },
+      {
+         "period",
+         {
+            description = "The . symbol."
+         }
+      },
+      {
+         "pipe",
+         {
+            description = "The | symbol, must be checked with shift status."
+         }
+      },
+      {
+         "plus",
+         {
+            description = "The + symbol, must be checked with shift status."
+         }
+      },
+      {
+         "pound",
+         {
+            description = "The # symbol, must be checked with shift status."
+         }
+      },
+      {
+         "printScreen",
+         {
+            description = "The Print Screen or PrtSc key."
+         }
+      },
+      {
+         "q",
+         {
+            description = "The letter q."
+         }
+      },
+      {
+         "questionMark",
+         {
+            description = "The ? symbol, must be checked with shift status."
+         }
+      },
+      {
+         "quote",
+         {
+            description = "The ' symbol."
+         }
+      },
+      {
+         "r",
+         {
+            description = "The letter r."
+         }
+      },
+      {
+         "right",
+         {
+            description = "The Right Arrow key."
+         }
+      },
+      {
+         "rightAlt",
+         {
+            description = "The Alt key on the right of the keyboard."
+         }
+      },
+      {
+         "rightBracket",
+         {
+            description = "The ] symbol. If shift status is checked this represents the } symbol."
+         }
+      },
+      {
+         "rightControl",
+         {
+            description = "The Ctrl key on the right of the keyboard."
+         }
+      },
+      {
+         "rightParanthesis",
+         {
+            description = "The ) symbol, must be checked with shift status."
+         }
+      },
+      {
+         "rightShift",
+         {
+            description = "The Shift key on the right of the keyboard."
+         }
+      },
+      {
+         "s",
+         {
+            description = "The letter s."
+         }
+      },
+      {
+         "scrollLock",
+         {
+            description = "The ScrollLock key."
+         }
+      },
+      {
+         "semicolon",
+         {
+            description = "The ; symbol."
+         }
+      },
+      {
+         "shift",
+         {
+            description = "The Shift key, right or left."
+         }
+      },
+      {
+         "slash",
+         {
+            description = "The / symbol."
+         }
+      },
+      {
+         "smallerThan",
+         {
+            description = "The < symbol, must be checked with shift status."
+         }
+      },
+      {
+         "space",
+         {
+            description = "The spacebar."
+         }
+      },
+      {
+         "star",
+         {
+            description = "The * symbol, must be checked with shift status."
+         }
+      },
+      {
+         "t",
+         {
+            description = "The letter t."
+         }
+      },
+      {
+         "tab",
+         {
+            description = "The Tab key."
+         }
+      },
+      {
+         "tilde",
+         {
+            description = "The ~ symbol, must be checked with shift status."
+         }
+      },
+      {
+         "u",
+         {
+            description = "The letter u."
+         }
+      },
+      {
+         "underscore",
+         {
+            description = "The _ symbol, must be checked with shift status."
+         }
+      },
+      {
+         "up",
+         {
+            description = "The Up Arrow key."
+         }
+      },
+      {
+         "v",
+         {
+            description = "The letter v."
+         }
+      },
+      {
+         "w",
+         {
+            description = "The letter w."
+         }
+      },
+      {
+         "x",
+         {
+            description = "The letter x."
+         }
+      },
+      {
+         "y",
+         {
+            description = "The letter y."
+         }
+      },
+      {
+         "z",
+         {
+            description = "The letter z."
+         }
+      }
+   ]
+}

@@ -1,0 +1,50 @@
+{
+   name = "Bitmap",
+   description = "Provides access to an image added as a Resource to the Project.",
+   fields = [
+      {
+         "height",
+         {
+            description = "The Height in pixels of the image."
+         }
+      },
+      {
+         "pixelFormat",
+         {
+            description = "The format of the color encoding for the pixels of this image."
+         }
+      },
+      {
+         "size",
+         {
+            description = "The exact size of the image."
+         }
+      },
+      {
+         "sizeBytes",
+         {
+            description = "The size of the image in bytes."
+         }
+      },
+      {
+         "transparent",
+         {
+            description = "When true, the transparency layer of the image is recognized. When the image is later blitted to the screen the transparent regions of the image are not drawn."
+         }
+      },
+      {
+         "width",
+         {
+            description = "The Width in pixels of the image."
+         }
+      }
+   ],
+   methods = [
+      {
+         "Load",
+         {
+            description = "Load the bitmap file from the included resources."
+         }
+      }
+   ]
+}

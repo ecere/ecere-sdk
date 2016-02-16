@@ -1,0 +1,18 @@
+{
+   name = "unsigned int",
+   description = "An unsigned integer data type.\n"
+      "\n"
+      "Memory occupied: 32 bits(or 4 bytes)\n"
+      "\n"
+      "An unsigned int data type holds a decimal value between the range of 0 to 2 exp 32-1 (or 0 to 4,294,967,295).",
+   usage = "Used in the declaration section of code, which is before any statements.\n"
+      "\n"
+      "Declared as a standard int, but with the unsigned keyword in front to denote an unsigned integer value.",
+   example = "unsigned int aUint; // A stand alone declaration of an unsigned int.\n"
+      "unsigned int a, b; // Declaring two unsigned ints at the same time.\n"
+      "unsigned int c = 64000, d = 10; // Declaring two unsigned ints, and initializing them both at the same time.",
+   remarks = "Unlike other languages the unsigned int data type is actually a class.\n"
+      "\n"
+      "unsigned int is equivalent to an unsigned int in C, and is in fact only part of eC to maintain backwards compatibility with C. In all ways, the unsigned int is also equivalent to the shorter and preferred uint syntax.",
+   also = "bool, byte, char, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
+}

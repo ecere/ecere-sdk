@@ -1,0 +1,31 @@
+{
+   name = "Key",
+   description = "Contains the key(or mousebutton) pressed by the user.",
+   also = "KeyCode, PredefinedKey",
+   fields = [
+      {
+         "alt",
+         {
+            description = "true when the Alt key is pressed."
+         }
+      },
+      {
+         "code",
+         {
+            description = "The numerical representation of the key which is pressed."
+         }
+      },
+      {
+         "ctrl",
+         {
+            description = "true when the Ctrl key is pressed."
+         }
+      },
+      {
+         "shift",
+         {
+            description = "true when the Shift key is pressed."
+         }
+      }
+   ]
+}
