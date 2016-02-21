@@ -410,14 +410,16 @@ void DocPrintType(Type type, char * string, bool printName, bool fullName)
       _PrintType(type, string, printName, true, fullName);
 }
 
+Map<String, bool> modulesAdded { };
 void AddComponents(Module module, bool isDll)
 {
    DataRow row = null;
    SubModule m;
 
-   if(module.name && (!strcmp(module.name, "ecere") || !strcmp(module.name, "ecereCOM")))
+   if(module.name && (!strcmp(module.name, "ecere") || !strcmp(module.name, "ecereCOM")) && !modulesAdded["ecereCOM"])
    {
       row = mainForm.browser.AddRow();
+      modulesAdded["ecereCOM"] = true;
       row.SetData(null, APIPageNameSpace { name = "ecereCOM", nameSpace = &module.application.systemNameSpace });
       row.tag = (int64)null;
       AddNameSpace(row, null, module.application.systemNameSpace, null, "", !isDll);
@@ -430,9 +432,10 @@ void AddComponents(Module module, bool isDll)
    }
 
    // PUT MODULE DESCRIPTION HERE
-   if(module.name && strcmp(module.name, "ecereCOM"))
+   if(module.name && !modulesAdded[module.name] && strcmp(module.name, "ecereCOM"))
    {
       row = mainForm.browser.AddRow();
+      modulesAdded[module.name] = true;
       row.SetData(null, APIPageNameSpace { name = module.name, module = module, nameSpace = &module.publicNameSpace });
       row.tag = (int64)module;
       AddNameSpace(row, module, module.publicNameSpace, null /*module.application.systemNameSpace*/, "", !isDll);
@@ -2377,6 +2380,7 @@ class MainForm : Window
       static char symbolsDir[MAX_LOCATION];
 
       history.size = 0;
+      modulesAdded.RemoveAll();
 
       FreeContext(globalContext);
       FreeExcludedSymbols(excludedSymbols);
