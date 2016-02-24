@@ -415,7 +415,7 @@ static void writeNamespaceDocFile(NamespaceDoc namespaceDoc, const char * path)
       f = FileOpen(filePath, write);
       if(f)
       {
-         WriteJSONObject(f, class(NamespaceDoc), namespaceDoc, 0, true);
+         WriteECONObject(f, class(NamespaceDoc), namespaceDoc, 0);
          delete f;
       }
       else
@@ -440,7 +440,7 @@ static void writeClassDocFile(ClassDoc classDoc, const char * path)
       f = FileOpen(filePath, write);
       if(f)
       {
-         WriteJSONObject(f, class(ClassDoc), classDoc, 0, true);
+         WriteECONObject(f, class(ClassDoc), classDoc, 0);
          delete f;
       }
       else

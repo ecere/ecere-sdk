@@ -1230,7 +1230,7 @@ private:
          files.Remove(resNode);
          version = 0.2f;
 
-         WriteJSONObject(f, class(Project), this, 0, false);
+         WriteJSONObject(f, class(Project), this, 0);
 
          files.Add(resNode);
 

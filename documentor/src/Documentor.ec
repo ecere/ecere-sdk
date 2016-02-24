@@ -3008,9 +3008,9 @@ class HelpView : HTMLView
                if(f)
                {
                   if(cl)
-                     WriteJSONObject(f, class(ClassDoc), clDoc, 0, true);
+                     WriteECONObject(f, class(ClassDoc), clDoc, 0);
                   else
-                     WriteJSONObject(f, class(NamespaceDoc), nsDoc, 0, true);
+                     WriteECONObject(f, class(NamespaceDoc), nsDoc, 0);
                   delete f;
                }
                else
