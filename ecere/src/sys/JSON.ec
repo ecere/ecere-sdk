@@ -1487,7 +1487,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
       }
       else
       {
-         Class _class = eCON ? ((Instance)object)._class : objectType;
+         Class _class = (eCON && objectType.type == normalClass) ? ((Instance)object)._class : objectType;
          Property prop;
          int c;
          bool isFirst = true;
