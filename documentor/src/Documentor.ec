@@ -714,20 +714,17 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
    }
    if(editing && !contents && !readOnly)
       contents = CopyString($"[Add Text]");
+   delete doc;
    return contents;
 }
-
+               // The filePath is returned!
 ItemDoc getDoc(char * filePath, Module module, DocumentationType type, void * object, DocumentationItem item, void * data, bool create)
 {
    ItemDoc doc = null;
-   bool docRetrieved = false;
-   File f;
-   NamespaceDoc nsDoc = null;
-   ClassDoc clDoc = null;
-
-   char docPath[MAX_LOCATION];
    Class cl = null;
    Method method = null;
+   DocCacheEntry entry;
+   Time now;
 
    switch(type)
    {
@@ -737,72 +734,50 @@ ItemDoc getDoc(char * filePath, Module module, DocumentationType type, void * ob
 
    FigureFilePath(filePath, module, type, object, item, data);
 
-   if(docCache[filePath])
-   {
-      DocCacheEntry entry = docCache[docPath];
-      if(cl && eClass_IsDerived(entry.doc._class, class(ClassDoc)))
-      {
-         clDoc = (ClassDoc)entry.doc;
-         docRetrieved = true;
-      }
-      else if(!cl && eClass_IsDerived(entry.doc._class, class(NamespaceDoc)))
-      {
-         nsDoc = (NamespaceDoc)entry.doc;
-         docRetrieved = true;
-      }
-   }
+   entry = docCache[filePath];
+   if(entry)
+      doc = entry.doc;
 
-   if(!docRetrieved)
+   if(!doc)
    {
-      f = FileOpen(filePath, read);
+      File f = FileOpen(filePath, read);
       if(f)
       {
          JSONParser parser { f = f, eCON = true };
          JSONResult jsonResult;
-         jsonResult = parser.GetObject(cl ? class(ClassDoc) : class(NamespaceDoc), cl ? &clDoc : &nsDoc);
+         jsonResult = parser.GetObject(cl ? class(ClassDoc) : class(NamespaceDoc), &doc);
          delete parser;
          delete f;
 
-         if(jsonResult == success)
-         {
-            docRetrieved = true;
-            docCache[docPath] = { added = GetTime(), doc = cl ? clDoc : nsDoc };
-         }
-         else
+         if(jsonResult != success)
          {
             PrintLn("error: problem parsing file: ", filePath);
-            delete clDoc;
-            delete nsDoc;
+            delete doc;
          }
       }
+      if(!doc)
+         doc = cl ? (ItemDoc)ClassDoc { } : (ItemDoc)NamespaceDoc { };
    }
 
-   if(!docRetrieved)
-   {
-      if(cl)
-         clDoc = { };
-      else
-         nsDoc = { };
-      doc = cl ? clDoc : nsDoc;
-      docCache[docPath] = { added = GetTime(), doc = cl ? clDoc : nsDoc };
-      docRetrieved = true;
-   }
+   incref doc;    // Reference to return
+
+   now = GetTime();
+   // Add to the cache
+   if(entry)
+      entry.timeStamp = now;
    else
    {
-      doc = cl ? clDoc : nsDoc;
+      docCache[filePath] = { now, doc };
+      incref doc; // Reference for the cache
    }
 
    //void pruneDocCache()
+   // NOTE: If we want time stamp to be last retrieved, the pruning should be done before the retrieval
    {
-      MapIterator<const String, DocCacheEntry> it { map = docCache };
+      MapIterator<String, DocCacheEntry> it { map = docCache };
       Array<const String> toRemove { };
-      Time now = GetTime();
-      for(entry : docCache)
-      {
-         Time diff = now - entry.added;
-         if(diff > 60*0.5)
-            toRemove.Add(&entry);
-      }
+      for(entry : docCache; now - entry.timeStamp > 30)
+         toRemove.Add(&entry);
       while(toRemove.count)
       {
          if(it.Index(toRemove.lastIterator.data, false))
@@ -2742,8 +2717,9 @@ class HelpView : HTMLView
          f.Read(contents, 1, len);
          contents[len] = '\0';
       }
-      if(!empty && contents)
+
       {
+         char docPath[MAX_LOCATION];
          char temp[MAX_LOCATION];
          char part[MAX_FILENAME];
          Module module;
@@ -2757,7 +2733,6 @@ class HelpView : HTMLView
          ClassDoc clDoc = null;
          FunctionDoc fnDoc = null;
          MethodDoc mdDoc = null;
-         //char filePath[MAX_LOCATION];
          Class cl = null;
          Method method = null;
          GlobalFunction function = null;
@@ -2804,17 +2779,17 @@ class HelpView : HTMLView
          else if(!strcmp(part, "returnValue"))
             item = returnValue;
 
-         doc = getDoc(temp, module, type, object, item, data, true);
+         doc = getDoc(docPath, module, type, object, item, data, !empty && contents);
 
+         /* Why invalidate this entry here?
          {
             MapIterator<const String, DocCacheEntry> it { map = docCache };
-            if(it.Index(temp, false))
+            if(it.Index(docPath, false))
             {
-               it.data.doc = null;
                delete it.data;
                it.Remove();
             }
-         }
+         }*/
 
          switch(type)
          {
@@ -2823,15 +2798,18 @@ class HelpView : HTMLView
             case methodDoc:    method = object; cl = method._class; break;
          }
 
-         if(eClass_IsDerived(doc._class, class(ClassDoc)))
+         if(doc)
          {
-            clDoc = (ClassDoc)doc;
-            docRetrieved = true;
-         }
-         else if(eClass_IsDerived(doc._class, class(NamespaceDoc)))
-         {
-            nsDoc = (NamespaceDoc)doc;
-            docRetrieved = true;
+            if(eClass_IsDerived(doc._class, class(ClassDoc)))
+            {
+               clDoc = (ClassDoc)doc;
+               docRetrieved = true;
+            }
+            else if(eClass_IsDerived(doc._class, class(NamespaceDoc)))
+            {
+               nsDoc = (NamespaceDoc)doc;
+               docRetrieved = true;
+            }
          }
 
          if(docRetrieved)
@@ -2840,9 +2818,9 @@ class HelpView : HTMLView
             {
                const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
                if(name) name += 2; else name = function.name;
-               if(!nsDoc.functions) nsDoc.functions = { };
+               if(!nsDoc.functions && !empty) nsDoc.functions = { };
                fnDoc = nsDoc.functions[name];
-               if(!fnDoc)
+               if(!fnDoc && !empty)
                {
                   fnDoc = { };
                   nsDoc.functions[name] = fnDoc;
@@ -2850,173 +2828,190 @@ class HelpView : HTMLView
             }
             else if(type == methodDoc)
             {
-               if(!clDoc.methods) clDoc.methods = { };
+               if(!clDoc.methods && !empty) clDoc.methods = { };
                mdDoc = clDoc.methods[method.name];
-               if(!mdDoc)
+               if(!mdDoc && !empty)
                {
                   mdDoc = { };
                   clDoc.methods[method.name] = mdDoc;
                }
             }
 
-            switch(item)
+            if(!empty || mdDoc || fnDoc || (type == classDoc && clDoc) || (type == nameSpaceDoc && nsDoc))
             {
-               case description:
-                  if(type == methodDoc) { mdDoc.description = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.description = contents; contents = null; }
-                  else if(type == classDoc) { clDoc.description = contents; contents = null; }
-                  else { nsDoc.description = contents; contents = null; }
-                  break;
-               case usage:
-                  if(type == methodDoc) { mdDoc.usage = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.usage = contents; contents = null; }
-                  else if(type == classDoc) { clDoc.usage = contents; contents = null; }
-                  break;
-               case remarks:
-                  if(type == methodDoc) { mdDoc.remarks = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.remarks = contents; contents = null; }
-                  else if(type == classDoc) { clDoc.remarks = contents; contents = null; }
-                  break;
-               case example:
-                  if(type == methodDoc) { mdDoc.example = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.example = contents; contents = null; }
-                  else if(type == classDoc) { clDoc.example = contents; contents = null; }
-                  break;
-               case seeAlso:
-                  if(type == methodDoc) { mdDoc.also = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.also = contents; contents = null; }
-                  else if(type == classDoc) { clDoc.also = contents; contents = null; }
-                  break;
-               case returnValue:
-                  if(type == methodDoc) { mdDoc.returnValue = contents; contents = null; }
-                  else if(type == functionDoc) { fnDoc.returnValue = contents; contents = null; }
-                  break;
-               case enumerationValue:
+               switch(item)
                {
-                  ValueDoc itDoc;
-                  if(!clDoc.values) clDoc.values = { };
-                  itDoc = clDoc.values[((NamedLink)data).name];
-                  if(!itDoc)
+                  case description:
+                     if(type == methodDoc) { mdDoc.description = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.description = contents; contents = null; }
+                     else if(type == classDoc) { clDoc.description = contents; contents = null; }
+                     else { nsDoc.description = contents; contents = null; }
+                     break;
+                  case usage:
+                     if(type == methodDoc) { mdDoc.usage = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.usage = contents; contents = null; }
+                     else if(type == classDoc) { clDoc.usage = contents; contents = null; }
+                     break;
+                  case remarks:
+                     if(type == methodDoc) { mdDoc.remarks = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.remarks = contents; contents = null; }
+                     else if(type == classDoc) { clDoc.remarks = contents; contents = null; }
+                     break;
+                  case example:
+                     if(type == methodDoc) { mdDoc.example = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.example = contents; contents = null; }
+                     else if(type == classDoc) { clDoc.example = contents; contents = null; }
+                     break;
+                  case seeAlso:
+                     if(type == methodDoc) { mdDoc.also = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.also = contents; contents = null; }
+                     else if(type == classDoc) { clDoc.also = contents; contents = null; }
+                     break;
+                  case returnValue:
+                     if(type == methodDoc) { mdDoc.returnValue = contents; contents = null; }
+                     else if(type == functionDoc) { fnDoc.returnValue = contents; contents = null; }
+                     break;
+                  case enumerationValue:
                   {
-                     itDoc = { };
-                     clDoc.values[((NamedLink)data).name] = itDoc;
-                  }
-                  itDoc.description = contents; contents = null;
-                  break;
-               }
-               case definition:
-               {
-                  DefineDoc itDoc;
-                  if(!nsDoc.defines) nsDoc.defines = { };
-                  itDoc = nsDoc.defines[((Definition)data).name];
-                  if(!itDoc)
-                  {
-                     itDoc = { };
-                     nsDoc.defines[((Definition)data).name] = itDoc;
-                  }
-                  itDoc.description = contents; contents = null;
-                  break;
-               }
-               case conversion:
-               {
-                  ConversionDoc itDoc;
-                  const char * name = RSearchString(((Property)data).name, "::", strlen(((Property)data).name), true, false);
-                  if(name) name += 2; else name = ((Property)data).name;
-                  if(!clDoc.conversions) clDoc.conversions = { };
-                  itDoc = clDoc.conversions[name];
-                  if(!itDoc)
-                  {
-                     itDoc = { };
-                     clDoc.conversions[name] = itDoc;
-                  }
-                  itDoc.description = contents; contents = null;
-                  break;
-               }
-               case memberDescription:
-               {
-                  FieldDoc itDoc;
-                  if(!clDoc.fields) clDoc.fields = { };
-                  itDoc = clDoc.fields[((DataMember)data).name];
-                  if(!itDoc)
-                  {
-                     itDoc = { };
-                     clDoc.fields[((DataMember)data).name] = itDoc;
-                  }
-                  itDoc.description = contents; contents = null;
-                  break;
-               }
-               case propertyDescription:
-               {
-                  PropertyDoc itDoc;
-                  if(!clDoc.properties) clDoc.properties = { };
-                  itDoc = clDoc.properties[((Property)data).name];
-                  if(!itDoc)
-                  {
-                     itDoc = { };
-                     clDoc.properties[((Property)data).name] = itDoc;
-                  }
-                  itDoc.description = contents; contents = null;
-                  break;
-               }
-               case parameter:
-               {
-                  ParameterDoc itDoc;
-                  char * name;
-                  Type prev;
-                  for(prev = data; prev; prev = prev.prev);
-                  name = ((Type)data).name;
-                  if(type == functionDoc)
-                  {
-                     if(!fnDoc.parameters) fnDoc.parameters = { };
-                     itDoc = fnDoc.parameters[name];
+                     ValueDoc itDoc;
+                     if(!clDoc.values) clDoc.values = { };
+                     itDoc = clDoc.values[((NamedLink)data).name];
                      if(!itDoc)
                      {
                         itDoc = { };
-                        fnDoc.parameters[name] = itDoc;
+                        clDoc.values[((NamedLink)data).name] = itDoc;
                      }
                      itDoc.description = contents; contents = null;
+                     break;
                   }
-                  else if(type == methodDoc)
+                  case definition:
                   {
-                     if(!mdDoc.parameters) mdDoc.parameters = { };
-                     itDoc = mdDoc.parameters[name];
+                     DefineDoc itDoc;
+                     if(!nsDoc.defines) nsDoc.defines = { };
+                     itDoc = nsDoc.defines[((Definition)data).name];
                      if(!itDoc)
                      {
                         itDoc = { };
-                        mdDoc.parameters[name] = itDoc;
+                        nsDoc.defines[((Definition)data).name] = itDoc;
                      }
                      itDoc.description = contents; contents = null;
+                     break;
                   }
-                  break;
+                  case conversion:
+                  {
+                     ConversionDoc itDoc;
+                     const char * name = RSearchString(((Property)data).name, "::", strlen(((Property)data).name), true, false);
+                     if(name) name += 2; else name = ((Property)data).name;
+                     if(!clDoc.conversions) clDoc.conversions = { };
+                     itDoc = clDoc.conversions[name];
+                     if(!itDoc)
+                     {
+                        itDoc = { };
+                        clDoc.conversions[name] = itDoc;
+                     }
+                     itDoc.description = contents; contents = null;
+                     break;
+                  }
+                  case memberDescription:
+                  {
+                     FieldDoc itDoc;
+                     if(!clDoc.fields) clDoc.fields = { };
+                     itDoc = clDoc.fields[((DataMember)data).name];
+                     if(!itDoc)
+                     {
+                        itDoc = { };
+                        clDoc.fields[((DataMember)data).name] = itDoc;
+                     }
+                     itDoc.description = contents; contents = null;
+                     break;
+                  }
+                  case propertyDescription:
+                  {
+                     PropertyDoc itDoc;
+                     if(!clDoc.properties) clDoc.properties = { };
+                     itDoc = clDoc.properties[((Property)data).name];
+                     if(!itDoc)
+                     {
+                        itDoc = { };
+                        clDoc.properties[((Property)data).name] = itDoc;
+                     }
+                     itDoc.description = contents; contents = null;
+                     break;
+                  }
+                  case parameter:
+                  {
+                     ParameterDoc itDoc;
+                     char * name;
+                     Type prev;
+                     for(prev = data; prev; prev = prev.prev);
+                     name = ((Type)data).name;
+                     if(type == functionDoc)
+                     {
+                        if(!fnDoc.parameters) fnDoc.parameters = { };
+                        itDoc = fnDoc.parameters[name];
+                        if(!itDoc)
+                        {
+                           itDoc = { };
+                           fnDoc.parameters[name] = itDoc;
+                        }
+                        itDoc.description = contents; contents = null;
+                     }
+                     else if(type == methodDoc)
+                     {
+                        if(!mdDoc.parameters) mdDoc.parameters = { };
+                        itDoc = mdDoc.parameters[name];
+                        if(!itDoc)
+                        {
+                           itDoc = { };
+                           mdDoc.parameters[name] = itDoc;
+                        }
+                        itDoc.description = contents; contents = null;
+                     }
+                     break;
+                  }
                }
             }
          }
 
+         if(type == functionDoc && fnDoc && fnDoc.isEmpty)
          {
-            File f;
-            char filePath[MAX_LOCATION];
-            char dirPath[MAX_LOCATION];
-            strcpy(filePath, temp);
-            StripLastDirectory(filePath, dirPath);
-            if(FileExists(filePath))
-               DeleteFile(filePath);
-            if(cl ? !clDoc.isEmpty : !nsDoc.isEmpty)
+            MapIterator<String, FunctionDoc> it { map = nsDoc.functions };
+            const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
+            if(name) name += 2; else name = function.name;
+            if(it.Index(name, false))
             {
+               it.Remove();
+            }
+            delete fnDoc;
+         }
+         else if(type == methodDoc && mdDoc && mdDoc.isEmpty)
+         {
+            MapIterator<String, MethodDoc> it { map = clDoc.methods };
+            if(it.Index(method.name, false))
+            {
+               it.Remove();
+            }
+            delete mdDoc;
+         }
+
+         if(docRetrieved)
+         {
+            char dirPath[MAX_LOCATION];
+            StripLastDirectory(docPath, dirPath);
+            if(FileExists(docPath))
+               DeleteFile(docPath);
+            if(cl ? (clDoc && !clDoc.isEmpty) : (nsDoc && !nsDoc.isEmpty))
+            {
+               File f;
                if(!FileExists(dirPath))
                   MakeDir(dirPath);
-               f = FileOpen(filePath, write);
-               if(f)
+               if((f = FileOpen(docPath, write)))
                {
-                  if(cl)
-                     WriteECONObject(f, class(ClassDoc), clDoc, 0);
-                  else
-                     WriteECONObject(f, class(NamespaceDoc), nsDoc, 0);
+                  WriteECONObject(f, cl ? class(ClassDoc) : class(NamespaceDoc), doc, 0);
                   delete f;
                }
                else
-               {
-                  PrintLn("error: writeClassDocFile -- problem opening file: ", filePath);
-               }
+                  PrintLn("error: writeClassDocFile -- problem opening file: ", docPath);
             }
          }
          delete doc;
@@ -4618,9 +4613,10 @@ char * getDocFileNameFromTypeName(const char * typeName)
    return docFileName;
 }
 
-class DocCacheEntry
+class DocCacheEntry //: struct      // TOCHECK: Why does this causes an error: 'struct __ecereNameSpace__ecere__com__MapIterator' has no member named 'data'
 {
-   Time added;
+public:
+   Time timeStamp;      // Should this be last accessed, or last retrieved?
    ItemDoc doc;
 
    ~DocCacheEntry()
@@ -4629,4 +4625,4 @@ class DocCacheEntry
    }
 }
 
-Map<const String, DocCacheEntry> docCache { };
+Map<String, DocCacheEntry> docCache { };
