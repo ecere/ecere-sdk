@@ -54,10 +54,10 @@ public class Mutex : struct
 #endif
 #endif
 
-#ifdef _DEBUG
-   int64 owningThread;
-#endif
-   int lockCount;
+//#ifdef _DEBUG
+   int64 _owningThread;
+//#endif
+   int _lockCount;
 
    Mutex()
    {
@@ -84,10 +84,10 @@ public class Mutex : struct
 #endif
 #endif
 
-      lockCount = 0;
-#ifdef _DEBUG
-      owningThread = 0;
-#endif
+      _lockCount = 0;
+//#ifdef _DEBUG
+      _owningThread = 0;
+//#endif
       return true;
    }
 
@@ -138,10 +138,10 @@ public:
 
 #endif
 
-#ifdef _DEBUG
-         owningThread = GetCurrentThreadID();
-#endif
-         lockCount++;
+//#ifdef _DEBUG
+         _owningThread = GetCurrentThreadID();
+//#endif
+         _lockCount++;
       }
    }
 
@@ -155,16 +155,16 @@ public:
             printf("[%d] Releasing Mutex %x\n", (int)GetCurrentThreadID(), this);
          */
 #ifdef _DEBUG
-         if(lockCount && owningThread != GetCurrentThreadID())
+         if(_lockCount && _owningThread != GetCurrentThreadID())
             PrintLn("WARNING: Not in owning thread!!");
 #endif
 
-         if(!--lockCount)
-#ifdef _DEBUG
-            owningThread = 0;
-#else
-            ;
-#endif
+         if(!--_lockCount)
+         {
+//#ifdef _DEBUG
+            _owningThread = 0;
+//#endif
+         }
 #if defined(__WIN32__)
 #ifdef _DEBUG
          ReleaseMutex(mutex);
@@ -186,11 +186,12 @@ public:
 #endif
 
 #ifdef _DEBUG
-         if(lockCount < 0)
+         if(_lockCount < 0)
             PrintLn("WARNING: lockCount < 0");
 #endif
       }
    }
 
-   property int lockCount { get { return lockCount; } }
+   property int lockCount { get { return _lockCount; } }
+   property int64 owningThread { get { return _owningThread; } }
 };

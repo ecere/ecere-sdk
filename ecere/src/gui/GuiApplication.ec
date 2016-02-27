@@ -1474,6 +1474,39 @@ public:
 #endif
    }
 
+   void LockEx(int count)
+   {
+#if !defined(__EMSCRIPTEN__)
+      int i;
+      for(i = 0; i < count; i++)
+      {
+         lockMutex.Wait();
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+         if(xGlobalDisplay)
+            XLockDisplay(xGlobalDisplay);
+#endif
+      }
+#endif
+   }
+
+   int UnlockEx(void)
+   {
+      int count = 0;
+#if !defined(__EMSCRIPTEN__)
+      int i;
+      count = lockMutex.owningThread == GetCurrentThreadID() ? lockMutex.lockCount : 0;
+      for(i = 0; i < count; i++)
+      {
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+         if(xGlobalDisplay)
+            XUnlockDisplay(xGlobalDisplay);
+#endif
+         lockMutex.Release();
+      }
+#endif
+      return count;
+   }
+
    Cursor GetCursor(SystemCursor cursor)
    {
       return systemCursors[cursor];
