@@ -1105,7 +1105,8 @@ static void BindDCOMClient()
                         f.Printf(" = 0");
                      f.Printf(";\n\n");
                   }
-                  f.Printf("      incref this;\n");
+                  // f.Printf("      incref this;\n");
+                  f.Printf("      safeIncRef();\n");
                   for(param = method.dataType.params.first; param; param = param.next)
                   {
                      char type[1024] = "";
@@ -1165,7 +1166,8 @@ static void BindDCOMClient()
                   }
                   f.Printf("      }\n");
                   f.Printf("      __ecereBuffer.Free();\n");
-                  f.Printf("      delete this;\n");
+                  //f.Printf("      delete this;\n");
+                  f.Printf("      safeDecRef();\n");
                   if(method.dataType.returnType.kind != voidType)
                   {
                      f.Printf("      return __ecereResult;\n");

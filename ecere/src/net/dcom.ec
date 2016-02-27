@@ -153,6 +153,7 @@ public:
 
       if(serverSocket && serverSocket.connected)
       {
+         int lockCount;
          int64 currentThreadID = GetCurrentThreadID();
          int callID = nextCallID++;
          DCOMServerSocket socket = serverSocket;
@@ -206,13 +207,13 @@ public:
             if((ack = VirtualCallAcknowledged(methodID, id, callID)))
                break;
 
-            guiApp.Unlock();
+            lockCount = guiApp.UnlockEx();
             mutex.Release();
             if(processingSocket && processingSocket.connected)
                processingSocket.ProcessTimeOut(0.01);
             else
                ecere::sys::Sleep(0.01);//serverSocket.thread.semaphore.Wait();
-            guiApp.Lock();
+            guiApp.LockEx(lockCount);
             mutex.Wait();
          }
 
@@ -223,7 +224,7 @@ public:
             delete ack;
          }
 
-         guiApp.Unlock();
+         lockCount = guiApp.UnlockEx();
          mutex.Release();
 
          if(socket._refCount > 1)
@@ -234,7 +235,7 @@ public:
             processingSocket._refCount--;
          delete processingSocket;
 
-         guiApp.Lock();
+         guiApp.LockEx(lockCount);
          mutex.Wait();
 
          if(_refCount > 1)
@@ -308,13 +309,18 @@ class DCOMClientThread : Thread
    bool connected;
    unsigned int Main()
    {
+      socket.mutex.Wait();
       socket._refCount += 2;
+      socket.mutex.Release();
       while(connected)
       {
          socket.ProcessTimeOut(0.01);
          semaphore.Release();
       }
-      if(socket._refCount > 1) socket._refCount--;
+      socket.mutex.Wait();
+      if(socket._refCount > 1)
+         socket._refCount--;
+      socket.mutex.Release();
       delete socket;
       return 0;
    }
@@ -612,6 +618,7 @@ public:
       bool result = false;
       if(Socket::Connect(server, port))
       {
+         int lockCount;
          int len = (int)(strlen(_class.name) + 4 - strlen("DCOMClient_"));
          unsigned int size = sizeof(class CreateInstancePacket) + len;
          CreateInstancePacket packet = (CreateInstancePacket)new0 byte[size];
@@ -625,7 +632,7 @@ public:
          thread.socket = this;
          thread.connected = true;
          thread.Create();
-         guiApp.Unlock();
+         lockCount = guiApp.UnlockEx();
          while(!answered && thread && connected)
          {
             //guiApp.WaitNetworkEvent();
@@ -637,7 +644,7 @@ public:
             else
                thread.semaphore.Wait();
          }
-         guiApp.Lock();
+         guiApp.LockEx(lockCount);
          result = connected;
       }
       return result;
@@ -728,8 +735,8 @@ public:
                break;
             }
          }
-         guiApp.Unlock();
       }
+      guiApp.Unlock();
    }
 
    void OnDisconnect(int code)
@@ -760,20 +767,23 @@ public:
 
          while(true)
          {
+            int lockCount;
             if(!thread || !connected)
                break;
             if((ack = CallAcknowledged(methodID, objectID, callID)))
                break;
-            guiApp.Unlock();
+            lockCount = guiApp.UnlockEx();
 
             //guiApp.WaitNetworkEvent();
             //guiApp.ProcessNetworkEvents();
             //Process();
+            mutex.Release();
             if(GetCurrentThreadID() == (int64)thread.id)
                ProcessTimeOut(0.01);
             else
                ecere::sys::Sleep(0.01);//thread.semaphore.Wait();
-            guiApp.Lock();
+            mutex.Wait();
+            guiApp.LockEx(lockCount);
          }
 
          if(ack)
@@ -807,7 +817,7 @@ public class DCOMSendControl
 public:
    void Stop()
    {
-      while(sendingOut) guiApp.Unlock(), ecere::sys::Sleep(0.01), guiApp.Lock();
+      while(sendingOut) { int lockCount = guiApp.UnlockEx(); ecere::sys::Sleep(0.01); guiApp.LockEx(lockCount); }
       sendingOut = true;
    }
 

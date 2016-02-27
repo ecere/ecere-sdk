@@ -312,6 +312,8 @@ public:
    #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
       if(this)
       {
+         safeIncRef();
+         {
          SOCKET s = this.s;
          int count;
          fd_set ws, es;
@@ -335,8 +337,12 @@ public:
 
             // This is what was making eCom jam...
             // select(s+1, null, &ws, &es, null);
+
+            safeDecRef();
             return true;
          }
+         }
+         safeDecRef();
       }
    #endif
       return false;
@@ -433,6 +439,21 @@ public:
       return (int)send(s, (const char *)buffer, count, flags);
    }
    virtual bool OnEstablishConnection(int s);
+
+   dllexport void safeIncRef()
+   {
+      mutex.Wait();
+      incref this;
+      //mutex.Release();
+   }
+
+   dllexport void safeDecRef()
+   {
+      Mutex mutex = this.mutex;
+      //mutex.Wait();
+      delete this;
+      mutex.Release();
+   }
 
 private:
    Socket()
@@ -608,9 +629,10 @@ private:
    {
       bool result = false;
       SOCKET s;
+      Mutex mutex = this.mutex;
 
-      incref this;
       mutex.Wait();
+      incref this;
       // network.mutex.Wait();
       s = this.s;
       if(FD_ISSET(s, rs) || leftOver)
@@ -661,7 +683,8 @@ private:
                uint recvCount = OnReceive(recvBuffer + flushCount, recvBytes - flushCount);
                if(!recvCount)
                {
-                  leftOver = true;
+                  if(recvBytes)
+                     leftOver = true;
                   if(!processAlone)
                      network.leftOverBytes = true;
                   break;
@@ -709,9 +732,9 @@ private:
             _Disconnect(disconnectCode);
       }
       // network.mutex.Release();
+      delete this;
       mutex.Release();
 
-      delete this;
       return result;
    }
 #endif
@@ -728,6 +751,7 @@ private:
       struct timeval tvTO = {(uint)timeOut, (uint)((timeOut -(uint)timeOut)* 1000000)};
       fd_set rs, ws, es;
       int selectResult;
+      Mutex mutex;
 
       if(disconnectCode > 0 && !leftOver) return false;
       FD_ZERO(&rs);
@@ -737,15 +761,19 @@ private:
       //FD_SET(s, &ws);
       FD_SET(s, &es);
 
-      incref this;
-      selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
+      mutex = this.mutex;
       mutex.Wait();
+      incref this;
+      mutex.Release();
+      selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
+
       if(s != -1 && _refCount && (leftOver || selectResult))
       {
          gotEvent |= ProcessSocket(&rs, &ws, &es);
       }
-      mutex.Release();
+      mutex.Wait();
       delete this;
+      mutex.Release();
       return gotEvent;
    }
 
