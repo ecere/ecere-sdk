@@ -64,7 +64,13 @@ public:
      int glformat;
 
      if( image.format.bytesPerPixel == 1 )
+     {
+#ifdef SHADERS
        glformat = GL_RED;
+#else
+       glformat = GL_ALPHA;
+#endif
+     }
      else if( image.format.bytesPerPixel == 2 )
        glformat = GL_RG;
      else if( image.format.bytesPerPixel == 3 )

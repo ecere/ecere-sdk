@@ -106,12 +106,15 @@ public:
    {
      if(texture)
      {
+#ifdef SHADERS
         int glformat = GL_RED;
+#else
+        int glformat = GL_ALPHA;
+#endif
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
 
-        if( channelcount == 1 )
-          glformat = GL_RED;
+        if( channelcount == 1 );
         else if( channelcount == 2 )
           glformat = GL_RG;
         else if( channelcount == 3 )
