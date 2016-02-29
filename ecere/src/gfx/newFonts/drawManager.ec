@@ -1202,7 +1202,7 @@ public:
    {
       int mindex;
       float norminv;
-      if(!prevProgram)
+      if(!flags.prehistoricOpenGL && !prevProgram)
          glGetIntegerv(GL_CURRENT_PROGRAM, (GLint *)&prevProgram);
       // while(glGetError());
 
@@ -1229,6 +1229,16 @@ public:
       orderBarrierMask = 0;
 
       updateCount++;
+
+      if(flags.prehistoricOpenGL)
+      {
+         glMatrixMode(GL_PROJECTION);
+         glLoadMatrixf(matrix);
+
+         glMatrixMode(GL_MODELVIEW);
+         glLoadIdentity();
+         glScalef(4,4,4);
+      }
    }
 
    void drawImage( DMImage image, int offsetx, int offsety, int sizex, int sizey, uint32 color )
