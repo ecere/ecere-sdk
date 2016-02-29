@@ -1518,7 +1518,7 @@ class Win32Interface : Interface
 
    void PositionRootWindow(Window window, int x, int y, int w, int h, bool move, bool resize)
    {
-      int flags = SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOCOPYBITS;
+      int flags = SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOSENDCHANGING;
 
       if(!window.systemParent && !fullScreenMode)
       {
