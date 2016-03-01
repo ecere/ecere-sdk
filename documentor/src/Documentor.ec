@@ -692,20 +692,9 @@ static char * ReadDoc(Module module, DocumentationType type, void * object, Docu
          case parameter:
             if((type == functionDoc && fnDoc && fnDoc.parameters) || (type == methodDoc && mdDoc && mdDoc.parameters))
             {
-               Type prev;
-               char * name;
-               for(prev = data; prev; prev = prev.prev);
-               name = ((Type)data).name;
-               if(type == functionDoc)
-               {
-                  itDoc = fnDoc.parameters[name];
-                  if(itDoc) s = itDoc.description;
-               }
-               else if(type == methodDoc)
-               {
-                  itDoc = mdDoc.parameters[name];
-                  if(itDoc) s = itDoc.description;
-               }
+               char * name = ((Type)data).name;
+               itDoc = ((type == functionDoc) ? fnDoc.parameters : mdDoc.parameters)[name] ;
+               if(itDoc) s = itDoc.description;
             }
             break;
       }
