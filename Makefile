@@ -115,7 +115,7 @@ export DOCDIR=$(DESTDIR)$(prefix)/share/ecere/doc
 endif
 
 ifndef MANDIR
-export MANDIR=$(DESTDIR)$(prefix)/share/man/
+export MANDIR=$(DESTDIR)$(prefix)/share/man
 endif
 
 ifndef BINDIR
@@ -632,7 +632,9 @@ ifdef CodeGuard
 endif
 	$(call cp,$(OBJLIBDIR)libecereVanilla$(A),"$(DESTSLIBDIR)/")
 	$(call cp,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
+	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
+	$(call cpr,$(DOC)/ecere,"$(DOCDIR)/ecere")
+	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
 endif
 
 ifdef OSX_TARGET
@@ -660,14 +662,16 @@ endif
 	install $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
+	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
+	$(call cpr,$(DOC)/ecere,"$(DOCDIR)/ecere")
+	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
 	mkdir -p $(MANDIR)/man1
-	cp -pRf share/man/man1/* $(MANDIR)/man1
+	$(call cpr,share/man/man1,$(MANDIR)/man1)
 	mkdir -p $(SAMPLESDIR)
-	cp -pRf samples/* $(SAMPLESDIR)
+	$(call cpr,samples,$(SAMPLESDIR))
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
 	mkdir -p $(EXTRASDIR)
-	cp -pRf extras/* $(EXTRASDIR)
+	$(call cpr,extras,$(EXTRASDIR))
 endif
 
 ifndef OSX_TARGET
@@ -732,7 +736,9 @@ ifdef BSD_HOST
 	install $(INSTALL_FLAGS) -d $(DOCDIR)
 endif
 	install $(INSTALL_FLAGS) -m 644 doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
-	$(call cpr,$(DOC)/*.econ,"$(DOCDIR)/")
+	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
+	$(call cpr,$(DOC)/ecere,"$(DOCDIR)/ecere")
+	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
 	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
 	mkdir -p $(SAMPLESDIR)
