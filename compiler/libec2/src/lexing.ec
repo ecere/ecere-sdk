@@ -39,7 +39,7 @@ public enum TokenType2 : TokenType
    {
       get
       {
-   	  return this == '='|| this == mulAssign || this == divAssign || this == modAssign ||
+        return this == '='|| this == mulAssign || this == divAssign || this == modAssign ||
                this == addAssign || this == subAssign || this == leftAssign || this == rightAssign ||
                this == andAssign || this == xorAssign || this == orAssign;
       }
@@ -94,16 +94,16 @@ public enum TokenType2 : TokenType
             case neOp: Print("!="); break;
             case andOp: Print("&&"); break;
             case orOp: Print("||"); break;
-      	   case mulAssign: Print("*="); break;
-      	   case divAssign: Print("/="); break;
-      	   case modAssign: Print("%="); break;
-      	   case addAssign: Print("+="); break;
-      	   case subAssign: Print("-="); break;
-      	   case leftAssign: Print("<<="); break;
-      	   case rightAssign: Print(">>="); break;
-      	   case andAssign: Print("&="); break;
-      	   case xorAssign: Print("^="); break;
-      	   case orAssign: Print("|="); break;
+            case mulAssign: Print("*="); break;
+            case divAssign: Print("/="); break;
+            case modAssign: Print("%="); break;
+            case addAssign: Print("+="); break;
+            case subAssign: Print("-="); break;
+            case leftAssign: Print("<<="); break;
+            case rightAssign: Print(">>="); break;
+            case andAssign: Print("&="); break;
+            case xorAssign: Print("^="); break;
+            case orAssign: Print("|="); break;
          }
       }
    }
