@@ -31,7 +31,7 @@ class Form1 : Window
                ASTExpression exp = ASTExpression::parse();
                exp.print();
                PrintLn("");
-               PrintLn(exp.Compute());
+               PrintLn(exp.compute());
             }
             */
             delete f;

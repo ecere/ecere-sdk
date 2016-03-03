@@ -162,7 +162,7 @@ public ASTDeclarator GetFuncDecl(ASTDeclarator decl)
 
 public class AST : ASTList<ASTNode>
 {
-   ASTNode ::ParseExternalDeclaration()
+   ASTNode ::parseExternalDeclaration()
    {
       SpecsList specs = null;
       InitDeclList decls = null;
@@ -216,7 +216,7 @@ public:
       AST ast = null;
       while(peekToken())
       {
-         ASTNode n = ParseExternalDeclaration();
+         ASTNode n = parseExternalDeclaration();
          if(n)
          {
             if(!ast) ast = { };

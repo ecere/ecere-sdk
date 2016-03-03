@@ -87,7 +87,7 @@ public class ASTExpression : ASTNode
 public:
    ExpressionType type;
 
-   virtual float Compute();
+   virtual float compute();
 
    bool debugValue;
 
@@ -287,7 +287,7 @@ public class ExpConstant : ASTExpression
       return { constant = CopyString(readToken().text); };
    }
 
-   float Compute()
+   float compute()
    {
       return (float)atof(constant);
    }
@@ -343,24 +343,24 @@ public class ExpOperation : ASTExpression
       return exp;
    }
 
-   float Compute()
+   float compute()
    {
       if(exp1 && exp2)
       {
          switch(op)
          {
-            case '*': return exp1.Compute() * exp2.Compute();
-            case '/': return exp1.Compute() / exp2.Compute();
-            case '-': return exp1.Compute() - exp2.Compute();
-            case '+': return exp1.Compute() + exp2.Compute();
+            case '*': return exp1.compute() * exp2.compute();
+            case '/': return exp1.compute() / exp2.compute();
+            case '-': return exp1.compute() - exp2.compute();
+            case '+': return exp1.compute() + exp2.compute();
          }
       }
       else if(exp2)
       {
          switch(op)
          {
-            case '-': return -exp2.Compute();
-            case '+': return  exp2.Compute();
+            case '-': return -exp2.compute();
+            case '+': return  exp2.compute();
          }
       }
       return 0;
@@ -390,9 +390,9 @@ public:
       Print(")");
    }
 
-   float Compute()
+   float compute()
    {
-      return (list && list.lastIterator.data) ? list.lastIterator.data.Compute() : 0;
+      return (list && list.lastIterator.data) ? list.lastIterator.data.compute() : 0;
    }
 }
 
