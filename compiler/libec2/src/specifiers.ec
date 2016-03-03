@@ -35,7 +35,7 @@ public class SpecsList : ASTList<ASTSpecifier>
       while(true)
       {
          peekToken();
-         if(nextToken.type == STRUCT || nextToken.type == UNION || nextToken.type == CLASS || nextToken.type == ENUM)
+         if(nextToken.type == _struct || nextToken.type == _union || nextToken.type == _class || nextToken.type == _enum)
          {
             ASTSpecifier s = SpecClass::parse();
             if(s)
@@ -53,7 +53,7 @@ public class SpecsList : ASTList<ASTSpecifier>
             if(!token.type.isQualifier)
                gotSpec = true;
          }
-         else if(nextToken.type == IDENTIFIER)
+         else if(nextToken.type == identifier)
          {
             bool isType = false;
             if(isType || !gotSpec)
@@ -75,7 +75,7 @@ public class SpecsList : ASTList<ASTSpecifier>
 
 public class SpecBase : ASTSpecifier
 {
-   TokenType specifier;
+   TokenType2 specifier;
 
    void print()
    {
@@ -98,7 +98,7 @@ public class SpecName : ASTSpecifier
 
 public class SpecClass : ASTSpecifier
 {
-   TokenType type;
+   TokenType2 type;
    ASTIdentifier id;
    SpecsList baseSpecs;
    ClassDefList definitions;
@@ -116,9 +116,9 @@ public class SpecClass : ASTSpecifier
 
    SpecClass ::parse()
    {
-      SpecClass spec = (peekToken().type == ENUM) ? SpecEnum { } : SpecClass { };
+      SpecClass spec = (peekToken().type == _enum) ? SpecEnum { } : SpecClass { };
       spec.type = readToken().type;
-      if(peekToken().type == IDENTIFIER)
+      if(peekToken().type == identifier)
          spec.id = ASTIdentifier::parse();
       if(peekToken().type == ':')
       {
@@ -185,7 +185,7 @@ public class ASTAttribute : ASTNode
 
 public class ASTAttrib : ASTNode
 {
-   TokenType type;
+   TokenType2 type;
    List<ASTAttribute> attribs;
 }
 

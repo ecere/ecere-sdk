@@ -29,13 +29,13 @@ public class ASTStmtOrDecl : ASTNode
       bool isType = false;
 
       peekToken();
-      if(nextToken.type.isSpecifier || (nextToken.type == IDENTIFIER && isType))
+      if(nextToken.type.isSpecifier || (nextToken.type == identifier && isType))
       {
          specs = SpecsList::parse();
          decls = InitDeclList::parse();
          return ASTDeclaration::parse(specs, decls);
       }
-      else if(nextToken.type == IDENTIFIER)
+      else if(nextToken.type == identifier)
       {
          ASTStatement stmt;
          int a = pushAmbiguity();
@@ -68,20 +68,20 @@ public:
    {
       switch(peekToken().type)
       {
-         case ';':      readToken(); return { };
-         case '{':      return StmtCompound::parse();
-         case IF:       return StmtIf::parse();
-         case SWITCH:   return StmtSwitch::parse();
-         case DEFAULT:
-         case CASE:     return StmtCase::parse();
-         case WHILE:    return StmtWhile::parse();
-         case DO:       return StmtDoWhile::parse();
-         case FOR:      return StmtFor::parse();
-         case BREAK:    return StmtBreak::parse();
-         case GOTO:     return StmtGoto::parse();
-         case RETURN:   return StmtReturn::parse();
-         case CONTINUE: return StmtContinue::parse();
-         case IDENTIFIER:
+         case ';':       readToken(); return { };
+         case '{':       return StmtCompound::parse();
+         case _if:       return StmtIf::parse();
+         case _switch:   return StmtSwitch::parse();
+         case _default:
+         case _case:     return StmtCase::parse();
+         case _while:    return StmtWhile::parse();
+         case _do:       return StmtDoWhile::parse();
+         case _for:      return StmtFor::parse();
+         case _break:    return StmtBreak::parse();
+         case _goto:     return StmtGoto::parse();
+         case _return:   return StmtReturn::parse();
+         case _continue: return StmtContinue::parse();
+         case identifier:
          {
             ASTStatement stmt;
             int a = pushAmbiguity();
@@ -173,7 +173,7 @@ public class StmtCompound : ASTStatement
             if(s._class != class(StmtLabeled) && s._class != class(StmtCompound))
                printIndent();
             s.print();
-            if(s._class == class(StmtExpression)) 
+            if(s._class == class(StmtExpression))
                PrintLn("");
          }
       }
@@ -252,7 +252,7 @@ public class StmtIf : ASTStatement
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
          stmt.print();
-         if(stmt._class == class(StmtExpression)) PrintLn(""); 
+         if(stmt._class == class(StmtExpression)) PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
       if(elseStmt)
@@ -262,7 +262,7 @@ public class StmtIf : ASTStatement
          if(elseStmt._class != class(StmtCompound)) { PrintLn(""); indent++; }
          printIndent();
          if(elseStmt._class != class(StmtCompound)) elseStmt.print();
-         if(elseStmt._class == class(StmtExpression)) PrintLn(""); 
+         if(elseStmt._class == class(StmtExpression)) PrintLn("");
          indent--;
       }
    }
@@ -277,7 +277,7 @@ public class StmtIf : ASTStatement
          stmt.exp = ExpList::parse();
          if(peekToken().type == ')') readToken();
          stmt.stmt = ASTStatement::parse();
-         if(peekToken().type == ELSE)
+         if(peekToken().type == _else)
          {
             readToken();
             stmt.elseStmt = ASTStatement::parse();
@@ -366,14 +366,14 @@ public class StmtCase : ASTStatement
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
          stmt.print();
-         if(stmt._class == class(StmtExpression)) PrintLn(""); 
+         if(stmt._class == class(StmtExpression)) PrintLn("");
       }
    }
 
    StmtCase ::parse()
    {
       StmtCase stmt { };
-      if(readToken().type == CASE)
+      if(readToken().type == _case)
          stmt.exp = ExpConditional::parse();
       if(peekToken().type == ':')
       {
@@ -414,7 +414,7 @@ public class StmtDoWhile : ASTStatement
       StmtDoWhile stmt { };
       readToken();
       stmt.stmt = ASTStatement::parse();
-      if(peekToken().type == WHILE)
+      if(peekToken().type == _while)
       {
          readToken();
          if(peekToken().type == '(')
@@ -452,13 +452,13 @@ public class StmtFor : ASTStatement
          increment.print();
       }
       PrintLn(")");
-      
+
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
          stmt.print();
-         if(stmt._class == class(StmtExpression)) PrintLn(""); 
+         if(stmt._class == class(StmtExpression)) PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
    }
