@@ -40,7 +40,7 @@ public:
          decl = DeclPointer::parse();
       else
       {
-         if(peekToken().type == IDENTIFIER)
+         if(peekToken().type == identifier)
             decl = DeclIdentifier::parse();
          else if(nextToken.type == '(')
             decl = DeclBrackets::parse();
