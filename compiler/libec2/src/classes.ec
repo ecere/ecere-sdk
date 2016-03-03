@@ -15,7 +15,7 @@ public:
    ASTMemberInit ::parse()
    {
       ASTMemberInit init { };
-      if(peekToken().type == IDENTIFIER)
+      if(peekToken().type == identifier)
       {
          int a = pushAmbiguity();
          while(true)
@@ -117,7 +117,7 @@ public:
       if(nextToken.type == '}')
          return null;
 
-      if(nextToken.type == IDENTIFIER)
+      if(nextToken.type == identifier)
          a = pushAmbiguity();
 
       specs = SpecsList::parse();
@@ -182,7 +182,7 @@ public:
    Class _class;
    //List attached;    // For IDE
    AccessMode declMode;
-   
+
    // COMPILING DATA
    Type type;
    Symbol propSet;
