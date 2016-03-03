@@ -101,7 +101,7 @@ again:
 
    for(c = 0; c < 10; c++)
       PrintLn(c);
-   
+
    if(a) if(b) s; else s2;
 
    if(a == 4)

@@ -18,7 +18,7 @@ public class ASTList : ASTNode
    IteratorPointer GetNext(IteratorPointer pointer)       { return list ? list.GetNext(pointer) : 0; }
    bool SetData(IteratorPointer pointer, D data)          { return list ? list.SetData(pointer, (ASTNode)data) : 0; }
    D GetData(IteratorPointer pointer)                     { return list ? list.GetData(pointer) : (D)0; }
-   IteratorPointer GetAtPosition(I pos, bool create)      { return list ? list.GetAtPosition((int)pos, create) : 0; }
+   IteratorPointer GetAtPosition(I pos, bool create, bool * justAdded)      { return list ? list.GetAtPosition((int)pos, create, justAdded) : 0; }
    IteratorPointer Insert(Link after, T value)            { return list ? list.Insert(after, (void *)value) : 0; }
    IteratorPointer Add(T value)                           { return list ? list.Add((void *)value) : 0; }
    void Remove(IteratorPointer it)                        { if(list) list.Remove(it); }

@@ -1,17 +1,9 @@
 public import "ecere"
 public import "ec"
 
-public enum TokenType
+public enum TokenType2 : TokenType
 {
-   IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261,PTR_OP = 262,INC_OP = 263,DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270,
-   AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281,
-   OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295,
-   UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309,
-   SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323,
-   SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336,
-   TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347,
-   CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356,
-   NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366;
+   dummy;
 
    property char { }
 
@@ -19,11 +11,11 @@ public enum TokenType
    {
       get
       {
-         return isQualifier || this == CHAR || this == SHORT || this == INT || this == UINT || this == INT64 || this == LONG || this == SIGNED ||
-                this == UNSIGNED || this == FLOAT || this == DOUBLE || this == VOID ||
-                this == VALIST || this == THISCLASS || this == TYPED_OBJECT || this == ANY_OBJECT ||
-                this == TYPEDEF || this == STRUCT || this == CLASS || this == UNION || this == ENUM ||
-                this == TYPEOF || this == SUBCLASS;
+         return isQualifier || this == _char || this == _short || this == _int || this == _uint || this == _int64 || this == _long || this == _signed ||
+                this == _unsigned || this == _float || this == _double || this == _void ||
+                this == _valist || this == thisClass || this == typedObject || this == anyObject ||
+                this == _typedef || this == _struct || this == _class || this == _union || this == _enum ||
+                this == _typeof || this == subClass;
       }
    }
 
@@ -31,7 +23,7 @@ public enum TokenType
    {
       get
       {
-         return this == EXTERN || this == STATIC || this == AUTO || this == REGISTER || this == CONST || this == VOLATILE;
+         return this == _extern || this == _static || this == _auto || this == _register || this == _const || this == _volatile;
       }
    }
 
@@ -39,7 +31,7 @@ public enum TokenType
    {
       get
       {
-         return this == '&' || this == '*' || this == '+' || this == '-' || this == '~' || this == '!' || this == DELETE || this == _INCREF;
+         return this == '&' || this == '*' || this == '+' || this == '-' || this == '~' || this == '!' || this == _delete || this == _incref;
       }
    }
 
@@ -47,9 +39,9 @@ public enum TokenType
    {
       get
       {
-   	  return this == '='|| this == MUL_ASSIGN || this == DIV_ASSIGN || this == MOD_ASSIGN ||
-               this == ADD_ASSIGN || this == SUB_ASSIGN || this == LEFT_ASSIGN || this == RIGHT_ASSIGN ||
-               this == AND_ASSIGN || this == XOR_ASSIGN || this == OR_ASSIGN;
+   	  return this == '='|| this == mulAssign || this == divAssign || this == modAssign ||
+               this == addAssign || this == subAssign || this == leftAssign || this == rightAssign ||
+               this == andAssign || this == xorAssign || this == orAssign;
       }
    }
 
@@ -61,57 +53,57 @@ public enum TokenType
       {
          switch(this)
          {
-            case VOID: Print("void"); break;
-            case CHAR: Print("char"); break;
-            case SHORT: Print("short"); break;
-            case INT: Print("int"); break;
-            case LONG: Print("long"); break;
-            case INT64: Print("int64"); break;
-            case UNSIGNED: Print("unsigned"); break;
-            case SIGNED: Print("signed"); break;
-            case FLOAT: Print("float"); break;
-            case DOUBLE: Print("double"); break;
-            case TYPEDEF: Print("typedef"); break;
-            case EXTERN: Print("extern"); break;
-            case STATIC: Print("static"); break;
-            case AUTO: Print("auto"); break;
-            case REGISTER: Print("register"); break;
-            case UINT: Print("uint"); break;
-            case CONST: Print("const"); break;
-            case VOLATILE: Print("volatile"); break;
-            case VALIST: Print("va_list"); break;
-            case THISCLASS: Print("thisclass"); break;
-            case TYPED_OBJECT: Print("typed_Object"); break;
-            case ANY_OBJECT: Print("any_object"); break;
-            case STRUCT: Print("struct"); break;
-            case UNION: Print("union"); break;
-            case ENUM: Print("enum"); break;
-            case CLASS: Print("class"); break;
+            case _void: Print("void"); break;
+            case _char: Print("char"); break;
+            case _short: Print("short"); break;
+            case _int: Print("int"); break;
+            case _long: Print("long"); break;
+            case _int64: Print("int64"); break;
+            case _unsigned: Print("unsigned"); break;
+            case _signed: Print("signed"); break;
+            case _float: Print("float"); break;
+            case _double: Print("double"); break;
+            case _typedef: Print("typedef"); break;
+            case _extern: Print("extern"); break;
+            case _static: Print("static"); break;
+            case _auto: Print("auto"); break;
+            case _register: Print("register"); break;
+            case _uint: Print("uint"); break;
+            case _const: Print("const"); break;
+            case _volatile: Print("volatile"); break;
+            case _valist: Print("va_list"); break;
+            case thisClass: Print("thisclass"); break;
+            case typedObject: Print("typed_Object"); break;
+            case anyObject: Print("any_object"); break;
+            case _struct: Print("struct"); break;
+            case _union: Print("union"); break;
+            case _enum: Print("enum"); break;
+            case _class: Print("class"); break;
 
-            case TYPEOF: Print("typeof"); break;
-            case SUBCLASS: Print("subclass"); break;
+            case _typeof: Print("typeof"); break;
+            case subClass: Print("subclass"); break;
 
-            case INC_OP: Print("++"); break;
-            case DEC_OP: Print("--"); break;
-            case SIZEOF: Print("sizeof "); break;
-            case LEFT_OP: Print("<<"); break;
-            case RIGHT_OP: Print(">>"); break;
-            case LE_OP: Print("<="); break;
-            case GE_OP: Print(">="); break;
-            case EQ_OP: Print("=="); break;
-            case NE_OP: Print("!="); break;
-            case AND_OP: Print("&&"); break;
-            case OR_OP: Print("||"); break;
-      	   case MUL_ASSIGN: Print("*="); break;
-      	   case DIV_ASSIGN: Print("/="); break;
-      	   case MOD_ASSIGN: Print("%="); break;
-      	   case ADD_ASSIGN: Print("+="); break;
-      	   case SUB_ASSIGN: Print("-="); break;
-      	   case LEFT_ASSIGN: Print("<<="); break;
-      	   case RIGHT_ASSIGN: Print(">>="); break;
-      	   case AND_ASSIGN: Print("&="); break;
-      	   case XOR_ASSIGN: Print("^="); break;
-      	   case OR_ASSIGN: Print("|="); break;
+            case incOp: Print("++"); break;
+            case decOp: Print("--"); break;
+            case sizeOf: Print("sizeof "); break;
+            case leftOp: Print("<<"); break;
+            case rightOp: Print(">>"); break;
+            case leOp: Print("<="); break;
+            case geOp: Print(">="); break;
+            case eqOp: Print("=="); break;
+            case neOp: Print("!="); break;
+            case andOp: Print("&&"); break;
+            case orOp: Print("||"); break;
+      	   case mulAssign: Print("*="); break;
+      	   case divAssign: Print("/="); break;
+      	   case modAssign: Print("%="); break;
+      	   case addAssign: Print("+="); break;
+      	   case subAssign: Print("-="); break;
+      	   case leftAssign: Print("<<="); break;
+      	   case rightAssign: Print(">>="); break;
+      	   case andAssign: Print("&="); break;
+      	   case xorAssign: Print("^="); break;
+      	   case orAssign: Print("|="); break;
          }
       }
    }
@@ -119,7 +111,7 @@ public enum TokenType
 
 class Token
 {
-   TokenType type;
+   TokenType2 type;
    String text;
    ~Token()
    {
@@ -157,14 +149,16 @@ Token peekToken()
       }
       else
       {
-         nextToken = { _refCount = 1 };
-         nextToken.type = (TokenType)LexEc();
-         nextToken.text = CopyString(GetYYText());
-         if(ambiguous)
+         TokenType2 type = (TokenType2)LexEc();
+         if(type)
          {
-            stackPos++;
-            tokenStack.Add(nextToken);
-            incref nextToken;
+            nextToken = { _refCount = 1, type = type, text = CopyString(GetYYText()) };
+            if(ambiguous)
+            {
+               stackPos++;
+               tokenStack.Add(nextToken);
+               incref nextToken;
+            }
          }
       }
    }
