@@ -3,23 +3,23 @@ import "astNode"
 import "specifiers"
 import "declarators"
 
-static TokenType opPrec[][4] =
+static TokenType2 opPrec[][4] =
 {
    { '*', '/', '%' },
    { '+', '-' },
-   { LEFT_OP, RIGHT_OP },
-   { '<', '>', LE_OP, GE_OP },
-   { EQ_OP, NE_OP },
+   { leftOp, rightOp },
+   { '<', '>', leOp, geOp },
+   { eqOp, neOp },
    { '&' },
    { '^' },
    { '|' },
-   { AND_OP },
-   { OR_OP }
+   { andOp },
+   { orOp }
 };
 
 static define numPrec = sizeof(opPrec) / sizeof(opPrec[0]);
 
-static bool isPrecedence(TokenType this, int l)
+static bool isPrecedence(TokenType2 this, int l)
 {
    // TO OPTIMIZE: return opPrec[this] == l
    if(this)
@@ -27,7 +27,7 @@ static bool isPrecedence(TokenType this, int l)
       int o;
       for(o = 0; o < sizeof(opPrec[0]) / sizeof(opPrec[0][0]); o++)
       {
-         TokenType op = opPrec[l][o];
+         TokenType2 op = opPrec[l][o];
          if(this == op)
             return true;
          else if(!op)
@@ -180,7 +180,7 @@ simple_primary_expression:
    | CLASS '(' declaration_specifiers abstract_declarator ')' { $$ = MkExpClass($3, $4); $$.loc = @$; }
    | CLASS '(' identifier ')' { $$ = MkExpClass(MkListOne(MkSpecifierName($3.string)), null); FreeIdentifier($3); $$.loc = @$; }
    | VAARG '(' assignment_expression ',' type_name ')' { $$ = MkExpVaArg($3, $5); $$.loc = @$; }
-   
+
    | CLASS_DATA '(' identifier ')' { $$ = MkExpClassData($3); $$.loc = @$; }
    | database_open
    | dbfield
@@ -190,9 +190,9 @@ simple_primary_expression:
    | '[' argument_expression_list ']' { $$ = MkExpArray($2); $$.loc = @$; }
    ;
 */
-   if(peekToken().type == CONSTANT)
+   if(peekToken().type == constant)
       return ExpConstant::parse();
-   else if(nextToken.type == IDENTIFIER)
+   else if(nextToken.type == identifier)
    {
       ExpIdentifier exp = ExpIdentifier::parse();
       if(peekToken().type == '{')
@@ -203,7 +203,7 @@ simple_primary_expression:
       }
       return exp;
    }
-   else if(nextToken.type == STRING_LITERAL)
+   else if(nextToken.type == stringLiteral)
       return ExpString::parse();
    else if(nextToken.type == '{')
       return ExpInstance::parse(null, null);
@@ -237,9 +237,9 @@ static ASTExpression parsePostfixExpression()
          exp = ExpCall::parse(exp);
       else if(nextToken.type == '.')
          exp = ExpMember::parse(exp);
-      else if(nextToken.type == PTR_OP)
+      else if(nextToken.type == ptrOp)
          exp = ExpPointer::parse(exp);
-      else if(nextToken.type == INC_OP || nextToken.type == DEC_OP)
+      else if(nextToken.type == incOp || nextToken.type == decOp)
       {
          readToken();
          exp = ExpOperation { exp1 = exp, op = token.type };
@@ -253,7 +253,7 @@ static ASTExpression parsePostfixExpression()
 static ASTExpression parseUnaryExpression()
 {
    peekToken();
-   if(nextToken.type == INC_OP || nextToken.type == DEC_OP)
+   if(nextToken.type == incOp || nextToken.type == decOp)
    {
       readToken();
       return ExpOperation { op = token.type, exp2 = parseUnaryExpression() };
@@ -325,7 +325,7 @@ public class ExpIdentifier : ASTExpression
 
 public class ExpOperation : ASTExpression
 {
-   TokenType op;
+   TokenType2 op;
    ASTExpression exp1, exp2;
 
    void print()

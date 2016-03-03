@@ -81,7 +81,7 @@ public:
    {
       // PrintLn("");
       printIndent();
-      if(specifiers) 
+      if(specifiers)
       {
          for(s : specifiers)
             s.print();
@@ -164,25 +164,25 @@ public class AST : ASTList<ASTNode>
 {
    ASTNode ::ParseExternalDeclaration()
    {
-      SpecsList specs = null; 
+      SpecsList specs = null;
       InitDeclList decls = null;
 
       peekToken();
-      if(nextToken.type == IMPORT)
+      if(nextToken.type == _import)
       {
          ASTImport astImport { };
          readToken();
          peekToken();
-         if(nextToken.type == STATIC)
+         if(nextToken.type == _static)
          {
             readToken();
          }
-         else if(nextToken.type == IDENTIFIER)
+         else if(nextToken.type == identifier)
          {
             readToken();
          }
          peekToken();
-         if(nextToken.type == STRING_LITERAL)
+         if(nextToken.type == stringLiteral)
          {
             readToken();
             astImport.importString = CopyString(token.text);
@@ -214,7 +214,7 @@ public:
    AST ::parse()
    {
       AST ast = null;
-      while(peekToken().type)
+      while(peekToken())
       {
          ASTNode n = ParseExternalDeclaration();
          if(n)
