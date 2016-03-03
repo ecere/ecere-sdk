@@ -527,6 +527,206 @@ void AddComponents(Module module, bool isDll)
    }
 }
 
+void AddClassView()
+{
+   DataRow row = mainForm.browser.AddRow();
+   row.SetData(null, APIPageNameSpace { name = "Class Hierarchy View", nameSpace = &componentsApp.publicNameSpace });
+   AddCVModules(componentsApp, row);
+}
+
+Map<String, bool> cvmodulesAdded { };
+void AddCVModules(Module module, DataRow parentRow)
+{
+   SubModule m;
+   for(m = module.modules.first; m; m = m.next)
+   {
+      /*if(!strcmp(m.module.name, "ec2"))
+         PrintLn(m.module.name);*/
+      //if(m.importMode == publicAccess/* || !isDll*/)
+         AddCVModules(m.module, parentRow);
+   }
+
+   if(module.name && !cvmodulesAdded[module.name]/* && strcmp(module.name, "ecereCOM")*/)
+   {
+      DataRow row = parentRow.AddRow();
+      cvmodulesAdded[module.name] = true;
+      row.SetData(null, APIPageNameSpace { name = module.name, module = module, nameSpace = &module.publicNameSpace });
+      row.tag = (int64)module;
+      //AddNameSpace(row, module, module.publicNameSpace, null /*module.application.systemNameSpace*/, "", !isDll);
+      //if(!isDll)
+      //   AddNameSpace(row, module, module.privateNameSpace, null /*module.application.systemNameSpace*/, "", !isDll);
+      AddCVNamespace(row, module, module.publicNameSpace, null /*module.application.systemNameSpace*/, ""/*, !isDll*/);
+   }
+}
+
+static void AddCVNamespace(DataRow parentRow, Module module, NameSpace mainNameSpace, NameSpace comNameSpace, const char * parentName/*, bool showPrivate*/)
+{
+   char nsName[1024];
+   NameSpace * ns;
+   NameSpace * nameSpace = mainNameSpace;
+   DataRow row;
+   //DataRow classesRow = null;
+   DataRow functionsRow = null, definesRow = null;
+   APIPage page;
+
+   strcpy(nsName, parentName ? parentName : "");
+   if(nameSpace->name)
+   {
+      if(nsName[0])
+         strcat(nsName, "::");
+      strcat(nsName, nameSpace->name);
+   }
+
+   if(nsName[0])
+   {
+      row = parentRow.AddRow();
+      row.SetData(null, (page = APIPageNameSpace { nameSpace->name, module = module, nameSpace = nameSpace/*, showPrivate = showPrivate*/ }));
+      row.tag = (int64)nameSpace;
+      row.icon = mainForm.icons[typeNameSpace];
+   }
+   else
+   {
+      // "Global NameSpace"
+      row = parentRow;
+      page = parentRow.GetData(null);
+   }
+
+   for(ns = (NameSpace *)mainNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
+   {
+      NameSpace * comNS = (comNameSpace != null) ? (NameSpace *)comNameSpace.nameSpaces.FindString(ns->name) : null;
+      AddCVNamespace(row, module, ns, comNS, nsName/*, showPrivate*/);
+   }
+   if(comNameSpace != null)
+   {
+      for(ns = (NameSpace *)comNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
+      {
+         if(!mainNameSpace.nameSpaces.FindString(ns->name))
+         {
+            AddCVNamespace(row, module, ns, null, nsName/*, showPrivate*/);
+         }
+      }
+   }
+
+   if(mainNameSpace.classes.first || (comNameSpace && comNameSpace.classes.first))
+   {
+      for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
+      {
+         AddCVNSClasses(module, *nameSpace, null, row);
+      }
+   }
+
+   if(mainNameSpace.functions.first || (comNameSpace && comNameSpace.functions.first))
+   {
+      for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
+      {
+         if(nameSpace->functions.first)
+         {
+            BTNamedLink link;
+            GlobalFunction fn;
+            for(link = (BTNamedLink)nameSpace->functions.first; link; link = (BTNamedLink)((BTNode)link).next)
+            {
+               fn = link.data;
+               if(!module || fn.module == module || (!fn.module.name && !strcmp(module.name, "ecere")))
+               {
+                  const char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
+                  DataRow fnRow;
+                  if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
+                  fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int64)fn;
+               }
+            }
+         }
+      }
+   }
+
+   if(mainNameSpace.defines.first || (comNameSpace && comNameSpace.defines.first))
+   {
+      for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
+      {
+         if(nameSpace->defines.first)
+         {
+            BTNamedLink link;
+            Definition def;
+            for(link = (BTNamedLink)nameSpace->defines.first; link; link = (BTNamedLink)((BTNode)link).next)
+            {
+               def = link.data;
+               //if(def.module == module)
+               {
+                  char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
+                  DataRow defRow;
+                  if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
+                  defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int64)def;
+               }
+            }
+         }
+      }
+   }
+}
+
+void AddCVNSClasses(Module module, NameSpace nameSpace, Class base, DataRow parentRow)
+{
+   if(nameSpace.classes.first)
+   {
+      Class cl;
+      Class _enum = eSystem_FindClass(module, "enum");
+      Class _struct = eSystem_FindClass(module, "struct");
+      Class _class = eSystem_FindClass(module, "class");
+      Class _instance = eSystem_FindClass(module, "Instance");
+      BTNamedLink link;
+      for(link = (BTNamedLink)nameSpace.classes.first; link; link = (BTNamedLink)((BTNode)link).next)
+      {
+         cl = link.data;
+         if(!cl.templateClass && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
+         {
+            //if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
+            //AddClass(classesRow, module, cl, nsName, showPrivate);
+            if(cl.base == base || (!base && (cl.base == _enum || cl.base == _struct ||
+                  cl.base == _class || cl.base == _instance ||
+                  !(cl.base.module == module && cl.base.nameSpace == nameSpace))) ||
+                  (cl.base.templateClass && cl.base.templateClass == base))
+            {
+               DataRow row = parentRow.AddRow();
+               row.SetData(null, /*(page = */APIPageClass { cl.name, cl = cl/*, showPrivate = showPrivate*/ }/*)*/);
+               row.tag = (int64)cl;
+               row.collapsed = false;
+               row.icon = (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? mainForm.icons[typeDataType] : mainForm.icons[typeClass];
+               AddCVNSClasses(module, nameSpace, cl, row);
+            }
+         }
+      }
+   }
+}
+
+void AddCVClasses(Module module, Class base, DataRow parentRow)
+{
+   Class cl;
+   Class _enum = eSystem_FindClass(module, "enum");
+   Class _struct = eSystem_FindClass(module, "struct");
+   Class _class = eSystem_FindClass(module, "class");
+   Class _instance = eSystem_FindClass(module, "Instance");
+   Map<String, Class> sort { };
+   for(cl = module.classes.first; cl; cl = cl.next)
+   {
+      if(cl.base == base || (!base && (cl.base == _enum || cl.base == _struct || cl.base == _class || cl.base == _instance || cl.base.module != module)))
+         sort[cl.name] = cl;
+      /*else
+      {
+         if(!strcmp(module.name, "ec2"))
+            PrintLn("base is: ", cl.base.name);
+      }*/
+   }
+   for(cl : sort)
+   {
+      DataRow row = parentRow.AddRow();
+      row.SetData(null, /*(page = */APIPageClass { cl.name, cl = cl/*, showPrivate = showPrivate*/ }/*)*/);
+      row.tag = (int64)cl;
+      row.collapsed = true;
+      row.icon = (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? mainForm.icons[typeDataType] : mainForm.icons[typeClass];
+      AddCVClasses(module, cl, row);
+   }
+   sort.RemoveAll();
+   delete sort;
+}
+
 class APIPage
 {
 public:
@@ -2682,6 +2882,7 @@ class MainForm : Window
 
       history.size = 0;
       modulesAdded.RemoveAll();
+      cvmodulesAdded.RemoveAll();
 
       FreeContext(globalContext);
       FreeExcludedSymbols(excludedSymbols);
@@ -2758,6 +2959,8 @@ class MainForm : Window
       mainForm.browser.SelectRow(mainForm.browser.FindSubRow((int64)module));
 
       SetSymbolsDir(null);
+
+      AddClassView();
    }
 
    AddressBar addressBar { this, borderStyle = bevel, anchor = Anchor { top = 0, left = 0, right = 0 }, size.h = 26, hotKey = altD };
@@ -2851,7 +3054,8 @@ class MainForm : Window
 
    bool OnPostCreate()
    {
-      mainForm.OpenModule((((GuiApplication)__thisModule).argc > 1) ? ((GuiApplication)__thisModule).argv[1] : "ecere");
+      //mainForm.OpenModule((((GuiApplication)__thisModule).argc > 1) ? ((GuiApplication)__thisModule).argv[1] : "ecere");
+      mainForm.OpenModule("ec2");
       //mainForm.OpenModule("ec");
       //mainForm.OpenModule("c:/games/chess/debug/chess.sym");
       //mainForm.OpenModule("c:/ide/Objects.IDE.Win32.Debug/ide.sym");
