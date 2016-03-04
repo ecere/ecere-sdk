@@ -136,6 +136,7 @@ public:
 
 public class ExpList : ASTList<ASTExpression>
 {
+public:
    ExpList ::parse()
    {
       return (ExpList)ASTList::parse(class(ExpList), ASTExpression::parse, ',');
@@ -145,6 +146,7 @@ public class ExpList : ASTList<ASTExpression>
 /*
 public class ExpCompound : ASTExpression
 {
+public:
    ASTStatement compound;
 }
 */
@@ -275,6 +277,7 @@ static ASTExpression parseUnaryExpression()
 
 public class ExpConstant : ASTExpression
 {
+public:
    String constant;
 
    void print()
@@ -295,6 +298,7 @@ public class ExpConstant : ASTExpression
 
 public class ExpString : ASTExpression
 {
+public:
    String string;
 
    void print()
@@ -310,6 +314,7 @@ public class ExpString : ASTExpression
 
 public class ExpIdentifier : ASTExpression
 {
+public:
    ASTIdentifier identifier;
 
    void print()
@@ -325,6 +330,7 @@ public class ExpIdentifier : ASTExpression
 
 public class ExpOperation : ASTExpression
 {
+public:
    TokenType2 op;
    ASTExpression exp1, exp2;
 
@@ -369,6 +375,7 @@ public class ExpOperation : ASTExpression
 
 public class ExpAssignment : ExpOperation
 {
+public:
    ASTExpression ::parse()
    {
       ASTExpression exp = ExpConditional::parse();
@@ -428,6 +435,7 @@ public:
 
 public class ExpIndex : ASTExpression
 {
+public:
    ASTExpression exp;
    ExpList index;
 
@@ -452,6 +460,7 @@ public class ExpIndex : ASTExpression
 
 public class ExpMember : ASTExpression
 {
+public:
    ASTExpression exp;
    ASTIdentifier member;
    // MemberType memberType;
@@ -474,6 +483,7 @@ public class ExpMember : ASTExpression
 
 public class ExpPointer : ExpMember
 {
+public:
    void print()
    {
       if(exp) exp.print();
@@ -491,6 +501,7 @@ public class ExpPointer : ExpMember
 
 public class ExpCall : ASTExpression
 {
+public:
    ASTExpression exp;
    ExpList arguments;
    // Location argLoc;
@@ -516,6 +527,7 @@ public class ExpCall : ASTExpression
 
 public class ExpCast : ASTExpression
 {
+public:
    ASTTypeName typeName;
    ASTExpression exp;
 
@@ -529,6 +541,7 @@ public class ExpCast : ASTExpression
 
 public class ExpInstance : ASTExpression
 {
+public:
    ASTInstantiation instance;
 
    ExpInstance ::parse(SpecsList specs, InitDeclList decls)
@@ -544,6 +557,7 @@ public class ExpInstance : ASTExpression
 /*
 public class ExpSizeOf : ASTExpression
 {
+public:
    ASTTypeName typeName;
 
    ExpSizeOf ::parse()
@@ -554,6 +568,7 @@ public class ExpSizeOf : ASTExpression
 
 public class ExpAlignOf : ASTExpression
 {
+public:
    ASTTypeName typeName;
 
    ExpAlignOf ::parse()
@@ -612,6 +627,7 @@ public class ExpAlignOf : ASTExpression
 
 public class InstanceInit : ASTNode
 {
+public:
    InstanceInit ::parse()
    {
       int a = pushAmbiguity();
@@ -635,6 +651,7 @@ public class InstanceInit : ASTNode
 
 public class InstInitMember : InstanceInit
 {
+public:
    MemberInitList members;
 
    InstInitMember ::parse()
@@ -652,6 +669,7 @@ public class InstInitMember : InstanceInit
 
 public class InstInitFunction : InstanceInit
 {
+public:
    ASTClassFunction function;
 
    InstInitFunction ::parse(SpecsList specs, InitDeclList decls)
@@ -667,6 +685,7 @@ public class InstInitFunction : InstanceInit
 
 public class InstInitList : ASTList<InstanceInit>
 {
+public:
    InstInitList ::parse()
    {
       return (InstInitList)ASTList::parse(class(InstInitList), InstanceInit::parse, 0);
