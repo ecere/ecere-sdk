@@ -39,6 +39,7 @@ public:
 
 public class DeclarationInstance : ASTDeclaration
 {
+public:
    ASTInstantiation inst;
 
    DeclarationInstance ::parse(SpecsList specs, InitDeclList decls)
@@ -65,6 +66,7 @@ public class DeclarationInstance : ASTDeclaration
 
 public class DeclarationDefine : ASTDeclaration
 {
+public:
    ASTIdentifier id;
    ASTExpression exp;
 }
@@ -162,6 +164,7 @@ public ASTDeclarator GetFuncDecl(ASTDeclarator decl)
 
 public class AST : ASTList<ASTNode>
 {
+public:
    ASTNode ::parseExternalDeclaration()
    {
       SpecsList specs = null;
