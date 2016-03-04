@@ -111,6 +111,9 @@ public enum TokenType2 : TokenType
 
 class Token
 {
+public:
+   property TokenType2 type { get { return this ? type : 0; } };
+private:
    TokenType2 type;
    String text;
    ~Token()
