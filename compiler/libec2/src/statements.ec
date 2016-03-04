@@ -12,6 +12,7 @@ public:
 /*
 class AsmField : struct
 {
+public:
    AsmField prev, next;
    Location loc;
    char * command;
@@ -22,6 +23,7 @@ class AsmField : struct
 // *** Statements ***
 public class ASTStmtOrDecl : ASTNode
 {
+public:
    ASTStmtOrDecl ::parse()
    {
       SpecsList specs = null;
@@ -105,6 +107,7 @@ public:
 
 public class StmtExpression : ASTStatement
 {
+public:
    ExpList expressions;
 
    void print()
@@ -143,6 +146,7 @@ void printIndent()
 
 public class StmtCompound : ASTStatement
 {
+public:
    List<ASTDeclaration> declarations;
    List<ASTStatement> statements;
    // Context context;
@@ -238,6 +242,7 @@ public class StmtCompound : ASTStatement
 
 public class StmtIf : ASTStatement
 {
+public:
    ExpList exp;
    ASTStatement stmt;
    ASTStatement elseStmt;
@@ -291,6 +296,7 @@ int caseIndent = -1;
 
 public class StmtSwitch : ASTStatement
 {
+public:
    ExpList exp;
    ASTStatement stmt;
 
@@ -326,6 +332,7 @@ public class StmtSwitch : ASTStatement
 
 public class StmtLabeled : ASTStatement
 {
+public:
    ASTIdentifier id;
    ASTStatement stmt;
 
@@ -348,6 +355,7 @@ public class StmtLabeled : ASTStatement
 
 public class StmtCase : ASTStatement
 {
+public:
    ASTExpression exp;
    ASTStatement stmt;
 
@@ -386,6 +394,7 @@ public class StmtCase : ASTStatement
 
 public class StmtWhile : ASTStatement
 {
+public:
    ExpList exp;
    ASTStatement stmt;
 
@@ -406,6 +415,7 @@ public class StmtWhile : ASTStatement
 
 public class StmtDoWhile : ASTStatement
 {
+public:
    ExpList exp;
    ASTStatement stmt;
 
@@ -431,6 +441,7 @@ public class StmtDoWhile : ASTStatement
 
 public class StmtFor : ASTStatement
 {
+public:
    ASTStatement init;
    ASTStatement check;
    ExpList increment;
@@ -485,6 +496,7 @@ public class StmtFor : ASTStatement
 
 public class StmtBreak : ASTStatement
 {
+public:
    void print()
    {
       PrintLn("break;");
@@ -500,6 +512,7 @@ public class StmtBreak : ASTStatement
 
 public class StmtContinue : ASTStatement
 {
+public:
    void print()
    {
       PrintLn("continue;");
@@ -515,6 +528,7 @@ public class StmtContinue : ASTStatement
 
 public class StmtReturn : ASTStatement
 {
+public:
    ExpList exp;
    void print()
    {
@@ -539,6 +553,7 @@ public class StmtReturn : ASTStatement
 
 public class StmtGoto : ASTStatement
 {
+public:
    ASTIdentifier id;
 
    void print()
@@ -560,6 +575,7 @@ public class StmtGoto : ASTStatement
 
 public class StmtAsm : ASTStatement
 {
+public:
    ASTSpecifier spec;
    String statements;
    List<String> inputFields;
@@ -569,24 +585,28 @@ public class StmtAsm : ASTStatement
 
 public class StmtWatch : ASTStatement
 {
+public:
    ASTExpression watcher, object;
    List<ASTPropertyWatch> watches;
 }
 
 public class StmtFireWatch : ASTStatement
 {
+public:
    ASTExpression watcher, object;
    List<ASTIdentifiers> watches;
 }
 
 public class StmtStopWatching : ASTStatement
 {
+public:
    ASTExpression watcher, object;
    List<ASTIdentifiers> watches;
 }
 
 public class StmtForEach : ASTStatement
 {
+public:
    Identifier id;
    ExpList exp;
    ExpList filter;
@@ -595,6 +615,7 @@ public class StmtForEach : ASTStatement
 
 public class StmtDecl : ASTStatement
 {
+public:
    ASTDeclaration decl;
 
    void print()

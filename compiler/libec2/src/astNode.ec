@@ -10,6 +10,7 @@ public:
 
 public class ASTList : ASTNode
 {
+public:
    List<ASTNode> list { };
 
    IteratorPointer GetFirst()                             { return list ? list.GetFirst() : 0; }
