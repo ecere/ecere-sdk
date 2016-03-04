@@ -2,6 +2,7 @@ import "expressions"
 
 public class ASTPointer : ASTNode
 {
+public:
    SpecsList qualifiers;
    ASTPointer pointer;
 
@@ -63,6 +64,7 @@ public:
 
 public class TypeNameList : ASTList<ASTTypeName>
 {
+public:
    TypeNameList ::parse()
    {
       TypeNameList list = null;
@@ -125,6 +127,7 @@ public:
 
 public class DeclIdentifier : ASTDeclarator
 {
+public:
    ASTIdentifier identifier;
 
    void print()
@@ -140,6 +143,7 @@ public class DeclIdentifier : ASTDeclarator
 
 public class DeclBrackets : ASTDeclarator
 {
+public:
    void print()
    {
       Print("(");
@@ -163,6 +167,7 @@ public class DeclBrackets : ASTDeclarator
 
 public class DeclArray : ASTDeclarator
 {
+public:
    ASTExpression exp;
    // ASTSpecifier enumClass;
 
@@ -186,6 +191,7 @@ public class DeclArray : ASTDeclarator
 
 public class DeclPointer : ASTDeclarator
 {
+public:
    ASTPointer pointer;
 
    void print()
@@ -202,6 +208,7 @@ public class DeclPointer : ASTDeclarator
 
 public class DeclStruct : ASTDeclarator
 {
+public:
    ASTExpression exp;
    ASTExpression posExp;
    ASTAttrib attrib;
@@ -214,11 +221,13 @@ public class DeclStruct : ASTDeclarator
 
 public class DeclExtended : ASTDeclarator
 {
+public:
    ExtDecl extended;
 }
 
 public class ASTInitializer : ASTNode
 {
+public:
    // bool isConstant;
    ASTInitializer ::parse()
    {
@@ -237,6 +246,7 @@ public class ASTInitializer : ASTNode
 
 public class InitExp : ASTInitializer
 {
+public:
    ASTExpression exp;
 
    void print()
@@ -253,6 +263,7 @@ public class InitExp : ASTInitializer
 
 public class InitList : ASTInitializer
 {
+public:
    ASTList<ASTInitializer> list;
 
    void print()
@@ -274,6 +285,7 @@ public class InitList : ASTInitializer
 
 public class ASTInitDeclarator : ASTNode
 {
+public:
    ASTDeclarator declarator;
    ASTInitializer initializer;
 
@@ -306,6 +318,7 @@ public class ASTInitDeclarator : ASTNode
 
 public class InitDeclList : ASTList<ASTInitDeclarator>
 {
+public:
    InitDeclList ::parse()
    {
       return (InitDeclList)ASTList::parse(class(InitDeclList), ASTInitDeclarator::parse, ',');
