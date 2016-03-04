@@ -63,6 +63,7 @@ public:
 
 public class MemberInitList : ASTList<ASTMemberInit>
 {
+public:
    MemberInitList ::parse()
    {
       MemberInitList list = (MemberInitList)ASTList::parse(class(MemberInitList), ASTMemberInit::parse, ',');
@@ -74,6 +75,7 @@ public class MemberInitList : ASTList<ASTMemberInit>
 
 public class ASTPropertyDef : ASTNode
 {
+public:
    SpecsList specifiers;
    ASTDeclarator declarator;
    ASTIdentifier id;
@@ -88,6 +90,7 @@ public class ASTPropertyDef : ASTNode
 
 public class ClassDefList : ASTList<ASTClassDef>
 {
+public:
    ClassDefList ::parse()
    {
       return (ClassDefList)ASTList::parse(class(ClassDefList), ASTClassDef::parse, 0);
@@ -150,12 +153,14 @@ public:
 
 public class ClassDefClassPropertyValue : ASTClassDef
 {
+public:
    ASTIdentifier id;
    ASTInitializer initializer;
 }
 
 public class ClassDefDeclaration : ASTClassDef
 {
+public:
    ASTDeclaration decl;
 
    ClassDefDeclaration ::parse(SpecsList specs, InitDeclList decls)
@@ -200,6 +205,7 @@ public:
 
 public class ClassDefFunction : ASTClassDef
 {
+public:
    ASTClassFunction function;
 
    ClassDefFunction ::parse(SpecsList specs, InitDeclList decls)
@@ -218,6 +224,7 @@ public class ClassDefFunction : ASTClassDef
 
 public class ClassDefInitialization : ASTClassDef
 {
+public:
    MemberInitList defValues;
 
    ClassDefInitialization ::parse()
@@ -241,20 +248,24 @@ public class ClassDefInitialization : ASTClassDef
 
 public class ClassDefProperty : ASTClassDef
 {
+public:
    ASTPropertyDef propertyDef;
 }
 
 public class ClassDefPropertyWatch : ASTClassDef
 {
+public:
    ASTPropertyWatch propertyWatch;
 }
 
 public class ClassDefDesigner : ASTClassDef
 {
+public:
    String designer;
 }
 
 public class ClassDefDefaultProperty : ASTClassDef
 {
+public:
    ASTIdentifier defaultProperty;
 }

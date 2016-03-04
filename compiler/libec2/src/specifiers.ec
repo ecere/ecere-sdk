@@ -4,25 +4,30 @@ import "classes"
 // Specifiers
 public class ASTSpecifier : ASTNode
 {
+public:
 };
 
 public class SpecTypeOf : ASTSpecifier
 {
+public:
    Expression expression;
 }
 
 public class SpecSubClass : ASTSpecifier
 {
+public:
    ASTSpecifier _class;
 }
 
 public class SpecTemplateType : ASTSpecifier
 {
+public:
    TemplateParameter templateParameter;
 }
 
 public class SpecsList : ASTList<ASTSpecifier>
 {
+public:
    void printSep()
    {
       Print(" ");
@@ -75,6 +80,7 @@ public class SpecsList : ASTList<ASTSpecifier>
 
 public class SpecBase : ASTSpecifier
 {
+public:
    TokenType2 specifier;
 
    void print()
@@ -85,6 +91,7 @@ public class SpecBase : ASTSpecifier
 
 public class SpecName : ASTSpecifier
 {
+public:
    String name;
    //ExtDecl extDecl;
    //Symbol symbol;
@@ -98,6 +105,7 @@ public class SpecName : ASTSpecifier
 
 public class SpecClass : ASTSpecifier
 {
+public:
    TokenType2 type;
    ASTIdentifier id;
    SpecsList baseSpecs;
@@ -170,21 +178,25 @@ public:
 
 public class EnumeratorList : ASTList<ASTEnumerator>
 {
+public:
 }
 
 public class SpecEnum : SpecClass
 {
+public:
    EnumeratorList enumerators;
 }
 
 public class ASTAttribute : ASTNode
 {
+public:
    String attr;
    ASTExpression exp;
 }
 
 public class ASTAttrib : ASTNode
 {
+public:
    TokenType2 type;
    List<ASTAttribute> attribs;
 }
@@ -193,10 +205,12 @@ public class ASTExtDecl : ASTNode { }
 
 public class ExtDeclString : ASTExtDecl
 {
+public:
    String s;
 }
 
 public class ExtDeclAttrib : ASTExtDecl
 {
+public:
    ASTAttrib attr;
 }
