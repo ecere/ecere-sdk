@@ -732,7 +732,7 @@ ItemDoc getDoc(char * filePath, Module module, DocumentationType type, void * ob
       File f = FileOpen(filePath, read);
       if(f)
       {
-         eCONParser parser { f = f };
+         ECONParser parser { f = f };
          JSONResult jsonResult = parser.GetObject(cl ? class(ClassDoc) : class(NamespaceDoc), &doc);
          delete parser;
          delete f;
