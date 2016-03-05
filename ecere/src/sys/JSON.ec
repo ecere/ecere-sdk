@@ -31,7 +31,7 @@ public enum SetBool : uint
 };
 
 
-public class eCONParser : JSONParser
+public class ECONParser : JSONParser
 {
    eCON = true;
 }
