@@ -51,14 +51,22 @@ typedef unsigned __int64 uint64;
 #include <sys/types.h>
 extern int __ecereVMethodID_class_OnUnserialize;
 
+extern int __ecereVMethodID_class_OnCompare;
+
+extern void qsort_s(void * base, size_t nel, size_t width, int (* compare)(void *, const void *, const void *), void * arg);
+
+struct __ecereNameSpace__ecere__com__SortRData
+{
+void * arg;
+int (* compare)(void *, const void *, const void *);
+} ecere_gcc_struct;
+
 struct __ecereNameSpace__ecere__com__Array
 {
 uint64 * array;
 unsigned int count;
 unsigned int minAllocSize;
 } ecere_gcc_struct;
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
 
@@ -107,15 +115,131 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
+extern void *  memcpy(void * , const void * , size_t size);
+
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 extern void *  memmove(void * , const void * , size_t size);
 
 extern void *  memset(void *  area, int value, size_t count);
 
-extern void *  memcpy(void * , const void * , size_t size);
+struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 int __ecereVMethodID_class_OnFree;
+
+static inline int __ecereNameSpace__ecere__com__compareDeref(struct __ecereNameSpace__ecere__com__SortRData * cs, const void ** a, const void ** b)
+{
+return cs->compare(cs->arg, *a, *b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareDescDeref(struct __ecereNameSpace__ecere__com__SortRData * cs, const void ** a, const void ** b)
+{
+return -cs->compare(cs->arg, *a, *b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareDesc(struct __ecereNameSpace__ecere__com__SortRData * cs, const void * a, const void * b)
+{
+return -cs->compare(cs->arg, a, b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareArgLast(const void * a, const void * b, struct __ecereNameSpace__ecere__com__SortRData * cs)
+{
+return cs->compare(cs->arg, a, b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareDerefArgLast(const void ** a, const void ** b, struct __ecereNameSpace__ecere__com__SortRData * cs)
+{
+return cs->compare(cs->arg, *a, *b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareDescDerefArgLast(const void ** a, const void ** b, struct __ecereNameSpace__ecere__com__SortRData * cs)
+{
+return -cs->compare(cs->arg, *a, *b);
+}
+
+static inline int __ecereNameSpace__ecere__com__compareDescArgLast(const void * a, const void * b, struct __ecereNameSpace__ecere__com__SortRData * cs)
+{
+return -cs->compare(cs->arg, a, b);
+}
+
+static inline void __ecereNameSpace__ecere__com__quickSort(void * base, size_t nel, size_t w, char * piv, int (* compare)(void *, const void *, const void *), void * arg)
+{
+size_t beg[300], end[300];
+int frame = 0;
+
+beg[0] = 0;
+end[0] = nel;
+while(frame >= 0)
+{
+size_t L = beg[frame], R = end[frame] - 1;
+
+if(L < R)
+{
+memcpy(piv, (char *)base + L * w, w);
+while(L < R)
+{
+while(compare(arg, (char *)base + (R * w), piv) >= 0 && L < R)
+R--;
+if(L < R)
+{
+memcpy((char *)base + L * w, (char *)base + R * w, w);
+L++;
+}
+while(compare(arg, (char *)base + (L * w), piv) <= 0 && L < R)
+L++;
+if(L < R)
+{
+memcpy((char *)base + R * w, (char *)base + L * w, w);
+R--;
+}
+}
+memcpy((char *)base + L * w, piv, w);
+beg[frame + 1] = L + 1;
+end[frame + 1] = end[frame];
+end[frame++] = L;
+if(end[frame] - beg[frame] > end[frame - 1] - beg[frame - 1])
+{
+size_t swap;
+
+swap = beg[frame];
+beg[frame] = beg[frame - 1];
+beg[frame - 1] = swap;
+swap = end[frame];
+end[frame] = end[frame - 1];
+end[frame - 1] = swap;
+}
+}
+else
+frame--;
+}
+}
+
+static inline void __ecereNameSpace__ecere__com___qsortrx(void * base, size_t nel, size_t width, int (* compare)(void * arg, const void * a, const void * b), int (* optCompareArgLast)(const void * a, const void * b, void * arg), void * arg, unsigned int deref, unsigned int ascending)
+{
+if(!deref && ascending)
+{
+qsort_s(base, nel, width, compare, arg);
+}
+else
+{
+struct __ecereNameSpace__ecere__com__SortRData s =
+{
+arg, compare
+};
+
+qsort_s(base, nel, width, (void *)(!deref ? (void *)(__ecereNameSpace__ecere__com__compareDesc) : (void *)(ascending ? (void *)(__ecereNameSpace__ecere__com__compareDeref) : (void *)(__ecereNameSpace__ecere__com__compareDescDeref))), &s);
+}
+}
+
+void __ecereNameSpace__ecere__com__qsortrx(void * base, size_t nel, size_t width, int (* compare)(void * arg, const void * a, const void * b), int (* optCompareArgLast)(const void * a, const void * b, void * arg), void * arg, unsigned int deref, unsigned int ascending)
+{
+__ecereNameSpace__ecere__com___qsortrx(base, nel, width, compare, optCompareArgLast, arg, deref, ascending);
+}
+
+void __ecereNameSpace__ecere__com__qsortr(void * base, size_t nel, size_t width, int (* compare)(void * arg, const void * a, const void * b), void * arg)
+{
+__ecereNameSpace__ecere__com___qsortrx(base, nel, width, compare, (((void *)0)), arg, 0, 1);
+}
 
 struct __ecereNameSpace__ecere__com__Property;
 
@@ -296,6 +420,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+
 struct __ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
@@ -382,11 +508,9 @@ char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } ecere_gcc_struct;
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SortRData;
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array;
-
-const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Class * this);
-
-struct __ecereNameSpace__ecere__com__Class * __ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(const char *  value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
@@ -461,7 +585,7 @@ return __ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize;
 void __ecereMethod___ecereNameSpace__ecere__com__Array_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance ** this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
-struct __ecereNameSpace__ecere__com__Instance * array = __ecereNameSpace__ecere__com__eInstance_New(__ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(class->fullName));
+struct __ecereNameSpace__ecere__com__Instance * array = __ecereNameSpace__ecere__com__eInstance_New(class);
 unsigned int count, c;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 
@@ -639,6 +763,15 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this, item) : (void)1;
 }));
 }
 
+void __ecereMethod___ecereNameSpace__ecere__com__Array_Sort(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int ascending)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+struct __ecereNameSpace__ecere__com__Class * Dclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass;
+unsigned int byRef = (Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3;
+
+__ecereNameSpace__ecere__com___qsortrx(__ecerePointer___ecereNameSpace__ecere__com__Array->array, __ecerePointer___ecereNameSpace__ecere__com__Array->count, Dclass->typeSize, (void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare], (((void *)0)), Dclass, !byRef, ascending);
+}
+
 void __ecereMethod___ecereNameSpace__ecere__com__Array_Copy(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * source)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
@@ -711,6 +844,13 @@ void __ecereRegisterModule_Array(struct __ecereNameSpace__ecere__com__Instance *
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Array_ec}ecere::com::SortRData", 0, sizeof(struct __ecereNameSpace__ecere__com__SortRData), 0, (void *)0, (void *)0, module, 3, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__com__SortRData = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "arg", "void *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "compare", "int (*)(void *, const void *, const void *)", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::qsortrx", "void ecere::com::qsortrx(void * base, uintsize nel, uintsize width, int (* compare)(void * arg, const void * a, const void * b), int (* optCompareArgLast)(const void * a, const void * b, void * arg), void * arg, bool deref, bool ascending)", __ecereNameSpace__ecere__com__qsortrx, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::qsortr", "void ecere::com::qsortr(void * base, uintsize nel, uintsize width, int (* compare)(void * arg, const void * a, const void * b), void * arg)", __ecereNameSpace__ecere__com__qsortr, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Array", "ecere::com::Container", sizeof(struct __ecereNameSpace__ecere__com__Array), 0, (void *)0, (void *)__ecereDestructor___ecereNameSpace__ecere__com__Array, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Array = class;
@@ -731,6 +871,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Copy", 0, __ecereMethod__
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetCount", 0, __ecereMethod___ecereNameSpace__ecere__com__Array_GetCount, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", 0, __ecereMethod___ecereNameSpace__ecere__com__Array_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", 0, __ecereMethod___ecereNameSpace__ecere__com__Array_Delete, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "Sort", 0, __ecereMethod___ecereNameSpace__ecere__com__Array_Sort, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "array", "T *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "minAllocSize", "uint", 4, 4, 1);

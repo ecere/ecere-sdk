@@ -63,6 +63,7 @@ public enum TokenType
   _int = INT,
   _uint = UINT,
   _int64 = INT64,
+  _int128 = INT128,
   _long = LONG,
   _signed = SIGNED,
   _unsigned = UNSIGNED,
@@ -80,7 +81,7 @@ public enum TokenType
   _default = DEFAULT,
   _if = IF,
   _switch = SWITCH,
-  _whilte = WHILE,
+  _while = WHILE,
   _do = DO,
   _for = FOR,
   _goto = GOTO,
@@ -1365,12 +1366,13 @@ public:
 };
 
 // For the .sym file:
+// BEWARE: Adding a value in the middle of this list has very arcane bootstrapping implications!!
 public enum TypeKind
 {
    voidType, charType, shortType, intType, int64Type, longType, floatType,
    doubleType, classType, structType, unionType, functionType, arrayType, pointerType,
    ellipsisType, enumType, methodType, vaListType, /*typedObjectType, anyObjectType, classPointerType, */ dummyType,
-   subClassType, templateType, thisClassType, intPtrType, intSizeType, _BoolType
+   subClassType, templateType, thisClassType, intPtrType, intSizeType, _BoolType, int128Type /* TODO! */
 };
 
 public class Type : struct
@@ -1447,6 +1449,7 @@ public:
    bool pointerAlignment:1; // true if the alignment is the pointer size
    bool isLong:1;    // true if this is truly a long set as a int/int64 (need to improve long support)
    bool signedBeforePromotion:1;
+   bool isVector:1; // For __attribute__((__vector_size(..))
    // bool wasThisClass:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;

@@ -694,6 +694,7 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
             else if(spec.type == baseSpecifier)
             {
                if(spec.specifier == INT64) s = "int64";
+               else if(spec.specifier == INT128) s = "__int128";
             }
             if(s)
             {
@@ -873,6 +874,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                      else if(spec.type == baseSpecifier)
                      {
                         if(spec.specifier == INT64) s = "int64";
+                        else if(spec.specifier == INT128) s = "__int128";
                      }
                      if(s)
                      {
@@ -906,6 +908,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                else if(spec.type == baseSpecifier)
                {
                   if(spec.specifier == INT64) s = "int64";
+                  else if(spec.specifier == INT128) s = "__int128";
                }
                if(s)
                {
@@ -1038,6 +1041,7 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
             else if(spec.type == baseSpecifier)
             {
                if(spec.specifier == INT64) s = "int64";
+               else if(spec.specifier == INT128) s = "__int128";
             }
             if(s)
             {
@@ -2343,6 +2347,8 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                            specType.dllExport = true;
                         else if(!strcmp(s, "stdcall"))
                            specType.attrStdcall = true;
+                        else if(!strcmp(s, "__vector_size__"))
+                           specType.isVector = true;
                      }
                   }
                }
@@ -2372,6 +2378,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                specType.kind = _BoolType;
             else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
             else if(spec.specifier == INT64) specType.kind = int64Type;
+            else if(spec.specifier == INT128) specType.kind = int128Type;
             else if(spec.specifier == VALIST)
                specType.kind = vaListType;
             else if(spec.specifier == SHORT) specType.kind = shortType;
@@ -2584,8 +2591,29 @@ static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
 {
    Type type = parentType;
    Declarator subDecl = decl ? decl.declarator : null;
+   bool isVector = false;
+   if(decl && (decl.type == extendedDeclarator || decl.type == extendedDeclaratorEnd))
+   {
+      ExtDecl extDecl = decl.extended.extended;
+      if(extDecl && extDecl.type == extDeclAttrib)
+      {
+         OldList * attribs = extDecl.attr.attribs;
+         if(attribs)
+         {
+            Attribute attr;
+            for(attr = attribs->first; attr; attr = attr.next)
+            {
+               String s = attr.attr;
+               if(s)
+                  if(!strcmp(s, "__vector_size__"))
+                     isVector = true;
+            }
+         }
+      }
+   }
+
    if(!parentType)
-      type = ProcessTypeSpecs(specs, decl == null, (decl && decl.type == extendedDeclaratorEnd) ? true : false);
+      type = ProcessTypeSpecs(specs, decl == null, (decl && decl.type == extendedDeclaratorEnd && !isVector) ? true : false);
    if(decl)
    {
       switch(decl.type)
@@ -2626,6 +2654,16 @@ static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
                                  type.dllExport = true;
                               else if(!strcmp(s, "stdcall"))
                                  type.attrStdcall = true;
+                              else if(!strcmp(s, "__vector_size__"))
+                              {
+                                 type.isVector = true;
+                                 /*
+                                 Expression exp = attr.exp;
+                                 while(exp.type == bracketsExp)
+                                    exp = exp.list ? exp.list->last : null;
+                                 type.vectorSize = CopyExpression(exp);
+                                 */
+                              }
                            }
                         }
                      }

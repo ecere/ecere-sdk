@@ -132,6 +132,7 @@ default:
 "define"             { return(DEFINE); }
 "__int64"            { return(INT64); }
 "int64"              { return(INT64); }
+"__int128"           { return(INT128); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
 "Bool"               { return(BOOL); }

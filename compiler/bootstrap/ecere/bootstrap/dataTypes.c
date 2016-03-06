@@ -2617,7 +2617,7 @@ if(_class->type == 2)
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)member;
 
 value.__anon1.ui64 = ((*(unsigned int *)data & bitMember->mask) >> bitMember->pos);
-if(value.__anon1.ui64)
+if(value.__anon1.ui64 && (memberType != _class))
 {
 unsigned int needClass = 1;
 char internalMemberString[1024];
@@ -2657,7 +2657,7 @@ if(!atMember || !strcmp(memberType->name, "bool"))
 strcat(tempString, name);
 strcat(tempString, " = ");
 }
-if(!strcmp(memberType->name, "char *"))
+if(needClass && *needClass && !strcmp(memberType->name, "char *"))
 {
 int len = strlen(tempString);
 int c;

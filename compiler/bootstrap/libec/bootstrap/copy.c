@@ -711,6 +711,7 @@ unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
 unsigned int signedBeforePromotion : 1;
+unsigned int isVector : 1;
 } ecere_gcc_struct;
 
 struct Instantiation;
