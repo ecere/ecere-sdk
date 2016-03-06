@@ -686,6 +686,7 @@ unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
 unsigned int signedBeforePromotion : 1;
+unsigned int isVector : 1;
 } ecere_gcc_struct;
 
 extern void DeclareMethod(struct External * neededFor, struct __ecereNameSpace__ecere__com__Method * method, const char *  name);
@@ -1506,10 +1507,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      return __ecere
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   }\n");
 }
 next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method));
-while(next && ((next->type == 1) != doVirtual || (doVirtual && next->vid != vid)))
+while((!next && doVirtual) || (next && ((next->type == 1) != doVirtual || (doVirtual && next->vid != vid))))
 {
 id++;
-next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)next));
+next = next ? (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)next)) : (((void *)0));
 if(!next && doVirtual)
 {
 if(vid == _class->vTblSize)

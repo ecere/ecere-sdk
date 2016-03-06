@@ -1906,13 +1906,23 @@ void ImportModule(const char * name, int importType, int importAccess, unsigned 
 {
 struct ImportedModule * module = (((void *)0));
 char moduleName[797];
+unsigned int isSourceModule = 0;
 
+if(sourceFile)
+{
+char sourceFileModule[274];
+
+__ecereNameSpace__ecere__sys__GetLastDirectory(sourceFile, sourceFileModule);
+__ecereNameSpace__ecere__sys__StripExtension(sourceFileModule);
+if(!(strcasecmp)(sourceFileModule, name))
+isSourceModule = 1;
+}
 strncpy(moduleName, name, (797) - 1);
 moduleName[(797) - 1] = 0;
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 for(module = (*defines).first; module; module = module->next)
 {
-if(module->type == 0 && !(strcasecmp)(module->name, moduleName))
+if(module->type == 0 && !(strcasecmp)(module->name, moduleName) && ((importType == 2) == (module->importType == 2) || isSourceModule))
 break;
 }
 if((!module || (module->dllOnly && !loadDllOnly)) && strlen(name) < (274))

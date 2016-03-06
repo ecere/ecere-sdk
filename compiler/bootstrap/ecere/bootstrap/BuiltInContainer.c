@@ -209,6 +209,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
+
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {
 return this->data;
@@ -247,6 +249,10 @@ return this->count;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)
+{
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Sort(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, unsigned int ascending)
 {
 }
 
@@ -622,6 +628,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "FreeIterator", "vo
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetCount", "int GetCount()", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetCount, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Delete", "void Delete(ecere::com::IteratorPointer it)", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Sort", "void Sort(bool ascending)", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Sort, 1);
 __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer___ecereNameSpace__ecere__com__Container = __ecereNameSpace__ecere__com__eClass_AddProperty(class, 0, "ecere::com::Container", 0, __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_vTbl", "void *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_class", "ecere::com::Class", sizeof(void *), 0xF000F000, 1);

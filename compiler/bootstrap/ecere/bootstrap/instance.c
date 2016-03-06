@@ -124,6 +124,8 @@ unsigned int Instance_LocateModule(const char * name, const char * fileName);
 
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr);
 
+void System_SetArgs(int argc, char ** argv, int * argcPtr, const char *** argvPtr);
+
 void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
 
 void Instance_Module_Free(void * library);
@@ -342,8 +344,86 @@ unsigned int ch = ((unsigned char *)source)[c];
 
 switch(ch)
 {
+case 128:
+ch = 0x20AC;
+break;
+case 130:
+ch = 0x201A;
+break;
+case 131:
+ch = 0x0192;
+break;
+case 132:
+ch = 0x201E;
+break;
+case 133:
+ch = 0x2026;
+break;
+case 134:
+ch = 0x2020;
+break;
+case 135:
+ch = 0x2021;
+break;
+case 136:
+ch = 0x02C6;
+break;
+case 137:
+ch = 0x2030;
+break;
+case 138:
+ch = 0x0160;
+break;
+case 139:
+ch = 0x2039;
+break;
+case 140:
+ch = 0x0152;
+break;
+case 142:
+ch = 0x017D;
+break;
+case 145:
+ch = 0x2018;
+break;
+case 146:
+ch = 0x2019;
+break;
+case 147:
+ch = 0x201C;
+break;
+case 148:
+ch = 0x201D;
+break;
+case 149:
+ch = 0x2022;
+break;
 case 150:
-ch = 0x2012;
+ch = 0x2013;
+break;
+case 151:
+ch = 0x2014;
+break;
+case 152:
+ch = 0x02DC;
+break;
+case 153:
+ch = 0x2122;
+break;
+case 154:
+ch = 0x0161;
+break;
+case 155:
+ch = 0x203A;
+break;
+case 156:
+ch = 0x0153;
+break;
+case 158:
+ch = 0x017E;
+break;
+case 159:
+ch = 0x0178;
 break;
 }
 if(ch < 0x80)
@@ -967,23 +1047,17 @@ ch -= ('a' - 10);
 else if(ch >= 'A' && ch <= 'Z')
 ch -= ('A' - 10);
 else
-{
-if(endString)
-*endString = string + c;
 break;
-}
 if(ch < base)
 {
 value *= base;
 value += ch;
 }
 else
-{
-if(endString)
-*endString = string + c;
 break;
 }
-}
+if(endString)
+*endString = string + c;
 return sign * value;
 }
 
@@ -1028,23 +1102,17 @@ ch -= ('a' - 10);
 else if(ch >= 'A' && ch <= 'Z')
 ch -= ('A' - 10);
 else
-{
-if(endString)
-*endString = string + c;
 break;
-}
 if(ch < base)
 {
 value *= base;
 value += ch;
 }
 else
-{
-if(endString)
-*endString = string + c;
 break;
 }
-}
+if(endString)
+*endString = string + c;
 return sign * value;
 }
 
@@ -1257,6 +1325,8 @@ return 0;
 
 void __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove(struct __ecereNameSpace__ecere__com__BlockPool * this, struct __ecereNameSpace__ecere__com__MemBlock * block)
 {
+struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
+
 if(block->prev)
 block->prev->next = block->next;
 if(block->next)
@@ -1267,13 +1337,12 @@ if(this->last == block)
 this->last = block->prev;
 block->next = this->free;
 this->free = block;
-block->part->blocksUsed--;
+part->blocksUsed--;
 this->numBlocks--;
-(*block->part->pool).usedSpace -= block->size;
-if(!block->part->blocksUsed && this->numBlocks && this->totalSize > this->numBlocks + this->numBlocks / 2)
+(*part->pool).usedSpace -= block->size;
+if(!part->blocksUsed && this->numBlocks && this->totalSize > this->numBlocks + this->numBlocks / 2)
 {
 struct __ecereNameSpace__ecere__com__MemBlock * next = this->free, * prev = (((void *)0));
-struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
 
 this->free = (((void *)0));
 this->totalSize -= part->size;
@@ -3348,6 +3417,11 @@ return def;
 return (((void *)0));
 }
 
+void __ecereNameSpace__ecere__com__eSystem_SetArgs(struct __ecereNameSpace__ecere__com__Instance * app, int argc, char * argv[])
+{
+System_SetArgs(argc, argv, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv);
+}
+
 void * __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class)
 {
 struct __ecereNameSpace__ecere__com__Instance * instance = (((void *)0));
@@ -5240,7 +5314,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpa
 {
 struct __ecereNameSpace__ecere__com__NameSpace * ns = _class->nameSpace;
 
-while((*ns).parent && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).classes) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).functions) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).defines) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).nameSpaces))
+while(ns != nameSpace && (*ns).parent && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).classes) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).functions) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).defines) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).nameSpaces))
 {
 struct __ecereNameSpace__ecere__com__NameSpace * parent = (*ns).parent;
 
@@ -6303,7 +6377,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcpy", "void * memcpy(
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uintsize size)", memmove, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcmp", "int memcmp(const void *, const void *, uintsize size)", memcmp, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sprintf", "int sprintf(char *, const char *, ...)", sprintf, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int sprintf(char *, uintsize, const char *, ...)", snprintf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int snprintf(char *, uintsize, const char *, ...)", snprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("printf", "int printf(const char *, ...)", printf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, uintsize, const char*, __builtin_va_list)", vsnprintf, module, 4);
@@ -6804,6 +6878,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_GetDe
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_GetDesigner", "subclass(ecere::com::ClassDesignerBase) ecere::com::eInstance_GetDesigner(ecere::com::Instance instance)", __ecereNameSpace__ecere__com__eInstance_GetDesigner, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::LocateModule", "bool ecere::com::LocateModule(const char * name, const char * fileName)", __ecereNameSpace__ecere__com__LocateModule, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::__ecere_COM_Initialize", "ecere::com::Application ecere::com::__ecere_COM_Initialize(bool guiApp, int argc, char * argv[])", __ecereNameSpace__ecere__com____ecere_COM_Initialize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_SetArgs", "void ecere::com::eSystem_SetArgs(ecere::com::Application app, int argc, char * argv[])", __ecereNameSpace__ecere__com__eSystem_SetArgs, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_AddTemplateParameter", "ecere::com::ClassTemplateParameter ecere::com::eClass_AddTemplateParameter(ecere::com::Class _class, const char * name, ecere::com::TemplateParameterType type, const void * info, ecere::com::ClassTemplateArgument defaultArg)", __ecereNameSpace__ecere__com__eClass_AddTemplateParameter, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_DoneAddingTemplateParameters", "void ecere::com::eClass_DoneAddingTemplateParameters(ecere::com::Class base)", __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::com::Platform", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);

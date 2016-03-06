@@ -179,7 +179,7 @@ default:
 %token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
 %token TYPEDEF EXTERN STATIC AUTO REGISTER
-%token CHAR SHORT INT UINT INT64 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
+%token CHAR SHORT INT UINT INT64 INT128 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
 %token STRUCT UNION ENUM ELLIPSIS
 
 %token CASE DEFAULT IF SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
@@ -2202,6 +2202,7 @@ type_specifier:
 	| INT             { $$ = MkSpecifier(INT); }
    | UINT            { $$ = MkSpecifier(UINT); }
    | INT64           { $$ = MkSpecifier(INT64); }
+   | INT128          { $$ = MkSpecifier(INT128); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }
@@ -2231,6 +2232,7 @@ strict_type_specifier:
 	| INT             { $$ = MkSpecifier(INT); }
    | UINT            { $$ = MkSpecifier(UINT); }
    | INT64           { $$ = MkSpecifier(INT64); }
+   | INT128          { $$ = MkSpecifier(INT128); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }
@@ -3109,6 +3111,7 @@ init_declarator_list:
 	| init_declarator_list ',' init_declarator   { $$ = $1; ListAdd($1, $3); }
 	| UINT ',' init_declarator                  { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("uint")), null)); ListAdd($$, $3); }
    | INT64 ',' init_declarator                  { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("int64")), null)); ListAdd($$, $3); }
+   | INT128 ',' init_declarator                 { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__int128")), null)); ListAdd($$, $3); }
 	| base_strict_type ',' init_declarator
    {
       char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);

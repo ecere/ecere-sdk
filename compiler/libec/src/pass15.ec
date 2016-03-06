@@ -1629,7 +1629,13 @@ public Type Dereference(Type source)
    Type type = null;
    if(source)
    {
-      if(source.kind == pointerType || source.kind == arrayType)
+      if(source.isVector)
+      {
+         type = { refCount = 1 };
+         CopyTypeInto(type, source);
+         type.isVector = false;
+      }
+      else if(source.kind == pointerType || source.kind == arrayType)
       {
          type = source.type;
          source.type.refCount++;
@@ -2216,7 +2222,7 @@ static void _DeclareType(External neededFor, Type type, bool needDereference, bo
          _DeclareType(neededFor, type.type, false, false, fwdDecl);
       else if(type.kind == classType)
       {
-         Class c = type._class.registered;
+         Class c = type._class ? type._class.registered : null;
          _DeclareStruct(neededFor, c ? c.fullName : "ecere::com::Instance", c ? c.type == noHeadClass : false, needDereference && c && c.type == structClass, fwdDecl);
       }
       else if(type.kind == structType || type.kind == unionType)
@@ -3188,6 +3194,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intSizeType /* Exception here for size_t */))
          return true;
       else if(dest.kind == int64Type && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == intPtrType || source.kind == intSizeType))
+         return true;
+      else if(dest.kind == int128Type && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == intPtrType || source.kind == int64Type || source.kind == intSizeType))
          return true;
       else if(dest.kind == intPtrType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == intSizeType || source.kind == int64Type))
          return true;
@@ -6961,6 +6969,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case _BoolType: ListAdd(specs, MkSpecifier(_BOOL)); break;
       case shortType: ListAdd(specs, MkSpecifier(SHORT)); break;
       case int64Type: ListAdd(specs, MkSpecifier(INT64)); break;
+      case int128Type: ListAdd(specs, MkSpecifier(INT128)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
       case intSizeType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intsize" : "uintsize")); break;
       case intType:
@@ -7013,6 +7022,7 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case voidType: strcat(string, "void"); break;
          case intType:  strcat(string, type.isSigned ? "int" : "uint"); break;
          case int64Type:  strcat(string, type.isSigned ? "int64" : "uint64"); break;
+         case int128Type:  strcat(string, type.isSigned ? "__int128" : "unsigned __int128"); break;
          case intPtrType:  strcat(string, type.isSigned ? "intptr" : "uintptr"); break;
          case intSizeType:  strcat(string, type.isSigned ? "intsize" : "uintsize"); break;
          case charType: strcat(string, type.isSigned ? "char" : "byte"); break;

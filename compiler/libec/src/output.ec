@@ -974,6 +974,9 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
                //f.Puts("int64");
                f.Puts(typeName ? "int64" : "long long");
                break;
+            case INT128:
+               f.Puts("__int128");
+               break;
             case VALIST:
                f.Puts("__builtin_va_list");
                break;

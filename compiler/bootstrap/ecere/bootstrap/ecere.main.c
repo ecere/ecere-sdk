@@ -109,6 +109,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
@@ -166,6 +168,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Sort;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddDefaultMethod;
 
@@ -350,6 +354,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
 
@@ -757,6 +763,9 @@ __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll = meth
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, "SetData", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData = method->vid;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, "Sort", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort = method->vid;
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Class");
 __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_ = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "char *", module);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ClassDesignerBase");
@@ -848,6 +857,9 @@ __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll = method->vid
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__Container, "SetData", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData = method->vid;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__com__Container, "Sort", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__com__Container_Sort = method->vid;
 __ecereProp___ecereNameSpace__ecere__com__Container_copySrc = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Container, "copySrc", module);
 __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::CustomAVLTree");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DesignerBase");
@@ -896,6 +908,7 @@ _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::It
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
+__ecereClass___ecereNameSpace__ecere__com__List = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List");
 __ecereClass___ecereNameSpace__ecere__com__ListItem = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ListItem");
 __ecereClass___ecereNameSpace__ecere__com__Map = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<const String, const String>");

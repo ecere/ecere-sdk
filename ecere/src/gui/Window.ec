@@ -1137,13 +1137,23 @@ private:
             if(parent.numIcons) ph -= guiApp.textMode ? 16 : 24;
             if(anchor.left.type == vTiled)
             {
-               tilingH = (int)sqrt(numTiling);
-               tilingW = numTiling / tilingH;
+               if(numTiling)
+               {
+                  tilingH = (int)sqrt(numTiling);
+                  tilingW = numTiling / tilingH;
+               }
+               else
+                  tilingH = tilingW = 0;
             }
             else
             {
-               tilingW = (int)sqrt(numTiling);
-               tilingH = numTiling / tilingW;
+               if(numTiling)
+               {
+                  tilingW = (int)sqrt(numTiling);
+                  tilingH = numTiling / tilingW;
+               }
+               else
+                  tilingH = tilingW = 0;
             }
 
             leftOver = numTiling - tilingH * tilingW;
@@ -1155,19 +1165,30 @@ private:
             else
                tilingSplit = numTiling;
 
-            if(positionID >= tilingSplit)
+            if(tilingW && tilingH)
             {
-               x = xOffset + pw * (tilingSplit / tilingH + (positionID - tilingSplit) / tilingLastH)/tilingW;
-               y = yOffset + ph * ((positionID - tilingSplit) % tilingLastH) / tilingLastH;
-               x2 = xOffset + pw * (tilingSplit/tilingH + (positionID - tilingSplit) / tilingLastH + 1)/tilingW;
-               y2 = yOffset + ph * (((positionID - tilingSplit) % tilingLastH) + 1) / tilingLastH;
+               if(positionID >= tilingSplit)
+               {
+                  x = xOffset + pw * (tilingSplit / tilingH + (positionID - tilingSplit) / tilingLastH)/tilingW;
+                  y = yOffset + ph * ((positionID - tilingSplit) % tilingLastH) / tilingLastH;
+                  x2 = xOffset + pw * (tilingSplit/tilingH + (positionID - tilingSplit) / tilingLastH + 1)/tilingW;
+                  y2 = yOffset + ph * (((positionID - tilingSplit) % tilingLastH) + 1) / tilingLastH;
+               }
+               else
+               {
+                  x = xOffset + pw * (positionID / tilingH) / tilingW;
+                  y = yOffset + ph * (positionID % tilingH) / tilingH;
+                  x2 = xOffset + pw * (positionID / tilingH + 1) / tilingW;
+                  y2 = yOffset + ph * ((positionID % tilingH) + 1) / tilingH;
+               }
             }
             else
             {
-               x = xOffset + pw * (positionID / tilingH) / tilingW;
-               y = yOffset + ph * (positionID % tilingH) / tilingH;
-               x2 = xOffset + pw * (positionID / tilingH + 1) / tilingW;
-               y2 = yOffset + ph * ((positionID % tilingH) + 1) / tilingH;
+               // How can this happen? From ec2 parsing test
+               x = 0;
+               y = 0;
+               x2 = 0;
+               y2 = 0;
             }
             if(guiApp.textMode)
             {
