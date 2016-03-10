@@ -28,6 +28,7 @@
 
 import "immediate"
 import "Display"
+import "OpenGLDisplayDriver"
 
 // Kept public for now
 public void GLABDeleteBuffers(int count, GLAB * buffers)

@@ -111,6 +111,7 @@ public void glmsLoadMatrix(Matrix matrix)
       (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
    };
 #ifdef SHADERS
+      memcpy(matrixStack[curStack][matrixIndex[curStack]].array, matrix.array, sizeof(Matrix));
       shader_LoadMatrixf((MatrixMode) (0x1700 + curStack), m);
 #else
       glLoadMatrixf(m);
@@ -139,6 +140,19 @@ public void glmsPopMatrix()
       matrixIndex[curStack]--;
       LoadCurMatrix();
    }
+}
+
+public void glmsLoadMatrixf(float * i)
+{
+   double m[16] =
+   {
+      i[0*4+0], i[0*4+1], i[0*4+2], i[0*4+3],
+      i[1*4+0], i[1*4+1], i[1*4+2], i[1*4+3],
+      i[2*4+0], i[2*4+1], i[2*4+2], i[2*4+3],
+      i[3*4+0], i[3*4+1], i[3*4+2], i[3*4+3]
+   };
+   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, i, 16*sizeof(double));
+   LoadCurMatrix();
 }
 
 public void glmsLoadMatrixd(double * i)
