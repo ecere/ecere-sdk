@@ -1088,6 +1088,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
@@ -1110,7 +1116,7 @@ if distributed with the Ecere SDK Windows installer.
                                     {
                                        "Name" : "Emscripten",
                                        "Options" : {
-                                          "ExcludeFromBuild" : false
+                                          "ExcludeFromBuild" : true
                                        }
                                     }
                                  ]
