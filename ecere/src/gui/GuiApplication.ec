@@ -1221,7 +1221,7 @@ public:
          for(link = class(Interface).derivatives.first; link; link = link.next)
          {
             bool foundDriver = false;
-            int c, numDrivers;
+            int c, numDrivers = 0;
             const char ** graphicsDrivers;
             inter = link.data;
 
