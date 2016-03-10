@@ -23,6 +23,11 @@ import "Color"
 #  endif
 #endif
 
+#if defined(__EMSCRIPTEN__)
+   #define ES2
+   #include <GLES2/gl2.h>
+#endif
+
 #include "cc.h"
 #include "mm.h"
 
@@ -106,7 +111,7 @@ public:
    {
      if(texture)
      {
-#ifdef SHADERS
+#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
         int glformat = GL_RED;
 #else
         int glformat = GL_ALPHA;
@@ -115,28 +120,32 @@ public:
         int h = rect[3] - rect[1];
 
         if( channelcount == 1 );
+#if !defined(__EMSCRIPTEN__)
         else if( channelcount == 2 )
           glformat = GL_RG;
+#endif
         else if( channelcount == 3 )
           glformat = GL_RGB;
         else if( channelcount == 4 )
           glformat = GL_RGBA;
 
         // FIXME: no glPushAttrib() in core profile
-//#ifndef SHADERS
+#if !defined(__EMSCRIPTEN__)
         glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
         glPushAttrib( GL_TEXTURE_BIT );
-//#endif
+#endif
         glBindTexture( GL_TEXTURE_2D, texture.glTex );
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+#if !defined(__EMSCRIPTEN__)
         glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
         glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
         glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
+#endif
         glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data );
-//#ifndef SHADERS
+#if !defined(__EMSCRIPTEN__)
         glPopAttrib();
         glPopClientAttrib();
-//#endif
+#endif
 
       #if 0
         IMGImage image;
