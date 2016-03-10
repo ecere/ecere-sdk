@@ -17,6 +17,11 @@ import "instance"
 #  endif
 #endif
 
+#if defined(__EMSCRIPTEN__)
+   #define ES2
+   #include <GLES2/gl2.h>
+#endif
+
 // TOFIX:
 int GL_ARB_texture_non_power_of_two = 1;
 int GL_EXT_texture_filter_anisotropic = 1;
@@ -65,14 +70,16 @@ public:
 
      if( image.format.bytesPerPixel == 1 )
      {
-#ifdef SHADERS
+#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
        glformat = GL_RED;
 #else
        glformat = GL_ALPHA;
 #endif
      }
+#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
      else if( image.format.bytesPerPixel == 2 )
        glformat = GL_RG;
+#endif
      else if( image.format.bytesPerPixel == 3 )
        glformat = GL_RGB;
      else if( image.format.bytesPerPixel == 4 )
