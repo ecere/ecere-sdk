@@ -10,6 +10,11 @@ import "OpenGLDisplayDriver"
    #define SHADERS
 #endif
 
+#if defined(__EMSCRIPTEN__)
+   #define ES2
+   #include <GLES2/gl2.h>
+#endif
+
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
 //#     include "gl_core_3_3.h"
@@ -66,6 +71,7 @@ import "OpenGLDisplayDriver"
    #undef glVertex3fv
 
    #undef glLoadMatrixd
+   #undef glLoadMatrixf
    #undef glMultMatrixd
    #undef glFrustum
    #undef glOrtho
@@ -103,6 +109,7 @@ import "OpenGLDisplayDriver"
    #define glVertex3fv           glimtkVertex3fv
 
    #define glLoadMatrixd         glmsLoadMatrixd
+   #define glLoadMatrixf         glmsLoadMatrixf
    #define glMultMatrixd         glmsMultMatrixd
    #define glFrustum             glmsFrustum
    #define glOrtho               glmsOrtho
@@ -654,6 +661,7 @@ public class DrawManager
       return program;
    }
 
+#if !defined(__EMSCRIPTEN__)
    static void flushRenderDrawBufferArchaic( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
       glEnable( GL_TEXTURE_2D );
@@ -882,6 +890,7 @@ public class DrawManager
 
      }
    }
+#endif
 
    void flushRenderDrawBuffer( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
@@ -952,7 +961,10 @@ public class DrawManager
          drawBuffer = &this.drawBuffer[this.drawBufferIndex];
          this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
          glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+
+#if !defined(__EMSCRIPTEN__)
          vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+#endif
          vertexcount = 0;
 
          glActiveTexture( GL_TEXTURE0 );
@@ -989,7 +1001,9 @@ public class DrawManager
           {
             if( vertexcount )
             {
+#if !defined(__EMSCRIPTEN__)
               glUnmapBuffer( GL_ARRAY_BUFFER );
+#endif
               // Flush font manager texture updates
               flush();
 
@@ -998,7 +1012,9 @@ public class DrawManager
               drawBuffer = &this.drawBuffer[this.drawBufferIndex];
               this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
               glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+#if !defined(__EMSCRIPTEN__)
               vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+#endif
               vertexcount = 0;
             }
 
@@ -1105,7 +1121,9 @@ public class DrawManager
           vertexcount += 6;
         }
 
+#if !defined(__EMSCRIPTEN__)
         glUnmapBuffer( GL_ARRAY_BUFFER );
+#endif
         // Flush font manager texture updates
         flush();
         // Render buffered images
@@ -1210,10 +1228,10 @@ public:
 
       // Save OpenGL state
       // FIXME: no glPushAttrib() in core profile
-//#ifndef SHADERS
+#if !defined(__EMSCRIPTEN__)
       glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
       glPushAttrib( GL_ALL_ATTRIB_BITS );
-//#endif
+#endif
 
       // Prepare rendering pass
       matrixOrtho( matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0f, 1.0 );
@@ -1232,10 +1250,10 @@ public:
 
       if(flags.prehistoricOpenGL)
       {
-         glMatrixMode(GL_PROJECTION);
+         glMatrixMode(MatrixMode::projection);
          glLoadMatrixf(matrix);
 
-         glMatrixMode(GL_MODELVIEW);
+         glMatrixMode(MatrixMode::modelView);
          glLoadIdentity();
          glScalef(4,4,4);
       }
@@ -1385,9 +1403,11 @@ public:
 
    void flushImages( )
    {
+#if !defined(__EMSCRIPTEN__)
      if( flags.prehistoricOpenGL )
        flushDrawImagesArchaic( );
      else
+#endif
        flushDrawImages( );
 
      if(vboAvailable)
@@ -1397,10 +1417,10 @@ public:
          glUseProgram( prevProgram );
       // Restore OpenGL state
       // FIXME: no glPushAttrib() in core profile
-//#ifndef SHADERS
+#if !defined(__EMSCRIPTEN__)
       glPopAttrib();
       glPopClientAttrib();
-//#endif
+#endif
    }
 
    void drawBarrier( )

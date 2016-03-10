@@ -40,7 +40,11 @@ int mmBitMapInit( mmBitMap *bitmap, size_t entrycount, int initvalue )
   bitmap->map = 0;
   if( mapsize )
   {
+#ifdef MM_ATOMIC_SUPPORT
     if( !( bitmap->map = malloc( mapsize * sizeof(mmAtomicL) ) ) )
+#else
+    if( !( bitmap->map = malloc( mapsize * sizeof(long) ) ) )
+#endif
       return 0;
   }
   bitmap->mapsize = mapsize;
