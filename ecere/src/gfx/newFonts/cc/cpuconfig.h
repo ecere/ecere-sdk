@@ -72,7 +72,10 @@
    #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 2) ? 2 : 3)
    #define CPUCONF_LONG_BITS (sizeof(long) * 8)
 #else
+
+#if !defined(__EMSCRIPTEN__)
    #define CPUCONF_ARCH_IA32
+#endif
 
    #define CPUCONF_INTPTR_BITS (32)
    #define CPUCONF_POINTER_BITS (32)
