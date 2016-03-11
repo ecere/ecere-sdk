@@ -5,6 +5,8 @@
  * *****************************************************************************/
 import "Color"
 
+#define _Noreturn
+
 #include <math.h>
 #include <stdlib.h>
 

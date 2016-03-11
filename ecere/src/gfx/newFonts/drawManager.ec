@@ -1,5 +1,7 @@
 import "OpenGLDisplayDriver"
 
+#define _Noreturn
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
