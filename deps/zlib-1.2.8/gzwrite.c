@@ -3,6 +3,8 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
+#include <unistd.h>
+
 #include "gzguts.h"
 
 /* Local functions */

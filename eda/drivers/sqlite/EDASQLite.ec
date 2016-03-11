@@ -413,6 +413,7 @@ class SQLiteDatabase : Database
    bool CreateCustomFunction(const char * name, SQLCustomFunction customFunction)
    {
       bool result = false;
+#if !defined(__EMSCRIPTEN__)
       Class cfClass = customFunction._class;
       customFunction.method = eClass_FindMethod(cfClass, "function", cfClass.module);
       if(customFunction.method)
@@ -482,6 +483,7 @@ class SQLiteDatabase : Database
             result = sqlite3_create_function(db, name, customFunction.args.count, SQLITE_UTF8, customFunction, SQLiteFunctionProcessor, null, null) == SQLITE_OK;
          }
       }
+#endif
       return result;
    }
 }
@@ -492,6 +494,7 @@ __attribute__((unused)) static Iterator dummy; // TOFIX: forward struct declarat
 
 public ffi_type * FFIGetType(Class type, bool structByValue)
 {
+#if !defined(__EMSCRIPTEN__)
    if(type)
       switch(type.type)
       {
@@ -545,12 +548,14 @@ public ffi_type * FFIGetType(Class type, bool structByValue)
       }
    else
       return &ffi_type_void;
+#endif
    return null;
 }
 
 static SerialBuffer staticBuffer { };
 void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** values)
 {
+#if !defined(__EMSCRIPTEN__)
    SQLCustomFunction sqlFunction = sqlite3_user_data(context);
 
    /*  // Simple 1 pointer param returning a string
@@ -775,6 +780,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
       delete data;
    }
    delete args;
+#endif
 }
 
 class SQLiteTable : Table
