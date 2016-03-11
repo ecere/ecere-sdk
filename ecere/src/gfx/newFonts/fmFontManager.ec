@@ -11,6 +11,8 @@ import "imgDistMap"
 
 #include <math.h>
 
+#define _Noreturn
+
 #include "cc.h"
 
 static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, (uint *)retCodePoint); }
