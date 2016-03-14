@@ -587,9 +587,11 @@ void OutputFileListActions(File f, const char * name, int parts, const char * fi
    {
       int c;
       for(c=0; c<parts; c++)
-         f.Printf("\t@$(call echo,$(%s%d)) >> %s\n", name, c+1, fileName);
-   } else if(parts) {
-      f.Printf("\t@$(call echo,$(%s)) >> %s\n", name, fileName);
+         f.Printf("\t$(call addtolistfile,$(%s%d),%s)\n", name, c+1, fileName);
+   }
+   else if(parts)
+   {
+      f.Printf("\t$(call addtolistfile,$(%s),%s)\n", name, fileName);
    }
 }
 
@@ -3398,7 +3400,7 @@ private:
          }
          if(numCObjects)
          {
-            f.Printf("\t@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst\n");
+            f.Printf("\t$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)\n");
             OutputFileListActions(f, "ECOBJECTS", eCsourcesParts, "$(OBJ)objects.lst");
          }
 

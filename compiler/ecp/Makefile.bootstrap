@@ -97,8 +97,8 @@ objdir:
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
 	@$(call touch,$(OBJ)symbols.lst)
-	@$(call echo,$(SYMBOLS)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS)) >> $(OBJ)symbols.lst
+	$(call addtolistfile,$(SYMBOLS),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS),$(OBJ)symbols.lst)
 	$(ECS) -console $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec

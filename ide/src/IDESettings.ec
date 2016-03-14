@@ -957,6 +957,7 @@ public:
       get { return sysroot; }
       isset { return sysroot && sysroot[0]; }
    }
+   bool resourcesDotEar;
    property Array<String> includeDirs
    {
       set
@@ -1096,7 +1097,6 @@ public:
       get { return executableLauncher; }
       isset { return false; }
    }
-   bool resourcesDotEar;
 private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
@@ -1190,7 +1190,8 @@ public:
          false,
          distccHosts,
          gnuToolchainPrefix,
-         sysroot
+         sysroot,
+         resourcesDotEar
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));
