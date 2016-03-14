@@ -168,8 +168,8 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
-	@$(call echo,$(_OBJECTS1)) >> $(OBJ)objects.lst
-	@$(call echo,$(_OBJECTS2)) >> $(OBJ)objects.lst
+	$(call addtolistfile,$(_OBJECTS1),$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS2),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP

@@ -136,8 +136,8 @@ objdir:
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
 	@$(call touch,$(OBJ)symbols.lst)
-	@$(call echo,$(SYMBOLS)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS)) >> $(OBJ)symbols.lst
+	$(call addtolistfile,$(SYMBOLS),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
@@ -149,8 +149,8 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
-	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
-	@$(call echo,$(ECOBJECTS)) >> $(OBJ)objects.lst
+	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
