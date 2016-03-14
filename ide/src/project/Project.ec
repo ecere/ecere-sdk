@@ -2531,6 +2531,11 @@ private:
             f.Puts("# TOOLCHAIN\n");
             f.Puts("\n");
 
+            f.Puts("# OPTIONS\n");
+            if(compiler.resourcesDotEar)
+               f.Puts("USE_RESOURCES_EAR := defined\n");
+            f.Puts("\n");
+
             f.Puts("# EXTENSIONS\n");
             if(compiler.outputFileExt)
                f.Printf("OUT := %s\n", compiler.outputFileExt);
@@ -3018,6 +3023,13 @@ private:
             resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
+         f.Puts("ifdef USE_RESOURCES_EAR\n");
+         f.Puts("RESOURCES_EAR = $(OBJ)resources.ear\n");
+         f.Puts("else\n");
+         f.Puts("RESOURCES_EAR = $(RESOURCES)\n");
+         f.Puts("endif\n");
+         f.Puts("\n");
+
          f.Puts("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n");
          f.Puts("\n");
          if((config && config.options && config.options.libraries) ||
@@ -3353,6 +3365,15 @@ private:
             f.Puts("\n");
          }
 
+         if(resNode.files && resNode.files.count && !noResources)
+         {
+            f.Puts("ifdef USE_RESOURCES_EAR\n");
+            f.Puts("$(RESOURCES_EAR): $(RESOURCES) | objdir\n");
+               resNode.GenMakefileAddResources(f, resNode.path, config, "RESOURCES_EAR");
+            f.Puts("endif\n");
+            f.Puts("\n");
+         }
+
          // *** Target ***
 
          // This would not rebuild the target on updated objects
@@ -3363,7 +3384,7 @@ private:
          f.Puts("$(OBJECTS): | objdir\n");
 
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
-         f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
+         f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
                rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
 
          f.Printf("\t@$(call rm,$(OBJ)objects.lst)\n");
@@ -3404,7 +3425,11 @@ private:
             }
          }
          if(resNode.files && resNode.files.count && !noResources)
-            resNode.GenMakefileAddResources(f, resNode.path, config);
+         {
+            f.Puts("ifndef USE_RESOURCES_EAR\n");
+            resNode.GenMakefileAddResources(f, resNode.path, config, "TARGET");
+            f.Puts("endif\n");
+         }
          f.Puts("else\n");
          f.Puts("ifdef WINDOWS_HOST\n");
          f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)\n");
@@ -3592,6 +3617,12 @@ private:
             OutputCleanActions(f, "BOWLS", eCsourcesParts);
             OutputCleanActions(f, "IMPORTS", eCsourcesParts);
             OutputCleanActions(f, "SYMBOLS", eCsourcesParts);
+         }
+         if(resNode.files && resNode.files.count && !noResources)
+         {
+            f.Puts("ifdef USE_RESOURCES_EAR\n");
+            f.Printf("\t$(call rm,$(RESOURCES_EAR))\n");
+            f.Puts("endif\n");
          }
          f.Puts("\n");
 
