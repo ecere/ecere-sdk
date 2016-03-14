@@ -537,12 +537,12 @@ objdir:
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
 	@$(call touch,$(OBJ)symbols.lst)
-	@$(call echo,$(SYMBOLS1)) >> $(OBJ)symbols.lst
-	@$(call echo,$(SYMBOLS2)) >> $(OBJ)symbols.lst
-	@$(call echo,$(SYMBOLS3)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS1)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS2)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS3)) >> $(OBJ)symbols.lst
+	$(call addtolistfile,$(SYMBOLS1),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(SYMBOLS2),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(SYMBOLS3),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS1),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS2),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS3),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
@@ -575,11 +575,11 @@ endif
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
-	@$(call echo,$(_OBJECTS)) >> $(OBJ)objects.lst
-	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
-	@$(call echo,$(ECOBJECTS1)) >> $(OBJ)objects.lst
-	@$(call echo,$(ECOBJECTS2)) >> $(OBJ)objects.lst
-	@$(call echo,$(ECOBJECTS3)) >> $(OBJ)objects.lst
+	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
+	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS1),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS2),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS3),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
 ifndef NOSTRIP

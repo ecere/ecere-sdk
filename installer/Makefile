@@ -5404,8 +5404,8 @@ objdir:
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
 	@$(call touch,$(OBJ)symbols.lst)
-	@$(call echo,$(SYMBOLS)) >> $(OBJ)symbols.lst
-	@$(call echo,$(IMPORTS)) >> $(OBJ)symbols.lst
+	$(call addtolistfile,$(SYMBOLS),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
 pots: $(OBJ)$(MODULE).main.ec	
@@ -5420,10 +5420,10 @@ $(TARGET): $(SOURCES) $(RCSOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 ifdef WINDOWS_TARGET
-	@$(call echo,$(RCOBJECTS)) >> $(OBJ)objects.lst
+	$(call addtolistfile,$(RCOBJECTS),$(OBJ)objects.lst)
 endif
-	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
-	@$(call echo,$(ECOBJECTS)) >> $(OBJ)objects.lst
+	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
