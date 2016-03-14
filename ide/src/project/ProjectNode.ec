@@ -2136,7 +2136,7 @@ private:
       delete platforms;
    }
 
-   void GenMakefileAddResources(File f, String resourcesPath, ProjectConfig prjConfig)
+   void GenMakefileAddResources(File f, String resourcesPath, ProjectConfig prjConfig, const char * resourcesTarget)
    {
       int count = 0;
       if(files)
@@ -2161,7 +2161,7 @@ private:
 
                // $(EAR) aw%s --- /*quiet ? "q" : */""
                if(count == 0)
-                  f.Printf("\t%s$(EAR) aw$(EARFLAGS) $(TARGET)", ts.a);
+                  f.Printf("\t%s$(EAR) aw$(EARFLAGS) $(%s)", ts.a, resourcesTarget);
 
                tempPath[0] = '\0';
                if(eString_PathInsideOfMore(child.path, resourcesPath, tempPath))
@@ -2207,7 +2207,7 @@ private:
          for(child : files)
          {
             if(child.type == folder)
-               child.GenMakefileAddResources(f, resourcesPath, prjConfig);
+               child.GenMakefileAddResources(f, resourcesPath, prjConfig, resourcesTarget);
          }
       }
    }

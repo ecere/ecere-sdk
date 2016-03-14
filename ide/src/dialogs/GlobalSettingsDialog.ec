@@ -1154,6 +1154,24 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
+   Button resourcesDotEar
+   {
+      this, text = $"Use resources.ear", position = { 300, 308 };
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.resourcesDotEar = button.checked;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
    CompilerOptionsTab()
    {
       Platform p;
@@ -1186,6 +1204,7 @@ class CompilerOptionsTab : CompilersSubTab
          linkerFlags.strings = compiler.linkerFlags;
          objectFileExt.contents = compiler.objectFileExt;
          outputFileExt.contents = compiler.outputFileExt;
+         resourcesDotEar.checked = compiler.resourcesDotEar;
 
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;

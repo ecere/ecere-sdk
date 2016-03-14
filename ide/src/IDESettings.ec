@@ -1096,6 +1096,7 @@ public:
       get { return executableLauncher; }
       isset { return false; }
    }
+   bool resourcesDotEar;
 private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
