@@ -2092,7 +2092,7 @@ private:
       }
    }
 
-   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, SingleFileCompileMode mode)
+   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, bool verbose, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -2151,7 +2151,7 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s%s%s objdir -C \"%s\"%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s%s%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
@@ -2160,7 +2160,7 @@ private:
 
                      compilerName,
                      objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
-                     topNode.path, justPrint ? " -n" : "", makeFilePath);
+                     topNode.path, verbose ? " V=1" : "", justPrint ? " -n" : "", makeFilePath);
                if(justPrint || raw)
                   ide.outputView.buildBox.Logf("%s\n", command);
                Execute(command);
@@ -2211,7 +2211,7 @@ private:
          GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #if defined(__WIN32__)
                "",
 #else
@@ -2234,7 +2234,7 @@ private:
                numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
                (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
+               (String)makeTargets, topNode.path, verbose ? " V=1" : "", (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
          if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
 
@@ -2295,7 +2295,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config, int bitDepth, CleanType cleanType, bool justPrint, bool raw)
+   void Clean(CompilerConfig compiler, ProjectConfig config, int bitDepth, CleanType cleanType, bool justPrint, bool raw, bool verbose)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -2340,14 +2340,14 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s%s%s %sclean%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s%s%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                compilerName,
                objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
-               topNode.path, justPrint ? " -n": "", makeFilePath);
+               topNode.path, verbose ? " V=1" : "", justPrint ? " -n": "", makeFilePath);
          if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
@@ -2378,7 +2378,7 @@ private:
       DirExpression targetDirExp = GetTargetDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
 
-      // Build(project, ideMain, true, null, false);
+      // Build(project, ...);
 
       strcpy(target, topNode.path);
       PathCatSlash(target, targetDirExp.dir);
@@ -2416,9 +2416,9 @@ private:
       delete target;
    }
 
-   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, SingleFileCompileMode mode)
+   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, bool verbose, SingleFileCompileMode mode)
    {
-      return Build(build, nodes, compiler, config, bitDepth, justPrint, raw, mode);
+      return Build(build, nodes, compiler, config, bitDepth, justPrint, raw, verbose, mode);
    }
 #endif
 
