@@ -429,6 +429,8 @@ class IDEWorkSpace : Window
    BitmapResource bmpTopFrameHalf      { ":codeMarks/topFrameHalf.png", window = this };
    BitmapResource bmpTopFrameHalfError { ":codeMarks/topFrameHalfError.png", window = this };
 
+   BuildOutputMode rightClickMenuBuildOutputMode;
+
    Debugger debugger { };
 
    ProjectView projectView;
@@ -2045,6 +2047,7 @@ class IDEWorkSpace : Window
    {
       bool unavailable = project && projectView.buildInProgress;
       bool naForRun = unavailable || !project || project.GetTargetType(project.config) != executable;
+      BuildOutputMode mode = ide.rightClickMenuBuildOutputMode;
 
       projectNewItem.disabled             = unavailable;
       toolBar.buttonNewProject.disabled   = unavailable;
@@ -2060,7 +2063,7 @@ class IDEWorkSpace : Window
       toolBar.buttonRun.disabled = naForRun;
 
       projectBuildItem.disabled = false;
-      projectBuildItem.text     = unavailable ? $"Stop Build" : $"Build";
+      projectBuildItem.text     = unavailable ? $"Stop Build" : bldMnuStrBuild[mode];
       projectBuildItem.accelerator = unavailable ? Key { pauseBreak, ctrl = true } : f7;
 
       projectLinkItem.disabled                  = unavailable;
@@ -2090,27 +2093,28 @@ class IDEWorkSpace : Window
       if(projectView && projectView.popupMenu && projectView.popupMenu.menu && projectView.popupMenu.created)
       {
          MenuItem menu;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, 0);
+         BuildOutputMode mode = ide.rightClickMenuBuildOutputMode;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectBuild, mode);
          if(menu)
          {
             menu.disabled = false;
-            menu.text   = unavailable ? $"Stop Build" : $"Build";
+            menu.text   = unavailable ? $"Stop Build" : bldMnuStrBuild[mode];
             menu.accelerator = unavailable ? Key { pauseBreak, ctrl = true } : f7;
          }
 
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, 0);              if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, 0);           if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectCleanTarget, 0);       if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, 0);             if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, 0);         if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, 0);        if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectInstall, 0);           if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, 0);            if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, 0);                if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, 0);              if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugPrecompile, 0);      if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugCompile, 0);         if(menu) menu.disabled = unavailable;
-         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugGenerateSymbols, 0); if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectLink, mode);              if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRebuild, mode);           if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectCleanTarget, mode);       if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectClean, mode);             if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRealClean, mode);         if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRegenerate, mode);        if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectInstall, mode);           if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::ProjectRemove, mode);            if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileClean, mode);                if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileCompile, mode);              if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugPrecompile, mode);      if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugCompile, mode);         if(menu) menu.disabled = unavailable;
+         menu = projectView.popupMenu.menu.FindItem(ProjectView::FileDebugGenerateSymbols, mode); if(menu) menu.disabled = unavailable;
          projectView.popupMenu.Update(null);
       }
    }
@@ -3072,7 +3076,7 @@ class IDEWorkSpace : Window
                               {
                                  List<ProjectNode> nodes { };
                                  nodes.Add(node);
-                                 projectView.Compile(node.project, nodes, false, false, isCObject ? cObject : normal);
+                                 projectView.Compile(node.project, nodes, normal, isCObject ? cObject : normal);
                                  delete nodes;
                               }
                            }
