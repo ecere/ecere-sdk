@@ -93,7 +93,6 @@ class GlobalSettingsDialog : Window
                {
                   ideSettings.compilerConfigs.Add(compiler.Copy());
                }
-
                compilerSettingsChanged = true;
             }
 

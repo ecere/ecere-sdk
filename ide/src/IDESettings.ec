@@ -354,8 +354,8 @@ private:
                for(c : oldSettings.compilerConfigs)
                   data.compilerConfigs.Add(c.Copy());
 
-               for(s : oldSettings.recentFiles) data.recentFiles.Add(CopyString(s));
-               for(s : oldSettings.recentProjects) data.recentProjects.Add(CopyString(s));
+               for(s : oldSettings.recentFiles) data.recentFiles.Add(s);
+               for(s : oldSettings.recentProjects) data.recentProjects.Add(s);
 
                data.docDir = oldSettings.docDir;
                data.ideFileDialogLocation = oldSettings.ideFileDialogLocation;
@@ -452,8 +452,8 @@ class IDESettings : GlobalSettingsData
 {
 public:
    List<CompilerConfig> compilerConfigs { };
-   Array<String> recentFiles { };
-   Array<String> recentProjects { };
+   RecentPaths recentFiles { };
+   RecentPaths recentProjects { };
    property const char * docDir
    {
       set { delete docDir; if(value && value[0]) docDir = CopyString(value); }
@@ -551,10 +551,8 @@ private:
    {
       compilerConfigs.Free();
       delete compilerConfigs;
-      recentFiles.Free();
-      delete recentFiles;
-      recentProjects.Free();
-      delete recentProjects;
+      if(recentProjects) { recentFiles.Free(); delete recentFiles; }
+      if(recentProjects) { recentProjects.Free(); delete recentProjects; }
       delete docDir;
 
       delete projectDefaultTargetDir;
@@ -606,24 +604,8 @@ private:
             }
          }
       }
-      if(recentFiles && recentFiles.count)
-      {
-         int c;
-         for(c = 0; c < recentFiles.count; c++)
-         {
-            if(recentFiles[c] && recentFiles[c][0])
-               ChangeCh(recentFiles[c], from, to);
-         }
-      }
-      if(recentProjects && recentProjects.count)
-      {
-         int c;
-         for(c = 0; c < recentProjects.count; c++)
-         {
-            if(recentProjects[c] && recentProjects[c][0])
-               ChangeCh(recentProjects[c], from, to);
-         }
-      }
+      recentFiles.changeChar(from, to);
+      recentProjects.changeChar(from, to);
       if(docDir && docDir[0])
          ChangeCh(docDir, from, to);
       if(ideFileDialogLocation && ideFileDialogLocation[0])
@@ -725,43 +707,55 @@ private:
       }
       return output;
    }
+}
 
-   void AddRecentFile(const char * fileName)
+class RecentPaths : Array<String>
+{
+   IteratorPointer Add(T value)
    {
       int c;
-      char * filePath = CopyString(fileName);
+      char * filePath = (char *)value;
       ChangeCh(filePath, '\\', '/');
-      for(c = 0; c<recentFiles.count; c++)
+      for(c = 0; c < count; c++)
       {
-         if(recentFiles[c] && !fstrcmp(recentFiles[c], filePath))
+         if(this[c] && !fstrcmp(this[c], filePath))
          {
-            recentFiles.Delete((void *)&recentFiles[c]);
+            Delete((void *)&this[c]);
             c--;
          }
       }
-      while(recentFiles.count >= MaxRecent)
-         recentFiles.Delete(recentFiles.GetLast());
-      recentFiles.Insert(null, filePath);
-      //UpdateRecentMenus(owner);
+      return Array::Add((T)filePath);
    }
 
-   void AddRecentProject(const char * projectName)
+   IteratorPointer addRecent(T value)
    {
       int c;
-      char * filePath = CopyString(projectName);
+      char * filePath = (char *)value;
       ChangeCh(filePath, '\\', '/');
-      for(c = 0; c<recentProjects.count; c++)
+      for(c = 0; c < count; c++)
       {
-         if(recentProjects[c] && !fstrcmp(recentProjects[c], filePath))
+         if(this[c] && !fstrcmp(this[c], filePath))
          {
-            recentProjects.Delete((void *)&recentProjects[c]);
+            Delete((void *)&this[c]);
             c--;
          }
       }
-      while(recentProjects.count >= MaxRecent)
-         recentProjects.Delete(recentProjects.GetLast());
-      recentProjects.Insert(null, filePath);
-      //UpdateRecentMenus(owner);
+      while(count >= MaxRecent)
+         Delete(GetLast());
+      return Insert(null, filePath);
+   }
+
+   void changeChar(char from, char to)
+   {
+      if(this && count)
+      {
+         int c;
+         for(c = 0; c < count; c++)
+         {
+            if(this[c] && this[c][0])
+               ChangeCh(this[c], from, to);
+         }
+      }
    }
 }
 
