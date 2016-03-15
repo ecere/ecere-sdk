@@ -2101,7 +2101,7 @@ class CodeEditor : Window
       if(!parentClosing)
       {
          if(ide.workspace && fileName)
-            ide.workspace.UpdateOpenedFileInfo(fileName, closed);
+            ide.workspace.UpdateOpenedFileInfo(fileName, closed, false);
          if(inUseDebug && !debugClosing)
          {
             debugClosing = true;

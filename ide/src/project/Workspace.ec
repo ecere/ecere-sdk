@@ -534,20 +534,26 @@ public:
       return node;
    }
 
-   OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state)
+   OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state, bool fileOpen)
    {
+      bool insert = false;
       char absolutePath[MAX_LOCATION];
       char relativePath[MAX_LOCATION];
       OpenedFileInfo ofi;
       GetSlashPathBuffer(absolutePath, fileName);
       MakeRelativePath(relativePath, fileName);
       ofi = FindOpenedFileInfo(relativePath, absolutePath);
+      if(fileOpen && ofi)
+      {
+         openedFiles.Remove(openedFiles.Find(ofi));
+         insert = true;
+      }
       if(state)
       {
          if(!ofi)
          {
             ofi = OpenedFileInfo { path = CopyString(relativePath) };
-            openedFiles.Add(ofi);
+            insert = true;
          }
          ofi.state = state;
          ofi.modified = GetLocalTimeStamp();
@@ -562,6 +568,8 @@ public:
          if(!holdTracking)
             modified = true;
       }
+      if(insert)
+         openedFiles.Insert(null, ofi);
       return ofi;
    }
 
@@ -639,7 +647,7 @@ public:
 
    void RestorePreviouslyOpenedFileState(CodeEditor editor)
    {
-      if((editor.openedFileInfo = UpdateOpenedFileInfo(editor.fileName, opened)))
+      if((editor.openedFileInfo = UpdateOpenedFileInfo(editor.fileName, opened, true)))
          editor.openedFileInfo.SetCodeEditorState(editor);
    }
 
@@ -919,6 +927,21 @@ public:
          }
          ide.breakpointsView.Update(null);
       }
+   }
+
+   Array<String> getRecentFiles()
+   {
+      int c = 0;
+      Array<String> recentFiles { };
+      for(ofi : openedFiles; c < 9)
+      {
+         char path[MAX_LOCATION];
+         strcpy(path, workspaceDir);
+         PathCatSlash(path, ofi.path);
+         recentFiles.Add(CopyString(path));
+         c++;
+      }
+      return recentFiles;
    }
 
    void Init()
