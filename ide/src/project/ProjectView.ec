@@ -103,6 +103,56 @@ enum BuildState
    property bool { get { return this != none; } }
    //property bool actualBuild { get { return this == buildingMainProject || this == buildingSecondaryProject;  } }
 };
+enum BuildOutputMode { normal, raw, verbose, justPrint }; // note: verbose and justPrint both imply raw output
+Array<const String> bldMnuStrBuild
+{[
+   $"Build",
+   $"Build (Raw Output)",
+   $"Build (Verbose)",
+   $"Build (Just Print Commands)"
+]};
+Array<const String> bldMnuStrRelink
+{[
+   $"Relink",
+   $"Relink (Raw Output)",
+   $"Relink (Verbose)",
+   $"Relink (Just Print Commands)"
+]};
+Array<const String> bldMnuStrRebuild
+{[
+   $"Rebuild",
+   $"Rebuild (Raw Output)",
+   $"Rebuild (Verbose)",
+   $"Rebuild (Just Print Commands)"
+]};
+Array<const String> bldMnuStrCleanTarget
+{[
+   $"Clean Target",
+   $"Clean Target (Raw Output)",
+   $"Clean Target (Verbose)",
+   $"Clean Target (Just Print Commands)"
+]};
+Array<const String> bldMnuStrClean
+{[
+   $"Clean",
+   $"Clean (Raw Output)",
+   $"Clean (Verbose)",
+   $"Clean (Just Print Commands)"
+]};
+Array<const String> bldMnuStrRealClean
+{[
+   $"Real Clean",
+   $"Real Clean (Raw Output)",
+   $"Real Clean (Verbose)",
+   $"Real Clean (Just Print Commands)"
+]};
+Array<const String> bldMnuStrCompile
+{[
+   $"Compile",
+   $"Compile (Raw Output)",
+   $"Compile (Verbose)",
+   $"Compile (Just Print Commands)"
+]};
 
 class ProjectView : Window
 {
@@ -216,6 +266,7 @@ class ProjectView : Window
          {
             bool showDebuggingMenuItems = mods.ctrl && mods.shift;
             bool showInstallMenuItem = mods.ctrl && mods.shift;
+            BuildOutputMode outputMode = (mods.ctrl && mods.shift) ? justPrint : mods.ctrl ? verbose : mods.shift ? raw : normal;
             ProjectNode node = (ProjectNode)(intptr)row.tag;
 #ifdef IDE_SHOW_INSTALL_MENU_BUTTON
             showInstallMenuItem = true;
@@ -228,14 +279,14 @@ class ProjectView : Window
                if(node.type == NodeTypes::project)
                {
                   MenuItem mi;
-                                                                                                                                             mi = ide.projectBuildItem;
-                  MenuItem { pop, $"Build"              , b, f7     , NotifySelect = ProjectBuild      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
-                  MenuItem { pop, $"Relink"             , l         , NotifySelect = ProjectLink       , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
-                  MenuItem { pop, $"Rebuild"            , r, shiftF7, NotifySelect = ProjectRebuild    , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanTargetItem;
-                  MenuItem { pop, $"Clean Target"       , g         , NotifySelect = ProjectCleanTarget, bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
-                  MenuItem { pop, $"Clean"              , c         , NotifySelect = ProjectClean      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
-                  MenuItem { pop, $"Real Clean"                     , NotifySelect = ProjectRealClean  , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
-                  MenuItem { pop, $"Regenerate Makefile", m         , NotifySelect = ProjectRegenerate , bitmap = mi.bitmap }.disabled = na;
+                                                                                                                                                                        mi = ide.projectBuildItem;
+                  MenuItem { pop, bldMnuStrBuild[outputMode]      , b, f7     , id = outputMode, NotifySelect = ProjectBuild      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectLinkItem;
+                  MenuItem { pop, bldMnuStrRelink[outputMode]     , l         , id = outputMode, NotifySelect = ProjectLink       , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRebuildItem;
+                  MenuItem { pop, bldMnuStrRebuild[outputMode]    , r, shiftF7, id = outputMode, NotifySelect = ProjectRebuild    , bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanTargetItem;
+                  MenuItem { pop, bldMnuStrCleanTarget[outputMode], g         , id = outputMode, NotifySelect = ProjectCleanTarget, bitmap = mi.bitmap }.disabled = na; mi = ide.projectCleanItem;
+                  MenuItem { pop, bldMnuStrClean[outputMode]      , c         , id = outputMode, NotifySelect = ProjectClean      , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRealCleanItem;
+                  MenuItem { pop, bldMnuStrRealClean[outputMode]              , id = outputMode, NotifySelect = ProjectRealClean  , bitmap = mi.bitmap }.disabled = na; mi = ide.projectRegenerateItem;
+                  MenuItem { pop, $"Regenerate Makefile"          , m                          , NotifySelect = ProjectRegenerate , bitmap = mi.bitmap }.disabled = na;
                   if(showInstallMenuItem)
                   {
                      mi = ide.projectInstallItem;
@@ -285,8 +336,8 @@ class ProjectView : Window
                {
                   MenuItem { pop, $"Open", o, NotifySelect = FileOpenFile };
                   MenuDivider { pop };
-                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
-                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
+                  MenuItem { pop, bldMnuStrClean[outputMode], l, id = outputMode, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
+                  MenuItem { pop, bldMnuStrCompile[outputMode], c, Key { f7, ctrl = true}, id = outputMode, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
                   if(showDebuggingMenuItems)
                   {
                      char extension[MAX_EXTENSION];
@@ -328,8 +379,8 @@ class ProjectView : Window
                      // MenuItem { pop, $"Add New Behavior Graph...", g, NotifySelect = ProjectAddNewGraph };
                   }
                   MenuDivider { pop };
-                  MenuItem { pop, $"Clean", l, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
-                  MenuItem { pop, $"Compile", c, Key { f7, ctrl = true}, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
+                  MenuItem { pop, bldMnuStrClean[outputMode], l, id = outputMode, NotifySelect = FileClean, bitmap = ide.projectCleanItem.bitmap }.disabled = na;
+                  MenuItem { pop, bldMnuStrCompile[outputMode], c, Key { f7, ctrl = true}, id = outputMode, NotifySelect = FileCompile, bitmap = ide.projectBuildItem.bitmap }.disabled = na;
                   MenuDivider { pop };
                   MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { pop };
@@ -352,6 +403,7 @@ class ProjectView : Window
                   }
                };
                popupMenu.Create();
+               ide.rightClickMenuBuildOutputMode = outputMode;
                ide.AdjustPopupBuildMenus();
             }
          }
@@ -748,12 +800,12 @@ class ProjectView : Window
       return false;
    }
 
-   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw)
+   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode)
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         return Build(prj, buildType, compiler, config, bitDepth, justPrint, raw);
+         return Build(prj, buildType, compiler, config, bitDepth, outputMode);
       }
       return false;
    }
@@ -785,7 +837,7 @@ class ProjectView : Window
       return result;
    }
 
-   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw)
+   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode)
    {
       bool result = true;
       Window document;
@@ -811,11 +863,11 @@ class ProjectView : Window
 
          // TODO: Disabled until problems fixed... is it fixed?
          if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config, bitDepth, clean, justPrint, raw);
+            prj.Clean(compiler, config, bitDepth, clean, outputMode);
          else
          {
             if(buildType == relink || (config && config.linkingModified))
-               prj.Clean(compiler, config, bitDepth, cleanTarget, false, raw);
+               prj.Clean(compiler, config, bitDepth, cleanTarget, outputMode);
             if(config && config.symbolGenModified)
             {
                DirExpression objDir = prj.GetObjDir(compiler, config, bitDepth);
@@ -842,7 +894,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType, null, compiler, config, bitDepth, justPrint, raw, normal);
+         result = prj.Build(buildType, null, compiler, config, bitDepth, outputMode, normal);
 
          if(config)
          {
@@ -873,6 +925,7 @@ class ProjectView : Window
 
    bool ProjectBuild(MenuItem selection, Modifiers mods)
    {
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(buildInProgress == none)
       {
          Project prj = project;
@@ -894,7 +947,7 @@ class ProjectView : Window
          config = prj.config;
          if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
          {
-            BuildInterrim(prj, build, compiler, config, bitDepth, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+            BuildInterrim(prj, build, compiler, config, bitDepth, mode);
          }
          delete compiler;
       }
@@ -908,6 +961,7 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       int bitDepth = ide.workspace.bitDepth;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -925,11 +979,11 @@ class ProjectView : Window
       if(!prj.GetConfigIsInDebugSession(config) ||
             (!ide.DontTerminateDebugSession($"Project Install") && DebugStopForMake(prj, relink, compiler, config)))
       {
-         BuildInterrim(prj, build, compiler, config, bitDepth, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+         BuildInterrim(prj, build, compiler, config, bitDepth, mode);
          if(ProjectPrepareForToolchain(prj, normal, false, false, compiler, config))
          {
             ide.outputView.buildBox.Logf($"\nInstalling project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-            Build(prj, install, compiler, config, bitDepth, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+            Build(prj, install, compiler, config, bitDepth, mode);
          }
       }
       delete compiler;
@@ -941,6 +995,7 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       int bitDepth = ide.workspace.bitDepth;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -963,7 +1018,7 @@ class ProjectView : Window
             ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
             if(config)
                config.linkingModified = true;
-            Build(prj, relink, compiler, config, bitDepth, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+            Build(prj, relink, compiler, config, bitDepth, mode);
          }
       }
       delete compiler;
@@ -975,6 +1030,7 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.compiler);
       int bitDepth = ide.workspace.bitDepth;
       Project prj = project;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -1000,7 +1056,7 @@ class ProjectView : Window
                config.compilingModified = true;
                config.makingModified = true;
             }*/ // -- should this still be used depite the new solution of BuildType?
-            Build(prj, rebuild, compiler, config, bitDepth, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+            Build(prj, rebuild, compiler, config, bitDepth, mode);
          }
       }
       delete compiler;
@@ -1009,23 +1065,26 @@ class ProjectView : Window
 
    bool ProjectCleanTarget(MenuItem selection, Modifiers mods)
    {
-      CleanProject($"Project Clean Target", $"Cleaning project %s target using the %s configuration...\n", selection, cleanTarget, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+      CleanProject($"Project Clean Target", $"Cleaning project %s target using the %s configuration...\n", selection, cleanTarget, mode);
       return true;
    }
 
    bool ProjectClean(MenuItem selection, Modifiers mods)
    {
-      CleanProject($"Project Clean", $"Cleaning project %s using the %s configuration...\n", selection, clean, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+      CleanProject($"Project Clean", $"Cleaning project %s using the %s configuration...\n", selection, clean, mode);
       return true;
    }
 
    bool ProjectRealClean(MenuItem selection, Modifiers mods)
    {
-      CleanProject($"Project Real Clean", $"Removing intermediate objects directory for project %s using the %s configuration...\n", selection, realClean, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+      CleanProject($"Project Real Clean", $"Removing intermediate objects directory for project %s using the %s configuration...\n", selection, realClean, mode);
       return true;
    }
 
-   void CleanProject(const char * terminateDebugSessionMessage, const char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint, bool raw)
+   void CleanProject(const char * terminateDebugSessionMessage, const char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, BuildOutputMode outputMode)
    {
       Project prj = project;
       Array<Project> projects { };
@@ -1075,7 +1134,7 @@ class ProjectView : Window
                ide.AdjustBuildMenus();
                ide.AdjustDebugMenus();
 
-               prj.Clean(compiler, config, bitDepth, cleanType, justPrint, raw);
+               prj.Clean(compiler, config, bitDepth, cleanType, outputMode);
                buildInProgress = none;
                ide.AdjustBuildMenus();
                ide.AdjustDebugMenus();
@@ -1112,7 +1171,7 @@ class ProjectView : Window
       return true;
    }
 
-   bool Compile(Project project, List<ProjectNode> nodes, bool justPrint, bool raw, SingleFileCompileMode mode)
+   bool Compile(Project project, List<ProjectNode> nodes, BuildOutputMode outputMode, SingleFileCompileMode mode)
    {
       bool result = true;
       Window document;
@@ -1153,7 +1212,7 @@ class ProjectView : Window
 
             buildInProgress = compilingFile;
             ide.AdjustBuildMenus();
-            result = project.Compile(nodes, compiler, config, bitDepth, justPrint, raw, mode);
+            result = project.Compile(nodes, compiler, config, bitDepth, outputMode, mode);
             buildInProgress = none;
             ide.AdjustBuildMenus();
          }
@@ -1162,7 +1221,7 @@ class ProjectView : Window
       return result;
    }
 
-   bool Clean(Project project, List<ProjectNode> nodes, bool justPrint)
+   bool Clean(Project project, List<ProjectNode> nodes)
    {
       bool result = true;
       Window document;
@@ -1370,6 +1429,7 @@ class ProjectView : Window
       OldLink item;
       OldList selectedRows;
       Project project = null;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       List<ProjectNode> nodes { };
       fileList.GetMultiSelection(selectedRows);
       for(item = selectedRows.first; item; item = item.next)
@@ -1387,7 +1447,7 @@ class ProjectView : Window
       }
       selectedRows.Free(null);
       if(project)
-         Compile(project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, normal);
+         Compile(project, nodes, mode, normal);
       else
          ide.outputView.buildBox.Logf($"Please select files from a single project.\n");
       delete nodes;
@@ -1416,7 +1476,7 @@ class ProjectView : Window
       }
       selectedRows.Free(null);
       if(project)
-         Clean(project, nodes, mods.ctrl && mods.shift);
+         Clean(project, nodes);
       else
          ide.outputView.buildBox.Logf($"Please select files from a single project.\n");
       delete nodes;
@@ -1427,6 +1487,7 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1435,7 +1496,7 @@ class ProjectView : Window
             ProjectBuild(selection, mods);
          ide.Update(null);
          if(!stopBuild)
-            Compile(node.project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, debugPrecompile);
+            Compile(node.project, nodes, mode, debugPrecompile);
          delete nodes;
       }
       return true;
@@ -1445,6 +1506,7 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1452,9 +1514,9 @@ class ProjectView : Window
          if(node.type == project)
             ProjectBuild(selection, mods);
          else
-            Compile(node.project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, normal);
+            Compile(node.project, nodes, mode, normal);
          if(!stopBuild)
-            Compile(node.project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, debugCompile);
+            Compile(node.project, nodes, mode, debugCompile);
          delete nodes;
       }
       return true;
@@ -1464,6 +1526,7 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
+      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1471,9 +1534,9 @@ class ProjectView : Window
          if(node.type == project)
             ProjectBuild(selection, mods);
          else
-            Compile(node.project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, normal);
+            Compile(node.project, nodes, mode, normal);
          if(!stopBuild)
-            Compile(node.project, nodes, mods.ctrl && mods.shift, mods.ctrl && !mods.shift, debugGenerateSymbols);
+            Compile(node.project, nodes, mode, debugGenerateSymbols);
          delete nodes;
       }
       return true;
@@ -1558,7 +1621,7 @@ class ProjectView : Window
          project.Run(args, compiler, config, bitDepth);
       /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run, compiler, config, bitDepth, false, false))
+      else if(BuildInterrim(project, run, compiler, config, bitDepth, normal))
          project.Run(args, compiler, config, bitDepth);
       delete args;
       delete compiler;
@@ -1580,7 +1643,7 @@ class ProjectView : Window
       else if(project.GetDebug(config) ||
          MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, bitDepth, false, false))
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, bitDepth, normal))
          {
             if(compiler.type.isVC)
             {
@@ -1992,7 +2055,7 @@ class ProjectView : Window
       bool useValgrind = ide.workspace.useValgrind;
 
       bool result = false;
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, bitDepth, false, false))
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, bitDepth, normal))
       {
          // For Restart, compiler and config will only be used if for
          // whatever reason (if at all possible) the Debugger is in a
@@ -2030,7 +2093,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false, false)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
          ide.debugger.StepInto(compiler, config, bitDepth, useValgrind);
       delete compiler;
       return true;
@@ -2043,7 +2106,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false, false)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
          ide.debugger.StepOver(compiler, config, bitDepth, useValgrind, skip);
 
       delete compiler;
@@ -2057,7 +2120,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, false, false)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
          ide.debugger.StepUntil(compiler, config, bitDepth, useValgrind, skip);
 
       delete compiler;
