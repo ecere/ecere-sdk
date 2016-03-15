@@ -205,6 +205,7 @@ public:
    property List<Breakpoint> breakpoints { set { breakpoints = value; } get { return breakpoints; } isset { return breakpoints && breakpoints.count; } }
    property List<Watch> watches { set { watches = value; } get { return watches; } isset { return watches && watches.count; } }
    property List<OpenedFileInfo> openedFiles { set { openedFiles = value; } get { return openedFiles; } isset { return openedFiles && openedFiles.count; } }
+   property RecentPaths recentFiles { set { recentFiles = value; } get { return recentFiles; } isset { return recentFiles && recentFiles.count; } }
 
    bool useValgrind;
    ValgrindLeakCheck vgLeakCheck;
@@ -223,6 +224,7 @@ private:
    List<Breakpoint> breakpoints;
    List<Watch> watches;
    List<OpenedFileInfo> openedFiles;
+   RecentPaths recentFiles;
 
    char * workspaceFile;
    char * workspaceDir;
@@ -534,20 +536,26 @@ public:
       return node;
    }
 
-   OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state)
+   OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state, bool fileOpen)
    {
+      bool insert = false;
       char absolutePath[MAX_LOCATION];
       char relativePath[MAX_LOCATION];
       OpenedFileInfo ofi;
       GetSlashPathBuffer(absolutePath, fileName);
       MakeRelativePath(relativePath, fileName);
       ofi = FindOpenedFileInfo(relativePath, absolutePath);
+      if(fileOpen && ofi)
+      {
+         openedFiles.Remove(openedFiles.Find(ofi));
+         insert = true;
+      }
       if(state)
       {
          if(!ofi)
          {
             ofi = OpenedFileInfo { path = CopyString(relativePath) };
-            openedFiles.Add(ofi);
+            insert = true;
          }
          ofi.state = state;
          ofi.modified = GetLocalTimeStamp();
@@ -562,6 +570,8 @@ public:
          if(!holdTracking)
             modified = true;
       }
+      if(insert)
+         openedFiles.Insert(null, ofi);
       return ofi;
    }
 
@@ -641,7 +651,7 @@ public:
 
    void RestorePreviouslyOpenedFileState(CodeEditor editor)
    {
-      if((editor.openedFileInfo = UpdateOpenedFileInfo(editor.fileName, opened)))
+      if((editor.openedFileInfo = UpdateOpenedFileInfo(editor.fileName, opened, true)))
          editor.openedFileInfo.SetCodeEditorState(editor);
    }
 
@@ -931,6 +941,7 @@ public:
       if(!breakpoints) breakpoints = { };
       if(!watches) watches = { };
       if(!openedFiles) openedFiles = { };
+      if(!recentFiles) recentFiles = { };
    }
 
    void Free()
@@ -950,6 +961,7 @@ public:
       if(breakpoints) { breakpoints.Free(); delete breakpoints; }
       if(watches) { watches.Free(); delete watches; }
       if(openedFiles) { openedFiles.Free(); delete openedFiles; }
+      if(recentFiles) { recentFiles.Free(); delete recentFiles; }
 
       projects.Free();
    }
@@ -976,7 +988,6 @@ public:
       SetSourceDirs(null);
       Free();
    }
-
 }
 
 Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
@@ -1076,6 +1087,21 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
 
       if(workspace)
       {
+         if(!workspace.recentFiles || !workspace.recentFiles.count)
+         {
+            int c;
+            if(!workspace.recentFiles) workspace.recentFiles = { };
+            if(workspace.openedFiles && workspace.openedFiles.count)
+            {
+               for(c = workspace.openedFiles.count - 1; c >= 0; c--)
+               {
+                 char path[MAX_LOCATION];
+                 strcpy(path, workspace.workspaceDir);
+                 PathCatSlash(path, workspace.openedFiles[c].path);
+                 workspace.recentFiles.addRecent(CopyString(path));
+               }
+            }
+         }
          workspace.Init();
          if(!workspace.projects.first)
          {

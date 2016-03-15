@@ -45,7 +45,7 @@ IDESettingsContainer settingsContainer
 #ifndef MAKEFILE_GENERATOR
       IDESettings settings = (IDESettings)data;
       globalSettingsDialog.ideSettings = settings;
-      ide.UpdateRecentMenus();
+      ide.updateRecentMenus();
       ide.UpdateCompilerConfigs(true);
 #endif
    }

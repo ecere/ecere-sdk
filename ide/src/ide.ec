@@ -734,8 +734,8 @@ class IDEWorkSpace : Window
          }
       };
       MenuDivider { fileMenu };
-      Menu recentFiles { fileMenu, $"Recent Files", r };
-      Menu recentProjects { fileMenu, $"Recent Projects", p };
+      Menu recentFilesMenu { fileMenu, $"Recent Files", r };
+      Menu recentProjectsMenu { fileMenu, $"Recent Projects", p };
       MenuDivider { fileMenu };
       MenuItem exitItem
       {
@@ -751,7 +751,8 @@ class IDEWorkSpace : Window
       bool FileRecentFile(MenuItem selection, Modifiers mods)
       {
          int id = 0;
-         for(file : ideSettings.recentFiles)
+         RecentPaths recentFiles = workspace ? workspace.recentFiles : ideSettings.recentFiles;
+         for(file : recentFiles)
          {
             if(id == selection.id)
             {
@@ -821,8 +822,8 @@ class IDEWorkSpace : Window
                      newProjectDialog.CreateNewProject();
                      if(projectView)
                      {
-                        ideSettings.AddRecentProject(projectView.fileName);
-                        ide.UpdateRecentMenus();
+                        ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
+                        ide.updateRecentProjectsMenu();
                         settingsContainer.Save();
                      }
                   }
@@ -1723,6 +1724,7 @@ class IDEWorkSpace : Window
       ideMainFrame.SetText("%s - %s", project.topNode.name, titleECEREIDE);
 
       AdjustMenus();
+      updateRecentMenus();
 
       ide.breakpointsView.LoadFromWorkspace();
       ide.watchesView.LoadFromWorkspace();
@@ -1754,6 +1756,7 @@ class IDEWorkSpace : Window
          outputView.visible = false;
          ideMainFrame.text = titleECEREIDE;
          ide.AdjustMenus();
+         ide.updateRecentMenus();
          return true;
       }
       return false;
@@ -1820,8 +1823,8 @@ class IDEWorkSpace : Window
 
    void DocumentSaved(Window document, const char * fileName)
    {
-      ideSettings.AddRecentFile(fileName);
-      ide.UpdateRecentMenus();
+      ideSettings.recentFiles.addRecent(CopyString(fileName));
+      ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
       settingsContainer.Save();
    }
@@ -2537,7 +2540,7 @@ class IDEWorkSpace : Window
          {
             document.fileName = filePath;
             if(workspace && !workspace.holdTracking)
-               workspace.UpdateOpenedFileInfo(filePath, opened);
+               workspace.UpdateOpenedFileInfo(filePath, opened, true);
          }
       }
 
@@ -2566,11 +2569,11 @@ class IDEWorkSpace : Window
             document.state = maximized;
 
          if(isProject)
-            ideSettings.AddRecentProject(document.fileName);
-         else
-            ideSettings.AddRecentFile(document.fileName);
-         ide.UpdateRecentMenus();
+            ideSettings.recentProjects.addRecent(CopyString(document.fileName));
+         else if(!workspace)
+            ideSettings.recentFiles.addRecent(CopyString(document.fileName));
          ide.AdjustFileMenus();
+         ide.updateRecentFilesMenu();
          settingsContainer.Save();
 
          return document;
@@ -2583,19 +2586,19 @@ class IDEWorkSpace : Window
    /*bool Window::GenericDocumentOnClose(bool parentClosing)
    {
       if(!parentClosing && ide.workspace)
-         ide.workspace.UpdateOpenedFileInfo(fileName, unknown);
+         ide.workspace.UpdateOpenedFileInfo(fileName, unknown, false);
       return true;
    }*/
    bool ModelView::ModelViewOnClose(bool parentClosing)
    {
       if(!parentClosing && ide.workspace)
-         ide.workspace.UpdateOpenedFileInfo(fileName, unknown);
+         ide.workspace.UpdateOpenedFileInfo(fileName, unknown, false);
       return true;
    }
    bool PictureEdit::PictureEditOnClose(bool parentClosing)
    {
       if(!parentClosing && ide.workspace)
-         ide.workspace.UpdateOpenedFileInfo(fileName, unknown);
+         ide.workspace.UpdateOpenedFileInfo(fileName, unknown, false);
       return true;
    }
 
@@ -3166,8 +3169,8 @@ class IDEWorkSpace : Window
                   newProjectDialog.Modal();
                   if(projectView)
                   {
-                     ideSettings.AddRecentProject(projectView.fileName);
-                     ide.UpdateRecentMenus();
+                     ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
+                     ide.updateRecentMenus();
                      settingsContainer.Save();
                   }
                   delete newProjectDialog;
@@ -3459,38 +3462,46 @@ class IDEWorkSpace : Window
       return true;
    }
 
-   void UpdateRecentMenus()
+   void updateRecentMenus()
    {
-      int c;
-      Menu fileMenu = menu.FindMenu($"File");
-      Menu recentFiles = fileMenu.FindMenu($"Recent Files");
-      Menu recentProjects = fileMenu.FindMenu($"Recent Projects");
+      updateRecentFilesMenu();
+      updateRecentProjectsMenu();
+   }
+
+   void updateRecentFilesMenu()
+   {
+      int c = 0;
       char * itemPath = new char[MAX_LOCATION];
       char * itemName = new char[MAX_LOCATION+4];
-
-      recentFiles.Clear();
-      c = 0;
-
-      for(recent : ideSettings.recentFiles)
+      Workspace ws = workspace;
+      RecentPaths recentFiles = ws ? ws.recentFiles : ideSettings.recentFiles;
+      recentFilesMenu.Clear();
+      for(recent : recentFiles)
       {
          strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
          MakeSystemPath(itemPath);
          snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemName[MAX_LOCATION+4-1] = '\0';
-         recentFiles.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
+         recentFilesMenu.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
          c++;
       }
+      delete itemPath;
+      delete itemName;
+   }
 
-      recentProjects.Clear();
-      c = 0;
+   void updateRecentProjectsMenu()
+   {
+      int c = 0;
+      char * itemPath = new char[MAX_LOCATION];
+      char * itemName = new char[MAX_LOCATION+4];
+      recentProjectsMenu.Clear();
       for(recent : ideSettings.recentProjects)
       {
          strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
          MakeSystemPath(itemPath);
          snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemName[MAX_LOCATION+4-1] = '\0';
-         recentProjects.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
+         recentProjectsMenu.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
          c++;
       }
-
       delete itemPath;
       delete itemName;
    }
