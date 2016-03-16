@@ -182,7 +182,7 @@ private:
             }
          }
       }
-      else if(isalpha(ch))
+      else if(isalpha(ch) || ch == '_')
       {
          if(eCON)
          {
@@ -247,7 +247,7 @@ private:
          {
             char buffer[256];
             int c = 0;
-            while(c < sizeof(buffer)-1 && isalpha(ch))
+            while(c < sizeof(buffer)-1 && (isalpha(ch) || isdigit(ch) || ch == '_'))
             {
                buffer[c++] = ch;
                if(!f.Getc(&ch)) break;
@@ -507,7 +507,7 @@ private:
                break;
             }
          }
-         else if(ch == '\"' || (!comment && ch && !isalpha(ch)))
+         else if(ch == '\"' || (!comment && ch && !isalpha(ch) && !isdigit(ch) && ch != '_'))
          {
             if(quoted && ch == '\"' && wasQuoted)
                *wasQuoted = true;
@@ -587,7 +587,7 @@ private:
                         lineComment = false;
                      else if(comment && pch == '*' && ch == '/')
                         comment = false;
-                     else if(ch == '=' || ch == ';' || ch == ',' || ch == '}')
+                     else if(ch == '=' || ch == ';' || ch == ',' || ch == ']' || ch == '}')
                      {
                         ch = 0;
                         seekback = -1;
