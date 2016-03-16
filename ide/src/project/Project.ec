@@ -406,7 +406,7 @@ static bool IsLinkerOption(String s)
 
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
-enum GenMakefilePrintTypes { objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources };
+enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources };
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
@@ -2573,7 +2573,8 @@ private:
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
-            f.Printf("LD := $(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_LD_FLAGS),$(space)$(GCC_LD_FLAGS),)\n", compiler.ldCommand);
+            f.Printf("LD := $(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_LD_FLAGS),$(space)$(GCC_LD_FLAGS),)\n",
+                  compiler.ldCommand && compiler.ldCommand[0] ? compiler.ldCommand : "$(if $(CONTAINS_CXX),$(CXX),$(CC))");
             f.Printf("AR := $(GCC_PREFIX)%s\n", compiler.arCommand);
             f.Puts("STRIP := $(GCC_PREFIX)strip\n");
             f.Puts("ifdef WINDOWS_TARGET\n");
@@ -2685,7 +2686,7 @@ private:
       return result;
    }
 
-   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config, const char * ldCommand)
+   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
@@ -2776,6 +2777,9 @@ private:
          f.Printf("MODULE := %s\n", fixedModuleName);
          f.Printf("VERSION := %s\n", property::moduleVersion);
          f.Printf("CONFIG := %s\n", fixedConfigName);
+         topNode.GenMakefilePrintNode(f, this, noPrint, null, null, config, &containsCXX);
+         if(containsCXX)
+            f.Puts("CONTAINS_CXX := defined\n");
          f.Puts("ifndef COMPILER\n" "COMPILER := default\n" "endif\n");
          f.Puts("\n");
 
@@ -2997,7 +3001,7 @@ private:
             f.Puts("endif\n\n");
          }
 
-         numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, &containsCXX);
+         numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, null);
          if(numObjects)
             objectsParts = OutputFileList(f, "_OBJECTS", listItems, varStringLenDiffs, null);
          f.Printf("OBJECTS =%s%s%s%s\n",
@@ -3403,7 +3407,7 @@ private:
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
 
-         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n", ldCommand && ldCommand[0] ? "LD" : containsCXX ? "CXX" : "CC");
+         f.Puts("\t$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
