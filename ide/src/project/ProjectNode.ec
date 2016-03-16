@@ -1595,9 +1595,10 @@ private:
                collision = info ? info.IsExtensionColliding(extension) : false;
                sprintf(s, "%s$(OBJ)%s%s%s$(O)%s", ts.a, moduleName, collision ? "." : "", collision ? extension : "", ts.b);
                items.Add(CopyString(s));
-               if(containsCXX && (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
-                  *containsCXX = true;
             }
+            else if(printType == noPrint && containsCXX &&
+                  (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
+               *containsCXX = true;
          }
          delete ts;
       }

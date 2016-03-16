@@ -737,7 +737,7 @@ class ProjectView : Window
             //logBox.Logf("%s\n", makefileName);
             logBox.Logf($"%s - %s%smakefile for %s config...\n", makefileName, reason, action, GetConfigName(config));
 
-            if(!project.GenerateMakefile(null, false, null, config, compiler.ldCommand))
+            if(!project.GenerateMakefile(null, false, null, config))
                ide.outputView.buildBox.Logf($"Error generating makefile (Is the project directory writable?)\n");
 
             ide.statusBar.text = null;
