@@ -18,6 +18,7 @@ public:
             dataClass = (subclass(GlobalSettingsData))globalSettings.data._class;
          //incref dataBackup;
          //incref dataBackup;
+         f.Seek(0, start);
          jsonResult = parser.GetObject(dataClass, &globalSettings.data);
          if(globalSettings.data)
          {

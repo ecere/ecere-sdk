@@ -85,7 +85,7 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 -DMAKEFILE_GENERATOR
+			 -DOUTSIDE_IDE_SETTINGS_USE
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \

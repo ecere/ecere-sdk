@@ -2,6 +2,9 @@
    "Version" : 0.2,
    "ModuleName" : "documentor",
    "Options" : {
+      "PreprocessorDefinitions" : [
+         "OUTSIDE_IDE_SETTINGS_USE"
+      ],
       "TargetFileName" : "documentor",
       "Libraries" : [
          "ecere"

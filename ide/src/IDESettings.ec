@@ -24,6 +24,24 @@ import "OldIDESettings"
 import "process"
 #endif
 
+IDESettings ideSettings;
+
+IDESettingsContainer settingsContainer
+{
+   dataOwner = &ideSettings;
+   dataClass = class(IDESettings);
+
+   void OnLoad(GlobalSettingsData data)
+   {
+#ifndef OUTSIDE_IDE_SETTINGS_USE
+      IDESettings settings = (IDESettings)data;
+      globalSettingsDialog.ideSettings = settings;
+      ide.UpdateRecentMenus();
+      ide.UpdateCompilerConfigs(true);
+#endif
+   }
+};
+
 define MaxRecent = 9;
 
 enum DirTypes { includes, libraries, executables };
@@ -235,20 +253,42 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
 }
 
 #ifdef SETTINGS_TEST
-define settingsName = "ecereIDE-SettingsTest";
+define settingsDir = ".ecereIDE-SettingsTest";
+define ideSettingsName = "ecereIDE-SettingsTest";
 #else
+define settingsDir = ".ecereIDE";
 define ideSettingsName = "ecereIDE";
 #endif
 
 class IDESettingsContainer : GlobalSettings
 {
-   settingsName = ideSettingsName;
+   property bool useNewConfigurationFiles
+   {
+      set
+      {
+         if(value)
+         {
+            settingsContainer.driver = "ECON";
+            settingsName = "config";
+            settingsExtension = "econ";
+            settingsDirectory = settingsDir;
+         }
+         else
+         {
+            settingsContainer.driver = "JSON";
+            settingsName = ideSettingsName;
+            settingsExtension = null;
+            settingsDirectory = null;
+         }
+      }
+   }
 
    virtual void OnLoad(GlobalSettingsData data);
 
    char moduleLocation[MAX_LOCATION];
 
 private:
+   bool oldConfig;
    FileSize settingsFileSize;
 
    IDESettingsContainer()
@@ -327,9 +367,23 @@ private:
 
    SettingsIOResult Load()
    {
-      SettingsIOResult result = GlobalSettings::Load();
-      IDESettings data = (IDESettings)this.data;
+      IDESettings data;
       CompilerConfig defaultCompiler = null;
+      SettingsIOResult result;
+      useNewConfigurationFiles = true;
+      result = GlobalSettings::Load();
+      data = (IDESettings)this.data;
+      oldConfig = false;
+      if(result == fileNotFound)
+      {
+         oldConfig = true;
+         /*delete this.data;
+         data = null;
+         *dataOwner = null;*/
+         useNewConfigurationFiles = false;
+         result = GlobalSettings::Load();
+      }
+      data = (IDESettings)this.data;
       if(!data)
       {
          this.data = IDESettings { };
@@ -377,17 +431,38 @@ private:
          }
       }
 
+      if(settingsFilePath)
       {
-         char path[MAX_LOCATION];
-         CompilerConfigsData compilerConfigs = null;
-         GetCompilerConfigsFilePath(path, settingsFilePath);
-         readCompilerConfigs(path, &compilerConfigs);
-         if(compilerConfigs && compilerConfigs.compilers && compilerConfigs.compilers.count)
          {
-            data.property::compilerConfigs = compilerConfigs.compilers;
-            compilerConfigs.compilers = null;
+            CompilerConfigsData d = null;
+            d.read(settingsFilePath, oldConfig, class(CompilerConfigsData), &d);
+            if(d && d.compilers && d.compilers.count)
+            {
+               data.property::compilerConfigs = d.compilers;
+               d.compilers = null;
+            }
+            delete d;
          }
-         delete compilerConfigs;
+         {
+            RecentFilesData d = null;
+            d.read(settingsFilePath, oldConfig, class(RecentFilesData), &d);
+            if(d && d.recentFiles && d.recentFiles.count)
+            {
+               data.property::recentFiles = d.recentFiles;
+               d.recentFiles = null;
+            }
+            delete d;
+         }
+         {
+            RecentWorkspacesData d = null;
+            d.read(settingsFilePath, oldConfig, class(RecentWorkspacesData), &d);
+            if(d && d.recentWorkspaces && d.recentWorkspaces.count)
+            {
+               data.property::recentProjects = d.recentWorkspaces;
+               d.recentWorkspaces = null;
+            }
+            delete d;
+         }
       }
 
       // Ensure we have a default compiler
@@ -436,20 +511,30 @@ private:
          data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
       OnLoad(data);
+      if(oldConfig)
+      {
+         useNewConfigurationFiles = true;
+         Save();
+      }
       return result;
    }
 
    SettingsIOResult Save()
    {
       SettingsIOResult result;
-
-      IDESettings data = (IDESettings)this.data;
+      IDESettings data;
+      useNewConfigurationFiles = true;
+      data = (IDESettings)this.data;
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, false);
       data.ForcePathSeparatorStyle(true);
+      if(oldConfig)
+         settingsFilePath = null;
       result = GlobalSettings::Save();
       if(result != success)
          PrintLn("Error saving IDE settings");
+      else
+         oldConfig = false;
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
 
@@ -457,81 +542,144 @@ private:
       FileGetSize(settingsFilePath, &settingsFileSize);
 
       {
-         char path[MAX_LOCATION];
-         CompilerConfigsData compilerConfigs { };
-         delete compilerConfigs.compilers;
-         compilerConfigs.compilers = data.compilerConfigs;
-         GetCompilerConfigsFilePath(path, settingsFilePath);
-         writeCompilerConfigs(path, compilerConfigs);
-         compilerConfigs.compilers = null;
-         delete compilerConfigs;
+         CompilerConfigsData d { };
+         delete d.compilers;
+         d.compilers = data.compilerConfigs;
+         d.write(settingsFilePath, oldConfig, class(CompilerConfigsData), d);
+         d.compilers = null;
+         delete d;
+      }
+      {
+         RecentFilesData d { };
+         delete d.recentFiles;
+         d.recentFiles = data.recentFiles;
+         d.write(settingsFilePath, oldConfig, class(RecentFilesData), d);
+         d.recentFiles = null;
+         delete d;
+      }
+      {
+         RecentWorkspacesData d { };
+         delete d.recentWorkspaces;
+         d.recentWorkspaces = data.recentProjects;
+         d.write(settingsFilePath, oldConfig, class(RecentWorkspacesData), d);
+         d.recentWorkspaces = null;
+         delete d;
       }
 
       return result;
    }
 }
 
-class CompilerConfigsData
+static void getDotEcereIDEFileDataPath(const char * settingsFilePath, bool oldConfig, Class _class, char * path)
+{
+   strcpy(path, settingsFilePath);
+   StripLastDirectory(path, path);
+   if(oldConfig)
+      PathCatSlash(path, settingsDir);
+   if(_class == class(CompilerConfigsData))
+      PathCatSlash(path, "compilerConfigs.econ");
+   else if(_class == class(RecentFilesData))
+      PathCatSlash(path, "recentFiles.econ");
+   else if(_class == class(RecentWorkspacesData))
+      PathCatSlash(path, "recentWorkspaces.econ");
+}
+
+class DotEcereIDEFileData
+{
+   SettingsIOResult write(const char * settingsFilePath, bool oldConfig, Class _class, DotEcereIDEFileData data)
+   {
+      SettingsIOResult result = error;
+      char path[MAX_LOCATION];
+      File f;
+      getDotEcereIDEFileDataPath(settingsFilePath, oldConfig, _class, path);
+      f = FileOpen(path, write);
+      if(f)
+      {
+         WriteECONObject(f, _class, data, 0);
+         delete f;
+         result = success;
+      }
+      else
+         PrintLn($"Error writing compiler configs file to ", path, " location.");
+      return result;
+   }
+
+   SettingsIOResult read(const char * settingsFilePath, bool oldConfig, Class _class, DotEcereIDEFileData * data/*, bool interactive*/)
+   {
+      SettingsIOResult result = error;
+      char path[MAX_LOCATION];
+      File f;
+      getDotEcereIDEFileDataPath(settingsFilePath, oldConfig, _class, path);
+      if(!FileExists(path))
+         result = fileNotFound;
+      else if((f = FileOpen(path, read)))
+      {
+         JSONResult jsonResult;
+         {
+            ECONParser parser { f = f };
+            f.Seek(0, start);
+            jsonResult = parser.GetObject(_class, data);
+            if(jsonResult != success)
+               delete *data;
+            delete parser;
+         }
+         if(!*data)
+         {
+            JSONParser parser { f = f };
+            f.Seek(0, start);
+            jsonResult = parser.GetObject(this._class, data);
+            if(jsonResult != success)
+               delete *data;
+            delete parser;
+         }
+         if(jsonResult == success)
+            result = success;
+         else
+         {
+   #if 0
+            if(jsonResult == syntaxError && (!interactive || MessageBox { type = yesNo, master = cartographer,
+                              caption = $"Corrupt compiler configs file", contents = $"Attempt to load safety copy?" }.Modal() == yes))
+            {
+               char * altPath = new char[MAX_LOCATION]; strcat(altPath, path);
+               delete f;
+               strcat(altPath, ".copy");
+               if((f = FileOpen(altPath, read)))
+               {
+                  jsonResult = parser.GetObject(this._class, data);
+                  if(jsonResult == success)
+                     result = success;
+               }
+               delete altPath;
+            }
+            else
+   #endif
+            {
+               result = fileNotCompatibleWithDriver;
+               PrintLn($"Error reading compiler configs file");
+            }
+         }
+         delete f;
+      }
+      return result;
+   }
+}
+
+class CompilerConfigsData : DotEcereIDEFileData
 {
 public:
    List<CompilerConfig> compilers { };
 }
 
-SettingsIOResult writeCompilerConfigs(const char * path, CompilerConfigsData compilerConfigsData)
+class RecentFilesData : DotEcereIDEFileData
 {
-   SettingsIOResult result = error;
-   File f = FileOpen(path, write);
-   if(f)
-   {
-      WriteJSONObject(f, class(CompilerConfigsData), compilerConfigsData, 0);
-      delete f;
-      result = success;
-   }
-   else
-      PrintLn($"Error writing compiler configs file to ", path, " location.");
-   return result;
+public:
+   Array<String> recentFiles { };
 }
 
-SettingsIOResult readCompilerConfigs(const char * path, CompilerConfigsData * compilerConfigsData/*, bool interactive*/)
+class RecentWorkspacesData : DotEcereIDEFileData
 {
-   SettingsIOResult result = error;
-   File f;
-   if(!FileExists(path))
-      result = fileNotFound;
-   else if((f = FileOpen(path, read)))
-   {
-      JSONParser parser { f = f };
-      JSONResult jsonResult = parser.GetObject(class(CompilerConfigsData), compilerConfigsData);
-      if(jsonResult == success)
-         result = success;
-      else
-      {
-#if 0
-         if(jsonResult == syntaxError && (!interactive || MessageBox { type = yesNo, master = cartographer,
-                           caption = $"Corrupt compiler configs file", contents = $"Attempt to load safety copy?" }.Modal() == yes))
-         {
-            char * altPath = new char[MAX_LOCATION]; strcat(altPath, path);
-            delete f;
-            strcat(altPath, ".copy");
-            if((f = FileOpen(altPath, read)))
-            {
-               jsonResult = parser.GetObject(class(CompilerConfigsData), compilerConfigsData);
-               if(jsonResult == success)
-                  result = success;
-            }
-            delete altPath;
-         }
-         else
-#endif
-         {
-            result = fileNotCompatibleWithDriver;
-            PrintLn($"Error reading compiler configs file");
-         }
-      }
-      delete parser;
-      delete f;
-   }
-   return result;
+public:
+   Array<String> recentWorkspaces { };
 }
 
 class IDESettings : GlobalSettingsData
@@ -543,8 +691,18 @@ public:
       get { return compilerConfigs; }
       isset { return false; }
    }
-   Array<String> recentFiles { };
-   Array<String> recentProjects { };
+   property Array<String> recentFiles
+   {
+      set { delete recentFiles; if(value) recentFiles = value; }
+      get { return recentFiles; }
+      isset { return false; }
+   }
+   property Array<String> recentProjects
+   {
+      set { delete recentProjects; if(value) recentProjects = value; }
+      get { return recentProjects; }
+      isset { return false; }
+   }
    property const char * docDir
    {
       set { delete docDir; if(value && value[0]) docDir = CopyString(value); }
@@ -619,6 +777,8 @@ private:
    char * compilerConfigsDir;
    char * defaultCompiler;
    String language;
+   Array<String> recentFiles { };
+   Array<String> recentProjects { };
 
    CompilerConfig GetCompilerConfig(const String compilerName)
    {
@@ -1299,28 +1459,6 @@ public:
       incref copy;
       return copy;
    }
-}
-
-void GetCompilerConfigsFilePath(char * path, const char * settingsFilePath)
-{
-   const char * addendum = "-CompilerConfigs";
-   int s, d, max = Min(strlen(settingsFilePath), MAX_LOCATION-1);
-   int lenS = strlen(ideSettingsName);
-   int lenD = lenS + strlen(addendum);
-   for(s = d = 0; s<max; )
-   {
-      if(strstr(settingsFilePath+s, ideSettingsName) == settingsFilePath+s)
-      {
-         path[d] = '\0';
-         strcat(path, ideSettingsName);
-         strcat(path, addendum);
-         s += lenS;
-         d += lenD;
-      }
-      else
-         path[d++] = settingsFilePath[s++];
-   }
-   path[d] = '\0';
 }
 
 #if defined(ECERE_IDE)

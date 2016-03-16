@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "MAKEFILE_GENERATOR"
+         "OUTSIDE_IDE_SETTINGS_USE"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "epj2make",

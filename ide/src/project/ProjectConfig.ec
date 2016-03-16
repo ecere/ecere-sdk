@@ -1,4 +1,4 @@
-#ifndef MAKEFILE_GENERATOR
+#ifndef OUTSIDE_IDE_SETTINGS_USE
 import "ide"
 #endif
 

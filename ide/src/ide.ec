@@ -3722,6 +3722,8 @@ class IDEApp : GuiApplication
       }
       */
 
+      globalSettingsDialog.settingsContainer = settingsContainer;
+
       // Default to language specified by environment if no language selected
       if(!ideSettings.language)
       {

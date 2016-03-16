@@ -1,4 +1,4 @@
-#ifndef MAKEFILE_GENERATOR
+#ifndef OUTSIDE_IDE_SETTINGS_USE
 import "ide"
 #else
 #ifdef ECERE_STATIC
@@ -10,17 +10,17 @@ import "ecere"
 import "Project"
 
 static define app = ((GuiApplication)__thisModule);
-#endif // #ifndef MAKEFILE_GENERATOR
+#endif // #ifndef OUTSIDE_IDE_SETTINGS_USE
 
 #define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
 
 static void OutputLog(const char * string)
 {
-#ifdef MAKEFILE_GENERATOR
+#ifdef OUTSIDE_IDE_SETTINGS_USE
    printf("%s", string);
 #else
    ide.outputView.buildBox.Log(string);
-#endif // #ifdef MAKEFILE_GENERATOR
+#endif // #ifdef OUTSIDE_IDE_SETTINGS_USE
 }
 
 bool eString_PathInsideOfMore(const char * path, const char * of, char * pathRest)
@@ -1318,7 +1318,7 @@ private:
       return node;
    }
 
-#ifndef MAKEFILE_GENERATOR
+#ifndef OUTSIDE_IDE_SETTINGS_USE
    void OnDisplay(Surface surface, int x, int y, int width, ProjectView projectView, Alignment alignment, DataDisplayFlags displayFlags)
    {
       char label[MAX_FILENAME];
@@ -1422,7 +1422,7 @@ private:
          }
       }
    }
-#endif // #ifndef MAKEFILE_GENERATOR
+#endif // #ifndef OUTSIDE_IDE_SETTINGS_USE
 
    int OnCompare(ProjectNode b)
    {
