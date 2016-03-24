@@ -333,7 +333,7 @@ static inline void OpenGLErrorCheck( const char *file, int line )
 #define DM_VERTEX_NORMFACTOR (4.0f)
 
 #define DM_TEXCOORD_NORMSHIFT (13)
-#define DM_TEXCOORD_NORMFACTOR (8192.0f)
+#define DM_TEXCOORD_NORMFACTOR (8192.0 /*f*/)
 
 static GLuint dmCreateShader( GLenum type, const char *shadersource, const char *optionstring )
 {
@@ -900,6 +900,8 @@ public class DrawManager
 
    void flushRenderDrawBuffer( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
+      glabCurArrayBuffer = 0;
+
       glBindBuffer( GL_ARRAY_BUFFER, drawBuffer.vbo );
       if( program.vertexloc != -1 )
       {
@@ -953,6 +955,8 @@ public class DrawManager
       DMDrawBuffer *drawBuffer;
       DMDrawVertex *vboVertex;
       DMProgram *program;
+
+      glabCurArrayBuffer = 0;
 
       ERRORCHECK();
 
@@ -1200,6 +1204,8 @@ public:
       }
 
       updateCount = 0;
+
+      glabCurArrayBuffer = 0;
 
       return true;
    }
