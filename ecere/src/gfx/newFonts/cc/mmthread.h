@@ -385,41 +385,53 @@ struct mtSpin
 
 static inline void mtSpinInit( mtSpin *spin )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_spin_init( &spin->pspinlock, PTHREAD_PROCESS_PRIVATE );
+#endif
   return;
 }
 
 static inline void mtSpinDestroy( mtSpin *spin )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_spin_destroy( &spin->pspinlock );
+#endif
   return;
 }
 
 static inline void mtSpinLock( mtSpin *spin )
 {
+#if !defined(__EMSCRIPTEN__)
   #ifdef MT_DEBUG
   if( pthread_spin_lock( &spin->pspinlock ) )
     DEBUG_WARNING();
   #else
   pthread_spin_lock( &spin->pspinlock );
   #endif
+#endif
   return;
 }
 
 static inline void mtSpinUnlock( mtSpin *spin )
 {
+#if !defined(__EMSCRIPTEN__)
   #ifdef MT_DEBUG
   if( pthread_spin_unlock( &spin->pspinlock ) )
     DEBUG_WARNING();
   #else
   pthread_spin_unlock( &spin->pspinlock );
   #endif
+#endif
   return;
 }
 
 static inline int mtSpinTryLock( mtSpin *spin )
 {
+#if !defined(__EMSCRIPTEN__)
   return !( pthread_spin_trylock( &spin->pspinlock ) );
+#else
+  return 0;
+#endif
 }
 
  #else
@@ -449,19 +461,27 @@ typedef struct
 
 static inline void mtBarrierInit( mtBarrier *barrier, int count )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_barrier_init( &barrier->pbarrier, 0, count );
+#endif
   return;
 }
 
 static inline void mtBarrierDestroy( mtBarrier *barrier )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_barrier_destroy( &barrier->pbarrier );
+#endif
   return;
 }
 
 static inline int mtBarrierWait( mtBarrier *barrier )
 {
+#if !defined(__EMSCRIPTEN__)
   return pthread_barrier_wait( &barrier->pbarrier );
+#else
+  return 0;
+#endif
 }
 
  #endif
@@ -484,42 +504,60 @@ struct mtRWlock
 
 static inline void mtRWlockInit( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_rwlock_init( &rwlock->prwlock, 0 );
+#endif
   return;
 }
 
 static inline void mtRWlockDestroy( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_rwlock_destroy( &rwlock->prwlock );
+#endif
   return;
 }
 
 static inline void mtRWlockRead( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_rwlock_rdlock( &rwlock->prwlock );
+#endif
   return;
 }
 
 static inline void mtRWlockWrite( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_rwlock_wrlock( &rwlock->prwlock );
+#endif
   return;
 }
 
 static inline void mtRWlockUnlock( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   pthread_rwlock_unlock( &rwlock->prwlock );
+#endif
   return;
 }
 
 static inline int mtRWlockTryRead( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   return pthread_rwlock_rdlock( &rwlock->prwlock );
+#else
+  return 0;
+#endif
 }
 
 static inline int mtRWlockTryWrite( mtRWlock *rwlock )
 {
+#if !defined(__EMSCRIPTEN__)
   return pthread_rwlock_wrlock( &rwlock->prwlock );
+#else
+  return 0;
+#endif
 }
 
  #endif
