@@ -224,7 +224,7 @@ static int ReadASCIIZ(File f, char ** string)
 
 static float ReadFloat(File f)
 {
-   float floatValue;
+   float floatValue = 0;
    f.Read(&floatValue, sizeof(float), 1);
    BIGENDSWAP_DWORD(floatValue);
    return floatValue;
@@ -232,7 +232,7 @@ static float ReadFloat(File f)
 
 static uint16 ReadWORD(File f)
 {
-   uint16 wordValue;
+   uint16 wordValue = 0;
    f.Read(&wordValue, sizeof(uint16), 1);
    BIGENDSWAP_WORD(wordValue);
    return wordValue;
@@ -240,7 +240,7 @@ static uint16 ReadWORD(File f)
 
 static uint ReadDWORD(File f)
 {
-   uint dwordValue;
+   uint dwordValue = 0;
    f.Read(&dwordValue, sizeof(uint), 1);
    BIGENDSWAP_DWORD(dwordValue);
    return dwordValue;
@@ -276,7 +276,7 @@ static bool ReadRGB(FileInfo * info, ColorRGB * rgb)
 {
    if(info->chunkId == RGB_BYTE || info->chunkId == RGB_BYTE_GAMMA)
    {
-      byte value;
+      byte value = 0;
       info->f.Getc((char *)&value); rgb->r = value / 255.0f;
       info->f.Getc((char *)&value); rgb->g = value / 255.0f;
       info->f.Getc((char *)&value); rgb->b = value / 255.0f;
@@ -326,7 +326,7 @@ struct SharedSourceVertexInfo
          if(face > b.face) return 1;
       }
       if(index == b.index) return 0;
-      if(WELD_TRESHOLD)
+      if(WELD_TRESHOLD > 0)
       {
          if(value.x < b.value.x - WELD_TRESHOLD) return -1;
          if(value.x > b.value.x + WELD_TRESHOLD) return 1;
@@ -479,7 +479,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
          }
 
          // Optional code to compensate auto-welding with a limit angle cutoff between faces of same smoothing group
-         if(SMOOTH_CUTOFF && WELD_TRESHOLD)
+         if(SMOOTH_CUTOFF && WELD_TRESHOLD > 0)
          {
             for(i : svInfo.faces)
             {
@@ -515,7 +515,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
                {
                   bool valid = true;
 
-                  if(SMOOTH_CUTOFF && WELD_TRESHOLD)
+                  if(SMOOTH_CUTOFF && WELD_TRESHOLD > 0)
                   {
                      int origIndexB = -1;
                      int k;
@@ -555,14 +555,14 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
                   }
                }
             }
-            if(!SMOOTH_CUTOFF || !WELD_TRESHOLD) break;
+            if(!SMOOTH_CUTOFF || !(WELD_TRESHOLD > 0)) break;
          }
          normal.Scale(normal, 1.0f / numShared);
          if(vInfo.index == index)
             vInfo.normal.Normalize(normal);
 
          // Auto welding/smoothing requires extra vertices because angle is too steep
-         if(SMOOTH_CUTOFF && WELD_TRESHOLD)
+         if(SMOOTH_CUTOFF && WELD_TRESHOLD > 0)
          {
             SharedDestVertexInfo newSharedInfo = null;
             int index;

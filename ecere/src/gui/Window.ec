@@ -6258,7 +6258,7 @@ private:
             guiApp.interfaceDriver.SetMousePosition(guiApp.windowMovingStart.x, guiApp.windowMovingStart.y);
          else
          {
-            int x, y;
+            int x = 0, y = 0;
             guiApp.interfaceDriver.GetMousePosition(&x, &y);
             guiApp.windowMovingStart.x += x - absPosition.x;
             guiApp.windowMovingStart.y += y - absPosition.y;
