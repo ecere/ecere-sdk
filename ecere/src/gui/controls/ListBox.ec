@@ -592,7 +592,7 @@ public:
       if(this)
       {
          ListBoxCell cell = listBox.GetCell(&this, &field);
-         if(cell && cell.isSet && cell.data)
+         if(cell && cell.isSet)
          {
             if((field.dataType.type == normalClass || field.dataType.type == noHeadClass))
                return cell.data[0];
@@ -882,8 +882,8 @@ private:
          if(sortField.dataType.type == normalClass || sortField.dataType.type == noHeadClass)
          {
             result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
-               (cell1.isSet && cell1.data) ? cell1.data[0] : null,
-               (cell2.isSet && cell2.data) ? cell2.data[0] : null);
+               cell1.isSet ? cell1.data[0] : null,
+               cell2.isSet ? cell2.data[0] : null);
          }
          else
          {
