@@ -1518,7 +1518,7 @@ class EARFileSystem : FileSystem
             EAREntry entry { };
             if(EARGetEntry(f, entry, name, null).isDirectory)
             {
-               uint first, last;
+               uint first = 0, last = 0;
 
                sprintf(d.path, "<%s>%s", archive, name);
                d.f = f;
