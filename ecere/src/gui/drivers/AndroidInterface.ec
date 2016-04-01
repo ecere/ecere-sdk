@@ -1066,8 +1066,7 @@ static Array<TouchPointerInfo> buildPointerInfo(AInputEvent * event)
    int i;
    for(i = 0; i < count; i++)
    {
-      infos[i].x = (int)AMotionEvent_getX(event, i);
-      infos[i].y = (int)AMotionEvent_getY(event, i);
+      infos[i].point = { (int)AMotionEvent_getX(event, i), (int)AMotionEvent_getY(event, i) };
       infos[i].id = (int)AMotionEvent_getPointerId(event, i);
       infos[i].pressure = AMotionEvent_getPressure(event, i);
       infos[i].size = AMotionEvent_getSize(event, i);
@@ -1138,6 +1137,7 @@ class AndroidActivity : AndroidAppGlue
                lastTime = time;
                mouseX = x, mouseY = y;
                if(result)
+                  // TOCHECK: Should we do result = here?
                   window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, x, y, &keyFlags, false, true);
                if(result)
                {
