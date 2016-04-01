@@ -494,7 +494,7 @@ private class HotKeySlot : struct
 public struct TouchPointerInfo
 {
    int id;
-   int x, y;
+   Point point;
    float size, pressure;
 };
 
@@ -4092,8 +4092,8 @@ private:
          while(result && w != this)
          {
             // TODO: How to handle this?
-            int x = infos[0].x;
-            int y = infos[0].y;
+            int x = infos[0].point.x;
+            int y = infos[0].point.y;
             Window msgWindow = GetAtPosition(x,y, false, true, w);
             Window window;
             delete w;
@@ -4113,11 +4113,11 @@ private:
 
                   for(i : in)
                   {
-                     i.x -= (window.absPosition.x + window.clientStart.x);
-                     i.y -= (window.absPosition.y + window.clientStart.y);
+                     i.point.x -= (window.absPosition.x + window.clientStart.x);
+                     i.point.y -= (window.absPosition.y + window.clientStart.y);
 
-                     i.x = Max(Min(i.x, 32767),-32768);
-                     i.y = Max(Min(i.y, 32767),-32768);
+                     i.point.x = Max(Min(i.point.x, 32767),-32768);
+                     i.point.y = Max(Min(i.point.y, 32767),-32768);
                   }
 
                   incref window;
