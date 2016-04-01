@@ -95,6 +95,7 @@ void shader_texturing(bool on)
    glUniform1i(uTexturingOn, on);
 }
 
+#if !defined(ECERE_NO3D)
 public void shader_setMaterial(Material material, bool perVertexColor)
 {
    glUniform1i(uPerVertexColor, perVertexColor);
@@ -106,6 +107,7 @@ public void shader_setMaterial(Material material, bool perVertexColor)
    glUniform1f(uMatPower, material.power);
    glUniform1f(uMatOpacity, material.opacity);
 }
+#endif
 
 public void shader_setSimpleMaterial(ColorAlpha color)
 {
@@ -128,6 +130,7 @@ public void shader_setPerVertexColor(bool perVertexColor)
    glUniform1i(uPerVertexColor, perVertexColor);
 }
 
+#if !defined(ECERE_NO3D)
 void shader_setLight(Display display, uint id, Light light)
 {
    if(light != null)
@@ -237,6 +240,7 @@ void shader_setLight(Display display, uint id, Light light)
    else
       glUniform1i(uLightsOn[id], 0);
 }
+#endif
 
 bool loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
 {

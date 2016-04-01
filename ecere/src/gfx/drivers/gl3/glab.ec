@@ -1,8 +1,6 @@
 // GL Array Buffer Manipulation
 
-#if defined(_GLES)
- #define ES1_1
-#else
+#if !defined(_GLES)
  #define SHADERS
 #endif
 
@@ -14,7 +12,9 @@
 #elif defined(__EMSCRIPTEN__)
    #include <GLES2/gl2.h>
 
-   #define ES2
+#if !defined(_GLES2)
+   #define _GLES2
+#endif
 
    #define GL_INT    0x1404
    #define GL_DOUBLE 0x140A
@@ -120,7 +120,7 @@ public struct GLAB
 
    void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
    {
-#if defined(_GLES) || defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && vboAvailable)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       if(type == GL_INT)
@@ -184,7 +184,7 @@ public struct GLEAB
       {
          if(glabCurElementBuffer != ((this != null) ? buffer : 0))
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-#if defined(_GLES) || defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
          type = GL_UNSIGNED_SHORT;
 #endif
          glDrawElements(primType, count, type, indices);
