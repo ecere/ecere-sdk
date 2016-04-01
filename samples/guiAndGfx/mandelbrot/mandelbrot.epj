@@ -1,0 +1,90 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "mandelbrot",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "mandelbrot",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse",
+               "-msse2",
+               "-msse3",
+               "-msse4"
+            ],
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "TargetFileName" : "mandelbrot.html",
+            "Libraries" : [
+               "ecereStatic",
+               "z",
+               "jpeg",
+               "png",
+               "freetype"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten"
+            ],
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "mandelbrot.ec",
+      "mandelbrotUI.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "shaders",
+               "Files" : [
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/fixed.vertex"
+               ]
+            }
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Emscripten",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      }
+   ]
+}
