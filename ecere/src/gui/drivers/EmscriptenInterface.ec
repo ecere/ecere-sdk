@@ -47,7 +47,7 @@ private:
 
 static Point lastMouse;
 
-static inline const char *emscripten_event_type_to_string(int eventType) {
+static __attribute__((unused)) inline const char *emscripten_event_type_to_string(int eventType) {
   const char *events[] = { "(invalid)", "(none)", "keypress", "keydown", "keyup", "click", "mousedown", "mouseup", "dblclick", "mousemove", "wheel", "resize",
     "scroll", "blur", "focus", "focusin", "focusout", "deviceorientation", "devicemotion", "orientationchange", "fullscreenchange", "pointerlockchange",
     "visibilitychange", "touchstart", "touchend", "touchmove", "touchcancel", "gamepadconnected", "gamepaddisconnected", "beforeunload",
@@ -68,6 +68,7 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
    Window window = guiApp.desktop;
    Modifiers mods { };
    int methodID;
+   bool result = true;
 
    mods.alt = e->altKey ? true : false;
    mods.shift = e->shiftKey ? true : false;
@@ -128,7 +129,96 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
       e->ctrlKey ? " CTRL" : "", e->shiftKey ? " SHIFT" : "", e->altKey ? " ALT" : "", e->metaKey ? " META" : "",
       e->button, e->buttons, e->movementX, e->movementY, e->canvasX, e->canvasY);
 */
-   return 0;
+   result = false;
+   return !result;
+}
+
+static Array<TouchPointerInfo> buildPointerInfo(const EmscriptenTouchEvent * event)
+{
+   uint count = event->numTouches;
+   Array<TouchPointerInfo> infos { size = count };
+   int i;
+   for(i = 0; i < count; i++)
+   {
+      infos[i].point = { event->touches[i].canvasX, event->touches[i].canvasY };
+      infos[i].id = i;
+      infos[i].pressure = 0;
+      infos[i].size = 0;
+   }
+   return infos;
+}
+
+static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void *userData)
+{
+   Window window = guiApp.desktop;
+   Modifiers mods { };
+   const EmscriptenTouchPoint * t1 = &e->touches[0];
+   int methodID;
+
+   mods.alt = e->altKey ? true : false;
+   mods.shift = e->shiftKey ? true : false;
+   mods.ctrl = e->ctrlKey ? true : false;
+
+   mods.left = (mouseButtons & 1) ? true : false;
+
+   switch(eventType)
+   {
+      case EMSCRIPTEN_EVENT_TOUCHMOVE:
+      {
+         Array<TouchPointerInfo> infos = buildPointerInfo(e);
+         lastMouse = { t1->canvasX, t1->canvasY };
+         if(window.MultiTouchMessage(move, infos, &mods, false, true))
+            window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, t1->canvasX, t1->canvasY, &mods, false, true);
+         delete infos;
+         break;
+      }
+      case EMSCRIPTEN_EVENT_TOUCHSTART:
+      {
+         bool result = true;
+         if(e->numTouches == 1)
+         {
+            static int mouseX, mouseY;
+            static Time lastTime = 0;
+            Time time = GetTime();
+            if(Abs(t1->canvasX - mouseX) < 40 && Abs(t1->canvasY - mouseY) < 40 && time - lastTime < 0.3)
+            {
+               methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick;
+               if(!window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true))
+                  result = false;
+            }
+            lastTime = time;
+            mouseX = t1->canvasX, mouseY = t1->canvasY;
+            if(result)
+            {
+               methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown;
+               // result = ?
+               window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true);
+            }
+            mouseButtons |= 1;
+         }
+         if(result)
+         {
+            Array<TouchPointerInfo> infos = buildPointerInfo(e);
+            window.MultiTouchMessage(e->numTouches == 1 ? down : pointerDown, infos, &mods, false, true);
+            delete infos;
+         }
+         break;
+      }
+      case EMSCRIPTEN_EVENT_TOUCHCANCEL:
+      case EMSCRIPTEN_EVENT_TOUCHEND:
+         methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
+         if(window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true))
+         {
+            Array<TouchPointerInfo> infos = buildPointerInfo(e);
+            window.MultiTouchMessage(e->numTouches > 1 ? pointerUp : up, infos, &mods, false, true);
+            delete infos;
+         }
+
+         // if(e->button == 0)
+            mouseButtons &= ~1;
+         break;
+   }
+   return 1;
 }
 
 static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void *userData)
@@ -150,7 +240,7 @@ static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void
 
    window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, key, 0);
 
-  return 0;
+   return 1;
 }
 static bool keyStatus[KeyCode];
 
@@ -207,6 +297,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
 {
    Window window = guiApp.desktop;
    Key key = 0;
+   bool result = 0;
    switch(e->keyCode)
    {
       case 8: key = backSpace; break;
@@ -362,12 +453,12 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
          case EMSCRIPTEN_EVENT_KEYDOWN:
             //PrintLn("Setting ", key, " to down");
             keyStatus[key] = true;
-            window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, key, (unichar)e->charCode);
+            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, key, (unichar)e->charCode);
             break;
          case EMSCRIPTEN_EVENT_KEYUP:
             //PrintLn("Setting ", key, " to false");
             keyStatus[key] = false;
-            window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, key, (unichar)e->charCode);
+            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, key, (unichar)e->charCode);
             break;
       }
    }
@@ -414,7 +505,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
   }
   */
 
-  return 0;
+  return !result;
 }
 
 static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void *userData)
@@ -457,19 +548,29 @@ class EmscriptenInterface : Interface
    {
       emscripten_set_resize_callback(0, 0, 1, uievent_callback);
       //emscripten_set_scroll_callback(0, 0, 1, uievent_callback);
+
       emscripten_set_click_callback(0, 0, 1, mouse_callback);
       emscripten_set_mousedown_callback(0, 0, 1, mouse_callback);
       emscripten_set_mouseup_callback(0, 0, 1, mouse_callback);
       emscripten_set_dblclick_callback(0, 0, 1, mouse_callback);
       emscripten_set_mousemove_callback(0, 0, 1, mouse_callback);
+      /*emscripten_set_mouseenter_callback(0, 0, 1, mouse_callback);
+      emscripten_set_mouseleave_callback(0, 0, 1, mouse_callback);*/
+
       emscripten_set_wheel_callback(0, 0, 1, wheel_callback);
+
       emscripten_set_keypress_callback(0, 0, 1, key_callback);
       emscripten_set_keydown_callback(0, 0, 1, key_callback);
       emscripten_set_keyup_callback(0, 0, 1, key_callback);
+
       emscripten_set_pointerlockchange_callback(0, 0, 1, pointerlockchange_callback);
       emscripten_set_fullscreenchange_callback(0, 0, 1, fullscreenchange_callback);
-      /*emscripten_set_mouseenter_callback(0, 0, 1, mouse_callback);
-      emscripten_set_mouseleave_callback(0, 0, 1, mouse_callback);*/
+
+      emscripten_set_touchstart_callback(0, 0, 1, touch_callback);
+      emscripten_set_touchend_callback(0, 0, 1, touch_callback);
+      emscripten_set_touchmove_callback(0, 0, 1, touch_callback);
+      emscripten_set_touchcancel_callback(0, 0, 1, touch_callback);
+
       return true;
    }
 
