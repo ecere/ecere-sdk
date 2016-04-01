@@ -45,13 +45,10 @@
             "TargetFileName" : "mandelbrot.html",
             "Libraries" : [
                "ecereStatic",
-               "z",
-               "jpeg",
-               "png",
-               "freetype"
+               "z"
             ],
             "LibraryDirs" : [
-               "../../../ecere/obj/emscripten.linux.emscripten"
+               "../../../ecere/obj/minEmscripten.linux.emscripten"
             ],
             "FastMath" : true
          }

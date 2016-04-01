@@ -2,9 +2,7 @@
 
 namespace gfx::drivers;
 
-#if defined(_GLES)
-   #define ES1_1
-#else
+#if !defined(_GLES)  // OpenGL ES 1
    #define SHADERS
 #endif
 
@@ -112,8 +110,8 @@ import "shading"
    #endif
 
    #if defined(__ANDROID__) || defined(__ODROID__)
-      #if defined(__ODROID__) && !defined(ES1_1)
-         #define ES1_1
+      #if defined(__ODROID__) && !defined(_GLES)
+         #define _GLES
       #endif
 
       #define uint _uint
@@ -145,8 +143,10 @@ import "shading"
       #undef class
 
    #elif defined(__EMSCRIPTEN__)
-      #define ES2
-      // #define ES1_1
+#if !defined(_GLES2)
+      #define _GLES2
+#endif
+      // #define _GLES
 
       #define property _property
       #define uint _uint
@@ -307,7 +307,7 @@ private:
    #define APIENTRY
 #endif
 
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
 
    #undef glRecti
    #undef glBegin
@@ -391,7 +391,7 @@ public void glesColorMaterial(int a, int b)
 }
 
 static GLuint stippleTexture;
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
 static bool stippleEnabled;
 #endif
 
@@ -462,7 +462,7 @@ void glDrawPixels(int a, int b, int c, int d, void * e) { }
 static int primitiveTypes[RenderPrimitiveType] =
 {
    GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
-#if defined(SHADERS) || defined(ES1_1) || defined(ES2)
+#if defined(SHADERS) || defined(_GLES) || defined(_GLES2)
    GL_TRIANGLE_FAN,     // NOTE: This will only work for single quads
 #else
    GLIMTKMode::quads,
@@ -501,7 +501,7 @@ public void GLSetupLighting(bool enable)
 
 // Non OpenGL ES friendly stuff
 
-#if defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
 
 //#undef GL_UNSIGNED_INT
 //#undef GL_DOUBLE
@@ -1689,7 +1689,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          oglDisplay.flipBufW = width;
          oglDisplay.flipBufH = height;
-#if defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
          result = true;
 #else
          oglDisplay.flippingBuffer = renew oglDisplay.flippingBuffer ColorAlpha [width * height];
@@ -2228,7 +2228,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glColor4fv(oglSurface.foreground);
       glBegin(GL_LINES);
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
       if(stippleEnabled)
       {
          glTexCoord2f(0.5f, 0);
@@ -2261,7 +2261,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("Rectangle\n");
 
       glColor4fv(oglSurface.foreground);
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
       if(stippleEnabled)
       {
          glBegin(GL_LINES);
@@ -2723,7 +2723,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(stipple)
       {
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
          stippleEnabled = true;
          glesLineStipple(1, (uint16)stipple);
 #else
@@ -2733,7 +2733,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
          stippleEnabled = false;
          glMatrixMode(GL_TEXTURE);
          glLoadIdentity();
@@ -2762,7 +2762,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
             break;
          case fillMode:
-#if !defined(ES1_1) && !defined(ES2)
+#if !defined(_GLES) && !defined(_GLES2)
             glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
 #endif
             break;
@@ -3351,7 +3351,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(vboAvailable)
       {
-#if defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
          if(indices32bit)
          {
             if(!oglIndices.buffer.buffer)
@@ -3499,7 +3499,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             OGLIndices oglIndices = primitive->data;
             GLEAB eab = ((!display.display3D.collectingHits && oglIndices && vboAvailable) ? oglIndices.buffer : noEAB);
-#if defined(ES1_1) || defined(ES2)
+#if defined(_GLES) || defined(_GLES2)
             if(!vboAvailable && primitive->type.indices32bit)
             {
                uint16 * temp = new uint16[primitive->nIndices];

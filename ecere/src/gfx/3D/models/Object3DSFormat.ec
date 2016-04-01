@@ -3,14 +3,16 @@ namespace gfx3D::models;
 import "Object"
 
 #if defined(__EMSCRIPTEN__)
-#define ES2
+#if !defined(_GLES2)
+#define _GLES2
+#endif
 #endif
 
 #if defined(__ANDROID__) || defined(__ODROID__)
-#define ES1_1
+#define _GLES
 #endif
 
-#if !defined(ES1_1) && !defined(ES2)
+#if !defined(_GLES) && !defined(_GLES2)
 #define USE_32_BIT_INDICES true
 #define indicesMember indices32
 #define uintindex uint32
