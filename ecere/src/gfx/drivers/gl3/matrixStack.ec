@@ -31,6 +31,28 @@ public union Matrix
       m[0][0]=m[1][1]=m[2][2]=m[3][3]=1;
    }
 
+   void Translate(double tx, double ty, double tz)
+   {
+      Matrix tmat;
+      Matrix mat1;
+
+      FillBytesBy4(tmat, 0, sizeof(Matrix) >> 2);
+      tmat.m[0][0]=tmat.m[1][1]=tmat.m[2][2]=tmat.m[3][3]=1;
+      tmat.m[3][0]=tx; tmat.m[3][1]=ty; tmat.m[3][2]=tz;
+      mat1.Multiply(this, tmat);
+      this = mat1;
+   }
+
+   void Scale(double sx, double sy, double sz)
+   {
+      Matrix smat;
+      Matrix mat1;
+      FillBytesBy4(smat, 0, sizeof(Matrix) >> 2);
+      smat.m[0][0]=sx; smat.m[1][1]=sy; smat.m[2][2]=sz; smat.m[3][3]=1;
+      mat1.Multiply(this, smat);
+      this = mat1;
+   }
+
    void Transpose(Matrix source)
    {
       int i,j;
@@ -151,7 +173,7 @@ public void glmsLoadMatrixf(float * i)
       i[2*4+0], i[2*4+1], i[2*4+2], i[2*4+3],
       i[3*4+0], i[3*4+1], i[3*4+2], i[3*4+3]
    };
-   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, i, 16*sizeof(double));
+   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, m, 16*sizeof(double));
    LoadCurMatrix();
 }
 
@@ -176,6 +198,29 @@ public void glmsOrtho( double l, double r, double b, double t, double n, double 
    LoadCurMatrix();
 }
 
+public void glmsScaled( double a, double b, double c )
+{
+   Matrix m, r;
+
+   m.Identity();
+   m.Scale(a,b,c);
+   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
+   LoadCurMatrix();
+}
+
+public void glmsTranslated( double a, double b, double c )
+{
+   Matrix m, r;
+
+   m.Identity();
+   m.Translate(a,b,c);
+   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
+   LoadCurMatrix();
+}
+
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 public void glmsFrustum( double l, double r, double b, double t, double n, double f )
 {
    nearPlane = n;
@@ -204,7 +249,6 @@ public void glmsFrustum( double l, double r, double b, double t, double n, doubl
    }
 }
 
-#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 public void glmsRotated( double a, double b, double c, double d )
 {
    Quaternion q;
@@ -212,27 +256,6 @@ public void glmsRotated( double a, double b, double c, double d )
 
    q.RotationAxis({(float)b,(float)c,(float)-d}, a );
    m.RotationQuaternion(q);
-   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
-}
-public void glmsScaled( double a, double b, double c )
-{
-   Matrix m, r;
-
-   m.Identity();
-   m.Scale(a,b,c);
-   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
-}
-
-public void glmsTranslated( double a, double b, double c )
-{
-   Matrix m, r;
-
-   m.Identity();
-   m.Translate(a,b,c);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
    LoadCurMatrix();
