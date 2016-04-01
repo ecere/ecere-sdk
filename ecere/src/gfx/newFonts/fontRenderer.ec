@@ -10,9 +10,7 @@ import "Color"
 #include <math.h>
 #include <stdlib.h>
 
-#if defined(_GLES)
-   #define ES1_1
-#else
+#if !defined(_GLES)
    #define SHADERS
 #endif
 
@@ -26,7 +24,9 @@ import "Color"
 #endif
 
 #if defined(__EMSCRIPTEN__)
-   #define ES2
+#if !defined(_GLES2)
+   #define _GLES2
+#endif
    #include <GLES2/gl2.h>
 #endif
 
