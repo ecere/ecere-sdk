@@ -6,7 +6,6 @@
 #define CPUCONF_CHAR_SIZE (1)
 #define CPUCONF_SHORT_SIZE (2)
 #define CPUCONF_INT_SIZE (4)
-#define CPUCONF_LONG_SIZE (4)
 #define CPUCONF_LONG_LONG_SIZE (8)
 #define CPUCONF_INTPTR_SIZE (8)
 #define CPUCONF_POINTER_SIZE (8)
@@ -68,8 +67,13 @@
    #define CPUCONF_INTPTR_BITSHIFT (6)
    #define CPUCONF_POINTER_BITSHIFT (6)
 
-   #define CPUCONF_LONG_BITSHIFT ((sizeof(long) == 2) ? 5 : 6)
-   #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 2) ? 2 : 3)
+#if defined(__WIN32__)
+   #define CPUCONF_LONG_SIZE (4)
+#else
+   #define CPUCONF_LONG_SIZE (8)
+#endif
+   #define CPUCONF_LONG_BITSHIFT ((sizeof(long) == 4) ? 5 : 6)
+   #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 4) ? 2 : 3)
    #define CPUCONF_LONG_BITS (sizeof(long) * 8)
 #else
 
@@ -84,6 +88,7 @@
    #define CPUCONF_INTPTR_BITSHIFT (5)
    #define CPUCONF_POINTER_BITSHIFT (5)
 
+   #define CPUCONF_LONG_SIZE (4)
    #define CPUCONF_LONG_BITSHIFT (5)
    #define CPUCONF_LONG_SIZESHIFT (2)
    #define CPUCONF_LONG_BITS (32)
