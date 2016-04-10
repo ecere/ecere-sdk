@@ -2561,7 +2561,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          {
             NameSpace * ns = _class.nameSpace;
-            while(ns->parent &&
+            while(ns != nameSpace &&
+               ns->parent &&
                !ns->classes.first &&
                !ns->functions.first &&
                !ns->defines.first &&
