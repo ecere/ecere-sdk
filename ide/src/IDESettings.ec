@@ -623,15 +623,6 @@ class DotEcereIDEFileData
                delete *data;
             delete parser;
          }
-         if(!*data)
-         {
-            JSONParser parser { f = f };
-            f.Seek(0, start);
-            jsonResult = parser.GetObject(this._class, data);
-            if(jsonResult != success)
-               delete *data;
-            delete parser;
-         }
          if(jsonResult == success)
             result = success;
          else

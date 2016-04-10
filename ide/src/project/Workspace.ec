@@ -1011,7 +1011,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
       JSONResult result;
       WorkspaceFile wf = null;
       {
-         JSONParser parser { f = f };
+         ECONParser parser { f = f };
          f.Seek(0, start);
          result = parser.GetObject(class(WorkspaceFile), &wf);
          if(result != success)

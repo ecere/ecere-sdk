@@ -1210,7 +1210,7 @@ private:
          files.Remove(resNode);
          version = 0.2f;
 
-         WriteJSONObject(f, class(Project), this, 0);
+         WriteECONObject(f, class(Project), this, 0);
 
          files.Add(resNode);
 
@@ -4629,7 +4629,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
       project = LegacyBinaryLoadProject(f, filePath);
       if(!project)
       {
-         JSONParser parser { f = f };
+         ECONParser parser { f = f };
          /*JSONResult result = */parser.GetObject(class(Project), &project);
          if(project)
          {
