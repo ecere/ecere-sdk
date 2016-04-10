@@ -1290,11 +1290,20 @@ static void _myfree(void * pointer)
          printf("WARNING! pool is -1\n");
       else   */
       if(pool)
+      {
+#ifdef _DEBUG
+         memset(pointer, 0xec, block.size);
+#endif
          pool->Remove(block);
+      }
       else
       {
          TOTAL_MEM -= sizeof(class MemBlock) + block.size;
          OUTSIDE_MEM -= sizeof(class MemBlock) + block.size;
+
+#ifdef _DEBUG
+         memset(block, 0xec, sizeof(class MemBlock) + block.size);
+#endif
          free(block);
       }
    }
