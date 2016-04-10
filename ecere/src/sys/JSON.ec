@@ -526,7 +526,7 @@ private:
          *string = CopyString(buffer.array);
       }
       delete buffer;
-      if(ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=')
+      if(ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=' && ch != ':')
          ch = 0;
       return result;
    }
@@ -587,7 +587,7 @@ private:
                         lineComment = false;
                      else if(comment && pch == '*' && ch == '/')
                         comment = false;
-                     else if(ch == '=' || ch == ';' || ch == ',' || ch == ']' || ch == '}')
+                     else if(ch == '=' || ch == ':' || ch == ';' || ch == ',' || ch == ']' || ch == '}')
                      {
                         ch = 0;
                         seekback = -1;
@@ -684,8 +684,10 @@ private:
                {
                   SkipEmpty();
                   prop = null; member = null;
-                  if(ch == '=')
+                  if(ch == '=' || ch == ':')
                   {
+                     if(wasQuoted)
+                        string[0] = (char)tolower(string[0]);
                      while(1)
                      {
                         eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
@@ -724,7 +726,7 @@ private:
                   }
                   else
                   {
-                     if(ch == '=')
+                     if(ch == '=' || ch == ':')
                         PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
                      else
                         PrintLn("Warning: default member assignment: no more members");
@@ -785,12 +787,12 @@ private:
                      ch = 0;
                      SkipEmpty();
                   }
-                  if(eCON && ch != '=')
+                  if(eCON && ch != '=' && ch != ':')
                   {
                      f.Seek(seek-1, start);
                      ch = 0;
                   }
-                  if(ch == (eCON ? '=' : ':') || (eCON && type && (prop || member)))
+                  if((ch == ':' || (eCON && ch == '=')) || (eCON && type && (prop || member)))
                   {
                      JSONResult itemResult = GetValue(type, value);
                      if(itemResult != syntaxError)
