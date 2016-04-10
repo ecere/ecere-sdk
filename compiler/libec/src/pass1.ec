@@ -115,7 +115,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
                      type.byReference = method.dataType.byReference;
 
                      methodDataType = ProcessTypeString(method.dataTypeString, false);
-                     type.thisClass = methodDataType.thisClass = arg ? FindClass(arg->dataTypeString) : null;
+                     type.thisClass = methodDataType.thisClass = (arg && arg->dataTypeString) ? FindClass(arg->dataTypeString) : null;
                   }
                }
                else if(method.dataType.staticMethod)
