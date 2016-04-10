@@ -1031,6 +1031,7 @@ private struct BlockPool
 
    void Remove(MemBlock block)
    {
+      MemPart part = block.part;
       /*if(blockSize == 28)
          printf("BlockPool::Remove (%d)\n", blockSize);*/
       if(block.prev)
@@ -1052,14 +1053,13 @@ private struct BlockPool
          printf("Setting new free block: part = %x\n", block.part);
       }*/
 
-      block.part.blocksUsed--;
+      part.blocksUsed--;
       numBlocks--;
-      block.part.pool->usedSpace -= block.size;
+      part.pool->usedSpace -= block.size;
 
-      if(!block.part.blocksUsed && numBlocks && totalSize > numBlocks + numBlocks / 2)
+      if(!part.blocksUsed && numBlocks && totalSize > numBlocks + numBlocks / 2)
       {
          MemBlock next = free, prev = null;
-         MemPart part = block.part;
          free = null;
          totalSize -= part.size;
          /*if(blockSize == 28)
