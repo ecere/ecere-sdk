@@ -88,6 +88,7 @@ public union Matrix
 #endif
 
 public enum MatrixMode { modelView = 0x1700, projection = 0x1701, texture = 0x1702 };
+public enum GLMSWhatToGet { projectionMatrix = 0x0BA7, modelViewMatrix = 0x0BA6, textureMatrix = 0x0BA8 };
 
 double nearPlane = 1;
 
@@ -267,6 +268,26 @@ public void glmsMultMatrixd( double * i )
    r.Multiply((Matrix *)i, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
    LoadCurMatrix();
+}
+
+public void glmsGetDoublev(GLMSWhatToGet what, double * i)
+{
+   int ix;
+   switch(what)
+   {
+      case modelViewMatrix:
+         ix = MatrixMode::modelView-0x1700;
+         memcpy(i, matrixStack[ix][matrixIndex[ix]].array, sizeof(Matrix));
+         break;
+      case projectionMatrix:
+         ix = MatrixMode::projection-0x1700;
+         memcpy(i, matrixStack[ix][matrixIndex[ix]].array, sizeof(Matrix));
+         break;
+      case textureMatrix:
+         ix = MatrixMode::texture-0x1700;
+         memcpy(i, matrixStack[ix][matrixIndex[ix]].array, sizeof(Matrix));
+         break;
+   }
 }
 #endif
 
