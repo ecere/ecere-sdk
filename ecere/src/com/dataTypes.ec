@@ -705,7 +705,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
 
                         //value.ui = (((uint)data & bitMember.mask) >> bitMember.pos);
                         value.ui64 = ((*(uint*)data & bitMember.mask) >> bitMember.pos);
-                        if(value.ui64)
+                        if(value.ui64 && (memberType != _class))  // Avoid infinite recursion on bit classes holding themselves
                         {
                            bool needClass = true;
                            char internalMemberString[1024];
