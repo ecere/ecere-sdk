@@ -242,7 +242,7 @@ public class Id : uint64
          }
          else
          {
-            Id id = thisID;
+            uint64 id = thisID;
             id.OnGetString(tempString, null, null);
          }
       }
