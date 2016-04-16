@@ -10239,6 +10239,7 @@ public:
       set { controlled = value; }
       get { return controlled; }
    }
+   // TODO: Add OnStateChange so we can implement SavedConfigWindow as a WindowController instead
    virtual bool V::OnKeyDown(WindowController controller, Key key, unichar ch);
    virtual bool V::OnKeyUp(WindowController controller, Key key, unichar ch);
    virtual bool V::OnKeyHit(WindowController controller, Key key, unichar ch);
