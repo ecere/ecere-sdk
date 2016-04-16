@@ -604,6 +604,26 @@ private:
       getNameFromListBox = flag;
       ok.disabled = okDisabled;
       open.disabled = okDisabled;
+
+      if(style == selectDir)
+      {
+         if(okDisabled)
+         {
+            ok.disabled = false;
+            ok.caption = $"Select Here";
+            ok.isDefault = true;
+            open.isDefault = false;
+
+            // Never use contents of editbox for 'Select Here'
+            getNameFromListBox = true;
+         }
+         else
+         {
+            ok.caption = $"Select";
+            ok.isDefault = false;
+            open.isDefault = true;
+         }
+      }
    }
 
    void ListFiles()
@@ -790,7 +810,7 @@ private:
    {
       bool result = true;
       FileAttribs exists = 0;
-      char * wildcardPointer = strstr(fileName, "*");
+      char * wildcardPointer = fileName ? strstr(fileName, "*") : null;
 
       if(wildcardPointer)
       {
@@ -1040,7 +1060,7 @@ private:
       else
       {
          strcpy(filePath, currentDirectory);
-         if(PathCat(filePath, fileName))
+         if((style == selectDir && !fileName) || PathCat(filePath, fileName) || style == selectDir)
          {
             FileFixCase(filePath);
             exists = FileExists(filePath);
@@ -1476,7 +1496,8 @@ private:
             }
             delete selectedFileName;
             editText = fileName.contents;
-            ok.disabled = !editText || !editText[0];
+            if(style != selectDir)
+               ok.disabled = !editText || !editText[0];
          }
          return true;
       }
