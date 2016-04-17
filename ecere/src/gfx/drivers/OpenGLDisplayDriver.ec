@@ -598,6 +598,7 @@ static void APIENTRY openglCallbackFunction(GLenum source,
       case GL_DEBUG_SEVERITY_LOW: PrintLn("LOW"); break;
       case GL_DEBUG_SEVERITY_MEDIUM: PrintLn("MEDIUM"); break;
       case GL_DEBUG_SEVERITY_HIGH: PrintLn("HIGH"); break;
+      default: PrintLn("(other)");
    }
    PrintLn("---------------------opengl-callback-end--------------");
 }
