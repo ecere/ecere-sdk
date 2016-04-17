@@ -643,6 +643,8 @@ public class DrawManager
 
    GLuint prevProgram;
 
+   bool renderingFlipped;
+
    static DMProgram *flushUseProgram( int programIndex )
    {
       DMProgram *program = &shaderPrograms[ programIndex ];
@@ -725,6 +727,7 @@ public class DrawManager
         glActiveTexture( GL_TEXTURE0 );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glDisable( GL_BLEND );
+        GLSetupLighting(false);
 
       #if DM_RENDER_IMAGE_DEBUG
       printf( " Flush %d images\n", (int)imageBufferCount );
@@ -1142,6 +1145,8 @@ public class DrawManager
 
 public:
 
+   property bool renderingFlipped { set { renderingFlipped = value; } }
+
    virtual void flush();
 
    bool init( DrawManagerFlags flags )
@@ -1242,7 +1247,10 @@ public:
 #endif
 
       // Prepare rendering pass
-      matrixOrtho( matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0f, 1.0 );
+      if(renderingFlipped)
+         matrixOrtho( matrix, 0.0, (float)viewportwidth, 0.0, (float)viewportheight, -1.0f, 1.0 );
+      else
+         matrixOrtho( matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0f, 1.0 );
       norminv = 1.0f / DM_VERTEX_NORMFACTOR;
       for( mindex = 0 ; mindex < 12 ; mindex += 4 )
       {
