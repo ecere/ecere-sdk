@@ -99,7 +99,7 @@ void shader_texturing(bool on)
 public void shader_setMaterial(Material material, bool perVertexColor)
 {
    glUniform1i(uPerVertexColor, perVertexColor);
-   glUniform1i(uMatTwoSided, !material.flags.singleSideLight);
+   glUniform1i(uMatTwoSided, material.flags.doubleSided && !material.flags.singleSideLight);
    glUniform3f(uMatDiffuse, material.diffuse.r, material.diffuse.g, material.diffuse.b);
    glUniform3f(uMatAmbient, material.ambient.r, material.ambient.g, material.ambient.b);
    glUniform3f(uMatSpecular, material.specular.r, material.specular.g, material.specular.b);
