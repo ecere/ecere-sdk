@@ -255,7 +255,7 @@ public void glmsRotated( double a, double b, double c, double d )
    Quaternion q;
    Matrix m, r;
 
-   q.RotationAxis({(float)b,(float)c,(float)-d}, a );
+   q.RotationAxis({(float)b,(float)c,(float)-d}, -a );
    m.RotationQuaternion(q);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
