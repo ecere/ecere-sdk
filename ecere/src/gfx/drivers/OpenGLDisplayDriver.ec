@@ -492,8 +492,11 @@ public void GLSetupFog(bool enable)
 #endif
 }
 
+bool lightingEnabled;
+
 public void GLSetupLighting(bool enable)
 {
+   lightingEnabled = enable;
 #if defined(SHADERS)
    shader_lighting(enable);
 #else

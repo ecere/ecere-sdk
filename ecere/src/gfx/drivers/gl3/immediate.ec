@@ -321,6 +321,12 @@ public void glimtkColor4f(float r, float g, float b, float a)
       shader_color(r, g, b, a);
 #else
       glColor4f(r, g, b, a);
+      if(lightingEnabled)
+      {
+         float color[4] = { r, g, b, a };
+         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
+         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
+      }
 #endif
    }
 }
