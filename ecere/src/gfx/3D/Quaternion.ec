@@ -109,15 +109,15 @@ public struct Quaternion
       z =  q2.w * q1.z + q2.x * q1.y - q2.y * q1.x - q2.z * q1.w;
    }
 
-   void RotationAxis(Vector3Df axis, Degrees angle)
+   void RotationAxis(Vector3D axis, Degrees angle)
    {
       double sa = sin( angle / 2 );
       double ca = cos( angle / 2 );
 
-      x = (double)(axis.x * sa);
-      y = (double)(axis.y * sa);
-      z = (double)(axis.z * sa);
-      w = (double)ca;
+      x = axis.x * sa;
+      y = axis.y * sa;
+      z = axis.z * sa;
+      w = ca;
    }
 
    void RotationYawPitchRoll(Euler euler)

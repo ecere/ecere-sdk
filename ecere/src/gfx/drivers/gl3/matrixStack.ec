@@ -250,12 +250,14 @@ public void glmsFrustum( double l, double r, double b, double t, double n, doubl
    }
 }
 
-public void glmsRotated( double a, double b, double c, double d )
+public void glmsRotated(double angle, double x, double y, double z)
 {
    Quaternion q;
    Matrix m, r;
+   Vector3D n;
 
-   q.RotationAxis({(float)b,(float)c,(float)-d}, a );
+   n.Normalize({ -x, -y, -z });
+   q.RotationAxis(n, angle);
    m.RotationQuaternion(q);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;

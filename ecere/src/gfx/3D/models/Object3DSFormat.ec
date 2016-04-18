@@ -1623,12 +1623,10 @@ static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
                   {
                      Vector3Df axis;
                      Angle angle = ReadFloat(info->f);
-                     Vector3Df fixedAxis;
+                     Vector3D fixedAxis;
 
                      Read3DVertex(info->f, axis);
-                     fixedAxis.x = axis.x;
-                     fixedAxis.y = -axis.z;
-                     fixedAxis.z = axis.y;
+                     fixedAxis = { axis.x, -axis.z, axis.y };
 
                      if(c > 0)
                      {
