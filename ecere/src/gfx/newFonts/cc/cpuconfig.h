@@ -7,8 +7,6 @@
 #define CPUCONF_SHORT_SIZE (2)
 #define CPUCONF_INT_SIZE (4)
 #define CPUCONF_LONG_LONG_SIZE (8)
-#define CPUCONF_INTPTR_SIZE (8)
-#define CPUCONF_POINTER_SIZE (8)
 #define CPUCONF_FLOAT_SIZE (4)
 #define CPUCONF_DOUBLE_SIZE (8)
 #define CPUCONF_LONG_DOUBLE_SIZE (16)
@@ -60,6 +58,8 @@
 #if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_WIN64)
    #define CPUCONF_ARCH_AMD64
 
+   #define CPUCONF_INTPTR_SIZE (8)
+   #define CPUCONF_POINTER_SIZE (8)
    #define CPUCONF_INTPTR_BITS (64)
    #define CPUCONF_POINTER_BITS (64)
    #define CPUCONF_INTPTR_SIZESHIFT (3)
@@ -81,6 +81,8 @@
    #define CPUCONF_ARCH_IA32
 #endif
 
+   #define CPUCONF_INTPTR_SIZE (4)
+   #define CPUCONF_POINTER_SIZE (4)
    #define CPUCONF_INTPTR_BITS (32)
    #define CPUCONF_POINTER_BITS (32)
    #define CPUCONF_INTPTR_SIZESHIFT (2)
