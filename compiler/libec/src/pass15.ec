@@ -12378,6 +12378,7 @@ static void ProcessStatement(Statement stmt)
             Symbol symbol;
             Expression expIt = null;
             bool isMap = false, isArray = false, isLinkList = false, isList = false, isCustomAVLTree = false; //, isAVLTree = false;
+            // TODO: Find these once on loadup
             Class arrayClass = eSystem_FindClass(privateModule, "Array");
             Class linkListClass = eSystem_FindClass(privateModule, "LinkList");
             Class customAVLTreeClass = eSystem_FindClass(privateModule, "CustomAVLTree");
