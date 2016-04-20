@@ -27,6 +27,10 @@ import "instance"
 #include <wincon.h>
 #include <shellapi.h>
 
+#if !defined(_WIN64) && defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 2)))
+   #undef CALLBACK
+   #define CALLBACK __attribute__((__stdcall__, __force_align_arg_pointer__))
+#endif
 
 #if defined(ECERE_VANILLA)
 #define ECERE_NOJOYSTICK
