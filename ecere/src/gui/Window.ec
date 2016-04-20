@@ -1883,7 +1883,7 @@ private:
       if(guiApp.currentSkin)
       {
          MinMaxValue cw = 0, ch = 0;
-         bool sbvVisible, sbhVisible;
+         bool sbvVisible = false, sbhVisible = false;
          int rangeH = 0, rangeV = 0;
          int positionH = 0, positionV;
 
