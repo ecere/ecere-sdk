@@ -590,7 +590,9 @@ static void ProcessExpression(Expression exp)
                memberExp.index.exp.expType._class.registered != containerClass && eClass_IsDerived(memberExp.index.exp.expType._class.registered, containerClass))
             {
                Class c = memberExp.index.exp.expType._class.registered;
-               if(strcmp((c.templateClass ? c.templateClass : c).name, "Array"))
+               // TODO: Find these once on loadup
+               Class arrayClass = eSystem_FindClass(privateModule, "Array");
+               if(!eClass_IsDerived(c.templateClass ? c.templateClass : c, arrayClass))
                {
                   if(exp.op.exp2 && exp.op.op == '=')
                   {
