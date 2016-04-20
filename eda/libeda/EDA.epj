@@ -52,8 +52,8 @@
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "LibraryDirs" : [
-               "../../obj/$(PLATFORM)/bin",
-               "../../obj/$(PLATFORM)/lib"
+               "../../obj/$(PLATFORM)$(ARCH_SUFFIX)/bin",
+               "../../obj/$(PLATFORM)$(ARCH_SUFFIX)/lib"
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
