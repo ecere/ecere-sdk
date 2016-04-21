@@ -355,7 +355,7 @@ public:
    ClassTemplateArgument * templateArgs;
    Class templateClass;
    OldList templatized;
-   int numParams;
+   int numParams;       // TOTAL number of params including all base classes; use templateParams.count for this level
    bool isInstanceClass;
    bool byValueSystemClass;
 
@@ -2936,6 +2936,7 @@ static void FreeTemplateArg(Class template, ClassTemplateParameter param, int id
    {
       case type:
          delete (void *)template.templateArgs[id].dataTypeString;
+         template.templateArgs[id].dataTypeClass = null;
          break;
       case identifier:
          delete (void *)template.templateArgs[id].memberString;
@@ -2970,6 +2971,7 @@ static void FreeTemplateArgs(Class template)
                {
                   case type:
                      delete (void *)template.templateArgs[id].dataTypeString;
+                     template.templateArgs[id].dataTypeClass = null;
                      break;
                   case identifier:
                      delete (void *)template.templateArgs[id].memberString;
@@ -2995,18 +2997,20 @@ static void FreeTemplate(Class template)
       if(link)
          template.nameSpace->classes.Delete((BTNode)link);
    }
-   FreeTemplateArgs(template);
 
-   delete (void *)template.fullName;
-   delete (void *)template.name;
-   delete (void *)template.templateArgs;
-   delete (void *)template.dataTypeString;
+   FreeTemplatesDerivatives(template);
+   FreeTemplateArgs(template);
 
    while((deriv = template.derivatives.first))
    {
       ((Class)deriv.data).base = null;
       template.derivatives.Delete(deriv);
    }
+
+   delete (void *)template.fullName;
+   delete (void *)template.name;
+   delete template.templateArgs;
+   delete (void *)template.dataTypeString;
 
    if(template.module)
       template.module.classes.Delete(template);
@@ -3024,8 +3028,6 @@ static void FreeTemplates(Class _class)
    }
 
    FreeTemplateArgs(_class);
-   //if(_class.templateArgs)
-      //printf("Deleting  Template args for %s\n", _class.name);
    delete _class.templateArgs;
    delete (void *)_class.dataTypeString;
 
@@ -3065,9 +3067,6 @@ public dllexport void eClass_Unregister(Class _class)
    delete _class._vTbl;
 
    FreeTemplates(_class);
-
-   FreeTemplateArgs(_class);
-   delete _class.templateArgs;
 
    while((template = _class.templatized.first))
    {
@@ -3814,6 +3813,7 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                         {
                            int id = p;
                            Class sClass;
+                           // NOTE: This struct 'arg' here is only to build up templateString
                            ClassTemplateArgument arg;
                            for(sClass = expClass.base; sClass; sClass = sClass.base) id += sClass.templateParams.count;
                            arg = expClass.templateArgs[id];
@@ -3825,8 +3825,7 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                               {
                                  if(cParam.type == type && arg.dataTypeString && !strcmp(cParam.name, arg.dataTypeString))
                                  {
-                                    arg.dataTypeString = templatedClass.templateArgs[p].dataTypeString;
-                                    arg.dataTypeClass = templatedClass.templateArgs[p].dataTypeClass;
+                                    arg = templatedClass.templateArgs[p];
                                     break;
                                  }
                               }
@@ -3913,6 +3912,7 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                         {
                            FreeTemplateArg(templatedClass, param, c);
 
+                           // TRICKY: This copies from equivalent parameters
                            arg->dataTypeString = templatedClass.templateArgs[p].dataTypeString;
                            arg->dataTypeClass = templatedClass.templateArgs[p].dataTypeClass;
                            CopyTemplateArg(cParam, arg);
@@ -4626,6 +4626,10 @@ public dllexport void * eInstance_New(Class _class)
                size *= 3;
          }
          instance = _calloc(1, size);
+         if(!instance && size)
+            printf("Failed to allocate memory instantiating %s object!\n", _class.name);
+         else if(!size)
+            printf("Warning: 0 size instantiating %s object!\n", _class.name);
       }
 #ifdef MEMINFO
       allocateClass = null;
@@ -4639,13 +4643,13 @@ public dllexport void * eInstance_New(Class _class)
       }
 #endif
 
-      if(_class.type == normalClass)
+      if(instance && _class.type == normalClass)
       {
          instance._class = _class;
          // Copy the virtual table initially
          instance._vTbl = _class._vTbl;
       }
-      if(!ConstructInstance(instance, _class, null))
+      if(instance && !ConstructInstance(instance, _class, null))
       {
          _free(instance);
          instance = null;
