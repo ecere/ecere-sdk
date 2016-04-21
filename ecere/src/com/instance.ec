@@ -4,6 +4,7 @@ namespace com;
 
 #if defined(__EMSCRIPTEN__)
  #define DISABLE_MEMMGR
+ #define _NOMUTEX
 #endif
 
 import "BinaryTree"
@@ -24,9 +25,15 @@ import "dataTypes"
 
 #undef __BLOCKS__
 
-#if !defined(__EMSCRIPTEN__)
-#if !defined(ECERE_BOOTSTRAP)
+#if defined(ECERE_BOOTSTRAP)
+ #define _NOMUTEX
+#endif
+
+#if !defined(_NOMUTEX)
 import "Mutex"
+#else
+#if defined(MEMINFO)
+int GetCurrentThreadID() { return 0; }
 #endif
 #endif
 
@@ -53,7 +60,7 @@ import "Mutex"
 #endif
 
 #ifdef MEMINFO
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
 import "Thread"
 #endif
 static define MAX_MEMORY_LOC = 40;
@@ -202,7 +209,7 @@ public dllexport void MemoryGuard_PushLoc(const char * loc)
 {
 #ifdef MEMINFO
    MemStack stack;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
    stack = (MemStack)memStacks.Find(GetCurrentThreadID());
@@ -214,7 +221,7 @@ public dllexport void MemoryGuard_PushLoc(const char * loc)
    }
    if(stack.pos < MAX_STACK_FRAMES)
       stack.frames[stack.pos++] = loc;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 #endif
@@ -224,7 +231,7 @@ public dllexport void MemoryGuard_PopLoc()
 {
 #ifdef MEMINFO
    MemStack stack;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
    stack = (MemStack)memStacks.Find(GetCurrentThreadID());
@@ -232,7 +239,7 @@ public dllexport void MemoryGuard_PopLoc()
    {
       stack.pos--;
    }
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 #endif
@@ -734,7 +741,7 @@ static uint TOTAL_MEM = 0;
 static uint OUTSIDE_MEM = 0;
 #endif
 
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
 #if !defined(ECERE_BOOTSTRAP)
 static Mutex memMutex { };
 #endif
@@ -1462,7 +1469,7 @@ static void * _malloc(unsigned int size)
    void * pointer;
 
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
 
@@ -1489,7 +1496,7 @@ static void * _malloc(unsigned int size)
                printf("      %s\n", stack.frames[c]);
 
          memoryErrorsCount++;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
          memMutex.Release();
 #endif
          return null;
@@ -1506,7 +1513,7 @@ static void * _malloc(unsigned int size)
    }
 #endif
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 
@@ -1529,7 +1536,7 @@ static void * _calloc(int n, unsigned int size)
 #else
    void * pointer;
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
 
@@ -1554,7 +1561,7 @@ static void * _calloc(int n, unsigned int size)
             if(stack.frames[c])
                printf("      %s\n", stack.frames[c]);
          memoryErrorsCount++;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
          memMutex.Release();
 #endif
          return null;
@@ -1573,7 +1580,7 @@ static void * _calloc(int n, unsigned int size)
    }
 #endif
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 
@@ -1597,7 +1604,7 @@ static void * _realloc(void * pointer, unsigned int size)
 #else
    if(!size) { _free(pointer); return null; }
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
 
@@ -1639,7 +1646,7 @@ static void * _realloc(void * pointer, unsigned int size)
          if(stack.frames[c])
             printf("      %s\n", stack.frames[c]);
       memoryErrorsCount++;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
       memMutex.Release();
 #endif
       return null;
@@ -1689,7 +1696,7 @@ static void * _realloc(void * pointer, unsigned int size)
    pointer = realloc(pointer, size);
 #endif
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
    return pointer ? ((byte *)pointer + REDZONE) : null;
@@ -1710,7 +1717,7 @@ static void * _crealloc(void * pointer, unsigned int size)
 #else
    if(!size) { _free(pointer); return null; }
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
 
@@ -1752,7 +1759,7 @@ static void * _crealloc(void * pointer, unsigned int size)
          if(stack.frames[c])
             printf("      %s\n", stack.frames[c]);
       memoryErrorsCount++;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
       memMutex.Release();
 #endif
       return null;
@@ -1802,7 +1809,7 @@ static void * _crealloc(void * pointer, unsigned int size)
    pointer = crealloc(pointer, size);
 #endif
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
    return pointer ? ((byte *)pointer + REDZONE) : null;
@@ -1816,7 +1823,7 @@ static void _free(void * pointer)
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
       free(pointer);
 #else
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
       if(memMutex != pointer) memMutex.Wait();
 #endif
 
@@ -1926,7 +1933,7 @@ static void _free(void * pointer)
       free(pointer);
 #endif
 
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
       if(memMutex != pointer) memMutex.Release();
 #endif
 
@@ -4630,7 +4637,7 @@ public dllexport void * eInstance_New(Class _class)
 #ifdef MEMINFO
 
 #undef malloc
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
       //allocateClass = _class;
@@ -4665,7 +4672,7 @@ public dllexport void * eInstance_New(Class _class)
       }
 #ifdef MEMINFO
       allocateClass = null;
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 #endif
@@ -7393,7 +7400,7 @@ public void queryMemInfo(char * string)
 
    blocksByClass.Free();
    sizeByClass.Free();
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
    for(p = 0; pools && p < NUM_POOLS; p++)
@@ -7407,7 +7414,7 @@ public void queryMemInfo(char * string)
          sizeByClass[c] += block.size;
       }
    }
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_NOMUTEX)
    memMutex.Release();
 #endif
 
