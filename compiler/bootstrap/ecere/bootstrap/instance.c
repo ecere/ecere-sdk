@@ -3370,13 +3370,17 @@ else
 size *= 3;
 }
 instance = __ecereNameSpace__ecere__com___calloc(1, size);
+if(!instance && size)
+printf("Failed to allocate memory instantiating %s object!\n", _class->name);
+else if(!size)
+printf("Warning: 0 size instantiating %s object!\n", _class->name);
 }
-if(_class->type == 0)
+if(instance && _class->type == 0)
 {
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class = _class;
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = _class->_vTbl;
 }
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, (((void *)0))))
+if(instance && !__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, (((void *)0))))
 {
 __ecereNameSpace__ecere__com___free(instance);
 instance = (((void *)0));
@@ -3885,6 +3889,7 @@ switch(param->type)
 {
 case 0:
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->templateArgs[id].__anon1.__anon1.dataTypeString), template->templateArgs[id].__anon1.__anon1.dataTypeString = 0);
+template->templateArgs[id].__anon1.__anon1.dataTypeClass = (((void *)0));
 break;
 case 1:
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->templateArgs[id].__anon1.__anon2.memberString), template->templateArgs[id].__anon1.__anon2.memberString = 0);
@@ -3922,6 +3927,7 @@ switch(param->type)
 {
 case 0:
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->templateArgs[id].__anon1.__anon1.dataTypeString), template->templateArgs[id].__anon1.__anon1.dataTypeString = 0);
+template->templateArgs[id].__anon1.__anon1.dataTypeClass = (((void *)0));
 break;
 case 1:
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->templateArgs[id].__anon1.__anon2.memberString), template->templateArgs[id].__anon1.__anon2.memberString = 0);
@@ -4015,33 +4021,6 @@ return 1;
 }
 }
 return 0;
-}
-
-static void __ecereNameSpace__ecere__com__FreeTemplate(struct __ecereNameSpace__ecere__com__Class * template)
-{
-struct __ecereNameSpace__ecere__sys__OldLink * deriv;
-
-if(template->nameSpace)
-{
-struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*template->nameSpace).classes, template->name);
-
-if(link)
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*template->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
-}
-__ecereNameSpace__ecere__com__FreeTemplateArgs(template);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->fullName), template->fullName = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->name), template->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->templateArgs), template->templateArgs = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->dataTypeString), template->dataTypeString = 0);
-while((deriv = template->derivatives.first))
-{
-((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&template->derivatives, deriv);
-}
-if(template->module)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)template->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, template);
-else
-__ecereNameSpace__ecere__com___free(template);
 }
 
 static void __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(struct __ecereNameSpace__ecere__com__Class * base)
@@ -4423,8 +4402,7 @@ for(cParam = _class->templateParams.first; cParam; cParam = cParam->next, p++)
 {
 if(cParam->type == 0 && arg.__anon1.__anon1.dataTypeString && !strcmp(cParam->name, arg.__anon1.__anon1.dataTypeString))
 {
-arg.__anon1.__anon1.dataTypeString = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString;
-arg.__anon1.__anon1.dataTypeClass = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeClass;
+arg = templatedClass->templateArgs[p];
 break;
 }
 }
@@ -4697,23 +4675,32 @@ return param;
 return (((void *)0));
 }
 
-static void __ecereNameSpace__ecere__com__FreeTemplates(struct __ecereNameSpace__ecere__com__Class * _class)
+static void __ecereNameSpace__ecere__com__FreeTemplate(struct __ecereNameSpace__ecere__com__Class * template)
 {
-struct __ecereNameSpace__ecere__sys__OldLink * deriv, * template;
+struct __ecereNameSpace__ecere__sys__OldLink * deriv;
 
-for(deriv = _class->derivatives.first; deriv; deriv = deriv->next)
+if(template->nameSpace)
 {
-__ecereNameSpace__ecere__com__FreeTemplates(deriv->data);
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*template->nameSpace).classes, template->name);
+
+if(link)
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*template->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
 }
-__ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
-(__ecereNameSpace__ecere__com__eSystem_Delete(_class->templateArgs), _class->templateArgs = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
-while((template = _class->templatized.first))
+__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(template);
+__ecereNameSpace__ecere__com__FreeTemplateArgs(template);
+while((deriv = template->derivatives.first))
 {
-__ecereNameSpace__ecere__com__FreeTemplates(template->data);
-__ecereNameSpace__ecere__com__FreeTemplate(template->data);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templatized, template);
+((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&template->derivatives, deriv);
 }
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->fullName), template->fullName = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->name), template->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(template->templateArgs), template->templateArgs = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)template->dataTypeString), template->dataTypeString = 0);
+if(template->module)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)template->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, template);
+else
+__ecereNameSpace__ecere__com___free(template);
 }
 
 static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class * base, struct __ecereNameSpace__ecere__com__Class * mod)
@@ -5044,127 +5031,23 @@ return templatedClass;
 return (((void *)0));
 }
 
-void __ecereNameSpace__ecere__com__eClass_Unregister(struct __ecereNameSpace__ecere__com__Class * _class)
+static void __ecereNameSpace__ecere__com__FreeTemplates(struct __ecereNameSpace__ecere__com__Class * _class)
 {
-struct __ecereNameSpace__ecere__com__BTNamedLink * namedLink;
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__sys__OldLink * deriv, * template;
-struct __ecereNameSpace__ecere__com__ClassProperty * classProp;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
 
-if(_class->templateClass)
+for(deriv = _class->derivatives.first; deriv; deriv = deriv->next)
 {
-struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
-
-for(templateLink = _class->templateClass->templatized.first; templateLink; templateLink = templateLink->next)
-{
-if(templateLink->data == _class)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templateClass->templatized, templateLink);
-break;
+__ecereNameSpace__ecere__com__FreeTemplates(deriv->data);
 }
-}
-__ecereNameSpace__ecere__com__FreeTemplate(_class);
-return ;
-}
-(__ecereNameSpace__ecere__com__eSystem_Delete(_class->_vTbl), _class->_vTbl = 0);
-__ecereNameSpace__ecere__com__FreeTemplates(_class);
 __ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->templateArgs), _class->templateArgs = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
 while((template = _class->templatized.first))
 {
+__ecereNameSpace__ecere__com__FreeTemplates(template->data);
 __ecereNameSpace__ecere__com__FreeTemplate(template->data);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templatized, template);
 }
-while((member = _class->membersAndProperties.first))
-{
-if(!member->isProperty && (member->type == 1 || member->type == 2))
-__ecereNameSpace__ecere__com__DataMember_Free(member);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->name), member->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->dataTypeString), member->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndProperties, member);
-}
-while((member = _class->conversions.first))
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->name), member->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->dataTypeString), member->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->conversions, member);
-}
-while((namedLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->prop)))
-{
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->prop, (struct __ecereNameSpace__ecere__sys__BTNode *)namedLink);
-}
-while((namedLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->members)))
-{
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)namedLink);
-}
-while((classProp = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->classProperties)))
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)classProp->name), classProp->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)classProp->dataTypeString), classProp->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->classProperties, (struct __ecereNameSpace__ecere__sys__BTNode *)classProp);
-}
-while((method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods)))
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->name), method->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
-}
-if(_class->type == 4)
-{
-struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&data->values, (void *)__ecereNameSpace__ecere__com__FreeEnumValue);
-}
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_class->delayedCPValues, (((void *)0)));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_class->selfWatchers, (((void *)0)));
-if(_class->base)
-{
-struct __ecereNameSpace__ecere__com__Class * base = _class->base;
-
-for(deriv = base->derivatives.first; deriv; deriv = deriv->next)
-{
-if(deriv->data == _class)
-break;
-}
-if(deriv)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&base->derivatives, deriv);
-}
-while((deriv = _class->derivatives.first))
-{
-((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->derivatives, deriv);
-}
-if(_class->nameSpace)
-{
-struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, _class->name);
-
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
-}
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->name), _class->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(_class->data), _class->data = 0);
-while((param = _class->templateParams.first))
-{
-switch(param->type)
-{
-case 0:
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->defaultArg.__anon1.__anon1.dataTypeString), param->defaultArg.__anon1.__anon1.dataTypeString = 0);
-break;
-case 1:
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->defaultArg.__anon1.__anon2.memberString), param->defaultArg.__anon1.__anon2.memberString = 0);
-break;
-case 2:
-break;
-}
-if(param->type != 1)
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->__anon1.dataTypeString), param->__anon1.dataTypeString = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->name), param->name = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templateParams, param);
-}
-__ecereNameSpace__ecere__com___free(_class);
 }
 
 struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char * name, const char * baseName, int size, int sizeClass, unsigned int (* Constructor)(void *), void (* Destructor)(void *), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess)
@@ -5780,6 +5663,127 @@ break;
 }
 __ecereNameSpace__ecere__com__FixDerivativesBase(base, base);
 }
+}
+
+void __ecereNameSpace__ecere__com__eClass_Unregister(struct __ecereNameSpace__ecere__com__Class * _class)
+{
+struct __ecereNameSpace__ecere__com__BTNamedLink * namedLink;
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Method * method;
+struct __ecereNameSpace__ecere__sys__OldLink * deriv, * template;
+struct __ecereNameSpace__ecere__com__ClassProperty * classProp;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+if(_class->templateClass)
+{
+struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
+
+for(templateLink = _class->templateClass->templatized.first; templateLink; templateLink = templateLink->next)
+{
+if(templateLink->data == _class)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templateClass->templatized, templateLink);
+break;
+}
+}
+__ecereNameSpace__ecere__com__FreeTemplate(_class);
+return ;
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete(_class->_vTbl), _class->_vTbl = 0);
+__ecereNameSpace__ecere__com__FreeTemplates(_class);
+while((template = _class->templatized.first))
+{
+__ecereNameSpace__ecere__com__FreeTemplate(template->data);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templatized, template);
+}
+while((member = _class->membersAndProperties.first))
+{
+if(!member->isProperty && (member->type == 1 || member->type == 2))
+__ecereNameSpace__ecere__com__DataMember_Free(member);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->name), member->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->dataTypeString), member->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndProperties, member);
+}
+while((member = _class->conversions.first))
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->name), member->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)member->dataTypeString), member->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->conversions, member);
+}
+while((namedLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->prop)))
+{
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->prop, (struct __ecereNameSpace__ecere__sys__BTNode *)namedLink);
+}
+while((namedLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->members)))
+{
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)namedLink);
+}
+while((classProp = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->classProperties)))
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)classProp->name), classProp->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)classProp->dataTypeString), classProp->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->classProperties, (struct __ecereNameSpace__ecere__sys__BTNode *)classProp);
+}
+while((method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods)))
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->name), method->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
+}
+if(_class->type == 4)
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&data->values, (void *)__ecereNameSpace__ecere__com__FreeEnumValue);
+}
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_class->delayedCPValues, (((void *)0)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_class->selfWatchers, (((void *)0)));
+if(_class->base)
+{
+struct __ecereNameSpace__ecere__com__Class * base = _class->base;
+
+for(deriv = base->derivatives.first; deriv; deriv = deriv->next)
+{
+if(deriv->data == _class)
+break;
+}
+if(deriv)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&base->derivatives, deriv);
+}
+while((deriv = _class->derivatives.first))
+{
+((struct __ecereNameSpace__ecere__com__Class *)deriv->data)->base = (((void *)0));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->derivatives, deriv);
+}
+if(_class->nameSpace)
+{
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, _class->name);
+
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->name), _class->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(_class->data), _class->data = 0);
+while((param = _class->templateParams.first))
+{
+switch(param->type)
+{
+case 0:
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->defaultArg.__anon1.__anon1.dataTypeString), param->defaultArg.__anon1.__anon1.dataTypeString = 0);
+break;
+case 1:
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->defaultArg.__anon1.__anon2.memberString), param->defaultArg.__anon1.__anon2.memberString = 0);
+break;
+case 2:
+break;
+}
+if(param->type != 1)
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->__anon1.dataTypeString), param->__anon1.dataTypeString = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)param->name), param->name = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templateParams, param);
+}
+__ecereNameSpace__ecere__com___free(_class);
 }
 
 void __ecereNameSpace__ecere__com__eInstance_Delete(struct __ecereNameSpace__ecere__com__Instance * instance)
