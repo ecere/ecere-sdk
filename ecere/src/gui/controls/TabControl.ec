@@ -608,6 +608,8 @@ public class TabControl : Window
          tab.button.checked = true;
          tab.autoCreate = true;
       }
+      else
+         tab.button.checked = false;
 
       PlaceButton(tab.button, placement, curTab == tab, buttonsOffset);
       switch(placement)
