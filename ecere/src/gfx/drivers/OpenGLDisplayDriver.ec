@@ -567,7 +567,7 @@ class OGLDisplay : struct
 };
 
 #if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-//#define GL_DEBUGGING
+// #define GL_DEBUGGING
 #endif
 
 #ifdef GL_DEBUGGING
@@ -579,6 +579,8 @@ static void APIENTRY openglCallbackFunction(GLenum source,
                                            const GLchar* message,
                                            const void* userParam)
 {
+   if(severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+      return;
    PrintLn("---------------------opengl-callback-start------------");
    PrintLn("message: ", message);
    PrintLn("type: ");
