@@ -238,7 +238,8 @@ static void CheckPublicExpression(Expression exp, AccessMode access)
          case instanceExp:
          {
             MembersInit members;
-            CheckPublicClass(exp.instance._class.symbol /*FindClass(exp.instance._class.name)*/, access, "define");
+            if(exp.instance._class)
+               CheckPublicClass(exp.instance._class.symbol/*FindClass(exp.instance._class.name)*/, access, "define");
             for(members = exp.instance.members->first; members; members = members.next)
             {
                if(members.type == dataMembersInit)

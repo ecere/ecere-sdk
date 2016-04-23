@@ -1359,6 +1359,7 @@ case 1:
 {
 struct MembersInit * members;
 
+if(exp->__anon1.instance->_class)
 CheckPublicClass(exp->__anon1.instance->_class->__anon1.__anon1.symbol, access, "define");
 for(members = (*exp->__anon1.instance->members).first; members; members = members->next)
 {
