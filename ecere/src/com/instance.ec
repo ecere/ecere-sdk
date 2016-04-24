@@ -3289,25 +3289,20 @@ public int64 _strtoi64(const char * string, const char ** endString, int base)
       else if(ch >= 'A' && ch <= 'Z')
          ch -= ('A'- 10);
       else
-      {
-         if(endString)
-            *endString = string + c;
          // Invalid character
          break;
-      }
       if(ch < base)
       {
          value *= base;
          value += ch;
       }
       else
-      {
-         if(endString)
-            *endString = string + c;
          // Invalid character
          break;
-      }
    }
+   if(endString)
+      *endString = string + c;
+
    return sign*value;
 }
 
@@ -3344,25 +3339,19 @@ public uint64 _strtoui64(const char * string, const char ** endString, int base)
       else if(ch >= 'A' && ch <= 'Z')
          ch -= ('A' - 10);
       else
-      {
-         if(endString)
-            *endString = string + c;
          // Invalid character
          break;
-      }
       if(ch < base)
       {
          value *= base;
          value += ch;
       }
       else
-      {
-         if(endString)
-            *endString = string + c;
          // Invalid character
          break;
-      }
    }
+   if(endString)
+      *endString = string + c;
    return sign*value;
 }
 
