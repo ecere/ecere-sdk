@@ -49,7 +49,7 @@ distclean: cleantarget
 ecere:
 	@$(call echo,Building ecere...)
 	cd ecere && $(MAKE)
-	
+
 libec:
 	@$(call echo,Building ec...)
 	cd libec && $(MAKE)
