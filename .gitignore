@@ -17,6 +17,7 @@ debug/
 release/
 dat/
 .configs/
+*.tmp/
 
 # CodeGuard files
 .codeguard/
