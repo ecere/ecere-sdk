@@ -1247,7 +1247,8 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
 
-   quote = (type.type == unitClass && ((buffer[0] != '.' && !isdigit(buffer[0])) || strchr(buffer, ' ')));
+   quote = (type.type == unitClass && ((buffer[0] != '.' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+           (type.type == enumClass && !eCON);
    if(quote) f.Puts("\"");
    f.Puts(buffer);
    if(quote) f.Puts("\"");
@@ -1403,13 +1404,7 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
          f.Puts("unset");
    }
    else if(type.type == enumClass)
-   {
-      if(!eCON)
-         f.Puts("\"");
       WriteNumber(f, type, value, indent, eCON);
-      if(!eCON)
-         f.Puts("\"");
-   }
    else if(eClass_IsDerived(type, class(Map)))
    {
       WriteMap(f, type, value.p, indent, eCON);
