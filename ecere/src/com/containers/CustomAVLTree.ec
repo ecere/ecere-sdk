@@ -193,6 +193,7 @@ private:
       uint offset = 0;
       ClassType t = Tclass.type;
       int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
+      bool isInt64 = onCompare == (void *)class(int64).OnCompare;
 
       reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
       offset = __ENDIAN_PAD(Tclass.typeSize);
@@ -226,10 +227,22 @@ private:
       }
       else
       {
+         int64 a64;
+         if(isInt64)
+            a64 = *(int64 *)a;
          while(this)
          {
             byte * b = reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key;
-            int result = onCompare(Tclass, a, b);
+            int result;
+            if(isInt64)
+            {
+               int64 b64 = *(int64 *)b;
+                    if(a64 > b64) result = 1;
+               else if(a64 < b64) result = -1;
+               else result = 0;
+            }
+            else
+               result = onCompare(Tclass, a, b);
             if(result)
             {
                thisclass node = result < 0 ? left : right;
@@ -506,11 +519,12 @@ public:
          root = node;
       else
       {
-         Class Tclass = class(BT).templateArgs[0].dataTypeClass;
+         Class btClass = class(BT);
+         Class Tclass = btClass.templateArgs[0].dataTypeClass;
          if(!Tclass)
          {
-            Tclass = class(BT).templateArgs[0].dataTypeClass =
-               eSystem_FindClass(__thisModule.application, class(BT).templateArgs[0].dataTypeString);
+            Tclass = btClass.templateArgs[0].dataTypeClass =
+               eSystem_FindClass(__thisModule.application, btClass.templateArgs[0].dataTypeString);
          }
          if(root.Add(Tclass, node, 0))
             root = node.Rebalance();
