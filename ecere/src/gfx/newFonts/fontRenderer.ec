@@ -218,16 +218,15 @@ public:
 
    }
 
-   void drawImageFloat( float targetx, float targety, float angsin, float angcos, int imageindex )
+   void drawImageFloat( float targetx, float targety, float angsin, float angcos, int imageindex, bool useExtColor )
    {
       DMImage *image = &imageList[ imageindex ];
 
       /* 0.2588190451, 0.965925826289 */
-
-   #if DM_ENABLE_EXT_COLOR
+   #if (DM_ENABLE_EXT_COLOR && defined(SHADERS))
       dm.drawImageFloatExtColor( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, stateColor, stateExtColor );
    #else
-      dm.drawImageFloat( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, stateColor );
+      dm.drawImageFloat( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, useExtColor ? stateExtColor : stateColor );
    #endif
    }
 
