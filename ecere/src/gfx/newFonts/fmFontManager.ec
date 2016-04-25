@@ -260,7 +260,7 @@ public:
    // If the renderer records per-image data, return an imageIndex passed to drawImage()
    virtual int registerImage( int offsetx, int offsety, int width, int height );
    // Draw an image, imageIndex passed as the value previously returned by registerImage()
-   virtual void drawImage( int targetx, int targety, int imageIndex );
+   virtual void drawImage( int targetx, int targety, int imageIndex, bool useExtColor );
    // Draw an image, called instead of drawImage() for text cursors, can point to exactly the same function
    virtual void drawImageCursor( int targetx, int targety, int imageIndex );
    // If drawImage is zero, then this alternate function is called, passing everything required to render the glyph
@@ -796,12 +796,12 @@ public class FontManager
      return glyph;
    }
 
-   static inline void drawTextGlyph( FMFont font, FMGlyph *glyph, int x, int y )
+   static inline void drawTextGlyph( FMFont font, FMGlyph *glyph, int x, int y, bool useExtColor )
    {
       int ptx = x + glyph->offsetx;
       int pty = y + glyph->offsety;
       if( renderer.drawImage )
-         renderer.drawImage( ptx, pty, glyph->imageIndex );
+         renderer.drawImage( ptx, pty, glyph->imageIndex, useExtColor );
       else if( renderer.drawImageAlt )
          renderer.drawImageAlt( texdata, ptx, pty, glyph->x0, glyph->y0, glyph->x1 - glyph->x0, glyph->y1 - glyph->y0 );
    }
@@ -1110,7 +1110,15 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-         drawTextGlyph(font, glyph, x, y );
+#if !defined(SHADERS)
+         if(font.processImage)
+         {
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            if(outlineGlyph)
+               drawTextGlyph(font, outlineGlyph, x, y, true );
+         }
+#endif
+         drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
        }
        prevGlyphIndex = ( glyph ? glyph->glyphindex : -1 );
@@ -1168,7 +1176,15 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-         drawTextGlyph(font, glyph, x, y );
+#if !defined(SHADERS)
+         if(font.processImage)
+         {
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            if(outlineGlyph)
+               drawTextGlyph(font, outlineGlyph, x, y, true );
+         }
+#endif
+         drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
        }
        prevGlyphIndex = ( glyph ? glyph->glyphindex : -1 );
@@ -1229,7 +1245,15 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-         drawTextGlyph(font, glyph, x, y );
+#if !defined(SHADERS)
+         if(font.processImage)
+         {
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            if(outlineGlyph)
+               drawTextGlyph(font, outlineGlyph, x, y, true );
+         }
+#endif
+         drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
          if( x > truncatepoint )
            break;
