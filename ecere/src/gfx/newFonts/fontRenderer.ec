@@ -193,13 +193,13 @@ public:
       return imageindex;
    }
 
-   void drawImage( int targetx, int targety, int imageindex )
+   void drawImage( int targetx, int targety, int imageindex, bool useExtColor )
    {
       DMImage *image = &imageList[ imageindex ];
-   #if DM_ENABLE_EXT_COLOR
+   #if (DM_ENABLE_EXT_COLOR && defined(SHADERS))
       dm.drawImageExtColor( image, targetx, targety, image->sizex, image->sizey, stateColor, stateExtColor );
    #else
-      dm.drawImage( image, targetx, targety, image->sizex, image->sizey, stateColor );
+      dm.drawImage( image, targetx, targety, image->sizex, image->sizey, useExtColor ? stateExtColor : stateColor );
    #endif
    }
 
