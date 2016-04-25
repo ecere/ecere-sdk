@@ -1986,8 +1986,52 @@ private:
       }
    }
 
+#ifdef _DEBUG
+   static bool DebugFindRow(DataRow parent, DataRow row)
+   {
+      bool found = false;
+      DataRow r;
+      for(r = parent.subRows.first; r; r = r.next)
+      {
+         if(r == row)
+         {
+            found = true;
+            break;
+         }
+         if(DebugFindRow(r, row))
+         {
+            found = true;
+            break;
+         }
+      }
+      return found;
+   }
+#endif
+
    void SetCurrentRow(DataRow row, bool notify)
    {
+#if _DEBUG
+      if(this && row)
+      {
+         bool found = false;
+         DataRow r;
+         for(r = rows.first; r; r = r.next)
+         {
+            if(r == row)
+            {
+               found = true;
+               break;
+            }
+            if(DebugFindRow(r, row))
+            {
+               found = true;
+               break;
+            }
+         }
+         if(!found)
+            PrintLn("ERROR: Setting currentRow to a row not found in ListBox!!");
+      }
+#endif
       if(this && (currentRow != row || (currentRow && currentRow.selectedFlag == unselected)))
       {
          int headerSize = ((style.header) ? rowHeight : 0);
