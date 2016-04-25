@@ -276,6 +276,7 @@ public:
       return tempString;
    }
 
+   // TODO: Warn against the danger of using TakeOut with 'normal' classes, as they will be considered equivalent if onCompare says so
    void TakeOut(const D d)
    {
       IteratorPointer i = Find(d);
