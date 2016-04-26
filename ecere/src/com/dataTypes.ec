@@ -770,7 +770,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                   strcat(tempString, " = ");
                }
 
-               if(!strcmp(memberType.name, "char *"))
+               // Only quote and escape for data serialization purposes
+               if(needClass && *needClass && !strcmp(memberType.name, "char *"))
                {
                   int len = strlen(tempString);
                   int c;
