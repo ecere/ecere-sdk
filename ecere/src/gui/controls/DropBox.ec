@@ -938,6 +938,7 @@ private:
    DataRow noneRow;
    ColorAlpha selectionColor, selectionText;
 
-   selectionColor = SELECTION_COLOR;
-   selectionText = SELECTION_TEXT;
+   // TO REVIEW: This was blacked out when currentSkin was not yet initialized
+   selectionColor = guiApp.currentSkin ? SELECTION_COLOR : Color { 10, 36, 106 };
+   selectionText = guiApp.currentSkin ? SELECTION_TEXT : white;
 };
