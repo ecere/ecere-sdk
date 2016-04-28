@@ -622,7 +622,6 @@ public class DrawManagerFlags : uint32 { public: bool prehistoricOpenGL:1; }
 public class DrawManager
 {
    DrawManagerFlags flags;
-   DMProgram shaderPrograms[DM_PROGRAM_COUNT];
 
    // Matrix
    float matrix[16];
@@ -641,6 +640,7 @@ public class DrawManager
    // Counter to track program uniforms and such
    int64 updateCount;
 
+   DMProgram shaderPrograms[DM_PROGRAM_COUNT];
    GLuint prevProgram;
 
    bool renderingFlipped;
@@ -1425,6 +1425,11 @@ public:
      else
 #endif
        flushDrawImages( );
+   }
+
+   void finish()
+   {
+      flushImages();
 
      if(vboAvailable)
         glBindBuffer( GL_ARRAY_BUFFER, 0 );
@@ -1445,5 +1450,10 @@ public:
       if( drawBarrierIndex >= ( 1 << DM_BARRIER_ORDER_BITS ) )
          flushImages( );
       orderBarrierMask = drawBarrierIndex << DM_BARRIER_ORDER_SHIFT;
+   }
+
+   void clear()
+   {
+      imageBufferCount = 0;
    }
 }

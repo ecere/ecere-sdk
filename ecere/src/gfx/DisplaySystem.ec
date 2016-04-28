@@ -142,7 +142,7 @@ public:
       }
    }
 
-   void * LoadResource(Resource resource)
+   void * _LoadResource(Resource resource, void * fm)
    {
       DisplaySystemResPtr res;
       for(res = resources.first; res; res = res.next)
@@ -162,14 +162,50 @@ public:
          resources.Add(res);
 
          // This will load e.g. the Bitmap *
-         res.resource.Load(resource, this);
+#if !defined(ECERE_VANILLA)
+         if(fm)
+         {
+            ((FontResource)res.resource).LoadFM((FontResource)resource, this, fm);
+         }
+         else
+#endif
+            res.resource.Load(resource, this);
       }
+#if !defined(ECERE_VANILLA)
+      else if(fm)
+      {
+         FontResource fr = (FontResource)res.resource;
+         if(!fr.fmFont)
+         {
+            FontManager fMgr = (FontManager)fm;
+            fr.fmFont = fMgr.getFont(fr);
+            fr.fm = fm;
+         }
+         if(!fr.font)
+         {
+            fr.font = LoadFont(fr.faceName, fr.size, fr.flags);
+            fr.displaySystem = this;
+         }
+      }
+#endif
       // This would copy e.g. the Bitmap *
       incref res.resource;
       resource.Reference(res.resource);
 
       return res;
    }
+
+   void * LoadResource(Resource resource)
+   {
+      return _LoadResource(resource, null);
+   }
+
+#if !defined(ECERE_VANILLA)
+   void * LoadResourceFM(Resource resource, FontManager fm)
+   {
+      return _LoadResource(resource, fm);
+   }
+#endif
 
    void UnloadResource(Resource resource, DisplaySystemResPtr res)
    {
