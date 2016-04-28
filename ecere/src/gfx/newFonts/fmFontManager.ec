@@ -5,6 +5,7 @@
  * *****************************************************************************/
 import "LinkList"
 import "File"
+import "FontResource"
 
 import "atlasBuilder"
 import "imgDistMap"
@@ -18,166 +19,6 @@ import "imgDistMap"
 #include "cc.h"
 
 static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, (uint *)retCodePoint); }
-
-////
-
-// Based on Exponential blur, Jani Huhtanen, 2006
-
-#define APREC 16
-#define ZPREC 7
-
-static void blurCols( byte *dst, int w, int h, int stride, int alpha )
-{
-   int y;
-   for( y = 0 ; y < h ; y++ )
-   {
-      int x, z = 0;
-      for( x = 1 ; x < w ; x++ )
-      {
-         z += ( alpha * ( ( (int)( dst[x] ) << ZPREC ) - z ) ) >> APREC;
-         dst[x] = (byte)( z >> ZPREC );
-      }
-      for( x = w-2 ; x >= 0 ; x-- )
-      {
-         z += ( alpha * ( ( (int)( dst[x] ) << ZPREC ) - z ) ) >> APREC;
-         dst[x] = (byte)( z >> ZPREC );
-      }
-      dst += stride;
-   }
-}
-
-static void blurRows( byte *dst, int w, int h, int stride, int alpha )
-{
-   int x;
-   for( x = 0 ; x < w ; x++ )
-   {
-      int y, z = 0;
-      for( y = stride ; y < h*stride ; y += stride )
-      {
-         z += ( alpha * ( ( (int)( dst[y] ) << ZPREC ) - z ) ) >> APREC;
-         dst[y] = (byte)( z >> ZPREC );
-      }
-      for( y = (h-2)*stride ; y >= 0 ; y -= stride )
-      {
-         z += ( alpha * ( ( (int)( dst[y] ) << ZPREC ) - z ) ) >> APREC;
-         dst[y] = (byte)( z >> ZPREC );
-      }
-      dst++;
-   }
-}
-
-static void blur( byte *dst, int width, int height, int stride, int radius )
-{
-   if( radius >= 1 )
-   {
-      int boxcount = 2;
-      // Calculate the alpha such that 90% of the kernel is within the radius. (Kernel extends to infinity)
-      float radiusrange = (float)radius * ( 1.0f / sqrtf( 3 ) );
-      uint32 alpha = (uint32)roundf( ( 1 << APREC ) * ( 1.0f - expf( -2.3f / ( radiusrange + 1.0f ) ) ) );
-      for( ; boxcount ; boxcount-- )
-      {
-         blurRows( dst, width, height, stride, alpha );
-         blurCols( dst, width, height, stride, alpha );
-      }
-  }
-}
-
-#undef APREC
-#undef ZPREC
-
-
-#define APREC 12
-#define ZPREC 7
-#define SPREC (31-(APREC+ZPREC+8))
-
-static void blurCols32( int *dst, int w, int h, int stride, int alpha )
-{
-   int y;
-   for( y = 0 ; y < h ; y++ )
-   {
-      int x, z = 0;
-      for( x = 1 ; x < w ; x++ )
-      {
-         z += ( alpha * ( dst[x] - z ) ) >> APREC;
-         dst[x] = z;
-      }
-      for( x = w - 2 ; x >= 0 ; x-- )
-      {
-         z += ( alpha * ( dst[x] - z ) ) >> APREC;
-         dst[x] = z;
-      }
-      dst += stride;
-   }
-}
-
-static void blurRows32( int *dst, int w, int h, int stride, int alpha )
-{
-  int x;
-  for( x = 0 ; x < w ; x++ )
-  {
-    int y, z = 0;
-    for( y = 1 * stride ; y < h * stride ; y += stride )
-    {
-      z += ( alpha * ( dst[y] - z ) ) >> APREC;
-      dst[y] = z;
-    }
-    for( y = ( h - 2 ) * stride ; y >= 0 ; y -= stride )
-    {
-      z += ( alpha * ( dst[y] - z ) ) >> APREC;
-      dst[y] = z;
-    }
-    dst++;
-  }
-}
-
-static void blurScale( byte *dst, int width, int height, int stride, int radius, int scale )
-{
-   if( radius >= 1 )
-   {
-      int x, y, boxcount;
-      float radiusrange;
-      int alpha;
-      int *buffer, *bufferrow;
-      byte *dstrow;
-
-      if( scale > ( 1 << SPREC ) )
-         scale = 1 << SPREC;
-
-      buffer = new int[ width * height ];
-      for( y = 0 ; y < height ; y++ )
-      {
-         dstrow = &dst[y*stride];
-         bufferrow = &buffer[y*width];
-         for( x = 0 ; x < width ; x++ )
-            bufferrow[x] = ( (int)dstrow[x] << ZPREC ) * scale;
-      }
-
-      boxcount = 3;
-
-      /* Calculate the alpha such that 90% of the kernel is within the radius. (Kernel extends to infinity) */
-      radiusrange = (float)radius * 0.3f;
-      alpha = (uint32)roundf( ( 1 << APREC ) * ( 1.0f - expf( -2.3f / ( radiusrange + 1.0f ) ) ) );
-      for( ; boxcount ; boxcount-- )
-      {
-         blurRows32( buffer, width, height, width, alpha );
-         blurCols32( buffer, width, height, width, alpha );
-      }
-
-      for( y = 0 ; y < height ; y++ )
-      {
-         dstrow = &dst[y*stride];
-         bufferrow = &buffer[y*width];
-         for( x = 0 ; x < width ; x++ )
-            dstrow[x] = (byte)Min(255, bufferrow[x] >> ZPREC);
-      }
-      delete buffer;
-   }
-}
-
-#undef APREC
-#undef ZPREC
-#undef SPREC
-
 
 ////
 
@@ -393,7 +234,7 @@ class FMDefBits : uint64
 {
 public:
    uint32 codePoint:32;
-   int size:11, subPixel:6, blurRadius:6, blurScale:6;
+   int size:11, subPixel:6;
    bool outline:1;
 }
 
@@ -501,16 +342,16 @@ public class FMFont : struct
          if(bytesperpixel == 2)
          {
             /* Alpha channel */
-            dstrow[0] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
+            dstrow[0] = (byte)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
             /* Intensity channel */
-            dstrow[1] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
+            dstrow[1] = (byte)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
          }
          else
          {
             if(isOutline)
-               dstrow[0] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
+               dstrow[0] = (byte)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
             else
-               dstrow[0] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
+               dstrow[0] = (byte)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
          }
          dstrow += bytesperpixel;
        }
@@ -520,11 +361,11 @@ public class FMFont : struct
      delete distancemap;
    }
 
-   public void setOutline(float intensityFactor, float alphaFactor, float radius)      // TODO: Figure out radius?
+   public void setOutline(float size, float fade)
    {
-      outlineIntensityFactor = intensityFactor;
-      outlineAlphaFactor = alphaFactor;
-      outlineRadius = radius;
+      outlineIntensityFactor = 1.0f / (0.2f + size);
+      outlineAlphaFactor = 1.0f / (0.2f + fade);
+      outlineRadius = size;
       processImage = outlineProcessGlyphImage;
       processImageContext = this;
    }
@@ -581,8 +422,6 @@ struct FMState
    FMFont font;
    uint16 size;
    FMTextAlignment align;
-   uint16 blurradius;
-   uint16 blurscale;
 };
 
 ////
@@ -628,26 +467,26 @@ static void copyGlyphBitmap4( byte *dst, byte *src, int glyphwidth, int glyphhei
 
 public class FontManager
 {
-  FontManagerRenderer renderer;
-  int width, height;
-  float widthinv, heightinv;
-  int bytesperpixel;
-  int bytesperline;
-  int channelindex;
+   FontManagerRenderer renderer;
+   int width, height;
+   float widthinv, heightinv;
+   int bytesperpixel;
+   int bytesperline;
+   int channelindex;
 
-  AtlasBuilder atlas { };
-  byte *texdata;
-  int dirtyrect[4];
+   AtlasBuilder atlas { };
+   byte *texdata;
+   int dirtyrect[4];
 
-  LinkList<FMFont, link = link> fontList { };
+   LinkList<FMFont, link = link> fontList { };
 
-  FMState states[FM_MAX_STATES];
-  int nstates;
+   FMState states[FM_MAX_STATES];
+   int nstates;
 
    void (*copyGlyphBitmap)( byte *dst, byte *src, int glyphwidth, int glyphheight, int dststride );
 
 
-   static FMGlyph *getGlyph( FMFont font, unichar codepoint, int size, int subpixel, int blurradius, int blurscale, bool outlinePass )
+   static FMGlyph *getGlyph( FMFont font, unichar codepoint, int size, int subpixel, bool outlinePass )
    {
      int i, glyphindex, advance, x0, y0, x1, y1, gx, gy;
      int glyphwidth, glyphheight, glyphareawidth, glyphareaheight;
@@ -655,16 +494,16 @@ public class FontManager
      FMGlyph *glyph;
      uint32 hashindex;
      int padding, added;
-     byte *bdst;
+     // byte *bdst;
      byte *dst, *src;
 
      glyph = 0;
      if( size < 0.2 )
        return 0;
-     padding = blurradius + font.glyphPaddingWidth;
+     padding = font.glyphPaddingWidth;
 
      // Find code point and size.
-     glyphdef = FMDefBits { codepoint, size, subpixel, blurradius, blurscale, outlinePass };
+     glyphdef = FMDefBits { codepoint, size, subpixel, outlinePass };
      hashindex = ccHash32Int64Inline( glyphdef ) & ( FM_HASH_TABLE_SIZE - 1 );
      i = font.hashtable[hashindex];
      while( i != -1 )
@@ -698,7 +537,7 @@ public class FontManager
        if( !( font.ftFont.buildGlyphBitmap( glyphindex, size, subpixel, &advance, &x0, &y0, &x1, &y1 ) ) )
        {
          if( codepoint != FM_GLYPH_CODEPOINT_REPLACEMENT )
-           return getGlyph(font, FM_GLYPH_CODEPOINT_REPLACEMENT, size, subpixel, blurradius, blurscale, outlinePass );
+           return getGlyph(font, FM_GLYPH_CODEPOINT_REPLACEMENT, size, subpixel, outlinePass );
          return 0;
        }
      }
@@ -768,19 +607,6 @@ public class FontManager
         copyGlyphBitmap( dst, src, glyphwidth, glyphheight, bytesperline );
      }
 
-     /* Blur */
-     if( blurradius > 0 )
-     {
-#if 1
-    printf( "Do NOT use the blur! This will be removed in favor of external image processing\n" );
-#endif
-       bdst = &texdata[ glyph->x0 * bytesperpixel + ( glyph->y0 * bytesperline ) ];
-       if( blurscale == 1 )
-         blur(bdst, glyphareawidth, glyphareaheight, this.width, blurradius );
-       else
-         blurScale(bdst, glyphareawidth, glyphareaheight, this.width, blurradius, blurscale );
-     }
-
      // User custom font image processing
      if(font.processImage)
      {
@@ -831,7 +657,11 @@ public:
    property FontManagerRenderer renderer { set { renderer = value; } get { return renderer; } }
 
    // When notified of a full atlas, you should call fmExpandAtlas() or fmResetAtlas() within the callback
-   virtual void (*onAtlasFull)();
+   virtual void onAtlasFull()
+   {
+      renderer.flush();
+      atlas.reset(atlas.width, atlas.height);
+   }
 
    // Create and destroy font manager
    bool create( int width, int height, int channelCount, int channelIndex, FontManagerRenderer renderer)
@@ -904,25 +734,15 @@ public:
    ////
 
    // State setting
-   void setState( FMFont font, int size, int align, int blurradius, int blurscale )
+   void setState( FMFont font, int size, int align)
    {
      FMState *state;
      if( size >= FM_SIZE_MAX )
        size = FM_SIZE_MAX;
-     if( blurradius >= FM_BLUR_RADIUS_MAX )
-       blurradius = FM_BLUR_RADIUS_MAX;
-     else if( blurradius < 0 )
-       blurradius = 0;
-     if( blurscale >= FM_BLUR_SCALE_MAX )
-       blurscale = FM_BLUR_SCALE_MAX;
-     else if( blurscale < 1 )
-       blurscale = 1;
      state = &states[ nstates - 1 ];
      state->font = font;
      state->size = (uint16)size;
      state->align = (uint16)align;
-     state->blurradius = (uint16)blurradius;
-     state->blurscale = (uint16)blurscale;
    }
 
    void setFont( FMFont font )
@@ -941,20 +761,6 @@ public:
    void setAlign( int align )
    {
      states[ nstates - 1 ].align = (uint16)align;
-   }
-
-   void setBlur( int radius, int scale )
-   {
-     if( radius >= FM_BLUR_RADIUS_MAX )
-       radius = FM_BLUR_RADIUS_MAX;
-     else if( radius < 0 )
-       radius = 0;
-     if( scale >= FM_BLUR_SCALE_MAX )
-       scale = FM_BLUR_SCALE_MAX;
-     else if( scale < 1 )
-       scale = 1;
-     states[ nstates - 1 ].blurradius = (uint16)radius;
-     states[ nstates - 1 ].blurscale = (uint16)scale;
    }
 
    // Set image manipuation callback
@@ -985,8 +791,6 @@ public:
      FMState *state = &states[ nstates - 1 ];
      state->size = 12;
      state->font = 0;
-     state->blurradius = 0;
-     state->blurscale = 1;
      state->align = { left, baseline };
    }
 
@@ -1000,6 +804,29 @@ public:
         fontList.Remove((IteratorPointer)font);
         delete font;
      }
+   }
+
+   // Add font from FontResource
+   FMFont getFont(FontResource fontResource)
+   {
+      FMFont font = null;
+
+      Array<FaceInfo> infos = ResolveFont(fontResource.faceName, fontResource.size, fontResource.flags);
+      if(infos)
+      {
+         for(i : infos)
+         {
+            font = addFont(i.fileName, Max(2, (int)(1+fontResource.outlineSize)));
+            if(font)
+            {
+               font.setOutline(fontResource.outlineSize, fontResource.outlineFade);
+               break;
+            }
+         }
+         infos.Free();
+         delete infos;
+      }
+      return font;
    }
 
    // Add font from file
@@ -1077,15 +904,12 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return x;
      font = state->font;
@@ -1106,14 +930,14 @@ public:
      {
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
 #if !defined(SHADERS)
          if(font.processImage)
          {
-            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
@@ -1135,15 +959,12 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return x;
      font = state->font;
@@ -1164,7 +985,7 @@ public:
      {
        if( index == cursoroffset )
        {
-         glyph = getGlyph(font, FM_GLYPH_CODEPOINT_CURSOR, state->size, subpixel, blurradius, blurscale, false );
+         glyph = getGlyph(font, FM_GLYPH_CODEPOINT_CURSOR, state->size, subpixel, false );
          if( glyph )
            drawTextCursorGlyph(font, glyph, x, y );
        }
@@ -1172,14 +993,14 @@ public:
          break;
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
 #if !defined(SHADERS)
          if(font.processImage)
          {
-            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
@@ -1201,15 +1022,12 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return x;
      font = state->font;
@@ -1241,14 +1059,14 @@ public:
      {
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
 #if !defined(SHADERS)
          if(font.processImage)
          {
-            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, true );
+            FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
@@ -1286,15 +1104,12 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return 0;
      font = state->font;
@@ -1307,7 +1122,7 @@ public:
      {
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &advance, &subpixel );
@@ -1330,7 +1145,6 @@ public:
      FMQuad q;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
      int startx, advance;
      int minx, miny, maxx, maxy;
@@ -1339,8 +1153,6 @@ public:
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return x;
      font = state->font;
@@ -1359,7 +1171,7 @@ public:
      {
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
@@ -1411,7 +1223,6 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
@@ -1424,8 +1235,6 @@ public:
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return 0;
      font = state->font;
@@ -1448,7 +1257,7 @@ public:
        }
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &advance, &subpixel );
@@ -1489,15 +1298,12 @@ public:
      uint32 utf8state;
      FMGlyph *glyph;
      int prevGlyphIndex;
-     int blurradius, blurscale;
      FMFont font;
 
      state = &states[ nstates - 1 ];
      glyph = 0;
      utf8state = 0;
      prevGlyphIndex = -1;
-     blurradius = state->blurradius;
-     blurscale = state->blurscale;
      if( !( state->font ) )
        return 0;
      font = state->font;
@@ -1512,7 +1318,7 @@ public:
      {
        if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
          continue;
-       glyph = getGlyph(font, codepoint, state->size, subpixel, blurradius, blurscale, false );
+       glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &advance, &subpixel );
@@ -1759,17 +1565,15 @@ public:
    {
       int subpixel;
       FMState *state = &states[ nstates - 1 ];
-      int blurradius = state->blurradius;
-      int blurscale = state->blurscale;
       FMFont font = state->font;
-      FMGlyph *glyph = getGlyph(font, unicode, state->size, 0, blurradius, blurscale, false );
+      FMGlyph *glyph = getGlyph(font, unicode, state->size, 0, false );
       if( glyph )
       {
          subpixel = font.ftFont.getGlyphKernAdvance( pathdraw.prevGlyphIndex, glyph->glyphindex );
 #if !defined(SHADERS)
          if(font.processImage)
          {
-            FMGlyph *outlineGlyph = getGlyph(font, unicode, state->size, 0, blurradius, blurscale, true );
+            FMGlyph *outlineGlyph = getGlyph(font, unicode, state->size, 0, true );
             if(outlineGlyph)
                drawTextGlyphFloat(font, outlineGlyph, x, y, vectorx, vectory, (float)subpixel * (1.0f/64.0f), pathdraw.middleAlign, true );
          }
@@ -1793,9 +1597,7 @@ public:
       int subpixel = 0;
       FMState *state = &states[ nstates - 1 ];
       FMFont font = state->font;
-      int blurradius = state->blurradius;
-      int blurscale = state->blurscale;
-      FMGlyph *glyph = getGlyph(font, unicode, state->size, 0, blurradius, blurscale, false );
+      FMGlyph *glyph = getGlyph(font, unicode, state->size, 0, false );
       if( glyph )
       {
          subpixel = font.ftFont.getGlyphKernAdvance( pathdraw.prevGlyphIndex, glyph->glyphindex );
