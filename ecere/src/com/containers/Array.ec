@@ -26,7 +26,7 @@ public:
 
    void OnUnserialize(IOChannel channel)
    {
-      Array array = eInstance_New(_class.fullName);
+      Array array = eInstance_New(_class); //.fullName);
       uint count, c;
       Class Dclass = class(D);
       channel.Get(count);

@@ -3,7 +3,7 @@ namespace sys;
 import "instance"
 
 #ifdef _DEBUG //MEMINFO // _DEBUG
-#define DEBUG_LISTS
+//#define DEBUG_LISTS
 #endif
 
 public class Item : struct
