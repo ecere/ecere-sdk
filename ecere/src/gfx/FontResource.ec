@@ -1,6 +1,9 @@
 namespace gfx;
 
 import "Window"
+#if !defined(ECERE_VANILLA)
+import "fmFontManager"
+#endif
 
 public class FontResource : Resource
 {
@@ -14,6 +17,9 @@ public:
    property Window window { set { if(value) { value.RemoveResource(this); value.AddResource(this); } }  };
    property float outlineSize { set { outlineSize = value; } get { return this ? outlineSize : 0; } };
    property float outlineFade { set { outlineFade = value; } get { return this ? outlineFade : 0; } };
+#if !defined(ECERE_VANILLA)
+   property FMFont fmFont { get { return this ? fmFont : null; } };
+#endif
 
 private:
    char * faceName;
@@ -22,6 +28,10 @@ private:
    FontFlags flags;
    DisplaySystem displaySystem;
    float outlineSize, outlineFade;
+#if !defined(ECERE_VANILLA)
+   FontManager fm;
+   FMFont fmFont;
+#endif
 
    void Load(FontResource copy, DisplaySystem displaySystem)
    {
@@ -38,6 +48,18 @@ private:
       }
    }
 
+#if !defined(ECERE_VANILLA)
+   void LoadFM(FontResource copy, DisplaySystem displaySystem, FontManager fm)
+   {
+      Load(copy, displaySystem);
+      if(fm)
+      {
+         this.fm = fm;
+         fmFont = fm.getFont(this);
+      }
+   }
+#endif
+
    void Reference(FontResource reference)
    {
       delete faceName;
@@ -47,17 +69,27 @@ private:
       *&outlineSize = *&reference.outlineSize;
       *&outlineFade = *&reference.outlineFade;
       font = reference.font;
+#if !defined(ECERE_VANILLA)
+      fmFont = reference.fmFont;
+#endif
    }
 
    void Dereference()
    {
       font = null;
+#if !defined(ECERE_VANILLA)
+      fmFont = null;
+#endif
    }
 
    ~FontResource()
    {
       if(font && displaySystem)
          displaySystem.UnloadFont(font);
+#if !defined(ECERE_VANILLA)
+      if(fmFont && fm)
+         fm.removeFont(fmFont);
+#endif
       delete faceName;
    }
 
