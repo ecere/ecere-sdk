@@ -175,6 +175,7 @@ public:
       if( imagecount >= imageAlloc )
       {
          imageAlloc <<= 1;
+         dm.flushImages(); // Need to flush as we will be invalidating images previously given to DrawManager
          imageList = renew imageList DMImage[imageAlloc];
       }
       imagecount++;
