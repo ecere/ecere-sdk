@@ -133,25 +133,25 @@ public:
    // 2D Drawing
    virtual void ::SetForeground(Display, Surface, ColorAlpha);
    virtual void ::SetBackground(Display, Surface, ColorAlpha);
-   virtual void ::LineStipple(Display, Surface, uint);
-   virtual ColorAlpha ::GetPixel(Display, Surface, int, int);
-   virtual void ::PutPixel(Display, Surface, int, int);
-   virtual void ::DrawLine(Display, Surface, int, int, int, int);
-   virtual void ::Rectangle(Display, Surface,int,int,int,int);
-   virtual void ::Area(Display, Surface,int,int,int,int);
+   virtual void ::LineStipple(Display, Surface, uint pattern);
+   virtual ColorAlpha ::GetPixel(Display, Surface, int x, int y);
+   virtual void ::PutPixel(Display, Surface, int x, int y);
+   virtual void ::DrawLine(Display, Surface, int x1, int y1, int x2, int y2);
+   virtual void ::Rectangle(Display, Surface, int x1, int y1, int x2, int y2);
+   virtual void ::Area(Display, Surface, int x1, int y1, int x2, int y2);
    virtual void ::Clear(Display, Surface, ClearType);
-   virtual void ::Blit(Display, Surface, Bitmap, int, int, int, int, int, int);
-   virtual void ::Stretch(Display, Surface, Bitmap, int, int, int, int, int, int,int,int);
-   virtual void ::Filter(Display, Surface, Bitmap, int, int, int, int, int, int,int,int);
-   virtual void ::BlitDI(Display, Surface, Bitmap, int, int, int, int, int, int);
-   virtual void ::StretchDI(Display, Surface, Bitmap, int, int, int, int, int, int,int,int);
-   virtual void ::FilterDI(Display, Surface, Bitmap, int, int, int, int, int, int, int,int);
+   virtual void ::Blit(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h);
+   virtual void ::Stretch(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
+   virtual void ::Filter(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
+   virtual void ::BlitDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h);
+   virtual void ::StretchDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
+   virtual void ::FilterDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
    virtual void ::TextFont(Display, Surface, Font);
    virtual void ::TextOpacity(Display, Surface, bool);
-   virtual void ::WriteText(Display, Surface, int, int, const char *, int);
-   virtual void ::TextExtent(Display, Surface, const char *, int, int *, int *);
-   virtual void ::FontExtent(DisplaySystem, Font, const char *, int, int *, int *);
-   virtual void ::DrawingChar(Display, Surface, char);
+   virtual void ::WriteText(Display, Surface, int x, int y, const String text, int len);
+   virtual void ::TextExtent(Display, Surface, const String text, int len, int * tw, int * th);
+   virtual void ::FontExtent(DisplaySystem, Font, const String text, int len, int * tw, int * th);
+   virtual void ::DrawingChar(Display, Surface, char ch);
    virtual void ::NextPage(Display);
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
    // 3D Graphics
