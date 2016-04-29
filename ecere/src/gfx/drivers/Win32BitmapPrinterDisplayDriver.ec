@@ -264,7 +264,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
                if(gdiSystem.hdc)
                {
                   char curDir[MAX_LOCATION];
-                  String docName = printingDocumentName ? printingDocumentName : szMessage;
+                  const String docName = printingDocumentName ? printingDocumentName : szMessage;
 
                   gdiSystem.tmpDC = CreateCompatibleDC(gdiSystem.hdc);
                   gdiSystem.depth = GetDeviceCaps(gdiSystem.hdc, BITSPIXEL);
