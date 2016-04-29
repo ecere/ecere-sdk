@@ -1005,6 +1005,51 @@ class OpenGLDisplayDriver : DisplayDriver
       delete oglSystem;
    }
 
+   static bool ::initialDisplaySetup(Display display)
+   {
+      bool result = true;
+      #ifdef SHADERS
+      loadShaders("<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
+      #endif
+      glEnableClientState(GL_VERTEX_ARRAY);
+
+      GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+#if defined(__WIN32__)
+      if(glBlendFuncSeparate)
+         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+      else
+         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#else
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+#endif
+      glEnable(GL_BLEND);
+
+      glMatrixMode(MatrixMode::modelView);
+      glLoadIdentity(); // For setting up GLES stack
+      glScaled(1.0, 1.0, -1.0);
+      // glTranslatef(0.375f, 0.375f, 0.0f);
+      // glTranslatef(-0.625f, -0.625f, 0.0f);
+      glMatrixMode(MatrixMode::projection);
+#if !defined(EM_MODE) && !defined(SHADERS)
+      glShadeModel(GL_FLAT);
+
+      // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, true);
+      glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+      glFogi(GL_FOG_MODE, GL_EXP);
+      glFogf(GL_FOG_DENSITY, 0);
+      glEnable(GL_NORMALIZE);
+#endif
+      glDepthFunc(GL_LESS);
+      glClearDepth(1.0);
+      glDisable(GL_MULTISAMPLE_ARB);
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
+      display.ambient = Color { 50,50,50 };
+#endif
+      return result;
+   }
+
    bool CreateDisplay(Display display)
    {
       bool result = false;
@@ -1073,7 +1118,10 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 #if defined(__WIN32__) || defined(USEPBUFFER)
       else
+      {
          result = true;
+         wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
+      }
 #endif
       if(result)
       {
@@ -1081,46 +1129,8 @@ class OpenGLDisplayDriver : DisplayDriver
          CheckExtensions(oglSystem);
          vboAvailable = glBindBuffer != null;
          setupDebugging();
-         #ifdef SHADERS
-         loadShaders("<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
-         #endif
-         glEnableClientState(GL_VERTEX_ARRAY);
-
-         GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-#if defined(__WIN32__)
-         if(glBlendFuncSeparate)
-            glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-         else
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-#else
-         glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-#endif
-         glEnable(GL_BLEND);
-
-         glMatrixMode(MatrixMode::modelView);
-         glLoadIdentity(); // For setting up GLES stack
-         glScaled(1.0, 1.0, -1.0);
-         // glTranslatef(0.375f, 0.375f, 0.0f);
-         // glTranslatef(-0.625f, -0.625f, 0.0f);
-         glMatrixMode(MatrixMode::projection);
-#if !defined(EM_MODE) && !defined(SHADERS)
-         glShadeModel(GL_FLAT);
-
-         // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, true);
-         glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-         glFogi(GL_FOG_MODE, GL_EXP);
-         glFogf(GL_FOG_DENSITY, 0);
-         glEnable(GL_NORMALIZE);
-#endif
-         glDepthFunc(GL_LESS);
-         glClearDepth(1.0);
-         glDisable(GL_MULTISAMPLE_ARB);
+         initialDisplaySetup(display);
       }
-#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
-      display.ambient = Color { 50,50,50 };
-#endif
 
       if(!useSingleGLContext)
       {
@@ -1485,6 +1495,10 @@ class OpenGLDisplayDriver : DisplayDriver
       else
 #endif
          result = true;
+
+      if(display.alphaBlend && result)
+         initialDisplaySetup(display);
+
       if(!result && display.alphaBlend)
       {
          printf("Alpha blending windows not supported on this display\n");
