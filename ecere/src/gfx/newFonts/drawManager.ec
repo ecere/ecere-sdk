@@ -1215,6 +1215,10 @@ public:
       return true;
    }
 
+   ~DrawManager()
+   {
+      end();
+   }
 
    void end( )
    {
