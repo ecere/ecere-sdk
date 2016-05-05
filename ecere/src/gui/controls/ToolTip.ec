@@ -184,7 +184,7 @@ public class ToolTip : Window
       {
          toolTip.pos = { x, y };
          toolTip.closeTimer.Stop();
-         if(!mods.isSideEffect && !toolTip.created && rootWindow.active)
+         if(!mods.isSideEffect && !toolTip.created && rootWindow.active && !mods.left)
             toolTip.timer.Start();
          return toolTip.OrigOnMouseOver ? toolTip.OrigOnMouseOver(this, x, y, mods) : true;
       }
@@ -222,7 +222,7 @@ public class ToolTip : Window
       {
          toolTip.pos = { x, y };
          toolTip.closeTimer.Stop();
-         if(!mods.isSideEffect && !toolTip.created && rootWindow.active)
+         if(!mods.isSideEffect && !toolTip.created && rootWindow.active && !mods.left)
          {
             toolTip.timer.Stop();
             toolTip.timer.Start();
