@@ -6945,7 +6945,33 @@ public int ISO8859_1toUTF8(const char * source, char * dest, int max)
       unichar ch = ((byte *)source)[c];
       switch(ch)
       {
-         case 150: ch = (unichar)0x2012; break;
+         case 128: ch = (unichar)0x20AC; break;
+         case 130: ch = (unichar)0x201A; break;
+         case 131: ch = (unichar)0x0192; break;
+         case 132: ch = (unichar)0x201E; break;
+         case 133: ch = (unichar)0x2026; break;
+         case 134: ch = (unichar)0x2020; break;
+         case 135: ch = (unichar)0x2021; break;
+         case 136: ch = (unichar)0x02C6; break;
+         case 137: ch = (unichar)0x2030; break;
+         case 138: ch = (unichar)0x0160; break;
+         case 139: ch = (unichar)0x2039; break;
+         case 140: ch = (unichar)0x0152; break;
+         case 142: ch = (unichar)0x017D; break;
+         case 145: ch = (unichar)0x2018; break;
+         case 146: ch = (unichar)0x2019; break;
+         case 147: ch = (unichar)0x201C; break;
+         case 148: ch = (unichar)0x201D; break;
+         case 149: ch = (unichar)0x2022; break;
+         case 150: ch = (unichar)0x2013; break;
+         case 151: ch = (unichar)0x2014; break;
+         case 152: ch = (unichar)0x02DC; break;
+         case 153: ch = (unichar)0x2122; break;
+         case 154: ch = (unichar)0x0161; break;
+         case 155: ch = (unichar)0x203A; break;
+         case 156: ch = (unichar)0x0153; break;
+         case 158: ch = (unichar)0x017E; break;
+         case 159: ch = (unichar)0x0178; break;
       }
       if(ch < 0x80)
       {
