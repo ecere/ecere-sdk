@@ -626,7 +626,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          // case XK_KP_Next:
          case XK_KP_Page_Down:key = keyPadPageDown; break;
          case XK_KP_End:      key = keyPadEnd; break;
-         // case XK_KP_Begin:
+         case XK_KP_Begin:    key = keyPad5; break;
          case XK_KP_Insert:   key = keyPadInsert; break;
          case XK_KP_Delete:   key = keyPadDelete; break;
          // case XK_KP_Equal:
@@ -634,7 +634,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          case XK_KP_Add:      key = keyPadPlus; break;
          case XK_KP_Separator:key = keyPadDelete; break;
          case XK_KP_Subtract: key = keyPadMinus; break;
-         // case XK_KP_Decimal:
+         case XK_KP_Decimal:  key = keyPadDelete; break;
          case XK_KP_Divide:   key = keyPadSlash; break;
 
          case XK_KP_0:  key = keyPad0; break;
