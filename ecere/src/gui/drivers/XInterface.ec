@@ -1947,7 +1947,7 @@ class XInterface : Interface
                      supportedTargets[2] = XA_STRING;
                      supportedTargets[3] = atoms[utf8_string];
                      XChangeProperty(xGlobalDisplay,req->requestor, req->_property,
-                        XA_ATOM,32,PropModeReplace, (byte *) supportedTargets, 4*sizeof(Atom));
+                        XA_ATOM,32,PropModeReplace, (byte *) supportedTargets, 4);
                      respond.xselection._property = req->_property;
                      delete supportedTargets;
                   }
