@@ -109,14 +109,14 @@ public void shader_setMaterial(Material material, bool perVertexColor)
 }
 #endif
 
-public void shader_setSimpleMaterial(ColorAlpha color)
+public void shader_setSimpleMaterial(ColorAlpha color, bool twoSided)
 {
    float opacity = color.a / 255.0f;
    float r = color.color.r / 255.0f;
    float g = color.color.g / 255.0f;
    float b = color.color.b / 255.0f;
    glUniform1i(uPerVertexColor, 0);
-   glUniform1i(uMatTwoSided, 0);
+   glUniform1i(uMatTwoSided, twoSided);
    glUniform3f(uMatDiffuse, r, g, b);
    glUniform3f(uMatAmbient, r, g, b);
    glUniform3f(uMatSpecular, r, g, b);
