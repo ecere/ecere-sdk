@@ -75,6 +75,8 @@ Class * class_byte;
 
 Class * class_class;
 
+Class * class_Instance;
+
 Method * method_class_onDisplay;
 Method * method_class_onCompare;
 Method * method_class_onCopy;
@@ -159,6 +161,8 @@ Application eC_init(bool guiApp, int argc, char * argv[])
          class_uint = eC_findClass(app, "uint");
          class_uint64 = eC_findClass(app, "uint64");
          class_byte = eC_findClass(app, "byte");
+
+         class_Instance = eC_findClass(app, "Instance");
 
          class_Application = eC_findClass(app, "Application");
          if(class_Application)

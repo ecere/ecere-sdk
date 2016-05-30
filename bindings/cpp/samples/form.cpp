@@ -32,10 +32,20 @@ public:
       {
          double i = 3.14159265;
          char tmp[256];
-         constString s = onGetString(class_double, &i, tmp, null, null);
+         constString s = _onGetString(class_double, &i, tmp, null, null);
          PrintLn(class_String, "Hello! -- ", class_String, s, null); // Need to terminate with a null!
          HelloForm2 & self = (HelloForm2 &)owner;
          MessageBox($("C++ Bindings!"), self.button.caption).modal();
+
+         FontResource a("Arial", 20, true);
+         FontResource b("Comic Sans MS", 20, true);
+         FontResource c("Arial", 20, true);
+
+         bool ab = a.onCompare(class_FontResource, a, b);
+         bool ac = a.onCompare(class_FontResource, a, c);
+         printf("a compare b = %d\n", ab);
+         printf("a compare c = %d\n", ac);
+
          return true;
       };
 

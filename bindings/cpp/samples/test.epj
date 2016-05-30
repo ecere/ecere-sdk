@@ -54,7 +54,7 @@
             "../ecere.hpp"
          ]
       },
-      "sample1.cpp"
+      "form.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [
