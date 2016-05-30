@@ -1,0 +1,63 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "test",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "..",
+         "../../c"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "test",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "c",
+         "Files" : [
+            "../../c/eC.c",
+            "../../c/eC.h",
+            "../../c/ecere.c",
+            "../../c/ecere.h"
+         ]
+      },
+      {
+         "Folder" : "cpp",
+         "Files" : [
+            "../eC.cpp",
+            "../eC.hpp",
+            "../ecere.cpp",
+            "../ecere.hpp"
+         ]
+      },
+      "sample1.cpp"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
