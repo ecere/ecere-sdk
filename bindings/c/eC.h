@@ -15,41 +15,6 @@ extern "C"
 {
 #endif
 
-#define Instance           eC_Instance
-#define Module             eC_Module
-#define Application        eC_Application
-#define Container          eC_Container
-#define Array              eC_Array
-#define CustomAVLTree      eC_CustomAVLTree
-#define AVLTree            eC_AVLTree
-#define Map                eC_Map
-#define LinkList           eC_LinkList
-#define List               eC_List
-#define IOChannel          eC_IOChannel
-#define SerialBuffer       eC_SerialBuffer
-#define OldArray           eC_OldArray
-
-#define Window             eC_Window
-#define ClassDesignerBase  eC_ClassDesignerBase
-#define DesignerBase       eC_DesignerBase
-
-// Structs / Unions (with methods or properties)
-#define Iterator           eC_Iterator
-#define MapIterator        eC_MapIterator
-#define BuiltInContainer   eC_BuiltInContainer
-#define BinaryTree         eC_BinaryTree
-#define StringBinaryTree   eC_StringBinaryTree
-#define OldList            eC_OldList
-
-// class : struct (with methods or properties)
-#define Class              eC_Class
-#define BTNode             eC_BTNode
-#define Item               eC_Item
-#define OldLink            eC_OldLink
-#define AVLNode            eC_AVLNode
-#define MapNode            eC_MapNode
-#define StringBTNode       eC_StringBTNode
-
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -118,26 +83,40 @@ extern "C"
 
 // GENERATED:
 
-#ifdef __cplusplus
-   // class : struct (with methods or properties)
-   #define Class eC_Class
-   #define BTNode eC_BTNode
-   #define Item eC_Item
-   #define OldLink eC_OldLink
-   #define AVLNode eC_AVLNode
-   #define MapNode eC_MapNode
-   #define StringBTNode eC_StringBTNode
-#endif
+#define Instance           eC_Instance
+#define Module             eC_Module
+#define Application        eC_Application
+#define Container          eC_Container
+#define Array              eC_Array
+#define CustomAVLTree      eC_CustomAVLTree
+#define AVLTree            eC_AVLTree
+#define Map                eC_Map
+#define LinkList           eC_LinkList
+#define List               eC_List
+#define IOChannel          eC_IOChannel
+#define SerialBuffer       eC_SerialBuffer
+#define OldArray           eC_OldArray
 
-#ifdef __cplusplus
-   // Structs / Unions (with methods or properties)
-   #define Iterator eC_Iterator
-   #define MapIterator eC_MapIterator
-   #define BuiltInContainer eC_BuiltInContainer
-   #define BinaryTree eC_BinaryTree
-   #define StringBinaryTree eC_StringBinaryTree
-   #define OldList eC_OldList
-#endif
+#define Window             eC_Window
+#define ClassDesignerBase  eC_ClassDesignerBase
+#define DesignerBase       eC_DesignerBase
+
+// Structs / Unions (with methods or properties)
+#define Iterator           eC_Iterator
+#define MapIterator        eC_MapIterator
+#define BuiltInContainer   eC_BuiltInContainer
+#define BinaryTree         eC_BinaryTree
+#define StringBinaryTree   eC_StringBinaryTree
+#define OldList            eC_OldList
+
+// class : struct (with methods or properties)
+#define Class              eC_Class
+#define BTNode             eC_BTNode
+#define Item               eC_Item
+#define OldLink            eC_OldLink
+#define AVLNode            eC_AVLNode
+#define MapNode            eC_MapNode
+#define StringBTNode       eC_StringBTNode
 
 // Defines
 #if defined(__cplusplus)
@@ -990,12 +969,12 @@ extern DesignerBase (*GetActiveDesigner)(void);
 extern Platform (*GetRuntimePlatform)(void);
 extern bool (*LocateModule)(const char *name, const char *fileName);
 extern void (*Print)(Class * class_object, void * object, ...);
-extern int (*PrintBuf)(char *buffer, int maxLen, Class * class_object, void * object, ...);
-extern void (*PrintLn)(Class * class_object, void * object, ...);
-extern int (*PrintLnBuf)(char *buffer, int maxLen, Class * class_object, void * object, ...);
-extern char *(*PrintLnString)(Class * class_object, void * object, ...);
-extern int (*PrintStdArgsToBuffer)(char *buffer, int maxLen, Class * class_object, void * object, va_list args);
-extern char *(*PrintString)(Class * class_object, void * object, ...);
+extern int (*PrintBuf)(char *buffer, int maxLen, Class * class_object, const void * object, ...);
+extern void (*PrintLn)(Class * class_object, const void * object, ...);
+extern int (*PrintLnBuf)(char *buffer, int maxLen, Class * class_object, const void * object, ...);
+extern char *(*PrintLnString)(Class * class_object, const void * object, ...);
+extern int (*PrintStdArgsToBuffer)(char *buffer, int maxLen, Class * class_object, const void * object, va_list args);
+extern char *(*PrintString)(Class * class_object, const void * object, ...);
 extern void (*SetActiveDesigner)(DesignerBase designer);
 extern int64 (*_strtoi64)(const char *string, const char **endString, int base);
 extern uint64 (*_strtoui64)(const char *string, const char **endString, int base);
