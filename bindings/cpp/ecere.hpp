@@ -63,9 +63,9 @@ public:
    ecere::gui Namespace
 ****************************************************************************/
 ///////////// Window Class /////////////////////////////////////////////////
-#define Window_class_registration(c, d) \
-   REGISTER_METHOD("OnRedraw", onRedraw, Window, d, void, (eC_Instance o, eC_Instance s),    o, (*i, Surface { s }), (o, s), ); \
-   REGISTER_METHOD("OnCreate", onCreate, Window, d, bool, (eC_Instance o),                     o, (*i),                (o),    true);
+#define Window_class_registration(d) \
+   REGISTER_METHOD("OnRedraw", onRedraw, Window, d, void, (eC_Window o, eC_Surface s),    o, (*i, Surface { s }), (o, s), ); \
+   REGISTER_METHOD("OnCreate", onCreate, Window, d, bool, (eC_Window o),                  o, (*i),                (o),    true);
 
 bool foo(eC_Instance o);
 
@@ -74,7 +74,7 @@ class Window : public Instance
 public:
    CONSTRUCT(Window, Instance) { }
 
-   static Class * class_registration(Class * _class) { Window_class_registration(_class, Window); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Window_class_registration(Window); }
 
    VIRTUAL_METHOD(onCreate, Window, Window, bool, (Window &), (),
       return Window_onCreate(self->impl));
@@ -160,7 +160,7 @@ class Label : public Window
 public:
    CONSTRUCT(Label, Window) { }
 
-   static Class * class_registration(Class * _class) { Window_class_registration(_class, Label); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Window_class_registration(Label); }
 };
 
 ///////////// MessageBox Class /////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public:
       this->contents = contents;
       this->caption = caption;
    }
-   static Class * class_registration(Class * _class) { Window_class_registration(_class, MessageBox); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Window_class_registration(MessageBox); }
 
    #undef PSELF
    #define PSELF SELF(MessageBox, contents)
@@ -186,10 +186,10 @@ public:
 };
 
 ///////////// Button Class /////////////////////////////////////////////////
-#define Button_class_registration(c, d) \
-   Window_class_registration(_class, d); \
+#define Button_class_registration(d) \
+   Window_class_registration(d); \
    REGISTER_METHOD("NotifyClicked", notifyClicked, Button, d, \
-      bool, (eC_Instance m, eC_Instance b, int x, int y, Modifiers mods), \
+      bool, (eC_Window m, eC_Button b, int x, int y, Modifiers mods), \
       b, (*(Window *)INSTANCEL(m, m->_class), *(Button *)INSTANCEL(b, b->_class), x, y, mods), \
       (m, b, x, y, mods), true);
 
@@ -198,7 +198,7 @@ class Button : public Window
 public:
    CONSTRUCT(Button, Window) { }
 
-   static Class * class_registration(Class * _class) { Button_class_registration(_class, Button); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Button_class_registration(Button); }
 
    VIRTUAL_METHOD(notifyClicked, Button, Button, bool, (Window &, Button &, int, int, Modifiers), (Window & window, Button & button, int x, int y, Modifiers mods),
       return Button_notifyClicked(self->impl, window.impl, button.impl, x, y, mods));
@@ -209,7 +209,7 @@ class ToolButton : public Button
 {
 public:
    CONSTRUCT(ToolButton, Button) { }
-   static Class * class_registration(Class * _class) { Button_class_registration(_class, ToolButton); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Button_class_registration(ToolButton); }
 
    #undef PSELF
    #define PSELF SELF(ToolButton, Foo)
@@ -223,10 +223,10 @@ public:
    {
       Instance_evolve(&impl, GuiApplication::_class.impl);
       _INSTANCE(impl, impl->_class) = this;
-      vTbl = (void (**)(void))_class.impl->data;
+      vTbl = _class.vTbl;
    }
 
-   static Class * class_registration(Class * _class) { Application_class_registration(_class, GuiApplication); class_vtbl_setup(_class); return _class; }
+   REGISTER() { Application_class_registration(GuiApplication); }
 };
 
 #endif
