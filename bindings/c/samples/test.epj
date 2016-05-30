@@ -1,0 +1,53 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "EcereCAPI",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         ".."
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "EcereCAPI",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "c",
+         "Files" : [
+            "../eC.c",
+            "../eC.h",
+            "../ecere.c",
+            "../ecere.h"
+         ]
+      },
+      "form.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
