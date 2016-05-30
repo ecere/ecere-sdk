@@ -183,7 +183,42 @@ public:
 
 // GENERATED: (Instance, Module and Application might require some custom tweaks...)
 
+#define Instance_onDisplay_vTblID               onDisplay_vTblID
+#define Instance_onCompare_vTblID               onCompare_vTblID
+#define Instance_onCopy_vTblID                  onCopy_vTblID
+#define Instance_onFree_vTblID                  onFree_vTblID
+#define Instance_onGetString_vTblID             onGetString_vTblID
+#define Instance_onGetDataFromString_vTblID     onGetDataFromString_vTblID
+#define Instance_onEdit_vTblID                  onEdit_vTblID
+#define Instance_onSerialize_vTblID             onSerialize_vTblID
+#define Instance_onUnserialize_vTblID           onUnserialize_vTblID
+#define Instance_onSaveEdit_vTblID              onSaveEdit_vTblID
+
 // Normal Class Definitions
+#define Instance_class_registration(d) \
+   REGISTER_METHOD("OnCompare", onCompare, Instance, d, bool, (eC_Class * c, eC_Instance o, eC_Instance o2), \
+      o, (c, *i, *(Instance *)INSTANCEL(o2, o2->_class)), (c, o, o2), true);
+
+/*
+   REGISTER_METHOD("OnDisplay", onDisplay, Instance, d, void, (eC_Class * c, eC_Instance o, eC_Instance s, int x, int y, int w, void * f, Alignment a, DataDisplayFlags df), \
+      o, (c, *i, Surface(s), x, y, w, f, a, df), (c, o, s, x, y, w, f, a, df), );
+*/
+
+/*
+#define Instance_onCopy(c, i, co, o)                   onCopy(c, &i, co, o)
+#define Instance_onFree(c, i)                          onFree(i ? i->_class : c, i)
+#define Instance_onGetString(c, i, t, d, n)            onGetString(i ? i->_class : c, i, t, d, n)
+#define Instance_onGetDataFromString(c, i, s)          onGetDataFromString(c, &i, s)
+#define Instance_onEdit(c, i, b, o, x, y, w, h, u)     onEdit(i ? i->_class : c, i, b, o, x, y, w, h, u)
+#define Instance_onSerialize(c, i, s)                  onSerialize(i ? i->_class : c, i, s)
+#define Instance_onUnserialize(c, i, s)                onUnserialize(c, &i, s)
+#define Instance_onSaveEdit(c, i, w, o)                onSaveEdit(c, &i, w, o)
+*/
+class Surface;
+
+typedef uint32 Alignment;
+typedef uint32 DataDisplayFlags;
+
 class Instance
 {
 public:
@@ -193,7 +228,19 @@ public:
 
    static eC_bool constructor(eC_Instance i) { if(!Class_isDerived(i->_class, _class.impl)) return new Instance(i) != null; return true; }
    static void destructor(eC_Instance i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }
-   static void class_registration(CPPClass & _class) { }
+   static void class_registration(CPPClass & _class) { Instance_class_registration(Instance); }
+/*
+   VIRTUAL_METHOD(onDisplay, Instance, Instance,
+      void, (eC_Class *, Instance &, Surface &, int, int, int, void *, Alignment, DataDisplayFlags),
+      (eC_Class * cl, Instance & foo, Surface & surface, int x, int y, int w, void * fieldData, Alignment alignment, DataDisplayFlags flags),
+      Instance_onDisplay(cl, foo.impl, surface.impl, x, y, w, fieldData, alignment, flags));
+*/
+
+   VIRTUAL_METHOD(onCompare, Instance, Instance,
+      bool, (eC_Class *, Instance &, Instance &),
+      (eC_Class * cl, Instance & a, Instance & b),
+      return Instance_onCompare(cl, self->impl, b.impl));
+
    inline explicit Instance(eC_Instance _impl, CPPClass & cl = _class)
    {
       Class * c = cl.impl;

@@ -154,38 +154,38 @@ extern "C"
 // Virtual Method Calls
 
 // Base Class
-#define onDisplay(c, i, s, x, y, w, d, a, f) ({ void (* method)(Class *, void *, Surface, int, int, int, void *, Alignment, DataDisplayFlags) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onDisplay_vTblID]; \
+#define _onDisplay(c, i, s, x, y, w, d, a, f) ({ void (* method)(eC_Class *, void *, eC_Surface, int, int, int, void *, Alignment, DataDisplayFlags) = (void (*)(eC_Class *, void *, eC_Surface, int, int, int, void *, Alignment, DataDisplayFlags))((c) ? (c)->_vTbl : class_class->_vTbl)[onDisplay_vTblID]; \
                                                 method ? method((c), i, s, x, y, w, d, a, f) : 1; })
-#define onCompare(c, i, co, o)               ({ int (* method)(Class *, void *, Class *, void *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onCompare_vTblID]; \
+#define _onCompare(c, i, o)                   ({ int (* method)(eC_Class *, void *, void *) = (int (*)(eC_Class *, void *, void *))((c) ? (c)->_vTbl : class_class->_vTbl)[onCompare_vTblID]; \
+                                                method ? method((c), i, o) : 1; })
+#define _onCopy(c, i, co, o)                  ({ void (* method)(eC_Class *, void *, eC_Class *, void *) = (void (*)(eC_Class *, void *, eC_Class *, void *))((c) ? (c)->_vTbl : class_class->_vTbl)[onCopy_vTblID]; \
                                                 method ? method((c), i, co, o) : 1; })
-#define onCopy(c, i, co, o)                  ({ void (* method)(Class *, void *, Class *, void *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onCopy_vTblID]; \
-                                                method ? method((c), i, co, o) : 1; })
-#define onFree(c, i)                         ({ void (* method)(Class *, void *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onFree_vTblID]; \
+#define _onFree(c, i)                         ({ void (* method)(eC_Class *, void *) = (void (*)(eC_Class *, void *))((c) ? (c)->_vTbl : class_class->_vTbl)[onFree_vTblID]; \
                                                 method ? method((c), i) : 1; })
-#define onGetString(c, i, t, d, n)           ({ constString (* method)(Class *, void *, char *, void *, bool *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onGetString_vTblID]; \
+#define _onGetString(c, i, t, d, n)           ({ constString (* method)(eC_Class *, void *, char *, void *, bool *) = (constString (*)(eC_Class *, void *, char *, void *, bool *))((c) ? (c)->_vTbl : class_class->_vTbl)[onGetString_vTblID]; \
                                                 method ? method((c), i, t, d, n) : null; })
-#define onGetDataFromString(c, i, s)         ({ bool (* method)(Class *, void *, constString) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onGetDataFromString_vTblID]; \
+#define _onGetDataFromString(c, i, s)         ({ bool (* method)(eC_Class *, void *, constString) = (bool (*)(eC_Class *, void *, constString))((c) ? (c)->_vTbl : class_class->_vTbl)[onGetDataFromString_vTblID]; \
                                                 method ? method((c), i, s) : 1; })
-#define onEdit(c, i, b, o, x, y, w, h, u)    ({ Window (* method)(Class *, void *, DataBox, DataBox, int, int, int, int, void *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onEdit_vTblID]; \
+#define _onEdit(c, i, b, o, x, y, w, h, u)    ({ eC_Window (* method)(eC_Class *, void *, DataBox, DataBox, int, int, int, int, void *) = (eC_Window (*)(eC_Class *, void *, DataBox, DataBox, int, int, int, int, void *))((c) ? (c)->_vTbl : class_class->_vTbl)[onEdit_vTblID]; \
                                                 method ? method((c), i, b, i, x, y, w, h, u) : 1; })
-#define onSerialize(c, i, s)                 ({ void (* method)(Class *, void *, IOChannel) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onSerialize_vTblID]; \
+#define _onSerialize(c, i, s)                 ({ void (* method)(eC_Class *, void *, eC_IOChannel) = (void (*)(eC_Class *, void *, eC_IOChannel))((c) ? (c)->_vTbl : class_class->_vTbl)[onSerialize_vTblID]; \
                                                 method ? method((c), i, s) : 1; })
-#define onUnserialize(c, i, s)               ({ void (* method)(Class *, void *, IOChannel) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onUnserialize_vTblID]; \
+#define _onUnserialize(c, i, s)               ({ void (* method)(eC_Class *, void *, eC_IOChannel) = (void (*)(eC_Class *, void *, eC_IOChannel))((c) ? (c)->_vTbl : class_class->_vTbl)[onUnserialize_vTblID]; \
                                                 method ? method((c), i, s) : 1; })
-#define onSaveEdit(c, i, w, o)               ({ bool (* method)(Class *, void *, Window, void *) = ((c) ? (c)->_vTbl : class_class->_vTbl)[onSaveEdit_vTblID]; \
+#define _onSaveEdit(c, i, w, o)               ({ bool (* method)(eC_Class *, void *, eC_Window, void *) = (bool (*)(eC_Class *, void *, eC_Window, void *))((c) ? (c)->_vTbl : class_class->_vTbl)[onSaveEdit_vTblID]; \
                                                 method ? method((c), i, w, o) : 1; })
 
 // Base Virtual Methods for Normal Classes
-#define Instance_onDisplay(c, i, s, x, y, w, d, a, f)  onDisplay(i ? i->_class : c, i, s, x, y, w, d, a, f)
-#define Instance_onCompare(c, i, co, o)                onCompare(i ? i->_class : c, i, co, o)
-#define Instance_onCopy(c, i, co, o)                   onCopy(c, &i, co, o)
-#define Instance_onFree(c, i)                          onFree(i ? i->_class : c, i)
-#define Instance_onGetString(c, i, t, d, n)            onGetString(i ? i->_class : c, i, t, d, n)
-#define Instance_onGetDataFromString(c, i, s)          onGetDataFromString(c, &i, s)
-#define Instance_onEdit(c, i, b, o, x, y, w, h, u)     onEdit(i ? i->_class : c, i, b, o, x, y, w, h, u)
-#define Instance_onSerialize(c, i, s)                  onSerialize(i ? i->_class : c, i, s)
-#define Instance_onUnserialize(c, i, s)                onUnserialize(c, &i, s)
-#define Instance_onSaveEdit(c, i, w, o)                onSaveEdit(c, &i, w, o)
+#define Instance_onDisplay(c, i, s, x, y, w, d, a, f)  _onDisplay(i ? i->_class : c, i, s, x, y, w, d, a, f)
+#define Instance_onCompare(c, i, o)                    _onCompare(i ? i->_class : c, i, o)
+#define Instance_onCopy(c, i, co, o)                   _onCopy(c, &i, co, o)
+#define Instance_onFree(c, i)                          _onFree(i ? i->_class : c, i)
+#define Instance_onGetString(c, i, t, d, n)            _onGetString(i ? i->_class : c, i, t, d, n)
+#define Instance_onGetDataFromString(c, i, s)          _onGetDataFromString(c, &i, s)
+#define Instance_onEdit(c, i, b, o, x, y, w, h, u)     _onEdit(i ? i->_class : c, i, b, o, x, y, w, h, u)
+#define Instance_onSerialize(c, i, s)                  _onSerialize(i ? i->_class : c, i, s)
+#define Instance_onUnserialize(c, i, s)                _onUnserialize(c, &i, s)
+#define Instance_onSaveEdit(c, i, w, o)                _onSaveEdit(c, &i, w, o)
 
 // Application Class
 #define Application_main(x)   ({ eC_Application i = x; \
@@ -1057,6 +1057,9 @@ extern Class * class_uint16;
 extern Class * class_uint;
 extern Class * class_uint64;
 extern Class * class_byte;
+
+// Instance Class
+extern Class * class_Instance;
 
 // Application Class
 extern Class * class_Application;
