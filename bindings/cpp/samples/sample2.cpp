@@ -32,11 +32,9 @@ public:
       };
    }
 
-   static Class * class_registration(Class * _class)
+   REGISTER()
    {
-      Window::class_registration(_class);
       register_onRedraw(_class, [](Window & w, Surface surface) { surface.writeTextf(100, 100, $("Class Method!")); });
-      return _class;
    }
 };
 

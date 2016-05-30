@@ -1,8 +1,8 @@
 #include "eC.hpp"
 
-CPPClass<Instance> Instance::_class;
-CPPClass<Module> Module::_class;
-CPPClass<Application> Application::_class;
+TCPPClass<Instance> Instance::_class;
+TCPPClass<Module> Module::_class;
+TCPPClass<Application> Application::_class;
 
 void eC_cpp_init(Module & module)
 {

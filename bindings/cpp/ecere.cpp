@@ -1,12 +1,12 @@
 #include "ecere.hpp"
 
-CPPClass<GuiApplication> GuiApplication::_class;
-CPPClass<Surface> Surface::_class;
-CPPClass<FontResource> FontResource::_class;
-CPPClass<Window> Window::_class;
-CPPClass<Button> Button::_class;
-CPPClass<Label> Label::_class;
-CPPClass<MessageBox> MessageBox::_class;
+TCPPClass<GuiApplication> GuiApplication::_class;
+TCPPClass<Surface> Surface::_class;
+TCPPClass<FontResource> FontResource::_class;
+TCPPClass<Window> Window::_class;
+TCPPClass<Button> Button::_class;
+TCPPClass<Label> Label::_class;
+TCPPClass<MessageBox> MessageBox::_class;
 
 void ecere_cpp_init(Module & module)
 {

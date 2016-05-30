@@ -18,33 +18,35 @@
 
 #define newt(t, c) eC_new(class_ ## t->structSize * c)
 
-#define class_vtbl_setup(c) \
-   { typedef void (* Function)(void *); delete [] (Function *)_class->data; _class->data = new Function [_class->vTblSize]; \
-   memset(_class->data, 0, sizeof(Function) * _class->vTblSize); } \
-
 #define _REGISTER_CLASS(n, ns, bs, a) \
-   n::class_registration((Class *)eC_registerClass(normalClass, ns, bs, sizeof(Instance *), 0, \
-      (eC_bool (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, privateAccess, publicAccess))
+   (Class *)eC_registerClass(normalClass, ns, bs, sizeof(Instance *), 0, \
+      (eC_bool (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, privateAccess, publicAccess)
 
 // For defining _class and registereing together (single translation unit)
-#define REGISTER_CLASS_DEF(n, b, a)    CPPClass<n> n::_class(_REGISTER_CLASS(n,     #n, b::_class.impl->name, a));
+#define REGISTER_CLASS_DEF(n, b, a)    TCPPClass<n> n::_class(_REGISTER_CLASS(n,     #n, b::_class.impl->name, a));
 
 // For defining _class and registering separately (multiple translation units)
-#define CLASS_DEF(n)                   CPPClass<n> n::_class;
-#define REGISTER_CLASS(n, b, a)        n::_class.impl = _REGISTER_CLASS(n,       #n, b::_class.impl->name, a);
+#define CLASS_DEF(n)                   TCPPClass<n> n::_class;
+#define REGISTER_CLASS(n, b, a)        n::_class.setup(_REGISTER_CLASS(n,       #n, b::_class.impl->name, a));
 
 // For C++ classes proxying eC classes:
-#define REGISTER_CPP_CLASS(n, a)       n::_class.impl = _REGISTER_CLASS(n, "CPP" #n, #n, a);
+#define REGISTER_CPP_CLASS(n, a)       n::_class.setup(_REGISTER_CLASS(n, "CPP" #n, #n, a));
 
 #define _CONSTRUCT(c, b) \
-   static CPPClass<c> _class; \
+   static TCPPClass<c> _class; \
    static eC_bool constructor(eC_Instance i) { if(!Class_isDerived(i->_class, _class.impl)) return new c(i) != null; return true;} \
    static void destructor(eC_Instance i) { c * inst = (c *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(c & self))_class.destructor)(*inst); delete inst; } \
-   explicit inline c(eC_Instance _impl, Class * cl = _class.impl) : b(_impl, cl)
+   explicit inline c(eC_Instance _impl, CPPClass & cl = _class) : b(_impl, cl)
 
 #define CONSTRUCT(c, b) \
-   c() : c(Instance_new(_class.impl), _class.impl) { } \
+   c() : c(Instance_new(_class.impl), _class) { } \
    _CONSTRUCT(c, b)
+
+#define DESTRUCT(c) \
+   ((TCPPClass<c> &)_class).destructor
+
+#define REGISTER() \
+   static void class_registration(CPPClass & _class)
 
 #define APP_CONSTRUCT(c, b) \
    inline c() : c(eC_init_CALL) { } \
@@ -75,11 +77,11 @@
       FunctionType operator= (FunctionType func) \
       { \
          SELF(c, n); \
-         if(self->vTbl == c::_class.impl->data) \
+         if(self->vTbl == c::_class.vTbl) \
          { \
             uint size = c :: _class.impl->vTblSize; \
             self->vTbl = (void (**)())new FunctionType[size]; \
-            memcpy(self->vTbl, c::_class.impl->data, sizeof(FunctionType) * size); \
+            memcpy(self->vTbl, c::_class.vTbl, sizeof(FunctionType) * size); \
          } \
          ((FunctionType *)self->vTbl)[b ## _ ## n ## _vTblID] = func; \
          return func; \
@@ -90,13 +92,13 @@
          d; \
       } \
    } n; \
-   static void register_ ## n(Class * cl, c ## _ ## n ## _Functor::FunctionType func) \
+   static void register_ ## n(CPPClass & cl, c ## _ ## n ## _Functor::FunctionType func) \
    { \
-      ((c ## _ ## n ## _Functor::FunctionType *)cl->data)[b ## _ ## n ## _vTblID] = func; \
+      ((c ## _ ## n ## _Functor::FunctionType *)cl.vTbl)[b ## _ ## n ## _vTblID] = func; \
    }
 
 #define REGISTER_METHOD(ns, n, bc, c, r, p, o, a, ea, rv) \
-   addMethod(_class, ns, (void *) +[]p \
+   addMethod(_class.impl, ns, (void *) +[]p \
    { \
       Class * cl = (Class *)o->_class; \
       c * i = (c *)_INSTANCE(o, cl); \
@@ -142,19 +144,40 @@ extern "C" eC_Module ecere_init(eC_Module fromModule);
 
 class Class : public eC_Class { };
 
-template <class T>
 class CPPClass
 {
 public:
+   typedef void (* Function)(void);
    Class * impl;
-   void (*destructor)(T &);
+   Function * vTbl;
+};
 
-   CPPClass() { };
-   CPPClass(Class * _impl) : impl(_impl) { }
-   ~CPPClass()
+template <class T>
+class TCPPClass : public CPPClass
+{
+public:
+   TCPPClass() { }
+   TCPPClass(Class * _impl)
+   {
+      setup(_impl);
+   }
+   void (*destructor)(T &);
+   void setup(Class * _impl)
+   {
+      impl = _impl;
+      if(impl)
+      {
+         _impl->data = this;
+         if(vTbl) delete [] vTbl;
+         vTbl = new Function[impl->vTblSize];
+         memset(vTbl, 0, sizeof(Function) * impl->vTblSize);
+         T::class_registration(*this);
+      }
+   }
+   ~TCPPClass()
    {
       if(impl)
-         delete [] (void (**)(void))impl->data;
+         delete [] vTbl;
    }
 };
 
@@ -164,17 +187,18 @@ public:
 class Instance
 {
 public:
-   static CPPClass<Instance> _class;
+   static TCPPClass<Instance> _class;
    eC_Instance impl;
    void (**vTbl)(void);
 
    static eC_bool constructor(eC_Instance i) { if(!Class_isDerived(i->_class, _class.impl)) return new Instance(i) != null; return true; }
    static void destructor(eC_Instance i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }
-
-   inline explicit Instance(eC_Instance _impl, Class * c = _class.impl)
+   static void class_registration(CPPClass & _class) { }
+   inline explicit Instance(eC_Instance _impl, CPPClass & cl = _class)
    {
+      Class * c = cl.impl;
       impl = _impl;
-      vTbl = c ? (void (**)(void))c->data : null;
+      vTbl = cl.vTbl;
       if(impl)
       {
          if(c && !_INSTANCE(impl, c))
@@ -182,13 +206,11 @@ public:
          impl->_refCount++;
       }
    }
-
    inline Instance()
    {
       impl = null;
       vTbl = null;
    }
-
    inline ~Instance()
    {
       if(impl && impl->_class)
@@ -196,38 +218,34 @@ public:
          Instance ** i = (Instance **)&INSTANCEL(impl, impl->_class);
          if(i && *i == this)
             *i = null;
-         if(vTbl && vTbl != impl->_class->data)
+         if(vTbl)
+         {
+            CPPClass * cl = (CPPClass *)impl->_class->data;
+            if(cl && vTbl != cl->vTbl)
             delete [] vTbl;
+         }
          Instance_decref(impl);
       }
    }
-
-   inline Instance(const Instance & i)
+   inline Instance(const Instance & i) = delete;
+   inline Instance(const Instance && i)
    {
       impl = i.impl;
-      vTbl = null;
-      if(impl)
-      {
-         impl->_refCount++;
-         if(i.vTbl)
-            vTbl = i.vTbl;
-      }
+      vTbl = i.vTbl;
    }
-
-   static Class * class_registration(Class * _class) { return _class; }
 };
 
 class Module : public Instance
 {
 public:
-   static CPPClass<Module> _class;
-   inline explicit Module(eC_Instance _impl, Class * c = _class.impl) : Instance(_impl, c) { }
+   static TCPPClass<Module> _class;
+   inline explicit Module(eC_Instance _impl, CPPClass & c = _class) : Instance(_impl, c) { }
 };
 
 void eC_cpp_init(Module & module);
 void ecere_cpp_init(Module & module);
 
-#define Application_class_registration(c, d) \
+#define Application_class_registration(d) \
    REGISTER_METHOD("Main", main, Application, d, void, (eC_Instance o), o, (*i), (o), );
 
 class Application : public Module
@@ -237,7 +255,7 @@ public:
    {
       eC_cpp_init(*this);
       _INSTANCE(impl, impl->_class) = this;
-      vTbl = (void (**)(void))_class.impl->data;
+      vTbl = _class.vTbl;
 
       // TODO: Omit this if we're linking against eC rt only
       ecere_init(impl);
@@ -247,7 +265,7 @@ public:
 #endif
    }
 
-   static Class * class_registration(Class * _class) { Application_class_registration(_class, Application); class_vtbl_setup(_class); return _class; }
+   static void class_registration(CPPClass & _class) { Application_class_registration(Application); }
 
    #undef   PSELF
    #define  PSELF SELF(Application, exitCode)
