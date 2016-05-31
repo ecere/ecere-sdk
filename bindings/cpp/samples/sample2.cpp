@@ -34,7 +34,7 @@ public:
 
    REGISTER()
    {
-      register_onRedraw(_class, [](Window & w, Surface surface) { surface.writeTextf(100, 100, $("Class Method!")); });
+      register_onRedraw(_class, [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Class Method!")); });
    }
 };
 
