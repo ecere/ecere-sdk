@@ -30,6 +30,8 @@ class FontResource : public Instance
 public:
    CONSTRUCT(FontResource, Instance) { }
 
+   REGISTER(); // { Instance_class_registration(FontResource); }
+
    inline FontResource(constString faceName, float size = 10, eC_bool bold = false, eC_bool italic = false) : FontResource()
    {
       this->faceName = faceName;
@@ -64,10 +66,8 @@ public:
 ****************************************************************************/
 ///////////// Window Class /////////////////////////////////////////////////
 #define Window_class_registration(d) \
-   REGISTER_METHOD("OnRedraw", onRedraw, Window, d, void, (eC_Window o, eC_Surface s),    o, (*i, Surface { s }), (o, s), ); \
-   REGISTER_METHOD("OnCreate", onCreate, Window, d, bool, (eC_Window o),                  o, (*i),                (o),    true);
-
-bool foo(eC_Instance o);
+   REGISTER_METHOD("OnRedraw", onRedraw, Window, d, void, (eC_Window o, eC_Surface s),   o, o, Surface surface(s); return fn(*i, surface), (o, s), ); \
+   REGISTER_METHOD("OnCreate", onCreate, Window, d, bool, (eC_Window o),                 o, o, return fn(*i),                        (o),    true);
 
 class Window : public Instance
 {
@@ -76,9 +76,9 @@ public:
 
    REGISTER() { Window_class_registration(Window); }
 
-   VIRTUAL_METHOD(onCreate, Window, Window, bool, (Window &), (),
+   VIRTUAL_METHOD(onCreate, Window, Window, bool, Window &, , ,
       return Window_onCreate(self->impl));
-   VIRTUAL_METHOD(onRedraw, Window, Window, void, (Window &, Surface), (Surface surface),
+   VIRTUAL_METHOD(onRedraw, Window, Window, void, Window & _ARG, , Surface & surface,
       return Window_onRedraw(self->impl, surface.impl));
 
    DialogResult modal() { return Window_modal(impl); }
@@ -190,7 +190,7 @@ public:
    Window_class_registration(d); \
    REGISTER_METHOD("NotifyClicked", notifyClicked, Button, d, \
       bool, (eC_Window m, eC_Button b, int x, int y, Modifiers mods), \
-      b, (*(Window *)INSTANCEL(m, m->_class), *(Button *)INSTANCEL(b, b->_class), x, y, mods), \
+      b, b, return fn(*(Window *)INSTANCEL(m, m->_class), *(Button *)INSTANCEL(b, b->_class), x, y, mods), \
       (m, b, x, y, mods), true);
 
 class Button : public Window
@@ -200,7 +200,7 @@ public:
 
    REGISTER() { Button_class_registration(Button); }
 
-   VIRTUAL_METHOD(notifyClicked, Button, Button, bool, (Window &, Button &, int, int, Modifiers), (Window & window, Button & button, int x, int y, Modifiers mods),
+   VIRTUAL_METHOD(notifyClicked, Button, Button, bool, Window & _ARG, Window & window _ARG, Button & button _ARG int x _ARG int y _ARG Modifiers mods,
       return Button_notifyClicked(self->impl, window.impl, button.impl, x, y, mods));
 };
 
