@@ -3,6 +3,7 @@
 TCPPClass<Instance> Instance::_class;
 TCPPClass<Module> Module::_class;
 TCPPClass<Application> Application::_class;
+TCPPClass<IOChannel> IOChannel::_class;
 
 void eC_cpp_init(Module & module)
 {
