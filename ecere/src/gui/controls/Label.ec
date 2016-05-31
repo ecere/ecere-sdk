@@ -102,7 +102,7 @@ private:
    {
       if(window && window.visible && window.created && !window.disabled)
          window.Activate();
-      return isGroupBox;
+      return clickThrough ? Window::OnLeftButtonDown(x, y, mods) : isGroupBox;
    }
 
    static void Surface::GroupBevel(bool inner, int x, int y, int w, int h, int tw)
