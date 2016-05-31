@@ -52,7 +52,7 @@ public:
       DestroyChildren();
    }
 
-   void Select(SelectorButton button)
+   void Select(Button button)
    {
       button.checked = true;
       if(button.created)
@@ -61,22 +61,22 @@ public:
       MakeControlVisible(button);
    }
 
-   void AddButton(SelectorButton button)
+   void AddButton(Button button)
    {
       if(created)
          button.Create();
    }
 
-   void RemoveButton(SelectorButton button)
+   void RemoveButton(Button button)
    {
       Iterator<Window> it { controls };
       while(it.Next())
       {
-         if(button == (SelectorButton)it.data)
+         if(button == (Button)it.data)
          {
             if(it.Next() || (it.Prev() && it.Prev()))
             {
-               SelectorButton newSelection = (SelectorButton)it.data;
+               Button newSelection = (Button)it.data;
                newSelection.checked = true;
                newSelection.NotifyClicked(newSelection.master, newSelection, 0, 0, 0);
             }
@@ -86,16 +86,16 @@ public:
       button.Destroy(0);
    }
 
-   SelectorButton FindButtonByID(int64 id)
+   Button FindButtonByID(int64 id)
    {
-      SelectorButton button = null;
+      Button button = null;
       Iterator<Window> it { controls };
       while(it.Next())
       {
          Window b = it.data;
-         if(eClass_IsDerived(b._class, class(SelectorButton)) && b.id == id)
+         if(eClass_IsDerived(b._class, class(Button)) && b.id == id)
          {
-            button = (SelectorButton)b;
+            button = (Button)b;
             break;
          }
       }
@@ -108,21 +108,21 @@ public:
       return true;
    }
 
-   property SelectorButton selectedButton
+   property Button selectedButton
    {
       get
       {
-         SelectorButton button = null;
+         Button button = null;
          Iterator<Window> it { controls };
          while(it.Next())
          {
             Window w = it.data;
-            if(eClass_IsDerived(w._class, class(SelectorButton)))
+            if(eClass_IsDerived(w._class, class(Button)))
             {
-               SelectorButton b = (SelectorButton)w;
+               Button b = (Button)w;
                if(b.checked)
                {
-                  button = (SelectorButton)b;
+                  button = (Button)b;
                   break;
                }
             }
