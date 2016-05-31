@@ -3186,24 +3186,27 @@ class CodeEditor : Window
                                           if(instClass && eClass_GetDesigner(instClass))
                                           {
                                              Instance control = eInstance_New(instClass);
-                                             incref control;
-
-                                             object = ObjectInfo
+                                             if(control)
                                              {
-                                                oClass = classObject;
-                                                instance = control;
-                                                instCode = inst;
-                                             };
-                                             classObject.instances.Add(object);
-                                             if(inst.exp)
-                                                // TOCHECK: Why is this needed now?
-                                                object.name = CopyString((inst.exp.type == memberExp) ? inst.exp.member.member.string : inst.exp.identifier.string);
-                                             def.object = object;
+                                                incref control;
 
-                                             // if(object.name) { symbol = eList_Add(&curContext.symbols, sizeof(Symbol)); symbol.string = object.name; symbol.type = MkClassType(instClass.name); }
+                                                object = ObjectInfo
+                                                {
+                                                   oClass = classObject;
+                                                   instance = control;
+                                                   instCode = inst;
+                                                };
+                                                classObject.instances.Add(object);
+                                                if(inst.exp)
+                                                   // TOCHECK: Why is this needed now?
+                                                   object.name = CopyString((inst.exp.type == memberExp) ? inst.exp.member.member.string : inst.exp.identifier.string);
+                                                def.object = object;
 
-                                             designer.CreateObject(control, object, false, classObject.instance);
-                                             sheet.AddObject(object, object.name ? object.name : inst._class.name, typeData, false);
+                                                // if(object.name) { symbol = eList_Add(&curContext.symbols, sizeof(Symbol)); symbol.string = object.name; symbol.type = MkClassType(instClass.name); }
+
+                                                designer.CreateObject(control, object, false, classObject.instance);
+                                                sheet.AddObject(object, object.name ? object.name : inst._class.name, typeData, false);
+                                             }
                                           }
                                           break;
                                        }
@@ -3228,7 +3231,7 @@ class CodeEditor : Window
                                        {
                                           Instantiation inst = decl.inst;
                                           Class instClass = eSystem_FindClass(this.privateModule, inst._class.name);
-                                          if(instClass && eClass_GetDesigner(instClass))
+                                          if(instClass && eClass_GetDesigner(instClass) && ((object && object.next) || (!object && classObject.instances.first)))
                                           {
                                              Instance control;
                                              object = object ? object.next : classObject.instances.first;
