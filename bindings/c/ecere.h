@@ -37,6 +37,7 @@ extern "C"
 #define FontResource    eC_FontResource
 
 #define Window          eC_Window
+#define DataBox         eC_DataBox
 #define Button          eC_Button
 #define Label           eC_Label
 #define MessageBox      eC_MessageBox
@@ -288,6 +289,9 @@ extern int Button_notifyClicked_vTblID;
 
 extern Class * class_ToolButton;
 
+///////////// DataBox Class /////////////////////////////////////////////////
+typedef Window DataBox;
+
 ///////////// GuiApplication Class /////////////////////////////////////////////////
 extern Class * class_GuiApplication;
 
@@ -300,6 +304,7 @@ Module ecere_init(Module fromModule);
    #undef MessageBox
    #undef Label
    #undef Window
+   #undef DataBox
    #undef GuiApplication
 
    #undef FontResource

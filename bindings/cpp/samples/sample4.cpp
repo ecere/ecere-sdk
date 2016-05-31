@@ -31,7 +31,7 @@ public:
          return true;
       };
 
-      onRedraw = [](Window & w, Surface surface) { surface.writeTextf(100, 100, $("Instance Method!")); };
+      onRedraw = [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Instance Method!")); };
    }
 };
 GuiApplication app;

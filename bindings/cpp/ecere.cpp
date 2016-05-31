@@ -21,3 +21,7 @@ void ecere_cpp_init(Module & module)
       REGISTER_CPP_CLASS(MessageBox, module);
    }
 }
+
+// Instance methods depending on libecere
+void Instance::class_registration(CPPClass & _class) { Instance_class_registration(Instance); }
+void FontResource::class_registration(CPPClass & _class) { Instance_class_registration(FontResource); }

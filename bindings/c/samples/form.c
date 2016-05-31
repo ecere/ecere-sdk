@@ -20,7 +20,7 @@ static bool HelloForm2_button_notifyClicked(HelloForm2 this, Button button, int 
    MessageBox msgBox = newi(class_MessageBox);
    double i = 3.14159265;
    char tmp[256];
-   constString s = onGetString(class_double, &i, tmp, null, null);
+   constString s = _onGetString(class_double, &i, tmp, null, null);
 
    PrintLn(class_String, "Hello! -- ", class_String, s, null); // Need to terminate with a null!
    Window_set_caption(msgBox, $("Hello!"));

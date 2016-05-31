@@ -36,7 +36,7 @@ public:
    {
       Window::class_registration(_class);
 
-      register_onRedraw(_class, [](Window & w, Surface surface) { surface.writeTextf(100, 100, $("Class Method!")); });
+      register_onRedraw(_class, [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Class Method!")); });
 
       DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n"); };
    }
