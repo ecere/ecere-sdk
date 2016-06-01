@@ -55,7 +55,7 @@
    _CONSTRUCT(c, b)
 
 #if !defined(__WIN32__) || defined(__CONSOLE_APP__)
-   #define APP_SET_ARGS(a) eC_setArgs(a, argc, argv)
+   #define APP_SET_ARGS(a) eC_setArgs(a.impl, argc, argv);
 #else
    #define APP_SET_ARGS(a)
 #endif

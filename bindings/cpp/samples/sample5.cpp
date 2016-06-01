@@ -34,8 +34,6 @@ public:
       onRedraw = [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Instance Method!")); };
    }
 };
-GuiApplication app;
-HelloForm hello;
 
 extern "C" int
 #if defined(__WIN32__) && !defined(__CONSOLE_APP__)
@@ -44,8 +42,11 @@ extern "C" int
    main(int argc, char * argv[])
 #endif
 {
+   GuiApplication app;
+   HelloForm hello;
+
 #if !defined(__WIN32__) || defined(__CONSOLE_APP__)
-   eC_setArgs(app, argc, argv)
+   eC_setArgs(app.impl, argc, argv);
 #endif
    app.main();
    unloadTranslatedStrings(MODULE_NAME);
