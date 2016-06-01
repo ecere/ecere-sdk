@@ -111,9 +111,10 @@ typedef uint32 Color;
 typedef Color SystemColor;
 #endif
 
-enum SystemColor
 #if CPP11
-   : Color
+enum SystemColor : Color
+#else
+enum enum_Color
 #endif
 {
    formColor = COLOR(229, 234, 245)
@@ -170,9 +171,11 @@ typedef int64 DialogResult;
 #endif
 
 // Enumerations
-enum DialogResult
+
 #if CPP11
-   : int64
+enum DialogResult : int64
+#else
+enum enum_DialogResult
 #endif
 {
    cancel = 0,
@@ -181,9 +184,10 @@ enum DialogResult
    ok = 3
 };
 
-enum BorderStyle
 #if CPP11
-   : BorderBits
+enum BorderStyle : BorderBits
+#else
+enum enum_BorderStyle
 #endif
 {
    none,

@@ -390,6 +390,7 @@ public:
    int numParams;       // TOTAL number of params including all base classes; use templateParams.count for this level
    bool isInstanceClass;
    bool byValueSystemClass;
+   void * bindingsClass;
 
    property const char *
    {
@@ -4618,12 +4619,12 @@ public dllexport Method eClass_FindMethod(Class _class, const char * name, Modul
 }
 
 // Construct an instance
-static bool ConstructInstance(void * instance, Class _class, Class from)
+static bool ConstructInstance(void * instance, Class _class, Class from, bool bindingsAlloc)
 {
    if(_class.templateClass) _class = _class.templateClass;
    if(_class.base && from != _class.base)
    {
-      if(!ConstructInstance(instance, _class.base, from))
+      if(!ConstructInstance(instance, _class.base, from, false))
          return false;
    }
    if(_class.Initialize)
@@ -4634,7 +4635,12 @@ static bool ConstructInstance(void * instance, Class _class, Class from)
    }
    if(_class.Constructor)
    {
-      if(!_class.Constructor(instance))
+      bool result;
+      if(_class.bindingsClass)
+         result = ((bool (*)(void *, bool))(void *)_class.Constructor)(instance, bindingsAlloc);
+      else
+         result = _class.Constructor(instance);
+      if(!result)
       {
          for(; _class; _class = _class.base)
          {
@@ -4649,7 +4655,7 @@ static bool ConstructInstance(void * instance, Class _class, Class from)
    return true;
 }
 
-public dllexport void * eInstance_New(Class _class)
+static void * Instance_New(Class _class, bool bindingsAlloc)
 {
    Instance instance = null;
    if(_class)
@@ -4711,7 +4717,7 @@ public dllexport void * eInstance_New(Class _class)
          // Copy the virtual table initially
          instance._vTbl = _class._vTbl;
       }
-      if(instance && !ConstructInstance(instance, _class, null))
+      if(instance && !ConstructInstance(instance, _class, null, bindingsAlloc))
       {
          _free(instance);
          instance = null;
@@ -4720,6 +4726,16 @@ public dllexport void * eInstance_New(Class _class)
          printf("%s: %d instances\n", _class.name, _class.count);*/
    }
    return instance;
+}
+
+public dllexport void * eInstance_New(Class _class)
+{
+   return Instance_New(_class, true);
+}
+
+public dllexport void * eInstance_NewEx(Class _class, bool bindingsAlloc)
+{
+   return Instance_New(_class, bindingsAlloc);
 }
 
 public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
@@ -4831,7 +4847,7 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
       instance._vTbl = _class._vTbl;
 
       // We don't want to reconstruct the portion already constructed...
-      if(!ConstructInstance(instance, _class, fromClass))
+      if(!ConstructInstance(instance, _class, fromClass, false))
       {
          _free(instance);
          *instancePtr = null;
@@ -6284,7 +6300,7 @@ public dllexport void eProperty_SelfWatch(Class _class, const char * name, void 
    }
 }
 
-public dllexport void eInstance_Watch(void * instance, Property _property, void * object, void (*callback)(void *, void *))
+public dllexport void eInstance_Watch(Instance instance, Property _property, void * object, void (*callback)(void *, void *))
 {
    if(_property.isWatchable)
    {

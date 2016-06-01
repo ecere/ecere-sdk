@@ -54,7 +54,8 @@
             "../ecere.hpp"
          ]
       },
-      "form.cpp"
+      "form.cpp",
+      "foo.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
