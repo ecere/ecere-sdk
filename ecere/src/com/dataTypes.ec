@@ -1252,6 +1252,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
    }
    else if(_class.type == normalClass || _class.type == noHeadClass || _class.type == structClass)
    {
+      // TOCHECK: Serializing null instances?
       //if(data)
       {
          Class lastClass = null;
@@ -2508,7 +2509,7 @@ void InitializeDataTypes(Module module)
    RegisterClass_String(module);
 }
 
-public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, va_list args)
+public int PrintStdArgsToBuffer(char * buffer, int maxLen, const typed_object object, va_list args)
 {
    int len = 0;
    // TOFIX: OnGetString will need a maxLen as well
@@ -2546,7 +2547,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, 
    return len;
 }
 
-public int PrintBuf(char * buffer, int maxLen, typed_object object, ...)
+public int PrintBuf(char * buffer, int maxLen, const typed_object object, ...)
 {
    va_list args;
    int len;
@@ -2556,7 +2557,7 @@ public int PrintBuf(char * buffer, int maxLen, typed_object object, ...)
    return len;
 }
 
-public int PrintLnBuf(char * buffer, int maxLen, typed_object object, ...)
+public int PrintLnBuf(char * buffer, int maxLen, const typed_object object, ...)
 {
    va_list args;
    int len;
@@ -2568,7 +2569,7 @@ public int PrintLnBuf(char * buffer, int maxLen, typed_object object, ...)
    return len;
 }
 
-public char * PrintString(typed_object object, ...)
+public char * PrintString(const typed_object object, ...)
 {
    char buffer[4096];
    va_list args;
@@ -2582,7 +2583,7 @@ public char * PrintString(typed_object object, ...)
    return string;
 }
 
-public char * PrintLnString(typed_object object, ...)
+public char * PrintLnString(const typed_object object, ...)
 {
    char buffer[4096];
    va_list args;
@@ -2603,7 +2604,7 @@ public char * PrintLnString(typed_object object, ...)
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #endif
 
-public void PrintLn(typed_object object, ...)
+public void PrintLn(const typed_object object, ...)
 {
    va_list args;
    char buffer[4096];
@@ -2617,7 +2618,7 @@ public void PrintLn(typed_object object, ...)
 #endif
 }
 
-public void Print(typed_object object, ...)
+public void Print(const typed_object object, ...)
 {
    va_list args;
    char buffer[4096];

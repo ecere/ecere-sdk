@@ -460,6 +460,7 @@ static void WriteMain(const char * fileName)
       {
          f.Puts("   int exitCode;\n");
          f.Puts("   Module module;\n");
+         f.Puts("   bool setThingsUp = !__thisModule;\n");
       }
 
       //if(nonInst || thisAppClass)    // We use it all the time to get "Application" for the exit code now...
@@ -489,10 +490,15 @@ static void WriteMain(const char * fileName)
             f.Puts("      __thisModule = module;\n");
          f.Puts("   }\n\n");
       }
-      else if(targetPlatform == win32 && !isConsole)
-         f.Puts("   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n\n");
       else
-         f.Puts("   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
+      {
+         f.Puts("   if(setThingsUp)\n");
+         if(targetPlatform == win32 && !isConsole)
+            f.Puts("      __thisModule = __ecere_COM_Initialize(1, 0, null);\n\n");
+         else
+            f.Puts("      __thisModule = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
+         f.Puts("   __currentModule = module = __thisModule;\n");
+      }
 
       // First load all modules
       if(_imports.count)
@@ -651,7 +657,7 @@ static void WriteMain(const char * fileName)
       if(!isDynamicLibrary && thisAppClass)
       {
          f.Printf("   _class = eSystem_FindClass(__currentModule, \"%s\");\n", thisAppClass.name);
-         f.Printf("   eInstance_Evolve((Instance *)&__currentModule, _class);\n");
+         f.Printf("   if(setThingsUp) eInstance_Evolve((Instance *)&__currentModule, _class);\n");
          f.Printf("   __thisModule = __currentModule;\n");
       }
 
@@ -1973,6 +1979,8 @@ class SymbolgenApp : Application
                   thisAppClass = FindAppClass(&privateModule.application.privateNameSpace, false);
                */
                thisAppClass = SearchAppClass_Module(privateModule);
+               if(!thisAppClass)
+                  thisAppClass = eSystem_FindClass(privateModule, "Application");
             }
             WriteMain(output);
 
