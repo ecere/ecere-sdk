@@ -16,7 +16,8 @@
 
 #define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })
 
-#define newt(t, c) eC_new(class_ ## t->structSize * c)
+#undef   newi
+#define  newi(c) Instance_newEx(c, true)
 
 #define _REGISTER_CLASS(n, ns, bs, a) \
    (Class *)eC_registerClass(normalClass, ns, bs, sizeof(Instance *), 0, \
@@ -35,12 +36,12 @@
 #define _CONSTRUCT(c, b) \
    INSTANCE_VIRTUAL_METHODS(c) \
    static TCPPClass<c> _class; \
-   static eC_bool constructor(eC_Instance i) { if(!Class_isDerived(i->_class, _class.impl)) return new c(i) != null; return true;} \
+   static eC_bool constructor(eC_Instance i, eC_bool alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new c(i, _class) != null : true; } \
    static void destructor(eC_Instance i) { c * inst = (c *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(c & self))_class.destructor)(*inst); delete inst; } \
    explicit inline c(eC_Instance _impl, CPPClass & cl = _class) : b(_impl, cl)
 
 #define CONSTRUCT(c, b) \
-   c() : c(Instance_new(_class.impl), _class) { } \
+   c() : c(Instance_newEx(_class.impl, false), _class) { } \
    _CONSTRUCT(c, b)
 
 #define DESTRUCT(c) \
@@ -60,7 +61,7 @@
 #endif
 
 #define MAIN_DEFINITION \
-   MAIN_DECLARATION \
+   extern "C" MAIN_DECLARATION \
    { \
       APP_SET_ARGS(app); \
       app.main(); \
@@ -68,7 +69,7 @@
       return app.exitCode; \
    }
 
-#define SELF(c, n)  c * self = ((c *)(((char *)this) - (char *)&((c *)0)->n))
+#define SELF(c, n)  c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))
 
 #define _ARG ,
 
@@ -83,7 +84,7 @@
          if(self->vTbl == c::_class.vTbl) \
          { \
             uint size = c :: _class.impl->vTblSize; \
-            self->vTbl = (void (**)())new FunctionType[size]; \
+            self->vTbl = (void (**)())newt(FunctionType, size); \
             memcpy(self->vTbl, c::_class.vTbl, sizeof(FunctionType) * size); \
          } \
          ((FunctionType *)self->vTbl)[b ## _ ## n ## _vTblID] = func; \
@@ -128,7 +129,7 @@
 
 #define REGISTER_TYPED_METHOD(ns, n, bc, c, r, p, ocl, oi, code, ea, rv) \
    _REGISTER_METHOD(\
-      CPPClass * cppcl = _class ? (CPPClass *)_class->data : null;, \
+      CPPClass * cppcl = _class ? (CPPClass *)_class->bindingsClass : null;, \
       else if(cppcl && cppcl->vTbl && cppcl->vTbl[vid]) \
       { \
          fn = (bc ## _ ## n ## _Functor::FunctionType) cppcl->vTbl[vid]; \
@@ -138,25 +139,25 @@
 
 #define property(n, sg) struct n ## Prop { n ## Prop() { }; int _[0]; sg } n;
 
-#define _set(t, n, d) \
+#define _set(t, n, c, d) \
    inline t operator= (t v) \
    { \
-      PSELF; \
+      SELF(c, n); \
       d; \
       return v; \
    } \
 
-#define set(t, n, d) \
-   _set(t, n, d) \
+#define set(t, n, c, d) \
+   _set(t, n, c, d) \
    inline n ## Prop & operator= (n ## Prop & prop) \
    { \
-      PSELF; \
+      SELF(c, n); \
       t v = prop; \
       d; \
       return prop; \
    }
 
-#define get(t, n, d) inline operator t () const { PSELF; d; }
+#define get(t, n, c, d) inline operator t () const { SELF(c, n); d; }
 
 extern "C" eC_Module ecere_init(eC_Module fromModule);
 
@@ -192,9 +193,9 @@ public:
       impl = _impl;
       if(impl)
       {
-         _impl->data = this;
-         if(vTbl) delete [] vTbl;
-         vTbl = new Function[impl->vTblSize];
+         _impl->bindingsClass = this;
+         if(vTbl) eC_delete(vTbl);
+         vTbl = newt(Function, impl->vTblSize);
          memset(vTbl, 0, sizeof(Function) * impl->vTblSize);
          T::class_registration(*this);
       }
@@ -202,7 +203,7 @@ public:
    ~TCPPClass()
    {
       if(impl)
-         delete [] vTbl;
+         eC_delete(vTbl);
    }
 };
 
@@ -300,10 +301,19 @@ public:
    eC_Instance impl;
    void (**vTbl)(void);
 
-   static eC_bool constructor(eC_Instance i) { if(!Class_isDerived(i->_class, _class.impl)) return new Instance(i) != null; return true; }
+   void * operator new   (uintsize count) { return eC_new(count); }
+   void * operator new [](uintsize count) { return eC_new(count); }
+   void operator delete   (void * ptr) { eC_delete(ptr); }
+   void operator delete [](void * ptr) { eC_delete(ptr); }
+
+   static eC_bool constructor(eC_Instance i, bool alloc)
+   {
+      if(alloc &&!_INSTANCE(i, _class.impl))
+         return new Instance(i, _class) != null;
+      return true;
+   }
    static void destructor(eC_Instance i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }
    static void class_registration(CPPClass & _class);
-   //static void class_registration(CPPClass & _class) { Instance_class_registration(Instance); }
 
    INSTANCE_VIRTUAL_METHODS(Instance);
 
@@ -328,16 +338,16 @@ public:
    {
       if(impl && impl->_class)
       {
-         if(impl->_class->data)
+         if(impl->_class->bindingsClass)
          {
             Instance ** i = (Instance **)&INSTANCEL(impl, impl->_class);
             if(i && *i == this)
                *i = null;
             if(vTbl)
             {
-               CPPClass * cl = (CPPClass *)impl->_class->data;
+               CPPClass * cl = (CPPClass *)impl->_class->bindingsClass;
                if(cl && vTbl != cl->vTbl)
-               delete [] vTbl;
+               eC_delete(vTbl);
             }
          }
          Instance_decref(impl);
@@ -372,10 +382,12 @@ public:
       eC_cpp_init(*this);
       _INSTANCE(impl, impl->_class) = this;
       vTbl = _class.vTbl;
+      __thisModule = impl;
 
       // TODO: Omit this if we're linking against eC rt only
       ecere_init(impl);
       ecere_cpp_init(*this);
+
 #ifdef MODULE_NAME
       loadTranslatedStrings(null, MODULE_NAME);
 #endif
@@ -383,9 +395,7 @@ public:
 
    static void class_registration(CPPClass & _class) { Application_class_registration(Application); }
 
-   #undef   PSELF
-   #define  PSELF SELF(Application, exitCode)
-   property(exitCode, get(int, exitCode, return self ? _IPTR(self->impl, class_Application, class_members_Application)->exitCode : 0) );
+   property(exitCode, get(int, exitCode, Application, return self ? _IPTR(self->impl, class_Application, class_members_Application)->exitCode : 0) );
 
    VIRTUAL_METHOD(main, Application, Application, void, Application &, , ,
       return Application_main(self->impl));

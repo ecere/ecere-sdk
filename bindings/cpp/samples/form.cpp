@@ -48,6 +48,8 @@ public:
 };
 REGISTER_CLASS_DEF(Foo, Instance, app);
 
+void testStuff();
+
 class HelloForm2 : public Window
 {
 public:
@@ -100,7 +102,7 @@ public:
             printf("after");
             */
             Surface s { };
-            ((Foo *)null)->onDisplay(s, 0,0,0, null, 0, 0);
+            Foo * o = (Foo *)null; o->onDisplay(s, 0,0,0, null, 0, 0);
             //((Foo *)&obj3)->onDisplay(Surface { }, 0,0,0, null, 0, 0);
 
             int r;
@@ -108,6 +110,8 @@ public:
             //r = obj2.onCompare(obj1); printf("result: %d\n", r);
             //r = obj1.onCompare(obj3); printf("result: %d\n", r);
             //printf("result: a = %d, b = %d\n", obj4.a, obj4.b);
+
+            testStuff();
          }
          return true;
       };
@@ -140,6 +144,13 @@ public:
 };
 REGISTER_CLASS_DEF(HelloForm2, Window, app);
 
+void testStuff()
+{
+   //eC_Class * c = eC_findClass(app.impl, "HelloForm2");
+   eC_Class * c = HelloForm2::_class.impl;
+   ((HelloForm2 *)_INSTANCE(newi(c), c))->modal();
+}
+
 class HelloForm3 : public HelloForm2
 {
 public:
@@ -158,5 +169,5 @@ public:
 };
 REGISTER_CLASS_DEF(HelloForm3, HelloForm2, app);
 
-HelloForm2 hello2;
-//HelloForm3 hello3;
+//HelloForm2 hello2;
+HelloForm3 hello3;

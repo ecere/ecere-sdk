@@ -28,11 +28,10 @@ extern "C"
 
 #define incref(x) (x)->_refCount++;
 
-#define newi(c) ({ Instance i = Instance_new(c); incref(i); i; })
-#ifndef __cplusplus
-   #define new(t, c) eC_new(class_ ## t->structSize * c)
-#endif
 #define newb(c) eC_new(c)
+#define newi(c) ({ eC_Instance i = Instance_new(c); incref(i); i; })
+#define newc(t, c) (t *)eC_new(class_ ## t->structSize * c)
+#define newt(t, c) (t *)eC_new(sizeof(t) * c)
 
 #define deletei(v) Instance_decref(v), v = null
 #ifndef __cplusplus
@@ -143,6 +142,7 @@ extern "C"
 #define Module_load              __ecereNameSpace__ecere__com__eModule_Load
 
 #define Instance_new             __ecereNameSpace__ecere__com__eInstance_New
+#define Instance_newEx           __ecereNameSpace__ecere__com__eInstance_NewEx
 #define Instance_delete          __ecereNameSpace__ecere__com__eInstance_Delete
 #define Instance_decref          __ecereNameSpace__ecere__com__eInstance_DecRef
 #define Instance_evolve          __ecereNameSpace__ecere__com__eInstance_Evolve
@@ -372,9 +372,10 @@ enum boolean
 };
 #endif
 
-enum BackSlashEscaping
 #if CPP11
-   : uint32
+enum BackSlashEscaping : uint32
+#else
+enum enum_BackSlashEscaping
 #endif
 { forArgsPassing = 2 };
 
@@ -471,6 +472,8 @@ struct BinaryTree
 {
    BTNode * root;
    int count;
+   int (*CompareKey)(BinaryTree * tree, uintptr a, uintptr b);
+   void (*FreeKey)(void * key);
 };
 
 struct OldList
@@ -591,9 +594,9 @@ struct Class
    NameSpace * nameSpace;
    const char *dataTypeString;
    Type dataType;
-   void (*Initialize)();
    int typeSize;
    int defaultAlignment;
+   void (*Initialize)();
    int memberOffset;
    OldList selfWatchers;
    const char *designerClass;
@@ -621,6 +624,7 @@ struct Class
    int numParams;
    bool isInstanceClass;
    bool byValueSystemClass;
+   void * bindingsClass;
 };
 struct ClassProperty
 {
@@ -894,8 +898,8 @@ extern __attribute__((dllimport)) Application __ecereNameSpace__ecere__com____ec
 
 extern __attribute__((dllimport)) Class * __ecereNameSpace__ecere__com__eSystem_FindClass(Module module, const char *name);
 extern __attribute__((dllimport)) Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(ClassType type, const char *name, const char *baseName, int size, int sizeClass, bool (*Constructor)(void *), void (*Destructor)(void *), Module module, AccessMode declMode, AccessMode inheritanceAccess);
-extern __attribute__((dllimport)) void * __ecereNameSpace__ecere__com__eSystem_new(uint size);
-extern __attribute__((dllimport)) void * __ecereNameSpace__ecere__com__eSystem_new0(uint size);
+extern __attribute__((dllimport)) void * __ecereNameSpace__ecere__com__eSystem_New(uint size);
+extern __attribute__((dllimport)) void * __ecereNameSpace__ecere__com__eSystem_New0(uint size);
 extern __attribute__((dllimport)) void *__ecereNameSpace__ecere__com__eSystem_Renew(void *memory, uint size);
 extern __attribute__((dllimport)) void *__ecereNameSpace__ecere__com__eSystem_Renew0(void *memory, uint size);
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eSystem_Delete(void *memory);
@@ -934,6 +938,7 @@ extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eClass_SetP
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eClass_Unregister(Class * _class);
 
 extern __attribute__((dllimport)) Instance __ecereNameSpace__ecere__com__eInstance_New(Class * _class);
+extern __attribute__((dllimport)) Instance __ecereNameSpace__ecere__com__eInstance_NewEx(Class * _class, bool bindingsAlloc);
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eInstance_Delete(Instance instance);
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eInstance_Evolve(Instance *instancePtr, Class * _class);
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eInstance_SetMethod(Instance instance, constString name, void *function);
@@ -963,6 +968,8 @@ extern __attribute__((dllimport)) constString __ecereNameSpace__ecere__GetTransl
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__LoadTranslatedStrings(constString moduleName, constString name);
 extern __attribute__((dllimport)) void __ecereNameSpace__ecere__UnloadTranslatedStrings(constString name);
 
+extern Module __thisModule;
+
 // Global Functions
 extern void (*CheckConsistency)(void);
 extern void (*CheckMemory)(void);
@@ -977,8 +984,8 @@ extern char *(*PrintLnString)(Class * class_object, const void * object, ...);
 extern int (*PrintStdArgsToBuffer)(char *buffer, int maxLen, Class * class_object, const void * object, va_list args);
 extern char *(*PrintString)(Class * class_object, const void * object, ...);
 extern void (*SetActiveDesigner)(DesignerBase designer);
-extern int64 (*_strtoi64)(const char *string, const char **endString, int base);
-extern uint64 (*_strtoui64)(const char *string, const char **endString, int base);
+// extern int64 (*_strtoi64)(const char *string, const char **endString, int base);
+// extern uint64 (*_strtoui64)(const char *string, const char **endString, int base);
 extern uint (*log2i)(uint number);
 extern void (*memswap)(byte *a, byte *b, uint size);
 extern uint (*pow2i)(uint number);
@@ -1061,6 +1068,9 @@ extern Class * class_byte;
 
 // Instance Class
 extern Class * class_Instance;
+
+// Module Class
+extern Class * class_Module;
 
 // Application Class
 extern Class * class_Application;
