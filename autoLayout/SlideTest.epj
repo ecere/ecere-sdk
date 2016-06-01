@@ -1,0 +1,71 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "SlideTest",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "SlideTest",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "autoLayout",
+         "Files" : [
+            "autoLayout.ec",
+            "wrapText.ec"
+         ]
+      },
+      {
+         "Folder" : "graphics",
+         "Files" : [
+            "bg1.png"
+         ]
+      },
+      {
+         "Folder" : "slides",
+         "Files" : [
+            "slide1.ec",
+            "./base.ec",
+            "titleSlide.ec",
+            "languageSlide.ec",
+            "classesSlide.ec",
+            "instancesSlide.ec",
+            "formSlide.ec",
+            "buttonSlide.ec",
+            "gnosisSlide.ec"
+         ]
+      },
+      "slides.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
