@@ -1,4 +1,4 @@
-import "ecere"
+public import "ecere"
 import "wrapText"
 
 // Add 'unset' ?
