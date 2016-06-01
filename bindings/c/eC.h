@@ -56,15 +56,15 @@ extern "C"
    #define MAIN_DECLARATION int main(int argc, char * argv[])
    #ifdef __cplusplus
       #if defined(__CONSOLE_APP__)
-         #define eC_init_CALL eC_init(false, null, null);
+         #define eC_init_CALL eC_init(false, null, null)
       #else
-         #define eC_init_CALL eC_init(true, null, null);
+         #define eC_init_CALL eC_init(true, null, null)
       #endif
    #else
       #if defined(__CONSOLE_APP__)
-         #define eC_init_CALL eC_init(false, argc, argv);
+         #define eC_init_CALL eC_init(false, argc, argv)
       #else
-         #define eC_init_CALL eC_init(true, argc, argv);
+         #define eC_init_CALL eC_init(true, argc, argv)
       #endif
    #endif
 #endif
@@ -127,6 +127,7 @@ extern "C"
 
 // dllimport Functions
 #define eC_initApp               __ecereNameSpace__ecere__com____ecere_COM_Initialize
+#define eC_setArgs               __ecereNameSpace__ecere__com__eSystem_SetArgs
 #define eC_findClass             __ecereNameSpace__ecere__com__eSystem_FindClass
 #define eC_registerClass         __ecereNameSpace__ecere__com__eSystem_RegisterClass
 #define eC_new                   __ecereNameSpace__ecere__com__eSystem_New
@@ -896,6 +897,7 @@ struct class_members_SerialBuffer
 // C Exported functions
 extern __attribute__((dllimport)) Application __ecereNameSpace__ecere__com____ecere_COM_Initialize(bool guiApp, int argc, char *argv[]);
 
+extern __attribute__((dllimport)) void __ecereNameSpace__ecere__com__eSystem_SetArgs(Application app, int argc, char * argv[]);
 extern __attribute__((dllimport)) Class * __ecereNameSpace__ecere__com__eSystem_FindClass(Module module, const char *name);
 extern __attribute__((dllimport)) Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(ClassType type, const char *name, const char *baseName, int size, int sizeClass, bool (*Constructor)(void *), void (*Destructor)(void *), Module module, AccessMode declMode, AccessMode inheritanceAccess);
 extern __attribute__((dllimport)) void * __ecereNameSpace__ecere__com__eSystem_New(uint size);
