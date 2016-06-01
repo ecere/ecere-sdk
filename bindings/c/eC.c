@@ -15,8 +15,8 @@ char *(*PrintLnString)(Class * class_object, const void * object, ...);
 int (*PrintStdArgsToBuffer)(char *buffer, int maxLen, Class * class_object, const void * object, va_list args);
 char *(*PrintString)(Class * class_object, const void * object, ...);
 void (*SetActiveDesigner)(DesignerBase designer);
-int64 (*_strtoi64)(const char *string, const char **endString, int base);
-uint64 (*_strtoui64)(const char *string, const char **endString, int base);
+// int64 (*_strtoi64)(const char *string, const char **endString, int base);
+// uint64 (*_strtoui64)(const char *string, const char **endString, int base);
 uint (*log2i)(uint number);
 void (*memswap)(byte *a, byte *b, uint size);
 uint (*pow2i)(uint number);
@@ -99,6 +99,8 @@ int onSerialize_vTblID;
 int onUnserialize_vTblID;
 int onSaveEdit_vTblID;
 
+Class * class_Module;
+
 int Application_main_vTblID;
 
 Method * method_Application_main;
@@ -164,6 +166,8 @@ Application eC_init(bool guiApp, int argc, char * argv[])
 
          class_Instance = eC_findClass(app, "Instance");
 
+         class_Module = eC_findClass(app, "Module");
+
          class_Application = eC_findClass(app, "Application");
          if(class_Application)
          {
@@ -179,3 +183,5 @@ Application eC_init(bool guiApp, int argc, char * argv[])
    }
    return app;
 }
+
+Module __thisModule;
