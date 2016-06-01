@@ -426,6 +426,21 @@ void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int 
 #endif
 }
 
+void System_SetArgs(int argc, char ** argv, int * argcPtr, const char *** argvPtr)
+{
+#if defined(__unix__)
+   *argcPtr = argc;
+   *argvPtr = (const char **)argv;
+
+   if(!__thisModule && argv)
+   {
+      if(!getcwd(exeLocation, MAX_LOCATION))
+         exeLocation[0] = 0;
+      PathCat(exeLocation, argv[0]);
+   }
+#endif
+}
+
 void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload)
 {
    char fileName[MAX_LOCATION];

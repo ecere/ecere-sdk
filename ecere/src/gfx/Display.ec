@@ -438,7 +438,7 @@ public:
    Surface GetSurface(int x, int y, Box clip)
    {
       Surface result = null;
-      Surface surface { };
+      Surface surface { _refCount = 1 };
       if(surface)
       {
          Box box { -x, -y, -x + width - 1, -y + height - 1 };
