@@ -40,24 +40,21 @@ public:
       this->italic = italic;
    }
 
-   #undef PSELF
-   #define PSELF SELF(FontResource, bold)
-
    property(bold,
-      set(eC_bool, bold, FontResource_set_bold(self ? self->impl : null, v))
-      get(eC_bool, bold, return FontResource_get_bold(self ? self->impl : null))
+      set(eC_bool, bold, FontResource, FontResource_set_bold(self ? self->impl : null, v))
+      get(eC_bool, bold, FontResource, return FontResource_get_bold(self ? self->impl : null))
    );
    property(italic,
-      set(eC_bool, italic, FontResource_set_italic(self ? self->impl : null, v))
-      get(eC_bool, italic, return FontResource_get_italic(self ? self->impl : null))
+      set(eC_bool, italic, FontResource, FontResource_set_italic(self ? self->impl : null, v))
+      get(eC_bool, italic, FontResource, return FontResource_get_italic(self ? self->impl : null))
    );
    property(faceName,
-      set(constString, faceName, FontResource_set_faceName(self ? self->impl : null, v))
-      get(constString, faceName, return FontResource_get_faceName(self ? self->impl : null))
+      set(constString, faceName, FontResource, FontResource_set_faceName(self ? self->impl : null, v))
+      get(constString, faceName, FontResource, return FontResource_get_faceName(self ? self->impl : null))
    );
    property(size,
-      set(float, size, FontResource_set_size(self ? self->impl : null, v))
-      get(float, size, return FontResource_get_size(self ? self->impl : null))
+      set(float, size, FontResource, FontResource_set_size(self ? self->impl : null, v))
+      get(float, size, FontResource, return FontResource_get_size(self ? self->impl : null))
    );
 };
 
@@ -87,70 +84,67 @@ public:
    //void set_size(const Size & v) { Window_set_size(impl, &v); }
    //void set_hasClose(eC_bool v)  { Window_set_hasClose(impl, v); }
 
-   #undef   PSELF
-   #define  PSELF SELF(Window, parent)
-
    property(parent,
-      set(const Window &, parent, Window_set_parent(self ? self->impl : null, v.impl))
-      get(Window &, parent,
+      set(const Window &, parent, Window, Window_set_parent(self ? self->impl : null, v.impl))
+      get(Window &, parent, Window,
          eC_Instance i = Window_get_parent(self ? self->impl : null);
          return *(Window *)_INSTANCE(i, Window::_class.impl))
 
-      _set(const Window *, parent, Window_set_parent(self ? self->impl : null, v ? v->impl : null))
-      get(Window *, parent,
+      _set(const Window *, parent, Window, Window_set_parent(self ? self->impl : null, v ? v->impl : null))
+      get(Window *, parent, Window,
          eC_Instance i = Window_get_parent(self ? self->impl : null);
          return i ? (Window *)_INSTANCE(i, Window::_class.impl) : null)
 
-      get(Window, parent, return Window(Window_get_parent(self ? self->impl : null)));
+      get(Window, parent, Window, return Window(Window_get_parent(self ? self->impl : null)));
    );
    property(size,
-      set(const Size &, size, Window_set_size(self ? self->impl : null, &v))
-      get(Size, size, { Size v; Window_get_size(self ? self->impl : null, &v); return v; })
+      set(const Size &, size, Window, Window_set_size(self ? self->impl : null, &v))
+      get(Size, size, Window, { Size v; Window_get_size(self ? self->impl : null, &v); return v; })
    );
    property(clientSize,
-      set(const Size &, clientSize, Window_set_clientSize(self ? self->impl : null, &v))
-      get(Size,         clientSize, { Size v; Window_get_clientSize(self ? self->impl : null, &v); return v; })
+      set(const Size &, clientSize, Window, Window_set_clientSize(self ? self->impl : null, &v))
+      get(Size,         clientSize, Window, { Size v; Window_get_clientSize(self ? self->impl : null, &v); return v; })
    );
    property(position,
-      set(const Point &, position, Window_set_position(self ? self->impl : null, &v))
-      get(Point,         position, { Point v; Window_get_position(self ? self->impl : null, &v); return v; })
+      set(const Point &, position, Window, Window_set_position(self ? self->impl : null, &v))
+      get(Point,         position, Window, { Point v; Window_get_position(self ? self->impl : null, &v); return v; })
    );
    property(hasClose,
-      set(eC_bool, hasClose, Window_set_hasClose(self ? self->impl : null, v))
-      get(eC_bool, hasClose, return Window_get_hasClose(self ? self->impl : null))
+      set(eC_bool, hasClose, Window, Window_set_hasClose(self ? self->impl : null, v))
+      get(eC_bool, hasClose, Window, return Window_get_hasClose(self ? self->impl : null))
    );
    property(hasMinimize,
-      set(eC_bool, hasMinimize, Window_set_hasMinimize(self ? self->impl : null, v))
-      get(eC_bool, hasMinimize, return Window_get_hasMinimize(self ? self->impl : null))
+      set(eC_bool, hasMinimize, Window, Window_set_hasMinimize(self ? self->impl : null, v))
+      get(eC_bool, hasMinimize, Window, return Window_get_hasMinimize(self ? self->impl : null))
    );
    property(hasMaximize,
-      set(eC_bool, hasMaximize, Window_set_hasMaximize(self ? self->impl : null, v))
-      get(eC_bool, hasMaximize, return Window_get_hasMaximize(self ? self->impl : null))
+      set(eC_bool, hasMaximize, Window, Window_set_hasMaximize(self ? self->impl : null, v))
+      get(eC_bool, hasMaximize, Window, return Window_get_hasMaximize(self ? self->impl : null))
    );
    property(caption,
-      set(constString, caption, Window_set_caption(self ? self->impl : null, v))
-      get(constString, caption, return Window_get_caption(self ? self->impl : null))
+      set(constString, caption, Window, Window_set_caption(self ? self->impl : null, v))
+      get(constString, caption, Window, return Window_get_caption(self ? self->impl : null))
    );
    property(font,
-      set(const FontResource &, font, Window_set_font(self ? self->impl : null, v.impl))
-      get(FontResource &, font,
+      set(const FontResource &, font, Window, Window_set_font(self ? self->impl : null, v.impl))
+      get(FontResource &, font, Window,
             eC_Instance i = Window_get_font(self ? self->impl : null);
             return *(FontResource *)_INSTANCE(i, FontResource::_class.impl))
 
-      _set(const FontResource *, font, Window_set_font(self ? self->impl : null, v->impl))
-      get(FontResource *, font,
+      _set(const FontResource *, font,Window,  Window_set_font(self ? self->impl : null, v->impl))
+      get(FontResource *, font, Window,
             eC_Instance i = Window_get_font(self ? self->impl : null);
             return i ? (FontResource *)_INSTANCE(i, FontResource::_class.impl) : null)
 
-      get(FontResource, font, return FontResource(Window_get_font(self ? self->impl : null)))
+      get(FontResource, font, Window, return FontResource(Window_get_font(self ? self->impl : null)))
    );
    property(borderStyle,
-      set(BorderStyle, borderStyle, Window_set_borderStyle(self ? self->impl : null, v))
-      get(BorderStyle, borderStyle, return Window_get_borderStyle(self ? self->impl : null))
+      set(BorderStyle, borderStyle, Window, Window_set_borderStyle(self ? self->impl : null, v))
+      get(BorderStyle, borderStyle, Window, return Window_get_borderStyle(self ? self->impl : null))
    );
    property(background,
-      set(Color, background, Window_set_background(self ? self->impl : null, v))
-      get(Color, background, return Window_get_background(self ? self->impl : null))
+      set(Color, background, Window, Window_set_background(self ? self->impl : null, v))
+      get(Color, background, Window, return Window_get_background(self ? self->impl : null))
    );
 };
 
@@ -176,12 +170,9 @@ public:
    }
    REGISTER() { Window_class_registration(MessageBox); }
 
-   #undef PSELF
-   #define PSELF SELF(MessageBox, contents)
-
    property(contents,
-      set(constString, contents, MessageBox_set_contents(self ? self->impl : null, v))
-      get(constString, contents, return MessageBox_get_contents(self ? self->impl : null))
+      set(constString, contents, MessageBox, MessageBox_set_contents(self ? self->impl : null, v))
+      get(constString, contents, MessageBox, return MessageBox_get_contents(self ? self->impl : null))
    );
 };
 
@@ -210,9 +201,6 @@ class ToolButton : public Button
 public:
    CONSTRUCT(ToolButton, Button) { }
    REGISTER() { Button_class_registration(ToolButton); }
-
-   #undef PSELF
-   #define PSELF SELF(ToolButton, Foo)
 };
 
 ///////////// GuiApplication Class /////////////////////////////////////////////////
@@ -223,6 +211,7 @@ public:
    {
       Instance_evolve(&impl, GuiApplication::_class.impl);
       _INSTANCE(impl, impl->_class) = this;
+      __thisModule = impl;
       vTbl = _class.vTbl;
    }
 
