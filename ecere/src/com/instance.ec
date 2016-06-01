@@ -122,6 +122,7 @@ dllexport int isblank(int c);
 #endif
 bool Instance_LocateModule(const char * name, const char * fileName);
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr);
+void System_SetArgs(int argc, char ** argv, int * argcPtr, const char *** argvPtr);
 void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
 void Instance_Module_Free(void * library);
 #if defined(_DEBUG)
@@ -6518,7 +6519,7 @@ static void LoadCOM(Module module)
 
    // --- Stdio ---
    eSystem_RegisterFunction("sprintf", "int sprintf(char *, const char *, ...)", sprintf, module, baseSystemAccess);
-   eSystem_RegisterFunction("snprintf", "int sprintf(char *, uintsize, const char *, ...)", snprintf, module, baseSystemAccess);
+   eSystem_RegisterFunction("snprintf", "int snprintf(char *, uintsize, const char *, ...)", snprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("printf", "int printf(const char *, ...)", printf, module, baseSystemAccess);
    eSystem_RegisterFunction("vsprintf", "int vsprintf(char*, const char*, __builtin_va_list)", vsprintf, module, baseSystemAccess);
    eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, uintsize, const char*, __builtin_va_list)", vsnprintf, module, baseSystemAccess);
@@ -6583,6 +6584,11 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
    app._class = eSystem_FindClass(app, "Application");
 
    return app;
+}
+
+public dllexport void eSystem_SetArgs(Application app, int argc, char * argv[])
+{
+   System_SetArgs(argc, argv, &app.argc, &app.argv);
 }
 
 public dllexport ClassTemplateParameter eClass_AddTemplateParameter(Class _class, const char * name, TemplateParameterType type, const void * info, ClassTemplateArgument defaultArg)
