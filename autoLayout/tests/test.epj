@@ -1,0 +1,53 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "test1",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "test1",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "autoLayout",
+         "Files" : [
+            "../autoLayout/autoLayout.ec",
+            "../autoLayout/wrapText.ec"
+         ]
+      },
+      "test1.ec",
+      "test2.ec",
+      "test3.ec",
+      "test4.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
