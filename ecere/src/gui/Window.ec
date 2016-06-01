@@ -4101,6 +4101,7 @@ private:
       bool result = true;
       bool wasMoving = guiApp.windowMoving ? true : false;
       bool wasScrolling = guiApp.windowScrolling ? true : false;
+      bool firstPass = true;
       Window w = null;
       while(result && w != this)
       {
@@ -4350,7 +4351,7 @@ private:
             msgWindow.SelectMouseCursor();
          */
 
-         if(guiApp.windowCaptured || trueWindow)
+         if(firstPass && (guiApp.windowCaptured || trueWindow))
          {
             Window prevWindow = guiApp.prevWindow;
             List<Window> overWindows = guiApp.overWindows;
@@ -4456,6 +4457,7 @@ private:
          */
          if(!result || !w || !w.clickThrough)
             break;
+         firstPass = false;
       }
       delete w;
       return result;
