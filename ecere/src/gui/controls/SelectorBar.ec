@@ -140,6 +140,7 @@ public:
 public class SelectorButton : Button
 {
    bevelOver = true, isRadio = true, bitmap = null, minClientSize = { 44, 22 }; isRemote = true;
+   clickThrough = true;
 
 public:
    Window focusHolder;
