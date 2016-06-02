@@ -1465,7 +1465,7 @@ class BuildTab : Tab
                   }
                }
                */
-               SelectorButton button = configSelector.FindButtonByID((int64)(intptr)configToDelete);
+               SelectorButton button = (SelectorButton)configSelector.FindButtonByID((int64)(intptr)configToDelete);
                if(button)
                   configSelector.RemoveButton(button);
 

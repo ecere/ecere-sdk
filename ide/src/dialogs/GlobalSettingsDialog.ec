@@ -537,7 +537,7 @@ class CompilersTab : GlobalSettingsSubTab
             String msg = PrintString($"Are you sure you wish to delete the ", compilerToDelete.name, $" compiler configuration?");
             if(MessageBox { type = okCancel, text = title, contents = msg }.Modal() == ok)
             {
-               SelectorButton button = compilerSelector.FindButtonByID((int64)(intptr)compilerToDelete);
+               SelectorButton button = (SelectorButton)compilerSelector.FindButtonByID((int64)(intptr)compilerToDelete);
                if(button)
                   compilerSelector.RemoveButton(button);
                //DeleteCompiler(compilerToDelete);
