@@ -278,7 +278,10 @@ class CompilersTab : GlobalSettingsSubTab
    {
       this, text = $"Compiler Configurations:", anchor = { left = 148, top = 38, right = 99 }; size = { 0, 26 };
       opacity = 0;
-      direction = horizontal, scrollable = true;
+      direction = horizontal;
+      scrollable = true;
+      endButtons = false;
+      hoverScroll = true;
 
       bool OnKeyDown(Key key, unichar ch)
       {
