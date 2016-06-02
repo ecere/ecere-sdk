@@ -16,7 +16,7 @@ static define stackerScrolling = 16;
 
 class StackerBits
 {
-   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1, endButtons:1;
+   bool reverse:1, scrollable:1, flipSpring:1, autoSize:1, endButtons:1, hoverScroll:1;
 
    // internals
    bool holdChildMonitoring:1;
@@ -83,6 +83,11 @@ public:
       }
       get { return bits.endButtons; }
    };
+   property bool hoverScroll
+   {
+      set { bits.hoverScroll = value; }
+      get { return bits.hoverScroll; }
+   };
 
 private:
    StackerBits bits;
@@ -117,6 +122,7 @@ private:
    RepButton left
    {
       nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0; delay0 = 0.1;
+      clickThrough = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -138,6 +144,7 @@ private:
    RepButton right
    {
       nonClient = true, parent = this, visible = false, bevelOver = true, keyRepeat = true, opacity = 0; delay0 = 0.1;
+      clickThrough = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -255,6 +262,29 @@ private:
    gap = 5;
    direction = vertical;
    endButtons = true;
+
+   bool OnMouseMove(int x, int y, Modifiers mods)
+   {
+      int limit = direction == vertical ? size.h : size.w;
+      int length = direction == vertical ? scrollArea.h : scrollArea.w;
+      if(bits.hoverScroll/* && needScrollers*/ && length > limit)
+      {
+         int pos = direction == vertical ? y : x;
+         if(pos > 0)
+         {
+            int endZoneSize = (bits.endButtons ? left.size.w : 0) + 16;
+            //float ratio = (float)pos / (float)limit;
+            float ratio = (float)(Min(Max(endZoneSize, pos), limit - endZoneSize) - endZoneSize) / (float)(limit - endZoneSize * 2);
+            int offset = (int)(ratio * (length - limit));
+            if(direction == vertical)
+               scroll.y = offset;
+            else
+               scroll.x = offset;
+            size = size;   // TRIGGER SCROLLING UPDATE (Currently required since we aren't using Window scrollbars)
+         }
+      }
+      return true;
+   }
 
    void OnChildAddedOrRemoved(Window child, bool removed)
    {

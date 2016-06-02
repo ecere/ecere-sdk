@@ -1322,7 +1322,10 @@ class BuildTab : Tab
    {
       this, text = $"Configurations: ", anchor = { left = 98, top = 8, right = 54 }; size = { 0, 26 };
       opacity = 0;
-      direction = horizontal, scrollable = true;
+      direction = horizontal;
+      scrollable = true;
+      endButtons = false;
+      hoverScroll = true;
 
       bool OnKeyDown(Key key, unichar ch)
       {
@@ -1468,7 +1471,10 @@ class BuildTab : Tab
    {
       this, text = $"Platforms: ", anchor = { left = 64, top = 38, right = 54 }; size = { 0, 26 };
       opacity = 0;
-      direction = horizontal, scrollable = true;
+      direction = horizontal;
+      scrollable = true;
+      endButtons = false;
+      hoverScroll = true;
 
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
