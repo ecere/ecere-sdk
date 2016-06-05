@@ -1320,7 +1320,7 @@ class BuildTab : Tab
    };
    SelectorBar configSelector
    {
-      this, text = $"Configurations: ", anchor = { left = 98, top = 8, right = 54 }; size = { 0, 26 };
+      this, text = $"Configurations: ", anchor = { left = 90, top = 8, right = 54 }; size = { 0, 26 };
       opacity = 0;
       direction = horizontal;
       scrollable = true;
