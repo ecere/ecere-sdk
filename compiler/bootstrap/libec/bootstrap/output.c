@@ -2009,7 +2009,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, " ") : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(f, ", ") : (unsigned int)1;
 }));
 OutputAttribute(attrib, f);
 }

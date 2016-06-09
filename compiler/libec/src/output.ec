@@ -890,7 +890,7 @@ static void OutputAttrib(Attrib attr, File f)
       Attribute attrib;
       for(attrib = attr.attribs->first; attrib; attrib = attrib.next)
       {
-         if(attrib.prev) f.Puts(" ");
+         if(attrib.prev) f.Puts(", ");
          OutputAttribute(attrib, f);
       }
    }
