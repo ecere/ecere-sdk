@@ -1,0 +1,59 @@
+{
+   version = 0.2,
+   moduleName = "test1",
+   options = {
+      warnings = all,
+      preprocessorDefinitions = [
+         "IMPORT_STATIC=\"\""
+      ],
+      targetType = executable,
+      targetFileName = "layoutb",
+      libraries = [
+         "ecere"
+      ],
+      console = true
+   },
+   configurations = [
+      {
+         name = "Debug",
+         options = {
+            debug = true,
+            optimization = none,
+            preprocessorDefinitions = [
+               "_DEBUG"
+            ],
+            fastMath = false
+         }
+      },
+      {
+         name = "Release",
+         options = {
+            debug = false,
+            optimization = speed,
+            fastMath = true
+         }
+      }
+   ],
+   files = [
+      {
+         folder = "autoLayout",
+         files = [
+            "../autoLayout/autoLayout.ec",
+            "../autoLayout/wrapText.ec",
+            "../autoLayout/guhix.ec"
+         ]
+      },
+      "test.ec",
+      "test1.ec",
+      "test2.ec",
+      "test3.ec",
+      "test4.ec",
+      "gutest.ec",
+      "eltest.ec",
+      "frank.ec"
+   ],
+   resourcesPath = "",
+   resources = [
+
+   ]
+}

@@ -1,7 +1,5 @@
 import "autoLayout"
 
-AutoLayoutForm form1 { contents = Elemental4 { }, clientSize = { 1024, 768 } };
-
 class Elemental4 : Col
 {
    font = { "Verdana", 20, true };

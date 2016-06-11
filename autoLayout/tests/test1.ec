@@ -1,7 +1,5 @@
 import "autoLayout"
 
-AutoLayoutForm form1 { contents = Elemental1 { }, clientSize = { 1024, 768 } };
-
 class Elemental1 : Col
 {
    bgColor = ivory;
@@ -12,7 +10,7 @@ class Elemental1 : Col
       Element b1 { c1, caption = "The", bgColor = red };
       Element b2 { c1, caption = "Quick", bgColor = blue, fgColor = white };
       Element b3 { c1, caption = "Brown" };
-      Element b3b { c1, caption = ">>", fgColor = white, bgColor = navy, selfHAlignment = right, selfVAlignment = left };
+      Element b3b { c1, caption = ">>", fgColor = white, bgColor = navy, selfHAlignment = right, selfVAlignment = top/*left*/ };
 
    Bar r3 { this, bgColor = green, maxSize = { 1.0, 150 }, caption = "Line 2" };
       Element b4 { r3, caption = "Fox.", bgColor = yellow };

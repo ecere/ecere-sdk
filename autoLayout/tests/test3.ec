@@ -1,7 +1,5 @@
 import "autoLayout"
 
-AutoLayoutForm form1 { contents = Elemental3 { }, clientSize = { 1024, 768 } };
-
 class Elemental3 : Col
 {
    bgColor = skyBlue;
