@@ -23,3 +23,48 @@ class Elemental1 : Col
       Element b8 { r4, caption = "Address Bar", bgColor = teal, maxSize.w = 1.0 };
       Element b9 { r4, caption = "Right", bgColor = maroon };
 }
+
+#if 0
+class Elemental : Col
+{
+   Bar r1
+   {
+      Element b0 { caption = "<<" };
+      Bar s1 { };
+      Element b1 { caption = "The" };
+      Element b2 { caption = "Quick" };
+      Element b3 { caption = "Brown" };
+      Bar s2 { };
+   };
+   Bar r2
+   {
+      Element b4 { caption = "Fox." };
+      Element b5 { };
+      Element b6 { };
+   };
+   Bar r3
+   {
+      Element b7 { caption = "Left" };
+      Element b8 { caption = "Address Bar" };
+      Element b9 { caption = "Right" };
+   };
+}
+
+{ [
+   { "class == Elemental", bgColor = ivory },
+   { "id == Elemental::r1", bgColor = gray, maxSize = { 100%, 100 } },
+   { "id == Elemental::b0", fgColor = white, bgColor = navy },
+   { "id == Elemental::b1", bgColor = red },
+   { "id == Elemental::b2", bgColor = blue, fgColor = white },
+
+   { "id == Elemental::r2", bgColor = lightGray, maxSize = { 100%, 150 } },
+   { "id == Elemental::b4", bgColor = yellow },
+   { "id == Elemental::b5", bgColor = aquamarine, maxSize = { 25%, 50 } },
+   { "id == Elemental::b6", bgColor = tomato, maxSize = { 50%, 50 } },
+
+   { "id == Elemental::r3", bgColor = lightGray, maxSize = { 100%, 0 } },
+   { "id == Elemental::b7", bgColor = skyBlue },
+   { "id == Elemental::b8", bgColor = teal, maxSize.w = 100% },
+   { "id == Elemental::b9", bgColor = maroon }
+] };
+#endif // 0
