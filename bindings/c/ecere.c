@@ -43,6 +43,8 @@ Property * property_Window_position;
 Property * property_Window_font;
 
 Method * method_Window_modal;
+Method * method_Window_create;
+
 Method * method_Window_onCreate;
 Method * method_Window_onRedraw;
 
@@ -80,6 +82,8 @@ void (* Window_set_caption)(Window w, constString v);
 constString (* Window_get_caption)(Window w);
 
 DialogResult (* Window_modal)(Window);
+
+bool (* Window_create)(Window);
 
 Class * class_Button;
 
@@ -152,6 +156,11 @@ Module ecere_init(Module fromModule)
          method_Window_modal = Class_findMethod(class_Window, "Modal", module);
          if(method_Window_modal)
             Window_modal = (void *)method_Window_modal->function;
+
+         method_Window_create = Class_findMethod(class_Window, "Create", module);
+         if(method_Window_create)
+            Window_create = (void *)method_Window_create->function;
+
          method_Window_onCreate = Class_findMethod(class_Window, "OnCreate", module);
          if(method_Window_onCreate)
             Window_onCreate_vTblID = method_Window_onCreate->vid;
