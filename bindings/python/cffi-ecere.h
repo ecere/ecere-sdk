@@ -3,6 +3,10 @@ typedef Instance Module;
 typedef Module Application;
 typedef struct Class Class;
 typedef uint32_t bool;
+typedef uint32_t Color;
+
+typedef char * String;
+typedef const char * constString;
 
 //struct Class { ...; };
 
@@ -13,6 +17,8 @@ void Instance_evolve(Instance *instancePtr, Class * _class);
 
 Application eC_init(bool guiApp, int argc, char * argv[]);
 Module ecere_init(Module fromModule);
+
+void Application_main(Application app);
 
 extern void (*PrintLn)(Class * class_object, const void * object, ...);
 
@@ -32,9 +38,23 @@ typedef Instance Window;
 typedef int64_t DialogResult;
 
 extern DialogResult (* Window_modal)(Window);
+extern bool (* Window_create)(Window);
 extern void (* FontResource_set_size)(FontResource f, float v);
 
 extern void (* Window_set_size)(Window w, const Size * v);
 
 extern void (* Window_set_hasClose)(Window w, bool hasClose);
 extern bool (* Window_get_hasClose)(Window w);
+
+extern void (* Window_set_caption)(Window w, constString caption);
+extern constString (* Window_get_caption)(Window w);
+
+extern void (* Window_set_background)(Window w, Color background);
+extern Color (* Window_get_background)(Window w);
+
+#define COLOR_r_MASK       0x00FF0000
+#define COLOR_r_SHIFT      16
+#define COLOR_g_MASK       0x0000FF00
+#define COLOR_g_SHIFT      8
+#define COLOR_b_MASK       0x000000FF
+#define COLOR_b_SHIFT      0
