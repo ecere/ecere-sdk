@@ -22,6 +22,9 @@ void Application_main(Application app);
 
 extern void (*PrintLn)(Class * class_object, const void * object, ...);
 
+extern Class * class_int;
+// extern Class * class_float;
+extern Class * class_double;
 extern Class * class_String;
 extern Class * class_Window;
 extern Class * class_GuiApplication;
