@@ -1,8 +1,15 @@
 import sys
 from _pyEcere import *
 
-def printLn(args):
-   lib.PrintLn(lib.class_String, args.encode('utf8'), ffi.NULL)
+def convertTypedArgs(args):
+   cargs = ()
+   for a in args:
+      if type(a) == str:   cargs += (lib.class_String, ffi.new("char[]", a.encode('utf8')))
+      if type(a) == int:   cargs += (lib.class_int,    ffi.new("int *", a))
+      if type(a) == float: cargs += (lib.class_double, ffi.new("double *", a))
+   return cargs + (ffi.NULL,)
+
+def printLn(*args): lib.PrintLn(*convertTypedArgs(args))
 
 class Color:
    def __init__(self, r = 0, g = 0, b = 0):
