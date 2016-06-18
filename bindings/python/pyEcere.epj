@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "c"
+         "../c"
       ],
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "_pyEcere",
@@ -41,10 +41,10 @@
       {
          "Folder" : "c",
          "Files" : [
-            "eC.h",
-            "ecere.h",
-            "ecere.c",
-            "eC.c"
+            "../c/eC.c",
+            "../c/eC.h",
+            "../c/ecere.c",
+            "../c/ecere.h"
          ]
       },
       {
@@ -54,9 +54,9 @@
          ]
       },
       "build_ecere.py",
-      "ex1.py",
       "cffi-ecere.h",
-      "pyEcere.py"
+      "pyEcere.py",
+      "samples/sample.py"
    ],
    "ResourcesPath" : "",
    "Resources" : [

@@ -261,6 +261,11 @@ extern constString (* Window_get_caption)(Window w);
 extern DialogResult (* Window_modal)(Window);
 
 extern Method * method_Window_modal;
+
+extern bool (* Window_create)(Window);
+
+extern Method * method_Window_create;
+
 extern Method * method_Window_onCreate;
 
 extern int Window_onCreate_vTblID;
