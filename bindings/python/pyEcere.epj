@@ -1,0 +1,65 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "cffiEcere",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "c"
+      ],
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "_pyEcere",
+      "Libraries" : [
+         "ecere",
+         "python3"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false,
+            "PostbuildCommands" : [
+               "$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_pyEcere.dll,_pyEcere.pyd)"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "c",
+         "Files" : [
+            "eC.h",
+            "ecere.h",
+            "ecere.c",
+            "eC.c"
+         ]
+      },
+      {
+         "Folder" : "generated",
+         "Files" : [
+            "./_pyEcere.c"
+         ]
+      },
+      "build_ecere.py",
+      "ex1.py",
+      "cffi-ecere.h",
+      "pyEcere.py"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
