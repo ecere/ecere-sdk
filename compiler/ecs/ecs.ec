@@ -1175,10 +1175,10 @@ static void BindDCOMClient()
                f.Printf("   }\n");
             }
             next = (Method)((BTNode)method).next;
-            while(next && ((next.type == virtualMethod) != doVirtual || (doVirtual && next.vid != vid)))
+            while((!next && doVirtual) || (next && ((next.type == virtualMethod) != doVirtual || (doVirtual && next.vid != vid))))
             {
                id++;
-               next = (Method)((BTNode)next).next;
+               next = next ? (Method)((BTNode)next).next : null;
                if(!next && doVirtual)
                {
                   if(vid == _class.vTblSize)
