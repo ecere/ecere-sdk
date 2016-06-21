@@ -724,6 +724,15 @@ public void ImportModule(const char * name, ImportType importType, AccessMode im
 {
    ImportedModule module = null;
    char moduleName[MAX_LOCATION];
+   bool isSourceModule = false;
+   if(sourceFile)
+   {
+      char sourceFileModule[MAX_FILENAME];
+      GetLastDirectory(sourceFile, sourceFileModule);
+      StripExtension(sourceFileModule);
+      if(!strcmpi(sourceFileModule, name))
+         isSourceModule = true;
+   }
 
    strncpy(moduleName, name, MAX_LOCATION-1);
    moduleName[MAX_LOCATION-1] = 0;
@@ -731,7 +740,8 @@ public void ImportModule(const char * name, ImportType importType, AccessMode im
 
    for(module = defines->first; module; module = module.next)
    {
-      if(module.type == moduleDefinition && !strcmpi(module.name, moduleName))
+      if(module.type == moduleDefinition && !strcmpi(module.name, moduleName) &&
+         ((importType == remoteImport) == (module.importType == remoteImport) || isSourceModule))
          break;
    }
    if((!module || (module.dllOnly && !loadDllOnly)) && strlen(name) < MAX_FILENAME)
