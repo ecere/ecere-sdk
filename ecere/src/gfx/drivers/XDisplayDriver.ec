@@ -1,5 +1,8 @@
 namespace gfx::drivers;
 
+// Enable to work around some Linux drivers not supporting PictStandardA8 format properly
+#define ENABLE_XRENDER_WORK_AROUND
+
 import "instance"
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX)
@@ -86,6 +89,9 @@ class XBitmap : struct
    Pixmap mask;
    X11Picture picture;
    X11Picture maskPicture;
+#ifdef ENABLE_XRENDER_WORK_AROUND
+   bool alphaTweak;
+#endif
 };
 
 XRenderPictFormat * GetXRenderFormat(PixelFormat pixelFormat, bool alphaBlend)
@@ -659,7 +665,15 @@ class XDisplayDriver : DisplayDriver
       XImage image = { 0 };
       GC gc = 0;
 
+#ifdef ENABLE_XRENDER_WORK_AROUND
+      if(bitmap.pixelFormat == pixelFormatAlpha)
+      {
+         xBitmap.alphaTweak = true;
+         bitmap.alphaBlend = true;
+      }
+#else
       if(bitmap.pixelFormat != pixelFormatAlpha)
+#endif
          bitmap.Convert(null, bitmap.alphaBlend ? pixelFormat888 : xSystemPixelFormat, null);
 
       //bitmap.Convert(null, pixelFormatRGBA, null);
@@ -1322,7 +1336,11 @@ class XDisplayDriver : DisplayDriver
 
          if(src.alphaBlend || display.alphaBlend)
          {
-            if(src.pixelFormat == pixelFormatAlpha)
+            if(src.pixelFormat == pixelFormatAlpha
+#ifdef ENABLE_XRENDER_WORK_AROUND
+               || xBitmap.alphaTweak
+#endif
+               )
             {
                XRenderComposite(xGlobalDisplay, PictOpOver, xSurface.colorPicture, xBitmap.picture, xSurface.picture, 0, 0, sx, sy, dx, dy, w + (xSurface.xOffset ? 1 : 1), h);
             }
@@ -1391,7 +1409,11 @@ class XDisplayDriver : DisplayDriver
 
          XRenderSetPictureTransform(xGlobalDisplay, xBitmap.picture, &transform);
 
-         if(src.pixelFormat == pixelFormatAlpha)
+         if(src.pixelFormat == pixelFormatAlpha
+#ifdef ENABLE_XRENDER_WORK_AROUND
+            || xBitmap.alphaTweak
+#endif
+            )
             XRenderComposite(xGlobalDisplay, PictOpOver, xSurface.colorPicture, xBitmap.picture, xSurface.picture, 0, 0, sx, sy, dx, dy, w, h);
          else if(src.alphaBlend)
             XRenderComposite(xGlobalDisplay, PictOpOver, xBitmap.picture, None, xSurface.picture, sx, sy, sx, sy, dx, dy, w, h);
