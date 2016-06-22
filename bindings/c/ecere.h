@@ -35,10 +35,12 @@ extern "C"
 
 #define Surface         eC_Surface
 #define FontResource    eC_FontResource
+#define BitmapResource  eC_BitmapResource
 
 #define Window          eC_Window
 #define DataBox         eC_DataBox
 #define Button          eC_Button
+#define Picture         eC_Picture
 #define Label           eC_Label
 #define MessageBox      eC_MessageBox
 #define GuiApplication  eC_GuiApplication
@@ -161,6 +163,17 @@ extern bool (* FontResource_get_bold)(FontResource f);
 extern void (* FontResource_set_italic)(FontResource f, bool v);
 extern bool (* FontResource_get_italic)(FontResource f);
 
+///////////// BitmapResource Class /////////////////////////////////////////////////
+extern Class * class_BitmapResource;
+
+typedef Instance BitmapResource;
+
+// Properties
+extern Property * property_BitmapResource_fileName;
+
+extern void (* BitmapResource_set_fileName)(BitmapResource f, constString v);
+extern constString (* BitmapResource_get_fileName)(BitmapResource f);
+
 /****************************************************************************
    ecere::gui Namespace
 ****************************************************************************/
@@ -213,6 +226,44 @@ enum enum_BorderStyle
    deepContour  = deep|contour
 };
 
+#if !defined(__cplusplus)
+typedef enum AnchorValueType AnchorValueType;
+#endif
+
+enum AnchorValueType { /*none, */offset = 1, relative, middleRelative, cascade, vTiled, hTiled };
+
+typedef struct AnchorValue AnchorValue;
+struct AnchorValue
+{
+   AnchorValueType type;
+
+   union
+   {
+      int distance;
+      float percent;
+   };
+};
+
+typedef struct MiddleAnchorValue MiddleAnchorValue;
+struct MiddleAnchorValue
+{
+   AnchorValueType type;
+
+   union
+   {
+      int distance;
+      float percent;
+   };
+};
+
+typedef struct Anchor Anchor;
+struct Anchor
+{
+   union { AnchorValue left; MiddleAnchorValue horz; };
+   union { AnchorValue top; MiddleAnchorValue vert; };
+   AnchorValue right, bottom;
+};
+
 ///////////// Window Class /////////////////////////////////////////////////
 typedef Instance Window;
 
@@ -261,6 +312,9 @@ extern Color (* Window_get_foreground)(Window w);
 
 extern void (* Window_set_position)(Window w, const Point * v);
 extern void (* Window_get_position)(Window w, Point * v);
+
+extern void (* Window_set_anchor)(Window w, const Anchor * v);
+extern void (* Window_get_anchor)(Window w, Anchor * v);
 
 extern void (* Window_set_font)(Window w, FontResource v);
 extern FontResource (* Window_get_font)(Window w);
@@ -312,6 +366,16 @@ extern int Button_notifyClicked_vTblID;
 
 extern Class * class_ToolButton;
 
+///////////// Picture Class /////////////////////////////////////////////////
+typedef Window Picture;
+
+extern Class * class_Picture;
+
+extern Property * property_Picture_image;
+
+extern void (* Picture_set_image)(Picture p, BitmapResource v);
+extern constString (* Picture_get_image)(Picture p);
+
 ///////////// DataBox Class /////////////////////////////////////////////////
 typedef Window DataBox;
 
@@ -328,9 +392,11 @@ Module ecere_init(Module fromModule);
    #undef Label
    #undef Window
    #undef DataBox
+   #undef Picture
    #undef GuiApplication
 
    #undef FontResource
+   #undef BitmapResource
    #undef Surface
 
    #undef Module
