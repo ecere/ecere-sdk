@@ -51,20 +51,20 @@ extern "C"
    typedef void * HINSTANCE;
    #define WINAPI __stdcall
    #define MAIN_DECLARATION int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char * cmdLine, int show)
-   #define eC_init_CALL eC_init(true, 0, null)
+   #define eC_init_CALL eC_init(true, true, 0, null)
 #else
    #define MAIN_DECLARATION int main(int argc, char * argv[])
    #ifdef __cplusplus
       #if defined(__CONSOLE_APP__)
-         #define eC_init_CALL eC_init(false, null, null)
+         #define eC_init_CALL eC_init(true, false, null, null)
       #else
-         #define eC_init_CALL eC_init(true, null, null)
+         #define eC_init_CALL eC_init(true, true, null, null)
       #endif
    #else
       #if defined(__CONSOLE_APP__)
-         #define eC_init_CALL eC_init(false, argc, argv)
+         #define eC_init_CALL eC_init(true, false, argc, argv)
       #else
-         #define eC_init_CALL eC_init(true, argc, argv)
+         #define eC_init_CALL eC_init(true, true, argc, argv)
       #endif
    #endif
 #endif
@@ -644,6 +644,11 @@ struct ClassTemplateParameter
    ClassTemplateParameter * next;
    const char *name;
    TemplateParameterType type;
+   union
+   {
+      const char * dataTypeString;     // For expression
+      TemplateMemberType memberType;   // For identifier
+   };
    ClassTemplateArgument defaultArg;
    void *param;
 };
@@ -1082,7 +1087,7 @@ extern Method * method_Application_main;
 
 extern int Application_main_vTblID;
 
-Module eC_init(bool guiApp, int argc, char * argv[]);
+Module eC_init(bool loadEcere, bool guiApp, int argc, char * argv[]);
 
 #if defined(__cplusplus)
    #undef bool
