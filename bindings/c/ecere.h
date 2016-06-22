@@ -72,18 +72,18 @@ extern "C"
 #define COLOR_SET_g(x, g)  (x) = ((Color)(x) & ~((Color)COLOR_g_MASK)) | (((Color)(g)) << COLOR_g_SHIFT)
 #define COLOR_SET_b(x, b)  (x) = ((Color)(x) & ~((Color)COLOR_b_MASK)) | (((Color)(b)) << COLOR_b_SHIFT)
 
-#define BORDERBITS_contour_mask  0x00000001
-#define BORDERBITS_contour_shift 0
-#define BORDERBITS_fixed_mask    0x00000002
-#define BORDERBITS_fixed_shift   1
-#define BORDERBITS_sizable_mask  0x00000004
-#define BORDERBITS_sizable_shift 2
-#define BORDERBITS_deep_mask     0x00000008
-#define BORDERBITS_deep__shift   3
-#define BORDERBITS_bevel_mask    0x00000010
-#define BORDERBITS_bevel_shift   4
-#define BORDERBITS_thin_mask     0x00000020
-#define BORDERBITS_thin_shift    5
+#define BORDERBITS_contour_MASK  0x00000001
+#define BORDERBITS_contour_SHIFT 0
+#define BORDERBITS_fixed_MASK    0x00000002
+#define BORDERBITS_fixed_SHIFT   1
+#define BORDERBITS_sizable_MASK  0x00000004
+#define BORDERBITS_sizable_SHIFT 2
+#define BORDERBITS_deep_MASK     0x00000008
+#define BORDERBITS_deep_SHIFT    3
+#define BORDERBITS_bevel_MASK    0x00000010
+#define BORDERBITS_bevel_SHIFT   4
+#define BORDERBITS_thin_MASK     0x00000020
+#define BORDERBITS_thin_SHIFT    5
 
 #define BORDERBITS_contour(x)    ((((BorderBits)(x)) & BORDERBITS_contour_MASK) >> BORDERBITS_contours_SHIFT)
 #define BORDERBITS_fixed(x)      ((((BorderBits)(x)) & BORDERBITS_fixed_MASK) >> BORDERBITS_fixed_SHIFT)
@@ -140,12 +140,20 @@ typedef Instance FontResource;
 // Properties
 extern Property * property_FontResource_faceName;
 extern Property * property_FontResource_size;
+extern Property * property_FontResource_outlineSize;
+extern Property * property_FontResource_outlineFade;
 
 extern void (* FontResource_set_faceName)(FontResource f, constString v);
 extern constString (* FontResource_get_faceName)(FontResource f);
 
 extern void (* FontResource_set_size)(FontResource f, float v);
 extern float (* FontResource_get_size)(FontResource f);
+
+extern void (* FontResource_set_outlineSize)(FontResource f, float v);
+extern float (* FontResource_get_outlineSize)(FontResource f);
+
+extern void (* FontResource_set_outlineFade)(FontResource f, float v);
+extern float (* FontResource_get_outlineFade)(FontResource f);
 
 extern void (* FontResource_set_bold)(FontResource f, bool v);
 extern bool (* FontResource_get_bold)(FontResource f);
@@ -191,13 +199,13 @@ enum enum_BorderStyle
 #endif
 {
    none,
-   contour      = BORDERBITS_contour_mask,
-   fixed        = BORDERBITS_fixed_mask | contour,
-   sizable      = BORDERBITS_sizable_mask | fixed,
-   thin         = BORDERBITS_thin_mask | fixed,
-   sizableThin  = BORDERBITS_sizable_mask | thin,
-   deep         = BORDERBITS_deep_mask,
-   bevel        = BORDERBITS_bevel_mask,
+   contour      = BORDERBITS_contour_MASK,
+   fixed        = BORDERBITS_fixed_MASK | contour,
+   sizable      = BORDERBITS_sizable_MASK | fixed,
+   thin         = BORDERBITS_thin_MASK | fixed,
+   sizableThin  = BORDERBITS_sizable_MASK | thin,
+   deep         = BORDERBITS_deep_MASK,
+   bevel        = BORDERBITS_bevel_MASK,
    sizableDeep  = sizable|deep,
    sizableBevel = sizable|bevel,
    fixedDeep    = fixed|deep,
@@ -248,6 +256,9 @@ extern Window (* Window_get_parent)(Window w);
 extern void (* Window_set_background)(Window w, Color v);
 extern Color (* Window_get_background)(Window w);
 
+extern void (* Window_set_foreground)(Window w, Color v);
+extern Color (* Window_get_foreground)(Window w);
+
 extern void (* Window_set_position)(Window w, const Point * v);
 extern void (* Window_get_position)(Window w, Point * v);
 
@@ -256,6 +267,9 @@ extern FontResource (* Window_get_font)(Window w);
 
 extern void (* Window_set_caption)(Window w, constString v);
 extern constString (* Window_get_caption)(Window w);
+
+extern void (* Window_set_displayDriver)(Window w, constString v);
+extern constString (* Window_get_displayDriver)(Window w);
 
 // Methods
 extern DialogResult (* Window_modal)(Window);
