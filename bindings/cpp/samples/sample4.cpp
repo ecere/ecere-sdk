@@ -11,6 +11,7 @@ public:
    {
       caption = $("Sample App using Ecere Toolkit/C++ Bindings");
       borderStyle = sizable;
+      displayDriver = "OpenGL";
       clientSize = { 640, 480 };
       hasClose = true;
       hasMaximize = true;

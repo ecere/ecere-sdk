@@ -125,6 +125,10 @@ public:
       set(constString, caption, Window, Window_set_caption(self ? self->impl : null, v))
       get(constString, caption, Window, return Window_get_caption(self ? self->impl : null))
    );
+   property(displayDriver,
+      set(constString, displayDriver, Window, Window_set_displayDriver(self ? self->impl : null, v))
+      get(constString, displayDriver, Window, return Window_get_displayDriver(self ? self->impl : null))
+   );
    property(font,
       set(const FontResource &, font, Window, Window_set_font(self ? self->impl : null, v.impl))
       get(FontResource &, font, Window,
