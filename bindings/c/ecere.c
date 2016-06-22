@@ -6,6 +6,13 @@ Method * method_Surface_writeTextf;
 
 void (* Surface_writeTextf)(Surface s, int x, int y, const char * format, ...);
 
+Class * class_BitmapResource;
+
+Property * property_BitmapResource_fileName;
+
+void (* BitmapResource_set_fileName)(BitmapResource f, constString v);
+constString (* BitmapResource_get_fileName)(BitmapResource f);
+
 Class * class_FontResource;
 
 Property * property_FontResource_faceName;
@@ -49,6 +56,7 @@ Property * property_Window_background;
 Property * property_Window_foreground;
 Property * property_Window_parent;
 Property * property_Window_position;
+Property * property_Window_anchor;
 Property * property_Window_font;
 Property * property_Window_displayDriver;
 
@@ -88,6 +96,9 @@ Color (* Window_get_foreground)(Window w);
 void (* Window_set_position)(Window w, const Point * v);
 void (* Window_get_position)(Window w, Point * v);
 
+void (* Window_set_anchor)(Window w, const Anchor * v);
+void (* Window_get_anchor)(Window w, Anchor * v);
+
 void (* Window_set_font)(Window w, Instance v);
 FontResource (* Window_get_font)(Window w);
 
@@ -110,6 +121,13 @@ int Button_notifyClicked_vTblID;
 Class * class_ToolButton;
 
 Class * class_Label;
+
+Class * class_Picture;
+
+Property * property_Picture_image;
+
+void (* Picture_set_image)(Picture p, BitmapResource v);
+constString (* Picture_get_image)(Picture p);
 
 Class * class_GuiApplication;
 
@@ -177,6 +195,17 @@ Module ecere_init(Module fromModule)
          {
             FontResource_set_outlineFade = (void *)property_FontResource_outlineFade->Set;
             FontResource_get_outlineFade = (void *)property_FontResource_outlineFade->Get;
+         }
+      }
+
+      class_BitmapResource = eC_findClass(module, "BitmapResource");
+      if(class_BitmapResource)
+      {
+         property_BitmapResource_fileName = Class_findProperty(class_BitmapResource, "fileName", module);
+         if(property_BitmapResource_fileName)
+         {
+            BitmapResource_set_fileName = (void *)property_BitmapResource_fileName->Set;
+            BitmapResource_get_fileName = (void *)property_BitmapResource_fileName->Get;
          }
       }
 
@@ -282,6 +311,13 @@ Module ecere_init(Module fromModule)
             Window_get_position = (void *)property_Window_position->Get;
          }
 
+         property_Window_anchor = Class_findProperty(class_Window, "anchor", module);
+         if(property_Window_anchor)
+         {
+            Window_set_anchor = (void *)property_Window_anchor->Set;
+            Window_get_anchor = (void *)property_Window_anchor->Get;
+         }
+
          property_Window_font = Class_findProperty(class_Window, "font", module);
          if(property_Window_font)
          {
@@ -298,6 +334,17 @@ Module ecere_init(Module fromModule)
          method_Button_notifyClicked = Class_findMethod(class_Button, "NotifyClicked", module);
          if(method_Button_notifyClicked)
             Button_notifyClicked_vTblID = method_Button_notifyClicked->vid;
+      }
+
+      class_Picture = eC_findClass(module, "Picture");
+      if(class_Picture)
+      {
+         property_Picture_image = Class_findProperty(class_Picture, "image", module);
+         if(property_Picture_image)
+         {
+            Picture_set_image = (void *)property_Picture_image->Set;
+            Picture_get_image = (void *)property_Picture_image->Get;
+         }
       }
 
       class_MessageBox = eC_findClass(module, "MessageBox");

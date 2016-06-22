@@ -20,7 +20,7 @@ class MyForm(Window):
 
       def myOnRedraw(self, surface):
          surface.writeTextf(20, 20, I18N("Writing Stuff on the wall!!"))
-      self.onRedraw = myOnRedraw
+      self.onDrawOverChildren = myOnRedraw
 
       def button1Clicked(self, button, x, y, mods):
          printLn("I got pushed! (master is ", self.caption, ")")
@@ -28,12 +28,14 @@ class MyForm(Window):
          MessageBox(caption = I18N("Hello, Python!"), contents = I18N("Python is pretty nifty.")).modal()
          return True
 
+      self.picture1 = Picture(parent = self, anchor = Anchor(0,0,0,0), image = BitmapResource("C:/Users/Jerome/Desktop/khaleesi.png"))
+
       self.button1 = Button(
-            parent = self,
-            caption = "Push It!",
-            position = Point(80,80),
-            font = FontResource("Merriweather", 30),
-            notifyClicked = button1Clicked )
+          parent = self,
+          caption = "Push It!",
+          position = Point(80,80),
+          font = FontResource("Merriweather", 30),
+          notifyClicked = button1Clicked )
 
 MyForm()
 

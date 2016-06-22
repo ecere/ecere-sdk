@@ -97,6 +97,16 @@ class Color:
    @b.setter
    def b(self, value): self.value = ((self.value) & ~(lib.COLOR_b_MASK)) | (((value)) << lib.COLOR_b_SHIFT)
 
+class BitmapResource:
+   def __init__(self, fileName = None):
+      self.this = lib.Instance_new(lib.class_BitmapResource)
+      if fileName is not None:      self.fileName = fileName
+
+   @property
+   def fileName(self): return ffi.string(lib.FontResource_get_fileName(self.this)).decode('utf8')
+   @fileName.setter
+   def fileName(self, value): lib.BitmapResource_set_fileName(self.this, value.encode('utf8'))
+
 class FontResource:
    def __init__(self, faceName = None, size = None, outlineSize = None, outlineFade = None):
       self.this = lib.Instance_new(lib.class_FontResource)
@@ -146,8 +156,9 @@ class Instance:
    def __init__(self): self.this = ffi.NULL
 
 @ffi.callback("void(Instance)")
-def cb_Instance_destructor(w):
+def cb_Window_destructor(w):
    instance = ffi.from_handle(ffi.cast("void **", ffi.cast("char *", w) + w._class.offset)[0])
+   Window.instances.remove(instance)
    #print("Instance destroyed now!")
    instance.handle = 0
 
@@ -163,9 +174,10 @@ class Application(Instance):
    def __init__(self):
       self.this = lib.eC_init(True, True, len(sys.argv), [ffi.new("char[]", i.encode('utf8')) for i in sys.argv])
       lib.ecere_init(self.this)
-      Window.pyClass_Window         = lib.eC_registerClass(lib.normalClass, "PyWindow"    .encode('utf8'), "Window"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Instance_destructor), self.this, lib.publicAccess, lib.publicAccess);
-      Button.pyClass_Button         = lib.eC_registerClass(lib.normalClass, "PyButton"    .encode('utf8'), "Button"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Instance_destructor), self.this, lib.publicAccess, lib.publicAccess);
-      MessageBox.pyClass_MessageBox = lib.eC_registerClass(lib.normalClass, "PyMessageBox".encode('utf8'), "MessageBox" .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Instance_destructor), self.this, lib.publicAccess, lib.publicAccess);
+      Window.pyClass_Window         = lib.eC_registerClass(lib.normalClass, "PyWindow"    .encode('utf8'), "Window"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
+      Button.pyClass_Button         = lib.eC_registerClass(lib.normalClass, "PyButton"    .encode('utf8'), "Button"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
+      Picture.pyClass_Picture       = lib.eC_registerClass(lib.normalClass, "PyPicture"   .encode('utf8'), "Picture"    .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
+      MessageBox.pyClass_MessageBox = lib.eC_registerClass(lib.normalClass, "PyMessageBox".encode('utf8'), "MessageBox" .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
 
    def main(self):
       lib.Application_main(self.this)
@@ -175,19 +187,74 @@ class GuiApplication(Application):
       Application.__init__(self)
       rApp = ffi.new("Instance *", self.this); lib.Instance_evolve(rApp, lib.class_GuiApplication); self.this = rApp[0]
 
+class Anchor:
+   def __init__(self, left = None, right = None, top = None, bottom = None, horz = None, vert = None):
+      self.this = ffi.new("Anchor *")
+      # Would generate conversion properties here instead?
+      if left is not None:
+         if type(left) == int:
+            self.this.left.type = lib.offset
+            self.this.left.distance = left
+         elif type(left) == float:
+            self.this.left.type = lib.relative
+            self.this.left.distance = left
+      if right is not None:
+         if type(right) == int:
+            self.this.right.type = lib.offset
+            self.this.right.distance = right
+         elif type(right) == float:
+            self.this.right.type = lib.relative
+            self.this.right.distance = right
+      if top is not None:
+         if type(top) == int:
+            self.this.top.type = lib.offset
+            self.this.top.distance = top
+         elif type(top) == float:
+            self.this.top.type = lib.relative
+            self.this.top.distance = top
+      if bottom is not None:
+         if type(bottom) == int:
+            self.this.bottom.type = lib.offset
+            self.this.bottom.distance = bottom
+         elif type(bottom) == float:
+            self.this.bottom.type = lib.relative
+            self.this.bottom.distance = bottom
+      if horz is not None:
+         if type(horz) == int:
+            self.this.horz.type = lib.offset
+            self.this.horz.distance = horz
+         elif type(horz) == float:
+            self.this.horz.type = lib.relative
+            self.this.horz.distance = horz
+      if vert is not None:
+         if type(vert) == int:
+            self.this.vert.type = lib.offset
+            self.this.vert.distance = vert
+         elif type(vert) == float:
+            self.this.vert.type = lib.relative
+            self.this.vert.distance = vert
+
 @ffi.callback("void(Window, Surface)")
 def cb_Window_onRedraw(w, s):
    window = ffi.from_handle(ffi.cast("void **", ffi.cast("char *", w) + w._class.offset)[0])
    surface = Surface(this = s)
    window.fn_onRedraw(window, surface)
 
+@ffi.callback("void(Window, Surface)")
+def cb_Window_onDrawOverChildren(w, s):
+   window = ffi.from_handle(ffi.cast("void **", ffi.cast("char *", w) + w._class.offset)[0])
+   surface = Surface(this = s)
+   window.fn_onDrawOverChildren(window, surface)
+
 class Window(Instance):
+   instances = []
+
    def __init__(self,
       parent = None, caption = None, displayDriver = None,
       hasClose = None, hasMinimize = None, hasMaximize = None,
       borderStyle = None, clientSize = None, font = None, background = None, foreground = None, position = None):
-
       self.this = lib.Instance_new(Window.pyClass_Window)
+      Window.instances.append(self)
       self.handle = ffi.new_handle(self)
       ffi.cast("void **", ffi.cast("char *", self.this) + self.this._class.offset)[0] = self.handle
 
@@ -219,6 +286,11 @@ class Window(Instance):
    def position(self): value = Point(); lib.Window_get_position(self.this, value.this); return value
    @position.setter
    def position(self, value): lib.Window_set_position(self.this, value.this)
+
+   @property
+   def anchor(self): value = Anchor(); lib.Window_get_anchor(self.this, value.this); return value
+   @anchor.setter
+   def anchor(self, value): lib.Window_set_anchor(self.this, value.this)
 
    @property
    def clientSize(self): value = Size(); lib.Window_get_size(self.this, value.this); return value
@@ -277,6 +349,13 @@ class Window(Instance):
       self.fn_onRedraw = value
       lib.Instance_setMethod(self.this, "OnRedraw".encode('utf8'), cb_Window_onRedraw);
 
+   @property
+   def onDrawOverChildren(self): return self.fn_onDrawOverChildren
+   @onDrawOverChildren.setter
+   def onDrawOverChildren(self, value):
+      self.fn_onDrawOverChildren = value
+      lib.Instance_setMethod(self.this, "OnDrawOverChildren".encode('utf8'), cb_Window_onDrawOverChildren);
+
 @ffi.callback("bool(Window, Button, int, int, Modifiers)")
 def cb_Button_notifyClicked(m, b, x, y, mods):
    button = ffi.from_handle(ffi.cast("void **", ffi.cast("char *", b) + b._class.offset)[0])
@@ -287,6 +366,7 @@ def cb_Button_notifyClicked(m, b, x, y, mods):
 class Button(Window):
    def __init__(self, parent = None, caption = None, position = None, font = None, notifyClicked = None):
       self.this = lib.Instance_new(Button.pyClass_Button)
+      Window.instances.append(self)
       self.handle = ffi.new_handle(self)
       ffi.cast("void **", ffi.cast("char *", self.this) + self.this._class.offset)[0] = self.handle
 
@@ -303,9 +383,28 @@ class Button(Window):
       self.fn_notifyClicked = value
       lib.Instance_setMethod(self.this, "NotifyClicked".encode('utf8'), cb_Button_notifyClicked);
 
+class Picture(Window):
+   def __init__(self, parent = None, caption = None, image = None, position = None, anchor = None):
+      self.this = lib.Instance_new(Picture.pyClass_Picture)
+      Window.instances.append(self)
+      self.handle = ffi.new_handle(self)
+      ffi.cast("void **", ffi.cast("char *", self.this) + self.this._class.offset)[0] = self.handle
+
+      if parent is not None:       self.parent = parent
+      if caption is not None:      self.caption = caption
+      if image is not None:        self.image = image
+      if position is not None:     self.position = position
+      if anchor is not None:       self.anchor = anchor
+
+   @property
+   def image(self): value = lib.Picture_get_image(self.this); return BitmapResource(this = value)
+   @image.setter
+   def image(self, value): lib.Picture_set_image(self.this, value.this)
+
 class MessageBox(Window):
    def __init__(self, parent = None, caption = None, contents = None, position = None):
       self.this = lib.Instance_new(MessageBox.pyClass_MessageBox)
+      Window.instances.append(self)
       self.handle = ffi.new_handle(self)
       ffi.cast("void **", ffi.cast("char *", self.this) + self.this._class.offset)[0] = self.handle
 
