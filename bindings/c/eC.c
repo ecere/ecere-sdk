@@ -107,12 +107,12 @@ Method * method_Application_main;
 
 GlobalFunction * function_PrintLn;
 
-Application eC_init(bool guiApp, int argc, char * argv[])
+Application eC_init(bool loadEcere, bool guiApp, int argc, char * argv[])
 {
    Application app = eC_initApp(guiApp, argc, argv);
    if(app)
    {
-      Module module = Module_load(app, "ecereCOM", publicAccess);
+      Module module = Module_load(app, loadEcere ? "ecere" : "ecereCOM", publicAccess);
       app->_refCount++;
       if(module)
       {
