@@ -12,12 +12,20 @@ Property * property_FontResource_faceName;
 Property * property_FontResource_size;
 Property * property_FontResource_bold;
 Property * property_FontResource_italic;
+Property * property_FontResource_outlineSize;
+Property * property_FontResource_outlineFade;
 
 void (* FontResource_set_faceName)(FontResource f, constString v);
 constString (* FontResource_get_faceName)(FontResource f);
 
 void (* FontResource_set_size)(FontResource f, float v);
 float (* FontResource_get_size)(FontResource f);
+
+void (* FontResource_set_outlineSize)(FontResource f, float v);
+float (* FontResource_get_outlineSize)(FontResource f);
+
+void (* FontResource_set_outlineFade)(FontResource f, float v);
+float (* FontResource_get_outlineFade)(FontResource f);
 
 void (* FontResource_set_bold)(FontResource f, bool v);
 bool (* FontResource_get_bold)(FontResource f);
@@ -38,9 +46,11 @@ Property * property_Window_hasMinimize;
 Property * property_Window_hasMaximize;
 Property * property_Window_borderStyle;
 Property * property_Window_background;
+Property * property_Window_foreground;
 Property * property_Window_parent;
 Property * property_Window_position;
 Property * property_Window_font;
+Property * property_Window_displayDriver;
 
 Method * method_Window_modal;
 Method * method_Window_create;
@@ -72,6 +82,9 @@ Window (* Window_get_parent)(Window w);
 void (* Window_set_background)(Window w, Color v);
 Color (* Window_get_background)(Window w);
 
+void (* Window_set_foreground)(Window w, Color v);
+Color (* Window_get_foreground)(Window w);
+
 void (* Window_set_position)(Window w, const Point * v);
 void (* Window_get_position)(Window w, Point * v);
 
@@ -80,6 +93,9 @@ FontResource (* Window_get_font)(Window w);
 
 void (* Window_set_caption)(Window w, constString v);
 constString (* Window_get_caption)(Window w);
+
+void (* Window_set_displayDriver)(Window w, constString v);
+constString (* Window_get_displayDriver)(Window w);
 
 DialogResult (* Window_modal)(Window);
 
@@ -148,6 +164,20 @@ Module ecere_init(Module fromModule)
             FontResource_set_italic = (void *)property_FontResource_italic->Set;
             FontResource_get_italic = (void *)property_FontResource_italic->Get;
          }
+
+         property_FontResource_outlineSize = Class_findProperty(class_FontResource, "outlineSize", module);
+         if(property_FontResource_outlineSize)
+         {
+            FontResource_set_outlineSize = (void *)property_FontResource_outlineSize->Set;
+            FontResource_get_outlineSize = (void *)property_FontResource_outlineSize->Get;
+         }
+
+         property_FontResource_outlineFade = Class_findProperty(class_FontResource, "outlineFade", module);
+         if(property_FontResource_outlineFade)
+         {
+            FontResource_set_outlineFade = (void *)property_FontResource_outlineFade->Set;
+            FontResource_get_outlineFade = (void *)property_FontResource_outlineFade->Get;
+         }
       }
 
       class_Window = eC_findClass(module, "Window");
@@ -167,6 +197,13 @@ Module ecere_init(Module fromModule)
          method_Window_onRedraw = Class_findMethod(class_Window, "OnRedraw", module);
          if(method_Window_onRedraw)
             Window_onRedraw_vTblID = method_Window_onRedraw->vid;
+
+         property_Window_displayDriver = Class_findProperty(class_Window, "displayDriver", module);
+         if(property_Window_displayDriver)
+         {
+            Window_set_displayDriver = (void *)property_Window_displayDriver->Set;
+            Window_get_displayDriver = (void *)property_Window_displayDriver->Get;
+         }
 
          property_Window_caption = Class_findProperty(class_Window, "caption", module);
          if(property_Window_caption)
@@ -201,6 +238,13 @@ Module ecere_init(Module fromModule)
          {
             Window_set_background = (void *)property_Window_background->Set;
             Window_get_background = (void *)property_Window_background->Get;
+         }
+
+         property_Window_foreground = Class_findProperty(class_Window, "foreground", module);
+         if(property_Window_foreground)
+         {
+            Window_set_foreground = (void *)property_Window_foreground->Set;
+            Window_get_foreground = (void *)property_Window_foreground->Get;
          }
 
          property_Window_hasClose = Class_findProperty(class_Window, "hasClose", module);
