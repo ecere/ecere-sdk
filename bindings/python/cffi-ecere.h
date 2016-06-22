@@ -149,6 +149,13 @@ extern Class * class_GuiApplication;
 
 extern Class * class_FontResource;
 
+extern Class * class_BitmapResource;
+
+typedef Instance BitmapResource;
+
+extern void (* BitmapResource_set_fileName)(BitmapResource f, constString v);
+extern constString (* BitmapResource_get_fileName)(BitmapResource f);
+
 #define false 0
 #define true 1
 
@@ -188,6 +195,42 @@ typedef Window MessageBox;
 typedef int64_t DialogResult;
 typedef uint32 Modifiers;
 
+enum AnchorValueType { /*none, */offset = 1, relative, middleRelative, cascade, vTiled, hTiled };
+typedef enum AnchorValueType AnchorValueType;
+
+typedef struct AnchorValue AnchorValue;
+struct AnchorValue
+{
+   AnchorValueType type;
+
+   union
+   {
+      int distance;
+      float percent;
+   };
+};
+
+typedef struct MiddleAnchorValue MiddleAnchorValue;
+struct MiddleAnchorValue
+{
+   AnchorValueType type;
+
+   union
+   {
+      int distance;
+      float percent;
+   };
+};
+
+typedef struct Anchor Anchor;
+struct Anchor
+{
+   union { AnchorValue left; MiddleAnchorValue horz; };
+   union { AnchorValue top; MiddleAnchorValue vert; };
+   AnchorValue right, bottom;
+};
+
+
 extern DialogResult (* Window_modal)(Window);
 extern bool (* Window_create)(Window);
 
@@ -205,6 +248,9 @@ extern FontResource (* Window_get_font)(Window w);
 
 extern void (* Window_set_position)(Window w, const Point * v);
 extern void (* Window_get_position)(Window w, Point * v);
+
+extern void (* Window_set_anchor)(Window w, const Anchor * v);
+extern void (* Window_get_anchor)(Window w, Anchor * v);
 
 extern void (* Window_set_hasClose)(Window w, bool hasClose);
 extern bool (* Window_get_hasClose)(Window w);
@@ -229,6 +275,13 @@ extern Color (* Window_get_foreground)(Window w);
 
 extern void (* MessageBox_set_contents)(MessageBox m, constString contents);
 extern constString (* MessageBox_get_contents)(MessageBox m);
+
+typedef Window Picture;
+
+extern Class * class_Picture;
+
+extern void (* Picture_set_image)(Picture p, BitmapResource v);
+extern constString (* Picture_get_image)(Picture p);
 
 #define COLOR_r_MASK       0x00FF0000
 #define COLOR_r_SHIFT      16
