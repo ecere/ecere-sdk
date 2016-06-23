@@ -30,6 +30,13 @@ import "Color"
    #include <GLES2/gl2.h>
 #endif
 
+#if defined(__ANDROID__) || defined(__ODROID__)
+#if !defined(_GLES)
+   #define _GLES
+#endif
+   #include <GLES/gl.h>
+#endif
+
 #include "cc.h"
 #include "mm.h"
 
@@ -113,7 +120,7 @@ public:
    {
      if(texture)
      {
-#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
+#if defined(SHADERS) && !defined(_GLES2)
         int glformat = GL_RED;
 #else
         int glformat = GL_ALPHA;
@@ -122,7 +129,7 @@ public:
         int h = rect[3] - rect[1];
 
         if( channelcount == 1 );
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
         else if( channelcount == 2 )
           glformat = GL_RG;
 #endif
@@ -132,19 +139,19 @@ public:
           glformat = GL_RGBA;
 
         // FIXME: no glPushAttrib() in core profile
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
         glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
         glPushAttrib( GL_TEXTURE_BIT );
 #endif
         glBindTexture( GL_TEXTURE_2D, texture.glTex );
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
         glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
         glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
         glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
 #endif
         glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data );
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
         glPopAttrib();
         glPopClientAttrib();
 #endif
