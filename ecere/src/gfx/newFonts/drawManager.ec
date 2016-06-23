@@ -17,6 +17,13 @@ import "OpenGLDisplayDriver"
    #include <GLES2/gl2.h>
 #endif
 
+#if defined(__ANDROID__) || defined(__ODROID__)
+#if !defined(_GLES)
+   #define _GLES
+#endif
+   #include <GLES/gl.h>
+#endif
+
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
 #  if defined(SHADERS)
 //#     include "gl_core_3_3.h"
@@ -50,7 +57,7 @@ import "OpenGLDisplayDriver"
 
 #endif
 
-#if defined(ES1_1) || defined(ES2) || defined(SHADERS)
+#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
 
    #undef glRecti
    #undef glBegin
@@ -335,6 +342,7 @@ static inline void OpenGLErrorCheck( const char *file, int line )
 #define DM_TEXCOORD_NORMSHIFT (13)
 #define DM_TEXCOORD_NORMFACTOR (8192.0 /*f*/)
 
+#ifdef SHADERS
 static GLuint dmCreateShader( GLenum type, const char *shadersource, const char *optionstring )
 {
   GLuint shader;
@@ -364,7 +372,6 @@ static GLuint dmCreateShader( GLenum type, const char *shadersource, const char 
   }
   return shader;
 }
-
 
 static bool dmCreateProgram( DMProgram program, const char *vertexsource, const char *fragmentsource, char *optionstring )
 {
@@ -580,7 +587,7 @@ const char *dmFragmentShaderAlphaIntensityExtColor =
 ;
 
 ////
-
+#endif
 
 static void matrixOrtho( float *m, float left, float right, float bottom, float top, float nearval, float farval )
 {
@@ -654,18 +661,23 @@ public class DrawManager
       DMProgram *program = &shaderPrograms[ programIndex ];
       if( !program->flags.valid)
       {
+#ifdef SHADERS
          glUseProgram( 0 );
+#endif
          return 0;
       }
 
+#ifdef SHADERS
       glUseProgram( program->glProgram );
+#endif
       if( program->lastUpdateCount != this.updateCount )
       {
+#ifdef SHADERS
          glUniformMatrix4fv( program->matrixloc, 1, GL_FALSE, this.matrix );
          glUniform1i( program->texbaseloc, 0 );
+#endif
          program->lastUpdateCount = this.updateCount;
       }
-
       return program;
    }
 
@@ -709,7 +721,7 @@ public class DrawManager
      DMImage *image, *bindimage;
      Texture texture, bindTexture;
      DMDrawBuffer *drawBuffer;
-     DMDrawVertexFlat *vboVertex;
+     DMDrawVertexFlat *vboVertex = null;
      DMProgram *program;
 
      ERRORCHECK();
@@ -725,7 +737,9 @@ public class DrawManager
         drawBuffer = &this.drawBuffer[drawBufferIndex];
         drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
         glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+#if !defined(_GLES) && !defined(_GLES2)  // TODO:
         vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+#endif
         vertexCount = 0;
 
         glActiveTexture( GL_TEXTURE0 );
@@ -763,7 +777,9 @@ public class DrawManager
           {
             if( vertexCount )
             {
+#if !defined(_GLES) && !defined(_GLES2)    // TODO:
               glUnmapBuffer( GL_ARRAY_BUFFER );
+#endif
               // Flush font manager texture updates
               flush( );
               // Render buffered images
@@ -771,7 +787,9 @@ public class DrawManager
               drawBuffer = &this.drawBuffer[drawBufferIndex];
               drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
               glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
+#if !defined(_GLES) && !defined(_GLES2)    // TODO:
               vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+#endif
               vertexCount = 0;
             }
 
@@ -886,7 +904,9 @@ public class DrawManager
           vertexCount += 6;
         }
 
+#if !defined(_GLES) && !defined(_GLES2) // TODO:
         glUnmapBuffer( GL_ARRAY_BUFFER );
+#endif
 
         // Flush font manager texture updates
         flush();
@@ -901,7 +921,8 @@ public class DrawManager
    }
 #endif
 
-   void flushRenderDrawBuffer( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
+#ifdef SHADERS
+   static void flushRenderDrawBuffer( DMDrawBuffer drawBuffer, DMProgram program, int vertexCount )
    {
       glabCurArrayBuffer = 0;
 
@@ -943,8 +964,10 @@ public class DrawManager
       glFlush();
    #endif
    }
+#endif
 
-   void flushDrawImages( )
+#ifdef SHADERS
+   static void flushDrawImages( )
    {
       int index, stateblend, vertexcount, flushflag, programIndex;
       float vx0, vx1, vx2, vx3, vy0, vy1, vy2, vy3;
@@ -956,7 +979,7 @@ public class DrawManager
       DMImage *image, *bindimage;
       Texture texture, bindtexture;
       DMDrawBuffer *drawBuffer;
-      DMDrawVertex *vboVertex;
+      DMDrawVertex *vboVertex = null;
       DMProgram *program;
 
       glabCurArrayBuffer = 0;
@@ -975,7 +998,7 @@ public class DrawManager
          this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
          glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
 
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2) // TODO:
          vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 #endif
          vertexcount = 0;
@@ -1014,7 +1037,7 @@ public class DrawManager
           {
             if( vertexcount )
             {
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)  // TODO:
               glUnmapBuffer( GL_ARRAY_BUFFER );
 #endif
               // Flush font manager texture updates
@@ -1025,7 +1048,7 @@ public class DrawManager
               drawBuffer = &this.drawBuffer[this.drawBufferIndex];
               this.drawBufferIndex = ( this.drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
               glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)   // TODO:
               vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 #endif
               vertexcount = 0;
@@ -1134,7 +1157,7 @@ public class DrawManager
           vertexcount += 6;
         }
 
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)      // TODO:
         glUnmapBuffer( GL_ARRAY_BUFFER );
 #endif
         // Flush font manager texture updates
@@ -1146,6 +1169,7 @@ public class DrawManager
         ERRORCHECK();
       }
    }
+#endif
 
 public:
 
@@ -1155,7 +1179,7 @@ public:
 
    bool init( DrawManagerFlags flags )
    {
-      int drawBufferIndex, programIndex;
+      int drawBufferIndex;
       DMDrawBuffer *drawBuffer;
       uint vertexSize;
 
@@ -1170,7 +1194,9 @@ public:
          vertexSize = sizeof(DMDrawVertexFlat);
       else
       {
+#ifdef SHADERS
          DMProgram *program;
+         int programIndex;
          for( programIndex = 0 ; programIndex < DM_PROGRAM_COUNT ; programIndex++ )
          {
             program = &shaderPrograms[ programIndex ];
@@ -1191,6 +1217,7 @@ public:
             return false;
          // glUseProgram( 0 );
          vertexSize = sizeof(DMDrawVertex);
+#endif
       }
 
       for( drawBufferIndex = 0 ; drawBufferIndex < DM_CONTEXT_DRAW_BUFFER_COUNT ; drawBufferIndex++ )
@@ -1241,15 +1268,17 @@ public:
    {
       int mindex;
       float norminv;
+#ifdef SHADERS
       if(!flags.prehistoricOpenGL && !prevProgram)
          glGetIntegerv(GL_CURRENT_PROGRAM, (GLint *)&prevProgram);
+#endif
       // while(glGetError());
 
       // ERRORCHECK();
 
       // Save OpenGL state
       // FIXME: no glPushAttrib() in core profile
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)      // TODO:
       glPushClientAttrib( GL_CLIENT_ALL_ATTRIB_BITS );
       glPushAttrib( GL_ALL_ATTRIB_BITS );
 #endif
@@ -1427,12 +1456,15 @@ public:
 
    void flushImages( )
    {
-#if !defined(__EMSCRIPTEN__)
-     if( flags.prehistoricOpenGL )
-       flushDrawImagesArchaic( );
-     else
+#if !defined(_GLES2)
+      if(flags.prehistoricOpenGL)
+         flushDrawImagesArchaic();
 #endif
-       flushDrawImages( );
+
+#if defined(SHADERS)
+      if(!flags.prehistoricOpenGL)
+         flushDrawImages( );
+#endif
    }
 
    void finish()
@@ -1442,11 +1474,13 @@ public:
      if(vboAvailable)
         glBindBuffer( GL_ARRAY_BUFFER, 0 );
      glabCurArrayBuffer = 0;
+#ifdef SHADERS
      if( !flags.prehistoricOpenGL )
          glUseProgram( prevProgram );
+#endif
       // Restore OpenGL state
       // FIXME: no glPushAttrib() in core profile
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)       // TODO:
       glPopAttrib();
       glPopClientAttrib();
 #endif
