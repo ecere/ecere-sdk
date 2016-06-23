@@ -55,8 +55,11 @@
    //#error "Unknown endianness"
 #endif
 
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_WIN64)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64)
+
+#if defined(__x86_64__) || defined(_M_X64)
    #define CPUCONF_ARCH_AMD64
+#endif
 
    #define CPUCONF_INTPTR_SIZE (8)
    #define CPUCONF_POINTER_SIZE (8)
@@ -75,9 +78,10 @@
    #define CPUCONF_LONG_BITSHIFT ((sizeof(long) == 4) ? 5 : 6)
    #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 4) ? 2 : 3)
    #define CPUCONF_LONG_BITS (sizeof(long) * 8)
+
 #else
 
-#if !defined(__EMSCRIPTEN__)
+#if !defined(__EMSCRIPTEN__) && (defined(__i386) || defined(_M_IX86))
    #define CPUCONF_ARCH_IA32
 #endif
 

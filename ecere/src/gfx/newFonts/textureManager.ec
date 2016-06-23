@@ -22,6 +22,13 @@ import "instance"
    #include <GLES2/gl2.h>
 #endif
 
+#if defined(__ANDROID__) || defined(__ODROID__)
+#if !defined(_GLES)
+   #define _GLES
+#endif
+   #include <GLES/gl.h>
+#endif
+
 // TOFIX:
 int GL_ARB_texture_non_power_of_two = 1;
 int GL_EXT_texture_filter_anisotropic = 1;
