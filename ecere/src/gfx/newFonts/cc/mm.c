@@ -65,7 +65,9 @@
 
 #if defined(MM_LINUX)
  #include <sys/sysinfo.h>
+#if !defined(__ANDROID__)
  #include <utmpx.h>
+#endif
 #endif
 
 #if defined(MM_WIN32)
@@ -180,7 +182,7 @@ void mmInit()
   {
     mmcontext.nodecount = 1;
     sysmemory = -1;
- #if defined(MM_LINUX)
+ #if defined(MM_LINUX) && !defined(__ANDROID__)
     mmcontext.cpucount = get_nprocs();
     mmcontext.pagesize = sysconf(_SC_PAGESIZE);
  #elif defined(MM_UNIX)
