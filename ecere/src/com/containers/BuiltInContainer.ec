@@ -131,4 +131,9 @@ public:
          tempString[0] = 0;
       return tempString;
    }
+
+   virtual void Sort(bool ascending)
+   {
+
+   }
 };

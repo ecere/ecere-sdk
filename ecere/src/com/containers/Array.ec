@@ -8,7 +8,147 @@ import "Container"
 
 default:
 extern int __ecereVMethodID_class_OnUnserialize;
+extern int __ecereVMethodID_class_OnCompare;
+
+// qsort_r/_s wrappers adapted from public domain code by Isaac Turner
+#if !defined(ECERE_BOOTSTRAP)
+#if (defined __APPLE__ || defined __MACH__ || defined __DARWIN__ || defined __FreeBSD__ || defined __BSD__ || defined __bsdi__ || defined OpenBSD3_1 || defined OpenBSD3_9 || defined __OpenBSD__ || \
+     defined __NetBSD__ || defined __DragonFly__ || defined AMIGA)
+   #define BSD
+   extern void qsort_r(void *base, uintsize nel, uintsize width, void *arg, int (*compare)(void *, const void *, const void *));
+#elif defined(__WIN32__)
+   extern void qsort_s(void *base, uintsize nel, uintsize width, int (*compare)(void *, const void *, const void *), void * arg);
+#elif (defined __GLIBC__ && ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 8)))
+   #define GLIBC
+   extern void qsort_r(void *base, uintsize nel, uintsize width, int(* compare)(const void *, const void *, void *), void *arg);
+#endif
+#endif
 private:
+
+// Quick Sort algorithm adapted from public domain code by Darel Rex Finley
+static inline void quickSort(void *base, uintsize nel, uintsize w, char * piv, int (*compare)(void *, const void *, const void *), void *arg)
+{
+   #define MAX_LEVELS  300
+   uintsize beg[MAX_LEVELS], end[MAX_LEVELS];
+   int frame = 0;
+
+   beg[0] = 0;
+   end[0] = nel;
+   while(frame >= 0)
+   {
+      uintsize L = beg[frame], R = end[frame]-1;
+      if(L < R)
+      {
+         memcpy(piv, (char *)base + L*w, w);
+         while(L < R)
+         {
+            while(compare(arg, (char *)base + (R*w), piv) >= 0 && L < R) R--;
+            if(L < R)
+            {
+               memcpy((char *)base + L*w, (char *)base + R*w, w);
+               L++;
+            }
+            while(compare(arg, (char *)base + (L*w), piv) <= 0 && L < R) L++;
+            if(L < R)
+            {
+               memcpy((char *)base + R*w, (char *)base + L*w, w);
+               R--;
+            }
+         }
+         memcpy((char *)base + L*w, piv, w);
+         beg[frame+1] = L+1;
+         end[frame+1] = end[frame];
+         end[frame++] = L;
+
+         // Process smaller partition first
+         if(end[frame]-beg[frame] > end[frame-1]-beg[frame-1])
+         {
+            uintsize swap;
+            swap = beg[frame]; beg[frame] = beg[frame-1]; beg[frame-1] = swap;
+            swap = end[frame]; end[frame] = end[frame-1]; end[frame-1] = swap;
+         }
+      }
+      else
+         frame--;
+   }
+   #undef MAX_LEVELS
+}
+
+static struct SortRData { void *arg; int (*compare)(void *, const void *, const void *); };
+
+static inline int compareDeref            (SortRData cs, const void **a, const void **b)  { return  cs.compare(cs.arg, *a, *b); }
+static inline int compareDescDeref        (SortRData cs, const void **a, const void **b)  { return -cs.compare(cs.arg, *a, *b); }
+static inline int compareDesc             (SortRData cs, const void * a, const void * b)  { return -cs.compare(cs.arg,  a,  b); }
+
+static inline int compareArgLast          (const void * a, const void * b, SortRData cs)  { return  cs.compare(cs.arg,  a,  b); }
+static inline int compareDerefArgLast     (const void **a, const void **b, SortRData cs)  { return  cs.compare(cs.arg, *a, *b); }
+static inline int compareDescDerefArgLast (const void **a, const void **b, SortRData cs)  { return -cs.compare(cs.arg, *a, *b); }
+static inline int compareDescArgLast      (const void * a, const void * b, SortRData cs)  { return -cs.compare(cs.arg,  a,  b); }
+
+static inline void _qsortrx(void *base, uintsize nel, uintsize width,
+   int (*compare)(void *arg, const void *a, const void *b),
+   int (*optCompareArgLast)(const void *a, const void *b, void *arg),
+   void *arg,
+   bool deref, bool ascending)
+{
+#if defined(GLIBC) && !defined(ECERE_BOOTSTRAP)
+   if(!deref && ascending && optCompareArgLast)
+      qsort_r(base, nel, width, optCompareArgLast, arg);
+   else
+   {
+      SortRData s { arg, compare };
+      #define compare_fn !deref && ascending ? compareArgLast : !deref ? compareDescArgLast : ascending ? compareDerefArgLast : compareDescDerefArgLast
+      qsort_r(base, nel, width, compare_fn, s);
+      #undef compare_fn
+   }
+#else
+   if(!deref && ascending)
+   {
+   #if defined(BSD) && !defined(ECERE_BOOTSTRAP)
+      qsort_r(base, nel, width, arg, compare);
+   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
+      qsort_s(base, nel, width, compare, arg);
+   #else
+      {
+         char * buf = new char[width];
+         quickSort(base, nel, width, buf, compare, arg);
+         delete buf;
+      }
+   #endif
+   }
+   else
+   {
+      SortRData s { arg, compare };
+      #define compare_fn   !deref ? compareDesc : ascending ? compareDeref : compareDescDeref
+   #if defined(BSD) && !defined(ECERE_BOOTSTRAP)
+      qsort_r(base, nel, width, s, compare_fn);
+   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
+      qsort_s(base, nel, width, compare_fn, s);
+   #else
+      {
+         char * buf = new char[width];
+         quickSort(base, nel, width, buf, compare_fn, s);
+         delete buf;
+      }
+   #endif
+      #undef compare_fn
+   }
+#endif
+}
+
+public void qsortrx(void *base, uintsize nel, uintsize width,
+   int (*compare)(void *arg, const void *a, const void *b),
+   int (*optCompareArgLast)(const void *a, const void *b, void *arg),
+   void *arg,
+   bool deref, bool ascending)
+{
+   _qsortrx(base, nel, width, compare, optCompareArgLast, arg, deref, ascending);
+}
+
+public void qsortr(void *base, uintsize nel, uintsize width, int (*compare)(void *arg, const void *a, const void *b), void *arg)
+{
+   _qsortrx(base, nel, width, compare, null, arg, false, true);
+}
 
 public class Array : Container
 {
@@ -227,7 +367,6 @@ public:
       }
    }
 
-
    void Free()
    {
       int c;
@@ -246,5 +385,12 @@ public:
       T data = *(T*)item;
       delete data;
       Remove(item);
+   }
+
+   void Sort(bool ascending)
+   {
+      Class Dclass = class(D);
+      bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+      _qsortrx(array, count, Dclass.typeSize, (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare], null, Dclass, !byRef, ascending);
    }
 };

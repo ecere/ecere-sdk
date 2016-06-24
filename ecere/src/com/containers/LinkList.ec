@@ -1,6 +1,11 @@
 namespace com;
 
 import "Container"
+import "List"  // Ugly dependency for List optimization in Sort()
+
+default:
+extern int __ecereVMethodID_class_OnCompare;
+private:
 
 public struct LinkElement<class T:void *>
 {
@@ -179,5 +184,111 @@ public:
    {
       Remove(item);
       delete item;
+   }
+
+   // Optimized Merge Sort Reusing List Nodes
+   static void _Sort(bool ascending, LinkList * lists)
+   {
+      // Only sort containers with more than 1 items and which are integer indexable
+      if(count >= 2)
+      {
+         LT a, b, mid;
+         Class Dclass = class(D);
+         bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+         bool isList = GetData == List::GetData;
+         bool isLinkList = GetData == LinkList::GetData;
+         bool isStruct = Dclass.type == structClass;
+         int (* onCompare)(void *, const void *, const void *) = (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare];
+         LinkList listA = lists[0];
+         LinkList listB = lists[1];
+
+         // Find midpoint
+         mid = GetAtPosition(count / 2-1, false, null);
+
+         // Split into 2 lists
+         a = first;
+         b = mid.link.next;
+
+         while(a)
+         {
+            LT i = a;
+            bool done = (a == mid);
+            a = a.link.next;
+            listA.LinkList::Add((void *)(uintptr)i);
+            if(done) break;
+         }
+
+         while(b)
+         {
+            LT i = b;
+            b = b.link.next;
+            listB.LinkList::Add((void *)(uintptr)i);
+         }
+
+         first = null, last = null, count = 0;
+
+         // Sort each of the 2 lists
+         listA._Sort(ascending, lists+2);
+         listB._Sort(ascending, lists+2);
+
+         // Merge
+         a = listA.first;
+         b = listB.first;
+
+         while(a || b)
+         {
+            int r;
+            if(a && b)
+            {
+               if(isLinkList)
+                  r = onCompare(Dclass, a, b);
+               else if(isList)
+               {
+                  if(isStruct || byRef)
+                     r = onCompare(Dclass, &((Link)a).data, &((Link)b).data);
+                  else
+                     r = onCompare(Dclass, (const void *)(uintptr)((Link)a).data, (const void *)(uintptr)((Link)b).data);
+               }
+               else
+               {
+                  D dataA = GetData(a), dataB = GetData(b);
+                  r = onCompare(Dclass, byRef ? &dataA : (const void *)(uintptr)dataA, byRef ? &dataB : (const void *)(uintptr)dataB);
+               }
+            }
+            else if(a)
+               r = -1;
+            else
+               r = 1;
+            if(!ascending) r *= -1;
+
+            if(r < 0)
+            {
+               LT i = a;
+               a = a.link.next;
+               LinkList::Add((void *)(uintptr)i);
+            }
+            else
+            {
+               LT i = b;
+               b = b.link.next;
+               LinkList::Add((void *)(uintptr)i);
+            }
+         }
+         listA.first = null, listA.last = null, listA.count = 0;
+         listB.first = null, listB.last = null, listB.count = 0;
+      }
+   }
+
+   void Sort(bool ascending)
+   {
+      // Pre-allocate 2 log2(n) lists
+      int i, numLists = log2i(count) * 2;
+      LinkList * lists = new LinkList[numLists];
+      for(i = 0; i < numLists; i++)
+         lists[i] = eInstance_New(_class);
+      _Sort(ascending, lists);
+      for(i = 0; i < numLists; i++)
+         delete lists[i];
+      delete lists;
    }
 }
