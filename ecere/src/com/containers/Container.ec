@@ -331,4 +331,92 @@ public:
          delete (void *)data;
       this = container;
    }
+
+   static void _Sort(bool ascending, Container * lists)
+   {
+      // Only sort containers with more than 1 items and which are integer indexable
+      int count = GetCount();
+      if(count >= 2 && class(I) == class(int))
+      {
+         Iterator a { this };
+         Iterator b { this };
+         Iterator mid { this };
+
+         Class Dclass = class(D);
+         bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+         int (* onCompare)(void *, const void *, const void *) = (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare];
+
+         Container listA = lists[0];
+         Container listB = lists[1];
+
+         // Find midpoint
+         mid.Index(count / 2-1, false);
+
+         // Split into 2 lists
+         while(a.Next())
+         {
+            listA.Add(a.data);
+            if(a.pointer == mid.pointer)
+               break;
+         }
+
+         b.pointer = mid.pointer;
+         while(b.Next())
+            listB.Add(b.data);
+
+         RemoveAll();
+
+         // Sort each of the 2 lists
+         listA._Sort(ascending, lists + 2);
+         listB._Sort(ascending, lists + 2);
+
+         // Merge
+         a = { listA };
+         b = { listB };
+         a.Next();
+         b.Next();
+
+         while(a.pointer || b.pointer)
+         {
+            int r;
+            if(a.pointer && b.pointer)
+            {
+               D dataA = a.data, dataB = b.data;
+               r = onCompare(Dclass, byRef ? &dataA : (const void *)(uintptr)dataA, byRef ? &dataB : (const void *)(uintptr)dataB);
+            }
+            else if(a.pointer)
+               r = -1;
+            else
+               r = 1;
+            if(!ascending) r *= -1;
+
+            if(r < 0)
+            {
+               Add(a.data);
+               a.Next();
+            }
+            else
+            {
+               Add(b.data);
+               b.Next();
+            }
+         }
+
+         listA.RemoveAll();
+         listB.RemoveAll();
+      }
+   }
+
+   virtual void Sort(bool ascending)
+   {
+      // Pre-allocate 2 log2(n) containers
+      int i, numLists = log2i(GetCount()) * 2;
+      Container * lists = new Container[numLists];
+      for(i = 0; i < numLists; i++)
+         lists[i] = eInstance_New(_class);
+      _Sort(ascending, lists);
+      for(i = 0; i < numLists; i++)
+         delete lists[i];
+      delete lists;
+   }
 }
