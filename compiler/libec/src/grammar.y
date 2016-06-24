@@ -2635,7 +2635,7 @@ direct_declarator_nofunction_type_ok:
      direct_declarator_nofunction
    | base_strict_type
    {
-      char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
+      char * colon = $1.name ? RSearchString($1.name, "::", strlen($1.name), true, false) : null;
       String s = colon ? colon + 2 : $1.name;
       $$ = MkDeclaratorIdentifier(MkIdentifier(s));
       FreeSpecifier($1);
