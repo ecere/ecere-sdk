@@ -19701,7 +19701,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 2637 "grammar.y"
     {
-      char * colon = RSearchString((yyvsp[(1) - (1)].specifier).name, "::", strlen((yyvsp[(1) - (1)].specifier).name), true, false);
+      char * colon = (yyvsp[(1) - (1)].specifier).name ? RSearchString((yyvsp[(1) - (1)].specifier).name, "::", strlen((yyvsp[(1) - (1)].specifier).name), true, false) : null;
       String s = colon ? colon + 2 : (yyvsp[(1) - (1)].specifier).name;
       (yyval.declarator) = MkDeclaratorIdentifier(MkIdentifier(s));
       FreeSpecifier((yyvsp[(1) - (1)].specifier));
