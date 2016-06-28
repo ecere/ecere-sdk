@@ -2,6 +2,10 @@
 
 namespace com;
 
+#if defined(__ANDROID__)
+ #define DISABLE_MEMMGR
+#endif
+
 #if defined(__EMSCRIPTEN__)
  #define DISABLE_MEMMGR
  #define _NOMUTEX
@@ -708,7 +712,7 @@ static class MemInfo : BTNode //struct
          printf("Object of class %s\n", _class);
       printf("   Allocation Stack:\n");
       for(c = 0; c<MAX_MEMORY_LOC; c++)
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
          if(allocLoc[c] && allocLoc[c] != (void *)0xabababababababab)
 #else
          if(allocLoc[c] && allocLoc[c] != (void *)0xabababab)
@@ -4829,7 +4833,7 @@ public dllexport void eInstance_Delete(Instance instance)
       bool ownVtbl;
 
 #ifdef MEMINFO
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
       if(instance._class == (void *)0xecececececececec)
 #else
       if(instance._class == (void *)0xecececec)
@@ -5660,7 +5664,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
       }
       incref module;
    }
-#if defined(_DEBUG)
+#if defined(_DEBUG) && !defined(__ANDROID__)
    InternalModuleLoadBreakpoint();
 #endif
    return module;
@@ -6355,7 +6359,7 @@ public bool LocateModule(const char * name, const char * fileName)
 }
 
 /*
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
 #define _64BIT 1
 #else
 #define _64BIT 0
@@ -6598,8 +6602,11 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
 
 #ifdef __ANDROID__
    // Clean up global variables
+#if !defined(DISABLE_MEMMGR)
    memoryInitialized = false;
    pools = null;
+#endif
+
 #ifdef MEMINFO
    memset(&memStacks, 0, sizeof(BinaryTree));
    memoryErrorsCount = 0;

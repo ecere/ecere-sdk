@@ -1,10 +1,10 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "Hello",
+   "ModuleName" : "hello",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "SharedLibrary",
-      "TargetFileName" : "Hello",
+      "TargetFileName" : "hello",
       "Libraries" : [
          "ecere",
          "log",
@@ -13,15 +13,17 @@
          "GLESv1_CM"
       ],
       "PostbuildCommands" : [
-         "$(call mkdir,$(OBJ)apk/lib/armeabi)",
-         "$(call mkdir,$(OBJ)apk/lib/x86)",
-         "$(call cp,../../ecere/obj/android.linux.$(COMPILER)/libecere.so,$(OBJ)apk/lib/armeabi)",
-         "$(call cp,$(TARGET),$(OBJ)apk/lib/armeabi)",
-         "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I C:/android-sdk/platforms/android-20/android.jar -S android/res $(OBJ)apk",
-         "jarsigner -storepass android -sigalg MD5withRSA -digestalg SHA1 $(OBJ)$(MODULE)-unsigned.apk -keystore C:/Users/Jerome/debug.keystore androiddebugkey -signedjar $(OBJ)$(MODULE).apk",
-         "adb uninstall com.ecere.Hello",
+         "$(call mkdir,$(OBJ)classes)",
+         "$(call mkdir,$(OBJ)apk/lib/arm64-v8a)",
+         "javac -verbose -d $(OBJ)/classes -classpath C:/android-sdk/platforms/android-22/android.jar;$(OBJ) -sourcepath . $(MODULE).java",
+         "dx --dex --verbose --output=$(OBJ)apk/classes.dex $(OBJ)classes",
+         "$(call cp,../../ecere/obj/android.linux.$(COMPILER)/libecere.so,$(OBJ)apk/lib/arm64-v8a)",
+         "$(call cp,$(TARGET),$(OBJ)apk/lib/arm64-v8a)",
+         "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I C:/android-sdk/platforms/android-22/android.jar -S android/res $(OBJ)apk",
+         "jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore C:/android-sdk/debug.keystore -storepass android $(OBJ)$(MODULE)-unsigned.apk androiddebugkey -signedjar $(OBJ)$(MODULE).apk",
+         "adb uninstall com.ecere.$(MODULE)",
          "adb install $(OBJ)$(MODULE).apk",
-         "adb shell am start -a android.intent.action.MAIN -n com.ecere.Hello/android.app.NativeActivity"
+         "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/.hello"
       ]
    },
    "Configurations" : [
@@ -63,7 +65,8 @@
          ]
       },
       "helloAndroid.ec",
-      "note.txt"
+      "note.txt",
+      "hello.java"
    ],
    "ResourcesPath" : "",
    "Resources" : [
