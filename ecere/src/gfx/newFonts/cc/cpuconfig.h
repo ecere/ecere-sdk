@@ -55,7 +55,7 @@
    //#error "Unknown endianness"
 #endif
 
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64)
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
 
 #if defined(__x86_64__) || defined(_M_X64)
    #define CPUCONF_ARCH_AMD64

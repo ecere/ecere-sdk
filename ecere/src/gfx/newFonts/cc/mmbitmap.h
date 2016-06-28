@@ -52,7 +52,7 @@ static inline int mmBitMapDirectGet( mmBitMap *bitmap, size_t entryindex )
 #ifdef MM_ATOMIC_SUPPORT
   value = (int)(( MM_ATOMIC_ACCESS_L( &bitmap->map[index] ) >> shift ) & 0x1);
 #else
-  value = ( bitmap->map[index] >> shift ) & 0x1;
+  value = (int)(( bitmap->map[index] >> shift ) & 0x1);
 #endif
   return value;
 }
@@ -92,7 +92,7 @@ static inline int mmBitMapDirectMaskGet( mmBitMap *bitmap, size_t entryindex, lo
 #ifdef MM_ATOMIC_SUPPORT
   value = (int)(( MM_ATOMIC_ACCESS_L( &bitmap->map[index] ) >> shift ) & mask);
 #else
-  value = ( bitmap->map[index] >> shift ) & mask;
+  value = (int)(( bitmap->map[index] >> shift ) & mask);
 #endif
   return value;
 }
@@ -126,7 +126,7 @@ static inline int mmBitMapGet( mmBitMap *bitmap, size_t entryindex )
   value = (int)(( mmAtomicReadL( &bitmap->map[index] ) >> shift ) & 0x1);
 #else
   mtMutexLock( &bitmap->mutex );
-  value = ( bitmap->map[index] >> shift ) & 0x1;
+  value = (int)(( bitmap->map[index] >> shift ) & 0x1);
   mtMutexUnlock( &bitmap->mutex );
 #endif
   return value;
@@ -182,7 +182,7 @@ static inline int mmBitMapMaskGet( mmBitMap *bitmap, size_t entryindex, long mas
   value = (int)(( mmAtomicReadL( &bitmap->map[index] ) >> shift ) & mask);
 #else
   mtMutexLock( &bitmap->mutex );
-  value = ( bitmap->map[index] >> shift ) & mask;
+  value = (int)(( bitmap->map[index] >> shift ) & mask);
   mtMutexUnlock( &bitmap->mutex );
 #endif
   return value;
@@ -191,10 +191,10 @@ static inline int mmBitMapMaskGet( mmBitMap *bitmap, size_t entryindex, long mas
 static inline void mmBitMapMaskSet( mmBitMap *bitmap, size_t entryindex, long value, long mask )
 {
   size_t index, shift;
-  long oldvalue, newvalue;
   index = entryindex >> CPUCONF_LONG_BITSHIFT;
   shift = entryindex & ( CPUCONF_LONG_BITS - 1 );
 #ifdef MM_ATOMIC_SUPPORT
+  long oldvalue, newvalue;
   for( ; ; )
   {
     oldvalue = (int)mmAtomicReadL( &bitmap->map[index] );
