@@ -8,7 +8,7 @@ import "Object"
 #endif
 #endif
 
-#if defined(__ANDROID__) || defined(__ODROID__)
+#if (defined(__ANDROID__) || defined(__ODROID__)) && !defined(_GLES)
 #define _GLES
 #endif
 
