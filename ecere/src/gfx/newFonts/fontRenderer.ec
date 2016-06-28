@@ -147,13 +147,25 @@ public:
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 #if !defined(_GLES) && !defined(_GLES2)
         glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
-        glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
-        glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
+        glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * textureWidth + rect[0]) * channelcount);
+        //glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
+        //glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
+#else
+       {
+          int row = w * channelcount;
+          byte * tmp = new byte[h * row];
+          int y;
+          for(y = 0; y < h; y++)
+            memcpy(tmp + y * row, data + textureWidth * (y + rect[1]) + rect[0], row);
+          glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, tmp);
+          delete tmp;
+       }
 #endif
-        glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data );
 #if !defined(_GLES) && !defined(_GLES2)
         glPopAttrib();
         glPopClientAttrib();
+#else
+        glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 #endif
 
       #if 0
