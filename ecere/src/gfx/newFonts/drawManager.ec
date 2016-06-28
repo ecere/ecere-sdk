@@ -718,6 +718,9 @@ public class DrawManager
      Texture texture, bindTexture;
      DMDrawBuffer *drawBuffer;
      DMDrawVertexFlat *vboVertex = null;
+#if defined(_GLES) || defined(_GLES2)
+     DMDrawVertexFlat *vboStorage = null;
+#endif
      DMProgram *program;
 
      ERRORCHECK();
@@ -733,7 +736,9 @@ public class DrawManager
         drawBuffer = &this.drawBuffer[drawBufferIndex];
         drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
         glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-#if !defined(_GLES) && !defined(_GLES2)  // TODO:
+#if defined(_GLES) || defined(_GLES2)
+        vboVertex = vboStorage = new DMDrawVertexFlat[drawBuffer->vertexAlloc * 1];
+#else
         vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 #endif
         vertexCount = 0;
@@ -773,7 +778,9 @@ public class DrawManager
           {
             if( vertexCount )
             {
-#if !defined(_GLES) && !defined(_GLES2)    // TODO:
+#if defined(_GLES) || defined(_GLES2)
+              glBufferData( GL_ARRAY_BUFFER, drawBuffer->vertexAlloc * sizeof(DMDrawVertexFlat), vboStorage, GL_DYNAMIC_DRAW );
+#else
               glUnmapBuffer( GL_ARRAY_BUFFER );
 #endif
               // Flush font manager texture updates
@@ -783,7 +790,9 @@ public class DrawManager
               drawBuffer = &this.drawBuffer[drawBufferIndex];
               drawBufferIndex = ( drawBufferIndex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
               glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo );
-#if !defined(_GLES) && !defined(_GLES2)    // TODO:
+#if defined(_GLES) || defined(_GLES2)
+              vboVertex = vboStorage;
+#else
               vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 #endif
               vertexCount = 0;
@@ -900,7 +909,10 @@ public class DrawManager
           vertexCount += 6;
         }
 
-#if !defined(_GLES) && !defined(_GLES2) // TODO:
+#if defined(_GLES) || defined(_GLES2) // TODO:
+        glBufferData( GL_ARRAY_BUFFER, drawBuffer->vertexAlloc * sizeof(DMDrawVertexFlat), vboStorage, GL_DYNAMIC_DRAW );
+        delete vboStorage;
+#else
         glUnmapBuffer( GL_ARRAY_BUFFER );
 #endif
 
