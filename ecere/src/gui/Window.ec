@@ -4084,20 +4084,28 @@ private:
    public bool MultiTouchMessage(TouchPointerEvent event, Array<TouchPointerInfo> infos, Modifiers * mods, bool consequential, bool activate)
    {
       bool result = true;
-      if(infos.count)
+      if((infos && infos.count) || (event == up || event == pointerUp))
       {
          Window w = null;
          while(result && w != this)
          {
             // TODO: How to handle this?
-            int x = infos[0].point.x;
-            int y = infos[0].point.y;
+            int x = (infos && infos.count) ? infos[0].point.x : 0;
+            int y = (infos && infos.count) ? infos[0].point.y : 0;
             Window msgWindow = GetAtPosition(x,y, false, true, w);
             Window window;
             delete w;
             w = msgWindow;
             if(w) incref w;
             window = (w && !w.disabled) ? w : null;
+
+            if(guiApp.windowCaptured && (guiApp.windowCaptured.rootWindow == this))
+            {
+               if(!guiApp.windowCaptured.isEnabled)
+                  guiApp.windowCaptured.ReleaseCapture();
+               else
+                  window = guiApp.windowCaptured;
+            }
 
             if(consequential) mods->isSideEffect = true;
             if(!result || (window && window.destroyed)) window = null;
@@ -4106,16 +4114,20 @@ private:
             {
                if(window.OnMultiTouch && !window.disabled)
                {
-                  Array<TouchPointerInfo> in { size = infos.size };
-                  memcpy(in.array, infos.array, sizeof(TouchPointerInfo) * infos.size);
-
-                  for(i : in)
+                  Array<TouchPointerInfo> in = null;
+                  if(infos && infos.count)
                   {
-                     i.point.x -= (window.absPosition.x + window.clientStart.x);
-                     i.point.y -= (window.absPosition.y + window.clientStart.y);
+                     in = { size = infos.size };
+                     memcpy(in.array, infos.array, sizeof(TouchPointerInfo) * infos.size);
 
-                     i.point.x = Max(Min(i.point.x, 32767),-32768);
-                     i.point.y = Max(Min(i.point.y, 32767),-32768);
+                     for(i : in)
+                     {
+                        i.point.x -= (window.absPosition.x + window.clientStart.x);
+                        i.point.y -= (window.absPosition.y + window.clientStart.y);
+
+                        i.point.x = Max(Min(i.point.x, 32767),-32768);
+                        i.point.y = Max(Min(i.point.y, 32767),-32768);
+                     }
                   }
 
                   incref window;

@@ -1113,14 +1113,18 @@ static Key keyCodeTable[] =
 static Array<TouchPointerInfo> buildPointerInfo(AInputEvent * event)
 {
    uint count = (uint)AMotionEvent_getPointerCount(event);
-   Array<TouchPointerInfo> infos { size = count };
-   int i;
-   for(i = 0; i < count; i++)
+   Array<TouchPointerInfo> infos = null;
+   if(count)
    {
-      infos[i].point = { (int)AMotionEvent_getX(event, i), (int)AMotionEvent_getY(event, i) };
-      infos[i].id = (int)AMotionEvent_getPointerId(event, i);
-      infos[i].pressure = AMotionEvent_getPressure(event, i);
-      infos[i].size = AMotionEvent_getSize(event, i);
+      int i;
+      infos = { size = count };
+      for(i = 0; i < count; i++)
+      {
+         infos[i].point = { (int)AMotionEvent_getX(event, i), (int)AMotionEvent_getY(event, i) };
+         infos[i].id = (int)AMotionEvent_getPointerId(event, i);
+         infos[i].pressure = AMotionEvent_getPressure(event, i);
+         infos[i].size = AMotionEvent_getSize(event, i);
+      }
    }
    return infos;
 }
@@ -1155,8 +1159,9 @@ class AndroidActivity : AndroidAppGlue
          //int64 eventTime = AMotionEvent_getDownTime(event);
          //float axis;
          Modifiers keyFlags = 0;
-         int x = (int)AMotionEvent_getX(event, 0);
-         int y = (int)AMotionEvent_getY(event, 0);
+         uint count = (uint)AMotionEvent_getPointerCount(event);
+         int x = count ? (int)AMotionEvent_getX(event, 0) : 0;
+         int y = count ? (int)AMotionEvent_getY(event, 0) : 0;
          bool shift = (meta & AMETA_SHIFT_ON) ? true : false;
          bool alt = (meta & AMETA_ALT_ON) ? true : false;
          //bool sym = (meta & AMETA_SYM_ON) ? true : false;
