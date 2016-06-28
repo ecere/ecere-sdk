@@ -985,8 +985,8 @@ class OpenGLDisplayDriver : DisplayDriver
          egl_init_display(guiApp.desktop.windowHandle);
          #elif defined(__ODROID__)
          egl_init_display((uint)displaySystem.window);
-         CheckExtensions(oglSystem);
          #endif
+         CheckExtensions(oglSystem);
 
          // TODO: Clean this up? Needed here?
          glEnableClientState(GL_VERTEX_ARRAY);
