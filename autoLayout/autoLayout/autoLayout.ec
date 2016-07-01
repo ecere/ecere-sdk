@@ -63,6 +63,7 @@ private:
    Box pdg; // padding
    Box bm; // combined for box model
 
+
    selfHAlignment = inherit;
    selfVAlignment = inherit;
 
@@ -164,8 +165,10 @@ private:
             //if(xh > h) // h is 0
                h = Min(xh, rch);
 
+            // take the max size if bigger
             //if(xw && xw < w) w = xw; // w s already the smaller of xw or rcw
             //if(xh && xh < h) h = xh; // h s already the smaller of xh or rch
+            // take the min size if smaller
             if(nw && nw > w) w = nw;
             if(nh && nh > h) h = nh;
 
@@ -178,6 +181,7 @@ private:
             e.clientSize = { w, h };
 
             e.computeContentSize(displaySystem);
+            //PrintLn("contentSize: ", contentSize);
             if(!e.hScroll && e.contentSize.w > nw) nw = e.contentSize.w;
             if(!e.vScroll && e.contentSize.h > nh) nh = e.contentSize.h;
 
@@ -200,6 +204,7 @@ private:
       }
       if(caption)
       {
+         //char * t = caption;
          /*if(!cw) cw = MAXINT;
          if(!ch) ch = MAXINT;*/
 
@@ -207,6 +212,7 @@ private:
          wrapTextExtent(displaySystem, fontObject, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
          if(graphicsSize.w)
             graphicsSize.w += 1;
+         //PrintLn("graphicsSize: ", graphicsSize);
       }
 
       // Set the content size to the max of (minimum extent of children, graphics extent)
@@ -214,6 +220,7 @@ private:
          contentSize = { Max(graphicsSize.w, minimum), Max(graphicsSize.h, thickness) };
       else
          contentSize = { Max(graphicsSize.w, thickness), Max(graphicsSize.h, minimum) };
+      //PrintLn("id(", id, ") graphicsSize: ", graphicsSize, " contentSize: ", contentSize, " clientSize: ", clientSize, "  ", caption);
    }
 
    void updateTLPosition()
@@ -238,8 +245,10 @@ private:
       if(lastAlignment == inherit) lastAlignment = (direction == horizontal) ? hAlignment : vAlignment;
       cw -= bm.left + bm.right;
       ch -= bm.top + bm.bottom;
+      //PrintLn("Element::autoLayout() -- id(", id, ")");
 
       // Allocate extra space
+      //PrintLn("extraSpace:");
       for(n : nodes)
       {
          Element e = n;
@@ -248,6 +257,7 @@ private:
          {
             if(direction == horizontal)
             {
+               //Alignment a = e.selfHAlignment == inherit ? hAlignment : e.selfHAlignment;
                int xw = e.maxSize.w.getPixels(cw);
                int nw = e.minSize.w.getPixels(cw);
                int w = Max(nw, e.contentSize.w);
@@ -260,9 +270,11 @@ private:
 
                totalMax += Max(w, xw) + bm;
                totalUsed[e.selfHAlignment == inherit ? hAlignment : e.selfHAlignment] += Max(w, xw) + bm;
+               //PrintLn("H:nw", nw, ":xw", xw, ":w", w, ":bm", bm, ":tMin", totalMin, ":tMax", totalMax, ":a", a, ":tUsed", totalUsed[a]);
             }
             else
             {
+               //Alignment a = e.selfVAlignment == inherit ? vAlignment : e.selfVAlignment;
                int xh = e.maxSize.h.getPixels(ch);
                int nh = e.minSize.h.getPixels(ch);
                int h = Max(nh, e.contentSize.h);
@@ -275,6 +287,7 @@ private:
 
                totalMax += Max(h, xh) + bm;
                totalUsed[e.selfVAlignment == inherit ? vAlignment : e.selfVAlignment] += Max(h, xh) + bm;
+               //PrintLn("V:nh", nh, ":xh", xh, ":h", h, ":mm", mm, ":tMin", totalMin, ":tMax", totalMax, ":a", a, ":tUsed", totalUsed[a]);
             }
          }
       }
@@ -300,6 +313,7 @@ private:
          }
       }
 
+      //PrintLn("positioning:");
       for(n : nodes)
       {
          Element e = n;
@@ -311,6 +325,8 @@ private:
          int xh = e.maxSize.h.getPixels(ch);
          bool positionUpdated = false;
 
+         //PrintLn("a:w", w, ":h", h, ":nw", nw, ":nh", nh, ":xw", xw, ":xh", xh);
+
          w += e.bm.left + e.bm.right;
          h += e.bm.top + e.bm.bottom;
          if(xw) xw += e.bm.left + e.bm.right;
@@ -318,11 +334,15 @@ private:
          nw += e.bm.left + e.bm.right;
          nh += e.bm.top + e.bm.bottom;
 
+         //PrintLn("b:w", w, ":h", h, ":nw", nw, ":nh", nh, ":xw", xw, ":xh", xh);
+
          if(nw > w) w = nw;
          if(nh > h) h = nh;
 
          if(xw && w > xw) w = xw;
          if(xh && h > xh) h = xh;
+
+         //PrintLn("c:w", w, ":h", h, ":nw", nw, ":nh", nh, ":xw", xw, ":xh", xh);
 
          if(direction == horizontal)
          {
@@ -352,6 +372,7 @@ private:
                case center: y = (thickness - h) / 2; break;
             }
             e.position = { start, y + e.bm.top };
+            //PrintLn("H:w", w, ":h", h, ":nw", nw, ":nh", nh, ":xw", xw, ":xh", xh, ":start", start, ":y", y, "id(", e.id, ") position: ", e.position, "  ", caption);
             start += w;
          }
          else
@@ -383,6 +404,7 @@ private:
             }
 
             e.position = { x + e.bm.left, start };
+            //PrintLn("V:w", w, ":h", h, ":nw", nw, ":nh", nh, ":xw", xw, ":xh", xh, ":x", x, ":start", start, "id(", e.id, ") position: ", e.position, "  ", caption);
             start += h;
          }
 
@@ -404,6 +426,7 @@ private:
             if(positionUpdated && e.nodes)
                e.updateTLPosition();
          }
+         //PrintLn("id(", e.id, ") contentSize: ", e.contentSize, " clientSize: ", e.clientSize, "  ", e.caption);
       }
    }
 
@@ -412,8 +435,12 @@ private:
       //int cw = clientSize.w, ch = clientSize.h;
       int x, y, x2, y2;
       // clientSize excludes box model
+      //PrintLn("render");
+      //PrintLn(":x", tlPosition.x, ":y", tlPosition.y);
       x = tlPosition.x + mgn.left;
       y = tlPosition.y + mgn.top;
+      //PrintLn(":x", x, ":y", y);
+      //PrintLn("clientSize:w", clientSize.w, ":h", clientSize.h);
       x2 = x + brd.left + pdg.left + clientSize.w + pdg.right + brd.right - 1;
       y2 = y + brd.top + pdg.top + clientSize.h + pdg.bottom + brd.bottom - 1;
       // clientSize includes box model
@@ -431,6 +458,7 @@ private:
 
       x += brd.left;
       y += brd.top;
+      //PrintLn(":x", x, ":y", y);
       x2 -= brd.right;
       y2 -= brd.bottom;
       surface.background = bgColor;
@@ -442,12 +470,13 @@ private:
 
       x += pdg.left;
       y += pdg.top;
+      //PrintLn(":x", x, ":y", y);
       x2 -= pdg.right;
       y2 -= pdg.bottom;
       if(bmpObject)
       {
          int sw = bmpObject.width, sh = bmpObject.height;
-         int bx = x + (clientSize.w - sw) / 2;
+         int bx = x + (clientSize.w - sw) / 2; // who asked for centering ?
          int by = y + (clientSize.h - sh) / 2;
          surface.blitTint = bitmapTint;
          surface.Blit(bmpObject, bx,by,0,0, sw,sh);
@@ -467,6 +496,7 @@ private:
          /*else
             y += mgn.top + brd.top + pdg.top;*/
 
+         //PrintLn("wrapText:tx", tx, ":ty", ty, ":sw", tlPosition.x + clientSize.w, ":sh", tlPosition.y + clientSize.h, " - id(", id, ") position: ", position, "  ", caption);
          surface.foreground = fgColor;
          surface.font = fontObject;
          //surface.WriteText(x, y, caption, strlen(caption));
