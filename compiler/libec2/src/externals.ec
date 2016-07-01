@@ -165,6 +165,8 @@ public ASTDeclarator GetFuncDecl(ASTDeclarator decl)
    {
       if(decl._class == class(DeclFunction))
          funcDecl = decl;
+      else if(decl._class == class(DeclPointer) || decl._class == class(DeclArray))
+         funcDecl = null;
       decl = decl.declarator;
    }
    return funcDecl;
