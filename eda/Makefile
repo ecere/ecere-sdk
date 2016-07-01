@@ -10,38 +10,38 @@ include $(_CF_DIR)default.cf
 
 all:
 	@$(call echo,Building Ecere Data Access layer...)
-	cd libeda && $(MAKE)
+	cd libeda && $(_MAKE)
 	@$(call echo,Building EDASQLite driver...)
-	cd drivers && cd sqlite && $(MAKE)
+	cd drivers && cd sqlite && $(_MAKE)
 ifdef EDASQLiteCipher
 	@$(call echo,Building EDASQLiteCipher driver...)
-	cd drivers && cd sqliteCipher && $(MAKE)
+	cd drivers && cd sqliteCipher && $(_MAKE)
 endif
 
 cleantarget:
-	cd libeda && $(MAKE) cleantarget
-	cd drivers && cd sqlite && $(MAKE) cleantarget
+	cd libeda && $(_MAKE) cleantarget
+	cd drivers && cd sqlite && $(_MAKE) cleantarget
 ifdef EDASQLiteCipher
-	cd drivers && cd sqliteCipher && $(MAKE) cleantarget
+	cd drivers && cd sqliteCipher && $(_MAKE) cleantarget
 endif
 
 clean:
-	cd libeda && $(MAKE) clean
-	cd drivers && cd sqlite && $(MAKE) clean
+	cd libeda && $(_MAKE) clean
+	cd drivers && cd sqlite && $(_MAKE) clean
 ifdef EDASQLiteCipher
-	cd drivers && cd sqliteCipher && $(MAKE) clean
+	cd drivers && cd sqliteCipher && $(_MAKE) clean
 endif
 
 realclean:
-	cd libeda && $(MAKE) realclean
-	cd drivers && cd sqlite && $(MAKE) realclean
+	cd libeda && $(_MAKE) realclean
+	cd drivers && cd sqlite && $(_MAKE) realclean
 ifdef EDASQLiteCipher
-	cd drivers && cd sqliteCipher && $(MAKE) realclean
+	cd drivers && cd sqliteCipher && $(_MAKE) realclean
 endif
 
 distclean:
-	cd libeda && $(MAKE) distclean
-	cd drivers && cd sqlite && $(MAKE) distclean
+	cd libeda && $(_MAKE) distclean
+	cd drivers && cd sqlite && $(_MAKE) distclean
 ifdef EDASQLiteCipher
-	cd drivers && cd sqliteCipher && $(MAKE) distclean
+	cd drivers && cd sqliteCipher && $(_MAKE) distclean
 endif

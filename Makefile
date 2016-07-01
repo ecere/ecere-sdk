@@ -181,18 +181,18 @@ ifdef CROSS_TARGET
 endif
 
 bootstrap: outputdirs
-	cd compiler && $(MAKE) $(XBOOT) bootstrap
+	cd compiler && $(_MAKE) $(XBOOT) bootstrap
 
 deps:
 ifdef CROSS_TARGET
 ifndef LINUX_HOST
 	@$(call echo,Building dependencies (host)...)
-	cd deps && $(MAKE) $(XBOOT)
+	cd deps && $(_MAKE) $(XBOOT)
 endif
 endif
 ifndef LINUX_TARGET
 	@$(call echo,Building dependencies...)
-	cd deps && $(MAKE)
+	cd deps && $(_MAKE)
 endif
 
 ecere: bootstrap deps
@@ -201,41 +201,41 @@ ifdef CROSS_TARGET
 else
 	@$(call echo,Building 2nd stage ecere...)
 endif
-	cd ecere && $(MAKE) nores $(XBOOT)
-	cd ear && $(MAKE) nores $(XBOOT)
-	cd ecere && $(MAKE) cleaneceretarget
+	cd ecere && $(_MAKE) nores $(XBOOT)
+	cd ear && $(_MAKE) nores $(XBOOT)
+	cd ecere && $(_MAKE) cleaneceretarget
 ifdef CROSS_TARGET
 	@$(call echo,Building 2nd stage ecere...)
 endif
-	cd ecere && $(MAKE)
+	cd ecere && $(_MAKE)
 
 ecerecom: bootstrap
 ifdef CROSS_TARGET
 	@$(call echo,Building eC Core Runtime (host)...)
-	cd ecere && $(MAKE) -f Makefile.ecereCOM $(XBOOT)
+	cd ecere && $(_MAKE) -f Makefile.ecereCOM $(XBOOT)
 endif
 	@$(call echo,Building eC Core Runtime...)
-	cd ecere && $(MAKE) -f Makefile.ecereCOM
+	cd ecere && $(_MAKE) -f Makefile.ecereCOM
 
 ecerevanilla: bootstrap
 	@$(call echo,Building Vanilla Ecere...)
-	cd ecere && $(MAKE) -f Makefile.vanilla
+	cd ecere && $(_MAKE) -f Makefile.vanilla
 
 ear: ecere ecerevanilla
 	@$(call echo,Building ear...)
-	cd ear && cd cmd && $(MAKE) cleantarget
-	cd ear && $(MAKE)
+	cd ear && cd cmd && $(_MAKE) cleantarget
+	cd ear && $(_MAKE)
 
 fixprecompile:
-	cd compiler && $(MAKE) fixprecompile
+	cd compiler && $(_MAKE) fixprecompile
 
 compiler: ecere ear
 ifdef CROSS_TARGET
 	@$(call echo,Building 2nd stage compiler (host))
-	cd compiler && $(MAKE) $(XBOOT)
+	cd compiler && $(_MAKE) $(XBOOT)
 endif
 	@$(call echo,Building 2nd stage compiler)
-	cd compiler && $(MAKE)
+	cd compiler && $(_MAKE)
 
 prepbinaries: compiler ecerecom
 	@$(call echo,Enabling 2nd stage binaries...)
@@ -301,26 +301,26 @@ endif
 
 epj2make: prepbinaries
 	@$(call echo,Building epj2make...)
-	cd epj2make && $(MAKE)
+	cd epj2make && $(_MAKE)
 
 ecereaudio: prepbinaries
 ifneq ($(ECERE_AUDIO),n)
 	@$(call echo,Building EcereAudio...)
-	cd audio && $(MAKE)
+	cd audio && $(_MAKE)
 endif
 
 ide: prepbinaries
 	@$(call echo,Building IDE...)
-	cd ide && $(MAKE)
+	cd ide && $(_MAKE)
 
 documentor: prepbinaries
 	@$(call echo,Building Documentor...)
-	cd documentor && $(MAKE)
+	cd documentor && $(_MAKE)
 
 codeguard: prepcodeguard
 ifdef CodeGuard
 	@$(call echo,Building CodeGuard client...)
-	cd codeGuard && $(MAKE)
+	cd codeGuard && $(_MAKE)
 endif
 
 prepcodeguard: eda
@@ -345,10 +345,10 @@ endif
 eda: prepbinaries
 ifdef CROSS_TARGET
 	@$(call echo,Building EDA (host))
-	cd eda && $(MAKE) $(XBOOT)
+	cd eda && $(_MAKE) $(XBOOT)
 endif
 	@$(call echo,Building EDA...)
-	cd eda && $(MAKE)
+	cd eda && $(_MAKE)
 
 emptyoutput: outputdirs
 	$(call rm,$(OBJLIBDIR)libecereVanilla$(A))
@@ -399,89 +399,89 @@ ifdef CodeGuard
 endif
 
 cleantarget:
-	cd compiler && $(MAKE) cleantarget
-	cd documentor && $(MAKE) cleantarget
-	cd ear && $(MAKE) cleantarget
-	cd ecere && $(MAKE) cleantarget
-	cd eda && $(MAKE) cleantarget
-	cd epj2make && $(MAKE) cleantarget
-	cd ide && $(MAKE) cleantarget
-	cd installer && $(MAKE) cleantarget
+	cd compiler && $(_MAKE) cleantarget
+	cd documentor && $(_MAKE) cleantarget
+	cd ear && $(_MAKE) cleantarget
+	cd ecere && $(_MAKE) cleantarget
+	cd eda && $(_MAKE) cleantarget
+	cd epj2make && $(_MAKE) cleantarget
+	cd ide && $(_MAKE) cleantarget
+	cd installer && $(_MAKE) cleantarget
 ifneq ($(ECERE_AUDIO),n)
-	cd audio && $(MAKE) cleantarget
+	cd audio && $(_MAKE) cleantarget
 endif
 
 pots: cleantarget
-	$(MAKE) OUTPUT_POT=1
-	cd installer && $(MAKE) OUTPUT_POT=1 pots
+	$(_MAKE) OUTPUT_POT=1
+	cd installer && $(_MAKE) OUTPUT_POT=1 pots
 
 ifdef WINDOWS_TARGET
 installer:
-	$(MAKE) prepinstall ARCH=
-	$(MAKE) prepinstall ARCH=x32
+	$(_MAKE) prepinstall ARCH=
+	$(_MAKE) prepinstall ARCH=x32
 	@$(call echo,Building Ecere runtime for installer...)
-	cd ecere && @$(MAKE) -f Makefile.installer ARCH=x32
+	cd ecere && @$(_MAKE) -f Makefile.installer ARCH=x32
 	@$(call echo,Building Installer for Windows...)
-	cd installer && @$(MAKE) ARCH=x32
+	cd installer && @$(_MAKE) ARCH=x32
 	@$(call echo,The Ecere SDK Windows Installer is fully built.)
 endif
 
 clean: emptyoutput
 ifndef LINUX_TARGET
-	cd deps && $(MAKE) clean
+	cd deps && $(_MAKE) clean
 endif
-	cd ecere && $(MAKE) clean
-	cd compiler && $(MAKE) clean
-	cd ear && $(MAKE) clean
-	cd epj2make && $(MAKE) clean
-	cd ide && $(MAKE) clean
-	cd documentor && $(MAKE) clean
+	cd ecere && $(_MAKE) clean
+	cd compiler && $(_MAKE) clean
+	cd ear && $(_MAKE) clean
+	cd epj2make && $(_MAKE) clean
+	cd ide && $(_MAKE) clean
+	cd documentor && $(_MAKE) clean
 ifneq ($(ECERE_AUDIO),n)
-	cd audio && $(MAKE) clean
+	cd audio && $(_MAKE) clean
 endif
 ifdef CodeGuard
-	cd codeGuard && $(MAKE) clean
+	cd codeGuard && $(_MAKE) clean
 endif
-	cd eda && $(MAKE) clean
+	cd eda && $(_MAKE) clean
 	@$(call echo,Done.)
 
 realclean: outputdirs
 ifndef LINUX_TARGET
-	cd deps && $(MAKE) realclean
+	cd deps && $(_MAKE) realclean
 endif
-	cd ecere && $(MAKE) realclean
-	cd compiler && $(MAKE) realclean
-	cd ear && $(MAKE) realclean
-	cd epj2make && $(MAKE) realclean
-	cd ide && $(MAKE) realclean
-	cd documentor && $(MAKE) realclean
+	cd ecere && $(_MAKE) realclean
+	cd compiler && $(_MAKE) realclean
+	cd ear && $(_MAKE) realclean
+	cd epj2make && $(_MAKE) realclean
+	cd ide && $(_MAKE) realclean
+	cd documentor && $(_MAKE) realclean
 ifneq ($(ECERE_AUDIO),n)
-	cd audio && $(MAKE) realclean
+	cd audio && $(_MAKE) realclean
 endif
 ifdef CodeGuard
-	cd codeGuard && $(MAKE) realclean
+	cd codeGuard && $(_MAKE) realclean
 endif
-	cd eda && $(MAKE) realclean
+	cd eda && $(_MAKE) realclean
 	$(call rmr,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
 distclean: outputdirs
 ifndef LINUX_TARGET
-	cd deps && $(MAKE) distclean
+	cd deps && $(_MAKE) distclean
 endif
-	cd ecere && $(MAKE) distclean
-	cd compiler && $(MAKE) distclean
-	cd ear && $(MAKE) distclean
-	cd epj2make && $(MAKE) distclean
-	cd ide && $(MAKE) distclean
-	cd documentor && $(MAKE) distclean
+	cd ecere && $(_MAKE) distclean
+	cd compiler && $(_MAKE) distclean
+	cd ear && $(_MAKE) distclean
+	cd epj2make && $(_MAKE) distclean
+	cd ide && $(_MAKE) distclean
+	cd documentor && $(_MAKE) distclean
 ifneq ($(ECERE_AUDIO),n)
-	cd audio && $(MAKE) distclean
+	cd audio && $(_MAKE) distclean
 endif
 ifdef CodeGuard
-	cd codeGuard && $(MAKE) distclean
+	cd codeGuard && $(_MAKE) distclean
 endif
-	cd eda && $(MAKE) distclean
+	cd eda && $(_MAKE) distclean
 	$(call rmr,obj/)
 	@$(call echo,Done.)
 
@@ -859,28 +859,28 @@ updatebootstrap: regenbootstrap
 
 update_ecere:
 	@echo Regenerating ecere bootstrapper...
-	cd ecere && $(MAKE) -f Makefile.bootstrap clean
-	cd ecere && $(MAKE) -f Makefile.bootstrap
+	cd ecere && $(_MAKE) -f Makefile.bootstrap clean
+	cd ecere && $(_MAKE) -f Makefile.bootstrap
 
 update_libec:
 	@echo Regenerating ec bootstrapper...
-	cd compiler/libec && $(MAKE) -f Makefile.bootstrap clean
-	cd compiler/libec && $(MAKE) -f Makefile.bootstrap
+	cd compiler/libec && $(_MAKE) -f Makefile.bootstrap clean
+	cd compiler/libec && $(_MAKE) -f Makefile.bootstrap
 
 update_ecp:
 	@echo Regenerating ecp bootstrapper...
-	cd compiler/ecp && $(MAKE) -f Makefile.bootstrap clean
-	cd compiler/ecp && $(MAKE) -f Makefile.bootstrap
+	cd compiler/ecp && $(_MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecp && $(_MAKE) -f Makefile.bootstrap
 
 update_ecc:
 	@echo Regenerating ecc bootstrapper...
-	cd compiler/ecc && $(MAKE) -f Makefile.bootstrap clean
-	cd compiler/ecc && $(MAKE) -f Makefile.bootstrap
+	cd compiler/ecc && $(_MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecc && $(_MAKE) -f Makefile.bootstrap
 
 update_ecs:
 	@echo Regenerating ecs bootstrapper...
-	cd compiler/ecs && $(MAKE) -f Makefile.bootstrap clean
-	cd compiler/ecs && $(MAKE) -f Makefile.bootstrap
+	cd compiler/ecs && $(_MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecs && $(_MAKE) -f Makefile.bootstrap
 
 troubleshoot:
 	@$(call echo,Printing values of some variables.)
@@ -896,6 +896,13 @@ troubleshoot:
 	@$(call echo,WINDOWS_TARGET=$(WINDOWS_TARGET))
 	@$(call echo,BSD_HOST=$(BSD_HOST))
 	@$(call echo,BSD_TARGET=$(BSD_TARGET))
+	@$(call echo,OS=$(OS))
+	@$(call echo,OSTYPE=$(OSTYPE))
+	@$(call echo,BASH=$(BASH))
+	@$(call echo,TERM=$(TERM))
+	@$(call echo,SHELL=$(SHELL))
+	@$(call echo,WIN_SHELL_COMMANDS=$(WIN_SHELL_COMMANDS))
+	@$(call echo,WIN_PS_TOOLS=$(WIN_PS_TOOLS))
 	@$(call echo,CCACHE=$(CCACHE))
 	@$(call echo,CCACHE_COMPILE=$(CCACHE_COMPILE))
 	@$(call echo,CCACHE_PREFIX=$(CCACHE_PREFIX))
@@ -921,3 +928,7 @@ troubleshoot:
 	@$(call echo,DIR_VER=$(DIR_VER))
 	@$(call echo,REPOSITORY_VER=$(REPOSITORY_VER))
 	@$(call echo,CPPFLAGS=$(CPPFLAGS))
+	@$(call echo,OPENSSL_CONF=$(OPENSSL_CONF))
+	@$(call echo,OPENSSL_INCLUDE_DIR=$(OPENSSL_INCLUDE_DIR))
+	@$(call echo,OPENSSL_LIB_DIR=$(OPENSSL_LIB_DIR))
+	@$(call echo,OPENSSL_BIN_DIR=$(OPENSSL_BIN_DIR))

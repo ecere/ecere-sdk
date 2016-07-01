@@ -14,48 +14,48 @@ all: ecp ecc ecs
 
 libec:
 	@$(call echo,Building 2nd stage libec...)
-	cd libec && $(MAKE)
+	cd libec && $(_MAKE)
 
 ecp: libec
 	@$(call echo,Building 2nd stage ecp...)
-	cd ecp && $(MAKE)
+	cd ecp && $(_MAKE)
 
 ecc: libec
 	@$(call echo,Building 2nd stage ecc...)
-	cd ecc && $(MAKE)
+	cd ecc && $(_MAKE)
 
 ecs: libec
 	@$(call echo,Building 2nd stage ecs...)
-	cd ecs && $(MAKE)
+	cd ecs && $(_MAKE)
 
 bootstrap:
 	@$(call echo,Bootstrapping eC compiling tools...)
-	cd bootstrap && $(MAKE)
+	cd bootstrap && $(_MAKE)
 
 cleantarget:
-	cd bootstrap && $(MAKE) cleantarget
-	cd libec && $(MAKE) cleantarget
-	cd ecp && $(MAKE) cleantarget
-	cd ecc && $(MAKE) cleantarget
-	cd ecs && $(MAKE) cleantarget
+	cd bootstrap && $(_MAKE) cleantarget
+	cd libec && $(_MAKE) cleantarget
+	cd ecp && $(_MAKE) cleantarget
+	cd ecc && $(_MAKE) cleantarget
+	cd ecs && $(_MAKE) cleantarget
 
 clean:
-	cd bootstrap && $(MAKE) clean
-	cd libec && $(MAKE) clean
-	cd ecp && $(MAKE) clean
-	cd ecc && $(MAKE) clean
-	cd ecs && $(MAKE) clean
+	cd bootstrap && $(_MAKE) clean
+	cd libec && $(_MAKE) clean
+	cd ecp && $(_MAKE) clean
+	cd ecc && $(_MAKE) clean
+	cd ecs && $(_MAKE) clean
 
 realclean:
-	cd bootstrap && $(MAKE) realclean
-	cd libec && $(MAKE) realclean
-	cd ecp && $(MAKE) realclean
-	cd ecc && $(MAKE) realclean
-	cd ecs && $(MAKE) realclean
+	cd bootstrap && $(_MAKE) realclean
+	cd libec && $(_MAKE) realclean
+	cd ecp && $(_MAKE) realclean
+	cd ecc && $(_MAKE) realclean
+	cd ecs && $(_MAKE) realclean
 
 distclean:
-	cd bootstrap && $(MAKE) distclean
-	cd libec && $(MAKE) distclean
-	cd ecp && $(MAKE) distclean
-	cd ecc && $(MAKE) distclean
-	cd ecs && $(MAKE) distclean
+	cd bootstrap && $(_MAKE) distclean
+	cd libec && $(_MAKE) distclean
+	cd ecp && $(_MAKE) distclean
+	cd ecc && $(_MAKE) distclean
+	cd ecs && $(_MAKE) distclean

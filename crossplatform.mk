@@ -174,11 +174,16 @@ hidspace = $(subst $(space),$(esc),$(subst $(backslash)$(space),$(esc),$(1)))
 shwspace = $(subst $(esc),$(backslash)$(space),$(1))
 unescp_all = $(subst $(esc),$(backslash),$(subst $(backslash),,$(subst $(backslash)$(backslash),$(esc),$(1))))
 
+# FILE PATH TOOLS
+fp_opt_quotes = $(if $(findstring $(space),$(1)),"$(1)",$(1))
+
 # PATH SEPARATOR STRING TOOLS
 ifdef WINDOWS_HOST
-ifndef MSYSCON
-   WIN_PS_TOOLS := defined
-endif
+   ifneq ($(TERM),cygwin)
+      ifndef MSYSCON
+         WIN_PS_TOOLS := defined
+      endif
+   endif
 endif
 slash_path = $(subst $(backslash),$(slash),$(1))
 ifdef WIN_PS_TOOLS
@@ -230,11 +235,15 @@ _CPP = $(if $(findstring $(space),$(CPP)),"$(CPP)",$(CPP))
 
 _SYSROOT = $(if $(SYSROOT),$(space)--sysroot=$(SYSROOT),)
 
+_MAKE = $(call fp_opt_quotes,$(MAKE))
+
 # SHELL COMMANDS
 ifdef WINDOWS_HOST
-ifndef MSYSCON
-   WIN_SHELL_COMMANDS := defined
-endif
+   ifneq ($(TERM),cygwin)
+      ifndef MSYSCON
+         WIN_SHELL_COMMANDS := defined
+      endif
+   endif
 endif
 ifneq ($(V),1)
    SILENT_IS_ON := defined

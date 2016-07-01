@@ -24,44 +24,44 @@ ifdef WINDOWS_TARGET
 endif
 
 clean: cleantarget
-	cd ecere && $(MAKE) clean
-	cd libec && $(MAKE) clean
-	cd ecp && $(MAKE) clean
-	cd ecc && $(MAKE) clean
-	cd ecs && $(MAKE) clean
+	cd ecere && $(_MAKE) clean
+	cd libec && $(_MAKE) clean
+	cd ecp && $(_MAKE) clean
+	cd ecc && $(_MAKE) clean
+	cd ecs && $(_MAKE) clean
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
-	cd ecere && $(MAKE) realclean
-	cd libec && $(MAKE) realclean
-	cd ecp && $(MAKE) realclean
-	cd ecc && $(MAKE) realclean
-	cd ecs && $(MAKE) realclean
+	cd ecere && $(_MAKE) realclean
+	cd libec && $(_MAKE) realclean
+	cd ecp && $(_MAKE) realclean
+	cd ecc && $(_MAKE) realclean
+	cd ecs && $(_MAKE) realclean
 
 distclean: cleantarget
 	$(call rmr,obj/)
-	cd ecere && $(MAKE) distclean
-	cd libec && $(MAKE) distclean
-	cd ecp && $(MAKE) distclean
-	cd ecc && $(MAKE) distclean
-	cd ecs && $(MAKE) distclean
+	cd ecere && $(_MAKE) distclean
+	cd libec && $(_MAKE) distclean
+	cd ecp && $(_MAKE) distclean
+	cd ecc && $(_MAKE) distclean
+	cd ecs && $(_MAKE) distclean
 
 ecere:
 	@$(call echo,Building ecere...)
-	cd ecere && $(MAKE)
+	cd ecere && $(_MAKE)
 
 libec:
 	@$(call echo,Building ec...)
-	cd libec && $(MAKE)
+	cd libec && $(_MAKE)
 
 ecp: ecere libec
 	@$(call echo,Building ecp...)
-	cd ecp && $(MAKE)
+	cd ecp && $(_MAKE)
 
 ecc: ecere libec
 	@$(call echo,Building ecc...)
-	cd ecc && $(MAKE)
+	cd ecc && $(_MAKE)
 
 ecs: ecere libec
 	@$(call echo,Building ecs...)
-	cd ecs && $(MAKE)
+	cd ecs && $(_MAKE)

@@ -17,57 +17,57 @@ endif
 endif
 
 cleantarget:
-	cd freetype-2.3.12 && $(MAKE) cleantarget
-	cd libpng-1.6.12 && $(MAKE) cleantarget
-	cd zlib-1.2.8 && $(MAKE) cleantarget
-	cd jpeg-9a && $(MAKE) cleantarget
-	cd libungif-4.1.1 && $(MAKE) cleantarget
-	cd libffi-3.0.11 && $(MAKE) cleantarget
+	cd freetype-2.3.12 && $(_MAKE) cleantarget
+	cd libpng-1.6.12 && $(_MAKE) cleantarget
+	cd zlib-1.2.8 && $(_MAKE) cleantarget
+	cd jpeg-9a && $(_MAKE) cleantarget
+	cd libungif-4.1.1 && $(_MAKE) cleantarget
+	cd libffi-3.0.11 && $(_MAKE) cleantarget
 
 clean:
-	cd freetype-2.3.12 && $(MAKE) clean
-	cd libpng-1.6.12 && $(MAKE) clean
-	cd zlib-1.2.8 && $(MAKE) clean
-	cd jpeg-9a && $(MAKE) clean
-	cd libungif-4.1.1 && $(MAKE) clean
-	cd libffi-3.0.11 && $(MAKE) clean
+	cd freetype-2.3.12 && $(_MAKE) clean
+	cd libpng-1.6.12 && $(_MAKE) clean
+	cd zlib-1.2.8 && $(_MAKE) clean
+	cd jpeg-9a && $(_MAKE) clean
+	cd libungif-4.1.1 && $(_MAKE) clean
+	cd libffi-3.0.11 && $(_MAKE) clean
 
 realclean:
-	cd freetype-2.3.12 && $(MAKE) realclean
-	cd libpng-1.6.12 && $(MAKE) realclean
-	cd zlib-1.2.8 && $(MAKE) realclean
-	cd jpeg-9a && $(MAKE) realclean
-	cd libungif-4.1.1 && $(MAKE) realclean
-	cd libffi-3.0.11 && $(MAKE) realclean
+	cd freetype-2.3.12 && $(_MAKE) realclean
+	cd libpng-1.6.12 && $(_MAKE) realclean
+	cd zlib-1.2.8 && $(_MAKE) realclean
+	cd jpeg-9a && $(_MAKE) realclean
+	cd libungif-4.1.1 && $(_MAKE) realclean
+	cd libffi-3.0.11 && $(_MAKE) realclean
 
 distclean:
-	cd freetype-2.3.12 && $(MAKE) distclean
-	cd libpng-1.6.12 && $(MAKE) distclean
-	cd zlib-1.2.8 && $(MAKE) distclean
-	cd jpeg-9a && $(MAKE) distclean
-	cd libungif-4.1.1 && $(MAKE) distclean
-	cd libffi-3.0.11 && $(MAKE) distclean
+	cd freetype-2.3.12 && $(_MAKE) distclean
+	cd libpng-1.6.12 && $(_MAKE) distclean
+	cd zlib-1.2.8 && $(_MAKE) distclean
+	cd jpeg-9a && $(_MAKE) distclean
+	cd libungif-4.1.1 && $(_MAKE) distclean
+	cd libffi-3.0.11 && $(_MAKE) distclean
 
 freetype:
 	@$(call echo,Building FreeType...)
-	cd freetype-2.3.12 && $(MAKE)
+	cd freetype-2.3.12 && $(_MAKE)
 	
 jpeg:
 	@$(call echo,Building libjpeg...)
-	cd jpeg-9a && $(MAKE)
+	cd jpeg-9a && $(_MAKE)
 
 png:
 	@$(call echo,Building libpng...)
-	cd libpng-1.6.12 && $(MAKE)
+	cd libpng-1.6.12 && $(_MAKE)
 
 gif:
 	@$(call echo,Building libungif...)
-	cd libungif-4.1.1 && $(MAKE)
+	cd libungif-4.1.1 && $(_MAKE)
 
 z:
 	@$(call echo,Building zlib...)
-	cd zlib-1.2.8 && $(MAKE)
+	cd zlib-1.2.8 && $(_MAKE)
 
 ffi:
 	@$(call echo,Building libffi...)
-	cd libffi-3.0.11 && $(MAKE)
+	cd libffi-3.0.11 && $(_MAKE)
