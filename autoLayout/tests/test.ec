@@ -16,20 +16,41 @@ import "frank"
 Array<Window> tws { };
 class TestWindow : Window
 {
-   property Array<Window> tests { set { value.Add(this); } }
+   property Array<Window> tests { set { if(value) value.Add(this); } }
    OnDestroy = TestOnDestroy;
 }
 class TestGuhixWindow : GuhixWindow
 {
-   property Array<Window> tests { set { value.Add(this); } }
+   property Array<Window> tests { set { if(value) value.Add(this); } }
    OnDestroy = TestOnDestroy;
 }
 class TestAutoLayoutForm : AutoLayoutForm
 {
-   property Array<Window> tests { set { value.Add(this); } }
+   property Array<Window> tests { set { if(value) value.Add(this); } }
    OnDestroy = TestOnDestroy;
 }
-void Window::TestOnDestroy() { for(w : tws; w != this) w.Destroy(0); }
+void Window::TestOnDestroy() { t.Stop(); for(w : tws; w != this) w.Destroy(0); }
+Timer t
+{
+   delay = 1;
+   bool DelayExpired()
+   {
+      if(tElement1.contents.direction == horizontal)
+         tElement1.contents.direction = vertical;
+      else
+         tElement1.contents.direction = horizontal;
+      tElement1.triggerUpdate();
+      return true;
+   }
+};
+class BenchApp : GuiApplication
+{
+   bool Init()
+   {
+      t.Start();
+      return true;
+   }
+}
 
 //===========================================================================
 //   GUI Tests (AutoLayout API, Guhix Ideas, Frankenstein GUI, etc.)
@@ -41,10 +62,10 @@ TestAutoLayoutForm alf3 { contents = Elemental3 { }, clientSize = { 480, 180 }, 
 TestAutoLayoutForm alf4 { contents = Elemental4 { }, clientSize = { 320, 240 }, anchor = { right = 80, bottom = 80 }, tests = tws, caption = "test4" };
 
 TestHoverScrollTitleTabsBar1 hs1 { tests = tws, anchor = { left = 100, top = 100 } };
-//TestNextGenHoverScrollTitleTabsBar1 hs2 { tests = tws };
+//////TestNextGenHoverScrollTitleTabsBar1 hs2 { tests = tws };
 Test2 t2 { tests = tws, anchor = { top = 460, right = 100 } };
 Test3 t3 { tests = tws, anchor = { /*top = 160*/ left = 80/*, horz = 0*/, vert = 0 } };
 TestElement1 tElement1 { tests = tws, anchor = { left = 600, top = 400 } };
 
 TestGuhix1 tGuhix1 { tests = tws, anchor = { left = 600, top = 100 } };
-//TestTextList tTextList { tests = tws, anchor = { left = 100, top = 100 } };
+//////TestTextList tTextList { tests = tws, anchor = { left = 100, top = 100 } };

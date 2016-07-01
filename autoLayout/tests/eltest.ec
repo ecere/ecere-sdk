@@ -243,6 +243,12 @@ class TestElementWindow : TestWindow
       }*/
       return true;
    }
+
+   void triggerUpdate()
+   {
+      size = { size.w, size.h };
+      Update(null);
+   }
 }
 
 class ElTitleBar : Col

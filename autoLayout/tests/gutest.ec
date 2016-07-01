@@ -19,14 +19,22 @@ class TestGuhix1 : TestGuhixWindow
 class UxTestStackedEntries : Ux
 {
    maxSize = { 1.0 };
-   Ux e1 { this, caption = "e1" };
-   Ux e2 { this, caption = "e2" };
-   Ux e3 { this, caption = "e3" };
-   Ux e4 { this, caption = "e4" };
-   Ux e5 { this, caption = "e5" };
-   Ux e6 { this, caption = "e6" };
-   Ux e7 { this, caption = "e7" };
-   Ux e8 { this, caption = "e8" };
+   CUxA e1 { this, caption = "e1" };
+   CUxA e2 { this, caption = "e2" };
+   CUxA e3 { this, caption = "e3" };
+   CUxA e4 { this, caption = "e4" };
+   CUxA e5 { this, caption = "e5" };
+   CUxA e6 { this, caption = "e6" };
+   CUxA e7 { this, caption = "e7" };
+   CUxA e8 { this, caption = "e8" };
+}
+
+class CUxA : Ux
+{
+   margin = 4;
+   border = { 2, black };
+   bgColor = beige;
+   padding = 2;
 }
 
 //TestTextList tTextList { };

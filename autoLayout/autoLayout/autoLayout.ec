@@ -42,6 +42,7 @@ private:
 
    Dimensions minSize, maxSize;  // Size specification
    Size clientSize;
+   Size scrollSize;
    BorderStyle borderStyle;
    Point scroll;
    bool hScroll, vScroll;
