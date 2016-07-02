@@ -759,7 +759,7 @@ class IDEWorkSpace : Window
                char extension[MAX_EXTENSION] = "";
                GetExtension(file, extension);
                isProjectFile = (!strcmpi(extension, "epj") || !strcmpi(extension, "ews"));
-               if(mods.ctrl)
+               if(mods.ctrl && !mods.shift)
                {
                   char * command = PrintString("ecere-ide ", isProjectFile ? "-t " : "", file);
                   Execute(command);
@@ -784,14 +784,14 @@ class IDEWorkSpace : Window
          {
             if(id == selection.id)
             {
-               if(mods.ctrl)
+               if(mods.ctrl && !mods.shift)
                {
                   char * command = PrintString("ecere-ide ", file);
                   Execute(command);
                   delete command;
                }
                else
-                  OpenFile(file, false, true, null, no, normal, mods.ctrl && mods.shift);
+                  OpenFile(file, false, true, (mods.ctrl && mods.shift) ? "txt" : null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
