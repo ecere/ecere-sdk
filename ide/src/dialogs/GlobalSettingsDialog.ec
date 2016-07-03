@@ -864,7 +864,8 @@ class CompilerToolchainTab : CompilersSubTab
          cppLabel.disabled = cpp.disabled = isVC || disabled;
          cxxLabel.disabled = cxx.disabled = isVC || disabled;
          ccLabel.disabled = cc.disabled = isVC || disabled;
-         ldLabel.disabled = cxx.disabled = isVC || disabled;
+         ldLabel.disabled = ld.disabled = isVC || disabled;
+         arLabel.disabled = ar.disabled = isVC || disabled;
          makeLabel.disabled = make.disabled = disabled;
          executableLauncherLabel.disabled = executableLauncher.disabled = disabled;
          gnuToolchainPrefixLabel.disabled = gnuToolchainPrefix.disabled = disabled;
@@ -1167,10 +1168,10 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label outputFileExtLabel { this, position = { 8, 306 }, labeledWindow = outputFileExt };
-   EditBox outputFileExt
+   Label staticLibFileExtLabel { this, position = { 8, 306 }, labeledWindow = staticLibFileExt };
+   EditBox staticLibFileExt
    {
-      this, text = $"Output file extension";//, hotKey = altH;
+      this, text = $"Output (a, so, exe) file extension";//, hotKey = altH;
       position = { 168, 304 }, size = { 80, 22 };
 
       bool NotifyModified(EditBox editBox)
@@ -1178,7 +1179,59 @@ class CompilerOptionsTab : CompilersSubTab
          CompilerConfig compiler = loadedCompiler;
          if(compiler)
          {
-            compiler.outputFileExt = editBox.contents;
+            compiler.staticLibFileExt = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+   EditBox sharedLibFileExt
+   {
+      this;
+      position = { 256, 304 }, size = { 80, 22 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.sharedLibFileExt = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+   EditBox executableFileExt
+   {
+      this;
+      position = { 344, 304 }, size = { 80, 22 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.executableFileExt = editBox.contents;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
+   Button stripTarget
+   {
+      this, text = $"Strip target", hotKey = altC, position = { 168, 332 };
+      isCheckbox = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         CompilerConfig compiler = loadedCompiler;
+         if(compiler)
+         {
+            compiler.noStripTarget = !button.checked;
             modifiedDocument = true;
             compilersTab.modifiedDocument = true;
          }
@@ -1188,7 +1241,7 @@ class CompilerOptionsTab : CompilersSubTab
 
    Button resourcesDotEar
    {
-      this, text = $"Use resources.ear", position = { 300, 308 };
+      this, text = $"Use resources.ear", position = { 308, 332 };
       isCheckbox = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -1236,7 +1289,10 @@ class CompilerOptionsTab : CompilersSubTab
          cxxFlags.strings = compiler.cxxFlags;
          linkerFlags.strings = compiler.linkerFlags;
          objectFileExt.contents = compiler.objectFileExt;
-         outputFileExt.contents = compiler.outputFileExt;
+         staticLibFileExt.contents = compiler.staticLibFileExt;
+         sharedLibFileExt.contents = compiler.sharedLibFileExt;
+         executableFileExt.contents = compiler.executableFileExt;
+         stripTarget.checked = !compiler.noStripTarget;
          resourcesDotEar.checked = compiler.resourcesDotEar;
 
          labelTargetPlatform.disabled = disabled;

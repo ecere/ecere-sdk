@@ -1243,11 +1243,21 @@ private:
       switch(targetType)
       {
          case executable:
-            if(compiler.targetPlatform == win32)
+            if(compiler.executableFileExt)
+            {
+               strcat(string, ".");
+               strcat(string, compiler.executableFileExt);
+            }
+            else if(compiler.targetPlatform == win32)
                strcat(string, ".exe");
             break;
          case sharedLibrary:
-            if(compiler.targetPlatform == win32)
+            if(compiler.sharedLibFileExt)
+            {
+               strcat(string, ".");
+               strcat(string, compiler.sharedLibFileExt);
+            }
+            else if(compiler.targetPlatform == win32)
                strcat(string, ".dll");
             else if(compiler.targetPlatform == apple)
                strcat(string, ".dylib");
@@ -1260,7 +1270,13 @@ private:
             }
             break;
          case staticLibrary:
-            strcat(string, ".a");
+            if(compiler.staticLibFileExt)
+            {
+               strcat(string, ".");
+               strcat(string, compiler.staticLibFileExt);
+            }
+            else
+               strcat(string, ".a");
             break;
       }
    }
@@ -1546,8 +1562,8 @@ private:
       cc.concatx((String)prefix, compiler.ccCommand,  " ");
       cxx.concatx((String)prefix, compiler.cxxCommand, " ");
 
+      ar.concatx((String)gnuToolchainPrefix, compiler.arCommand,  " ");
       strip.concatx(gnuToolchainPrefix, "strip ");
-      ar.concatx(gnuToolchainPrefix, "ar rcs");
       windres.concatx(gnuToolchainPrefix, "windres ");
 
       testLen = Max(testLen, ecp.size);
@@ -2090,7 +2106,6 @@ private:
       char command[MAX_F_STRING*4];
       char * compilerName = CopyString(compiler.name);
       Map<String, NameCollisionInfo> cfgNameCollisions;
-      const char * objFileExt = strcmp(compiler.objectFileExt, objectDefaultFileExt) != 0 ? compiler.objectFileExt : null;
 
       delete lastBuildConfigName;
       lastBuildConfigName = CopyString(config ? config.name : "Common");
@@ -2129,15 +2144,13 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s%s%s objdir -C \"%s\"%s%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                      /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
-
                      compilerName,
-                     objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                      topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n" : "", makeFilePath);
                if(outputMode != normal)
                   ide.outputView.buildBox.Logf("%s\n", command);
@@ -2189,7 +2202,7 @@ private:
          GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #if defined(__WIN32__)
                "",
 #else
@@ -2205,7 +2218,7 @@ private:
                ide.workspace.useValgrind ? " DISABLED_POOLING=1" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
                compilerName,
-               objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
+               compiler.noStripTarget ? " NOSTRIP=y" : "",
                eC_Debug ? "--always-make " : "",
                ccVersion == post4_8 ? "GCC_CC_FLAGS=-fno-diagnostics-show-caret " : "",
                cxxVersion == post4_8 ? "GCC_CXX_FLAGS=-fno-diagnostics-show-caret " : "",
@@ -2283,7 +2296,6 @@ private:
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != __runtimePlatform);
       const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
-      const char * objFileExt = strcmp(compiler.objectFileExt, objectDefaultFileExt) ? compiler.objectFileExt : null;
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -2318,12 +2330,11 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s%s%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                compilerName,
-               objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
                topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n": "", makeFilePath);
          if(outputMode != normal)
@@ -2348,7 +2359,7 @@ private:
       delete compilerName;
    }
 
-   void Run(const char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Run(const char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool shellOpen)
    {
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
@@ -2361,7 +2372,8 @@ private:
       strcpy(target, topNode.path);
       PathCatSlash(target, targetDirExp.dir);
       CatTargetFileName(target, compiler, config);
-      sprintf(target, "%s %s", target, args);
+      if(args[0] && (executableLauncher || !shellOpen))
+         sprintf(target, "%s %s", target, args);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
 
       if(ide.workspace.debugDir && strlen(ide.workspace.debugDir))
@@ -2384,6 +2396,8 @@ private:
          Execute(prefixedTarget);
          delete prefixedTarget;
       }
+      else if(shellOpen)
+         ShellOpen(target);
       else
          Execute(target);
 
@@ -2508,6 +2522,24 @@ private:
                f.Puts("\n");
             }
 
+            f.Puts("# PREFIXES AND EXTENSIONS\n");
+            f.Puts("EC := .ec\n");
+            f.Puts("S := .sym\n");
+            f.Puts("I := .imp\n");
+            f.Puts("B := .bowl\n");
+            f.Puts("C := .c\n");
+            f.Printf("O := .%s\n", compiler.objectFileExt ? compiler.objectFileExt  : "o");
+            f.Printf("A := .%s\n", compiler.staticLibFileExt ? compiler.staticLibFileExt  : "a");
+            f.Printf("SO := .%s\n", compiler.sharedLibFileExt ? compiler.sharedLibFileExt : "$(if $(WINDOWS_TARGET),dll,$(if $(OSX_TARGET),dylib,so))");
+            f.Printf("E := %s%s\n", compiler.executableFileExt ? "." : "",
+                  compiler.executableFileExt ? compiler.executableFileExt : "$(if $(WINDOWS_TARGET),.exe,)");
+            f.Puts("OUT := $(if $(STATIC_LIBRARY_TARGET),$(A),$(if $(SHARED_LIBRARY_TARGET),$(SO)$(VER),$(if $(EXECUTABLE_TARGET),$(E),.x)))\n");
+            f.Puts("LP := $(if $(WINDOWS_TARGET),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)\n");
+            f.Puts("HOST_E := $(if $(WINDOWS_HOST),.exe,)\n");
+            f.Puts("HOST_SO := $(if $(WINDOWS_HOST),.dll,$(if $(OSX_HOST),.dylib,.so))\n");
+            f.Puts("HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)\n");
+            f.Puts(".SUFFIXES: .c .ec .sym .imp .bowl $(O) $(A)\n");
+
             f.Puts("# TOOLCHAIN\n");
             f.Puts("\n");
 
@@ -2518,6 +2550,9 @@ private:
                f.Puts("   USE_RESOURCES_EAR := defined\n");
                f.Puts("endif\n");
             }
+            if(compiler.noStripTarget)
+               f.Puts("NOSTRIP := defined");
+
             f.Puts("\n");
 
             f.Puts("# EXTENSIONS\n");

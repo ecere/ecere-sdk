@@ -1244,11 +1244,23 @@ public:
       get { return objectFileExt && objectFileExt[0] ? objectFileExt : objectDefaultFileExt ; }
       isset { return objectFileExt && objectFileExt[0] && strcmp(objectFileExt, objectDefaultFileExt); }
    }
-   property const char * outputFileExt
+   property const char * staticLibFileExt
    {
-      set { delete outputFileExt; if(value && value[0]) outputFileExt = CopyString(value); }
-      get { return outputFileExt; }
-      isset { return outputFileExt && outputFileExt[0]; }
+      set { delete staticLibFileExt; if(value && value[0]) staticLibFileExt = CopyString(value); }
+      get { return staticLibFileExt; }
+      isset { return staticLibFileExt && staticLibFileExt[0]; }
+   }
+   property const char * sharedLibFileExt
+   {
+      set { delete sharedLibFileExt; if(value && value[0]) sharedLibFileExt = CopyString(value); }
+      get { return sharedLibFileExt; }
+      isset { return sharedLibFileExt && sharedLibFileExt[0]; }
+   }
+   property const char * executableFileExt
+   {
+      set { delete executableFileExt; if(value && value[0]) executableFileExt = CopyString(value); }
+      get { return executableFileExt; }
+      isset { return executableFileExt && executableFileExt[0]; }
    }
    property const char * executableLauncher
    {
@@ -1281,6 +1293,7 @@ public:
       isset { return sysroot && sysroot[0]; }
    }
    bool resourcesDotEar;
+   bool noStripTarget;
    property Array<String> includeDirs
    {
       set
@@ -1434,6 +1447,23 @@ public:
       get { return executableLauncher; }
       isset { return false; }
    }
+   property const char * outputFileExt
+   {
+      set { delete executableFileExt; if(value && value[0]) executableFileExt = CopyString(value); }
+      get { return executableFileExt; }
+      isset { return false; }
+   }
+   // utility
+   property bool hasDocumentOutput
+   {
+      get
+      {
+         bool result = executableFileExt && executableFileExt[0] &&
+               (!strcmpi(executableFileExt, "htm") || !strcmpi(executableFileExt, "html"));
+         return result;
+      }
+      isset { return false; }
+   }
 private:
    Array<String> includeDirs { };
    Array<String> libraryDirs { };
@@ -1459,7 +1489,9 @@ private:
    char * ldCommand;
    char * arCommand;
    char * objectFileExt;
-   char * outputFileExt;
+   char * staticLibFileExt;
+   char * sharedLibFileExt;
+   char * executableFileExt;
    char * executableLauncher;
    char * distccHosts;
    char * gnuToolchainPrefix;
@@ -1483,7 +1515,9 @@ private:
       delete ldCommand;
       delete arCommand;
       delete objectFileExt;
-      delete outputFileExt;
+      delete staticLibFileExt;
+      delete sharedLibFileExt;
+      delete executableFileExt;
       delete makeCommand;
       delete executableLauncher;
       delete distccHosts;
@@ -1560,7 +1594,9 @@ public:
          arCommand,
          ldCommand,
          objectFileExt,
-         outputFileExt,
+         staticLibFileExt,
+         sharedLibFileExt,
+         executableFileExt,
          executableLauncher,
          ccacheEnabled,
          distccEnabled,
@@ -1568,7 +1604,8 @@ public:
          distccHosts,
          gnuToolchainPrefix,
          sysroot,
-         resourcesDotEar
+         resourcesDotEar,
+         noStripTarget
       };
       for(s : includeDirs) copy.includeDirs.Add(CopyString(s));
       for(s : libraryDirs) copy.libraryDirs.Add(CopyString(s));
@@ -1648,8 +1685,12 @@ class CompilerConfigs : List<CompilerConfig>
                ccfg.arCommand = arDefaultCommand;
             if(!ccfg.objectFileExt || !ccfg.objectFileExt[0])
                ccfg.objectFileExt = objectDefaultFileExt;
-            /*if(!ccfg.outputFileExt || !ccfg.outputFileExt[0])
-               ccfg.outputFileExt = outputDefaultFileExt;*/
+            /*if(!ccfg.staticLibFileExt || !ccfg.staticLibFileExt[0])
+               ccfg.staticLibFileExt = staticLibDefaultFileExt;*/
+            /*if(!ccfg.sharedLibFileExt || !ccfg.sharedLibFileExt[0])
+               ccfg.sharedLibFileExt = sharedLibDefaultFileExt;*/
+            /*if(!ccfg.executableFileExt || !ccfg.executableFileExt[0])
+               ccfg.executableFileExt = outputDefaultFileExt;*/
             if(!ccfg._refCount) incref ccfg;
          }
       }

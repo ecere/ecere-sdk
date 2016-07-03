@@ -1612,17 +1612,18 @@ class ProjectView : Window
       CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
       ProjectConfig config = project.config;
       int bitDepth = ide.workspace.bitDepth;
+      bool shellOpen = compiler.hasDocumentOutput;
       String args = new char[maxPathLen];
       args[0] = '\0';
       if(ide.workspace.commandLineArgs)
          //ide.debugger.GetCommandLineArgs(args);
          strcpy(args, ide.workspace.commandLineArgs);
       if(ide.debugger.isActive)
-         project.Run(args, compiler, config, bitDepth);
+         project.Run(args, compiler, config, bitDepth, shellOpen);
       /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
       else if(BuildInterrim(project, run, compiler, config, bitDepth, normal))
-         project.Run(args, compiler, config, bitDepth);
+         project.Run(args, compiler, config, bitDepth, shellOpen);
       delete args;
       delete compiler;
       return true;
@@ -1662,6 +1663,10 @@ class ProjectView : Window
                ChangeWorkingDir(oldwd);
 
                delete pathBackup;
+            }
+            else if(compiler.hasDocumentOutput)
+            {
+               project.Run("", compiler, config, bitDepth, true);
             }
             else
             {
