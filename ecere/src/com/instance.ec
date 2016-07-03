@@ -2,7 +2,9 @@
 
 namespace com;
 
-// #define DISABLE_MEMMGR
+#if defined(__EMSCRIPTEN__)
+ #define DISABLE_MEMMGR
+#endif
 
 import "BinaryTree"
 import "OldList"
