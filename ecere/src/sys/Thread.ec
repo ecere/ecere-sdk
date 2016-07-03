@@ -55,6 +55,8 @@ public class Thread
    pthread_t id;
    bool dontDetach;
    Semaphore sem { };
+#else
+   uint id;
 #endif
 
    uint returnCode;
