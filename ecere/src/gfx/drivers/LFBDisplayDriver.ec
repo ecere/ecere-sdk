@@ -113,6 +113,7 @@ public:
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    Bitmap bitmap;
 
@@ -2014,10 +2015,10 @@ public class LFBDisplayDriver : DisplayDriver
       delete font;
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
 #ifndef ECERE_NOTRUETYPE
-      return Font::Load(displaySystem, faceName, size, flags);
+      return Font::Load(displaySystem, faceName, size, flags, outlineSize, outlineFade);
 #else
       return { };
 #endif
@@ -2040,7 +2041,7 @@ public class LFBDisplayDriver : DisplayDriver
          if(width)
          {
             int w = 0, advance = 0;
-            font.ProcessString(displaySystem, (const byte *)text, len, null, null, null, &w, 0, prevGlyph, rPrevGlyph, &advance);
+            font.ProcessString(displaySystem, (const byte *)text, len, false, null, null, &w, 0, prevGlyph, rPrevGlyph, &advance);
             if(adv) *adv = advance >> 6;
             //*width = (w + 64 - w % 64) >> 6;
             *width = w >> 6;
@@ -2055,13 +2056,6 @@ public class LFBDisplayDriver : DisplayDriver
          if(height) *height = 0;
       }
    }
-
-#if !defined(ECERE_NOTRUETYPE)
-   void ::OutputGlyph(Surface surface, Display display, int x, int y, Glyph glyph, Bitmap bitmap)
-   {
-      surface.driver.Blit(display, surface, bitmap, x + glyph.left, y + glyph.top, glyph.x, glyph.y, glyph.w, glyph.h);
-   }
-#endif
 
    void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
@@ -2093,7 +2087,7 @@ public class LFBDisplayDriver : DisplayDriver
          lfbSurface.writingText = true;
 #if !defined(ECERE_NOTRUETYPE)
          x <<= 6;
-         lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, OutputGlyph, surface, display, &x, y, prevGlyph, rPrevGlyph, &adv);
+         lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, &adv);
          x += adv;
 #endif
          lfbSurface.writingText = false;

@@ -74,6 +74,8 @@ static class GDIFont : struct
    char faceName[512];
    FontFlags flags;
    float size;
+   float outlineSize;
+   float outlineFade;
    int ascent, descent;
    float scale;
 
@@ -849,10 +851,10 @@ class GDIDisplayDriver : DisplayDriver
       Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       if(false) //display.alphaBlend)
-         return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
+         return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
       else
       {
          GDIFont font { };
@@ -901,7 +903,7 @@ class GDIDisplayDriver : DisplayDriver
          if(!gdiFont.font)
          {
             gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);
+               gdiFont.faceName, gdiFont.size, gdiFont.flags, gdiFont.outlineSize, gdiFont.outlineFade);
          }
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextFont(display, surface, gdiFont.font);
       }
@@ -930,7 +932,7 @@ class GDIDisplayDriver : DisplayDriver
          if(!gdiFont.font)
          {
             gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);
+               gdiFont.faceName, gdiFont.size, gdiFont.flags, gdiFont.outlineSize, gdiFont.outlineFade);
          }
          if(surface.textOpacity)
          {

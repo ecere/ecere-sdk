@@ -79,7 +79,7 @@ public:
       return result;
    }
 
-   Font LoadFont(const char * faceName, float size, FontFlags flags)
+   Font LoadOutlineFont(const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       Font result = null;
       subclass(DisplayDriver) driver = this ? this.driver : ((subclass(DisplayDriver))class(LFBDisplayDriver));
@@ -93,7 +93,7 @@ public:
          {
             TrimLSpaces(fonts[c],fonts[c]);
             TrimRSpaces(fonts[c],fonts[c]);
-            if((result = driver.LoadFont(this, fonts[c], size, flags)))
+            if((result = driver.LoadFont(this, fonts[c], size, flags, outlineSize, outlineFade)))
             {
                break;
             }
@@ -101,6 +101,11 @@ public:
          delete string;
       }
       return result;
+   }
+
+   Font LoadFont(const char * faceName, float size, FontFlags flags)
+   {
+      return LoadOutlineFont(faceName, size, flags, 0, 0);
    }
 
    void UnloadFont(Font font)

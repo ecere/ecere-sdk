@@ -573,7 +573,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
    #ifdef USE_GDI_FONT
       void * font;
@@ -586,7 +586,7 @@ class DirectDrawDisplayDriver : DisplayDriver
       ReleaseDC(null, hdc);
       return font;
    #else
-      Font font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
+      Font font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
       /*if(font)
       {
          font.bitmap.pixelFormat = C8;

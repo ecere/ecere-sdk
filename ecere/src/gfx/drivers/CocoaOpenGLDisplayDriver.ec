@@ -51,6 +51,7 @@ class SurfaceData : struct
    bool opaqueText;
    int  xOffset;
    bool writingText;
+   bool writingOutline;
 
    float foreground[4], background[4], bitmapMult[4];
 };
@@ -973,9 +974,9 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       LFBDisplayDriver::UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
-      Font font = LFBDisplayDriver::LoadFont(displaySystem, faceName, size, flags);
+      Font font = LFBDisplayDriver::LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
 
       printf("CocoaOpenGLDisplayDriver:LoadFont(%s):%p %s:%i\n", faceName, font, __FILE__, __LINE__);
 

@@ -2711,6 +2711,7 @@ private:
          // Default Settings
          surface.TextFont(usedFont.font);
          surface.TextOpacity(false);
+         surface.outlineColor = black;
 
          OnRedraw(surface);
 
@@ -2739,6 +2740,7 @@ private:
 
          surface.TextFont(usedFont.font);
          surface.TextOpacity(false);
+         surface.outlineColor = black;
 
          OnDrawOverChildren(surface);
 
