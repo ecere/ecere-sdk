@@ -127,7 +127,7 @@ public:
    virtual bool ::MakeDDBitmap(DisplaySystem, Bitmap, bool);
 
    // Font loading
-   virtual Font ::LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags);
+   virtual Font ::LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade);
    virtual void ::UnloadFont(DisplaySystem, Font);
 
    // 2D Drawing

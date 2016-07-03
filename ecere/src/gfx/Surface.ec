@@ -131,12 +131,14 @@ private:
    bool blend;
    bool writeColor;
    ColorAlpha blitTint;
+   ColorAlpha outlineColor;
 
    blitTint = white;
 
    blend = true;
    writeColor = true;
    alphaWrite = blend;
+   outlineColor = black;
 
    ~Surface()
    {
@@ -161,6 +163,11 @@ public:
       {
          return ((LFBSurface)driverData).bitmap;
       }
+   }
+   property ColorAlpha outlineColor
+   {
+      set { outlineColor = value; }
+      get { return outlineColor; }
    }
 
    ColorAlpha GetPixel(int x, int y)

@@ -28,6 +28,10 @@ static uint16 * utf16 = null;
 
 #if !defined(ECERE_NOTRUETYPE)
 
+#if !defined(ECERE_VANILLA)
+import "imgDistMap"
+#endif
+
 #define MAX_FONT_LINK_ENTRIES   10
 
 static HB_Script theCurrentScript;
@@ -92,7 +96,6 @@ static void hb_getAdvances(HB_Font font, const HB_Glyph * glyphs, uint numGlyphs
          {
             glFont.glyphPacks.Add((pack = GlyphPack { key = (uintptr)packNo }));
             pack.Render(glFont, fontEntryNum, glFont.displaySystem);
-            pack.bitmap.alphaBlend = true;
          }
          lastPack = packNo;
       }
@@ -179,7 +182,6 @@ static void hb_getGlyphMetrics(HB_Font font, HB_Glyph theGlyph, HB_GlyphMetrics 
             pack = { key = (uintptr)packNo };
             glFont.glyphPacks.Add(pack);
             pack.Render(glFont, fontEntryNum, glFont.displaySystem);
-            pack.bitmap.alphaBlend = true;
          }
          lastPack = packNo;
       }
@@ -364,6 +366,7 @@ struct Glyph
 {
    int ax, ay;
    int x, y;
+   int ox, oy; // Outline
    int w, h;
    int left, top;
    int bx, by;
@@ -374,56 +377,32 @@ struct Glyph
 class GlyphPack : BTNode
 {
    Glyph glyphs[256];
-   Bitmap bitmap { };
+   Bitmap bitmap { transparent = true, alphaBlend = true };
+   Bitmap outline;
    int cellWidth, cellHeight;
+   int oCellWidth, oCellHeight;
+
+   ~GlyphPack()
+   {
+      delete outline;
+   }
 
    void Render(Font font, int startFontEntry, DisplaySystem displaySystem)
    {
 #if !defined(ECERE_NOTRUETYPE)
       unichar c;
-      int maxWidth, maxHeight;
+      int maxWidth = 0, maxHeight = 0;
       int cellWidth, cellHeight;
-      int width, height;
+      int oCellWidth = 0, oCellHeight = 0;
+      int width, height, oWidth = 0, oHeight = 0;
       FontEntry fontEntry = null;
       FT_Face faces[128];
       float scales[128];
+      float outlineSize = font.outlineSize;
+      int padding = 1 + (int)outlineSize;
       bool isGlyph = ((uint)key & 0x80000000) != 0;
-      //int curScript = ((uint)key & 0x7F000000) >> 24;
       unichar testChar = 0;
-      /*
-      if(isGlyph)
-      {
-         switch(curScript)
-         {
-            case HB_Script_Arabic:
-               testChar = 0x621;
-               // printf("\nRendering arabic in %s (%d)\n", faceName, key & 0xFFFFFF);
-               break;
-            case HB_Script_Devanagari:
-               testChar = 0x905;
-               break;
-            case 60: testChar =　'あ'; break;
-            case 61: testChar =　0x3400; break;
-         }
-      }
-      */
-      /*
-      FT_GlyphSlot slot;
-      FT_Matrix matrix;
-      FT_Vector pen = { 0, 0 };
-      if(fakeItalic)
-      {
-         matrix.xx = (FT_Fixed)( 1.0 * 0x10000L );
-         matrix.xy = (FT_Fixed)( 0.3 * 0x10000L );
-         matrix.yx = (FT_Fixed)( 0.0 * 0x10000L );
-         matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
-         FT_Set_Transform( fontEntry.face, &matrix, &pen );
-      }
-      FT_Set_Char_Size( fontEntry.face, (int)(size * 64), (int)(size * 64), 96, 96);
-      */
-
-      maxWidth = 0;
-      maxHeight = 0;
+      Bitmap bitmap = this.bitmap;
 
       for(c = 0; c < MAX_FONT_LINK_ENTRIES; c++)
       {
@@ -441,7 +420,6 @@ class GlyphPack : BTNode
                matrix.yy = (FT_Fixed)( 1.0 * 0x10000L );
                FT_Set_Transform(fontEntry.face, &matrix, &pen);
             }
-            //FT_Set_Char_Size(fontEntry.face, (int)(size * 64), (int)(size * 64), 96, 96);
             fontEntry.scale = FaceSetCharSize(fontEntry.face, font.size);
             if(!font.scale)
                font.scale = fontEntry.scale;
@@ -505,34 +483,46 @@ class GlyphPack : BTNode
          {
             maxWidth = Max(maxWidth, ((faces[c]->glyph->metrics.width + 64 + (64 - (faces[c]->glyph->metrics.width & 0x3F))) >> 6));
             maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height + 64 + (64 - (faces[c]->glyph->metrics.height & 0x3F))) >> 6));
-            //maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height) >> 6));
          }
       }
       this.cellWidth = cellWidth = maxWidth;
       this.cellHeight = cellHeight = maxHeight;
 
-      width = maxWidth * 16;
-      height = maxHeight * 8;
+      width = pow2i(maxWidth * 16);
+      height = pow2i(maxHeight * 8);
 
-      if(true)
+#if !defined(ECERE_VANILLA)
+      if(outlineSize)
       {
-         width = pow2i(width);
-         height = pow2i(height);
+         oCellWidth = 2*padding + cellWidth;
+         oCellHeight = 2*padding + cellHeight;
+         oWidth = pow2i(oCellWidth * 16);
+         oHeight = pow2i(oCellHeight * 8);
+         outline = { transparent = true, alphaBlend = true };
       }
+#endif
 
-      if(bitmap.Allocate(null, width, height, 0, pixelFormatAlpha, false /*true*/))
+      if(bitmap.Allocate(null, width, height, 0, pixelFormatAlpha, false) &&
+         (!outline || outline.Allocate(null, oWidth, oHeight, 0, pixelFormatAlpha, false)))
       {
-         Bitmap bitmap = this.bitmap;
-
-         bitmap.transparent = true;
+         float fade = font.outlineFade;
+         float alphaFactor = 1.0f / (0.2f + fade);
+         // float intensityFactor = 1.0f / (0.2f + outlineSize);
+         float range = outlineSize, rangeInv = 1.0f / range;
+         float * distanceMap = null;
+         byte * padded = null;
+         if(outline)
+         {
+            distanceMap = new float[oCellWidth * oCellHeight];
+            padded = new byte[oCellWidth * oCellHeight];
+         }
 
          for(c = 0; c < 128; c++)
          {
             FT_Int i, j, p, q;
             FT_Int xMax, yMax;
-            int sx = (c % 16) * cellWidth;
-            int sy = (c / 16) * cellHeight;
-            int x, y;
+            int gx = ((uint)c & 0xF), gy = ((uint)c >> 4);
+            int sx = gx * cellWidth, sy = gy * cellHeight;
             byte * picture = (byte *)bitmap.picture;
             Glyph * glyph = &glyphs[c];
             FT_GlyphSlot slot = null;
@@ -540,7 +530,6 @@ class GlyphPack : BTNode
             if(faces[c])
             {
                double em_size = 1.0 * faces[c]->units_per_EM;
-               //double x_scale = faces[c]->size->metrics.x_ppem / em_size;
                double y_scale = em_size ? (faces[c]->size->metrics.y_ppem / em_size) : 1;
                double ascender = faces[c]->ascender * y_scale;
                slot = faces[c]->glyph;
@@ -549,40 +538,20 @@ class GlyphPack : BTNode
 
                FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 
-               x = sx;
-               y = sy;
-               //printf("%d, %d\n", maxHeight, faces[c]->size->metrics.height >> 6);
-
                glyph->left = slot->bitmap_left;
-               // glyph->top = ((64 + (64 - faces[c]->glyph->metrics.height & 0x3F)) >> 6) + (int)(ascender - slot->bitmap_top) + height - (faces[c]->size->metrics.height >> 6);
-               // glyph->top = (int)(ascender - slot->bitmap_top) + 2 * (height - maxHeight);
-               //glyph->top = (int)(ascender - slot->bitmap_top) + 2 * ((((faces[c]->size->metrics.height + 64 + (64 - faces[c]->size->metrics.height & 0x3F)) >> 6)) - height);
-               //glyph->top = (int)(ascender - slot->bitmap_top) + (height - (faces[c]->size->metrics.height >> 6));
-
-               //glyph->top = (int)(ascender + (height *64 - /*faces[0]->size->metrics.height - */faces[c]->size->metrics.height) / 64.0  + 0.5) - slot->bitmap_top;
-               //glyph->top = (int)(ascender + (height *64 - /*faces[0]->size->metrics.height - */faces[c]->size->metrics.height) / 64.0  + 0.5) - slot->bitmap_top;
-
-               //glyph->top = (int)((ascender - slot->bitmap_top) + (height * 64 - maxHeight * 64 + faces[c]->glyph->metrics.height - faces[c]->glyph->metrics.height) / 64);
-
-               //glyph->top = (int)(ascender - slot->bitmap_top); // + ((faces[c]->size->metrics.height >> 6) - (faces[0]->size->metrics.height >> 6)) + (height - (faces[c]->size->metrics.height >> 6));
-               //glyph->top = (int)(ascender - slot->bitmap_top); // + ((faces[c]->size->metrics.height >> 6) - (faces[0]->size->metrics.height >> 6)) + (height - (faces[c]->size->metrics.height >> 6));
-
-               //glyph->top = (int)(ascender - slot->bitmap_top);// + (height - maxHeight);
                glyph->top = (int)(ascender - slot->bitmap_top) + (int)(font.height - (faces[c]->size->metrics.height >> 6)) / 2;
 
-               // printf("[char: %d] mode: %d, width: %d, height: %d, pitch: %d\n", key + c, slot->bitmap.pixel_mode, slot->bitmap.width, slot->bitmap.rows, slot->bitmap.pitch);
-               xMax = x + slot->bitmap.width;
-               yMax = y + slot->bitmap.rows;
+               xMax = sx + slot->bitmap.width;
+               yMax = sy + slot->bitmap.rows;
 
                {
                   int total = 0;
                   int numPixels = 0;
-                  //int max;
                   if(slot->bitmap.pixel_mode != FT_PIXEL_MODE_MONO)
                   {
-                     for(j = y, q = 0; j<yMax; j++)
+                     for(j = sy, q = 0; j<yMax; j++)
                      {
-                        for(p = 0, i = x; i<xMax; i++)
+                        for(p = 0, i = sx; i<xMax; i++)
                         {
                            byte value = ((byte *)slot->bitmap.buffer)[q + p++];
                            if(value > 32)
@@ -594,12 +563,11 @@ class GlyphPack : BTNode
                         q += slot->bitmap.pitch;
                      }
                   }
-                  //max = numPixels ? (total / numPixels) : 1;
 
-                  for(j = y, q = 0; j<yMax; j++)
+                  for(j = sy, q = 0; j<yMax; j++)
                   {
                      int bit = 0x80;
-                     for(p = 0, i = x; i<xMax; i++)
+                     for(p = 0, i = sx; i<xMax; i++)
                      {
                         if(slot->bitmap.pixel_mode == FT_PIXEL_MODE_MONO)
                         {
@@ -610,12 +578,62 @@ class GlyphPack : BTNode
                         else
                         {
                            byte value = ((byte *)slot->bitmap.buffer)[q + p++];
-                           picture[j * bitmap.stride + i] = /*(max < 192) ? Min(255, value * 192/max) :*/ value;
+                           picture[j * bitmap.stride + i] = value;
                         }
                      }
                      q += slot->bitmap.pitch;
                   }
                }
+#if !defined(ECERE_VANILLA)
+               if(outline)
+               {
+                  // Generate outline from distance map
+                  float * dmap = distanceMap;
+                  byte *dst = outline.picture + gy * oCellHeight * oWidth + gx * oCellWidth;
+                  int x, y;
+                  byte * core = picture + gy * cellHeight * width + gx * cellWidth, * p;
+                  memset(padded, 0, oCellWidth * oCellHeight);
+                  if(slot->bitmap.width)
+                  {
+                     byte * src = padded + padding * oCellWidth + padding;
+                     picture = core;
+                     for(y = 0; y < cellHeight; y++)
+                     {
+                        byte * pic = picture;
+                        p = src;
+                        for(x = 0; x < cellWidth; x++, p++, pic++)
+                           *p = *pic;
+                        picture += width;
+                        src += oCellWidth;
+                     }
+                  }
+                  imgDistMapBuild(distanceMap, padded, oCellWidth, oCellHeight, 1, oCellWidth);
+
+                  //core -= padding * width;
+                  for(y = 0; y < oCellHeight; y++, dst += oWidth)
+                  {
+                     byte * dstRow = dst;
+                     p = core - padding;
+                     for(x = 0; x < oCellWidth; x++, dstRow++, dmap++, p++)
+                     {
+                        float rangeBase = (range - *dmap) * rangeInv, alpha = alphaFactor * rangeBase;
+                        *dstRow = (byte)( Max( 0.0f, Min( 255.0f, alpha * 255.0f ) ) + 0.5f);
+                        /*
+                        if(y >= padding && y < cellWidth + padding && x >= padding && x < cellWidth + padding)
+                        {
+                           float intensity = Max( (float) *p * (1.0f/255.0f), intensityFactor * rangeBase );
+                           byte v = (byte)( Max( 0.0f, Min( 255.0f, intensity * 255.0f ) ) + 0.5f);
+                           *p = v;
+                        }
+                        */
+                     }
+                     //core += width;
+                  }
+
+                  glyph->ox = gx * oCellWidth;
+                  glyph->oy = gy * oCellHeight;
+               }
+#endif
             }
             glyph->x = sx;
             glyph->y = sy;
@@ -634,6 +652,10 @@ class GlyphPack : BTNode
             }
             glyph->scale = scales[c];
          }
+
+         delete padded;
+         delete distanceMap;
+
          #if 0
          {
             int c;
@@ -643,16 +665,25 @@ class GlyphPack : BTNode
                bitmap.palette[c] = ColorAlpha { 255, { (byte)c,(byte)c,(byte)c } };
             bitmap.pixelFormat = pixelFormat8;
 
-            /*
-            //strcpy(fileName, faceName);
-            if(flags)
-               strcat(fileName, "Bold");
-            */
-            sprintf(fileName, "font%d", fid++);
+            sprintf(fileName, "font%d", fid);
             ChangeExtension(fileName, "pcx", fileName);
 
             bitmap.Save(fileName, null, 0);
             bitmap.pixelFormat = pixelFormatAlpha;
+
+            if(outline)
+            {
+               for(c = 0; c<256; c++)
+                  outline.palette[c] = ColorAlpha { 255, { (byte)c,(byte)c,(byte)c } };
+               outline.pixelFormat = pixelFormat8;
+
+               sprintf(fileName, "outline%d", fid);
+               ChangeExtension(fileName, "pcx", fileName);
+
+               outline.Save(fileName, null, 0);
+               outline.pixelFormat = pixelFormatAlpha;
+            }
+            fid++;
          }
          #endif
 
@@ -667,10 +698,13 @@ class GlyphPack : BTNode
             || displaySystem.driver == class(Direct3D8DisplayDriver)
             || displaySystem.driver == class(Direct3D9DisplayDriver)
 #endif
-
                )
 #endif
+            {
                bitmap.MakeDD(displaySystem);
+               if(outline)
+                  outline.MakeDD(displaySystem);
+            }
             displaySystem.Unlock();
          }
       }
@@ -742,6 +776,8 @@ public class Font : struct
    char faceName[512];
    FontFlags flags;
    float size;
+   float outlineSize;
+   float outlineFade;
    int ascent, descent;
    float scale;
 
@@ -793,12 +829,14 @@ public class Font : struct
       get { return (int)(this ? descent * scale : 0); }
    }
 
-   void Setup(DisplaySystem displaySystem, const String faceName, float size, FontFlags flags)
+   void Setup(DisplaySystem displaySystem, const String faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       strcpy(this.faceName, faceName);
       this.flags = flags;
       this.displaySystem = displaySystem;
       this.size = size;
+      this.outlineSize = outlineSize;
+      this.outlineFade = outlineFade;
    }
 
    bool LoadEntry(FaceInfo info)
@@ -842,7 +880,7 @@ public class Font : struct
       return result;
    }
 
-   Font ::Load(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font ::Load(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       Font result = null;
       Array<FaceInfo> infos = ResolveFont(faceName, size, flags);
@@ -850,7 +888,7 @@ public class Font : struct
       {
          Font font { };
          bool success = false;
-         font.Setup(displaySystem, faceName, size, flags);
+         font.Setup(displaySystem, faceName, size, flags, outlineSize, outlineFade);
          for(f : infos)
             success |= font.LoadEntry(f);
          if(success)
@@ -867,17 +905,21 @@ public class Font : struct
    }
 
    void ProcessString(DisplaySystem displaySystem, const byte * text, int len,
-                      void (* callback)(Surface surface, Display display, int x, int y, Glyph glyph, Bitmap bitmap),
+                      bool output,
                       Surface surface, Display display, int * x, int y, int prevGlyph, int * rPrevGlyph, int * advance)
    {
 #if !defined(ECERE_NOTRUETYPE)
       if(this && fontEntries[0])
       {
+         LFBSurface lfbSurface = surface ? surface.driverData : null;
          int previousGlyph = prevGlyph;
          FT_Face previousFace = 0;
          int c, nb, glyphIndex = 0;
-         unichar lastPack = 0;
+         bool writingOutline = lfbSurface && lfbSurface.writingOutline;
+         int padding = writingOutline ? 1 + (int)surface.font.outlineSize : 0;
+         unichar lastPack = writingOutline ? -1 : 0;
          GlyphPack pack = asciiPack;
+         Bitmap bitmap = writingOutline ? pack.outline : pack.bitmap;
          int wc = 0;
          uint * glyphs = null;
          int numGlyphs = 0;
@@ -887,8 +929,6 @@ public class Font : struct
          FontEntry curFontEntry;
          Glyph * lastGlyph = null;
          int lastAX = 0;
-
-         pack.bitmap.alphaBlend = true;
 
          for(c = 0; c < len || (numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)));)
          {
@@ -1098,7 +1138,7 @@ public class Font : struct
                      pack.Render(this, fontEntryNum, displaySystem);
                   }
                }
-               pack.bitmap.alphaBlend = true;
+               bitmap = writingOutline ? pack.outline : pack.bitmap;
                lastPack = packNo;
             }
             if(pack)
@@ -1126,8 +1166,9 @@ public class Font : struct
                previousGlyph = glyph->glyphNo;
                previousFace = curFontEntry ? curFontEntry.face : null;
 
-               if(callback)
-                  callback(surface, display, ((*x) >> 6), y + (oy >> 6), glyph, pack.bitmap);
+               if(output)
+                  surface.driver.Blit(display, surface, bitmap, ((*x) >> 6) + glyph->left - writingOutline * padding, y + (oy >> 6) + glyph->top - writingOutline * padding,
+                     writingOutline ? glyph->ox : glyph->x, writingOutline ? glyph->oy : glyph->y, glyph->w + writingOutline + 2 * padding, glyph->h + writingOutline + 2 * padding);
                *x += ax;
 
                lastGlyph = glyph;
@@ -1144,11 +1185,8 @@ public class Font : struct
                *advance = w - lastAX;
          }
          if(rPrevGlyph) *rPrevGlyph = previousGlyph;
-      }
-      if(surface)
-      {
-         LFBSurface lfbSurface = surface.driverData;
-         lfbSurface.xOffset = 0;
+         if(lfbSurface)
+            lfbSurface.xOffset = 0;
       }
 #endif
    }

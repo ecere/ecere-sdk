@@ -1615,6 +1615,7 @@ class OGLSurface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    float foreground[4], background[4], bitmapMult[4];
 } OGLSurface;
@@ -3443,12 +3444,12 @@ class OpenGLDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       Font font;
       OGLSystem oglSystem = displaySystem.driverData;
       oglSystem.loadingFont = true;
-      font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
+      font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
       return font;
    }
 
@@ -3478,6 +3479,14 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.writingText = true;
 
       glEnable(GL_TEXTURE_2D);
+      if(surface.font.outlineSize)
+      {
+         ColorAlpha outlineColor = surface.outlineColor;
+         glColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
+         oglSurface.writingOutline = true;
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
+         oglSurface.writingOutline = false;
+      }
       glColor4fv(oglSurface.foreground);
 
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);

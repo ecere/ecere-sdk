@@ -11,7 +11,9 @@ public:
    property bool italic { set { flags.italic = value; } get { return this ? flags.italic : false; } };
    property bool underline { set { flags.underline = value; } get { return this ? flags.underline : false; } };
    property Font font { get { return this ? font : null; } };
-   property Window window { set { if(value) value.AddResource(this); } };
+   property Window window { set { if(value) { value.RemoveResource(this); value.AddResource(this); } }  };
+   property float outlineSize { set { outlineSize = value; } get { return this ? outlineSize : 0; } };
+   property float outlineFade { set { outlineFade = value; } get { return this ? outlineFade : 0; } };
 
 private:
    char * faceName;
@@ -19,20 +21,31 @@ private:
    float size;
    FontFlags flags;
    DisplaySystem displaySystem;
+   float outlineSize, outlineFade;
 
    void Load(FontResource copy, DisplaySystem displaySystem)
    {
       delete faceName;
-      faceName = CopyString(copy.faceName);
-      size = copy.size;
-      flags = copy.flags;
-      this.displaySystem = displaySystem;
-      if(faceName)
-         font = displaySystem.LoadFont(faceName, size, flags);
+      faceName = *&CopyString(copy.faceName);
+      *&size = *&copy.size;
+      *&flags = *&copy.flags;
+      *&outlineSize = *&copy.outlineSize;
+      *&outlineFade = *&copy.outlineFade;
+      if(faceName && displaySystem)
+      {
+         this.displaySystem = displaySystem;
+         font = displaySystem.LoadOutlineFont(faceName, size, flags, outlineSize, outlineFade);
+      }
    }
 
    void Reference(FontResource reference)
    {
+      delete faceName;
+      faceName = *&CopyString(reference.faceName);
+      *&size = *&reference.size;
+      *&flags = *&reference.flags;
+      *&outlineSize = *&reference.outlineSize;
+      *&outlineFade = *&reference.outlineFade;
       font = reference.font;
    }
 

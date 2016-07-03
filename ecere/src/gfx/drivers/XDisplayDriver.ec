@@ -75,6 +75,7 @@ class XSurface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    ColorAlpha foreground, background;
    bool opaque;
@@ -1658,10 +1659,10 @@ class XDisplayDriver : DisplayDriver
       }
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       Font font;
-      font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
+      font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
       return font;
    }
 
