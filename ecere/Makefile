@@ -119,6 +119,7 @@ _ECSOURCES2 = \
 	src/gfx/Surface.ec \
 	src/gfx/fontManagement.ec \
 	src/gfx/fontRendering.ec \
+	src/gfx/imgDistMap.ec \
 	src/gui/controls/Button.ec \
 	src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec \
@@ -820,6 +821,9 @@ $(OBJ)fontManagement.sym: src/gfx/fontManagement.ec
 $(OBJ)fontRendering.sym: src/gfx/fontRendering.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@)
 
+$(OBJ)imgDistMap.sym: src/gfx/imgDistMap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@)
+
 $(OBJ)Button.sym: src/gui/controls/Button.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.sym
 
@@ -1237,6 +1241,9 @@ $(OBJ)fontManagement.c: src/gfx/fontManagement.ec $(OBJ)fontManagement.sym | $(S
 
 $(OBJ)fontRendering.c: src/gfx/fontRendering.ec $(OBJ)fontRendering.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)imgDistMap.c: src/gfx/imgDistMap.ec $(OBJ)imgDistMap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.c -symbols $(OBJ)
@@ -1721,6 +1728,9 @@ $(OBJ)fontManagement$(O): $(OBJ)fontManagement.c
 
 $(OBJ)fontRendering$(O): $(OBJ)fontRendering.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRendering.c) -o $(call quote_path,$@)
+
+$(OBJ)imgDistMap$(O): $(OBJ)imgDistMap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)imgDistMap.c) -o $(call quote_path,$@)
 
 $(OBJ)Button.o: $(OBJ)Button.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Button.c -o $(OBJ)Button.o

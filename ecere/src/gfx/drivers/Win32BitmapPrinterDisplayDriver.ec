@@ -793,7 +793,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       Win32BitmapPrinterSystem gdiSystem = displaySystem.driverData;
       HDC hdc = gdiSystem.hdc;

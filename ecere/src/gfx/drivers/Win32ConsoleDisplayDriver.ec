@@ -337,7 +337,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
 
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * string, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * string, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
       return (void *) bool::true;
    }

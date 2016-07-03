@@ -76,6 +76,7 @@ static class D3D8Surface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    ColorAlpha background;
 };
@@ -982,9 +983,9 @@ class Direct3D8DisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
-      return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
+      return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
    }
 
    void TextFont(Display display, Surface surface, Font font)
