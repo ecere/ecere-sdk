@@ -864,12 +864,14 @@ public int GetRandom(int lo, int hi)
    if(hi >= lo)
    {
 #if defined(__linux__) || defined(__DJGPP__)
-      // return lo+(int)(((uint)(hi - lo) + 1.0)*random()/(RAND_MAX+1.0));
-      return (int)(lo + ((uint)(hi - lo) + 1.0) * random() / (RAND_MAX + 1.0));
+   #define rand_fn random
 #else
-      // return lo+(int)(((uint)(hi - lo) + 1.0)*rand()/(RAND_MAX+1.0));
-      return (int)(lo + ((uint)(hi - lo) + 1.0) * rand() / (RAND_MAX + 1.0));
+   #define rand_fn rand
 #endif
+      if(hi - lo > RAND_MAX)
+         return (int)(lo + ((uint)(hi - lo) + 1.0) * (rand_fn() * ((double)RAND_MAX + 1.0) + rand_fn()) / (RAND_MAX * (RAND_MAX + 1.0) + RAND_MAX + 1.0));
+      else
+         return (int)(lo + ((uint)(hi - lo) + 1.0) * rand_fn() / (RAND_MAX + 1.0));
    }
    else
       return lo;
