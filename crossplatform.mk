@@ -174,6 +174,7 @@ escspace = $(subst $(space),$(backslash)$(space),$(subst $(backslash)$(space),$(
 hidspace = $(subst $(space),$(esc),$(subst $(backslash)$(space),$(esc),$(1)))
 shwspace = $(subst $(esc),$(backslash)$(space),$(1))
 unescp_all = $(subst $(esc),$(backslash),$(subst $(backslash),,$(subst $(backslash)$(backslash),$(esc),$(1))))
+path = $(call fp_encode,$(1))
 
 # HIDDEN SPACE STRING TOOLS
 temporaty_token := _+;:;+_:;+;:_:+;+:_
@@ -185,10 +186,26 @@ hs_process = $(subst $(space),$(hidden_space),$(subst $(backslash)$(space),$(hid
 hs_quote_all = $(foreach item,$(1),"$(call hs_unhide,$(item))")
 hs_quote_each = $(foreach item,$(1),$(if $(findstring $(esc),$(item)),"$(call hs_unhide,$(item))",$(item)))
 
-# FILE PATH TOOLS
+# FILE PATH FUNCTIONS
+fp_encode = $(call hidspace,$(call fp_unquote,$(1)))
+fp_decode = $(call shwspace,$(1))
 fp_unquote = $(subst $(quote),,$(1))
 fp_opt_quotes = $(if $(findstring $(space),$(1)),"$(1)",$(1))
 fp_no_parent_dir = $(foreach item,$(1),$(if $(findstring ..,$(item)),,$(item)))
+
+# EACH PATH FUNCTIONS -- FILE PATH FUNCTIONS TO BE USED WITH FOREACH AND _PATH VARIABLE NAME
+# i.e.: $(foreach _path,$(1),$(ep_wildcard))
+ep_decode_syspath_quote = $(call fp_opt_quotes,$(call sys_path,$(call unescp_all,$(call fp_decode,$(_path)))))
+ep_wildcard = $(if $(wildcard $(call fp_decode,$(_path))),$(_path),)
+ep_unwildcard = $(if $(wildcard $(call fp_decode,$(_path))),,$(_path))
+
+# PATH LISTS FUNCTIONS
+pl_decode = $(foreach _path,$(1),$(ep_decode_syspath_quote))
+pl_wildcard = $(foreach _path,$(1),$(ep_wildcard))
+pl_unwildcard = $(foreach _path,$(1),$(ep_unwildcard))
+pl_wildcard_some = $(if $(1),$(if $(subst $(space),,$(call pl_wildcard,$(1))),some,),)
+pl_unwildcard_some = $(if $(1),$(if $(subst $(space),,$(call pl_unwildcard,$(1))),some,),)
+
 
 # FILE SYSTEM TOOLS
 # hs_ls doc
@@ -226,8 +243,8 @@ ifdef WIN_PS_TOOLS
    psep := $(backslash)
    sys_path = $(subst $(backslash)$(backslash),$(slash),$(subst $(slash),$(backslash),$(1)))
    quote_path = "$(call sys_path,$(call unescp_all,$(1)))"
-   each_path_quote = $(if $(findstring $(esc),$(path)),"$(call unescp_all,$(call shwspace,$(path)))",$(call unescp_all,$(path)))
-   sys_path_list = $(foreach path,$(1),$(each_path_quote))
+   each_path_quote = $(if $(findstring $(esc),$(_path)),"$(call unescp_all,$(call shwspace,$(_path)))",$(call unescp_all,$(_path)))
+   sys_path_list = $(foreach _path,$(1),$(each_path_quote))
 else
    psep := $(slash)
    sys_path = $(1)
@@ -295,10 +312,10 @@ ifdef WIN_SHELL_COMMANDS
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
    cp = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))"$(if $(SILENT_IS_ON), > nul,))
    cpr = $(if $(1),xcopy /y /i /e$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1))) $(call sys_path,$(2))$(if $(SILENT_IS_ON), > nul,))
-   rm = $(if $(1),-del /f$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1)))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
-   rmr = $(if $(1),-rmdir /s$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
-   mkdir = $(if $(1),-mkdir $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
-   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
+   rm = $(if $(call pl_wildcard_some,$(1)),-del /f$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(call pl_wildcard,$(1))))$(if $(SILENT_IS_ON), > nul,),)
+   rmr = $(if $(call pl_wildcard_some,$(1)),-rmdir /s /q $(call sys_path,$(call pl_wildcard,$(1)))$(if $(SILENT_IS_ON), > nul,),)
+   mkdir = $(if $(call pl_unwildcard_some,$(1)),-mkdir $(call pl_decode,$(call pl_unwildcard,$(1)))$(if $(SILENT_IS_ON), > nul,),)
+   rmdir = $(if $(call pl_wildcard_some,$(1)),-rmdir /q $(call pl_decode,$(call pl_wildcard,$(1)))$(if $(SILENT_IS_ON), > nul,),)
    hs_unsafe_crossloop = ${if $(1),${if $(2),@cmd /c "for %%I in (${call hs_quote_each,$(1)}) do ${call $(2),%%I}",},}
 else
    cd = cd
@@ -307,10 +324,10 @@ else
    touch = $(if $(1),touch $(1))
    cp = $(if $(1),cp -P$(if $(SILENT_IS_ON),,v) $(1) $(2))
    cpr = $(if $(1),cp -PR$(if $(SILENT_IS_ON),,v) $(1) $(2))
-   rm = $(if $(1),-rm -f$(if $(SILENT_IS_ON),,v) $(1))
-   rmr = $(if $(1),-rm -fr$(if $(SILENT_IS_ON),,v) $(1))
-   mkdir = $(if $(1),-mkdir -p$(if $(SILENT_IS_ON),,v) $(1))
-   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON),, -v) $(1))
+   rm = $(if $(call pl_wildcard_some,$(1)),-rm -f$(if $(SILENT_IS_ON),,v) $(call pl_wildcard,$(1)),)
+   rmr = $(if $(call pl_wildcard_some,$(1)),-rm -fr$(if $(SILENT_IS_ON),,v) $(call pl_wildcard,$(1)),)
+   mkdir = $(if $(call pl_unwildcard_some,$(1)),-mkdir -p$(if $(SILENT_IS_ON),,v) $(call pl_unwildcard,$(1)),)
+   rmdir = $(if $(call pl_wildcard_some,$(1)),-rmdir$(if $(SILENT_IS_ON),, -v) $(call pl_wildcard,$(1)),)
    hs_unsafe_crossloop = ${if $(1),${if $(2),for item in ${call hs_quote_each,$(1)}; do ${call $(2),"$$item"}; done,},}
 endif
 
