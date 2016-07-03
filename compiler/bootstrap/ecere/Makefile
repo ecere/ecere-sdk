@@ -121,7 +121,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+	$(call mkdir,$(OBJ))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
@@ -206,11 +206,11 @@ $(OBJ)instance.c.o: ../../../ecere/src/com/instance.c
 $(OBJ)$(MODULE).main$(O): bootstrap/$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
-clean: objdir
+clean:
 	$(call rm,$(TARGET))
 	$(call rm,$(OBJECTS))
 
-realclean: objdir
+realclean:
 	$(call rmr,$(OBJ))
 
 distclean:

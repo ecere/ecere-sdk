@@ -3623,7 +3623,7 @@ private:
          if(numCObjects)
             GenMakefilePrintMainObjectRule(f, config);
 
-         f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
+         f.Printf("cleantarget:%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          if(numCObjects)
          {
             f.Printf("\t$(call rm,%s)\n", "$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");

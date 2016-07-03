@@ -228,11 +228,15 @@ ifdef WIN_PS_TOOLS
    quote_path = "$(call sys_path,$(call unescp_all,$(1)))"
    each_path_quote = $(if $(findstring $(esc),$(path)),"$(call unescp_all,$(call shwspace,$(path)))",$(call unescp_all,$(path)))
    sys_path_list = $(foreach path,$(1),$(each_path_quote))
+   each_path_wildcard = $(wildcard $(call escspace,$(if $(findstring $(esc),$(path)),"$(call unescp_all,$(call shwspace,$(path)))",$(call unescp_all,$(path)))))
 else
    psep := $(slash)
    sys_path = $(1)
    quote_path = $(1)
+   each_path_wildcard = $(addprefix ./,$(wildcard $(path)))
 endif
+wildcard_list = $(foreach path,$(1),$(each_path_wildcard))
+wildcard_check = $(if $(1),$(if $(subst $(space),,$(call wildcard_list,$(1))),something,),)
 
 # PREFIXES AND EXTENSIONS
 EC := .ec
@@ -295,10 +299,10 @@ ifdef WIN_SHELL_COMMANDS
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
    cp = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))"$(if $(SILENT_IS_ON), > nul,))
    cpr = $(if $(1),xcopy /y /i /e$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1))) $(call sys_path,$(2))$(if $(SILENT_IS_ON), > nul,))
-   rm = $(if $(1),-del /f$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1)))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
-   rmr = $(if $(1),-rmdir /s$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
-   mkdir = $(if $(1),-mkdir $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,)$(if $(DEBUG_IS_ON),, 2>&1))
-   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(1))$(if $(SILENT_IS_ON), > nul,))
+   rm = $(if $(call wildcard_check,$(1)),-del /f$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(call wildcard_list,$(1))))$(if $(SILENT_IS_ON), > nul,),)
+   rmr = $(if $(call wildcard_check,$(1)),-rmdir /s /q $(call sys_path,$(call wildcard_list,$(1)))$(if $(SILENT_IS_ON), > nul,),)
+   mkdir = $(if $(call wildcard_check,$(1)),,-mkdir $(call sys_path,$(filter-out $(call wildcard_list,$(1)),$(1)))$(if $(SILENT_IS_ON), > nul,))
+   rmdir = $(if $(call wildcard_check,$(1)),-rmdir /q $(call sys_path,$(call wildcard_list,$(1)))$(if $(SILENT_IS_ON), > nul,),)
    hs_unsafe_crossloop = ${if $(1),${if $(2),@cmd /c "for %%I in (${call hs_quote_each,$(1)}) do ${call $(2),%%I}",},}
 else
    cd = cd
@@ -307,10 +311,10 @@ else
    touch = $(if $(1),touch $(1))
    cp = $(if $(1),cp -P$(if $(SILENT_IS_ON),,v) $(1) $(2))
    cpr = $(if $(1),cp -PR$(if $(SILENT_IS_ON),,v) $(1) $(2))
-   rm = $(if $(1),-rm -f$(if $(SILENT_IS_ON),,v) $(1))
-   rmr = $(if $(1),-rm -fr$(if $(SILENT_IS_ON),,v) $(1))
-   mkdir = $(if $(1),-mkdir -p$(if $(SILENT_IS_ON),,v) $(1))
-   rmdir = $(if $(1),-rmdir$(if $(SILENT_IS_ON),, -v) $(1))
+   rm = $(if $(call wildcard_check,$(1)),-rm -f$(if $(SILENT_IS_ON),,v) $(call wildcard_list,$(1)),)
+   rmr = $(if $(call wildcard_check,$(1)),-rm -fr$(if $(SILENT_IS_ON),,v) $(call wildcard_list,$(1)),)
+   mkdir = $(if $(call wildcard_check,$(1)),,-mkdir -p$(if $(SILENT_IS_ON),,v) $(filter-out $(call wildcard_list,$(1)),$(1)))
+   rmdir = $(if $(call wildcard_check,$(1)),-rmdir$(if $(SILENT_IS_ON),, -v) $(call wildcard_list,$(1)),)
    hs_unsafe_crossloop = ${if $(1),${if $(2),for item in ${call hs_quote_each,$(1)}; do ${call $(2),"$$item"}; done,},}
 endif
 

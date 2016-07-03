@@ -173,13 +173,13 @@ all: prepbinaries ide epj2make documentor eda codeguard ecereaudio
 	@$(call echo,The Ecere SDK is fully built.)
 
 outputdirs:
-	$(if $(wildcard $(OBJDIR)),,$(call mkdir,$(OBJDIR)))
-	$(if $(wildcard $(OBJBINDIR)),,$(call mkdir,$(OBJBINDIR)))
-	$(if $(wildcard $(OBJLIBDIR)),,$(call mkdir,$(OBJLIBDIR)))
+	$(call mkdir,$(OBJDIR))
+	$(call mkdir,$(OBJBINDIR))
+	$(call mkdir,$(OBJLIBDIR))
 ifdef CROSS_TARGET
-	$(if $(wildcard $(XOBJDIR)),,$(call mkdir,$(XOBJDIR)))
-	$(if $(wildcard $(XOBJBINDIR)),,$(call mkdir,$(XOBJBINDIR)))
-	$(if $(wildcard $(XOBJLIBDIR)),,$(call mkdir,$(XOBJLIBDIR)))
+	$(call mkdir,$(XOBJDIR))
+	$(call mkdir,$(XOBJBINDIR))
+	$(call mkdir,$(XOBJLIBDIR))
 endif
 
 bootstrap: outputdirs
@@ -451,7 +451,7 @@ endif
 	+cd eda && $(_MAKE) clean
 	@$(call echo,Done.)
 
-realclean: outputdirs
+realclean:
 ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) realclean
 endif
