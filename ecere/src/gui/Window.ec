@@ -4399,13 +4399,13 @@ private:
 
             while(it.Next())
             {
-               Window w = it.data;
-               if(trueWindow != w && !trueWindow.IsDescendantOf(w))
+               Window ww = it.data;
+               if(trueWindow != ww && !trueWindow.IsDescendantOf(ww))
                {
                   it.pointer = null;
-                  result = w.OnMouseLeave(*mods);
+                  result = ww.OnMouseLeave(*mods);
                   if(!result) break;
-                  overWindows.TakeOut(w);
+                  overWindows.TakeOut(ww);
                }
             }
 
@@ -4449,10 +4449,10 @@ private:
             }
             if(trueWindow && trueWindow._refCount > 1 && !trueWindow.destroyed)
             {
-               for(w : guiApp.overWindows; w == trueWindow)
+               for(wi : guiApp.overWindows; wi == trueWindow)
                {
                   OnMouseLeave(0);
-                  guiApp.overWindows.TakeOut(w);
+                  guiApp.overWindows.TakeOut(wi);
                   break;
                }
                guiApp.prevWindow = trueWindow;
