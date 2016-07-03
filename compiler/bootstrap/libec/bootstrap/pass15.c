@@ -15987,7 +15987,7 @@ if(exp->destType && CheckExpressionType(exp, exp->destType, 0, 0))
 break;
 else
 {
-if(thisClass)
+if(thisClass && strcmp(id->string, "this"))
 {
 ReplaceClassMembers(exp, thisClass ? thisClass : currentClass);
 if(exp->type != 0)

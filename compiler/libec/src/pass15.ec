@@ -7964,7 +7964,7 @@ void ProcessExpressionType(Expression exp)
                   break;
                else
                {
-                  if(thisClass)
+                  if(thisClass && strcmp(id.string, "this"))
                   {
                      ReplaceClassMembers(exp, thisClass ? thisClass : currentClass);
                      if(exp.type != identifierExp)
