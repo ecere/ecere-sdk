@@ -1,9 +1,9 @@
 #if defined(BUILDING_ECERE_COM)
-#if !defined(__EMSCRIPTEN__)
+//#if !defined(__EMSCRIPTEN__)
 import "Semaphore"
-#else
-import "ecere"
-#endif
+//#else
+//import "ecere"
+//#endif
 #else
 import "ecere"
 #endif

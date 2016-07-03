@@ -66,12 +66,12 @@ private:
 #if !defined(ECERE_BOOTSTRAP)
 import "units"
 import "Time"
-#if !defined(__EMSCRIPTEN__)
+//#if !defined(__EMSCRIPTEN__)
 import "Mutex"
 import "Semaphore"
 import "FileMonitor"
 import "Thread"
-#endif
+//#endif
 import "Archive"
 import "EARArchive"
 import "Date"

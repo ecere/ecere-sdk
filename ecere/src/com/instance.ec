@@ -2814,7 +2814,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
                !strcmp(name, "LineStyle") ||
                !strcmp(name, "FillStyle") ||
                !strcmp(name, "FontObject") ||
-               !strcmp(name, "SymbolStyle"))
+               !strcmp(name, "FontObject") ||
+               !strcmp(name, "ecere::sys::Thread"))
             {
                _class.offset = force32Bits ? 24 : 12;
             }
