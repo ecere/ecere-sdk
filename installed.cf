@@ -1,0 +1,98 @@
+ifdef WINDOWS_HOST
+ # Auto-Select MinGW-w64 when asking for 64 bit
+ ifeq ($(ARCH),x64)
+  GCC_PREFIX=x86_64-w64-mingw32-
+ endif
+endif
+
+# EXTENSIONS
+OUT := $(if $(STATIC_LIBRARY_TARGET),$(A),$(if $(SHARED_LIBRARY_TARGET),$(SO)$(VER),$(if $(EXECUTABLE_TARGET),$(E),.x)))
+
+# TOOLCHAIN
+export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)
+export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
+export AS      = $(GCC_PREFIX)as
+export LD      = $(GCC_PREFIX)ld
+export AR      = $(GCC_PREFIX)ar
+export STRIP   = $(GCC_PREFIX)strip
+export ECP := ecp$(HOST_E)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECC := ecc$(HOST_E)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECS := ecs$(HOST_E)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
+export EAR := ear$(HOST_E)
+ifdef WINDOWS_TARGET
+WINDRES := $(GCC_PREFIX)windres
+ ifdef ARCH
+  ifeq ($(ARCH),x32)
+WINDRES_FLAGS := -F pe-i386
+  else
+   ifeq ($(ARCH),x64)
+WINDRES_FLAGS := -F pe-x86-64
+   endif
+  endif
+ endif
+endif
+UPX := upx
+
+ifndef ARCH
+TARGET_ARCH :=$(shell $(CC) -dumpmachine)
+ ifdef WINDOWS_TARGET
+  ifneq ($(filter x86_64%,$(TARGET_ARCH)),)
+     TARGET_ARCH := x86_64
+  else
+     TARGET_ARCH := i386
+  endif
+ else
+  ifdef LINUX_TARGET
+   ifneq ($(filter x86_64-pc-linux-gnu,$(TARGET_ARCH)),)    # Fix for PREFIXLIBDIR / DEB_HOST_MULTIARCH with Clang on Debian
+      TARGET_ARCH := x86_64-linux-gnu
+   endif
+   ifneq ($(filter i586-linux-gnu,$(TARGET_ARCH)),)
+      TARGET_ARCH := i386-linux-gnu
+   endif
+  endif
+ endif
+endif
+
+ifndef WINDOWS_HOST
+export LD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
+export DYLD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
+endif
+
+# HARD CODED PLATFORM-SPECIFIC OPTIONS
+LDFLAGS +=$(if $(LINUX_TARGET), -Wl$(comma)--no-undefined,)
+LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL,)
+
+ifdef BSD_TARGET
+EXCLUDED_LIBS += $(space)dl
+CFLAGS += -isystem /usr/local/include -isystem /usr/local/include/freetype2
+LDFLAGS += -L/usr/local/lib
+endif
+
+ifdef OSX_TARGET
+CFLAGS += -I$(SYSROOT)/usr/include/ffi
+else
+# OFLAGS += -L/usr/lib/$(TARGET_ARCH)/ec
+endif
+
+OFLAGS += $(LDFLAGS)
+
+# FLAGS
+
+UPXFLAGS = -9 -q
+
+ifdef ARCH_FLAGS
+CFLAGS += $(ARCH_FLAGS)
+OFLAGS += $(ARCH_FLAGS)
+endif
+
+CFLAGS += -fmessage-length=0
+
+EARFLAGS = q
+
+ifdef DISABLE_GL
+CFLAGS += -DECERE_NOGL
+endif
+
+ifndef ENABLE_SSL
+CFLAGS += -DECERE_NOSSL
+endif

@@ -31,10 +31,13 @@ CONSOLE = -mconsole
 
 # INCLUDES
 
-_CF_DIR = .configs/
+_CF_DIR = ../../
+ifndef BS_REGEN_COMP
+BS_REGEN_COMP := default
+endif
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf
+include $(_CF_DIR)$(BS_REGEN_COMP).cf
 
 # POST-INCLUDES VARIABLES
 
