@@ -161,7 +161,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+	$(call mkdir,$(OBJ))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -338,7 +338,7 @@ $(OBJ)jmemnobs.o: jmemnobs.c
 $(OBJ)transupp.o: transupp.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,transupp.c) -o $(call quote_path,$@)
 
-cleantarget: objdir
+cleantarget:
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET

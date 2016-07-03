@@ -17,7 +17,7 @@ all: bindir ecere libec ecp ecc ecs
 	@$(call echo,All done!)
 
 bindir:
-	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+	$(call mkdir,$(OBJ))
 
 ecere:
 	@$(call echo,Building ecere...)
@@ -39,7 +39,7 @@ ecs: ecere libec
 	@$(call echo,Building ecs...)
 	+cd ecs && $(_MAKE)
 
-cleantarget: bindir
+cleantarget:
 	$(call rm,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
 ifdef WINDOWS_TARGET
 	$(call rm,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))

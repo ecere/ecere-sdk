@@ -95,7 +95,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+	$(call mkdir,$(OBJ))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
@@ -111,11 +111,11 @@ $(OBJ)ecp.o: bootstrap/ecp.c
 $(OBJ)ecp.main.o: bootstrap/ecp.main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c bootstrap/ecp.main.c -o $(OBJ)ecp.main.o
 
-clean: objdir
+clean:
 	$(call rm,$(TARGET))
 	$(call rm,$(OBJECTS))
 
-realclean: objdir
+realclean:
 	$(call rmr,$(OBJ))
 
 distclean:

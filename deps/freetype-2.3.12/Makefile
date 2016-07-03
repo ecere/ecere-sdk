@@ -164,7 +164,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+	$(call mkdir,$(OBJ))
 
 $(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
@@ -307,7 +307,7 @@ $(OBJ)type42.o: src/type42/type42.c
 $(OBJ)winfnt.o: src/winfonts/winfnt.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/winfonts/winfnt.c -o $(OBJ)winfnt.o
 
-cleantarget: objdir
+cleantarget:
 	$(call rm,$(TARGET))
 
 clean: cleantarget
