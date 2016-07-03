@@ -40,7 +40,7 @@ typedef struct in_addr IN_ADDR;
 import "network"
 import "List"
 
-#if !defined(__EMSCRIPTEN__)
+#if 1 //!defined(__EMSCRIPTEN__)
 
 // SERVER
 
