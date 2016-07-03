@@ -31,13 +31,20 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
    Link Insert(Link after, LLT value)
    {
       Link link;
-      if(class(LLT) && class(LLT).type == structClass)
+      Class cLLT = class(LLT);
+      if(cLLT && cLLT.type == structClass)
       {
-         link = (Link)new0 byte[sizeof(class ListItem) + class(LLT).structSize];
-         memcpy((void *)&link.data, (void *)value, class(LLT).structSize);
+         uint sType = cLLT.structSize;
+         link = (Link)new0 byte[sizeof(class ListItem) + sType];
+         memcpy((void *)&link.data, (void *)value, sType);
       }
       else
-         link = Link { data = (uint64)value };
+      {
+         // TOFIX: This allocates too much data?
+         // link = Link { data = (uint64)value };
+         link = (Link)new0 byte[sizeof(class ListItem) + sizeof(uint64)];
+         link.data = (uint64)value;
+      }
       LinkList::Insert(after, (LT)link);
       return link;
    }
