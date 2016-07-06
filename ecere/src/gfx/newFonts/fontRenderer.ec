@@ -10,32 +10,7 @@ import "Color"
 #include <math.h>
 #include <stdlib.h>
 
-#if !defined(_GLES)
-   #define SHADERS
-#endif
-
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#  if defined(SHADERS)
-//#     include "gl_core_3_3.h"
-#     include "gl_compat_4_4.h"     // FIXME: no glPushAttrib() in core profile
-#  else
-#     include "gl_compat_4_4.h"
-#  endif
-#endif
-
-#if defined(__EMSCRIPTEN__)
-#if !defined(_GLES2)
-   #define _GLES2
-#endif
-   #include <GLES2/gl2.h>
-#endif
-
-#if defined(__ANDROID__) || defined(__ODROID__)
-#if !defined(_GLES)
-   #define _GLES
-#endif
-   #include <GLES/gl.h>
-#endif
+#include "glHelpers.h"
 
 #include "cc.h"
 #include "mm.h"
@@ -44,8 +19,6 @@ import "fmFontManager"
 import "textureManager"
 import "drawManager"
 
-#define DM_ENABLE_EXT_COLOR (1)
-
 public class FontRenderer : FontManagerRenderer
 {
    DrawManager dm;
@@ -53,17 +26,10 @@ public class FontRenderer : FontManagerRenderer
    int textureWidth, textureHeight;
    int channelcount;
 
-   int imagecount;
-   int imageAlloc;
-   DMImage *imageList;
-
    ColorAlpha stateColor;
    ColorAlpha stateExtColor;
    ColorAlpha stateCursorColor;
    uint32 stateLayer;
-
-   imageAlloc = 512;
-   imageList = new DMImage[imageAlloc];
 
    stateColor = white;
    stateCursorColor = white;
@@ -82,7 +48,6 @@ public:
    ~FontRenderer()
    {
       delete texture;
-      delete imageList;
    }
 
    bool createTexture( int width, int height )
@@ -94,7 +59,7 @@ public:
 
       delete texture;
 
-      texture = { 0 << DM_TEXTURE_ORDER_SHIFT };
+      texture = { };
       texture.build(image, 0, 0.0, 0 );
 
       textureWidth = width;
@@ -104,53 +69,61 @@ public:
 
    int resizeTexture( int width, int height )
    {
-     int retval;
-
+     dm.clearImages();
      // Reuse create to resize too.
-     delete imageList;
-     imagecount = 0;
-     imageAlloc = 512;
-     imageList = new DMImage[imageAlloc];
-
-     retval = createTexture( width, height );
-     return retval;
+     return createTexture( width, height );
    }
 
    void updateTexture( int *rect, const byte* data )
    {
      if(texture)
      {
-#if defined(SHADERS) && !defined(_GLES2)
-        int glformat = GL_RED;
-#else
+#if defined(_GLES) || defined(_GLES2)
         int glformat = GL_ALPHA;
+#else
+        int glformat =
+   #if ENABLE_GL_LEGACY
+         glCaps_legacyFormats ? GL_ALPHA :
+   #endif
+            GL_RED;
 #endif
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
 
+
         if( channelcount == 1 );
-#if !defined(_GLES) && !defined(_GLES2)
         else if( channelcount == 2 )
-          glformat = GL_RG;
+        {
+#if !ENABLE_GL_LEGACY && !defined(_GLES) && !defined(_GLES2)
+          glformat = glCaps_legacyFormats ? GL_LUMINANCE_ALPHA : GL_RG;
+#else
+          glformat = GL_LUMINANCE_ALPHA;
 #endif
+        }
         else if( channelcount == 3 )
           glformat = GL_RGB;
         else if( channelcount == 4 )
           glformat = GL_RGBA;
 
         // FIXME: no glPushAttrib() in core profile
-#if !defined(_GLES) && !defined(_GLES2)
-        glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
-        glPushAttrib( GL_TEXTURE_BIT );
+#if ENABLE_GL_LEGACY
+        if(glCaps_legacy)
+        {
+          glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT );
+          glPushAttrib( GL_TEXTURE_BIT );
+        }
 #endif
-        glBindTexture( GL_TEXTURE_2D, texture.glTex );
+
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-#if !defined(_GLES) && !defined(_GLES2)
-        glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
-        glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * textureWidth + rect[0]) * channelcount);
-        //glPixelStorei( GL_UNPACK_SKIP_PIXELS, rect[0] );
-        //glPixelStorei( GL_UNPACK_SKIP_ROWS, rect[1] );
-#else
+        glBindTexture( GL_TEXTURE_2D, texture.glTex );
+#if ENABLE_GL_LEGACY
+        if(glCaps_legacy)
+        {
+           glPixelStorei( GL_UNPACK_ROW_LENGTH, textureWidth );
+           glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * textureWidth + rect[0]) * channelcount);
+        }
+        else
+#endif
        {
           int row = w * channelcount;
           byte * tmp = new byte[h * row];
@@ -160,13 +133,16 @@ public:
           glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], w, h, glformat, GL_UNSIGNED_BYTE, tmp);
           delete tmp;
        }
+
+#if ENABLE_GL_LEGACY
+        if(glCaps_legacy)
+        {
+           glPopAttrib();
+           glPopClientAttrib();
+        }
+        else
 #endif
-#if !defined(_GLES) && !defined(_GLES2)
-        glPopAttrib();
-        glPopClientAttrib();
-#else
-        glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
-#endif
+           glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 
       #if 0
         IMGImage image;
@@ -188,49 +164,17 @@ public:
 
    int registerImage( int offsetx, int offsety, int width, int height )
    {
-      int imageindex = imagecount;
-      DMImage *image;
-
-      if( imagecount >= imageAlloc )
-      {
-         imageAlloc <<= 1;
-         dm.flushImages(); // Need to flush as we will be invalidating images previously given to DrawManager
-         imageList = renew imageList DMImage[imageAlloc];
-      }
-      imagecount++;
-
-      image = &imageList[ imageindex ];
-   #if 1
-      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR, stateLayer );
-   #elif 1
-      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY, stateLayer );
-   #elif 1
-      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND, stateLayer );
-   #else
-      image->defineImage( texture, offsetx, offsety, width, height, 1, DM_PROGRAM_NORMAL, stateLayer );
-   #endif
-
-      return imageindex;
+      return dm.defineImage( texture, offsetx, offsety, width, height, true, stateLayer );
    }
 
-   void drawImage( int targetx, int targety, int imageindex, bool useExtColor )
+   void drawImage( int targetx, int targety, int imageIndex, bool useExtColor )
    {
-      DMImage *image = &imageList[ imageindex ];
-   #if (DM_ENABLE_EXT_COLOR && defined(SHADERS))
-      dm.drawImageExtColor( image, targetx, targety, image->sizex, image->sizey, stateColor, stateExtColor );
-   #else
-      dm.drawImage( image, targetx, targety, image->sizex, image->sizey, useExtColor ? stateExtColor : stateColor );
-   #endif
+      dm.drawImage( imageIndex, targetx, targety, 0,1, useExtColor ? stateExtColor : stateColor );
    }
 
-   void drawImageCursor( int targetx, int targety, int imageindex )
+   void drawImageCursor( int targetx, int targety, int imageIndex )
    {
-      DMImage *image = &imageList[ imageindex ];
-   #if DM_ENABLE_EXT_COLOR
-      dm.drawImageExtColor( image, targetx, targety, image->sizex, image->sizey, stateCursorColor, stateExtColor );
-   #else
-      dm.drawImage( image, targetx, targety, image->sizex, image->sizey, stateCursorColor );
-   #endif
+      dm.drawImage( imageIndex, targetx, targety, 0,1, stateCursorColor );
    }
 
    void drawImageAlt( byte *texdata, int targetx, int targety, int offsetx, int offsety, int width, int height )
@@ -238,36 +182,29 @@ public:
 
    }
 
-   void drawImageFloat( float targetx, float targety, float angsin, float angcos, int imageindex, bool useExtColor )
+   void drawImageFloat( float targetx, float targety, float angsin, float angcos, int imageIndex, bool useExtColor )
    {
-      DMImage *image = &imageList[ imageindex ];
-
-      /* 0.2588190451, 0.965925826289 */
-   #if (DM_ENABLE_EXT_COLOR && defined(SHADERS))
-      dm.drawImageFloatExtColor( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, stateColor, stateExtColor );
-   #else
-      dm.drawImageFloat( image, targetx, targety, (float)image->sizex, (float)image->sizey, angsin, angcos, useExtColor ? stateExtColor : stateColor );
-   #endif
+      dm.drawImage( imageIndex, targetx, targety, angsin, angcos, useExtColor ? stateExtColor : stateColor );
    }
 
    void resetImages( )
    {
-      imagecount = 0;
+      dm.resetImages();
    }
 
    void setColor( ColorAlpha color )
    {
-      stateColor = { color.a, { color.color.b, color.color.g, color.color.r } };
+      stateColor = color;
    }
 
    void setExtColor( ColorAlpha color )
    {
-      stateExtColor = { color.a, { color.color.b, color.color.g, color.color.r } };
+      stateExtColor = color;
    }
 
    void setCursorColor( ColorAlpha color )
    {
-      stateCursorColor = { color.a, { color.color.b, color.color.g, color.color.r } };
+      stateCursorColor = color;
    }
 
    void setLayer( uint32 layerIndex )
