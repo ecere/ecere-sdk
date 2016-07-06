@@ -2,20 +2,12 @@
 
 namespace gfx::drivers;
 
-#if !defined(_GLES)  // OpenGL ES 1
-   #define SHADERS
-#endif
-
 #if defined(__ANDROID__)
 #include <android/native_activity.h>
 #endif
 
 #if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#  if defined(SHADERS)
-#     include "gl_core_3_3.h"
-#  else
 #     include "gl_compat_4_4.h"
-#  endif
 #endif
 
 #if defined(__ANDROID__) || defined(__ODROID__)
@@ -29,23 +21,17 @@ import "shading"
 
 #define GL_BGRA_EXT  0x80E1
 
-#ifdef SHADERS
-
-#undef glEnableClientState
-#undef glDisableClientState
-#undef GL_VERTEX_ARRAY
-#undef GL_NORMAL_ARRAY
-#undef GL_TEXTURE_COORD_ARRAY
-#undef GL_COLOR_ARRAY
-
-#define glEnableClientState      glEnableVertexAttribArray
-#define glDisableClientState     glDisableVertexAttribArray
-#define GL_VERTEX_ARRAY          GLBufferContents::vertex
-#define GL_NORMAL_ARRAY          GLBufferContents::normal
-#define GL_TEXTURE_COORD_ARRAY   GLBufferContents::texCoord
-#define GL_COLOR_ARRAY           GLBufferContents::color
-
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
 #endif
+
+void CheckGLErrors()
+{
+   int e, nCount = 0;
+   while((e = glGetError()) && nCount++ < 10)
+      printf("GL error %d!\n", e);
+}
 
 // We were using PBUFFER for alpha compositing on Linux before, but it does not seem to work, nor be required anymore.
 // #define USEPBUFFER
@@ -116,7 +102,7 @@ import "shading"
    #endif
 
    #if defined(__ANDROID__) || defined(__ODROID__)
-      #if defined(__ODROID__) && !defined(_GLES)
+      #if !defined(_GLES)
          #define _GLES
       #endif
 
@@ -134,6 +120,7 @@ import "shading"
       #define Bool      X11Bool
 
       #include <GLES/gl.h>
+      #include <GLES/glext.h>
 
       #undef Bool
       #undef Picture
@@ -157,8 +144,6 @@ import "shading"
       #define property _property
       #define uint _uint
 
-      //#include <GL/gl.h>
-      //#include <GLES/gl.h>
       #include <GLES2/gl2.h>
 
       #include <emscripten/emscripten.h>
@@ -183,42 +168,88 @@ import "shading"
 
    #endif
 
-   #define glLoadMatrix glLoadMatrixd
-   #define glMultMatrix glMultMatrixd
-   #define glGetMatrix  glGetDoublev
-   #define glTranslate glTranslated
-   #define glScale glScaled
+/*                                                            OpenGL Versions Features Quick Reference
 
-/*
-#define glVertex3v glVertex3dv
-#define glNormal3v glNormal3dv
+                                 | OpenGL 1.1  | OpenGL 1.5  | GL ES 1.1  |  OpenGL 2  | GL 3 (Compat) | GL 3 (Core) |  GL ES 2    |  WebGL 1   |  GL ES 3   |   WebGL 2
+   =======================================================================================================================================================================
+   glBegin()                     |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glLoadMatrix()                |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glLineWidth()                 |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glPointSize()                 |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glLineStipple()               |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glPolygonStipple()            |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   glColorMaterial()             |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   GL_QUADS                      |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   GL_INT / GL_DOUBLE            |      X      |      X      |     -      |     X      |       X       |      X      |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   GL_SELECT                     |      X      |      X      |     -      |   (Slow)   |     (Slow)    |    (Slow)   |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   Non ² Textures                |      -      |      -      |     -      |     X      |       X       |      X      |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glVertexPointer()       (PTR) |      X      |      X      |     X      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glVertexPointer()       (VBO) |      -      |      X      |     X      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glBufferData()                |      -      |      X      |     X      |     X      |       X       |      X      |      X      |     X      |     X      |     X
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glMapBuffer()                 |      -      |      X      |   OES x    |     X      |       X       |      X      |    OES x    |     -      |    OES x   |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glBindFramebuffer()           |      -      |      -      |   OES x    |     -      |       X       |      X      |      X      |     X      |     X      |     X
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glVertexAttribPointer() (PTR) |      -      |      -      |     -      |     X      |       X       |      X      |      X      |     -      |     X      |     -
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   glVertexAttribPointer() (VBO) |      -      |      -      |     -      |     X      |       X       |      X      |      X      |     X      |     X      |     X
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   GLSL Version                  |      -      |      -      |     -      |    1.10    |     1.30      |    1.30     |     1.00    |    1.00    |    3.00    |    3.00
+   ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   bool legacy          :1; //   |      X      |      X      |     -      |     X      |       X       |      -      |      -      |     -      |     -      |     -
+   bool shaders         :1; //   |      -      |      -      |     -      |     X      |       X       |      X      |      X      |     X      |     X      |     X
+   bool nonPow2Textures :1; //   |      -      |      -      |     -      |     X      |       X       |      X      |      -      |     -      |     -      |     -
+   bool vertexBuffer    :1; //   |      -      |      X      |     X      |     X      |       X       |      X      |      X      |     X      |     X      |     X
+   bool frameBuffer     :1; //   |      -      |      -      |     ~      |     -      |       X       |      X      |      X      |     X      |     X      |     X
+// bool mapBuffer       :1; //   |      -      |      X      |     ~      |     X      |       X       |      X      |      ~      |     -      |     ~      |     -
 */
 
-/*
-//#ifdef VERTEX_FORMAT_DOUBLE
+// Compiled In Capabilities
+#define ENABLE_GL_SHADERS  (!defined(_GLES))
+#define ENABLE_GL_FFP      (!defined(_GLES2))
+#define ENABLE_GL_POINTER  (!defined(__EMSCRIPTEN__))
+#define ENABLE_GL_FBO      (!defined(__EMSCRIPTEN__))
+#define ENABLE_GL_LEGACY   (!defined(_GLES) && !defined(_GLES2))
+#define ENABLE_GL_INTDBL   (!defined(_GLES) && !defined(_GLES2))
+#define ENABLE_GL_MAPBUF   (!defined(_GLES) && !defined(_GLES2))
+#define ENABLE_GL_SELECT   (!defined(_GLES) && !defined(_GLES2))
+#define ENABLE_GL_COLORMAT (ENABLE_GL_FFP   && !defined(_GLES))
 
-#define glLoadMatrix glLoadMatrixd
-#define glMultMatrix glMultMatrixd
-#define glGetMatrix  glGetDoublev
-#define glVertex3v glVertex3dv
-#define glNormal3v glNormal3dv
-#define glTranslate glTranslated
-#define glScale glScaled
-//#define GL_VERTEX_FORMAT   GL_DOUBLE
-
+#if ENABLE_GL_SHADERS && ENABLE_GL_FFP
+   #define GLEnableClientState            (shaders ? glEnableVertexAttribArray : glEnableClientState)
+   #define GLDisableClientState           (shaders ? glDisableVertexAttribArray : glDisableClientState)
+   #define VERTICES                       (shaders ? GLBufferContents::vertex : GL_VERTEX_ARRAY)
+   #define NORMALS                        (shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
+   #define TEXTURECOORDS                  (shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
+   #define COLORS                         (shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
+   #define GLVertexPointer(n, t, s, p)    (shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
+   #define GLTexCoordPointer(n, t, s, p)  (shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
+#elif ENABLE_GL_SHADERS
+   #define GLEnableClientState            glEnableVertexAttribArray
+   #define GLDisableClientState           glDisableVertexAttribArray
+   #define VERTICES                       GLBufferContents::vertex
+   #define NORMALS                        GLBufferContents::normal
+   #define TEXTURECOORDS                  GLBufferContents::texCoord
+   #define COLORS                         GLBufferContents::color
+   #define GLVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
+   #define GLTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
 #else
-
-#define glLoadMatrix glLoadMatrixf
-#define glMultMatrix glMultMatrixf
-#define glGetMatrix  glGetFloatv
-#define glVertex3v glVertex3fv
-#define glNormal3v glNormal3fv
-#define glTranslate glTranslatef
-#define glScale glScalef
-//#define GL_VERTEX_FORMAT   GL_FLOAT
-
+   #define GLEnableClientState            glEnableClientState
+   #define GLDisableClientState           glDisableClientState
+   #define VERTICES                       GL_VERTEX_ARRAY
+   #define NORMALS                        GL_NORMAL_ARRAY
+   #define TEXTURECOORDS                  GL_TEXTURE_COORD_ARRAY
+   #define COLORS                         GL_COLOR_ARRAY
+   #define GLVertexPointer                glVertexPointer
+   #define GLTexCoordPointer              glTexCoordPointer
 #endif
-*/
 
 #define GL_ARRAY_BUFFER_ARB            0x8892
 #define GL_ELEMENT_ARRAY_BUFFER_ARB    0x8893
@@ -249,57 +280,22 @@ import "shading"
    static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = null;
    static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = null;
 
-#else
-
-#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#elif !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
 default:
    GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
    GLAPI void APIENTRY glUnlockArraysEXT (void);
 private:
 #endif
 
+#ifndef APIENTRY
+   #define APIENTRY
+#endif
+
 #if defined(__ANDROID__) || defined(__ODROID__)
+   // Frame Buffer Extensions
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
    #define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
    #define GL_COLOR_ATTACHMENT0     GL_COLOR_ATTACHMENT0_OES
-
-   // TOFIX: Grab Screen and BlitDI/StretchDI will have wrong colors
-   #undef  GL_BGRA_EXT
-   #define GL_BGRA_EXT               GL_RGBA
-#endif
-
-#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
-
-   #define GL_POLYGON_STIPPLE 0xFFFF
-   #define GL_LINE_STIPPLE 0xFFFF
-   #define GL_LINE 0xFFFF
-   #define GL_FILL 0xFFFF
-   #define GL_ALL_ATTRIB_BITS 0xFFFF
-   #define GL_LIGHT_MODEL_LOCAL_VIEWER 0xFFFF
-
-   #define GL_POLYGON      9
-   #define GL_QUADS        7
-
-   //#define GL_QUADS              0
-   #define GL_QUAD_STRIP         0
-   //#define GL_DOUBLE             0
-   //#define GL_UNSIGNED_INT       0
-   //#define GL_FILL               0
-   //#define GL_LINE               0
-   //#define GL_LINE_STIPPLE       0
-   #define GL_UNPACK_ROW_LENGTH  0
-   #define GL_UNPACK_SKIP_PIXELS 0
-   #define GL_UNPACK_SKIP_ROWS   0
-   #define GL_RGBA8              0
-   #define GL_PACK_ROW_LENGTH    0
-   #define GL_PACK_SKIP_ROWS     0
-   #define GL_PACK_SKIP_PIXELS   0
-#endif
-
-#endif
-
-
-#if defined(__ANDROID__) || defined(__ODROID__)
    #define glBindFramebuffer        glBindFramebufferOES
    #define glBindRenderbuffer       glBindRenderbufferOES
    #define glFramebufferTexture2D   glFramebufferTexture2DOES
@@ -307,105 +303,120 @@ private:
    #define glGenRenderbuffers       glGenRenderbuffersOES
    #define glDeleteFramebuffers     glDeleteFramebuffersOES
    #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
+
+   // TOFIX: Grab Screen and BlitDI/StretchDI will have wrong colors
+   #undef  GL_BGRA_EXT
+   #define GL_BGRA_EXT               GL_RGBA
 #endif
 
-#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+#if !ENABLE_GL_INTDBL
    #define GL_INT                                  0x1404
    #define GL_UNSIGNED_INT                         0x1405
    #define GL_DOUBLE                               0x140A
-   #define APIENTRY
 #endif
 
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
-
-   #undef glRecti
-   #undef glBegin
-   #undef glTexCoord2i
-   #undef glVertex2i
-   #undef glTexCoord2d
-   #undef glVertex2d
-   #undef glTexCoord2f
-   #undef glVertex2f
-   #undef glEnd
-   #undef glColor3f
-   #undef glColor4ub
-   #undef glColor4fv
-   #undef glNormal3fv
-   #undef glNormal3f
-   #undef glTexCoord2fv
-   #undef glVertex3d
-   #undef glVertex3dv
-   #undef glVertex3f
-   #undef glVertex3fv
-
-   #undef glLoadMatrixd
-   #undef glMultMatrixd
-   #undef glFrustum
-   #undef glOrtho
-   #undef glScaled
-   #undef glScalef
-   #undef glTranslated
-   #undef glRotated
-   #undef glMatrixMode
-   #undef glLoadIdentity
-   #undef glPushMatrix
-   #undef glPopMatrix
-
-   #undef glLineStipple
-   #undef glColorMaterial
-   #undef glLightModeli
-
-   #define glRecti               glimtkRecti
-   #define glBegin               glimtkBegin
-   #define glTexCoord2i          glimtkTexCoord2i
-   #define glVertex2i            glimtkVertex2i
-   #define glTexCoord2d          glimtkTexCoord2d
-   #define glVertex2d            glimtkVertex2d
-   #define glTexCoord2f          glimtkTexCoord2f
-   #define glVertex2f            glimtkVertex2f
-   #define glEnd                 glimtkEnd
-   #define glColor3f             glimtkColor3f
-   #define glColor4ub            glimtkColor4ub
-   #define glColor4fv            glimtkColor4fv
-   #define glNormal3fv           glimtkNormal3fv
-   #define glNormal3f            glimtkNormal3f
-   #define glTexCoord2fv         glimtkTexCoord2fv
-   #define glVertex3d            glimtkVertex3d
-   #define glVertex3dv           glimtkVertex3dv
-   #define glVertex3f            glimtkVertex3f
-   #define glVertex3fv           glimtkVertex3fv
-
-   #define glLoadMatrixd         glmsLoadMatrixd
-   #define glMultMatrixd         glmsMultMatrixd
-   #define glFrustum             glmsFrustum
-   #define glOrtho               glmsOrtho
-   #define glScaled              glmsScaled
-   #define glScalef              glmsScaled
-   #define glTranslated          glmsTranslated
-   #define glRotated             glmsRotated
-   #define glMatrixMode          glmsMatrixMode
-   #define glLoadIdentity        glmsLoadIdentity
-   #define glPushMatrix          glmsPushMatrix
-   #define glPopMatrix           glmsPopMatrix
-
-   #define glLineStipple         glesLineStipple
-   #define glColorMaterial       glesColorMaterial
-   #define glLightModeli         glesLightModeli
-
+#if ENABLE_GL_STIPPLES
+   #define GLLineStipple                     (stipples ? glLineStipple : glsupLineStipple)
+#else
+   #define GLLineStipple                     glsupLineStipple
 #endif
 
-public void glesColorMaterial(int a, int b)
-{
-   PrintLn("glColorMaterial stub");
-}
+#if ENABLE_GL_COLORMAT
+   #define GLColorMaterial(a,b)              glColorMaterial(a,b)
+#else
+   #define GLColorMaterial(a,b)
+#endif
+
+#ifdef _GLES
+   #define GLLightModeli                     glsupLightModeli
+#else
+   #define GLLightModeli                     glLightModeli
+#endif
+
+#if ENABLE_GL_LEGACY
+   #define GLRecti(x1, y1, x2, y2)           (immediate && !shaders ? glRecti(x1, y1, x2, y2) : glimtkRecti(capabilities, x1, y1, x2, y2))
+   #define GLBegin(m)                        (immediate && !shaders ? glBegin(m) : glimtkBegin(m))
+   #define GLTexCoord2i                      (immediate && !shaders ? glTexCoord2i : glimtkTexCoord2i)
+   #define GLVertex2i                        (immediate && !shaders ? glVertex2i : glimtkVertex2i)
+   #define GLTexCoord2d                      (immediate && !shaders ? glTexCoord2d : glimtkTexCoord2d)
+   #define GLVertex2d                        (immediate && !shaders ? glVertex2d : glimtkVertex2d)
+   #define GLTexCoord2f                      (immediate && !shaders ? glTexCoord2f : glimtkTexCoord2f)
+   #define GLVertex2f                        (immediate && !shaders ? glVertex2f : glimtkVertex2f)
+   #define GLEnd()                           (immediate && !shaders ? glEnd() : glimtkEnd(capabilities))
+   #define GLColor3f(a,b,c)                  (immediate && !shaders ? glColor3f(a,b,c) : glimtkColor3f(shaders, a,b,c))
+   #define GLColor4ub(a,b,c,d)               (immediate && !shaders ? glColor4ub(a,b,c,d) : glimtkColor4ub(shaders,a,b,c,d))
+   #define GLColor4f(a,b,c,d)                (immediate && !shaders ? glColor4f(a,b,c,d) : glimtkColor4f(shaders,a,b,c,d))
+   #define GLColor4fv(v)                     (immediate && !shaders ? glColor4fv(v) : glimtkColor4fv(shaders, v))
+   #define GLNormal3fv                       (immediate && !shaders ? glNormal3fv : glimtkNormal3fv)
+   #define GLNormal3f                        (immediate && !shaders ? glNormal3f : glimtkNormal3f)
+   #define GLTexCoord2fv                     (immediate && !shaders ? glTexCoord2fv : glimtkTexCoord2fv)
+   #define GLVertex3d                        (immediate && !shaders ? glVertex3d : glimtkVertex3d)
+   #define GLVertex3dv                       (immediate && !shaders ? glVertex3dv : glimtkVertex3dv)
+   #define GLVertex3f                        (immediate && !shaders ? glVertex3f : glimtkVertex3f)
+   #define GLVertex3fv                       (immediate && !shaders ? glVertex3fv : glimtkVertex3fv)
+
+   #define GLLoadMatrixd(m)                  (fixedFunction && !shaders ? glLoadMatrixd(m) : glmsLoadMatrixd(shaders, m))
+   #define GLMultMatrixd(m)                  (fixedFunction && !shaders ? glMultMatrixd(m) : glmsMultMatrixd(shaders, m))
+   #define GLFrustum(a,b,c,d,e,f)            (fixedFunction && !shaders ? glFrustum(a,b,c,d,e,f) : glmsFrustum(shaders, a,b,c,d,e,f))
+   #define GLOrtho(a,b,c,d,e,f)              (fixedFunction && !shaders ? glOrtho(a,b,c,d,e,f) : glmsOrtho(shaders, a,b,c,d,e,f))
+   #define GLScaled(x, y, z)                 (fixedFunction && !shaders ? glScaled(x, y, z) : glmsScaled(shaders, x,y,z))
+   #define GLScalef(x, y, z)                 (fixedFunction && !shaders ? glScalef(x, y, z) : glmsScaled(shaders, x,y,z))
+   #define GLTranslated(x, y, z)             (fixedFunction && !shaders ? glTranslated(x,y,z) : glmsTranslated(shaders, x,y,z))
+   #define GLRotated(a, x, y, z)             (fixedFunction && !shaders ? glRotated : glmsRotated)
+   #define GLMatrixMode(m)                   (fixedFunction && !shaders ? glMatrixMode(m) : glmsMatrixMode(shaders, m))
+   #define GLLoadIdentity()                  (fixedFunction && !shaders ? glLoadIdentity() : glmsLoadIdentity(shaders))
+   #define GLPushMatrix                      (fixedFunction && !shaders ? glPushMatrix : glmsPushMatrix)
+   #define GLPopMatrix()                     (fixedFunction && !shaders ? glPopMatrix() : glmsPopMatrix(shaders))
+#else
+   #define GLRecti(x1, y1, x2, y2)           glimtkRecti(capabilities, x1, y1, x2, y2)
+   #define GLBegin(m)                        glimtkBegin(m)
+   #define GLTexCoord2i                      glimtkTexCoord2i
+   #define GLVertex2i                        glimtkVertex2i
+   #define GLTexCoord2d                      glimtkTexCoord2d
+   #define GLVertex2d                        glimtkVertex2d
+   #define GLTexCoord2f                      glimtkTexCoord2f
+   #define GLVertex2f                        glimtkVertex2f
+   #define GLEnd()                           glimtkEnd(capabilities)
+   #define GLColor3f(a,b,c)                  glimtkColor3f(shaders, a,b,c)
+   #define GLColor4ub(a,b,c,d)               glimtkColor4ub(shaders,a,b,c,d)
+   #define GLColor4f(a,b,c,d)                glimtkColor4f(shaders,a,b,c,d)
+   #define GLColor4fv(v)                     glimtkColor4fv(shaders, v)
+   #define GLNormal3fv                       glimtkNormal3fv
+   #define GLNormal3f                        glimtkNormal3f
+   #define GLTexCoord2fv                     glimtkTexCoord2fv
+   #define GLVertex3d                        glimtkVertex3d
+   #define GLVertex3dv                       glimtkVertex3dv
+   #define GLVertex3f                        glimtkVertex3f
+   #define GLVertex3fv                       glimtkVertex3fv
+
+   #define GLLoadMatrixd(m)                  glmsLoadMatrixd(shaders, m)
+   #define GLMultMatrixd(m)                  glmsMultMatrixd(shaders, m)
+   #define GLFrustum(a,b,c,d,e,f)            glmsFrustum(shaders, a,b,c,d,e,f)
+   #define GLOrtho(a,b,c,d,e,f)              glmsOrtho(shaders, a,b,c,d,e,f)
+   #define GLScaled(a,b,c)                   glmsScaled(shaders, a,b,c)
+   #define GLScalef(a,b,c)                   glmsScaled(shaders, a,b,c)
+   #define GLTranslated(a,b,c)               glmsTranslated(shaders, a,b,c)
+   #define GLRotated(a, x, y, z)             glmsRotated(shaders, a, x, y, z)
+   #define GLMatrixMode(m)                   glmsMatrixMode(shaders, m)
+   #define GLLoadIdentity()                  glmsLoadIdentity(shaders)
+   #define GLPushMatrix                      glmsPushMatrix
+   #define GLPopMatrix()                     glmsPopMatrix(shaders)
+#endif
+
+#define GLLoadMatrix GLLoadMatrixd
+#define GLMultMatrix GLMultMatrixd
+#define GLGetMatrix  GLGetDoublev
+#define GLTranslate  GLTranslated
+#define GLScale      GLScaled
 
 static GLuint stippleTexture;
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
 static bool stippleEnabled;
-#endif
-
-public void glesLineStipple( int i, unsigned short j )
+                              // TOCHECK: Do we really need to pass shaders?
+public void glsupLineStipple( bool shaders, int i, unsigned short j )
 {
+#if ENABLE_GL_LEGACY
+   bool fixedFunction = false;
+#endif
    uint texture[1*16];
    int x;
    for(x = 0; x < 16; x++)
@@ -419,122 +430,108 @@ public void glesLineStipple( int i, unsigned short j )
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 16, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
 
    // TOOD: Special shading code for stippling?
-   GLSetupTexturing(true);
+   GLSetupTexturing(shaders, true);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-   glMatrixMode(GL_TEXTURE);
-   glLoadIdentity();
+   GLMatrixMode(GL_TEXTURE);
+   GLLoadIdentity();
    //glTranslated(1.0/backAttrib->texW/2.0f, 1.0/backAttrib->texH/2.0f, 0.0f);
-   glScaled(i/16.0, 1, 1.0f);
-   glTranslated(0.5, 0.5, 0);
-   glMatrixMode(MatrixMode::projection);
+   GLScaled(i/16.0, 1, 1.0f);
+   GLTranslated(0.5, 0.5, 0);
+   GLMatrixMode(MatrixMode::projection);
 }
 
-public void glesLightModeli( unsigned int pname, int param )
-{
-#if !defined(SHADERS)
-   if(pname == GL_LIGHT_MODEL_TWO_SIDE)
-      glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
+#ifdef _GLES
+   public void glsupLightModeli( unsigned int pname, int param )
+   {
+      if(pname == GL_LIGHT_MODEL_TWO_SIDE)
+         glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
+   }
+
+   void glFogi( unsigned int pname, int param ) { }
+   void glPolygonMode( unsigned int i, unsigned int j ) { }
+   void glBlendFuncSeparate(int a, int b, int c, int d)
+   {
+      glBlendFunc(a, b);
+   }
+
 #endif
-}
 
-#if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+#if defined(_GLES) || defined(_GLES2)
 void glClearDepth( double depth ) { glClearDepthf((float)depth); }
 #endif
 
-#if defined(__ANDROID__) || defined(__ODROID__)
-void glFogi( unsigned int pname, int param ) { }
-void glPolygonMode( unsigned int i, unsigned int j ) { }
-
+#if !ENABLE_GL_SELECT
 
 // *** Picking won't be supported for now ***
 void glPushName( unsigned int i ) { }
 void glLoadName( unsigned int i ) { }
 void glPopName() { }
 
-// Probably replace by regular glBlendFunc ...
-void glBlendFuncSeparate(int a, int b, int c, int d)
-{
-   glBlendFunc(a, b);
-}
-
-// For direct pixel blitting...
-void glRasterPos2d(double a, double b) { }
-void glPixelZoom(float a, float b) { }
-void glDrawPixels(int a, int b, int c, int d, void * e) { }
-
 #endif
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
-static int primitiveTypes[RenderPrimitiveType] =
+static inline uint getPrimitiveType(bool quadsSupport, RenderPrimitiveType type)
 {
-   GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
-#if defined(SHADERS) || defined(_GLES) || defined(_GLES2)
-   GL_TRIANGLE_FAN,     // NOTE: This will only work for single quads
-#else
-   GLIMTKMode::quads,
-#endif
-   GLIMTKMode::quadStrip,
-   GL_LINE_STRIP
-};
+   static int primitiveTypes[RenderPrimitiveType] =
+   {
+      GL_POINTS, GL_LINES, GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN,
+      GLIMTKMode::quads,
+      GLIMTKMode::quadStrip,
+      GL_LINE_STRIP
+   };
+   // NOTE: This will only work for single quads
+   return (type == quads && !quadsSupport) ? GL_TRIANGLE_FAN : primitiveTypes[type];
+}
+
+public void GLSetupTexturing(bool shaders, bool enable)
+{
+#if ENABLE_GL_SHADERS
+   if(shaders)
+      shader_texturing(enable);
 #endif
 
-public void GLSetupTexturing(bool enable)
-{
-#ifdef SHADERS
-   shader_texturing(enable);
-#else
-   (enable ? glEnable : glDisable)(GL_TEXTURE_2D);
+#if ENABLE_GL_FFP
+   if(!shaders)
+      (enable ? glEnable : glDisable)(GL_TEXTURE_2D);
 #endif
 }
 
-public void GLSetupFog(bool enable)
+public void GLSetupFog(bool shaders, bool enable)
 {
-#ifdef SHADERS
-   shader_fog(enable);
-#else
-   (enable ? glEnable : glDisable)(GL_FOG);
+#if ENABLE_GL_SHADERS
+   if(shaders)
+      shader_fog(enable);
+#endif
+
+#if ENABLE_GL_FFP
+   if(!shaders)
+      (enable ? glEnable : glDisable)(GL_FOG);
 #endif
 }
 
 bool lightingEnabled;
 
-public void GLSetupLighting(bool enable)
+public void GLSetupLighting(bool shaders, bool enable)
 {
    lightingEnabled = enable;
-#if defined(SHADERS)
-   shader_lighting(enable);
-#else
-   (enable ? glEnable : glDisable)(GL_LIGHTING);
+#if ENABLE_GL_SHADERS
+   if(shaders)
+      shader_lighting(enable);
+#endif
+
+#if ENABLE_GL_FFP
+   if(!shaders)
+      (enable ? glEnable : glDisable)(GL_LIGHTING);
 #endif
 }
-
-// Non OpenGL ES friendly stuff
-
-#if defined(_GLES) || defined(_GLES2)
-
-//#undef GL_UNSIGNED_INT
-//#undef GL_DOUBLE
-#undef GL_INT
-//#undef GL_POLYGON
-//#undef GL_QUADS
-#undef GL_QUAD_STRIP
-#undef GL_POLYGON_STIPPLE
-#undef GL_LINE_STIPPLE
-#undef GL_LINE
-#undef GL_FILL
-#undef GL_ALL_ATTRIB_BITS
-#undef GL_LIGHT_MODEL_LOCAL_VIEWER
-
 #endif
 
 static int displayWidth, displayHeight;
 
 #define GL_CLAMP_TO_EDGE 0x812F
-
-/*static */bool vboAvailable;
 
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
@@ -568,6 +565,8 @@ class OGLDisplay : struct
    Pixmap shapePixmap;
    X11Picture shapePicture;
 #endif
+
+   GLCapabilities capabilities, originalCapabilities;
 
    ColorAlpha * flippingBuffer;
    int flipBufH, flipBufW;
@@ -620,7 +619,11 @@ class OGLSystem : struct
 {
    int maxTextureSize;
    bool loadingFont;
-   bool pow2textures;
+#if ENABLE_GL_SHADERS
+   int shadingProgram;
+   int vertexShader;
+   int fragmentShader;
+#endif
 #if defined(__WIN32__)
    PIXELFORMATDESCRIPTOR pfd;
    int format;
@@ -634,6 +637,7 @@ class OGLSystem : struct
    GLXContext glContext;
    GLXDrawable glxDrawable;
 #endif
+   GLCapabilities capabilities;
 };
 
 class OGLSurface : struct
@@ -687,32 +691,57 @@ static void setupDebugging()
 #endif
 
 #if defined(__WIN32__)
-static HGLRC winCreateContext(HDC hdc)
+static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible)
 {
    HGLRC result = 0;
-#ifdef SHADERS
    if(wglCreateContextAttribsARB)
    {
-      int attribs[] =
+      int versions[12][2] =
       {
-         WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-         WGL_CONTEXT_MINOR_VERSION_ARB, 4,
-         WGL_CONTEXT_FLAGS_ARB, /*WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | */WGL_CONTEXT_DEBUG_BIT_ARB,
-         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB /*WGL_CONTEXT_CORE_PROFILE_BIT_ARB*/,
-         0,0
+         { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 },
+                             { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 },
+                                                 { 2, 1 }, { 2, 0 }
       };
-      result = wglCreateContextAttribsARB(hdc, null, attribs);
-      if(!result)
+
+      bool tryingCompat = true;
+      int v = 0;
+      while(!result)
       {
-         attribs[1] = 2;
-         attribs[3] = 0;
-         attribs[7] = 0;
-         result = wglCreateContextAttribsARB(hdc, null, attribs);
+         for(v = 0; !result && v < sizeof(versions) / sizeof(versions[0]); v++)
+         {
+            int v0 = versions[v][0], v1 = versions[v][1];
+            if(!tryingCompat || v0 >= 3)
+            {
+               bool coreNotion = v0 > 3 || (v0 == 3 && v1 >= 3);
+               int attribs[] =
+               {
+                  WGL_CONTEXT_MAJOR_VERSION_ARB, v0, WGL_CONTEXT_MINOR_VERSION_ARB, v1,
+         #ifdef _DEBUG
+                  WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+         #endif
+                  WGL_CONTEXT_PROFILE_MASK_ARB, coreNotion ? (tryingCompat ? WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : WGL_CONTEXT_CORE_PROFILE_BIT_ARB) : 0,
+                  0,0
+               };
+               result = wglCreateContextAttribsARB(hdc, null, attribs);
+               if(result)
+               {
+                  if(contextVersion) *contextVersion = v0;
+                  if(isCompatible)   *isCompatible = tryingCompat || !coreNotion;
+               }
+            }
+         }
+         if(tryingCompat)
+            tryingCompat = false;
+         else
+            break;
       }
    }
-#endif
    if(!result)
+   {
+      if(contextVersion) *contextVersion = 1;
+      if(isCompatible)   *isCompatible = true;
       result = wglCreateContext(hdc);
+   }
    return result;
 }
 #endif
@@ -851,24 +880,68 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    }
 
-   void ::CheckExtensions(OGLSystem oglSystem)
+#if !defined(__EMSCRIPTEN__)
+   void ::CheckCapabilities(OGLSystem oglSystem, OGLDisplay oglDisplay)
    {
+      GLCapabilities capabilities;
+#if !defined(_GLES2)
       const char * extensions = (const char *)glGetString(GL_EXTENSIONS);
+#endif
 #ifdef DIAGNOSTICS
       printf("extensions: %s\n", extensions);
 #endif
 
-      oglSystem.pow2textures = (extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two")) ? false : true;
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
+
+#if defined(_GLES)
+      capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
+#elif defined(_GLES2)
+      capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true };
+#else
+      capabilities =
+      {
+         nonPow2Textures = extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two");
+         intAndDouble = true;
+#if ENABLE_GL_LEGACY
+         legacy         = glBegin != null;
+         immediate      = glBegin != null;
+         fixedFunction  = glBegin != null;
+         quads          = glBegin != null;
+#endif
+#if ENABLE_GL_SHADERS
+         shaders = glCreateProgram != null;
+#endif
+#if ENABLE_GL_FBO
+         shaders = glBindFramebuffer != null;
+#endif
+         vertexBuffer = glBindBuffer != null;
+         // mapBuffer = glMapBuffer != null;
+      };
+#endif
+
 #ifdef DIAGNOSTICS
       PrintLn("max texture size: ", oglSystem.maxTextureSize);
 #endif
+      if(oglDisplay) oglDisplay.capabilities = capabilities;
+      if(oglSystem)  oglSystem.capabilities = capabilities;
    }
+#endif
 
    bool CreateDisplaySystem(DisplaySystem displaySystem)
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
+#if defined(__ANDROID__) || defined(__ODROID__)
+      bool shaders = false;
+#endif
+
+#ifdef _GLES
+      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true };
+#elif defined(_GLES2)
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true };
+#else
+      oglSystem.capabilities = { shaders = true, fixedFunction = true, immediate = true, legacy = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, nonPow2Textures = true };
+#endif
 
 #ifdef DIAGNOSTICS
       PrintLn("OpenGL driver's CreateDisplaySystem()");
@@ -969,11 +1042,12 @@ class OpenGLDisplayDriver : DisplayDriver
 #ifdef DIAGNOSTICS
                      PrintLn("winCreateContext()");
 #endif
-                     oglSystem.glrc = winCreateContext(oglSystem.hdc);
+                     oglSystem.glrc = winCreateContext(oglSystem.hdc, null, null);
 #ifdef DIAGNOSTICS
                      PrintLn("wglMakeCurrent()");
 #endif
-                     wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
+                     if(oglSystem.glrc)
+                        wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
                   }
                }
                /*else
@@ -988,17 +1062,16 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
    #elif defined(__unix__) || defined(__APPLE__)
-      vboAvailable = true;
       #if defined(__ANDROID__) || defined(__ODROID__)
          #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
          #elif defined(__ODROID__)
          egl_init_display((uint)displaySystem.window);
          #endif
-         CheckExtensions(oglSystem);
+         CheckCapabilities(oglSystem, null);
 
          // TODO: Clean this up? Needed here?
-         glEnableClientState(GL_VERTEX_ARRAY);
+         GLEnableClientState(VERTICES);
          /*
          // Initialize GL state.
          glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
@@ -1016,12 +1089,13 @@ class OpenGLDisplayDriver : DisplayDriver
          matrixStack[1][0].Identity();
          matrixStack[2][0].Identity();
 
-         glmsMatrixMode(GL_MODELVIEW);
-         glScaled(1.0, 1.0, -1.0);
-         glmsMatrixMode(GL_PROJECTION);
+         GLMatrixMode(GL_MODELVIEW);
+         GLScaled(1.0, 1.0, -1.0);
+         GLMatrixMode(GL_PROJECTION);
          glShadeModel(GL_FLAT);
 
-         glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+         if(!shaders)
+            GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
          glEnable(GL_NORMALIZE);
@@ -1030,8 +1104,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_MULTISAMPLE_ARB);
 
          glViewport(0,0,eglWidth,eglHeight);
-         glmsLoadIdentity();
-         glOrtho(0,eglWidth,eglHeight,0,0.0,1.0);
+         GLLoadIdentity();
+         GLOrtho(0,eglWidth,eglHeight,0,0.0,1.0);
 
          glabCurArrayBuffer = 0;
          glabCurElementBuffer = 0;
@@ -1058,7 +1132,6 @@ class OpenGLDisplayDriver : DisplayDriver
               */
 
             emscripten_webgl_init_context_attributes(&attribs);
-            oglSystem.pow2textures = true;
             oglSystem.maxTextureSize = 16384;
             oglSystem.glc = emscripten_webgl_create_context("canvas", &attribs);
             if(emscripten_webgl_make_context_current(oglSystem.glc) == EMSCRIPTEN_RESULT_SUCCESS)
@@ -1099,8 +1172,6 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglSystem.glContext)
          {
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
-            // Setup Extensions
-            // CheckExtensions(oglSystem);
             glXMakeCurrent(xGlobalDisplay, None, null);
             result = true;
          }
@@ -1122,6 +1193,15 @@ class OpenGLDisplayDriver : DisplayDriver
          glDeleteTextures(1, &stippleTexture);
          stippleTexture = 0;
       }
+
+#if ENABLE_GL_SHADERS
+      if(oglSystem.shadingProgram)
+         glDeleteProgram(oglSystem.shadingProgram);
+      if(oglSystem.fragmentShader)
+         glDeleteShader(oglSystem.fragmentShader);
+      if(oglSystem.vertexShader)
+         glDeleteShader(oglSystem.vertexShader);
+#endif
 
       glimtkTerminate();
 
@@ -1160,13 +1240,31 @@ class OpenGLDisplayDriver : DisplayDriver
       delete oglSystem;
    }
 
-   static bool ::initialDisplaySetup(Display display)
+   /*static */bool ::initialDisplaySetup(Display display)
    {
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
       bool result = true;
-      #ifdef SHADERS
-      loadShaders("<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
-      #endif
-      glEnableClientState(GL_VERTEX_ARRAY);
+      bool shaders = capabilities.shaders;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+#if ENABLE_GL_SHADERS
+      if(shaders)
+         loadShaders(display.displaySystem, "<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
+#if ENABLE_GL_LEGACY
+      else
+      {
+         glDisableVertexAttribArray(GLBufferContents::color);
+         glDisableVertexAttribArray(GLBufferContents::normal);
+         glDisableVertexAttribArray(GLBufferContents::texCoord);
+         glDisableVertexAttribArray(GLBufferContents::vertex);
+         glUseProgram(0);
+      }
+#endif
+
+#endif
+      GLEnableClientState(VERTICES);
 
       GLABBindBuffer(GL_ARRAY_BUFFER, 0);
       GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -1181,23 +1279,29 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       glEnable(GL_BLEND);
 
-      glMatrixMode(MatrixMode::modelView);
-      glLoadIdentity(); // For setting up GLES stack
-      glScaled(1.0, 1.0, -1.0);
+      GLMatrixMode(MatrixMode::modelView);
+      GLLoadIdentity(); // For setting up GLES stack
+      GLScaled(1.0, 1.0, -1.0);
       // glTranslatef(0.375f, 0.375f, 0.0f);
       // glTranslatef(-0.625f, -0.625f, 0.0f);
-      glMatrixMode(MatrixMode::projection);
-#if !defined(EM_MODE) && !defined(SHADERS)
-      glShadeModel(GL_FLAT);
+      GLMatrixMode(MatrixMode::projection);
+      GLLoadIdentity();
+      if(display.width && display.height)
+         GLOrtho(0,display.width,display.height,0,0.0,1.0);
 
-      // #define GL_LIGHT_MODEL_LOCAL_VIEWER 0x0B51
-
-      // glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-
-      glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
-      glFogi(GL_FOG_MODE, GL_EXP);
-      glFogf(GL_FOG_DENSITY, 0);
-      glEnable(GL_NORMALIZE);
+#if ENABLE_GL_FFP
+      if(!shaders)
+      {
+         glShadeModel(GL_FLAT);
+         /*
+         #define GL_LIGHT_MODEL_LOCAL_VIEWER 0x0B51
+         GLLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+         */
+         GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+         glFogi(GL_FOG_MODE, GL_EXP);
+         glFogf(GL_FOG_DENSITY, 0);
+         glEnable(GL_NORMALIZE);
+      }
 #endif
       glDepthFunc(GL_LESS);
       glClearDepth(1.0);
@@ -1212,13 +1316,11 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLDisplay oglDisplay = display.driverData;
-#if !defined(__ANDROID__) && !defined(__ODROID__)
       OGLSystem oglSystem = display.displaySystem.driverData;
-#endif
 
       if(!oglDisplay)
          oglDisplay = display.driverData = OGLDisplay { };
-      //printf("Inside CreateDisplay\n");
+      oglDisplay.capabilities = oglSystem.capabilities;
 
 #if defined(__WIN32__) || defined(USEPBUFFER)
       if(!display.alphaBlend)
@@ -1227,7 +1329,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          oglDisplay.hdc = GetDC(display.window);
          SetPixelFormat(oglDisplay.hdc, oglSystem.format, &oglSystem.pfd);
-         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc)))
+         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, null, null)))
          {
             wglShareLists(oglSystem.glrc, oglDisplay.glrc);
             wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
@@ -1293,10 +1395,9 @@ class OpenGLDisplayDriver : DisplayDriver
             PrintLn("ogl_LoadFunctions() failed!");
 
 #ifdef DIAGNOSTICS
-         PrintLn("CheckExtensions()");
+         PrintLn("CheckCapabilities()");
 #endif
-         CheckExtensions(oglSystem);
-         vboAvailable = glBindBuffer != null;
+         CheckCapabilities(oglSystem, oglDisplay);
 
 #ifdef DIAGNOSTICS
          PrintLn("vboAvailable is: ", vboAvailable);
@@ -1311,6 +1412,32 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__EMSCRIPTEN__)
          emscripten_webgl_make_context_current(oglSystem.glc);
 #endif
+
+         if(result)
+         {
+            GLCapabilities capabilities = *&display.glCapabilities;
+            // PrintLn("Available OpenGL Capabilities: ", oglDisplay.capabilities);
+            // PrintLn("Desired OpenGL Capabilities: ", capabilities);
+
+            oglDisplay.originalCapabilities = oglDisplay.capabilities;
+
+            // Re-enable shaders if no fixed function support
+            if(!oglDisplay.capabilities.fixedFunction)
+               capabilities.shaders = true;
+            // Re-enable fixed function if no shaders support
+            if(!oglDisplay.capabilities.shaders)
+               capabilities.fixedFunction = true;
+
+            #if !ENABLE_GL_POINTER
+            // Re-enable vertex buffer if no pointer support
+            capabilities.vertexBuffer = true;
+            #endif
+
+            oglDisplay.capabilities &= capabilities;
+
+            // PrintLn("Selected OpenGL Capabilities: ", oglDisplay.capabilities);
+            oglSystem.capabilities = oglDisplay.capabilities;
+         }
 
          initialDisplaySetup(display);
       }
@@ -1333,17 +1460,19 @@ class OpenGLDisplayDriver : DisplayDriver
          result = true;
       #endif
       }
-
       return result;
    }
 
    bool DisplaySize(Display display, int width, int height)
    {
       OGLDisplay oglDisplay = display.driverData;
-
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
       bool result = false;
 
-      //printf("Inside DisplaySize\n");
 #if defined(__WIN32__) || defined(USEPBUFFER)
       OGLSystem oglSystem = display.displaySystem.driverData;
       if(display.alphaBlend)
@@ -1427,7 +1556,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
          oglDisplay.pBuffer = wglCreatePbufferARB(oglSystem.hdc, pixelFormat, width, height, attributes);
          oglDisplay.hdc = wglGetPbufferDCARB(oglDisplay.pBuffer);
-         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc)))
+         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, null, null)))
          {
             BITMAPINFO * info;
             HDC hdc = GetDC(display.window);
@@ -1694,9 +1823,9 @@ class OpenGLDisplayDriver : DisplayDriver
       result = false;
 
       glViewport(0,0,width,height);
-      glMatrixMode(MatrixMode::projection);
-      glLoadIdentity();
-      glOrtho(0,width,height,0,0.0,1.0);
+      GLMatrixMode(MatrixMode::projection);
+      GLLoadIdentity();
+      GLOrtho(0,width,height,0,0.0,1.0);
       displayWidth = display.width = width;
       displayHeight = display.height = height;
 
@@ -1749,7 +1878,6 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__) || defined(USEPBUFFER)
       OGLDisplay oglDisplay = display.driverData;
 #endif
-      //Logf("DisplayScreen\n");
 
 #if !defined(__ANDROID__)
       /*glFlush();
@@ -1854,7 +1982,6 @@ class OpenGLDisplayDriver : DisplayDriver
       #endif
 #endif
       }
-      //Logf("Out of DisplayScreen\n");
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
@@ -1871,12 +1998,13 @@ class OpenGLDisplayDriver : DisplayDriver
    bool AllocateBitmap(DisplaySystem displaySystem, Bitmap bitmap, int width, int height, int stride, PixelFormat format, bool allocatePalette)
    {
       OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities capabilities = oglSystem.capabilities;
       bool result = false;
       Bitmap mipMap { };
       GLuint glBitmap = 0;
 
       uint w = width, h = height;
-      if(oglSystem.pow2textures)
+      if(!capabilities.nonPow2Textures)
       {
          w = pow2i(w);
          h = pow2i(h);
@@ -1895,8 +2023,9 @@ class OpenGLDisplayDriver : DisplayDriver
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-#if !defined(SHADERS)
-      glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+#if ENABLE_GL_FFP
+      if(!capabilities.shaders)
+         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 #endif
 
       mipMap.Allocate(null, w, h, w, pixelFormatRGBA, false);
@@ -1919,6 +2048,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities capabilities = oglSystem.capabilities;
       Bitmap convBitmap = bitmap;
       if(bitmap.keepData)
       {
@@ -1932,7 +2062,7 @@ class OpenGLDisplayDriver : DisplayDriver
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
          GLuint glBitmap = 0;
-         if(oglSystem.pow2textures)
+         if(!capabilities.nonPow2Textures)
          {
             w = pow2i(w);
             h = pow2i(h);
@@ -1984,7 +2114,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
 #endif
 
-#if !defined(SHADERS)
+#if ENABLE_GL_FFP
+      if(!capabilities.shaders)
          glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 #endif
 
@@ -2068,9 +2199,13 @@ class OpenGLDisplayDriver : DisplayDriver
    bool GetSurface(Display display, Surface surface, int x,int y, Box clip)
    {
       bool result = false;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
       OGLSurface oglSurface = surface.driverData = OGLSurface { };
-
-      //Logf("GetSurface\n");
 
       if(oglSurface)
       {
@@ -2080,8 +2215,8 @@ class OpenGLDisplayDriver : DisplayDriver
             displayHeight = display.height;
 
             glViewport(0,0,display.width,display.height);
-            glLoadIdentity();
-            glOrtho(0,display.width,display.height,0,0.0,1.0);
+            GLLoadIdentity();
+            GLOrtho(0,display.width,display.height,0,0.0,1.0);
          }
 
          surface.offset.x = x;
@@ -2106,8 +2241,6 @@ class OpenGLDisplayDriver : DisplayDriver
    void Clip(Display display, Surface surface, Box clip)
    {
       Box box;
-
-      //Logf("Clip\n");
 
       if(clip != null)
       {
@@ -2145,9 +2278,11 @@ class OpenGLDisplayDriver : DisplayDriver
             uint row;
 
             glPixelStorei(GL_PACK_ALIGNMENT, 4);
+#if ENABLE_GL_LEGACY
             glPixelStorei(GL_PACK_ROW_LENGTH, bitmap.stride);
             glPixelStorei(GL_PACK_SKIP_ROWS, 0);
             glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+#endif
             glReadPixels(x,display.height-h-y,w,h,GL_BGRA_EXT,GL_UNSIGNED_BYTE, flippingBuffer);
 
             // Need a flip...
@@ -2163,8 +2298,6 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSurface oglSurface = surface.driverData;
 
-      //Logf("SetForeground\n");
-
       oglSurface.foreground[0] = color.color.r/255.0f;
       oglSurface.foreground[1] = color.color.g/255.0f;
       oglSurface.foreground[2] = color.color.b/255.0f;
@@ -2177,8 +2310,6 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetBackground(Display display, Surface surface, ColorAlpha color)
    {
       OGLSurface oglSurface = surface.driverData;
-
-      //Logf("SetBackground\n");
 
       oglSurface.background[0] = color.color.r/255.0f;
       oglSurface.background[1] = color.color.g/255.0f;
@@ -2205,19 +2336,30 @@ class OpenGLDisplayDriver : DisplayDriver
    void PutPixel(Display display, Surface surface,int x,int y)
    {
       OGLSurface oglSurface = surface.driverData;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
 
-      //Logf("PutPixel\n");
-
-      glColor4fv(oglSurface.foreground);
-      glBegin(GL_POINTS);
+      GLColor4fv(oglSurface.foreground);
+      GLBegin(GL_POINTS);
       // glVertex2i(x+surface.offset.x, y+surface.offset.y);
-      glVertex2f(x+surface.offset.x + 0.5f, y+surface.offset.y + 0.5f);
+      GLVertex2f(x+surface.offset.x + 0.5f, y+surface.offset.y + 0.5f);
 
-      glEnd();
+      GLEnd();
    }
 
    void DrawLine(Display display, Surface surface, int _x1, int _y1, int _x2, int _y2)
    {
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
+
       OGLSurface oglSurface = surface.driverData;
       float x1 = _x1, x2 = _x2, y1 = _y1, y2 = _y2;
       if(_x1 == _x2)
@@ -2239,97 +2381,100 @@ class OpenGLDisplayDriver : DisplayDriver
       x2 += surface.offset.x;
       y2 += surface.offset.y;
 
-      //Logf("Line\n");
-
-      glColor4fv(oglSurface.foreground);
-      glBegin(GL_LINES);
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
+      GLColor4fv(oglSurface.foreground);
+      GLBegin(GL_LINES);
       if(stippleEnabled)
       {
-         glTexCoord2f(0.5f, 0);
-         glVertex2f(x1 + 0.5f, y1 + 0.5f);
-         glTexCoord2f(Max(x2-x1, y2-y1) + 0.5f, 0);
-         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+         GLTexCoord2f(0.5f, 0);
+         GLVertex2f(x1 + 0.5f, y1 + 0.5f);
+         GLTexCoord2f(Max(x2-x1, y2-y1) + 0.5f, 0);
+         GLVertex2f(x2 + 0.5f, y2 + 0.5f);
       }
       else
-#endif
       {
          /*
-         glVertex2i(x1, y1);
-         glVertex2i(x2, y2);
+         GLVertex2i(x1, y1);
+         GLVertex2i(x2, y2);
          */
-         glVertex2f(x1 + 0.5f, y1 + 0.5f);
-         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+         GLVertex2f(x1 + 0.5f, y1 + 0.5f);
+         GLVertex2f(x2 + 0.5f, y2 + 0.5f);
       }
 
-      glEnd();
+      GLEnd();
    }
 
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       OGLSurface oglSurface = surface.driverData;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
       x1 += surface.offset.x;
       y1 += surface.offset.y;
       x2 += surface.offset.x;
       y2 += surface.offset.y;
 
-      //Logf("Rectangle\n");
-
-      glColor4fv(oglSurface.foreground);
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
+      GLColor4fv(oglSurface.foreground);
       if(stippleEnabled)
       {
-         glBegin(GL_LINES);
+         GLBegin(GL_LINES);
 
-         glTexCoord2f(0.5f, 0);
-         glVertex2f(x1 + 0.5f, y1 + 0.5f);
-         glTexCoord2f(y2-y1 + 0.5f, 0);
-         glVertex2f(x1 + 0.5f, y2 + 0.5f);
+         GLTexCoord2f(0.5f, 0);
+         GLVertex2f(x1 + 0.5f, y1 + 0.5f);
+         GLTexCoord2f(y2-y1 + 0.5f, 0);
+         GLVertex2f(x1 + 0.5f, y2 + 0.5f);
 
-         glTexCoord2f(0.5f, 0);
-         glVertex2f(x1 + 0.5f, y2 + 0.5f);
-         glTexCoord2f(x2 - x1 + 0.5f, 0);
-         glVertex2f(x2 + 0.5f, y2 + 0.5f);
+         GLTexCoord2f(0.5f, 0);
+         GLVertex2f(x1 + 0.5f, y2 + 0.5f);
+         GLTexCoord2f(x2 - x1 + 0.5f, 0);
+         GLVertex2f(x2 + 0.5f, y2 + 0.5f);
 
-         glTexCoord2f(0.5f, 0);
-         glVertex2f(x2 + 0.5f, y2 + 0.5f);
-         glTexCoord2f(y1 - y2 + 0.5f, 0);
-         glVertex2f(x2 + 0.5f, y1 + 0.5f);
+         GLTexCoord2f(0.5f, 0);
+         GLVertex2f(x2 + 0.5f, y2 + 0.5f);
+         GLTexCoord2f(y1 - y2 + 0.5f, 0);
+         GLVertex2f(x2 + 0.5f, y1 + 0.5f);
 
-         glTexCoord2f(0.5f, 0);
-         glVertex2f(x2 + 0.5f, y1 + 0.5f);
-         glTexCoord2f(x1 - x2 + 0.5f, 0);
-         glVertex2f(x1 + 0.5f, y1 + 0.5f);
+         GLTexCoord2f(0.5f, 0);
+         GLVertex2f(x2 + 0.5f, y1 + 0.5f);
+         GLTexCoord2f(x1 - x2 + 0.5f, 0);
+         GLVertex2f(x1 + 0.5f, y1 + 0.5f);
       }
       else
-#endif
       {
-         glBegin(GL_LINE_LOOP);
+         GLBegin(GL_LINE_LOOP);
          /*
          glVertex2i(x1, y1);
          glVertex2i(x1, y2);
          glVertex2i(x2, y2);
          glVertex2i(x2, y1);
          */
-         glVertex2f(x1 + 0.5f, y1 + 0.5f);
-         glVertex2f(x1 + 0.5f, y2 + 0.5f);
-         glVertex2f(x2 + 0.5f, y2 + 0.5f);
-         glVertex2f(x2 + 0.5f, y1 + 0.5f);
+         GLVertex2f(x1 + 0.5f, y1 + 0.5f);
+         GLVertex2f(x1 + 0.5f, y2 + 0.5f);
+         GLVertex2f(x2 + 0.5f, y2 + 0.5f);
+         GLVertex2f(x2 + 0.5f, y1 + 0.5f);
       }
-      glEnd();
+      GLEnd();
    }
 
    void Area(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       OGLSurface oglSurface = surface.driverData;
-      //Logf("Area\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
 
-      glColor4fv(oglSurface.background);
+      GLColor4fv(oglSurface.background);
 
-      glRecti(x1+surface.offset.x, y1+surface.offset.y,
+      GLRecti(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
       /*
-      glRectf(x1+surface.offset.x, y1+surface.offset.y,
+      GLRectf(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
       */
    }
@@ -2362,109 +2507,122 @@ class OpenGLDisplayDriver : DisplayDriver
    void Blit(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
       OGLSurface oglSurface = surface.driverData;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
 
       if(!oglSurface.writingText)
       {
          // glTranslatef(-0.375f, -0.375f, 0.0f);
-         GLSetupTexturing(true);
-         glColor4fv(oglSurface.bitmapMult);
+         GLSetupTexturing(shaders, true);
+         GLColor4fv(oglSurface.bitmapMult);
       }
       else if(oglSurface.xOffset)
-         glTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
+         GLTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
 
       glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
-      glBegin(GLIMTKMode::quads);
+      GLBegin(GLIMTKMode::quads);
 
       if(h < 0)
       {
-         glTexCoord2f((float)sx/ bitmap.width, (float)(sy-h)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy-h)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
-         glTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+         GLTexCoord2f((float)sx/ bitmap.width, (float)(sy-h)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy-h)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
+         GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
       }
       else
       {
          /*
-         glTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
-         glTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
+         GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
+         GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
          */
 
-         glTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
-         glVertex2f((float)dx+surface.offset.x, (float)dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
-         glVertex2f((float)dx+w+surface.offset.x, (float)dy+surface.offset.y);
-         glTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
-         glVertex2f((float)dx+w+surface.offset.x, (float)dy+h+surface.offset.y);
-         glTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
-         glVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
+         GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2f((float)dx+surface.offset.x, (float)dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
+         GLVertex2f((float)dx+w+surface.offset.x, (float)dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
+         GLVertex2f((float)dx+w+surface.offset.x, (float)dy+h+surface.offset.y);
+         GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
+         GLVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
       }
-      glEnd();
+      GLEnd();
 
       if(!oglSurface.writingText)
       {
-         GLSetupTexturing(false);
+         GLSetupTexturing(shaders, false);
 
          //glTranslate(0.375, 0.375, 0.0);
       }
       else if(oglSurface.xOffset)
-         glTranslated(-oglSurface.xOffset / 64.0/*+0.375*/, 0.0, 0.0);
+         GLTranslated(-oglSurface.xOffset / 64.0/*+0.375*/, 0.0, 0.0);
    }
 
    void Stretch(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       OGLSurface oglSurface = surface.driverData;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
 
       //glTranslate(-0.375, -0.375, 0.0);
 
-      GLSetupTexturing(true);
+      GLSetupTexturing(shaders, true);
       glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
 
-      glColor4fv(oglSurface.bitmapMult);
+      GLColor4fv(oglSurface.bitmapMult);
 
-      glBegin(GLIMTKMode::quads);
+      GLBegin(GLIMTKMode::quads);
 
       if(h < 0)
       {
-         glTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
 
-         glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
 
-         glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
+         GLTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
 
-         glTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+         GLTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
       }
       else
       {
-         glTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
 
-         glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+         GLTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
 
-         glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
-         glVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
+         GLTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
 
-         glTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
-         glVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
+         GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
       }
 
-      glEnd();
+      GLEnd();
 
-      GLSetupTexturing(false);
+      GLSetupTexturing(shaders, false);
 
       //glTranslate(0.375, 0.375, 0.0);
    }
@@ -2478,8 +2636,6 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       float s2dw,s2dh,d2sw,d2sh;
       //bool flipX = false, flipY = false;
-
-      //Logf("StretchDI\n");
 
       if(Sgn(w) != Sgn(sw))
       {
@@ -2559,27 +2715,34 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(bitmap.pixelFormat == pixelFormat888 && !bitmap.paletteShades)
       {
+#if ENABLE_GL_LEGACY
+         OGLDisplay oglDisplay = display.driverData;
+         GLCapabilities capabilities = oglDisplay.capabilities;
+         bool legacy = capabilities.legacy;
+#endif
+
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-         glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
-         glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
-         glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
-#if !defined(SHADERS)
-         glRasterPos2d(dx,dy);
-         //glPixelZoom(flipX ? -s2dw : s2dw, flipY ? s2dh : -s2dh);
-         glPixelZoom(s2dw, -s2dh);
-         glDrawPixels(sw,sh,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+#if ENABLE_GL_LEGACY
+         if(legacy)
+         {
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
+            glRasterPos2d(dx,dy);
+            //glPixelZoom(flipX ? -s2dw : s2dw, flipY ? s2dh : -s2dh);
+            glPixelZoom(s2dw, -s2dh);
+            glDrawPixels(sw,sh,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+         }
 #endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-         glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-         glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
    }
 
    void BlitDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
-      //Logf("BlitDI\n");
-
       //Clip against the edges of the source
       if(sx<0)
       {
@@ -2626,19 +2789,27 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(bitmap.pixelFormat == pixelFormat888 && !bitmap.paletteShades)
       {
+#if ENABLE_GL_LEGACY
+         OGLDisplay oglDisplay = display.driverData;
+         GLCapabilities capabilities = oglDisplay.capabilities;
+         bool legacy = capabilities.legacy;
+#endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-         glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
-         glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
-         glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
-#if !defined(SHADERS)
-         glRasterPos2d(dx,dy);
-         glPixelZoom(1,-1);
-         glDrawPixels(w,h,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+#if ENABLE_GL_LEGACY
+         if(legacy)
+         {
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, sy);
+            glRasterPos2d(dx,dy);
+            glPixelZoom(1,-1);
+            glDrawPixels(w,h,GL_BGRA_EXT,GL_UNSIGNED_BYTE, bitmap.picture);
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+         }
 #endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-         glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-         glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
    }
 
@@ -2670,15 +2841,19 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool immediate = capabilities.immediate;
+#endif
+      bool shaders = capabilities.shaders;
       oglSystem.loadingFont = true;
 
       //glTranslated(-0.375, -0.375, 0.0);
 
-      //Logf("Blit\n");
-
       if(surface.textOpacity)
       {
-         int w, h, adv;
+         int w = 0, h, adv = 0;
          FontExtent(display.displaySystem, surface.font, text, len, &w, &h, 0, null, &adv);
          w += adv;
          display.displaySystem.driver.Area(display, surface,x,y,x+w-1,y+h-1);
@@ -2686,23 +2861,23 @@ class OpenGLDisplayDriver : DisplayDriver
 
       oglSurface.writingText = true;
 
-      GLSetupTexturing(true);
+      GLSetupTexturing(shaders, true);
 
       if(surface.font.outlineSize)
       {
          ColorAlpha outlineColor = surface.outlineColor;
-         glColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
+         GLColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
          oglSurface.writingOutline = true;
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
          oglSurface.writingOutline = false;
       }
-      glColor4fv(oglSurface.foreground);
+      GLColor4fv(oglSurface.foreground);
 
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
       oglSurface.writingText = false;
       oglSystem.loadingFont = false;
 
-      GLSetupTexturing(false);
+      GLSetupTexturing(shaders, false);
 
       //glTranslated(0.375, 0.375, 0.0);
    }
@@ -2734,29 +2909,41 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint32 stipple)
    {
-      //Logf("Stipple\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool legacy = capabilities.legacy;
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
 
       if(stipple)
       {
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
-         stippleEnabled = true;
-         glesLineStipple(1, (uint16)stipple);
-#else
-         glLineStipple(1, (uint16)stipple);
-         glEnable(GL_LINE_STIPPLE);
+#if ENABLE_GL_LEGACY
+         if(legacy)
+         {
+            stippleEnabled = true;
+            glLineStipple(1, (uint16)stipple);
+            glEnable(GL_LINE_STIPPLE);
+         }
+         else
 #endif
+            glsupLineStipple(shaders, 1, (uint16)stipple);
       }
       else
       {
-#if defined(_GLES) || defined(_GLES2) || defined(SHADERS)
-         stippleEnabled = false;
-         glMatrixMode(GL_TEXTURE);
-         glLoadIdentity();
-         glMatrixMode(MatrixMode::projection);
-         GLSetupTexturing(false);   // TODO: Special shading code for stipple?
-#else
-         glDisable(GL_LINE_STIPPLE);
+#if ENABLE_GL_LEGACY
+         if(legacy)
+            glDisable(GL_LINE_STIPPLE);
+         else
 #endif
+         {
+            stippleEnabled = false;
+            GLMatrixMode(GL_TEXTURE);
+            GLLoadIdentity();
+            GLMatrixMode(MatrixMode::projection);
+            GLSetupTexturing(shaders, false);   // TODO: Special shading code for stipple?
+         }
       }
    }
 
@@ -2764,7 +2951,11 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetRenderState(Display display, RenderState state, uint value)
    {
       OGLDisplay oglDisplay = display.driverData;
-      //Logf("RenderState\n");
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool legacy = capabilities.legacy;
+#endif
+      bool shaders = capabilities.shaders;
 
       switch(state)
       {
@@ -2777,8 +2968,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
             break;
          case fillMode:
-#if !defined(_GLES) && !defined(_GLES2)
-            glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
+#if ENABLE_GL_LEGACY
+            if(legacy)
+               glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
 #endif
             break;
          case depthTest:
@@ -2791,18 +2983,26 @@ class OpenGLDisplayDriver : DisplayDriver
          case fogColor:
          {
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
-#if defined(SHADERS)
-            shader_fogColor(color[0], color[1], color[2]);
-#else
-            glFogfv(GL_FOG_COLOR, (float *)&color);
+#if ENABLE_GL_SHADERS
+            if(shaders)
+               shader_fogColor(color[0], color[1], color[2]);
+#endif
+
+#if ENABLE_GL_FFP
+            if(!shaders)
+               glFogfv(GL_FOG_COLOR, (float *)&color);
 #endif
             break;
          }
          case fogDensity:
-#if defined(SHADERS)
-            shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
-#else
-            glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
+#if ENABLE_GL_SHADERS
+            if(shaders)
+               shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
+#endif
+
+#if ENABLE_GL_FFP
+            if(!shaders)
+               glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
             break;
          case blend:
@@ -2812,11 +3012,17 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case ambient:
          {
-#if defined(SHADERS)
-            shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
-#else
-            float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
-            glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+#if ENABLE_GL_SHADERS
+            if(shaders)
+               shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
+#endif
+
+#if ENABLE_GL_FFP
+            if(!shaders)
+            {
+               float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
+               glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+            }
 #endif
             break;
          }
@@ -2838,166 +3044,173 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SetLight(Display display, int id, Light light)
    {
-#if defined(SHADERS)
-      shader_setLight(display, id, light);
-#else
-      //Logf("SetLight\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+      bool shaders = capabilities.shaders;
 
-      if(light != null)
+#if ENABLE_GL_SHADERS
+      if(shaders)
+         shader_setLight(display, id, light);
+#endif
+
+#if ENABLE_GL_FFP
+      if(!shaders)
       {
-         Object lightObject = light.lightObject;
-         float position[4] = { 0, 0, 0, 0 };
-         float color[4] = { 0, 0, 0, 1 };
-
-         glEnable(GL_LIGHT0 + id);
-         /*
-         glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, (float *)&light.diffuse);
-         glLightfv(GL_LIGHT0 + id, GL_AMBIENT, (float *)&light.ambient);
-         glLightfv(GL_LIGHT0 + id, GL_SPECULAR,(float *)&light.specular);
-         */
-
-         if(!light.multiplier) light.multiplier = 1.0f;
-
-         color[0] = light.diffuse.r * light.multiplier;
-         color[1] = light.diffuse.g * light.multiplier;
-         color[2] = light.diffuse.b * light.multiplier;
-         glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, color);
-
-         color[0] = light.ambient.r * light.multiplier;
-         color[1] = light.ambient.g * light.multiplier;
-         color[2] = light.ambient.b * light.multiplier;
-         glLightfv(GL_LIGHT0 + id, GL_AMBIENT, color);
-         color[0] = light.specular.r * light.multiplier;
-         color[1] = light.specular.g * light.multiplier;
-         color[2] = light.specular.b * light.multiplier;
-         glLightfv(GL_LIGHT0 + id, GL_SPECULAR,color);
-
-         if(lightObject)
+         if(light != null)
          {
-            Vector3D positionVector;
-            if(light.flags.spot)
+            Object lightObject = light.lightObject;
+            float position[4] = { 0, 0, 0, 0 };
+            float color[4] = { 0, 0, 0, 1 };
+
+            glEnable(GL_LIGHT0 + id);
+
+            if(!light.multiplier) light.multiplier = 1.0f;
+
+            color[0] = light.diffuse.r * light.multiplier;
+            color[1] = light.diffuse.g * light.multiplier;
+            color[2] = light.diffuse.b * light.multiplier;
+            glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, color);
+
+            color[0] = light.ambient.r * light.multiplier;
+            color[1] = light.ambient.g * light.multiplier;
+            color[2] = light.ambient.b * light.multiplier;
+            glLightfv(GL_LIGHT0 + id, GL_AMBIENT, color);
+            color[0] = light.specular.r * light.multiplier;
+            color[1] = light.specular.g * light.multiplier;
+            color[2] = light.specular.b * light.multiplier;
+            glLightfv(GL_LIGHT0 + id, GL_SPECULAR,color);
+
+            if(lightObject)
             {
-               if(lightObject.flags.root || !lightObject.parent)
+               Vector3D positionVector;
+               if(light.flags.spot)
                {
-                  positionVector = lightObject.transform.position;
-                  positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
-               }
-               else
-               {
-                  positionVector.MultMatrix(lightObject.transform.position, lightObject.parent.matrix);
-                  if(display.display3D.camera)
+                  if(lightObject.flags.root || !lightObject.parent)
+                  {
+                     positionVector = lightObject.transform.position;
                      positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
-               }
-               position[3] = 1;
-            }
-            else
-            {
-               if(!light.direction.x && !light.direction.y && !light.direction.z)
-               {
-                  Vector3Df vector { 0,0,-1 };
-                  Matrix mat;
-                  mat.RotationQuaternion(light.orientation);
-                  positionVector.MultMatrixf(vector, mat);
-               }
-               else
-               {
-                  positionVector = light.direction;
+                  }
+                  else
+                  {
+                     positionVector.MultMatrix(lightObject.transform.position, lightObject.parent.matrix);
+                     if(display.display3D.camera)
+                        positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+                  }
                   position[3] = 1;
                }
-            }
+               else
+               {
+                  if(!light.direction.x && !light.direction.y && !light.direction.z)
+                  {
+                     Vector3Df vector { 0,0,-1 };
+                     Matrix mat;
+                     mat.RotationQuaternion(light.orientation);
+                     positionVector.MultMatrixf(vector, mat);
+                  }
+                  else
+                  {
+                     positionVector = light.direction;
+                     position[3] = 1;
+                  }
+               }
 
-            position[0] = (float)positionVector.x;
-            position[1] = (float)positionVector.y;
-            position[2] = (float)positionVector.z;
+               position[0] = (float)positionVector.x;
+               position[1] = (float)positionVector.y;
+               position[2] = (float)positionVector.z;
 
-            glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
+               glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
 
-            /*
-            // Display Light Position
-            glDisable(GL_LIGHTING);
-            glDisable(GL_DEPTH_TEST);
-            glColor3f(1,1,1);
-            glPointSize(10);
-            glBegin(GL_POINTS);
-            glVertex3fv(position);
-            glEnd();
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_LIGHTING);
+               /*
+               // Display Light Position
+               glDisable(GL_LIGHTING);
+               glDisable(GL_DEPTH_TEST);
+               glColor3f(1,1,1);
+               glPointSize(10);
+               glBegin(GL_POINTS);
+               glVertex3fv(position);
+               glEnd();
+               glEnable(GL_DEPTH_TEST);
+               glEnable(GL_LIGHTING);
 
 
-            // Display Target
-            if(lightObject.flags.root || !lightObject.parent)
-            {
-               positionVector = light.target.transform.position;
-               positionVector.Subtract(positionVector, display.camera.cPosition);
+               // Display Target
+               if(lightObject.flags.root || !lightObject.parent)
+               {
+                  positionVector = light.target.transform.position;
+                  positionVector.Subtract(positionVector, display.camera.cPosition);
+               }
+               else
+               {
+                  positionVector.MultMatrix(light.target.transform.position,
+                     lightObject.light.target.parent.matrix);
+                  positionVector.Subtract(positionVector, display.camera.cPosition);
+               }
+
+               position[0] = positionVector.x;
+               position[1] = positionVector.y;
+               position[2] = positionVector.z;
+
+               glDisable(GL_LIGHTING);
+               glDisable(GL_DEPTH_TEST);
+               glColor3f(1,1,0);
+               glPointSize(10);
+               glBegin(GL_POINTS);
+               glVertex3fv(position);
+               glEnd();
+               glEnable(GL_DEPTH_TEST);
+               glEnable(GL_LIGHTING);
+               */
+
+               if(light.flags.attenuation)
+               {
+                  glLightf(GL_LIGHT0 + id, GL_CONSTANT_ATTENUATION, light.Kc);
+                  glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, light.Kl);
+                  glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
+               }
+
+               if(light.flags.spot)
+               {
+                  float exponent = 0;
+                  #define MAXLIGHT  0.9
+                  float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
+                  // Figure out exponent out of the hot spot
+                  exponent = (float)(log(MAXLIGHT) / log(cos((light.hotSpot / 2))));
+
+                  glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, direction);
+                  glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)(light.fallOff / 2));
+                  glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, exponent);
+               }
             }
             else
             {
-               positionVector.MultMatrix(light.target.transform.position,
-                  lightObject.light.target.parent.matrix);
-               positionVector.Subtract(positionVector, display.camera.cPosition);
-            }
+               Vector3Df vector { 0,0,-1 };
+               Vector3Df direction;
+               Matrix mat;
 
-            position[0] = positionVector.x;
-            position[1] = positionVector.y;
-            position[2] = positionVector.z;
+               mat.RotationQuaternion(light.orientation);
+               direction.MultMatrix(vector, mat);
 
-            glDisable(GL_LIGHTING);
-            glDisable(GL_DEPTH_TEST);
-            glColor3f(1,1,0);
-            glPointSize(10);
-            glBegin(GL_POINTS);
-            glVertex3fv(position);
-            glEnd();
-            glEnable(GL_DEPTH_TEST);
-            glEnable(GL_LIGHTING);
-            */
+               position[0] = direction.x;
+               position[1] = direction.y;
+               position[2] = direction.z;
 
-            if(light.flags.attenuation)
-            {
-               glLightf(GL_LIGHT0 + id, GL_CONSTANT_ATTENUATION, light.Kc);
-               glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, light.Kl);
-               glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
-            }
-
-            if(light.flags.spot)
-            {
-               float exponent = 0;
-               #define MAXLIGHT  0.9
-               float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
-               // Figure out exponent out of the hot spot
-               exponent = (float)(log(MAXLIGHT) / log(cos((light.hotSpot / 2))));
-
-               glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, direction);
-               glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)(light.fallOff / 2));
-               glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, exponent);
+               glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
             }
          }
          else
-         {
-            Vector3Df vector { 0,0,-1 };
-            Vector3Df direction;
-            Matrix mat;
-
-            mat.RotationQuaternion(light.orientation);
-            direction.MultMatrix(vector, mat);
-
-            position[0] = direction.x;
-            position[1] = direction.y;
-            position[2] = direction.z;
-
-            glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
-         }
+            glDisable(GL_LIGHT0 + id);
       }
-      else
-         glDisable(GL_LIGHT0 + id);
 #endif
    }
 
    void SetCamera(Display display, Surface surface, Camera camera)
    {
       OGLDisplay oglDisplay = display.driverData;
-      //Logf("SetCamera\n");
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
 
       if(surface && camera)
       {
@@ -3016,9 +3229,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glViewport(x, y, w, h);
 
          // *** Projection Matrix ***
-         glMatrixMode(MatrixMode::projection);
+         GLMatrixMode(MatrixMode::projection);
          if(!display.display3D.camera)
-            glPushMatrix();
+            GLPushMatrix();
 
          if(display.display3D.collectingHits)
          {
@@ -3034,11 +3247,11 @@ class OpenGLDisplayDriver : DisplayDriver
                   (h + 2.0f * (y - pickY)) / display.display3D.pickHeight, 0, 1
                }
             };
-            glLoadMatrixd(pickMatrix.array);
+            GLLoadMatrixd(pickMatrix.array);
          }
          else
-            glLoadIdentity();
-         glFrustum(
+            GLLoadIdentity();
+         GLFrustum(
             (left   - origX) * camera.zMin / camera.focalX,
             (right  - origX) * camera.zMin / camera.focalX,
             (bottom - origY) * camera.zMin / camera.focalY,
@@ -3048,25 +3261,26 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_BLEND);
 
          // *** Z Inverted Identity Matrix ***
-         glMatrixMode(MatrixMode::modelView);
+         GLMatrixMode(MatrixMode::modelView);
          if(!display.display3D.camera)
-            glPushMatrix();
+            GLPushMatrix();
 
-         glLoadIdentity();
+         GLLoadIdentity();
 
-         glScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
+         GLScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
 
          // *** View Matrix ***
-         glMultMatrixd(camera.viewMatrix.array);
+         GLMultMatrixd(camera.viewMatrix.array);
 
          // *** Lights ***
          // ...
 
          glEnable(GL_DEPTH_TEST);
 
-         GLSetupLighting(true);
-#if !defined(SHADERS)
-         glShadeModel(GL_SMOOTH);
+         GLSetupLighting(shaders, true);
+#if ENABLE_GL_FFP
+         if(!shaders)
+            glShadeModel(GL_SMOOTH);
 #endif
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
@@ -3084,17 +3298,20 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
 
+         GLSetupTexturing(shaders, false);
+         GLSetupLighting(shaders, false);
+         GLSetupFog(shaders, false);
 
-         GLSetupTexturing(false);
-         GLSetupLighting(false);
-         GLSetupFog(false);
+         GLDisableClientState(COLORS);
 
-         glDisableClientState(GL_COLOR_ARRAY);
+#if ENABLE_GL_SHADERS
+         if(shaders)
+            shader_setPerVertexColor(false);
+#endif
 
-#if defined(SHADERS)
-         shader_setPerVertexColor(false);
-#else
-         glShadeModel(GL_FLAT);
+#if ENABLE_GL_FFP
+         if(!shaders)
+            glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
 #if !defined(__EMSCRIPTEN__)
@@ -3102,50 +3319,57 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
          // *** Restore 2D MODELVIEW Matrix ***
-         glPopMatrix();
+         GLPopMatrix();
 
          // *** Restore 2D PROJECTION Matrix ***
-         glMatrixMode(MatrixMode::projection);
-         glPopMatrix();
+         GLMatrixMode(MatrixMode::projection);
+         GLPopMatrix();
       }
 
    }
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
-      //Logf("ApplyMaterial\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
 
       // Basic Properties
       if(material.flags.doubleSided)
       {
-#if !defined(SHADERS)
-         glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
+#if ENABLE_GL_FFP
+         if(!shaders)
+            GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
       }
       else
       {
-#if !defined(SHADERS)
-         glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
+#if ENABLE_GL_FFP
+         if(!shaders)
+            GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
          glEnable(GL_CULL_FACE);
       }
 
       // Fog
-      GLSetupFog(!material.flags.noFog);
+      GLSetupFog(shaders, !material.flags.noFog);
 
       // Maps
       if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
       {
          Bitmap map = material.baseMap;
-         GLSetupTexturing(true);
+         GLSetupTexturing(shaders, true);
          glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)map.driverData);
 
-         glMatrixMode(GL_TEXTURE);
-         glLoadIdentity();
+         GLMatrixMode(GL_TEXTURE);
+         GLLoadIdentity();
          if(material.uScale && material.vScale)
-            glScalef(material.uScale, material.vScale, 1);
-         glMatrixMode(MatrixMode::modelView);
+            GLScalef(material.uScale, material.vScale, 1);
+         GLMatrixMode(MatrixMode::modelView);
 
          if(material.flags.tile)
          {
@@ -3159,38 +3383,44 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
       else
-         GLSetupTexturing(false);
+         GLSetupTexturing(shaders, false);
 
-#if defined(SHADERS)
-      shader_setMaterial(material, mesh.flags.colors);
-#else
-      if(mesh.flags.colors)
+#if ENABLE_GL_SHADERS
+      if(shaders)
+         shader_setMaterial(material, mesh.flags.colors);
+#endif
+
+#if ENABLE_GL_FFP
+      if(!shaders)
       {
-         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-         glEnable(GL_COLOR_MATERIAL);
-      }
-      else
-      {
-         glDisable(GL_COLOR_MATERIAL);
+         if(mesh.flags.colors)
          {
-            float color[4] = { material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity };
-            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
+            GLColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+            glEnable(GL_COLOR_MATERIAL);
+         }
+         else
+         {
+            glDisable(GL_COLOR_MATERIAL);
+            {
+               float color[4] = { material.diffuse.r, material.diffuse.g, material.diffuse.b, material.opacity };
+               glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
+            }
+            {
+               float color[4] = { material.ambient.r, material.ambient.g, material.ambient.b, 0 };
+               glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
+            }
          }
          {
-            float color[4] = { material.ambient.r, material.ambient.g, material.ambient.b, 0 };
-            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
+            float color[4] = { material.specular.r, material.specular.g, material.specular.b, 0 };
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
          }
-      }
-      {
-         float color[4] = { material.specular.r, material.specular.g, material.specular.b, 0 };
-         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
-      }
-      {
-         float color[4] = { material.emissive.r, material.emissive.g, material.emissive.b, 0 };
-         glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, color);
-      }
+         {
+            float color[4] = { material.emissive.r, material.emissive.g, material.emissive.b, 0 };
+            glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, color);
+         }
 
-      glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
+         glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
+      }
 #endif
    }
 
@@ -3199,29 +3429,32 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLMesh oglMesh = mesh.data;
       if(oglMesh)
       {
+         OGLDisplay oglSystem = displaySystem.driverData;
+         GLCapabilities capabilities = oglSystem.capabilities;
+         bool vertexBuffer = capabilities.vertexBuffer;
          if(!mesh.flags.vertices)
          {
-            oglMesh.vertices.free();
+            oglMesh.vertices.free(vertexBuffer);
             delete mesh.vertices;
          }
          if(!mesh.flags.normals)
          {
-            oglMesh.normals.free();
+            oglMesh.normals.free(vertexBuffer);
             delete mesh.normals;
          }
          if(!mesh.flags.texCoords1)
          {
-            oglMesh.texCoords.free();
+            oglMesh.texCoords.free(vertexBuffer);
             delete mesh.texCoords;
          }
          if(!mesh.flags.texCoords2)
          {
-            oglMesh.texCoords2.free();
+            oglMesh.texCoords2.free(vertexBuffer);
             // delete mesh.texCoords2;
          }
          if(!mesh.flags.colors)
          {
-            oglMesh.colors.free();
+            oglMesh.colors.free(vertexBuffer);
             delete mesh.colors;
          }
          if(!mesh.flags)
@@ -3311,25 +3544,27 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void UnlockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
    {
-      OGLMesh oglMesh = mesh.data;
-      if(!flags) flags = mesh.flags;
-
-      if(vboAvailable)
+      OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities capabilities = oglSystem.capabilities;
+      bool vertexBuffer = capabilities.vertexBuffer;
+      if(vertexBuffer)
       {
+         OGLMesh oglMesh = mesh.data;
+         if(!flags) flags = mesh.flags;
          if(flags.vertices)
-            oglMesh.vertices.upload(
+            oglMesh.vertices.upload(vertexBuffer,
                mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices); //, GL_STATIC_DRAW_ARB );
 
          if(flags.normals)
-            oglMesh.normals.upload(
+            oglMesh.normals.upload(vertexBuffer,
                mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals); //, GL_STATIC_DRAW_ARB );
 
          if(flags.texCoords1)
-            oglMesh.texCoords.upload(
+            oglMesh.texCoords.upload(vertexBuffer,
                mesh.nVertices * sizeof(Pointf), mesh.texCoords); //, GL_STATIC_DRAW_ARB );
 
          if(flags.colors)
-            oglMesh.colors.upload(
+            oglMesh.colors.upload(vertexBuffer,
                mesh.nVertices * sizeof(ColorRGBAf), mesh.colors); //, GL_STATIC_DRAW_ARB );
       }
    }
@@ -3343,9 +3578,12 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void FreeIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
    {
+      OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities capabilities = oglSystem.capabilities;
+      bool vertexBuffer = capabilities.vertexBuffer;
       if(oglIndices)
       {
-         oglIndices.buffer.free();
+         oglIndices.buffer.free(vertexBuffer);
          delete oglIndices.indices;
          delete oglIndices;
       }
@@ -3364,9 +3602,12 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void UnlockIndices(DisplaySystem displaySystem, OGLIndices oglIndices, bool indices32bit, int nIndices)
    {
-      if(vboAvailable)
+      OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities capabilities = oglSystem.capabilities;
+      bool vertexBuffer = capabilities.vertexBuffer;
+      if(vertexBuffer)
       {
-#if defined(_GLES) || defined(_GLES2)
+#if !ENABLE_GL_INTDBL
          if(indices32bit)
          {
             if(!oglIndices.buffer.buffer)
@@ -3377,7 +3618,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
 #endif
-         oglIndices.buffer.upload(
+         oglIndices.buffer.upload(vertexBuffer,
             nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
             oglIndices.indices); //GL_STATIC_DRAW_ARB);
       }
@@ -3391,14 +3632,19 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-      //Logf("SelectMesh\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_SHADERS && ENABLE_GL_FFP
+      bool shaders = capabilities.shaders;
+#endif
 
 #if !defined( __ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+      bool vertexBuffer = capabilities.vertexBuffer;
 
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
-         if(!vboAvailable && display.display3D.mesh)
+         if(!vertexBuffer && display.display3D.mesh)
             glUnlockArraysEXT();
 
 #endif
@@ -3407,62 +3653,62 @@ class OpenGLDisplayDriver : DisplayDriver
          OGLMesh oglMesh = mesh.data;
 
          // *** Vertex Stream ***
-         glEnableClientState(GL_VERTEX_ARRAY);
+         GLEnableClientState(VERTICES);
          if(!display.display3D.collectingHits && oglMesh)
          {
-            oglMesh.vertices.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
+            oglMesh.vertices.use(capabilities, vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
-               glEnableClientState(GL_NORMAL_ARRAY);
-               oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
+               GLEnableClientState(NORMALS);
+               oglMesh.normals.use(capabilities, normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
             }
             else
-               glDisableClientState(GL_NORMAL_ARRAY);
+               GLDisableClientState(NORMALS);
 
             // *** Texture Coordinates Stream ***
             if(mesh.texCoords || mesh.flags.texCoords1)
             {
-               glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+               GLEnableClientState(TEXTURECOORDS);
+               oglMesh.texCoords.use(capabilities, texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
             }
             else
-               glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+               GLDisableClientState(TEXTURECOORDS);
 
             // *** Color Stream ***
             if(mesh.colors || mesh.flags.colors)
             {
-               glEnableClientState(GL_COLOR_ARRAY);
-               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
+               GLEnableClientState(COLORS);
+               oglMesh.colors.use(capabilities, color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
             }
             else
-               glDisableClientState(GL_COLOR_ARRAY);
+               GLDisableClientState(COLORS);
          }
          else
          {
-            noAB.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
+            noAB.use(capabilities, vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
             if((mesh.normals || mesh.flags.normals) && !display.display3D.collectingHits)
             {
-               glEnableClientState(GL_NORMAL_ARRAY);
-               noAB.use(normal, 3, GL_FLOAT, 0, mesh.normals);
+               GLEnableClientState(NORMALS);
+               noAB.use(capabilities, normal, 3, GL_FLOAT, 0, mesh.normals);
             }
             else
-               glDisableClientState(GL_NORMAL_ARRAY);
+               GLDisableClientState(NORMALS);
             if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
             {
-               glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-               noAB.use(texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
+               GLEnableClientState(TEXTURECOORDS);
+               noAB.use(capabilities, texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
             }
             else
-               glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+               GLDisableClientState(TEXTURECOORDS);
             if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
             {
-               glEnableClientState(GL_COLOR_ARRAY);
-               noAB.use(color, 4, GL_FLOAT, 0, mesh.colors);
+               GLEnableClientState(COLORS);
+               noAB.use(capabilities, color, 4, GL_FLOAT, 0, mesh.colors);
             }
             else
-               glDisableClientState(GL_COLOR_ARRAY);
+               GLDisableClientState(COLORS);
          }
 
 #if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
@@ -3470,100 +3716,91 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          if(glLockArraysEXT)
 #endif
-            if(!vboAvailable)
+            if(!vertexBuffer)
                glLockArraysEXT(0, mesh.nVertices);
-
 #endif
       }
    }
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
    {
-      //Logf("DrawPrimitives\n");
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+      bool vertexBuffer = capabilities.vertexBuffer;
 
       if(primitive->type.vertexRange)
-         glDrawArrays(primitiveTypes[primitive->type.primitiveType], primitive->first, primitive->nVertices);
+         glDrawArrays(getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->first, primitive->nVertices);
       else
       {
-         //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) ***
-         // HACK TO SPEED THINGS UP...
-#ifndef __ANDROID__
-         /*GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-         if(primitive->nIndices < (mesh.nVertices >> 2) && !primitive->type.indices32bit)
+         OGLIndices oglIndices = primitive->data;
+         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && vertexBuffer) ? oglIndices.buffer : noEAB);
+#if !ENABLE_GL_INTDBL
+         if(!vertexBuffer && primitive->type.indices32bit)
          {
-            int c;
-            glBegin((GLIMTKMode)primitiveTypes[primitive->type.primitiveType]);
-            if(primitive->data)
-            {
-               OGLIndices oglIndices = primitive->data;
-               MeshFeatures flags = mesh.flags;
-               for(c = 0; c<primitive->nIndices; c++)
-               {
-                  uint16 index = ((uint16 *) oglIndices.indices)[c];
-                  if(flags.normals) glNormal3fv((float *)&mesh.normals[index]);
-                  if(flags.texCoords1) glTexCoord2fv((float *)&mesh.texCoords[index]);
-                  if(flags.colors) glColor4fv((float *)&mesh.colors[index]);
-                  glVertex3fv((float *)&mesh.vertices[index]);
-               }
-            }
-            glEnd();
+            uint16 * temp = new uint16[primitive->nIndices];
+            uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
+            int i;
+            for(i = 0; i < primitive->nIndices; i++)
+               temp[i] = (uint16)src[i];
+            eab.draw(vertexBuffer, getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->nIndices, GL_UNSIGNED_SHORT, temp);
+            delete temp;
          }
-         else*/
+         else
 #endif
-
-         {
-            OGLIndices oglIndices = primitive->data;
-            GLEAB eab = ((!display.display3D.collectingHits && oglIndices && vboAvailable) ? oglIndices.buffer : noEAB);
-#if defined(_GLES) || defined(_GLES2)
-            if(!vboAvailable && primitive->type.indices32bit)
-            {
-               uint16 * temp = new uint16[primitive->nIndices];
-               uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
-               int i;
-               for(i = 0; i < primitive->nIndices; i++)
-                  temp[i] = (uint16)src[i];
-               eab.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, GL_UNSIGNED_SHORT, temp);
-               delete temp;
-            }
-            else
-#endif
-            eab.draw(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
+            eab.draw(vertexBuffer, getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->nIndices,
                primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-         }
+         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
    }
 
    void PushMatrix(Display display)
    {
-      glPushMatrix();
+#if ENABLE_GL_LEGACY
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+      bool fixedFunction = capabilities.fixedFunction;
+      bool shaders = capabilities.shaders;
+#endif
+      GLPushMatrix();
    }
 
    void PopMatrix(Display display, bool setMatrix)
    {
-      glPopMatrix();
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
+      GLPopMatrix();
    }
 
    void SetTransform(Display display, Matrix transMatrix, bool viewSpace, bool useCamera)
    {
+      OGLDisplay oglDisplay = display.driverData;
+      GLCapabilities capabilities = oglDisplay.capabilities;
+#if ENABLE_GL_LEGACY
+      bool fixedFunction = capabilities.fixedFunction;
+#endif
+      bool shaders = capabilities.shaders;
       Matrix matrix = transMatrix;
       Camera camera = useCamera ? display.display3D.camera : null;
 
       if(viewSpace)
       {
-         glLoadIdentity();
-         glScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
+         GLLoadIdentity();
+         GLScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
       }
       else if(camera)
       {
-         glTranslated(
+         GLTranslated(
             matrix.m[3][0] - camera.cPosition.x,
             matrix.m[3][1] - camera.cPosition.y,
             matrix.m[3][2] - camera.cPosition.z);
       }
       else
-         glTranslated(
+         GLTranslated(
             matrix.m[3][0],
             matrix.m[3][1],
             matrix.m[3][2]);
@@ -3572,7 +3809,7 @@ class OpenGLDisplayDriver : DisplayDriver
       matrix.m[3][1] = 0;
       matrix.m[3][2] = 0;
 
-      glMultMatrixd(matrix.array);
+      GLMultMatrixd(matrix.array);
    }
 #endif
 }

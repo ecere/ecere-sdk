@@ -1,23 +1,24 @@
 // Matrix Stack Implementation
 
-#ifndef _GLES
- #define SHADERS
-#endif
-
 #if defined(__ANDROID__) || defined(__ODROID__)
    #include <GLES/gl.h>
+   #ifndef _GLES
+      #define _GLES
+   #endif
 #elif defined(__EMSCRIPTEN__)
    #include <GLES2/gl2.h>
+   #ifndef _GLES2
+      #define _GLES2
+   #endif
 #else
-#  if defined(SHADERS)
-#     include "gl_core_3_3.h"
-#  else
-#     include "gl_compat_4_4.h"
-#  endif
+   #include "gl_compat_4_4.h"
 #endif
 
 import "Display"
 import "shading"
+
+#define ENABLE_GL_SHADERS  (!defined(_GLES))
+#define ENABLE_GL_FFP      (!defined(_GLES2))
 
 #if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
 public union Matrix
@@ -106,7 +107,7 @@ public void glmsSetNearPlane(double value)
 /*static */int matrixIndex[3];
 /*static */int curStack = 0;
 
-static void LoadCurMatrix()
+static void LoadCurMatrix(bool shaders)
 {
    double * i = matrixStack[curStack][matrixIndex[curStack]].array;
    float m[16] =
@@ -117,14 +118,18 @@ static void LoadCurMatrix()
       (float)i[12],(float)i[13],(float)i[14],(float)i[15]
    };
 
-#ifdef SHADERS
-   shader_LoadMatrixf((MatrixMode) (0x1700 + curStack), m);
-#else
-   glLoadMatrixf(m);
+#if ENABLE_GL_SHADERS
+   if(shaders)
+      shader_LoadMatrixf((MatrixMode) (0x1700 + curStack), m);
+#endif
+
+#if ENABLE_GL_FFP
+   if(!shaders)
+      glLoadMatrixf(m);
 #endif
 }
 
-public void glmsLoadMatrix(Matrix matrix)
+public void glmsLoadMatrix(bool shaders, Matrix matrix)
 {
    float m[16] =
    {
@@ -133,18 +138,24 @@ public void glmsLoadMatrix(Matrix matrix)
       (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
       (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
    };
-#ifdef SHADERS
+#if ENABLE_GL_SHADERS
+   if(shaders)
+   {
       memcpy(matrixStack[curStack][matrixIndex[curStack]].array, matrix.array, sizeof(Matrix));
       shader_LoadMatrixf((MatrixMode) (0x1700 + curStack), m);
-#else
+   }
+#endif
+
+#if ENABLE_GL_FFP
+   if(!shaders)
       glLoadMatrixf(m);
 #endif
 }
 
-public void glmsLoadIdentity()
+public void glmsLoadIdentity(bool shaders)
 {
    matrixStack[curStack][matrixIndex[curStack]].Identity();
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
 public void glmsPushMatrix()
@@ -156,16 +167,16 @@ public void glmsPushMatrix()
    }
 }
 
-public void glmsPopMatrix()
+public void glmsPopMatrix(bool shaders)
 {
    if(matrixIndex[curStack] > 0)
    {
       matrixIndex[curStack]--;
-      LoadCurMatrix();
+      LoadCurMatrix(shaders);
    }
 }
 
-public void glmsLoadMatrixf(float * i)
+public void glmsLoadMatrixf(bool shaders, float * i)
 {
    double m[16] =
    {
@@ -175,16 +186,16 @@ public void glmsLoadMatrixf(float * i)
       i[3*4+0], i[3*4+1], i[3*4+2], i[3*4+3]
    };
    memcpy(matrixStack[curStack][matrixIndex[curStack]].array, m, 16*sizeof(double));
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
-public void glmsLoadMatrixd(double * i)
+public void glmsLoadMatrixd(bool shaders, double * i)
 {
    memcpy(matrixStack[curStack][matrixIndex[curStack]].array, i, sizeof(Matrix));
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
-public void glmsOrtho( double l, double r, double b, double t, double n, double f )
+public void glmsOrtho(bool shaders, double l, double r, double b, double t, double n, double f )
 {
    Matrix m
    { {
@@ -196,10 +207,10 @@ public void glmsOrtho( double l, double r, double b, double t, double n, double 
    Matrix res;
    res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = res;
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
-public void glmsScaled( double a, double b, double c )
+public void glmsScaled( bool shaders, double a, double b, double c )
 {
    Matrix m, r;
 
@@ -207,10 +218,10 @@ public void glmsScaled( double a, double b, double c )
    m.Scale(a,b,c);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
-public void glmsTranslated( double a, double b, double c )
+public void glmsTranslated( bool shaders, double a, double b, double c )
 {
    Matrix m, r;
 
@@ -218,11 +229,11 @@ public void glmsTranslated( double a, double b, double c )
    m.Translate(a,b,c);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
-public void glmsFrustum( double l, double r, double b, double t, double n, double f )
+public void glmsFrustum( bool shaders, double l, double r, double b, double t, double n, double f )
 {
    nearPlane = n;
    n = 1;
@@ -246,11 +257,11 @@ public void glmsFrustum( double l, double r, double b, double t, double n, doubl
       Matrix res;
       res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
       matrixStack[curStack][matrixIndex[curStack]] = res;
-      LoadCurMatrix();
+      LoadCurMatrix(shaders);
    }
 }
 
-public void glmsRotated(double angle, double x, double y, double z)
+public void glmsRotated( bool shaders, double angle, double x, double y, double z)
 {
    Quaternion q;
    Matrix m, r;
@@ -261,15 +272,15 @@ public void glmsRotated(double angle, double x, double y, double z)
    m.RotationQuaternion(q);
    r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
-public void glmsMultMatrixd( double * i )
+public void glmsMultMatrixd( bool shaders, double * i )
 {
    Matrix r;
    r.Multiply((Matrix *)i, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = r;
-   LoadCurMatrix();
+   LoadCurMatrix(shaders);
 }
 
 public void glmsGetDoublev(GLMSWhatToGet what, double * i)
@@ -293,10 +304,12 @@ public void glmsGetDoublev(GLMSWhatToGet what, double * i)
 }
 #endif
 
-public void glmsMatrixMode(MatrixMode mode)
+public void glmsMatrixMode(bool shaders, MatrixMode mode)
 {
    curStack = (mode == modelView) ? 0 : (mode == projection) ? 1 : 2;
-#ifndef SHADERS
-   glMatrixMode(mode);
+
+#if ENABLE_GL_FFP
+   if(!shaders)
+      glMatrixMode(mode);
 #endif
 }

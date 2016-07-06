@@ -31,6 +31,27 @@ import "Quaternion"
 import "Vector3D"
 #endif
 
+#if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER))
+import "OpenGLDisplayDriver"
+#endif
+
+public class GLCapabilities : uint
+{
+public:
+   bool legacy          :1;
+   bool shaders         :1;
+   bool nonPow2Textures :1;
+   bool vertexBuffer    :1;
+   bool frameBuffer     :1;
+
+   // To be able to disable these at runtime independently...
+   bool immediate       :1;
+   bool fixedFunction   :1;
+   bool quads           :1;
+   bool intAndDouble    :1;
+   // bool mapBuffer       :1;
+};
+
 public enum RenderState { fillMode = 1, depthTest, depthWrite, fogDensity, fogColor, blend, ambient, alphaWrite, antiAlias, vSync };
 
 public union RenderStateFloat { float f; uint ui; };
@@ -1126,6 +1147,28 @@ public:
    property bool useSharedMemory { set { useSharedMemory = value; } get { return useSharedMemory; } };
    property void * systemWindow { get { return window; } };
    property DisplaySystem displaySystem { get { return displaySystem; } };
+#ifndef ECERE_VANILLA
+   property GLCapabilities glCapabilities
+   {
+      get { return ((OGLDisplay)driverData).capabilities; }
+      set
+      {
+         glCapabilities = value;
+         if(driverData)
+         {
+            OGLDisplay oglDisplay = driverData;
+            if(!oglDisplay.originalCapabilities.fixedFunction)
+               value.shaders = true;
+            if(!oglDisplay.originalCapabilities.shaders)
+               value.fixedFunction = true;
+            oglDisplay.capabilities = oglDisplay.originalCapabilities & value;
+            Lock(true);
+            OpenGLDisplayDriver::initialDisplaySetup(this);
+            Unlock();
+         }
+      }
+   };
+#endif
 
    int width, height;
    void * driverData;
@@ -1144,6 +1187,8 @@ private:
    bool alphaBlend;
    void * windowDriverData;
    bool useSharedMemory;
+   GLCapabilities glCapabilities;
+   glCapabilities = { true, true, true, true, true, true, true, true };
 };
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)

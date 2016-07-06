@@ -5005,7 +5005,7 @@ private:
          }
          if(displaySystem)
          {
-            display = Display { alphaBlend = alphaBlend, useSharedMemory = useSharedMemory, windowDriverData = windowData };
+            display = Display { alphaBlend = alphaBlend, useSharedMemory = useSharedMemory, glCapabilities = glCapabilities, windowDriverData = windowData };
             if(display.Create(displaySystem, windowHandle))
                result = true;
             else
@@ -9638,6 +9638,30 @@ public:
    property bool moveable { get { return (bool)moveable; } set { moveable = value; } };
    property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; if(value) nativeDecorations = false; /* Native Decorations are not supported with alphaBlend */ } };
    property bool useSharedMemory { get { return (bool)useSharedMemory; } set { useSharedMemory = value; } };
+   property GLCapabilities glCapabilities
+   {
+      get { return glCapabilities; }
+      set
+      {
+         bool reload = display != null &&
+            (glCapabilities.nonPow2Textures != value.nonPow2Textures ||
+             glCapabilities.intAndDouble != value.intAndDouble ||
+             glCapabilities.vertexBuffer != value.vertexBuffer ||
+             glCapabilities.quads != value.quads);
+         if(reload)
+            UnloadGraphics(false);
+
+         glCapabilities = value;
+
+         if(reload)
+         {
+            if(SetupDisplay())
+               LoadGraphics(false, false);
+         }
+         else if(display)
+            display.glCapabilities = value;
+      }
+   };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
    property bool nativeDecorations
    {
@@ -9786,6 +9810,8 @@ private:
    BitmapResource icon;
    void * windowData;
    CreationActivationOption creationActivation;
+   GLCapabilities glCapabilities;
+   glCapabilities = { true, true, true, true, true, true, true, true };
    struct
    {
       bool active:1;            // true if window and ancestors are active

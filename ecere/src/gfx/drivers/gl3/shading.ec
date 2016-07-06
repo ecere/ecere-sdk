@@ -2,28 +2,28 @@ import "Display"
 import "matrixStack"
 import "glab"
 
-#ifndef _GLES
- #define SHADERS
-#endif
-
-#if defined(SHADERS)
-
 #if defined(__ANDROID__) || defined(__ODROID__)
    #include <GLES/gl.h>
 
    #define GL_INT    0x1404
    #define GL_DOUBLE 0x140A
+
+   #ifndef _GLES
+      #define _GLES
+   #endif
 #elif defined(__EMSCRIPTEN__)
    #include <GLES2/gl2.h>
+
+   #ifndef _GLES2
+      #define _GLES2
+   #endif
 #else
-#  if defined(SHADERS)
-#     include "gl_core_3_3.h"
-#  else
-#     include "gl_compat_4_4.h"
-#  endif
+   #include "gl_compat_4_4.h"
 #endif
 
-int shadingProgram;
+#define ENABLE_GL_SHADERS  (!defined(_GLES))
+
+#if ENABLE_GL_SHADERS
 
 // Uniforms
 int uPrjMatrix;
@@ -242,164 +242,190 @@ void shader_setLight(Display display, uint id, Light light)
 }
 #endif
 
-bool loadShaders(const String vertexShaderFile, const String fragmentShaderFile)
+bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, const String fragmentShaderFile)
 {
    bool result = false;
-   File vf = FileOpen(vertexShaderFile, read);
-   File ff = FileOpen(fragmentShaderFile, read);
-   // printf("loading shaders %s and %s (%p and %p)\n", vertexShaderFile, fragmentShaderFile, vf, ff);
-   if(vf && ff)
+   OGLSystem oglSystem = displaySystem.driverData;
+   if(oglSystem.shadingProgram)
+      result = true;
+   else
    {
-      static char compileLog[65536];
-      #define BUFFER_SIZE  4096
-      int bufferLen = BUFFER_SIZE;
-      char * buffer = new byte[BUFFER_SIZE];
-      int vsLen = 0, fsLen = 0;
-      char * vsSource = null;
-      char * psSource = null;
-      if(vf)
+      File vf = FileOpen(vertexShaderFile, read);
+      File ff = FileOpen(fragmentShaderFile, read);
+      // printf("loading shaders %s and %s (%p and %p)\n", vertexShaderFile, fragmentShaderFile, vf, ff);
+      if(vf && ff)
       {
-         while(!vf.eof)
+         static char compileLog[65536];
+         #define BUFFER_SIZE  4096
+         int bufferLen = BUFFER_SIZE;
+         char * buffer = new byte[BUFFER_SIZE];
+         int vsLen = 0, fsLen = 0;
+         char * vsSource = null;
+         char * psSource = null;
+         if(vf)
          {
-            int count = vf.Read(buffer + vsLen, 1, BUFFER_SIZE);
-            vsLen += count;
-            if(count == BUFFER_SIZE && bufferLen < vsLen + BUFFER_SIZE)
+            while(!vf.eof)
             {
-               bufferLen = vsLen + BUFFER_SIZE;
-               buffer = renew buffer byte[bufferLen];
+               int count = vf.Read(buffer + vsLen, 1, BUFFER_SIZE);
+               vsLen += count;
+               if(count == BUFFER_SIZE && bufferLen < vsLen + BUFFER_SIZE)
+               {
+                  bufferLen = vsLen + BUFFER_SIZE;
+                  buffer = renew buffer byte[bufferLen];
+               }
             }
+            vsSource = new byte[vsLen+1];
+            memcpy(vsSource, buffer, vsLen);
+            vsSource[vsLen] = 0;
+            delete vf;
          }
-         vsSource = new byte[vsLen+1];
-         memcpy(vsSource, buffer, vsLen);
-         vsSource[vsLen] = 0;
-         delete vf;
-      }
-      if(ff)
-      {
-         while(!ff.eof)
+         if(ff)
          {
-            int count = ff.Read(buffer + fsLen, 1, BUFFER_SIZE);
-            fsLen += count;
-            if(count == BUFFER_SIZE && bufferLen < fsLen + BUFFER_SIZE)
+            while(!ff.eof)
             {
-               bufferLen = fsLen + BUFFER_SIZE;
-               buffer = renew buffer byte[bufferLen];
+               int count = ff.Read(buffer + fsLen, 1, BUFFER_SIZE);
+               fsLen += count;
+               if(count == BUFFER_SIZE && bufferLen < fsLen + BUFFER_SIZE)
+               {
+                  bufferLen = fsLen + BUFFER_SIZE;
+                  buffer = renew buffer byte[bufferLen];
+               }
             }
+            psSource = new byte[fsLen+1];
+            memcpy(psSource, buffer, fsLen);
+            psSource[fsLen] = 0;
+            delete ff;
          }
-         psSource = new byte[fsLen+1];
-         memcpy(psSource, buffer, fsLen);
-         psSource[fsLen] = 0;
-         delete ff;
-      }
-      delete buffer;
+         delete buffer;
 
-      printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
-      printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
+#ifdef _DEBUG
+         printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
+         printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
+#endif
 
-      {
-         int program = glCreateProgram();
-         int vShader = glCreateShader(GL_VERTEX_SHADER);
-         int fShader = glCreateShader(GL_FRAGMENT_SHADER);
-         const char * vptr[1] = { vsSource };
-         const char * fptr[1] = { psSource };
-         int i;
-
-         glShaderSource(vShader, 1, vptr, &vsLen);
-         glShaderSource(fShader, 1, fptr, &fsLen);
-         delete vsSource;
-         delete psSource;
-
-         glCompileShader(vShader);
-         glGetShaderInfoLog(vShader, sizeof(compileLog), null, compileLog);
-         puts("Vertex Shader Compile Log:");
-         puts("--------------------------");
-         puts(compileLog[0] ? compileLog : "Success.");
-
-         glCompileShader(fShader);
-         glGetShaderInfoLog(fShader, sizeof(compileLog), null, compileLog);
-         puts("");
-         puts("");
-         puts("Fragment Shader Compile Log:");
-         puts("--------------------------");
-         puts(compileLog[0] ? compileLog : "Success.");
-
-         glAttachShader(program, vShader);
-         glAttachShader(program, fShader);
-
-         glBindAttribLocation(program, GLBufferContents::vertex, "vertex");
-         glBindAttribLocation(program, GLBufferContents::texCoord, "texCoord");
-         glBindAttribLocation(program, GLBufferContents::color, "color");
-         glBindAttribLocation(program, GLBufferContents::normal, "normal");
-         // glBindFragDataLocation(program, 0, "fragColor");
-
-         glLinkProgram(program);
-         glValidateProgram(program);
-
-         glGetProgramInfoLog(program, sizeof(compileLog), null, compileLog);
-         puts("");
-         puts("");
-         puts("Shader Program Log:");
-         puts("--------------------------");
-         puts(compileLog[0] ? compileLog : "Success.");
-
-         uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
-         uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
-         uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
-         uColor         = glGetUniformLocation(program, "current_color");
-         uTexturingOn   = glGetUniformLocation(program, "texturingOn");
-         uLightingOn    = glGetUniformLocation(program, "lightingOn");
-         uFogOn         = glGetUniformLocation(program, "fogOn");
-         uFogDensity    = glGetUniformLocation(program, "fogDensity");
-         uFogColor      = glGetUniformLocation(program, "fogColor");
-         uGlobalAmbient = glGetUniformLocation(program, "globalAmbient");
-         uPerVertexColor  = glGetUniformLocation(program, "perVertexColor");
-         uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
-         uMatAmbient       = glGetUniformLocation(program, "matAmbient");
-         uMatSpecular      = glGetUniformLocation(program, "matSpecular");
-         uMatEmissive      = glGetUniformLocation(program, "matEmissive");
-         uMatPower         = glGetUniformLocation(program, "matPower");
-         uMatOpacity       = glGetUniformLocation(program, "matOpacity");
-         uMatTwoSided      = glGetUniformLocation(program, "matTwoSided");
-
-         for(i = 0; i < 8; i++)
          {
-            char name[100];
+            int program = glCreateProgram();
+            int vShader = glCreateShader(GL_VERTEX_SHADER);
+            int fShader = glCreateShader(GL_FRAGMENT_SHADER);
+            const char * vptr[1] = { vsSource };
+            const char * fptr[1] = { psSource };
+            int i;
 
-            sprintf(name, "lightsOn[%d]", i);
-            uLightsOn [i] = glGetUniformLocation(program, name);
+            glShaderSource(vShader, 1, vptr, &vsLen);
+            glShaderSource(fShader, 1, fptr, &fsLen);
+            delete vsSource;
+            delete psSource;
 
-            sprintf(name, "lightsPos[%d]", i);
-            uLightsPos[i] = glGetUniformLocation(program, name);
+            glCompileShader(vShader);
+            glGetShaderInfoLog(vShader, sizeof(compileLog), null, compileLog);
 
-            sprintf(name, "lightsDiffuse[%d]", i);
-            uLightsDiffuse[i] = glGetUniformLocation(program, name);
+#ifndef _DEBUG
+            if(compileLog[0])
+#endif
+            {
+               puts("Vertex Shader Compile Log:");
+               puts("--------------------------");
+               puts(compileLog[0] ? compileLog : "Success.");
+            }
 
-            sprintf(name, "lightsAmbient[%d]", i);
-            uLightsAmbient[i] = glGetUniformLocation(program, name);
+            glCompileShader(fShader);
+            glGetShaderInfoLog(fShader, sizeof(compileLog), null, compileLog);
+#ifndef _DEBUG
+            if(compileLog[0])
+#endif
+            {
+               puts("");
+               puts("");
+               puts("Fragment Shader Compile Log:");
+               puts("--------------------------");
+               puts(compileLog[0] ? compileLog : "Success.");
+            }
 
-            sprintf(name, "lightsSpecular[%d]", i);
-            uLightsSpecular[i] = glGetUniformLocation(program, name);
+            glAttachShader(program, vShader);
+            glAttachShader(program, fShader);
+
+            glBindAttribLocation(program, GLBufferContents::vertex, "vertex");
+            glBindAttribLocation(program, GLBufferContents::texCoord, "texCoord");
+            glBindAttribLocation(program, GLBufferContents::color, "color");
+            glBindAttribLocation(program, GLBufferContents::normal, "normal");
+            // glBindFragDataLocation(program, 0, "fragColor");
+
+            glLinkProgram(program);
+            glValidateProgram(program);
+
+            glGetProgramInfoLog(program, sizeof(compileLog), null, compileLog);
+#ifndef _DEBUG
+            if(compileLog[0])
+#endif
+            {
+               puts("");
+               puts("");
+               puts("Shader Program Log:");
+               puts("--------------------------");
+               puts(compileLog[0] ? compileLog : "Success.");
+            }
+
+            uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
+            uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
+            uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
+            uColor         = glGetUniformLocation(program, "current_color");
+            uTexturingOn   = glGetUniformLocation(program, "texturingOn");
+            uLightingOn    = glGetUniformLocation(program, "lightingOn");
+            uFogOn         = glGetUniformLocation(program, "fogOn");
+            uFogDensity    = glGetUniformLocation(program, "fogDensity");
+            uFogColor      = glGetUniformLocation(program, "fogColor");
+            uGlobalAmbient = glGetUniformLocation(program, "globalAmbient");
+            uPerVertexColor  = glGetUniformLocation(program, "perVertexColor");
+            uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
+            uMatAmbient       = glGetUniformLocation(program, "matAmbient");
+            uMatSpecular      = glGetUniformLocation(program, "matSpecular");
+            uMatEmissive      = glGetUniformLocation(program, "matEmissive");
+            uMatPower         = glGetUniformLocation(program, "matPower");
+            uMatOpacity       = glGetUniformLocation(program, "matOpacity");
+            uMatTwoSided      = glGetUniformLocation(program, "matTwoSided");
+
+            for(i = 0; i < 8; i++)
+            {
+               char name[100];
+
+               sprintf(name, "lightsOn[%d]", i);
+               uLightsOn [i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsPos[%d]", i);
+               uLightsPos[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsDiffuse[%d]", i);
+               uLightsDiffuse[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsAmbient[%d]", i);
+               uLightsAmbient[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsSpecular[%d]", i);
+               uLightsSpecular[i] = glGetUniformLocation(program, name);
+            }
+
+            oglSystem.shadingProgram = program;
+            oglSystem.vertexShader = vShader;
+            oglSystem.fragmentShader = fShader;
          }
-
-         shadingProgram = program;
-
-         glUseProgram(shadingProgram);
-
-         // Initialize uniforms to defaults
-         glmsMatrixMode(texture);
-         glmsLoadIdentity();
-         glmsMatrixMode(projection);
-         glmsLoadIdentity();
-         glmsMatrixMode(modelView);
-         glmsLoadIdentity();
-         shader_color(1.0, 1.0, 1.0, 1.0);
-
          result = true;
       }
+      delete vf;
+      delete ff;
    }
-   delete vf;
-   delete ff;
+   if(result)
+   {
+      glUseProgram(oglSystem.shadingProgram);
 
+      // Initialize uniforms to defaults
+      glmsMatrixMode(true, texture);
+      glmsLoadIdentity(true);
+      glmsMatrixMode(true, projection);
+      glmsLoadIdentity(true);
+      glmsMatrixMode(true, modelView);
+      glmsLoadIdentity(true);
+      shader_color(1.0, 1.0, 1.0, 1.0);
+   }
    return result;
 }
 
