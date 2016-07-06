@@ -156,6 +156,7 @@ public:
 
       if(this && !b) return 1;
       if(b && !this) return -1;
+      if(!b && !this) return 0;
       if(GetCount() > b.GetCount()) return 1;
       if(GetCount() < b.GetCount()) return -1;
 
