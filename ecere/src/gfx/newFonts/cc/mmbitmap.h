@@ -190,9 +190,8 @@ static inline int mmBitMapMaskGet( mmBitMap *bitmap, size_t entryindex, long mas
 
 static inline void mmBitMapMaskSet( mmBitMap *bitmap, size_t entryindex, long value, long mask )
 {
-  size_t index, shift;
-  index = entryindex >> CPUCONF_LONG_BITSHIFT;
-  shift = entryindex & ( CPUCONF_LONG_BITS - 1 );
+  size_t index = entryindex >> CPUCONF_LONG_BITSHIFT;
+  size_t shift = entryindex & ( CPUCONF_LONG_BITS - 1 );
 #ifdef MM_ATOMIC_SUPPORT
   long oldvalue, newvalue;
   for( ; ; )
