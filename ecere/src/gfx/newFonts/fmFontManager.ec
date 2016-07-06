@@ -6,11 +6,12 @@
 import "LinkList"
 import "File"
 import "FontResource"
+import "FontRenderer"
 
 import "atlasBuilder"
 import "imgDistMap"
 
-#define SHADERS
+#include "glHelpers.h"
 
 #include <math.h>
 
@@ -572,15 +573,8 @@ public class FontManager
      glyph->imageIndex = -1;
      if( renderer.registerImage )
      {
-        if(outlinePass)
-        {
-           renderer.setLayer(3); //DM_LAYER_BELOW);
-        }
-        glyph->imageIndex = renderer.registerImage( gx, gy, glyphareawidth, glyphareaheight );
-        if(outlinePass)
-        {
-           renderer.setLayer(6); //DM_LAYER_NORMAL);
-        }
+        renderer.setLayer(outlinePass ? 3 : 6);
+        glyph->imageIndex = renderer.registerImage( gx, gy, glyphareawidth, glyphareaheight);
      }
 
      // Add char to hash table
@@ -934,14 +928,12 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-#if !defined(SHADERS)
          if(font.processImage)
          {
             FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
-#endif
          drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
        }
@@ -997,14 +989,12 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-#if !defined(SHADERS)
          if(font.processImage)
          {
             FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
-#endif
          drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
        }
@@ -1063,14 +1053,12 @@ public:
        if( glyph )
        {
          font.addKerning(prevGlyphIndex, glyph, &x, &subpixel );
-#if !defined(SHADERS)
          if(font.processImage)
          {
             FMGlyph *outlineGlyph = getGlyph(font, codepoint, state->size, subpixel, true );
             if(outlineGlyph)
                drawTextGlyph(font, outlineGlyph, x, y, true );
          }
-#endif
          drawTextGlyph(font, glyph, x, y, false );
          addGlyphAdvance( &x, &subpixel, glyph );
          if( x > truncatepoint )
@@ -1570,14 +1558,12 @@ public:
       if( glyph )
       {
          subpixel = font.ftFont.getGlyphKernAdvance( pathdraw.prevGlyphIndex, glyph->glyphindex );
-#if !defined(SHADERS)
          if(font.processImage)
          {
             FMGlyph *outlineGlyph = getGlyph(font, unicode, state->size, 0, true );
             if(outlineGlyph)
                drawTextGlyphFloat(font, outlineGlyph, x, y, vectorx, vectory, (float)subpixel * (1.0f/64.0f), pathdraw.middleAlign, true );
          }
-#endif
          drawTextGlyphFloat(font, glyph, x, y, vectorx, vectory, (float)subpixel * (1.0f/64.0f), pathdraw.middleAlign, false );
 
          subpixel += glyph->advance;

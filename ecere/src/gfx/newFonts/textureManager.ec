@@ -1,37 +1,9 @@
-import "instance"
+import "Display"
 
 #include <stdio.h>
 #include <math.h>
 
-#if !defined(_GLES)
-   #define SHADERS
-#endif
-
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#  if defined(SHADERS)
-#     include "gl_core_3_3.h"
-#  else
-#     include "gl_compat_4_4.h"
-#  endif
-#endif
-
-#if defined(__EMSCRIPTEN__)
-#if !defined(_GLES2)
-   #define _GLES2
-#endif
-   #include <GLES2/gl2.h>
-#endif
-
-#if defined(__ANDROID__) || defined(__ODROID__)
-#if !defined(_GLES)
-   #define _GLES
-#endif
-   #include <GLES/gl.h>
-#endif
-
-// TOFIX:
-int GL_ARB_texture_non_power_of_two = 1;
-int GL_EXT_texture_filter_anisotropic = 1;
+#include "glHelpers.h"
 
 #include "cc.h"
 
@@ -62,6 +34,7 @@ class Texture : struct
    float widthinv;
    float heightinv;
    TextureFlags flags;
+   int swizzle;
    uint32 orderMask;
 
    flags = { invalid = true };
@@ -72,21 +45,37 @@ public:
 
    static bool setData( IMGImage image, int internalformat, int mipmapmode, float anisotropy, int maxresolution )
    {
-     int width, height;
-     int glformat;
+      int width, height;
+      int glformat;
+      int swizzle = 0;
 
-     if( image.format.bytesPerPixel == 1 )
-     {
-#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
-       glformat = GL_RED;
+      if( image.format.bytesPerPixel == 1 )
+      {
+#if defined(_GLES) || defined(_GLES2)
+         glformat = GL_ALPHA, swizzle = 1;
 #else
-       glformat = GL_ALPHA;
+
+   #if ENABLE_GL_LEGACY
+         if(glCaps_legacyFormats)
+            glformat = GL_ALPHA, swizzle = 1;
+         else
+   #endif
+           glformat = GL_RED, swizzle = 2;
+#endif
+      }
+     else if( image.format.bytesPerPixel == 2 )
+     {
+#if defined(_GLES) || defined(_GLES2)
+       glformat = GL_LUMINANCE_ALPHA;
+#else
+   #if ENABLE_GL_LEGACY
+         if(glCaps_legacyFormats)
+            glformat = GL_LUMINANCE_ALPHA;
+         else
+   #endif
+            glformat = GL_RG;
 #endif
      }
-#if defined(SHADERS) && !defined(__EMSCRIPTEN__)
-     else if( image.format.bytesPerPixel == 2 )
-       glformat = GL_RG;
-#endif
      else if( image.format.bytesPerPixel == 3 )
        glformat = GL_RGB;
      else if( image.format.bytesPerPixel == 4 )
@@ -101,7 +90,7 @@ public:
 
      width = image.format.width;
      height = image.format.height;
-     if( !( GL_ARB_texture_non_power_of_two ) )
+     if(!glCaps_nonPow2Textures)
      {
        if( !( ccIsPow2Int32( width ) ) || !( ccIsPow2Int32( height ) ) )
        {
@@ -115,13 +104,18 @@ public:
 
      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+     if(image.data)
+       memset(image.data, 0, image.format.width * image.format.height);
      glTexImage2D( GL_TEXTURE_2D, 0, internalformat, image.format.width, image.format.height, 0, glformat, GL_UNSIGNED_BYTE, image.data );
 
-     if( ( GL_EXT_texture_filter_anisotropic ) && ( anisotropy > 1.0 ) )
-       ; //glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy );
+#if GL_TEXTURE_MAX_ANISOTROPY_EXT
+     if(anisotropy > 1.0)
+       glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropy );
+#endif
 
      this.width = width;
      this.height = height;
+     this.swizzle = swizzle;
      widthinv = 1.0f / (float)width;
      heightinv = 1.0f / (float)height;
 
