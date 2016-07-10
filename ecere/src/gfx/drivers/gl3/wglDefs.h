@@ -185,6 +185,24 @@ typedef BOOL (APIENTRY * PFNWGLSWAPINTERVALEXTPROC) (int interval);
 typedef int (APIENTRY * PFNWGLGETSWAPINTERVALEXTPROC) (void);
 typedef HGLRC (APIENTRY * PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
 
+typedef void (APIENTRY * PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
+typedef void (APIENTRY * PFNGLUNLOCKARRAYSEXTPROC) (void);
+
+static PFNGLLOCKARRAYSEXTPROC glLockArraysEXT = null;
+static PFNGLUNLOCKARRAYSEXTPROC glUnlockArraysEXT = null;
+
+static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = null;
+static PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = null;
+static PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB = null;
+static PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB = null;
+static PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB = null;
+static PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB = null;
+static PFNWGLRELEASEPBUFFERDCARBPROC wglReleasePbufferDCARB = null;
+static PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB = null;
+static PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB = null;
+static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = null;
+static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = null;
+
 #ifdef WGL_WGLEXT_PROTOTYPES
 extern BOOL WINAPI wglSwapIntervalEXT (int);
 extern int WINAPI wglGetSwapIntervalEXT (void);

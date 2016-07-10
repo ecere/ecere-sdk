@@ -1,7 +1,10 @@
 #version 100
 
-uniform mat4 projection_matrix;
-uniform mat4 modelview_matrix;
+//uniform mat4 projection_matrix;
+//uniform mat4 modelview_matrix;
+uniform vec4 mvmatrix_z;
+uniform mat4 proj_modelview_matrix;
+uniform mat4 normals_matrix;
 uniform vec4 current_color;
 
 // Lights
@@ -30,17 +33,6 @@ uniform bool fogOn;
 uniform float fogDensity;
 uniform vec3 fogColor;
 
-/*
-in vec2 texCoord;
-in vec3 vertex;
-in vec3 normal;
-in vec4 color;
-
-out vec2 fTexCoord;
-out vec4 fColor;
-out vec4 fColorBack;
-*/
-
 attribute vec2 texCoord;
 attribute vec3 vertex;
 attribute vec3 normal;
@@ -53,14 +45,20 @@ varying vec4 fColorBack;
 void main(void)
 {
    float f = 1.0;
-   vec3 n = normalize(mat3(modelview_matrix) * normal);
-   vec4 pos = modelview_matrix * vec4(vertex, 1.0);
+   vec3 n = normalize(mat3(normals_matrix) * normal);
+   float z = dot(mvmatrix_z, vec4(vertex, 1.0));
 
+   /*
+   vec4 pos = modelview_matrix * vec4(vertex, 1.0);
    gl_Position = projection_matrix * pos;
+   */
+
+   gl_Position = proj_modelview_matrix * vec4(vertex, 1.0);
+
    fTexCoord = texCoord;
 
    if(fogOn)
-      f = clamp(exp(fogDensity * pos.z), 0.0, 1.0);
+      f = clamp(exp(fogDensity * /*pos.*/ z), 0.0, 1.0);
 
    if(lightingOn)
    {
@@ -71,10 +69,12 @@ void main(void)
       vec3 c2 = vec3(0);
       // vec3 ecPosition3 = vec3(gl_Position) / gl_Position.w;
       vec3 eye = vec3(0.0, 0.0, 1.0);
+      vec3 diffuse = vec3(0), diffuse2 = vec3(0), specular = vec3(0), specular2 = vec3(0), ambient = vec3(0);
 
       fColor = vec4(0);
       if(matTwoSided)
          fColorBack = vec4(0);
+
       for(int i = 0; i < 8; i++)
          if(lightsOn[i])
          {
@@ -96,9 +96,9 @@ void main(void)
                }
             }
 
-            c += diffuseColor * min(1.0, max(0.0, d)) * lightsDiffuse[i];
-            c += matSpecular * pf * lightsSpecular[i];
-            c += matAmbient * lightsAmbient[i];
+            diffuse += min(1.0, max(0.0, d)) * lightsDiffuse[i];
+            specular += pf * lightsSpecular[i];
+            ambient += lightsAmbient[i];
 
             if(matTwoSided)
             {
@@ -114,14 +114,17 @@ void main(void)
                   }
                }
 
-               c2 += diffuseColor * min(1.0, max(0.0, d2)) * lightsDiffuse[i];
-               c2 += matSpecular * pf * lightsSpecular[i];
-               c2 += matAmbient * lightsAmbient[i];
+               diffuse2 += min(1.0, max(0.0, d2)) * lightsDiffuse[i];
+               specular2 += pf * lightsSpecular[i];
             }
          }
 
-      c += ambientColor * globalAmbient;
+      c += diffuseColor * diffuse;
+      c += matSpecular * specular;
+      c += ambientColor * (ambient + globalAmbient);
       c += matEmissive;
+      c = min(c, vec3(1,1,1));
+
       fColor = vec4(c, opacity);
 
       if(fogOn)
@@ -129,8 +132,11 @@ void main(void)
 
       if(matTwoSided)
       {
-         c2 += ambientColor * globalAmbient;
-         c2 += matEmissive;
+         c2 += diffuseColor * diffuse2;
+         c2 += matSpecular * specular2;
+         c2 += ambientColor * (ambient + globalAmbient);
+         c2 = min(c2, vec3(1,1,1));
+
          fColorBack = vec4(c2, opacity);
 
          if(fogOn)

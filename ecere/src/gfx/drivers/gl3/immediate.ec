@@ -1,60 +1,8 @@
 // OpenGL Immediate Mode Transition Kit
-
-#if defined(__ANDROID__) || defined(__ODROID__)
-   #include <GLES/gl.h>
-   #ifndef _GLES
-      #define _GLES
-   #endif
-#elif defined(__EMSCRIPTEN__)
-   #include <GLES2/gl2.h>
-   #ifndef _GLES2
-      #define _GLES2
-   #endif
-#else
-   #include "gl_compat_4_4.h"
-#endif
-
 import "glab"
 import "shading"
 
-#define ENABLE_GL_SHADERS  (!defined(_GLES))
-#define ENABLE_GL_FFP      (!defined(_GLES2))
-#define ENABLE_GL_POINTER  (!defined(__EMSCRIPTEN__))
-#define ENABLE_GL_FBO      (!defined(__EMSCRIPTEN__))
-#define ENABLE_GL_LEGACY   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_INTDBL   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_MAPBUF   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_SELECT   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_COLORMAT (ENABLE_GL_FFP   && !defined(_GLES))
-
-#if ENABLE_GL_SHADERS && ENABLE_GL_FFP
-   #define GLEnableClientState            (shaders ? glEnableVertexAttribArray : glEnableClientState)
-   #define GLDisableClientState           (shaders ? glDisableVertexAttribArray : glDisableClientState)
-   #define VERTICES                       (shaders ? GLBufferContents::vertex : GL_VERTEX_ARRAY)
-   #define NORMALS                        (shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
-   #define TEXTURECOORDS                  (shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
-   #define COLORS                         (shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
-   #define GLVertexPointer(n, t, s, p)    (shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
-   #define GLTexCoordPointer(n, t, s, p)  (shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
-#elif ENABLE_GL_SHADERS
-   #define GLEnableClientState            glEnableVertexAttribArray
-   #define GLDisableClientState           glDisableVertexAttribArray
-   #define VERTICES                       GLBufferContents::vertex
-   #define NORMALS                        GLBufferContents::normal
-   #define TEXTURECOORDS                  GLBufferContents::texCoord
-   #define COLORS                         GLBufferContents::color
-   #define GLVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
-   #define GLTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
-#else
-   #define GLEnableClientState            glEnableClientState
-   #define GLDisableClientState           glDisableClientState
-   #define VERTICES                       GL_VERTEX_ARRAY
-   #define NORMALS                        GL_NORMAL_ARRAY
-   #define TEXTURECOORDS                  GL_TEXTURE_COORD_ARRAY
-   #define COLORS                         GL_COLOR_ARRAY
-   #define GLVertexPointer                glVertexPointer
-   #define GLTexCoordPointer              glTexCoordPointer
-#endif
+#include "glHelpers.h"
 
 public enum GLIMTKMode
 {
@@ -83,14 +31,14 @@ static bool vertexColorValues = false;
 static int vertexStride = 4;
 static int vertexOffset = 2;
 
-public void glimtkRecti(GLCapabilities capabilities, int a, int b, int c, int d)
+public void glimtkRecti(int a, int b, int c, int d)
 {
    glimtkBegin(quads);
    glimtkVertex2i(a, b);
    glimtkVertex2i(a, d);
    glimtkVertex2i(c, d);
    glimtkVertex2i(c, b);
-   glimtkEnd(capabilities);
+   glimtkEnd();
 }
 
 public void glimtkBegin(GLIMTKMode mode)
@@ -170,57 +118,54 @@ public void glimtkVertex2d(double x, double y)   { glimtkVertex2f((float)x, (flo
 
 GLAB streamVecAB, streamNorAB;
 
-public void glimtkEnd(GLCapabilities capabilities)
+public void glimtkEnd()
 {
-   bool vertexBuffer = capabilities.vertexBuffer;
-#if ENABLE_GL_SHADERS
-   bool shaders = capabilities.shaders;
-#endif
    GLIMTKMode mode = beginMode;
    if(mode == quads)        mode = triangles;
    else if(mode == polygon) mode = triangleFan;
 
-   GLEnableClientState(TEXTURECOORDS);
+   GLEnableClientState(TEXCOORDS);
 
-   if(vertexBuffer)
+   if(glcaps_vertexBuffer)
    {
-      streamVecAB.upload(vertexBuffer, vertexStride * sizeof(float) * vertexCount, vertexPointer);
-      streamVecAB.use(capabilities, texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
+      streamVecAB.upload(vertexStride * sizeof(float) * vertexCount, vertexPointer);
+      streamVecAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
    }
    else
-      noAB.use(capabilities, texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
+      noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
 
    if(vertexColorValues)
    {
       GLEnableClientState(COLORS);
-      if(vertexBuffer)
-         streamVecAB.use(capabilities, color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
+      if(glcaps_vertexBuffer)
+         streamVecAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
       else
-         noAB.use(capabilities, color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
+         noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
 
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          shader_setPerVertexColor(true);
 #endif
    }
 
-   if(vertexBuffer)
-      streamVecAB.use(capabilities, vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+   if(glcaps_vertexBuffer)
+      streamVecAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
    else
-      noAB.use(capabilities, vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
+      noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
 
    if(normalCount && normalCount == vertexCount)
    {
       GLEnableClientState(NORMALS);
-      if(vertexBuffer)
+      if(glcaps_vertexBuffer)
       {
-         streamNorAB.upload(vertexBuffer, 3*sizeof(float) * vertexCount, normalPointer);
-         streamNorAB.use(capabilities, normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+         streamNorAB.upload(3*sizeof(float) * vertexCount, normalPointer);
+         streamNorAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
       }
       else
-         noAB.use(capabilities, normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
+         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
    }
 
+   GLFlushMatrices();
    glDrawArrays(mode, 0, vertexCount);
 
    if(normalCount)
@@ -230,12 +175,12 @@ public void glimtkEnd(GLCapabilities capabilities)
       GLDisableClientState(COLORS);
 
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          shader_setPerVertexColor(false);
 #endif
 
    }
-   GLDisableClientState(TEXTURECOORDS);
+   GLDisableClientState(TEXCOORDS);
 
    normalCount = 0;
    vertexColorValues = false;
@@ -252,7 +197,7 @@ static unsigned int shortVPSize = 0, floatVPSize = 0;
 static unsigned short *shortBDBuffer = null;
 static unsigned int shortBDSize = 0;
 
-public void glimtkVertexPointeri(bool shaders, int numCoords, int stride, int *pointer, int numVertices)
+public void glimtkVertexPointeri(int numCoords, int stride, int *pointer, int numVertices)
 {
    if(pointer)
    {
@@ -271,7 +216,7 @@ public void glimtkVertexPointeri(bool shaders, int numCoords, int stride, int *p
       GLVertexPointer(numCoords, GL_SHORT, stride, 0);
 }
 
-public void glimtkVertexPointerd(bool shaders, int numCoords, int stride, double *pointer, int numVertices)
+public void glimtkVertexPointerd(int numCoords, int stride, double *pointer, int numVertices)
 {
    if(pointer)
    {
@@ -289,17 +234,17 @@ public void glimtkVertexPointerd(bool shaders, int numCoords, int stride, double
       GLVertexPointer(numCoords, GL_FLOAT, stride, 0);
 }
 
-public void glimtkTexReuseIntVP(bool shaders, int numCoords)
+public void glimtkTexReuseIntVP(int numCoords)
 {
    GLTexCoordPointer(numCoords, GL_SHORT, 0, floatVPBuffer);
 }
 
-public void glimtkTexReuseDoubleVP(bool shaders, int numCoords)
+public void glimtkTexReuseDoubleVP(int numCoords)
 {
    GLTexCoordPointer(numCoords, GL_FLOAT, 0, floatVPBuffer);
 }
 
-public void glimtkColor4f(bool shaders, float r, float g, float b, float a)
+public void glimtkColor4f(float r, float g, float b, float a)
 {
    if(beginMode != unset)
    {
@@ -338,12 +283,12 @@ public void glimtkColor4f(bool shaders, float r, float g, float b, float a)
    else
    {
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          shader_color(r, g, b, a);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!shaders)
+      if(!glcaps_shaders)
       {
          glColor4f(r, g, b, a);
          if(lightingEnabled)
@@ -357,19 +302,19 @@ public void glimtkColor4f(bool shaders, float r, float g, float b, float a)
    }
 }
 
-public void glimtkColor3f( bool usingShaders, float r, float g, float b )
+public void glimtkColor3f( float r, float g, float b )
 {
-   glimtkColor4f(usingShaders, r, g, b, 1.0f);
+   glimtkColor4f(r, g, b, 1.0f);
 }
 
-public void glimtkColor4ub(bool usingShaders, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+public void glimtkColor4ub(byte r, byte g, byte b, byte a)
 {
-   glimtkColor4f(usingShaders, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
+   glimtkColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 }
 
-public void glimtkColor4fv(bool shaders, float * a)
+public void glimtkColor4fv(float * a)
 {
-   glimtkColor4f(shaders, a[0], a[1], a[2], a[3]);
+   glimtkColor4f(a[0], a[1], a[2], a[3]);
 }
 
 public void glimtkBufferDatad(int target, int size, void * data, int usage)

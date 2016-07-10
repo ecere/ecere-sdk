@@ -43,6 +43,7 @@ public:
    bool nonPow2Textures :1;
    bool vertexBuffer    :1;
    bool frameBuffer     :1;
+   bool pointSize       :1;
 
    // To be able to disable these at runtime independently...
    bool immediate       :1;
@@ -1161,7 +1162,15 @@ public:
                value.shaders = true;
             if(!oglDisplay.originalCapabilities.shaders)
                value.fixedFunction = true;
+            // Disable things that don't work with shaders
+            if(value.shaders)
+            {
+               value.fixedFunction = false;
+               value.legacy = false;
+               value.immediate = false;
+            }
             oglDisplay.capabilities = oglDisplay.originalCapabilities & value;
+
             Lock(true);
             OpenGLDisplayDriver::initialDisplaySetup(this);
             Unlock();

@@ -26,11 +26,15 @@ import "glab"
 #if ENABLE_GL_SHADERS
 
 // Uniforms
-int uPrjMatrix;
-int uMVMatrix;
+// int uPrjMatrix;
+// int uMVMatrix;
+int uMVMatrix_z;
+int uPrjMVMatrix;
 int uTextureMatrix;
+int uNormalsMatrix;
 int uColor;
 int uTexturingOn;
+int uSwizzleMode;
 int uLightingOn;
 int uFogOn;
 int uFogDensity;
@@ -54,10 +58,22 @@ void shader_LoadMatrixf(MatrixMode mode, float * m)
 {
    if(mode == texture)
       glUniformMatrix4fv(uTextureMatrix, 1, GL_FALSE, m);
-   else if(mode == projection)
+   /*else if(mode == projection)
       glUniformMatrix4fv(uPrjMatrix, 1, GL_FALSE, m);
    else
-      glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);
+      glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);*/
+}
+
+void shader_LoadNormalMatrix(float * m)
+{
+   glUniformMatrix4fv(uNormalsMatrix, 1, GL_FALSE, m);
+}
+
+void shader_LoadPrjMVMatrix(float * m, float * mvz)
+{
+   glUniformMatrix4fv(uPrjMVMatrix, 1, GL_FALSE, m);
+   if(mvz)
+      glUniform4fv(uMVMatrix_z, 1, mvz);
 }
 
 void shader_setGlobalAmbient(float r, float g, float b, float a)
@@ -93,6 +109,11 @@ void shader_fogColor(float r, float g, float b)
 void shader_texturing(bool on)
 {
    glUniform1i(uTexturingOn, on);
+}
+
+void shader_swizzle(int swizzle)
+{
+   glUniform1i(uSwizzleMode, swizzle);
 }
 
 #if !defined(ECERE_NO3D)
@@ -226,9 +247,10 @@ void shader_setLight(Display display, uint id, Light light)
          Vector3Df direction;
          Matrix mat;
          Matrix m = matrixStack[0][matrixIndex[0]];
-         m.Scale(nearPlane, nearPlane, nearPlane);
 
+         m.Scale(nearPlane, nearPlane, nearPlane);
          mat.RotationQuaternion(light.orientation);
+
          direction.MultMatrix(vector, mat);
 
          vector.MultMatrix(direction, m);
@@ -365,11 +387,15 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
                puts(compileLog[0] ? compileLog : "Success.");
             }
 
-            uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
-            uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
+            //uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
+            //uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
+            uMVMatrix_z      = glGetUniformLocation(program, "mvmatrix_z");
+            uPrjMVMatrix   = glGetUniformLocation(program, "proj_modelview_matrix");
             uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
+            uNormalsMatrix = glGetUniformLocation(program, "normals_matrix");
             uColor         = glGetUniformLocation(program, "current_color");
             uTexturingOn   = glGetUniformLocation(program, "texturingOn");
+            uSwizzleMode   = glGetUniformLocation(program, "swizzleMode");
             uLightingOn    = glGetUniformLocation(program, "lightingOn");
             uFogOn         = glGetUniformLocation(program, "fogOn");
             uFogDensity    = glGetUniformLocation(program, "fogDensity");
@@ -418,12 +444,12 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
       glUseProgram(oglSystem.shadingProgram);
 
       // Initialize uniforms to defaults
-      glmsMatrixMode(true, texture);
-      glmsLoadIdentity(true);
-      glmsMatrixMode(true, projection);
-      glmsLoadIdentity(true);
-      glmsMatrixMode(true, modelView);
-      glmsLoadIdentity(true);
+      glmsMatrixMode(texture);
+      glmsLoadIdentity();
+      glmsMatrixMode(projection);
+      glmsLoadIdentity();
+      glmsMatrixMode(modelView);
+      glmsLoadIdentity();
       shader_color(1.0, 1.0, 1.0, 1.0);
    }
    return result;

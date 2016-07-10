@@ -1,50 +1,50 @@
+#if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
+
 // #define DIAGNOSTICS
-
-namespace gfx::drivers;
-
-#if defined(__ANDROID__)
-#include <android/native_activity.h>
+#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+ #define GL_DEBUGGING
 #endif
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-#     include "gl_compat_4_4.h"
-#endif
-
-#if defined(__ANDROID__) || defined(__ODROID__)
-import "egl"
-#endif
+import "Display"
 
 import "glab"
 import "immediate"
 import "matrixStack"
 import "shading"
 
-#define GL_BGRA_EXT  0x80E1
+namespace gfx::drivers;
 
-#if defined(__ANDROID__)
-#include <android/log.h>
-#define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
-#endif
+#include "glHelpers.h"
 
-void CheckGLErrors()
-{
-   int e, nCount = 0;
-   while((e = glGetError()) && nCount++ < 10)
-      printf("GL error %d!\n", e);
-}
-
-// We were using PBUFFER for alpha compositing on Linux before, but it does not seem to work, nor be required anymore.
-// #define USEPBUFFER
+// **********   GL PLATFORMS INCLUDES   **********
+// UNIX
 #if defined(__unix__) || defined(__APPLE__)
 
-   #if !defined(__MINGW32__)
+   // EGL
+   #if defined(__ANDROID__) || defined(__ODROID__)
+      import "egl"
+
+      #if defined(__ANDROID__)
+         #include <android/native_activity.h>
+         #include <android/log.h>
+         #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+      #endif
+
+   // Emscripten
+   #elif defined(__EMSCRIPTEN__)
+      #define property _property
+      #define uint _uint
+
+      #include <emscripten/emscripten.h>
+      #include <emscripten/html5.h>
+
+      #undef property
+      #undef uint
+
+   // GLX
+   #elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+      #define pointer _pointer
       #define GL_GLEXT_PROTOTYPES
-   #endif
-
-   #define pointer _pointer
-
-
-   #if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
 
       #define property _property
       #define new _new
@@ -81,92 +81,41 @@ void CheckGLErrors()
       #undef new
       #undef property
       #undef class
+      #undef pointer
 
-   #endif
-
-#endif
-
-#if defined(__APPLE__)
-   #include <OpenGl/gl.h>
-#endif
-
-#if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
-
-   #if defined(__WIN32__)
-      //#define WIN32_LEAN_AND_MEAN
-      #undef _WIN32_WINNT
-      #define _WIN32_WINNT 0x0502
-      #define String Sting_
-      #include <windows.h>
-      #undef String
-   #endif
-
-   #if defined(__ANDROID__) || defined(__ODROID__)
-      #if !defined(_GLES)
-         #define _GLES
+      #if !defined(__APPLE__)
+      GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
+      GLAPI void APIENTRY glUnlockArraysEXT (void);
       #endif
 
-      #define uint _uint
-      #define property _property
-      #define new _new
-      #define class _class
-      #define Window    X11Window
-      #define Cursor    X11Cursor
-      #define Font      X11Font
-      #define Display   X11Display
-      #define Time      X11Time
-      #define KeyCode   X11KeyCode
-      #define Picture   X11Picture
-      #define Bool      X11Bool
+      import "XInterface"
 
-      #include <GLES/gl.h>
-      #include <GLES/glext.h>
+      // We were using PBUFFER for alpha compositing on Linux before, but it does not seem to work, nor be required anymore.
+      // #define USEPBUFFER
 
-      #undef Bool
-      #undef Picture
-      #undef Window
-      #undef Cursor
-      #undef Font
-      #undef Display
-      #undef Time
-      #undef KeyCode
-      #undef uint
-      #undef new
-      #undef property
-      #undef class
+   #endif
 
-   #elif defined(__EMSCRIPTEN__)
-#if !defined(_GLES2)
-      #define _GLES2
+// Apple
+#elif defined(__APPLE__)
+   #include <OpenGl/gl.h>
+
+// WGL
+#elif defined(__WIN32__)
+   //#define WIN32_LEAN_AND_MEAN
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0502
+   #define String Sting_
+   #include <windows.h>
+   #undef String
+
+   #include "wglDefs.h"
 #endif
-      // #define _GLES
 
-      #define property _property
-      #define uint _uint
-
-      #include <GLES2/gl2.h>
-
-      #include <emscripten/emscripten.h>
-      #include <emscripten/html5.h>
-
-      #undef property
-      #undef uint
-
-   #else
-      #include <GL/gl.h>
-   #endif
-
-   #undef pointer
-
-   import "Display"
-
-   #if defined(__unix__) || defined(__APPLE__)
-
-   #if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
-   import "XInterface"
-   #endif
-
-   #endif
+#if defined(__WIN32__)
+#elif !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+default:
+private:
+#endif
 
 /*                                                            OpenGL Versions Features Quick Reference
 
@@ -211,212 +160,91 @@ void CheckGLErrors()
 // bool mapBuffer       :1; //   |      -      |      X      |     ~      |     X      |       X       |      X      |      ~      |     -      |     ~      |     -
 */
 
-// Compiled In Capabilities
-#define ENABLE_GL_SHADERS  (!defined(_GLES))
-#define ENABLE_GL_FFP      (!defined(_GLES2))
-#define ENABLE_GL_POINTER  (!defined(__EMSCRIPTEN__))
-#define ENABLE_GL_FBO      (!defined(__EMSCRIPTEN__))
-#define ENABLE_GL_LEGACY   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_INTDBL   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_MAPBUF   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_SELECT   (!defined(_GLES) && !defined(_GLES2))
-#define ENABLE_GL_COLORMAT (ENABLE_GL_FFP   && !defined(_GLES))
-
-#if ENABLE_GL_SHADERS && ENABLE_GL_FFP
-   #define GLEnableClientState            (shaders ? glEnableVertexAttribArray : glEnableClientState)
-   #define GLDisableClientState           (shaders ? glDisableVertexAttribArray : glDisableClientState)
-   #define VERTICES                       (shaders ? GLBufferContents::vertex : GL_VERTEX_ARRAY)
-   #define NORMALS                        (shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
-   #define TEXTURECOORDS                  (shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
-   #define COLORS                         (shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
-   #define GLVertexPointer(n, t, s, p)    (shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
-   #define GLTexCoordPointer(n, t, s, p)  (shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
-#elif ENABLE_GL_SHADERS
-   #define GLEnableClientState            glEnableVertexAttribArray
-   #define GLDisableClientState           glDisableVertexAttribArray
-   #define VERTICES                       GLBufferContents::vertex
-   #define NORMALS                        GLBufferContents::normal
-   #define TEXTURECOORDS                  GLBufferContents::texCoord
-   #define COLORS                         GLBufferContents::color
-   #define GLVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
-   #define GLTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
-#else
-   #define GLEnableClientState            glEnableClientState
-   #define GLDisableClientState           glDisableClientState
-   #define VERTICES                       GL_VERTEX_ARRAY
-   #define NORMALS                        GL_NORMAL_ARRAY
-   #define TEXTURECOORDS                  GL_TEXTURE_COORD_ARRAY
-   #define COLORS                         GL_COLOR_ARRAY
-   #define GLVertexPointer                glVertexPointer
-   #define GLTexCoordPointer              glTexCoordPointer
-#endif
-
-#define GL_ARRAY_BUFFER_ARB            0x8892
-#define GL_ELEMENT_ARRAY_BUFFER_ARB    0x8893
-#define GL_STATIC_DRAW_ARB             0x88E4
-#define GL_LIGHT_MODEL_COLOR_CONTROL   0x81F8
-#define GL_SEPARATE_SPECULAR_COLOR     0x81FA
-
-#define GL_MULTISAMPLE_ARB             0x809D
-
-#if defined(__WIN32__)
-   #include "wglDefs.h"
-
-   typedef void (APIENTRY * PFNGLLOCKARRAYSEXTPROC) (GLint first, GLsizei count);
-   typedef void (APIENTRY * PFNGLUNLOCKARRAYSEXTPROC) (void);
-
-   static PFNGLLOCKARRAYSEXTPROC glLockArraysEXT = null;
-   static PFNGLUNLOCKARRAYSEXTPROC glUnlockArraysEXT = null;
-
-   static PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB = null;
-   static PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB = null;
-   static PFNWGLCREATEPBUFFERARBPROC wglCreatePbufferARB = null;
-   static PFNWGLGETPBUFFERDCARBPROC wglGetPbufferDCARB = null;
-   static PFNWGLQUERYPBUFFERARBPROC wglQueryPbufferARB = null;
-   static PFNWGLDESTROYPBUFFERARBPROC wglDestroyPbufferARB = null;
-   static PFNWGLRELEASEPBUFFERDCARBPROC wglReleasePbufferDCARB = null;
-   static PFNWGLBINDTEXIMAGEARBPROC wglBindTexImageARB = null;
-   static PFNWGLRELEASETEXIMAGEARBPROC wglReleaseTexImageARB = null;
-   static PFNWGLSWAPINTERVALEXTPROC wglSwapIntervalEXT = null;
-   static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = null;
-
-#elif !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
 default:
-   GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
-   GLAPI void APIENTRY glUnlockArraysEXT (void);
+// Capabilities Global set to capabilities of Display being rendered to
+GLCapabilities glcaps;
+// Requiring Graphics Reload:
+bool glcaps_nonPow2Textures, glcaps_vertexBuffer, glcaps_quads, glcaps_intAndDouble;
+// Might toggle without Reload:
+bool glcaps_shaders, glcaps_fixedFunction, glcaps_immediate, glcaps_legacy, glcaps_pointSize, glcaps_frameBuffer;
+// bool mapBuffer;
 private:
-#endif
 
+
+// **********   Errors and Debugging   **********
+/*
+void CheckGLErrors()
+{
+   int e, nCount = 0;
+   while((e = glGetError()) && nCount++ < 10)
+      printf("GL error %d!\n", e);
+}
+*/
+#ifdef GL_DEBUGGING
 #ifndef APIENTRY
    #define APIENTRY
 #endif
+static void APIENTRY openglCallbackFunction(GLenum source,
+                                           GLenum type,
+                                           GLuint id,
+                                           GLenum severity,
+                                           GLsizei length,
+                                           const GLchar* message,
+                                           const void* userParam)
+{
+   if(severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+      return;
+   PrintLn("---------------------opengl-callback-start------------");
+   PrintLn("message: ", message);
+   PrintLn("type: ");
+   switch (type)
+   {
+      case GL_DEBUG_TYPE_ERROR: PrintLn("ERROR"); break;
+      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: PrintLn("DEPRECATED_BEHAVIOR"); break;
+      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: PrintLn("UNDEFINED_BEHAVIOR"); break;
+      case GL_DEBUG_TYPE_PORTABILITY: PrintLn("PORTABILITY"); break;
+      case GL_DEBUG_TYPE_PERFORMANCE: PrintLn("PERFORMANCE"); break;
+      case GL_DEBUG_TYPE_OTHER: PrintLn("OTHER"); break;
+   }
 
-#if defined(__ANDROID__) || defined(__ODROID__)
-   // Frame Buffer Extensions
-   #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
-   #define GL_RENDERBUFFER          GL_RENDERBUFFER_OES
-   #define GL_COLOR_ATTACHMENT0     GL_COLOR_ATTACHMENT0_OES
-   #define glBindFramebuffer        glBindFramebufferOES
-   #define glBindRenderbuffer       glBindRenderbufferOES
-   #define glFramebufferTexture2D   glFramebufferTexture2DOES
-   #define glGenFramebuffers        glGenFramebuffersOES
-   #define glGenRenderbuffers       glGenRenderbuffersOES
-   #define glDeleteFramebuffers     glDeleteFramebuffersOES
-   #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
+   PrintLn("id: ", id);
+   Print("severity: ");
+   switch (severity)
+   {
+      case GL_DEBUG_SEVERITY_LOW: PrintLn("LOW"); break;
+      case GL_DEBUG_SEVERITY_MEDIUM: PrintLn("MEDIUM"); break;
+      case GL_DEBUG_SEVERITY_HIGH: PrintLn("HIGH"); break;
+      default: PrintLn("(other)");
+   }
+   PrintLn("---------------------opengl-callback-end--------------");
+}
 
-   // TOFIX: Grab Screen and BlitDI/StretchDI will have wrong colors
-   #undef  GL_BGRA_EXT
-   #define GL_BGRA_EXT               GL_RGBA
+static void setupDebugging()
+{
+   if(glDebugMessageCallback)
+   {
+      GLuint unusedIds = 0;
+
+      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+      glDebugMessageCallback(openglCallbackFunction, null);
+      glDebugMessageControl(GL_DONT_CARE,
+          GL_DONT_CARE,
+          GL_DONT_CARE,
+          0,
+          &unusedIds,
+          GL_TRUE);
+   }
+}
 #endif
 
-#if !ENABLE_GL_INTDBL
-   #define GL_INT                                  0x1404
-   #define GL_UNSIGNED_INT                         0x1405
-   #define GL_DOUBLE                               0x140A
-#endif
-
-#if ENABLE_GL_STIPPLES
-   #define GLLineStipple                     (stipples ? glLineStipple : glsupLineStipple)
-#else
-   #define GLLineStipple                     glsupLineStipple
-#endif
-
-#if ENABLE_GL_COLORMAT
-   #define GLColorMaterial(a,b)              glColorMaterial(a,b)
-#else
-   #define GLColorMaterial(a,b)
-#endif
-
-#ifdef _GLES
-   #define GLLightModeli                     glsupLightModeli
-#else
-   #define GLLightModeli                     glLightModeli
-#endif
-
-#if ENABLE_GL_LEGACY
-   #define GLRecti(x1, y1, x2, y2)           (immediate && !shaders ? glRecti(x1, y1, x2, y2) : glimtkRecti(capabilities, x1, y1, x2, y2))
-   #define GLBegin(m)                        (immediate && !shaders ? glBegin(m) : glimtkBegin(m))
-   #define GLTexCoord2i                      (immediate && !shaders ? glTexCoord2i : glimtkTexCoord2i)
-   #define GLVertex2i                        (immediate && !shaders ? glVertex2i : glimtkVertex2i)
-   #define GLTexCoord2d                      (immediate && !shaders ? glTexCoord2d : glimtkTexCoord2d)
-   #define GLVertex2d                        (immediate && !shaders ? glVertex2d : glimtkVertex2d)
-   #define GLTexCoord2f                      (immediate && !shaders ? glTexCoord2f : glimtkTexCoord2f)
-   #define GLVertex2f                        (immediate && !shaders ? glVertex2f : glimtkVertex2f)
-   #define GLEnd()                           (immediate && !shaders ? glEnd() : glimtkEnd(capabilities))
-   #define GLColor3f(a,b,c)                  (immediate && !shaders ? glColor3f(a,b,c) : glimtkColor3f(shaders, a,b,c))
-   #define GLColor4ub(a,b,c,d)               (immediate && !shaders ? glColor4ub(a,b,c,d) : glimtkColor4ub(shaders,a,b,c,d))
-   #define GLColor4f(a,b,c,d)                (immediate && !shaders ? glColor4f(a,b,c,d) : glimtkColor4f(shaders,a,b,c,d))
-   #define GLColor4fv(v)                     (immediate && !shaders ? glColor4fv(v) : glimtkColor4fv(shaders, v))
-   #define GLNormal3fv                       (immediate && !shaders ? glNormal3fv : glimtkNormal3fv)
-   #define GLNormal3f                        (immediate && !shaders ? glNormal3f : glimtkNormal3f)
-   #define GLTexCoord2fv                     (immediate && !shaders ? glTexCoord2fv : glimtkTexCoord2fv)
-   #define GLVertex3d                        (immediate && !shaders ? glVertex3d : glimtkVertex3d)
-   #define GLVertex3dv                       (immediate && !shaders ? glVertex3dv : glimtkVertex3dv)
-   #define GLVertex3f                        (immediate && !shaders ? glVertex3f : glimtkVertex3f)
-   #define GLVertex3fv                       (immediate && !shaders ? glVertex3fv : glimtkVertex3fv)
-
-   #define GLLoadMatrixd(m)                  (fixedFunction && !shaders ? glLoadMatrixd(m) : glmsLoadMatrixd(shaders, m))
-   #define GLMultMatrixd(m)                  (fixedFunction && !shaders ? glMultMatrixd(m) : glmsMultMatrixd(shaders, m))
-   #define GLFrustum(a,b,c,d,e,f)            (fixedFunction && !shaders ? glFrustum(a,b,c,d,e,f) : glmsFrustum(shaders, a,b,c,d,e,f))
-   #define GLOrtho(a,b,c,d,e,f)              (fixedFunction && !shaders ? glOrtho(a,b,c,d,e,f) : glmsOrtho(shaders, a,b,c,d,e,f))
-   #define GLScaled(x, y, z)                 (fixedFunction && !shaders ? glScaled(x, y, z) : glmsScaled(shaders, x,y,z))
-   #define GLScalef(x, y, z)                 (fixedFunction && !shaders ? glScalef(x, y, z) : glmsScaled(shaders, x,y,z))
-   #define GLTranslated(x, y, z)             (fixedFunction && !shaders ? glTranslated(x,y,z) : glmsTranslated(shaders, x,y,z))
-   #define GLRotated(a, x, y, z)             (fixedFunction && !shaders ? glRotated : glmsRotated)
-   #define GLMatrixMode(m)                   (fixedFunction && !shaders ? glMatrixMode(m) : glmsMatrixMode(shaders, m))
-   #define GLLoadIdentity()                  (fixedFunction && !shaders ? glLoadIdentity() : glmsLoadIdentity(shaders))
-   #define GLPushMatrix                      (fixedFunction && !shaders ? glPushMatrix : glmsPushMatrix)
-   #define GLPopMatrix()                     (fixedFunction && !shaders ? glPopMatrix() : glmsPopMatrix(shaders))
-#else
-   #define GLRecti(x1, y1, x2, y2)           glimtkRecti(capabilities, x1, y1, x2, y2)
-   #define GLBegin(m)                        glimtkBegin(m)
-   #define GLTexCoord2i                      glimtkTexCoord2i
-   #define GLVertex2i                        glimtkVertex2i
-   #define GLTexCoord2d                      glimtkTexCoord2d
-   #define GLVertex2d                        glimtkVertex2d
-   #define GLTexCoord2f                      glimtkTexCoord2f
-   #define GLVertex2f                        glimtkVertex2f
-   #define GLEnd()                           glimtkEnd(capabilities)
-   #define GLColor3f(a,b,c)                  glimtkColor3f(shaders, a,b,c)
-   #define GLColor4ub(a,b,c,d)               glimtkColor4ub(shaders,a,b,c,d)
-   #define GLColor4f(a,b,c,d)                glimtkColor4f(shaders,a,b,c,d)
-   #define GLColor4fv(v)                     glimtkColor4fv(shaders, v)
-   #define GLNormal3fv                       glimtkNormal3fv
-   #define GLNormal3f                        glimtkNormal3f
-   #define GLTexCoord2fv                     glimtkTexCoord2fv
-   #define GLVertex3d                        glimtkVertex3d
-   #define GLVertex3dv                       glimtkVertex3dv
-   #define GLVertex3f                        glimtkVertex3f
-   #define GLVertex3fv                       glimtkVertex3fv
-
-   #define GLLoadMatrixd(m)                  glmsLoadMatrixd(shaders, m)
-   #define GLMultMatrixd(m)                  glmsMultMatrixd(shaders, m)
-   #define GLFrustum(a,b,c,d,e,f)            glmsFrustum(shaders, a,b,c,d,e,f)
-   #define GLOrtho(a,b,c,d,e,f)              glmsOrtho(shaders, a,b,c,d,e,f)
-   #define GLScaled(a,b,c)                   glmsScaled(shaders, a,b,c)
-   #define GLScalef(a,b,c)                   glmsScaled(shaders, a,b,c)
-   #define GLTranslated(a,b,c)               glmsTranslated(shaders, a,b,c)
-   #define GLRotated(a, x, y, z)             glmsRotated(shaders, a, x, y, z)
-   #define GLMatrixMode(m)                   glmsMatrixMode(shaders, m)
-   #define GLLoadIdentity()                  glmsLoadIdentity(shaders)
-   #define GLPushMatrix                      glmsPushMatrix
-   #define GLPopMatrix()                     glmsPopMatrix(shaders)
-#endif
-
-#define GLLoadMatrix GLLoadMatrixd
-#define GLMultMatrix GLMultMatrixd
-#define GLGetMatrix  GLGetDoublev
-#define GLTranslate  GLTranslated
-#define GLScale      GLScaled
 
 static GLuint stippleTexture;
 static bool stippleEnabled;
-                              // TOCHECK: Do we really need to pass shaders?
-public void glsupLineStipple( bool shaders, int i, unsigned short j )
+
+                              // TOCHECK: Do we really need to pass glcaps_shaders?
+public void glsupLineStipple( int i, unsigned short j )
 {
-#if ENABLE_GL_LEGACY
-   bool fixedFunction = false;
-#endif
    uint texture[1*16];
    int x;
    for(x = 0; x < 16; x++)
@@ -430,7 +258,7 @@ public void glsupLineStipple( bool shaders, int i, unsigned short j )
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 16, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
 
    // TOOD: Special shading code for stippling?
-   GLSetupTexturing(shaders, true);
+   GLSetupTexturing(true);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -443,13 +271,16 @@ public void glsupLineStipple( bool shaders, int i, unsigned short j )
    GLMatrixMode(MatrixMode::projection);
 }
 
-#ifdef _GLES
+   // Exported to build _GLES version...
    public void glsupLightModeli( unsigned int pname, int param )
    {
+#if ENABLE_GL_FFP
       if(pname == GL_LIGHT_MODEL_TWO_SIDE)
          glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
+#endif
    }
 
+#ifdef _GLES
    void glFogi( unsigned int pname, int param ) { }
    void glPolygonMode( unsigned int i, unsigned int j ) { }
    void glBlendFuncSeparate(int a, int b, int c, int d)
@@ -473,7 +304,7 @@ void glPopName() { }
 #endif
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
-static inline uint getPrimitiveType(bool quadsSupport, RenderPrimitiveType type)
+static inline uint getPrimitiveType(RenderPrimitiveType type)
 {
    static int primitiveTypes[RenderPrimitiveType] =
    {
@@ -483,47 +314,47 @@ static inline uint getPrimitiveType(bool quadsSupport, RenderPrimitiveType type)
       GL_LINE_STRIP
    };
    // NOTE: This will only work for single quads
-   return (type == quads && !quadsSupport) ? GL_TRIANGLE_FAN : primitiveTypes[type];
+   return (type == quads && !glcaps_quads) ? GL_TRIANGLE_FAN : primitiveTypes[type];
 }
 
-public void GLSetupTexturing(bool shaders, bool enable)
+public void GLSetupTexturing(bool enable)
 {
 #if ENABLE_GL_SHADERS
-   if(shaders)
+   if(glcaps_shaders)
       shader_texturing(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!shaders)
+   if(!glcaps_shaders)
       (enable ? glEnable : glDisable)(GL_TEXTURE_2D);
 #endif
 }
 
-public void GLSetupFog(bool shaders, bool enable)
+public void GLSetupFog(bool enable)
 {
 #if ENABLE_GL_SHADERS
-   if(shaders)
+   if(glcaps_shaders)
       shader_fog(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!shaders)
+   if(!glcaps_shaders)
       (enable ? glEnable : glDisable)(GL_FOG);
 #endif
 }
 
 bool lightingEnabled;
 
-public void GLSetupLighting(bool shaders, bool enable)
+public void GLSetupLighting(bool enable)
 {
    lightingEnabled = enable;
 #if ENABLE_GL_SHADERS
-   if(shaders)
+   if(glcaps_shaders)
       shader_lighting(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!shaders)
+   if(!glcaps_shaders)
       (enable ? glEnable : glDisable)(GL_LIGHTING);
 #endif
 }
@@ -573,47 +404,6 @@ class OGLDisplay : struct
    bool depthWrite;
    int x, y;
 };
-
-#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-// #define GL_DEBUGGING
-#endif
-
-#ifdef GL_DEBUGGING
-static void APIENTRY openglCallbackFunction(GLenum source,
-                                           GLenum type,
-                                           GLuint id,
-                                           GLenum severity,
-                                           GLsizei length,
-                                           const GLchar* message,
-                                           const void* userParam)
-{
-   if(severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-      return;
-   PrintLn("---------------------opengl-callback-start------------");
-   PrintLn("message: ", message);
-   PrintLn("type: ");
-   switch (type)
-   {
-      case GL_DEBUG_TYPE_ERROR: PrintLn("ERROR"); break;
-      case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: PrintLn("DEPRECATED_BEHAVIOR"); break;
-      case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: PrintLn("UNDEFINED_BEHAVIOR"); break;
-      case GL_DEBUG_TYPE_PORTABILITY: PrintLn("PORTABILITY"); break;
-      case GL_DEBUG_TYPE_PERFORMANCE: PrintLn("PERFORMANCE"); break;
-      case GL_DEBUG_TYPE_OTHER: PrintLn("OTHER"); break;
-   }
-
-   PrintLn("id: ", id);
-   Print("severity: ");
-   switch (severity)
-   {
-      case GL_DEBUG_SEVERITY_LOW: PrintLn("LOW"); break;
-      case GL_DEBUG_SEVERITY_MEDIUM: PrintLn("MEDIUM"); break;
-      case GL_DEBUG_SEVERITY_HIGH: PrintLn("HIGH"); break;
-      default: PrintLn("(other)");
-   }
-   PrintLn("---------------------opengl-callback-end--------------");
-}
-#endif
 
 class OGLSystem : struct
 {
@@ -670,26 +460,6 @@ class OGLIndices : struct
 int current;
 void * previous;
 
-#ifdef GL_DEBUGGING
-static void setupDebugging()
-{
-   if(glDebugMessageCallback)
-   {
-      GLuint unusedIds = 0;
-
-      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-
-      glDebugMessageCallback(openglCallbackFunction, null);
-      glDebugMessageControl(GL_DONT_CARE,
-          GL_DONT_CARE,
-          GL_DONT_CARE,
-          0,
-          &unusedIds,
-          GL_TRUE);
-   }
-}
-#endif
-
 #if defined(__WIN32__)
 static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible)
 {
@@ -719,7 +489,7 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
          #ifdef _DEBUG
                   WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
          #endif
-                  WGL_CONTEXT_PROFILE_MASK_ARB, coreNotion ? (tryingCompat ? WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : WGL_CONTEXT_CORE_PROFILE_BIT_ARB) : 0,
+                  coreNotion ? WGL_CONTEXT_PROFILE_MASK_ARB : 0, coreNotion ? (tryingCompat ? WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : WGL_CONTEXT_CORE_PROFILE_BIT_ARB) : 0,
                   0,0
                };
                result = wglCreateContextAttribsARB(hdc, null, attribs);
@@ -894,14 +664,15 @@ class OpenGLDisplayDriver : DisplayDriver
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
 
 #if defined(_GLES)
-      capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
+      capabilities = { fixedFunction = true, vertexBuffer = true, pointSize = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
-      capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true };
+      capabilities = { glcaps_shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true };
 #else
       capabilities =
       {
          nonPow2Textures = extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two");
          intAndDouble = true;
+         pointSize = true;
 #if ENABLE_GL_LEGACY
          legacy         = glBegin != null;
          immediate      = glBegin != null;
@@ -931,16 +702,13 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
-#if defined(__ANDROID__) || defined(__ODROID__)
-      bool shaders = false;
-#endif
 
 #ifdef _GLES
-      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true };
+      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #elif defined(_GLES2)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true };
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #else
-      oglSystem.capabilities = { shaders = true, fixedFunction = true, immediate = true, legacy = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, nonPow2Textures = true };
+      oglSystem.capabilities = { shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, nonPow2Textures = true };
 #endif
 
 #ifdef DIAGNOSTICS
@@ -1094,14 +862,16 @@ class OpenGLDisplayDriver : DisplayDriver
          GLMatrixMode(GL_PROJECTION);
          glShadeModel(GL_FLAT);
 
-         if(!shaders)
+#if !defined(_GLES)
+         if(!glcaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+#endif
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
          glEnable(GL_NORMALIZE);
          glDepthFunc(GL_LESS);
          glClearDepth(1.0);
-         glDisable(GL_MULTISAMPLE_ARB);
+         glDisable(GL_MULTISAMPLE);
 
          glViewport(0,0,eglWidth,eglHeight);
          GLLoadIdentity();
@@ -1243,14 +1013,14 @@ class OpenGLDisplayDriver : DisplayDriver
    /*static */bool ::initialDisplaySetup(Display display)
    {
       OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
+      OGLSystem oglSystem = display.displaySystem.driverData;
       bool result = true;
-      bool shaders = capabilities.shaders;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
+
+      oglSystem.capabilities = oglDisplay.capabilities;
+      SETCAPS(oglDisplay.capabilities);
+
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          loadShaders(display.displaySystem, "<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
 #if ENABLE_GL_LEGACY
       else
@@ -1279,6 +1049,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       glEnable(GL_BLEND);
 
+      GLMatrixMode(MatrixMode::texture);
+      GLLoadIdentity();
+
       GLMatrixMode(MatrixMode::modelView);
       GLLoadIdentity(); // For setting up GLES stack
       GLScaled(1.0, 1.0, -1.0);
@@ -1290,14 +1063,16 @@ class OpenGLDisplayDriver : DisplayDriver
          GLOrtho(0,display.width,display.height,0,0.0,1.0);
 
 #if ENABLE_GL_FFP
-      if(!shaders)
+      if(!glcaps_shaders)
       {
          glShadeModel(GL_FLAT);
          /*
          #define GL_LIGHT_MODEL_LOCAL_VIEWER 0x0B51
          GLLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
          */
+#if !defined(_GLES)
          GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+#endif
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
          glEnable(GL_NORMALIZE);
@@ -1305,7 +1080,10 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       glDepthFunc(GL_LESS);
       glClearDepth(1.0);
-      glDisable(GL_MULTISAMPLE_ARB);
+#if !defined(__EMSCRIPTEN__)
+      glDisable(GL_MULTISAMPLE);
+#endif
+
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
       display.ambient = Color { 50,50,50 };
 #endif
@@ -1421,12 +1199,23 @@ class OpenGLDisplayDriver : DisplayDriver
 
             oglDisplay.originalCapabilities = oglDisplay.capabilities;
 
-            // Re-enable shaders if no fixed function support
+            // Re-enable glcaps_shaders if no fixed function support
             if(!oglDisplay.capabilities.fixedFunction)
                capabilities.shaders = true;
-            // Re-enable fixed function if no shaders support
+            // Re-enable fixed function if no glcaps_shaders support
             if(!oglDisplay.capabilities.shaders)
+            {
                capabilities.fixedFunction = true;
+               capabilities.shaders = false;
+            }
+
+            // Disable things that don't work with glcaps_shaders
+            if(capabilities.shaders)
+            {
+               capabilities.fixedFunction = false;
+               capabilities.legacy = false;
+               capabilities.immediate = false;
+            }
 
             #if !ENABLE_GL_POINTER
             // Re-enable vertex buffer if no pointer support
@@ -1466,11 +1255,6 @@ class OpenGLDisplayDriver : DisplayDriver
    bool DisplaySize(Display display, int width, int height)
    {
       OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
       bool result = false;
 
 #if defined(__WIN32__) || defined(USEPBUFFER)
@@ -1809,6 +1593,8 @@ class OpenGLDisplayDriver : DisplayDriver
       else
 #endif
          result = true;
+
+      SETCAPS(oglDisplay.capabilities);
 
       if(display.alphaBlend && result)
          initialDisplaySetup(display);
@@ -2200,15 +1986,10 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
       OGLSurface oglSurface = surface.driverData = OGLSurface { };
-
       if(oglSurface)
       {
+         SETCAPS(oglDisplay.capabilities);
          if(displayWidth != display.width || displayHeight != display.height)
          {
             displayWidth = display.width;
@@ -2336,30 +2117,15 @@ class OpenGLDisplayDriver : DisplayDriver
    void PutPixel(Display display, Surface surface,int x,int y)
    {
       OGLSurface oglSurface = surface.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
-
       GLColor4fv(oglSurface.foreground);
       GLBegin(GL_POINTS);
       // glVertex2i(x+surface.offset.x, y+surface.offset.y);
       GLVertex2f(x+surface.offset.x + 0.5f, y+surface.offset.y + 0.5f);
-
       GLEnd();
    }
 
    void DrawLine(Display display, Surface surface, int _x1, int _y1, int _x2, int _y2)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
-
       OGLSurface oglSurface = surface.driverData;
       float x1 = _x1, x2 = _x2, y1 = _y1, y2 = _y2;
       if(_x1 == _x2)
@@ -2406,12 +2172,6 @@ class OpenGLDisplayDriver : DisplayDriver
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       OGLSurface oglSurface = surface.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
       x1 += surface.offset.x;
       y1 += surface.offset.y;
       x2 += surface.offset.x;
@@ -2462,12 +2222,6 @@ class OpenGLDisplayDriver : DisplayDriver
    void Area(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       OGLSurface oglSurface = surface.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
 
       GLColor4fv(oglSurface.background);
 
@@ -2507,18 +2261,11 @@ class OpenGLDisplayDriver : DisplayDriver
    void Blit(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
       OGLSurface oglSurface = surface.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
 
       if(!oglSurface.writingText)
       {
          // glTranslatef(-0.375f, -0.375f, 0.0f);
-         GLSetupTexturing(shaders, true);
+         GLSetupTexturing(true);
          GLColor4fv(oglSurface.bitmapMult);
       }
       else if(oglSurface.xOffset)
@@ -2564,7 +2311,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(!oglSurface.writingText)
       {
-         GLSetupTexturing(shaders, false);
+         GLSetupTexturing(false);
 
          //glTranslate(0.375, 0.375, 0.0);
       }
@@ -2575,16 +2322,10 @@ class OpenGLDisplayDriver : DisplayDriver
    void Stretch(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       OGLSurface oglSurface = surface.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
 
       //glTranslate(-0.375, -0.375, 0.0);
 
-      GLSetupTexturing(shaders, true);
+      GLSetupTexturing(true);
       glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
 
       GLColor4fv(oglSurface.bitmapMult);
@@ -2622,7 +2363,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       GLEnd();
 
-      GLSetupTexturing(shaders, false);
+      GLSetupTexturing(false);
 
       //glTranslate(0.375, 0.375, 0.0);
    }
@@ -2715,15 +2456,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(bitmap.pixelFormat == pixelFormat888 && !bitmap.paletteShades)
       {
-#if ENABLE_GL_LEGACY
-         OGLDisplay oglDisplay = display.driverData;
-         GLCapabilities capabilities = oglDisplay.capabilities;
-         bool legacy = capabilities.legacy;
-#endif
-
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 #if ENABLE_GL_LEGACY
-         if(legacy)
+         if(glcaps_legacy)
          {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
@@ -2789,14 +2524,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(bitmap.pixelFormat == pixelFormat888 && !bitmap.paletteShades)
       {
-#if ENABLE_GL_LEGACY
-         OGLDisplay oglDisplay = display.driverData;
-         GLCapabilities capabilities = oglDisplay.capabilities;
-         bool legacy = capabilities.legacy;
-#endif
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 #if ENABLE_GL_LEGACY
-         if(legacy)
+         if(glcaps_legacy)
          {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
@@ -2841,12 +2571,6 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool immediate = capabilities.immediate;
-#endif
-      bool shaders = capabilities.shaders;
       oglSystem.loadingFont = true;
 
       //glTranslated(-0.375, -0.375, 0.0);
@@ -2861,7 +2585,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       oglSurface.writingText = true;
 
-      GLSetupTexturing(shaders, true);
+      GLSetupTexturing(true);
 
       if(surface.font.outlineSize)
       {
@@ -2877,7 +2601,7 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.writingText = false;
       oglSystem.loadingFont = false;
 
-      GLSetupTexturing(shaders, false);
+      GLSetupTexturing(false);
 
       //glTranslated(0.375, 0.375, 0.0);
    }
@@ -2909,31 +2633,25 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint32 stipple)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool legacy = capabilities.legacy;
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
-
       if(stipple)
       {
 #if ENABLE_GL_LEGACY
-         if(legacy)
+         if(glcaps_legacy)
          {
-            stippleEnabled = true;
             glLineStipple(1, (uint16)stipple);
             glEnable(GL_LINE_STIPPLE);
          }
          else
 #endif
-            glsupLineStipple(shaders, 1, (uint16)stipple);
+         {
+            stippleEnabled = true;
+            glsupLineStipple(1, (uint16)stipple);
+         }
       }
       else
       {
 #if ENABLE_GL_LEGACY
-         if(legacy)
+         if(glcaps_legacy)
             glDisable(GL_LINE_STIPPLE);
          else
 #endif
@@ -2942,7 +2660,7 @@ class OpenGLDisplayDriver : DisplayDriver
             GLMatrixMode(GL_TEXTURE);
             GLLoadIdentity();
             GLMatrixMode(MatrixMode::projection);
-            GLSetupTexturing(shaders, false);   // TODO: Special shading code for stipple?
+            GLSetupTexturing(false);   // TODO: Special shading code for stipple?
          }
       }
    }
@@ -2951,25 +2669,19 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetRenderState(Display display, RenderState state, uint value)
    {
       OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool legacy = capabilities.legacy;
-#endif
-      bool shaders = capabilities.shaders;
-
       switch(state)
       {
          case antiAlias:
 #ifndef __EMSCRIPTEN__
             if(value)
-               glEnable(GL_MULTISAMPLE_ARB);
+               glEnable(GL_MULTISAMPLE);
             else
-               glDisable(GL_MULTISAMPLE_ARB);
+               glDisable(GL_MULTISAMPLE);
 #endif
             break;
          case fillMode:
 #if ENABLE_GL_LEGACY
-            if(legacy)
+            if(glcaps_legacy)
                glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
 #endif
             break;
@@ -2984,24 +2696,24 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
 #if ENABLE_GL_SHADERS
-            if(shaders)
+            if(glcaps_shaders)
                shader_fogColor(color[0], color[1], color[2]);
 #endif
 
 #if ENABLE_GL_FFP
-            if(!shaders)
+            if(!glcaps_shaders)
                glFogfv(GL_FOG_COLOR, (float *)&color);
 #endif
             break;
          }
          case fogDensity:
 #if ENABLE_GL_SHADERS
-            if(shaders)
+            if(glcaps_shaders)
                shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
 
 #if ENABLE_GL_FFP
-            if(!shaders)
+            if(!glcaps_shaders)
                glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
             break;
@@ -3013,12 +2725,12 @@ class OpenGLDisplayDriver : DisplayDriver
          case ambient:
          {
 #if ENABLE_GL_SHADERS
-            if(shaders)
+            if(glcaps_shaders)
                shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
 #endif
 
 #if ENABLE_GL_FFP
-            if(!shaders)
+            if(!glcaps_shaders)
             {
                float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -3044,17 +2756,13 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SetLight(Display display, int id, Light light)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-      bool shaders = capabilities.shaders;
-
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          shader_setLight(display, id, light);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!shaders)
+      if(!glcaps_shaders)
       {
          if(light != null)
          {
@@ -3206,11 +2914,6 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetCamera(Display display, Surface surface, Camera camera)
    {
       OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
 
       if(surface && camera)
       {
@@ -3277,16 +2980,16 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glEnable(GL_DEPTH_TEST);
 
-         GLSetupLighting(shaders, true);
+         GLSetupLighting(true);
 #if ENABLE_GL_FFP
-         if(!shaders)
+         if(!glcaps_shaders)
             glShadeModel(GL_SMOOTH);
 #endif
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
 #ifndef __EMSCRIPTEN__
-         glEnable(GL_MULTISAMPLE_ARB);
+         glEnable(GL_MULTISAMPLE);
 #endif
       }
       else if(surface && display.display3D.camera)
@@ -3298,24 +3001,24 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
 
-         GLSetupTexturing(shaders, false);
-         GLSetupLighting(shaders, false);
-         GLSetupFog(shaders, false);
+         GLSetupTexturing(false);
+         GLSetupLighting(false);
+         GLSetupFog(false);
 
          GLDisableClientState(COLORS);
 
 #if ENABLE_GL_SHADERS
-         if(shaders)
+         if(glcaps_shaders)
             shader_setPerVertexColor(false);
 #endif
 
 #if ENABLE_GL_FFP
-         if(!shaders)
+         if(!glcaps_shaders)
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
 #if !defined(__EMSCRIPTEN__)
-         glDisable(GL_MULTISAMPLE_ARB);
+         glDisable(GL_MULTISAMPLE);
 #endif
 
          // *** Restore 2D MODELVIEW Matrix ***
@@ -3330,18 +3033,11 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
-
       // Basic Properties
       if(material.flags.doubleSided)
       {
 #if ENABLE_GL_FFP
-         if(!shaders)
+         if(!glcaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
@@ -3349,20 +3045,20 @@ class OpenGLDisplayDriver : DisplayDriver
       else
       {
 #if ENABLE_GL_FFP
-         if(!shaders)
+         if(!glcaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
          glEnable(GL_CULL_FACE);
       }
 
       // Fog
-      GLSetupFog(shaders, !material.flags.noFog);
+      GLSetupFog(!material.flags.noFog);
 
       // Maps
       if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
       {
          Bitmap map = material.baseMap;
-         GLSetupTexturing(shaders, true);
+         GLSetupTexturing(true);
          glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)map.driverData);
 
          GLMatrixMode(GL_TEXTURE);
@@ -3383,15 +3079,15 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
       else
-         GLSetupTexturing(shaders, false);
+         GLSetupTexturing(false);
 
 #if ENABLE_GL_SHADERS
-      if(shaders)
+      if(glcaps_shaders)
          shader_setMaterial(material, mesh.flags.colors);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!shaders)
+      if(!glcaps_shaders)
       {
          if(mesh.flags.colors)
          {
@@ -3429,32 +3125,31 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLMesh oglMesh = mesh.data;
       if(oglMesh)
       {
-         OGLDisplay oglSystem = displaySystem.driverData;
-         GLCapabilities capabilities = oglSystem.capabilities;
-         bool vertexBuffer = capabilities.vertexBuffer;
+         OGLSystem oglSystem = displaySystem.driverData;
+         SETCAPS(oglSystem.capabilities);
          if(!mesh.flags.vertices)
          {
-            oglMesh.vertices.free(vertexBuffer);
+            oglMesh.vertices.free(glcaps_vertexBuffer);
             delete mesh.vertices;
          }
          if(!mesh.flags.normals)
          {
-            oglMesh.normals.free(vertexBuffer);
+            oglMesh.normals.free(glcaps_vertexBuffer);
             delete mesh.normals;
          }
          if(!mesh.flags.texCoords1)
          {
-            oglMesh.texCoords.free(vertexBuffer);
+            oglMesh.texCoords.free(glcaps_vertexBuffer);
             delete mesh.texCoords;
          }
          if(!mesh.flags.texCoords2)
          {
-            oglMesh.texCoords2.free(vertexBuffer);
+            oglMesh.texCoords2.free(glcaps_vertexBuffer);
             // delete mesh.texCoords2;
          }
          if(!mesh.flags.colors)
          {
-            oglMesh.colors.free(vertexBuffer);
+            oglMesh.colors.free(glcaps_vertexBuffer);
             delete mesh.colors;
          }
          if(!mesh.flags)
@@ -3545,27 +3240,26 @@ class OpenGLDisplayDriver : DisplayDriver
    void UnlockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
    {
       OGLSystem oglSystem = displaySystem.driverData;
-      GLCapabilities capabilities = oglSystem.capabilities;
-      bool vertexBuffer = capabilities.vertexBuffer;
-      if(vertexBuffer)
+      SETCAPS(oglSystem.capabilities);
+      if(glcaps_vertexBuffer)
       {
          OGLMesh oglMesh = mesh.data;
          if(!flags) flags = mesh.flags;
          if(flags.vertices)
-            oglMesh.vertices.upload(vertexBuffer,
-               mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices); //, GL_STATIC_DRAW_ARB );
+            oglMesh.vertices.upload(
+               mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices);
 
          if(flags.normals)
-            oglMesh.normals.upload(vertexBuffer,
-               mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals); //, GL_STATIC_DRAW_ARB );
+            oglMesh.normals.upload(
+               mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals);
 
          if(flags.texCoords1)
-            oglMesh.texCoords.upload(vertexBuffer,
-               mesh.nVertices * sizeof(Pointf), mesh.texCoords); //, GL_STATIC_DRAW_ARB );
+            oglMesh.texCoords.upload(
+               mesh.nVertices * sizeof(Pointf), mesh.texCoords);
 
          if(flags.colors)
-            oglMesh.colors.upload(vertexBuffer,
-               mesh.nVertices * sizeof(ColorRGBAf), mesh.colors); //, GL_STATIC_DRAW_ARB );
+            oglMesh.colors.upload(
+               mesh.nVertices * sizeof(ColorRGBAf), mesh.colors);
       }
    }
 
@@ -3579,11 +3273,10 @@ class OpenGLDisplayDriver : DisplayDriver
    void FreeIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
    {
       OGLSystem oglSystem = displaySystem.driverData;
-      GLCapabilities capabilities = oglSystem.capabilities;
-      bool vertexBuffer = capabilities.vertexBuffer;
+      SETCAPS(oglSystem.capabilities);
       if(oglIndices)
       {
-         oglIndices.buffer.free(vertexBuffer);
+         oglIndices.buffer.free(glcaps_vertexBuffer);
          delete oglIndices.indices;
          delete oglIndices;
       }
@@ -3603,9 +3296,8 @@ class OpenGLDisplayDriver : DisplayDriver
    void UnlockIndices(DisplaySystem displaySystem, OGLIndices oglIndices, bool indices32bit, int nIndices)
    {
       OGLSystem oglSystem = displaySystem.driverData;
-      GLCapabilities capabilities = oglSystem.capabilities;
-      bool vertexBuffer = capabilities.vertexBuffer;
-      if(vertexBuffer)
+      SETCAPS(oglSystem.capabilities);
+      if(glcaps_vertexBuffer)
       {
 #if !ENABLE_GL_INTDBL
          if(indices32bit)
@@ -3614,13 +3306,13 @@ class OpenGLDisplayDriver : DisplayDriver
                glGenBuffers(1, &oglIndices.buffer.buffer);
             if(glabCurElementBuffer != oglIndices.buffer.buffer)
                GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oglIndices.buffer.buffer);
-            glimtkBufferDatai(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32) * nIndices, oglIndices.indices, GL_STATIC_DRAW_ARB);
+            glimtkBufferDatai(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32) * nIndices, oglIndices.indices, GL_STATIC_DRAW);
          }
          else
 #endif
-         oglIndices.buffer.upload(vertexBuffer,
+         oglIndices.buffer.upload(
             nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
-            oglIndices.indices); //GL_STATIC_DRAW_ARB);
+            oglIndices.indices);
       }
    }
 
@@ -3632,21 +3324,12 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_SHADERS && ENABLE_GL_FFP
-      bool shaders = capabilities.shaders;
-#endif
-
 #if !defined( __ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
-      bool vertexBuffer = capabilities.vertexBuffer;
-
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
-         if(!vertexBuffer && display.display3D.mesh)
+         if(!glcaps_vertexBuffer && display.display3D.mesh)
             glUnlockArraysEXT();
-
 #endif
       if(mesh)
       {
@@ -3656,13 +3339,13 @@ class OpenGLDisplayDriver : DisplayDriver
          GLEnableClientState(VERTICES);
          if(!display.display3D.collectingHits && oglMesh)
          {
-            oglMesh.vertices.use(capabilities, vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
+            oglMesh.vertices.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
                GLEnableClientState(NORMALS);
-               oglMesh.normals.use(capabilities, normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
+               oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
@@ -3670,42 +3353,42 @@ class OpenGLDisplayDriver : DisplayDriver
             // *** Texture Coordinates Stream ***
             if(mesh.texCoords || mesh.flags.texCoords1)
             {
-               GLEnableClientState(TEXTURECOORDS);
-               oglMesh.texCoords.use(capabilities, texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+               GLEnableClientState(TEXCOORDS);
+               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
             }
             else
-               GLDisableClientState(TEXTURECOORDS);
+               GLDisableClientState(TEXCOORDS);
 
             // *** Color Stream ***
             if(mesh.colors || mesh.flags.colors)
             {
                GLEnableClientState(COLORS);
-               oglMesh.colors.use(capabilities, color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
+               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
          }
          else
          {
-            noAB.use(capabilities, vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
+            noAB.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
             if((mesh.normals || mesh.flags.normals) && !display.display3D.collectingHits)
             {
                GLEnableClientState(NORMALS);
-               noAB.use(capabilities, normal, 3, GL_FLOAT, 0, mesh.normals);
+               noAB.use(normal, 3, GL_FLOAT, 0, mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
             if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
             {
-               GLEnableClientState(TEXTURECOORDS);
-               noAB.use(capabilities, texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
+               GLEnableClientState(TEXCOORDS);
+               noAB.use(texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
             }
             else
-               GLDisableClientState(TEXTURECOORDS);
+               GLDisableClientState(TEXCOORDS);
             if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
             {
                GLEnableClientState(COLORS);
-               noAB.use(capabilities, color, 4, GL_FLOAT, 0, mesh.colors);
+               noAB.use(color, 4, GL_FLOAT, 0, mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
@@ -3716,7 +3399,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          if(glLockArraysEXT)
 #endif
-            if(!vertexBuffer)
+            if(!glcaps_vertexBuffer)
                glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
@@ -3724,30 +3407,29 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-      bool vertexBuffer = capabilities.vertexBuffer;
-
       if(primitive->type.vertexRange)
-         glDrawArrays(getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->first, primitive->nVertices);
+      {
+         GLFlushMatrices();
+         glDrawArrays(getPrimitiveType(primitive->type.primitiveType), primitive->first, primitive->nVertices);
+      }
       else
       {
          OGLIndices oglIndices = primitive->data;
-         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && vertexBuffer) ? oglIndices.buffer : noEAB);
+         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && glcaps_vertexBuffer) ? oglIndices.buffer : noEAB);
 #if !ENABLE_GL_INTDBL
-         if(!vertexBuffer && primitive->type.indices32bit)
+         if(!glcaps_vertexBuffer && primitive->type.indices32bit)
          {
             uint16 * temp = new uint16[primitive->nIndices];
             uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
             int i;
             for(i = 0; i < primitive->nIndices; i++)
                temp[i] = (uint16)src[i];
-            eab.draw(vertexBuffer, getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->nIndices, GL_UNSIGNED_SHORT, temp);
+            eab.draw(getPrimitiveType(primitive->type.primitiveType), primitive->nIndices, GL_UNSIGNED_SHORT, temp);
             delete temp;
          }
          else
 #endif
-            eab.draw(vertexBuffer, getPrimitiveType(oglDisplay.capabilities.quads, primitive->type.primitiveType), primitive->nIndices,
+            eab.draw(getPrimitiveType(primitive->type.primitiveType), primitive->nIndices,
                primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));
          GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -3756,34 +3438,16 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void PushMatrix(Display display)
    {
-#if ENABLE_GL_LEGACY
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-      bool fixedFunction = capabilities.fixedFunction;
-      bool shaders = capabilities.shaders;
-#endif
       GLPushMatrix();
    }
 
    void PopMatrix(Display display, bool setMatrix)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
       GLPopMatrix();
    }
 
    void SetTransform(Display display, Matrix transMatrix, bool viewSpace, bool useCamera)
    {
-      OGLDisplay oglDisplay = display.driverData;
-      GLCapabilities capabilities = oglDisplay.capabilities;
-#if ENABLE_GL_LEGACY
-      bool fixedFunction = capabilities.fixedFunction;
-#endif
-      bool shaders = capabilities.shaders;
       Matrix matrix = transMatrix;
       Camera camera = useCamera ? display.display3D.camera : null;
 
