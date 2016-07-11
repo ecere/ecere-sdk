@@ -453,6 +453,14 @@ public FaceInfo ResolveCharFont(const String faceName, float size, FontFlags fla
    if(pattern) FcPatternDestroy(pattern);
    if(matched) FcPatternDestroy(matched);
    if(charSet) FcCharSetDestroy(charSet);
+#elif defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
+   {
+      // Fall back to Arial Unicode MS
+      char fileName[MAX_LOCATION];
+      GetWindowsDirectory(fileName, MAX_LOCATION);
+      PathCat(fileName, "fonts/arialuni.ttf");
+      info = { fileName = CopyString(fileName) };
+   }
 #endif
    return info;
 }
