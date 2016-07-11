@@ -2,6 +2,34 @@ import "ecere"
 
 import "tesselation"
 
+//#include "glHelpers.h"
+
+#include <GL/gl.h>
+
+   #define GLBegin(m)                        (glCaps_immediate ? glBegin(m) : glimtkBegin(m))
+   #define GLEnd()                           (glCaps_immediate ? glEnd() : glimtkEnd())
+   #define GLVertex3f(x,y,z)                 (glCaps_immediate ? glVertex3f(x,y,z) : glimtkVertex3f(x,y,z))
+   #define GLTexCoord2f(x,y)                 (glCaps_immediate ? glTexCoord2f(x,y) : glimtkTexCoord2f(x,y))
+   #define GLColor4f(a,b,c,d)                (glCaps_immediate ? glColor4f(a,b,c,d) : glimtkColor4f(a,b,c,d))
+
+#define SETCAPS(caps) \
+   glCaps                     = caps; \
+   glCaps_shaders             = glCaps.shaders; \
+   glCaps_fixedFunction       = glCaps.fixedFunction; \
+   glCaps_nonPow2Textures     = glCaps.nonPow2Textures; \
+   glCaps_vertexBuffer        = glCaps.vertexBuffer; \
+   glCaps_quads               = glCaps.quads; \
+   glCaps_intAndDouble        = glCaps.intAndDouble; \
+   glCaps_immediate           = glCaps.immediate; \
+   glCaps_legacy              = glCaps.legacy; \
+   glCaps_pointSize           = glCaps.pointSize; \
+   glCaps_frameBuffer         = glCaps.frameBuffer; \
+   glCaps_vao                 = glCaps.vao;
+
+GLCapabilities glCaps;
+bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble;
+bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao;
+
 #define glTypeUnsignedShort     0x1403
 #define glTypeFloat             0x1406
 
@@ -134,6 +162,7 @@ class ButterburTest : Window
    void OnRedraw(Surface surface)
    {
       display.antiAlias = true;
+      SETCAPS(display.glCapabilities);
       scene.render();
    }
 }
@@ -560,11 +589,11 @@ class BBPath : BBObject
          else
             fillMode = triangleFan;
 
-         fillIndices.upload(fillCount * sizeof(uint16), ixFill);
+         fillIndices.allocate(fillCount * sizeof(uint16), ixFill, staticDraw);
       }
 
-      vbo.upload(vboCount*sizeof(Pointf), points);
-      lineIndices.upload(ixCount * sizeof(uint16), ix);
+      vbo.allocate(vboCount*sizeof(Pointf), points, staticDraw);
+      lineIndices.allocate(ixCount * sizeof(uint16), ix, staticDraw);
       lineCount = ixCount;
 
       if(points != nodes.array)
@@ -582,18 +611,18 @@ class BBPath : BBObject
       // Fill
       if(closed)
       {
-         glimtkColor4f(fillColor.color.r/255.0f, fillColor.color.g/255.0f, fillColor.color.b/255.0f, fillColor.a/255.0f);
+         GLColor4f(fillColor.color.r/255.0f, fillColor.color.g/255.0f, fillColor.color.b/255.0f, fillColor.a/255.0f);
          fillIndices.draw(fillMode, fillCount, glTypeUnsignedShort, null);
       }
 
       // Line
       if(lineWidth)
       {
-         glimtkColor4f(lineColor.color.r/255.0f, lineColor.color.g/255.0f, lineColor.color.b/255.0f, lineColor.a/255.0f);
+         GLColor4f(lineColor.color.r/255.0f, lineColor.color.g/255.0f, lineColor.color.b/255.0f, lineColor.a/255.0f);
          lineIndices.draw(lineWidth > 1 ? GLIMTKMode::triangleStrip : GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
 
 #ifdef _DEBUG
-         glimtkColor4f(1, 0, 0, 1);
+         GLColor4f(1, 0, 0, 1);
           //fillIndices.draw(GLIMTKMode::lineStrip, fillCount, glTypeUnsignedShort, null);
          // lineIndices.draw(GLIMTKMode::lineStrip, lineCount, glTypeUnsignedShort, null);
 #endif

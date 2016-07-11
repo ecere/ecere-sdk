@@ -1,61 +1,73 @@
 {
-   "Version" : 0.2,
-   "ModuleName" : "butterbur",
-   "Options" : {
-      "Warnings" : "All",
-      "TargetType" : "Executable",
-      "TargetFileName" : "butterbur",
-      "Libraries" : [
+   version = 0.2,
+   moduleName = "butterbur",
+   options = {
+      warnings = all,
+      includeDirs = [
+         "../ecere/src/gfx/drivers/gl3"
+      ],
+      targetType = executable,
+      targetFileName = "butterbur",
+      libraries = [
          "ecere"
       ]
    },
-   "Platforms" : [
+   platforms = [
       {
-         "Name" : "linux",
-         "Options" : {
-            "Libraries" : [
+         name = "linux",
+         options = {
+            libraries = [
+               "m",
+               "GL"
+            ]
+         }
+      },
+      {
+         name = "apple",
+         options = {
+            libraries = [
                "m"
             ]
          }
       },
       {
-         "Name" : "apple",
-         "Options" : {
-            "Libraries" : [
-               "m"
+         name = "win32",
+         options = {
+            libraries = [
+               "opengl32"
             ]
          }
       }
    ],
-   "Configurations" : [
+   configurations = [
       {
-         "Name" : "Debug",
-         "Options" : {
-            "Debug" : true,
-            "Optimization" : "None",
-            "PreprocessorDefinitions" : [
+         name = "Debug",
+         options = {
+            debug = true,
+            optimization = none,
+            preprocessorDefinitions = [
                "_DEBUG"
             ],
-            "Console" : true,
-            "FastMath" : false
+            console = true,
+            fastMath = false
          }
       },
       {
-         "Name" : "Release",
-         "Options" : {
-            "Debug" : false,
-            "Optimization" : "Speed",
-            "FastMath" : true
+         name = "Release",
+         options = {
+            debug = false,
+            optimization = speed,
+            fastMath = true
          }
       }
    ],
-   "Files" : [
+   files = [
       {
-         "Folder" : "deps",
-         "Files" : [
+         folder = "deps",
+         files = [
             {
-               "Folder" : "libtess",
-               "Files" : [
+               folder = "libtess",
+               files = [
                   "../deps/libtess/dict.c",
                   "../deps/libtess/dict.h",
                   "../deps/libtess/dictList.h",
@@ -85,16 +97,16 @@
       },
       "src/butterbur.ec",
       {
-         "FileName" : "src/tesselation.ec",
-         "Options" : {
-            "IncludeDirs" : [
+         fileName = "src/tesselation.ec",
+         options = {
+            includeDirs = [
                "../deps/libtess"
             ]
          }
       }
    ],
-   "ResourcesPath" : "",
-   "Resources" : [
+   resourcesPath = "",
+   resources = [
 
    ]
 }
