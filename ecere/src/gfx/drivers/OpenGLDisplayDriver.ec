@@ -360,6 +360,8 @@ public void GLSetupLighting(bool enable)
 }
 #endif
 
+static GLuint lastBlitTex;
+
 static int displayWidth, displayHeight;
 
 #define GL_CLAMP_TO_EDGE 0x812F
@@ -428,6 +430,10 @@ class OGLSystem : struct
    GLXDrawable glxDrawable;
 #endif
    GLCapabilities capabilities;
+
+   // Buffer Data
+   uint16 *shortBDBuffer;
+   uint shortBDSize;
 };
 
 class OGLSurface : struct
@@ -973,6 +979,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDeleteShader(oglSystem.vertexShader);
 #endif
 
+      delete oglSystem.shortBDBuffer;
       glimtkTerminate();
 
    #if defined(__WIN32__)
@@ -1021,7 +1028,15 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if ENABLE_GL_SHADERS
       if(glcaps_shaders)
+      {
+#if ENABLE_GL_LEGACY
+         glDisableClientState(GL_VERTEX_ARRAY);
+         glDisableClientState(GL_NORMAL_ARRAY);
+         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+         glDisableClientState(GL_COLOR_ARRAY);
+#endif
          loadShaders(display.displaySystem, "<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
+      }
 #if ENABLE_GL_LEGACY
       else
       {
@@ -2261,18 +2276,25 @@ class OpenGLDisplayDriver : DisplayDriver
    void Blit(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
       OGLSurface oglSurface = surface.driverData;
+      GLuint tex = (GLuint)(uintptr)bitmap.driverData;
+      if(!tex) return;
 
       if(!oglSurface.writingText)
       {
          // glTranslatef(-0.375f, -0.375f, 0.0f);
          GLSetupTexturing(true);
          GLColor4fv(oglSurface.bitmapMult);
+         glBindTexture(GL_TEXTURE_2D, tex);
+         GLBegin(GLIMTKMode::quads);
       }
-      else if(oglSurface.xOffset)
-         GLTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
-
-      glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
-      GLBegin(GLIMTKMode::quads);
+      else if(lastBlitTex != tex)
+      {
+         if(lastBlitTex)
+            GLEnd();
+         glBindTexture(GL_TEXTURE_2D, tex);
+         GLBegin(GLIMTKMode::quads);
+         lastBlitTex = tex;
+      }
 
       if(h < 0)
       {
@@ -2307,16 +2329,12 @@ class OpenGLDisplayDriver : DisplayDriver
          GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
          GLVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
       }
-      GLEnd();
-
       if(!oglSurface.writingText)
       {
+         GLEnd();
          GLSetupTexturing(false);
-
          //glTranslate(0.375, 0.375, 0.0);
       }
-      else if(oglSurface.xOffset)
-         GLTranslated(-oglSurface.xOffset / 64.0/*+0.375*/, 0.0, 0.0);
    }
 
    void Stretch(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
@@ -2569,41 +2587,49 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
-      OGLSurface oglSurface = surface.driverData;
-      OGLSystem oglSystem = display.displaySystem.driverData;
-      oglSystem.loadingFont = true;
-
-      //glTranslated(-0.375, -0.375, 0.0);
-
-      if(surface.textOpacity)
+      if(len && text[0])
       {
-         int w = 0, h, adv = 0;
-         FontExtent(display.displaySystem, surface.font, text, len, &w, &h, 0, null, &adv);
-         w += adv;
-         display.displaySystem.driver.Area(display, surface,x,y,x+w-1,y+h-1);
-      }
+         OGLSurface oglSurface = surface.driverData;
+         OGLSystem oglSystem = display.displaySystem.driverData;
+         oglSystem.loadingFont = true;
 
-      oglSurface.writingText = true;
+         //glTranslated(-0.375, -0.375, 0.0);
 
-      GLSetupTexturing(true);
+         if(surface.textOpacity)
+         {
+            int w = 0, h, adv = 0;
+            FontExtent(display.displaySystem, surface.font, text, len, &w, &h, 0, null, &adv);
+            w += adv;
+            display.displaySystem.driver.Area(display, surface,x,y,x+w-1,y+h-1);
+         }
 
-      if(surface.font.outlineSize)
-      {
-         ColorAlpha outlineColor = surface.outlineColor;
-         GLColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
-         oglSurface.writingOutline = true;
+         oglSurface.writingText = true;
+
+         GLSetupTexturing(true);
+
+         if(surface.font.outlineSize)
+         {
+            ColorAlpha outlineColor = surface.outlineColor;
+            GLColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
+            oglSurface.writingOutline = true;
+            lastBlitTex = 0;
+            ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
+            if(lastBlitTex) GLEnd();
+            oglSurface.writingOutline = false;
+         }
+         GLColor4fv(oglSurface.foreground);
+
+         lastBlitTex = 0;
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
-         oglSurface.writingOutline = false;
+         if(lastBlitTex) GLEnd();
+
+         oglSurface.writingText = false;
+         oglSystem.loadingFont = false;
+
+         GLSetupTexturing(false);
+
+         //glTranslated(0.375, 0.375, 0.0);
       }
-      GLColor4fv(oglSurface.foreground);
-
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
-      oglSurface.writingText = false;
-      oglSystem.loadingFont = false;
-
-      GLSetupTexturing(false);
-
-      //glTranslated(0.375, 0.375, 0.0);
    }
 
    void TextFont(Display display, Surface surface, Font font)
@@ -3246,20 +3272,20 @@ class OpenGLDisplayDriver : DisplayDriver
          OGLMesh oglMesh = mesh.data;
          if(!flags) flags = mesh.flags;
          if(flags.vertices)
-            oglMesh.vertices.upload(
-               mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices);
+            oglMesh.vertices.allocate(
+               mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, staticDraw);
 
          if(flags.normals)
-            oglMesh.normals.upload(
-               mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals);
+            oglMesh.normals.allocate(
+               mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, staticDraw);
 
          if(flags.texCoords1)
-            oglMesh.texCoords.upload(
-               mesh.nVertices * sizeof(Pointf), mesh.texCoords);
+            oglMesh.texCoords.allocate(
+               mesh.nVertices * sizeof(Pointf), mesh.texCoords, staticDraw);
 
          if(flags.colors)
-            oglMesh.colors.upload(
-               mesh.nVertices * sizeof(ColorRGBAf), mesh.colors);
+            oglMesh.colors.allocate(
+               mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
       }
    }
 
@@ -3306,13 +3332,27 @@ class OpenGLDisplayDriver : DisplayDriver
                glGenBuffers(1, &oglIndices.buffer.buffer);
             if(glabCurElementBuffer != oglIndices.buffer.buffer)
                GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oglIndices.buffer.buffer);
-            glimtkBufferDatai(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32) * nIndices, oglIndices.indices, GL_STATIC_DRAW);
+
+            {
+               uint * pointer = (uint *)oglIndices.indices;
+               int i;
+               uint16 * b;
+               if(nIndices > oglSystem.shortBDSize)
+               {
+                  oglSystem.shortBDSize = nIndices;
+                  oglSystem.shortBDBuffer = renew oglSystem.shortBDBuffer uint16[oglSystem.shortBDSize];
+               }
+               b = oglSystem.shortBDBuffer;
+               for(i = 0; i < nIndices; i++)
+                  b[i] = (uint16)pointer[i];
+
+               glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint16), b, GL_STATIC_DRAW);
          }
          else
 #endif
-         oglIndices.buffer.upload(
+         oglIndices.buffer.allocate(
             nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
-            oglIndices.indices);
+            oglIndices.indices, staticDraw);
       }
    }
 

@@ -20,16 +20,58 @@ public enum GLIMTKMode
 };
 
 static int beginCount;
-static int vertexCount;
-static int normalCount;
-static float *vertexPointer;
-static float *normalPointer;
 static GLIMTKMode beginMode = unset;
-static uint beginBufferSize, normalBufferSize;
-static int numVertexCoords = 2;
 static bool vertexColorValues = false;
-static int vertexStride = 4;
-static int vertexOffset = 2;
+static int numCoords = 2;     // Number of coordinates per vertex
+static int vertexOffset = 2;  // Offset of vertex info
+
+static struct FloatGLAB : GLAB
+{
+   uint count;       // Count of vertices
+   uint size;        // Size in vertices
+   int stride;      // Number of floats per vertex
+   float * pointer;
+   uint bufSize;     // Size in bytes of VBO
+
+   static inline float * ensure(uint extraVertices)
+   {
+      if(count + extraVertices >= size)
+      {
+         size = size ? (size + size/2) : Max(count + extraVertices, 6);
+         pointer = renew pointer float[size * stride];
+      }
+      return pointer + count * stride;
+   }
+
+   static inline void upload()
+   {
+      uint bufSize = count * stride * sizeof(float);
+      if(bufSize > this.bufSize)
+      {
+         this.bufSize = bufSize;
+         GLAB::allocate(bufSize, null, dynamicDraw);
+      }
+      GLAB::upload(0, bufSize, verticesBuf.pointer);
+   }
+
+   static inline void free()
+   {
+      bufSize = 0;
+      count = 0;
+      size = 0;
+      delete pointer;
+      GLAB::free();
+   }
+};
+
+FloatGLAB verticesBuf { stride = 4 };
+FloatGLAB normalsBuf { stride = 3 };
+
+void glimtkTerminate()
+{
+   verticesBuf.free();
+   normalsBuf.free();
+}
 
 public void glimtkRecti(int a, int b, int c, int d)
 {
@@ -44,240 +86,124 @@ public void glimtkRecti(int a, int b, int c, int d)
 public void glimtkBegin(GLIMTKMode mode)
 {
    beginMode = mode;
-   beginCount = 0;
-   vertexCount = 0;
    vertexColorValues = false;
+   beginCount = 0;
    vertexOffset = 2;
-   vertexStride = 4;
-   numVertexCoords = 2;
 
-   if(!vertexPointer)
-   {
-      normalBufferSize = beginBufferSize = 1024;  // default number of vertices
-      vertexPointer = new float[beginBufferSize * vertexStride];
-      normalPointer = new float[normalBufferSize * 3];
-   }
+   verticesBuf.count = 0;
+   verticesBuf.stride = 4;
+   numCoords = 2;
 }
 
 public void glimtkTexCoord2f(float x, float y)
 {
-   int count = vertexCount;
-
-   if(vertexCount + numVertexCoords > beginBufferSize)
+   int stride = verticesBuf.stride;
+   bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+   float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1);
+   buf[0] = x;
+   buf[1] = y;
+   buf += stride;
+   if(quadsAdd)
    {
-      beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
-   }
-
-   vertexPointer[count*vertexStride  ] = x;
-   vertexPointer[count*vertexStride+1] = y;
-   count++;
-
-   if(beginMode == quads && ((beginCount % 4) == 3))
-   {
-      vertexPointer[count*vertexStride  ] = vertexPointer[(count-4)*vertexStride];
-      vertexPointer[count*vertexStride+1] = vertexPointer[(count-4)*vertexStride+1];
-      count++;
-      vertexPointer[count*vertexStride  ] = vertexPointer[(count-3)*vertexStride];
-      vertexPointer[count*vertexStride+1] = vertexPointer[(count-3)*vertexStride+1];
-      count++;
+      buf[0] = buf[-4*stride];
+      buf[1] = buf[-4*stride+1];
+      buf += stride;
+      buf[0] = buf[-3*stride];
+      buf[1] = buf[-3*stride+1];
+      buf += stride;
    }
 }
+
 public void glimtkTexCoord2i(int x, int y)       { glimtkTexCoord2f((float)x, (float)y); }
 public void glimtkTexCoord2d(double x, double y) { glimtkTexCoord2f((float)x, (float)y); }
 public void glimtkTexCoord2fv(float * a)         { glimtkTexCoord2f(a[0], a[1]); }
 
 public void glimtkVertex2f(float x, float y)
 {
-   numVertexCoords = 2;
-   vertexStride = vertexOffset + numVertexCoords;
-
-   if(vertexCount + 4 > beginBufferSize)
+   numCoords = 2;
+   verticesBuf.stride = vertexOffset + numCoords;
    {
-      beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
-   }
-
-   vertexPointer[vertexCount*vertexStride+vertexOffset] = x;
-   vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = y;
-   vertexCount++;
-
-   if(beginMode == quads && ((beginCount % 4) == 3))
-   {
-      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset];
-      vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset + 1];
-      vertexCount++;
-      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset];
-      vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset + 1];
-      vertexCount++;
+      int stride = verticesBuf.stride;
+      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
+      buf[0] = x;
+      buf[1] = y;
+      verticesBuf.count++;
+      if(quadsAdd)
+      {
+         buf += stride;
+         buf[0] = buf[-4*stride];
+         buf[1] = buf[-4*stride+1];
+         buf += stride;
+         buf[0] = buf[-3*stride];
+         buf[1] = buf[-3*stride+1];
+         verticesBuf.count+=2;
+      }
    }
    beginCount++;
 }
 public void glimtkVertex2i(int x, int y)         { glimtkVertex2f((float)x, (float)y); }
 public void glimtkVertex2d(double x, double y)   { glimtkVertex2f((float)x, (float)y); }
 
-GLAB streamVecAB, streamNorAB;
-
-public void glimtkEnd()
+public void glimtkVertex3f( float x, float y, float z )
 {
-   GLIMTKMode mode = beginMode;
-   if(mode == quads)        mode = triangles;
-   else if(mode == polygon) mode = triangleFan;
-
-   GLEnableClientState(TEXCOORDS);
-
-   if(glcaps_vertexBuffer)
+   numCoords = 3;
+   verticesBuf.stride = vertexOffset + numCoords;
    {
-      streamVecAB.upload(vertexStride * sizeof(float) * vertexCount, vertexPointer);
-      streamVecAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), 0);
-   }
-   else
-      noAB.use(texCoord, 2, GL_FLOAT, vertexStride * sizeof(float), vertexPointer);
-
-   if(vertexColorValues)
-   {
-      GLEnableClientState(COLORS);
-      if(glcaps_vertexBuffer)
-         streamVecAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), (void *)(2 * sizeof(float)));
-      else
-         noAB.use(color, 4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
-
-#if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
-         shader_setPerVertexColor(true);
-#endif
-   }
-
-   if(glcaps_vertexBuffer)
-      streamVecAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
-   else
-      noAB.use(vertex, numVertexCoords, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + vertexOffset);
-
-   if(normalCount && normalCount == vertexCount)
-   {
-      GLEnableClientState(NORMALS);
-      if(glcaps_vertexBuffer)
+      int stride = verticesBuf.stride;
+      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
+      buf[0] = x;
+      buf[1] = y;
+      buf[2] = z;
+      verticesBuf.count++;
+      if(quadsAdd)
       {
-         streamNorAB.upload(3*sizeof(float) * vertexCount, normalPointer);
-         streamNorAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+         buf += stride;
+         buf[0] = buf[-4*stride];
+         buf[1] = buf[-4*stride+1];
+         buf[2] = buf[-4*stride+2];
+         buf += stride;
+         buf[0] = buf[-3*stride];
+         buf[1] = buf[-3*stride+1];
+         buf[2] = buf[-3*stride+2];
+         verticesBuf.count+=2;
       }
-      else
-         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalPointer);
    }
-
-   GLFlushMatrices();
-   glDrawArrays(mode, 0, vertexCount);
-
-   if(normalCount)
-      GLDisableClientState(NORMALS);
-   if(vertexColorValues)
-   {
-      GLDisableClientState(COLORS);
-
-#if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
-         shader_setPerVertexColor(false);
-#endif
-
-   }
-   GLDisableClientState(TEXCOORDS);
-
-   normalCount = 0;
-   vertexColorValues = false;
-   numVertexCoords = 2;
-   beginMode = unset;
+   beginCount++;
 }
 
-// Vertex Pointer
-static float *floatVPBuffer = null;
-static short *shortVPBuffer = null;
-static unsigned int shortVPSize = 0, floatVPSize = 0;
-
-// Buffer Data
-static unsigned short *shortBDBuffer = null;
-static unsigned int shortBDSize = 0;
-
-public void glimtkVertexPointeri(int numCoords, int stride, int *pointer, int numVertices)
-{
-   if(pointer)
-   {
-      int i;
-      if(numVertices*numCoords > shortVPSize)
-      {
-         shortVPSize = numVertices*numCoords;
-         shortVPBuffer = renew shortVPBuffer short[shortVPSize];
-      }
-      for(i = 0; i < numVertices*numCoords; i++)
-         shortVPBuffer[i] = (short)pointer[i];
-
-      GLVertexPointer(numCoords, GL_SHORT, stride, shortVPBuffer);
-   }
-   else
-      GLVertexPointer(numCoords, GL_SHORT, stride, 0);
-}
-
-public void glimtkVertexPointerd(int numCoords, int stride, double *pointer, int numVertices)
-{
-   if(pointer)
-   {
-      int i;
-      if(numVertices*numCoords > floatVPSize)
-      {
-         floatVPSize = numVertices*numCoords;
-         floatVPBuffer = renew floatVPBuffer float[floatVPSize];
-      }
-      for(i = 0; i < numVertices*numCoords; i++)
-         floatVPBuffer[i] = (float)pointer[i];
-      GLVertexPointer(numCoords, GL_FLOAT, stride, floatVPBuffer);
-   }
-   else
-      GLVertexPointer(numCoords, GL_FLOAT, stride, 0);
-}
-
-public void glimtkTexReuseIntVP(int numCoords)
-{
-   GLTexCoordPointer(numCoords, GL_SHORT, 0, floatVPBuffer);
-}
-
-public void glimtkTexReuseDoubleVP(int numCoords)
-{
-   GLTexCoordPointer(numCoords, GL_FLOAT, 0, floatVPBuffer);
-}
+public void glimtkVertex3d( double x, double y, double z )  { glimtkVertex3f((float)x, (float)y, (float)z); }
+public void glimtkVertex3fv( float* coords )                { glimtkVertex3f(coords[0], coords[1], coords[2]); }
+public void glimtkVertex3dv( double* coords )               { glimtkVertex3f((float)coords[0], (float)coords[1], (float)coords[2]); }
 
 public void glimtkColor4f(float r, float g, float b, float a)
 {
    if(beginMode != unset)
    {
-      int count = vertexCount;
-
+      // Called within glBegin()/glEnd()
       vertexColorValues = true;
       vertexOffset = 6;
-      vertexStride = vertexOffset + numVertexCoords;
-
-      if(vertexCount + vertexStride > beginBufferSize)
+      verticesBuf.stride = vertexOffset + numCoords;
       {
-         beginBufferSize = beginBufferSize + beginBufferSize/2;
-         vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
-      }
+         int stride = verticesBuf.stride;
+         bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+         float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + 2;
+         buf[0] = r, buf[1] = g, buf[2] = b, buf[3] = a;
 
-      vertexPointer[count*vertexStride + 2] = r;
-      vertexPointer[count*vertexStride + 3] = g;
-      vertexPointer[count*vertexStride + 4] = b;
-      vertexPointer[count*vertexStride + 5] = a;
-      count++;
-
-      if(beginMode == quads && ((beginCount % 4) == 3))
-      {
-         vertexPointer[count*vertexStride + 2] = vertexPointer[(count-4) * vertexStride + 2];
-         vertexPointer[count*vertexStride + 3] = vertexPointer[(count-4) * vertexStride + 3];
-         vertexPointer[count*vertexStride + 4] = vertexPointer[(count-4) * vertexStride + 4];
-         vertexPointer[count*vertexStride + 5] = vertexPointer[(count-4) * vertexStride + 5];
-         count++;
-         vertexPointer[count*vertexStride + 2] = vertexPointer[(count-3) * vertexStride + 2];
-         vertexPointer[count*vertexStride + 3] = vertexPointer[(count-3) * vertexStride + 3];
-         vertexPointer[count*vertexStride + 4] = vertexPointer[(count-3) * vertexStride + 4];
-         vertexPointer[count*vertexStride + 5] = vertexPointer[(count-3) * vertexStride + 5];
-         count++;
+         if(quadsAdd)
+         {
+            buf += stride;
+            buf[0] = buf[-4*stride];
+            buf[1] = buf[-4*stride+1];
+            buf[2] = buf[-4*stride+2];
+            buf[3] = buf[-4*stride+3];
+            buf += stride;
+            buf[0] = buf[-3*stride];
+            buf[1] = buf[-3*stride+1];
+            buf[2] = buf[-3*stride+2];
+            buf[3] = buf[-3*stride+3];
+         }
       }
    }
    else
@@ -302,128 +228,109 @@ public void glimtkColor4f(float r, float g, float b, float a)
    }
 }
 
-public void glimtkColor3f( float r, float g, float b )
-{
-   glimtkColor4f(r, g, b, 1.0f);
-}
+public void glimtkColor3f( float r, float g, float b )      { glimtkColor4f(r, g, b, 1.0f); }
+public void glimtkColor4ub(byte r, byte g, byte b, byte a)  { glimtkColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f); }
+public void glimtkColor4fv(float * a)                       { glimtkColor4f(a[0], a[1], a[2], a[3]); }
 
-public void glimtkColor4ub(byte r, byte g, byte b, byte a)
-{
-   glimtkColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
-}
-
-public void glimtkColor4fv(float * a)
-{
-   glimtkColor4f(a[0], a[1], a[2], a[3]);
-}
-
-public void glimtkBufferDatad(int target, int size, void * data, int usage)
-{
-   int numElems = size/sizeof(double);
-   double * dblPtr = (double *)data;
-   int i;
-   if (numElems > floatVPSize)
-   {
-      floatVPSize = numElems;
-      floatVPBuffer = renew floatVPBuffer float[floatVPSize];
-   }
-   for (i=0; i< numElems; i++)
-      floatVPBuffer[i] = (float)dblPtr[i];
-
-   glBufferData(target, numElems*sizeof(float), floatVPBuffer, usage);
-}
-
-public void glimtkBufferDatai(int target, int size, void * data, int usage)
-{
-   int numElems = size/sizeof(unsigned int);
-   unsigned int * pointer = (unsigned int *)data;
-   int i;
-   if (numElems > shortBDSize)
-   {
-      shortBDSize = numElems;
-      shortBDBuffer = renew shortBDBuffer uint16[shortBDSize];
-   }
-   for (i=0; i< numElems; i++)
-      shortBDBuffer[i] = (unsigned short)pointer[i];
-
-   glBufferData(target, numElems*sizeof(unsigned short), shortBDBuffer, usage);
-}
-
-public void glimtkVertex3f( float x, float y, float z )
-{
-   numVertexCoords = 3;
-   vertexStride = vertexOffset + numVertexCoords;
-
-   if(vertexCount + vertexStride > beginBufferSize)
-   {
-      beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
-   }
-
-   vertexPointer[vertexCount*vertexStride+vertexOffset] = x;
-   vertexPointer[vertexCount*vertexStride+vertexOffset+1] = y;
-   vertexPointer[vertexCount*vertexStride+vertexOffset+2] = z;
-   vertexCount++;
-
-   if(beginMode == quads && ((beginCount % 4) == 3))
-   {
-      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset];
-      vertexPointer[vertexCount*vertexStride+vertexOffset+1] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset+1];
-      vertexPointer[vertexCount*vertexStride+vertexOffset+2] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset+2];
-      vertexCount++;
-      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset];
-      vertexPointer[vertexCount*vertexStride+vertexOffset+1] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset+1];
-      vertexPointer[vertexCount*vertexStride+vertexOffset+2] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset+2];
-      vertexCount++;
-   }
-   beginCount++;
-}
-
-public void glimtkVertex3d( double x, double y, double z )  { glimtkVertex3f((float)x, (float)y, (float)z); }
-public void glimtkVertex3fv( float* coords )                { glimtkVertex3f(coords[0], coords[1], coords[2]); }
-public void glimtkVertex3dv( double* coords )               { glimtkVertex3f((float)coords[0], (float)coords[1], (float)coords[2]); }
 
 public void glimtkNormal3f(float x, float y, float z)
 {
-   normalCount = vertexCount;
-   if(vertexCount + 4 > normalBufferSize)
+   normalsBuf.count = verticesBuf.count;
    {
-      normalBufferSize = normalBufferSize + normalBufferSize/2;
-      normalPointer = renew normalPointer float[normalBufferSize * 2];
-   }
+      int stride = normalsBuf.stride;
+      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      float * buf = normalsBuf.ensure(quadsAdd ? 3 : 1) + 2;
 
-   normalPointer[normalCount*3+0] = x;
-   normalPointer[normalCount*3+1] = y;
-   normalPointer[normalCount*3+2] = z;
-   normalCount++;
+      buf[0] = x, buf[1] = y, buf[2] = z;
+      normalsBuf.count++;
 
-   if(beginMode == quads && ((beginCount % 4) == 3))
-   {
-      normalPointer[normalCount*3+0] = normalPointer[(normalCount-4)*3+0];
-      normalPointer[normalCount*3+1] = normalPointer[(normalCount-4)*3+1];
-      normalPointer[normalCount*3+2] = normalPointer[(normalCount-4)*3+2];
-      normalCount++;
-      normalPointer[normalCount*3+0] = normalPointer[(normalCount-3)*3+0];
-      normalPointer[normalCount*3+1] = normalPointer[(normalCount-3)*3+1];
-      normalPointer[normalCount*3+2] = normalPointer[(normalCount-3)*3+2];
-      normalCount++;
+      if(quadsAdd)
+      {
+         buf[0] = buf[-4*stride];
+         buf[1] = buf[-4*stride+1];
+         buf[2] = buf[-4*stride+2];
+         buf += stride;
+         buf[0] = buf[-3*stride];
+         buf[1] = buf[-3*stride+1];
+         buf[2] = buf[-3*stride+2];
+         normalsBuf.count += 2;
+      }
    }
 }
-public void glimtkNormal3fd(double x, double y, double z)         { glimtkNormal3f((float)x, (float)y, (float)z); }
-public void glimtkNormal3fv(float * coords)                       { glimtkNormal3f(coords[0], coords[1], coords[2]); }
+public void glimtkNormal3d(double x, double y, double z)         { glimtkNormal3f((float)x, (float)y, (float)z); }
+public void glimtkNormal3fv(float * coords)                      { glimtkNormal3f(coords[0], coords[1], coords[2]); }
+public void glimtkNormal3fd(double * coords)                     { glimtkNormal3f((float)coords[0], (float)coords[1], (float)coords[2]); }
 
-public void glimtkTerminate()
+
+public void glimtkEnd()
 {
-   delete vertexPointer;
-   delete normalPointer;
-   beginBufferSize = 0;
+   GLIMTKMode mode = beginMode;
+   if(!glcaps_quads)
+   {
+      if(mode == quads)        mode = triangles;
+      else if(mode == polygon) mode = triangleFan;
+   }
 
-   delete floatVPBuffer;
-   shortVPSize = 0;
+   GLEnableClientState(TEXCOORDS);
 
-   delete shortVPBuffer;
-   floatVPSize = 0;
+   if(glcaps_vertexBuffer)
+   {
+      verticesBuf.upload();
+      verticesBuf.use(texCoord, 2, GL_FLOAT, verticesBuf.stride * sizeof(float), 0);
+   }
+   else
+      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer);
 
-   delete shortBDBuffer;
-   shortBDSize = 0;
+   if(vertexColorValues)
+   {
+      GLEnableClientState(COLORS);
+      if(glcaps_vertexBuffer)
+         verticesBuf.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(2 * sizeof(float)));
+      else
+         noAB.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + 2);
+
+#if ENABLE_GL_SHADERS
+      if(glcaps_shaders)
+         shader_setPerVertexColor(true);
+#endif
+   }
+
+   if(glcaps_vertexBuffer)
+      verticesBuf.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+   else
+      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + vertexOffset);
+
+   if(normalsBuf.count && normalsBuf.count == verticesBuf.count)
+   {
+      GLEnableClientState(NORMALS);
+      if(glcaps_vertexBuffer)
+      {
+         normalsBuf.upload();
+         normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+      }
+      else
+         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalsBuf.pointer);
+   }
+
+   GLFlushMatrices();
+   glDrawArrays(mode, 0, verticesBuf.count);
+
+   if(normalsBuf.count)
+      GLDisableClientState(NORMALS);
+   if(vertexColorValues)
+   {
+      GLDisableClientState(COLORS);
+
+#if ENABLE_GL_SHADERS
+      if(glcaps_shaders)
+         shader_setPerVertexColor(false);
+#endif
+
+   }
+   GLDisableClientState(TEXCOORDS);
+
+   normalsBuf.count = 0;
+   vertexColorValues = false;
+   numCoords = 2;
+   beginMode = unset;
 }

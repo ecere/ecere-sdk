@@ -7,48 +7,66 @@ import "OpenGLDisplayDriver"
 
 // Kept public for now
 
-// NOTE: Don't call if without vertexBuffer
 public void GLABDeleteBuffers(int count, GLAB * buffers)
 {
-   int i;
-   for(i = 0; i < count; i++)
+   if(glcaps_vertexBuffer)
    {
-      uint buffer = buffers[i].buffer;
-      if(buffer)
+      int i;
+      for(i = 0; i < count; i++)
       {
-         if(buffer == glabCurArrayBuffer)
-            GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-         else if(buffer == glabCurElementBuffer)
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+         uint buffer = buffers[i].buffer;
+         if(buffer)
+         {
+            if(buffer == glabCurArrayBuffer)
+               GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+            else if(buffer == glabCurElementBuffer)
+               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+         }
       }
+      if(count && buffers[0].buffer)
+         glDeleteBuffers(count, (GLuint *)buffers);
    }
-   if(count && buffers[0].buffer)
-      glDeleteBuffers(count, (GLuint *)buffers);
 }
 
 // NOTE: Don't call if without vertexBuffer
 void GLABBindBuffer(int target, uint buffer)
 {
-   glBindBuffer(target, buffer);
-   if(target == GL_ARRAY_BUFFER)
-      glabCurArrayBuffer = buffer;
-   else if(target == GL_ELEMENT_ARRAY_BUFFER)
-      glabCurElementBuffer = buffer;
+   if(glcaps_vertexBuffer)
+   {
+      glBindBuffer(target, buffer);
+      if(target == GL_ARRAY_BUFFER)
+         glabCurArrayBuffer = buffer;
+      else if(target == GL_ELEMENT_ARRAY_BUFFER)
+         glabCurElementBuffer = buffer;
+   }
 }
 
 public enum GLBufferContents { vertex, normal, texCoord, color };
+
+public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
+
+static GLint bufferUsages[] = { GL_DYNAMIC_DRAW, GL_STATIC_DRAW, GL_STREAM_DRAW };
 
 public define noAB = GLAB { 0 };
 
 uint glabCurArrayBuffer;
 
+static short *shortVPBuffer = null;
+static uint shortVPSize = 0;
+
+void glabTerminate()
+{
+   shortVPSize = 0;
+   delete shortVPBuffer;
+}
+
 public struct GLAB
 {
    uint buffer;
 
-   void upload(uint size, void * data)
+   void allocate(uint size, void * data, GLBufferUsage usage)
    {
-      if(this != null && data)
+      if(this != null)
       {
          if(glcaps_vertexBuffer)
          {
@@ -56,10 +74,20 @@ public struct GLAB
                glGenBuffers(1, &buffer);
             if(glabCurArrayBuffer != buffer)
                GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
-            glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, size, data, bufferUsages[usage]);
          }
          else
             buffer = 1;
+      }
+   }
+
+   void upload(uint offset, uint size, void * data)
+   {
+      if(this != null && glcaps_vertexBuffer)
+      {
+         if(glabCurArrayBuffer != buffer)
+            GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
+         glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
       }
    }
 
@@ -86,10 +114,10 @@ public struct GLAB
       if(!glcaps_shaders)
          switch(contents)
          {
-            case normal:   glNormalPointer(type, stride, pointer); break;
-            case vertex:   glVertexPointer(n, type, stride, pointer); break;
-            case texCoord: glTexCoordPointer(n, type, stride, pointer); break;
-            case color:    glColorPointer(n, type, stride, pointer); break;
+            case normal:   glNormalPointer      (type, stride, pointer); break;
+            case vertex:   glVertexPointer   (n, type, stride, pointer); break;
+            case texCoord: glTexCoordPointer (n, type, stride, pointer); break;
+            case color:    glColorPointer    (n, type, stride, pointer); break;
          }
 #endif
    }
@@ -100,7 +128,23 @@ public struct GLAB
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glcaps_vertexBuffer)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
       if(type == GL_INT)
-         glimtkVertexPointeri(n, stride, pointer, count);
+      {
+         if(pointer)
+         {
+            int i;
+            if(count*n > shortVPSize)
+            {
+               shortVPSize = count*n;
+               shortVPBuffer = renew shortVPBuffer short[shortVPSize];
+            }
+            for(i = 0; i < count*n; i++)
+               shortVPBuffer[i] = (short)pointer[i];
+
+            GLVertexPointer(n, GL_SHORT, stride, shortVPBuffer);
+         }
+         else
+            GLVertexPointer(n, GL_SHORT, stride, 0);
+      }
       else if(type == GL_DOUBLE)
       {
 #if ENABLE_GL_SHADERS
@@ -127,9 +171,9 @@ public struct GLEAB
 {
    uint buffer;
 
-   void upload(uint size, void * data)
+   void allocate(uint size, void * data, GLBufferUsage usage)
    {
-      if(this != null && data)
+      if(this != null)
       {
          if(glcaps_vertexBuffer)
          {
@@ -139,12 +183,22 @@ public struct GLEAB
             if(glcaps_vertexBuffer && glabCurElementBuffer != buffer)
                GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
             if(size)
-               glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);  //GL_DYNAMIC_DRAW);
+               glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
             else
                ;
          }
          else
             buffer = 1;
+      }
+   }
+
+   void upload(uint offset, uint size, void * data)
+   {
+      if(this != null && glcaps_vertexBuffer)
+      {
+         if(glabCurArrayBuffer != buffer)
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
+         glBufferSubData(buffer, offset, size, data);
       }
    }
 

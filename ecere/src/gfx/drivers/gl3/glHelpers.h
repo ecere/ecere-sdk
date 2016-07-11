@@ -174,7 +174,9 @@
    #define GLTexCoord2d(x,y)                 (glcaps_immediate ? glTexCoord2d(x,y) : glimtkTexCoord2d(x,y))
    #define GLTexCoord2fv(v)                  (glcaps_immediate ? glTexCoord2fv(v) : glimtkTexCoord2fv(v))
    #define GLNormal3f(x,y,z)                 (glcaps_immediate ? glNormal3f : glimtkNormal3f)
+   #define GLNormal3d(x,y,z)                 (glcaps_immediate ? glNormal3d : glimtkNormal3d)
    #define GLNormal3fv(v)                    (glcaps_immediate ? glNormal3fv(v) : glimtkNormal3fv(v))
+   #define GLNormal3dv(v)                    (glcaps_immediate ? glNormal3dv(v) : glimtkNormal3dv(v))
    #define GLColor3f(a,b,c)                  (glcaps_immediate ? glColor3f(a,b,c) : glimtkColor3f(a,b,c))
    #define GLColor4ub(a,b,c,d)               (glcaps_immediate ? glColor4ub(a,b,c,d) : glimtkColor4ub(a,b,c,d))
    #define GLColor4f(a,b,c,d)                (glcaps_immediate ? glColor4f(a,b,c,d) : glimtkColor4f(a,b,c,d))
@@ -193,8 +195,10 @@
    #define GLColor4ub                        glimtkColor4ub
    #define GLColor4f                         glimtkColor4f
    #define GLColor4fv                        glimtkColor4fv
-   #define GLNormal3fv                       glimtkNormal3fv
    #define GLNormal3f                        glimtkNormal3f
+   #define GLNormal3d                        glimtkNormal3d
+   #define GLNormal3fv                       glimtkNormal3fv
+   #define GLNormal3dv                       glimtkNormal3dv
    #define GLTexCoord2fv                     glimtkTexCoord2fv
    #define GLVertex3d                        glimtkVertex3d
    #define GLVertex3dv                       glimtkVertex3dv
