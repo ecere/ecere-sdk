@@ -162,11 +162,11 @@ private:
 
 default:
 // Capabilities Global set to capabilities of Display being rendered to
-GLCapabilities glcaps;
+GLCapabilities glCaps;
 // Requiring Graphics Reload:
-bool glcaps_nonPow2Textures, glcaps_vertexBuffer, glcaps_quads, glcaps_intAndDouble;
+bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
 // Might toggle without Reload:
-bool glcaps_shaders, glcaps_fixedFunction, glcaps_immediate, glcaps_legacy, glcaps_pointSize, glcaps_frameBuffer;
+bool glCaps_core, glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
 // bool mapBuffer;
 private:
 
@@ -242,8 +242,7 @@ static void setupDebugging()
 static GLuint stippleTexture;
 static bool stippleEnabled;
 
-                              // TOCHECK: Do we really need to pass glcaps_shaders?
-public void glsupLineStipple( int i, unsigned short j )
+public void glsupLineStipple( int i, uint16 j )
 {
    uint texture[1*16];
    int x;
@@ -314,18 +313,18 @@ static inline uint getPrimitiveType(RenderPrimitiveType type)
       GL_LINE_STRIP
    };
    // NOTE: This will only work for single quads
-   return (type == quads && !glcaps_quads) ? GL_TRIANGLE_FAN : primitiveTypes[type];
+   return (type == quads && !glCaps_quads) ? GL_TRIANGLE_FAN : primitiveTypes[type];
 }
 
 public void GLSetupTexturing(bool enable)
 {
 #if ENABLE_GL_SHADERS
-   if(glcaps_shaders)
+   if(glCaps_shaders)
       shader_texturing(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!glcaps_shaders)
+   if(!glCaps_shaders)
       (enable ? glEnable : glDisable)(GL_TEXTURE_2D);
 #endif
 }
@@ -333,12 +332,12 @@ public void GLSetupTexturing(bool enable)
 public void GLSetupFog(bool enable)
 {
 #if ENABLE_GL_SHADERS
-   if(glcaps_shaders)
+   if(glCaps_shaders)
       shader_fog(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!glcaps_shaders)
+   if(!glCaps_shaders)
       (enable ? glEnable : glDisable)(GL_FOG);
 #endif
 }
@@ -349,12 +348,12 @@ public void GLSetupLighting(bool enable)
 {
    lightingEnabled = enable;
 #if ENABLE_GL_SHADERS
-   if(glcaps_shaders)
+   if(glCaps_shaders)
       shader_lighting(enable);
 #endif
 
 #if ENABLE_GL_FFP
-   if(!glcaps_shaders)
+   if(!glCaps_shaders)
       (enable ? glEnable : glDisable)(GL_LIGHTING);
 #endif
 }
@@ -400,11 +399,14 @@ class OGLDisplay : struct
 #endif
 
    GLCapabilities capabilities, originalCapabilities;
+   bool compat;
+   int version;
 
    ColorAlpha * flippingBuffer;
    int flipBufH, flipBufW;
    bool depthWrite;
    int x, y;
+   uint vao;
 };
 
 class OGLSystem : struct
@@ -430,6 +432,8 @@ class OGLSystem : struct
    GLXDrawable glxDrawable;
 #endif
    GLCapabilities capabilities;
+   bool compat;
+   int version;
 
    // Buffer Data
    uint16 *shortBDBuffer;
@@ -467,7 +471,7 @@ int current;
 void * previous;
 
 #if defined(__WIN32__)
-static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible)
+static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible, bool compatible)
 {
    HGLRC result = 0;
    if(wglCreateContextAttribsARB)
@@ -479,7 +483,7 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
                                                  { 2, 1 }, { 2, 0 }
       };
 
-      bool tryingCompat = true;
+      bool tryingCompat = compatible;
       int v = 0;
       while(!result)
       {
@@ -670,23 +674,35 @@ class OpenGLDisplayDriver : DisplayDriver
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
 
 #if defined(_GLES)
-      capabilities = { fixedFunction = true, vertexBuffer = true, pointSize = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
+      capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
-      capabilities = { glcaps_shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true };
+      capabilities = { glCaps_shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
 #else
       capabilities =
       {
          nonPow2Textures = extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two");
          intAndDouble = true;
-         pointSize = true;
+#ifdef GL_DEBUGGING
+         debug = true;
+#endif
+         compatible = oglDisplay.compat;
+         pointSize = oglDisplay.compat;
 #if ENABLE_GL_LEGACY
-         legacy         = glBegin != null;
-         immediate      = glBegin != null;
-         fixedFunction  = glBegin != null;
-         quads          = glBegin != null;
+         legacy         = glBegin != null && oglDisplay.compat;
+         legacyFormats  = glBegin != null && oglDisplay.compat;
+         immediate      = glBegin != null && oglDisplay.compat;
+         fixedFunction  = glBegin != null && oglDisplay.compat;
+         quads          = glBegin != null && oglDisplay.compat;
+         select         = glSelectBuffer != null && oglDisplay.compat;
 #endif
 #if ENABLE_GL_SHADERS
          shaders = glCreateProgram != null;
+#endif
+#if ENABLE_GL_POINTER
+         vertexPointer = oglDisplay.compat;
+#endif
+#if ENABLE_GL_VAO
+         vao = glBindVertexArray != null && !oglDisplay.compat;
 #endif
 #if ENABLE_GL_FBO
          shaders = glBindFramebuffer != null;
@@ -714,7 +730,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #elif defined(_GLES2)
       oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #else
-      oglSystem.capabilities = { shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, nonPow2Textures = true };
+      oglSystem.capabilities = { compatible = glCaps_compatible, shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, vao = true, nonPow2Textures = true };
 #endif
 
 #ifdef DIAGNOSTICS
@@ -816,7 +832,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #ifdef DIAGNOSTICS
                      PrintLn("winCreateContext()");
 #endif
-                     oglSystem.glrc = winCreateContext(oglSystem.hdc, null, null);
+                     oglSystem.glrc = winCreateContext(oglSystem.hdc, &oglSystem.version, &oglSystem.compat, displaySystem.glCapabilities.compatible);
 #ifdef DIAGNOSTICS
                      PrintLn("wglMakeCurrent()");
 #endif
@@ -869,7 +885,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glShadeModel(GL_FLAT);
 
 #if !defined(_GLES)
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
          glFogi(GL_FOG_MODE, GL_EXP);
@@ -1027,13 +1043,16 @@ class OpenGLDisplayDriver : DisplayDriver
       SETCAPS(oglDisplay.capabilities);
 
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
       {
 #if ENABLE_GL_LEGACY
-         glDisableClientState(GL_VERTEX_ARRAY);
-         glDisableClientState(GL_NORMAL_ARRAY);
-         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-         glDisableClientState(GL_COLOR_ARRAY);
+         if(oglDisplay.compat)
+         {
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
+         }
 #endif
          loadShaders(display.displaySystem, "<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
       }
@@ -1044,11 +1063,18 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisableVertexAttribArray(GLBufferContents::normal);
          glDisableVertexAttribArray(GLBufferContents::texCoord);
          glDisableVertexAttribArray(GLBufferContents::vertex);
+         glBindVertexArray(0);
          glUseProgram(0);
       }
 #endif
 
 #endif
+
+#if ENABLE_GL_VAO
+      if(glCaps_vao)
+         glBindVertexArray(oglDisplay.vao);
+#endif
+
       GLEnableClientState(VERTICES);
 
       GLABBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -1078,7 +1104,7 @@ class OpenGLDisplayDriver : DisplayDriver
          GLOrtho(0,display.width,display.height,0,0.0,1.0);
 
 #if ENABLE_GL_FFP
-      if(!glcaps_shaders)
+      if(!glCaps_shaders)
       {
          glShadeModel(GL_FLAT);
          /*
@@ -1122,7 +1148,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          oglDisplay.hdc = GetDC(display.window);
          SetPixelFormat(oglDisplay.hdc, oglSystem.format, &oglSystem.pfd);
-         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, null, null)))
+         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, &oglDisplay.version, &oglDisplay.compat, (*&display.glCapabilities).compatible)))
          {
             wglShareLists(oglSystem.glrc, oglDisplay.glrc);
             wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
@@ -1152,6 +1178,11 @@ class OpenGLDisplayDriver : DisplayDriver
          // visualInfo = oglSystem.visualInfo;
 //#endif
          */
+#if !defined(__APPLE__)
+         oglDisplay.compat = true;
+         oglDisplay.version = 4;
+#endif
+
          if(visualInfo)
          {
             //printf("visualInfo is not null\n");
@@ -1197,7 +1228,10 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
 #  ifdef GL_DEBUGGING
-         setupDebugging();
+         if(oglDisplay.capabilities.debug)
+            setupDebugging();
+#else
+         oglDisplay.capabilities.debug = false;
 #  endif
 
 #endif
@@ -1214,17 +1248,17 @@ class OpenGLDisplayDriver : DisplayDriver
 
             oglDisplay.originalCapabilities = oglDisplay.capabilities;
 
-            // Re-enable glcaps_shaders if no fixed function support
+            // Re-enable glCaps_shaders if no fixed function support
             if(!oglDisplay.capabilities.fixedFunction)
                capabilities.shaders = true;
-            // Re-enable fixed function if no glcaps_shaders support
+            // Re-enable fixed function if no glCaps_shaders support
             if(!oglDisplay.capabilities.shaders)
             {
                capabilities.fixedFunction = true;
                capabilities.shaders = false;
             }
 
-            // Disable things that don't work with glcaps_shaders
+            // Disable things that don't work with glCaps_shaders
             if(capabilities.shaders)
             {
                capabilities.fixedFunction = false;
@@ -1242,6 +1276,14 @@ class OpenGLDisplayDriver : DisplayDriver
             // PrintLn("Selected OpenGL Capabilities: ", oglDisplay.capabilities);
             oglSystem.capabilities = oglDisplay.capabilities;
          }
+
+#if ENABLE_GL_VAO
+         if(oglDisplay.capabilities.vao)
+         {
+            glGenVertexArrays(1, &oglDisplay.vao);
+            glBindVertexArray(oglDisplay.vao);
+         }
+#endif
 
          initialDisplaySetup(display);
       }
@@ -1355,7 +1397,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
          oglDisplay.pBuffer = wglCreatePbufferARB(oglSystem.hdc, pixelFormat, width, height, attributes);
          oglDisplay.hdc = wglGetPbufferDCARB(oglDisplay.pBuffer);
-         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, null, null)))
+         if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, null, null, oglDisplay.capabilities.compatible)))
          {
             BITMAPINFO * info;
             HDC hdc = GetDC(display.window);
@@ -1664,6 +1706,15 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void StartUpdate(Display display)
    {
+#if ENABLE_GL_VAO
+      if(glCaps_vao)
+      {
+         OGLDisplay oglDisplay = display.driverData;
+         glBindVertexArray(oglDisplay.vao);
+      }
+#endif
+      GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+      GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
    }
 
    void EndUpdate(Display display)
@@ -2476,7 +2527,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 #if ENABLE_GL_LEGACY
-         if(glcaps_legacy)
+         if(glCaps_legacy)
          {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
@@ -2544,7 +2595,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 #if ENABLE_GL_LEGACY
-         if(glcaps_legacy)
+         if(glCaps_legacy)
          {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, bitmap.stride);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, sx);
@@ -2662,7 +2713,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(stipple)
       {
 #if ENABLE_GL_LEGACY
-         if(glcaps_legacy)
+         if(glCaps_legacy)
          {
             glLineStipple(1, (uint16)stipple);
             glEnable(GL_LINE_STIPPLE);
@@ -2677,7 +2728,7 @@ class OpenGLDisplayDriver : DisplayDriver
       else
       {
 #if ENABLE_GL_LEGACY
-         if(glcaps_legacy)
+         if(glCaps_legacy)
             glDisable(GL_LINE_STIPPLE);
          else
 #endif
@@ -2707,7 +2758,7 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case fillMode:
 #if ENABLE_GL_LEGACY
-            if(glcaps_legacy)
+            if(glCaps_legacy)
                glPolygonMode(GL_FRONT_AND_BACK, ((FillModeValue)value == solid) ? GL_FILL : GL_LINE);
 #endif
             break;
@@ -2722,24 +2773,24 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
 #if ENABLE_GL_SHADERS
-            if(glcaps_shaders)
+            if(glCaps_shaders)
                shader_fogColor(color[0], color[1], color[2]);
 #endif
 
 #if ENABLE_GL_FFP
-            if(!glcaps_shaders)
+            if(!glCaps_shaders)
                glFogfv(GL_FOG_COLOR, (float *)&color);
 #endif
             break;
          }
          case fogDensity:
 #if ENABLE_GL_SHADERS
-            if(glcaps_shaders)
+            if(glCaps_shaders)
                shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
 
 #if ENABLE_GL_FFP
-            if(!glcaps_shaders)
+            if(!glCaps_shaders)
                glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
             break;
@@ -2751,12 +2802,12 @@ class OpenGLDisplayDriver : DisplayDriver
          case ambient:
          {
 #if ENABLE_GL_SHADERS
-            if(glcaps_shaders)
+            if(glCaps_shaders)
                shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
 #endif
 
 #if ENABLE_GL_FFP
-            if(!glcaps_shaders)
+            if(!glCaps_shaders)
             {
                float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -2783,12 +2834,12 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetLight(Display display, int id, Light light)
    {
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          shader_setLight(display, id, light);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!glcaps_shaders)
+      if(!glCaps_shaders)
       {
          if(light != null)
          {
@@ -3008,7 +3059,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
          GLSetupLighting(true);
 #if ENABLE_GL_FFP
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
             glShadeModel(GL_SMOOTH);
 #endif
          glDepthMask((byte)bool::true);
@@ -3034,12 +3085,12 @@ class OpenGLDisplayDriver : DisplayDriver
          GLDisableClientState(COLORS);
 
 #if ENABLE_GL_SHADERS
-         if(glcaps_shaders)
+         if(glCaps_shaders)
             shader_setPerVertexColor(false);
 #endif
 
 #if ENABLE_GL_FFP
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
@@ -3063,7 +3114,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(material.flags.doubleSided)
       {
 #if ENABLE_GL_FFP
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
@@ -3071,7 +3122,7 @@ class OpenGLDisplayDriver : DisplayDriver
       else
       {
 #if ENABLE_GL_FFP
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
          glEnable(GL_CULL_FACE);
@@ -3108,12 +3159,12 @@ class OpenGLDisplayDriver : DisplayDriver
          GLSetupTexturing(false);
 
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          shader_setMaterial(material, mesh.flags.colors);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!glcaps_shaders)
+      if(!glCaps_shaders)
       {
          if(mesh.flags.colors)
          {
@@ -3155,27 +3206,27 @@ class OpenGLDisplayDriver : DisplayDriver
          SETCAPS(oglSystem.capabilities);
          if(!mesh.flags.vertices)
          {
-            oglMesh.vertices.free(glcaps_vertexBuffer);
+            oglMesh.vertices.free(glCaps_vertexBuffer);
             delete mesh.vertices;
          }
          if(!mesh.flags.normals)
          {
-            oglMesh.normals.free(glcaps_vertexBuffer);
+            oglMesh.normals.free(glCaps_vertexBuffer);
             delete mesh.normals;
          }
          if(!mesh.flags.texCoords1)
          {
-            oglMesh.texCoords.free(glcaps_vertexBuffer);
+            oglMesh.texCoords.free(glCaps_vertexBuffer);
             delete mesh.texCoords;
          }
          if(!mesh.flags.texCoords2)
          {
-            oglMesh.texCoords2.free(glcaps_vertexBuffer);
+            oglMesh.texCoords2.free(glCaps_vertexBuffer);
             // delete mesh.texCoords2;
          }
          if(!mesh.flags.colors)
          {
-            oglMesh.colors.free(glcaps_vertexBuffer);
+            oglMesh.colors.free(glCaps_vertexBuffer);
             delete mesh.colors;
          }
          if(!mesh.flags)
@@ -3267,7 +3318,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSystem oglSystem = displaySystem.driverData;
       SETCAPS(oglSystem.capabilities);
-      if(glcaps_vertexBuffer)
+      if(glCaps_vertexBuffer)
       {
          OGLMesh oglMesh = mesh.data;
          if(!flags) flags = mesh.flags;
@@ -3302,7 +3353,7 @@ class OpenGLDisplayDriver : DisplayDriver
       SETCAPS(oglSystem.capabilities);
       if(oglIndices)
       {
-         oglIndices.buffer.free(glcaps_vertexBuffer);
+         oglIndices.buffer.free(glCaps_vertexBuffer);
          delete oglIndices.indices;
          delete oglIndices;
       }
@@ -3323,10 +3374,9 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLSystem oglSystem = displaySystem.driverData;
       SETCAPS(oglSystem.capabilities);
-      if(glcaps_vertexBuffer)
+      if(glCaps_vertexBuffer)
       {
-#if !ENABLE_GL_INTDBL
-         if(indices32bit)
+         if(!glCaps_intAndDouble && indices32bit)
          {
             if(!oglIndices.buffer.buffer)
                glGenBuffers(1, &oglIndices.buffer.buffer);
@@ -3347,12 +3397,12 @@ class OpenGLDisplayDriver : DisplayDriver
                   b[i] = (uint16)pointer[i];
 
                glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint16), b, GL_STATIC_DRAW);
+            }
          }
          else
-#endif
-         oglIndices.buffer.allocate(
-            nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
-            oglIndices.indices, staticDraw);
+            oglIndices.buffer.allocate(
+               nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
+               oglIndices.indices, staticDraw);
       }
    }
 
@@ -3368,7 +3418,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
-         if(!glcaps_vertexBuffer && display.display3D.mesh)
+         if(!glCaps_vertexBuffer && display.display3D.mesh)
             glUnlockArraysEXT();
 #endif
       if(mesh)
@@ -3439,7 +3489,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
          if(glLockArraysEXT)
 #endif
-            if(!glcaps_vertexBuffer)
+            if(!glCaps_vertexBuffer)
                glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
@@ -3455,9 +3505,8 @@ class OpenGLDisplayDriver : DisplayDriver
       else
       {
          OGLIndices oglIndices = primitive->data;
-         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && glcaps_vertexBuffer) ? oglIndices.buffer : noEAB);
-#if !ENABLE_GL_INTDBL
-         if(!glcaps_vertexBuffer && primitive->type.indices32bit)
+         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
+         if(!glCaps_intAndDouble && !glCaps_vertexBuffer && primitive->type.indices32bit)
          {
             uint16 * temp = new uint16[primitive->nIndices];
             uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
@@ -3468,7 +3517,6 @@ class OpenGLDisplayDriver : DisplayDriver
             delete temp;
          }
          else
-#endif
             eab.draw(getPrimitiveType(primitive->type.primitiveType), primitive->nIndices,
                primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));

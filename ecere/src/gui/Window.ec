@@ -4997,7 +4997,7 @@ private:
 
          if(!displaySystem)
          {
-            displaySystem = DisplaySystem {};
+            displaySystem = DisplaySystem { glCapabilities = glCapabilities };
             if(!displaySystem.Create(dDriver.name, guiApp.fullScreenMode ? windowHandle : windowHandle /*null*/, guiApp.fullScreenMode))
             {
                delete displaySystem;
@@ -9647,6 +9647,10 @@ public:
             (glCapabilities.nonPow2Textures != value.nonPow2Textures ||
              glCapabilities.intAndDouble != value.intAndDouble ||
              glCapabilities.vertexBuffer != value.vertexBuffer ||
+             glCapabilities.compatible != value.compatible ||
+             glCapabilities.legacyFormats != value.legacyFormats ||
+             glCapabilities.debug != value.debug ||
+             glCapabilities.vertexPointer != value.vertexPointer ||
              glCapabilities.quads != value.quads);
          if(reload)
             UnloadGraphics(false);
@@ -9811,7 +9815,7 @@ private:
    void * windowData;
    CreationActivationOption creationActivation;
    GLCapabilities glCapabilities;
-   glCapabilities = { true, true, true, true, true, true, true, true, true, true };
+   glCapabilities = { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
    struct
    {
       bool active:1;            // true if window and ancestors are active

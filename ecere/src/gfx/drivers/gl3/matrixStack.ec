@@ -267,7 +267,7 @@ public void glmsFlushMatrices()
       {
          Matrix * matrix = &matrixStack[stack][matrixIndex[stack]];
 #if ENABLE_GL_SHADERS
-         if(glcaps_shaders)
+         if(glCaps_shaders)
          {
             if(stack == 0)
             {
@@ -307,7 +307,7 @@ public void glmsFlushMatrices()
 #endif
 
 #if ENABLE_GL_FFP
-         if(!glcaps_shaders)
+         if(!glCaps_shaders)
          {
             float m[16] =
             {
@@ -323,7 +323,7 @@ public void glmsFlushMatrices()
          stackModified[stack] = false;
       }
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders && stack == 1 && prjViewModified)
+      if(glCaps_shaders && stack == 1 && prjViewModified)
       {
          Matrix * mv = &matrixStack[0][matrixIndex[0]];
          Matrix * prj = &matrixStack[1][matrixIndex[1]];

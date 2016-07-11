@@ -337,6 +337,7 @@ private:
    public PixelFormat pixelFormat;
    public DisplayFlags flags;
    int numDisplays;
+   GLCapabilities glCapabilities;
 
    OldList resources;
 

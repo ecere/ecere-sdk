@@ -98,7 +98,7 @@ public void glimtkBegin(GLIMTKMode mode)
 public void glimtkTexCoord2f(float x, float y)
 {
    int stride = verticesBuf.stride;
-   bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+   bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
    float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1);
    buf[0] = x;
    buf[1] = y;
@@ -124,7 +124,7 @@ public void glimtkVertex2f(float x, float y)
    verticesBuf.stride = vertexOffset + numCoords;
    {
       int stride = verticesBuf.stride;
-      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
       float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
       buf[0] = x;
       buf[1] = y;
@@ -151,7 +151,7 @@ public void glimtkVertex3f( float x, float y, float z )
    verticesBuf.stride = vertexOffset + numCoords;
    {
       int stride = verticesBuf.stride;
-      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
       float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
       buf[0] = x;
       buf[1] = y;
@@ -187,7 +187,7 @@ public void glimtkColor4f(float r, float g, float b, float a)
       verticesBuf.stride = vertexOffset + numCoords;
       {
          int stride = verticesBuf.stride;
-         bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+         bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
          float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + 2;
          buf[0] = r, buf[1] = g, buf[2] = b, buf[3] = a;
 
@@ -209,12 +209,12 @@ public void glimtkColor4f(float r, float g, float b, float a)
    else
    {
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          shader_color(r, g, b, a);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!glcaps_shaders)
+      if(!glCaps_shaders)
       {
          glColor4f(r, g, b, a);
          if(lightingEnabled)
@@ -238,7 +238,7 @@ public void glimtkNormal3f(float x, float y, float z)
    normalsBuf.count = verticesBuf.count;
    {
       int stride = normalsBuf.stride;
-      bool quadsAdd = beginMode == quads && !glcaps_quads && ((beginCount % 4) == 3);
+      bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
       float * buf = normalsBuf.ensure(quadsAdd ? 3 : 1) + 2;
 
       buf[0] = x, buf[1] = y, buf[2] = z;
@@ -265,7 +265,7 @@ public void glimtkNormal3fd(double * coords)                     { glimtkNormal3
 public void glimtkEnd()
 {
    GLIMTKMode mode = beginMode;
-   if(!glcaps_quads)
+   if(!glCaps_quads)
    {
       if(mode == quads)        mode = triangles;
       else if(mode == polygon) mode = triangleFan;
@@ -273,7 +273,7 @@ public void glimtkEnd()
 
    GLEnableClientState(TEXCOORDS);
 
-   if(glcaps_vertexBuffer)
+   if(glCaps_vertexBuffer)
    {
       verticesBuf.upload();
       verticesBuf.use(texCoord, 2, GL_FLOAT, verticesBuf.stride * sizeof(float), 0);
@@ -284,18 +284,18 @@ public void glimtkEnd()
    if(vertexColorValues)
    {
       GLEnableClientState(COLORS);
-      if(glcaps_vertexBuffer)
+      if(glCaps_vertexBuffer)
          verticesBuf.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(2 * sizeof(float)));
       else
          noAB.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + 2);
 
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          shader_setPerVertexColor(true);
 #endif
    }
 
-   if(glcaps_vertexBuffer)
+   if(glCaps_vertexBuffer)
       verticesBuf.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
    else
       noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + vertexOffset);
@@ -303,7 +303,7 @@ public void glimtkEnd()
    if(normalsBuf.count && normalsBuf.count == verticesBuf.count)
    {
       GLEnableClientState(NORMALS);
-      if(glcaps_vertexBuffer)
+      if(glCaps_vertexBuffer)
       {
          normalsBuf.upload();
          normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
@@ -322,7 +322,7 @@ public void glimtkEnd()
       GLDisableClientState(COLORS);
 
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          shader_setPerVertexColor(false);
 #endif
 

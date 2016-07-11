@@ -9,7 +9,7 @@ import "OpenGLDisplayDriver"
 
 public void GLABDeleteBuffers(int count, GLAB * buffers)
 {
-   if(glcaps_vertexBuffer)
+   if(glCaps_vertexBuffer)
    {
       int i;
       for(i = 0; i < count; i++)
@@ -31,7 +31,7 @@ public void GLABDeleteBuffers(int count, GLAB * buffers)
 // NOTE: Don't call if without vertexBuffer
 void GLABBindBuffer(int target, uint buffer)
 {
-   if(glcaps_vertexBuffer)
+   if(glCaps_vertexBuffer)
    {
       glBindBuffer(target, buffer);
       if(target == GL_ARRAY_BUFFER)
@@ -45,7 +45,7 @@ public enum GLBufferContents { vertex, normal, texCoord, color };
 
 public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
 
-static GLint bufferUsages[] = { GL_DYNAMIC_DRAW, GL_STATIC_DRAW, GL_STREAM_DRAW };
+static GLint bufferUsages[] = { GL_DYNAMIC_DRAW, GL_STATIC_DRAW, 0x88E0 /*GL_STREAM_DRAW*/ };
 
 public define noAB = GLAB { 0 };
 
@@ -68,7 +68,7 @@ public struct GLAB
    {
       if(this != null)
       {
-         if(glcaps_vertexBuffer)
+         if(glCaps_vertexBuffer)
          {
             if(!buffer)
                glGenBuffers(1, &buffer);
@@ -83,7 +83,7 @@ public struct GLAB
 
    void upload(uint offset, uint size, void * data)
    {
-      if(this != null && glcaps_vertexBuffer)
+      if(this != null && glCaps_vertexBuffer)
       {
          if(glabCurArrayBuffer != buffer)
             GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -95,7 +95,7 @@ public struct GLAB
    {
       if(this != null && buffer)
       {
-         if(glcaps_vertexBuffer)
+         if(glCaps_vertexBuffer)
             GLABDeleteBuffers(1, this);
          buffer = 0;
       }
@@ -103,15 +103,15 @@ public struct GLAB
 
    void use(GLBufferContents contents, int n, int type, uint stride, void * pointer)
    {
-      if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glcaps_vertexBuffer)
+      if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #if ENABLE_GL_SHADERS
-      if(glcaps_shaders)
+      if(glCaps_shaders)
          glVertexAttribPointer(contents, n, type, GL_FALSE, stride, pointer);
 #endif
 
 #if ENABLE_GL_FFP
-      if(!glcaps_shaders)
+      if(!glCaps_shaders)
          switch(contents)
          {
             case normal:   glNormalPointer      (type, stride, pointer); break;
@@ -124,42 +124,43 @@ public struct GLAB
 
    void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
    {
-#if !ENABLE_GL_INTDBL
-      if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glcaps_vertexBuffer)
-         GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-      if(type == GL_INT)
+      if(!glCaps_intAndDouble)
       {
-         if(pointer)
+         if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
+            GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         if(type == GL_INT)
          {
-            int i;
-            if(count*n > shortVPSize)
+            if(pointer)
             {
-               shortVPSize = count*n;
-               shortVPBuffer = renew shortVPBuffer short[shortVPSize];
+               int i;
+               if(count*n > shortVPSize)
+               {
+                  shortVPSize = count*n;
+                  shortVPBuffer = renew shortVPBuffer short[shortVPSize];
+               }
+               for(i = 0; i < count*n; i++)
+                  shortVPBuffer[i] = (short)((int *)pointer)[i];
+
+               GLVertexPointer(n, GL_SHORT, stride, shortVPBuffer);
             }
-            for(i = 0; i < count*n; i++)
-               shortVPBuffer[i] = (short)pointer[i];
-
-            GLVertexPointer(n, GL_SHORT, stride, shortVPBuffer);
+            else
+               GLVertexPointer(n, GL_SHORT, stride, 0);
          }
-         else
-            GLVertexPointer(n, GL_SHORT, stride, 0);
-      }
-      else if(type == GL_DOUBLE)
-      {
-#if ENABLE_GL_SHADERS
-         if(glcaps_shaders)
-            glVertexAttribPointer(GLBufferContents::vertex, n, GL_DOUBLE, GL_FALSE, stride, pointer);
-#endif
+         else if(type == GL_DOUBLE)
+         {
+   #if ENABLE_GL_SHADERS
+            if(glCaps_shaders)
+               glVertexAttribPointer(GLBufferContents::vertex, n, GL_DOUBLE, GL_FALSE, stride, pointer);
+   #endif
 
-#if ENABLE_GL_FFP
-         if(!glcaps_shaders)
-            glVertexPointer(n, GL_DOUBLE, stride, pointer);
-#endif
+   #if ENABLE_GL_FFP
+            if(!glCaps_shaders)
+               glVertexPointer(n, GL_DOUBLE, stride, pointer);
+   #endif
+         }
       }
-#else
-      use(vertex, n, type, stride, pointer);
-#endif
+      else
+         use(vertex, n, type, stride, pointer);
    }
 };
 
@@ -175,12 +176,12 @@ public struct GLEAB
    {
       if(this != null)
       {
-         if(glcaps_vertexBuffer)
+         if(glCaps_vertexBuffer)
          {
             if(!buffer)
                glGenBuffers(1, &buffer);
 
-            if(glcaps_vertexBuffer && glabCurElementBuffer != buffer)
+            if(glCaps_vertexBuffer && glabCurElementBuffer != buffer)
                GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
             if(size)
                glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
@@ -194,7 +195,7 @@ public struct GLEAB
 
    void upload(uint offset, uint size, void * data)
    {
-      if(this != null && glcaps_vertexBuffer)
+      if(this != null && glCaps_vertexBuffer)
       {
          if(glabCurArrayBuffer != buffer)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
@@ -206,7 +207,7 @@ public struct GLEAB
    {
       if(this != null && buffer)
       {
-         if(glcaps_vertexBuffer)
+         if(glCaps_vertexBuffer)
             GLABDeleteBuffers(1, (GLAB *)this);
          buffer = 0;
       }
@@ -214,17 +215,16 @@ public struct GLEAB
 
    void draw(int primType, int count, int type, void * indices)
    {
-      if(glcaps_vertexBuffer
+      if(glCaps_vertexBuffer
 #if ENABLE_GL_POINTER
-         || (!buffer && indices)
+         || (glCaps_vertexPointer && !buffer && indices)
 #endif
          )
       {
-         if(glcaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+         if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
-#if !ENABLE_GL_INTDBL
-         type = GL_UNSIGNED_SHORT;
-#endif
+         if(!glCaps_intAndDouble)
+            type = GL_UNSIGNED_SHORT;
          GLFlushMatrices();
          glDrawElements(primType, count, type, indices);
       }

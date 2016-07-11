@@ -77,18 +77,19 @@
 #define ENABLE_GL_INTDBL   (!defined(_GLES) && !defined(_GLES2))
 #define ENABLE_GL_MAPBUF   (!defined(_GLES) && !defined(_GLES2))
 #define ENABLE_GL_SELECT   (!defined(_GLES) && !defined(_GLES2))
+#define ENABLE_GL_VAO      (!defined(_GLES) && !defined(_GLES2))
 #define ENABLE_GL_COLORMAT (ENABLE_GL_FFP   && !defined(_GLES))
 
 #if ENABLE_GL_SHADERS && ENABLE_GL_FFP
-   #define GLEnableClientState            (glcaps_shaders ? glEnableVertexAttribArray : glEnableClientState)
-   #define GLDisableClientState           (glcaps_shaders ? glDisableVertexAttribArray : glDisableClientState)
-   #define VERTICES                       (glcaps_shaders ? GLBufferContents::vertex : GL_VERTEX_ARRAY)
-   #define NORMALS                        (glcaps_shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
-   #define TEXCOORDS                      (glcaps_shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
-   #define COLORS                         (glcaps_shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
-   #define GLVertexPointer(n, t, s, p)    (glcaps_shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
-   #define GLColorPointer(n, t, s, p)     (glcaps_shaders ? glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p) : glColorPointer(n, t, s, p))
-   #define GLTexCoordPointer(n, t, s, p)  (glcaps_shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
+   #define GLEnableClientState            (glCaps_shaders ? glEnableVertexAttribArray : glEnableClientState)
+   #define GLDisableClientState           (glCaps_shaders ? glDisableVertexAttribArray : glDisableClientState)
+   #define VERTICES                       (glCaps_shaders ? GLBufferContents::vertex : GL_VERTEX_ARRAY)
+   #define NORMALS                        (glCaps_shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
+   #define TEXCOORDS                      (glCaps_shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
+   #define COLORS                         (glCaps_shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
+   #define GLVertexPointer(n, t, s, p)    (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
+   #define GLColorPointer(n, t, s, p)     (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p) : glColorPointer(n, t, s, p))
+   #define GLTexCoordPointer(n, t, s, p)  (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
 #elif ENABLE_GL_SHADERS
    #define GLEnableClientState            glEnableVertexAttribArray
    #define GLDisableClientState           glDisableVertexAttribArray
@@ -112,19 +113,19 @@
 #endif
 
 #if ENABLE_GL_INTDBL && ENABLE_GL_SHADERS
-   #define GLLoadMatrixd(m)               (glcaps_fixedFunction ? glLoadMatrixd(m) : glmsLoadMatrixd(m))
-   #define GLMultMatrixd(m)               (glcaps_fixedFunction ? glMultMatrixd(m) : glmsMultMatrixd(m))
-   #define GLFrustum(a,b,c,d,e,f)         (glcaps_fixedFunction ? glFrustum(a,b,c,d,e,f) : glmsFrustum(a,b,c,d,e,f))
-   #define GLOrtho(a,b,c,d,e,f)           (glcaps_fixedFunction ? glOrtho(a,b,c,d,e,f) : glmsOrtho(a,b,c,d,e,f))
-   #define GLScaled(x, y, z)              (glcaps_fixedFunction ? glScaled(x, y, z) : glmsScaled(x,y,z))
-   #define GLScalef(x, y, z)              (glcaps_fixedFunction ? glScalef(x, y, z) : glmsScaled(x,y,z))
-   #define GLTranslated(x, y, z)          (glcaps_fixedFunction ? glTranslated(x,y,z) : glmsTranslated(x,y,z))
-   #define GLRotated(a, x, y, z)          (glcaps_fixedFunction ? glRotated(a, x,y,z) : glmsRotated(a,x,y,z))
-   #define GLMatrixMode(m)                (glcaps_fixedFunction ? glMatrixMode(m) : glmsMatrixMode(m))
-   #define GLLoadIdentity()               (glcaps_fixedFunction ? glLoadIdentity() : glmsLoadIdentity())
-   #define GLPushMatrix()                 (glcaps_fixedFunction ? glPushMatrix() : glmsPushMatrix())
-   #define GLPopMatrix()                  (glcaps_fixedFunction ? glPopMatrix() : glmsPopMatrix())
-   #define GLFlushMatrices()              (glcaps_fixedFunction ? (void)0 : glmsFlushMatrices())
+   #define GLLoadMatrixd(m)               (glCaps_fixedFunction ? glLoadMatrixd(m) : glmsLoadMatrixd(m))
+   #define GLMultMatrixd(m)               (glCaps_fixedFunction ? glMultMatrixd(m) : glmsMultMatrixd(m))
+   #define GLFrustum(a,b,c,d,e,f)         (glCaps_fixedFunction ? glFrustum(a,b,c,d,e,f) : glmsFrustum(a,b,c,d,e,f))
+   #define GLOrtho(a,b,c,d,e,f)           (glCaps_fixedFunction ? glOrtho(a,b,c,d,e,f) : glmsOrtho(a,b,c,d,e,f))
+   #define GLScaled(x, y, z)              (glCaps_fixedFunction ? glScaled(x, y, z) : glmsScaled(x,y,z))
+   #define GLScalef(x, y, z)              (glCaps_fixedFunction ? glScalef(x, y, z) : glmsScaled(x,y,z))
+   #define GLTranslated(x, y, z)          (glCaps_fixedFunction ? glTranslated(x,y,z) : glmsTranslated(x,y,z))
+   #define GLRotated(a, x, y, z)          (glCaps_fixedFunction ? glRotated(a, x,y,z) : glmsRotated(a,x,y,z))
+   #define GLMatrixMode(m)                (glCaps_fixedFunction ? glMatrixMode(m) : glmsMatrixMode(m))
+   #define GLLoadIdentity()               (glCaps_fixedFunction ? glLoadIdentity() : glmsLoadIdentity())
+   #define GLPushMatrix()                 (glCaps_fixedFunction ? glPushMatrix() : glmsPushMatrix())
+   #define GLPopMatrix()                  (glCaps_fixedFunction ? glPopMatrix() : glmsPopMatrix())
+   #define GLFlushMatrices()              (glCaps_fixedFunction ? (void)0 : glmsFlushMatrices())
    #define GLLoadMatrix(m)                (glmsLoadMatrix(m), glmsFlushMatrices())
 #elif ENABLE_GL_INTDBL
    #define GLLoadMatrixd                  glLoadMatrixd
@@ -159,28 +160,28 @@
 #endif
 
 #if ENABLE_GL_LEGACY
-   #define GLRecti(x1, y1, x2, y2)           (glcaps_immediate ? glRecti(x1, y1, x2, y2) : glimtkRecti(x1, y1, x2, y2))
-   #define GLBegin(m)                        (glcaps_immediate ? glBegin(m) : glimtkBegin(m))
-   #define GLEnd()                           (glcaps_immediate ? glEnd() : glimtkEnd())
-   #define GLVertex2i(x,y)                   (glcaps_immediate ? glVertex2i(x,y) : glimtkVertex2i(x,y))
-   #define GLVertex2f(x,y)                   (glcaps_immediate ? glVertex2f(x,y) : glimtkVertex2f(x,y))
-   #define GLVertex2d(x,y)                   (glcaps_immediate ? glVertex2d(x,y) : glimtkVertex2d(x,y))
-   #define GLVertex3f(x,y,z)                 (glcaps_immediate ? glVertex3f(x,y,z) : glimtkVertex3f(x,y,z))
-   #define GLVertex3d(x,y,z)                 (glcaps_immediate ? glVertex3d(x,y,z) : glimtkVertex3d(x,y,z))
-   #define GLVertex3fv(v)                    (glcaps_immediate ? glVertex3fv(v) : glimtkVertex3fv(v))
-   #define GLVertex3dv(v)                    (glcaps_immediate ? glVertex3dv(v) : glimtkVertex3dv(v))
-   #define GLTexCoord2i(x,y)                 (glcaps_immediate ? glTexCoord2i(x,y) : glimtkTexCoord2i(x,y))
-   #define GLTexCoord2f(x,y)                 (glcaps_immediate ? glTexCoord2f(x,y) : glimtkTexCoord2f(x,y))
-   #define GLTexCoord2d(x,y)                 (glcaps_immediate ? glTexCoord2d(x,y) : glimtkTexCoord2d(x,y))
-   #define GLTexCoord2fv(v)                  (glcaps_immediate ? glTexCoord2fv(v) : glimtkTexCoord2fv(v))
-   #define GLNormal3f(x,y,z)                 (glcaps_immediate ? glNormal3f : glimtkNormal3f)
-   #define GLNormal3d(x,y,z)                 (glcaps_immediate ? glNormal3d : glimtkNormal3d)
-   #define GLNormal3fv(v)                    (glcaps_immediate ? glNormal3fv(v) : glimtkNormal3fv(v))
-   #define GLNormal3dv(v)                    (glcaps_immediate ? glNormal3dv(v) : glimtkNormal3dv(v))
-   #define GLColor3f(a,b,c)                  (glcaps_immediate ? glColor3f(a,b,c) : glimtkColor3f(a,b,c))
-   #define GLColor4ub(a,b,c,d)               (glcaps_immediate ? glColor4ub(a,b,c,d) : glimtkColor4ub(a,b,c,d))
-   #define GLColor4f(a,b,c,d)                (glcaps_immediate ? glColor4f(a,b,c,d) : glimtkColor4f(a,b,c,d))
-   #define GLColor4fv(v)                     (glcaps_immediate ? glColor4fv(v) : glimtkColor4fv(v))
+   #define GLRecti(x1, y1, x2, y2)           (glCaps_immediate ? glRecti(x1, y1, x2, y2) : glimtkRecti(x1, y1, x2, y2))
+   #define GLBegin(m)                        (glCaps_immediate ? glBegin(m) : glimtkBegin(m))
+   #define GLEnd()                           (glCaps_immediate ? glEnd() : glimtkEnd())
+   #define GLVertex2i(x,y)                   (glCaps_immediate ? glVertex2i(x,y) : glimtkVertex2i(x,y))
+   #define GLVertex2f(x,y)                   (glCaps_immediate ? glVertex2f(x,y) : glimtkVertex2f(x,y))
+   #define GLVertex2d(x,y)                   (glCaps_immediate ? glVertex2d(x,y) : glimtkVertex2d(x,y))
+   #define GLVertex3f(x,y,z)                 (glCaps_immediate ? glVertex3f(x,y,z) : glimtkVertex3f(x,y,z))
+   #define GLVertex3d(x,y,z)                 (glCaps_immediate ? glVertex3d(x,y,z) : glimtkVertex3d(x,y,z))
+   #define GLVertex3fv(v)                    (glCaps_immediate ? glVertex3fv(v) : glimtkVertex3fv(v))
+   #define GLVertex3dv(v)                    (glCaps_immediate ? glVertex3dv(v) : glimtkVertex3dv(v))
+   #define GLTexCoord2i(x,y)                 (glCaps_immediate ? glTexCoord2i(x,y) : glimtkTexCoord2i(x,y))
+   #define GLTexCoord2f(x,y)                 (glCaps_immediate ? glTexCoord2f(x,y) : glimtkTexCoord2f(x,y))
+   #define GLTexCoord2d(x,y)                 (glCaps_immediate ? glTexCoord2d(x,y) : glimtkTexCoord2d(x,y))
+   #define GLTexCoord2fv(v)                  (glCaps_immediate ? glTexCoord2fv(v) : glimtkTexCoord2fv(v))
+   #define GLNormal3f(x,y,z)                 (glCaps_immediate ? glNormal3f : glimtkNormal3f)
+   #define GLNormal3d(x,y,z)                 (glCaps_immediate ? glNormal3d : glimtkNormal3d)
+   #define GLNormal3fv(v)                    (glCaps_immediate ? glNormal3fv(v) : glimtkNormal3fv(v))
+   #define GLNormal3dv(v)                    (glCaps_immediate ? glNormal3dv(v) : glimtkNormal3dv(v))
+   #define GLColor3f(a,b,c)                  (glCaps_immediate ? glColor3f(a,b,c) : glimtkColor3f(a,b,c))
+   #define GLColor4ub(a,b,c,d)               (glCaps_immediate ? glColor4ub(a,b,c,d) : glimtkColor4ub(a,b,c,d))
+   #define GLColor4f(a,b,c,d)                (glCaps_immediate ? glColor4f(a,b,c,d) : glimtkColor4f(a,b,c,d))
+   #define GLColor4fv(v)                     (glCaps_immediate ? glColor4fv(v) : glimtkColor4fv(v))
 #else
    #define GLRecti                           glimtkRecti
    #define GLBegin                           glimtkBegin
@@ -236,21 +237,26 @@
 #endif
 
 #define SETCAPS(caps) \
-   glcaps                     = caps; \
-   glcaps_shaders             = glcaps.shaders; \
-   glcaps_fixedFunction       = glcaps.fixedFunction; \
-   glcaps_nonPow2Textures     = glcaps.nonPow2Textures; \
-   glcaps_vertexBuffer        = glcaps.vertexBuffer; \
-   glcaps_quads               = glcaps.quads; \
-   glcaps_intAndDouble        = glcaps.intAndDouble; \
-   glcaps_immediate           = glcaps.immediate; \
-   glcaps_legacy              = glcaps.legacy; \
-   glcaps_pointSize           = glcaps.pointSize; \
-   glcaps_frameBuffer         = glcaps.frameBuffer;
+   glCaps                     = caps; \
+   glCaps_shaders             = glCaps.shaders; \
+   glCaps_fixedFunction       = glCaps.fixedFunction; \
+   glCaps_nonPow2Textures     = glCaps.nonPow2Textures; \
+   glCaps_vertexBuffer        = glCaps.vertexBuffer; \
+   glCaps_quads               = glCaps.quads; \
+   glCaps_intAndDouble        = glCaps.intAndDouble; \
+   glCaps_immediate           = glCaps.immediate; \
+   glCaps_legacy              = glCaps.legacy; \
+   glCaps_legacyFormats       = glCaps.legacyFormats; \
+   glCaps_pointSize           = glCaps.pointSize; \
+   glCaps_frameBuffer         = glCaps.frameBuffer; \
+   glCaps_vao                 = glCaps.vao; \
+   glCaps_compatible          = glCaps.compatible; \
+   glCaps_select              = glCaps.select; \
+   glCaps_vertexPointer       = glCaps.vertexPointer
 
-extern GLCapabilities glcaps;
-extern bool glcaps_nonPow2Textures, glcaps_vertexBuffer, glcaps_quads, glcaps_intAndDouble;
-extern bool glcaps_shaders, glcaps_fixedFunction, glcaps_immediate, glcaps_legacy, glcaps_pointSize, glcaps_frameBuffer;
+extern GLCapabilities glCaps;
+extern bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
+extern bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
 
 #if ENABLE_GL_INTDBL
    #define GL_INDEX_INT GL_UNSIGNED_INT

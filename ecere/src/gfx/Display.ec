@@ -38,19 +38,27 @@ import "OpenGLDisplayDriver"
 public class GLCapabilities : uint
 {
 public:
-   bool legacy          :1;
-   bool shaders         :1;
-   bool nonPow2Textures :1;
+   // Expect reloading graphics
+   bool compatible      :1;
    bool vertexBuffer    :1;
-   bool frameBuffer     :1;
-   bool pointSize       :1;
-
-   // To be able to disable these at runtime independently...
-   bool immediate       :1;
-   bool fixedFunction   :1;
    bool quads           :1;
    bool intAndDouble    :1;
+   bool legacyFormats   :1;
+   bool nonPow2Textures :1;
+   bool vertexPointer   :1;
+
+   // Should be able to toggle without reloading
+   bool legacy          :1;
+   bool shaders         :1;
+   bool fixedFunction   :1;
+   bool immediate       :1;
+   bool frameBuffer     :1;
+   bool pointSize       :1;
+   bool vao             :1;
+   bool select          :1;
    // bool mapBuffer       :1;
+
+   bool debug           :1;
 };
 
 public enum RenderState { fillMode = 1, depthTest, depthWrite, fogDensity, fogColor, blend, ambient, alphaWrite, antiAlias, vSync };
