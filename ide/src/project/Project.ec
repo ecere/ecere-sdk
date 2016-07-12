@@ -4651,7 +4651,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
       project = LegacyBinaryLoadProject(f, filePath);
       if(!project)
       {
-         JSONParser parser { f = f };
+         ECONParser parser { f = f };
          /*JSONResult result = */parser.GetObject(class(Project), &project);
          if(project)
          {
