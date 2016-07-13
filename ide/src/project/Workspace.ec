@@ -859,6 +859,7 @@ public:
 
    void Free()
    {
+      delete name;
       delete workspaceFile;
       delete workspaceDir;
       delete commandLineArgs;
