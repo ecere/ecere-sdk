@@ -15,7 +15,7 @@ class OutputView : Window
    borderStyle = sizable;
    hasClose = true;
    mergeMenus = false;
-   text = "Output";
+   text = $"Output";
    menu = Menu { };
    anchor = Anchor { left = 0, right = 0, bottom = 0 };
    size.h = 240;
@@ -24,11 +24,11 @@ class OutputView : Window
    virtual void OnGotoError(const char * line, bool noParsing);
    virtual void OnCodeLocationParseAndGoTo(const char * line);
 
-   FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = "Find" };
+   FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = $"Find" };
 
    Button buildBtn
    {
-      this, inactive = true, text = "Build", bevelOver = true, isRadio = true, bitmap = null, checked = true;
+      this, inactive = true, text = $"Build", bevelOver = true, isRadio = true, bitmap = null, checked = true;
       size = { 99, 20 };
       anchor = { left = 0, top = 1 };
       font = { $"Tahoma", 8.25f, bold = true };
@@ -42,7 +42,7 @@ class OutputView : Window
 
    Button debugBtn
    {
-      this, inactive = true, text = "Debug", bevelOver = true, isRadio = true, bitmap = null;
+      this, inactive = true, text = $"Debug", bevelOver = true, isRadio = true, bitmap = null;
       size = { 99, 20 };
       anchor = { left = 100, top = 1 };
 
@@ -55,7 +55,7 @@ class OutputView : Window
 
    Button findBtn
    {
-      this, inactive = true, text = "Find", bevelOver = true, isRadio = true, bitmap = null;
+      this, inactive = true, text = $"Find", bevelOver = true, isRadio = true, bitmap = null;
       size = { 99, 20 };
       anchor = { left = 200, top = 1 };
 
