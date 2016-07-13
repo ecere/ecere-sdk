@@ -7439,7 +7439,7 @@ static GlobalData FindGlobalData(char * name)
          start = c+1;
       }
    }
-   if(c - start)
+   if(nameSpace && c - start)
    {
       return ScanGlobalData(nameSpace, name + start);
    }
