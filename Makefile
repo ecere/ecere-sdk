@@ -729,6 +729,7 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,$(OBJBINDIR)$(LP)EcereAudio$(SO),"$(DESTLIBDIR)/")
 endif
+	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/ide$(E)")
 	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ear$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecc$(B32_SFX)$(E),"$(BINDIR)/")
