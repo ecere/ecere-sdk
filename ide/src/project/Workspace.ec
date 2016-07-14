@@ -593,28 +593,30 @@ public:
 
    void OpenPreviouslyOpenedFiles(bool noParsing)
    {
+      Array<String> filePaths {};
       holdTracking = true;
-      for(ofi : openedFiles)
+      for(ofi : openedFiles; ofi.state != closed)
+         filePaths.Add(CopyString(ofi.path));
+      for(path : filePaths)
       {
-         if(ofi.state != closed)
+         Window file;
+         char absolutePath[MAX_LOCATION];
+         strcpy(absolutePath, workspaceDir);
+         PathCatSlash(absolutePath, path);
+         file = ide.OpenFile(absolutePath, false, true, null, no, normal, noParsing);
+         if(file)
          {
-            Window file;
-            char absolutePath[MAX_LOCATION];
-            strcpy(absolutePath, workspaceDir);
-            PathCatSlash(absolutePath, ofi.path);
-            file = ide.OpenFile(absolutePath, false, true, null, no, normal, noParsing);
-            if(file)
+            for(prj : projects)
             {
-               for(prj : projects)
-               {
-                  ProjectNode node = prj.topNode.FindByFullPath(absolutePath, true);
-                  if(node)
-                     node.EnsureVisible();
-               }
+               ProjectNode node = prj.topNode.FindByFullPath(absolutePath, true);
+               if(node)
+                  node.EnsureVisible();
             }
          }
       }
       holdTracking = false;
+      filePaths.Free();
+      delete filePaths;
    }
 
    OpenedFileInfo FindOpenedFileInfo(const char * relativePath, const char * absolutePath)
