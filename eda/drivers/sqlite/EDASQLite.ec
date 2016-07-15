@@ -1501,7 +1501,7 @@ class SQLiteRow : DriverRow
          if(nextFindStatement) { sqlite3_finalize(nextFindStatement); nextFindStatement = null; }
          if(prevFindStatement) { sqlite3_finalize(prevFindStatement); prevFindStatement = null; }
          if(lastFindStatement) { sqlite3_finalize(lastFindStatement); lastFindStatement = null; }
-         result = GoToSysID(*(int *)data);
+         result = GoToSysID(*(Id *)data);
          if(result)
             findSysID = true;
          return result != 0;
