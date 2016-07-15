@@ -3425,16 +3425,19 @@ class CodeEditor : Window
                                                                                           ObjectInfo check;
                                                                                           if(!strcmp(name, "this"))
                                                                                           {
-                                                                                             char * name = computed.member.member.string;
-                                                                                             ObjectInfo check;
-                                                                                             for(check = classObject.instances.first; check; check = check.next)
-                                                                                                if(check.name && !strcmp(name, check.name))
-                                                                                                {
-                                                                                                   if(prop.Set)
-                                                                                                      ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
-                                                                                                   variable = false;
-                                                                                                   break;
-                                                                                                }
+                                                                                             if(computed.member.member)
+                                                                                             {
+                                                                                                char * name = computed.member.member.string;
+                                                                                                ObjectInfo check;
+                                                                                                for(check = classObject.instances.first; check; check = check.next)
+                                                                                                   if(check.name && !strcmp(name, check.name))
+                                                                                                   {
+                                                                                                      if(prop.Set)
+                                                                                                         ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
+                                                                                                      variable = false;
+                                                                                                      break;
+                                                                                                   }
+                                                                                             }
                                                                                           }
                                                                                           else
                                                                                           {
