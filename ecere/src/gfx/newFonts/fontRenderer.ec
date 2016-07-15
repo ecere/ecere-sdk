@@ -10,7 +10,9 @@ import "Color"
 #include <math.h>
 #include <stdlib.h>
 
-#include "glHelpers.h"
+#include "gl123es.h"
+
+namespace gfx;
 
 #include "cc.h"
 #include "mm.h"
