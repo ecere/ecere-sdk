@@ -209,7 +209,7 @@ static bool AddToArchive(Archive archive, ArchiveDir parentDir, const char * nam
             delete directory;
       }
    }
-   else if(exists)
+   else if(exists && parentDir)
    {
       int ratio;
       uint newPosition;
@@ -233,6 +233,11 @@ static bool AddToArchive(Archive archive, ArchiveDir parentDir, const char * nam
          ((GuiApplication)__thisModule).exitCode = 1;
          result = false;
       }
+   }
+   else if(exists)
+   {
+      Logf($"'f' is specified but %s is not a folder\n", path);
+      result = false;
    }
    return result;
 }
