@@ -1648,7 +1648,10 @@ private:
                   th = space.h;
                }
                else
+               {
                   surface.TextExtent2(buffer, line.count, &tw, &th, 0, null, &oh);
+                  tw += countTabsExtraSpaces(buffer, tabSize, 0, line.count) * space.w;
+               }
             }
             else if(line == selStartLine)
             {
