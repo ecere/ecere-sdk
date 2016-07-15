@@ -2136,7 +2136,7 @@ class CodeEditor : Window
    void OnDestroy(void)
    {
       ObjectInfo oClass, next;
-      Class windowClass = eSystem_FindClass(this.privateModule, "ecere::gui::Window");
+      // Class windowClass = eSystem_FindClass(this.privateModule, "ecere::gui::Window");
 
       FreeType(this.functionType);
       FreeType(this.instanceType);
