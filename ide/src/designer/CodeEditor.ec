@@ -760,7 +760,7 @@ class CodeEditor : Window
    bool inUseDebug;
    OpenedFileInfo openedFileInfo;
 
-   FontResource font { codeFont.faceName, codeFont.size };
+   FontResource font { codeFont.faceName, codeFont.size, codeFont.bold, codeFont.italic };
    saveDialog = codeEditorFileDialog;
 
    Designer designer { codeEditor = this, visible = false, saveDialog = codeEditorFormFileDialog };

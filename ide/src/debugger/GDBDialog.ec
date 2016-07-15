@@ -318,7 +318,7 @@ class GDBDialog : Window
       rightCol, this, text = $"Output:", multiLine = true, hasVertScroll = true, hasHorzScroll = true;
       size = { 328, 80 };
       anchor = { left = rightCol.margin, right = rightCol.margin };
-      font = { panelFont.faceName, panelFont.size };
+      font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
    };
 
    Label treeLabel { rightCol, this, position = { 4, 4 }, labeledWindow = tree };
@@ -328,7 +328,7 @@ class GDBDialog : Window
       multiSelect = false, fullRowSelect = false, hasVertScroll = true, hasHorzScroll = true;
       borderStyle = deep, collapseControl = true, treeBranches = true;
       anchor = { left = rightCol.margin, right = rightCol.margin };
-      font = { panelFont.faceName, panelFont.size };
+      font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
    };
 
    void UpdateOutput()
