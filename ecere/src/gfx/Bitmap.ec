@@ -393,7 +393,7 @@ public:
    {
       if(driver)
          return driver.ConvertBitmap(displaySystem, this, format, palette);
-      return false;
+      return pixelFormat == format;
    }
 
    bool Copy(Bitmap source)
@@ -856,6 +856,7 @@ public:
       {
          driver.FreeBitmap(displaySystem, this);
          driverData = null;
+         driver = class(LFBDisplayDriver);
       }
       if(this && keepData)
          delete picture;
@@ -933,6 +934,7 @@ public:
                this.palette = palette;
                allocatePalette = true;
                pixelFormat = pixelFormat8;
+               sizeBytes = stride * height;
 
                newBitmap.picture = null;
             }
