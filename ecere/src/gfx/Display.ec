@@ -536,7 +536,7 @@ public:
 
    void FontExtent(Font font, const char * text, int len, int * width, int * height)
    {
-      int overHang;
+      int overHang = 0;
       FontExtent2(font, text, len, width, height, 0, null, &overHang);
       if(width) *width += overHang;
    }

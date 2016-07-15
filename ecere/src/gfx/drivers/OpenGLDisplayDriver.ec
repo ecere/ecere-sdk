@@ -368,6 +368,16 @@ static int displayWidth, displayHeight;
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
 {
+   GLCapabilities capabilities, originalCapabilities;
+   bool compat;
+   int version;
+
+   ColorAlpha * flippingBuffer;
+   int flipBufH, flipBufW;
+   bool depthWrite;
+   int x, y;
+   uint vao;
+
 #if defined(__WIN32__)
    HDC hdc;
    HGLRC glrc;
@@ -397,16 +407,6 @@ class OGLDisplay : struct
    Pixmap shapePixmap;
    X11Picture shapePicture;
 #endif
-
-   GLCapabilities capabilities, originalCapabilities;
-   bool compat;
-   int version;
-
-   ColorAlpha * flippingBuffer;
-   int flipBufH, flipBufW;
-   bool depthWrite;
-   int x, y;
-   uint vao;
 };
 
 class OGLSystem : struct
