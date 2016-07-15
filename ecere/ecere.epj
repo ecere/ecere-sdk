@@ -921,24 +921,6 @@ if distributed with the Ecere SDK Windows installer.
                            "Folder" : "gl3",
                            "Files" : [
                               {
-                                 "FileName" : "gl_core_3_3.c",
-                                 "Configurations" : [
-                                    {
-                                       "Name" : "Debug",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    },
-                                    {
-                                       "Name" : "GLES",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
-                              },
-                              "gl_core_3_3.h",
-                              {
                                  "FileName" : "glab.ec",
                                  "Configurations" : [
                                     {
