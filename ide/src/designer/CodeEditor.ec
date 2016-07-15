@@ -2610,6 +2610,7 @@ class CodeEditor : Window
 
    void ModifyCode()
    {
+      fixCaret = true;
       selected.modified = true;
       selected.oClass.modified = true;
 
