@@ -2576,8 +2576,16 @@ private:
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
-            f.Printf("LD := $(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_LD_FLAGS),$(space)$(GCC_LD_FLAGS),)\n",
-                  compiler.ldCommand && compiler.ldCommand[0] ? compiler.ldCommand : "$(if $(CONTAINS_CXX),$(CXX),$(CC))");
+            f.Printf("LD := ");
+            if(compiler.ldCommand && compiler.ldCommand[0])
+            {
+               f.Puts("$(GCC_PREFIX)");
+               f.Puts(compiler.ldCommand);
+            }
+            else
+               f.Puts("$(if $(CONTAINS_CXX),$(CXX),$(CC))");
+            f.Puts("$(_SYSROOT)$(if $(GCC_LD_FLAGS),$(space)$(GCC_LD_FLAGS),)\n");
+
             f.Printf("AR := $(GCC_PREFIX)%s\n", compiler.arCommand);
             f.Puts("STRIP := $(GCC_PREFIX)strip\n");
             f.Puts("ifdef WINDOWS_TARGET\n");
