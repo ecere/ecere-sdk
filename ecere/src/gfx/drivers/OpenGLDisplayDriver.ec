@@ -2881,6 +2881,12 @@ class OpenGLDisplayDriver : DisplayDriver
                   glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, light.Kl);
                   glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
                }
+               else
+               {
+                  glLightf(GL_LIGHT0 + id, GL_CONSTANT_ATTENUATION, 1);
+                  glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, 0);
+                  glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, 0);
+               }
 
                if((light.flags.spot && light.fallOff < 360) || (lightObject && (light.direction.x || light.direction.y || light.direction.z)))
                {

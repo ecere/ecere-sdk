@@ -1293,8 +1293,6 @@ static bool ReadLight(FileInfo * info, Object object)
             { Kc, Kl, Kq, small, d });
          */
 
-         light->flags.attenuation = true;
-
          /*
          #define MINLIGHT     0.08
          light->Kq = 1/(light->end*light->end*MINLIGHT);
@@ -1302,8 +1300,13 @@ static bool ReadLight(FileInfo * info, Object object)
 
          #define MINLIGHT     0.15f
          // #define MINLIGHT     0.1
-         light->Kl = (float)(1/(light->end*MINLIGHT));
+         //light->Kl = (float)(1/(light->end*MINLIGHT));
 
+         float c = 1.0, l = 0.005, q = 0.0005, small = 500, end = light->end;
+         light->Kc = (c + l * end + q * end * end) / small;
+         light->Kl = light->Kc * l/c;
+         light->Kq = light->Kc * q/c;
+         light->flags.attenuation = true;
          break;
       }
       case LIT_START:
