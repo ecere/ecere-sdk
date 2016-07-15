@@ -204,14 +204,7 @@ class Designer : DesignerBase
    bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
    {
       if(active)
-      {
          codeEditor.EnsureUpToDate();
-         codeEditor.fixCaret = true;
-         /*
-         if(classDesigner)
-            classDesigner.Activate();
-         */
-      }
       return true;
    }
 
