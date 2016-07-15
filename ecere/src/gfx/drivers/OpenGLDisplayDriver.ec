@@ -661,11 +661,11 @@ class OpenGLDisplayDriver : DisplayDriver
    }
 
 #if !defined(__EMSCRIPTEN__)
-   void ::CheckCapabilities(OGLSystem oglSystem, OGLDisplay oglDisplay)
+   void ::CheckCapabilities(OGLSystem oglSystem, OGLDisplay oglDisplay, bool canCheckExtensions)
    {
       GLCapabilities capabilities;
 #if !defined(_GLES2)
-      const char * extensions = (const char *)glGetString(GL_EXTENSIONS);
+      const char * extensions = (canCheckExtensions && oglDisplay.compat) ? (const char *)glGetString(GL_EXTENSIONS) : null;
 #endif
 #ifdef DIAGNOSTICS
       printf("extensions: %s\n", extensions);
@@ -680,7 +680,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #else
       capabilities =
       {
-         nonPow2Textures = extensions && strstr(extensions, "GL_ARB_texture_non_power_of_two");
+         nonPow2Textures = glGetStringi || (extensions && (strstr(extensions, "GL_ARB_texture_non_power_of_two")));
          intAndDouble = true;
 #ifdef GL_DEBUGGING
          debug = true;
@@ -858,7 +858,7 @@ class OpenGLDisplayDriver : DisplayDriver
          #elif defined(__ODROID__)
          egl_init_display((uint)displaySystem.window);
          #endif
-         CheckCapabilities(oglSystem, null);
+         CheckCapabilities(oglSystem, null, true);
 
          // TODO: Clean this up? Needed here?
          GLEnableClientState(VERTICES);
@@ -1033,11 +1033,73 @@ class OpenGLDisplayDriver : DisplayDriver
       delete oglSystem;
    }
 
-   /*static */bool ::initialDisplaySetup(Display display)
+   /*static */bool ::initialDisplaySetup(Display display, bool canCheckExtensions, bool loadExtensions)
    {
       OGLDisplay oglDisplay = display.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
       bool result = true;
+
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+      if(loadExtensions && ogl_LoadFunctions() == ogl_LOAD_FAILED)
+         PrintLn("ogl_LoadFunctions() failed!");
+      CheckCapabilities(oglSystem, oglDisplay, canCheckExtensions);
+   #ifdef GL_DEBUGGING
+      if(oglDisplay.capabilities.debug)
+         setupDebugging();
+   #else
+      oglDisplay.capabilities.debug = false;
+   #endif
+#endif
+
+      {
+         GLCapabilities capabilities = *&display.glCapabilities;
+         // PrintLn("Available OpenGL Capabilities: ", oglDisplay.capabilities);
+         // PrintLn("Desired OpenGL Capabilities: ", capabilities);
+
+         oglDisplay.originalCapabilities = oglDisplay.capabilities;
+
+         // Re-enable glCaps_shaders if no fixed function support
+         if(!oglDisplay.capabilities.fixedFunction)
+            capabilities.shaders = true;
+         // Re-enable fixed function if no glCaps_shaders support
+         if(!oglDisplay.capabilities.shaders)
+         {
+            capabilities.fixedFunction = true;
+            capabilities.shaders = false;
+         }
+
+         if(!capabilities.shaders && !capabilities.fixedFunction)
+         {
+            capabilities.fixedFunction = oglDisplay.capabilities.fixedFunction;
+            capabilities.shaders = oglDisplay.capabilities.shaders;
+         }
+
+         // Disable things that don't work with glCaps_shaders
+         if(capabilities.shaders)
+         {
+            capabilities.fixedFunction = false;
+            capabilities.legacy = false;
+            capabilities.immediate = false;
+         }
+
+         #if !ENABLE_GL_POINTER
+         // Re-enable vertex buffer if no pointer support
+         capabilities.vertexBuffer = true;
+         #endif
+
+         oglDisplay.capabilities &= capabilities;
+
+         // PrintLn("Selected OpenGL Capabilities: ", oglDisplay.capabilities);
+         oglSystem.capabilities = oglDisplay.capabilities;
+      }
+
+#if ENABLE_GL_VAO
+      if(oglDisplay.capabilities.vao)
+      {
+         glGenVertexArrays(1, &oglDisplay.vao);
+         glBindVertexArray(oglDisplay.vao);
+      }
+#endif
 
       oglSystem.capabilities = oglDisplay.capabilities;
       SETCAPS(oglDisplay.capabilities);
@@ -1204,88 +1266,22 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__) || defined(USEPBUFFER)
       else
       {
+         oglDisplay.compat = (*&display.glCapabilities).compatible;
          result = true;
          wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
       }
 #endif
       if(result)
       {
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
-
-#ifdef DIAGNOSTICS
-         PrintLn("Calling ogl_LoadFunctions() in CreateDisplay()");
-#endif
-         if(ogl_LoadFunctions() == ogl_LOAD_FAILED)
-            PrintLn("ogl_LoadFunctions() failed!");
-
-#ifdef DIAGNOSTICS
-         PrintLn("CheckCapabilities()");
-#endif
-         CheckCapabilities(oglSystem, oglDisplay);
-
-#ifdef DIAGNOSTICS
-         PrintLn("vboAvailable is: ", vboAvailable);
-#endif
-
-#  ifdef GL_DEBUGGING
-         if(oglDisplay.capabilities.debug)
-            setupDebugging();
-#else
-         oglDisplay.capabilities.debug = false;
-#  endif
-
-#endif
-
 #if defined(__EMSCRIPTEN__)
          emscripten_webgl_make_context_current(oglSystem.glc);
 #endif
 
-         if(result)
-         {
-            GLCapabilities capabilities = *&display.glCapabilities;
-            // PrintLn("Available OpenGL Capabilities: ", oglDisplay.capabilities);
-            // PrintLn("Desired OpenGL Capabilities: ", capabilities);
-
-            oglDisplay.originalCapabilities = oglDisplay.capabilities;
-
-            // Re-enable glCaps_shaders if no fixed function support
-            if(!oglDisplay.capabilities.fixedFunction)
-               capabilities.shaders = true;
-            // Re-enable fixed function if no glCaps_shaders support
-            if(!oglDisplay.capabilities.shaders)
-            {
-               capabilities.fixedFunction = true;
-               capabilities.shaders = false;
-            }
-
-            // Disable things that don't work with glCaps_shaders
-            if(capabilities.shaders)
-            {
-               capabilities.fixedFunction = false;
-               capabilities.legacy = false;
-               capabilities.immediate = false;
-            }
-
-            #if !ENABLE_GL_POINTER
-            // Re-enable vertex buffer if no pointer support
-            capabilities.vertexBuffer = true;
-            #endif
-
-            oglDisplay.capabilities &= capabilities;
-
-            // PrintLn("Selected OpenGL Capabilities: ", oglDisplay.capabilities);
-            oglSystem.capabilities = oglDisplay.capabilities;
-         }
-
-#if ENABLE_GL_VAO
-         if(oglDisplay.capabilities.vao)
-         {
-            glGenVertexArrays(1, &oglDisplay.vao);
-            glBindVertexArray(oglDisplay.vao);
-         }
+#if defined(__WIN32__) || defined(USEPBUFFER)
+         initialDisplaySetup(display, !display.alphaBlend, true);
+#else
+         initialDisplaySetup(display, true, true);
 #endif
-
-         initialDisplaySetup(display);
       }
 
       if(!useSingleGLContext)
@@ -1654,7 +1650,7 @@ class OpenGLDisplayDriver : DisplayDriver
       SETCAPS(oglDisplay.capabilities);
 
       if(display.alphaBlend && result)
-         initialDisplaySetup(display);
+         initialDisplaySetup(display, true, false);
 
       if(!result && display.alphaBlend)
       {

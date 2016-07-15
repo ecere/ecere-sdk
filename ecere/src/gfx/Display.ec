@@ -1180,7 +1180,7 @@ public:
             oglDisplay.capabilities = oglDisplay.originalCapabilities & value;
 
             Lock(true);
-            OpenGLDisplayDriver::initialDisplaySetup(this);
+            OpenGLDisplayDriver::initialDisplaySetup(this, true, false);
             Unlock();
          }
       }
