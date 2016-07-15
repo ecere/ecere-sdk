@@ -319,6 +319,7 @@ private:
             CloseAndMonitor();
 
             MessageBox { master = w, type = ok, isModal = true,
+                  creationActivation = flash,
                   text = "Global Settings Modified Externally",
                   contents = "The global settings were modified by another process and a drastic shrinking of the settings file was detected.\n"
                   "The new settings will not be loaded to prevent loss of your ide settings.\n"
