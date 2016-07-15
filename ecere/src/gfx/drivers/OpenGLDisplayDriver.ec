@@ -3166,15 +3166,20 @@ class OpenGLDisplayDriver : DisplayDriver
                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
             }
          }
+         if(material.power > 0.1)
          {
             float color[4] = { material.specular.r, material.specular.g, material.specular.b, 0 };
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
+         }
+         else
+         {
+            float color[4] = { 0,0,0,0 };
             glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
          }
          {
             float color[4] = { material.emissive.r, material.emissive.g, material.emissive.b, 0 };
             glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, color);
          }
-
          glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
       }
 #endif
