@@ -4,6 +4,8 @@ import "defaultShader"
 
 #include "gl123es.h"
 
+namespace gfx::drivers;
+
 public enum GLIMTKMode
 {
    unset          =     -1,

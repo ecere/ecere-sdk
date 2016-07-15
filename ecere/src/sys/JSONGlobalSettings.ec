@@ -1,6 +1,8 @@
 import "GlobalAppSettings"
 import "JSON"
 
+namespace sys;
+
 public class JSONGlobalSettings : GlobalSettingsDriver
 {
    class_property(name) = "JSON";

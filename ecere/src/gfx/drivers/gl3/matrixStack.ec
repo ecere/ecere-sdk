@@ -4,6 +4,8 @@ import "defaultShader"
 
 #include "gl123es.h"
 
+namespace gfx::drivers;
+
 #if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
 public union Matrix
 {

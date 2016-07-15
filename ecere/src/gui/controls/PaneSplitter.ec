@@ -1,5 +1,7 @@
 import "Window"
 
+namespace gui::controls;
+
 define defaultToolSize = 6;
 
 public class PaneSplitter : Window

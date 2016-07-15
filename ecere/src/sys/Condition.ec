@@ -8,6 +8,8 @@ import "Semaphore"
 import "ecere"
 #endif
 
+namespace sys;
+
 #if !defined(__EMSCRIPTEN__)
 
 public class Condition : struct

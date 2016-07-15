@@ -1,5 +1,7 @@
 import "Window"
 
+namespace gui::controls;
+
 struct ToolTipTextLine
 {
    char * string;
