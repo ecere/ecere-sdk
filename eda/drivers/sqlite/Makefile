@@ -90,12 +90,18 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
+			 -DSQLITE_ENABLE_RTREE=1 \
+			 -DSQLITE_OMIT_AUTHORIZATION
 
 CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
-	 $(if $(DEBUG), -g, -O2) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
+			 -DSQLITE_ENABLE_RTREE=1 \
+			 -DSQLITE_OMIT_AUTHORIZATION
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
