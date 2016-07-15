@@ -1,7 +1,9 @@
 import "OpenGLDisplayDriver"
 import "textureManager"
 
-#include "glHelpers.h"
+#include "gl123es.h"
+
+namespace gfx;
 
 #define _Noreturn
 #include <stdlib.h>

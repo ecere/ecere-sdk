@@ -3,7 +3,9 @@ import "Display"
 #include <stdio.h>
 #include <math.h>
 
-#include "glHelpers.h"
+#include "gl123es.h"
+
+namespace gfx;
 
 #include "cc.h"
 

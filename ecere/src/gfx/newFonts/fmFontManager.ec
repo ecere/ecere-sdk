@@ -6,12 +6,14 @@
 import "LinkList"
 import "File"
 import "FontResource"
-import "FontRenderer"
+import "fontRenderer"
 
 import "atlasBuilder"
 import "imgDistMap"
 
-#include "glHelpers.h"
+#include "gl123es.h"
+
+namespace gfx;
 
 #include <math.h>
 
