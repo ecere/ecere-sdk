@@ -84,8 +84,8 @@ namespace gfx::drivers;
       #undef pointer
 
       #if !defined(__APPLE__)
-      GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
-      GLAPI void APIENTRY glUnlockArraysEXT (void);
+      default GLAPI void APIENTRY glLockArraysEXT (GLint first, GLsizei count);
+      default GLAPI void APIENTRY glUnlockArraysEXT (void);
       #endif
 
       import "XInterface"
