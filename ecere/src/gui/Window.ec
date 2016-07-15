@@ -7271,6 +7271,9 @@ public:
             clip.bottom += decorations ? 0 : clientStart.y;
          }
 
+         if(decorations && this == guiApp.desktop)
+            clip = { 0, 0, guiApp.virtualScreen.w, guiApp.virtualScreen.h };
+
          if(display && display.flags.flipping)
          {
             rootWindow.Update(null);
