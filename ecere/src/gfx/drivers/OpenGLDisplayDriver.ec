@@ -886,7 +886,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if !defined(_GLES)
          if(!glCaps_shaders)
-            GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+            ;//GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
@@ -1174,7 +1174,7 @@ class OpenGLDisplayDriver : DisplayDriver
          GLLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
          */
 #if !defined(_GLES)
-         GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
+         ;//GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
