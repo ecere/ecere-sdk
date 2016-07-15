@@ -9611,7 +9611,7 @@ public:
       }
    };
    property bool moveable { get { return (bool)moveable; } set { moveable = value; } };
-   property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; } };
+   property bool alphaBlend { get { return (bool)alphaBlend; } set { alphaBlend = value; if(value) nativeDecorations = false; /* Native Decorations are not supported with alphaBlend */ } };
    property bool useSharedMemory { get { return (bool)useSharedMemory; } set { useSharedMemory = value; } };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
    property bool nativeDecorations
