@@ -479,7 +479,7 @@ class IDEWorkSpace : Window
 
    CallStackView callStackView
    {
-      parent = this, font = { panelFont.faceName, panelFont.size };
+      parent = this, font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
 
       void OnSelectFrame(int frameIndex)
       {
@@ -581,7 +581,7 @@ class IDEWorkSpace : Window
    WatchesView watchesView { parent = this };
    ThreadsView threadsView
    {
-      parent = this, font = { panelFont.faceName, panelFont.size };
+      parent = this, font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
 
       bool OnKeyDown(Key key, unichar ch)
       {
