@@ -961,7 +961,7 @@ private:
          }
          return true;
       }
-      return true;
+      return !ide.destroyed;
    }
 
 #endif
