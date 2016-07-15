@@ -148,12 +148,13 @@ class Test3D : Window
 
       GetMousePosition(&x, &y);
 
-      specularLight.light.direction =
+      specularLight.transform.position =
       {
          (x - clientSize.w / 2) * 400 / clientSize.w,
          (y - clientSize.h / 2) * 400 / clientSize.h,
-         -camera.position.z - cube.transform.scaling.z * (1 + 1.0f / ((numSpheres - 1) * (1+spacing)))
+         - cube.transform.scaling.z * (1 + 1.0f / ((numSpheres - 1) * (1+spacing)))
       };
+      specularLight.UpdateTransform();
 
       display.SetCamera(surface, camera);
 

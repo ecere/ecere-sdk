@@ -1359,12 +1359,10 @@ private:
                position.MultMatrix(transform.position, parent.matrix);
 
             if(light.target)
+            {
                light.direction.Subtract((Vector3D *) light.target.matrix.m[3], position);
-            else
-               light.direction = position; // TOCHECK: Why does this happen?
-
-            light.direction.Normalize(light.direction);
-            transform.orientation.RotationDirection(light.direction);
+               light.direction.Normalize(light.direction);
+            }
          }
 
          if(!flags.localMatrixSet)

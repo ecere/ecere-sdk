@@ -2838,11 +2838,12 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
       if(!glCaps_shaders)
       {
-         if(light != null)
+         if(light != null && !light.flags.off)
          {
             Object lightObject = light.lightObject;
             float position[4] = { 0, 0, 0, 0 };
             float color[4] = { 0, 0, 0, 1 };
+            Vector3D l;
 
             glEnable(GL_LIGHT0 + id);
 
@@ -2857,6 +2858,7 @@ class OpenGLDisplayDriver : DisplayDriver
             color[1] = light.ambient.g * light.multiplier;
             color[2] = light.ambient.b * light.multiplier;
             glLightfv(GL_LIGHT0 + id, GL_AMBIENT, color);
+
             color[0] = light.specular.r * light.multiplier;
             color[1] = light.specular.g * light.multiplier;
             color[2] = light.specular.b * light.multiplier;
@@ -2864,84 +2866,14 @@ class OpenGLDisplayDriver : DisplayDriver
 
             if(lightObject)
             {
-               Vector3D positionVector;
-               if(light.flags.spot)
-               {
-                  if(lightObject.flags.root || !lightObject.parent)
-                  {
-                     positionVector = lightObject.transform.position;
-                     positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
-                  }
-                  else
-                  {
-                     positionVector.MultMatrix(lightObject.transform.position, lightObject.parent.matrix);
-                     if(display.display3D.camera)
-                        positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
-                  }
-                  position[3] = 1;
-               }
-               else
-               {
-                  if(!light.direction.x && !light.direction.y && !light.direction.z)
-                  {
-                     Vector3Df vector { 0,0,-1 };
-                     Matrix mat;
-                     mat.RotationQuaternion(light.orientation);
-                     positionVector.MultMatrixf(vector, mat);
-                  }
-                  else
-                  {
-                     positionVector = light.direction;
-                     position[3] = 1;
-                  }
-               }
+               // Positional Lights, including Spot Lights (and omni light with flags.spot not set)
+               Matrix * mat = &lightObject.matrix;
+               l = { mat->m[3][0], mat->m[3][1], mat->m[3][2] };
+               if(display.display3D.camera)
+                  l.Subtract(l, display.display3D.camera.cPosition);
 
-               position[0] = (float)positionVector.x;
-               position[1] = (float)positionVector.y;
-               position[2] = (float)positionVector.z;
-
+               position[0] = (float)l.x, position[1] = (float)l.y, position[2] = (float)l.z, position[3] = 1;
                glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
-
-               /*
-               // Display Light Position
-               glDisable(GL_LIGHTING);
-               glDisable(GL_DEPTH_TEST);
-               glColor3f(1,1,1);
-               glPointSize(10);
-               glBegin(GL_POINTS);
-               glVertex3fv(position);
-               glEnd();
-               glEnable(GL_DEPTH_TEST);
-               glEnable(GL_LIGHTING);
-
-
-               // Display Target
-               if(lightObject.flags.root || !lightObject.parent)
-               {
-                  positionVector = light.target.transform.position;
-                  positionVector.Subtract(positionVector, display.camera.cPosition);
-               }
-               else
-               {
-                  positionVector.MultMatrix(light.target.transform.position,
-                     lightObject.light.target.parent.matrix);
-                  positionVector.Subtract(positionVector, display.camera.cPosition);
-               }
-
-               position[0] = positionVector.x;
-               position[1] = positionVector.y;
-               position[2] = positionVector.z;
-
-               glDisable(GL_LIGHTING);
-               glDisable(GL_DEPTH_TEST);
-               glColor3f(1,1,0);
-               glPointSize(10);
-               glBegin(GL_POINTS);
-               glVertex3fv(position);
-               glEnd();
-               glEnable(GL_DEPTH_TEST);
-               glEnable(GL_LIGHTING);
-               */
 
                if(light.flags.attenuation)
                {
@@ -2950,32 +2882,80 @@ class OpenGLDisplayDriver : DisplayDriver
                   glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
                }
 
-               if(light.flags.spot)
+               if((light.flags.spot && light.fallOff < 360) || (lightObject && (light.direction.x || light.direction.y || light.direction.z)))
                {
-                  float exponent = 0;
-                  #define MAXLIGHT  0.9
-                  float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
                   // Figure out exponent out of the hot spot
-                  exponent = (float)(log(MAXLIGHT) / log(cos((light.hotSpot / 2))));
+                  #define MAXLIGHT  0.9
+                  float exponent = light.flags.spot ? (float)(log(MAXLIGHT) / log(cos(light.hotSpot / 2))) : 1;
+                  Degrees cutOff = light.flags.spot ? light.fallOff/2 : 90;
+                  float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
 
                   glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, direction);
-                  glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)(light.fallOff / 2));
+                  glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)cutOff);
                   glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, exponent);
                }
+               else
+               {
+                  float d[4] = { 0, 0, 1, 0 };
+                  glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, d);
+                  glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, 180);
+                  glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, 1);
+               }
+
+               /*
+               if(lightObject)
+               {
+                  // Display Light Position
+                  glDisable(GL_LIGHTING);
+                  glDisable(GL_DEPTH_TEST);
+                  glColor3f(1,1,1);
+                  glPointSize(10);
+                  glBegin(GL_POINTS);
+                  glVertex3fv(position);
+                  glEnd();
+                  glEnable(GL_DEPTH_TEST);
+                  glEnable(GL_LIGHTING);
+
+
+                  // Display Target
+                  if(lightObject.flags.root || !lightObject.parent)
+                  {
+                     positionVector = light.target.transform.position;
+                     positionVector.Subtract(positionVector, display.camera.cPosition);
+                  }
+                  else
+                  {
+                     positionVector.MultMatrix(light.target.transform.position,
+                        lightObject.light.target.parent.matrix);
+                     positionVector.Subtract(positionVector, display.camera.cPosition);
+                  }
+
+                  position[0] = positionVector.x;
+                  position[1] = positionVector.y;
+                  position[2] = positionVector.z;
+
+                  glDisable(GL_LIGHTING);
+                  glDisable(GL_DEPTH_TEST);
+                  glColor3f(1,1,0);
+                  glPointSize(10);
+                  glBegin(GL_POINTS);
+                  glVertex3fv(position);
+                  glEnd();
+                  glEnable(GL_DEPTH_TEST);
+                  glEnable(GL_LIGHTING);
+               }
+               */
             }
             else
             {
-               Vector3Df vector { 0,0,-1 };
-               Vector3Df direction;
+               // Directional Light
+               Vector3D vector { 0,0,-1 };
+               Vector3D direction;
                Matrix mat;
-
                mat.RotationQuaternion(light.orientation);
                direction.MultMatrix(vector, mat);
-
-               position[0] = direction.x;
-               position[1] = direction.y;
-               position[2] = direction.z;
-
+               l.Normalize(direction);
+               position[0] = (float)l.x, position[1] = (float)l.y, position[2] = (float)l.z, position[3] = 0;
                glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
             }
          }
