@@ -3008,7 +3008,8 @@ static bool StringsAreSameOrMore(Array<String> strings, Array<String> originals,
             break;
          }
          else
-            map[s] = null;
+            mit.Remove();
+            // TOFIX: Templates map[s] = null;
       }
       if(result)
       {
