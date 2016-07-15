@@ -3163,6 +3163,7 @@ private:
 
          clipExtent.AddBox(box);
 
+         display.Lock(true);
          display.StartUpdate();
 
          if(!rootWindow.fullRender)
@@ -3211,6 +3212,7 @@ private:
          }
 
          display.EndUpdate();
+         display.Unlock();
          dirtyBack.Empty();
 
          dirty = false;

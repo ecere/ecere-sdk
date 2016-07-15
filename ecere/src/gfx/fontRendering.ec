@@ -30,6 +30,8 @@ static uint16 * utf16 = null;
 
 #if !defined(ECERE_VANILLA)
 import "imgDistMap"
+import "immediate"
+#include "gl123es.h"
 #endif
 
 #define MAX_FONT_LINK_ENTRIES   10
@@ -701,9 +703,17 @@ class GlyphPack : BTNode
                )
 #endif
             {
+#if !defined(ECERE_VANILLA)
+               if(displaySystem.driver == class(OpenGLDisplayDriver) && lastBlitTex)
+                  GLEnd();
+#endif
                bitmap.MakeDD(displaySystem);
                if(outline)
                   outline.MakeDD(displaySystem);
+#if !defined(ECERE_VANILLA)
+               if(displaySystem.driver == class(OpenGLDisplayDriver) && lastBlitTex)
+                  GLBegin(GLIMTKMode::quads);
+#endif
             }
             displaySystem.Unlock();
          }

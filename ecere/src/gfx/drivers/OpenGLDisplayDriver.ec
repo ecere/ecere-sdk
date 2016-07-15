@@ -359,7 +359,7 @@ public void GLSetupLighting(bool enable)
 }
 #endif
 
-static GLuint lastBlitTex;
+/*static */GLuint lastBlitTex;
 
 static int displayWidth, displayHeight;
 
@@ -2673,6 +2673,7 @@ class OpenGLDisplayDriver : DisplayDriver
          lastBlitTex = 0;
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
          if(lastBlitTex) GLEnd();
+         lastBlitTex = 0;
 
          oglSurface.writingText = false;
          oglSystem.loadingFont = false;
