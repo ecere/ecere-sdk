@@ -230,8 +230,7 @@ private:
    {
       files.Free(FileEntry::Free);
       fileNotifies.Free(FileNotify::Free);
-      if(active)
-         globalSystem.fileMonitors.Remove(this);
+      globalSystem.fileMonitors.Remove(this);
       // delete this;
    }
 
