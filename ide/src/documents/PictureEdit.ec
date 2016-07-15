@@ -63,15 +63,11 @@ class PictureEdit : Window
             {
                if(bitmap)
                {
-                  //ColorAlpha * palette = bitmap.Quantize(0, 255);
-                  bitmapNotIndexed = { };
-                  bitmapNotIndexed.Copy(bitmap);
-                  bitmapNotIndexed.Convert(null, pixelFormat888, null);
-
-                  /*
-                  eBitmap_Convert(null, bitmap, PixelFormat8, palette);
-                  bitmap.allocatePalette = true;
-                  */
+                  displaySystem.Lock();
+                  OnUnloadGraphics();
+                  bitmap.Quantize(0, 255);
+                  OnLoadGraphics();
+                  displaySystem.Unlock();
 
                   imageModeColorTableItem.disabled = false;
                   Update(null);
@@ -86,11 +82,17 @@ class PictureEdit : Window
             bool NotifySelect(MenuItem selection, Modifiers mods)
             {
                if(bitmap)
+               {
+                  displaySystem.Lock();
+                  OnUnloadGraphics();
                   bitmap.Convert(null, pixelFormat888, null);
-               delete bitmapNotIndexed;
-               imageModeColorTableItem.disabled = true;
-               Update(null);
-               modifiedDocument = true;
+                  OnLoadGraphics();
+                  displaySystem.Unlock();
+
+                  imageModeColorTableItem.disabled = true;
+                  Update(null);
+                  modifiedDocument = true;
+               }
                return true;
             }
          };
@@ -145,12 +147,6 @@ class PictureEdit : Window
                   bitmap.alphaBlend = true;
                   bitmap.Convert(null, pixelFormat888, null);
                }
-               if(bitmap.pixelFormat == pixelFormat8)
-               {
-                  bitmapNotIndexed = { };
-                  bitmapNotIndexed.Copy(bitmap);
-                  bitmapNotIndexed.Convert(null, pixelFormat888, null);
-               }
                //if(!eWindow_GetStartWidth(window) || !eWindow_GetStartHeight(window))
                {
                   Size size = initSize;  // what's the use of retrieving initSize
@@ -169,6 +165,7 @@ class PictureEdit : Window
                      (!) ? (A_CLIENT|bitmap.width) : eWindow_GetStartWidth(window),
                      (!eWindow_GetStartHeight(window)) ? (A_CLIENT|bitmap.height) : eWindow_GetStartHeight(window));
                   */
+                  bitmap.keepData = true;
                }
                scrollArea = Size { bitmap.width, bitmap.height };
             }
@@ -182,6 +179,7 @@ class PictureEdit : Window
             {
                case pixelFormat8:
                   imageModeIndexedItem.checked = true;
+                  imageModeRGBItem.disabled = true;
                   break;
                case pixelFormat888:
                   imageModeRGBItem.checked = true;
@@ -190,6 +188,31 @@ class PictureEdit : Window
             }
          }
       }
+   }
+
+   void OnUnloadGraphics()
+   {
+      void * picture = bitmap.picture, * palette = bitmap.palette;
+      bitmap.picture = null;
+      bitmap.palette = null;
+      bitmap.Free();
+      bitmap.picture = picture;
+      bitmap.palette = palette;
+      delete bitmapNotIndexed;
+   }
+
+   bool OnLoadGraphics()
+   {
+      if(bitmap.pixelFormat == pixelFormat8)
+      {
+         bitmapNotIndexed = { };
+         bitmapNotIndexed.Copy(bitmap);
+         bitmapNotIndexed.Convert(null, pixelFormat888, null);
+         bitmapNotIndexed.MakeDD(displaySystem);
+      }
+      else
+         bitmap.MakeDD(displaySystem);
+      return true;
    }
 
    void OnRedraw(Surface surface)

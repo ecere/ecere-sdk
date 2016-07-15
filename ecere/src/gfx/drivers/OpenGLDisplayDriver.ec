@@ -1953,7 +1953,8 @@ class OpenGLDisplayDriver : DisplayDriver
          // Switch ARGB to RGBA
          //if(bitmap.format != pixelFormatRGBA)
          {
-            for(c=0; c<bitmap.size; c++)
+            int size = convBitmap.stride * convBitmap.height;
+            for(c = 0; c < size; c++)
             {
                // ((ColorRGBA *)bitmap.picture)[c] = ((ColorAlpha *)bitmap.picture)[c];
                // TODO:
