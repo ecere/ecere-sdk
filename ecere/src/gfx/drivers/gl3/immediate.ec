@@ -2,7 +2,7 @@
 import "glab"
 import "shading"
 
-#include "glHelpers.h"
+#include "gl123es.h"
 
 public enum GLIMTKMode
 {

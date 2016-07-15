@@ -2,7 +2,7 @@
 import "Display"
 import "shading"
 
-#include "glHelpers.h"
+#include "gl123es.h"
 
 #if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
 public union Matrix

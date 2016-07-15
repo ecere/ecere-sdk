@@ -2,26 +2,7 @@ import "Display"
 import "matrixStack"
 import "glab"
 
-#if defined(__ANDROID__) || defined(__ODROID__)
-   #include <GLES/gl.h>
-
-   #define GL_INT    0x1404
-   #define GL_DOUBLE 0x140A
-
-   #ifndef _GLES
-      #define _GLES
-   #endif
-#elif defined(__EMSCRIPTEN__)
-   #include <GLES2/gl2.h>
-
-   #ifndef _GLES2
-      #define _GLES2
-   #endif
-#else
-   #include "gl_compat_4_4.h"
-#endif
-
-#define ENABLE_GL_SHADERS  (!defined(_GLES))
+#include "gl123es.h"
 
 #if ENABLE_GL_SHADERS
 

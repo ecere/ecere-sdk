@@ -14,7 +14,7 @@ import "shading"
 
 namespace gfx::drivers;
 
-#include "glHelpers.h"
+#include "gl123es.h"
 
 // **********   GL PLATFORMS INCLUDES   **********
 // UNIX

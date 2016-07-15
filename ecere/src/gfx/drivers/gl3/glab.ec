@@ -3,7 +3,7 @@ import "immediate"
 import "Display"
 import "OpenGLDisplayDriver"
 
-#include "glHelpers.h"
+#include "gl123es.h"
 
 // Kept public for now
 
