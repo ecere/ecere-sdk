@@ -3554,6 +3554,32 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 }
 
+#if !defined(ECERE_NO3D)
+public void glshdMaterial(Material material, bool perVertexColor)
+{
+#if ENABLE_GL_SHADERS
+   if(glCaps_shaders)
+      shader_setMaterial(material, perVertexColor);
+#endif
+}
+#endif
+
+public void glshdColorMaterial(ColorAlpha color, bool twoSided)
+{
+#if ENABLE_GL_SHADERS
+   if(glCaps_shaders)
+      shader_setSimpleMaterial(color, twoSided);
+#endif
+}
+
+public void glshdPerVertexColor(bool perVertexColor)
+{
+#if ENABLE_GL_SHADERS
+   if(glCaps_shaders)
+      shader_setPerVertexColor(perVertexColor);
+#endif
+}
+
 public void UseSingleGLContext(bool useSingle)
 {
    useSingleGLContext = useSingle;

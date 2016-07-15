@@ -112,7 +112,7 @@ void shader_swizzle(int swizzle)
 }
 
 #if !defined(ECERE_NO3D)
-public void shader_setMaterial(Material material, bool perVertexColor)
+void shader_setMaterial(Material material, bool perVertexColor)
 {
    glUniform1i(uPerVertexColor, perVertexColor);
    glUniform1i(uMatTwoSided, material.flags.doubleSided && !material.flags.singleSideLight);
@@ -133,7 +133,7 @@ public void shader_setMaterial(Material material, bool perVertexColor)
 }
 #endif
 
-public void shader_setSimpleMaterial(ColorAlpha color, bool twoSided)
+void shader_setSimpleMaterial(ColorAlpha color, bool twoSided)
 {
    float opacity = color.a / 255.0f;
    float r = color.color.r / 255.0f;
@@ -149,7 +149,7 @@ public void shader_setSimpleMaterial(ColorAlpha color, bool twoSided)
    glUniform1f(uMatOpacity, opacity);
 }
 
-public void shader_setPerVertexColor(bool perVertexColor)
+void shader_setPerVertexColor(bool perVertexColor)
 {
    glUniform1i(uPerVertexColor, perVertexColor);
 }

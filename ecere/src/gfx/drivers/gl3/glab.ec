@@ -5,28 +5,7 @@ import "OpenGLDisplayDriver"
 
 #include "gl123es.h"
 
-// Kept public for now
-
-public void GLABDeleteBuffers(int count, GLAB * buffers)
-{
-   if(glCaps_vertexBuffer)
-   {
-      int i;
-      for(i = 0; i < count; i++)
-      {
-         uint buffer = buffers[i].buffer;
-         if(buffer)
-         {
-            if(buffer == glabCurArrayBuffer)
-               GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-            else if(buffer == glabCurElementBuffer)
-               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-         }
-      }
-      if(count && buffers[0].buffer)
-         glDeleteBuffers(count, (GLuint *)buffers);
-   }
-}
+namespace gfx::drivers;
 
 // NOTE: Don't call if without vertexBuffer
 void GLABBindBuffer(int target, uint buffer)
@@ -91,12 +70,33 @@ public struct GLAB
       }
    }
 
+   void ::deleteBuffers(int count, GLAB * buffers)
+   {
+      if(glCaps_vertexBuffer)
+      {
+         int i;
+         for(i = 0; i < count; i++)
+         {
+            uint buffer = buffers[i].buffer;
+            if(buffer)
+            {
+               if(buffer == glabCurArrayBuffer)
+                  GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+               else if(buffer == glabCurElementBuffer)
+                  GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            }
+         }
+         if(count && buffers[0].buffer)
+            glDeleteBuffers(count, (GLuint *)buffers);
+      }
+   }
+
    void free()
    {
       if(this != null && buffer)
       {
          if(glCaps_vertexBuffer)
-            GLABDeleteBuffers(1, this);
+            deleteBuffers(1, this);
          buffer = 0;
       }
    }
@@ -208,7 +208,7 @@ public struct GLEAB
       if(this != null && buffer)
       {
          if(glCaps_vertexBuffer)
-            GLABDeleteBuffers(1, (GLAB *)this);
+            GLAB::deleteBuffers(1, (GLAB *)this);
          buffer = 0;
       }
    }
