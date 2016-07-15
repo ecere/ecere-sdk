@@ -2332,7 +2332,7 @@ class CodeEditor : Window
 
          sprintf(message, $"The document %s was modified by another application.\n"
             "Would you like to reload it and lose your changes?", fileName);
-         if(MessageBox { type = yesNo, master = /*parent = */parent, text = $"Document has been modified",
+         if(MessageBox { creationActivation = flash, type = yesNo, master = /*parent = */parent, text = $"Document has been modified",
             contents = message }.Modal() == yes)
             reload = true;
       }
