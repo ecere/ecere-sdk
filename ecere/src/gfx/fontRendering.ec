@@ -1143,16 +1143,16 @@ public class Font : struct
             }
             if(pack)
             {
+               FT_Face face = curFontEntry ? curFontEntry.face : null;
                int index = rightToLeft ? (glyphIndex + 1) : (glyphIndex-1);
                Glyph * glyph = &pack.glyphs[glyphNo & 0x7F];
 
                int ax = (int)((numGlyphs ? shaper_item.advances[index] : glyph->ax) * glyph->scale);
                int offset = numGlyphs ? shaper_item.offsets[index].x : 0;
-               int oy = 0;//numGlyphs ? shaper_item.offsets[index].y : 0;
 
                ax += offset;
 
-               if(previousGlyph && curFontEntry && (curFontEntry.face == previousFace || !previousFace)) // TO IMPROVE: Assuming same face for now for multiple calls...
+               if(previousGlyph && curFontEntry && (face == previousFace || !previousFace)) // TO IMPROVE: Assuming same face for now for multiple calls...
                {
                   FT_Vector delta = { 0, 0 };
                   FT_Get_Kerning(curFontEntry.face, previousGlyph, glyph->glyphNo, FT_KERNING_UNFITTED, &delta );
@@ -1161,14 +1161,24 @@ public class Font : struct
                   *x += delta.x * glyph->scale;
                }
                else if(curFontEntry)
-                  FaceSetCharSize(curFontEntry.face, size);
+                  FaceSetCharSize(face, size);
 
                previousGlyph = glyph->glyphNo;
-               previousFace = curFontEntry ? curFontEntry.face : null;
+               previousFace = face;
 
-               if(output)
-                  surface.driver.Blit(display, surface, bitmap, ((*x) >> 6) + glyph->left - writingOutline * padding, y + (oy >> 6) + glyph->top - writingOutline * padding,
+               if(output && face)
+               {
+                  int h = (int)face->size->metrics.height;
+                  int desc = (int)face->size->metrics.descender;
+                  int oy = (numGlyphs ? shaper_item.offsets[index].y : 0);
+
+                  oy += h + desc - glyph->by;
+                  oy >>= 6;
+                  //oy += glyph->top;
+
+                  surface.driver.Blit(display, surface, bitmap, ((*x) >> 6) + glyph->left - writingOutline * padding, y + oy - writingOutline * padding,
                      writingOutline ? glyph->ox : glyph->x, writingOutline ? glyph->oy : glyph->y, glyph->w + writingOutline + 2 * padding, glyph->h + writingOutline + 2 * padding);
+               }
                *x += ax;
 
                lastGlyph = glyph;
