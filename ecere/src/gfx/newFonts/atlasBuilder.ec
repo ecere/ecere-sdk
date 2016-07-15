@@ -5,6 +5,8 @@
  * *****************************************************************************/
 import "instance"
 
+namespace gfx;
+
 struct AtlasNode { short x, y, width; };
 
 class AtlasBuilder
