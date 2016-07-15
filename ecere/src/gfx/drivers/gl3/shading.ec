@@ -7,56 +7,70 @@ import "glab"
 #if ENABLE_GL_SHADERS
 
 // Uniforms
-// int uPrjMatrix;
-// int uMVMatrix;
-int uMVMatrix_z;
-int uPrjMVMatrix;
-int uTextureMatrix;
-int uNormalsMatrix;
-int uColor;
-int uTexturingOn;
-int uSwizzleMode;
-int uLightingOn;
-int uFogOn;
-int uFogDensity;
-int uFogColor;
-int uGlobalAmbient;
-int uLightsOn[8];
-int uLightsPos[8];
-int uLightsDiffuse[8];
-int uLightsAmbient[8];
-int uLightsSpecular[8];
-int uPerVertexColor;
-int uMatDiffuse;
-int uMatAmbient;
-int uMatSpecular;
-int uMatEmissive;
-int uMatPower;
-int uMatOpacity;
-int uMatTwoSided;
+static int uPrjMatrix;
+static int uMVMatrix;
+//static int uMVMatrix_z;
+//static int uPrjMVMatrix;
+static int uTextureMatrix;
+static int uNormalsMatrix;
+static int uColor;
+static int uTexturingOn;
+static int uSwizzleMode;
+static int uLightingOn;
+static int uFogOn;
+static int uFogDensity;
+static int uFogColor;
+static int uGlobalAmbient;
+static int uNearPlane;
+static int uLightsOn[NumberOfLights];
+static int uLightsPos[NumberOfLights];
+static int uLightsDiffuse[NumberOfLights];
+static int uLightsAmbient[NumberOfLights];
+static int uLightsSpecular[NumberOfLights];
+static int uLightsKc[NumberOfLights];
+static int uLightsKl[NumberOfLights];
+static int uLightsKq[NumberOfLights];
+static int uLightsSpotDir[NumberOfLights];
+static int uLightsSpot[NumberOfLights];
+static int uLightsSpotCutOffCos[NumberOfLights];
+static int uLightsSpotExp[NumberOfLights];
+static int uPerVertexColor;
+static int uMatDiffuse;
+static int uMatAmbient;
+static int uMatSpecular;
+static int uMatEmissive;
+static int uMatPower;
+static int uMatOpacity;
+static int uMatTwoSided;
 
 void shader_LoadMatrixf(MatrixMode mode, float * m)
 {
    if(mode == texture)
       glUniformMatrix4fv(uTextureMatrix, 1, GL_FALSE, m);
-   /*else if(mode == projection)
+   else if(mode == projection)
       glUniformMatrix4fv(uPrjMatrix, 1, GL_FALSE, m);
-   else
-      glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);*/
+   else if(mode == modelView)
+      glUniformMatrix4fv(uMVMatrix, 1, GL_FALSE, m);
 }
 
+void shader_setNearPlane(double n)
+{
+   glUniform1f(uNearPlane, (float)n);
+}
+
+Matrix normalsMatrix;
 void shader_LoadNormalMatrix(float * m)
 {
    glUniformMatrix4fv(uNormalsMatrix, 1, GL_FALSE, m);
 }
-
+/*
 void shader_LoadPrjMVMatrix(float * m, float * mvz)
 {
    glUniformMatrix4fv(uPrjMVMatrix, 1, GL_FALSE, m);
    if(mvz)
       glUniform4fv(uMVMatrix_z, 1, mvz);
 }
-
+*/
 void shader_setGlobalAmbient(float r, float g, float b, float a)
 {
    glUniform3f(uGlobalAmbient, r, g, b);
@@ -104,9 +118,17 @@ public void shader_setMaterial(Material material, bool perVertexColor)
    glUniform1i(uMatTwoSided, material.flags.doubleSided && !material.flags.singleSideLight);
    glUniform3f(uMatDiffuse, material.diffuse.r, material.diffuse.g, material.diffuse.b);
    glUniform3f(uMatAmbient, material.ambient.r, material.ambient.g, material.ambient.b);
-   glUniform3f(uMatSpecular, material.specular.r, material.specular.g, material.specular.b);
+   if(!material.power)
+   {
+      glUniform1f(uMatPower, material.power);
+      glUniform3f(uMatSpecular, 0,0,0);
+   }
+   else
+   {
+      glUniform1f(uMatPower, material.power);
+      glUniform3f(uMatSpecular, material.specular.r, material.specular.g, material.specular.b);
+   }
    glUniform3f(uMatEmissive, material.emissive.r, material.emissive.g, material.emissive.b);
-   glUniform1f(uMatPower, material.power);
    glUniform1f(uMatOpacity, material.opacity);
 }
 #endif
@@ -121,7 +143,7 @@ public void shader_setSimpleMaterial(ColorAlpha color, bool twoSided)
    glUniform1i(uMatTwoSided, twoSided);
    glUniform3f(uMatDiffuse, r, g, b);
    glUniform3f(uMatAmbient, r, g, b);
-   glUniform3f(uMatSpecular, r, g, b);
+   glUniform3f(uMatSpecular, 0,0,0); //0.1f*r, 0.1f*g, 0.1f*b);
    glUniform3f(uMatEmissive, 0, 0, 0);
    glUniform1f(uMatPower, 0);
    glUniform1f(uMatOpacity, opacity);
@@ -135,10 +157,13 @@ public void shader_setPerVertexColor(bool perVertexColor)
 #if !defined(ECERE_NO3D)
 void shader_setLight(Display display, uint id, Light light)
 {
-   if(light != null)
+   if(light != null && !light.flags.off)
    {
       Object lightObject = light.lightObject;
       float multiplier = light.multiplier;
+      Matrix m = matrixStack[0][matrixIndex[0]];
+      Vector3D l;
+      m.Scale(nearPlane, nearPlane, nearPlane);
 
       glUniform1i(uLightsOn[id], 1);
 
@@ -161,83 +186,103 @@ void shader_setLight(Display display, uint id, Light light)
 
       if(lightObject)
       {
+         // Positional Lights (Including Spot Lights and Omni with flags.spot not set)
+         Matrix * mat = &lightObject.matrix;
+         Vector3D positionVector { mat->m[3][0], mat->m[3][1], mat->m[3][2] };
+         if(display.display3D.camera)
+            positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+
+         l.MultMatrix(positionVector, m);
+         glUniform4f(uLightsPos[id], (float)l.x, (float)l.y, (float)l.z, 1);
+
+         // Display Light Position
          /*
-         Vector3D positionVector;
-         if(light.flags.spot)
+         GLSetupLighting(false);
+         glDisable(GL_DEPTH_TEST);
+         GLColor3f(
+            light.diffuse.r * multiplier,
+            light.diffuse.g * multiplier,
+            light.diffuse.b * multiplier);
+         glPointSize(10);
+         GLBegin(GL_POINTS);
+         GLVertex3dv((double *)&positionVector);
+         GLEnd();
+         glEnable(GL_DEPTH_TEST);
+         GLSetupLighting(true);
+         */
+
+         // Display Target
+         /*
+         if(light.target)
          {
+            Vector3D positionVector;
             if(lightObject.flags.root || !lightObject.parent)
             {
-               positionVector = lightObject.transform.position;
-               positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+               positionVector = light.target.transform.position;
+               positionVector.Subtract(positionVector, display.camera.cPosition);
             }
             else
             {
-               positionVector.MultMatrix(lightObject.transform.position, lightObject.parent.matrix);
-               if(display.display3D.camera)
-                  positionVector.Subtract(positionVector, display.display3D.camera.cPosition);
+               positionVector.MultMatrix(light.target.transform.position,
+                  lightObject.light.target.parent.matrix);
+               positionVector.Subtract(positionVector, display.camera.cPosition);
             }
-            position[3] = 1;
+            GLSetupLighting(false);
+            glDisable(GL_DEPTH_TEST);
+            GLColor3f(1,1,0);
+            glPointSize(10);
+            GLBegin(GL_POINTS);
+            GLVertex3dv((double *)&positionVector);
+            GLEnd();
+            glEnable(GL_DEPTH_TEST);
+            GLSetupLighting(false);
          }
-         else
-         {
-            if(!light.direction.x && !light.direction.y && !light.direction.z)
-            {
-               Vector3Df vector { 0,0,-1 };
-               Matrix mat;
-               mat.RotationQuaternion(light.orientation);
-               positionVector.MultMatrixf(vector, mat);
-            }
-            else
-            {
-               positionVector = light.direction;
-               position[3] = 1;
-            }
-         }
-
-         position[0] = (float)positionVector.x;
-         position[1] = (float)positionVector.y;
-         position[2] = (float)positionVector.z;
-
-         glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
+         */
 
          if(light.flags.attenuation)
          {
-            glLightf(GL_LIGHT0 + id, GL_CONSTANT_ATTENUATION, light.Kc);
-            glLightf(GL_LIGHT0 + id, GL_LINEAR_ATTENUATION, light.Kl);
-            glLightf(GL_LIGHT0 + id, GL_QUADRATIC_ATTENUATION, light.Kq);
+            glUniform1f(uLightsKc[id], light.Kc);
+            glUniform1f(uLightsKl[id], light.Kl);
+            glUniform1f(uLightsKq[id], light.Kq);
          }
-
-         if(light.flags.spot)
+         else
          {
-            float exponent = 0;
-            #define MAXLIGHT  0.9
-            float direction[4] = { (float)light.direction.x, (float)light.direction.y, (float)light.direction.z, 1 };
-            // Figure out exponent out of the hot spot
-            exponent = (float)(log(MAXLIGHT) / log(cos((light.hotSpot / 2))));
-
-            glLightfv(GL_LIGHT0 + id, GL_SPOT_DIRECTION, direction);
-            glLightf(GL_LIGHT0 + id, GL_SPOT_CUTOFF, (float)(light.fallOff / 2));
-            glLightf(GL_LIGHT0 + id, GL_SPOT_EXPONENT, exponent);
+            glUniform1f(uLightsKc[id], 1);
+            glUniform1f(uLightsKl[id], 0);
+            glUniform1f(uLightsKq[id], 0);
          }
-         */
+
+         if((light.flags.spot && light.fallOff < 360) || (lightObject && (light.direction.x || light.direction.y || light.direction.z)))
+         {
+            #define MAXLIGHT  0.9
+            // Figure out exponent out of the hot spot
+            float exponent = light.flags.spot ? (float)(log(MAXLIGHT) / log(cos(light.hotSpot / 2))) : 1;
+            Degrees cutOff = light.flags.spot ? light.fallOff/2 : 90;
+            Vector3D l, n;
+            l.MultMatrix(light.direction, m);
+            n.Normalize(l);
+            n.Scale(n, -1);
+
+            glUniform1i(uLightsSpot[id], 1);
+            glUniform3f(uLightsSpotDir[id], (float)n.x, (float)n.y, (float)n.z);
+            glUniform1f(uLightsSpotCutOffCos[id], (float)cos(Degrees { cutOff }));
+            glUniform1f(uLightsSpotExp[id], exponent);
+         }
+         else
+            glUniform1i(uLightsSpot[id], 0);
       }
       else
       {
-         Vector3Df l;
-         Vector3Df vector { 0,0,-1 };
-         Vector3Df direction;
+         // Directional Light
+         Vector3D vector { 0,0,-1 };
+         Vector3D direction, v;
          Matrix mat;
-         Matrix m = matrixStack[0][matrixIndex[0]];
-
-         m.Scale(nearPlane, nearPlane, nearPlane);
          mat.RotationQuaternion(light.orientation);
-
          direction.MultMatrix(vector, mat);
+         v.Normalize(direction);
 
-         vector.MultMatrix(direction, m);
-         l.Normalize(vector);
-
-         glUniform4f(uLightsPos[id], l.x, l.y, l.z, 0);
+         l.MultMatrix(v, m);
+         glUniform4f(uLightsPos[id], (float)l.x, (float)l.y, (float)l.z, 0);
       }
    }
    else
@@ -368,10 +413,11 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
                puts(compileLog[0] ? compileLog : "Success.");
             }
 
-            //uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
-            //uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
-            uMVMatrix_z      = glGetUniformLocation(program, "mvmatrix_z");
-            uPrjMVMatrix   = glGetUniformLocation(program, "proj_modelview_matrix");
+            uPrjMatrix     = glGetUniformLocation(program, "projection_matrix");
+            uMVMatrix      = glGetUniformLocation(program, "modelview_matrix");
+            uNearPlane     = glGetUniformLocation(program, "nearPlane");
+            //uMVMatrix_z      = glGetUniformLocation(program, "mvmatrix_z");
+            //uPrjMVMatrix   = glGetUniformLocation(program, "proj_modelview_matrix");
             uTextureMatrix = glGetUniformLocation(program, "texture_matrix");
             uNormalsMatrix = glGetUniformLocation(program, "normals_matrix");
             uColor         = glGetUniformLocation(program, "current_color");
@@ -391,7 +437,7 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
             uMatOpacity       = glGetUniformLocation(program, "matOpacity");
             uMatTwoSided      = glGetUniformLocation(program, "matTwoSided");
 
-            for(i = 0; i < 8; i++)
+            for(i = 0; i < NumberOfLights; i++)
             {
                char name[100];
 
@@ -409,6 +455,27 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
 
                sprintf(name, "lightsSpecular[%d]", i);
                uLightsSpecular[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsKc[%d]", i);
+               uLightsKc[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsKl[%d]", i);
+               uLightsKl[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsKq[%d]", i);
+               uLightsKq[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsSpotDir[%d]", i);
+               uLightsSpotDir[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsSpot[%d]", i);
+               uLightsSpot[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsSpotCutOffCos[%d]", i);
+               uLightsSpotCutOffCos[i] = glGetUniformLocation(program, name);
+
+               sprintf(name, "lightsSpotExp[%d]", i);
+               uLightsSpotExp[i] = glGetUniformLocation(program, name);
             }
 
             oglSystem.shadingProgram = program;
@@ -417,6 +484,8 @@ bool loadShaders(DisplaySystem displaySystem, const String vertexShaderFile, con
          }
          result = true;
       }
+      else
+         printf("Error accessing built-in shaders files.\n");
       delete vf;
       delete ff;
    }

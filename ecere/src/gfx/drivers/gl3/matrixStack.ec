@@ -259,7 +259,7 @@ public void glmsFlushMatrices()
 {
    int stack;
 #if ENABLE_GL_SHADERS
-   bool mvModified = false, prjViewModified = false;
+   //bool mvModified = false, prjViewModified = false;
 #endif
    for(stack = 0; stack < 3; stack++)
    {
@@ -269,16 +269,25 @@ public void glmsFlushMatrices()
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
          {
+            float m[16] =
+            {
+               (float)matrix->m[0][0], (float)matrix->m[0][1], (float)matrix->m[0][2], (float)matrix->m[0][3],
+               (float)matrix->m[1][0], (float)matrix->m[1][1], (float)matrix->m[1][2], (float)matrix->m[1][3],
+               (float)matrix->m[2][0], (float)matrix->m[2][1], (float)matrix->m[2][2], (float)matrix->m[2][3],
+               (float)matrix->m[3][0], (float)matrix->m[3][1], (float)matrix->m[3][2], (float)matrix->m[3][3]
+            };
+            shader_LoadMatrixf((MatrixMode) (0x1700 + stack), m);
             if(stack == 0)
             {
                Matrix t, inv;
                double * i = inv.array;
 
-               mvModified = true;
-               prjViewModified = true;
+               //mvModified = true;
+               //prjViewModified = true;
 
                t.Transpose(matrix);
                inv.Inverse(t);
+               normalsMatrix = inv;
                {
                   float m[16] =
                   {
@@ -291,17 +300,12 @@ public void glmsFlushMatrices()
                }
             }
             else if(stack == 1)
-               prjViewModified = true;
-            else
             {
-               float m[16] =
-               {
-                  (float)matrix->m[0][0], (float)matrix->m[0][1], (float)matrix->m[0][2], (float)matrix->m[0][3],
-                  (float)matrix->m[1][0], (float)matrix->m[1][1], (float)matrix->m[1][2], (float)matrix->m[1][3],
-                  (float)matrix->m[2][0], (float)matrix->m[2][1], (float)matrix->m[2][2], (float)matrix->m[2][3],
-                  (float)matrix->m[3][0], (float)matrix->m[3][1], (float)matrix->m[3][2], (float)matrix->m[3][3]
-               };
-               shader_LoadMatrixf((MatrixMode) (0x1700 + stack), m);
+#if ENABLE_GL_SHADERS
+               if(glCaps_shaders)
+                  shader_setNearPlane(nearPlane);
+#endif
+               //prjViewModified = true;
             }
          }
 #endif
@@ -322,6 +326,7 @@ public void glmsFlushMatrices()
 #endif
          stackModified[stack] = false;
       }
+/*
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders && stack == 1 && prjViewModified)
       {
@@ -342,5 +347,6 @@ public void glmsFlushMatrices()
          }
       }
 #endif
+*/
    }
 }
