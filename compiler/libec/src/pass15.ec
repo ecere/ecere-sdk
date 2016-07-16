@@ -10715,9 +10715,8 @@ void ProcessExpressionType(Expression exp)
                               *newExp = *exp;
                               if(exp.destType) exp.destType.refCount++;
                               if(exp.expType)  exp.expType.refCount++;
-                              exp.type = castExp;
-                              exp.cast.typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl));
-                              exp.cast.exp = newExp;
+                              exp.type = bracketsExp;
+                              exp.list = MkListOne(MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl)), newExp));
                               //FreeType(exp.expType);
                               //exp.expType = null;
                               //ProcessExpressionType(sourceExp);
