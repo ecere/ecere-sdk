@@ -665,7 +665,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       GLCapabilities capabilities;
 #if !defined(_GLES2)
-      const char * extensions = (canCheckExtensions && oglDisplay.compat) ? (const char *)glGetString(GL_EXTENSIONS) : null;
+      const char * extensions = (canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
 #endif
 #ifdef DIAGNOSTICS
       printf("extensions: %s\n", extensions);
@@ -2848,6 +2848,8 @@ class OpenGLDisplayDriver : DisplayDriver
             glEnable(GL_LIGHT0 + id);
 
             if(!light.multiplier) light.multiplier = 1.0f;
+
+            GLFlushMatrices();
 
             color[0] = light.diffuse.r * light.multiplier;
             color[1] = light.diffuse.g * light.multiplier;
