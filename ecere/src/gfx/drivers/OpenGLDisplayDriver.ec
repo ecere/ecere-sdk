@@ -1022,6 +1022,8 @@ class OpenGLDisplayDriver : DisplayDriver
          XFree(oglSystem.visualInfo);
    #endif
       }
+      if(oglSystem.glContext)
+        glXDestroyContext(xGlobalDisplay, oglSystem.glContext);
 
       if(oglSystem.glxDrawable)
       {
