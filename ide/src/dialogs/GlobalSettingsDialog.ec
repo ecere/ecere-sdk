@@ -998,7 +998,7 @@ class CompilerOptionsTab : CompilersSubTab
 
    Button distccEnabled
    {
-      this, text = $"Use distcc", hotKey = altD, position = { 158, 68 };
+      this, text = $"Use distcc", position = { 158, 68 };
       isCheckbox = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -1006,7 +1006,7 @@ class CompilerOptionsTab : CompilersSubTab
          CompilerConfig compiler = loadedCompiler;
          if(compiler)
          {
-            distccHosts.disabled = !button.checked;
+            distccHostsLabel.disabled = distccHosts.disabled = !button.checked;
             compiler.distccEnabled = button.checked;
             modifiedDocument = true;
             compilersTab.modifiedDocument = true;
@@ -1015,11 +1015,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label distccHostsLabel { this, position = { 8, 96 }, labeledWindow = distccHosts };
+   Label distccHostsLabel { this, position = { 240, 68 }, labeledWindow = distccHosts };
    EditBox distccHosts
    {
       this, text = $"distcc hosts", hotKey = altH;
-      position = { 88, 92 }, size = { 300, 22 };
+      position = { 320, 64 }, size = { 160, 22 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1034,11 +1034,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label lblPrepDefs { this, position = { 8, 126 }, labeledWindow = prepDefs };
+   Label lblPrepDefs { this, position = { 8, 96 }, labeledWindow = prepDefs };
    StringListBox prepDefs
    {
       this, text = $"Preprocessor directives", hotKey = altP;
-      position = { 168, 124 }, size = { 280, 22 }, anchor = { left = 168, top = 124, right = 8 };
+      position = { 168, 94 }, size = { 280, 22 }, anchor = { left = 168, top = 94, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1053,11 +1053,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label leCcompilerFlags { this, position = { 8, 156 }, labeledWindow = eCcompilerFlags };
+   Label leCcompilerFlags { this, position = { 8, 126 }, labeledWindow = eCcompilerFlags };
    StringListBox eCcompilerFlags
    {
       this, text = $"Additional eC compiler flags", hotKey = altG;
-      position = { 168, 154 }, size = { 280, 22 }, anchor = { left = 168, top = 154, right = 8 };
+      position = { 168, 124 }, size = { 280, 22 }, anchor = { left = 168, top = 124, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1072,11 +1072,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    };
 
-   Label lblCompilerFlags { this, position = { 8, 186 }, labeledWindow = compilerFlags };
+   Label lblCompilerFlags { this, position = { 8, 156 }, labeledWindow = compilerFlags };
    StringListBox compilerFlags
    {
-      this, text = $"Additional compiler flags", hotKey = altR;
-      position = { 168, 184 }, size = { 280, 22 }, anchor = { left = 168, top = 184, right = 8 };
+      this, text = $"Additional C compiler flags", hotKey = altR;
+      position = { 168, 154 }, size = { 280, 22 }, anchor = { left = 168, top = 154, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1084,6 +1084,25 @@ class CompilerOptionsTab : CompilersSubTab
          {
             CompilerConfig compiler = loadedCompiler;
             compiler.compilerFlags = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   };
+
+   Label lblcxxFlags { this, position = { 8, 186 }, labeledWindow = cxxFlags };
+   StringListBox cxxFlags
+   {
+      this, text = $"Additional C++ compiler flags", hotKey = altD;
+      position = { 168, 184 }, size = { 280, 22 }, anchor = { left = 168, top = 184, right = 8 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.cxxFlags = ((StringListBox)editBox).strings;
             modifiedDocument = true;
             compilersTab.modifiedDocument = true;
          }
@@ -1208,12 +1227,13 @@ class CompilerOptionsTab : CompilersSubTab
          numJobsBox.Refresh();
          ccacheEnabled.checked = compiler.ccacheEnabled;
          distccEnabled.checked = compiler.distccEnabled;
-         distccHosts.disabled = !compiler.distccEnabled;
+         distccHostsLabel.disabled = distccHosts.disabled = !compiler.distccEnabled;
          distccHosts.contents = compiler.distccHosts;
          prepDefs.strings = compiler.prepDirectives;
          excludedLibraries.strings = compiler.excludeLibs;
          eCcompilerFlags.strings = compiler.eCcompilerFlags;
          compilerFlags.strings = compiler.compilerFlags;
+         cxxFlags.strings = compiler.cxxFlags;
          linkerFlags.strings = compiler.linkerFlags;
          objectFileExt.contents = compiler.objectFileExt;
          outputFileExt.contents = compiler.outputFileExt;
