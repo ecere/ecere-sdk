@@ -1393,6 +1393,20 @@ public:
       get { return compilerFlags; }
       isset { return compilerFlags.count != 0; }
    }
+   property Array<String> cxxFlags
+   {
+      set
+      {
+         cxxFlags.Free();
+         if(value)
+         {
+            delete cxxFlags;
+            cxxFlags = value;
+         }
+      }
+      get { return cxxFlags; }
+      isset { return cxxFlags.count != 0; }
+   }
    property Array<String> linkerFlags
    {
       set
@@ -1431,6 +1445,7 @@ private:
    Array<String> excludeLibs { };
    Array<String> eCcompilerFlags { };
    Array<String> compilerFlags { };
+   Array<String> cxxFlags { };
    Array<String> linkerFlags { };
    char * name;
    char * makeCommand;
@@ -1481,6 +1496,7 @@ private:
       if(prepDirectives) { prepDirectives.Free(); }
       if(excludeLibs) { excludeLibs.Free(); }
       if(compilerFlags) { compilerFlags.Free(); }
+      if(cxxFlags) { cxxFlags.Free(); }
       if(eCcompilerFlags) { eCcompilerFlags.Free(); }
       if(linkerFlags) { linkerFlags.Free(); }
    }
@@ -1514,6 +1530,7 @@ private:
          !(result = environmentVars.OnCompare(b.environmentVars)) &&
          !(result = prepDirectives.OnCompare(b.prepDirectives)) &&
          !(result = excludeLibs.OnCompare(b.excludeLibs)) &&
+         !(result = cxxFlags.OnCompare(b.cxxFlags)) &&
          !(result = eCcompilerFlags.OnCompare(b.eCcompilerFlags)) &&
          !(result = compilerFlags.OnCompare(b.compilerFlags)) &&
          !(result = linkerFlags.OnCompare(b.linkerFlags)))
@@ -1560,6 +1577,7 @@ public:
       for(s : prepDirectives) copy.prepDirectives.Add(CopyString(s));
       for(s : excludeLibs) copy.excludeLibs.Add(CopyString(s));
       for(s : compilerFlags) copy.compilerFlags.Add(CopyString(s));
+      for(s : cxxFlags) copy.cxxFlags.Add(CopyString(s));
       for(s : eCcompilerFlags) copy.eCcompilerFlags.Add(CopyString(s));
       for(s : linkerFlags) copy.linkerFlags.Add(CopyString(s));
 

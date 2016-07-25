@@ -2090,15 +2090,14 @@ private:
                      moduleName, collision ? "." : "", collision ? extension : "",
                      modulePath, moduleName, extension);
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
-               f.Printf("\t$(CXX)");
+               f.Printf("\t$(CXX) $(CXXFLAGS)");
             else if(!strcmpi(extension, "rc"))
                f.Printf("\t$(WINDRES) $(WINDRES_FLAGS) $< \"$(call escspace,$(call quote_path,$@))\"\n");
             else
-               f.Printf("\t$(CC)");
+               f.Printf("\t$(CC) $(CFLAGS)");
 
             if(strcmpi(extension, "rc") != 0)
             {
-               f.Puts(" $(CFLAGS)");
                GenMakePrintNodeFlagsVariable(this, nodeCFlagsMapping, "PRJ_CFLAGS", f);
 
                if(!strcmpi(extension, "ec"))
