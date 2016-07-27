@@ -330,7 +330,7 @@ static void InstDeclPassDeclarator(Declarator decl)
                if(type.qualifiers)
                {
                   spec = (Specifier)type.qualifiers->first;
-                  if(spec && spec.type == nameSpecifier && !strcmp(spec.name, "class"))
+                  if(spec && spec.type == nameSpecifier && spec.name && !strcmp(spec.name, "class"))
                      typedObject = true;
                }
 
