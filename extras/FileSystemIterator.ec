@@ -26,17 +26,13 @@ public:
    {
       StackFrame frame;
 
-      if(OnInit(startPath))
-      {
-         frame = stack.firstIterator.data;
-      }
-      else
-      {
-         frame = StackFrame { };
-         stack.Add(frame);
-         frame.path = CopyString(startPath);
-         frame.listing = FileListing { startPath, extensions = extensions };  // there should be a sorted = true/false
-      }
+      if(!OnInit(startPath))
+         return;
+
+      frame = StackFrame { };
+      stack.Add(frame);
+      frame.path = CopyString(startPath);
+      frame.listing = FileListing { startPath, extensions = extensions };  // there should be a sorted = true/false
 
       if(iterateStartPath)
       {
@@ -74,6 +70,7 @@ public:
             StackFrame parentFrame = stack.count > 1 ? stack[stack.count - 2] : null;
             OutFolder(parentFrame ? parentFrame.listing.path : startPath, !parentFrame);
             stack.lastIterator.Remove();
+            delete frame;
             if(stack.count)
                frame = stack.lastIterator.data;
             else
@@ -90,7 +87,7 @@ public:
 
    virtual bool OnInit(const char * startPath)
    {
-      return false;
+      return true;
    }
 
    virtual bool OnFile(const char * filePath)
