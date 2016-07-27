@@ -2513,7 +2513,11 @@ private:
 
             f.Puts("# OPTIONS\n");
             if(compiler.resourcesDotEar)
-               f.Puts("USE_RESOURCES_EAR := defined\n");
+            {
+               f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
+               f.Puts("   USE_RESOURCES_EAR := defined\n");
+               f.Puts("endif\n");
+            }
             f.Puts("\n");
 
             f.Puts("# EXTENSIONS\n");
