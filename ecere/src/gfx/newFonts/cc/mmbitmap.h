@@ -12,8 +12,10 @@
 #endif
 
 #if !defined(MM_ATOMIC_SUPPORT)
- #warning Compiling mmbitmap without atomic support, it is going to be SLOW.
+ //#warning Compiling mmbitmap without atomic support, it is going to be SLOW.
+#ifndef MM_H
  #warning This header requires mm.h
+#endif
 #endif
 
 
