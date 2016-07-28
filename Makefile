@@ -670,6 +670,8 @@ endif
 	mkdir -p $(SAMPLESDIR)
 	$(call cpr,samples,$(SAMPLESDIR))
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
+	find $(DOCDIR) -type d -exec chmod 755 {} \;
+	find $(DOCDIR) -type f -exec chmod 644 {} \;
 	mkdir -p $(EXTRASDIR)
 	$(call cpr,extras,$(EXTRASDIR))
 endif
@@ -744,6 +746,8 @@ endif
 	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
+	find $(DOCDIR) -type d -exec chmod 755 {} \;
+	find $(DOCDIR) -type f -exec chmod 644 {} \;
 	mkdir -p $(EXTRASDIR)
 	cp $(CPFLAGS) extras/* $(EXTRASDIR)
 ifdef DEBIAN_PACKAGE
