@@ -701,10 +701,15 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                      if(_class.type == bitClass)
                      {
                         BitMember bitMember = (BitMember) member;
-                        // TODO: Check if base type is 32 or 64 bit
-
-                        //value.ui = (((uint)data & bitMember.mask) >> bitMember.pos);
-                        value.ui64 = ((*(uint*)data & bitMember.mask) >> bitMember.pos);
+                        switch(_class.typeSize)
+                        {
+                           case 8: value.ui64 = *(uint64*)data; break;
+                           case 4: value.ui64 = *(uint32*)data; break;
+                           case 2: value.ui64 = *(uint16*)data; break;
+                           case 1: value.ui64 = *(  byte*)data; break;
+                           default:value.ui64 = 0;
+                        }
+                        value.ui64 = (value.ui64 & bitMember.mask) >> bitMember.pos;
                         if(value.ui64 && (memberType != _class))  // Avoid infinite recursion on bit classes holding themselves
                         {
                            bool needClass = true;

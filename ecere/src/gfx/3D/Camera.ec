@@ -623,11 +623,11 @@ private:
    Angle fovX, fovY;
 
    float slerpAmount, slerpPosition;
-   Plane viewClippingPlanes[ClippingPlane], worldClippingPlanes[ClippingPlane];
    Matrix inverseTranspose, inverseMatrix;
    Quaternion fromAngle, toAngle;
    bool needUpdate;
    Matrix viewMatrix;
    int width, height;
    Point origin;
+   Plane viewClippingPlanes[ClippingPlane], worldClippingPlanes[ClippingPlane];
 };

@@ -36,7 +36,8 @@ Light diffuseLight
 
 Object specularLight
 {
-   flags = { light = true; };
+   transform = { scaling = { 1, 1, 1 } };
+   flags = { light = true };
    light =
    {
       multiplier = 1;
@@ -152,7 +153,7 @@ class Test3D : Window
       {
          (x - clientSize.w / 2) * 400 / clientSize.w,
          (y - clientSize.h / 2) * 400 / clientSize.h,
-         - cube.transform.scaling.z * (1 + 1.0f / ((numSpheres - 1) * (1+spacing)))
+         - 2 * cube.transform.scaling.z * (1 + 1.0f / ((numSpheres - 1) * (1+spacing)))
       };
       specularLight.UpdateTransform();
 

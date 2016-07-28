@@ -831,6 +831,11 @@ public:
                      mesh.normals[nVertices] = objectMesh.normals[c];
                   if(objectMesh.texCoords)
                      mesh.texCoords[nVertices] = objectMesh.texCoords[c];
+                  if(objectMesh.tangents)
+                  {
+                     mesh.tangents[2*nVertices+0] = objectMesh.tangents[2*c+0];
+                     mesh.tangents[2*nVertices+1] = objectMesh.tangents[2*c+1];
+                  }
 
                   nVertices++;
                }
@@ -864,6 +869,11 @@ public:
                         mesh.normals[nVertices].MultMatrix(child.mesh.normals[c], normalMatrix);
                      if(child.mesh.texCoords)
                         mesh.texCoords[nVertices] = child.mesh.texCoords[c];
+                     if(child.mesh.tangents)
+                     {
+                        mesh.tangents[2*nVertices+0].MultMatrix(child.mesh.tangents[2*c+0], normalMatrix);
+                        mesh.tangents[2*nVertices+1].MultMatrix(child.mesh.tangents[2*c+1], normalMatrix);
+                     }
                      nVertices++;
                   }
                }

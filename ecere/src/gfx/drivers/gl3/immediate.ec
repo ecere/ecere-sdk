@@ -1,6 +1,6 @@
 // OpenGL Immediate Mode Transition Kit
 import "glab"
-import "shading"
+import "defaultShader"
 
 #include "gl123es.h"
 
@@ -210,7 +210,7 @@ public void glimtkColor4f(float r, float g, float b, float a)
    {
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         shader_color(r, g, b, a);
+         defaultShader.setColor(r, g, b, a);
 #endif
 
 #if ENABLE_GL_FFP
@@ -291,7 +291,7 @@ public void glimtkEnd()
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         shader_setPerVertexColor(true);
+         defaultShader.setPerVertexColor(true);
 #endif
    }
 
@@ -323,7 +323,7 @@ public void glimtkEnd()
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         shader_setPerVertexColor(false);
+         defaultShader.setPerVertexColor(false);
 #endif
 
    }

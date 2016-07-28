@@ -387,7 +387,7 @@ public class LFBDisplayDriver : DisplayDriver
       }
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
       if(bitmap.pixelFormat != pixelFormatAlpha)
       {
@@ -2083,12 +2083,22 @@ public class LFBDisplayDriver : DisplayDriver
       }
       else
       {
-         int adv = 0;
          lfbSurface.writingText = true;
 #if !defined(ECERE_NOTRUETYPE)
          x <<= 6;
-         lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, &adv);
-         x += adv;
+
+         if(surface.font.outlineSize)
+         {
+            ColorAlpha backForeground = surface.foreground;
+            int fx = x;
+            lfbSurface.writingOutline = true;
+            surface.foreground = surface.outlineColor;
+            lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &fx, y, prevGlyph, rPrevGlyph, null);
+            lfbSurface.writingOutline = false;
+            surface.foreground = backForeground;
+         }
+
+         lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, null);
 #endif
          lfbSurface.writingText = false;
       }
@@ -2132,6 +2142,12 @@ public class LFBDisplayDriver : DisplayDriver
          delete mesh.normals;
       if(mesh.texCoords && !mesh.flags.texCoords1)
          delete mesh.texCoords;
+      if(mesh.tangents && !mesh.flags.tangents)
+         delete mesh.tangents;
+      if(mesh.colors && !mesh.flags.colors)
+         delete mesh.colors;
+      if(mesh.lightVectors && !mesh.flags.lightVectors)
+         delete mesh.lightVectors;
    }
 
    bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)

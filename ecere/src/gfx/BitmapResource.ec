@@ -22,6 +22,7 @@ public class BitmapResource : Resource
    Bitmap bitmap;
    bool grayed, mono, transparent;
    bool alphaBlend;
+   bool mipMaps;
    int count;
    bool keepData;
 
@@ -51,6 +52,7 @@ public class BitmapResource : Resource
       mono = copy.mono;
       transparent = copy.transparent;
       alphaBlend = copy.alphaBlend;
+      mipMaps = copy.mipMaps;
       keepData = copy.keepData;
 
       if(fileName)
@@ -61,10 +63,12 @@ public class BitmapResource : Resource
 #if defined(__WIN32__)
          // if(bitmap.alphaBlend) ds = null;
 #endif
-         if((mono && !bitmap.LoadMonochrome(fileName, null, ds)) ||
-            (!mono && grayed && !bitmap.LoadGrayed(fileName, null, ds)) ||
-            (!mono && !grayed && transparent && !bitmap.LoadT(fileName, null, ds)) ||
-            (!mono && !grayed && !transparent && !bitmap.Load(fileName, null, ds)))
+         if(
+            (mipMaps && !bitmap.LoadMipMaps(fileName, null, ds)) ||
+            (!mipMaps && mono && !bitmap.LoadMonochrome(fileName, null, ds)) ||
+            (!mipMaps && !mono && grayed && !bitmap.LoadGrayed(fileName, null, ds)) ||
+            (!mipMaps && !mono && !grayed && transparent && !bitmap.LoadT(fileName, null, ds)) ||
+            (!mipMaps && !mono && !grayed && !transparent && !bitmap.Load(fileName, null, ds)))
                delete bitmap;
          if(bitmap && bitmap.alphaBlend)
          {
@@ -173,6 +177,12 @@ public:
       set { alphaBlend = value; }
       get { return this ? alphaBlend : false; }
       isset { return alphaBlend && (!fileName || !SearchString(fileName, 0, ".png", false, true)); }
+   };
+   property bool mipMaps
+   {
+      set { mipMaps = value; }
+      get { return this ? mipMaps : false; }
+      isset { return mipMaps; }
    };
    property bool keepData { set { keepData = value; } get { return this ? keepData : false; } };
    property Bitmap bitmap { get { return this ? bitmap : null; } set { bitmap = value; if(bitmap) incref bitmap; } };

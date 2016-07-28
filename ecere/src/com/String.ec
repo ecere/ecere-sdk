@@ -8,6 +8,7 @@ default:
 
 #undef __BLOCKS__
 #include <stdlib.h>
+#include <stdarg.h>
 #if !defined(ECERE_BOOTSTRAP) // quick fix for now
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
@@ -1161,3 +1162,149 @@ public bool IsPathInsideOf(const char * path, const char * of)
       return true;
    }
 }
+
+public enum StringAllocType { pointer, stack, heap };
+public class ZString
+{
+public:
+   char * _string;
+   int len;
+   StringAllocType allocType;
+   int size;
+   int minSize;
+   int maxSize;
+
+   ZString()
+   {
+      maxSize = MAXINT;
+   }
+
+   ~ZString()
+   {
+      if(allocType == heap)
+         delete _string;
+   }
+
+   void copyString(char * value, int newLen)
+   {
+      if(allocType == pointer)
+      {
+         size = 0;
+         _string = null;
+         allocType = heap;
+      }
+      if(allocType == heap)
+      {
+         int newSize = newLen ? newLen + 1 : 0;
+         if(newSize != size)
+         {
+            if(newSize < minSize) newSize = minSize;
+            else if(newSize > maxSize) newSize = maxSize;
+
+            if(newSize && size)
+               _string = renew _string char[newSize];
+            else if(newSize)
+               _string = new char[newSize];
+            else
+               delete _string;
+            size = newSize;
+         }
+      }
+      if(newLen + 1 > size) newLen = size-1;
+      len = newLen;
+
+      if(value)
+      {
+         memcpy(_string, value, newLen);
+         _string[newLen] = 0;
+      }
+   }
+
+public:
+
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      return _string;
+   }
+
+   bool OnGetDataFromString(const char * string)
+   {
+      property::string = (char *)string;
+      return true;
+   }
+
+   property char * string
+   {
+      set { copyString(value, value ? strlen(value) : 0); }
+      get { return _string; }
+   }
+
+   property const char *
+   {
+      get { return _string; }
+      set
+      {
+         return
+         {
+            len = value ? strlen(value) : 0;
+            _string = (char *)value;
+            allocType = pointer;
+         };
+      }
+   }
+
+   void concatf(const char * format, ...)
+   {
+      if(format && allocType != pointer)
+      {
+         int addedLen;
+         va_list args;
+         va_start(args, format);
+         if(size < minSize)
+         {
+            _string = renew _string char[minSize];
+            size = minSize;
+         }
+         addedLen = vsnprintf(string + len, Max(0, size - 1 - len), format, args);
+         if(addedLen > 0)
+         {
+            len += addedLen;
+            _string[len] = 0;
+         }
+         va_end(args);
+      }
+   }
+
+   void concat(ZString s)
+   {
+      if(s && allocType != pointer)
+      {
+         int addedLen = s.len;
+         int newLen = len + addedLen;
+         if(allocType == heap && newLen + 1 > size)
+         {
+            int newSize = newLen + 1;
+            if(newSize > maxSize)
+               newSize = maxSize;
+            if(newSize > size)
+            {
+               _string = renew _string char[newLen];
+               size = newSize;
+            }
+         }
+         if(newLen + 1 > size)
+            addedLen = size - 1 - len;
+         if(addedLen > 0)
+         {
+            memcpy(_string + len, s._string, addedLen);
+            len += addedLen;
+            _string[len] = 0;
+         }
+      }
+   }
+
+   void copy(ZString s)
+   {
+      copyString(s._string, s.len);
+   }
+};
