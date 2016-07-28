@@ -168,7 +168,8 @@ typedef struct
    uint origIndices[3];
    uint smoothGroups;
    Material material;
-   Vector3Df normal;
+   Vector3D normal;
+   double dots[3];
    bool done:1;
 } Face;
 
@@ -367,7 +368,7 @@ struct SourceVertexInfo
 class DestVertexInfo
 {
    int index, copyFromIndex;
-   Vector3Df normal;
+   Vector3Df normal, tangent1, tangent2;
 };
 
 static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
@@ -394,9 +395,11 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    {
       Face * face = &faces[c];
       Plane plane;
-      plane.FromPointsf(mesh.vertices[face->indices[2]],
-                        mesh.vertices[face->indices[1]],
-                        mesh.vertices[face->indices[0]]);
+      uint * indices = face->indices;
+      Vector3D edges[3], rEdges[3];
+      computeNormalWeights(3, mVertices, indices, true, 0, face->dots, edges, rEdges);
+
+      plane.FromPointsf(mVertices[indices[2]], mVertices[indices[1]], mVertices[indices[0]]);
       face->normal = { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z };
    }
 
@@ -455,12 +458,15 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 
    for(index = 0; index < nNewVertices; index++)
    {
-      int numShared = 0;
       it.pointer = vertices[index];
       if(it.pointer)
       {
+         int numShared = 0;
+         double dotSum = 0;
          DestVertexInfo vInfo = it.data;
-         Vector3Df normal { };
+         Vector3D normal { };
+         Vector3D tangent1 { };
+         Vector3D tangent2 { };
          SourceVertexInfo * inf = (SourceVertexInfo *)&(((AVLNode)it.pointer).key);
          uint smoothing = inf->smoothGroups;
          bool added = true;
@@ -546,9 +552,41 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 
                   if(valid)
                   {
-                     normal.x += face->normal.x;
-                     normal.y += face->normal.y;
-                     normal.z += face->normal.z;
+                     uint * indices = face->origIndices;
+                     uint ix = vInfo.copyFromIndex;
+                     uint ix0 = indices[0], ix1 = indices[1], ix2 = indices[2];
+                     double dot = ix == ix0 ? face->dots[0] : ix == ix1 ? face->dots[1] : ix == ix2 ? face->dots[2] : 1;
+                     if(ix != indices[0] && ix != indices[1] && ix != indices[2])
+                     {
+                             if(!mVertices[ix0].OnCompare(mVertices[ix])) dot = face->dots[0];
+                        else if(!mVertices[ix1].OnCompare(mVertices[ix])) dot = face->dots[1];
+                        else if(!mVertices[ix2].OnCompare(mVertices[ix])) dot = face->dots[2];
+                     }
+                     normal.x += face->normal.x * dot;
+                     normal.y += face->normal.y * dot;
+                     normal.z += face->normal.z * dot;
+
+                     if(mesh.texCoords)
+                     {
+                        Vector3Df * p0 = &mVertices[ix0], * p1 = &mVertices[ix1], * p2 = &mVertices[ix2];
+                        Pointf * t0 = &mesh->texCoords[ix0], * t1 = &mesh->texCoords[ix1], * t2 = &mesh->texCoords[ix2];
+                        Vector3D v01 { (double)p1->x - (double)p0->x, (double)p1->y - (double)p0->y, (double)p1->z - (double)p0->z };
+                        Vector3D v02 { (double)p2->x - (double)p0->x, (double)p2->y - (double)p0->y, (double)p2->z - (double)p0->z };
+
+                        Vector3D t01 { (double)t1->x - (double)t0->x, (double)t1->y - (double)t0->y };
+                        Vector3D t02 { (double)t2->x - (double)t0->x, (double)t2->y - (double)t0->y };
+                        double f = dot / (t01.x * t02.y - t02.x * t01.y);
+
+                        tangent1.x += f * (v01.x * t02.y - v02.x * t01.y);
+                        tangent1.y += f * (v01.y * t02.y - v02.y * t01.y);
+                        tangent1.z += f * (v01.z * t02.y - v02.z * t01.y);
+
+                        tangent2.x += f * (v02.x * t01.x - v01.x * t02.x);
+                        tangent2.y += f * (v02.y * t01.x - v01.y * t02.x);
+                        tangent2.z += f * (v02.z * t01.x - v01.z * t02.x);
+                     }
+
+                     dotSum += dot;
                      numShared++;
                      added = true;
                      face->done = true;
@@ -557,9 +595,22 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
             }
             if(!SMOOTH_CUTOFF || !WELD_TRESHOLD) break;
          }
-         normal.Scale(normal, 1.0f / numShared);
+         // normal.Scale(normal, 1.0f / numShared);
+         normal.Scale(normal, 1.0 / dotSum);
+         normal.Normalize(normal);
+
+         //tangent1.Scale(tangent1, 1.0 / dotSum);
+         tangent1.Normalize(tangent1);
+
+         //tangent2.Scale(tangent2, 1.0 / dotSum);
+         tangent2.Normalize(tangent2);
+
          if(vInfo.index == index)
-            vInfo.normal.Normalize(normal);
+         {
+            vInfo.normal = { (float)normal.x, (float)normal.y, (float)normal.z };
+            vInfo.tangent1 = { (float)tangent1.x, (float)tangent1.y, (float)tangent1.z };
+            vInfo.tangent2 = { (float)tangent2.x, (float)tangent2.y, (float)tangent2.z };
+         }
 
          // Auto welding/smoothing requires extra vertices because angle is too steep
          if(SMOOTH_CUTOFF && WELD_TRESHOLD)
@@ -615,7 +666,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
       *((void **)&mesh.texCoords) = null;
       *((int *)&mesh.nVertices) = 0;
 
-      mesh.Allocate( { vertices = true, normals = true, texCoords1 = oldTexCoords ? true : false }, nNewVertices, info->displaySystem);
+      mesh.Allocate( { vertices = true, normals = true, tangents = oldTexCoords ? true : false, texCoords1 = oldTexCoords ? true : false }, nNewVertices, info->displaySystem);
 
       // Fill in the new vertices
       for(index = 0; index < nNewVertices; index++)
@@ -627,6 +678,11 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
          // Duplicate vertex
          mesh.normals[index] = vInfo ? vInfo.normal : { };
          mesh.vertices[index] = oldVertices[vInfo ? vInfo.copyFromIndex : index];
+         if(mesh.tangents)
+         {
+            mesh.tangents[2*index+0] = vInfo ? vInfo.tangent1 : { };
+            mesh.tangents[2*index+1] = vInfo ? vInfo.tangent2 : { };
+         }
          if(mesh.texCoords)
             mesh.texCoords[index] = oldTexCoords[vInfo ? vInfo.copyFromIndex : index];
       }
@@ -641,7 +697,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
          info->faces[i].done = false;
    }
 
-   mesh.Unlock({ normals = true });
+   mesh.Unlock({ normals = true, tangents = true });
 
    // Free all the temporary stuff
 
@@ -1058,7 +1114,40 @@ static bool ReadMap(FileInfo * info, Material mat)
                         {
                            uint bc = y * bw + x;
                            Color color = picture[bc].color;
-                           picture[bc] = { 255, { color.r, 255 - color.b, color.g } };
+                           picture[bc] = { 255, { color.r, color.g, color.b } };
+                        }
+                  }
+               }
+            }
+         }
+         else if(info->parent->chunkId == MAT_SPECULARMAP)
+         {
+            // To avoid messing up the diffuse texture if same bitmap is specified by mistake...
+            char specName[MAX_LOCATION+5];
+            strcpy(specName, "SPEC:");
+            strcat(specName, location);
+            if(!mat.specularMap)
+            {
+               mat.specularMap = displaySystem.GetTexture(specName);
+               if(!mat.specularMap)
+               {
+                  mat.specularMap = Bitmap { };
+                  if(!mat.specularMap.Load(location, null, null) ||
+                     !mat.specularMap.Convert(null, pixelFormat888, null) ||
+                     !displaySystem.AddTexture(specName, mat.specularMap))
+                     delete mat.specularMap;
+                  if(mat.specularMap)
+                  {
+                     ColorAlpha * picture = (ColorAlpha *)mat.specularMap.picture;
+                     int bw = mat.specularMap.width, bh = mat.specularMap.height;
+                     int y, x;
+
+                     for(y = 0; y < bh; y++)
+                        for(x = 0; x < bw; x++)
+                        {
+                           uint bc = y * bw + x;
+                           Color color = picture[bc].color;
+                           picture[bc] = { 255, { color.r, color.g, color.b } };
                         }
                   }
                }
@@ -1206,9 +1295,12 @@ static bool ReadMaterial(FileInfo * info, Material mat)
       {
          uint16 shininess;
          ReadChunks(ReadAmountOf, info, &shininess);
+         mat.reflectivity = shininess / 100.0f;
+         /*
          mat.specular.r *= shininess / 100.0f;
          mat.specular.g *= shininess / 100.0f;
          mat.specular.b *= shininess / 100.0f;
+         */
          break;
       }
       case MAT_SHININESS:

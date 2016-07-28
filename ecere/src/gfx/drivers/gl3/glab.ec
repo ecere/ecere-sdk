@@ -20,7 +20,7 @@ void GLABBindBuffer(int target, uint buffer)
    }
 }
 
-public enum GLBufferContents { vertex, normal, texCoord, color };
+public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector };
 
 public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
 
@@ -114,10 +114,11 @@ public struct GLAB
       if(!glCaps_shaders)
          switch(contents)
          {
-            case normal:   glNormalPointer      (type, stride, pointer); break;
-            case vertex:   glVertexPointer   (n, type, stride, pointer); break;
-            case texCoord: glTexCoordPointer (n, type, stride, pointer); break;
-            case color:    glColorPointer    (n, type, stride, pointer); break;
+            case normal:      glNormalPointer      (type, stride, pointer); break;
+            case vertex:      glVertexPointer   (n, type, stride, pointer); break;
+            case texCoord:    glTexCoordPointer (n, type, stride, pointer); break;
+            case lightVector:
+            case color:       glColorPointer    (n, type, stride, pointer); break;
          }
 #endif
    }
@@ -225,7 +226,9 @@ public struct GLEAB
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
+
          GLFlushMatrices();
+
          glDrawElements(primType, count, type, indices);
       }
    }

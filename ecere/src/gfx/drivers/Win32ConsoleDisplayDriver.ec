@@ -131,7 +131,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
 
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
       return true;
    }

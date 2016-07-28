@@ -10,7 +10,7 @@ import "Display"
 import "glab"
 import "immediate"
 import "matrixStack"
-import "shading"
+import "defaultShader"
 
 namespace gfx::drivers;
 
@@ -320,7 +320,7 @@ public void GLSetupTexturing(bool enable)
 {
 #if ENABLE_GL_SHADERS
    if(glCaps_shaders)
-      shader_texturing(enable);
+      defaultShader.texturing(enable);
 #endif
 
 #if ENABLE_GL_FFP
@@ -333,7 +333,7 @@ public void GLSetupFog(bool enable)
 {
 #if ENABLE_GL_SHADERS
    if(glCaps_shaders)
-      shader_fog(enable);
+      defaultShader.fog(enable);
 #endif
 
 #if ENABLE_GL_FFP
@@ -349,7 +349,7 @@ public void GLSetupLighting(bool enable)
    lightingEnabled = enable;
 #if ENABLE_GL_SHADERS
    if(glCaps_shaders)
-      shader_lighting(enable);
+      defaultShader.lighting(enable);
 #endif
 
 #if ENABLE_GL_FFP
@@ -360,6 +360,8 @@ public void GLSetupLighting(bool enable)
 #endif
 
 /*static */GLuint lastBlitTex;
+
+Shader activeShader;
 
 static int displayWidth, displayHeight;
 
@@ -413,11 +415,6 @@ class OGLSystem : struct
 {
    int maxTextureSize;
    bool loadingFont;
-#if ENABLE_GL_SHADERS
-   int shadingProgram;
-   int vertexShader;
-   int fragmentShader;
-#endif
 #if defined(__WIN32__)
    PIXELFORMATDESCRIPTOR pfd;
    int format;
@@ -455,6 +452,8 @@ class OGLMesh : struct
 {
    GLAB vertices;
    GLAB normals;
+   GLAB tangents;
+   GLAB lightVectors;
    GLAB texCoords;
    GLAB texCoords2;
    GLAB colors;
@@ -523,6 +522,26 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
       result = wglCreateContext(hdc);
    }
    return result;
+}
+#endif
+
+#if ENABLE_GL_FFP
+static int maxTMU = 0;
+
+static void disableRemainingTMUs(int lastTMU)
+{
+   int t;
+   for(t = lastTMU; t < maxTMU; t++)
+   {
+      glActiveTexture(GL_TEXTURE0 + t);
+      glClientActiveTexture(GL_TEXTURE0 + t);
+      glDisable(GL_TEXTURE_2D);
+      glDisable(GL_TEXTURE_CUBE_MAP);
+      GLDisableClientState(TEXCOORDS);
+   }
+   glActiveTexture(GL_TEXTURE0);
+   glClientActiveTexture(GL_TEXTURE0);
+   maxTMU = lastTMU;
 }
 #endif
 
@@ -987,12 +1006,8 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 
 #if ENABLE_GL_SHADERS
-      if(oglSystem.shadingProgram)
-         glDeleteProgram(oglSystem.shadingProgram);
-      if(oglSystem.fragmentShader)
-         glDeleteShader(oglSystem.fragmentShader);
-      if(oglSystem.vertexShader)
-         glDeleteShader(oglSystem.vertexShader);
+      defaultShader.free();
+      activeShader = null;
 #endif
 
       delete oglSystem.shortBDBuffer;
@@ -1045,12 +1060,6 @@ class OpenGLDisplayDriver : DisplayDriver
       if(loadExtensions && ogl_LoadFunctions() == ogl_LOAD_FAILED)
          PrintLn("ogl_LoadFunctions() failed!");
       CheckCapabilities(oglSystem, oglDisplay, canCheckExtensions);
-   #ifdef GL_DEBUGGING
-      if(oglDisplay.capabilities.debug)
-         setupDebugging();
-   #else
-      oglDisplay.capabilities.debug = false;
-   #endif
 #endif
 
       {
@@ -1095,6 +1104,13 @@ class OpenGLDisplayDriver : DisplayDriver
          oglSystem.capabilities = oglDisplay.capabilities;
       }
 
+   #ifdef GL_DEBUGGING
+      if(oglDisplay.capabilities.debug)
+         setupDebugging();
+   #else
+      oglDisplay.capabilities.debug = false;
+   #endif
+
 #if ENABLE_GL_VAO
       if(oglDisplay.capabilities.vao)
       {
@@ -1118,7 +1134,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glDisableClientState(GL_COLOR_ARRAY);
          }
 #endif
-         loadShaders(display.displaySystem, "<:ecere>shaders/fixed.vertex", "<:ecere>shaders/fixed.frag");
+         defaultShader.select();
       }
 #if ENABLE_GL_LEGACY
       else
@@ -1127,6 +1143,8 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisableVertexAttribArray(GLBufferContents::normal);
          glDisableVertexAttribArray(GLBufferContents::texCoord);
          glDisableVertexAttribArray(GLBufferContents::vertex);
+         glDisableVertexAttribArray(GLBufferContents::tangent1);
+         glDisableVertexAttribArray(GLBufferContents::tangent2);
          glBindVertexArray(0);
          glUseProgram(0);
       }
@@ -1171,10 +1189,10 @@ class OpenGLDisplayDriver : DisplayDriver
       if(!glCaps_shaders)
       {
          glShadeModel(GL_FLAT);
-         /*
+
          #define GL_LIGHT_MODEL_LOCAL_VIEWER 0x0B51
          GLLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
-         */
+
 #if !defined(_GLES)
          ;//GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
@@ -1713,6 +1731,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       GLABBindBuffer(GL_ARRAY_BUFFER, 0);
       GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#if ENABLE_GL_SHADERS
+      activeProgram = 0;
+#endif
    }
 
    void EndUpdate(Display display)
@@ -1894,12 +1915,14 @@ class OpenGLDisplayDriver : DisplayDriver
       return result;
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, uint cubeMapFace)
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities capabilities = oglSystem.capabilities;
       Bitmap convBitmap = bitmap;
+      bool oldStyleCubeMap = (cubeMapFace >> 3) != 0;
+      int face = (cubeMapFace & 7) - 1;
       if(bitmap.keepData)
       {
          convBitmap = { };
@@ -1911,7 +1934,8 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
-         GLuint glBitmap = 0;
+         GLuint glBitmap = cubeMapFace && face > 0 ? (GLuint)(uintptr)bitmap.driverData : 0;
+         int target = cubeMapFace ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
          if(!capabilities.nonPow2Textures)
          {
             w = pow2i(w);
@@ -1939,27 +1963,70 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          // convBitmap.pixelFormat = pixelFormat888;
 
+         if(cubeMapFace && oldStyleCubeMap)
+         {
+            if(face == 0 || face == 1 || face == 4 || face == 5)
+            {
+               uint w = convBitmap.width;
+               uint32 * tmp = new uint [convBitmap.width];
+               int x, y;
+               for(y = 0; y < convBitmap.height; y++)
+               {
+                  uint32 * pic = (uint32 *)((byte *)convBitmap.picture + y * w * 4);
+                  for(x = 0; x < w; x++)
+                     tmp[x] = pic[w-1-x];
+                  memcpy(pic, tmp, w*4);
+               }
+               delete tmp;
+            }
+            else if(face == 2 || face == 3)
+            {
+               int y;
+               Bitmap tmp { };
+               tmp.Allocate(null, convBitmap.width, convBitmap.height, 0, convBitmap.pixelFormat, false);
+               for(y = 0; y < convBitmap.height; y++)
+               {
+                  memcpy(tmp.picture + convBitmap.width * 4 * y,
+                     convBitmap.picture + (convBitmap.height-1-y) * convBitmap.width * 4,
+                     convBitmap.width * 4);
+               }
+               memcpy(convBitmap.picture, tmp.picture, convBitmap.sizeBytes);
+               delete tmp;
+            }
+         }
+
          glGetError();
-         glGenTextures(1, &glBitmap);
+         if(!glBitmap)
+            glGenTextures(1, &glBitmap);
          if(glBitmap == 0)
          {
             //int error = glGetError();
             return false;
          }
 
-         glBindTexture(GL_TEXTURE_2D, glBitmap);
+         glBindTexture(target, glBitmap);
          glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+         //glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+         //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
+         //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+         glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+         glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+#ifndef GL_TEXTURE_WRAP_R
+   #define GL_TEXTURE_WRAP_R 0x8072
+#endif
+
+#if !defined(__EMSCRIPTEN__)
+         if(cubeMapFace)
+            glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+#endif
+
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
          glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
 #endif
@@ -1982,6 +2049,7 @@ class OpenGLDisplayDriver : DisplayDriver
                if(mipMap.Allocate(null, w, h, w, convBitmap.pixelFormat, false))
                {
                   Surface mipSurface = mipMap.GetSurface(0,0,null);
+                  mipSurface.blend = false;
                   mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
                   delete mipSurface;
                }
@@ -2000,7 +2068,7 @@ class OpenGLDisplayDriver : DisplayDriver
                //int width = 0;
                glGetError();
                // glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
-               glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+               glTexImage2D(cubeMapFace ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + face : GL_TEXTURE_2D, level, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
                //printf("Calling glTexImage2D\n");
                //glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &width);
                //printf("width = %d (Should be %d, %d)\n", width, w, h);
@@ -2026,8 +2094,8 @@ class OpenGLDisplayDriver : DisplayDriver
             FreeBitmap(displaySystem, bitmap);
          else if(oglSystem.loadingFont)
          {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             oglSystem.loadingFont = false;
          }
       }
@@ -2656,20 +2724,24 @@ class OpenGLDisplayDriver : DisplayDriver
 
          GLSetupTexturing(true);
 
+         x <<= 6;
          if(surface.font.outlineSize)
          {
             ColorAlpha outlineColor = surface.outlineColor;
+            int fx = x;
+
             GLColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
             oglSurface.writingOutline = true;
             lastBlitTex = 0;
-            ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
+            oglSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &fx, y, prevGlyph, rPrevGlyph, null);
             if(lastBlitTex) GLEnd();
             oglSurface.writingOutline = false;
          }
          GLColor4fv(oglSurface.foreground);
 
          lastBlitTex = 0;
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len, prevGlyph, rPrevGlyph);
+         oglSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, null);
+
          if(lastBlitTex) GLEnd();
          lastBlitTex = 0;
 
@@ -2773,7 +2845,7 @@ class OpenGLDisplayDriver : DisplayDriver
             float color[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
 #if ENABLE_GL_SHADERS
             if(glCaps_shaders)
-               shader_fogColor(color[0], color[1], color[2]);
+               defaultShader.setFogColor(color[0], color[1], color[2]);
 #endif
 
 #if ENABLE_GL_FFP
@@ -2785,7 +2857,7 @@ class OpenGLDisplayDriver : DisplayDriver
          case fogDensity:
 #if ENABLE_GL_SHADERS
             if(glCaps_shaders)
-               shader_fogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
+               defaultShader.setFogDensity((float)(RenderStateFloat { ui = value }.f * nearPlane));
 #endif
 
 #if ENABLE_GL_FFP
@@ -2802,7 +2874,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
 #if ENABLE_GL_SHADERS
             if(glCaps_shaders)
-               shader_setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
+               defaultShader.setGlobalAmbient(((Color)value).r / 255.0f, ((Color)value).g / 255.0f, ((Color)value).b / 255.0f, 1.0f);
 #endif
 
 #if ENABLE_GL_FFP
@@ -2834,7 +2906,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         shader_setLight(display, id, light);
+         defaultShader.setLight(display, id, light);
 #endif
 
 #if ENABLE_GL_FFP
@@ -2873,11 +2945,10 @@ class OpenGLDisplayDriver : DisplayDriver
                // Positional Lights, including Spot Lights (and omni light with flags.spot not set)
                Matrix * mat = &lightObject.matrix;
                l = { mat->m[3][0], mat->m[3][1], mat->m[3][2] };
-               if(display.display3D.camera)
+               if(display.display3D && display.display3D.camera)
                   l.Subtract(l, display.display3D.camera.cPosition);
 
                position[0] = (float)l.x, position[1] = (float)l.y, position[2] = (float)l.z, position[3] = 1;
-               glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
 
                if(light.flags.attenuation)
                {
@@ -2966,7 +3037,23 @@ class OpenGLDisplayDriver : DisplayDriver
                direction.MultMatrix(vector, mat);
                l.Normalize(direction);
                position[0] = (float)l.x, position[1] = (float)l.y, position[2] = (float)l.z, position[3] = 0;
-               glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
+            }
+            glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
+            if(display.display3D)
+            {
+               Matrix m;
+               Vector3Df v { position[0], position[1], position[2] };
+               Vector3Df l;
+               float * lp = display.display3D.light0Pos;
+               if(display.display3D.camera)
+                  m = display.display3D.camera.viewMatrix;
+               else
+                  m.Identity();
+               l.MultMatrix(v, m);
+               lp[0] = l.x;
+               lp[1] =-l.y;
+               lp[2] =-l.z;
+               lp[3] = position[3];
             }
          }
          else
@@ -2994,6 +3081,11 @@ class OpenGLDisplayDriver : DisplayDriver
 
          // *** ViewPort ***
          glViewport(x, y, w, h);
+
+         GLMatrixMode(MatrixMode::texture);
+         if(!display.display3D.camera)
+            GLPushMatrix();
+         GLLoadIdentity();
 
          // *** Projection Matrix ***
          GLMatrixMode(MatrixMode::projection);
@@ -3039,6 +3131,14 @@ class OpenGLDisplayDriver : DisplayDriver
          // *** View Matrix ***
          GLMultMatrixd(camera.viewMatrix.array);
 
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+         {
+            defaultShader.select();
+            defaultShader.setCamera(camera);
+         }
+#endif
+
          // *** Lights ***
          // ...
 
@@ -3065,15 +3165,62 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_CULL_FACE);
          glDisable(GL_DEPTH_TEST);
 
+         GLDisableClientState(COLORS);
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+         {
+            GLDisableClientState(TANGENTS1);
+            GLDisableClientState(TANGENTS2);
+         }
+#endif
+         GLDisableClientState(NORMALS);
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+            GLDisableClientState(LIGHTVECTORS);
+#endif
+
+         // *** Restore 2D MODELVIEW Matrix ***
+         GLPopMatrix();
+
+         // *** Restore 2D PROJECTION Matrix ***
+         GLMatrixMode(MatrixMode::projection);
+         GLPopMatrix();
+
+         // *** Restore 2D TEXTURE Matrix ***
+         GLMatrixMode(MatrixMode::texture);
+         GLPopMatrix();
+
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+            defaultShader.select();
+#endif
+
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            disableRemainingTMUs(1);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+            glDisable(GL_TEXTURE_CUBE_MAP);
+         #if _GLES
+            glDisable(GL_TEXTURE_GEN_STR);
+         #else
+            glDisable(GL_TEXTURE_GEN_R);
+            glDisable(GL_TEXTURE_GEN_S);
+            glDisable(GL_TEXTURE_GEN_T);
+         #endif
+         }
+#endif
+
          GLSetupTexturing(false);
          GLSetupLighting(false);
          GLSetupFog(false);
 
-         GLDisableClientState(COLORS);
-
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
-            shader_setPerVertexColor(false);
+         {
+            defaultShader.setPerVertexColor(false);
+            defaultShader.setMaterial(null, 0);
+         }
 #endif
 
 #if ENABLE_GL_FFP
@@ -3084,25 +3231,31 @@ class OpenGLDisplayDriver : DisplayDriver
 #if !defined(__EMSCRIPTEN__)
          glDisable(GL_MULTISAMPLE);
 #endif
-
-         // *** Restore 2D MODELVIEW Matrix ***
-         GLPopMatrix();
-
-         // *** Restore 2D PROJECTION Matrix ***
-         GLMatrixMode(MatrixMode::projection);
-         GLPopMatrix();
       }
-
    }
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
+      Shader shader = material.shader ? material.shader : defaultShader;
+      MaterialFlags flags = material.flags;
+#if ENABLE_GL_FFP
+      static int lastSeparate = 0;
+      int tmu = 0;
+      bool normalMapped = false;
+      OGLMesh oglMesh = mesh ? mesh.data : null;
+#endif
+
+#if ENABLE_GL_SHADERS
+      if(glCaps_shaders && shader)
+         shader.select();
+#endif
+
       // Basic Properties
-      if(material.flags.doubleSided)
+      if(flags.doubleSided)
       {
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
-            GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !material.flags.singleSideLight);
+            GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !flags.singleSideLight);
 #endif
          glDisable(GL_CULL_FACE);
       }
@@ -3116,43 +3269,417 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 
       // Fog
-      GLSetupFog(!material.flags.noFog);
-
-      // Maps
-      if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
-      {
-         Bitmap map = material.baseMap;
-         GLSetupTexturing(true);
-         glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)map.driverData);
-
-         GLMatrixMode(GL_TEXTURE);
-         GLLoadIdentity();
-         if(material.uScale && material.vScale)
-            GLScalef(material.uScale, material.vScale, 1);
-         GLMatrixMode(MatrixMode::modelView);
-
-         if(material.flags.tile)
-         {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-         }
-         else
-         {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-         }
-      }
-      else
-         GLSetupTexturing(false);
+      GLSetupFog(!flags.noFog);
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         shader_setMaterial(material, mesh.flags.colors);
+         activeShader.setMaterial(material, mesh.flags);
 #endif
 
 #if ENABLE_GL_FFP
       if(!glCaps_shaders)
       {
+         if(material.bumpMap && mesh.lightVectors)
+         {
+            float color[4] = { 1,1,1,1 };
+            glActiveTexture(GL_TEXTURE0 + tmu);
+            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
+            glDisable(GL_TEXTURE_CUBE_MAP);
+            glEnable(GL_TEXTURE_2D);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_DOT3_RGB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+            if(0) //((DefaultShaderBits)defaultShader.state).debugging)
+            {
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC2_RGB, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB, GL_SRC_COLOR);
+               glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
+            }
+
+         #if _GLES
+            glDisable(GL_TEXTURE_GEN_STR);
+         #else
+            glDisable(GL_TEXTURE_GEN_R);
+            glDisable(GL_TEXTURE_GEN_S);
+            glDisable(GL_TEXTURE_GEN_T);
+         #endif
+            glDisable(GL_LIGHTING);
+            lightingEnabled = false;
+
+            GLMatrixMode(GL_TEXTURE);
+            GLLoadIdentity();
+            if(material.uScale && material.vScale)
+               GLScalef(material.uScale, material.vScale, 1);
+            GLMatrixMode(MatrixMode::modelView);
+
+            if(flags.tile)
+            {
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            }
+            else
+            {
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            }
+
+            glActiveTexture(GL_TEXTURE0 + tmu);
+            glClientActiveTexture(GL_TEXTURE0 + tmu);
+
+            normalMapped = true;
+
+            // Modulate base color
+            if(material.diffuse.r < 1 || material.diffuse.g < 1 || material.diffuse.b < 1)
+            {
+               tmu++;
+               glDisable(GL_TEXTURE_CUBE_MAP);
+               glEnable(GL_TEXTURE_2D);
+               glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
+               glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+               color[0] = material.diffuse.r, color[1] = material.diffuse.g, color[2] = material.diffuse.b, color[3] = 1.0;
+               glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
+               glActiveTexture(GL_TEXTURE0 + tmu);
+               glClientActiveTexture(GL_TEXTURE0 + tmu);
+            }
+
+            // Add ambient light
+            {
+               ColorRGB ambient { material.ambient.r * 0.2f, material.ambient.g * 0.2f, material.ambient.g * 0.2f };
+               if(ambient.r > 0 || ambient.g > 0 || ambient.b > 0)
+               {
+                  tmu++;
+                  glDisable(GL_TEXTURE_CUBE_MAP);
+                  glEnable(GL_TEXTURE_2D);
+                  glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+
+                  glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_CONSTANT);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+                  glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_CONSTANT);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+                  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+                  color[0] = ambient.r, color[1] = ambient.g, color[2] = ambient.b, color[3] = 1.0;
+                  glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
+                  glActiveTexture(GL_TEXTURE0 + tmu);
+                  glClientActiveTexture(GL_TEXTURE0 + tmu);
+               }
+            }
+         }
+         else
+         {
+            GLDisableClientState(LIGHTVECTORS);
+            if(!lightingEnabled)
+            {
+               glEnable(GL_LIGHTING);
+               lightingEnabled = true;
+            }
+         }
+      }
+#endif
+      // Maps
+      if(flags.cubeMap || (material.baseMap && (mesh.texCoords || mesh.flags.texCoords1)))
+      {
+         Bitmap map = material.baseMap;
+         int diffuseTarget = flags.cubeMap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            glActiveTexture(GL_TEXTURE0 + tmu);
+            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            glEnable(diffuseTarget);
+            glDisable(flags.cubeMap ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP);
+         }
+#endif
+
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders && !flags.cubeMap)
+            GLSetupTexturing(true);
+#endif
+
+         glBindTexture(diffuseTarget, (GLuint)(uintptr)map.driverData);
+
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            if(tmu > 1)
+            {
+               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+               GLEnableClientState(TEXCOORDS);
+            }
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+            if(flags.cubeMap)
+            {
+            #if _GLES
+               glEnable(GL_TEXTURE_GEN_STR);
+               // GL_OBJECT_LINEAR: No extension support?
+               // glTexGeni(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+            #else
+               GLfloat xPlane[] = { 1.0f, 0.0f, 0.0f, 0 };
+               GLfloat yPlane[] = { 0.0f,-1.0f, 0.0f, 0 };
+               GLfloat zPlane[] = { 0.0f, 0.0f,-1.0f, 0 };
+               glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+               glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+               glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+               glTexGenfv(GL_R, GL_OBJECT_PLANE, zPlane);
+               glTexGenfv(GL_S, GL_OBJECT_PLANE, xPlane);
+               glTexGenfv(GL_T, GL_OBJECT_PLANE, yPlane);
+
+               glEnable(GL_TEXTURE_GEN_R);
+               glEnable(GL_TEXTURE_GEN_S);
+               glEnable(GL_TEXTURE_GEN_T);
+            #endif
+            }
+            else
+            {
+            #if _GLES
+               glDisable(GL_TEXTURE_GEN_STR);
+            #else
+               glDisable(GL_TEXTURE_GEN_R);
+               glDisable(GL_TEXTURE_GEN_S);
+               glDisable(GL_TEXTURE_GEN_T);
+            #endif
+            }
+            glClientActiveTexture(GL_TEXTURE0);
+         }
+#endif
+         if(flags.tile)
+         {
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+         }
+         else
+         {
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+         }
+      }
+      else
+      {
+         GLSetupTexturing(false);
+      }
+
+#if ENABLE_GL_FFP && !defined(_GLES)
+      if(!glCaps_shaders)
+      {
+         int separate = material.flags.separateSpecular ? GL_SEPARATE_SPECULAR_COLOR : GL_SINGLE_COLOR;
+         if(separate != lastSeparate)
+         {
+            GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, separate);
+            lastSeparate = separate;
+         }
+      }
+#endif
+
+      if((flags.cubeMap && material.baseMap) ||
+         (mesh.texCoords && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
+      {
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            glActiveTexture(GL_TEXTURE0 + tmu - 1);
+            glClientActiveTexture(GL_TEXTURE0 + tmu - 1);
+         }
+#endif
+         GLMatrixMode(GL_TEXTURE);
+         GLLoadIdentity();
+         if(material.uScale && material.vScale)
+            GLScalef(material.uScale, material.vScale, 1);
+         GLMatrixMode(MatrixMode::modelView);
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            glActiveTexture(GL_TEXTURE0);
+            glClientActiveTexture(GL_TEXTURE0);
+         }
+#endif
+      }
+
+#if ENABLE_GL_FFP
+      if(!glCaps_shaders)
+      {
+         if(material.envMap && material.refractiveIndex)
+         {
+            float color[4] = { material.opacity, material.opacity, material.opacity, 1.0 };
+            glActiveTexture(GL_TEXTURE0 + tmu);
+            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
+            glEnable(GL_TEXTURE_CUBE_MAP);
+         #if _GLES
+            glEnable(GL_TEXTURE_GEN_STR);
+            glTexGeni(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+         #else
+            glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glEnable(GL_TEXTURE_GEN_R);
+            glEnable(GL_TEXTURE_GEN_S);
+            glEnable(GL_TEXTURE_GEN_T);
+         #endif
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+            if(normalMapped)
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+            else
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_TEXTURE);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+            if(!normalMapped)
+            {
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC2_RGB, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC2_ALPHA, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB, GL_SRC_COLOR);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_ALPHA, GL_SRC_ALPHA);
+            }
+
+            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
+
+            GLMatrixMode(MatrixMode::texture);
+            {
+               double * s = display.display3D.camera.inverseTranspose.array;
+               Quaternion q = display.display3D.camera.cOrientation;
+               Matrix mat;
+               Euler e = q;
+               //e.yaw *= -1;
+               q = e;
+               mat.RotationQuaternion(q);
+               mat.Scale(2,-2,-2);
+               s = mat.array;
+
+               Matrix m
+               { {
+                  s[0],s[1],s[2],0,
+                  s[4],s[5],s[6],0,
+                  s[8],s[9],s[10],0,
+                  0,0,0,1
+               } };
+               GLLoadMatrixd(m.array);
+            }
+            GLMatrixMode(MatrixMode::modelView);
+         }
+
+         if(material.envMap && material.reflectivity)
+         {
+            float color[4] = { 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0 };
+            glActiveTexture(GL_TEXTURE0 + tmu);
+            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
+            glEnable(GL_TEXTURE_CUBE_MAP);
+         #if _GLES
+            glEnable(GL_TEXTURE_GEN_STR);
+            glTexGeni(GL_TEXTURE_GEN_STR_OES, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+         #else
+            glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+            glEnable(GL_TEXTURE_GEN_R);
+            glEnable(GL_TEXTURE_GEN_S);
+            glEnable(GL_TEXTURE_GEN_T);
+         #endif
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+            if(normalMapped)
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+            else
+               glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_INTERPOLATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+            if(!normalMapped)
+            {
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC2_RGB, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_SRC2_ALPHA, GL_CONSTANT);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_RGB, GL_SRC_COLOR);
+               glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND2_ALPHA, GL_SRC_ALPHA);
+            }
+
+            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
+
+            GLMatrixMode(MatrixMode::texture);
+            {
+               double * s = display.display3D.camera.inverseTranspose.array;
+               Matrix m
+               { {
+                  s[0],s[1],-s[2],0,
+                  s[4],-s[5],-s[6],0,
+                  -s[8],s[9],s[10],0,
+                  0,0,0,1
+               } };
+               GLLoadMatrixd(m.array);
+            }
+            GLMatrixMode(MatrixMode::modelView);
+         }
+      }
+#endif
+
+#if ENABLE_GL_FFP
+      if(!glCaps_shaders)
+      {
+         disableRemainingTMUs(tmu);
+
          if(mesh.flags.colors)
          {
             GLColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -3205,6 +3732,16 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             oglMesh.normals.free(glCaps_vertexBuffer);
             delete mesh.normals;
+         }
+         if(!mesh.flags.tangents)
+         {
+            oglMesh.tangents.free(glCaps_vertexBuffer);
+            delete mesh.tangents;
+         }
+         if(!mesh.flags.lightVectors)
+         {
+            oglMesh.lightVectors.free(glCaps_vertexBuffer);
+            delete mesh.lightVectors;
          }
          if(!mesh.flags.texCoords1)
          {
@@ -3260,6 +3797,14 @@ class OpenGLDisplayDriver : DisplayDriver
                   else
                      mesh.normals = new Vector3Df[nVertices];
                }
+               if(!mesh.flags.tangents && flags.tangents)
+               {
+                  mesh.tangents = new Vector3Df[2*nVertices];
+               }
+               if(!mesh.flags.lightVectors && flags.lightVectors)
+               {
+                  mesh.lightVectors = new ColorRGB[nVertices];
+               }
                if(!mesh.flags.texCoords1 && flags.texCoords1)
                {
                   mesh.texCoords = new Pointf[nVertices];
@@ -3300,6 +3845,14 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
             }
+            if(flags.tangents)
+            {
+               mesh.tangents = renew mesh.tangents Vector3Df[2 * nVertices];
+            }
+            if(flags.lightVectors)
+            {
+               mesh.lightVectors = renew mesh.lightVectors ColorRGB[nVertices];
+            }
          }
          result = true;
       }
@@ -3329,6 +3882,12 @@ class OpenGLDisplayDriver : DisplayDriver
          if(flags.colors)
             oglMesh.colors.allocate(
                mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
+
+         if(flags.tangents)
+            oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
+
+         if(flags.lightVectors)
+            oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
       }
    }
 
@@ -3432,6 +3991,25 @@ class OpenGLDisplayDriver : DisplayDriver
             else
                GLDisableClientState(NORMALS);
 
+#if ENABLE_GL_SHADERS
+            if(glCaps_shaders)
+            {
+               // *** Tangents Stream ***
+               if(mesh.tangents || mesh.flags.tangents)
+               {
+                  GLEnableClientState(TANGENTS1);
+                  GLEnableClientState(TANGENTS2);
+                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? null : mesh.tangents);
+                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)sizeof(Vector3Df) : mesh.tangents+1);
+               }
+               else
+               {
+                  GLDisableClientState(TANGENTS1);
+                  GLDisableClientState(TANGENTS2);
+               }
+            }
+#endif
+
             // *** Texture Coordinates Stream ***
             if(mesh.texCoords || mesh.flags.texCoords1)
             {
@@ -3441,6 +4019,20 @@ class OpenGLDisplayDriver : DisplayDriver
             else
                GLDisableClientState(TEXCOORDS);
 
+#if ENABLE_GL_FFP
+            if(!glCaps_shaders)
+            {
+               // *** Normal Map Aligned Light Vector ***
+               if(mesh.lightVectors || mesh.flags.lightVectors)
+               {
+                  GLEnableClientState(LIGHTVECTORS);
+                  oglMesh.lightVectors.use(lightVector, 3, GL_FLOAT, 0, oglMesh.lightVectors.buffer ? null : mesh.lightVectors);
+               }
+               else
+                  GLDisableClientState(LIGHTVECTORS);
+            }
+            else
+#endif
             // *** Color Stream ***
             if(mesh.colors || mesh.flags.colors)
             {
@@ -3460,6 +4052,24 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
                GLDisableClientState(NORMALS);
+#if ENABLE_GL_SHADERS
+            if(glCaps_shaders)
+            {
+               if((mesh.tangents || mesh.flags.tangents) && !display.display3D.collectingHits)
+               {
+                  GLEnableClientState(TANGENTS1);
+                  GLEnableClientState(TANGENTS2);
+                  noAB.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, mesh.tangents);
+                  noAB.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, mesh.tangents+1);
+               }
+               else
+               {
+                  GLDisableClientState(TANGENTS1);
+                  GLDisableClientState(TANGENTS2);
+               }
+            }
+#endif
+
             if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
             {
                GLEnableClientState(TEXCOORDS);
@@ -3467,6 +4077,20 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
                GLDisableClientState(TEXCOORDS);
+
+#if ENABLE_GL_FFP
+            if(!glCaps_shaders)
+            {
+               if((mesh.lightVectors || mesh.flags.lightVectors) && !display.display3D.collectingHits)
+               {
+                  GLEnableClientState(LIGHTVECTORS);
+                  noAB.use(lightVector, 3, GL_FLOAT, sizeof(ColorRGB), mesh.lightVectors);
+               }
+               else
+                  GLDisableClientState(LIGHTVECTORS);
+            }
+            else
+#endif
             if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
             {
                GLEnableClientState(COLORS);
@@ -3555,32 +4179,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
       GLMultMatrixd(matrix.array);
    }
-#endif
-}
-
-#if !defined(ECERE_NO3D)
-public void glshdMaterial(Material material, bool perVertexColor)
-{
-#if ENABLE_GL_SHADERS
-   if(glCaps_shaders)
-      shader_setMaterial(material, perVertexColor);
-#endif
-}
-#endif
-
-public void glshdColorMaterial(ColorAlpha color, bool twoSided)
-{
-#if ENABLE_GL_SHADERS
-   if(glCaps_shaders)
-      shader_setSimpleMaterial(color, twoSided);
-#endif
-}
-
-public void glshdPerVertexColor(bool perVertexColor)
-{
-#if ENABLE_GL_SHADERS
-   if(glCaps_shaders)
-      shader_setPerVertexColor(perVertexColor);
 #endif
 }
 

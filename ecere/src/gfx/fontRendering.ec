@@ -1201,7 +1201,7 @@ public class Font : struct
          {
             int w = (lastGlyph->w + lastGlyph->left) * (1 << 6);
             // Fix for advance != width + left (e.g. italic fonts)
-            if(w > lastAX)
+            if(w > lastAX && advance)
                *advance = w - lastAX;
          }
          if(rPrevGlyph) *rPrevGlyph = previousGlyph;

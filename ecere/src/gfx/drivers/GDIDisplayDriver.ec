@@ -463,12 +463,12 @@ class GDIDisplayDriver : DisplayDriver
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).FreeBitmap(displaySystem, bitmap);
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
       /*if(bitmap.alphaBlend)
          return true;
       else*/
-         return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
+         return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps, cubeMapFace);
    }
 
    void ReleaseSurface(Display display, Surface surface)

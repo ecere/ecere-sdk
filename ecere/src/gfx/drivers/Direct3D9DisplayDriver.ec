@@ -671,7 +671,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       return false;
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
       bool result = false;
       D3DSystem d3dSystem = displaySystem.driverData;

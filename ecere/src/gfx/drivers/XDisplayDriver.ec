@@ -661,7 +661,7 @@ class XDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).FreeBitmap(displaySystem, bitmap);
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
       //XDisplay xDisplay = display.driverData;
       XBitmap xBitmap { };

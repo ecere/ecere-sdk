@@ -1,6 +1,6 @@
 // Matrix Stack Implementation
 import "Display"
-import "shading"
+import "defaultShader"
 
 #include "gl123es.h"
 
@@ -91,25 +91,32 @@ public void glmsSetNearPlane(double value)
 /*static */int matrixIndex[3];
 /*static */int curStack = 0;
 bool stackModified[3];
+bool isIdentity[3][32];
 
 public void glmsLoadMatrix(Matrix matrix)
 {
-   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, matrix.array, sizeof(Matrix));
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+   memcpy(matrixStack[curStack][ix].array, matrix.array, sizeof(Matrix));
    stackModified[curStack] = true;
 }
 
 public void glmsLoadIdentity()
 {
-   matrixStack[curStack][matrixIndex[curStack]].Identity();
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = true;
+   matrixStack[curStack][ix].Identity();
    stackModified[curStack] = true;
 }
 
 public void glmsPushMatrix()
 {
-   if(matrixIndex[curStack] + 1 < sizeof(matrixStack[0]) / sizeof(Matrix))
+   int ix = matrixIndex[curStack];
+   if(ix + 1 < sizeof(matrixStack[0]) / sizeof(Matrix))
    {
-      matrixIndex[curStack]++;
-      memcpy(matrixStack[curStack][matrixIndex[curStack]].array, matrixStack[curStack][matrixIndex[curStack]-1].array, sizeof(Matrix));
+      matrixIndex[curStack] = ix+1;
+      memcpy(matrixStack[curStack][ix+1].array, matrixStack[curStack][ix].array, sizeof(Matrix));
+      isIdentity[curStack][ix+1] = isIdentity[curStack][ix];
    }
 }
 
@@ -131,13 +138,17 @@ public void glmsLoadMatrixf(float * i)
       i[2*4+0], i[2*4+1], i[2*4+2], i[2*4+3],
       i[3*4+0], i[3*4+1], i[3*4+2], i[3*4+3]
    };
-   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, m, 16*sizeof(double));
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+   memcpy(matrixStack[curStack][ix].array, m, 16*sizeof(double));
    stackModified[curStack] = true;
 }
 
 public void glmsLoadMatrixd(double * i)
 {
-   memcpy(matrixStack[curStack][matrixIndex[curStack]].array, i, sizeof(Matrix));
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+   memcpy(matrixStack[curStack][ix].array, i, sizeof(Matrix));
    stackModified[curStack] = true;
 }
 
@@ -151,36 +162,45 @@ public void glmsOrtho(double l, double r, double b, double t, double n, double f
       (-(r + l) / (r - l)), (-(t + b) / (t - b)), (-(f + n) / (f - n)), 1
    } };
    Matrix res;
-   res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = res;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+   res.Multiply(m, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = res;
    stackModified[curStack] = true;
 }
 
 public void glmsScaled(double a, double b, double c)
 {
    Matrix m, r;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
 
    m.Identity();
    m.Scale(a,b,c);
-   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
+   r.Multiply(m, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
 
 public void glmsTranslated( double a, double b, double c)
 {
    Matrix m, r;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
 
    m.Identity();
    m.Translate(a,b,c);
-   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
+   r.Multiply(m, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 public void glmsFrustum(double l, double r, double b, double t, double n, double f)
 {
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+
    nearPlane = n;
    n = 1;
    l /= nearPlane;
@@ -201,8 +221,8 @@ public void glmsFrustum(double l, double r, double b, double t, double n, double
          0, 0,             D, 0
       } };
       Matrix res;
-      res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-      matrixStack[curStack][matrixIndex[curStack]] = res;
+      res.Multiply(m, matrixStack[curStack][ix]);
+      matrixStack[curStack][ix] = res;
       stackModified[curStack] = true;
    }
 }
@@ -212,20 +232,25 @@ public void glmsRotated( double angle, double x, double y, double z)
    Quaternion q;
    Matrix m, r;
    Vector3D n;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
 
    n.Normalize({ -x, -y, -z });
    q.RotationAxis(n, angle);
    m.RotationQuaternion(q);
-   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
+   r.Multiply(m, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
 
 public void glmsMultMatrixd(double * i)
 {
    Matrix r;
-   r.Multiply((Matrix *)i, matrixStack[curStack][matrixIndex[curStack]]);
-   matrixStack[curStack][matrixIndex[curStack]] = r;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+
+   r.Multiply((Matrix *)i, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
 
@@ -258,56 +283,15 @@ public void glmsMatrixMode(MatrixMode mode)
 public void glmsFlushMatrices()
 {
    int stack;
-#if ENABLE_GL_SHADERS
-   //bool mvModified = false, prjViewModified = false;
-#endif
    for(stack = 0; stack < 3; stack++)
    {
       if(stackModified[stack])
       {
-         Matrix * matrix = &matrixStack[stack][matrixIndex[stack]];
+         int ix = matrixIndex[stack];
+         Matrix * matrix = &matrixStack[stack][ix];
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
-         {
-            float m[16] =
-            {
-               (float)matrix->m[0][0], (float)matrix->m[0][1], (float)matrix->m[0][2], (float)matrix->m[0][3],
-               (float)matrix->m[1][0], (float)matrix->m[1][1], (float)matrix->m[1][2], (float)matrix->m[1][3],
-               (float)matrix->m[2][0], (float)matrix->m[2][1], (float)matrix->m[2][2], (float)matrix->m[2][3],
-               (float)matrix->m[3][0], (float)matrix->m[3][1], (float)matrix->m[3][2], (float)matrix->m[3][3]
-            };
-            shader_LoadMatrixf((MatrixMode) (0x1700 + stack), m);
-            if(stack == 0)
-            {
-               Matrix t, inv;
-               double * i = inv.array;
-
-               //mvModified = true;
-               //prjViewModified = true;
-
-               t.Transpose(matrix);
-               inv.Inverse(t);
-               normalsMatrix = inv;
-               {
-                  float m[16] =
-                  {
-                     (float)i[0],(float)i[1],(float)i[2],(float)i[3],
-                     (float)i[4],(float)i[5],(float)i[6],(float)i[7],
-                     (float)i[8],(float)i[9],(float)i[10],(float)i[11],
-                     (float)i[12],(float)i[13],(float)i[14],(float)i[15]
-                  };
-                  shader_LoadNormalMatrix(m);
-               }
-            }
-            else if(stack == 1)
-            {
-#if ENABLE_GL_SHADERS
-               if(glCaps_shaders)
-                  shader_setNearPlane(nearPlane);
-#endif
-               //prjViewModified = true;
-            }
-         }
+            activeShader.updateMatrix((MatrixMode) (0x1700 + stack), matrix, isIdentity[stack][ix]);
 #endif
 
 #if ENABLE_GL_FFP
@@ -326,27 +310,9 @@ public void glmsFlushMatrices()
 #endif
          stackModified[stack] = false;
       }
-/*
-#if ENABLE_GL_SHADERS
-      if(glCaps_shaders && stack == 1 && prjViewModified)
-      {
-         Matrix * mv = &matrixStack[0][matrixIndex[0]];
-         Matrix * prj = &matrixStack[1][matrixIndex[1]];
-         Matrix mat;
-         mat.Multiply(mv, prj);
-         {
-            float m[16] =
-            {
-               (float)mat.m[0][0], (float)mat.m[0][1], (float)mat.m[0][2], (float)mat.m[0][3],
-               (float)mat.m[1][0], (float)mat.m[1][1], (float)mat.m[1][2], (float)mat.m[1][3],
-               (float)mat.m[2][0], (float)mat.m[2][1], (float)mat.m[2][2], (float)mat.m[2][3],
-               (float)mat.m[3][0], (float)mat.m[3][1], (float)mat.m[3][2], (float)mat.m[3][3]
-            };
-            float mvz[4] = { (float)mv->m[0][2], (float)mv->m[1][2], (float)mv->m[2][2], (float)mv->m[3][2] };
-            shader_LoadPrjMVMatrix(m, mvModified ? mvz : null);
-         }
-      }
-#endif
-*/
    }
+#if ENABLE_GL_SHADERS
+   if(glCaps_shaders)
+      activeShader.activate();
+#endif
 }

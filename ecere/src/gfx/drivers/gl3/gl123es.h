@@ -61,6 +61,22 @@
    #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
    #define glBlitFramebuffer        glBlitFramebufferOES // (a,b,c,d,,f,g,h,i,j)
 
+   // Cube Maps
+   #define GL_TEXTURE_CUBE_MAP               GL_TEXTURE_CUBE_MAP_OES
+   #define GL_TEXTURE_CUBE_MAP_POSITIVE_X    GL_TEXTURE_CUBE_MAP_POSITIVE_X_OES
+   #define GL_TEXTURE_CUBE_MAP_NEGATIVE_X    GL_TEXTURE_CUBE_MAP_NEGATIVE_X_OES
+   #define GL_TEXTURE_CUBE_MAP_POSITIVE_Y    GL_TEXTURE_CUBE_MAP_POSITIVE_Y_OES
+   #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Y    GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_OES
+   #define GL_TEXTURE_CUBE_MAP_POSITIVE_Z    GL_TEXTURE_CUBE_MAP_POSITIVE_Z_OES
+   #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES
+   #define GL_REFLECTION_MAP                 GL_REFLECTION_MAP_OES
+   #define GL_TEXTURE_GEN_MODE               GL_TEXTURE_GEN_MODE_OES
+   #define GL_TEXTURE_GEN_STR                GL_TEXTURE_GEN_STR_OES 
+
+   #define glTexGeni    glTexGeniOES
+   #define glTexGenfv   glTexGenfvOES
+
+
    // TOFIX: Grab Screen and BlitDI/StretchDI will have wrong colors
    #undef GL_BGRA_EXT
    #define GL_BGRA_EXT               GL_RGBA
@@ -87,9 +103,14 @@
    #define NORMALS                        (glCaps_shaders ? GLBufferContents::normal : GL_NORMAL_ARRAY)
    #define TEXCOORDS                      (glCaps_shaders ? GLBufferContents::texCoord : GL_TEXTURE_COORD_ARRAY)
    #define COLORS                         (glCaps_shaders ? GLBufferContents::color : GL_COLOR_ARRAY)
+   #define TANGENTS1                      (glCaps_shaders ? GLBufferContents::tangent1 : GL_COLOR_ARRAY)
+   #define TANGENTS2                      (glCaps_shaders ? GLBufferContents::tangent2 : GL_COLOR_ARRAY)
+   #define LIGHTVECTORS                   GL_COLOR_ARRAY
    #define GLVertexPointer(n, t, s, p)    (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
    #define GLColorPointer(n, t, s, p)     (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p) : glColorPointer(n, t, s, p))
    #define GLTexCoordPointer(n, t, s, p)  (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
+   #define GLTangent1Pointer(n, t, s, p)  (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::tangent1, n, t, GL_FALSE, s, p) : (void)0)
+   #define GLTangent2Pointer(n, t, s, p)  (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::tangent2, n, t, GL_FALSE, s, p) : (void)0)
 #elif ENABLE_GL_SHADERS
    #define GLEnableClientState            glEnableVertexAttribArray
    #define GLDisableClientState           glDisableVertexAttribArray
@@ -97,9 +118,13 @@
    #define NORMALS                        GLBufferContents::normal
    #define TEXCOORDS                      GLBufferContents::texCoord
    #define COLORS                         GLBufferContents::color
+   #define TANGENTS1                      GLBufferContents::tangent1
+   #define TANGENTS2                      GLBufferContents::tangent2
    #define GLVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
    #define GLColorPointer(n, t, s, p)     glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p)
    #define GLTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
+   #define GLTangent1Pointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::tangent1, n, t, GL_FALSE, s, p)
+   #define GLTangent2Pointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::tangent2, n, t, GL_FALSE, s, p)
 #else
    #define GLEnableClientState            glEnableClientState
    #define GLDisableClientState           glDisableClientState
@@ -107,9 +132,12 @@
    #define NORMALS                        GL_NORMAL_ARRAY
    #define TEXCOORDS                      GL_TEXTURE_COORD_ARRAY
    #define COLORS                         GL_COLOR_ARRAY
+   #define LIGHTVECTORS                   GL_COLOR_ARRAY
    #define GLVertexPointer                glVertexPointer
    #define GLColorPointer                 glColorPointer
    #define GLTexCoordPointer              glTexCoordPointer
+   #define GLTangent1Pointer
+   #define GLTangent2Pointer
 #endif
 
 #if ENABLE_GL_INTDBL && ENABLE_GL_SHADERS

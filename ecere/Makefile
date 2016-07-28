@@ -97,7 +97,8 @@ _ECSOURCES1 = \
 	src/gfx/drivers/gl3/glab.ec \
 	src/gfx/drivers/gl3/immediate.ec \
 	src/gfx/drivers/gl3/matrixStack.ec \
-	src/gfx/drivers/gl3/shading.ec \
+	src/gfx/drivers/gl3/shaders.ec \
+	src/gfx/drivers/gl3/defaultShader.ec \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
@@ -393,8 +394,8 @@ RESOURCES3 = \
 	locale/pt_BR.mo \
 	locale/ru.mo \
 	locale/zh_CN.mo \
-	src/gfx/drivers/gl3/fixed.frag \
-	src/gfx/drivers/gl3/fixed.vertex
+	src/gfx/drivers/gl3/default.frag \
+	src/gfx/drivers/gl3/default.vert
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -602,7 +603,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/hu.mo locale/mr.mo locale/nl.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
-	$(EAR) aw$(EARFLAGS) $(TARGET) src/gfx/drivers/gl3/fixed.frag src/gfx/drivers/gl3/fixed.vertex "shaders"
+	$(EAR) aw$(EARFLAGS) $(TARGET) src/gfx/drivers/gl3/default.frag src/gfx/drivers/gl3/default.vert "shaders"
 else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
@@ -748,8 +749,11 @@ $(OBJ)immediate.sym: src/gfx/drivers/gl3/immediate.ec
 $(OBJ)matrixStack.sym: src/gfx/drivers/gl3/matrixStack.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/matrixStack.ec -o $(OBJ)matrixStack.sym
 
-$(OBJ)shading.sym: src/gfx/drivers/gl3/shading.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.sym
+$(OBJ)shaders.sym: src/gfx/drivers/gl3/shaders.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shaders.ec -o $(OBJ)shaders.sym
+
+$(OBJ)defaultShader.sym: src/gfx/drivers/gl3/defaultShader.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/defaultShader.ec -o $(OBJ)defaultShader.sym
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.sym: src/gfx/drivers/Direct3D8DisplayDriver.ec
@@ -1181,8 +1185,11 @@ $(OBJ)immediate.c: src/gfx/drivers/gl3/immediate.ec $(OBJ)immediate.sym | $(SYMB
 $(OBJ)matrixStack.c: src/gfx/drivers/gl3/matrixStack.ec $(OBJ)matrixStack.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/matrixStack.ec -o $(OBJ)matrixStack.c -symbols $(OBJ)
 
-$(OBJ)shading.c: src/gfx/drivers/gl3/shading.ec $(OBJ)shading.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.c -symbols $(OBJ)
+$(OBJ)shaders.c: src/gfx/drivers/gl3/shaders.ec $(OBJ)shaders.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shaders.ec -o $(OBJ)shaders.c -symbols $(OBJ)
+
+$(OBJ)defaultShader.c: src/gfx/drivers/gl3/defaultShader.ec $(OBJ)defaultShader.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/defaultShader.ec -o $(OBJ)defaultShader.c -symbols $(OBJ)
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.c: src/gfx/drivers/Direct3D8DisplayDriver.ec $(OBJ)Direct3D8DisplayDriver.sym | $(SYMBOLS)
@@ -1932,8 +1939,11 @@ $(OBJ)immediate.o: $(OBJ)immediate.c
 $(OBJ)matrixStack.o: $(OBJ)matrixStack.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)matrixStack.c -o $(OBJ)matrixStack.o
 
-$(OBJ)shading.o: $(OBJ)shading.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)shading.c -o $(OBJ)shading.o
+$(OBJ)shaders.o: $(OBJ)shaders.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)shaders.c -o $(OBJ)shaders.o
+
+$(OBJ)defaultShader.o: $(OBJ)defaultShader.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)defaultShader.c -o $(OBJ)defaultShader.o
 
 $(OBJ)Window.o: $(OBJ)Window.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Window.c -o $(OBJ)Window.o

@@ -264,6 +264,7 @@ public:
    subclass(DisplayDriver) driver;
    void * driverData;
    bool keepData;
+   bool mipMaps;
 
 public:
 
@@ -293,6 +294,7 @@ public:
          surface.driver = (driver != null) ? driver : ((subclass(DisplayDriver))class(LFBDisplayDriver));
          surface.displaySystem = displaySystem;
          surface.display = null; // For now... with render to textures, the texture should have a display...
+         //surface.alphaWrite = write;
 
          if(surface.driver.GetBitmapSurface(displaySystem, surface, this, x, y, box))
          {
@@ -437,7 +439,7 @@ public:
       bool result = false;
       if(this && displaySystem && (!driver || driver == class(LFBDisplayDriver)))
       {
-         if(displaySystem.driver.MakeDDBitmap(displaySystem, this, false))
+         if(displaySystem.driver.MakeDDBitmap(displaySystem, this, false, 0))
          {
             this.displaySystem = displaySystem;
             driver = displaySystem ? displaySystem.driver : ((subclass(DisplayDriver))class(LFBDisplayDriver));
@@ -452,8 +454,9 @@ public:
       bool result = false;
       if(this && displaySystem && (!driver || driver == class(LFBDisplayDriver)))
       {
-         if(displaySystem.driver.MakeDDBitmap(displaySystem, this, true))
+         if(displaySystem.driver.MakeDDBitmap(displaySystem, this, true, 0))
          {
+            this.mipMaps = true;
             this.displaySystem = displaySystem;
             result = true;
          }

@@ -23,7 +23,7 @@ public:
       {
          InitializeMesh(displaySystem);
 
-         if(mesh.Allocate({vertices = true, texCoords1 = true }, 24, displaySystem))
+         if(mesh.Allocate({vertices = true, texCoords1 = !cubeMap }, 24, displaySystem))
          {
             PrimitiveGroup group;
             Vector3Df vertices[24] =
@@ -55,15 +55,6 @@ public:
                {  (float)size.x/2, (float)size.y/2, (float)size.z/2 },
                { -(float)size.x/2, (float)size.y/2, (float)size.z/2 }
             };
-            Pointf texCoords[24] =
-            {
-               { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
-               { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
-               { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
-               { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
-               { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
-               { 0, 1 }, { 1, 1 }, { 1, 0 }, { 0, 0 }
-            };
 
             uint16 indices[6][4] =
             {
@@ -87,32 +78,82 @@ public:
             int c;
 
             CopyBytes(mesh.vertices, vertices, sizeof(vertices));
-            CopyBytes(mesh.texCoords, texCoords, sizeof(texCoords));
-
-            for(c = 0; c<6; c++)
+            if(cubeMap)
             {
                Material material;
-               char name[20];
-               sprintf(name, "SKYBOX %s", faceNames[c]);
-               material = displaySystem.AddNamedMaterial(name);
+               char materialName[280];
+               char name[256];
+               sprintf(name, "%s/.%s", folder ? folder : ":skycube", extension ? extension : "pcx");
+               sprintf(materialName, "SKYBOX %s", name);
+               material = displaySystem.AddNamedMaterial(materialName);
                if(material)
                {
-                  char name[256];
-                  sprintf(name, "%s/%s.%s", folder ? folder : ":skycube", faceNames[c], extension ? extension : "pcx");
-                  material.flags = { noFog = true };
+                  material.flags = { noFog = true, cubeMap = true, noLighting = true  };
                   material.opacity = 1;
                   material.emissive.r = material.emissive.g = material.emissive.b = 1;
-                  material.baseMap = Bitmap { };
-                  material.baseMap.LoadMipMaps(name, null, displaySystem);
-                  displaySystem.AddTexture(name, material.baseMap);
+                  material.baseMap = cubeMap;
                }
-               group = mesh.AddPrimitiveGroup(triFan, 4);
-               //group = mesh.AddPrimitiveGroup(quads, sizeof(indices[c]) / sizeof(uint16));
-               if(group)
+               for(c = 0; c<6; c++)
                {
-                  group.material = material;
-                  CopyBytes(group.indices, indices[c], sizeof(indices[c]));
-                  mesh.UnlockPrimitiveGroup(group);
+                  group = mesh.AddPrimitiveGroup(triFan, 4);
+                  if(group)
+                  {
+                     group.material = material;
+                     CopyBytes(group.indices, indices[c], sizeof(indices[c]));
+                     mesh.UnlockPrimitiveGroup(group);
+                  }
+               }
+            }
+            else
+            {
+               Pointf oldTexCoords[24] =
+               {
+                  { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
+                  { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
+                  { 0, 1 }, { 1, 1 }, { 1, 0 }, { 0, 0 }
+               };
+
+               Pointf newTexCoords[24] =
+               {
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
+                  { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
+                  { 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 },
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
+                  { 0, 1 }, { 1, 1 }, { 1, 0 }, { 0, 0 },
+                  { 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }
+               };
+               Pointf * texCoords = newStyle ? newTexCoords : oldTexCoords;
+
+               CopyBytes(mesh.texCoords, texCoords, sizeof(newTexCoords));
+
+               for(c = 0; c<6; c++)
+               {
+                  Material material;
+                  char materialName[280];
+                  char name[256];
+                  sprintf(name, "%s/%s.%s", folder ? folder : ":skycube", faceNames[c], extension ? extension : "pcx");
+                  sprintf(materialName, "SKYBOX %s - %s", faceNames[c], name);
+                  material = displaySystem.AddNamedMaterial(materialName);
+                  if(material)
+                  {
+                     material.flags = { noFog = true, noLighting = true };
+                     material.opacity = 1;
+                     material.emissive.r = material.emissive.g = material.emissive.b = 1;
+                     material.baseMap = Bitmap { };
+                     material.baseMap.LoadMipMaps(name, null, displaySystem);
+                     displaySystem.AddTexture(name, material.baseMap);
+                  }
+                  group = mesh.AddPrimitiveGroup(triFan, 4);
+                  //group = mesh.AddPrimitiveGroup(quads, sizeof(indices[c]) / sizeof(uint16));
+                  if(group)
+                  {
+                     group.material = material;
+                     CopyBytes(group.indices, indices[c], sizeof(indices[c]));
+                     mesh.UnlockPrimitiveGroup(group);
+                  }
                }
             }
             result = true;
@@ -153,6 +194,11 @@ public:
    property Vector3Df size { set { size = value; } };
    property const char * folder { set { folder = value; } };
    property const char * extension { set { extension = value; } };
+   property bool newStyle { set { newStyle = value; } };
+   property CubeMap cubeMap
+   {
+      set { cubeMap = value; }
+   };
 
 private:
    SkyBox()
@@ -164,4 +210,6 @@ private:
 
    Vector3Df size;
    const char * folder, * extension;
+   bool newStyle;
+   CubeMap cubeMap;
 }

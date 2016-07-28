@@ -439,9 +439,9 @@ class DirectDrawDisplayDriver : DisplayDriver
       return result;
    }
 
-   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
+   bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps, int cubeMapFace)
    {
-      return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
+      return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps, cubeMapFace);
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)

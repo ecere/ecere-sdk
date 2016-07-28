@@ -2,7 +2,7 @@ namespace gfx3D;
 
 import "Display"
 
-public class MeshFeatures { public bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1; };
+public class MeshFeatures { public bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1, lightVectors:1, tangents:1; };
 public class PrimitiveGroupType { public: RenderPrimitiveType primitiveType:8; bool vertexRange:1, indices32bit:1; };
 public enum RenderPrimitiveType : PrimitiveGroupType
 {
@@ -22,7 +22,7 @@ public enum RenderPrimitiveType : PrimitiveGroupType
    */
 };
 
-public class MaterialFlags { public bool doubleSided:1, translucent:1, tile:1, noFog:1, singleSideLight:1; };
+public class MaterialFlags { public bool doubleSided:1, translucent:1, tile:1, noFog:1, singleSideLight:1, separateSpecular:1, cubeMap:1, noLighting:1; };
 public class Material : struct
 {
 public:
@@ -36,9 +36,16 @@ public:
    float power;
    Bitmap baseMap;
    Bitmap bumpMap;
-   Bitmap envMap;
+   Bitmap specularMap;
+   Bitmap reflectMap;
+   CubeMap envMap;
+   float reflectivity;
+   float refractiveIndex;
+   float refractiveIndexContainer;
+
    MaterialFlags flags;
    float uScale, vScale;
+   Shader shader;
 
    void Free()
    {
@@ -110,7 +117,9 @@ public:
    property int nVertices { get { return nVertices; } set { nVertices = value; } };
    property Vector3Df * vertices { get { return vertices; } set { vertices = value; } };
    property Vector3Df * normals { get { return normals; } set { normals = value; } };
+   property Vector3Df * tangents { get { return tangents; } set { tangents = value; } };
    property ColorRGBAf * colors { get { return colors; } set { colors = value; } };
+   property ColorRGB * lightVectors { get { return lightVectors; } set { lightVectors = value; } };
    property OldList groups { get { value = groups; } };
    property MeshFeatures flags { get { return flags; } set { flags = value; } };
 
@@ -308,11 +317,16 @@ public:
    {
       int c;
       int * numShared = new0 int[nVertices];
+      double * weightSum = new0 double[nVertices];
       PrimitiveGroup group;
 
-      if(Allocate({ normals = true }, nVertices, displaySystem))
+      if(Allocate({ normals = true, tangents = true }, nVertices, displaySystem))
       {
+         Vector3Df * normals = this.normals;
+         Vector3Df * tangents = this.tangents;
+         Pointf * texCoords = this.texCoords;
          FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
+         FillBytes(tangents, 0, 2*nVertices * sizeof(Vector3Df));
          for(group = groups.first; group; group = group.next)
          {
             int c;
@@ -397,16 +411,55 @@ public:
                   }
                   else
                   {
+                     Vector3D edges[4], rEdges[4];
+                     double weights[4];
+                     computeNormalWeights(nIndex, vertices, indices32, i32bit, c, weights, edges, rEdges);
+
                      plane.FromPointsf(vertices[i32bit ? indices32[c+2] : indices16[c+2]],
-                                      vertices[i32bit ? indices32[c+1] : indices16[c+1]],
-                                      vertices[i32bit ? indices32[c] : indices16[c]]);
+                                       vertices[i32bit ? indices32[c+1] : indices16[c+1]],
+                                       vertices[i32bit ? indices32[c] :   indices16[c]]);
                      planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                      for(i = c; i<c+nIndex; i++)
                      {
                         int index = i32bit ? indices32[i] : indices16[i];
-                        normals[index].Add(normals[index], planeNormal);
-                        numShared[index] ++;
+                        int v = i - c;
+                        double w = weights[v];
+                        //normals[index].Add(normals[index], planeNormal);
+                        normals[index].x += planeNormal.x * w;
+                        normals[index].y += planeNormal.y * w;
+                        normals[index].z += planeNormal.z * w;
+                        weightSum[index] += w;
+                        //numShared[index] ++;
+
+                        if(texCoords)
+                        {
+                           uint ix0 = index;
+                           uint prev = v ? i - 1 : c + nIndex-1;
+                           uint next = v < nIndex-1 ? i + 1 : c;
+                           uint ix1 = i32bit ? indices32[next] : indices16[next];
+                           uint ix2 = i32bit ? indices32[prev] : indices16[prev];
+                           Vector3Df * p0 = &vertices [ix0], * p1 = &vertices [ix1], * p2 = &vertices[ix2];
+                           Pointf    * t0 = &texCoords[ix0], * t1 = &texCoords[ix1], * t2 = &texCoords[ix2];
+                           Vector3D v01 { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
+                           Vector3D v02 { p2->x - p0->x, p2->y - p0->y, p2->z - p0->z };
+                           Pointf t01 { t1->x - t0->x, t1->y - t0->y };
+                           Pointf t02 { t2->x - t0->x, t2->y - t0->y };
+                           //if(Abs(t01.x) > 0.99) t01.x = 0;
+                           //if(Abs(t02.x) > 0.99) t02.x = 0;
+
+                           double f = w / (t01.x * t02.y - t02.x * t01.y);
+                           Vector3Df * tan1 = &tangents[index*2+0];
+                           Vector3Df * tan2 = &tangents[index*2+1];
+
+                           tan1->x += f * (v01.x * t02.y - v02.x * t01.y);
+                           tan1->y += f * (v01.y * t02.y - v02.y * t01.y);
+                           tan1->z += f * (v01.z * t02.y - v02.z * t01.y);
+
+                           tan2->x += f * (v02.x * t01.x - v01.x * t02.x);
+                           tan2->y += f * (v02.y * t01.x - v01.y * t02.x);
+                           tan2->z += f * (v02.z * t01.x - v01.z * t02.x);
+                        }
                      }
                   }
                }
@@ -421,8 +474,8 @@ public:
             Plane plane;
             Vector3Df planeNormal;
             plane.FromPointsf(vertices[primitive->indices[2]],
-                             vertices[primitive->indices[1]],
-                             vertices[primitive->indices[0]]);
+                              vertices[primitive->indices[1]],
+                              vertices[primitive->indices[0]]);
             planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
             if(primitive->material.flags.doubleSided && plane.d < 0)
@@ -441,11 +494,15 @@ public:
 
          for(c = 0; c<nVertices; c++)
          {
-            normals[c].Scale(normals[c], 1.0f / numShared[c]);
-            normals[c].Normalize(normals[c]);
+            float s = (float)(1.0 / weightSum[c]); // numShared[c]
+            Vector3Df * n = &normals[c], * t1 = &tangents[2*c], * t2 = &tangents[2*c+1];
+            n->Scale(n, s), n->Normalize(n);
+            t1->Scale(t1, s), t1->Normalize(t1);
+            t2->Scale(t2, s), t2->Normalize(t2);
          }
          delete numShared;
-         Unlock({ normals = true });
+         delete weightSum;
+         Unlock({ normals = true, tangents = true });
       }
    }
 
@@ -691,16 +748,42 @@ private:
    int nVertices;
    Vector3Df * vertices;
    Vector3Df * normals;
+   Vector3Df * tangents;
    Pointf * texCoords;
    ColorRGBAf * colors;
+   ColorRGB * lightVectors;
    OldList groups;
    int nPrimitives;
    PrimitiveSingle * primitives;
    Vector3Df min, max;
    float radius;
+   CubeMap normMap;
 
    // Private Data
    DisplaySystem displaySystem;
    subclass(DisplayDriver) driver;
    void * data;
 };
+
+void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
+{
+   int i;
+   for(i = 0; i < n; i++)
+   {
+      uint ix0 = i, ix1 = (i + 1) % n;
+      Vector3Df * p0, *p1;
+      if(indices)
+      {
+         if(ix32Bit)
+            ix0 = indices[base+ix0], ix1 = indices[base+ix1];
+         else
+            ix0 = ((uint16*)indices)[base+ix0], ix1 = ((uint16*)indices)[base+ix1];
+      }
+      p0 = &vertices[ix0], p1 = &vertices[ix1];
+      edges[i] = { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
+      edges[i].Normalize(edges[i]);
+      rEdges[i].Scale(edges[i], -1);
+   }
+   for(i = 0; i < n; i++)
+      weights[i] = acos(Min(1.0, Max(-1.0, edges[i].DotProduct(rEdges[i ? i-1 : n-1])))) / ((n-2) * Pi);
+}

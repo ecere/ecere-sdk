@@ -33,6 +33,12 @@ import "Vector3D"
 
 #if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER))
 import "OpenGLDisplayDriver"
+
+#define near _near
+#define far _far
+#include "gl123es.h"
+#undef near
+#undef far
 #endif
 
 public class GLCapabilities : uint
@@ -154,7 +160,7 @@ public:
    virtual bool ::ConvertBitmap(DisplaySystem, Bitmap, PixelFormat, ColorAlpha *);
 
    // Converts an LFB bitmap into an offscreen bitmap for this device
-   virtual bool ::MakeDDBitmap(DisplaySystem, Bitmap, bool);
+   virtual bool ::MakeDDBitmap(DisplaySystem, Bitmap, bool mipMaps, int cubeMapFace);
 
    // Font loading
    virtual Font ::LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade);
@@ -270,7 +276,7 @@ public struct Light
    float multiplier;
 };
 
-define NumberOfLights = 8;
+public define NumberOfLights = 8;
 
 // Painter's algorithm
 
@@ -951,6 +957,136 @@ public:
                if(!display3D.selection && displaySystem.driver.PushMatrix)
                   displaySystem.driver.PushMatrix(this);
 
+#if ENABLE_GL_FFP
+               if(object.mesh.tangents && object.mesh.normals)
+               {
+                  Mesh mesh = object.mesh;
+                  if(!glCaps_shaders)
+                  {
+                     int count = mesh.nVertices;
+                     Vector3Df * normals = mesh.normals;
+                     Vector3Df * vertices = mesh.vertices;
+                     ColorRGB * lightVectors;
+                     Vector3Df * tangents = mesh.tangents;
+                     int i;
+                     float * l = display3D.light0Pos;
+                     Vector3Df light { l[0], l[1], l[2] };
+                     Matrix o = object.matrix;
+                     Matrix t, inv = camera.viewMatrix;
+                     Vector3D ot { };
+                     Vector3D cPos = camera.cPosition;
+                     Vector3D pos = camera.position;
+                     bool positional = l[3] ? true : false;
+
+                     inv.Scale(1.0/nearPlane, -1.0/nearPlane,-1.0/nearPlane);
+
+                     pos.MultMatrix(cPos, camera.viewMatrix);
+
+                     ot.x = o.m[3][0] + pos.x;
+                     ot.y = o.m[3][1] + pos.y;
+                     ot.z = o.m[3][2] + pos.z;
+                     o.m[3][0] = 0;
+                     o.m[3][1] = 0;
+                     o.m[3][2] = 0;
+                     t.Multiply(o, inv);
+                     inv = t;
+                     t.Transpose(inv);
+                     inv.Inverse(t);
+
+                     mesh.Allocate({ lightVectors = true }, mesh.nVertices, displaySystem);
+                     mesh.Lock({ lightVectors = true });
+                     lightVectors = mesh.lightVectors;
+                     for(i = 0; i < count; i++)
+                     {
+                        Vector3Df tangent1 = tangents[i*2 + 0];
+                        Vector3Df tangent2 = tangents[i*2 + 1];
+                        Vector3Df normal = normals[i];
+                        Vector3Df tTangent1, tTangent2, tNormal;
+
+                        tTangent1.MultMatrix(tangent1, inv);
+                        tTangent2.MultMatrix(tangent2, inv);
+                        tNormal  .MultMatrix(normal,   inv);
+
+                        tTangent1.Normalize(tTangent1);
+                        tTangent2.Normalize(tTangent2);
+                        tNormal  .Normalize(tNormal);
+
+                        {
+                           Matrix tbn
+                           { {
+                               tTangent1.x, tTangent2.x, tNormal.x, 0,
+                               tTangent1.y, tTangent2.y, tNormal.y, 0,
+                               tTangent1.z, tTangent2.z, tNormal.z, 1
+                           } };
+                           Vector3Df n;
+                           if(positional)
+                           {
+                              Vector3Df tPos = vertices[i];
+                              tPos.x += ot.x, tPos.y += ot.y, tPos.z += ot.z;
+
+                              // Subtract vertex from light for positional lights
+                              light.x = l[0] - tPos.x;
+                              light.y = l[1] + tPos.y;
+                              light.z = l[2] - tPos.z;
+                           }
+                           n.MultMatrix(light, tbn);
+                           if(positional)
+                              n.Normalize(n);
+                           lightVectors[i] = { n.x / 2 + 0.5f, n.y / 2 + 0.5f, n.z / 2 + 0.5f };
+                        }
+                     }
+                     mesh.Unlock({ lightVectors = true });
+
+                     // Create normalization cube map
+                     /*
+                     if(!mesh.normMap)
+                        mesh.normMap = { };
+                     {
+                        int w = 256, h = 256, d = 256;
+                        Vector3Df min = mesh.min, max = mesh.max;
+                        Vector3Df delta
+                        {
+                           (max.x - min.x) / w,
+                           (max.y - min.y) / h,
+                           (max.z - min.z) / d
+                        };
+                        int i;
+                        for(i = 0; i < 6; i++)
+                        {
+                           Bitmap face = i > 0 ? { } : mesh.normMap;
+                           int x, y;
+                           ColorAlpha * p;
+                           face.Free();
+                           face.Allocate(null, w, h, 0, pixelFormat888, false);
+                           face.driverData = mesh.normMap.driverData;
+                           p = (ColorAlpha *)face.picture;
+                           for(y = 0; y < h; y++)
+                           {
+                              for(x = 0; x < w; x++, p++)
+                              {
+                                 Vector3Df v { min.x + x * delta.x, min.y + y * delta.y, min.z };
+                                 v.Normalize(v);
+                                 *p = ColorAlpha { 255, {
+                                       (byte)((v.x / 2.0 + 0.5) * 255),
+                                       (byte)((v.y / 2.0 + 0.5) * 255),
+                                       (byte)((v.z / 2.0 + 0.5) * 255) } };
+                             }
+                           }
+                           displaySystem.driver.MakeDDBitmap(displaySystem, face, true, (i + 1));
+                           if(i > 0)
+                           {
+                              face.driverData = 0;
+                              delete face;
+                           }
+                        }
+                     }
+                     */
+                  }
+                  else
+                     mesh.Free({ lightVectors = true });
+               }
+#endif
+
                SetTransform(object.matrix, object.flags.viewSpace);
                if(display3D.selection)
                {
@@ -1163,7 +1299,7 @@ public:
       set
       {
          glCapabilities = value;
-         if(driverData)
+         if(driverData && displaySystem.driver == class(OpenGLDisplayDriver))
          {
             OGLDisplay oglDisplay = driverData;
             if(!oglDisplay.originalCapabilities.fixedFunction)
@@ -1233,6 +1369,7 @@ private class Display3D : struct
 
    Line rayView, rayWorld, rayLocal;
    Vector3D rayIntersect;
+   float light0Pos[4];
 
    ~Display3D()
    {

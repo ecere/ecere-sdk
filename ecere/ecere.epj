@@ -1056,47 +1056,6 @@ if distributed with the Ecere SDK Windows installer.
                                  ]
                               },
                               {
-                                 "FileName" : "shading.ec",
-                                 "Configurations" : [
-                                    {
-                                       "Name" : "GLES",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    },
-                                    {
-                                       "Name" : "Debug",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    },
-                                    {
-                                       "Name" : "Release",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    },
-                                    {
-                                       "Name" : "MemoryGuard",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    },
-                                    {
-                                       "Name" : "Android",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    },
-                                    {
-                                       "Name" : "StaticGLES",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
-                                    }
-                                 ]
-                              },
-                              {
                                  "FileName" : "gl_compat_4_4.c",
                                  "Configurations" : [
                                     {
@@ -1128,13 +1087,79 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "Static",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "MinEmscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
                                     }
                                  ]
                               },
                               "gl_compat_4_4.h",
-                              "fixed.frag",
-                              "fixed.vertex",
-                              "gl123es.h"
+                              "gl123es.h",
+                              "default.vert",
+                              "default.frag",
+                              {
+                                 "FileName" : "shaders.ec",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 },
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Vanilla",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "FileName" : "defaultShader.ec",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 },
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Vanilla",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Android",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                           ],
+                           "Configurations" : [
+                              {
+                                 "Name" : "Static",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
                            ]
                         },
                         {
@@ -2757,8 +2782,8 @@ if distributed with the Ecere SDK Windows installer.
       {
          "Folder" : "shaders",
          "Files" : [
-            "src/gfx/drivers/gl3/fixed.frag",
-            "src/gfx/drivers/gl3/fixed.vertex"
+            "src/gfx/drivers/gl3/default.frag",
+            "src/gfx/drivers/gl3/default.vert"
          ]
       },
       {
