@@ -36,7 +36,7 @@ class Texture : struct
    float widthinv;
    float heightinv;
    TextureFlags flags;
-   int swizzle;
+   SwizzleMode swizzle;
    uint32 orderMask;
 
    flags = { invalid = true };
@@ -49,7 +49,7 @@ public:
    {
       int width, height;
       int glformat;
-      int swizzle = 0;
+      SwizzleMode swizzle = 0;
 
       if( image.format.bytesPerPixel == 1 )
       {
