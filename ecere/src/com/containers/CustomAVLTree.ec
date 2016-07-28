@@ -6,6 +6,7 @@ default:
 
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnCopy;
+extern int __ecereVMethodID_class_OnFree;
 private:
 
 enum AddSide : int { compare = 0, left = -1, right = 1};
@@ -573,7 +574,20 @@ public:
       BT item = (BT)_item;
       // THIS SHOULDN'T BE CALLING THE VIRTUAL FUNCTION
       CustomAVLTree::Remove(_item);
+      FreeKey((BT)item);
       delete item;
+   }
+
+   void FreeKey(BT item)
+   {
+      if(class(BT).type == structClass)
+      {
+         // TODO: Make this easier...
+         Class Tclass = class(BT);
+         ((void (*)(void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((byte *)&item.key) + __ENDIAN_PAD(sizeof(void *))));
+      }
+      else
+         delete item.key;
    }
 
    void Free()
@@ -597,6 +611,7 @@ public:
          else
          {
             BT parent = item.parent;
+            FreeKey((BT)item);
             delete item;
             item = parent;
          }
