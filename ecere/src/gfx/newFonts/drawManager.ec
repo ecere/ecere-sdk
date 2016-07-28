@@ -32,7 +32,7 @@ class DMImageFlags : uint16
 {
    bool empty:1;     // Image is empty, do not draw
    bool blending:1;  // Must draw image with blending
-   int swizzle:2;
+   SwizzleMode swizzle:2;
 }
 
 #define DM_BARRIER_ORDER_BITS 5
@@ -192,6 +192,7 @@ public class DrawManager
       GLVertexPointer  (2, GL_SHORT, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex, vx) );
       GLTexCoordPointer(2, GL_SHORT, sizeof(DMDrawVertex), (void *)OFFSET(DMDrawVertex, tx) );
 
+      GLFlushMatrices();
       glDrawArrays( GL_TRIANGLES, 0, vertexCount );
    }
 
@@ -204,7 +205,7 @@ public class DrawManager
       {
          bool stateBlend = true;
 #if ENABLE_GL_SHADERS
-         int swizzleMode = 0;
+         SwizzleMode swizzleMode = off;
 #endif
          int vertexCount = 0;
          int index;
@@ -222,13 +223,12 @@ public class DrawManager
 
          glabCurArrayBuffer = 0;
 
-         GLFlushMatrices();
-
          glDisable(GL_DEPTH_TEST);
          glDisable(GL_CULL_FACE);
          GLSetupFog(false);
          GLSetupTexturing(true);
          GLSetupLighting(false);
+
          GLEnableClientState(VERTICES);
          GLEnableClientState(TEXCOORDS);
          glEnable(GL_BLEND);
@@ -288,7 +288,8 @@ public class DrawManager
                   flush();
 
                   // Render buffered images
-                  flushRenderDrawBuffer( drawBuffer, vertexCount );
+                  if(color)
+                     flushRenderDrawBuffer( drawBuffer, vertexCount );
                   drawBuffer = &drawBuffers[drawBufferIndex++];
                   drawBufferIndex %= DRAW_BUFFER_COUNT;
                   glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo.buffer );
@@ -315,7 +316,7 @@ public class DrawManager
                {
                   swizzleMode = image->flags.swizzle;
                   if(glCaps_shaders)
-                     shader_swizzle( swizzleMode );
+                     defaultShader.swizzle( swizzleMode );
                }
 #endif
                if( texture != bindTexture )
@@ -351,7 +352,8 @@ public class DrawManager
          flush();
 
          // Render buffered images
-         flushRenderDrawBuffer( drawBuffer, vertexCount );
+         if(color)
+            flushRenderDrawBuffer( drawBuffer, vertexCount );
          imageBufferCount = 0;
 
          ERRORCHECK();
@@ -360,7 +362,7 @@ public class DrawManager
          GLSetupTexturing(false);
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
-            shader_swizzle(0);
+            defaultShader.swizzle(off);
 #endif
 
          if(glCaps_vertexBuffer)
