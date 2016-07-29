@@ -1872,7 +1872,7 @@ private:
                   display.Unlock();
                }
             }
-            if(guiApp.driver && changeRootWindow && windowHandle)
+            if(guiApp.driver && !guiApp.modeSwitching && changeRootWindow && windowHandle)
             {
                if(windowResized || windowMoved)
                   if(!display || display.flags.memBackBuffer)
@@ -9730,6 +9730,7 @@ public:
              glCapabilities.debug != value.debug ||
              glCapabilities.vertexPointer != value.vertexPointer ||
              glCapabilities.quads != value.quads);
+         guiApp.modeSwitching = true;
          if(reload)
             UnloadGraphics(false);
 
@@ -9742,6 +9743,7 @@ public:
          }
          else if(display)
             display.glCapabilities = value;
+         guiApp.modeSwitching = false;
       }
    };
    property CreationActivationOption creationActivation { get { return creationActivation; } set { creationActivation = value; } };
