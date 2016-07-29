@@ -243,6 +243,7 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
    return defaultCompiler;
 }
 
+//#define SETTINGS_TEST
 #ifdef SETTINGS_TEST
 define settingsDir = ".ecereIDE-SettingsTest";
 define ideSettingsName = "ecereIDE-SettingsTest";
@@ -589,20 +590,28 @@ static SettingsIOResult readConfigFile(const char * path, Class dataType, void *
 class SafeFile
 {
    File file;
-   File lock;
    FileOpenMode mode;
+   char path[MAX_LOCATION];
    char tmp[MAX_LOCATION];
-   char lck[MAX_LOCATION];
 
    ~SafeFile()
    {
       delete file;
+      // how to make this atomic ?
       if(mode == write)
-         DeleteFile(tmp);
-      if(lock)
       {
-         delete lock;
-         DeleteFile(lck);
+         int c;
+         for(c = 0; c < 10; c++)
+         {
+            if(FileExists(path).isFile)
+               DeleteFile(path);
+            else
+            {
+               MoveFile(tmp, path);
+               if(FileExists(path).isFile)
+                  break;
+            }
+         }
       }
    }
 }
@@ -610,55 +619,39 @@ class SafeFile
 SafeFile safeWriteFileOpen(const char * path, FileOpenMode mode)
 {
    SafeFile sf { mode = mode };
-   strcpy(sf.lck, path);
-   strcat(sf.lck, ".lck");
+   int c;
+   bool locked = false;
+   strcpy(sf.path, path);
    strcpy(sf.tmp, path);
    strcat(sf.tmp, ".tmp");
    if(mode == write)
    {
-      sf.lock = FileOpen(sf.lck, write);
-      if(sf.lock && sf.lock.Lock(exclusive, 0, 0, false))
+      if(FileExists(sf.tmp).isFile)
+         DeleteFile(sf.tmp);
+      sf.file = FileOpen(sf.tmp, write);
+      if(sf.file)
       {
-         if(sf.tmp && FileExists(path).isFile)
-            MoveFile(path, sf.tmp);
-         sf.file = FileOpen(path, write);
+         for(c = 0; c < 10 && !(locked = sf.file.Lock(exclusive, 0, 0, false)); c++);
+         if(!locked)
+         {
+            delete sf.file;
+            PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock on temporary file for writing: ", sf.tmp);
+         }
       }
       else
-         PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock for writing: ", sf.lck);
+         PrintLn($"warning: safeWriteFileOpen: unable to open temporary file for writing: ", sf.tmp);
    }
    else if(mode == read)
    {
-      int c;
-      bool locked = false;
-      bool failed = false;
-      for(c = 0; c < 10 && !(failed = sf.tmp && FileExists(sf.tmp).isFile); c++) Sleep(0.01);
-      if(failed)
+      sf.file = FileOpen(path, read);
+      if(sf.file)
       {
-         sf.lock = FileOpen(sf.lck, write);
-         if(sf.lock && sf.lock.Lock(exclusive, 0, 0, false))
+         for(c = 0; c < 10 && !(locked = sf.file.Lock(shared, 0, 0, false)); c++) Sleep(0.01);
+         if(!locked)
          {
-            if(FileExists(sf.tmp).isFile)
-            {
-               if(FileExists(path).isFile)
-                  DeleteFile(path);
-               MoveFile(sf.tmp, path);
-            }
-            else
-               PrintLn($"warning: safeWriteFileOpen: file is gone: ", sf.tmp);
-            delete sf.lock;
-            DeleteFile(sf.lck);
+            delete sf.file;
+            PrintLn($"warning: safeWriteFileOpen: unable to obtain shared lock on file for reading: ", path);
          }
-         else
-            PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock for failed write repair: ", sf.lck);
-      }
-      sf.lock = FileOpen(sf.lck, write);
-      if(sf.lock) delete sf.lock;
-      sf.lock = FileOpen(sf.lck, read);
-      if(sf.lock)
-      {
-         for(c = 0; c < 10 && !(locked = sf.lock.Lock(shared, 0, 0, false)); c++) Sleep(0.01);
-         if(locked)
-            sf.file = FileOpen(path, read);
       }
    }
    else
