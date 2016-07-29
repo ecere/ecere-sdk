@@ -25,6 +25,8 @@ import "ide"
 import "process"
 #endif
 
+IDEConfigHolder ideConfig { };
+
 IDESettings ideSettings;
 
 IDESettingsContainer settingsContainer
@@ -252,6 +254,24 @@ define settingsDir = ".ecereIDE";
 define ideSettingsName = "ecereIDE";
 #endif
 
+class IDEConfigHolder
+{
+   CompilerConfigs compilers { };
+   RecentFiles recentFiles { };
+   RecentWorkspaces recentWorkspaces { };
+
+   void forcePathSeparatorStyle(bool unixStyle)
+   {
+      char from, to;
+      if(unixStyle)
+         from = '\\', to = '/';
+      else
+         from = '/', to = '\\';
+      recentFiles.changeChar(from, to);
+      recentWorkspaces.changeChar(from, to);
+   }
+}
+
 class IDESettingsContainer : GlobalSettings
 {
    property bool useNewConfigurationFiles
@@ -418,9 +438,33 @@ private:
          }
       }
 
+      if(oldConfig)
+      {
+         if(data.compilerConfigs && data.compilerConfigs.count)
+         {
+            for(c : data.compilerConfigs)
+               ideConfig.compilers.Add(c);
+            data.compilerConfigs.RemoveAll();
+         }
+         if(data.recentFiles && data.recentFiles.count)
+         {
+            for(s : data.recentFiles)
+               ideConfig.recentFiles.Add(s);
+            data.recentFiles.RemoveAll();
+         }
+         if(data.recentProjects && data.recentProjects.count)
+         {
+            for(s : data.recentProjects)
+               ideConfig.recentWorkspaces.Add(s);
+            data.recentProjects.RemoveAll();
+         }
+         ideConfig.forcePathSeparatorStyle(true);
+      }
+
       CloseAndMonitor();
       FileGetSize(settingsFilePath, &settingsFileSize);
-      CompilerConfigs::fix();
+      if(oldConfig)
+         CompilerConfigs::fix();
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
@@ -676,7 +720,7 @@ class IDESettings : GlobalSettingsData
 public:
    property CompilerConfigs compilerConfigs
    {
-      set { if(compilerConfigs) compilerConfigs.Free(); delete compilerConfigs; if(value) compilerConfigs = value; }
+      set { if(settingsContainer.oldConfig) { if(compilerConfigs) compilerConfigs.Free(); delete compilerConfigs; if(value) compilerConfigs = value; } }
       get { return compilerConfigs; }
       isset { return false; }
    }

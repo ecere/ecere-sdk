@@ -89,13 +89,13 @@ class GlobalSettingsDialog : Window
             {
                if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
                   ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
-               if(compilersTab.compilerConfigs.OnCompare(ideSettings.compilerConfigs))
+               if(compilersTab.compilerConfigs.OnCompare(ideConfig.compilers))
                {
-                  cfgsToWrite = compilersTab.compilerConfigs.getWriteRequiredList(ideSettings.compilerConfigs);
-                  ideSettings.compilerConfigs.Free();
+                  cfgsToWrite = compilersTab.compilerConfigs.getWriteRequiredList(ideConfig.compilers);
+                  ideConfig.compilers.Free();
                   for(compiler : compilersTab.compilerConfigs)
                   {
-                     ideSettings.compilerConfigs.Add(compiler.Copy());
+                     ideConfig.compilers.Add(compiler.Copy());
                   }
                   compilerSettingsChanged = true;
                }
@@ -129,7 +129,7 @@ class GlobalSettingsDialog : Window
 
             if(compilerSettingsChanged)
             {
-               ideSettings.compilerConfigs.write(cfgsToWrite);
+               ideConfig.compilers.write(cfgsToWrite);
                OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
                cfgsToWrite.Free();
                delete cfgsToWrite;
@@ -185,7 +185,7 @@ class GlobalSettingsDialog : Window
       // CompilersTab
       if(workspaceActiveCompiler)
       {
-         for(compiler : ideSettings.compilerConfigs)
+         for(compiler : ideConfig.compilers)
          {
             if(!activateCompiler && !strcmp(workspaceActiveCompiler, compiler.name))
                activateCompiler = compiler;
@@ -197,10 +197,10 @@ class GlobalSettingsDialog : Window
       }
       if(!activateCompiler && readonlyCompiler)
          activateCompiler = readonlyCompiler;
-      if(!activateCompiler && ideSettings.compilerConfigs.count)
-         activateCompiler = ideSettings.compilerConfigs[0];
+      if(!activateCompiler && ideConfig.compilers.count)
+         activateCompiler = ideConfig.compilers[0];
 
-      for(compiler : ideSettings.compilerConfigs)
+      for(compiler : ideConfig.compilers)
          compilersTab.AddCompiler(compiler.Copy(), compiler == activateCompiler);
       compilersTab.compilerConfigsDir.path = ideSettings.compilerConfigsDir;
 
@@ -1400,7 +1400,7 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
       if(dialog && dialog.compilersTab.compilerConfigs && dialog.ideSettings)
       {
          DataRow row;
-         for(compiler : dialog.ideSettings.compilerConfigs)
+         for(compiler : ideConfig.compilers)
          {
             row = defaultCompilerDropBox.AddString(compiler.name);
             if(dialog.ideSettings.defaultCompiler && dialog.ideSettings.defaultCompiler[0] &&

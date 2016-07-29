@@ -753,7 +753,7 @@ class IDEWorkSpace : Window
       bool FileRecentFile(MenuItem selection, Modifiers mods)
       {
          int id = 0;
-         RecentPaths recentFiles = workspace ? workspace.recentFiles : ideSettings.recentFiles;
+         RecentPaths recentFiles = workspace ? workspace.recentFiles : ideConfig.recentFiles;
          for(file : recentFiles)
          {
             if(id == selection.id)
@@ -783,7 +783,7 @@ class IDEWorkSpace : Window
       bool FileRecentProject(MenuItem selection, Modifiers mods)
       {
          int id = 0;
-         for(file : ideSettings.recentProjects)
+         for(file : ideConfig.recentWorkspaces)
          {
             if(id == selection.id)
             {
@@ -824,7 +824,7 @@ class IDEWorkSpace : Window
                      newProjectDialog.CreateNewProject();
                      if(projectView)
                      {
-                        ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
+                        ideConfig.recentWorkspaces.addRecent(CopyString(projectView.fileName));
                         ide.updateRecentProjectsMenu();
                      }
                   }
@@ -1824,7 +1824,7 @@ class IDEWorkSpace : Window
 
    void DocumentSaved(Window document, const char * fileName)
    {
-      ideSettings.recentFiles.addRecent(CopyString(fileName));
+      ideConfig.recentFiles.addRecent(CopyString(fileName));
       ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
    }
@@ -1890,7 +1890,7 @@ class IDEWorkSpace : Window
    void UpdateToolBarActiveCompilers()
    {
       toolBar.activeCompiler.Clear();
-      for(compiler : ideSettings.compilerConfigs)
+      for(compiler : ideConfig.compilers)
       {
          DataRow row = toolBar.activeCompiler.AddString(compiler.name);
          if(workspace && workspace.activeCompiler && !strcmp(compiler.name, workspace.activeCompiler))
@@ -2569,9 +2569,9 @@ class IDEWorkSpace : Window
             document.state = maximized;
 
          if(isProject)
-            ideSettings.recentProjects.addRecent(CopyString(document.fileName));
+            ideConfig.recentWorkspaces.addRecent(CopyString(document.fileName));
          else if(!workspace)
-            ideSettings.recentFiles.addRecent(CopyString(document.fileName));
+            ideConfig.recentFiles.addRecent(CopyString(document.fileName));
          ide.AdjustFileMenus();
          ide.updateRecentFilesMenu();
 
@@ -3168,7 +3168,7 @@ class IDEWorkSpace : Window
                   newProjectDialog.Modal();
                   if(projectView)
                   {
-                     ideSettings.recentProjects.addRecent(CopyString(projectView.fileName));
+                     ideConfig.recentWorkspaces.addRecent(CopyString(projectView.fileName));
                      ide.updateRecentMenus();
                   }
                   delete newProjectDialog;
@@ -3472,7 +3472,7 @@ class IDEWorkSpace : Window
       char * itemPath = new char[MAX_LOCATION];
       char * itemName = new char[MAX_LOCATION+4];
       Workspace ws = workspace;
-      RecentPaths recentFiles = ws ? ws.recentFiles : ideSettings.recentFiles;
+      RecentPaths recentFiles = ws ? ws.recentFiles : ideConfig.recentFiles;
       recentFilesMenu.Clear();
       for(recent : recentFiles)
       {
@@ -3492,7 +3492,7 @@ class IDEWorkSpace : Window
       char * itemPath = new char[MAX_LOCATION];
       char * itemName = new char[MAX_LOCATION+4];
       recentProjectsMenu.Clear();
-      for(recent : ideSettings.recentProjects)
+      for(recent : ideConfig.recentWorkspaces)
       {
          strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
          MakeSystemPath(itemPath);
@@ -3664,9 +3664,9 @@ class IDEApp : GuiApplication
          }
       }
 
-      ideSettings.compilerConfigs.read();
-      ideSettings.recentFiles.read();
-      ideSettings.recentProjects.read();
+      ideConfig.compilers.read();
+      ideConfig.recentFiles.read();
+      ideConfig.recentWorkspaces.read();
 
       // First count files arg to decide whether to maximize
       {
