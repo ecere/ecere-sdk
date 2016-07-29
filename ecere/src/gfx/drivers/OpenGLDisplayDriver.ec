@@ -379,6 +379,7 @@ class OGLDisplay : struct
    bool depthWrite;
    int x, y;
    uint vao;
+   int maxTMU;
 
 #if defined(__WIN32__)
    HDC hdc;
@@ -522,26 +523,6 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
       result = wglCreateContext(hdc);
    }
    return result;
-}
-#endif
-
-#if ENABLE_GL_FFP
-static int maxTMU = 0;
-
-static void disableRemainingTMUs(int lastTMU)
-{
-   int t;
-   for(t = lastTMU; t < maxTMU; t++)
-   {
-      glActiveTexture(GL_TEXTURE0 + t);
-      glClientActiveTexture(GL_TEXTURE0 + t);
-      glDisable(GL_TEXTURE_2D);
-      glDisable(GL_TEXTURE_CUBE_MAP);
-      GLDisableClientState(TEXCOORDS);
-   }
-   glActiveTexture(GL_TEXTURE0);
-   glClientActiveTexture(GL_TEXTURE0);
-   maxTMU = lastTMU;
 }
 #endif
 
@@ -2813,6 +2794,24 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
    }
+#if ENABLE_GL_FFP
+   void ::disableRemainingTMUs(Display display, int lastTMU)
+   {
+      OGLDisplay oglDisplay = display.driverData;
+      int t;
+      for(t = lastTMU; t < oglDisplay.maxTMU; t++)
+      {
+         glActiveTexture(GL_TEXTURE0 + t);
+         glClientActiveTexture(GL_TEXTURE0 + t);
+         glDisable(GL_TEXTURE_2D);
+         glDisable(GL_TEXTURE_CUBE_MAP);
+         GLDisableClientState(TEXCOORDS);
+      }
+      glActiveTexture(GL_TEXTURE0);
+      glClientActiveTexture(GL_TEXTURE0);
+      oglDisplay.maxTMU = lastTMU;
+   }
+#endif
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
    void SetRenderState(Display display, RenderState state, uint value)
@@ -3181,15 +3180,18 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
          // *** Restore 2D MODELVIEW Matrix ***
+         GLMatrixMode(MatrixMode::modelView);
+         GLPopMatrix();
+
+         // *** Restore 2D TEXTURE Matrix ***
+         GLMatrixMode(MatrixMode::texture);
          GLPopMatrix();
 
          // *** Restore 2D PROJECTION Matrix ***
          GLMatrixMode(MatrixMode::projection);
          GLPopMatrix();
 
-         // *** Restore 2D TEXTURE Matrix ***
-         GLMatrixMode(MatrixMode::texture);
-         GLPopMatrix();
+         // NOTE: We expect the 2D projection matrix to be the active one for GetSurface to call glOrtho()
 
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
@@ -3199,8 +3201,9 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            disableRemainingTMUs(1);
+            disableRemainingTMUs(display, 0);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
             glDisable(GL_TEXTURE_CUBE_MAP);
          #if _GLES
             glDisable(GL_TEXTURE_GEN_STR);
@@ -3593,21 +3596,13 @@ class OpenGLDisplayDriver : DisplayDriver
 
             GLMatrixMode(MatrixMode::texture);
             {
-               double * s = display.display3D.camera.inverseTranspose.array;
-               Quaternion q = display.display3D.camera.cOrientation;
-               Matrix mat;
-               Euler e = q;
-               //e.yaw *= -1;
-               q = e;
-               mat.RotationQuaternion(q);
-               mat.Scale(2,-2,-2);
-               s = mat.array;
-
+               double * s = display.display3D.camera.viewMatrix.array;
+               double k = 2.0;
                Matrix m
                { {
-                  s[0],s[1],s[2],0,
-                  s[4],s[5],s[6],0,
-                  s[8],s[9],s[10],0,
+                  k*s[0],-k*s[4],-k*s[8], 0,
+                  k*s[1],-k*s[5],-k*s[9], 0,
+                  k*s[2],-k*s[6],-k*s[10],0,
                   0,0,0,1
                } };
                GLLoadMatrixd(m.array);
@@ -3682,7 +3677,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
       if(!glCaps_shaders)
       {
-         disableRemainingTMUs(tmu);
+         disableRemainingTMUs(display, tmu);
 
          if(mesh.flags.colors)
          {

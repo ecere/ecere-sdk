@@ -1224,12 +1224,6 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
-                                    },
-                                    {
-                                       "Name" : "MinEmscripten",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : false
-                                       }
                                     }
                                  ]
                               },

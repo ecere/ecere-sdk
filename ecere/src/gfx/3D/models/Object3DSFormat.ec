@@ -1586,6 +1586,9 @@ static bool ReadEditChunks(FileInfo * info, void * data)
                material.baseMap.MakeMipMaps(info->displaySystem);
             if(material.bumpMap)
                material.bumpMap.MakeMipMaps(info->displaySystem);
+            if(material.specularMap)
+               material.specularMap.MakeMipMaps(info->displaySystem);
+
             // COPY_NITEM(mat, material);
             CopyBytes(((byte *)(mat)) + sizeof(class NamedItem), ((byte *)(material)) + sizeof(class NamedItem), sizeof(class Material) - sizeof(class NamedItem));
          }

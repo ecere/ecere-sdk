@@ -717,6 +717,10 @@ public:
    // --- Lights ---
    void SetLight(int id, Light light)
    {
+      if(!display3D)
+      {
+         display3D = Display3D { };
+      }
       displaySystem.driver.SetLight(this, id, light);
    }
 
@@ -960,7 +964,7 @@ public:
                      Matrix t, inv = camera.viewMatrix;
                      Vector3D ot { };
                      Vector3D cPos = camera.cPosition;
-                     Vector3D pos = camera.position;
+                     Vector3D pos;
                      bool positional = l[3] ? true : false;
 
                      inv.Scale(1.0/nearPlane, -1.0/nearPlane,-1.0/nearPlane);
