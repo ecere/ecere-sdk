@@ -587,7 +587,12 @@ public:
          ((void (*)(void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((byte *)&item.key) + __ENDIAN_PAD(sizeof(void *))));
       }
       else
-         delete item.key;
+      {
+         // TOFIX: delete key; // This indexes the wrong templateArg (BT instead of KT)
+         KT k = item.key;
+         delete k;
+         item.key = (KT)0;
+      }
    }
 
    void Free()
