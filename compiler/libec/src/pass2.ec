@@ -1138,7 +1138,7 @@ static void ProcessExpression(Expression exp)
             }
             else if(exp.expType && exp.expType.kind == templateType)
             {
-               Expression argExp = GetTemplateArgExp(exp.expType.templateParameter, thisClass, false);
+               Expression argExp = GetTemplateArgExp(exp.expType.templateParameter, exp.expType.thisClassFrom, thisClass, false);
                if(argExp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -1181,7 +1181,7 @@ static void ProcessExpression(Expression exp)
             if(exp.op.op == '=' && exp.op.exp1 && exp.op.exp1.expType && exp.op.exp1.expType.kind == templateType &&
                (exp.op.exp1.type == indexExp || (exp.op.exp1.type == opExp && exp.op.exp1.op.op == '*' && !exp.op.exp1.op.exp1)))
             {
-               Expression argExp = GetTemplateArgExp(exp.op.exp1.expType.templateParameter, thisClass, false);
+               Expression argExp = GetTemplateArgExp(exp.op.exp1.expType.templateParameter, exp.op.exp1.expType.thisClassFrom, thisClass, false);
                if(argExp)
                {
                   // memcpy((byte *)array + (count * dataTypeClass.size), (dataTypeClass.type == structClass) ? value : &value, dataTypeClass.size);
@@ -1258,7 +1258,7 @@ static void ProcessExpression(Expression exp)
             else if(exp.op.op == '*' && !exp.op.exp1 && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.kind == pointerType &&
                exp.op.exp2.expType.type && exp.op.exp2.expType.type.kind == templateType)
             {
-               Expression argExp = GetTemplateArgExp(exp.op.exp2.expType.type.templateParameter, thisClass, false);
+               Expression argExp = GetTemplateArgExp(exp.op.exp2.expType.type.templateParameter, exp.op.exp2.expType.type.thisClassFrom, thisClass, false);
                if(argExp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -1389,7 +1389,7 @@ static void ProcessExpression(Expression exp)
             if(exp.op.op == '&' && !exp.op.exp1 && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.kind == templateType && !exp.op.exp2.expType.passAsTemplate)
             {
                Expression exp2 = exp.op.exp2;
-               Expression argExp = GetTemplateArgExp(exp2.expType.templateParameter, thisClass, false);
+               Expression argExp = GetTemplateArgExp(exp2.expType.templateParameter, exp2.expType.thisClassFrom, thisClass, false);
                if(argExp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -1490,7 +1490,7 @@ static void ProcessExpression(Expression exp)
          if(exp.index.exp.expType && exp.index.exp.expType.kind == pointerType &&
             exp.index.exp.expType.type && exp.index.exp.expType.type.kind == templateType)
          {
-            Expression argExp = GetTemplateArgExp(exp.index.exp.expType.type.templateParameter, thisClass, false);
+            Expression argExp = GetTemplateArgExp(exp.index.exp.expType.type.templateParameter, exp.index.exp.expType.type.thisClassFrom, thisClass, false);
             if(argExp)
             {
                Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -3148,7 +3148,7 @@ static void ProcessExpression(Expression exp)
          Specifier spec = exp.typeName.qualifiers ? exp.typeName.qualifiers->first : null;
          if(spec && spec.type == templateTypeSpecifier && !exp.typeName.declarator)
          {
-            Expression argExp = GetTemplateArgExp(spec.templateParameter, thisClass, false);
+            Expression argExp = GetTemplateArgExp(spec.templateParameter, null, thisClass, false);
             if(argExp)
             {
                Expression classExp;
@@ -3213,7 +3213,7 @@ static void ProcessExpression(Expression exp)
          if(exp._classExp.specifiers && exp._classExp.specifiers->first && ((Specifier)exp._classExp.specifiers->first).type == templateTypeSpecifier)
          {
             Specifier spec = exp._classExp.specifiers->first;
-            Expression argExp = GetTemplateArgExp(spec.templateParameter, thisClass, true);
+            Expression argExp = GetTemplateArgExp(spec.templateParameter, null, thisClass, true);
             if(argExp)
             {
                FreeList(exp._classExp.specifiers, FreeSpecifier);

@@ -464,16 +464,6 @@ int depth;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
 struct DBIndexItem;
 
 struct Symbol;
@@ -493,32 +483,6 @@ int declMode;
 } ecere_gcc_struct;
 
 struct Type;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
 
 extern void FreeType(struct Type * type);
 
@@ -619,6 +583,10 @@ struct PropertyWatch;
 
 struct Symbol *  FindType(struct Context *  ctx, const char *  name);
 
+struct __ecereNameSpace__ecere__com__DataMember;
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__Method
@@ -637,6 +605,67 @@ const char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
 } ecere_gcc_struct;
+
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
+
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} ecere_gcc_struct __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 struct Symbol
 {
@@ -701,35 +730,6 @@ int isIterator;
 struct Expression * propCategory;
 unsigned int mustRegister;
 } ecere_gcc_struct;
-
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
-
-struct __ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} ecere_gcc_struct __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct __anon2;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 
 struct __ecereNameSpace__ecere__com__Module;
 
@@ -1609,6 +1609,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -3398,11 +3399,11 @@ return spec;
 
 struct ClassDef;
 
-struct Expression *  GetTemplateArgExpByName(const char *  paramName, struct __ecereNameSpace__ecere__com__Class *  curClass, int tplType);
+struct Expression *  GetTemplateArgExpByName(const char *  paramName, struct __ecereNameSpace__ecere__com__Class *  thisClassFrom, struct __ecereNameSpace__ecere__com__Class *  curClass, int tplType);
 
-struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer)
+struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * thisClassFrom, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer)
 {
-return param->identifier ? GetTemplateArgExpByName(param->identifier->string, curClass, 0) : (((void *)0));
+return param->identifier ? GetTemplateArgExpByName(param->identifier->string, thisClassFrom, curClass, 0) : (((void *)0));
 }
 
 struct Declaration;
@@ -4316,17 +4317,22 @@ curContext->classDef = classDef;
 return classDef;
 }
 
-struct Expression * GetTemplateArgExpByName(const char * paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType)
+struct Expression * GetTemplateArgExpByName(const char * paramName, struct __ecereNameSpace__ecere__com__Class * thisClassFrom, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType)
 {
 struct Expression * argExp = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * _class = curClass ? curClass : ((curExternal && curExternal->type == 0 && curExternal->__anon1.function) ? curExternal->__anon1.function->_class : (((void *)0)));
+struct __ecereNameSpace__ecere__com__Class * instanceClass = ((curExternal && curExternal->type == 0 && curExternal->__anon1.function) ? curExternal->__anon1.function->_class : (((void *)0)));
+struct __ecereNameSpace__ecere__com__Class * _class = curClass ? curClass : instanceClass;
 
+if(thisClassFrom && instanceClass && thisClassFrom != instanceClass && strcmp(thisClassFrom->name, "class"))
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "unresolved template type (%s)\n", (((void *)0))), paramName);
 if(_class)
 {
 int id = 0;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam;
 struct __ecereNameSpace__ecere__com__Class * sClass;
 
+if(_class->templateClass)
+_class = _class->templateClass;
 for(sClass = _class; sClass; sClass = sClass->base)
 {
 id = 0;
@@ -5395,8 +5401,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBField", "Expressi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBIndex", "Expression MkExpDBIndex(char * table, Identifier id)", MkExpDBIndex, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBTable", "Expression MkExpDBTable(char * table)", MkExpDBTable, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpArray", "Expression MkExpArray(ecere::sys::OldList * expressions)", MkExpArray, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(const char * paramName, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExp", "Expression GetTemplateArgExp(TemplateParameter param, ecere::com::Class curClass, bool pointer)", GetTemplateArgExp, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(const char * paramName, ecere::com::Class thisClassFrom, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExp", "Expression GetTemplateArgExp(TemplateParameter param, ecere::com::Class thisClassFrom, ecere::com::Class curClass, bool pointer)", GetTemplateArgExp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputIntlStrings", "void OutputIntlStrings(void)", OutputIntlStrings, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetAST", "void SetAST(ecere::sys::OldList * list)", SetAST, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetAST", "ecere::sys::OldList * GetAST(void)", GetAST, module, 1);

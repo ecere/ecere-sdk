@@ -245,18 +245,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void DeclareProperty(struct External * neededBy, struct __ecereNameSpace__ecere__com__Property * prop, char *  setName, char *  getName);
-
 struct Expression;
 
 extern struct Expression * CopyExpression(struct Expression * exp);
@@ -365,32 +353,6 @@ extern struct Expression * MkExpMember(struct Expression * expression, struct Id
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
 struct Type;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
 
 extern struct Type * MkClassType(const char *  name);
 
@@ -882,6 +844,44 @@ struct Type * dataType;
 int memberAccess;
 } ecere_gcc_struct;
 
+extern void DeclareMethod(struct External * neededFor, struct __ecereNameSpace__ecere__com__Method * method, const char *  name);
+
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 struct Symbol
 {
 char *  string;
@@ -946,7 +946,7 @@ struct Expression * propCategory;
 unsigned int mustRegister;
 } ecere_gcc_struct;
 
-extern void DeclareMethod(struct External * neededFor, struct __ecereNameSpace__ecere__com__Method * method, const char *  name);
+extern void DeclareProperty(struct External * neededBy, struct __ecereNameSpace__ecere__com__Property * prop, char *  setName, char *  getName);
 
 struct PropertyWatch;
 
@@ -1095,7 +1095,7 @@ struct TemplateParameter * templateParameter;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
+extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * thisClassFrom, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
 
 extern struct Type * ProcessTemplateParameterType(struct TemplateParameter * param);
 
@@ -1503,6 +1503,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
@@ -2437,7 +2438,7 @@ ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(o, MkListOne(s
 }
 else if(exp->expType && exp->expType->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->expType->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(exp->expType->__anon1.templateParameter, exp->expType->thisClassFrom, thisClass, 0);
 
 if(argExp)
 {
@@ -2467,7 +2468,7 @@ if(exp->type == 4)
 {
 if(exp->__anon1.op.op == '=' && exp->__anon1.op.exp1 && exp->__anon1.op.exp1->expType && exp->__anon1.op.exp1->expType->kind == 20 && (exp->__anon1.op.exp1->type == 6 || (exp->__anon1.op.exp1->type == 4 && exp->__anon1.op.exp1->__anon1.op.op == '*' && !exp->__anon1.op.exp1->__anon1.op.exp1)))
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp1->expType->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp1->expType->__anon1.templateParameter, exp->__anon1.op.exp1->expType->thisClassFrom, thisClass, 0);
 
 if(argExp)
 {
@@ -2523,7 +2524,7 @@ return ;
 }
 else if(exp->__anon1.op.op == '*' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 13 && exp->__anon1.op.exp2->expType->__anon1.type && exp->__anon1.op.exp2->expType->__anon1.type->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp2->expType->__anon1.type->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp2->expType->__anon1.type->__anon1.templateParameter, exp->__anon1.op.exp2->expType->__anon1.type->thisClassFrom, thisClass, 0);
 
 if(argExp)
 {
@@ -2595,7 +2596,7 @@ __ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void 
 if(exp->__anon1.op.op == '&' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 20 && !exp->__anon1.op.exp2->expType->passAsTemplate)
 {
 struct Expression * exp2 = exp->__anon1.op.exp2;
-struct Expression * argExp = GetTemplateArgExp(exp2->expType->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(exp2->expType->__anon1.templateParameter, exp2->expType->thisClassFrom, thisClass, 0);
 
 if(argExp)
 {
@@ -2669,7 +2670,7 @@ exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsi
 ProcessExpression(exp->__anon1.index.exp);
 if(exp->__anon1.index.exp->expType && exp->__anon1.index.exp->expType->kind == 13 && exp->__anon1.index.exp->expType->__anon1.type && exp->__anon1.index.exp->expType->__anon1.type->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.index.exp->expType->__anon1.type->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.index.exp->expType->__anon1.type->__anon1.templateParameter, exp->__anon1.index.exp->expType->__anon1.type->thisClassFrom, thisClass, 0);
 
 if(argExp)
 {
@@ -4010,7 +4011,7 @@ struct Specifier * spec = exp->__anon1.typeName->qualifiers ? (*exp->__anon1.typ
 
 if(spec && spec->type == 8 && !exp->__anon1.typeName->declarator)
 {
-struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 0);
+struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, (((void *)0)), thisClass, 0);
 
 if(argExp)
 {
@@ -4067,7 +4068,7 @@ case 24:
 if(exp->__anon1._classExp.specifiers && (*exp->__anon1._classExp.specifiers).first && ((struct Specifier *)(*exp->__anon1._classExp.specifiers).first)->type == 8)
 {
 struct Specifier * spec = (*exp->__anon1._classExp.specifiers).first;
-struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 1);
+struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, (((void *)0)), thisClass, 1);
 
 if(argExp)
 {

@@ -95,6 +95,9 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                               char typeString[8192];
                               typeString[0] = 0;
                               dataType = ProcessType(decl.specifiers, d);
+                              // TODO: Need to find a more generic way to set up 'thisClassFrom'
+                              if(dataType && dataType.kind == templateType)
+                                 dataType.thisClassFrom = regClass;
                               PrintType(dataType, typeString, false, true);
 
                               if(member)

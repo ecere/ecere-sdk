@@ -2955,15 +2955,20 @@ Expression MkExpArray(OldList * expressions)
    return { type = arrayExp, list = expressions };
 }
 
-Expression GetTemplateArgExpByName(const char * paramName, Class curClass, TemplateParameterType tplType)
+Expression GetTemplateArgExpByName(const char * paramName, Class thisClassFrom, Class curClass, TemplateParameterType tplType)
 {
    Expression argExp = null;
-   Class _class = curClass ? curClass : ((curExternal && curExternal.type == functionExternal && curExternal.function) ? curExternal.function._class : null);
+   Class instanceClass = ((curExternal && curExternal.type == functionExternal && curExternal.function) ? curExternal.function._class : null);
+   Class _class = curClass ? curClass : instanceClass;
+
+   if(thisClassFrom && instanceClass && thisClassFrom != instanceClass && strcmp(thisClassFrom.name, "class"))
+      Compiler_Error($"unresolved template type (%s)\n", paramName);
    if(_class)
    {
       int id = 0;
       ClassTemplateParameter curParam;
       Class sClass;
+      if(_class.templateClass) _class = _class.templateClass;
       for(sClass = _class; sClass; sClass = sClass.base)
       {
          id = 0;
@@ -3001,9 +3006,9 @@ Expression GetTemplateArgExpByName(const char * paramName, Class curClass, Templ
    return argExp;
 }
 
-Expression GetTemplateArgExp(TemplateParameter param, Class curClass, bool pointer)
+Expression GetTemplateArgExp(TemplateParameter param, Class thisClassFrom, Class curClass, bool pointer)
 {
-   return param.identifier ? GetTemplateArgExpByName(param.identifier.string, curClass, type) : null;
+   return param.identifier ? GetTemplateArgExpByName(param.identifier.string, thisClassFrom, curClass, type) : null;
 }
 
 /*char * CreateMsgID(const char * string, const char * context)

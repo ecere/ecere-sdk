@@ -495,7 +495,7 @@ private:
    }
 }
 
-public class CustomAVLTree<class BT:AVLNode, class KT = uint64> : Container<BT, I = KT>
+public class CustomAVLTree<class BT:AVLNode<KT>, class KT = uint64> : Container<BT, I = KT>
 {
    class_fixed
 
@@ -574,11 +574,11 @@ public:
       BT item = (BT)_item;
       // THIS SHOULDN'T BE CALLING THE VIRTUAL FUNCTION
       CustomAVLTree::Remove(_item);
-      FreeKey((BT)item);
+      FreeKey(item);
       delete item;
    }
 
-   void FreeKey(BT item)
+   void FreeKey(AVLNode<KT> item)
    {
       if(class(BT).type == structClass)
       {
@@ -587,12 +587,7 @@ public:
          ((void (*)(void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((byte *)&item.key) + __ENDIAN_PAD(sizeof(void *))));
       }
       else
-      {
-         // TOFIX: delete key; // This indexes the wrong templateArg (BT instead of KT)
-         KT k = item.key;
-         delete k;
-         item.key = (KT)0;
-      }
+         delete item.key;
    }
 
    void Free()
@@ -616,7 +611,7 @@ public:
          else
          {
             BT parent = item.parent;
-            FreeKey((BT)item);
+            FreeKey(item);
             delete item;
             item = parent;
          }

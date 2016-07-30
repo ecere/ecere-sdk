@@ -166,7 +166,7 @@ static void ReplaceClassMembers(Expression exp, Class _class)
                   {
                      if(param.type == expression && !strcmp(param.name, id.string))
                      {
-                        Expression argExp = GetTemplateArgExpByName(param.name, _class, TemplateParameterType::expression);
+                        Expression argExp = GetTemplateArgExpByName(param.name, null, _class, TemplateParameterType::expression);
 
                         if(argExp)
                         {
@@ -8908,7 +8908,7 @@ void ProcessExpressionType(Expression exp)
 
                   if(type1.kind == pointerType && type1.type.kind == templateType && type2.kind != pointerType)
                   {
-                     Expression argExp = GetTemplateArgExp(type1.type.templateParameter, thisClass, true);
+                     Expression argExp = GetTemplateArgExp(type1.type.templateParameter, type1.type.thisClassFrom, thisClass, true);
                      if(argExp)
                      {
                         Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -8978,7 +8978,7 @@ void ProcessExpressionType(Expression exp)
 
                               if(type1.type.kind == templateType)
                               {
-                                 Expression argExp = GetTemplateArgExp(type1.type.templateParameter, thisClass, true);
+                                 Expression argExp = GetTemplateArgExp(type1.type.templateParameter, type1.type.thisClassFrom, thisClass, true);
                                  if(argExp)
                                  {
                                     Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -10092,7 +10092,7 @@ void ProcessExpressionType(Expression exp)
             }
             if(param && param.defaultArg.member)
             {
-               Expression argExp = GetTemplateArgExpByName(param.name, thisClass, TemplateParameterType::identifier);
+               Expression argExp = GetTemplateArgExpByName(param.name, null, thisClass, TemplateParameterType::identifier);
                if(argExp)
                {
                   Expression expMember = exp.member.exp;
@@ -10601,9 +10601,11 @@ void ProcessExpressionType(Expression exp)
                         bool constant = exp.expType.constant;
                         bool passAsTemplate = false;
                         Class thisClassFrom = null;
-                        Type t = ProcessTypeString(exp.expType.templateParameter.dataTypeString, false);
+                        Type t = exp.expType.templateParameter.dataTypeString ? ProcessTypeString(exp.expType.templateParameter.dataTypeString, false) : null;
                         if(t && t.kind == classType && t._class)
                            thisClassFrom = t._class.registered;
+                        else if(exp.expType.thisClassFrom)
+                           thisClassFrom = thisClass;
                         else
                            // Mark that 'thisClassFrom' was set to something
                            thisClassFrom = eSystem_FindClass(GetPrivateModule(), "class");
