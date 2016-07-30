@@ -1292,7 +1292,7 @@ if(dataMember)
 dataMember->dataType = dataType;
 else
 {
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in class %s\n", (((void *)0))), declId->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in class %s\n", (((void *)0))), declId->string, regClass->name);
 FreeType(dataType);
 }
 }
@@ -1310,13 +1310,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, declId->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in member %s\n", (((void *)0))), declId->string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in member %s\n", (((void *)0))), declId->string, member->name);
 }
 else if(regClass)
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, declId->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in class %s\n", (((void *)0))), declId->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in class %s\n", (((void *)0))), declId->string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;
@@ -1364,13 +1364,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, id->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in member %s\n", (((void *)0))), id->string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in member %s\n", (((void *)0))), id->string, member->name);
 }
 else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, id->string, typeString, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in class %s\n", (((void *)0))), id->string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in class %s\n", (((void *)0))), id->string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;
@@ -1398,13 +1398,13 @@ if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, string, inst->_class->__anon1.__anon1.name, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in member %s\n", (((void *)0))), string, member->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in member %s\n", (((void *)0))), string, member->name);
 }
 else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, string, inst->_class->__anon1.__anon1.name, 0, 0, def->memberAccess);
 if(!dataMember)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name already exists %s in class %s\n", (((void *)0))), string, regClass->name);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Member with same name (%s) already exists in class %s\n", (((void *)0))), string, regClass->name);
 }
 if(dataMember)
 dataMember->dataType = dataType;

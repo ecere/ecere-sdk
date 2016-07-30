@@ -82,7 +82,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                               dataMember.dataType = dataType;
                            else
                            {
-                              Compiler_Error($"Member with same name already exists %s in class %s\n", declId.string, regClass.name);
+                              Compiler_Error($"Member with same name (%s) already exists in class %s\n", declId.string, regClass.name);
                               FreeType(dataType);
                            }
                         }
@@ -105,14 +105,14 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                                  dataMember = eMember_AddDataMember(member, declId.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
-                                    Compiler_Error($"Member with same name already exists %s in member %s\n", declId.string, member.name);
+                                    Compiler_Error($"Member with same name (%s) already exists in member %s\n", declId.string, member.name);
                               }
                               else if(regClass)
                               {
                                  dataMember = eClass_AddDataMember(regClass, declId.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
-                                    Compiler_Error($"Member with same name already exists %s in class %s\n", declId.string, regClass.name);
+                                    Compiler_Error($"Member with same name (%s) already exists in class %s\n", declId.string, regClass.name);
                               }
 
                               //delete dataTypeString;
@@ -168,14 +168,14 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                                  dataMember = eMember_AddDataMember(member, id.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
-                                    Compiler_Error($"Member with same name already exists %s in member %s\n", id.string, member.name);
+                                    Compiler_Error($"Member with same name (%s) already exists in member %s\n", id.string, member.name);
                               }
                               else
                               {
                                  dataMember = eClass_AddDataMember(regClass, id.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
-                                    Compiler_Error($"Member with same name already exists %s in class %s\n", id.string, regClass.name);
+                                    Compiler_Error($"Member with same name (%s) already exists in class %s\n", id.string, regClass.name);
 
                               }
 
@@ -210,14 +210,14 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                      {
                         dataMember = eMember_AddDataMember(member, string, inst._class.name, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                         if(!dataMember)
-                           Compiler_Error($"Member with same name already exists %s in member %s\n", string, member.name);
+                           Compiler_Error($"Member with same name (%s) already exists in member %s\n", string, member.name);
 
                      }
                      else
                      {
                         dataMember = eClass_AddDataMember(regClass, string, inst._class.name, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                         if(!dataMember)
-                           Compiler_Error($"Member with same name already exists %s in class %s\n", string, regClass.name);
+                           Compiler_Error($"Member with same name (%s) already exists in class %s\n", string, regClass.name);
                      }
                      if(dataMember)
                         dataMember.dataType = dataType;

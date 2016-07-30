@@ -84,7 +84,7 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             if(member)
             {
                if(!eMember_AddDataMember(member, name, line[0] ? line : 0, 0, 0 /*size *//*type->size*/, memberAccess))
-                  ;//Compiler_Error($"Member with same name already exists %s in member %s\n", name, member->name);
+                  ;//Compiler_Error($"Member with same name (%s) already exists in member %s\n", name, member->name);
             }
             else if(regClass && regClass.type == bitClass)
             {
@@ -99,7 +99,7 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             else if(regClass)
             {
                if(!eClass_AddDataMember(regClass, name, line[0] ? line : 0, 0, 0 /*size *//*type->size*/, memberAccess))
-                  ;//Compiler_Error($"Member with same name already exists %s in class %s\n", name, regClass.fullName);
+                  ;//Compiler_Error($"Member with same name (%s) already exists in class %s\n", name, regClass.fullName);
             }
          }
          else if(!strcmp(line, "[Struct]") || !strcmp(line, "[Union]"))
@@ -109,12 +109,12 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             if(member)
             {
                if(!eMember_AddMember(member, dataMember))
-                  ;//Compiler_Error($"Member with same name already exists %s in member %s\n", name, member->name);
+                  ;//Compiler_Error($"Member with same name (%s) already exists in member %s\n", name, member->name);
             }
             else if(regClass)
             {
                if(!eClass_AddMember(regClass, dataMember))
-                  ;//Compiler_Error($"Member with same name already exists %s in class %s\n", name, regClass.name);
+                  ;//Compiler_Error($"Member with same name (%s) already exists in class %s\n", name, regClass.name);
             }
          }
       }
