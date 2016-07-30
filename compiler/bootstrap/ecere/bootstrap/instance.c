@@ -3754,6 +3754,13 @@ return link->data;
 return (((void *)0));
 }
 
+struct __ecereNameSpace__ecere__com__Class *  __ecereNameSpace__ecere__com__System_FindClass(struct __ecereNameSpace__ecere__com__Instance *  module, const char *  name, unsigned int registerTemplatesInternalDecl);
+
+struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char * name)
+{
+return __ecereNameSpace__ecere__com__System_FindClass(module, name, 0);
+}
+
 static struct __ecereNameSpace__ecere__com__Instance *  __ecereNameSpace__ecere__com__Module_Load(struct __ecereNameSpace__ecere__com__Instance *  fromModule, const char *  name, int importAccess, unsigned int ensureCOM);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char * name, int importAccess)
@@ -4146,630 +4153,6 @@ __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
 }
 }
 
-static void __ecereNameSpace__ecere__com__ComputeClassParameters(struct __ecereNameSpace__ecere__com__Class * templatedClass, const char * templateParams, struct __ecereNameSpace__ecere__com__Instance * findModule)
-{
-char ch;
-const char * nextParamStart = templateParams ? (templateParams + 1) : (((void *)0));
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * lastClass = (((void *)0)), * sClass;
-int curParamID = 0;
-int numParams = 0;
-struct __ecereNameSpace__ecere__com__Class * _class = templatedClass->templateClass ? templatedClass->templateClass : templatedClass;
-
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-numParams += sClass->templateParams.count;
-}
-if(templatedClass->templateArgs)
-__ecereNameSpace__ecere__com__FreeTemplateArgs(templatedClass);
-(__ecereNameSpace__ecere__com__eSystem_Delete(templatedClass->templateArgs), templatedClass->templateArgs = 0);
-templatedClass->templateArgs = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams));
-templatedClass->numParams = numParams;
-if(_class != templatedClass)
-{
-}
-if(templatedClass->base && templatedClass->base->templateArgs && _class == templatedClass)
-{
-struct __ecereNameSpace__ecere__com__Class * sClass;
-
-memcpy(templatedClass->templateArgs, templatedClass->base->templateArgs, sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams - templatedClass->templateParams.count));
-for(sClass = templatedClass->base; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-struct __ecereNameSpace__ecere__com__Class * prevClass;
-int id = 0;
-
-for(prevClass = sClass->base; prevClass; prevClass = prevClass->base)
-{
-if(prevClass->templateClass)
-prevClass = prevClass->templateClass;
-id += prevClass->templateParams.count;
-}
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(param = sClass->templateParams.first; param; param = param->next)
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[id++]);
-}
-}
-while(nextParamStart)
-{
-const char * paramStart = nextParamStart;
-const char * paramEnd;
-int level = 0;
-
-while(*paramStart == ' ')
-paramStart++;
-paramEnd = paramStart;
-while((ch = *paramEnd, ch && (level > 0 || (ch != '>' && ch != ','))))
-{
-if(ch == '<')
-level++;
-if(ch == '>')
-level--;
-paramEnd++;
-}
-nextParamStart = (ch == ',') ? (paramEnd + 1) : (((void *)0));
-while(*paramEnd == ' ')
-paramEnd--;
-if(paramEnd > paramStart)
-{
-const char * ptr, * equal = (((void *)0));
-
-for(ptr = paramStart; ptr <= paramEnd; ptr++)
-{
-if(*ptr == '=')
-{
-equal = ptr;
-break;
-}
-}
-if(equal)
-{
-const char * end = equal - 1;
-char ident[1024];
-
-while(*end == ' ')
-end--;
-strncpy(ident, paramStart, end + 1 - paramStart);
-ident[end + 1 - paramStart] = 0;
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(curParam = sClass->templateParams.first; curParam; curParam = curParam->next)
-{
-if(!strcmp(curParam->name, ident))
-break;
-}
-if(curParam)
-{
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * prevParam;
-
-curParamID = 0;
-for(prevParam = curParam->prev; prevParam; prevParam = prevParam->prev)
-curParamID++;
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-{
-if(nextClass->templateClass)
-nextClass = nextClass->templateClass;
-curParamID += nextClass->templateParams.count;
-}
-break;
-}
-}
-lastClass = sClass;
-}
-else
-{
-if(curParam)
-{
-curParam = curParam->next;
-curParamID++;
-}
-if(!curParam)
-{
-for(sClass = lastClass ? lastClass->base : _class; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-curParamID = 0;
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(param = sClass->templateParams.first; param; param = param->next, curParamID++)
-{
-curParam = param;
-break;
-}
-if(curParam)
-{
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-{
-if(nextClass->templateClass)
-nextClass = nextClass->templateClass;
-curParamID += nextClass->templateParams.count;
-}
-lastClass = sClass;
-break;
-}
-}
-}
-}
-if(curParam)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument argument =
-{
-
-.__anon1 = {
-
-.__anon1 = {
-.dataTypeString = 0
-}
-}
-};
-char value[1024];
-
-if(equal)
-{
-equal++;
-while(*equal == ' ')
-equal++;
-memcpy(value, equal, paramEnd - equal);
-value[paramEnd - equal] = 0;
-}
-else
-{
-memcpy(value, paramStart, paramEnd - paramStart);
-value[paramEnd - paramStart] = 0;
-}
-__ecereNameSpace__ecere__sys__TrimRSpaces(value, value);
-switch(curParam->type)
-{
-case 0:
-argument.__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(value);
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, value);
-if(!argument.__anon1.__anon1.dataTypeClass)
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, value);
-if(!argument.__anon1.__anon1.dataTypeClass)
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, value);
-break;
-case 2:
-{
-struct __ecereNameSpace__ecere__com__Class * expClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, curParam->__anon1.dataTypeString);
-
-if(!expClass)
-expClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, curParam->__anon1.dataTypeString);
-if(expClass)
-{
-((unsigned int (*)(void *, void *, const char *))(void *)expClass->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(expClass, &argument.__anon1.expression, value);
-}
-else if(value[0] == '\"')
-{
-char * endQuote = value + strlen(value) - 1;
-
-if(*endQuote != '\"')
-endQuote++;
-*endQuote = '\0';
-argument.__anon1.expression.__anon1.p = __ecereNameSpace__ecere__sys__CopyString(value + 1);
-}
-else if(value[0] == '\'')
-{
-int nb;
-unsigned int ch = __ecereNameSpace__ecere__sys__UTF8GetChar(value + 1, &nb);
-
-argument.__anon1.expression.__anon1.ui = ch;
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "uint"))
-{
-argument.__anon1.expression.__anon1.ui = (unsigned int)strtoul(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "char"))
-{
-argument.__anon1.expression.__anon1.c = (char)strtol(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "byte"))
-{
-argument.__anon1.expression.__anon1.uc = (unsigned char)strtoul(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "short"))
-{
-argument.__anon1.expression.__anon1.s = (short)strtol(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "uint16"))
-{
-argument.__anon1.expression.__anon1.us = (unsigned short)strtoul(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "int64"))
-{
-argument.__anon1.expression.__anon1.i64 = __ecereNameSpace__ecere__com___strtoi64(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "uint64"))
-{
-argument.__anon1.expression.__anon1.ui64 = __ecereNameSpace__ecere__com___strtoui64(value, (((void *)0)), 0);
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "float"))
-{
-argument.__anon1.expression.__anon1.f = (float)strtod(value, (((void *)0)));
-}
-else if(!strcmp(curParam->__anon1.dataTypeString, "double"))
-{
-argument.__anon1.expression.__anon1.d = strtod(value, (((void *)0)));
-}
-else
-{
-argument.__anon1.expression.__anon1.i = (int)strtol(value, (((void *)0)), 0);
-}
-break;
-}
-case 1:
-argument.__anon1.__anon2.memberString = __ecereNameSpace__ecere__sys__CopyString(value);
-break;
-}
-__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, curParam, curParamID);
-templatedClass->templateArgs[curParamID] = argument;
-}
-}
-}
-if(templatedClass == _class)
-{
-struct __ecereNameSpace__ecere__com__Class * sClass = _class;
-int curParamID = 0;
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-{
-if(nextClass->templateClass)
-nextClass = nextClass->templateClass;
-curParamID += nextClass->templateParams.count;
-}
-for(param = sClass->templateParams.first; param; param = param->next)
-{
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeString)
-{
-templatedClass->templateArgs[curParamID] = param->defaultArg;
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
-if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
-{
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString);
-}
-}
-curParamID++;
-}
-}
-if(templatedClass->base && templatedClass->base->templateArgs && numParams - _class->templateParams.count)
-{
-int c = numParams - _class->templateParams.count - 1;
-
-for(sClass = _class->base; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(param = sClass->templateParams.last; param; param = param->prev)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument * baseArg = &templatedClass->base->templateArgs[c];
-
-if(!(*arg).__anon1.__anon1.dataTypeString)
-{
-*arg = templatedClass->base->templateArgs[c];
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, arg);
-if(param->type == 0)
-{
-if((*arg).__anon1.__anon1.dataTypeClass && strchr((*arg).__anon1.__anon1.dataTypeString, '<') && (*arg).__anon1.__anon1.dataTypeClass->templateArgs)
-{
-struct __ecereNameSpace__ecere__com__Class * expClass = (*arg).__anon1.__anon1.dataTypeClass;
-struct __ecereNameSpace__ecere__com__Class * cClass = (((void *)0));
-int paramCount = 0;
-int lastParam = -1;
-char templateString[1024];
-
-sprintf(templateString, "%s<", expClass->templateClass->fullName);
-for(cClass = expClass; cClass; cClass = cClass->base)
-{
-int p = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-for(param = cClass->templateParams.first; param; param = param->next)
-{
-int id = p;
-struct __ecereNameSpace__ecere__com__Class * sClass;
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg;
-
-for(sClass = expClass->base; sClass; sClass = sClass->base)
-id += sClass->templateParams.count;
-arg = expClass->templateArgs[id];
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
-int p = numParams - _class->templateParams.count;
-
-for(cParam = _class->templateParams.first; cParam; cParam = cParam->next, p++)
-{
-if(cParam->type == 0 && arg.__anon1.__anon1.dataTypeString && !strcmp(cParam->name, arg.__anon1.__anon1.dataTypeString))
-{
-arg = templatedClass->templateArgs[p];
-break;
-}
-}
-}
-{
-char argument[256];
-
-argument[0] = '\0';
-switch(param->type)
-{
-case 2:
-{
-break;
-}
-case 1:
-{
-strcat(argument, arg.__anon1.__anon2.__anon1.member->name);
-break;
-}
-case 0:
-{
-if(arg.__anon1.__anon1.dataTypeString)
-strcat(argument, arg.__anon1.__anon1.dataTypeString);
-break;
-}
-}
-if(argument[0])
-{
-if(paramCount)
-strcat(templateString, ", ");
-if(lastParam != p - 1)
-{
-strcat(templateString, param->name);
-strcat(templateString, " = ");
-}
-strcat(templateString, argument);
-paramCount++;
-lastParam = p;
-}
-}
-p++;
-}
-}
-{
-int len = (int)strlen(templateString);
-
-if(templateString[len - 1] == '>')
-templateString[len++] = ' ';
-templateString[len++] = '>';
-templateString[len++] = '\0';
-}
-__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
-(*arg).__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(templateString);
-(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, templateString);
-if(!(*arg).__anon1.__anon1.dataTypeClass)
-(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, templateString);
-if(!(*arg).__anon1.__anon1.dataTypeClass)
-(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, templateString);
-}
-else
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
-int p = numParams - _class->templateParams.count;
-
-for(cParam = _class->templateParams.first; cParam; cParam = cParam->next, p++)
-{
-if(cParam->type == 0 && (*baseArg).__anon1.__anon1.dataTypeString && !strcmp(cParam->name, (*baseArg).__anon1.__anon1.dataTypeString))
-{
-__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
-(*arg).__anon1.__anon1.dataTypeString = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString;
-(*arg).__anon1.__anon1.dataTypeClass = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeClass;
-__ecereNameSpace__ecere__com__CopyTemplateArg(cParam, arg);
-break;
-}
-}
-}
-}
-}
-c--;
-}
-}
-}
-{
-struct __ecereNameSpace__ecere__com__Class * sClass;
-
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-int curParamID = 0;
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-{
-if(nextClass->templateClass)
-nextClass = nextClass->templateClass;
-curParamID += nextClass->templateParams.count;
-}
-for(param = sClass->templateParams.first; param; param = param->next)
-{
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeString)
-{
-templatedClass->templateArgs[curParamID] = param->defaultArg;
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
-if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
-{
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString);
-}
-}
-curParamID++;
-}
-}
-}
-{
-int c = numParams - 1;
-
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(param = sClass->templateParams.last; param; param = param->prev)
-{
-if(param->type == 0)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
-struct __ecereNameSpace__ecere__com__Class * dClass;
-int p = numParams - 1;
-
-for(dClass = _class; dClass; dClass = dClass->base)
-{
-if(dClass->templateClass)
-dClass = dClass->templateClass;
-for(cParam = dClass->templateParams.last; cParam; cParam = cParam->prev, p--)
-{
-if(cParam->type == 0 && (*arg).__anon1.__anon1.dataTypeString && !strcmp(cParam->name, (*arg).__anon1.__anon1.dataTypeString))
-{
-if(templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString && c != p)
-{
-__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
-(*arg).__anon1.__anon1.dataTypeString = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString;
-(*arg).__anon1.__anon1.dataTypeClass = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeClass;
-__ecereNameSpace__ecere__com__CopyTemplateArg(cParam, arg);
-}
-}
-}
-}
-}
-c--;
-}
-}
-}
-{
-struct __ecereNameSpace__ecere__com__Class * tClass;
-int c = numParams - 1;
-
-for(tClass = _class; tClass; tClass = tClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-if(tClass->templateClass)
-tClass = tClass->templateClass;
-for(param = tClass->templateParams.last; param; param = param->prev)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
-
-if(param->type == 1 && (*arg).__anon1.__anon2.memberString)
-{
-struct __ecereNameSpace__ecere__com__Class * memberClass = templatedClass;
-const char * memberString = (*arg).__anon1.__anon2.memberString;
-const char * colon = strstr(memberString, "::");
-const char * memberName = memberString;
-
-if(colon)
-memberName = colon + 2;
-if(!colon)
-{
-memberString = param->defaultArg.__anon1.__anon2.memberString;
-colon = memberString ? strstr(memberString, "::") : (((void *)0));
-}
-if(colon)
-{
-char className[1024];
-struct __ecereNameSpace__ecere__com__Class * sClass;
-
-memcpy(className, memberString, colon - memberString);
-className[colon - memberString] = '\0';
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-int id = 0;
-
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-{
-if(nextClass->templateClass)
-nextClass = nextClass->templateClass;
-id += nextClass->templateParams.count;
-}
-for(cParam = sClass->templateParams.first; cParam; cParam = cParam->next)
-{
-if(cParam->type == 0 && !strcmp(cParam->name, className) && templatedClass->templateArgs[id].__anon1.__anon1.dataTypeString)
-{
-strcpy(className, templatedClass->templateArgs[id].__anon1.__anon1.dataTypeString);
-}
-id++;
-}
-}
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, className);
-if(!memberClass)
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, className);
-if(!memberClass)
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, className);
-}
-if(memberClass)
-{
-switch(param->__anon1.memberType)
-{
-case 0:
-(*arg).__anon1.__anon2.__anon1.member = __ecereNameSpace__ecere__com__eClass_FindDataMember(memberClass, memberName, memberClass->module, (((void *)0)), (((void *)0)));
-break;
-case 1:
-(*arg).__anon1.__anon2.__anon1.method = __ecereNameSpace__ecere__com__eClass_FindMethod(memberClass, memberName, memberClass->module);
-break;
-case 2:
-(*arg).__anon1.__anon2.__anon1.prop = __ecereNameSpace__ecere__com__eClass_FindProperty(memberClass, memberName, memberClass->module);
-break;
-}
-}
-}
-c--;
-}
-}
-}
-}
-
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, int type, const void * info, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * defaultArg)
-{
-if(_class && name)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-for(param = _class->templateParams.first; param; param = param->next)
-{
-if(!strcmp(param->name, name))
-return param;
-}
-param = __extension__ ({
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateParameter));
-
-__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->type = type, __ecereInstance1->__anon1.dataTypeString = (type == 1) ? info : __ecereNameSpace__ecere__sys__CopyString(info), __ecereInstance1;
-});
-if(defaultArg != (((void *)0)))
-{
-param->defaultArg = *defaultArg;
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, &param->defaultArg);
-}
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templateParams, param);
-return param;
-}
-return (((void *)0));
-}
-
 static void __ecereNameSpace__ecere__com__FreeTemplate(struct __ecereNameSpace__ecere__com__Class * template)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * deriv;
@@ -4798,334 +4181,6 @@ else
 __ecereNameSpace__ecere__com___free(template);
 }
 
-static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class * base, struct __ecereNameSpace__ecere__com__Class * mod)
-{
-struct __ecereNameSpace__ecere__sys__OldLink * derivative;
-
-__ecereNameSpace__ecere__com__ComputeClassParameters(base, strchr(base->name, '<'), (((void *)0)));
-for(derivative = base->derivatives.first; derivative; derivative = derivative->next)
-{
-struct __ecereNameSpace__ecere__com__Class * _class = derivative->data;
-int type = _class->type;
-int oldType = type;
-int size = _class->structSize - _class->offset;
-int oldSizeClass = _class->sizeClass;
-int sizeClass = _class->sizeClass - _class->offsetClass;
-struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
-const char * dataTypeString = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * baseClass;
-unsigned int offsetBefore = _class->offset;
-int offsetClass, totalSizeClass;
-
-for(baseClass = base; baseClass->base; baseClass = baseClass->base)
-;
-if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
-{
-if(base->type == 1 && type == 0)
-type = 5;
-else
-type = base->type;
-}
-if(base && (_class->type == 0 || _class->type == 5 || _class->type == 1) && (base->type == 3 || base->type == 2 || base->type == 4))
-{
-type = base->type;
-}
-if(type == 4)
-{
-if(base->type != 4)
-{
-enumBase = base;
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, "enum");
-}
-}
-dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
-offsetClass = base ? (base->templateClass ? base->templateClass->sizeClass : base->sizeClass) : (type == 5 ? 0 : 0);
-totalSizeClass = offsetClass + sizeClass;
-if(type == 0 || type == 5)
-{
-_class->offset = (base && (base->templateClass ? (type == 0 ? base->templateClass->structSize : base->templateClass->memberOffset) : (type == 0 ? base->structSize : base->memberOffset)) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
-if(_class->structAlignment && (_class->offset % _class->structAlignment))
-_class->offset += _class->structAlignment - _class->offset % _class->structAlignment;
-}
-else
-_class->offset = 0;
-if(type == 1)
-{
-_class->memberOffset = (base && (base->templateClass ? base->templateClass->structSize : base->structSize) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : 0;
-_class->typeSize = _class->structSize = _class->memberOffset + size;
-}
-else if(type == 2 || type == 4 || type == 3)
-{
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, dataTypeString);
-
-if(dataTypeClass)
-_class->typeSize = dataTypeClass->typeSize;
-_class->structSize = 0;
-}
-else if(type == 0 || type == 5)
-{
-_class->structSize = _class->offset + size;
-_class->typeSize = sizeof(void *);
-}
-if(_class->type != 1000)
-_class->type = type;
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
-_class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
-if(totalSizeClass != oldSizeClass)
-{
-_class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
-memmove((unsigned char *)_class->data + mod->offsetClass, (unsigned char *)_class->data, totalSizeClass - mod->sizeClass);
-if(base->type != 1000 && base->type != 4)
-memcpy((unsigned char *)_class->data, (unsigned char *)base->data, totalSizeClass - _class->sizeClass);
-else
-memset((unsigned char *)_class->data, 0, totalSizeClass - _class->sizeClass);
-}
-_class->offsetClass = offsetClass;
-_class->sizeClass = totalSizeClass;
-{
-struct __ecereNameSpace__ecere__com__Method * method, * next;
-struct __ecereNameSpace__ecere__com__Class * b;
-unsigned int needUpdate = (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize);
-int updateStart = -1, updateEnd = -1;
-
-if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && needUpdate)
-{
-_class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
-_class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
-memmove(_class->_vTbl + mod->base->vTblSize, _class->_vTbl + baseClass->vTblSize, (_class->vTblSize - mod->vTblSize) * sizeof(void *));
-memcpy(_class->_vTbl + baseClass->vTblSize, mod->_vTbl + baseClass->vTblSize, (mod->base->vTblSize - baseClass->vTblSize) * sizeof(void *));
-updateStart = baseClass->vTblSize;
-updateEnd = updateStart + mod->base->vTblSize - baseClass->vTblSize;
-for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = next)
-{
-next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method));
-if(method->type == 1)
-method->vid += mod->base->vTblSize - baseClass->vTblSize;
-}
-}
-for(b = mod->base; b && b != (((void *)0)); b = b->base)
-{
-struct __ecereNameSpace__ecere__com__Method * vMethod;
-
-for(vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&b->methods); vMethod; vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)vMethod)))
-{
-if(vMethod->type == 1)
-{
-method = (struct __ecereNameSpace__ecere__com__Method *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->methods, vMethod->name);
-if(method)
-{
-if(method->function)
-_class->_vTbl[vMethod->vid] = method->function;
-if(!method->symbol)
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->name), method->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
-}
-else
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
-method->type = vMethod->type;
-method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(vMethod->dataTypeString);
-method->_class = vMethod->_class;
-}
-}
-else if((vMethod->vid >= updateStart && vMethod->vid < updateEnd) || _class->_vTbl[vMethod->vid] == b->_vTbl[vMethod->vid])
-_class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
-}
-}
-}
-}
-if(type == 0 || type == 5 || type == 1)
-{
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Class * c;
-
-for(c = mod->base; c; c = c->base)
-{
-struct __ecereNameSpace__ecere__com__Property * _property;
-
-for(_property = c->membersAndProperties.first; _property; _property = _property->next)
-{
-if(_property->isProperty)
-{
-struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, _property->name);
-
-if(link)
-{
-prop = link->data;
-if(!prop->Set && !prop->Get && prop->memberAccess == 4)
-{
-struct __ecereNameSpace__ecere__com__SelfWatcher * watcher;
-
-for(watcher = _class->selfWatchers.first; watcher; watcher = watcher->next)
-{
-if(watcher->_property == prop)
-watcher->_property = _property;
-}
-_property->selfWatchable = 1;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->prop, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->name), prop->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->dataTypeString), prop->dataTypeString = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndProperties, prop);
-}
-}
-}
-}
-}
-{
-struct __ecereNameSpace__ecere__com__DataMember * next;
-
-for(member = _class->membersAndProperties.first; member; member = next)
-{
-int offsetDiff = _class->offset - offsetBefore;
-
-next = member->next;
-if(!member->isProperty)
-{
-if(oldType == 2 && type != 2)
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev = member->prev;
-
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&_class->membersAndProperties, member);
-member = (struct __ecereNameSpace__ecere__com__DataMember *)__ecereNameSpace__ecere__com__eSystem_Renew0(member, sizeof(unsigned char) * (sizeof(struct __ecereNameSpace__ecere__com__DataMember)));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(&_class->membersAndProperties, prev, member);
-}
-if(offsetDiff > 0)
-{
-member->offset += offsetDiff;
-member->memberOffset += offsetDiff;
-}
-}
-member->id += mod->base->memberID;
-}
-_class->memberID += mod->base->memberID;
-_class->startMemberID += mod->base->memberID;
-}
-}
-__ecereNameSpace__ecere__com__FixDerivativesBase(_class, mod);
-{
-struct __ecereNameSpace__ecere__com__Class * c;
-
-for(c = mod->base; c; c = c->base)
-{
-struct __ecereNameSpace__ecere__com__ClassProperty * _property;
-
-for(_property = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&c->classProperties); _property; _property = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)_property)))
-{
-__ecereNameSpace__ecere__com__SetDelayedCPValues(_class, _property);
-}
-}
-}
-}
-{
-struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
-
-for(templateLink = base->templatized.first; templateLink; templateLink = templateLink->next)
-{
-struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
-
-template->base = base->base;
-template->_vTbl = base->_vTbl;
-template->data = base->data;
-template->offset = base->offset;
-template->offsetClass = base->offsetClass;
-template->sizeClass = base->sizeClass;
-template->structSize = base->structSize;
-template->vTblSize = base->vTblSize;
-__ecereNameSpace__ecere__com__FixDerivativesBase(template, mod);
-}
-}
-}
-
-struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char * name)
-{
-if(name && module)
-{
-struct __ecereNameSpace__ecere__com__BTNamedLink * link;
-
-if(!strncmp(name, "const ", 6))
-name += 6;
-link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(link)
-return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
-if(link)
-return link->data;
-{
-char noTemplateName[1024];
-char * templateParams = strchr(name, '<');
-
-if(templateParams)
-{
-strncpy(noTemplateName, name, templateParams - name);
-noTemplateName[templateParams - name] = '\0';
-}
-else
-strcpy(noTemplateName, name);
-link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(!link)
-link = __ecereNameSpace__ecere__com__SearchModule(module, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
-if(link)
-{
-struct __ecereNameSpace__ecere__com__Class * _class = link->data;
-struct __ecereNameSpace__ecere__com__Class * templatedClass = (((void *)0));
-char className[1024];
-
-strcpy(className, _class->fullName);
-strcat(className, templateParams);
-link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(link)
-return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
-if(link)
-return link->data;
-if(_class && templateParams)
-{
-struct __ecereNameSpace__ecere__sys__OldList __simpleStruct1 =
-{
-0, 0, 0, 0, 0
-};
-struct __ecereNameSpace__ecere__sys__OldList __simpleStruct0 =
-{
-0, 0, 0, 0, 0
-};
-
-templatedClass = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Class));
-*templatedClass = *_class;
-templatedClass->templateClass = _class;
-templatedClass->fullName = __ecereNameSpace__ecere__sys__CopyString(className);
-templatedClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(_class->dataTypeString);
-templatedClass->name = __ecereNameSpace__ecere__sys__CopyString(templatedClass->fullName + strlen(_class->fullName) - strlen(_class->name));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*templatedClass->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
-
-__ecereInstance1->name = (char *)templatedClass->name, __ecereInstance1->data = templatedClass, __ecereInstance1;
-}));
-templatedClass->templateArgs = (((void *)0));
-templatedClass->numParams = 0;
-templatedClass->derivatives = __simpleStruct0;
-templatedClass->templatized = __simpleStruct1;
-templatedClass->module = module;
-templatedClass->count = 0;
-templatedClass->prev = (((void *)0));
-templatedClass->next = (((void *)0));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, templatedClass);
-__ecereNameSpace__ecere__com__ComputeClassParameters(templatedClass, templateParams, module);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templatized, __extension__ ({
-struct __ecereNameSpace__ecere__sys__OldLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink));
-
-__ecereInstance1->data = templatedClass, __ecereInstance1;
-}));
-}
-return templatedClass;
-}
-}
-}
-return (((void *)0));
-}
-
 static void __ecereNameSpace__ecere__com__FreeTemplates(struct __ecereNameSpace__ecere__com__Class * _class)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * deriv, * template;
@@ -5142,621 +4197,6 @@ while((template = _class->templatized.first))
 __ecereNameSpace__ecere__com__FreeTemplates(template->data);
 __ecereNameSpace__ecere__com__FreeTemplate(template->data);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->templatized, template);
-}
-}
-
-struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char * name, const char * baseName, int size, int sizeClass, unsigned int (* Constructor)(void *), void (* Destructor)(void *), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess)
-{
-int start = 0, c;
-struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
-unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 2) ? 1 : 0;
-unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 4) ? 1 : 0;
-unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 8) ? 1 : 0;
-unsigned int crossBits = force32Bits || force64Bits;
-unsigned int fixed = 0;
-
-if(inCompiler && crossBits)
-{
-struct __ecereNameSpace__ecere__com__Class * c = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, name);
-
-if(c && c->fixed)
-fixed = 1;
-else if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM"))
-fixed = 1;
-}
-{
-nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace;
-if(declMode == 4)
-nameSpace = &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace;
-{
-for(c = 0; name[c]; c++)
-{
-if(name[c] == '.' || (name[c] == ':' && name[c + 1] == ':'))
-{
-struct __ecereNameSpace__ecere__com__NameSpace * newSpace;
-char * spaceName = __ecereNameSpace__ecere__com___malloc(c - start + 1);
-
-strncpy(spaceName, name + start, c - start);
-spaceName[c - start] = '\0';
-newSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).nameSpaces, spaceName);
-if(!newSpace)
-{
-newSpace = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__NameSpace) * (1));
-(*newSpace).classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-(*newSpace).defines.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-(*newSpace).functions.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-(*newSpace).nameSpaces.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-(*newSpace).name = spaceName;
-(*newSpace).parent = nameSpace;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)newSpace);
-}
-else
-(__ecereNameSpace__ecere__com__eSystem_Delete(spaceName), spaceName = 0);
-nameSpace = newSpace;
-if(name[c] == ':')
-c++;
-start = c + 1;
-}
-}
-}
-}
-if(c - start)
-{
-int offsetClass;
-int totalSizeClass;
-struct __ecereNameSpace__ecere__com__BTNamedLink * classLink = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * _class = (((void *)0));
-const char * dataTypeString = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * base = (baseName && baseName[0]) ? __ecereNameSpace__ecere__com__eSystem_FindClass(module, baseName) : (((void *)0));
-struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
-
-if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
-{
-if(base->type == 1 && type == 0)
-type = 5;
-else
-type = base->type;
-}
-if(base && (type == 0 || type == 5 || type == 1) && (base->type == 3 || base->type == 2 || base->type == 4))
-{
-type = base->type;
-}
-if(!base || base->type == 1000 || base->isInstanceClass)
-{
-if(type == 4)
-{
-if(base || !baseName || !baseName[0] || !strcmp(baseName, "unsigned int") || !strcmp(baseName, "uint") || !strcmp(baseName, "unsigned int64") || !strcmp(baseName, "uint64") || !strcmp(baseName, "int64") || !strcmp(baseName, "unsigned short") || !strcmp(baseName, "short") || !strcmp(baseName, "unsigned char") || !strcmp(baseName, "byte") || !strcmp(baseName, "char") || !strcmp(baseName, "uint32") || !strcmp(baseName, "uint16"))
-{
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
-dataTypeString = (baseName && baseName[0]) ? baseName : "int";
-}
-else
-{
-base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-base->internalDecl = 1;
-enumBase = base;
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
-}
-}
-else if(type == 1 && (!baseName || !baseName[0]))
-{
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "struct");
-dataTypeString = name + start;
-}
-else
-{
-if(type == 0)
-dataTypeString = "struct __ecereNameSpace__ecere__com__Instance";
-else if(type == 5)
-dataTypeString = "void *";
-else if(type == 2)
-dataTypeString = (baseName && baseName[0]) ? baseName : "unsigned int";
-else if(type == 3)
-dataTypeString = (baseName && baseName[0]) ? baseName : "int";
-else if(type == 1)
-dataTypeString = name + start;
-if(base || (!baseName || !baseName[0]) || type == 2 || type == 3)
-{
-if(base || !baseName || !baseName[0] || !strcmp(baseName, "unsigned int") || !strcmp(baseName, "uint") || !strcmp(baseName, "unsigned int64") || !strcmp(baseName, "uint64") || !strcmp(baseName, "int64") || !strcmp(baseName, "unsigned short") || !strcmp(baseName, "short") || !strcmp(baseName, "unsigned char") || !strcmp(baseName, "byte") || !strcmp(baseName, "char") || !strcmp(baseName, "uint32") || !strcmp(baseName, "uint16"))
-{
-if(type == 0 && strcmp(name, "ecere::com::Instance") && strcmp(name, "enum") && strcmp(name, "struct"))
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
-else
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
-}
-}
-else
-{
-}
-}
-}
-else
-{
-if(type == 4)
-{
-if(base->type != 4)
-{
-enumBase = base;
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
-}
-}
-dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
-}
-offsetClass = base ? base->sizeClass : (type == 5 ? 0 : 0);
-totalSizeClass = offsetClass + sizeClass;
-_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, name);
-if(!_class)
-{
-const char * colons = __ecereNameSpace__ecere__sys__RSearchString(name, "::", strlen(name), 1, 0);
-
-if(colons && colons)
-{
-_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, colons + 2);
-if(_class)
-{
-if(_class->internalDecl)
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
-_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
-}
-else
-_class = (((void *)0));
-}
-}
-}
-if(_class)
-{
-if(!_class->internalDecl)
-{
-if(declMode != 4)
-printf("error: Redefinition of class %s\n", name);
-else
-{
-_class->comRedefinition = 1;
-return _class;
-}
-return (((void *)0));
-}
-__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
-classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, name + start);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
-{
-struct __ecereNameSpace__ecere__sys__OldLink * t;
-
-for(t = _class->templatized.first; t; t = t->next)
-{
-struct __ecereNameSpace__ecere__com__Class * template = t->data;
-
-classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, template->name);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
-}
-}
-{
-struct __ecereNameSpace__ecere__com__NameSpace * ns = _class->nameSpace;
-
-while(ns != nameSpace && (*ns).parent && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).classes) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).functions) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).defines) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).nameSpaces))
-{
-struct __ecereNameSpace__ecere__com__NameSpace * parent = (*ns).parent;
-
-__ecereNameSpace__ecere__com__NameSpace_Free(ns);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*parent).nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)ns);
-ns = parent;
-}
-}
-}
-else
-{
-classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(!classLink)
-classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(!classLink)
-classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace, name + start, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(!classLink)
-classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace, name + start, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
-if(classLink)
-_class = classLink->data;
-if(_class && _class->internalDecl)
-{
-__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
-{
-struct __ecereNameSpace__ecere__sys__OldLink * t;
-
-for(t = _class->templatized.first; t; t = t->next)
-{
-struct __ecereNameSpace__ecere__com__Class * template = t->data;
-
-classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, template->name);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
-}
-}
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
-_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
-}
-else
-{
-_class = __ecereNameSpace__ecere__com___calloc(1, sizeof(struct __ecereNameSpace__ecere__com__Class));
-_class->methods.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-_class->members.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-_class->prop.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-_class->classProperties.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
-_class->name = __ecereNameSpace__ecere__sys__CopyString(name + start);
-_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
-}
-}
-if(nameSpace)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
-
-__ecereInstance1->name = (char *)_class->name, __ecereInstance1->data = _class, __ecereInstance1;
-}));
-{
-struct __ecereNameSpace__ecere__sys__OldLink * t;
-
-for(t = _class->templatized.first; t; t = t->next)
-{
-struct __ecereNameSpace__ecere__com__Class * template = t->data;
-
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
-
-__ecereInstance1->name = (char *)template->name, __ecereInstance1->data = template, __ecereInstance1;
-}));
-}
-}
-}
-if(_class)
-{
-if(!base && baseName && strcmp(baseName, name))
-{
-if(strchr(baseName, '<'))
-{
-char templateClassName[1024];
-struct __ecereNameSpace__ecere__com__Class * templateBase;
-
-strcpy(templateClassName, baseName);
-*strchr(templateClassName, '<') = '\0';
-templateBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, templateClassName);
-if(!templateBase)
-{
-templateBase = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, templateClassName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-templateBase->internalDecl = 1;
-}
-base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, baseName);
-}
-else
-{
-base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-base->internalDecl = 1;
-}
-}
-else
-_class->internalDecl = 0;
-if(totalSizeClass)
-{
-_class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
-if(base && base->type != 1000 && base->type != 4)
-memcpy(_class->data, base->data, offsetClass);
-else
-memset(_class->data, 0, offsetClass);
-memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
-}
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
-_class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
-_class->defaultAlignment = base ? base->defaultAlignment : 0;
-if(_class->module)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, _class);
-}
-if(_class->base)
-{
-struct __ecereNameSpace__ecere__com__Class * base = _class->base;
-struct __ecereNameSpace__ecere__sys__OldLink * deriv = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindLink(&base->derivatives, _class);
-
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&base->derivatives, deriv);
-}
-if(module)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, _class);
-}
-_class->nameSpace = nameSpace;
-{
-struct __ecereNameSpace__ecere__sys__OldLink * t;
-
-for(t = _class->templatized.first; t; t = t->next)
-{
-struct __ecereNameSpace__ecere__com__Class * template = t->data;
-
-template->nameSpace = nameSpace;
-}
-}
-_class->module = module;
-prevBase = _class->base;
-_class->base = base;
-if(base)
-{
-int numParams = 0;
-struct __ecereNameSpace__ecere__com__Class * sClass;
-
-for(sClass = base; sClass; sClass = sClass->base)
-{
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-numParams += sClass->templateParams.count;
-}
-if(numParams)
-{
-if(_class->templateArgs)
-{
-__ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
-}
-(__ecereNameSpace__ecere__com__eSystem_Delete(_class->templateArgs), _class->templateArgs = 0);
-_class->templateArgs = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams));
-_class->numParams = numParams;
-for(sClass = _class; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__Class * prevClass;
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-int id = 0;
-
-if(sClass->templateClass)
-sClass = sClass->templateClass;
-for(prevClass = sClass->base; prevClass; prevClass = prevClass->base)
-{
-if(prevClass->templateClass)
-prevClass = prevClass->templateClass;
-id += prevClass->templateParams.count;
-}
-if(base->templateArgs)
-{
-for(param = sClass->templateParams.first; param; param = param->next)
-{
-_class->templateArgs[id] = base->templateArgs[id];
-__ecereNameSpace__ecere__com__CopyTemplateArg(param, &_class->templateArgs[id]);
-id++;
-}
-}
-}
-}
-}
-_class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
-if(type == 0 || type == 5)
-_class->offset = (base && base->structSize && base->type != 1000) ? (base->type == 0 ? base->structSize : base->memberOffset) : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(struct __ecereNameSpace__ecere__com__Instance)));
-else
-_class->offset = 0;
-if(crossBits)
-{
-if(!strcmp(name, "GNOSISSystem") || !strcmp(name, "LineStyle") || !strcmp(name, "FillStyle") || !strcmp(name, "FontObject") || !strcmp(name, "FontObject") || !strcmp(name, "ecere::sys::Thread"))
-{
-_class->offset = force32Bits ? 24 : 12;
-}
-else if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::com::Array") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
-;
-else
-{
-if(!strcmp(name, "ecere::sys::FileListing"))
-{
-size = 3 * (force32Bits ? 4 : 8);
-_class->structAlignment = force32Bits ? 4 : 8;
-_class->pointerAlignment = 1;
-}
-else if(!strcmp(name, "ecere::com::Class"))
-size = 0;
-else if(!strcmp(name, "ecere::com::ClassProperty"))
-size = 0;
-else if(!strcmp(name, "ecere::com::NameSpace"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::BufferedFile"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::BTNode"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::StringBTNode"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::OldList"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::Item"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::NamedLink"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::NamedLink64"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::OldLink"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::NamedItem"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::NamedItem64"))
-size = 0;
-else if(!strcmp(name, "ecere::sys::BinaryTree"))
-size = 0;
-else if(module != ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && inCompiler)
-{
-if(fixed || type == 1)
-size = 0;
-}
-}
-}
-if(type == 1)
-{
-_class->memberOffset = (base && base->structSize && base->type != 1000) ? base->structSize : 0;
-_class->typeSize = _class->structSize = _class->memberOffset + size;
-}
-else if(type == 2 || type == 4 || type == 3)
-{
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, dataTypeString);
-
-if(dataTypeClass)
-_class->typeSize = dataTypeClass->typeSize;
-_class->structSize = 0;
-}
-else if(type == 0 || type == 5)
-{
-_class->structSize = _class->offset + size;
-_class->typeSize = sizeof(void *);
-}
-_class->offsetClass = offsetClass;
-_class->sizeClass = totalSizeClass;
-_class->Constructor = Constructor;
-_class->Destructor = Destructor;
-if(_class->type != 1000)
-_class->type = type;
-if(!size)
-_class->computeSize = 1;
-else
-_class->computeSize = 0;
-_class->inheritanceAccess = inheritanceAccess;
-if(type == 4)
-{
-if(enumBase)
-_class->base = base = enumBase;
-{
-struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-
-if(base && base->type != 4)
-data->largest = -1;
-else
-data->largest = ((struct __ecereNameSpace__ecere__com__EnumClassData *)base->data)->largest;
-}
-}
-if(base)
-{
-int i;
-unsigned int oldSize = _class->vTblSize;
-
-if(base->vTblSize && _class->vTblSize < base->vTblSize)
-{
-_class->vTblSize = base->vTblSize;
-_class->_vTbl = __ecereNameSpace__ecere__com___realloc(_class->_vTbl, sizeof(int (*)()) * _class->vTblSize);
-}
-if(!prevBase)
-{
-if(_class->type == 0 && strcmp(_class->name, "ecere::com::Instance") && strcmp(_class->name, "enum") && strcmp(_class->name, "struct"))
-prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
-else
-prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
-}
-for(i = 0; i < base->vTblSize; i++)
-{
-if(i >= oldSize || _class->_vTbl[i] == prevBase->_vTbl[i])
-_class->_vTbl[i] = base->_vTbl[i];
-}
-}
-if(_class->base)
-{
-struct __ecereNameSpace__ecere__sys__OldLink * link = (link = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink)), link->data = _class, link);
-
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->base->derivatives, link);
-}
-__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
-return _class;
-}
-}
-return (((void *)0));
-}
-
-void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property)
-{
-if(!_property->isWatchable)
-{
-struct __ecereNameSpace__ecere__com__Class * _class = _property->_class;
-
-if(!_class->computeSize)
-{
-_property->watcherOffset = _class->structSize;
-_class->structSize += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
-__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
-}
-_property->isWatchable = 1;
-}
-}
-
-void __ecereNameSpace__ecere__com__eClass_DestructionWatchable(struct __ecereNameSpace__ecere__com__Class * _class)
-{
-if(!_class->destructionWatchOffset)
-{
-_class->destructionWatchOffset = _class->structSize;
-_class->structSize += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
-__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
-}
-}
-
-void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base)
-{
-if(base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
-
-{
-void * first = base->templateParams.first;
-int count = base->templateParams.count;
-
-__ecereNameSpace__ecere__com__FreeTemplateArgs(base);
-(__ecereNameSpace__ecere__com__eSystem_Delete(base->templateArgs), base->templateArgs = 0);
-base->templateParams.first = (((void *)0));
-base->templateParams.count = 0;
-__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(base);
-base->templateParams.first = first;
-base->templateParams.count = count;
-}
-for(param = base->templateParams.first; param; param = param->next)
-{
-if(param->type == 1 && param->defaultArg.__anon1.__anon2.memberString)
-{
-struct __ecereNameSpace__ecere__com__Class * memberClass = base;
-const char * colon = strstr(param->defaultArg.__anon1.__anon2.memberString, "::");
-const char * memberName;
-
-if(colon)
-{
-char className[1024];
-struct __ecereNameSpace__ecere__com__Class * sClass;
-
-memcpy(className, param->defaultArg.__anon1.__anon2.memberString, colon - param->defaultArg.__anon1.__anon2.memberString);
-className[colon - param->defaultArg.__anon1.__anon2.memberString] = '\0';
-memberName = colon + 2;
-for(sClass = base; sClass; sClass = sClass->base)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
-struct __ecereNameSpace__ecere__com__Class * nextClass;
-int id = 0;
-
-for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
-id += nextClass->templateParams.count;
-if(sClass == base || base->templateArgs)
-{
-for(cParam = sClass->templateParams.first; cParam; cParam = cParam->next)
-{
-if(cParam->type == 0 && !strcmp(cParam->name, className))
-strcpy(className, (sClass == base) ? cParam->defaultArg.__anon1.__anon1.dataTypeString : base->templateArgs[id].__anon1.__anon1.dataTypeString);
-id++;
-}
-}
-}
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(base->module, className);
-if(!memberClass)
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)base->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, className);
-}
-else
-memberName = param->defaultArg.__anon1.__anon2.memberString;
-if(memberClass)
-{
-switch(param->__anon1.memberType)
-{
-case 0:
-param->defaultArg.__anon1.__anon2.__anon1.member = __ecereNameSpace__ecere__com__eClass_FindDataMember(memberClass, memberName, memberClass->module, (((void *)0)), (((void *)0)));
-break;
-case 1:
-param->defaultArg.__anon1.__anon2.__anon1.method = __ecereNameSpace__ecere__com__eClass_FindMethod(memberClass, memberName, memberClass->module);
-break;
-case 2:
-param->defaultArg.__anon1.__anon2.__anon1.prop = __ecereNameSpace__ecere__com__eClass_FindProperty(memberClass, memberName, memberClass->module);
-break;
-}
-}
-}
-}
-__ecereNameSpace__ecere__com__FixDerivativesBase(base, base);
 }
 }
 
@@ -5929,6 +4369,42 @@ if(ownVtbl)
 }
 __ecereNameSpace__ecere__com___free(instance);
 }
+}
+
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, int type, const void * info, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * defaultArg)
+{
+if(_class && name)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+for(param = _class->templateParams.first; param; param = param->next)
+{
+if(!strcmp(param->name, name))
+return param;
+}
+param = __extension__ ({
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateParameter));
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->type = type, __ecereInstance1->__anon1.dataTypeString = (type == 1) ? info : __ecereNameSpace__ecere__sys__CopyString(info), __ecereInstance1;
+});
+{
+struct __ecereNameSpace__ecere__com__Class * c = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, name);
+
+if(c && c->internalDecl)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)c->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, c);
+__ecereNameSpace__ecere__com__eClass_Unregister(c);
+}
+}
+if(defaultArg != (((void *)0)))
+{
+param->defaultArg = *defaultArg;
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, &param->defaultArg);
+}
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templateParams, param);
+return param;
+}
+return (((void *)0));
 }
 
 void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance)
@@ -6256,6 +4732,1233 @@ __ecereNameSpace__ecere__com__NameSpace_Free(&((struct __ecereNameSpace__ecere__
 Instance_Module_Free(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->library);
 }
 
+static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class *  base, struct __ecereNameSpace__ecere__com__Class *  mod);
+
+struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char * name, const char * baseName, int size, int sizeClass, unsigned int (* Constructor)(void *), void (* Destructor)(void *), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess)
+{
+int start = 0, c;
+struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 2) ? 1 : 0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 4) ? 1 : 0;
+unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 8) ? 1 : 0;
+unsigned int crossBits = force32Bits || force64Bits;
+unsigned int fixed = 0;
+
+if(inCompiler && crossBits)
+{
+struct __ecereNameSpace__ecere__com__Class * c = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, name);
+
+if(c && c->fixed)
+fixed = 1;
+else if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM"))
+fixed = 1;
+}
+{
+nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace;
+if(declMode == 4)
+nameSpace = &((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace;
+{
+for(c = 0; name[c]; c++)
+{
+if(name[c] == '.' || (name[c] == ':' && name[c + 1] == ':'))
+{
+struct __ecereNameSpace__ecere__com__NameSpace * newSpace;
+char * spaceName = __ecereNameSpace__ecere__com___malloc(c - start + 1);
+
+strncpy(spaceName, name + start, c - start);
+spaceName[c - start] = '\0';
+newSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).nameSpaces, spaceName);
+if(!newSpace)
+{
+newSpace = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__NameSpace) * (1));
+(*newSpace).classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+(*newSpace).defines.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+(*newSpace).functions.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+(*newSpace).nameSpaces.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+(*newSpace).name = spaceName;
+(*newSpace).parent = nameSpace;
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)newSpace);
+}
+else
+(__ecereNameSpace__ecere__com__eSystem_Delete(spaceName), spaceName = 0);
+nameSpace = newSpace;
+if(name[c] == ':')
+c++;
+start = c + 1;
+}
+}
+}
+}
+if(c - start)
+{
+int offsetClass;
+int totalSizeClass;
+struct __ecereNameSpace__ecere__com__BTNamedLink * classLink = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * _class = (((void *)0));
+const char * dataTypeString = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * base = (baseName && baseName[0]) ? __ecereNameSpace__ecere__com__System_FindClass(module, baseName, 1) : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
+
+if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
+{
+if(base->type == 1 && type == 0)
+type = 5;
+else
+type = base->type;
+}
+if(base && (type == 0 || type == 5 || type == 1) && (base->type == 3 || base->type == 2 || base->type == 4))
+{
+type = base->type;
+}
+if(!base || base->type == 1000 || base->isInstanceClass)
+{
+if(type == 4)
+{
+if(base || !baseName || !baseName[0] || !strcmp(baseName, "unsigned int") || !strcmp(baseName, "uint") || !strcmp(baseName, "unsigned int64") || !strcmp(baseName, "uint64") || !strcmp(baseName, "int64") || !strcmp(baseName, "unsigned short") || !strcmp(baseName, "short") || !strcmp(baseName, "unsigned char") || !strcmp(baseName, "byte") || !strcmp(baseName, "char") || !strcmp(baseName, "uint32") || !strcmp(baseName, "uint16"))
+{
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
+dataTypeString = (baseName && baseName[0]) ? baseName : "int";
+}
+else
+{
+base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
+base->internalDecl = 1;
+enumBase = base;
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
+}
+}
+else if(type == 1 && (!baseName || !baseName[0]))
+{
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "struct");
+dataTypeString = name + start;
+}
+else
+{
+if(type == 0)
+dataTypeString = "struct __ecereNameSpace__ecere__com__Instance";
+else if(type == 5)
+dataTypeString = "void *";
+else if(type == 2)
+dataTypeString = (baseName && baseName[0]) ? baseName : "unsigned int";
+else if(type == 3)
+dataTypeString = (baseName && baseName[0]) ? baseName : "int";
+else if(type == 1)
+dataTypeString = name + start;
+if(base || (!baseName || !baseName[0]) || type == 2 || type == 3)
+{
+if(base || !baseName || !baseName[0] || !strcmp(baseName, "unsigned int") || !strcmp(baseName, "uint") || !strcmp(baseName, "unsigned int64") || !strcmp(baseName, "uint64") || !strcmp(baseName, "int64") || !strcmp(baseName, "unsigned short") || !strcmp(baseName, "short") || !strcmp(baseName, "unsigned char") || !strcmp(baseName, "byte") || !strcmp(baseName, "char") || !strcmp(baseName, "uint32") || !strcmp(baseName, "uint16"))
+{
+if(type == 0 && strcmp(name, "ecere::com::Instance") && strcmp(name, "enum") && strcmp(name, "struct"))
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
+else
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
+}
+}
+else
+{
+}
+}
+}
+else
+{
+if(type == 4)
+{
+if(base->type != 4)
+{
+enumBase = base;
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
+}
+}
+dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
+}
+offsetClass = base ? base->sizeClass : (type == 5 ? 0 : 0);
+totalSizeClass = offsetClass + sizeClass;
+_class = __ecereNameSpace__ecere__com__System_FindClass(module, name, 1);
+if(!_class)
+{
+const char * colons = __ecereNameSpace__ecere__sys__RSearchString(name, "::", strlen(name), 1, 0);
+
+if(colons && colons)
+{
+_class = __ecereNameSpace__ecere__com__System_FindClass(module, colons + 2, 1);
+if(_class)
+{
+if(_class->internalDecl)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
+_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
+}
+else
+_class = (((void *)0));
+}
+}
+}
+if(_class)
+{
+if(!_class->internalDecl)
+{
+if(declMode != 4)
+printf("error: Redefinition of class %s\n", name);
+else
+{
+_class->comRedefinition = 1;
+return _class;
+}
+return (((void *)0));
+}
+__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
+classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, name + start);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
+{
+struct __ecereNameSpace__ecere__sys__OldLink * t;
+
+for(t = _class->templatized.first; t; t = t->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = t->data;
+
+classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, template->name);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
+}
+}
+{
+struct __ecereNameSpace__ecere__com__NameSpace * ns = _class->nameSpace;
+
+while(ns != nameSpace && (*ns).parent && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).classes) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).functions) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).defines) && !__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*ns).nameSpaces))
+{
+struct __ecereNameSpace__ecere__com__NameSpace * parent = (*ns).parent;
+
+__ecereNameSpace__ecere__com__NameSpace_Free(ns);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*parent).nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)ns);
+ns = parent;
+}
+}
+}
+else
+{
+classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(!classLink)
+classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(!classLink)
+classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->privateNameSpace, name + start, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(!classLink)
+classLink = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->publicNameSpace, name + start, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(classLink)
+_class = classLink->data;
+if(_class && _class->internalDecl)
+{
+__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
+{
+struct __ecereNameSpace__ecere__sys__OldLink * t;
+
+for(t = _class->templatized.first; t; t = t->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = t->data;
+
+classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, template->name);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
+}
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->fullName), _class->fullName = 0);
+_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
+}
+else
+{
+_class = __ecereNameSpace__ecere__com___calloc(1, sizeof(struct __ecereNameSpace__ecere__com__Class));
+_class->methods.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+_class->members.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+_class->prop.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+_class->classProperties.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
+_class->name = __ecereNameSpace__ecere__sys__CopyString(name + start);
+_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
+}
+}
+if(nameSpace)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
+
+__ecereInstance1->name = (char *)_class->name, __ecereInstance1->data = _class, __ecereInstance1;
+}));
+{
+struct __ecereNameSpace__ecere__sys__OldLink * t;
+
+for(t = _class->templatized.first; t; t = t->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = t->data;
+
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
+
+__ecereInstance1->name = (char *)template->name, __ecereInstance1->data = template, __ecereInstance1;
+}));
+}
+}
+}
+if(_class)
+{
+if(!base && baseName && strcmp(baseName, name))
+{
+if(strchr(baseName, '<'))
+{
+char templateClassName[1024];
+struct __ecereNameSpace__ecere__com__Class * templateBase;
+
+strcpy(templateClassName, baseName);
+*strchr(templateClassName, '<') = '\0';
+templateBase = __ecereNameSpace__ecere__com__System_FindClass(module, templateClassName, 1);
+if(!templateBase)
+{
+templateBase = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, templateClassName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
+templateBase->internalDecl = 1;
+}
+base = __ecereNameSpace__ecere__com__System_FindClass(module, baseName, 1);
+}
+else
+{
+base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
+base->internalDecl = 1;
+}
+}
+else
+_class->internalDecl = 0;
+if(totalSizeClass)
+{
+_class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
+if(base && base->type != 1000 && base->type != 4)
+memcpy(_class->data, base->data, offsetClass);
+else
+memset(_class->data, 0, offsetClass);
+memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
+_class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
+_class->defaultAlignment = base ? base->defaultAlignment : 0;
+if(_class->module)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, _class);
+}
+if(_class->base)
+{
+struct __ecereNameSpace__ecere__com__Class * base = _class->base;
+struct __ecereNameSpace__ecere__sys__OldLink * deriv = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindLink(&base->derivatives, _class);
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&base->derivatives, deriv);
+}
+if(module)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, _class);
+}
+_class->nameSpace = nameSpace;
+{
+struct __ecereNameSpace__ecere__sys__OldLink * t;
+
+for(t = _class->templatized.first; t; t = t->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = t->data;
+
+template->nameSpace = nameSpace;
+}
+}
+_class->module = module;
+prevBase = _class->base;
+_class->base = base;
+if(base)
+{
+int numParams = 0;
+struct __ecereNameSpace__ecere__com__Class * sClass;
+
+for(sClass = base; sClass; sClass = sClass->base)
+{
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+numParams += sClass->templateParams.count;
+}
+if(numParams)
+{
+if(_class->templateArgs)
+{
+__ecereNameSpace__ecere__com__FreeTemplateArgs(_class);
+}
+(__ecereNameSpace__ecere__com__eSystem_Delete(_class->templateArgs), _class->templateArgs = 0);
+_class->templateArgs = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams));
+_class->numParams = numParams;
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__Class * prevClass;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+int id = 0;
+
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(prevClass = sClass->base; prevClass; prevClass = prevClass->base)
+{
+if(prevClass->templateClass)
+prevClass = prevClass->templateClass;
+id += prevClass->templateParams.count;
+}
+if(base->templateArgs)
+{
+for(param = sClass->templateParams.first; param; param = param->next)
+{
+_class->templateArgs[id] = base->templateArgs[id];
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, &_class->templateArgs[id]);
+id++;
+}
+}
+}
+}
+}
+_class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
+if(type == 0 || type == 5)
+_class->offset = (base && base->structSize && base->type != 1000) ? (base->type == 0 ? base->structSize : base->memberOffset) : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(struct __ecereNameSpace__ecere__com__Instance)));
+else
+_class->offset = 0;
+if(crossBits)
+{
+if(!strcmp(name, "GNOSISSystem") || !strcmp(name, "LineStyle") || !strcmp(name, "FillStyle") || !strcmp(name, "FontObject") || !strcmp(name, "FontObject") || !strcmp(name, "ecere::sys::Thread"))
+{
+_class->offset = force32Bits ? 24 : 12;
+}
+else if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::com::Array") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
+;
+else
+{
+if(!strcmp(name, "ecere::sys::FileListing"))
+{
+size = 3 * (force32Bits ? 4 : 8);
+_class->structAlignment = force32Bits ? 4 : 8;
+_class->pointerAlignment = 1;
+}
+else if(!strcmp(name, "ecere::com::Class"))
+size = 0;
+else if(!strcmp(name, "ecere::com::ClassProperty"))
+size = 0;
+else if(!strcmp(name, "ecere::com::NameSpace"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BufferedFile"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BTNode"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::StringBTNode"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::OldList"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::Item"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedLink"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedLink64"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::OldLink"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedItem"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::NamedItem64"))
+size = 0;
+else if(!strcmp(name, "ecere::sys::BinaryTree"))
+size = 0;
+else if(module != ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && inCompiler)
+{
+if(fixed || type == 1)
+size = 0;
+}
+}
+}
+if(type == 1)
+{
+_class->memberOffset = (base && base->structSize && base->type != 1000) ? base->structSize : 0;
+_class->typeSize = _class->structSize = _class->memberOffset + size;
+}
+else if(type == 2 || type == 4 || type == 3)
+{
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, dataTypeString, 1);
+
+if(dataTypeClass)
+_class->typeSize = dataTypeClass->typeSize;
+_class->structSize = 0;
+}
+else if(type == 0 || type == 5)
+{
+_class->structSize = _class->offset + size;
+_class->typeSize = sizeof(void *);
+}
+_class->offsetClass = offsetClass;
+_class->sizeClass = totalSizeClass;
+_class->Constructor = Constructor;
+_class->Destructor = Destructor;
+if(_class->type != 1000)
+_class->type = type;
+if(!size)
+_class->computeSize = 1;
+else
+_class->computeSize = 0;
+_class->inheritanceAccess = inheritanceAccess;
+if(type == 4)
+{
+if(enumBase)
+_class->base = base = enumBase;
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
+
+if(base && base->type != 4)
+data->largest = -1;
+else
+data->largest = ((struct __ecereNameSpace__ecere__com__EnumClassData *)base->data)->largest;
+}
+}
+if(base)
+{
+int i;
+unsigned int oldSize = _class->vTblSize;
+
+if(base->vTblSize && _class->vTblSize < base->vTblSize)
+{
+_class->vTblSize = base->vTblSize;
+_class->_vTbl = __ecereNameSpace__ecere__com___realloc(_class->_vTbl, sizeof(int (*)()) * _class->vTblSize);
+}
+if(!prevBase)
+{
+if(_class->type == 0 && strcmp(_class->name, "ecere::com::Instance") && strcmp(_class->name, "enum") && strcmp(_class->name, "struct"))
+prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
+else
+prevBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
+}
+for(i = 0; i < base->vTblSize; i++)
+{
+if(i >= oldSize || _class->_vTbl[i] == prevBase->_vTbl[i])
+_class->_vTbl[i] = base->_vTbl[i];
+}
+}
+if(_class->base)
+{
+struct __ecereNameSpace__ecere__sys__OldLink * link = (link = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink)), link->data = _class, link);
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->base->derivatives, link);
+}
+__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
+return _class;
+}
+}
+return (((void *)0));
+}
+
+void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property)
+{
+if(!_property->isWatchable)
+{
+struct __ecereNameSpace__ecere__com__Class * _class = _property->_class;
+
+if(!_class->computeSize)
+{
+_property->watcherOffset = _class->structSize;
+_class->structSize += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
+__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
+}
+_property->isWatchable = 1;
+}
+}
+
+void __ecereNameSpace__ecere__com__eClass_DestructionWatchable(struct __ecereNameSpace__ecere__com__Class * _class)
+{
+if(!_class->destructionWatchOffset)
+{
+_class->destructionWatchOffset = _class->structSize;
+_class->structSize += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
+__ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
+}
+}
+
+void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base)
+{
+if(base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+{
+void * first = base->templateParams.first;
+int count = base->templateParams.count;
+
+__ecereNameSpace__ecere__com__FreeTemplateArgs(base);
+(__ecereNameSpace__ecere__com__eSystem_Delete(base->templateArgs), base->templateArgs = 0);
+base->templateParams.first = (((void *)0));
+base->templateParams.count = 0;
+__ecereNameSpace__ecere__com__FreeTemplatesDerivatives(base);
+base->templateParams.first = first;
+base->templateParams.count = count;
+}
+for(param = base->templateParams.first; param; param = param->next)
+{
+if(param->type == 1 && param->defaultArg.__anon1.__anon2.memberString)
+{
+struct __ecereNameSpace__ecere__com__Class * memberClass = base;
+const char * colon = strstr(param->defaultArg.__anon1.__anon2.memberString, "::");
+const char * memberName;
+
+if(colon)
+{
+char className[1024];
+struct __ecereNameSpace__ecere__com__Class * sClass;
+
+memcpy(className, param->defaultArg.__anon1.__anon2.memberString, colon - param->defaultArg.__anon1.__anon2.memberString);
+className[colon - param->defaultArg.__anon1.__anon2.memberString] = '\0';
+memberName = colon + 2;
+for(sClass = base; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+int id = 0;
+
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+id += nextClass->templateParams.count;
+if(sClass == base || base->templateArgs)
+{
+for(cParam = sClass->templateParams.first; cParam; cParam = cParam->next)
+{
+if(cParam->type == 0 && !strcmp(cParam->name, className))
+strcpy(className, (sClass == base) ? cParam->defaultArg.__anon1.__anon1.dataTypeString : base->templateArgs[id].__anon1.__anon1.dataTypeString);
+id++;
+}
+}
+}
+memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(base->module, className);
+if(!memberClass)
+memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)base->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, className);
+}
+else
+memberName = param->defaultArg.__anon1.__anon2.memberString;
+if(memberClass)
+{
+switch(param->__anon1.memberType)
+{
+case 0:
+param->defaultArg.__anon1.__anon2.__anon1.member = __ecereNameSpace__ecere__com__eClass_FindDataMember(memberClass, memberName, memberClass->module, (((void *)0)), (((void *)0)));
+break;
+case 1:
+param->defaultArg.__anon1.__anon2.__anon1.method = __ecereNameSpace__ecere__com__eClass_FindMethod(memberClass, memberName, memberClass->module);
+break;
+case 2:
+param->defaultArg.__anon1.__anon2.__anon1.prop = __ecereNameSpace__ecere__com__eClass_FindProperty(memberClass, memberName, memberClass->module);
+break;
+}
+}
+}
+}
+__ecereNameSpace__ecere__com__FixDerivativesBase(base, base);
+}
+}
+
+static void __ecereNameSpace__ecere__com__ComputeClassParameters(struct __ecereNameSpace__ecere__com__Class * templatedClass, const char * templateParams, struct __ecereNameSpace__ecere__com__Instance * findModule, unsigned int registerInternalDecl)
+{
+char ch;
+const char * nextParamStart = templateParams ? (templateParams + 1) : (((void *)0));
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * curParam = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * lastClass = (((void *)0)), * sClass;
+int curParamID = 0;
+int numParams = 0;
+struct __ecereNameSpace__ecere__com__Class * _class = templatedClass->templateClass ? templatedClass->templateClass : templatedClass;
+
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+numParams += sClass->templateParams.count;
+}
+if(templatedClass->templateArgs)
+__ecereNameSpace__ecere__com__FreeTemplateArgs(templatedClass);
+(__ecereNameSpace__ecere__com__eSystem_Delete(templatedClass->templateArgs), templatedClass->templateArgs = 0);
+templatedClass->templateArgs = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams));
+templatedClass->numParams = numParams;
+if(_class != templatedClass)
+{
+}
+if(templatedClass->base && templatedClass->base->templateArgs && _class == templatedClass)
+{
+struct __ecereNameSpace__ecere__com__Class * sClass;
+
+memcpy(templatedClass->templateArgs, templatedClass->base->templateArgs, sizeof(struct __ecereNameSpace__ecere__com__ClassTemplateArgument) * (numParams - templatedClass->templateParams.count));
+for(sClass = templatedClass->base; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+struct __ecereNameSpace__ecere__com__Class * prevClass;
+int id = 0;
+
+for(prevClass = sClass->base; prevClass; prevClass = prevClass->base)
+{
+if(prevClass->templateClass)
+prevClass = prevClass->templateClass;
+id += prevClass->templateParams.count;
+}
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(param = sClass->templateParams.first; param; param = param->next)
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[id++]);
+}
+}
+while(nextParamStart)
+{
+const char * paramStart = nextParamStart;
+const char * paramEnd;
+int level = 0;
+
+while(*paramStart == ' ')
+paramStart++;
+paramEnd = paramStart;
+while((ch = *paramEnd, ch && (level > 0 || (ch != '>' && ch != ','))))
+{
+if(ch == '<')
+level++;
+if(ch == '>')
+level--;
+paramEnd++;
+}
+nextParamStart = (ch == ',') ? (paramEnd + 1) : (((void *)0));
+while(*paramEnd == ' ')
+paramEnd--;
+if(paramEnd > paramStart)
+{
+const char * ptr, * equal = (((void *)0));
+
+for(ptr = paramStart; ptr <= paramEnd; ptr++)
+{
+if(*ptr == '=')
+{
+equal = ptr;
+break;
+}
+}
+if(equal)
+{
+const char * end = equal - 1;
+char ident[1024];
+
+while(*end == ' ')
+end--;
+strncpy(ident, paramStart, end + 1 - paramStart);
+ident[end + 1 - paramStart] = 0;
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(curParam = sClass->templateParams.first; curParam; curParam = curParam->next)
+{
+if(!strcmp(curParam->name, ident))
+break;
+}
+if(curParam)
+{
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * prevParam;
+
+curParamID = 0;
+for(prevParam = curParam->prev; prevParam; prevParam = prevParam->prev)
+curParamID++;
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+{
+if(nextClass->templateClass)
+nextClass = nextClass->templateClass;
+curParamID += nextClass->templateParams.count;
+}
+break;
+}
+}
+lastClass = sClass;
+}
+else
+{
+if(curParam)
+{
+curParam = curParam->next;
+curParamID++;
+}
+if(!curParam)
+{
+for(sClass = lastClass ? lastClass->base : _class; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+curParamID = 0;
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(param = sClass->templateParams.first; param; param = param->next, curParamID++)
+{
+curParam = param;
+break;
+}
+if(curParam)
+{
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+{
+if(nextClass->templateClass)
+nextClass = nextClass->templateClass;
+curParamID += nextClass->templateParams.count;
+}
+lastClass = sClass;
+break;
+}
+}
+}
+}
+if(curParam)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument argument =
+{
+
+.__anon1 = {
+
+.__anon1 = {
+.dataTypeString = 0
+}
+}
+};
+char value[1024];
+
+if(equal)
+{
+equal++;
+while(*equal == ' ')
+equal++;
+memcpy(value, equal, paramEnd - equal);
+value[paramEnd - equal] = 0;
+}
+else
+{
+memcpy(value, paramStart, paramEnd - paramStart);
+value[paramEnd - paramStart] = 0;
+}
+__ecereNameSpace__ecere__sys__TrimRSpaces(value, value);
+switch(curParam->type)
+{
+case 0:
+argument.__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(value);
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, value, 1);
+if(!argument.__anon1.__anon1.dataTypeClass)
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, value, 1);
+if(!argument.__anon1.__anon1.dataTypeClass)
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, value, 1);
+if(registerInternalDecl && !argument.__anon1.__anon1.dataTypeClass)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+for(param = templatedClass->templateParams.first; param; param = param->next)
+if(!strcmp(param->name, value))
+break;
+if(!param)
+{
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, value, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), _class->module, 1, 1);
+argument.__anon1.__anon1.dataTypeClass->internalDecl = 1;
+}
+}
+break;
+case 2:
+{
+struct __ecereNameSpace__ecere__com__Class * expClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, curParam->__anon1.dataTypeString, 1);
+
+if(!expClass)
+expClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, curParam->__anon1.dataTypeString, 1);
+if(expClass)
+{
+((unsigned int (*)(void *, void *, const char *))(void *)expClass->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(expClass, &argument.__anon1.expression, value);
+}
+else if(value[0] == '\"')
+{
+char * endQuote = value + strlen(value) - 1;
+
+if(*endQuote != '\"')
+endQuote++;
+*endQuote = '\0';
+argument.__anon1.expression.__anon1.p = __ecereNameSpace__ecere__sys__CopyString(value + 1);
+}
+else if(value[0] == '\'')
+{
+int nb;
+unsigned int ch = __ecereNameSpace__ecere__sys__UTF8GetChar(value + 1, &nb);
+
+argument.__anon1.expression.__anon1.ui = ch;
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "uint"))
+{
+argument.__anon1.expression.__anon1.ui = (unsigned int)strtoul(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "char"))
+{
+argument.__anon1.expression.__anon1.c = (char)strtol(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "byte"))
+{
+argument.__anon1.expression.__anon1.uc = (unsigned char)strtoul(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "short"))
+{
+argument.__anon1.expression.__anon1.s = (short)strtol(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "uint16"))
+{
+argument.__anon1.expression.__anon1.us = (unsigned short)strtoul(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "int64"))
+{
+argument.__anon1.expression.__anon1.i64 = __ecereNameSpace__ecere__com___strtoi64(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "uint64"))
+{
+argument.__anon1.expression.__anon1.ui64 = __ecereNameSpace__ecere__com___strtoui64(value, (((void *)0)), 0);
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "float"))
+{
+argument.__anon1.expression.__anon1.f = (float)strtod(value, (((void *)0)));
+}
+else if(!strcmp(curParam->__anon1.dataTypeString, "double"))
+{
+argument.__anon1.expression.__anon1.d = strtod(value, (((void *)0)));
+}
+else
+{
+argument.__anon1.expression.__anon1.i = (int)strtol(value, (((void *)0)), 0);
+}
+break;
+}
+case 1:
+argument.__anon1.__anon2.memberString = __ecereNameSpace__ecere__sys__CopyString(value);
+break;
+}
+__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, curParam, curParamID);
+templatedClass->templateArgs[curParamID] = argument;
+}
+}
+}
+if(templatedClass == _class)
+{
+struct __ecereNameSpace__ecere__com__Class * sClass = _class;
+int curParamID = 0;
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+{
+if(nextClass->templateClass)
+nextClass = nextClass->templateClass;
+curParamID += nextClass->templateParams.count;
+}
+for(param = sClass->templateParams.first; param; param = param->next)
+{
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeString)
+{
+templatedClass->templateArgs[curParamID] = param->defaultArg;
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
+if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
+{
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+}
+}
+curParamID++;
+}
+}
+if(templatedClass->base && templatedClass->base->templateArgs && numParams - _class->templateParams.count)
+{
+int c = numParams - _class->templateParams.count - 1;
+
+for(sClass = _class->base; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(param = sClass->templateParams.last; param; param = param->prev)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument * baseArg = &templatedClass->base->templateArgs[c];
+
+if(!(*arg).__anon1.__anon1.dataTypeString)
+{
+*arg = templatedClass->base->templateArgs[c];
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, arg);
+if(param->type == 0)
+{
+if((*arg).__anon1.__anon1.dataTypeClass && strchr((*arg).__anon1.__anon1.dataTypeString, '<') && (*arg).__anon1.__anon1.dataTypeClass->templateArgs)
+{
+struct __ecereNameSpace__ecere__com__Class * expClass = (*arg).__anon1.__anon1.dataTypeClass;
+struct __ecereNameSpace__ecere__com__Class * cClass = (((void *)0));
+int paramCount = 0;
+int lastParam = -1;
+char templateString[1024];
+
+sprintf(templateString, "%s<", expClass->templateClass->fullName);
+for(cClass = expClass; cClass; cClass = cClass->base)
+{
+int p = 0;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+for(param = cClass->templateParams.first; param; param = param->next)
+{
+int id = p;
+struct __ecereNameSpace__ecere__com__Class * sClass;
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg;
+
+for(sClass = expClass->base; sClass; sClass = sClass->base)
+id += sClass->templateParams.count;
+arg = expClass->templateArgs[id];
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
+int p = numParams - _class->templateParams.count;
+
+for(cParam = _class->templateParams.first; cParam; cParam = cParam->next, p++)
+{
+if(cParam->type == 0 && arg.__anon1.__anon1.dataTypeString && !strcmp(cParam->name, arg.__anon1.__anon1.dataTypeString))
+{
+arg = templatedClass->templateArgs[p];
+break;
+}
+}
+}
+{
+char argument[256];
+
+argument[0] = '\0';
+switch(param->type)
+{
+case 2:
+{
+break;
+}
+case 1:
+{
+strcat(argument, arg.__anon1.__anon2.__anon1.member->name);
+break;
+}
+case 0:
+{
+if(arg.__anon1.__anon1.dataTypeString)
+strcat(argument, arg.__anon1.__anon1.dataTypeString);
+break;
+}
+}
+if(argument[0])
+{
+if(paramCount)
+strcat(templateString, ", ");
+if(lastParam != p - 1)
+{
+strcat(templateString, param->name);
+strcat(templateString, " = ");
+}
+strcat(templateString, argument);
+paramCount++;
+lastParam = p;
+}
+}
+p++;
+}
+}
+{
+int len = (int)strlen(templateString);
+
+if(templateString[len - 1] == '>')
+templateString[len++] = ' ';
+templateString[len++] = '>';
+templateString[len++] = '\0';
+}
+__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
+(*arg).__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(templateString);
+(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, templateString, 1);
+if(!(*arg).__anon1.__anon1.dataTypeClass)
+(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(templatedClass->module, templateString, 1);
+if(!(*arg).__anon1.__anon1.dataTypeClass)
+(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, templateString, 1);
+}
+else
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
+int p = numParams - _class->templateParams.count;
+
+for(cParam = _class->templateParams.first; cParam; cParam = cParam->next, p++)
+{
+if(cParam->type == 0 && (*baseArg).__anon1.__anon1.dataTypeString && !strcmp(cParam->name, (*baseArg).__anon1.__anon1.dataTypeString))
+{
+__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
+(*arg).__anon1.__anon1.dataTypeString = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString;
+(*arg).__anon1.__anon1.dataTypeClass = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeClass;
+__ecereNameSpace__ecere__com__CopyTemplateArg(cParam, arg);
+break;
+}
+}
+}
+}
+}
+c--;
+}
+}
+}
+{
+struct __ecereNameSpace__ecere__com__Class * sClass;
+
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+int curParamID = 0;
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+{
+if(nextClass->templateClass)
+nextClass = nextClass->templateClass;
+curParamID += nextClass->templateParams.count;
+}
+for(param = sClass->templateParams.first; param; param = param->next)
+{
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeString)
+{
+templatedClass->templateArgs[curParamID] = param->defaultArg;
+__ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
+if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
+{
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString, 1);
+}
+}
+curParamID++;
+}
+}
+}
+{
+int c = numParams - 1;
+
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(param = sClass->templateParams.last; param; param = param->prev)
+{
+if(param->type == 0)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
+struct __ecereNameSpace__ecere__com__Class * dClass;
+int p = numParams - 1;
+
+for(dClass = _class; dClass; dClass = dClass->base)
+{
+if(dClass->templateClass)
+dClass = dClass->templateClass;
+for(cParam = dClass->templateParams.last; cParam; cParam = cParam->prev, p--)
+{
+if(cParam->type == 0 && (*arg).__anon1.__anon1.dataTypeString && !strcmp(cParam->name, (*arg).__anon1.__anon1.dataTypeString))
+{
+if(templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString && c != p)
+{
+__ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
+(*arg).__anon1.__anon1.dataTypeString = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeString;
+(*arg).__anon1.__anon1.dataTypeClass = templatedClass->templateArgs[p].__anon1.__anon1.dataTypeClass;
+__ecereNameSpace__ecere__com__CopyTemplateArg(cParam, arg);
+}
+}
+}
+}
+}
+c--;
+}
+}
+}
+{
+struct __ecereNameSpace__ecere__com__Class * tClass;
+int c = numParams - 1;
+
+for(tClass = _class; tClass; tClass = tClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
+
+if(tClass->templateClass)
+tClass = tClass->templateClass;
+for(param = tClass->templateParams.last; param; param = param->prev)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = &templatedClass->templateArgs[c];
+
+if(param->type == 1 && (*arg).__anon1.__anon2.memberString)
+{
+struct __ecereNameSpace__ecere__com__Class * memberClass = templatedClass;
+const char * memberString = (*arg).__anon1.__anon2.memberString;
+const char * colon = strstr(memberString, "::");
+const char * memberName = memberString;
+
+if(colon)
+memberName = colon + 2;
+if(!colon)
+{
+memberString = param->defaultArg.__anon1.__anon2.memberString;
+colon = memberString ? strstr(memberString, "::") : (((void *)0));
+}
+if(colon)
+{
+char className[1024];
+struct __ecereNameSpace__ecere__com__Class * sClass;
+
+memcpy(className, memberString, colon - memberString);
+className[colon - memberString] = '\0';
+for(sClass = _class; sClass; sClass = sClass->base)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter * cParam;
+struct __ecereNameSpace__ecere__com__Class * nextClass;
+int id = 0;
+
+if(sClass->templateClass)
+sClass = sClass->templateClass;
+for(nextClass = sClass->base; nextClass; nextClass = nextClass->base)
+{
+if(nextClass->templateClass)
+nextClass = nextClass->templateClass;
+id += nextClass->templateParams.count;
+}
+for(cParam = sClass->templateParams.first; cParam; cParam = cParam->next)
+{
+if(cParam->type == 0 && !strcmp(cParam->name, className) && templatedClass->templateArgs[id].__anon1.__anon1.dataTypeString)
+{
+strcpy(className, templatedClass->templateArgs[id].__anon1.__anon1.dataTypeString);
+}
+id++;
+}
+}
+memberClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, className, 1);
+if(!memberClass)
+memberClass = __ecereNameSpace__ecere__com__System_FindClass(templatedClass->module, className, 1);
+if(!memberClass)
+memberClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, className, 1);
+}
+if(memberClass)
+{
+switch(param->__anon1.memberType)
+{
+case 0:
+(*arg).__anon1.__anon2.__anon1.member = __ecereNameSpace__ecere__com__eClass_FindDataMember(memberClass, memberName, memberClass->module, (((void *)0)), (((void *)0)));
+break;
+case 1:
+(*arg).__anon1.__anon2.__anon1.method = __ecereNameSpace__ecere__com__eClass_FindMethod(memberClass, memberName, memberClass->module);
+break;
+case 2:
+(*arg).__anon1.__anon2.__anon1.prop = __ecereNameSpace__ecere__com__eClass_FindProperty(memberClass, memberName, memberClass->module);
+break;
+}
+}
+}
+c--;
+}
+}
+}
+}
+
 static void __ecereNameSpace__ecere__com__LoadCOM(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 2) ? 1 : 0;
@@ -6415,6 +6118,334 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("islower", "int islower(i
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isblank", "int isblank(int c)", isblank, module, 4);
+}
+
+static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class * base, struct __ecereNameSpace__ecere__com__Class * mod)
+{
+struct __ecereNameSpace__ecere__sys__OldLink * derivative;
+
+__ecereNameSpace__ecere__com__ComputeClassParameters(base, strchr(base->name, '<'), (((void *)0)), 1);
+for(derivative = base->derivatives.first; derivative; derivative = derivative->next)
+{
+struct __ecereNameSpace__ecere__com__Class * _class = derivative->data;
+int type = _class->type;
+int oldType = type;
+int size = _class->structSize - _class->offset;
+int oldSizeClass = _class->sizeClass;
+int sizeClass = _class->sizeClass - _class->offsetClass;
+struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
+const char * dataTypeString = (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * baseClass;
+unsigned int offsetBefore = _class->offset;
+int offsetClass, totalSizeClass;
+
+for(baseClass = base; baseClass->base; baseClass = baseClass->base)
+;
+if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
+{
+if(base->type == 1 && type == 0)
+type = 5;
+else
+type = base->type;
+}
+if(base && (_class->type == 0 || _class->type == 5 || _class->type == 1) && (base->type == 3 || base->type == 2 || base->type == 4))
+{
+type = base->type;
+}
+if(type == 4)
+{
+if(base->type != 4)
+{
+enumBase = base;
+base = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, "enum");
+}
+}
+dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
+offsetClass = base ? (base->templateClass ? base->templateClass->sizeClass : base->sizeClass) : (type == 5 ? 0 : 0);
+totalSizeClass = offsetClass + sizeClass;
+if(type == 0 || type == 5)
+{
+_class->offset = (base && (base->templateClass ? (type == 0 ? base->templateClass->structSize : base->templateClass->memberOffset) : (type == 0 ? base->structSize : base->memberOffset)) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
+if(_class->structAlignment && (_class->offset % _class->structAlignment))
+_class->offset += _class->structAlignment - _class->offset % _class->structAlignment;
+}
+else
+_class->offset = 0;
+if(type == 1)
+{
+_class->memberOffset = (base && (base->templateClass ? base->templateClass->structSize : base->structSize) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : 0;
+_class->typeSize = _class->structSize = _class->memberOffset + size;
+}
+else if(type == 2 || type == 4 || type == 3)
+{
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, dataTypeString);
+
+if(dataTypeClass)
+_class->typeSize = dataTypeClass->typeSize;
+_class->structSize = 0;
+}
+else if(type == 0 || type == 5)
+{
+_class->structSize = _class->offset + size;
+_class->typeSize = sizeof(void *);
+}
+if(_class->type != 1000)
+_class->type = type;
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
+_class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
+if(totalSizeClass != oldSizeClass)
+{
+_class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
+memmove((unsigned char *)_class->data + mod->offsetClass, (unsigned char *)_class->data, totalSizeClass - mod->sizeClass);
+if(base->type != 1000 && base->type != 4)
+memcpy((unsigned char *)_class->data, (unsigned char *)base->data, totalSizeClass - _class->sizeClass);
+else
+memset((unsigned char *)_class->data, 0, totalSizeClass - _class->sizeClass);
+}
+_class->offsetClass = offsetClass;
+_class->sizeClass = totalSizeClass;
+{
+struct __ecereNameSpace__ecere__com__Method * method, * next;
+struct __ecereNameSpace__ecere__com__Class * b;
+unsigned int needUpdate = (mod != (base->templateClass ? base->templateClass : base) || _class->vTblSize != mod->vTblSize);
+int updateStart = -1, updateEnd = -1;
+
+if(mod->base && mod->base->base && mod->base->vTblSize > baseClass->vTblSize && needUpdate)
+{
+_class->vTblSize += mod->base->vTblSize - baseClass->vTblSize;
+_class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
+memmove(_class->_vTbl + mod->base->vTblSize, _class->_vTbl + baseClass->vTblSize, (_class->vTblSize - mod->vTblSize) * sizeof(void *));
+memcpy(_class->_vTbl + baseClass->vTblSize, mod->_vTbl + baseClass->vTblSize, (mod->base->vTblSize - baseClass->vTblSize) * sizeof(void *));
+updateStart = baseClass->vTblSize;
+updateEnd = updateStart + mod->base->vTblSize - baseClass->vTblSize;
+for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = next)
+{
+next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method));
+if(method->type == 1)
+method->vid += mod->base->vTblSize - baseClass->vTblSize;
+}
+}
+for(b = mod->base; b && b != (((void *)0)); b = b->base)
+{
+struct __ecereNameSpace__ecere__com__Method * vMethod;
+
+for(vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&b->methods); vMethod; vMethod = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)vMethod)))
+{
+if(vMethod->type == 1)
+{
+method = (struct __ecereNameSpace__ecere__com__Method *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->methods, vMethod->name);
+if(method)
+{
+if(method->function)
+_class->_vTbl[vMethod->vid] = method->function;
+if(!method->symbol)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->name), method->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
+}
+else
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)method->dataTypeString), method->dataTypeString = 0);
+method->type = vMethod->type;
+method->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(vMethod->dataTypeString);
+method->_class = vMethod->_class;
+}
+}
+else if((vMethod->vid >= updateStart && vMethod->vid < updateEnd) || _class->_vTbl[vMethod->vid] == b->_vTbl[vMethod->vid])
+_class->_vTbl[vMethod->vid] = _class->base->_vTbl[vMethod->vid];
+}
+}
+}
+}
+if(type == 0 || type == 5 || type == 1)
+{
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Class * c;
+
+for(c = mod->base; c; c = c->base)
+{
+struct __ecereNameSpace__ecere__com__Property * _property;
+
+for(_property = c->membersAndProperties.first; _property; _property = _property->next)
+{
+if(_property->isProperty)
+{
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, _property->name);
+
+if(link)
+{
+prop = link->data;
+if(!prop->Set && !prop->Get && prop->memberAccess == 4)
+{
+struct __ecereNameSpace__ecere__com__SelfWatcher * watcher;
+
+for(watcher = _class->selfWatchers.first; watcher; watcher = watcher->next)
+{
+if(watcher->_property == prop)
+watcher->_property = _property;
+}
+_property->selfWatchable = 1;
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->prop, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->name), prop->name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->dataTypeString), prop->dataTypeString = 0);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndProperties, prop);
+}
+}
+}
+}
+}
+{
+struct __ecereNameSpace__ecere__com__DataMember * next;
+
+for(member = _class->membersAndProperties.first; member; member = next)
+{
+int offsetDiff = _class->offset - offsetBefore;
+
+next = member->next;
+if(!member->isProperty)
+{
+if(oldType == 2 && type != 2)
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev = member->prev;
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&_class->membersAndProperties, member);
+member = (struct __ecereNameSpace__ecere__com__DataMember *)__ecereNameSpace__ecere__com__eSystem_Renew0(member, sizeof(unsigned char) * (sizeof(struct __ecereNameSpace__ecere__com__DataMember)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(&_class->membersAndProperties, prev, member);
+}
+if(offsetDiff > 0)
+{
+member->offset += offsetDiff;
+member->memberOffset += offsetDiff;
+}
+}
+member->id += mod->base->memberID;
+}
+_class->memberID += mod->base->memberID;
+_class->startMemberID += mod->base->memberID;
+}
+}
+__ecereNameSpace__ecere__com__FixDerivativesBase(_class, mod);
+{
+struct __ecereNameSpace__ecere__com__Class * c;
+
+for(c = mod->base; c; c = c->base)
+{
+struct __ecereNameSpace__ecere__com__ClassProperty * _property;
+
+for(_property = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&c->classProperties); _property; _property = (struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)_property)))
+{
+__ecereNameSpace__ecere__com__SetDelayedCPValues(_class, _property);
+}
+}
+}
+}
+{
+struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
+
+for(templateLink = base->templatized.first; templateLink; templateLink = templateLink->next)
+{
+struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
+
+template->base = base->base;
+template->_vTbl = base->_vTbl;
+template->data = base->data;
+template->offset = base->offset;
+template->offsetClass = base->offsetClass;
+template->sizeClass = base->sizeClass;
+template->structSize = base->structSize;
+template->vTblSize = base->vTblSize;
+__ecereNameSpace__ecere__com__FixDerivativesBase(template, mod);
+}
+}
+}
+
+struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__System_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char * name, unsigned int registerTemplatesInternalDecl)
+{
+if(name && module)
+{
+struct __ecereNameSpace__ecere__com__BTNamedLink * link;
+
+if(!strncmp(name, "const ", 6))
+name += 6;
+link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(link)
+return link->data;
+link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
+if(link)
+return link->data;
+{
+char noTemplateName[1024];
+char * templateParams = strchr(name, '<');
+
+if(templateParams)
+{
+strncpy(noTemplateName, name, templateParams - name);
+noTemplateName[templateParams - name] = '\0';
+}
+else
+strcpy(noTemplateName, name);
+link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(!link)
+link = __ecereNameSpace__ecere__com__SearchModule(module, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
+if(link)
+{
+struct __ecereNameSpace__ecere__com__Class * _class = link->data;
+struct __ecereNameSpace__ecere__com__Class * templatedClass = (((void *)0));
+char className[1024];
+
+strcpy(className, _class->fullName);
+strcat(className, templateParams);
+link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->systemNameSpace, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
+if(link)
+return link->data;
+link = __ecereNameSpace__ecere__com__SearchModule(module, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
+if(link)
+return link->data;
+if(_class && templateParams)
+{
+struct __ecereNameSpace__ecere__sys__OldList __simpleStruct1 =
+{
+0, 0, 0, 0, 0
+};
+struct __ecereNameSpace__ecere__sys__OldList __simpleStruct0 =
+{
+0, 0, 0, 0, 0
+};
+
+templatedClass = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Class));
+*templatedClass = *_class;
+templatedClass->templateClass = _class;
+templatedClass->fullName = __ecereNameSpace__ecere__sys__CopyString(className);
+templatedClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(_class->dataTypeString);
+templatedClass->name = __ecereNameSpace__ecere__sys__CopyString(templatedClass->fullName + strlen(_class->fullName) - strlen(_class->name));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&(*templatedClass->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
+
+__ecereInstance1->name = (char *)templatedClass->name, __ecereInstance1->data = templatedClass, __ecereInstance1;
+}));
+templatedClass->templateArgs = (((void *)0));
+templatedClass->numParams = 0;
+templatedClass->derivatives = __simpleStruct0;
+templatedClass->templatized = __simpleStruct1;
+templatedClass->module = module;
+templatedClass->count = 0;
+templatedClass->prev = (((void *)0));
+templatedClass->next = (((void *)0));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, templatedClass);
+__ecereNameSpace__ecere__com__ComputeClassParameters(templatedClass, templateParams, module, registerTemplatesInternalDecl);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templatized, __extension__ ({
+struct __ecereNameSpace__ecere__sys__OldLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink));
+
+__ecereInstance1->data = templatedClass, __ecereInstance1;
+}));
+}
+return templatedClass;
+}
+}
+}
+return (((void *)0));
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char * argv[])
@@ -6844,6 +6875,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_Unreg
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::_strtoi64", "int64 ecere::com::_strtoi64(const char * string, const char * * endString, int base)", __ecereNameSpace__ecere__com___strtoi64, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::_strtoui64", "uint64 ecere::com::_strtoui64(const char * string, const char * * endString, int base)", __ecereNameSpace__ecere__com___strtoui64, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_FindClass", "ecere::com::Class ecere::com::eSystem_FindClass(ecere::com::Module module, const char * name)", __ecereNameSpace__ecere__com__eSystem_FindClass, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::System_FindClass", "ecere::com::Class ecere::com::System_FindClass(ecere::com::Module module, const char * name, bool registerTemplatesInternalDecl)", __ecereNameSpace__ecere__com__System_FindClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::DefaultFunction", "bool ecere::com::DefaultFunction(void)", __ecereNameSpace__ecere__com__DefaultFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_IsDerived", "bool ecere::com::eClass_IsDerived(ecere::com::Class _class, ecere::com::Class from)", __ecereNameSpace__ecere__com__eClass_IsDerived, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_AddMethod", "ecere::com::Method ecere::com::eClass_AddMethod(ecere::com::Class _class, const char * name, const char * type, void * function, ecere::com::AccessMode declMode)", __ecereNameSpace__ecere__com__eClass_AddMethod, module, 4);

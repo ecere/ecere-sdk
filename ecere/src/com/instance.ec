@@ -2089,7 +2089,7 @@ static void FixDerivativesBase(Class base, Class mod)
 {
    OldLink derivative;
 
-   ComputeClassParameters(base, strchr(base.name, '<'), null);
+   ComputeClassParameters(base, strchr(base.name, '<'), null, true);
 
    for(derivative = base.derivatives.first; derivative; derivative = derivative.next)
    {
@@ -2365,7 +2365,7 @@ static void FixDerivativesBase(Class base, Class mod)
          //const char * templateParams = strchr(template.name, '<');
          template.base = base.base;
          template._vTbl = base._vTbl;
-         //ComputeClassParameters(template, templateParams, null);
+         //ComputeClassParameters(template, templateParams, null, true);
 
          template.data = base.data;
          template.offset = base.offset;
@@ -2447,7 +2447,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
       Class _class = null;
       const char * dataTypeString = null;
       Class enumBase = null;
-      Class base = (baseName && baseName[0]) ? eSystem_FindClass(module, baseName) : null;
+      Class base = (baseName && baseName[0]) ? System_FindClass(module, baseName, true) : null;
       Class prevBase = null;
 
       if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass))
@@ -2562,13 +2562,13 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
       offsetClass = base ? base.sizeClass : (type == noHeadClass ? 0 : 0 /*sizeof(class Class)*/);
       totalSizeClass = offsetClass + sizeClass;
 
-      _class = eSystem_FindClass(module, name);
+      _class = System_FindClass(module, name, true);
       if(!_class)
       {
          const char * colons = RSearchString(name, "::", strlen(name), true, false);
          if(colons && colons)
          {
-            _class = eSystem_FindClass(module, colons + 2);
+            _class = System_FindClass(module, colons + 2, true);
             if(_class)
             {
                if(_class.internalDecl)
@@ -2695,13 +2695,13 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
                Class templateBase;
                strcpy(templateClassName, baseName);
                *strchr(templateClassName, '<') = '\0';
-               templateBase = eSystem_FindClass(module, templateClassName);
+               templateBase = System_FindClass(module, templateClassName, true);
                if(!templateBase)
                {
                   templateBase = eSystem_RegisterClass(0, templateClassName, null, 0,0, null, null, module, declMode, publicAccess);
                   templateBase.internalDecl = true;
                }
-               base = eSystem_FindClass(module, baseName);
+               base = System_FindClass(module, baseName, true);
             }
             else
             {
@@ -2878,7 +2878,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          else if(type == bitClass || type == enumClass || type == unitClass)
          {
-            Class dataTypeClass = eSystem_FindClass(_class.module, dataTypeString);
+            Class dataTypeClass = System_FindClass(_class.module, dataTypeString, true);
             if(dataTypeClass)
                _class.typeSize = dataTypeClass.typeSize;
             _class.structSize = 0;
@@ -3409,6 +3409,11 @@ public uint64 _strtoui64(const char * string, const char ** endString, int base)
 
 public dllexport Class eSystem_FindClass(Module module, const char * name)
 {
+   return System_FindClass(module, name, false);
+}
+
+Class System_FindClass(Module module, const char * name, bool registerTemplatesInternalDecl)
+{
    if(name && module)
    {
       BTNamedLink link;
@@ -3473,7 +3478,7 @@ public dllexport Class eSystem_FindClass(Module module, const char * name)
 
                module.classes.Add(templatedClass);
 
-               ComputeClassParameters(templatedClass, templateParams, module);
+               ComputeClassParameters(templatedClass, templateParams, module, registerTemplatesInternalDecl);
 
                _class.templatized.Add(OldLink { data = templatedClass });
             }
@@ -3500,7 +3505,7 @@ static void CopyTemplateArg(ClassTemplateParameter param, ClassTemplateArgument 
    }
 }
 
-static void ComputeClassParameters(Class templatedClass, const char * templateParams, Module findModule)
+static void ComputeClassParameters(Class templatedClass, const char * templateParams, Module findModule, bool registerInternalDecl)
 {
    char ch;
    const char * nextParamStart = templateParams ? (templateParams + 1) : null;
@@ -3706,16 +3711,28 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
             {
                case type:
                   argument.dataTypeString = CopyString(value);
-                  argument.dataTypeClass = eSystem_FindClass(findModule, value);
+                  argument.dataTypeClass = System_FindClass(findModule, value, true);
                   if(!argument.dataTypeClass)
-                     argument.dataTypeClass = eSystem_FindClass(_class.module, value);
+                     argument.dataTypeClass = System_FindClass(_class.module, value, true);
                   if(!argument.dataTypeClass)
-                     argument.dataTypeClass = eSystem_FindClass(_class.module.application, value);
+                     argument.dataTypeClass = System_FindClass(_class.module.application, value, true);
+                  if(registerInternalDecl && !argument.dataTypeClass)
+                  {
+                     ClassTemplateParameter param;
+                     for(param = templatedClass.templateParams.first; param; param = param.next)
+                        if(!strcmp(param.name, value))
+                           break;
+                     if(!param)
+                     {
+                        argument.dataTypeClass = eSystem_RegisterClass(0, value, null, 0,0, null, null, _class.module, publicAccess, publicAccess);
+                        argument.dataTypeClass.internalDecl = true;
+                     }
+                  }
                   break;
                case expression:
                {
-                  Class expClass = eSystem_FindClass(_class.module, curParam.dataTypeString);
-                  if(!expClass) expClass = eSystem_FindClass(_class.module.application, curParam.dataTypeString);
+                  Class expClass = System_FindClass(_class.module, curParam.dataTypeString, true);
+                  if(!expClass) expClass = System_FindClass(_class.module.application, curParam.dataTypeString, true);
                   if(expClass)
                   {
                      //if(expClass.type ==
@@ -3808,11 +3825,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
             CopyTemplateArg(param, templatedClass.templateArgs[curParamID]);
             if(param.type == type && param.defaultArg.dataTypeString)
             {
-               templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
+               templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(findModule, param.defaultArg.dataTypeString, true);
                if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
+                  templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(templatedClass.module, param.defaultArg.dataTypeString, true);
                if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString);
+                  templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString, true);
             }
          }
          curParamID++;
@@ -3936,11 +3953,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                      FreeTemplateArg(templatedClass, param, c);
 
                      arg->dataTypeString = CopyString(templateString);
-                     arg->dataTypeClass = eSystem_FindClass(findModule, templateString);
+                     arg->dataTypeClass = System_FindClass(findModule, templateString, true);
                      if(!arg->dataTypeClass)
-                        arg->dataTypeClass = eSystem_FindClass(templatedClass.module, templateString);
+                        arg->dataTypeClass = System_FindClass(templatedClass.module, templateString, true);
                      if(!arg->dataTypeClass)
-                        arg->dataTypeClass = eSystem_FindClass(templatedClass.module.application, templateString);
+                        arg->dataTypeClass = System_FindClass(templatedClass.module.application, templateString, true);
                   }
                   else
                   {
@@ -3991,11 +4008,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                CopyTemplateArg(param, templatedClass.templateArgs[curParamID]);
                if(param.type == type && param.defaultArg.dataTypeString)
                {
-                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
+                  templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(findModule, param.defaultArg.dataTypeString, true);
                   if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                     templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
+                     templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(templatedClass.module, param.defaultArg.dataTypeString, true);
                   if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                     templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString);
+                     templatedClass.templateArgs[curParamID].dataTypeClass = System_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString, true);
                }
             }
             curParamID++;
@@ -4094,11 +4111,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                      }
                   }
                   // TESTING: Added this here...
-                  memberClass = eSystem_FindClass(findModule, className);
+                  memberClass = System_FindClass(findModule, className, true);
                   if(!memberClass)
-                     memberClass = eSystem_FindClass(templatedClass.module, className);
+                     memberClass = System_FindClass(templatedClass.module, className, true);
                   if(!memberClass)
-                     memberClass = eSystem_FindClass(templatedClass.module.application, className);
+                     memberClass = System_FindClass(templatedClass.module.application, className, true);
                }
 
                if(memberClass)
@@ -6666,6 +6683,15 @@ public dllexport ClassTemplateParameter eClass_AddTemplateParameter(Class _class
          type = type;
          (type == identifier) ? info : CopyString(info);
       };
+
+      {
+         Class c = eSystem_FindClass(_class.module, name);
+         if(c && c.internalDecl)
+         {
+            c.module.classes.Remove(c);
+            eClass_Unregister(c);
+         }
+      }
       if(defaultArg != null)
       {
          param.defaultArg = defaultArg;
