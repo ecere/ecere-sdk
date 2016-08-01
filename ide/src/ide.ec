@@ -2576,18 +2576,11 @@ class IDEWorkSpace : Window
          {
             ideConfig.recentWorkspaces.addRecent(document.fileName);
             ide.updateRecentProjectsMenu();
-            settingsContainer.Save();
          }
          else if(workspace)
-         {
             workspace.recentFiles.addRecent(document.fileName);
-            workspace.Save();
-         }
          else
-         {
             ideConfig.recentFiles.addRecent(document.fileName);
-            settingsContainer.Save();
-         }
          ide.updateRecentFilesMenu();
          ide.AdjustFileMenus();
          return document;
