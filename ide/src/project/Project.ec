@@ -2476,7 +2476,8 @@ private:
       char path[MAX_LOCATION];
       char * name;
       char * compilerName;
-      bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
+      const char * ccCommand = compiler.ccCommand;
+      bool gccCompiler = compiler.ccCommand && (strstr(ccCommand, "gcc") != null || strstr(ccCommand, "g++") != null || strstr(ccCommand, "emcc") != null || strstr(ccCommand, "clang") != null);
       const char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
       Platform platform = compiler.targetPlatform;
 
