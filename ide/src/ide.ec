@@ -306,7 +306,7 @@ class IDEToolbar : ToolBar
          if(ide.workspace && ide.projectView && row && strcmp(row.string, ide.workspace.activeCompiler))
          {
             bool silent = ide.projectView.buildInProgress == none ? false : true;
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(row.string);
+            CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(row.string);
             ide.workspace.activeCompiler = row.string;
             ide.projectView.ShowOutputBuildLog(!silent);
             if(!silent)
@@ -328,7 +328,7 @@ class IDEToolbar : ToolBar
          if(ide.workspace && ide.projectView && row)
          {
             bool silent = ide.projectView.buildInProgress == none ? false : true;
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
+            CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
             ide.workspace.bitDepth = (int)row.tag;
             ide.projectView.ShowOutputBuildLog(!silent);
             if(!silent)
@@ -441,7 +441,7 @@ class IDEWorkSpace : Window
 
       void OnGotoError(const char * line, bool noParsing)
       {
-         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
+         CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.GoToError(line, noParsing, objectFileExt);
          delete compiler;
@@ -449,7 +449,7 @@ class IDEWorkSpace : Window
 
       void OnCodeLocationParseAndGoTo(const char * line)
       {
-         CompilerConfig compiler = ide.workspace ? ideSettings.GetCompilerConfig(ide.workspace.activeCompiler) : null;
+         CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
          delete compiler;
@@ -824,7 +824,7 @@ class IDEWorkSpace : Window
                      newProjectDialog.CreateNewProject();
                      if(projectView)
                      {
-                        ideConfig.recentWorkspaces.addRecent(CopyString(projectView.fileName));
+                        ideConfig.recentWorkspaces.addRecent(projectView.fileName);
                         ide.updateRecentProjectsMenu();
                      }
                   }
@@ -1824,7 +1824,7 @@ class IDEWorkSpace : Window
 
    void DocumentSaved(Window document, const char * fileName)
    {
-      ideConfig.recentFiles.addRecent(CopyString(fileName));
+      ideConfig.recentFiles.addRecent(fileName);
       ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
    }
@@ -1862,7 +1862,7 @@ class IDEWorkSpace : Window
    {
       if(workspace)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
+         CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(workspace.activeCompiler);
          for(prj : workspace.projects)
             projectView.ProjectUpdateMakefileForAllConfigs(prj);
          delete compiler;
@@ -1875,7 +1875,7 @@ class IDEWorkSpace : Window
       if(workspace)
       {
          bool silent = mute || (ide.projectView.buildInProgress == none ? false : true);
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
+         CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(workspace.activeCompiler);
          if(!silent)
          {
             projectView.ShowOutputBuildLog(true);
@@ -2332,7 +2332,7 @@ class IDEWorkSpace : Window
 
                         ide.projectView.ShowOutputBuildLog(true);
                         {
-                           CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
+                           CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
                            ide.projectView.DisplayCompiler(compiler, false);
                            delete compiler;
                         }
@@ -2435,7 +2435,7 @@ class IDEWorkSpace : Window
                   if(prj)
                   {
                      const char * activeConfigName = null;
-                     CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.activeCompiler);
+                     CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(workspace.activeCompiler);
                      prj.StartMonitoring();
                      workspace.AddProject(prj, null);
                      if(toolBar.activeConfig.currentRow && toolBar.activeConfig.currentRow != toolBar.activeConfig.firstRow &&
@@ -2569,12 +2569,23 @@ class IDEWorkSpace : Window
             document.state = maximized;
 
          if(isProject)
-            ideConfig.recentWorkspaces.addRecent(CopyString(document.fileName));
-         else if(!workspace)
-            ideConfig.recentFiles.addRecent(CopyString(document.fileName));
-         ide.AdjustFileMenus();
+         {
+            ideConfig.recentWorkspaces.addRecent(document.fileName);
+            ide.updateRecentProjectsMenu();
+            settingsContainer.Save();
+         }
+         else if(workspace)
+         {
+            workspace.recentFiles.addRecent(document.fileName);
+            workspace.Save();
+         }
+         else
+         {
+            ideConfig.recentFiles.addRecent(document.fileName);
+            settingsContainer.Save();
+         }
          ide.updateRecentFilesMenu();
-
+         ide.AdjustFileMenus();
          return document;
       }
       else
@@ -3168,7 +3179,7 @@ class IDEWorkSpace : Window
                   newProjectDialog.Modal();
                   if(projectView)
                   {
-                     ideConfig.recentWorkspaces.addRecent(CopyString(projectView.fileName));
+                     ideConfig.recentWorkspaces.addRecent(projectView.fileName);
                      ide.updateRecentMenus();
                   }
                   delete newProjectDialog;

@@ -518,7 +518,7 @@ public:
                      {
                         const char * cfgName = prj.config ? prj.config.name : "";
                         char name[MAX_FILENAME];
-                        CompilerConfig compiler = ideSettings.GetCompilerConfig(prj.lastBuildCompilerName);
+                        CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(prj.lastBuildCompilerName);
                         DirExpression objDir = prj.GetObjDir(compiler, prj.config, bitDepth);
                         strcpy(fullPath, prj.topNode.path);
                         PathCatSlash(fullPath, objDir.dir);
@@ -1098,7 +1098,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                   char path[MAX_LOCATION];
                   strcpy(path, workspace.workspaceDir);
                   PathCatSlash(path, workspace.openedFiles[c].path);
-                  workspace.recentFiles.addRecent(CopyString(path));
+                  workspace.recentFiles.addRecent(path);
                }
             }
          }
@@ -1466,7 +1466,7 @@ Workspace LoadLegacyWorkspace(const char * filePath, Array<String> openedFilesNo
                      TrimLSpaces(equal, equal);
                      if(!strcmpi(buffer, "Active Compiler"))
                      {
-                        CompilerConfig compiler = ideSettings.GetCompilerConfig(equal);
+                        CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(equal);
                         if(!compiler)
                            workspace.activeCompiler = defaultCompilerName;
                         else

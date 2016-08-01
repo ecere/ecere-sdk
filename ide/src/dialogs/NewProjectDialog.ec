@@ -211,7 +211,7 @@ class NewProjectDialog : Window
 
       if(prj && projectWindow)
       {
-         CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
+         CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
          ProjectConfig config = prj.config;
          projectWindow.ShowOutputBuildLog(true);
          projectWindow.DisplayCompiler(compiler, false);
@@ -560,7 +560,7 @@ class QuickProjectDialog : Window
 
          if(project && projectWindow)
          {
-            CompilerConfig compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
+            CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
             ProjectConfig config = project.config;
             projectWindow.ShowOutputBuildLog(true);
             projectWindow.DisplayCompiler(compiler, false);

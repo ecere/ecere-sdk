@@ -663,7 +663,7 @@ CompilerConfig GetCompilerConfig()
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
    CompilerConfig compiler = null;
    if(ide && ide.workspace)
-      compiler = ideSettings.GetCompilerConfig(ide.workspace.activeCompiler);
+      compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
    return compiler;
 #else
    incref defaultCompiler;
@@ -926,7 +926,7 @@ private:
 
                if(projectView)
                {
-                  CompilerConfig compiler = ideSettings.GetCompilerConfig(projectView.workspace.activeCompiler);
+                  CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(projectView.workspace.activeCompiler);
                   projectView.AddNode(topNode, null);
                   topNode.row.Move(prev);
 
