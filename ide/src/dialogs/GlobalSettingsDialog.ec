@@ -1171,7 +1171,7 @@ class CompilerOptionsTab : CompilersSubTab
    Label staticLibFileExtLabel { this, position = { 8, 306 }, labeledWindow = staticLibFileExt };
    EditBox staticLibFileExt
    {
-      this, text = $"Output (a, so, exe) file extension";//, hotKey = altH;
+      this, text = $"Target extensions (a, so, exe)";//, hotKey = altH;
       position = { 168, 304 }, size = { 80, 22 };
 
       bool NotifyModified(EditBox editBox)
