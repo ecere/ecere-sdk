@@ -111,7 +111,7 @@ FILE * eC_stdout(void);
 
 FILE * eC_stderr(void);
 
-unsigned int System_MoveFile(const char * source, const char * dest);
+unsigned int System_MoveFile(const char * source, const char * dest, unsigned int replaceAndFlush);
 
 unsigned int System_RenameFile(const char * oldName, const char * newName);
 
@@ -230,7 +230,12 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSp
 
 unsigned int __ecereNameSpace__ecere__sys__MoveFile(const char * source, const char * dest)
 {
-return System_MoveFile(source, dest);
+return System_MoveFile(source, dest, 0);
+}
+
+unsigned int __ecereNameSpace__ecere__sys__MoveFileEx(const char * source, const char * dest, unsigned int options)
+{
+return System_MoveFile(source, dest, (unsigned int)options);
 }
 
 unsigned int __ecereNameSpace__ecere__sys__RenameFile(const char * oldName, const char * newName)
@@ -679,6 +684,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__GuiErrorCode;
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__MoveFileOptions;
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__System;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_;
@@ -853,6 +860,12 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "windowCreationFailed",
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "graphicsLoadingFailed", 259);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "modeSwitchFailed", 260);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveFile", "bool ecere::sys::MoveFile(const char * source, const char * dest)", __ecereNameSpace__ecere__sys__MoveFile, module, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::MoveFileOptions", "uint", 0, 0, (void *)0, (void *)0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__sys__MoveFileOptions = class;
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "overwrite", "bool", 1, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "sync", "bool", 1, 1, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveFileEx", "bool ecere::sys::MoveFileEx(const char * source, const char * dest, ecere::sys::MoveFileOptions options)", __ecereNameSpace__ecere__sys__MoveFileEx, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RenameFile", "bool ecere::sys::RenameFile(const char * oldName, const char * newName)", __ecereNameSpace__ecere__sys__RenameFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DeleteFile", "bool ecere::sys::DeleteFile(const char * fileName)", __ecereNameSpace__ecere__sys__DeleteFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakeDir", "bool ecere::sys::MakeDir(const char * path)", __ecereNameSpace__ecere__sys__MakeDir, module, 1);

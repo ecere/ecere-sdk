@@ -47,7 +47,7 @@ FILE *eC_stdout(void);
 FILE *eC_stderr(void);
 
 // IMPLEMENTED IN _System.c
-bool System_MoveFile(const char * source, const char * dest);
+bool System_MoveFile(const char * source, const char * dest, uint replaceAndFlush);
 bool System_RenameFile(const char * oldName, const char * newName);
 bool System_DeleteFile(const char * fileName);
 bool System_MakeDir(const char * path);
@@ -144,10 +144,18 @@ static Array<Array<const String>> errorMessages { [ sysErrorMessages, guiErrorMe
 
 // --- File, directory & environment manipulation ---
 #undef MoveFile
+#undef MoveFileEx
 
 public bool MoveFile(const char * source, const char * dest)
 {
-   return System_MoveFile(source, dest);
+   return System_MoveFile(source, dest, 0);
+}
+
+public class MoveFileOptions : uint32 { public: bool overwrite:1; bool sync:1; };
+
+public bool MoveFileEx(const char * source, const char * dest, MoveFileOptions options)
+{
+   return System_MoveFile(source, dest, options);
 }
 
 public bool RenameFile(const char * oldName, const char * newName)

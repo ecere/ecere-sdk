@@ -629,11 +629,11 @@ static void getConfigFilePath(char * path, Class _class, char * dir, const char 
 static SettingsIOResult writeConfigFile(const char * path, Class dataType, void * data)
 {
    SettingsIOResult result = error;
-   SafeFile sf;
-   sf = safeWriteFileOpen(path, write);
-   if(sf.file)
+   SafeFile sf = SafeFile::open(path, write);
+   if(sf)
    {
       WriteECONObject(sf.file, dataType, data, 0);
+      sf.sync();
       delete sf;
       result = success;
    }
@@ -648,7 +648,7 @@ static SettingsIOResult readConfigFile(const char * path, Class dataType, void *
    SafeFile sf;
    if(!FileExists(path))
       result = fileNotFound;
-   else if((sf = safeWriteFileOpen(path, read)))
+   else if((sf = SafeFile::open(path, read)))
    {
       JSONResult jsonResult;
       {
@@ -678,69 +678,90 @@ class SafeFile
    char path[MAX_LOCATION];
    char tmp[MAX_LOCATION];
 
-   ~SafeFile()
+   SafeFile ::open(const char * path, FileOpenMode mode)
    {
-      delete file;
-      // how to make this atomic ?
-      if(mode == write)
+      SafeFile result = null;
+      if(mode == write || mode == read)
+      {
+         SafeFile sf { mode = mode };
+         int c;
+         bool locked = false;
+         FileLock lockType = mode == write ? exclusive : shared;
+
+         strcpy(sf.path, path);
+         strcpy(sf.tmp, path);
+         strcat(sf.tmp, ".tmp");
+         if(mode == write && FileExists(sf.tmp).isFile)
+            DeleteFile(sf.tmp);
+
+         sf.file = FileOpen(mode == write ? sf.tmp : path, mode);
+         if(sf.file)
+         {
+            for(c = 0; c < 10 && !(locked = sf.file.Lock(lockType, 0, 0, false)); c++) Sleep(0.01);
+            if(locked)
+               result = sf;
+            else if(mode == write)
+               PrintLn($"warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: ", sf.tmp);
+            else
+               PrintLn($"warning: SafeFile::open: unable to obtain shared lock on file for reading: ", path);
+         }
+         else if(mode == write)
+            PrintLn($"warning: SafeFile::open: unable to open temporary file for writing: ", sf.tmp);
+         else
+            PrintLn($"warning: SafeFile::open: unable to open file for reading: ", path);
+
+         if(!result)
+            delete sf;
+      }
+      else
+         PrintLn($"warning: SafeFile::open: does not yet support FileOpenMode::", mode);
+      return result;
+   }
+
+   void sync()
+   {
+      if(file && mode == write)
       {
          int c;
-         for(c = 0; c < 10; c++)
+         File f = FileOpen(path, FileExists(path) ? read : write);
+         if(f)
          {
-            if(FileExists(path).isFile)
-               DeleteFile(path);
+            bool locked = true;
+            for(c = 0; c < 10 && !(locked = f.Lock(exclusive, 0,0, false)); c++) Sleep(0.01);
+
+            if(locked)
+            {
+               f.Unlock(0,0, false);
+               delete f;
+               file.Unlock(0,0, false);
+               delete file;
+
+               for(c = 0; c < 10; c++)
+               {
+                  if(MoveFileEx(tmp, path, { true, true }))
+                     break;
+                  else
+                     Sleep(0.01);
+               }
+            }
             else
             {
-               MoveFile(tmp, path);
-               if(FileExists(path).isFile)
-                  break;
+               delete f;
+               PrintLn($"warning: SafeFile::sync: failed to lock file", mode);
             }
          }
       }
    }
-}
 
-SafeFile safeWriteFileOpen(const char * path, FileOpenMode mode)
-{
-   SafeFile sf { mode = mode };
-   int c;
-   bool locked = false;
-   strcpy(sf.path, path);
-   strcpy(sf.tmp, path);
-   strcat(sf.tmp, ".tmp");
-   if(mode == write)
+
+   ~SafeFile()
    {
-      if(FileExists(sf.tmp).isFile)
-         DeleteFile(sf.tmp);
-      sf.file = FileOpen(sf.tmp, write);
-      if(sf.file)
+      if(file)
       {
-         for(c = 0; c < 10 && !(locked = sf.file.Lock(exclusive, 0, 0, false)); c++);
-         if(!locked)
-         {
-            delete sf.file;
-            PrintLn($"warning: safeWriteFileOpen: unable to obtain exclusive lock on temporary file for writing: ", sf.tmp);
-         }
-      }
-      else
-         PrintLn($"warning: safeWriteFileOpen: unable to open temporary file for writing: ", sf.tmp);
-   }
-   else if(mode == read)
-   {
-      sf.file = FileOpen(path, read);
-      if(sf.file)
-      {
-         for(c = 0; c < 10 && !(locked = sf.file.Lock(shared, 0, 0, false)); c++) Sleep(0.01);
-         if(!locked)
-         {
-            delete sf.file;
-            PrintLn($"warning: safeWriteFileOpen: unable to obtain shared lock on file for reading: ", path);
-         }
+         file.Unlock(0,0, false);
+         delete file;
       }
    }
-   else
-      PrintLn($"warning: safeWriteFileOpen: does not yet support FileOpenMode::", mode);
-   return sf;
 }
 
 class RecentFilesData

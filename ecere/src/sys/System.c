@@ -70,13 +70,14 @@ char * __ecereNameSpace__ecere__sys__SearchString(const char * buffer, int start
 
 FileAttribs FILE_FileExists(const char * fileName);
 
-bool System_MoveFile(const char * source, const char * dest)
+bool System_MoveFile(const char * source, const char * dest, uint replaceAndFlush)
 {
 #ifdef __WIN32__
    bool result;
    uint16 * _wsource = __ecereNameSpace__ecere__sys__UTF8toUTF16(source, null);
    uint16 * _wdest = __ecereNameSpace__ecere__sys__UTF8toUTF16(dest, null);
-   result = MoveFileEx(_wsource, _wdest, MOVEFILE_COPY_ALLOWED) != 0;
+                                                                  // TODO: Select options individually
+   result = MoveFileEx(_wsource, _wdest, MOVEFILE_COPY_ALLOWED | (replaceAndFlush ? MOVEFILE_REPLACE_EXISTING|MOVEFILE_WRITE_THROUGH : 0)) != 0;
    __ecereNameSpace__ecere__com__eSystem_Delete(_wsource);
    __ecereNameSpace__ecere__com__eSystem_Delete(_wdest);
    return result;
