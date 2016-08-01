@@ -71,7 +71,7 @@
    #define GL_TEXTURE_CUBE_MAP_NEGATIVE_Z    GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_OES
    #define GL_REFLECTION_MAP                 GL_REFLECTION_MAP_OES
    #define GL_TEXTURE_GEN_MODE               GL_TEXTURE_GEN_MODE_OES
-   #define GL_TEXTURE_GEN_STR                GL_TEXTURE_GEN_STR_OES 
+   #define GL_TEXTURE_GEN_STR                GL_TEXTURE_GEN_STR_OES
 
    #define glTexGeni    glTexGeniOES
    #define glTexGenfv   glTexGenfvOES

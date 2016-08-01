@@ -568,7 +568,7 @@ public:
    void swizzle(SwizzleMode swizzle)
    {
 #ifdef _DEBUG
-      if(!((DefaultShaderBits)state).texturing && !((DefaultShaderBits)state).cubeMap)
+      if(swizzle && !((DefaultShaderBits)state).texturing && !((DefaultShaderBits)state).cubeMap)
          printf("swizzle() with texturing off\n");
 #endif
       if(((DefaultShaderBits)state).swizzle != swizzle)

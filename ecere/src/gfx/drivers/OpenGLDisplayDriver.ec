@@ -3724,37 +3724,37 @@ class OpenGLDisplayDriver : DisplayDriver
          SETCAPS(oglSystem.capabilities);
          if(!mesh.flags.vertices)
          {
-            oglMesh.vertices.free(glCaps_vertexBuffer);
+            oglMesh.vertices.free();
             delete mesh.vertices;
          }
          if(!mesh.flags.normals)
          {
-            oglMesh.normals.free(glCaps_vertexBuffer);
+            oglMesh.normals.free();
             delete mesh.normals;
          }
          if(!mesh.flags.tangents)
          {
-            oglMesh.tangents.free(glCaps_vertexBuffer);
+            oglMesh.tangents.free();
             delete mesh.tangents;
          }
          if(!mesh.flags.lightVectors)
          {
-            oglMesh.lightVectors.free(glCaps_vertexBuffer);
+            oglMesh.lightVectors.free();
             delete mesh.lightVectors;
          }
          if(!mesh.flags.texCoords1)
          {
-            oglMesh.texCoords.free(glCaps_vertexBuffer);
+            oglMesh.texCoords.free();
             delete mesh.texCoords;
          }
          if(!mesh.flags.texCoords2)
          {
-            oglMesh.texCoords2.free(glCaps_vertexBuffer);
+            oglMesh.texCoords2.free();
             // delete mesh.texCoords2;
          }
          if(!mesh.flags.colors)
          {
-            oglMesh.colors.free(glCaps_vertexBuffer);
+            oglMesh.colors.free();
             delete mesh.colors;
          }
          if(!mesh.flags)
@@ -3903,7 +3903,7 @@ class OpenGLDisplayDriver : DisplayDriver
       SETCAPS(oglSystem.capabilities);
       if(oglIndices)
       {
-         oglIndices.buffer.free(glCaps_vertexBuffer);
+         oglIndices.buffer.free();
          delete oglIndices.indices;
          delete oglIndices;
       }
