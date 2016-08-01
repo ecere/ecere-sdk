@@ -726,6 +726,10 @@ class IDEWorkSpace : Window
          fileMenu, $"Global Settings...", g;
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
+            // Reload configs here until we setup a configs directory monitor
+            ideConfig.compilers.Free();
+            ideConfig.compilers.read();
+
             globalSettingsDialog.master = this;
             if(ide.workspace && ide.workspace.activeCompiler)
                globalSettingsDialog.workspaceActiveCompiler = ide.workspace.activeCompiler;
