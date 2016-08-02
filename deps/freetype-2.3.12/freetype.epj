@@ -31,8 +31,8 @@
          "Name" : "Release",
          "Options" : {
             "Warnings" : "None",
-            "Optimization" : "None",
-            "FastMath" : false
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],
