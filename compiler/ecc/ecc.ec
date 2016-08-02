@@ -361,7 +361,7 @@ class CompilerApp : Application
                else
                   valid = false;
             }
-            else if(!strcmp(arg+1, "isystem") || !strcmp(arg+1, "isysroot"))
+            else if(!strcmp(arg+1, "isystem") || !strcmp(arg+1, "isysroot") || !strcmp(arg+1, "s"))
             {
                if(c + 1 < argc)
                {
