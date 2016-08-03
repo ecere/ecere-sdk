@@ -3,6 +3,8 @@
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
+#undef __BLOCKS__
+
 import "Color"
 
 #define _Noreturn
