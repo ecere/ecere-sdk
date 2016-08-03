@@ -1,0 +1,112 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "materials",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "materials",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "TargetFileName" : "materials.html",
+            "Libraries" : [
+               "ecereStatic",
+               "z",
+               "freetype",
+               "jpeg",
+               "png"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten"
+            ],
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "materials.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "watersky",
+         "Files" : [
+            "../ModelViewer/skycube/bk.jpg",
+            "../ModelViewer/skycube/dn.jpg",
+            "../ModelViewer/skycube/fr.jpg",
+            "../ModelViewer/skycube/lf.jpg",
+            "../ModelViewer/skycube/rt.jpg",
+            "../ModelViewer/skycube/up.jpg"
+         ]
+      },
+      {
+         "Folder" : "forest",
+         "Files" : [
+            "bk.jpg",
+            "dn.jpg",
+            "fr.jpg",
+            "lf.jpg",
+            "rt.jpg",
+            "up.jpg"
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "shaders",
+               "Files" : [
+                  "../../../ecere/src/gfx/drivers/gl3/default.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/default.vert"
+               ]
+            },
+            "C:/Windows/Fonts/tahomabd.ttf"
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Emscripten",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      },
+      "teapot.3DS",
+      "normal.jpg"
+   ]
+}
