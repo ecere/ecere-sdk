@@ -1074,6 +1074,7 @@ static bool ReadMap(FileInfo * info, Material mat)
       {
          char * name;
          char location[MAX_LOCATION];
+         char bumpName[MAX_LOCATION+5];
 
          ReadASCIIZ(info->f, &name);
 
@@ -1086,14 +1087,15 @@ static bool ReadMap(FileInfo * info, Material mat)
             strcpy(location, info->textureDirectory);
             PathCat(location, name);
          }
+         strcpy(bumpName, "BUMP:");
+         strcat(bumpName, location);
 
          if(info->parent->chunkId == MAT_BUMPMAP)
          {
             // To avoid messing up the diffuse texture if same bitmap is specified by mistake...
-            char bumpName[MAX_LOCATION+5];
-            strcpy(bumpName, "BUMP:");
-            strcat(bumpName, location);
-            if(!mat.bumpMap)
+            if(displaySystem.GetTexture(location))
+               mat.bumpMap = null; // Bad bump map if it's the same as the diffuse map...
+            else if(!mat.bumpMap)
             {
                mat.bumpMap = displaySystem.GetTexture(bumpName);
                if(!mat.bumpMap)
@@ -1164,6 +1166,10 @@ static bool ReadMap(FileInfo * info, Material mat)
                if(!mat.baseMap)
                {
                   mat.baseMap = Bitmap { };
+                  if(displaySystem.GetTexture(bumpName))
+                  {
+                     mat.bumpMap = null; // Bad bump map if it's the same as the diffuse map...
+                  }
                   if(!mat.baseMap.Load(location, null, null) ||
                      !mat.baseMap.Convert(null, pixelFormat888, null) ||
                      !displaySystem.AddTexture(location, mat.baseMap))
