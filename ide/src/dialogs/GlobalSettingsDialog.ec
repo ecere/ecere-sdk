@@ -19,8 +19,6 @@ class GlobalSettingsDialog : Window
    minClientSize = { 560, 542 };
    nativeDecorations = true;
 
-   IDESettings ideSettings;
-   IDESettingsContainer settingsContainer;
    String workspaceActiveCompiler;
 
    TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 8, right = 8, bottom = 40 } };
@@ -129,7 +127,7 @@ class GlobalSettingsDialog : Window
 
             if(compilerSettingsChanged)
             {
-               ideConfig.compilers.write(cfgsToWrite);
+               ideConfig.compilers.write(settingsContainer, cfgsToWrite);
                OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
                cfgsToWrite.Free();
                delete cfgsToWrite;
@@ -1397,14 +1395,14 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
    bool OnCreate()
    {
       GlobalSettingsDialog dialog = this.dialog;
-      if(dialog && dialog.compilersTab.compilerConfigs && dialog.ideSettings)
+      if(dialog && dialog.compilersTab.compilerConfigs && ideSettings)
       {
          DataRow row;
          for(compiler : ideConfig.compilers)
          {
             row = defaultCompilerDropBox.AddString(compiler.name);
-            if(dialog.ideSettings.defaultCompiler && dialog.ideSettings.defaultCompiler[0] &&
-                  !strcmp(compiler.name, dialog.ideSettings.defaultCompiler))
+            if(ideSettings.defaultCompiler && ideSettings.defaultCompiler[0] &&
+                  !strcmp(compiler.name, ideSettings.defaultCompiler))
                defaultCompilerDropBox.currentRow = row;
          }
          if(!defaultCompilerDropBox.currentRow && defaultCompilerDropBox)

@@ -20,20 +20,15 @@ import "StringsBox"
 
 import "OldIDESettings"
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-import "ide"
-import "process"
+#ifdef __WIN32__
+#define WIN32_LEAN_AND_MEAN
+#define Sleep _Sleep
+#include <windows.h>
+#undef MoveFileEx
+#undef Sleep
+#undef MessageBox
+#undef GetObject
 #endif
-
-IDEConfigHolder ideConfig { };
-
-IDESettings ideSettings;
-
-IDESettingsContainer settingsContainer
-{
-   dataOwner = &ideSettings;
-   dataClass = class(IDESettings);
-};
 
 define MaxRecent = 9;
 
@@ -297,20 +292,28 @@ class IDEConfigHolder
 
 class IDESettingsContainer : GlobalSettings
 {
+   virtual void onLoadCompilerConfigs();
+   virtual void onLoadRecentFiles();
+   virtual void onLoadRecentProjects();
+
+   CompilerConfigs compilerConfigs;
+   RecentFiles recentFiles;
+   RecentWorkspaces recentProjects;
+
    property bool useNewConfigurationFiles
    {
       set
       {
          if(value)
          {
-            settingsContainer.driver = "ECON";
+            driver = "ECON";
             settingsName = "config";
             settingsExtension = "econ";
             settingsDirectory = settingsDir;
          }
          else
          {
-            settingsContainer.driver = "JSON";
+            driver = "JSON";
             settingsName = ideSettingsName;
             settingsExtension = null;
             settingsDirectory = null;
@@ -334,7 +337,7 @@ class IDESettingsContainer : GlobalSettings
             int c;
             bool locked;
             for(c = 0; c < 10 && !(locked = f.Lock(shared, 0, 0, false)); c++) ecere::sys::Sleep(0.01);
-            RecentFiles::read();
+            recentFiles.read(this);
             f.Unlock(0,0,true);
             delete f;
          }
@@ -356,13 +359,37 @@ class IDESettingsContainer : GlobalSettings
             int c;
             bool locked;
             for(c = 0; c < 10 && !(locked = f.Lock(shared, 0, 0, false)); c++) ecere::sys::Sleep(0.01);
-            RecentWorkspaces::read();
+            recentProjects.read(this);
             f.Unlock(0,0,true);
             delete f;
          }
          return true;
       }
    };
+
+   static void getConfigFilePath(char * path, Class _class, char * dir, const char * configName)
+   {
+      if(dir) *dir = 0;
+      strcpy(path, settingsFilePath);
+      StripLastDirectory(path, path);
+      if(oldConfig)
+         PathCatSlash(path, settingsDir);
+      if(_class == class(CompilerConfig))
+      {
+         PathCatSlash(path, "compilerConfigs");
+         if(dir)
+            strcpy(dir, path);
+         if(configName)
+         {
+            PathCatSlash(path, configName);
+            strcat(path, ".econ");
+         }
+      }
+      else if(_class == class(RecentFilesData))
+         PathCatSlash(path, "recentFiles.econ");
+      else if(_class == class(RecentWorkspacesData))
+         PathCatSlash(path, "recentWorkspaces.econ");
+   }
 
 private:
    bool oldConfig;
@@ -515,21 +542,17 @@ private:
       if(oldConfig)
       {
          data.compilerConfigs.ensureDefaults();
-         data.compilerConfigs.write(null);
+         data.compilerConfigs.write(this, null);
          data.compilerConfigs.Free();
 
-         data.recentFiles.write();
+         data.recentFiles.write(this);
          data.recentFiles.Free();
 
-         data.recentProjects.write();
+         data.recentProjects.write(this);
          data.recentProjects.Free();
 
          Save();
       }
-
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-      globalSettingsDialog.ideSettings = data;
-#endif
       return result;
    }
 
@@ -600,30 +623,6 @@ static Map<String, CompilerConfig> getCompilerConfigsByName(const char * path)
       }
    }
    return map;
-}
-
-static void getConfigFilePath(char * path, Class _class, char * dir, const char * configName)
-{
-   if(dir) *dir = 0;
-   strcpy(path, settingsContainer.settingsFilePath);
-   StripLastDirectory(path, path);
-   if(settingsContainer.oldConfig)
-      PathCatSlash(path, settingsDir);
-   if(_class == class(CompilerConfig))
-   {
-      PathCatSlash(path, "compilerConfigs");
-      if(dir)
-         strcpy(dir, path);
-      if(configName)
-      {
-         PathCatSlash(path, configName);
-         strcat(path, ".econ");
-      }
-   }
-   else if(_class == class(RecentFilesData))
-      PathCatSlash(path, "recentFiles.econ");
-   else if(_class == class(RecentWorkspacesData))
-      PathCatSlash(path, "recentWorkspaces.econ");
 }
 
 static SettingsIOResult writeConfigFile(const char * path, Class dataType, void * data)
@@ -804,7 +803,7 @@ class IDESettings : GlobalSettingsData
 public:
    property CompilerConfigs compilerConfigs
    {
-      set { if(settingsContainer.oldConfig) { if(compilerConfigs) compilerConfigs.Free(); delete compilerConfigs; if(value) compilerConfigs = value; } }
+      set { /*if(settingsContainer.oldConfig)*/ { if(compilerConfigs) compilerConfigs.Free(); delete compilerConfigs; if(value) compilerConfigs = value; } }
       get { return compilerConfigs; }
       isset { return false; }
    }
@@ -1061,37 +1060,31 @@ private:
 
 class RecentFiles : RecentPaths
 {
-   void onAdd()
-   {
-      write();
-   }
-
-   void ::read()
+   void read(IDESettingsContainer settingsContainer)
    {
       char path[MAX_LOCATION];
       RecentFilesData d = null;
       Class _class = class(RecentFilesData);
-      getConfigFilePath(path, _class, null, null);
+      settingsContainer.getConfigFilePath(path, _class, null, null);
       readConfigFile(path, _class, &d);
       if(d && d.recentFiles && d.recentFiles.count)
       {
-         ideConfig.recentFiles = d.recentFiles;
-         d.recentFiles = null;
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-         ide.updateRecentFilesMenu();
-#endif
+         Free();
+         Copy((void *)d.recentFiles);
+         settingsContainer.recentFiles = this; // Merge IDEConfigHolder / IDESettingsContainer?
       }
       delete d;
       settingsContainer.recentFilesMonitor.fileName = path;
       settingsContainer.recentFilesMonitor.StartMonitoring();
+      settingsContainer.onLoadRecentFiles();
    }
 
-   void write()
+   void write(IDESettingsContainer settingsContainer)
    {
       char path[MAX_LOCATION];
       RecentFilesData d { };
       Class _class = class(RecentFilesData);
-      getConfigFilePath(path, _class, null, null);
+      settingsContainer.getConfigFilePath(path, _class, null, null);
       d.recentFiles = this;
       writeConfigFile(path, _class, d);
       d.recentFiles = null;
@@ -1101,37 +1094,31 @@ class RecentFiles : RecentPaths
 
 class RecentWorkspaces : RecentPaths
 {
-   void onAdd()
-   {
-      write();
-   }
-
-   void ::read()
+   void read(IDESettingsContainer settingsContainer)
    {
       char path[MAX_LOCATION];
       RecentWorkspacesData d = null;
       Class _class = class(RecentWorkspacesData);
-      getConfigFilePath(path, _class, null, null);
+      settingsContainer.getConfigFilePath(path, _class, null, null);
       readConfigFile(path, _class, &d);
       if(d && d.recentWorkspaces && d.recentWorkspaces.count)
       {
-         ideConfig.recentProjects = d.recentWorkspaces;
-         d.recentWorkspaces = null;
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-         ide.updateRecentProjectsMenu();
-#endif
+         Free();
+         Copy((void *)d.recentWorkspaces);
+         settingsContainer.recentProjects = this; // Merge IDEConfigHolder / IDESettingsContainer?
       }
+      delete d;
       settingsContainer.recentProjectsMonitor.fileName = path;
       settingsContainer.recentProjectsMonitor.StartMonitoring();
-      delete d;
+      settingsContainer.onLoadRecentProjects();
    }
 
-   void write()
+   void write(IDESettingsContainer settingsContainer)
    {
       char path[MAX_LOCATION];
       RecentWorkspacesData d { };
       Class _class = class(RecentWorkspacesData);
-      getConfigFilePath(path, _class, null, null);
+      settingsContainer.getConfigFilePath(path, _class, null, null);
       d.recentWorkspaces = this;
       writeConfigFile(path, _class, d);
       d.recentWorkspaces = null;
@@ -1141,8 +1128,6 @@ class RecentWorkspaces : RecentPaths
 
 class RecentPaths : Array<String>
 {
-   virtual void onAdd();
-
    IteratorPointer Add(T value)
    {
       int c;
@@ -1176,7 +1161,6 @@ class RecentPaths : Array<String>
       while(count >= MaxRecent)
          Delete(GetLast());
       ip = Insert(null, filePath);
-      onAdd();
       return ip;
    }
 
@@ -1739,12 +1723,12 @@ public:
       return d;
    }
 
-   void write()
+   void write(IDESettingsContainer settingsContainer)
    {
       char dir[MAX_LOCATION];
       char path[MAX_LOCATION];
       const char * settingsFilePath = settingsContainer.settingsFilePath;
-      getConfigFilePath(path, _class, dir, name);
+      settingsContainer.getConfigFilePath(path, _class, dir, name);
       if(FileExists(settingsFilePath) && !FileExists(dir))
       {
          MakeDir(dir);
@@ -1843,19 +1827,21 @@ class CompilerConfigs : List<CompilerConfig>
       return list;
    }
 
-   void read()
+   bool read(IDESettingsContainer settingsContainer)
    {
       if(settingsContainer.settingsFilePath)
       {
          char dir[MAX_LOCATION];
          char path[MAX_LOCATION];
          Class _class = class(CompilerConfig);
-         getConfigFilePath(path, _class, dir, null);
+         settingsContainer.getConfigFilePath(path, _class, dir, null);
          if(dir[0])
          {
             AVLTree<const String> addedConfigs { };
             Map<String, CompilerConfig> compilerConfigsByName = getCompilerConfigsByName(dir);
             MapIterator<const String, CompilerConfig> it { map = compilerConfigsByName };
+            Free();
+            settingsContainer.compilerConfigs = this; // Merge IDEConfigHolder / IDESettingsContainer?
             if(it.Index("Default", false))
             {
                CompilerConfig ccfg = it.data;
@@ -1870,30 +1856,23 @@ class CompilerConfigs : List<CompilerConfig>
                   addedConfigs.Add(ccfg.name);
                }
             }
-            /*
-            for(ccfg : this)
-            {
-               if(!addedConfigs.Find(ccfg.name))
-                  Add(ccfg.Copy());
-            }
-            */
             delete addedConfigs;
             ensureDefaults();
             compilerConfigsByName.Free();
             delete compilerConfigsByName;
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-            ide.UpdateCompilerConfigs(true);
-#endif
+            settingsContainer.onLoadCompilerConfigs();
+            return true;
          }
       }
+      return false;
    }
 
-   void write(AVLTree<String> cfgsToWrite)
+   void write(IDESettingsContainer settingsContainer, AVLTree<String> cfgsToWrite)
    {
       char dir[MAX_LOCATION];
       char path[MAX_LOCATION];
       Map<String, String> paths;
-      getConfigFilePath(path, class(CompilerConfig), dir, null);
+      settingsContainer.getConfigFilePath(path, class(CompilerConfig), dir, null);
       paths = getCompilerConfigFilePathsByName(dir);
       {
          MapIterator<String, String> it { map = paths };
@@ -1901,7 +1880,7 @@ class CompilerConfigs : List<CompilerConfig>
          {
             CompilerConfig ccfg = c;
             if(!cfgsToWrite || cfgsToWrite.Find(ccfg.name))
-               ccfg.write();
+               ccfg.write(settingsContainer);
             if(it.Index(ccfg.name, false))
             {
                delete it.data;
@@ -1983,6 +1962,24 @@ const String GetLanguageString()
       language = lang;
    }
    return language;
+}
+
+void setEcereLanguageInWinRegEnvironment(const char * languageCode)
+{
+#ifdef __WIN32__
+   HKEY key = null;
+   uint16 wLanguage[256];
+   DWORD status;
+   wLanguage[0] = 0;
+
+   RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   if(key)
+   {
+      UTF8toUTF16Buffer(languageCode, wLanguage, sizeof(wLanguage) / sizeof(uint16));
+      RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
+      RegCloseKey(key);
+   }
+#endif
 }
 
 bool LanguageRestart(const char * code, Application app, IDESettings settings, IDESettingsContainer settingsContainer, Window ide, Window projectView, bool wait)

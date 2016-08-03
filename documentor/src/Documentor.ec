@@ -5,6 +5,14 @@ import "HTMLView"
 import "IDESettings"
 import "SettingsDialog"
 
+IDESettings ideSettings;
+
+IDESettingsContainer settingsContainer
+{
+   dataOwner = &ideSettings;
+   dataClass = class(IDESettings);
+};
+
 static Context globalContext { };
 static OldList defines { };
 static OldList imports { };

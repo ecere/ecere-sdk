@@ -1428,6 +1428,7 @@ class InstallThread : Thread
 
          // Configure IDE
          IDESettings settings = null; // Don't instantiate yet so we can pick up old settings
+         CompilerConfigs configs { };
 
          IDESettingsContainer settingsContainer
          {
@@ -1442,7 +1443,9 @@ class InstallThread : Thread
          ((GuiApplication)__thisModule).SignalEvent();
 
          settingsContainer.Load();
-         compiler = settings.GetCompilerConfig(defaultCompilerName);
+         configs.read(settingsContainer);
+
+         compiler = configs.GetCompilerConfig(defaultCompilerName);
          if(compiler)
          {
             {
@@ -1537,8 +1540,14 @@ class InstallThread : Thread
          }
 
          settingsContainer.Save();
+         {
+            AVLTree<String> cfgsToWrite { [ compiler.name ] };
+            configs.write(settingsContainer, cfgsToWrite);
+            delete cfgsToWrite;
+         }
          delete settingsContainer;
          delete settings;
+         delete configs;
 
          // Set up Uninstaller
          ((GuiApplication)__thisModule).Lock();

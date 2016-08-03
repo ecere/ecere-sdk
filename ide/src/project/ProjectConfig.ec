@@ -1,7 +1,3 @@
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
-import "ide"
-#endif
-
 import "Project"
 
 enum DirExpressionType { unknown, targetDir, intermediateObjectsDir };  // "type" is not right
@@ -40,10 +36,10 @@ class DirExpression : struct
       {
          if(ideSettings)
          {
-         if(type == targetDir)
-            expr = ideSettings.projectDefaultTargetDir;
-         else if(type == intermediateObjectsDir)
-            expr = ideSettings.projectDefaultIntermediateObjDir;
+            if(type == targetDir)
+               expr = ideSettings.projectDefaultTargetDir;
+            else if(type == intermediateObjectsDir)
+               expr = ideSettings.projectDefaultIntermediateObjDir;
          }
          if(!expr || !expr[0])
             expr = defaultObjDirExpression;

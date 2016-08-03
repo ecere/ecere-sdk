@@ -16,6 +16,16 @@ define pathListSep = ":";
 extern int getch(void);
 #endif
 
+IDESettings ideSettings;
+
+IDESettingsContainer settingsContainer
+{
+   dataOwner = &ideSettings;
+   dataClass = class(IDESettings);
+};
+
+IDEConfigHolder ideConfig { };
+
 void ParseDirList(char * string, Container<String> list)
 {
    int c;
@@ -264,6 +274,8 @@ class epj2makeApp : GuiApplication
                   const char * compiler = getenv("COMPILER");
                   if(!compiler) compiler = "Default";
                   settingsContainer.Load();
+                  ideConfig.compilers.read(settingsContainer);
+
                   //incref ideSettings;
                   delete settingsContainer;
 

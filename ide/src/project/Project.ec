@@ -6,7 +6,9 @@ public import "ecere"
 
 import "DynamicString"
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if defined(ECERE_EPJ2MAKE)
+import "epj2make"
+#else
 import "ide"
 // We should have the .sln/.vcproj generation even on other platforms
 // e.g. detect from an environment variable pointing to a Windows drive

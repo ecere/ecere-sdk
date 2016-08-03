@@ -59,6 +59,20 @@ define pathListSep = ";";
 define pathListSep = ":";
 #endif
 
+IDEConfigHolder ideConfig { };
+
+IDESettings ideSettings;
+
+IDESettingsContainer settingsContainer
+{
+   dataOwner = &ideSettings;
+   dataClass = class(IDESettings);
+
+   void onLoadCompilerConfigs()     { ide.UpdateCompilerConfigs(true); }
+   void onLoadRecentFiles()         { ide.updateRecentFilesMenu(); }
+   void onLoadRecentProjects()      { ide.updateRecentProjectsMenu(); }
+};
+
 define maxPathLen = 65 * MAX_LOCATION;
 
 class PathBackup : struct
@@ -151,9 +165,6 @@ FileDialog ideProjectFileDialog
 
 GlobalSettingsDialog globalSettingsDialog
 {
-   ideSettings = ideSettings;
-   settingsContainer = settingsContainer;
-
    void OnGlobalSettingChange(GlobalSettingsChange globalSettingsChange)
    {
       switch(globalSettingsChange)
@@ -727,8 +738,7 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             // Reload configs here until we setup a configs directory monitor
-            ideConfig.compilers.Free();
-            ideConfig.compilers.read();
+            ideConfig.compilers.read(settingsContainer);
 
             globalSettingsDialog.master = this;
             if(ide.workspace && ide.workspace.activeCompiler)
@@ -829,6 +839,7 @@ class IDEWorkSpace : Window
                      if(projectView)
                      {
                         ideConfig.recentWorkspaces.addRecent(projectView.fileName);
+                        ideConfig.recentWorkspaces.write(settingsContainer);
                         ide.updateRecentProjectsMenu();
                      }
                   }
@@ -1829,6 +1840,7 @@ class IDEWorkSpace : Window
    void DocumentSaved(Window document, const char * fileName)
    {
       ideConfig.recentFiles.addRecent(fileName);
+      ideConfig.recentFiles.write(settingsContainer);
       ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
    }
@@ -2575,12 +2587,16 @@ class IDEWorkSpace : Window
          if(isProject)
          {
             ideConfig.recentWorkspaces.addRecent(document.fileName);
+            ideConfig.recentWorkspaces.write(settingsContainer);
             ide.updateRecentProjectsMenu();
          }
          else if(workspace)
             workspace.recentFiles.addRecent(document.fileName);
          else
+         {
             ideConfig.recentFiles.addRecent(document.fileName);
+            ideConfig.recentFiles.write(settingsContainer);
+         }
          ide.updateRecentFilesMenu();
          ide.AdjustFileMenus();
          return document;
@@ -3177,6 +3193,7 @@ class IDEWorkSpace : Window
                   if(projectView)
                   {
                      ideConfig.recentWorkspaces.addRecent(projectView.fileName);
+                     ideConfig.recentWorkspaces.write(settingsContainer);
                      ide.updateRecentMenus();
                   }
                   delete newProjectDialog;
@@ -3672,9 +3689,9 @@ class IDEApp : GuiApplication
          }
       }
 
-      ideConfig.compilers.read();
-      ideConfig.recentFiles.read();
-      ideConfig.recentWorkspaces.read();
+      ideConfig.compilers.read(settingsContainer);
+      ideConfig.recentFiles.read(settingsContainer);
+      ideConfig.recentWorkspaces.read(settingsContainer);
 
       // First count files arg to decide whether to maximize
       {
@@ -3737,8 +3754,6 @@ class IDEApp : GuiApplication
          ide.OpenFile(fullPath, app.argFilesCount > 1, true, null, yes, normal, false);
       }
       */
-
-      globalSettingsDialog.settingsContainer = settingsContainer;
 
       // Default to language specified by environment if no language selected
       if(!ideSettings.language)
