@@ -651,7 +651,6 @@ private:
       int frame;
       int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0, dirsMatchedCount = 0;
       //double lastTime = GetTime();
-      SearchStackFrame stack[stackSize];
       FindInFilesMode mode = this.mode;
 
       EditBox replaceEdit = null;
@@ -712,6 +711,8 @@ private:
 
       if(mode == directory)
       {
+         SearchStackFrame * stack = new0 SearchStackFrame[stackSize];
+
          strcpy(stack[0].path, dir);
          stack[0].fileList = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false
 
@@ -821,13 +822,15 @@ private:
          }
          if(abort)
             for( ; frame >= 0 ; frame--)
-               stack[frame].fileList.Stop();
+               if(frame < stackSize)
+                  stack[frame].fileList.Stop();
+         delete stack;
       }
       else if(mode == workspace || mode == project)
       {
-         bool firtIteration = true;
+         bool firstIteration = true;
          Project prj = project;
-         ProjectNode stack[1024];
+         ProjectNode * stack = new0 ProjectNode[stackSize];
          Iterator<Project> it { ide.workspace.projects };
 
          while(true)
@@ -839,17 +842,17 @@ private:
             }
             stack[1] = projectNode ? projectNode : prj.topNode;
 
-            for(frame = 1; frame && !abort;)
+            for(frame = 1; frame && !abort && frame < stackSize-1;)
             {
                switch(stack[frame].type)
                {
                   case project:
-                     if((subDirs || firtIteration) && stack[frame].files && stack[frame].files.count)
+                     if((subDirs || firstIteration) && stack[frame].files && stack[frame].files.count)
                      {
                         int lastFrame = frame;
                         frame++;
                         stack[frame] = stack[lastFrame].files.first;
-                        firtIteration = false;
+                        firstIteration = false;
                      }
                      break;
                   case file:
@@ -932,12 +935,12 @@ private:
                                  "%s\n", relative ? fileRelative : filePath);
                         app.Unlock();
                      }
-                     if((subDirs || firtIteration) && stack[frame].files && stack[frame].files.count)
+                     if((subDirs || firstIteration) && stack[frame].files && stack[frame].files.count)
                      {
                         int lastFrame = frame;
                         frame++;
                         stack[frame] = stack[lastFrame].files.first;
-                        firtIteration = false;
+                        firstIteration = false;
                      }
                      else
                         stack[frame] = stack[frame].next;
@@ -960,9 +963,11 @@ private:
          }
          if(abort)
          {
-            for( ; frame ; frame--)
-               stack[frame] = null;
+            for( ; frame >= 0; frame--)
+               if(frame < stackSize)
+                  stack[frame] = null;
          }
+         delete stack;
       }
       delete replaceEdit;
 
