@@ -705,7 +705,7 @@ class OpenGLDisplayDriver : DisplayDriver
          vao = glBindVertexArray != null && !oglDisplay.compat;
 #endif
 #if ENABLE_GL_FBO
-         shaders = glBindFramebuffer != null;
+         frameBuffer = glBindFramebuffer != null;
 #endif
          vertexBuffer = glBindBuffer != null;
          // mapBuffer = glMapBuffer != null;
