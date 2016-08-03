@@ -1,3 +1,5 @@
+#undef __BLOCKS__
+
 import "OpenGLDisplayDriver"
 import "textureManager"
 
