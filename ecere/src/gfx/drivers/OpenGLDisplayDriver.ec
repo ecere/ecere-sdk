@@ -1126,7 +1126,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisableVertexAttribArray(GLBufferContents::vertex);
          glDisableVertexAttribArray(GLBufferContents::tangent1);
          glDisableVertexAttribArray(GLBufferContents::tangent2);
+#if ENABLE_GL_VAO
          glBindVertexArray(0);
+#endif
          glUseProgram(0);
       }
 #endif
