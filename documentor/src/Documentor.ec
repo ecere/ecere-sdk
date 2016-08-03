@@ -2550,6 +2550,16 @@ class MainForm : Window
    bool dontRecordHistory;
    Module homeModule;
 
+   bool OnKeyHit(Key key, unichar ch)
+   {
+      switch(key)
+      {
+         case altLeft: Back(); return false;
+         case altRight: Forward(); return false;
+      }
+      return true;
+   }
+
    bool Forward()
    {
       if(historyPos < history.count-1)
