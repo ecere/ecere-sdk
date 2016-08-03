@@ -957,7 +957,7 @@ c++;
 else
 valid = 0;
 }
-else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot"))
+else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s"))
 {
 if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc)
 {

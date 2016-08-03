@@ -2089,7 +2089,7 @@ static void FixDerivativesBase(Class base, Class mod)
 {
    OldLink derivative;
 
-   ComputeClassParameters(base, strchr(base.name, '<'), null, true);
+   ComputeClassParameters(base, strchr(base.name, '<'), null, base.templateClass != mod);
 
    for(derivative = base.derivatives.first; derivative; derivative = derivative.next)
    {
@@ -3711,11 +3711,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
             {
                case type:
                   argument.dataTypeString = CopyString(value);
-                  argument.dataTypeClass = System_FindClass(findModule, value, true);
+                  argument.dataTypeClass = System_FindClass(findModule, value, registerInternalDecl);
                   if(!argument.dataTypeClass)
-                     argument.dataTypeClass = System_FindClass(_class.module, value, true);
+                     argument.dataTypeClass = System_FindClass(_class.module, value, registerInternalDecl);
                   if(!argument.dataTypeClass)
-                     argument.dataTypeClass = System_FindClass(_class.module.application, value, true);
+                     argument.dataTypeClass = System_FindClass(_class.module.application, value, registerInternalDecl);
                   if(registerInternalDecl && !argument.dataTypeClass)
                   {
                      ClassTemplateParameter param;

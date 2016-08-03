@@ -5534,11 +5534,11 @@ switch(curParam->type)
 {
 case 0:
 argument.__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(value);
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, value, 1);
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(findModule, value, registerInternalDecl);
 if(!argument.__anon1.__anon1.dataTypeClass)
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, value, 1);
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, value, registerInternalDecl);
 if(!argument.__anon1.__anon1.dataTypeClass)
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, value, 1);
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, value, registerInternalDecl);
 if(registerInternalDecl && !argument.__anon1.__anon1.dataTypeClass)
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
@@ -6124,7 +6124,7 @@ static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameS
 {
 struct __ecereNameSpace__ecere__sys__OldLink * derivative;
 
-__ecereNameSpace__ecere__com__ComputeClassParameters(base, strchr(base->name, '<'), (((void *)0)), 1);
+__ecereNameSpace__ecere__com__ComputeClassParameters(base, strchr(base->name, '<'), (((void *)0)), base->templateClass != mod);
 for(derivative = base->derivatives.first; derivative; derivative = derivative->next)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = derivative->data;
