@@ -4,34 +4,6 @@ import "shaders"
 
 namespace gfx::drivers;
 
-public class CubeMap : Bitmap
-{
-public:
-   void Load(DisplaySystem displaySystem, const String * names, const String extension, bool oldStyle)
-   {
-      int i;
-      for(i = 0; i < 6; i++)
-      {
-         char location[MAX_LOCATION];
-         Bitmap face = i > 0 ? { } : this;
-         strcpy(location, names[i]);
-         if(extension)
-            ChangeExtension(location, extension, location);
-         if(face.Load(location, null, null))
-         {
-            face.driverData = driverData;
-            displaySystem.driver.MakeDDBitmap(displaySystem, face, true, (i + 1) | (oldStyle << 3));
-         }
-         if(i > 0)
-         {
-            face.driverData = 0;
-            delete face;
-         }
-      }
-   }
-};
-
-
 // **********   Default Shader   **********
 public enum LightMode { off, dir, pos, posAtt, posSpot, posSpotAtt };
 public enum SwizzleMode { off, alpha, red };
