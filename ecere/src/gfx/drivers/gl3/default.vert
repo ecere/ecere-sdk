@@ -19,7 +19,7 @@ uniform mat4 projection_matrix;
    attribute vec3 tangent2;
 
    uniform float nearPlane;
-   uniform mat4 normals_matrix;
+   uniform mat3 normals_matrix;
 
    #if PER_VERTEX_COLOR
       varying vec4 diffuseColor; // w: opacity
@@ -69,10 +69,10 @@ void main(void)
       ambientColor = color.xyz;
    #endif
 
-   tNormal = mat3(normals_matrix) * normal;
+   tNormal = normals_matrix * normal;
 #if NORMALS_MAPPING
-   tTangent1 = mat3(normals_matrix) * tangent1;
-   tTangent2 = mat3(normals_matrix) * tangent2;
+   tTangent1 = normals_matrix * tangent1;
+   tTangent2 = normals_matrix * tangent2;
 #endif
 #elif PER_VERTEX_COLOR
    fColor = matDiffuse * color;

@@ -1,4 +1,4 @@
-precision highp float;
+// precision highp float;
 
 #if LIGHTING_ON
    #if PER_VERTEX_COLOR
@@ -48,7 +48,7 @@ precision highp float;
 
 #if ENVIRONMENT_MAPPING
    uniform samplerCube envTex;
-   uniform mat4 cubemap_matrix;
+   uniform mat3 cubemap_matrix;
 
    #if ENVIRONMENT_REFLECTION
       uniform float matReflectivity;
@@ -253,7 +253,7 @@ void main(void)
       computeLight(bool(LIGHT3_POSITIONAL) ? lights[3] : lightsPos[3], n, lEye, ambient, diffuse, specular,
          bool(LIGHT3_POSITIONAL), bool(LIGHT3_SPOT), bool(LIGHT3_ATT),
          bool(LIGHT3_SPOT) ? lightsSpotDir[3] : vec3(0), bool(LIGHT3_SPOT) ? lightsSpotCutOffCos[3] : 0.0, bool(LIGHT3_SPOT) ? lightsSpotExp[3] : 0.0,
-         bool(LIGHT3_ATT) ? lightsAtt[3] : vec(1,0,0),
+         bool(LIGHT3_ATT) ? lightsAtt[3] : vec3(1,0,0),
          lightsAmbient[3], lightsDiffuse[3], lightsSpecular[3]);
    #endif
    #if NUM_LIGHTS > 4 && LIGHT4_ON
@@ -274,15 +274,15 @@ void main(void)
       computeLight(bool(LIGHT6_POSITIONAL) ? lights[6] : lightsPos[6], n, lEye, ambient, diffuse, specular,
          bool(LIGHT6_POSITIONAL), bool(LIGHT6_SPOT), bool(LIGHT6_ATT),
          bool(LIGHT6_SPOT) ? lightsSpotDir[6] : vec3(0), bool(LIGHT6_SPOT) ? lightsSpotCutOffCos[6] : 0.0, bool(LIGHT6_SPOT) ? lightsSpotExp[6] : 0.0,
-         lightsAmbient[6], lightsDiffuse[6], lightsSpecular[6],
-         bool(LIGHT6_ATT) ? lightsAtt[6] : vec3(1,0,0));
+         bool(LIGHT6_ATT) ? lightsAtt[6] : vec3(1,0,0),
+         lightsAmbient[6], lightsDiffuse[6], lightsSpecular[6]);
    #endif
    #if NUM_LIGHTS > 7 && LIGHT7_ON
       computeLight(bool(LIGHT7_POSITIONAL) ? lights[7] : lightsPos[7], n, lEye, ambient, diffuse, specular,
          bool(LIGHT7_POSITIONAL), bool(LIGHT7_SPOT), bool(LIGHT7_ATT),
          bool(LIGHT7_SPOT) ? lightsSpotDir[7] : vec3(0), bool(LIGHT7_SPOT) ? lightsSpotCutOffCos[7] : 0.0, bool(LIGHT7_SPOT) ? lightsSpotExp[7] : 0.0,
-         lightsAmbient[7], lightsDiffuse[7], lightsSpecular[7],
-         bool(LIGHT7_ATT) ? lightsAtt[7] : vec3(1,0,0));
+         bool(LIGHT7_ATT) ? lightsAtt[7] : vec3(1,0,0),
+         lightsAmbient[7], lightsDiffuse[7], lightsSpecular[7]);
    #endif
 
    #if MAT_SPECULAR && SPECULAR_MAPPING
@@ -329,7 +329,7 @@ void main(void)
    {
       float opacity = c.w;
       v = refract(eyeToSurface, n, matRefractionETA);
-      c = vec4(opacity * c + (1.0 - opacity) * textureCube(envTex, vec3(cubemap_matrix * vec4(v, 1.0))));
+      c = vec4(opacity * c + (1.0 - opacity) * textureCube(envTex, vec3(cubemap_matrix * v)));
    }
    #endif
 
@@ -340,7 +340,7 @@ void main(void)
       reflectivity *= texture2D(reflectTex, texCoord).r;
    #endif
       v = reflect(eyeToSurface, n);
-      c = (1.0 - reflectivity) * c + reflectivity * textureCube(envTex, vec3(cubemap_matrix * vec4(v, 1.0)));
+      c = (1.0 - reflectivity) * c + reflectivity * textureCube(envTex, vec3(cubemap_matrix * v));
    }
    #endif
 #endif

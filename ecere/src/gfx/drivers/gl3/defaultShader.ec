@@ -190,9 +190,9 @@ public:
    float modelView[16];
    float projection[16];
    float matTexture[16];
-   float cubemap_matrix[16];
+   float cubemap_matrix[9];
 
-   float normalsMatrix[16];
+   float normalsMatrix[9];
    float nearPlane;
    float globalAmbient[3];
 
@@ -263,10 +263,14 @@ public:
       int i;
 
 #ifdef _DEBUG
-       PrintLn("Compiling shader for state: ", state);
+       //PrintLn("Compiling shader for state: ", state);
 #endif
 
+#if defined(__EMSCRIPTEN__)
       defs.concatf("#version 100\n");
+#else
+      defs.concatf("#version 110\n");
+#endif
       defs.concatf("\n#define NUM_LIGHTS %d",               8);
       defs.concatf("\n#define MODELVIEW %d",                state.modelView          ? 1 : 0);
       defs.concatf("\n#define PER_VERTEX_COLOR %d",         state.perVertexColor     ? 1 : 0);
@@ -300,7 +304,7 @@ public:
       defs.concatf("\n\n#line 0\n");
 
 #ifdef _DEBUG
-        printf((String)defs._string);
+      //puts((String)defs._string);
 #endif
       return defs;
    }
@@ -378,7 +382,7 @@ public:
          glUniform1f(shader.uNearPlane, nearPlane);
          glUniform3fv(shader.uGlobalAmbient, 1, globalAmbient);
 
-         glUniformMatrix4fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
+         glUniformMatrix3fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
 
          if(state.normalsMapping)
             glUniform1i(shader.uBumpTex, 1);
@@ -392,7 +396,7 @@ public:
       if(state.environmentMapping)
       {
          glUniform1i(shader.uEnvTex, 3);
-         glUniformMatrix4fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
+         glUniformMatrix3fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
          if(state.reflection)
             glUniform1f(shader.uMatReflectivity, reflectivity);
          if(state.refraction)
@@ -417,14 +421,13 @@ public:
    void setCamera(Camera camera)
    {
       double * c = camera.inverseTranspose.array;
-      float m[16] =
+      float m[9] =
       {
-         (float) c[0], (float) c[1], (float)-c[2], 0,
-         (float)-c[4], (float) c[5], (float) c[6], 0,
-         (float)-c[8], (float) c[9], (float) c[10], 0,
-         0, 0, 0, 1
+         (float) c[0], (float) c[1], (float)-c[2],
+         (float)-c[4], (float) c[5], (float) c[6],
+         (float)-c[8], (float) c[9], (float) c[10]
       };
-      memcpy(cubemap_matrix, m, 16 * sizeof(float));
+      memcpy(cubemap_matrix, m, 9 * sizeof(float));
       uniformsModified = true;
    }
 
@@ -459,14 +462,13 @@ public:
          t.Transpose(inv);
          inv.Inverse(t);
          {
-            float m[16] =
+            float m[9] =
             {
-               (float)i[0],(float)i[1],(float)i[2],(float)i[3],
-               (float)i[4],(float)i[5],(float)i[6],(float)i[7],
-               (float)i[8],(float)i[9],(float)i[10],(float)i[11],
-               (float)i[12],(float)i[13],(float)i[14],(float)i[15]
+               (float)i[0],(float)i[1],(float)i[2],
+               (float)i[4],(float)i[5],(float)i[6],
+               (float)i[8],(float)i[9],(float)i[10]
             };
-            memcpy(normalsMatrix, m, 16 * sizeof(float));
+            memcpy(normalsMatrix, m, 9 * sizeof(float));
          }
 
          uniformsModified = true;
