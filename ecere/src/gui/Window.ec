@@ -42,6 +42,37 @@ import "MessageBox"
 import "WindowList"
 import "i18n"
 
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#define property _property
+#define new _new
+#define class _class
+#define uint _uint
+
+#define Window    X11Window
+#define Cursor    X11Cursor
+#define Font      X11Font
+#define Display   X11Display
+#define Time      X11Time
+#define KeyCode   X11KeyCode
+#define Picture   X11Picture
+
+#include <X11/Xutil.h>
+
+#undef Window
+#undef Cursor
+#undef Font
+#undef Display
+#undef Time
+#undef KeyCode
+#undef Picture
+
+#undef uint
+#undef new
+#undef property
+#undef class
+
+#endif
+
 // Had to define this here for native decorations support, because the menu bar is part of total decoration's size, but not part of the system decorations
 #ifdef HIGH_DPI
 define skinMenuHeight = 40;
@@ -585,11 +616,20 @@ private:
       if(fileMonitor)
       {
          int i, lockCount = guiApp.lockMutex.lockCount;
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+         if(xGlobalDisplay)
+            XUnlockDisplay(xGlobalDisplay);
+#endif
+
          for(i = 0; i < lockCount; i++)
             guiApp.lockMutex.Release();
          delete fileMonitor;
          for(i = 0; i < lockCount; i++)
             guiApp.lockMutex.Wait();
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+         if(xGlobalDisplay)
+            XLockDisplay(xGlobalDisplay);
+#endif
       }
 #endif
 
