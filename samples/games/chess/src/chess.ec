@@ -663,6 +663,7 @@ class Chess : Window
       {
          case newAIGame:    aiItem.NotifySelect(this, aiItem, 0); break;
          case newLocalGame: localItem.NotifySelect(this, localItem, 0); break;
+         case close:        Destroy(0); break;
       }
    }
 
