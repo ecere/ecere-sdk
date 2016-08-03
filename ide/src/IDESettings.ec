@@ -694,7 +694,21 @@ class SafeFile
          if(mode == write && FileExists(sf.tmp).isFile)
             DeleteFile(sf.tmp);
 
-         sf.file = FileOpen(mode == write ? sf.tmp : path, mode);
+         if(mode == write)
+         {
+            sf.file = FileOpen(sf.tmp, readWrite);
+            if(!sf.file)
+            {
+               sf.file = FileOpen(sf.tmp, writeRead);
+               if(sf.file)
+               {
+                  delete sf.file;
+                  sf.file = FileOpen(sf.tmp, readWrite);
+               }
+            }
+         }
+         else
+            sf.file = FileOpen(path, mode);
          if(sf.file)
          {
             for(c = 0; c < 10 && !(locked = sf.file.Lock(lockType, 0, 0, false)); c++) Sleep(0.01);
@@ -723,7 +737,16 @@ class SafeFile
       if(file && mode == write)
       {
          int c;
-         File f = FileOpen(path, FileExists(path) ? read : write);
+         File f = FileOpen(path, readWrite);
+         if(!f)
+         {
+            f = FileOpen(path, writeRead);
+            if(f)
+            {
+               delete f;
+               f = FileOpen(path, readWrite);
+            }
+         }
          if(f)
          {
             bool locked = true;
