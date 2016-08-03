@@ -1281,7 +1281,7 @@ public:
    property bool useSharedMemory { set { useSharedMemory = value; } get { return useSharedMemory; } };
    property void * systemWindow { get { return window; } };
    property DisplaySystem displaySystem { get { return displaySystem; } };
-#ifndef ECERE_VANILLA
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
    property GLCapabilities glCapabilities
    {
       get { return ((OGLDisplay)driverData).capabilities; }

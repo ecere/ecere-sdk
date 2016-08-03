@@ -35,7 +35,7 @@ public class Font : struct { }
 import "lfbBlit"
 import "lfbConvert"
 
-#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA) && defined(__WIN32__)
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && defined(__WIN32__)
 import "OpenGLDisplayDriver"
 
 #if !defined(_GLES) && !defined(ECERE_STATIC)

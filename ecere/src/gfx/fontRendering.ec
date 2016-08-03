@@ -805,18 +805,16 @@ public class Font : struct
 
    ~Font()
    {
+#if !defined(ECERE_NOTRUETYPE)
       int entry;
 
-#if !defined(ECERE_NOTRUETYPE)
       GlyphPack pack;
       while((pack = (GlyphPack)glyphPacks.root))
       {
          glyphPacks.Remove(pack);
          delete pack;
       }
-#endif
 
-#if !defined(ECERE_NOTRUETYPE)
       for(entry = 0; entry<MAX_FONT_LINK_ENTRIES; entry++)
       {
          FontEntry fontEntry = fontEntries[entry];
@@ -854,6 +852,7 @@ public class Font : struct
    bool LoadEntry(FaceInfo info)
    {
       bool result = false;
+#if !defined(ECERE_NOTRUETYPE)
       if(numEntries < MAX_FONT_LINK_ENTRIES)
       {
          FontEntry fontEntry = FontEntry::Load(info);
@@ -889,6 +888,7 @@ public class Font : struct
             result = true;
          }
       }
+#endif
       return result;
    }
 
