@@ -1,10 +1,6 @@
 {
    name = "uint16",
-   description = "An unsigned integer data type.\n"
-      "\n"
-      "Memory occupied: 16 bits(or 2 bytes)\n"
-      "\n"
-      "A uint16 data type holds a decimal value between the range of 0 and 65,535.",
+   description = "16 bit unsigned integer data type (equivalent of C99 'uint16_t'). A 16 bit unsigned integer can range from 0 to 0xFFFF (65,535).",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "uint16 aUint16; // A standalone declaration of a uint16\n"
       "uint16 a, b; // Declaring two uint16s at the same time.\n"

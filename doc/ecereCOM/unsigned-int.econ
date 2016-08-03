@@ -1,10 +1,6 @@
 {
    name = "unsigned int",
-   description = "An unsigned integer data type.\n"
-      "\n"
-      "Memory occupied: 32 bits(or 4 bytes)\n"
-      "\n"
-      "An unsigned int data type holds a decimal value between the range of 0 to 2 exp 32-1 (or 0 to 4,294,967,295).",
+   description = "Core C unsigned integer data type (expected to be equivalent to C99 'uint32_t'). A 32 bit unsigned intger can range from 0 to 0xFFFFFFFF (4,294,967,295).",
    usage = "Used in the declaration section of code, which is before any statements.\n"
       "\n"
       "Declared as a standard int, but with the unsigned keyword in front to denote an unsigned integer value.",

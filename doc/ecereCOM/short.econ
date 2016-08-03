@@ -1,0 +1,3 @@
+{
+   description = "Signed integral type (expected to be equivalent to C ' int16_t'). A 16 bit signed integer can range from -32,767 to 32,767. On some platforms -32,768 is a valid value."
+}

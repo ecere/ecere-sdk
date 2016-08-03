@@ -1,10 +1,6 @@
 {
    name = "uint32",
-   description = "An unsigned integer data type.\n"
-      "\n"
-      "Memory occupied: 32 bits(or 4 bytes)\n"
-      "\n"
-      "A uint32 data type holds a decimal value between the range of 0 to 2 exp 32-1 (or 0 to  4,294,967,295).",
+   description = "32 bit unsigned integer data type (equivalent of C99 'uint32_t'). A 32 bit unsigned integer can range from 0 to 0xFFFFFFFF (4,294,967,295).",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "uint32 aUint32; // A stand alone declaration of a uint32.\n"
       "uint32 a, b; // Declaring two uint32s at the same time.\n"

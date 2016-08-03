@@ -1,4 +1,4 @@
 {
    name = "dialogs",
-   description = "The ecere::gui::dialogs namespace is for GUI dialogs like MessageBox or FileDialog."
+   description = "Commong Dialogs (MessageBox, FileDialog...)"
 }

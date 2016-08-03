@@ -1,0 +1,3 @@
+{
+   description = "Node with both a name and a valu for used with deprecated BinaryTree AVL Tree implmentation"
+}

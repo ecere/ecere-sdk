@@ -1,0 +1,3 @@
+{
+   description = "Unsigned integral type guaranteed to be the size of C 'size_t'"
+}

@@ -1,3 +1,4 @@
 {
-   name = "struct"
+   name = "struct",
+   description = "Basic C and eC object type construct which can specify data members (a.k.a. 'fields' or 'records'). eC structs can contain methods and properties, can be extended through inheritance, and are also a type without needing a 'typedef'."
 }

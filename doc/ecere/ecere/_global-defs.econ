@@ -1,4 +1,75 @@
 {
    name = "ecere",
-   description = "The ecere namespace is for Ecere APIs in general."
+   description = "Top level namespace for the Ecere library",
+   functions = [
+      {
+         "GetTranslatedString",
+         {
+            description = "Internationalization Suport (GNU gettext() equivalent)",
+            remarks = "Internationalizable strings in eC source code should be prefixed by a dollar sign e.g.:  $\"Hello, World\".<br>These strings will automatically be collected into a translation template (.pot) which can be used with GNU gettext compatible tools.<br><br>The call to GetTranslatedString() is then done automatically by the compiler.",
+            parameters = [
+               {
+                  "name",
+                  {
+                     description = "Module for which to load string",
+                     position = 1
+                  }
+               },
+               {
+                  "string",
+                  {
+                     description = "String which should be looked up. This string will be returned if no matching translation is found.",
+                     position = 2
+                  }
+               },
+               {
+                  "stringAndContext",
+                  {
+                     description = "String which should be looked up including a context, or null",
+                     position = 3
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "LoadTranslatedStrings",
+         {
+            description = "Load Internationalized Strings for specific module",
+            remarks = "The call to LoadTranslatedString() is generated  automatically by the symbol loader generator (ecs).",
+            parameters = [
+               {
+                  "moduleName",
+                  {
+                     description = "Name of the module from which to load embedded translation strings (e.g. dynamic library); null for the application executable",
+                     position = 1
+                  }
+               },
+               {
+                  "name",
+                  {
+                     description = "Name of the module for which to load translation strings",
+                     position = 2
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "UnloadTranslatedStrings",
+         {
+            description = "Unload Internationalized Strings for specific module",
+            remarks = "The call to UnloadTranslatedString() is generated  automatically by the symbol loader generator (ecs).",
+            parameters = [
+               {
+                  "name",
+                  {
+                     description = "Name of the module whose translation strings should be freed",
+                     position = 1
+                  }
+               }
+            ]
+         }
+      }
+   ]
 }

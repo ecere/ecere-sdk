@@ -1,0 +1,3 @@
+{
+   description = "Core C and eC enumeration data type construct. eC enumeration values are context-sensitive, can be extended through inheritance, contain methods and properties, and are also a type without needing a 'typedef'."
+}

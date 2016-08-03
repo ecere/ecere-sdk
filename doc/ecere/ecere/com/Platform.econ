@@ -1,0 +1,3 @@
+{
+   description = "Enumeration to identify a platform (Windows, Linux, Mac)"
+}

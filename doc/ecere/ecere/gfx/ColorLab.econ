@@ -1,0 +1,3 @@
+{
+   description = "A struct represneting the Lab Color Model which is accurately reflects the human eye's color sensitivity"
+}

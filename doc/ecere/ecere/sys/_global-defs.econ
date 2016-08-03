@@ -1,6 +1,14 @@
 {
    name = "sys",
-   description = "The ecere::sys namespace is for the extended System API.",
+   description = "Platform independent System API (Files, Multithreading, Unicode, ...)",
+   defines = [
+      {
+         "Pi",
+         {
+            description = "Ratio of a circle's circumference to its diameter; Measure of a half-circle angle in radians (180°)"
+         }
+      }
+   ],
    functions = [
       {
          "GetRandom",

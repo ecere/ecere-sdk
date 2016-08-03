@@ -1,0 +1,3 @@
+{
+   description = "Self-Balancing AVL Binary Tree template automatically wrapping keys of a given type within nodes (e.g. for key only dictionary)"
+}

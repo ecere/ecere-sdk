@@ -1,0 +1,3 @@
+{
+   description = "Class to host a TCP/IP service to which a Socket can connect"
+}

@@ -1,0 +1,3 @@
+{
+   description = "Generic type to represent an iterator's state (implementation is specific to container type)"
+}

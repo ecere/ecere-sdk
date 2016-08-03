@@ -1,0 +1,3 @@
+{
+   description = "Base class for 'class' data types containing virtual method table, runtime type information and reference count"
+}

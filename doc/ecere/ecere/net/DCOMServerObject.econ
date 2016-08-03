@@ -1,0 +1,3 @@
+{
+   description = "Class used by Distributed Objects to create remote objects on the server"
+}

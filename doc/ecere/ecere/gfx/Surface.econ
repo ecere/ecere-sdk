@@ -1,5 +1,6 @@
 {
    name = "Surface",
+   description = "The core graphics API class  implementing immediate mode draw calls",
    methods = [
       {
          "Blit",

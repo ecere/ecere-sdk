@@ -1,0 +1,3 @@
+{
+   description = "Internal String data type used by Distributed Objects to (de)serialize String parameters"
+}

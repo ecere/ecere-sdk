@@ -1,0 +1,47 @@
+{
+   description = "Implementation of a specific argument for templatization",
+   fields = [
+      {
+         "dataTypeClass",
+         {
+            description = "(For type parameters)"
+         }
+      },
+      {
+         "dataTypeString",
+         {
+            description = "(For type parameters)"
+         }
+      },
+      {
+         "expression",
+         {
+            description = "(For expression parameters)"
+         }
+      },
+      {
+         "member",
+         {
+            description = "(For member identifier parameters)"
+         }
+      },
+      {
+         "memberString",
+         {
+            description = "(For identifier parameters)"
+         }
+      },
+      {
+         "method",
+         {
+            description = "(For method identifier parameters)"
+         }
+      },
+      {
+         "prop",
+         {
+            description = "(For property identifier parameters)"
+         }
+      }
+   ]
+}

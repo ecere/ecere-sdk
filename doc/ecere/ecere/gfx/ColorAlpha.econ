@@ -1,0 +1,3 @@
+{
+   description = "A 32 bit bit class representing Alpha, Red, Green and Blue from 0..255, with Blue stored in LSB."
+}

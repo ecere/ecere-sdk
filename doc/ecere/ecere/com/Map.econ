@@ -1,0 +1,3 @@
+{
+   description = "Associative array template  implemented as an AVL tree of keys and value storage"
+}

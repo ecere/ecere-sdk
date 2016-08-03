@@ -1,4 +1,4 @@
 {
    name = "net",
-   description = "The ecere::net namespace is for the Network API."
+   description = "Networking API"
 }

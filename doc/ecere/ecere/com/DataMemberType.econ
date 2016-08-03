@@ -1,0 +1,3 @@
+{
+   description = "Enumeration type to identify the type of a DataMember (regular, inner union or inner struct)"
+}

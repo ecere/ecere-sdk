@@ -1,10 +1,6 @@
 {
    name = "float",
-   description = "A float data type.\n"
-      "\n"
-      "Memory occupied: 32 bits(or 4 bytes)\n"
-      "\n"
-      "A float data type holds a real number including the portion which follows the decimal point. The minimum precision for a float is 6 decimal digits. A floats range is from 1.17549435082228750e-38 to 3.40282346638528860e+38.",
+   description = "Core C single precision floating-point real number  data type. A float ranges from 1.17549435082228750e-38 to 3.40282346638528860e+38.",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "float aFloat; // A stand alone declaration of a float.\n"
       "float a, b; // Declaring two floats at the same time.\n"

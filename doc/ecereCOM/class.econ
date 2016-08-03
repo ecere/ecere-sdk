@@ -1,0 +1,3 @@
+{
+   description = "Basic eC object type construct featuring a virtual method table, reference counting and runtime type information (unless inheriting from 'struct'). Class instances are always individually allocated on the heap."
+}

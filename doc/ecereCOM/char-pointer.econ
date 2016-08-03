@@ -1,10 +1,6 @@
 {
    name = "char *",
-   description = "A pointer type to an array of chars.\n"
-      "\n"
-      "Memory Occupied: 8 bits (or 1 byte) per character.\n"
-      "\n"
-      "A char * will store any literal string of ASCII characters or UTF-8 characters, as well as any escape sequences.",
+   description = "Core C 'char *' data type, mostly equivalent to the String data type. Ecere APIs taking a String or char * representing text expect UTF-8 encoding.",
    usage = "Used in the declaration section of code, which is before any statements. \n"
       "\n"
       "A variable declared as being a char * can be assigned any literal string which is enclosed between double quotation marks (\" \").\n"

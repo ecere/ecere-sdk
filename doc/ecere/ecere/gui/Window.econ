@@ -1,6 +1,6 @@
 {
    name = "Window",
-   description = "The base class for any Window, and many Controls aswell. Contains many methods and properties that are inherited and used by these other Windows and Classes.",
+   description = "Base class for all GUI elements (controls, dialogs and forms)",
    fields = [
       {
          "sbh",
@@ -19,7 +19,7 @@
       {
          "alphaBlend",
          {
-            description = "When true, applies Alpha Blending to the background of the Window. Used for transparency effects."
+            description = "Set to true to blend with the desktop environment's. Support & performance varies."
          }
       },
       {
@@ -31,14 +31,19 @@
       {
          "background",
          {
-            description = "The Color of the Client Area.\n"
-               "Example: background = { r = 53, g = 100, b = 203 };"
+            description = "Color the client area is filled with"
          }
       },
       {
          "borderStyle",
          {
             description = "The type of Window frame your Window has."
+         }
+      },
+      {
+         "caption",
+         {
+            description = "The text which should appear in the caption of this window. For forms/dialogs with title bars, this will appear in the title bar. For controls, this is typically the text which should appear in the label associated with th control through the 'labeledWindow' property."
          }
       },
       {
@@ -81,7 +86,7 @@
       {
          "font",
          {
-
+            description = "Default font used for rendering the text within this Window and its controls.."
          }
       },
       {
@@ -141,6 +146,12 @@
          }
       },
       {
+         "id",
+         {
+            description = "An integer id to uniquely identify the window (e.g. when sharing method implementations among multiple controls), or for storing arbitrary user data."
+         }
+      },
+      {
          "isDocument",
          {
             description = "When true, this Window/Control would be treated as a document, enabling things like having the path show up in the Title Bar. \n"
@@ -150,8 +161,7 @@
       {
          "master",
          {
-            description = "Typically, the Master is the Controlling Window of the application. The Master receives all the messages.\n"
-               "Example: master = this;"
+            description = "The owner of this Window which should receive notifications (e.g. if this Window is a control)."
          }
       },
       {
@@ -189,9 +199,7 @@
       {
          "name",
          {
-            description = "This is the name of the instantiation. Typically this is only adjusted in the property editor.\n"
-               "Example: name = \"editBox1\";\n"
-               "or: EditBox editBox1;"
+            description = "(internal field for the Ecere IDE's Object Designer which matches the instance or class name)"
          }
       },
       {
@@ -215,15 +223,13 @@
       {
          "opacity",
          {
-            description = "A real number between 0 and 1, setting how translucent a control is. 0 is completely transparent, and 1 is completely opaque.\n"
-               "Example: opacity = 0.45;"
+            description = "A value between 0.0f and 1.0f specifying the opacity which wthich the client area's background will be filled using the background color."
          }
       },
       {
          "parent",
          {
-            description = "The Window which the current Window/Control belongs to.\n"
-               "Example: parent = this;"
+            description = "The Window within whose client area this window is constrained."
          }
       },
       {
@@ -256,15 +262,13 @@
       {
          "tabCycle",
          {
-            description = "When true, then it becomes possible to use the tab key to cycle through all of the children of this Window/Control. The order of cycling is determined by the order of instantiation.\n"
-               "Note: If tabCycle is not true on the parent, then children with hotKeys set, will not be activated by pressing the hotKey, unless the parent is currently active."
+            description = "When true, then it becomes possible to use the tab key to cycle through all of the children of this Window/Control. The order of cycling is determined by the order of instantiation. Note: If tabCycle is not true on the parent, then children with hotKeys set, will not be activated by pressing the hotKey, unless the parent is currently active."
          }
       },
       {
          "text",
          {
-            description = "The title bar text for the Window. For other controls such as a Label or a Button, text is the descriptive text that the user sees.\n"
-               "Example: text = \"This is a Window\";"
+            description = "Deprecated. Use 'caption'."
          }
       },
       {

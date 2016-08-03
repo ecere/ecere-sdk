@@ -1,0 +1,47 @@
+{
+   description = "Definition of a parameter for class templates",
+   fields = [
+      {
+         "dataTypeString",
+         {
+            description = "(For type parameters)"
+         }
+      },
+      {
+         "defaultArg",
+         {
+            description = "Default argument value for this parameter"
+         }
+      },
+      {
+         "memberType",
+         {
+            description = "(For identifier parameters)"
+         }
+      },
+      {
+         "name",
+         {
+            description = "Name for this parameter"
+         }
+      },
+      {
+         "next",
+         {
+            description = "(link within parameters list)"
+         }
+      },
+      {
+         "prev",
+         {
+            description = "(link within parameters list)"
+         }
+      },
+      {
+         "type",
+         {
+            description = "Type for this parameter"
+         }
+      }
+   ]
+}

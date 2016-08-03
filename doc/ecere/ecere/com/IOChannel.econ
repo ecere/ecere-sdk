@@ -1,0 +1,3 @@
+{
+   description = "Data type representing Input/Output channels with ability to read and write data. Used for (de)serialization and a base class of File."
+}

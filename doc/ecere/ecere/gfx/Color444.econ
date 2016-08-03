@@ -1,0 +1,3 @@
+{
+   description = "A 16 bit color bit class with 4 bits for each of Red, Green and Blue"
+}

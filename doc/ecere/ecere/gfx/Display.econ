@@ -1,5 +1,6 @@
 {
    name = "Display",
+   description = "A class representing 2D and 3D video graphics output such as a top-level window",
    methods = [
       {
          "Grab",

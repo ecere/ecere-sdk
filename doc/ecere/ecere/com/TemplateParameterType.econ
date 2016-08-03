@@ -1,0 +1,23 @@
+{
+   description = "Enumeration identifying the type of template parameter",
+   values = [
+      {
+         "expression",
+         {
+            description = "Parameter is an expression (e.g. LinkList::circ which can be true or false)"
+         }
+      },
+      {
+         "identifier",
+         {
+            description = "Parameter is an identifier representing a member of a class (e.g. LinkList::link)"
+         }
+      },
+      {
+         "type",
+         {
+            description = "Parameter is a type (most common)"
+         }
+      }
+   ]
+}

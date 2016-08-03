@@ -1,10 +1,6 @@
 {
    name = "char",
-   description = "Stores a single ASCII character.\n"
-      "\n"
-      "Memory occupied: 8 bits(or 1 byte)\n"
-      "\n"
-      "A char data type holds a decimal value between the range of -128 and 127. These integer values are used to refer to a particular alphanumeric character in the ASCII set.",
+   description = "Core C data type representing a single ASCII character (equivalent to C 'char' and expected to be signed and occupy 8 bits / 1 byte). A signed char can range from -127 to 127. On some platforms -128 is a valid value.",
    usage = "Used in the declaration section of code, which is before any statements.\n"
       "\n"
       "A variable declared as being a char can be assigned any single character enclosed between two single quotes (' '), or an integer which is then translated to the ASCII character corresponding to that value, at output.",

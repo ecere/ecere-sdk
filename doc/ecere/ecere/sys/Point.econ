@@ -1,8 +1,6 @@
 {
    name = "Point",
-   description = "An x, y coordinate on the Cartesian plane.\n"
-      "\n"
-      "Most frequently a Point type is used in graphical application to refer to a pixel coordinate on the screen.",
+   description = "A struct with integer x, y components. Often used for screen coordinates (top-left corner represented as 0,0).",
    usage = "Used in the declaration section of code.",
    example = "Point coord = { 10, 30 } // equivalent to coord.x = 10, coord.y = 30",
    also = "GeoPoint, Pointf, PolarPoint, Vector3D, Vector3Df",

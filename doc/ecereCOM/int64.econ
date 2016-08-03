@@ -1,10 +1,6 @@
 {
    name = "int64",
-   description = "An integer data type.\n"
-      "\n"
-      "Memory occupied: 64 bits(or 8 bytes)\n"
-      "\n"
-      "An int64 data type holds a decimal value between the range of -2 exp 63 and 2 exp 63-1 (or -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807).",
+   description = "64 bit signed integer data type (equivalent of C99 'int64_t'). A 64 bit signed integer can range from - 2^63-1 to 2^63-1 (-9,223,372,036,854,775,807 to 9,223,372,036,854,775,807). On some platform a negative value on less is valid.",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "int64 thisInt; // A stand alone declaration of an int64.\n"
       "int64 a, b; // Declaring two int64s at the same time.\n"

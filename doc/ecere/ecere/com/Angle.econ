@@ -1,0 +1,3 @@
+{
+   description = "Base data type representing the measure of an angle, default unit is Radians"
+}

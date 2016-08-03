@@ -1,0 +1,3 @@
+{
+   description = "Enumeration identifying a type of member an indentifier templat parameter refer to (member, method or property)"
+}

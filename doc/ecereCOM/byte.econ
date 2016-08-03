@@ -1,10 +1,6 @@
 {
    name = "byte",
-   description = "A byte type, is exactly what it's name implies, a data type  which stores a single byte of information.\n"
-      "\n"
-      "Memory occupied: 8 bits(or 1 byte)\n"
-      "\n"
-      "Numerically, a byte will hold a decimal number between 0 and 255. A byte is frequently used in conjunction with bitwise operators(AND(&), OR(|), XOR(^) and NOT(~)) or bit collection classes.",
+   description = "An unsigned integer data type representing a single byte of data (equivalent to C 'unsigned char' and expected to be equivalent to C99 'uint8_t'). A byte can range from 0 to 255. Often used to allocate and address memory.",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "byte a = 3; // binary form: 00000011\n"
       "byte b = 6; // binary form: 00000110\n"

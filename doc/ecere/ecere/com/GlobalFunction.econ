@@ -1,0 +1,3 @@
+{
+   description = "First class type representing global functions (functions outside of structs/classes)"
+}

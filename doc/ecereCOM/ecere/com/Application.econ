@@ -1,0 +1,4 @@
+{
+   description = "The Application class. Can be inherited from to customize execution entry point",
+   remarks = "The Application class (or any of its derived class) should not be instantiated. A specific module (e.g. application or library) should derive at most one class from Application."
+}

@@ -1,0 +1,51 @@
+{
+   description = "Directory Lister",
+   fields = [
+      {
+         "directory",
+         {
+            description = "Parent directory within which to list files"
+         }
+      },
+      {
+         "extensions",
+         {
+            description = "Extensions to include in results or null for all files"
+         }
+      }
+   ],
+   properties = [
+      {
+         "name",
+         {
+            description = "Name of current result"
+         }
+      },
+      {
+         "path",
+         {
+            description = "Path of current result"
+         }
+      },
+      {
+         "stats",
+         {
+            description = "Statistics of current result"
+         }
+      }
+   ],
+   methods = [
+      {
+         "Find",
+         {
+            description = "Find next directory ntry"
+         }
+      },
+      {
+         "Stop",
+         {
+            description = "Call if you interrupt the listing before Find() returns false"
+         }
+      }
+   ]
+}

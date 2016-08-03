@@ -1,3 +1,17 @@
 {
-   name = "com"
+   name = "com",
+   functions = [
+      {
+         "CheckConsistency",
+         {
+            description = "Check consistency of MemoryGuard's memory blocks"
+         }
+      },
+      {
+         "CheckMemory",
+         {
+            description = "Run MemoryGuard checks (typically called on exit)"
+         }
+      }
+   ]
 }

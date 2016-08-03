@@ -1,10 +1,6 @@
 {
    name = "bool",
-   description = "An enumeration type, capable of storing only two values: true and false.\n"
-      "\n"
-      "Memory occupied: 32 bits(or 4 bytes)\n"
-      "\n"
-      "A bool variable is used for logical purposes, and is used almost exclusively for comparison operations. Ie) Is this statement true? Or is it false?",
+   description = "Boolean value (true or false) stored as a 32 bit unsigned integer",
    usage = "Used in the declaration section of code, which is before any statements.",
    example = "bool thisBool; // A stand alone declaration of a bool.\n"
       "bool a, b; // Declaring two bools at the same time.\n"

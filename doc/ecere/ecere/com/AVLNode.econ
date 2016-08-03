@@ -1,0 +1,3 @@
+{
+   description = "Structure to hold individual nodes stored within CustomAVLTree"
+}

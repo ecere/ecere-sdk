@@ -1,4 +1,4 @@
 {
    name = "drivers",
-   description = "The ecere::gfx::drivers namespase if for what?"
+   description = "Namespace for graphics drivers implementing the DisplayDriver interface"
 }

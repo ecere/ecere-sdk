@@ -1,0 +1,3 @@
+{
+   description = "A struct representing the Cyan, Magenta, Yellow, Black model such as used for printing"
+}

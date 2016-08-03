@@ -1,6 +1,6 @@
 {
    name = "FontResource",
-   description = "Used to store a Font resource to display text with.",
+   description = "A class to automatically manag loading and unloading Font objects",
    properties = [
       {
          "bold",

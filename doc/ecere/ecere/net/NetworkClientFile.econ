@@ -1,0 +1,3 @@
+{
+   description = "Network client file handle returned by ConnectToFileServer()"
+}

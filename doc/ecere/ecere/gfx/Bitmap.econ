@@ -1,6 +1,6 @@
 {
    name = "Bitmap",
-   description = "Provides access to an image added as a Resource to the Project.",
+   description = "Class reprsenting a rasterized 2D image in a number of formats. Once made device-dependent, the data is stored as a texture on the GPU for hardware- accelerated drivers.",
    fields = [
       {
          "height",

@@ -1,0 +1,3 @@
+{
+   description = "Enumeration type describing access mode (e.g. public, private, static)"
+}

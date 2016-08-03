@@ -1,6 +1,6 @@
 {
    name = "Color",
-   description = "Contains the three RGB values that make up a pixel of color.",
+   description = "A 32 bit bit class representing Red, Green and Blue from 0..255, with Blue stored in LSB.",
    usage = "Used in the declaration section of code.",
    example = "Color red = { r = 255 }; // High intensity red.\n"
       "Color yellow = { 0xFFFF00 }; // High intensity yellow. r = 0xFF(255), g = 0xFF(255), b = 0x00(0)",

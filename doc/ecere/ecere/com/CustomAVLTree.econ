@@ -1,0 +1,3 @@
+{
+   description = "Self-Balancing AVL Binary Tree template allowing to specify custom nodes (e.g to directly store data within them)"
+}

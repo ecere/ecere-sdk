@@ -1,4 +1,4 @@
 {
    name = "gui",
-   description = "The ecere::gui namespace is for the Graphical User Interface API."
+   description = "Graphical User Interface API"
 }

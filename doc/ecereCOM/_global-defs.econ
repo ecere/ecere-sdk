@@ -1,0 +1,433 @@
+{
+   description = "The core eC runtime, either bundled within libecere or built as a library on its own",
+   defines = [
+      {
+         "fstrcmp",
+         {
+            description = "String comparison with run-time platform specific case sensitivity (case insensitive on Windows, sensitive otherwise)"
+         }
+      },
+      {
+         "strcmpi",
+         {
+            description = "Case insensitive string comparison"
+         }
+      },
+      {
+         "strnicmp",
+         {
+            description = "Case insensitive string comparison with maximum number of characters compared"
+         }
+      }
+   ],
+   functions = [
+      {
+         "acos",
+         {
+            description = "Arc Cosine"
+         }
+      },
+      {
+         "acosh",
+         {
+            description = "Hyperbolic Arc Cosine"
+         }
+      },
+      {
+         "asin",
+         {
+            description = "Arc Sine"
+         }
+      },
+      {
+         "asinh",
+         {
+            description = "Hyperbolic Arc Sine"
+         }
+      },
+      {
+         "atan",
+         {
+            description = "Arc Tangent"
+         }
+      },
+      {
+         "atan2",
+         {
+            description = "Arc Tangent from y, x components"
+         }
+      },
+      {
+         "atanh",
+         {
+            description = "Hyperbolic Arc Tangent"
+         }
+      },
+      {
+         "atof",
+         {
+            description = "Alphabetical to Float"
+         }
+      },
+      {
+         "atoi",
+         {
+            description = "Alphabetical to Int"
+         }
+      },
+      {
+         "ceil",
+         {
+            description = "Ceiling function (Smallest integral number greater or equal to)"
+         }
+      },
+      {
+         "cos",
+         {
+            description = "Cosine"
+         }
+      },
+      {
+         "cosh",
+         {
+            description = "Hyperbolic Cosine"
+         }
+      },
+      {
+         "exp",
+         {
+            description = "Exponential function (e^x where e =  2.71828...)"
+         }
+      },
+      {
+         "fabs",
+         {
+            description = "Absolute Value"
+         }
+      },
+      {
+         "floor",
+         {
+            description = "Flooring function (Greatest integral number smaller or equal to)"
+         }
+      },
+      {
+         "fmod",
+         {
+            description = "Modulo"
+         }
+      },
+      {
+         "fputs",
+         {
+            description = "Output string to a file (does not add a new line)"
+         }
+      },
+      {
+         "getenv",
+         {
+            description = "Return environment variable"
+         }
+      },
+      {
+         "isalnum",
+         {
+            description = "Is character alphanumeric?"
+         }
+      },
+      {
+         "isalpha",
+         {
+            description = "Is character alphabetical?"
+         }
+      },
+      {
+         "isblank",
+         {
+            description = "Is character blank?"
+         }
+      },
+      {
+         "isdigit",
+         {
+            description = "Is character digit?"
+         }
+      },
+      {
+         "islower",
+         {
+            description = "Is character lowercase?"
+         }
+      },
+      {
+         "isprint",
+         {
+            description = "Is character printable?"
+         }
+      },
+      {
+         "isspace",
+         {
+            description = "Is character a space?"
+         }
+      },
+      {
+         "isupper",
+         {
+            description = "Is character uppercase?"
+         }
+      },
+      {
+         "isxdigit",
+         {
+            description = "Is character an hexadecimal digit?"
+         }
+      },
+      {
+         "log",
+         {
+            description = "Natural logarithm"
+         }
+      },
+      {
+         "log10",
+         {
+            description = "Base-10 logarithm"
+         }
+      },
+      {
+         "memcmp",
+         {
+            description = "Compare memory"
+         }
+      },
+      {
+         "memcpy",
+         {
+            description = "Copy memory (cannot overlap)"
+         }
+      },
+      {
+         "memmove",
+         {
+            description = "Copy memory with potential overlap"
+         }
+      },
+      {
+         "memset",
+         {
+            description = "Fill memory with a repeated byte value"
+         }
+      },
+      {
+         "pow",
+         {
+            description = "Raise number to a power"
+         }
+      },
+      {
+         "printf",
+         {
+            description = "Classic C formatted output"
+         }
+      },
+      {
+         "puts",
+         {
+            description = "Output string to stdout (adds a new line)"
+         }
+      },
+      {
+         "qsort",
+         {
+            description = "Quick Sort algorithm for a C array, taking a comparison function"
+         }
+      },
+      {
+         "rename",
+         {
+            description = "Rename a file"
+         }
+      },
+      {
+         "sin",
+         {
+            description = "Sine"
+         }
+      },
+      {
+         "sinh",
+         {
+            description = "Hyperbolic Sine"
+         }
+      },
+      {
+         "snprintf",
+         {
+            description = "Formatted output to a string with maximum number of characters"
+         }
+      },
+      {
+         "sprintf",
+         {
+            description = "Formatted output to a string"
+         }
+      },
+      {
+         "sqrt",
+         {
+            description = "Square Root"
+         }
+      },
+      {
+         "strcasecmp",
+         {
+            description = "Case insensitive string comparison (System specific - use strcmpi() instead)"
+         }
+      },
+      {
+         "strcat",
+         {
+            description = "Concatenate a string to another"
+         }
+      },
+      {
+         "strchr",
+         {
+            description = "Search for a character in a string"
+         }
+      },
+      {
+         "strcmp",
+         {
+            description = "Case sensitive comparison of strings"
+         }
+      },
+      {
+         "strcpy",
+         {
+            description = "Copy a string to pre-allocated memory"
+         }
+      },
+      {
+         "strlen",
+         {
+            description = "Returns length of null-terminatd string"
+         }
+      },
+      {
+         "strlwr",
+         {
+            description = "Turn a string lowercase"
+         }
+      },
+      {
+         "strncasecmp",
+         {
+            description = "Case insensitive string comparison (System specific - use strnicmp() instead)"
+         }
+      },
+      {
+         "strncat",
+         {
+            description = "Concatenate a string to another with maximum number of characters"
+         }
+      },
+      {
+         "strncmp",
+         {
+            description = "Case sensitive comparison of strings with a maximum number of characters"
+         }
+      },
+      {
+         "strncpy",
+         {
+            description = "Copy a string to pre-allocated memory with a maximum number of characters"
+         }
+      },
+      {
+         "strstr",
+         {
+            description = "Search for the occurence of a string in another (case sensitive, see SearchString() for case insensitive)"
+         }
+      },
+      {
+         "strtod",
+         {
+            description = "Convert string to double"
+         }
+      },
+      {
+         "strtol",
+         {
+            description = "Convert string to long"
+         }
+      },
+      {
+         "strtoll",
+         {
+            description = "Convert string to long long"
+         }
+      },
+      {
+         "strtoul",
+         {
+            description = "Convert string to unsigned long"
+         }
+      },
+      {
+         "strtoull",
+         {
+            description = "Convert string to unsigned long long"
+         }
+      },
+      {
+         "strupr",
+         {
+            description = "Turn a string uppercase"
+         }
+      },
+      {
+         "system",
+         {
+            description = "Make a system call using the shell"
+         }
+      },
+      {
+         "tan",
+         {
+            description = "Tangent"
+         }
+      },
+      {
+         "tanh",
+         {
+            description = "Hyperbolic Tangent"
+         }
+      },
+      {
+         "tolower",
+         {
+            description = "Convert a character to lowercase"
+         }
+      },
+      {
+         "toupper",
+         {
+            description = "Convert a character to uppercase"
+         }
+      },
+      {
+         "vsnprintf",
+         {
+            description = "Output to a string variable arguments with a maximum number of characters"
+         }
+      },
+      {
+         "vsprintf",
+         {
+            description = "Output to a string variable arguments"
+         }
+      }
+   ]
+}
