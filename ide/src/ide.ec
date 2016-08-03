@@ -2754,7 +2754,7 @@ class IDEWorkSpace : Window
          //line = atoi(colon+1);
       }
       // support for "Found n match(es) in "file/path";
-      else if(path[len-1] == '\"' && strstr(path, $"Found %d match%s in \"%s\"%s\n\n"."Found") && strstr(path, $"match") && strstr(path, $"in") && (s = strstr(path, "\"")) && s != path+len-1)
+      else if(len > 0 && path[len-1] == '\"' && strstr(path, $"Found %d match%s in \"%s\"%s\n\n"."Found") && strstr(path, $"match") && strstr(path, $"in") && (s = strstr(path, "\"")) && s != path+len-1)
       {
          path = s+1;
       }
