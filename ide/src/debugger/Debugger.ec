@@ -4415,7 +4415,7 @@ class ValgrindTargetThread : Thread
                   // COMMENTED OUT DUE TO ISSUE #135, FIXED
                   //if(dynamicBuffer.array[dynamicBuffer.count - 1] != '\r')
                      dynamicBuffer.size++;
-                  dynamicBuffer[dynamicBuffer.count - 1] = '\0';
+                  dynamicBuffer[Max(0, dynamicBuffer.count - 1)] = '\0';
 #ifdef _DEBUG
                   // printf("%s\n", dynamicBuffer.array);
 #endif
