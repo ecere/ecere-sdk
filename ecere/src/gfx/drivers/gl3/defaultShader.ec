@@ -629,6 +629,7 @@ public:
          ((DefaultShaderBits)state).twoSided = material.flags.doubleSided && !material.flags.singleSideLight;
          ((DefaultShaderBits)state).lightBits = material.flags.noLighting ? 0 : lightBits;
          ((DefaultShaderBits)state).lighting = (!material.flags.noLighting && lightBits) ? true : false;
+         color[0] = 1, color[1] = 1, color[2] = 1, color[3] = material.opacity;
          diffuse[0]  = material.diffuse.r,  diffuse[1]  = material.diffuse.g,  diffuse[2]  = material.diffuse.b, diffuse[3] = material.opacity;
          ambient[0]  = material.ambient.r,  ambient[1]  = material.ambient.g,  ambient[2]  = material.ambient.b;
          specular[0] = material.specular.r, specular[1] = material.specular.g, specular[2] = material.specular.b;
