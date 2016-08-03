@@ -886,6 +886,7 @@ class APIPageNameSpace : APIPage
          for(link = (BTNamedLink)nameSpace->classes.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             Class cl = link.data;
+            Module module = cl.module ? cl.module  : this.module;
             if(!cl.templateClass && !cl.internalDecl)
             {
                char * desc = ReadDoc(module, classDoc, cl, description, null);
@@ -927,6 +928,7 @@ class APIPageNameSpace : APIPage
          for(link = (BTNamedLink)nameSpace->functions.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             GlobalFunction function = link.data;
+            Module module = function.module ? function.module  : this.module;
             char * desc = ReadDoc(module, functionDoc, function, description, null);
             const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
             if(name) name += 2; else name = function.name;
