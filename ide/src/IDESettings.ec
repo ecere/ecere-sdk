@@ -404,7 +404,7 @@ private:
       StripLastDirectory(moduleLocation, moduleLocation);
       ChangeCh(moduleLocation, '\\', '/');
       // PortableApps.com directory structure
-      if((start = strstr(path, "\\App\\EcereSDK\\bin\\ide.exe")))
+      if((start = strstr(path, "\\App\\EcereSDK\\bin\\ecere-ide.exe")))
       {
          char configFilePath[MAX_LOCATION];
          char defaultConfigFilePath[MAX_LOCATION];

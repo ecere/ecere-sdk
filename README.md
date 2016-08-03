@@ -1,4 +1,4 @@
-# The [Ecere SDK](http://ecere.org) v0.44.14
+# The [Ecere SDK](http://ecere.org) v0.44.15
 #### Free Open Source Software released under the New BSD license
 
 The **Ecere SDK** is a Software Development Kit including:
@@ -62,8 +62,9 @@ To install, type 'make install' ('mingw32-make install' on Windows).
 
 64-bit is now supported.
 
-Executables can also be deployed to the Android platform using the Android NDK. Please refer to http://ecere.org/android
+Executables can also be deployed to the Android platform using the Android NDK. Please refer to http://ecere.org/android .
 
+They can also deployed to the Web using Emscripten ( http://emscripten.org ) .
 
 ## DOCUMENTATION
 [![Tao](http://ecere.com/images/tao.png)](http://ecere.org/tao.pdf)  

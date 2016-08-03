@@ -1,3 +1,29 @@
+Ecere SDK 0.44.15 (August 3, 2016)
+
+   * Web Support through Emscripten and WebGL
+   * 3D Graphics Improvements (OpenGL)
+      - Support for Shaders (WebGL, Core/Compatibility profiles, OpenGL ES 2)
+      - Phong Shading Using Shaders
+      - Environment Mapping and Cube Maps (Support for Reflection and Refraction)
+      - Normals Mapping Support
+      - Fixed and improved lighting
+      - Computed Normals Weighting for smoother surfaces
+      - Optimizations
+   * Font Outline Support
+   * Fixed text extent computation to account for overhang of italic fonts
+   * ECON Support (ECON is a JSON superset, dropping quotes, supporting hexadecimal, multi-line strings, comments, derived classes, and mapping directly to eC instantiations -- http://ec-lang.org/econ/ )
+   * ECON based IDE configuration (split options, recent files/projects and compilers individually stored in separate files, all in ~/.ecereIDE/)
+   * ECON based Documentor (Documentation data can now be text-diffed with git etc.)
+   * Sortable Containers
+   * Distributed Objects Fixes & Improvements
+   * Renamed IDE binary to less generic name (ide ==> ecere-ide)
+   * Fixed building with GCC 6 (Compiler was generating bad __attribute__ specifiers with with spaces rather than commas)
+   * (Windows) Fixes for TDM-GCC 5
+   * Android: Fixes to run on newer versions
+   * X: Fixed NumPad key definitions
+   * Build system Fixes & Improvements
+   * Other Fixes & Improvements
+----------------------------------------
 Ecere SDK 0.44.14 (January 13, 2016)
 
    * Compiler: Fixed generating __extension__ expression with mismatched parentheses

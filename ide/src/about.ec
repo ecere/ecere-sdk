@@ -75,6 +75,19 @@ class AboutIDE : Window
       multiLine = true,
       hasVertScroll = true,
       contents =
+         "Alexis Naveros\n"
+         "   Font Outlines\n"
+         "   Modern OpenGL Guidance\n"
+         "\n"
+         "Local Ottawa eC Users Community\n"
+         "  http://www.meetup.com/eC-Programming-Language-Meetup/\n"
+         "\n"
+         "Darel Rex Finley\n"
+         "   Quick sort algorithm\n"
+         "\n"
+         "Isaac Turner\n"
+         "   Safe quick sort wrappers\n"
+         "\n"
          "Peng Hai Jie\n"
          "   Testing on FreeBSD\n"
          "\n"

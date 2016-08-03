@@ -1,5 +1,5 @@
-static define versionString = "Ecere SDK v0.44.14";
-static define dateString = $"January 13, 2016";
+static define versionString = "Ecere SDK v0.44.15";
+static define dateString = $"August 3, 2016";
 static define builtOnString = $"built on ";
 static define withoutMinGW = $" (Without MinGW)";
 
@@ -286,11 +286,11 @@ public enum CoreSDKID
 
 Array<Component> coreSDK
 { [
-   { "Ecere IDE",       "ecere-sdk/ide",                 "bin",      null, true,  true, true, bits64 },
-   { "Ecere IDE",       "ecere-sdk32/ide",                 "bin",      null, true,  true, true, bits32 },
-   { $"Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true, true, bits64 },
+   { "Ecere IDE",       "ecere-sdk/ecere-ide",              "bin",      null, true,  true, true, bits64 },
+   { "Ecere IDE",       "ecere-sdk32/ecere-ide",            "bin",      null, true,  true, true, bits32 },
+   { $"Runtime Library", "ecere-sdk/ecere.dll",             "bin",      null, true,  true, true, bits64 },
    { $"Runtime Library", "ecere-sdk32/ecere.dll",           "bin",      null, true,  true, true, bits32 },
-   { $"eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true, true, bits64 },
+   { $"eC Compiler",     "ecere-sdk/compiler",              "bin",      null, true,  true, true, bits64 },
    { $"eC Compiler",     "ecere-sdk32/compiler",            "bin",      null, true,  true, true, bits32 },
    { $"GNU C Compiler",  "tdm/gcc/core",   "tdm", null, true, true, minGWIncluded, none },
    { $"GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, none },
@@ -446,7 +446,7 @@ class Installer : Window
    tabCycle = true;
    clientSize = { 636, 476 };
    icon = { ":icon.png" };
-   caption = $"Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Edition";
 
    // clientSize = { 796, 576 };
    bool loaded;
@@ -1194,7 +1194,7 @@ class Installer : Window
 
 class InstallProgress : Window
 {
-   caption = $"Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Edition";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
@@ -1463,7 +1463,7 @@ class InstallThread : Thread
                   if((c == ide && osIS64bit) || (c == ide32 && !osIS64bit))
                   {
                      coreSDK[c].GetFullPath(idePath, false);
-                     PathCat(idePath, "ide.exe");
+                     PathCat(idePath, "ecere-ide.exe");
                   }
 
                   if(c == runtime || c == runtime32)

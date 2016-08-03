@@ -7,7 +7,7 @@
 
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "setup-ecere-0.44.14-win32",
+      "TargetFileName" : "setup-ecere-0.44.15-win32",
       "Libraries" : [
          "ole32",
          "uuid",
@@ -163,7 +163,7 @@
                "Folder" : "ecere_bin/ide/ide",
                "Files" : [
                   "../obj/win32/bin/documentor.exe",
-                  "../obj/win32/bin/ide.exe"
+                  "../obj/win32/bin/ecere-ide.exe"
                ]
             },
             {
@@ -1960,7 +1960,7 @@
                "Folder" : "ide",
                "Files" : [
                   "../obj/win32.x32/bin/documentor.exe",
-                  "../obj/win32.x32/bin/ide.exe"
+                  "../obj/win32.x32/bin/ecere-ide.exe"
                ]
             },
             {

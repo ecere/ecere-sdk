@@ -1,4 +1,4 @@
-Ecere SDK v0.44 - www.ecere.com
+Ecere SDK v0.44 - http://ecere.org
 
 Linux Installation Notes
 
@@ -6,28 +6,19 @@ Linux Installation Notes
 ecere/lib in your LD_LIBRARY_PATH.
 
 2. The Linux runtime has dependencies on libX11, libXrender, libGL, libjpeg,
-libz, libgif, libfreetype, libncurses, libpng12.so.0 and libfontconfig.so.1
+libz, libgif, libfreetype, libncurses, libpng and libfontconfig
 
-3. Indexed Color depths are not supported in the X driver. 
-24/16/15bpp are now all working.
+3. Indexed Color depths are not supported in the X driver. 24/16/15bpp should all work.
 
-4. You'll need a monospace font which fontconfig can match to "Courier New"
-or the code editor text will be extremely small. See
+4. If you have trouble seeing text, try installing these fonts:
 
-http://www.ecere.com/blog/2007/11/08/linux-sdk-new-support-for-fonts-alpha-blending-scaling-041174/
+   https://fedorahosted.org/releases/l/i/liberation-fonts/liberation-fonts-1.04.tar.gz
+   http://ftp.gnome.org/pub/GNOME/sources/ttf-bitstream-vera/1.10/ttf-bitstream-vera-1.10.tar.bz2
 
-for free fonts download links.
+5. You can also try the OpenGL display driver available in (View/Drivers) or by specifying 
 
-5. The default display driver on X makes use of the XRender system, which
-may have various level of performance or useability depending on the X display
-drivers in use. In particular, the closed source accelerated nVidia drivers
-rendered the glyphs sometimes as solid blocks on a GeForce 8800GT. This should
-be resolved in beta driver version 177.70 and newer.
+   {
+      displayDriver = "OpenGL"
+   }
 
-6. The text rendering performance with some drivers (including the nVidia
-drivers) is not what it should be either, and either a future release of the 
-driver or a future version of the SDK will fix this. In the meantime, the 
-OpenGL driver has been enabled in the IDE and can be selected through the 
-View/Drivers menu for better performance. Ecere applications now also check 
-the environment variable ECERE_DRIVER which will override the default.
-Setting it to OpenGL will make all Ecere applications use it by default.
+   in ~/.ecereIDE/config.econ .

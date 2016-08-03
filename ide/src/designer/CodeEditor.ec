@@ -2710,7 +2710,7 @@ class CodeEditor : Window
 #endif
       Project project;
 
-      // This temporarily fixes issue with 2 overrides in release mode with VC6 (only happens with both ecere.dll and ide.exe compiled in release mode)
+      // This temporarily fixes issue with 2 overrides in release mode with VC6 (only happens with both ecere.dll and ecere-ide.exe compiled in release mode)
       if(reentrant) return;
       reentrant = true;
 
