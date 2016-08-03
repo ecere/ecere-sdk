@@ -110,7 +110,7 @@ _ECSOURCES1 = \
 	$(if $(DISABLE_GL),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,)
 _ECSOURCES2 = \
-	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
+	$(if ,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
@@ -150,8 +150,8 @@ _ECSOURCES2 = \
 	src/gui/dialogs/MessageBox.ec \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,)
+	$(if ,src/gui/drivers/cocoa/CocoaDispatch.ec,) \
+	$(if ,src/gui/drivers/cocoa/CocoaInterface.ec,)
 _ECSOURCES3 = \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
 	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
@@ -247,8 +247,8 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
 	$(OBJ)gl_compat_4_4.o \
-	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
-	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
+	$(if ,$(OBJ)CocoaEcereBridge.o,) \
+	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
@@ -277,8 +277,8 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	src/gfx/drivers/gl3/gl_compat_4_4.c \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
+	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
+	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)

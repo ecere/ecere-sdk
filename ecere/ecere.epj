@@ -1882,6 +1882,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Debug",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2275,6 +2286,17 @@ if distributed with the Ecere SDK Windows installer.
                               },
                               {
                                  "Name" : "Vanilla",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Debug",
                                  "Platforms" : [
                                     {
                                        "Name" : "apple",
