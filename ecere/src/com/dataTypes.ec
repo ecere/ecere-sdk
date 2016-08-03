@@ -93,7 +93,7 @@ extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnSerialize;
 extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnCopy;
-public:
+private:
 
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
