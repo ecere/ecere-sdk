@@ -830,17 +830,18 @@ class APIPageNameSpace : APIPage
          char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, description, null);
          if(desc)
          {
-            f.Printf($"<H3>Description</H3><br><br>\n");
+            f.Printf($"<H3>Description</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, nameSpaceDoc, nameSpace, description, null);
                f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(desc);
-               f.Printf("</a><br><br>");
+               f.Printf("</a>");
             }
             else
-               f.Printf("%s<br><br>", desc);
+               f.Printf("%s", desc);
+            f.Printf("<br><br><br>");
             delete desc;
          }
       }
@@ -853,7 +854,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, ns, description, null);
             if(first)
             {
-               f.Printf($"<H3>Sub Namespaces</H3><br><br>\n");
+               f.Printf($"<H3>Sub Namespaces</H3><BR>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -876,7 +877,7 @@ class APIPageNameSpace : APIPage
             f.Printf("</TR><br>\n");
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
 
       if(nameSpace->classes.first)
@@ -885,13 +886,13 @@ class APIPageNameSpace : APIPage
          for(link = (BTNamedLink)nameSpace->classes.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             Class cl = link.data;
-            if(!cl.templateClass)
+            if(!cl.templateClass && !cl.internalDecl)
             {
                char * desc = ReadDoc(module, classDoc, cl, description, null);
 
                if(first)
                {
-                  f.Printf($"<a name=Classes></a><H3>Classes</H3><br><br>\n");
+                  f.Printf($"<a name=Classes></a><H3>Classes</H3><BR>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -917,7 +918,7 @@ class APIPageNameSpace : APIPage
             }
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
 
       if(nameSpace->functions.first)
@@ -931,7 +932,7 @@ class APIPageNameSpace : APIPage
             if(name) name += 2; else name = function.name;
             if(first)
             {
-               f.Printf($"<a name=Functions></a><H3>Functions</H3><br><br>\n");
+               f.Printf($"<a name=Functions></a><H3>Functions</H3><BR>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -954,7 +955,7 @@ class APIPageNameSpace : APIPage
             f.Printf("</TR><br>\n");
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
 
       if(nameSpace->defines.first)
@@ -966,7 +967,7 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
             if(first)
             {
-               f.Printf($"<a name=Definitions></a><H3>Definitions</H3><br><br>\n");
+               f.Printf($"<a name=Definitions></a><H3>Definitions</H3><BR>\n");
                f.Printf("<TABLE>\n");
                first = false;
             }
@@ -990,7 +991,7 @@ class APIPageNameSpace : APIPage
             f.Printf("</TR><br>\n");
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
 
       f.Printf("</FONT></BODY></HTML>\n");
@@ -1084,17 +1085,18 @@ class APIPageClass : APIPage
          char * desc = ReadDoc(module, classDoc, cl, description, null);
          if(desc)
          {
-            f.Printf($"<br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><H3>Description</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
                FigureFileName(fileName, module, classDoc, cl, description, null);
                f.Printf("<a style=\"text-decoration:none;\" href=\"edit://%s\">", fileName);
                f.Puts(desc);
-               f.Printf("</a><br><br>");
+               f.Printf("</a>");
             }
             else
-               f.Printf("%s<br><br>", desc);
+               f.Printf("%s", desc);
+            f.Printf("<br><br><br>");
             delete desc;
          }
       }
@@ -1106,7 +1108,7 @@ class APIPageClass : APIPage
          {
             NamedLink item;
 
-            f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
+            f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><BR>\n");
             f.Printf("<TABLE>\n");
 
             for(item = enumeration.values.first; item; item = item.next)
@@ -1175,7 +1177,7 @@ class APIPageClass : APIPage
 
       if(cl.conversions.first)
       {
-         f.Printf($"<a name=Conversions></a><H3>Conversions</H3><br><br>\n");
+         f.Printf($"<a name=Conversions></a><H3>Conversions</H3><BR>\n");
          f.Printf("<TABLE>\n");
          for(prop = cl.conversions.first; prop; prop = prop.next)
          {
@@ -1213,7 +1215,7 @@ class APIPageClass : APIPage
                FreeType(type);
             }
          }
-         f.Printf("</TABLE><br>\n");
+         f.Printf("</TABLE><br><br>\n");
       }
 
       if(cl.membersAndProperties.first)
@@ -1225,7 +1227,7 @@ class APIPageClass : APIPage
             {
                if(first)
                {
-                  f.Printf($"<a name=Members></a><H3>Properties and Members</H3><br><br>\n");
+                  f.Printf($"<a name=Members></a><H3>Properties and Members</H3><BR>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1265,7 +1267,7 @@ class APIPageClass : APIPage
             }
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
 
       if(cl.methods.first)
@@ -1279,7 +1281,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=VirtualMethods></a><H3>Virtual Methods</H3><BR>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1306,7 +1308,7 @@ class APIPageClass : APIPage
             }
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
 
          // Non-Virtual Methods
          first = true;
@@ -1317,7 +1319,7 @@ class APIPageClass : APIPage
                char * desc = ReadDoc(module, methodDoc, method, description, null);
                if(first)
                {
-                  f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n");
+                  f.Printf($"<a name=Methods></a><H3>Non-Virtual Methods</H3><BR>\n");
                   f.Printf("<TABLE>\n");
                   first = false;
                }
@@ -1346,13 +1348,13 @@ class APIPageClass : APIPage
             }
          }
          if(!first)
-            f.Printf("</TABLE><br>\n");
+            f.Printf("</TABLE><br><br>\n");
       }
       {
          char * usageDoc = ReadDoc(module, classDoc, cl, usage, null);
          if(usageDoc)
          {
-            f.Printf($"<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1363,7 +1365,7 @@ class APIPageClass : APIPage
             }
             else
                f.Printf("<br>%s\n", usageDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete usageDoc;
          }
       }
@@ -1371,7 +1373,7 @@ class APIPageClass : APIPage
          char * exampleDoc = ReadDoc(module, classDoc, cl, example, null);
          if(exampleDoc)
          {
-            f.Printf($"<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><BR>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE>\n");
             if(editing)
@@ -1386,7 +1388,7 @@ class APIPageClass : APIPage
                f.Printf("<TR><TD><CODE>%s</CODE></TD></TR>\n", exampleDoc);   // bgcolor=#CFC9C0
 
             f.Printf("</TABLE></FONT>\n");
-            f.Printf("<br>\n");
+            f.Printf("<br><br>\n");
             delete exampleDoc;
          }
       }
@@ -1395,7 +1397,7 @@ class APIPageClass : APIPage
 
          if(remarksDoc)
          {
-            f.Printf($"<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1406,7 +1408,7 @@ class APIPageClass : APIPage
             }
             else
                f.Printf("<br>%s\n", remarksDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete remarksDoc;
          }
       }
@@ -1423,8 +1425,7 @@ class APIPageClass : APIPage
             {
                if(first)
                {
-                  f.Printf($"<H3>Derived Classes</H3><br>\n");
-                  f.Printf("<br>");
+                  f.Printf($"<H3>Derived Classes</H3><BR>\n");
                   first = false;
                }
                else
@@ -1439,7 +1440,7 @@ class APIPageClass : APIPage
          char * seeAlsoDoc = ReadDoc(module, classDoc, cl, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf($"<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1518,7 +1519,7 @@ class APIPageMethod : APIPage
          char * desc = ReadDoc(module, methodDoc, method, description, null);
          if(desc)
          {
-            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1529,6 +1530,7 @@ class APIPageMethod : APIPage
             }
             else
                f.Printf("%s", desc);
+            f.Printf("<BR><BR>");
             delete desc;
          }
       }
@@ -1536,7 +1538,7 @@ class APIPageMethod : APIPage
       f.Printf("<br><br>\n");
       if(method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType)
       {
-         f.Printf($"<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><BR>\n");
       }
       if((method.dataType.returnType && method.dataType.returnType.kind != voidType) ||
          (method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType))
@@ -1612,7 +1614,7 @@ class APIPageMethod : APIPage
          char * usageDoc = ReadDoc(module, methodDoc, method, usage, null);
          if(usageDoc)
          {
-            f.Printf($"<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1623,7 +1625,7 @@ class APIPageMethod : APIPage
             }
             else
                f.Printf("<br>%s\n", usageDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete usageDoc;
          }
       }
@@ -1631,7 +1633,7 @@ class APIPageMethod : APIPage
          char * exampleDoc = ReadDoc(module, methodDoc, method, example, null);
          if(exampleDoc)
          {
-            f.Printf($"<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><BR>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE>\n");
             if(editing)
@@ -1645,7 +1647,7 @@ class APIPageMethod : APIPage
             else
                f.Printf("<TR><TD><CODE>%s</CODE></TD></TR>\n", exampleDoc);   // bgcolor=#CFC9C0
             f.Printf("</TABLE></FONT>\n");
-            f.Printf("<br>\n");
+            f.Printf("<br><br>\n");
             delete exampleDoc;
          }
       }
@@ -1653,7 +1655,7 @@ class APIPageMethod : APIPage
          char * remarksDoc = ReadDoc(module, methodDoc, method, remarks, null);
          if(remarksDoc)
          {
-            f.Printf($"<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1664,7 +1666,7 @@ class APIPageMethod : APIPage
             }
             else
                f.Printf("<br>%s\n", method, remarksDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete remarksDoc;
          }
       }
@@ -1672,7 +1674,7 @@ class APIPageMethod : APIPage
          char * seeAlsoDoc = ReadDoc(module, methodDoc, method, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf($"<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1684,7 +1686,7 @@ class APIPageMethod : APIPage
             else
                f.Printf("<br>%s\n", method, seeAlsoDoc);
 
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete seeAlsoDoc;
          }
       }
@@ -1751,7 +1753,7 @@ class APIPageFunction : APIPage
          char * desc = ReadDoc(module, functionDoc, function, description, null);
          if(desc)
          {
-            f.Printf($"<br><br><H3>Description</H3><br><br>\n");
+            f.Printf($"<br><br><H3>Description</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1763,12 +1765,13 @@ class APIPageFunction : APIPage
             else
                f.Printf("%s", desc);
             delete desc;
+            f.Printf("<BR><BR>");
          }
       }
       f.Printf("<br><br>\n");
       if(function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType)
       {
-         f.Printf($"<H3>Parameters</H3><br><br>\n");
+         f.Printf($"<H3>Parameters</H3><BR>\n");
       }
       if((function.dataType.returnType && function.dataType.returnType.kind != voidType) ||
          (function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType))
@@ -1844,7 +1847,7 @@ class APIPageFunction : APIPage
          char * usageDoc = ReadDoc(module, functionDoc, function, usage, null);
          if(usageDoc)
          {
-            f.Printf($"<H3>Usage</H3><br>\n");
+            f.Printf($"<H3>Usage</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1855,7 +1858,7 @@ class APIPageFunction : APIPage
             }
             else
                f.Printf("<br>%s\n", usageDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete usageDoc;
          }
       }
@@ -1863,7 +1866,7 @@ class APIPageFunction : APIPage
          char * exampleDoc = ReadDoc(module, functionDoc, function, example, null);
          if(exampleDoc)
          {
-            f.Printf($"<H3>Example</H3><br>\n");
+            f.Printf($"<H3>Example</H3><BR>\n");
             f.Printf($"<FONT face=\"Courier New\">\n");
             f.Printf("<br><TABLE>\n");
             if(editing)
@@ -1877,7 +1880,7 @@ class APIPageFunction : APIPage
             else
                f.Printf("<TR><TD><CODE>%s</CODE></TD></TR>\n", exampleDoc);   // bgcolor=#CFC9C0
             f.Printf("</TABLE></FONT>\n");
-            f.Printf("<br>\n");
+            f.Printf("<br><br>\n");
             delete exampleDoc;
          }
       }
@@ -1885,7 +1888,7 @@ class APIPageFunction : APIPage
          char * remarksDoc = ReadDoc(module, functionDoc, function, remarks, null);
          if(remarksDoc)
          {
-            f.Printf($"<H3>Remarks</H3><br>\n");
+            f.Printf($"<H3>Remarks</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1896,7 +1899,7 @@ class APIPageFunction : APIPage
             }
             else
                f.Printf("<br>%s\n", remarksDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete remarksDoc;
          }
       }
@@ -1904,7 +1907,7 @@ class APIPageFunction : APIPage
          char * seeAlsoDoc = ReadDoc(module, functionDoc, function, seeAlso, null);
          if(seeAlsoDoc)
          {
-            f.Printf($"<H3>See Also</H3><br>\n");
+            f.Printf($"<H3>See Also</H3><BR>\n");
             if(editing)
             {
                char fileName[MAX_LOCATION];
@@ -1915,7 +1918,7 @@ class APIPageFunction : APIPage
             }
             else
                f.Printf("<br>%s\n", seeAlsoDoc);
-            f.Printf("<br><br>\n");
+            f.Printf("<br><br><br>\n");
             delete seeAlsoDoc;
          }
       }
@@ -1982,7 +1985,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
             for(link = (BTNamedLink)nameSpace->classes.first; link; link = (BTNamedLink)((BTNode)link).next)
             {
                cl = link.data;
-               if(!cl.templateClass && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
+               if(!cl.templateClass && !cl.internalDecl && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
                {
                   if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
                   AddClass(classesRow, module, cl, nsName, showPrivate);
