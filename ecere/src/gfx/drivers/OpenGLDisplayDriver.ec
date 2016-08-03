@@ -3437,11 +3437,6 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            if(tmu > 1)
-            {
-               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
-               GLEnableClientState(TEXCOORDS);
-            }
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
             /* // This did not have the desired effect with a GL_ALPHA texture
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -3478,6 +3473,8 @@ class OpenGLDisplayDriver : DisplayDriver
                glEnable(GL_TEXTURE_GEN_S);
                glEnable(GL_TEXTURE_GEN_T);
             #endif
+
+               GLDisableClientState(TEXCOORDS);
             }
             else
             {
@@ -3488,6 +3485,10 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisable(GL_TEXTURE_GEN_S);
                glDisable(GL_TEXTURE_GEN_T);
             #endif
+
+               if(tmu > 1)
+                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+               GLEnableClientState(TEXCOORDS);
             }
             glClientActiveTexture(GL_TEXTURE0);
          }
