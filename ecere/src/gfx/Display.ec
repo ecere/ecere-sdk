@@ -947,7 +947,7 @@ public:
                   displaySystem.driver.PushMatrix(this);
 
 #if ENABLE_GL_FFP
-               if(object.mesh.tangents && object.mesh.normals)
+               if(object.mesh.tangents && object.mesh.normals && object.flags.computeLightVectors)
                {
                   Mesh mesh = object.mesh;
                   if(!glCaps_shaders)

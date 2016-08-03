@@ -380,6 +380,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    int nNewVertices;
    Vector3Df * mVertices;
    double cutOff = cos(Degrees { SMOOTH_CUTOFF });
+   bool hasBumpMap = false;
 
    Map<SharedSourceVertexInfo, SharedDestVertexInfo> sharedVertices { };
    Map<SourceVertexInfo, DestVertexInfo> vertexMap { };
@@ -407,6 +408,8 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    {
       Face * face = &faces[c];
       int i;
+      if(face->material && face->material.bumpMap)
+         hasBumpMap = true;
 
       // Zero space points
       if(!mVertices[face->indices[0]].OnCompare(mVertices[face->indices[1]]) &&
@@ -698,6 +701,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    }
 
    mesh.Unlock({ normals = true, tangents = true });
+   object.flags.computeLightVectors = hasBumpMap;
 
    // Free all the temporary stuff
 
