@@ -1655,7 +1655,7 @@ private:
             }
             else if(line == selStartLine)
             {
-               int prevGlyph;
+               int prevGlyph = 0;
                int start = Min(line.count, selStartX);
                int end   = Min(line.count, selEndX);
                surface.TextExtent2(buffer, start, &tw, &th, 0, &prevGlyph, null);
