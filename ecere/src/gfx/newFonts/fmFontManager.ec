@@ -3,6 +3,8 @@
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
+#undef __BLOCKS__
+
 import "LinkList"
 import "File"
 import "FontResource"
