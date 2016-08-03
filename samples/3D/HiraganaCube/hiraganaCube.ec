@@ -108,7 +108,8 @@ class Test3D : Window
       lfbSystem.Create("LFB", null, false);
       //font = lfbSystem.LoadFont("Arial Unicode MS", 180, 0);
       //font = lfbSystem.LoadFont("MingLiu", 150, 0);
-      font = lfbSystem.LoadFont("FreeSans.ttf", 175, 0);
+      //font = lfbSystem.LoadFont("FreeSans.ttf", 175, 0);
+      font = lfbSystem.LoadOutlineFont("FreeSans.ttf", 160, 0, 10.0, 0.2);
 
       for(group = cube.mesh.groups.first, c = 0; c<6; c++, group = group.next)
       {
@@ -123,8 +124,8 @@ class Test3D : Window
          surface.Clear(colorBuffer);
          surface.SetForeground(ColorAlpha { 255/*128*/, ColorHSV { 60 * c, 100, 50 }});
          surface.TextExtent(hiragana[c], strlen(hiragana[c]), &tw, &th);
-         //surface.WriteText((256 - tw) / 2, (256 - th) / 2 /*+ 20*/, hiragana[c], strlen(hiragana[c]));
-         surface.WriteText(12,-45, hiragana[c], strlen(hiragana[c]));
+         surface.outlineColor = black;
+         surface.WriteText((256 - tw) / 2, (256 - th) / 2, hiragana[c], strlen(hiragana[c]));
          surface.SetBackground({ 255 /*64*/, ColorHSV { (90 + 60 * c) % 360, 75, 50 }} );
          surface.Area(5,5, 250,20);
          surface.Area(5,5, 20,250);
