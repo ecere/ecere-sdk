@@ -2,7 +2,7 @@
    name = "Color",
    description = "A 32 bit bit class representing Red, Green and Blue from 0..255, with Blue stored in LSB.",
    usage = "Used in the declaration section of code.",
-   example = "Color red = { r = 255 }; // High intensity red.\n"
+   example = "Color red = { r = 255 }; // High intensity red.<br>"
       "Color yellow = { 0xFFFF00 }; // High intensity yellow. r = 0xFF(255), g = 0xFF(255), b = 0x00(0)",
    also = "Color444, Color555, Color565, ColorAlpha, ColorCMYK, ColorHSV, ColorKey, ColorLab, ColorRGB, ColorRGBA, DefinedColor, PixelFormat, SystemColor",
    fields = [

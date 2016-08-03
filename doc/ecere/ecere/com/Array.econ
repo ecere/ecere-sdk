@@ -1,36 +1,21 @@
 {
    name = "Array",
-   description = "A storage container allowing for dynamic resizing of allocated space at run time. The data type of the data stored in this container as a typecast at the time of declaration.",
-   usage = "Initially declared in the declaration section of code. The resulting array of data is later accessed through the [] syntax: nameOfArray[arrayElement] = arbitraryValue.\n"
-      "\n"
-      "Be certain that when you instantiate an Array that you have a matching delete statement for it, otherwise potential memory leaks could become a problem.",
-   example = "void Test()\n"
-      "{\n"
-      "   Array<int> points { size = 10 };\n"
-      "   points[0] = { 10, 10 };\n"
-      "   points.size = 20;\n"
-      "   points[19] = { 5, 5 };\n"
-      "   delete points;\n"
-      "}",
-   remarks = "Similar to a C++ Vector. The Array class does come with inevitable overhead required for the purposes of dynamically allocating storage. So if it is not required to have dynamic allocation of storage, it would be recommended to use standard arrays: ie) int thisArray[10];",
+   description = "A dynamically resizable array template",
+   usage = "The array object can be indexed with the [ ] operator.<br><br>Elements of the array individually allocated on the heap are not freed unless Free() is invoked.<br><br>The array itself is must be instantiated and deleted as it is a ckass type.",
+   example = "void test()<br>{<br>   Array points { size = 10 };<br>   points[0] = { 10, 10 };<br>   points.size = 20;<br>   points[19] = { 5, 5 };<br>   delete points;<br>}",
+   remarks = "The Array container class (like all containr classes) comes with some level of overhead, including an implied extra reference level and the overhead of multiple re-allocations. If dynamic reallocation is not required, stick to regular C arrays (e.g. int array[10]).",
    also = "Container",
    fields = [
       {
          "array",
          {
-            description = "The actual allocated storage for the Array."
+            description = "Pointer to the storage for the array"
          }
       },
       {
          "count",
          {
-            description = "The overall size of the Array."
-         }
-      },
-      {
-         "minAllocSize",
-         {
-            description = "The minimum amount of allocated storage for the Array before a reallocation would be necessary."
+            description = "The number of elements in the array. Setting this value does NOT allocat storage. Be careful setting this and using Add() on the same Array."
          }
       }
    ],
@@ -38,13 +23,13 @@
       {
          "minAllocSize",
          {
-            description = "The property to enable manual changes to the minAllocSize."
+            description = "Minimum number of elements for which storage is allocated in  the array"
          }
       },
       {
          "size",
          {
-            description = "The property to enable manual changes to the size of the Array."
+            description = "Set this property to allocate storage for the array"
          }
       }
    ]

@@ -2,11 +2,11 @@
    name = "uint32",
    description = "32 bit unsigned integer data type (equivalent of C99 'uint32_t'). A 32 bit unsigned integer can range from 0 to 0xFFFFFFFF (4,294,967,295).",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "uint32 aUint32; // A stand alone declaration of a uint32.\n"
-      "uint32 a, b; // Declaring two uint32s at the same time.\n"
+   example = "uint32 aUint32; // A stand alone declaration of a uint32.<br>"
+      "uint32 a, b; // Declaring two uint32s at the same time.<br>"
       "uint32 c = 64000, d = 10; // Declaring two uint32s, and initializing them both at the same time.",
-   remarks = "Unlike other languages the uint32 data type is actually a class.\n"
-      "\n"
+   remarks = "Unlike other languages the uint32 data type is actually a class.<br>"
+      "<br>"
       "uint32 is equivalent to an unsigned int in C.",
    also = "bool, byte, char, char *, double, enum, float, int, int64, uint16, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

@@ -2,15 +2,15 @@
    name = "byte",
    description = "An unsigned integer data type representing a single byte of data (equivalent to C 'unsigned char' and expected to be equivalent to C99 'uint8_t'). A byte can range from 0 to 255. Often used to allocate and address memory.",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "byte a = 3; // binary form: 00000011\n"
-      "byte b = 6; // binary form: 00000110\n"
-      "byte c;\n"
-      "c = a & b; // c will be 2  (00000010)\n"
-      "c = a | b; // c will be 7  (00000111)\n"
-      "c = a ^ b; // c will be 5  (00000101)\n"
+   example = "byte a = 3; // binary form: 00000011<br>"
+      "byte b = 6; // binary form: 00000110<br>"
+      "byte c;<br>"
+      "c = a & b; // c will be 2  (00000010)<br>"
+      "c = a | b; // c will be 7  (00000111)<br>"
+      "c = a ^ b; // c will be 5  (00000101)<br>"
       "c = ~b;    // c will be 249(11111001)",
-   remarks = "Unlike other languages the byte data type is actually a class.\n"
-      "\n"
+   remarks = "Unlike other languages the byte data type is actually a class.<br>"
+      "<br>"
       "byte is equivalent to an unsigned char in C.",
    also = "bool, char, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

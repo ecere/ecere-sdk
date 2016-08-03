@@ -2,11 +2,11 @@
    name = "double",
    description = "Core C double precision floating-point real number data type. A double ranges from 2.2250738585072014e-308 to 1.7976931348623158e+308.",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "double aDouble; // A stand alone declaration of a double.\n"
-      "double a, b; // Declaring two doubles at the same time.\n"
+   example = "double aDouble; // A stand alone declaration of a double.<br>"
+      "double a, b; // Declaring two doubles at the same time.<br>"
       "double c = 12.1234567899; // Declaring and initializing a double at the same time.",
-   remarks = "Unlike other languages, the double data type is actually a class.\n"
-      "\n"
+   remarks = "Unlike other languages, the double data type is actually a class.<br>"
+      "<br>"
       "double is equivalent to a double in C.",
    also = "bool, byte, char, char *, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

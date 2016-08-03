@@ -2,12 +2,12 @@
    name = "int64",
    description = "64 bit signed integer data type (equivalent of C99 'int64_t'). A 64 bit signed integer can range from - 2^63-1 to 2^63-1 (-9,223,372,036,854,775,807 to 9,223,372,036,854,775,807). On some platform a negative value on less is valid.",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "int64 thisInt; // A stand alone declaration of an int64.\n"
-      "int64 a, b; // Declaring two int64s at the same time.\n"
-      "int64 c = 4294967296, d = -300; // Declaring two int64s, and initializing them both at the same time.\n"
+   example = "int64 thisInt; // A stand alone declaration of an int64.<br>"
+      "int64 a, b; // Declaring two int64s at the same time.<br>"
+      "int64 c = 4294967296, d = -300; // Declaring two int64s, and initializing them both at the same time.<br>"
       "int64 anotherInt = 040000000000; // Declaring and initializing an int64 with an octal value.",
-   remarks = "Unlike other languages, the int64 data type is actually a class..\n"
-      "\n"
+   remarks = "Unlike other languages, the int64 data type is actually a class..<br>"
+      "<br>"
       "int64 is equivalent to a long long in C.",
    also = "bool, byte, char, char *, double, enum, int, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

@@ -55,7 +55,7 @@
       {
          "clientSize",
          {
-            description = "Sets the size of the interior of the Window; the Client Area.\n"
+            description = "Sets the size of the interior of the Window; the Client Area.<br>"
                "Example: clientSize = { 190, 290 };"
          }
       },
@@ -92,7 +92,7 @@
       {
          "foreground",
          {
-            description = "The Color of the text in the Client Area.\n"
+            description = "The Color of the text in the Client Area.<br>"
                "Example: foreground = { r = 0, g = 0, b = 0 };"
          }
       },
@@ -141,7 +141,7 @@
       {
          "hotKey",
          {
-            description = "The key associated with a particular Window or Control. Pressing this key, or key combination will automatically activate the associated Window or Control.\n"
+            description = "The key associated with a particular Window or Control. Pressing this key, or key combination will automatically activate the associated Window or Control.<br>"
                "Note: If the tabCycle property of the parent is not true, then hotKey will not work unless the parent is active."
          }
       },
@@ -154,7 +154,7 @@
       {
          "isDocument",
          {
-            description = "When true, this Window/Control would be treated as a document, enabling things like having the path show up in the Title Bar. \n"
+            description = "When true, this Window/Control would be treated as a document, enabling things like having the path show up in the Title Bar. <br>"
                "Note: For best results, set this property true on a Window rather than on a Control."
          }
       },
@@ -167,7 +167,7 @@
       {
          "maxClientSize",
          {
-            description = "The Maximum allowable size for the Client Area within the window.\n"
+            description = "The Maximum allowable size for the Client Area within the window.<br>"
                "Example: maxClientSize = { 120, 400 };"
          }
       },
@@ -186,7 +186,7 @@
       {
          "minClientSize",
          {
-            description = "The Minimum allowable size for the Client Area within the window.\n"
+            description = "The Minimum allowable size for the Client Area within the window.<br>"
                "Example: minClientSize = { 50, 50 };"
          }
       },
@@ -235,21 +235,21 @@
       {
          "position",
          {
-            description = "The position of a Window/Control relative to the top left client area of the Parent. \n"
+            description = "The position of a Window/Control relative to the top left client area of the Parent. <br>"
                "Example: position = { 10, 10 };"
          }
       },
       {
          "size",
          {
-            description = "Sets the size of the Window, including all the decorations.\n"
+            description = "Sets the size of the Window, including all the decorations.<br>"
                "Example: size = { 200, 300 };"
          }
       },
       {
          "state",
          {
-            description = "Sets the state of the Window, either Normal, Minimized, or Maximized.\n"
+            description = "Sets the state of the Window, either Normal, Minimized, or Maximized.<br>"
                "state = Normal;"
          }
       },
@@ -284,11 +284,11 @@
          {
             description = "Destroys the current Window/Control.",
             usage = "Used in the statement section of the source code.",
-            example = "Window\n"
-               "{\n"
-               "   text = \"Destroy Example\";\n"
-               "   Button \n"
-               "   {\n"
+            example = "Window<br>"
+               "{<br>"
+               "   text = \"Destroy Example\";<br>"
+               "   Button <br>"
+               "   {<br>"
                "      text = \"Destroy this Window!\";",
             parameters = [
                {
@@ -313,12 +313,12 @@
          {
             description = "This method is called anytime the Window is redrawn. Usually when it is resized or moved, however can also be called manually by calling Update() to redraw the contents of the window.",
             usage = "Use this method by overriding it in your own code, within the Window class that it belongs to.",
-            example = "class Form1 : Window\n"
-               "{\n"
-               "   void OnRedraw(Surface surface)\n"
-               "   {\n"
-               "      surface.blit( image, xdest, ydest, sourceX, sourceY, sourceW, sourceH );\n"
-               "   }\n"
+            example = "class Form1 : Window<br>"
+               "{<br>"
+               "   void OnRedraw(Surface surface)<br>"
+               "   {<br>"
+               "      surface.blit( image, xdest, ydest, sourceX, sourceY, sourceW, sourceH );<br>"
+               "   }<br>"
                "}",
             remarks = "Typically this method is responsible for the actual drawing of all the graphics for your program.",
             also = "OnApplyGraphics(), OnLoadGraphics(), OnResize(), OnResizing(), Update(), Window",
@@ -338,10 +338,10 @@
          {
             description = "Causes the OnRedraw() method of the Window to be called.",
             usage = "Used in the statement section of the code.",
-            example = "class Form1 : Window\n"
-               "{\n"
-               "   Update( null ); // update the entire window\n"
-               "   Update( { 0, 0, 50, 50 } ); // update the region from 0 to 50 on the x axis, and 0 to 50 on the y axis.\n"
+            example = "class Form1 : Window<br>"
+               "{<br>"
+               "   Update( null ); // update the entire window<br>"
+               "   Update( { 0, 0, 50, 50 } ); // update the region from 0 to 50 on the x axis, and 0 to 50 on the y axis.<br>"
                "} ",
             remarks = "One should only update the necessary areas when possible, as updating the entire window indiscriminately can hog precious CPU cycles.",
             also = "UpdateDisplay(), OnRedraw()",

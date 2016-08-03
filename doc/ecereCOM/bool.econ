@@ -2,11 +2,11 @@
    name = "bool",
    description = "Boolean value (true or false) stored as a 32 bit unsigned integer",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "bool thisBool; // A stand alone declaration of a bool.\n"
-      "bool a, b; // Declaring two bools at the same time.\n"
+   example = "bool thisBool; // A stand alone declaration of a bool.<br>"
+      "bool a, b; // Declaring two bools at the same time.<br>"
       "bool c = true, d = false; // Declaring two bools, and initializing them both at the same time.",
-   remarks = "A bool type describes a boolean type variable and can only store a true or false value.\n"
-      "\n"
+   remarks = "A bool type describes a boolean type variable and can only store a true or false value.<br>"
+      "<br>"
       "bool is equivalent to a bool in C.",
    also = "byte, char, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()",
    values = [

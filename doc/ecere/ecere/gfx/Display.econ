@@ -7,12 +7,12 @@
          {
             description = "The Grab method is used to copy pixel data from a given rectangular area in the current window display to a bitmap instance.",
             usage = "Grab is typically called on the display property of a Window instance to grab the content of the window.",
-            example = "void GrabWindowToBitmapFile(Window window, char * filePath, char * format)\n"
-               "{\n"
-               "   Bitmap bitmap { };\n"
-               "   window.display.Grab(bitmap, 0, 0, window.size.w, window.size.h);\n"
-               "   bitmap.Save(filePath, format, null);\n"
-               "   delete bitmap;\n"
+            example = "void GrabWindowToBitmapFile(Window window, char * filePath, char * format)<br>"
+               "{<br>"
+               "   Bitmap bitmap { };<br>"
+               "   window.display.Grab(bitmap, 0, 0, window.size.w, window.size.h);<br>"
+               "   bitmap.Save(filePath, format, null);<br>"
+               "   delete bitmap;<br>"
                "}",
             remarks = "When no memory has been allocated in the bitmap instance to contain the pixel data, Grab will automatically allocate memory according to the size of the rectangular area being copied and to the pixel format of the display. When memory has been pre-allocated, Grab will use the bitmap if it satisfies the required size and pixel format. If the pre-allocated bitmap is not sufficient, Grab will enlarge the allocated memory and change the pixel format appropriately.",
             also = "Bitmap::Save",

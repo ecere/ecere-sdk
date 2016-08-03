@@ -2,11 +2,11 @@
    name = "uint64",
    description = "64 bit unsigned integer data type (equivalent of C99 'uint64_t'). A 64 bit unsigned integer can range from 0 to 0xFFFFFFFFFFFFFFFF (18,446,744,073,709,551,615).",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "uint64 aUint64; // A stand alone declaration of a uint64.\n"
-      "uint64 a, b; // Declaring two uint64s at the same time.\n"
+   example = "uint64 aUint64; // A stand alone declaration of a uint64.<br>"
+      "uint64 a, b; // Declaring two uint64s at the same time.<br>"
       "uint64 c = 64000, d = 10; // Declaring two uint64s, and initializing them both at the same time.",
-   remarks = "Unlike other languages, the uint64 data type is actually a class.\n"
-      "\n"
+   remarks = "Unlike other languages, the uint64 data type is actually a class.<br>"
+      "<br>"
       "uint64 is equivalent to an unsigned long long in C.",
    also = "bool, byte, char, char *, double, enum, float, int, int64, uint16, uint32, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

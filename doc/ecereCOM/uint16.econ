@@ -2,12 +2,12 @@
    name = "uint16",
    description = "16 bit unsigned integer data type (equivalent of C99 'uint16_t'). A 16 bit unsigned integer can range from 0 to 0xFFFF (65,535).",
    usage = "Used in the declaration section of code, which is before any statements.",
-   example = "uint16 aUint16; // A standalone declaration of a uint16\n"
-      "uint16 a, b; // Declaring two uint16s at the same time.\n"
-      "uint16 c = 64000, d = 10; // Declaring two unit16s, and initializing them both at the same time.\n"
+   example = "uint16 aUint16; // A standalone declaration of a uint16<br>"
+      "uint16 a, b; // Declaring two uint16s at the same time.<br>"
+      "uint16 c = 64000, d = 10; // Declaring two unit16s, and initializing them both at the same time.<br>"
       "uint16 hexNumber = 0x1C42; // Declaring a uint16, and initializing it with the hex value 7,234.",
-   remarks = "Unlike other languages the uint16 data type is actually a class.\n"
-      "\n"
+   remarks = "Unlike other languages the uint16 data type is actually a class.<br>"
+      "<br>"
       "uint16 is equivalent to an unsigned short in C.",
    also = "bool, byte, char, char *, double, enum, int, int64, uint, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }

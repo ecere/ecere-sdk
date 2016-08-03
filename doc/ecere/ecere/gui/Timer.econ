@@ -2,18 +2,18 @@
    name = "Timer",
    description = "A Timer object useful for performing actions based on a particular time delay.",
    usage = "A Timer object is defined in the declaration section of code, with it's functionality being declared at initialization time.",
-   example = "class Form1 : Window\n"
-      "{\n"
-      "   Timer timer\n"
-      "   {\n"
-      "      this;         // the Timer object belongs to the Form1 class.\n"
-      "      delay = 0.01; // the time to wait is 0.01 seconds.\n"
-      "      bool DelayExpired() // Override the virtual function to tell the Timer what to do.\n"
-      "      {\n"
-      "         Update(null); // redraw the entire window.\n"
-      "         return true; // tell the program that everything went ok.\n"
-      "      }\n"
-      "   }; // terminate the initialization of timer.\n"
+   example = "class Form1 : Window<br>"
+      "{<br>"
+      "   Timer timer<br>"
+      "   {<br>"
+      "      this;         // the Timer object belongs to the Form1 class.<br>"
+      "      delay = 0.01; // the time to wait is 0.01 seconds.<br>"
+      "      bool DelayExpired() // Override the virtual function to tell the Timer what to do.<br>"
+      "      {<br>"
+      "         Update(null); // redraw the entire window.<br>"
+      "         return true; // tell the program that everything went ok.<br>"
+      "      }<br>"
+      "   }; // terminate the initialization of timer.<br>"
       "}",
    remarks = "This is an excellent, simple way to refresh the current window at particular intervals without requiring user input.",
    also = "GetTime(), Time",

@@ -2,8 +2,8 @@
    name = "Anchor",
    description = "Defines the position of a Window/Control based on its top, left, bottom, right, middle horizontal, and middle vertical points relative to the parents client area, rather than just the top left corner.",
    usage = "Specified as a property of a GUI element. Each individual property of the Anchor class can be set with an absolute value in pixels, or a relative value in percentages.",
-   example = "Window { anchor = { right = 16, bottom = 32 } };// This sets the window to appear with its right side being 16 pixels from the right side of the Parents client area, and 32 pixels from the bottom.\n"
-      "Window { anchor = { horz = 100, vert = 100 } };// This sets the window to appear with its center being 100 pixels from the left of the parents client area, and 100 pixels from the top.\n"
+   example = "Window { anchor = { right = 16, bottom = 32 } };// This sets the window to appear with its right side being 16 pixels from the right side of the Parents client area, and 32 pixels from the bottom.<br>"
+      "Window { anchor = { horz = 100, vert = 100 } };// This sets the window to appear with its center being 100 pixels from the left of the parents client area, and 100 pixels from the top.<br>"
       "Window { anchor = { horz = 0.5, vert = 0.5 } }; // This sets the window to appear with it's center being at 50% of the parents client area width, and 50% of the client area height.",
    remarks = "This is particularly useful if you want to ensure that a particular control remains a specific distance from any one side of its parent.",
    also = "Window",

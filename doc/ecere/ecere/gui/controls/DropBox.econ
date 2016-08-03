@@ -56,7 +56,7 @@
       {
          "maxShown",
          {
-            description = "The number of items to show in the drop down list.\n"
+            description = "The number of items to show in the drop down list.<br>"
                "Example: DropBox dropBox1 { this, maxShown = 2 };"
          }
       },
@@ -75,7 +75,7 @@
       {
          "rowHeight",
          {
-            description = "The height of each row of the drop down list. One item is listed per row.\n"
+            description = "The height of each row of the drop down list. One item is listed per row.<br>"
                "Example: DropBox dropBox1 { this, rowHeight = 16 };"
          }
       },

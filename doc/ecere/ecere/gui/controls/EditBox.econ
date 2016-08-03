@@ -18,7 +18,7 @@
       {
          "contents",
          {
-            description = "The contents of the Edit Box.\n"
+            description = "The contents of the Edit Box.<br>"
                "Example: char * contentsOfEditBox = editBox1.contents;"
          }
       },
@@ -31,14 +31,14 @@
       {
          "maxLineSize",
          {
-            description = "The maximum number of characters that a line can hold.\n"
+            description = "The maximum number of characters that a line can hold.<br>"
                "Example: maxLineSize = 30;"
          }
       },
       {
          "maxNumLines",
          {
-            description = "The maximum number of lines that the Edit Box contains.\n"
+            description = "The maximum number of lines that the Edit Box contains.<br>"
                "Example: maxNumLines = 5;"
          }
       },
@@ -93,14 +93,14 @@
       {
          "textHorzScroll",
          {
-            description = "When true, the text will scroll to the left while it is being entered, so that the caret is always visible. This also enables the user to manually scroll left and right on the line using the left and right arrows.\n"
+            description = "When true, the text will scroll to the left while it is being entered, so that the caret is always visible. This also enables the user to manually scroll left and right on the line using the left and right arrows.<br>"
                "When false, it is not possible to type past the width of the control."
          }
       },
       {
          "textVertScroll",
          {
-            description = "When true, the text can be scrolled vertically using the up and down arrows. For this to work, multiLine must also be true.\n"
+            description = "When true, the text can be scrolled vertically using the up and down arrows. For this to work, multiLine must also be true.<br>"
                "When false, it is not possible to type past the bottom of the control."
          }
       },
@@ -117,11 +117,11 @@
          {
             description = "Loads a file into the EditBox.",
             usage = "Used in the statements section of code. Once an instantiation of the EditBox control has been made, then Load() would be accessed through the . operator.",
-            example = "File f = FileOpen(\"C:/fun.txt\", read);\n"
-               "if(f)\n"
-               "{\n"
-               "   myEditBox.Load(f);\n"
-               "   delete(f);\n"
+            example = "File f = FileOpen(\"C:/fun.txt\", read);<br>"
+               "if(f)<br>"
+               "{<br>"
+               "   myEditBox.Load(f);<br>"
+               "   delete(f);<br>"
                "}",
             parameters = [
                {

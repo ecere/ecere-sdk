@@ -1,14 +1,14 @@
 {
    name = "char",
    description = "Core C data type representing a single ASCII character (equivalent to C 'char' and expected to be signed and occupy 8 bits / 1 byte). A signed char can range from -127 to 127. On some platforms -128 is a valid value.",
-   usage = "Used in the declaration section of code, which is before any statements.\n"
-      "\n"
+   usage = "Used in the declaration section of code, which is before any statements.<br>"
+      "<br>"
       "A variable declared as being a char can be assigned any single character enclosed between two single quotes (' '), or an integer which is then translated to the ASCII character corresponding to that value, at output.",
-   example = "char thisChar; // A stand alone declaration of a char.\n"
-      "char a, b; // Declaring two chars at the same time.\n"
+   example = "char thisChar; // A stand alone declaration of a char.<br>"
+      "char a, b; // Declaring two chars at the same time.<br>"
       "char c = 'a', d = 98; // Declaring two chars and initializing them at the same time. The 98 is the same as 'b'.",
-   remarks = "Technically, this is an integer data type. Unlike other languages, the char data type is actually a class.\n"
-      "\n"
+   remarks = "Technically, this is an integer data type. Unlike other languages, the char data type is actually a class.<br>"
+      "<br>"
       "char is equivalent to a char in C.",
    also = "bool, byte, char *, double, enum, float, int, int64, uint, uint16, uint32, uint64, OnCompare(), OnCopy(), OnDisplay(), OnEdit(), OnFree(), OnGetDataFromString(), OnGetString(), OnSaveEdit(), OnSerialize(), OnUnserialize()"
 }
