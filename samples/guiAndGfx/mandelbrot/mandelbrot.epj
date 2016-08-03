@@ -66,8 +66,8 @@
             {
                "Folder" : "shaders",
                "Files" : [
-                  "../../../ecere/src/gfx/drivers/gl3/fixed.frag",
-                  "../../../ecere/src/gfx/drivers/gl3/fixed.vertex"
+                  "../../../ecere/src/gfx/drivers/gl3/default.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/default.vert"
                ]
             }
          ],

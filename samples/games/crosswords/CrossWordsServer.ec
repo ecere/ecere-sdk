@@ -232,7 +232,7 @@ class CrossWordsGame
             if(word[0])
             {
                String s = CopyString(word);
-               if(!dictionary.Add(CopyString(word)))
+               if(!dictionary.Add(s))
                   delete s;
             }
          }

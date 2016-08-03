@@ -34,7 +34,7 @@ public:
 #endif
    background = slateGray;
 
-   BitmapResource bg { ":ecere.bmp", window = this };
+   // BitmapResource bg { ":ecere.bmp", window = this };
 
    MekanoWnd()
    {

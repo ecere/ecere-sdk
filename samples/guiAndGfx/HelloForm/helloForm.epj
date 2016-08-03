@@ -43,10 +43,12 @@
             "Libraries" : [
                "ecereStatic",
                "freetype",
-               "z"
+               "z",
+               "jpeg",
+               "png"
             ],
             "LibraryDirs" : [
-               "../../../ecere/obj/emscripten.linux.emscripten.x32"
+               "../../../ecere/obj/emscripten.linux.emscripten"
             ]
          }
       }
