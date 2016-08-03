@@ -887,7 +887,7 @@ class APIPageNameSpace : APIPage
          {
             Class cl = link.data;
             Module module = cl.module ? cl.module  : this.module;
-            if(!cl.templateClass && !cl.internalDecl)
+            if(!cl.templateClass) // && !cl.internalDecl)
             {
                char * desc = ReadDoc(module, classDoc, cl, description, null);
 
@@ -1987,7 +1987,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
             for(link = (BTNamedLink)nameSpace->classes.first; link; link = (BTNamedLink)((BTNode)link).next)
             {
                cl = link.data;
-               if(!cl.templateClass && !cl.internalDecl && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
+               if(!cl.templateClass /*&& !cl.internalDecl*/ && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
                {
                   if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
                   AddClass(classesRow, module, cl, nsName, showPrivate);
