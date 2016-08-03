@@ -3,7 +3,7 @@
    description = "Platform independent System API (Files, Multithreading, Unicode, ...)",
    defines = [
       {
-         "Pi",
+         "ecere::sys::Pi",
          {
             description = "Ratio of a circle's circumference to its diameter; Measure of a half-circle angle in radians (180°)"
          }

@@ -507,7 +507,7 @@ private:
                break;
             }
          }
-         else if(ch == '\"' || (!comment && ch && !isalpha(ch) && !isdigit(ch) && ch != '_'))
+         else if(ch == '\"' || (!quoted && !comment && ch && !isalpha(ch) && !isdigit(ch) && ch != '_'))
          {
             if(quoted && ch == '\"' && wasQuoted)
                *wasQuoted = true;
