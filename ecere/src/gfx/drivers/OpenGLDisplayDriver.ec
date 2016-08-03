@@ -3724,7 +3724,9 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglMesh)
       {
          OGLSystem oglSystem = displaySystem.driverData;
+         GLCapabilities caps = glCaps;
          SETCAPS(oglSystem.capabilities);
+
          if(!mesh.flags.vertices)
          {
             oglMesh.vertices.free();
@@ -3765,6 +3767,7 @@ class OpenGLDisplayDriver : DisplayDriver
             delete oglMesh;
             mesh.data = null;
          }
+         SETCAPS(caps);
       }
    }
 
@@ -3864,7 +3867,9 @@ class OpenGLDisplayDriver : DisplayDriver
    void UnlockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
    {
       OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
+
       if(glCaps_vertexBuffer)
       {
          OGLMesh oglMesh = mesh.data;
@@ -3891,6 +3896,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(flags.lightVectors)
             oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
       }
+      SETCAPS(caps);
    }
 
    bool LockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
@@ -3903,13 +3909,16 @@ class OpenGLDisplayDriver : DisplayDriver
    void FreeIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
    {
       OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
+
       if(oglIndices)
       {
          oglIndices.buffer.free();
          delete oglIndices.indices;
          delete oglIndices;
       }
+      SETCAPS(caps);
    }
 
    void * AllocateIndices(DisplaySystem displaySystem, int nIndices, bool indices32bit)
@@ -3926,7 +3935,9 @@ class OpenGLDisplayDriver : DisplayDriver
    void UnlockIndices(DisplaySystem displaySystem, OGLIndices oglIndices, bool indices32bit, int nIndices)
    {
       OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
+
       if(glCaps_vertexBuffer)
       {
          if(!glCaps_intAndDouble && indices32bit)
@@ -3957,6 +3968,7 @@ class OpenGLDisplayDriver : DisplayDriver
                nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
                oglIndices.indices, staticDraw);
       }
+      SETCAPS(caps);
    }
 
    uint16 * LockIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
