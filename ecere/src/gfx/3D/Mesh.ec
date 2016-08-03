@@ -320,13 +320,14 @@ public:
       double * weightSum = new0 double[nVertices];
       PrimitiveGroup group;
 
-      if(Allocate({ normals = true, tangents = true }, nVertices, displaySystem))
+      if(Allocate({ normals = true, tangents = texCoords != null }, nVertices, displaySystem))
       {
          Vector3Df * normals = this.normals;
          Vector3Df * tangents = this.tangents;
          Pointf * texCoords = this.texCoords;
          FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
-         FillBytes(tangents, 0, 2*nVertices * sizeof(Vector3Df));
+         if(tangents)
+            FillBytes(tangents, 0, 2*nVertices * sizeof(Vector3Df));
          for(group = groups.first; group; group = group.next)
          {
             int c;
@@ -432,7 +433,7 @@ public:
                         weightSum[index] += w;
                         //numShared[index] ++;
 
-                        if(texCoords)
+                        if(tangents)
                         {
                            uint ix0 = index;
                            uint prev = v ? i - 1 : c + nIndex-1;
@@ -495,10 +496,14 @@ public:
          for(c = 0; c<nVertices; c++)
          {
             float s = (float)(1.0 / weightSum[c]); // numShared[c]
-            Vector3Df * n = &normals[c], * t1 = &tangents[2*c], * t2 = &tangents[2*c+1];
+            Vector3Df * n = &normals[c];
             n->Scale(n, s), n->Normalize(n);
-            t1->Scale(t1, s), t1->Normalize(t1);
-            t2->Scale(t2, s), t2->Normalize(t2);
+            if(tangents)
+            {
+               Vector3Df * t1 = &tangents[2*c], * t2 = &tangents[2*c+1];
+               t1->Scale(t1, s), t1->Normalize(t1);
+               t2->Scale(t2, s), t2->Normalize(t2);
+            }
          }
          delete numShared;
          delete weightSum;

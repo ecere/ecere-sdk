@@ -51,18 +51,21 @@ public:
 
                      pNormals[index] = pVertices[index];
 
-                     pTangents[index*2] =
+                     if(pTangents)
                      {
-                        (float) (sin(theta) * cos(omega - Pi/2));
-                        (float) sin(omega - Pi/2);
-                        (float) (cos(theta) * cos(omega - Pi/2));
-                     };
-                     pTangents[index*2+1] =
-                     {
-                        (float) (sin(theta - Pi/2) * cosOmega);
-                        (float) sin(omega);
-                        (float) (cos(theta - Pi/2) * cosOmega);
-                     };
+                        pTangents[index*2] =
+                        {
+                           (float) (sin(theta) * cos(omega - Pi/2));
+                           (float) sin(omega - Pi/2);
+                           (float) (cos(theta) * cos(omega - Pi/2));
+                        };
+                        pTangents[index*2+1] =
+                        {
+                           (float) (sin(theta - Pi/2) * cosOmega);
+                           (float) sin(omega);
+                           (float) (cos(theta - Pi/2) * cosOmega);
+                        };
+                     }
 
                      //pTangents[index*2 + 1].CrossProduct(pNormals[index], pTangents[index*2]);
                      pTexCoords[index] = { (float)l / (w-1), (float)lat / (numLat) };

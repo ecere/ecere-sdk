@@ -949,10 +949,11 @@ public:
 public class CubeMap : Bitmap
 {
 public:
-   void Load(DisplaySystem displaySystem, const String * names, const String extension, bool oldStyle)
+   bool Load(DisplaySystem displaySystem, const String * names, const String extension, bool oldStyle)
    {
       int i;
-      for(i = 0; i < 6; i++)
+      bool result = true;
+      for(i = 0; result && i < 6; i++)
       {
          char location[MAX_LOCATION];
          Bitmap face = i > 0 ? { } : this;
@@ -962,13 +963,16 @@ public:
          if(face.Load(location, null, null))
          {
             face.driverData = driverData;
-            displaySystem.driver.MakeDDBitmap(displaySystem, face, true, (i + 1) | (oldStyle << 3));
+            result = displaySystem.driver.MakeDDBitmap(displaySystem, face, true, (i + 1) | (oldStyle << 3));
          }
+         else
+            result = false;
          if(i > 0)
          {
             face.driverData = 0;
             delete face;
          }
       }
+      return result;
    }
 };

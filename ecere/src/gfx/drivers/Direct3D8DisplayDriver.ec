@@ -677,7 +677,7 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       bool result = false;
       D3D8System d3dSystem = displaySystem.driverData;
-      if(bitmap.Convert(null, pixelFormat888, null))
+      if(cubeMapFace && bitmap.Convert(null, pixelFormat888, null))
       {
          IDirect3DTexture8 * texture;
          uint w = pow2i(Min(bitmap.width, 512)), h = pow2i(Min(bitmap.height, 512));

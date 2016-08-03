@@ -675,7 +675,7 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       bool result = false;
       D3DSystem d3dSystem = displaySystem.driverData;
-      if(bitmap.Convert(null, pixelFormat888, null))
+      if(!cubeMapFace && bitmap.Convert(null, pixelFormat888, null))
       {
          IDirect3DTexture9 * texture;
          uint w = pow2i(Min(bitmap.width, 512)), h = pow2i(Min(bitmap.height, 512));
