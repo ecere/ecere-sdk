@@ -770,7 +770,7 @@ class SafeFile
             else
             {
                delete f;
-               PrintLn($"warning: SafeFile::sync: failed to lock file", mode);
+               PrintLn($"warning: SafeFile::sync: failed to lock file for ", mode);
             }
          }
       }
