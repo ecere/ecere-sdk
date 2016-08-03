@@ -1,4 +1,4 @@
-.TH DOCUMENTOR "1" "August 2012" "documentor" "Ecere SDK/API Reference Tool"
+.TH DOCUMENTOR "1" "August 2016" "documentor" "Ecere SDK/API Reference Tool"
 .SH NAME
 documentor \- Ecere API Reference Tool
 .SH SYNOPSIS
@@ -7,8 +7,12 @@ documentor [\fIec-shared-library-name-or-path\fR] | [\fIec-symbol-file\fR (\fB.s
 .SH DESCRIPTION
 Brings up the Ecere API Reference Tool.
 
-Modules (eC shared library or symbol file) whose API you want to browse and/or contribute to can be specified on the command line.
+Module (eC shared library or symbol file) whose API you want to browse and/or contribute to can be specified on the command line.
 
 If no name is specified, the libecere API will show up by default.
 
-Changes will be saved in the documentation path specified in the application's File/Settings menu (Defaults to /usr/share/ecere/doc), with the file name: \fImodule-name\fR\fB.eCdoc\fR. 
+Changes will be saved in the documentation path specified in the application's File/Settings menu (Defaults to /usr/share/ecere/doc), within the folder: \fImodule-name\fR.
+
+Since version 0.44.15, documentation data is now stored using the \fBECON\fR data interchange format( http://ec-lang.org/econ/ ).
+
+ECON is compatible with the eC instantiation syntax.
