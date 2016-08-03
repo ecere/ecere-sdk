@@ -305,8 +305,8 @@ else
    nullerror = 2>/dev/null
    echo = $(if $(1),echo "$(1)")
    touch = $(if $(1),touch $(1))
-   cp = $(if $(1),cp -df$(if $(SILENT_IS_ON),,v) $(1) $(2))
-   cpr = $(if $(1),cp -dfr$(if $(SILENT_IS_ON),,v) $(1) $(2))
+   cp = $(if $(1),cp -pP$(if $(SILENT_IS_ON),,v) $(1) $(2))
+   cpr = $(if $(1),cp -pPR$(if $(SILENT_IS_ON),,v) $(1) $(2))
    rm = $(if $(1),-rm -f$(if $(SILENT_IS_ON),,v) $(1))
    rmr = $(if $(1),-rm -fr$(if $(SILENT_IS_ON),,v) $(1))
    mkdir = $(if $(1),-mkdir -p$(if $(SILENT_IS_ON),,v) $(1))
