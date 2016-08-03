@@ -1643,7 +1643,12 @@ private:
       if(
          !(result = type.OnCompare(b.type)) &&
          !(result = targetPlatform.OnCompare(b.targetPlatform)) &&
-         !(result = numJobs.OnCompare(b.numJobs)));
+         !(result = numJobs.OnCompare(b.numJobs)) &&
+         !(result = ccacheEnabled.OnCompare(b.ccacheEnabled)) &&
+         !(result = distccEnabled.OnCompare(b.distccEnabled)) &&
+         !(result = resourcesDotEar.OnCompare(b.resourcesDotEar)) &&
+         !(result = noStripTarget.OnCompare(b.noStripTarget))
+         );
 
       if(!result &&
          !(result = name.OnCompare(b.name)) &&
