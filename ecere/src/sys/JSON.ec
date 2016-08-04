@@ -190,7 +190,7 @@ private:
             if(GetIdentifier(&string, null))
             {
                result = success;
-               if(eCON && (type.type == enumClass || type.type == unitClass))
+               if(eCON && type && (type.type == enumClass || type.type == unitClass))
                {
                   // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
                   if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
@@ -951,10 +951,12 @@ private:
       char buffer[256];
       int c = 0;
       bool comment = false;
+      bool hexMode = false;
       if(eCON)
       {
          while(c < sizeof(buffer)-1 && (comment || ch == '-' || ch == '.' || tolower(ch) == 'f' ||
-                     tolower(ch) == 'x' || tolower(ch) == 'e' || ch == '+' || isdigit(ch) || ch == '/'))
+                     (c == 1 && tolower(ch) == 'x' && buffer[0] == '0') || tolower(ch) == 'e' || ch == '+' || isdigit(ch) || ch == '/' ||
+                     (hexMode && ((ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')))))
          {
             if(!comment && ch == '/')
             {
@@ -983,7 +985,11 @@ private:
                }
             }
             else if(!comment)
+            {
+               if(c == 1 && ch == 'x' && buffer[0] == '0')
+                  hexMode = true;
                buffer[c++] = ch;
+            }
             if(!f.Getc(&ch)) break;
          }
       }
@@ -1025,7 +1031,7 @@ private:
          value.ui64 = strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
       }
-      else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int"))
+      else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
       {
          value.ui = (uint)strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
@@ -1227,7 +1233,7 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
    return true;
 }
 
-static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON)
+static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON, bool useHex)
 {
    char buffer[1024];
    bool needClass = eCON;
@@ -1240,11 +1246,21 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "int64"))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || type.typeSize == sizeof(int64))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
+   {
+      if(useHex)
+         sprintf(buffer, __runtimePlatform == win32 ? "0x%016I64X" : "0x%016llX", value.ui64);
+      else
+         ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
+   }
    else if(!strcmp(type.dataTypeString, "int"))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint") || type.typeSize == sizeof(int))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
+   {
+      if(useHex)
+         sprintf(buffer, "0x%08X", value.ui);
+      else
+         ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
+   }
    else if(!strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "int16"))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || type.typeSize == sizeof(short int))
@@ -1411,7 +1427,7 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
          f.Puts("unset");
    }
    else if(type.type == enumClass)
-      WriteNumber(f, type, value, indent, eCON);
+      WriteNumber(f, type, value, indent, eCON, false);
    else if(eClass_IsDerived(type, class(Map)))
    {
       WriteMap(f, type, value.p, indent, eCON);
@@ -1432,11 +1448,11 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    {
       Class dataType;
       dataType = superFindClass(type.dataTypeString, type.module);
-      WriteNumber(f, dataType, value, indent, eCON);
+      WriteNumber(f, dataType, value, indent, eCON, true);
    }
    else if(type.type == systemClass || type.type == unitClass)
    {
-      WriteNumber(f, type, value, indent, eCON);
+      WriteNumber(f, type, value, indent, eCON, false);
    }
    return true;
 }
