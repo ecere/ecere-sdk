@@ -85,7 +85,8 @@
             "Documentor.ec",
             "SettingsDialog.ec"
          ]
-      }
+      },
+      "resources.rc"
    ],
    "ResourcesPath" : "",
    "Resources" : [

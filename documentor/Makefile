@@ -217,6 +217,12 @@ $(OBJ)Documentor.o: $(OBJ)Documentor.c
 $(OBJ)SettingsDialog.o: $(OBJ)SettingsDialog.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)SettingsDialog.c -o $(OBJ)SettingsDialog.o
 
+ifdef WINDOWS_TARGET
+
+$(OBJ)resources$(O): resources.rc
+	$(WINDRES) $(WINDRES_FLAGS) $< "$(call escspace,$(call quote_path,$@))"
+endif
+
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
@@ -236,6 +242,9 @@ endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
+ifdef WINDOWS_TARGET
+	$(call rm,$(_RCOBJECTS))
+endif
 	$(call rm,$(ECOBJECTS))
 	$(call rm,$(COBJECTS))
 	$(call rm,$(BOWLS))
