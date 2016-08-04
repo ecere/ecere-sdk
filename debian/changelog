@@ -3,7 +3,7 @@ ecere-sdk (0.44.15-0ubuntu1) yakkety; urgency=low
   * Packaged Ecere SDK 0.44.15 (Closes: #811957 #826352)
   * Changes:
       * Fixed building with GCC 6 (Compiler was generating bad __attribute__
-        specifiers with with spaces rather than commas)
+        specifiers with spaces rather than commas)
       * Renamed IDE binary to less generic name (ide ==> ecere-ide)
       * Web Support through Emscripten and WebGL
       * 3D Graphics Improvements (OpenGL)
