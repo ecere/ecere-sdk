@@ -714,9 +714,9 @@ private:
          data.colorSchemes.Add(greenColorScheme);  incref greenColorScheme;
          data.colorSchemes.Add(grayColorScheme);   incref grayColorScheme;
       }
+      colorScheme = null;
       if(data.activeColorScheme)
       {
-         colorScheme = null;
          for(cs : data.colorSchemes; cs.name && !strcmp(cs.name, data.activeColorScheme))
          {
             colorScheme = cs;
@@ -1100,7 +1100,8 @@ public:
             colorSchemes.Free();
          delete colorSchemes;
          colorSchemes = value;
-         incref colorSchemes;
+         if(value)
+            incref colorSchemes;
       }
       get { return colorSchemes; }
    }
