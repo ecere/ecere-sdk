@@ -266,10 +266,10 @@ class EditorTab : GlobalSettingsSubTab
       return true;
    }
 
-   Label lblColorSchemes { this, anchor = { top = 92, right = 126 }, labeledWindow = dbColorSchemes };
+   Label lblColorSchemes { this, anchor = { top = 70, right = 16 }, labeledWindow = dbColorSchemes };
    DropBox dbColorSchemes
    {
-      this, text = $"Color Scheme: ", anchor = { top = 92, right = 16 }, size = { 100, 22 };
+      this, text = $"Color Scheme: ", anchor = { top = 92, right = 16 }, size = { 200, 22 };
 
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
