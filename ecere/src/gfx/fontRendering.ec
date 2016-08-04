@@ -880,7 +880,7 @@ public class Font : struct
                FaceSetCharSize(fontEntry.face, size);
                height = (int)((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
                if(!height)
-                  height = size * 96 / 72 + 4;
+                  height = (int)(size * 96 / 72 + 4);
                // printf("Font height is %d\n", height);
                this.fakeItalic = info.fakeItalic;
             }
