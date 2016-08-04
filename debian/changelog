@@ -1,8 +1,7 @@
 ecere-sdk (0.44.15-1) unstable; urgency=low
 
-Ecere SDK 0.44.15 (August 4, 2016)
-
-   * Packaged Ecere SDK 0.44.15 (Closes: #811957 #826352)
+  * Packaged Ecere SDK 0.44.15 (Closes: #811957 #826352)
+  * Changes:
       * Fixed building with GCC 6 (Compiler was generating bad __attribute__
         specifiers with with spaces rather than commas)
       * Renamed IDE binary to less generic name (ide ==> ecere-ide)
