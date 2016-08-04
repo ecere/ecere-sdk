@@ -879,6 +879,8 @@ public class Font : struct
                FT_Set_Transform(fontEntry.face, &matrix, &pen );
                FaceSetCharSize(fontEntry.face, size);
                height = (int)((fontEntry.face->size->metrics.height) >> 6); //* y_scale;
+               if(!height)
+                  height = size * 96 / 72 + 4;
                // printf("Font height is %d\n", height);
                this.fakeItalic = info.fakeItalic;
             }
@@ -1183,6 +1185,8 @@ public class Font : struct
                   int h = (int)face->size->metrics.height;
                   int desc = (int)face->size->metrics.descender;
                   int oy = (numGlyphs ? shaper_item.offsets[index].y : 0);
+                  if(!h)
+                     h = height * 64;
 
                   oy += h + desc - glyph->by;
                   oy >>= 6;

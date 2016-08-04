@@ -2688,7 +2688,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void WriteText(Display display, Surface surface, int x, int y, const char * text, int len, int prevGlyph, int * rPrevGlyph)
    {
-      if(len && text[0])
+      if(len && text[0] && surface.font)
       {
          OGLSurface oglSurface = surface.driverData;
          OGLSystem oglSystem = display.displaySystem.driverData;
