@@ -461,8 +461,12 @@ class IDEWorkSpace : Window
          for(ce = (CodeEditor)firstChild; ce; ce = (CodeEditor)ce.next)
             if(ce._class == class(CodeEditor))
             {
-               ce.font = { codeFont.faceName, codeFont.size, codeFont.bold, codeFont.italic };
-               ce.editBox.font = ce.font;
+               FontResource font;
+               font = { codeFont.faceName, codeFont.size, codeFont.bold, codeFont.italic };
+               incref font;
+               delete *&ce.font;
+               *&ce.font = font;
+               ce.editBox.font = font;
                ce.OnPostCreate();
             }
       }
