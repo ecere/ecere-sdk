@@ -3257,6 +3257,9 @@ class HelpView : HTMLView
          // dialog.Create();
          edit = true;
          // PositionCaret(true);
+
+         // TOCHECK: Adding this here seemed to fixed caret positioning bugs
+         ComputeSizes();
       }
       return true;
    }
