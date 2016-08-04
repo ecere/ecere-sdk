@@ -4157,6 +4157,7 @@ class HelpView : HTMLView
          char * text = textBlock.text;
          int maxW;
          Block block = textBlock;
+         int xOffset = 0;
          while(block && block.type != TD) block = block.parent;
          if(block)
          {
@@ -4172,11 +4173,19 @@ class HelpView : HTMLView
 
          display.FontExtent(textBlock.font.font, " ", 1, null, &th);
 
+         // Work around to re-align with first line having different indentation because of &nbsp;&nbsp; before <A> of current block
+         {
+            Block parent = textBlock.parent;
+            while(parent && parent.type == ANCHOR) parent = parent.parent;
+            if(parent && parent.subBlocks.first && ((Block)parent.subBlocks.first).type == TEXT)
+               xOffset = sx - ((Block)parent.subBlocks.first).startX;
+         }
+
          while(textPos < textBlock.textLen)
          {
             int startPos = textPos;
             int width = 0;
-            int x = 0;
+            int x = xOffset;
             bool lineComplete = false;
 
             for(; textPos<textBlock.textLen && !lineComplete;)
@@ -4215,7 +4224,7 @@ class HelpView : HTMLView
                break;
             }
             sy += th;
-            sx = textBlock.startX;
+            sx = textBlock.startX - xOffset;
          }
          if(setCaretX)
             caretX = sx;
@@ -4272,6 +4281,7 @@ class HelpView : HTMLView
          int maxW;
          Block b = textBlock;
          int space;
+         int xOffset = 0;
 
          if(textBlock.type != TEXT) continue;
 
@@ -4288,6 +4298,14 @@ class HelpView : HTMLView
          else
             maxW = clientSize.w - 10 - sx;
 
+         // Work around to re-align with first line having different indentation because of &nbsp;&nbsp; before <A> of current block
+         {
+            Block parent = textBlock.parent;
+            while(parent && parent.type == ANCHOR) parent = parent.parent;
+            if(parent && parent.subBlocks.first && ((Block)parent.subBlocks.first).type == TEXT)
+               xOffset = sx - ((Block)parent.subBlocks.first).startX;
+         }
+
          display.FontExtent(textBlock.font.font, " ", 1, &space, &th);
          //space = space/2+2;
          space = 2;
@@ -4295,7 +4313,7 @@ class HelpView : HTMLView
          while(textPos < textBlock.textLen)
          {
             int width = 0;
-            int x = 0;
+            int x = xOffset;
             bool lineComplete = false;
 
             for(; textPos<textBlock.textLen && !lineComplete;)
@@ -4311,7 +4329,7 @@ class HelpView : HTMLView
 
                display.FontExtent(textBlock.font.font, text + textPos, len, &w, &th);
 
-               sx = x + textBlock.startX;
+               sx = x + textBlock.startX - xOffset;
                if(/*py >= sy && */py < sy + th && /*px >= sx-space && */px < sx + w-space)
                {
                   int c, numBytes;
