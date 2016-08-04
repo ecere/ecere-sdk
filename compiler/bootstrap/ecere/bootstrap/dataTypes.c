@@ -300,6 +300,8 @@ long long largest;
 
 struct __ecereNameSpace__ecere__com__Property;
 
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer;
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size;
@@ -946,8 +948,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpa
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 unsigned char *  __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_buffer(struct __ecereNameSpace__ecere__com__Instance * this);
@@ -1191,7 +1191,6 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
-void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -3463,19 +3462,19 @@ __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___e
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = (void *)0;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, void * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSerialize", "void ecere::com::Byte_OnSerialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnSerialize", "void ecere::com::Int_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::IntPtr32_OnSerialize", "void ecere::com::IntPtr32_OnSerialize(ecere::com::Class _class, int data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__IntPtr32_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnUnserialize", "void ecere::com::Int_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnUnserialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnSerialize", "void ecere::com::Enum_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnUnserialize", "void ecere::com::Enum_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnUnserialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnSerialize", "void ecere::com::Int64_OnSerialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnUnserialize", "void ecere::com::Int64_OnUnserialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnUnserialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnSerialize", "void ecere::com::Word_OnSerialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnSerialize, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnUnserialize", "void ecere::com::Word_OnUnserialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnUnserialize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, void * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSerialize", "void ecere::com::Byte_OnSerialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnSerialize", "void ecere::com::Int_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::IntPtr32_OnSerialize", "void ecere::com::IntPtr32_OnSerialize(ecere::com::Class _class, int data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__IntPtr32_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnUnserialize", "void ecere::com::Int_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnUnserialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnSerialize", "void ecere::com::Enum_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnUnserialize", "void ecere::com::Enum_OnUnserialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Enum_OnUnserialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnSerialize", "void ecere::com::Int64_OnSerialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnUnserialize", "void ecere::com::Int64_OnUnserialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnUnserialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnSerialize", "void ecere::com::Word_OnSerialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnSerialize, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnUnserialize", "void ecere::com::Word_OnUnserialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnUnserialize, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::StaticString", 0, sizeof(struct __ecereNameSpace__ecere__com__StaticString), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__StaticString = class;
@@ -3485,15 +3484,15 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereM
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "char[1]", 1, 1, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::String_OnCompare", "int ecere::com::String_OnCompare(ecere::com::Class _class, const char * string1, const char * string2)", __ecereNameSpace__ecere__com__String_OnCompare, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes1", "void ecere::com::InitializeDataTypes1(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes1, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes", "void ecere::com::InitializeDataTypes(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintStdArgsToBuffer", "int ecere::com::PrintStdArgsToBuffer(char * buffer, int maxLen, const typed_object object, __builtin_va_list args)", __ecereNameSpace__ecere__com__PrintStdArgsToBuffer, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintBuf", "int ecere::com::PrintBuf(char * buffer, int maxLen, const typed_object object, ...)", __ecereNameSpace__ecere__com__PrintBuf, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLnBuf", "int ecere::com::PrintLnBuf(char * buffer, int maxLen, const typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLnBuf, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintString", "char * ecere::com::PrintString(const typed_object object, ...)", __ecereNameSpace__ecere__com__PrintString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLnString", "char * ecere::com::PrintLnString(const typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLnString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLn", "void ecere::com::PrintLn(const typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLn, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Print", "void ecere::com::Print(const typed_object object, ...)", __ecereNameSpace__ecere__com__Print, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::String_OnCompare", "int ecere::com::String_OnCompare(ecere::com::Class _class, const char * string1, const char * string2)", __ecereNameSpace__ecere__com__String_OnCompare, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes1", "void ecere::com::InitializeDataTypes1(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes1, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes", "void ecere::com::InitializeDataTypes(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintStdArgsToBuffer", "int ecere::com::PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, __builtin_va_list args)", __ecereNameSpace__ecere__com__PrintStdArgsToBuffer, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintBuf", "int ecere::com::PrintBuf(char * buffer, int maxLen, typed_object object, ...)", __ecereNameSpace__ecere__com__PrintBuf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLnBuf", "int ecere::com::PrintLnBuf(char * buffer, int maxLen, typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLnBuf, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintString", "char * ecere::com::PrintString(typed_object object, ...)", __ecereNameSpace__ecere__com__PrintString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLnString", "char * ecere::com::PrintLnString(typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLnString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintLn", "void ecere::com::PrintLn(typed_object object, ...)", __ecereNameSpace__ecere__com__PrintLn, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Print", "void ecere::com::Print(typed_object object, ...)", __ecereNameSpace__ecere__com__Print, module, 4);
 }
 
