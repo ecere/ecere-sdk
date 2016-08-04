@@ -410,8 +410,13 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
 define settingsDir = ".ecereIDE-SettingsTest";
 define ideSettingsName = "ecereIDE-SettingsTest";
 #else
+#ifdef __WIN32__
+define settingsDir = "EcereIDE";
+define ideSettingsName = "EcereIDE";
+#else
 define settingsDir = ".ecereIDE";
 define ideSettingsName = "ecereIDE";
+#endif
 #endif
 
 class IDEConfigHolder
