@@ -93,8 +93,8 @@ msgid "Audio"
 msgstr "Audio"
 
 #: ./src/installer.ec:2
-msgid "August 3, 2016"
-msgstr "August 3, 2016"
+msgid "August 4, 2016"
+msgstr "August 4, 2016"
 
 #: ./src/installer.ec:820
 msgid "Avail. Space"

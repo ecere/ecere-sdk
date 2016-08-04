@@ -1,5 +1,5 @@
 static define versionString = "Ecere SDK v0.44.15";
-static define dateString = $"August 3, 2016";
+static define dateString = $"August 4, 2016";
 static define builtOnString = $"built on ";
 static define withoutMinGW = $" (Without MinGW)";
 
