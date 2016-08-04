@@ -14,6 +14,7 @@ Ecere SDK 0.44.15 (August 3, 2016)
    * ECON Support (ECON is a JSON superset, dropping quotes, supporting hexadecimal, multi-line strings, comments, derived classes, and mapping directly to eC instantiations -- http://ec-lang.org/econ/ )
    * ECON based IDE configuration (split options, recent files/projects and compilers individually stored in separate files, all in ~/.ecereIDE/)
    * ECON based Documentor (Documentation data can now be text-diffed with git etc.)
+   * ECON based Color Scheme and Font Selection in Global Settings
    * Sortable Containers
    * Distributed Objects Fixes & Improvements
    * Renamed IDE binary to less generic name (ide ==> ecere-ide)
