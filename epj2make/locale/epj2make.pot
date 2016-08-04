@@ -90,7 +90,7 @@ msgstr " to compile instead of "
 msgid "Compiling source file "
 msgstr "Compiling source file "
 
-#: ./../ide/src/IDESettings.ec:1982
+#: ./../ide/src/IDESettings.ec:1998
 msgid "Error creating compiler configs directory at "
 msgstr "Error creating compiler configs directory at "
 
@@ -106,19 +106,19 @@ msgstr "Error: Project configuration (%s) was not found.\n"
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
-#: ./../ide/src/IDESettings.ec:1435
+#: ./../ide/src/IDESettings.ec:1451
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./../ide/src/IDESettings.ec:1438
+#: ./../ide/src/IDESettings.ec:1454
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:1439
+#: ./../ide/src/IDESettings.ec:1455
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:1441
+#: ./../ide/src/IDESettings.ec:1457
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -130,7 +130,7 @@ msgstr "No compilation required for header file "
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 
-#: ./../ide/src/IDESettings.ec:1437
+#: ./../ide/src/IDESettings.ec:1453
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -138,7 +138,7 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Syntax:\n"
 msgstr "Syntax:\n"
 
-#: ./../ide/src/IDESettings.ec:1436
+#: ./../ide/src/IDESettings.ec:1452
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -150,11 +150,11 @@ msgstr "Unable to locate source file "
 msgid "\n"
 msgstr "\n"
 
-#: ./../ide/src/IDESettings.ec:857
+#: ./../ide/src/IDESettings.ec:858
 msgid "error: could not parse configuration file: "
 msgstr "error: could not parse configuration file: "
 
-#: ./../ide/src/IDESettings.ec:831
+#: ./../ide/src/IDESettings.ec:832
 msgid "error: could not safely open file for writing configuration: "
 msgstr "error: could not safely open file for writing configuration: "
 
@@ -162,27 +162,27 @@ msgstr "error: could not safely open file for writing configuration: "
 msgid "invalid option: %s\n"
 msgstr "invalid option: %s\n"
 
-#: ./../ide/src/IDESettings.ec:925
+#: ./../ide/src/IDESettings.ec:926
 msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
 msgstr "warning: SafeFile::open: does not yet support FileOpenMode::"
 
-#: ./../ide/src/IDESettings.ec:912
+#: ./../ide/src/IDESettings.ec:913
 msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
 msgstr "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
 
-#: ./../ide/src/IDESettings.ec:914
+#: ./../ide/src/IDESettings.ec:915
 msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
 msgstr "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
 
-#: ./../ide/src/IDESettings.ec:919
+#: ./../ide/src/IDESettings.ec:920
 msgid "warning: SafeFile::open: unable to open file for reading: "
 msgstr "warning: SafeFile::open: unable to open file for reading: "
 
-#: ./../ide/src/IDESettings.ec:917
+#: ./../ide/src/IDESettings.ec:918
 msgid "warning: SafeFile::open: unable to open temporary file for writing: "
 msgstr "warning: SafeFile::open: unable to open temporary file for writing: "
 
-#: ./../ide/src/IDESettings.ec:967
+#: ./../ide/src/IDESettings.ec:968
 msgid "warning: SafeFile::sync: failed to lock file for "
 msgstr "warning: SafeFile::sync: failed to lock file for "
 

@@ -986,12 +986,24 @@ class RecentFilesData
 {
 public:
    RecentFiles recentFiles;
+
+   ~RecentFilesData()
+   {
+      if(recentFiles) recentFiles.Free();
+      delete recentFiles;
+   }
 }
 
 class RecentWorkspacesData
 {
 public:
    RecentWorkspaces recentWorkspaces;
+
+   ~RecentWorkspacesData()
+   {
+      if(recentWorkspaces) recentWorkspaces.Free();
+      delete recentWorkspaces;
+   }
 }
 
 class IDESettings : GlobalSettingsData
@@ -1319,6 +1331,7 @@ class RecentFiles : RecentPaths
       {
          Free();
          Copy((void *)d.recentFiles);
+         d.recentFiles.RemoveAll();
          settingsContainer.recentFiles = this; // Merge IDEConfigHolder / IDESettingsContainer?
       }
       delete d;
@@ -1353,6 +1366,7 @@ class RecentWorkspaces : RecentPaths
       {
          Free();
          Copy((void *)d.recentWorkspaces);
+         d.recentWorkspaces.RemoveAll();
          settingsContainer.recentProjects = this; // Merge IDEConfigHolder / IDESettingsContainer?
       }
       delete d;
