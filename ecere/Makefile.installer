@@ -67,31 +67,14 @@ _ECSOURCES1 = \
 	src/sys/units.ec \
 	src/sys/i18n.ec \
 	src/sys/Condition.ec \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/Cube.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/SkyBox.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/Sphere.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/models/Object3DSFormat.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Camera.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Matrix.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Mesh.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Object.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Plane.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Quaternion.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/3D/Vector3D.ec) \
 	src/gfx/bitmaps/BMPFormat.ec \
-	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/GIFFormat.ec) \
-	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/JPEGFormat.ec) \
 	src/gfx/bitmaps/PCXFormat.ec \
 	src/gfx/bitmaps/PNGFormat.ec \
-	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/RGBFormat.ec) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/GDIDisplayDriver.ec,) \
 	src/gfx/drivers/lfbBlit.ec \
 	src/gfx/drivers/lfbConvert.ec \
-	src/gfx/drivers/LFBDisplayDriver.ec \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,)
+	src/gfx/drivers/LFBDisplayDriver.ec
 _ECSOURCES2 = \
-	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -100,6 +83,9 @@ _ECSOURCES2 = \
 	src/gfx/FontResource.ec \
 	src/gfx/Resource.ec \
 	src/gfx/Surface.ec \
+	src/gfx/fontManagement.ec \
+	src/gfx/fontRendering.ec \
+	src/gfx/imgDistMap.ec \
 	src/gui/controls/Button.ec \
 	src/gui/controls/CalendarControl.ec \
 	src/gui/controls/DataBox.ec \
@@ -125,18 +111,12 @@ _ECSOURCES2 = \
 	src/gui/dialogs/MessageBox.ec \
 	src/gui/dialogs/ReplaceDialog.ec \
 	src/gui/dialogs/WindowList.ec \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
-	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
-	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,)
+	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,)
 _ECSOURCES3 = \
-	$(if $(WINDOWS_TARGET),,src/gui/skins/TVisionSkin.ec) \
 	src/gui/skins/WindowsSkin.ec \
 	src/gui/Anchor.ec \
 	src/gui/ClipBoard.ec \
 	src/gui/Cursor.ec \
-	$(if $(WINDOWS_TARGET),,src/gui/Desktop3D.ec) \
 	src/gui/FormDesigner.ec \
 	src/gui/GuiApplication.ec \
 	src/gui/Interface.ec \
@@ -145,12 +125,6 @@ _ECSOURCES3 = \
 	src/gui/Timer.ec \
 	src/gui/typeEdit.ec \
 	src/gui/Window.ec \
-	$(if $(WINDOWS_TARGET),,src/net/dcom.ec) \
-	$(if $(WINDOWS_TARGET),,src/net/HTTPFile.ec) \
-	$(if $(WINDOWS_TARGET),,src/net/network.ec) \
-	$(if $(WINDOWS_TARGET),,src/net/NetworkClientFile.ec) \
-	$(if $(WINDOWS_TARGET),,src/net/Service.ec) \
-	$(if $(WINDOWS_TARGET),,src/net/Socket.ec) \
 	src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec \
 	src/com/containers/BuiltInContainer.ec \
@@ -225,8 +199,6 @@ _OBJECTS = \
 	$(OBJ)File.c.o \
 	$(OBJ)DualPipe.c.o \
 	$(OBJ)System.c.o \
-	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
-	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
@@ -235,8 +207,6 @@ SOURCES = $(ECSOURCES) \
 	src/sys/File.c \
 	src/sys/DualPipe.c \
 	src/sys/System.c \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
-	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
@@ -380,7 +350,7 @@ PRJ_CFLAGS += \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
 			 -I../deps/jpeg-9a \
-			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -Os) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DBUILDING_ECERE_COM \
@@ -407,9 +377,9 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
 LIBS += \
@@ -461,7 +431,7 @@ OFLAGS += \
 	 -L$(call quote_path,$(SYSROOT)/usr/X11/lib) \
 	 -L$(call quote_path,/usr/X11R6/lib) \
 	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
 LIBS += \
 	$(call _L,curses) \
@@ -622,84 +592,8 @@ $(OBJ)i18n.sym: src/sys/i18n.ec
 $(OBJ)Condition.sym: src/sys/Condition.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Condition.ec) -o $(call quote_path,$@)
 
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Cube.sym: src/gfx/3D/meshes/Cube.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/Cube.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)SkyBox.sym: src/gfx/3D/meshes/SkyBox.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/SkyBox.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Sphere.sym: src/gfx/3D/meshes/Sphere.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/Sphere.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object3DSFormat.sym: src/gfx/3D/models/Object3DSFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/models/Object3DSFormat.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Camera.sym: src/gfx/3D/Camera.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Camera.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Matrix.sym: src/gfx/3D/Matrix.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Matrix.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Mesh.sym: src/gfx/3D/Mesh.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Mesh.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object.sym: src/gfx/3D/Object.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Object.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Plane.sym: src/gfx/3D/Plane.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Plane.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Quaternion.sym: src/gfx/3D/Quaternion.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Quaternion.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Vector3D.sym: src/gfx/3D/Vector3D.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Vector3D.ec) -o $(call quote_path,$@)
-endif
-
 $(OBJ)BMPFormat.sym: src/gfx/bitmaps/BMPFormat.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/BMPFormat.ec) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)GIFFormat.sym: src/gfx/bitmaps/GIFFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/GIFFormat.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)JPEGFormat.sym: src/gfx/bitmaps/JPEGFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/JPEGFormat.ec) -o $(call quote_path,$@)
-endif
-
-$(OBJ)PCXFormat.sym: src/gfx/bitmaps/PCXFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PCXFormat.ec) -o $(call quote_path,$@)
-
-$(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PNGFormat.ec) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)RGBFormat.sym: src/gfx/bitmaps/RGBFormat.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/RGBFormat.ec) -o $(call quote_path,$@)
-endif
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.sym: src/gfx/drivers/GDIDisplayDriver.ec
@@ -714,21 +608,6 @@ $(OBJ)lfbConvert.sym: src/gfx/drivers/lfbConvert.ec
 
 $(OBJ)LFBDisplayDriver.sym: src/gfx/drivers/LFBDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/LFBDisplayDriver.ec) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/NCursesDisplayDriver.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/XDisplayDriver.ec) -o $(call quote_path,$@)
-endif
 
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Bitmap.ec) -o $(call quote_path,$@)
@@ -753,6 +632,15 @@ $(OBJ)Resource.sym: src/gfx/Resource.ec
 
 $(OBJ)Surface.sym: src/gfx/Surface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Surface.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontManagement.sym: src/gfx/fontManagement.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontRendering.sym: src/gfx/fontRendering.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@)
+
+$(OBJ)imgDistMap.sym: src/gfx/imgDistMap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@)
 
 $(OBJ)Button.sym: src/gui/controls/Button.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Button.ec) -o $(call quote_path,$@)
@@ -829,34 +717,9 @@ $(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
 $(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/WindowList.ec) -o $(call quote_path,$@)
 
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaDispatch.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaInterface.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/NCursesInterface.ec) -o $(call quote_path,$@)
-endif
-
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.sym: src/gui/drivers/Win32Interface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/Win32Interface.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)XInterface.sym: src/gui/drivers/XInterface.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/XInterface.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)TVisionSkin.sym: src/gui/skins/TVisionSkin.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/skins/TVisionSkin.ec) -o $(call quote_path,$@)
 endif
 
 $(OBJ)WindowsSkin.sym: src/gui/skins/WindowsSkin.ec
@@ -870,11 +733,6 @@ $(OBJ)ClipBoard.sym: src/gui/ClipBoard.ec
 
 $(OBJ)Cursor.sym: src/gui/Cursor.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Cursor.ec) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Desktop3D.sym: src/gui/Desktop3D.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Desktop3D.ec) -o $(call quote_path,$@)
-endif
 
 $(OBJ)FormDesigner.sym: src/gui/FormDesigner.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/FormDesigner.ec) -o $(call quote_path,$@)
@@ -899,36 +757,6 @@ $(OBJ)typeEdit.sym: src/gui/typeEdit.ec
 
 $(OBJ)Window.sym: src/gui/Window.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Window.ec) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)dcom.sym: src/net/dcom.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/dcom.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)HTTPFile.sym: src/net/HTTPFile.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/HTTPFile.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)network.sym: src/net/network.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/network.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NetworkClientFile.sym: src/net/NetworkClientFile.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/NetworkClientFile.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Service.sym: src/net/Service.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/Service.ec) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Socket.sym: src/net/Socket.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/Socket.ec) -o $(call quote_path,$@)
-endif
 
 $(OBJ)Array.sym: src/com/containers/Array.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/Array.ec) -o $(call quote_path,$@)
@@ -1037,84 +865,14 @@ $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
 $(OBJ)Condition.c: src/sys/Condition.ec $(OBJ)Condition.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Condition.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Cube.c: src/gfx/3D/meshes/Cube.ec $(OBJ)Cube.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/Cube.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)SkyBox.c: src/gfx/3D/meshes/SkyBox.ec $(OBJ)SkyBox.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/SkyBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Sphere.c: src/gfx/3D/meshes/Sphere.ec $(OBJ)Sphere.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/Sphere.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object3DSFormat.c: src/gfx/3D/models/Object3DSFormat.ec $(OBJ)Object3DSFormat.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/models/Object3DSFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Camera.c: src/gfx/3D/Camera.ec $(OBJ)Camera.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Camera.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Matrix.c: src/gfx/3D/Matrix.ec $(OBJ)Matrix.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Matrix.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Mesh.c: src/gfx/3D/Mesh.ec $(OBJ)Mesh.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Mesh.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object.c: src/gfx/3D/Object.ec $(OBJ)Object.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Object.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Plane.c: src/gfx/3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Plane.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Quaternion.c: src/gfx/3D/Quaternion.ec $(OBJ)Quaternion.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Quaternion.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Vector3D.c: src/gfx/3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Vector3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
 $(OBJ)BMPFormat.c: src/gfx/bitmaps/BMPFormat.ec $(OBJ)BMPFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/BMPFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)GIFFormat.c: src/gfx/bitmaps/GIFFormat.ec $(OBJ)GIFFormat.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/GIFFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)JPEGFormat.c: src/gfx/bitmaps/JPEGFormat.ec $(OBJ)JPEGFormat.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/JPEGFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
 
 $(OBJ)PCXFormat.c: src/gfx/bitmaps/PCXFormat.ec $(OBJ)PCXFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/PCXFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/PNGFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/RGBFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.c: src/gfx/drivers/GDIDisplayDriver.ec $(OBJ)GDIDisplayDriver.sym | $(SYMBOLS)
@@ -1133,16 +891,6 @@ $(OBJ)LFBDisplayDriver.c: src/gfx/drivers/LFBDisplayDriver.ec $(OBJ)LFBDisplayDr
 ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCursesDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/NCursesDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/XDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 endif
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
@@ -1168,6 +916,15 @@ $(OBJ)Resource.c: src/gfx/Resource.ec $(OBJ)Resource.sym | $(SYMBOLS)
 
 $(OBJ)Surface.c: src/gfx/Surface.ec $(OBJ)Surface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Surface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontManagement.c: src/gfx/fontManagement.ec $(OBJ)fontManagement.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontRendering.c: src/gfx/fontRendering.ec $(OBJ)fontRendering.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)imgDistMap.c: src/gfx/imgDistMap.ec $(OBJ)imgDistMap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Button.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1244,21 +1001,6 @@ $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/WindowList.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/cocoa/CocoaDispatch.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/cocoa/CocoaInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/NCursesInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.c: src/gui/drivers/Win32Interface.ec $(OBJ)Win32Interface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/Win32Interface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1267,11 +1009,6 @@ endif
 ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XInterface.c: src/gui/drivers/XInterface.ec $(OBJ)XInterface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/XInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)TVisionSkin.c: src/gui/skins/TVisionSkin.ec $(OBJ)TVisionSkin.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/skins/TVisionSkin.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 endif
 
 $(OBJ)WindowsSkin.c: src/gui/skins/WindowsSkin.ec $(OBJ)WindowsSkin.sym | $(SYMBOLS)
@@ -1285,11 +1022,6 @@ $(OBJ)ClipBoard.c: src/gui/ClipBoard.ec $(OBJ)ClipBoard.sym | $(SYMBOLS)
 
 $(OBJ)Cursor.c: src/gui/Cursor.ec $(OBJ)Cursor.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Cursor.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Desktop3D.c: src/gui/Desktop3D.ec $(OBJ)Desktop3D.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Desktop3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
 
 $(OBJ)FormDesigner.c: src/gui/FormDesigner.ec $(OBJ)FormDesigner.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/FormDesigner.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1314,36 +1046,6 @@ $(OBJ)typeEdit.c: src/gui/typeEdit.ec $(OBJ)typeEdit.sym | $(SYMBOLS)
 
 $(OBJ)Window.c: src/gui/Window.ec $(OBJ)Window.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Window.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)dcom.c: src/net/dcom.ec $(OBJ)dcom.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/dcom.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)HTTPFile.c: src/net/HTTPFile.ec $(OBJ)HTTPFile.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/HTTPFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)network.c: src/net/network.ec $(OBJ)network.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/network.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NetworkClientFile.c: src/net/NetworkClientFile.ec $(OBJ)NetworkClientFile.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/NetworkClientFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Service.c: src/net/Service.ec $(OBJ)Service.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/Service.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/Socket.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-endif
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/Array.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1461,84 +1163,14 @@ $(OBJ)i18n.o: $(OBJ)i18n.c
 $(OBJ)Condition.o: $(OBJ)Condition.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Condition.c) -o $(call quote_path,$@)
 
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Cube.o: $(OBJ)Cube.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Cube.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)SkyBox.o: $(OBJ)SkyBox.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)SkyBox.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Sphere.o: $(OBJ)Sphere.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Sphere.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object3DSFormat.o: $(OBJ)Object3DSFormat.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Object3DSFormat.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Camera.o: $(OBJ)Camera.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Camera.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Matrix.o: $(OBJ)Matrix.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Matrix.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Mesh.o: $(OBJ)Mesh.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Mesh.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Object.o: $(OBJ)Object.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Object.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Plane.o: $(OBJ)Plane.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Plane.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Quaternion.o: $(OBJ)Quaternion.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Quaternion.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Vector3D.o: $(OBJ)Vector3D.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Vector3D.c) -o $(call quote_path,$@)
-endif
-
 $(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BMPFormat.c) -o $(call quote_path,$@)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)BMPFormat.c -o $(OBJ)BMPFormat.o
 
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)GIFFormat.o: $(OBJ)GIFFormat.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GIFFormat.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)JPEGFormat.o: $(OBJ)JPEGFormat.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)JPEGFormat.c) -o $(call quote_path,$@)
-endif
-
-$(OBJ)PCXFormat.o: $(OBJ)PCXFormat.c
+$(OBJ)PCXFormat$(O): $(OBJ)PCXFormat.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PCXFormat.c) -o $(call quote_path,$@)
 
-$(OBJ)PNGFormat.o: $(OBJ)PNGFormat.c
+$(OBJ)PNGFormat$(O): $(OBJ)PNGFormat.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PNGFormat.c) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)RGBFormat.o: $(OBJ)RGBFormat.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RGBFormat.c) -o $(call quote_path,$@)
-endif
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
@@ -1553,21 +1185,6 @@ $(OBJ)lfbConvert.o: $(OBJ)lfbConvert.c
 
 $(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)LFBDisplayDriver.c) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NCursesDisplayDriver.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaOpenGLDisplayDriver.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)XDisplayDriver.c) -o $(call quote_path,$@)
-endif
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Bitmap.c) -o $(call quote_path,$@)
@@ -1592,6 +1209,15 @@ $(OBJ)Resource.o: $(OBJ)Resource.c
 
 $(OBJ)Surface.o: $(OBJ)Surface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Surface.c) -o $(call quote_path,$@)
+
+$(OBJ)fontManagement$(O): $(OBJ)fontManagement.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontManagement.c) -o $(call quote_path,$@)
+
+$(OBJ)fontRendering$(O): $(OBJ)fontRendering.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRendering.c) -o $(call quote_path,$@)
+
+$(OBJ)imgDistMap$(O): $(OBJ)imgDistMap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)imgDistMap.c) -o $(call quote_path,$@)
 
 $(OBJ)Button.o: $(OBJ)Button.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Button.c) -o $(call quote_path,$@)
@@ -1668,31 +1294,6 @@ $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)WindowList.c) -o $(call quote_path,$@)
 
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaDispatch.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaEcereBridge.m) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaInterface.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(OSX_TARGET),)
-$(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/EcereView.m) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NCursesInterface.c) -o $(call quote_path,$@)
-endif
-
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.o: $(OBJ)Win32Interface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Win32Interface.c) -o $(call quote_path,$@)
@@ -1701,11 +1302,6 @@ endif
 ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XInterface.o: $(OBJ)XInterface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)XInterface.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)TVisionSkin.o: $(OBJ)TVisionSkin.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)TVisionSkin.c) -o $(call quote_path,$@)
 endif
 
 $(OBJ)WindowsSkin.o: $(OBJ)WindowsSkin.c
@@ -1719,11 +1315,6 @@ $(OBJ)ClipBoard.o: $(OBJ)ClipBoard.c
 
 $(OBJ)Cursor.o: $(OBJ)Cursor.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Cursor.c) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Desktop3D.o: $(OBJ)Desktop3D.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Desktop3D.c) -o $(call quote_path,$@)
-endif
 
 $(OBJ)FormDesigner.o: $(OBJ)FormDesigner.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FormDesigner.c) -o $(call quote_path,$@)
@@ -1748,36 +1339,6 @@ $(OBJ)typeEdit.o: $(OBJ)typeEdit.c
 
 $(OBJ)Window.o: $(OBJ)Window.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Window.c) -o $(call quote_path,$@)
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)dcom.o: $(OBJ)dcom.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dcom.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)HTTPFile.o: $(OBJ)HTTPFile.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HTTPFile.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)network.o: $(OBJ)network.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)network.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)NetworkClientFile.o: $(OBJ)NetworkClientFile.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NetworkClientFile.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Service.o: $(OBJ)Service.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Service.c) -o $(call quote_path,$@)
-endif
-
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
-$(OBJ)Socket.o: $(OBJ)Socket.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Socket.c) -o $(call quote_path,$@)
-endif
 
 $(OBJ)Array.o: $(OBJ)Array.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Array.c) -o $(call quote_path,$@)
