@@ -1,3 +1,43 @@
+ecere-sdk (0.44.15-0ubuntu1) yakkety; urgency=low
+
+Ecere SDK 0.44.15 (August 4, 2016)
+
+   * Packaged Ecere SDK 0.44.15 (Closes: #811957 #826352)
+      * Fixed building with GCC 6 (Compiler was generating bad __attribute__
+        specifiers with with spaces rather than commas)
+      * Renamed IDE binary to less generic name (ide ==> ecere-ide)
+      * Web Support through Emscripten and WebGL
+      * 3D Graphics Improvements (OpenGL)
+         - Support for Shaders
+           (WebGL, Core/Compatibility profiles, OpenGL ES 2)
+         - Phong Shading Using Shaders
+         - Environment Mapping and Cube Maps
+            (Support for Reflection and Refraction)
+         - Normals Mapping Support
+         - Fixed and improved lighting
+         - Computed Normals Weighting for smoother surfaces
+         - Optimizations
+      * Font Outline Support
+      * Fixed text extent computation to account for overhang of italic fonts
+      * ECON Support (ECON is a JSON superset, dropping quotes, supporting
+        hexadecimal, multi-line strings, comments, derived classes, and
+        mapping directly to eC instantiations -- http://ec-lang.org/econ/ )
+      * ECON based IDE configuration (split options, recent files/projects
+        and compilers individually stored in separate files,
+        all in ~/.ecereIDE/)
+      * ECON based Documentor
+         (Documentation data can now be text-diffed with git etc.)
+      * ECON based Color Scheme and Font Selection in Global Settings
+      * Sortable Containers
+      * Distributed Objects Fixes & Improvements
+      * (Windows) Fixes for TDM-GCC 5
+      * Android: Fixes to run on newer versions
+      * X: Fixed NumPad key definitions
+      * Build system Fixes & Improvements
+      * Other Fixes & Improvements
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Thu, 4 Aug 2016 14:00:00 -0400
+
 ecere-sdk (0.44.14-0ubuntu1) xenial; urgency=low
 
    * Packaged Ecere SDK 0.44.14

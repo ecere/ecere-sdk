@@ -43,6 +43,20 @@ Depends: libecc0 (= ${binary:Version}),
          ${devel:Depends},
          ${misc:Depends},
          ${shlibs:Depends}
+         libasound2-dev,
+         libffi-dev,
+         libfontconfig1-dev,
+         libfreetype6-dev,
+         libgif-dev,
+         libgl1-mesa-dev,
+         libjpeg-dev,
+         libncurses5-dev,
+         libpng-dev,
+         libsqlite3-dev,
+         libx11-dev,
+         libxext-dev,
+         libxrender-dev,
+         linux-libc-dev
 Description: Ecere SDK Development Tools
  This package provides the compiling tools
  for the eC language, the Ecere IDE,
