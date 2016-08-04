@@ -64,13 +64,18 @@
    ],
    "Files" : [
       {
+         "Folder" : "ide",
+         "Files" : [
+            "../ide/src/IDESettings.ec",
+            "../ide/src/OldIDESettings.ec"
+         ]
+      },
+      {
          "Folder" : "src",
          "Files" : [
             "installer.ec"
          ]
       },
-      "../ide/src/IDESettings.ec",
-      "../ide/src/OldIDESettings.ec",
       "../extras/gui/controls/StringsBox.ec",
       "../ide/src/licensing.ec",
       "../extras/createLink.ec",

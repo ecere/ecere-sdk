@@ -45,9 +45,9 @@ RES =
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/setup-ecere-0.44.15-win32$(E)
 
 _ECSOURCES = \
-	src/installer.ec \
 	../ide/src/IDESettings.ec \
 	../ide/src/OldIDESettings.ec \
+	src/installer.ec \
 	../extras/gui/controls/StringsBox.ec \
 	../ide/src/licensing.ec \
 	../extras/createLink.ec \
@@ -6566,14 +6566,14 @@ endif
 
 # SYMBOL RULES
 
-$(OBJ)installer.sym: src/installer.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@)
-
 $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../ide/src/IDESettings.ec) -o $(call quote_path,$@)
 
 $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../ide/src/OldIDESettings.ec) -o $(call quote_path,$@)
+
+$(OBJ)installer.sym: src/installer.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@)
 
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../extras/gui/controls/StringsBox.ec) -o $(call quote_path,$@)
@@ -6589,14 +6589,14 @@ $(OBJ)CheckListBox.sym: ../extras/gui/controls/CheckListBox.ec
 
 # C OBJECT RULES
 
-$(OBJ)installer.c: src/installer.ec $(OBJ)installer.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
 $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,../ide/src/IDESettings.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,../ide/src/OldIDESettings.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)installer.c: src/installer.ec $(OBJ)installer.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,../extras/gui/controls/StringsBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -6612,14 +6612,14 @@ $(OBJ)CheckListBox.c: ../extras/gui/controls/CheckListBox.ec $(OBJ)CheckListBox.
 
 # OBJECT RULES
 
-$(OBJ)installer.o: $(OBJ)installer.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)installer.c) -o $(call quote_path,$@)
-
 $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IDESettings.c) -o $(call quote_path,$@)
 
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)OldIDESettings.c) -o $(call quote_path,$@)
+
+$(OBJ)installer.o: $(OBJ)installer.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)installer.c) -o $(call quote_path,$@)
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)StringsBox.c) -o $(call quote_path,$@)
