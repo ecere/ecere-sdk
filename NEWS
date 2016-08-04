@@ -18,7 +18,7 @@ Ecere SDK 0.44.15 (August 4, 2016)
    * Sortable Containers
    * Distributed Objects Fixes & Improvements
    * Renamed IDE binary to less generic name (ide ==> ecere-ide)
-   * Fixed building with GCC 6 (Compiler was generating bad __attribute__ specifiers with with spaces rather than commas)
+   * Fixed building with GCC 6 (Compiler was generating bad __attribute__ specifiers with spaces rather than commas)
    * (Windows) Fixes for TDM-GCC 5
    * Android: Fixes to run on newer versions
    * X: Fixed NumPad key definitions
