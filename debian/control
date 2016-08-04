@@ -42,7 +42,7 @@ Depends: libecc0 (= ${binary:Version}),
          libecerecom0 (= ${binary:Version}),
          ${devel:Depends},
          ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
          libasound2-dev,
          libffi-dev,
          libfontconfig1-dev,
