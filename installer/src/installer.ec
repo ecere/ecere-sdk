@@ -286,8 +286,8 @@ public enum CoreSDKID
 
 Array<Component> coreSDK
 { [
-   { "Ecere IDE",       "ecere-sdk/ecere-ide",              "bin",      null, true,  true, true, bits64 },
-   { "Ecere IDE",       "ecere-sdk32/ecere-ide",            "bin",      null, true,  true, true, bits32 },
+   { "Ecere IDE",       "ecere-sdk/ide",                    "bin",      null, true,  true, true, bits64 },
+   { "Ecere IDE",       "ecere-sdk32/ide",                  "bin",      null, true,  true, true, bits32 },
    { $"Runtime Library", "ecere-sdk/ecere.dll",             "bin",      null, true,  true, true, bits64 },
    { $"Runtime Library", "ecere-sdk32/ecere.dll",           "bin",      null, true,  true, true, bits32 },
    { $"eC Compiler",     "ecere-sdk/compiler",              "bin",      null, true,  true, true, bits64 },
