@@ -1,7 +1,7 @@
 namespace gfx;
 
 import "Window"
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
 import "fmFontManager"
 #endif
 
@@ -17,7 +17,7 @@ public:
    property Window window { set { if(value) { value.RemoveResource(this); value.AddResource(this); } }  };
    property float outlineSize { set { outlineSize = value; } get { return this ? outlineSize : 0; } };
    property float outlineFade { set { outlineFade = value; } get { return this ? outlineFade : 0; } };
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
    property FMFont fmFont { get { return this ? fmFont : null; } };
 #endif
 
@@ -28,7 +28,7 @@ private:
    FontFlags flags;
    DisplaySystem displaySystem;
    float outlineSize, outlineFade;
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
    FontManager fm;
    FMFont fmFont;
 #endif
@@ -48,7 +48,7 @@ private:
       }
    }
 
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
    void LoadFM(FontResource copy, DisplaySystem displaySystem, FontManager fm)
    {
       Load(copy, displaySystem);
@@ -69,7 +69,7 @@ private:
       *&outlineSize = *&reference.outlineSize;
       *&outlineFade = *&reference.outlineFade;
       font = reference.font;
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
       fmFont = reference.fmFont;
 #endif
    }
@@ -77,7 +77,7 @@ private:
    void Dereference()
    {
       font = null;
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
       fmFont = null;
 #endif
    }
@@ -86,7 +86,7 @@ private:
    {
       if(font && displaySystem)
          displaySystem.UnloadFont(font);
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
       if(fmFont && fm)
          fm.removeFont(fmFont);
 #endif
