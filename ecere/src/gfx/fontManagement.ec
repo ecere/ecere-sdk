@@ -458,24 +458,23 @@ public Map<String, FontInfo> ListAvailableFonts()
       for(i = 0; i < fontSet->nfont; i++)
       {
          FcPattern * font = fontSet->fonts[i];
-         String family;
-         int spacing;
-         FcCharSet * charSet;
+         String family = null;
+         int spacing = 0;
+         FcCharSet * charSet = null;
 
-         if(FcPatternGetString(font, FC_FAMILY, 0, (byte **)&family) == FcResultMatch &&
-            FcPatternGetInteger(font, FC_SPACING, 0, &spacing) == FcResultMatch &&
-            FcPatternGetCharSet(font, FC_CHARSET, 0, &charSet) == FcResultMatch)
+         FcPatternGetString(font, FC_FAMILY, 0, (byte **)&family);
+         FcPatternGetInteger(font, FC_SPACING, 0, &spacing);
+         FcPatternGetCharSet(font, FC_CHARSET, 0, &charSet);
+
+         if(family && !it.Index(family, true))
          {
-            if(!it.Index(family, true))
+            it.data =
             {
-               it.data =
-               {
-                  fixedPitch = spacing == FC_MONO,
-                  defaultOrAnsiCharSet =
-                     FcCharSetHasChar(charSet, '[') && FcCharSetHasChar(charSet, '{') &&
-                     FcCharSetHasChar(charSet, 'a') && FcCharSetHasChar(charSet, 'Z');
-               };
-            }
+               fixedPitch = spacing == FC_MONO,
+               defaultOrAnsiCharSet =
+                  FcCharSetHasChar(charSet, '[') && FcCharSetHasChar(charSet, '{') &&
+                  FcCharSetHasChar(charSet, 'a') && FcCharSetHasChar(charSet, 'Z');
+            };
          }
       }
    }
