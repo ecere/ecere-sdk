@@ -197,7 +197,7 @@ msgstr "Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Editio
 msgid "Ecere Vanilla"
 msgstr "Ecere Vanilla"
 
-#: ./../ide/src/IDESettings.ec:1998
+#: ./../ide/src/IDESettings.ec:2017
 msgid "Error creating compiler configs directory at "
 msgstr "Error creating compiler configs directory at "
 
@@ -221,7 +221,7 @@ msgstr "GDB Docs"
 msgid "GNU C Compiler"
 msgstr "GNU C Compiler"
 
-#: ./../ide/src/IDESettings.ec:1451
+#: ./../ide/src/IDESettings.ec:1470
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -307,15 +307,15 @@ msgstr "License Agreements"
 msgid "Make Docs"
 msgstr "Make Docs"
 
-#: ./../ide/src/IDESettings.ec:1454
+#: ./../ide/src/IDESettings.ec:1473
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:1455
+#: ./../ide/src/IDESettings.ec:1474
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:1457
+#: ./../ide/src/IDESettings.ec:1476
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -335,7 +335,7 @@ msgstr "Networking"
 msgid "Please wait while the Ecere Software Development Kit is being installed."
 msgstr "Please wait while the Ecere Software Development Kit is being installed."
 
-#: ./../ide/src/IDESettings.ec:1453
+#: ./../ide/src/IDESettings.ec:1472
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -404,7 +404,7 @@ msgstr "This program is based on these free open source software components."
 msgid "Threading"
 msgstr "Threading"
 
-#: ./../ide/src/IDESettings.ec:1452
+#: ./../ide/src/IDESettings.ec:1471
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -425,11 +425,11 @@ msgstr "built on "
 msgid "eC Compiler"
 msgstr "eC Compiler"
 
-#: ./../ide/src/IDESettings.ec:858
+#: ./../ide/src/IDESettings.ec:877
 msgid "error: could not parse configuration file: "
 msgstr "error: could not parse configuration file: "
 
-#: ./../ide/src/IDESettings.ec:832
+#: ./../ide/src/IDESettings.ec:851
 msgid "error: could not safely open file for writing configuration: "
 msgstr "error: could not safely open file for writing configuration: "
 
@@ -441,27 +441,27 @@ msgstr "gnurx Docs"
 msgid "terms and conditions"
 msgstr "terms and conditions"
 
-#: ./../ide/src/IDESettings.ec:926
+#: ./../ide/src/IDESettings.ec:945
 msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
 msgstr "warning: SafeFile::open: does not yet support FileOpenMode::"
 
-#: ./../ide/src/IDESettings.ec:913
+#: ./../ide/src/IDESettings.ec:932
 msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
 msgstr "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
 
-#: ./../ide/src/IDESettings.ec:915
+#: ./../ide/src/IDESettings.ec:934
 msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
 msgstr "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
 
-#: ./../ide/src/IDESettings.ec:920
+#: ./../ide/src/IDESettings.ec:939
 msgid "warning: SafeFile::open: unable to open file for reading: "
 msgstr "warning: SafeFile::open: unable to open file for reading: "
 
-#: ./../ide/src/IDESettings.ec:918
+#: ./../ide/src/IDESettings.ec:937
 msgid "warning: SafeFile::open: unable to open temporary file for writing: "
 msgstr "warning: SafeFile::open: unable to open temporary file for writing: "
 
-#: ./../ide/src/IDESettings.ec:968
+#: ./../ide/src/IDESettings.ec:987
 msgid "warning: SafeFile::sync: failed to lock file for "
 msgstr "warning: SafeFile::sync: failed to lock file for "
 
