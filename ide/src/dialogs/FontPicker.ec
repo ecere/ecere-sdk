@@ -158,7 +158,7 @@ class FontPicker : Window
    {
       int maxH = 12 + 5;
       float size = dbSize.GetData(dfSize);
-      int maxSize = (int)(size * 96 / 72 * 1.5);
+      int maxSize = (int)(size * 96 / 72 * 2);
       for(f : fontResources)
       {
          Font font = f.font;
@@ -167,7 +167,7 @@ class FontPicker : Window
          displaySystem.FontExtent(font, "W", 1, null, &h);
          h += 5;
 
-         h = font.ascent + font.descent + 5;
+         //h = font.ascent + font.descent + 5;
          if(h > maxSize) h = maxSize;
          maxH = Max(maxH, h);
       }
