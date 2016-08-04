@@ -318,6 +318,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
    Block block = startBlock;
    int startSel, endSel;
    Block startSelBlock = null, endSelBlock = null;
+   int prevGlyph = 0;
    if(browser.textBlock != browser.selBlock || browser.curPosition != browser.selPosition)
       browser.NormalizeSelection(&startSelBlock, &startSel, &endSelBlock, &endSel);
 
@@ -402,7 +403,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
                int l = startSel - textPos;
                if(block.text)
                {
-                  surface.TextExtent(block.text + textPos, l, &tw, &th);
+                  surface.TextExtent2(block.text + textPos, l, &tw, &th, prevGlyph, &prevGlyph, null);
                   surface.WriteText(x, y + h - th, block.text + textPos, l);
                   x += tw;
                }
@@ -422,7 +423,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
                   surface.foreground = white;
                   surface.textOpacity = true;
                }
-               surface.TextExtent(block.text + textPos, len, &tw, &th);
+               surface.TextExtent2(block.text + textPos, len, &tw, &th, prevGlyph, &prevGlyph, null);
                surface.WriteText(x, y + h - th, block.text + textPos, len);
                x += tw;
                if(browser.isSelected)
@@ -441,7 +442,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
                int l = endPos - textPos;
                if(block.text)
                {
-                  surface.TextExtent(block.text + textPos, l, &tw, &th);
+                  surface.TextExtent2(block.text + textPos, l, &tw, &th, prevGlyph, &prevGlyph, null);
                   surface.WriteText(x, y + h - th, block.text + textPos, l);
                   x += tw;
                }
