@@ -645,11 +645,25 @@ private:
       result = GlobalSettings::Load();
       data = (IDESettings)this.data;
       oldConfig = false;
-      if(result == fileNotFound)
+      if(result == fileNotFound || (settingsFilePath && isGlobalPath))
       {
+         bool retryNewConfig = settingsFilePath && isGlobalPath;
          oldConfig = true;
          useNewConfigurationFiles = false;
-         result = GlobalSettings::Load();
+         if(retryNewConfig)
+         {
+            settingsFilePath = null;
+            CloseAndMonitor();
+         }
+
+         GlobalSettings::Load();
+
+         if(result == fileNotFound && retryNewConfig)
+         {
+            oldConfig = false;
+            useNewConfigurationFiles = true;
+            result = GlobalSettings::Load();
+         }
       }
       data = (IDESettings)this.data;
       if(!data)

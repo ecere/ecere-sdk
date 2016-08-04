@@ -377,6 +377,8 @@ private:
 public:
    virtual void OnAskReloadSettings();
 
+   property bool isGlobalPath { get { return globalPath; } }
+
    bool OpenAndLock(FileSize * fileSize)
    {
       SettingsLocationType type = readType;
