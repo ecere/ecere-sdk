@@ -5,7 +5,7 @@ Maintainer: Jerome St-Louis <jerstlouis@gmail.com>
 Build-Depends: debhelper (>= 9~),
                dh-exec (>= 0.3~),
                dpkg-dev (>= 1.16.1~),
-               libasound2-dev,
+               libasound2-dev [linux-any],
                libffi-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
@@ -22,7 +22,7 @@ Build-Depends: debhelper (>= 9~),
                linux-libc-dev [linux-any],
                upx-ucl [!sparc64 !x32],
                zlib1g-dev
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Homepage: http://ecere.org/
 
 Package: ecere-sdk
@@ -42,7 +42,21 @@ Depends: libecc0 (= ${binary:Version}),
          libecerecom0 (= ${binary:Version}),
          ${devel:Depends},
          ${misc:Depends},
-         ${shlibs:Depends}
+         ${shlibs:Depends},
+         libasound2-dev [linux-any],
+         libffi-dev,
+         libfontconfig1-dev,
+         libfreetype6-dev,
+         libgif-dev,
+         libgl1-mesa-dev,
+         libjpeg-dev,
+         libncurses5-dev,
+         libpng-dev,
+         libsqlite3-dev,
+         libx11-dev,
+         libxext-dev,
+         libxrender-dev,
+         linux-libc-dev [linux-any]
 Description: Ecere SDK Development Tools
  This package provides the compiling tools
  for the eC language, the Ecere IDE,
@@ -118,7 +132,7 @@ Description: EDA SQLite Driver
 
 Package: libecereaudio0
 Section: libs
-Architecture: any
+Architecture: linux-any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
