@@ -440,9 +440,47 @@ public Map<String, FontInfo> ListAvailableFonts()
    EnumFontFamiliesExW(hdc, &logFont, (void *)fontLister, (LPARAM)fonts, 0);
 
    ReleaseDC(0, hdc);
-
 #elif !defined(ECERE_NOFONTCONFIG)
+   int i;
+   FcPattern * pattern;
+   FcObjectSet * objectSet;
+   FcFontSet * fontSet;
 
+   if(!fcConfig)
+      fcConfig = FcInitLoadConfigAndFonts();
+
+   pattern = FcPatternCreate();
+   objectSet = FcObjectSetBuild(FC_FAMILY, FC_SPACING, FC_CHARSET, null);
+   fontSet = FcFontList(fcConfig, pattern, objectSet);
+   if(fontSet)
+   {
+      MapIterator<String, FontInfo> it { map = fonts };
+      for(i = 0; i < fontSet->nfont; i++)
+      {
+         FcPattern * font = fontSet->fonts[i];
+         String family;
+         int spacing;
+         FcCharSet * charSet;
+
+         if(FcPatternGetString(font, FC_FAMILY, 0, (byte **)&family) == FcResultMatch &&
+            FcPatternGetInteger(font, FC_SPACING, 0, &spacing) == FcResultMatch &&
+            FcPatternGetCharSet(font, FC_CHARSET, 0, &charSet) == FcResultMatch)
+         {
+            if(!it.Index(family, true))
+            {
+               it.data =
+               {
+                  fixedPitch = spacing == FC_MONO,
+                  defaultOrAnsiCharSet =
+                     FcCharSetHasChar(charSet, '[') && FcCharSetHasChar(charSet, '{') &&
+                     FcCharSetHasChar(charSet, 'a') && FcCharSetHasChar(charSet, 'Z');
+               };
+            }
+         }
+      }
+   }
+   if(pattern) FcPatternDestroy(pattern);
+   if(fontSet) FcFontSetDestroy(fontSet);
 #endif
    return fonts;
 }
