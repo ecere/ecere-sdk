@@ -54,6 +54,7 @@ _ECSOURCES = \
 	src/dialogs/FindInFilesDialog.ec \
 	src/dialogs/GlobalSettingsDialog.ec \
 	src/dialogs/NewProjectDialog.ec \
+	src/dialogs/FontPicker.ec \
 	src/dialogs/NodeProperties.ec \
 	src/dialogs/WorkspaceSettings.ec \
 	src/dialogs/ProjectTabSettings.ec \
@@ -327,6 +328,9 @@ $(OBJ)NodeProperties.sym: src/dialogs/NodeProperties.ec
 $(OBJ)WorkspaceSettings.sym: src/dialogs/WorkspaceSettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.sym
 
+$(OBJ)FontPicker.sym: src/dialogs/FontPicker.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/FontPicker.ec -o $(OBJ)FontPicker.sym
+
 $(OBJ)ProjectTabSettings.sym: src/dialogs/ProjectTabSettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/ProjectTabSettings.ec -o $(OBJ)ProjectTabSettings.sym
 
@@ -461,6 +465,9 @@ $(OBJ)NewProjectDialog.c: src/dialogs/NewProjectDialog.ec $(OBJ)NewProjectDialog
 
 $(OBJ)NodeProperties.c: src/dialogs/NodeProperties.ec $(OBJ)NodeProperties.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/NodeProperties.ec -o $(OBJ)NodeProperties.c -symbols $(OBJ)
+
+$(OBJ)FontPicker.c: src/dialogs/FontPicker.ec $(OBJ)FontPicker.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/FontPicker.ec -o $(OBJ)FontPicker.c -symbols $(OBJ)
 
 $(OBJ)WorkspaceSettings.c: src/dialogs/WorkspaceSettings.ec $(OBJ)WorkspaceSettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/WorkspaceSettings.ec -o $(OBJ)WorkspaceSettings.c -symbols $(OBJ)
@@ -602,6 +609,9 @@ $(OBJ)NodeProperties.o: $(OBJ)NodeProperties.c
 
 $(OBJ)WorkspaceSettings.o: $(OBJ)WorkspaceSettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)WorkspaceSettings.c -o $(OBJ)WorkspaceSettings.o
+
+$(OBJ)FontPicker.o: $(OBJ)FontPicker.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)FontPicker.c -o $(OBJ)FontPicker.o
 
 $(OBJ)ProjectTabSettings.o: $(OBJ)ProjectTabSettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)ProjectTabSettings.c -o $(OBJ)ProjectTabSettings.o

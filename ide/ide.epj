@@ -178,7 +178,8 @@
                   "NewProjectDialog.ec",
                   "NodeProperties.ec",
                   "WorkspaceSettings.ec",
-                  "ProjectTabSettings.ec"
+                  "ProjectTabSettings.ec",
+                  "FontPicker.ec"
                ]
             },
             {

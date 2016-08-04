@@ -74,11 +74,19 @@ class GlobalSettingsDialog : Window
             {
                if(editorTab.useFreeCaret.checked != ideSettings.useFreeCaret ||
                      editorTab.showLineNumbers.checked != ideSettings.showLineNumbers ||
-                     editorTab.caretFollowsScrolling.checked != ideSettings.caretFollowsScrolling)
+                     editorTab.caretFollowsScrolling.checked != ideSettings.caretFollowsScrolling ||
+                     editorTab.fontPicker.fontSize != ideSettings.codeEditorFontSize ||
+                     editorTab.fontPicker.faceName.OnCompare(ideSettings.codeEditorFont)
+                     )
                {
                   ideSettings.useFreeCaret = editorTab.useFreeCaret.checked;
                   ideSettings.showLineNumbers = editorTab.showLineNumbers.checked;
                   ideSettings.caretFollowsScrolling = editorTab.caretFollowsScrolling.checked;
+                  ideSettings.codeEditorFont = editorTab.fontPicker.faceName;
+                  ideSettings.codeEditorFontSize = editorTab.fontPicker.fontSize;
+
+                  ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize);
+
                   editorSettingsChanged = true;
                }
             }
@@ -226,6 +234,8 @@ class GlobalSettingsDialog : Window
    virtual void OnGlobalSettingChange(GlobalSettingsChange globalSettingsChange);
 }
 
+import "FontPicker"
+
 class EditorTab : GlobalSettingsSubTab
 {
    background = formColor;
@@ -233,19 +243,19 @@ class EditorTab : GlobalSettingsSubTab
 
    Button useFreeCaret
    {
-      this, text = $"Move code editor caret freely past end of line", position = { 16, 68 }, isCheckbox = true;
+      this, text = $"Move code editor caret freely past end of line", position = { 16, 58 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
    Button caretFollowsScrolling
    {
-      this, text = $"Keep caret visible (move along) when scrolling", position = { 16, 88 }, isCheckbox = true;
+      this, text = $"Keep caret visible (move along) when scrolling", position = { 16, 78 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
    Button showLineNumbers
    {
-      this, text = $"Show line numbers in code editor", position = { 16, 108 }, isCheckbox = true;
+      this, text = $"Show line numbers in code editor", position = { 16, 98 }, isCheckbox = true;
       NotifyClicked = NotifyClickedModifiedDocument;
    };
 
@@ -254,6 +264,17 @@ class EditorTab : GlobalSettingsSubTab
       modifiedDocument = true;
       return true;
    }
+
+   FontPicker fontPicker
+   {
+      this, anchor = { left = 8, right = 8, top = 120, bottom = 8 };
+
+      bool NotifyChanged()
+      {
+         modifiedDocument = true;
+         return true;
+      }
+   };
 }
 
 static void DrawStipple(Surface surface, Size clientSize)

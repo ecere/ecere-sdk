@@ -444,6 +444,42 @@ class IDEWorkSpace : Window
 
    Debugger debugger { };
 
+   void ApplyFont(const String faceName, float size)
+   {
+      panelFont.faceName = faceName;
+      panelFont.size = size;
+
+      codeFont.faceName = faceName;
+      codeFont.size = size;
+
+      {
+         CodeEditor ce;
+         for(ce = (CodeEditor)firstChild; ce; ce = (CodeEditor)ce.next)
+            if(ce._class == class(CodeEditor))
+            {
+               ce.font = { codeFont.faceName, codeFont.size, codeFont.bold, codeFont.italic };
+               ce.editBox.font = ce.font;
+               ce.OnPostCreate();
+            }
+      }
+
+      threadsView.font          = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      callStackView.font        = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      outputView.buildBox.font  = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      outputView.debugBox.font  = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      outputView.findBox.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+   #ifdef GDB_DEBUG_OUTPUT
+      outputView.gdbBox.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+   #endif
+#ifdef GDB_DEBUG_GUI
+      if(gdbDialog)
+      {
+         gdbDialog.tree.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+         gdbDialog.output.font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      }
+#endif
+   }
+
    ProjectView projectView;
 
    OutputView outputView
@@ -3688,6 +3724,8 @@ class IDEApp : GuiApplication
             return false;
          }
       }
+
+      ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize);
 
       ideConfig.compilers.read(settingsContainer);
       ideConfig.recentFiles.read(settingsContainer);

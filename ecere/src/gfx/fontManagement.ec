@@ -27,7 +27,7 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
    //if(fontType == TRUETYPE_FONTTYPE)
    {
       FontData * fontData = (FontData *) lParam;
-      char * fileName = (char *)lParam;
+      char * fileName = fontData->fileName;
       HKEY key;
       int weight = (fontData->flags.bold) ? FW_BOLD : FW_NORMAL;
       int italic = (fontData->flags.italic) ? 1 : 0;
@@ -304,13 +304,16 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
 #endif
       while(true)
       {
-         FaceInfo faceInfo
+         if(FileExists(fileName))
          {
-            fileName = CopyString(fileName),
-            fakeItalic = fakeItalic,
-            fontID = fontID
-         };
-         fileNames.Add(faceInfo);
+            FaceInfo faceInfo
+            {
+               fileName = CopyString(fileName),
+               fakeItalic = fakeItalic,
+               fontID = fontID
+            };
+            fileNames.Add(faceInfo);
+         }
          {
             int c;
             char ch;
@@ -394,7 +397,54 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
 #endif
 
 #endif
+   if(!fileNames.count)
+      delete fileNames;
    return fileNames;
+}
+
+import "AVLTree"
+
+public struct FontInfo
+{
+   bool fixedPitch;
+   bool defaultOrAnsiCharSet;
+};
+
+#if defined(__WIN32__)
+static int CALLBACK fontLister(ENUMLOGFONTEXW * font, NEWTEXTMETRICEX *lpntme, int fontType, LPARAM lParam)
+{
+   // const String faceName = font->elfLogFont.lfFaceName;
+   uint16 * faceName = font->elfLogFont.lfFaceName;
+   String s = UTF16toUTF8(faceName);
+   if(s[0] != '@')
+   {
+      Map<String, FontInfo> fonts = (Map<String, FontInfo>)lParam;
+      MapIterator<String, FontInfo> it { map = fonts };
+      if(!it.Index(s, true))
+         it.data = { (font->elfLogFont.lfPitchAndFamily & 3) == FIXED_PITCH, defaultOrAnsiCharSet = (font->elfLogFont.lfCharSet == ANSI_CHARSET || font->elfLogFont.lfCharSet == DEFAULT_CHARSET) };
+   }
+   delete s;
+   return 1;
+}
+#endif
+
+public Map<String, FontInfo> ListAvailableFonts()
+{
+   Map<String, FontInfo> fonts { };
+
+#if defined(__WIN32__)
+   LOGFONTW logFont = { 0 };
+   HDC hdc = GetDC(0);
+   logFont.lfCharSet = DEFAULT_CHARSET;
+
+   EnumFontFamiliesExW(hdc, &logFont, (void *)fontLister, (LPARAM)fonts, 0);
+
+   ReleaseDC(0, hdc);
+
+#elif !defined(ECERE_NOFONTCONFIG)
+
+#endif
+   return fonts;
 }
 
 public FaceInfo ResolveCharFont(const String faceName, float size, FontFlags flags, const String lang, unichar testChar)

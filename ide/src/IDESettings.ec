@@ -883,6 +883,19 @@ public:
       isset { return language != null; }
    }
 
+   property const String codeEditorFont
+   {
+      set
+      {
+         delete codeEditorFont;
+         codeEditorFont = CopyString(value);
+      }
+      get { return codeEditorFont; }
+   }
+
+   float codeEditorFontSize;
+   bool showFixedPitchFontsOnly;
+
 private:
    CompilerConfigs compilerConfigs { };
    char * docDir;
@@ -895,6 +908,12 @@ private:
    String language;
    RecentFiles recentFiles { };
    RecentWorkspaces recentProjects { };
+
+   String codeEditorFont;
+
+   showFixedPitchFontsOnly = true;
+   codeEditorFontSize = 12;
+   codeEditorFont = CopyString("Courier New");
 
    ~IDESettings()
    {
@@ -913,6 +932,8 @@ private:
       delete ideFileDialogLocation;
       delete ideProjectFileDialogLocation;
       delete displayDriver;
+
+      delete codeEditorFont;
    }
 
    void ForcePathSeparatorStyle(bool unixStyle)
