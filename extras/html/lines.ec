@@ -546,7 +546,8 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
             surface.TextExtent(block.text + textPos, len, &tw, &th);
             // eSurface_WriteText(surface, x, y + h - th, block.text + textPos, len);
 
-            if(pickX >= x && pickY >= y+h-th && pickX < x + tw && pickY < y+h)
+            if(block.text[0] == ' ' && block.text[1] == 0) pickX += tw; else
+            if(pickX >= x && pickY >= y+h-th && pickX < x + tw + 2 && pickY < y+h)
             {
                result = true;
                *pickBlock = block;

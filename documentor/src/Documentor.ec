@@ -4229,7 +4229,7 @@ class HelpView : HTMLView
          if(setCaretX)
             caretX = sx;
          caretY = sy;
-         SetCaret(sx, sy, th);
+         SetCaret(sx-1, sy, th);
          {
             Point scrollPos = scroll;
             bool doScroll = false;
