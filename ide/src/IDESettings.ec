@@ -732,6 +732,9 @@ private:
       // Import from previous ecereIDE settings
       if(oldConfig)
       {
+         // Save first so that settingsFilePath get set up
+         Save();
+
          data.compilerConfigs.ensureDefaults();
          data.compilerConfigs.write(this, null);
          data.compilerConfigs.Free();
@@ -741,8 +744,6 @@ private:
 
          data.recentProjects.write(this);
          data.recentProjects.Free();
-
-         Save();
       }
       return result;
    }

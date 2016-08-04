@@ -15,6 +15,9 @@
          "mpr",
          "z",
          "imm32"
+      ],
+      "LibraryDirs" : [
+         "../deps/zlib-1.2.8/obj/release.win32.x32"
       ]
    },
    "Configurations" : [
