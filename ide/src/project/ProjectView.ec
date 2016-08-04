@@ -242,9 +242,9 @@ class ProjectView : Window
       borderStyle = deep, parent = this, collapseControl = true, treeBranches = true;
       anchor = Anchor { left = 0, right = 0, top = 0 , bottom = 0 };
 
-      background = projectViewBackground;
-      foreground = projectViewText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      background = colorScheme.projectViewBackground;
+      foreground = colorScheme.projectViewText;
+      selectionColor = colorScheme.selectionColor, selectionText = colorScheme.selectionText;
       stippleColor = skyBlue;
 
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)

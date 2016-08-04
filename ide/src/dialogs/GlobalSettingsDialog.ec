@@ -76,14 +76,26 @@ class GlobalSettingsDialog : Window
                      editorTab.showLineNumbers.checked != ideSettings.showLineNumbers ||
                      editorTab.caretFollowsScrolling.checked != ideSettings.caretFollowsScrolling ||
                      editorTab.fontPicker.fontSize != ideSettings.codeEditorFontSize ||
-                     editorTab.fontPicker.faceName.OnCompare(ideSettings.codeEditorFont)
+                     editorTab.fontPicker.faceName.OnCompare(ideSettings.codeEditorFont) ||
+                     editorTab.dbColorSchemes.currentRow.string.OnCompare(ideSettings.activeColorScheme)
                      )
                {
+                  DataRow csRow = editorTab.dbColorSchemes.currentRow;
                   ideSettings.useFreeCaret = editorTab.useFreeCaret.checked;
                   ideSettings.showLineNumbers = editorTab.showLineNumbers.checked;
                   ideSettings.caretFollowsScrolling = editorTab.caretFollowsScrolling.checked;
                   ideSettings.codeEditorFont = editorTab.fontPicker.faceName;
                   ideSettings.codeEditorFontSize = editorTab.fontPicker.fontSize;
+                  if(csRow && csRow.string)
+                  {
+                     ideSettings.activeColorScheme = csRow.string;
+                     for(cs : ideSettings.colorSchemes; cs.name && !strcmp(cs.name, csRow.string))
+                     {
+                        colorScheme = cs;
+                        ide.ApplyColorScheme(colorScheme);
+                        break;
+                     }
+                  }
 
                   ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize);
 
@@ -240,6 +252,41 @@ class EditorTab : GlobalSettingsSubTab
 {
    background = formColor;
    text = $"Editor";
+
+   bool OnCreate()
+   {
+      dbColorSchemes.Clear();
+
+      for(s : ideSettings.colorSchemes)
+      {
+         DataRow row = dbColorSchemes.AddString(s.name);
+         if(!strcmp(s.name, ideSettings.activeColorScheme))
+            dbColorSchemes.currentRow = row;
+      }
+      return true;
+   }
+
+   Label lblColorSchemes { this, anchor = { top = 92, right = 126 }, labeledWindow = dbColorSchemes };
+   DropBox dbColorSchemes
+   {
+      this, text = $"Color Scheme: ", anchor = { top = 92, right = 16 }, size = { 100, 22 };
+
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         if(row)
+         {
+            IDEColorScheme colorScheme = null;
+            for(cs : ideSettings.colorSchemes; cs.name && !strcmp(cs.name, row.string))
+            {
+               colorScheme = cs;
+               break;
+            }
+            fontPicker.SelectColorScheme(colorScheme);
+            modifiedDocument = true;
+         }
+         return true;
+      }
+   };
 
    Button useFreeCaret
    {

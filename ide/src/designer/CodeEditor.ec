@@ -1,68 +1,5 @@
 import "ide"
 
-// *** Color Schemes ***
-
-// *** The Old Color Scheme that was causing me auras and ophtalmic migraines -- Uncomment at your own risk! ***
-/*
-FontResource panelFont { $"Courier New", 10 };
-FontResource codeFont { $"Courier New", 10 };
-Color selectionColor = Color { 10, 36, 106 };
-Color selectionText = white;
-Color viewsBackground = white;
-Color viewsText = black;
-Color outputBackground = white;
-Color outputText = black;
-Color projectViewBackground = white;
-Color projectViewText = black;
-Color codeEditorBG = white;
-Color codeEditorFG = black;
-Color marginColor = Color {230, 230, 230};
-Color selectedMarginColor = Color {200, 200, 200};
-Color lineNumbersColor = Color {60, 60, 60};
-SyntaxColorScheme colorScheme
-{
-   keywordColors = [ blue, blue ];
-   commentColor = dimGray;
-   charLiteralColor = crimson;
-   stringLiteralColor = crimson;
-   preprocessorColor = green;
-   numberColor = teal;
-};
-*/
-
-// The new nice dark scheme -- so peaceful on my brain
-
-FontResource panelFont { $"Courier New", 10 };
-FontResource codeFont { $"Courier New", 10 };
-/*
-FontResource panelFont { $"Consolas", 12 };
-FontResource codeFont { $"Consolas", 12 };
-*/
-Color selectionColor = lightYellow;
-Color selectionText = Color { 30, 40, 50 };
-Color viewsBackground = Color { 30, 40, 50 };
-Color viewsText = lightGray;
-Color outputBackground = black;
-Color outputText = lime;
-Color projectViewBackground = Color { 30, 40, 50 };
-Color projectViewText = lightGray;
-Color codeEditorBG = black;
-Color codeEditorFG = ivory;
-Color marginColor = Color {24, 24, 24};
-Color selectedMarginColor = Color {64, 64, 64};
-Color lineNumbersColor = Color {160, 160, 160};
-SyntaxColorScheme colorScheme
-{
-   keywordColors = [ skyBlue, skyBlue ];
-   commentColor = Color { 125, 125, 125 };
-   charLiteralColor = Color { 245, 50, 245 };
-   stringLiteralColor = Color { 245, 50, 245 };
-   preprocessorColor = { 120, 220, 140 };
-   numberColor = Color {   0, 192, 192 };
-};
-
-// *********************
-
 import "findCtx"
 import "findExp"
 import "findParams"
@@ -695,7 +632,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
 
 class CodeEditor : Window
 {
-   background = marginColor;
+   background = colorScheme.marginColor;
    borderStyle = sizableDeep;
    hasMaximize = true;
    hasMinimize = true;
@@ -892,8 +829,8 @@ class CodeEditor : Window
       freeCaret = ideSettings.useFreeCaret, caretFollowsScrolling = ideSettings.caretFollowsScrolling,
       tabKey = true, smartHome = true;
       tabSelection = true, /*maxLineSize = 65536, */parent = this, hasHorzScroll = true, hasVertScroll = true;
-      selectionColor = selectionColor, selectionText = selectionText,
-      background = codeEditorBG, foreground = codeEditorFG, syntaxColorScheme = colorScheme,
+      selectionColor = colorScheme.selectionColor, selectionText = colorScheme.selectionText,
+      background = colorScheme.codeEditorBG, foreground = colorScheme.codeEditorFG, syntaxColorScheme = colorScheme.syntaxColors,
       font = font, borderStyle = none;
       anchor = Anchor { left = 0, right = 0, top = 0, bottom = 0 };
 
@@ -2377,7 +2314,7 @@ class CodeEditor : Window
    void OnRedraw(Surface surface)
    {
       // Line Numbers
-      surface.SetBackground(marginColor);
+      surface.SetBackground(colorScheme.marginColor);
       surface.Area(0, 0, editBox.anchor.left.distance, clientSize.h - 1);
       if(ideSettings.showLineNumbers)
       {
@@ -2393,15 +2330,15 @@ class CodeEditor : Window
          currentLineNumber = editBox.scroll.y / spaceH + 1;
          sprintf(lineFormat, " %%%du", maxLineNumberLength);
 
-         surface.SetForeground(lineNumbersColor);
+         surface.SetForeground(colorScheme.lineNumbersColor);
          for(i = 0; i < editBox.clientSize.h - 4; i += spaceH)
          {
             // Highlight current line
             if(editBox.lineNumber == currentLineNumber - 1)
             {
-               surface.SetBackground(selectedMarginColor);
+               surface.SetBackground(colorScheme.selectedMarginColor);
                surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
-               surface.SetBackground(marginColor);
+               surface.SetBackground(colorScheme.marginColor);
             }
             sprintf(lineText, lineFormat, currentLineNumber);
             if(currentLineNumber <= editBox.numLines)

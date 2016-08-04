@@ -1,15 +1,5 @@
 import "ide"
 
-SyntaxColorScheme colorScheme
-{
-   keywordColors = [ skyBlue, skyBlue ];
-   commentColor = Color { 125, 125, 125 };
-   charLiteralColor = Color { 245, 50, 245 };
-   stringLiteralColor = Color { 245, 50, 245 };
-   preprocessorColor = { 120, 220, 140 };
-   numberColor = Color {   0, 192, 192 };
-};
-
 Array<float> sizes { [ 6, 7, 8.25f, 9, 10, 10.5f, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96 ] };
 
 Array<const String> fonts
@@ -88,6 +78,8 @@ class FontPicker : Window
       get { return curFont.faceName; }
    }
 
+   IDEColorScheme colorScheme;
+
    FontResource curFont { "Consolas", 12};
    DataField dfSize { class(float) };
    DropBox dbSize
@@ -137,12 +129,6 @@ class FontPicker : Window
       freeCaret = true;
 
       syntaxHighlighting = true;
-      syntaxColorScheme = colorScheme;
-
-      foreground = ivory;
-      selectionText = Color { 30, 40, 50 };
-      background = black;
-      selectionColor = lightYellow;
       multiLine = true;
       contents = sampleText;
    };
@@ -210,12 +196,30 @@ class FontPicker : Window
       fontResources.RemoveAll();
    }
 
+   void SelectColorScheme(IDEColorScheme colorScheme)
+   {
+      this.colorScheme = colorScheme;
+      sample.syntaxColorScheme = colorScheme.syntaxColors;
+      sample.selectionColor = colorScheme.selectionColor;
+      sample.selectionText = colorScheme.selectionText,
+      sample.background = colorScheme.codeEditorBG;
+      sample.foreground = colorScheme.codeEditorFG;
+   }
+
    bool OnCreate()
    {
       Map<String, FontInfo> fonts = ListAvailableFonts();
       DataRow sRow;
       float fontSize;
       bool fixedPitchOnly = ideSettings.showFixedPitchFontsOnly;
+
+      colorScheme = ::colorScheme;
+
+      sample.syntaxColorScheme = colorScheme.syntaxColors;
+      sample.selectionColor = colorScheme.selectionColor;
+      sample.selectionText = colorScheme.selectionText,
+      sample.background = colorScheme.codeEditorBG;
+      sample.foreground = colorScheme.codeEditorFG;
 
       curFont.faceName = ideSettings.codeEditorFont;
       curFont.size = fontSize = ideSettings.codeEditorFontSize;

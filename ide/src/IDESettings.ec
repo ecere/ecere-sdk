@@ -4,6 +4,171 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+// *** Color Schemes ***
+class IDEColorScheme
+{
+   String name;
+   SyntaxColorScheme syntaxColors;
+public:
+
+   property const String name
+   {
+      set { delete name; name = CopyString(value); }
+      get { return name; }
+   }
+
+   Color selectionColor;
+   Color selectionText;
+   Color viewsBackground;
+   Color viewsText;
+   Color outputBackground;
+   Color outputText;
+   Color projectViewBackground;
+   Color projectViewText;
+   Color codeEditorBG;
+   Color codeEditorFG;
+   Color marginColor;
+   Color selectedMarginColor;
+   Color lineNumbersColor;
+   Color sheetSelectionColor;
+   Color sheetSelectionText;
+
+   property SyntaxColorScheme syntaxColors
+   {
+      set { delete syntaxColors; syntaxColors = value; if(value) incref value; }
+      get { return syntaxColors; }
+   }
+
+   ~IDEColorScheme()
+   {
+      delete syntaxColors;
+      delete name;
+   }
+}
+
+IDEColorScheme colorScheme;
+
+// Default Color Schemes
+IDEColorScheme darkColorScheme
+{
+   name = "Classic Dark";
+   selectionColor = lightYellow;
+   selectionText = Color { 30, 40, 50 };
+   viewsBackground = Color { 30, 40, 50 };
+   viewsText = lightGray;
+   outputBackground = black;
+   outputText = lime;
+   sheetSelectionColor = Color { 170, 220, 255 };
+   sheetSelectionText = black;
+   projectViewBackground = Color { 30, 40, 50 };
+   projectViewText = lightGray;
+   codeEditorBG = black;
+   codeEditorFG = ivory;
+   marginColor = Color {24, 24, 24};
+   selectedMarginColor = Color {64, 64, 64};
+   lineNumbersColor = Color {160, 160, 160};
+   syntaxColors =
+   {
+      keywordColors = [ skyBlue, skyBlue ];
+      commentColor = Color { 125, 125, 125 };
+      charLiteralColor = Color { 245, 50, 245 };
+      stringLiteralColor = Color { 245, 50, 245 };
+      preprocessorColor = { 120, 220, 140 };
+      numberColor = Color {   0, 192, 192 };
+   };
+};
+
+IDEColorScheme lightColorScheme
+{
+   name = "Classic Light";
+   selectionColor = Color { 10, 36, 106 };
+   selectionText = white;
+   viewsBackground = white;
+   viewsText = black;
+   outputBackground = white;
+   outputText = black;
+   sheetSelectionColor = Color { 170, 220, 255 };
+   sheetSelectionText = black;
+   projectViewBackground = white;
+   projectViewText = black;
+   codeEditorBG = white;
+   codeEditorFG = black;
+   marginColor = Color {230, 230, 230};
+   selectedMarginColor = Color {200, 200, 200};
+   lineNumbersColor = Color {60, 60, 60};
+   syntaxColors =
+   {
+      keywordColors = [ blue, blue ];
+      commentColor = dimGray;
+      charLiteralColor = crimson;
+      stringLiteralColor = crimson;
+      preprocessorColor = green;
+      numberColor = teal;
+   };
+};
+
+IDEColorScheme greenColorScheme
+{
+   name = "Green",
+   selectionColor = 0x00FFFFE0,
+   selectionText = 0x001E2832,
+   viewsBackground = 0x001E2832,
+   viewsText = 0x00D3D3D3,
+   outputBackground = 0x00000000,
+   outputText = 0x0000FF00,
+   projectViewBackground = 0x001E2832,
+   projectViewText = 0x00D3D3D3,
+   codeEditorBG = 0x00000000,
+   codeEditorFG = 0x00FFFFF0,
+   marginColor = 0x001100,
+   selectedMarginColor = 0x002200,
+   lineNumbersColor = 0x00FF00,
+   sheetSelectionColor = 0x00AADCFF,
+   sheetSelectionText = 0x00000000,
+   syntaxColors = {
+      commentColor = 0x008c00,
+      charLiteralColor = 0x89de00,
+      stringLiteralColor = 0x89de00,
+      preprocessorColor = 0x0078DC8C,
+      numberColor = { 8, 237, 141 },
+      keywordColors = [
+         0x00e09d,
+         0x00e09d
+      ]
+   }
+};
+
+IDEColorScheme grayColorScheme
+{
+   name = "Gray & Orange",
+   selectionColor = 0x00FFFFE0,
+   selectionText = 0x001E2832,
+   viewsBackground = 0x001E2832,
+   viewsText = 0x00D3D3D3,
+   outputBackground = 0x00000000,
+   outputText = 0x0000FF00,
+   projectViewBackground = 0x001E2832,
+   projectViewText = 0x00D3D3D3,
+   codeEditorBG = 0x00202020,
+   codeEditorFG = 0x00E2E2E5,
+   marginColor = 0x00303030,
+   selectedMarginColor = 0x00404040,
+   lineNumbersColor = 0x00939395,
+   sheetSelectionColor = 0x00AADCFF,
+   sheetSelectionText = 0x00000000,
+   syntaxColors = {
+      commentColor = 0x005F5F5F,
+      charLiteralColor = 0x0089DE00,
+      stringLiteralColor = 0x00707070,
+      preprocessorColor = 0x00FAF4C6,
+      numberColor = 0x00FF9800,
+      keywordColors = [
+         0x00FF9800,
+         0x00FF9800
+      ]
+   }
+};
+
 define ecpDefaultCommand = "ecp";
 define eccDefaultCommand = "ecc";
 define ecsDefaultCommand = "ecs";
@@ -295,6 +460,7 @@ class IDESettingsContainer : GlobalSettings
    virtual void onLoadCompilerConfigs();
    virtual void onLoadRecentFiles();
    virtual void onLoadRecentProjects();
+   virtual void onLoad();
 
    CompilerConfigs compilerConfigs;
    RecentFiles recentFiles;
@@ -449,9 +615,10 @@ private:
 
       if(OpenAndLock(&newSettingsFileSize))
       {
-         if((double)settingsFileSize - (double)newSettingsFileSize < 2048)
+         //if((double)settingsFileSize - (double)newSettingsFileSize < 2048)
             Load();
-         else
+            onLoad();
+         /*else
          {
             GuiApplication app = ((GuiApplication)__thisModule.application);
             Window w;
@@ -466,7 +633,7 @@ private:
                   "The new settings will not be loaded to prevent loss of your ide settings.\n"
                   "Please check your settings file and make sure to save this IDE's global settings if your settings file has been compromised."
                   }.Create();
-         }
+         }*/
       }
    }
 
@@ -537,6 +704,30 @@ private:
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, true);
       data.ForcePathSeparatorStyle(true);
+
+      if(!data.colorSchemes || !data.colorSchemes.count)
+      {
+         if(!data.colorSchemes) data.colorSchemes = { };
+
+         data.colorSchemes.Add(darkColorScheme);   incref darkColorScheme;
+         data.colorSchemes.Add(lightColorScheme);  incref lightColorScheme;
+         data.colorSchemes.Add(greenColorScheme);  incref greenColorScheme;
+         data.colorSchemes.Add(grayColorScheme);   incref grayColorScheme;
+      }
+      if(data.activeColorScheme)
+      {
+         colorScheme = null;
+         for(cs : data.colorSchemes; cs.name && !strcmp(cs.name, data.activeColorScheme))
+         {
+            colorScheme = cs;
+            break;
+         }
+      }
+      if(!colorScheme)
+      {
+         colorScheme = data.colorSchemes[0];
+         data.activeColorScheme = colorScheme.name;
+      }
 
       // Import from previous ecereIDE settings
       if(oldConfig)
@@ -712,7 +903,11 @@ class SafeFile
          {
             for(c = 0; c < 10 && !(locked = sf.file.Lock(lockType, 0, 0, false)); c++) Sleep(0.01);
             if(locked)
+            {
+               sf.file.Truncate(0);
+               sf.file.Seek(0, start);
                result = sf;
+            }
             else if(mode == write)
                PrintLn($"warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: ", sf.tmp);
             else
@@ -896,6 +1091,29 @@ public:
    float codeEditorFontSize;
    bool showFixedPitchFontsOnly;
 
+   property Array<IDEColorScheme> colorSchemes
+   {
+      set
+      {
+         if(colorSchemes && colorSchemes._refCount < 2)
+            colorSchemes.Free();
+         delete colorSchemes;
+         colorSchemes = value;
+         incref colorSchemes;
+      }
+      get { return colorSchemes; }
+   }
+
+   property const String activeColorScheme
+   {
+      set
+      {
+         delete activeColorScheme;
+         activeColorScheme = CopyString(value);
+      }
+      get { return activeColorScheme; }
+   }
+
 private:
    CompilerConfigs compilerConfigs { };
    char * docDir;
@@ -909,7 +1127,11 @@ private:
    RecentFiles recentFiles { };
    RecentWorkspaces recentProjects { };
 
+   Array<IDEColorScheme> colorSchemes;
+
    String codeEditorFont;
+
+   String activeColorScheme;
 
    showFixedPitchFontsOnly = true;
    codeEditorFontSize = 12;
@@ -934,6 +1156,9 @@ private:
       delete displayDriver;
 
       delete codeEditorFont;
+
+      colorSchemes.Free();
+      delete activeColorScheme;
    }
 
    void ForcePathSeparatorStyle(bool unixStyle)

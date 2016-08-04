@@ -121,10 +121,13 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
+      /*
       font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
-      background = outputBackground;
-      foreground = outputText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      background = colorScheme.outputBackground;
+      foreground = colorScheme.outputText;
+      selectionColor = colorScheme.selectionColor;
+      selectionText = colorScheme.selectionText;
+      */
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
@@ -148,10 +151,13 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
+      /*
       font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
-      background = outputBackground;
-      foreground = outputText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      background = colorScheme.outputBackground;
+      foreground = colorScheme.outputText;
+      selectionColor = colorScheme.selectionColor;
+      selectionText = colorScheme.selectionText;
+      */
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
@@ -175,10 +181,13 @@ class OutputView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
+      /*
       font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
-      background = outputBackground;
-      foreground = outputText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      background = colorScheme.outputBackground;
+      foreground = colorScheme.outputText;
+      selectionColor = colorScheme.selectionColor;
+      selectionText = colorScheme.selectionText;
+      */
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
@@ -204,9 +213,10 @@ class OutputView : Window
       readOnly = true, hasVertScroll = true, hasHorzScroll = true, visible = false;
       anchor = Anchor { left = 0, right = 0, top = 23, bottom = 0 };
       font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
-      background = outputBackground;
-      foreground = outputText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      background = colorScheme.outputBackground;
+      foreground = colorScheme.outputText;
+      selectionColor = colorScheme.selectionColor;
+      selectionText = colorScheme.selectionText;
    };
 #endif
 

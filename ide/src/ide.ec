@@ -61,6 +61,9 @@ define pathListSep = ":";
 
 IDEConfigHolder ideConfig { };
 
+FontResource panelFont { $"Courier New", 10 };
+FontResource codeFont { $"Courier New", 10 };
+
 IDESettings ideSettings;
 
 IDESettingsContainer settingsContainer
@@ -71,6 +74,7 @@ IDESettingsContainer settingsContainer
    void onLoadCompilerConfigs()     { ide.UpdateCompilerConfigs(true); }
    void onLoadRecentFiles()         { ide.updateRecentFilesMenu(); }
    void onLoadRecentProjects()      { ide.updateRecentProjectsMenu(); }
+   void onLoad()                    { ide.ApplyColorScheme(colorScheme); ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize); }
 };
 
 define maxPathLen = 65 * MAX_LOCATION;
@@ -478,6 +482,75 @@ class IDEWorkSpace : Window
          gdbDialog.output.font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
       }
 #endif
+   }
+
+   void ApplyColorScheme(IDEColorScheme cs)
+   {
+      CodeEditor ce;
+
+      colorScheme = cs;
+
+      for(ce = (CodeEditor)firstChild; ce; ce = (CodeEditor)ce.next)
+         if(ce._class == class(CodeEditor))
+         {
+            EditBox eb = ce.editBox;
+            ce.background = cs.marginColor;
+            eb.selectionColor = cs.selectionColor;
+            eb.selectionText = cs.selectionText;
+            eb.background = cs.codeEditorBG;
+            eb.foreground = cs.codeEditorFG;
+            eb.syntaxColorScheme = cs.syntaxColors;
+         }
+
+      if(projectView)
+      {
+         projectView.fileList.background = cs.projectViewBackground;
+         projectView.fileList.foreground = cs.projectViewText;
+         projectView.fileList.selectionColor = cs.selectionColor;
+         projectView.fileList.selectionText = cs.selectionText;
+      }
+
+      sheet.properties.background = cs.viewsBackground;
+      sheet.properties.foreground = cs.viewsText;
+      sheet.properties.selectionText = cs.sheetSelectionText;
+      sheet.properties.selectionColor = cs.sheetSelectionColor;
+      sheet.methods.background = cs.viewsBackground;
+      sheet.methods.foreground = cs.viewsText;
+
+      threadsView.editBox.background = cs.viewsBackground;
+      threadsView.editBox.foreground = cs.viewsText;
+      threadsView.editBox.selectionColor = cs.selectionColor;
+      threadsView.editBox.selectionText = cs.selectionText;
+
+      callStackView.editBox.background = cs.viewsBackground;
+      callStackView.editBox.foreground = cs.viewsText;
+      callStackView.editBox.selectionColor = cs.selectionColor;
+      callStackView.editBox.selectionText = cs.selectionText;
+
+      watchesView.listBox.background = cs.viewsBackground;
+      watchesView.listBox.foreground = cs.viewsText;
+      watchesView.listBox.selectionColor = cs.selectionColor;
+      watchesView.listBox.selectionText = cs.selectionText;
+
+      breakpointsView.listBox.background = cs.viewsBackground;
+      breakpointsView.listBox.foreground = cs.viewsText;
+      breakpointsView.listBox.selectionColor = cs.selectionColor;
+      breakpointsView.listBox.selectionText = cs.selectionText;
+
+      outputView.buildBox.background = cs.outputBackground;
+      outputView.buildBox.foreground = cs.outputText;
+      outputView.buildBox.selectionColor = cs.selectionColor;
+      outputView.buildBox.selectionText = cs.selectionText;
+
+      outputView.debugBox.background = cs.outputBackground;
+      outputView.debugBox.foreground = cs.outputText;
+      outputView.debugBox.selectionColor = cs.selectionColor;
+      outputView.debugBox.selectionText = cs.selectionText;
+
+      outputView.findBox.background = cs.outputBackground;
+      outputView.findBox.foreground = cs.outputText;
+      outputView.findBox.selectionColor = cs.selectionColor;
+      outputView.findBox.selectionText = cs.selectionText;
    }
 
    ProjectView projectView;
@@ -3726,6 +3799,7 @@ class IDEApp : GuiApplication
       }
 
       ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize);
+      ide.ApplyColorScheme(colorScheme);
 
       ideConfig.compilers.read(settingsContainer);
       ideConfig.recentFiles.read(settingsContainer);

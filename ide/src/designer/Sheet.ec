@@ -271,9 +271,6 @@ void SetProperty(Property prop, Instance object, DataValue value)
    }
 }
 
-static define sheetSelectionColor = Color { 170, 220, 255 };
-static define sheetSelectionText = black;
-
 class Sheet : Window
 {
    text = $"Sheet";
@@ -456,10 +453,12 @@ class Sheet : Window
    {
       this, anchor = { left = 0, right = 0, top = 50, bottom = 25 };
       hasVertScroll = true, alwaysEdit = true, collapseControl = true, resizable = true;
-      background = viewsBackground;
-      foreground = viewsText;
-      selectionText = sheetSelectionText;
-      selectionColor = sheetSelectionColor;
+      /*
+      background = colorScheme.viewsBackground;
+      foreground = colorScheme.viewsText;
+      selectionText = colorScheme.sheetSelectionText;
+      selectionColor = colorScheme.sheetSelectionColor;
+      */
 
       bool NotifySelect(ListBox control, DataRow row, Modifiers keyFlags)
       {
@@ -491,8 +490,10 @@ class Sheet : Window
    {
       this, anchor = { left = 0, right = 0, top = 50, bottom = 25 };
       hasVertScroll = true;
-      background = viewsBackground;
-      foreground = viewsText;
+      /*
+      background = colorScheme.viewsBackground;
+      foreground = colorScheme.viewsText;
+      */
       // alwaysEdit = true;
       // resizable = true;
 
@@ -1649,14 +1650,14 @@ public:
             if(eClass_IsDerived(editData._class, class(DropBox)))
             {
                DropBox db = (DropBox)editData;
-               db.selectionColor = sheetSelectionColor;
-               db.selectionText = viewsBackground;
+               db.selectionColor = colorScheme.sheetSelectionColor;
+               db.selectionText = colorScheme.viewsBackground;
             }
             else if(eClass_IsDerived(editData._class, class(EditBox)))
             {
                EditBox eb = (EditBox)editData;
-               eb.selectionColor = sheetSelectionColor;
-               eb.selectionText = viewsBackground;
+               eb.selectionColor = colorScheme.sheetSelectionColor;
+               eb.selectionText = colorScheme.viewsBackground;
             }
          }
       }

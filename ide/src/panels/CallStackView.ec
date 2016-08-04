@@ -26,9 +26,12 @@ class CallStackView : Window
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true, readOnly = true;
       hasVertScroll = true, hasHorzScroll = true, borderStyle = none;
       anchor = Anchor { left = 20, top = 0, right = 0, bottom = 0 };
-      background = viewsBackground;
-      foreground = viewsText;
-      selectionColor = selectionColor, selectionText = selectionText;
+      /*
+      background = colorScheme.viewsBackground;
+      foreground = colorScheme.viewsText;
+      selectionColor = colorScheme.selectionColor;
+      selectionText = colorScheme.selectionText;
+      */
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
