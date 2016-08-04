@@ -1,3 +1,213 @@
 {
-   description = "Base Container template class"
+   description = "Base Container template class",
+   properties = [
+      {
+         "copySrc",
+         {
+            description = "Setting this property will fill this container with the elements from specified container (but without duplicating the individual elements)."
+         }
+      },
+      {
+         "firstIterator",
+         {
+            description = "Used to obtain an iterator to first element"
+         }
+      },
+      {
+         "lastIterator",
+         {
+            description = "Used to obtain an iterator to last element"
+         }
+      }
+   ],
+   methods = [
+      {
+         "Add",
+         {
+            description = "Add an element to this container at the end"
+         }
+      },
+      {
+         "Copy",
+         {
+            description = "Copies elements from another container -- Note: Individual elements do not get duplicated through OnCopy()"
+         }
+      },
+      {
+         "Delete",
+         {
+            description = "Remove an element from the container and free its allocated memory"
+         }
+      },
+      {
+         "Find",
+         {
+            description = "Find an element by value within this container"
+         }
+      },
+      {
+         "Free",
+         {
+            description = "Remove all elements from the container freeing their individual allocated memory"
+         }
+      },
+      {
+         "FreeIterator",
+         {
+            description = "Used to free the memory associated with an IteratorPointer for this container (typically only used for containers representing dynamic sequences)"
+         }
+      },
+      {
+         "GetAtPosition",
+         {
+            description = "Return an iterator to the element at position 'pos'. If create is true and the position is not currently occupied, an element will be added at that position. If an element was added as a result (with create set to true) and a non-null 'justAdded' pointer is passed, it will be set to true.",
+            remarks = "Avoid indexing linked lists by index as much as possible.<br><br>This method is used to implement the [ ] container indexing operator.",
+            parameters = [
+               {
+                  "create",
+                  {
+                     description = "Set to true if the element should be created if it does not exist.",
+                     position = 2
+                  }
+               },
+               {
+                  "justAdded",
+                  {
+                     description = "Used to request information whether a previously non-existent element was added (with create = true). The bool variable passed must be initialized to false by the caller.",
+                     position = 3
+                  }
+               },
+               {
+                  "pos",
+                  {
+                     description = "Index ('IT' parameter: integer for Array, Key for Map)",
+                     position = 1
+                  }
+               }
+            ],
+            returnValue = "An iterator pointer to the element indexed, or null if not found and not created."
+         }
+      },
+      {
+         "GetCount",
+         {
+            description = "Return the number of elements within this container"
+         }
+      },
+      {
+         "GetData",
+         {
+            description = "Return the element data at the position of the iterator"
+         }
+      },
+      {
+         "GetFirst",
+         {
+            description = "Return an iterator pointer to the first element"
+         }
+      },
+      {
+         "GetLast",
+         {
+            description = "Return an iterator pointer to the last element"
+         }
+      },
+      {
+         "GetNext",
+         {
+            description = "Return an iterator pointer to the next element"
+         }
+      },
+      {
+         "GetPrev",
+         {
+            description = "Return an iterator pointer to the previous element"
+         }
+      },
+      {
+         "Insert",
+         {
+            description = "Insert an element in this container after a specific element (specify 'null' to add at the beginning)",
+            parameters = [
+               {
+                  "after",
+                  {
+                     description = "Element after which this element should be added (null to add at the beginning)",
+                     position = 1
+                  }
+               },
+               {
+                  "value",
+                  {
+                     description = "Value to be added (Container element type)",
+                     position = 2
+                  }
+               }
+            ],
+            returnValue = "Iterator pointer to the element that was added"
+         }
+      },
+      {
+         "Move",
+         {
+            description = "Move an element after another",
+            parameters = [
+               {
+                  "after",
+                  {
+                     description = "Iterator pointer specifying after which element to move (null to move at the beginning)",
+                     position = 2
+                  }
+               },
+               {
+                  "it",
+                  {
+                     description = "Iterator pointer specifying which element to move",
+                     position = 1
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "Remove",
+         {
+            description = "Remove an element from the container without freeing its allocated memory"
+         }
+      },
+      {
+         "RemoveAll",
+         {
+            description = "Remove all elements from the container withou freeing their individual allocated memory"
+         }
+      },
+      {
+         "SetData",
+         {
+            description = "Set the data at the position of the iterator"
+         }
+      },
+      {
+         "Sort",
+         {
+            description = "Sort the container in ascending or descending order"
+         }
+      },
+      {
+         "TakeOut",
+         {
+            description = "Remove an item from a Container by value (implies a Find and is slower than removing from Iterator). The element is not freed.",
+            remarks = "Beware of using TakeOut() with 'class' data types and 'class_no_expansion' not set, as OnCompare() may resolve two different instances as equivalent.<br><br>Even in containers where values are not guaranteed to be unique, only a single element will be taken out per call.",
+            parameters = [
+               {
+                  "d",
+                  {
+                     description = "Value of element which should be taken out. ",
+                     position = 1
+                  }
+               }
+            ]
+         }
+      }
+   ]
 }

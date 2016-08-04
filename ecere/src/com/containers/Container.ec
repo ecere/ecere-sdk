@@ -332,7 +332,8 @@ public:
          delete (void *)data;
       this = container;
    }
-
+private:
+   // FIXME: Static is not overriding private
    static void _Sort(bool ascending, Container * lists)
    {
       // Only sort containers with more than 1 items and which are integer indexable
@@ -408,6 +409,7 @@ public:
       }
    }
 
+public:
    virtual void Sort(bool ascending)
    {
       // Pre-allocate 2 log2(n) containers
