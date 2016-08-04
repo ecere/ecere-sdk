@@ -10,152 +10,155 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/Documentor.ec:674
+#: ./src/Documentor.ec:821
 msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
 msgstr "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
 
-#: ./src/Documentor.ec:1236
-#: ./src/Documentor.ec:1496
-#: ./src/Documentor.ec:1728
+#: ./src/Documentor.ec:1387
+#: ./src/Documentor.ec:1647
+#: ./src/Documentor.ec:1880
 msgid "<FONT face=\"Courier New\">\n"
 msgstr "<FONT face=\"Courier New\">\n"
 
-#: ./src/Documentor.ec:1287
-msgid "<H3>Derived Classes</H3><br>\n"
-msgstr "<H3>Derived Classes</H3><br>\n"
+#: ./src/Documentor.ec:1438
+msgid "<H3>Derived Classes</H3><BR>\n"
+msgstr "<H3>Derived Classes</H3><BR>\n"
 
-#: ./src/Documentor.ec:694
-msgid "<H3>Description</H3><br><br>\n"
-msgstr "<H3>Description</H3><br><br>\n"
+#: ./src/Documentor.ec:841
+msgid "<H3>Description</H3><BR>\n"
+msgstr "<H3>Description</H3><BR>\n"
 
-#: ./src/Documentor.ec:1235
-#: ./src/Documentor.ec:1495
-#: ./src/Documentor.ec:1727
-msgid "<H3>Example</H3><br>\n"
-msgstr "<H3>Example</H3><br>\n"
+#: ./src/Documentor.ec:1386
+#: ./src/Documentor.ec:1646
+#: ./src/Documentor.ec:1879
+msgid "<H3>Example</H3><BR>\n"
+msgstr "<H3>Example</H3><BR>\n"
 
-#: ./src/Documentor.ec:1400
-#: ./src/Documentor.ec:1632
-msgid "<H3>Parameters</H3><br><br>\n"
-msgstr "<H3>Parameters</H3><br><br>\n"
+#: ./src/Documentor.ec:1551
+#: ./src/Documentor.ec:1784
+msgid "<H3>Parameters</H3><BR>\n"
+msgstr "<H3>Parameters</H3><BR>\n"
 
-#: ./src/Documentor.ec:1259
-#: ./src/Documentor.ec:1517
-#: ./src/Documentor.ec:1749
-msgid "<H3>Remarks</H3><br>\n"
-msgstr "<H3>Remarks</H3><br>\n"
+#: ./src/Documentor.ec:1410
+#: ./src/Documentor.ec:1668
+#: ./src/Documentor.ec:1901
+msgid "<H3>Remarks</H3><BR>\n"
+msgstr "<H3>Remarks</H3><BR>\n"
 
-#: ./src/Documentor.ec:1303
-#: ./src/Documentor.ec:1536
-#: ./src/Documentor.ec:1768
-msgid "<H3>See Also</H3><br>\n"
-msgstr "<H3>See Also</H3><br>\n"
+#: ./src/Documentor.ec:1687
+#: ./src/Documentor.ec:1920
+msgid "<H3>See Also</H3><BR>\n"
+msgstr "<H3>See Also</H3><BR>\n"
 
-#: ./src/Documentor.ec:717
-msgid "<H3>Sub Namespaces</H3><br><br>\n"
-msgstr "<H3>Sub Namespaces</H3><br><br>\n"
+#: ./src/Documentor.ec:1453
+msgid "<H3>See Also</H3>\n"
+msgstr "<H3>See Also</H3>\n"
 
-#: ./src/Documentor.ec:1216
-#: ./src/Documentor.ec:1476
-#: ./src/Documentor.ec:1708
-msgid "<H3>Usage</H3><br>\n"
-msgstr "<H3>Usage</H3><br>\n"
+#: ./src/Documentor.ec:865
+msgid "<H3>Sub Namespaces</H3><BR>\n"
+msgstr "<H3>Sub Namespaces</H3><BR>\n"
 
-#: ./src/Documentor.ec:667
-#: ./src/Documentor.ec:894
-#: ./src/Documentor.ec:1355
-#: ./src/Documentor.ec:1588
+#: ./src/Documentor.ec:1367
+#: ./src/Documentor.ec:1627
+#: ./src/Documentor.ec:1860
+msgid "<H3>Usage</H3><BR>\n"
+msgstr "<H3>Usage</H3><BR>\n"
+
+#: ./src/Documentor.ec:814
+#: ./src/Documentor.ec:1044
+#: ./src/Documentor.ec:1505
+#: ./src/Documentor.ec:1739
 msgid "<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n"
 msgstr "<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n"
 
-#: ./src/Documentor.ec:1446
-#: ./src/Documentor.ec:1678
+#: ./src/Documentor.ec:1597
+#: ./src/Documentor.ec:1830
 msgid "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
 msgstr "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
 
-#: ./src/Documentor.ec:755
-msgid "<a name=Classes></a><H3>Classes</H3><br><br>\n"
-msgstr "<a name=Classes></a><H3>Classes</H3><br><br>\n"
+#: ./src/Documentor.ec:904
+msgid "<a name=Classes></a><H3>Classes</H3><BR>\n"
+msgstr "<a name=Classes></a><H3>Classes</H3><BR>\n"
 
-#: ./src/Documentor.ec:1039
-msgid "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
-msgstr "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
+#: ./src/Documentor.ec:1190
+msgid "<a name=Conversions></a><H3>Conversions</H3><BR>\n"
+msgstr "<a name=Conversions></a><H3>Conversions</H3><BR>\n"
 
-#: ./src/Documentor.ec:830
-msgid "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
-msgstr "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
+#: ./src/Documentor.ec:980
+msgid "<a name=Definitions></a><H3>Definitions</H3><BR>\n"
+msgstr "<a name=Definitions></a><H3>Definitions</H3><BR>\n"
 
-#: ./src/Documentor.ec:970
-msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
-msgstr "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
+#: ./src/Documentor.ec:1121
+msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><BR>\n"
+msgstr "<a name=EnumerationValues></a><H3>Enumeration Values</H3><BR>\n"
 
-#: ./src/Documentor.ec:795
-msgid "<a name=Functions></a><H3>Functions</H3><br><br>\n"
-msgstr "<a name=Functions></a><H3>Functions</H3><br><br>\n"
+#: ./src/Documentor.ec:945
+msgid "<a name=Functions></a><H3>Functions</H3><BR>\n"
+msgstr "<a name=Functions></a><H3>Functions</H3><BR>\n"
 
-#: ./src/Documentor.ec:1089
-msgid "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
-msgstr "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
+#: ./src/Documentor.ec:1240
+msgid "<a name=Members></a><H3>Properties and Members</H3><BR>\n"
+msgstr "<a name=Members></a><H3>Properties and Members</H3><BR>\n"
 
-#: ./src/Documentor.ec:1181
-msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
-msgstr "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
+#: ./src/Documentor.ec:1332
+msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><BR>\n"
+msgstr "<a name=Methods></a><H3>Non-Virtual Methods</H3><BR>\n"
 
-#: ./src/Documentor.ec:1143
-msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
-msgstr "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
+#: ./src/Documentor.ec:1294
+msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><BR>\n"
+msgstr "<a name=VirtualMethods></a><H3>Virtual Methods</H3><BR>\n"
 
-#: ./src/Documentor.ec:948
-msgid "<br><H3>Description</H3><br><br>\n"
-msgstr "<br><H3>Description</H3><br><br>\n"
+#: ./src/Documentor.ec:1098
+msgid "<br><H3>Description</H3><BR>\n"
+msgstr "<br><H3>Description</H3><BR>\n"
 
-#: ./src/Documentor.ec:1382
-#: ./src/Documentor.ec:1615
-msgid "<br><br><H3>Description</H3><br><br>\n"
-msgstr "<br><br><H3>Description</H3><br><br>\n"
+#: ./src/Documentor.ec:1532
+#: ./src/Documentor.ec:1766
+msgid "<br><br><H3>Description</H3><BR>\n"
+msgstr "<br><br><H3>Description</H3><BR>\n"
 
-#: ./src/Documentor.ec:2168
+#: ./src/Documentor.ec:2320
 msgid "API Documentation Browser"
 msgstr "API Documentation Browser"
 
-#: ./src/Documentor.ec:932
+#: ./src/Documentor.ec:1082
 msgid "Base Class: "
 msgstr "Base Class: "
 
-#: ./src/Documentor.ec:924
+#: ./src/Documentor.ec:1074
 msgid "Basic Data Type"
 msgstr "Basic Data Type"
 
-#: ./src/Documentor.ec:906
+#: ./src/Documentor.ec:1056
 msgid "Bit Collection"
 msgstr "Bit Collection"
 
-#: ./src/Documentor.ec:2464
+#: ./src/Documentor.ec:2627
 #: ./src/SettingsDialog.ec:52
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ./src/Documentor.ec:915
+#: ./src/Documentor.ec:1065
 msgid "Class"
 msgstr "Class"
 
-#: ./src/Documentor.ec:918
+#: ./src/Documentor.ec:1068
 msgid "Class (No header)"
 msgstr "Class (No header)"
 
-#: ./src/Documentor.ec:1848
+#: ./src/Documentor.ec:2000
 msgid "Classes"
 msgstr "Classes"
 
-#: ./src/Documentor.ec:2057
+#: ./src/Documentor.ec:2209
 msgid "Conversions"
 msgstr "Conversions"
 
-#: ./src/Documentor.ec:2044
+#: ./src/Documentor.ec:2196
 msgid "Data Members"
 msgstr "Data Members"
 
-#: ./src/Documentor.ec:1894
+#: ./src/Documentor.ec:2046
 msgid "Definitions"
 msgstr "Definitions"
 
@@ -163,80 +166,84 @@ msgstr "Definitions"
 msgid "Documentation Path:"
 msgstr "Documentation Path:"
 
-#: ./src/Documentor.ec:909
+#: ./src/Documentor.ec:1059
 msgid "Enumeration"
 msgstr "Enumeration"
 
-#: ./src/Documentor.ec:2071
+#: ./src/Documentor.ec:2223
 msgid "Enumeration Values"
 msgstr "Enumeration Values"
 
-#: ./src/Documentor.ec:2006
+#: ./../ide/src/IDESettings.ec:1982
+msgid "Error creating compiler configs directory at "
+msgstr "Error creating compiler configs directory at "
+
+#: ./src/Documentor.ec:2158
 msgid "Events"
 msgstr "Events"
 
-#: ./src/Documentor.ec:2225
+#: ./src/Documentor.ec:2377
 msgid "Exit"
 msgstr "Exit"
 
-#: ./src/Documentor.ec:2184
+#: ./src/Documentor.ec:2336
 msgid "File"
 msgstr "File"
 
-#: ./src/Documentor.ec:1871
+#: ./src/Documentor.ec:2023
 msgid "Functions"
 msgstr "Functions"
 
-#: ./../ide/src/IDESettings.ec:775
+#: ./../ide/src/IDESettings.ec:1435
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./src/Documentor.ec:2019
+#: ./src/Documentor.ec:2171
 msgid "Methods"
 msgstr "Methods"
 
-#: ./../ide/src/IDESettings.ec:778
+#: ./../ide/src/IDESettings.ec:1438
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:779
+#: ./../ide/src/IDESettings.ec:1439
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:781
+#: ./../ide/src/IDESettings.ec:1441
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./src/Documentor.ec:671
-#: ./src/Documentor.ec:897
-#: ./src/Documentor.ec:1358
-#: ./src/Documentor.ec:1591
+#: ./src/Documentor.ec:818
+#: ./src/Documentor.ec:1047
+#: ./src/Documentor.ec:1508
+#: ./src/Documentor.ec:1742
 msgid "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:899
-#: ./src/Documentor.ec:1360
-#: ./src/Documentor.ec:1594
+#: ./src/Documentor.ec:1049
+#: ./src/Documentor.ec:1510
+#: ./src/Documentor.ec:1745
 msgid "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:935
+#: ./src/Documentor.ec:1085
 msgid "None"
 msgstr "None"
 
-#: ./src/Documentor.ec:2197
+#: ./src/Documentor.ec:2349
 msgid "Open..."
 msgstr "Open..."
 
-#: ./src/Documentor.ec:687
+#: ./src/Documentor.ec:834
 msgid "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./../ide/src/IDESettings.ec:777
+#: ./../ide/src/IDESettings.ec:1437
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: ./src/Documentor.ec:2038
+#: ./src/Documentor.ec:2190
 msgid "Properties"
 msgstr "Properties"
 
@@ -244,7 +251,7 @@ msgstr "Properties"
 msgid "Save"
 msgstr "Save"
 
-#: ./src/Documentor.ec:2460
+#: ./src/Documentor.ec:2623
 msgid "Save Changes"
 msgstr "Save Changes"
 
@@ -256,11 +263,11 @@ msgstr "Select a path"
 msgid "Settings"
 msgstr "Settings"
 
-#: ./src/Documentor.ec:2210
+#: ./src/Documentor.ec:2362
 msgid "Settings..."
 msgstr "Settings..."
 
-#: ./src/Documentor.ec:912
+#: ./src/Documentor.ec:1062
 msgid "Structure"
 msgstr "Structure"
 
@@ -268,42 +275,74 @@ msgstr "Structure"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: ./../ide/src/IDESettings.ec:776
+#: ./../ide/src/IDESettings.ec:1436
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./src/Documentor.ec:927
+#: ./src/Documentor.ec:1077
 msgid "Type: %s<br>\n"
 msgstr "Type: %s<br>\n"
 
-#: ./src/Documentor.ec:921
+#: ./src/Documentor.ec:1071
 msgid "Unit"
 msgstr "Unit"
 
-#: ./src/Documentor.ec:2012
+#: ./src/Documentor.ec:2164
 msgid "Virtual Methods"
 msgstr "Virtual Methods"
 
-#: ./src/Documentor.ec:631
-#: ./src/Documentor.ec:2587
-#: ./src/Documentor.ec:2758
+#: ./src/Documentor.ec:704
+#: ./src/Documentor.ec:3078
+#: ./src/Documentor.ec:3248
 msgid "[Add Text]"
 msgstr "[Add Text]"
 
-#: ./src/Documentor.ec:2187
+#: ./src/Documentor.ec:2339
 msgid "eC Shared Library files (*.dll, *.so, *.dylib)"
 msgstr "eC Shared Library files (*.dll, *.so, *.dylib)"
 
-#: ./src/Documentor.ec:2188
+#: ./src/Documentor.ec:2340
 msgid "eC Symbol files (*.sym)"
 msgstr "eC Symbol files (*.sym)"
 
-#: ./src/Documentor.ec:1368
-#: ./src/Documentor.ec:1601
+#: ./../ide/src/IDESettings.ec:857
+msgid "error: could not parse configuration file: "
+msgstr "error: could not parse configuration file: "
+
+#: ./../ide/src/IDESettings.ec:831
+msgid "error: could not safely open file for writing configuration: "
+msgstr "error: could not safely open file for writing configuration: "
+
+#: ./src/Documentor.ec:1518
+#: ./src/Documentor.ec:1752
 msgid "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 msgstr "this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
 
-#: ./src/Documentor.ec:1364
+#: ./src/Documentor.ec:1514
 msgid "this pointer class: None<br>\n"
 msgstr "this pointer class: None<br>\n"
+
+#: ./../ide/src/IDESettings.ec:925
+msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
+msgstr "warning: SafeFile::open: does not yet support FileOpenMode::"
+
+#: ./../ide/src/IDESettings.ec:912
+msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:914
+msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+msgstr "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+
+#: ./../ide/src/IDESettings.ec:919
+msgid "warning: SafeFile::open: unable to open file for reading: "
+msgstr "warning: SafeFile::open: unable to open file for reading: "
+
+#: ./../ide/src/IDESettings.ec:917
+msgid "warning: SafeFile::open: unable to open temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to open temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:967
+msgid "warning: SafeFile::sync: failed to lock file for "
+msgstr "warning: SafeFile::sync: failed to lock file for "
 

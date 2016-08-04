@@ -10,71 +10,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./epj2make.ec:234
+#: ./epj2make.ec:244
 msgid "         [-cc <c compiler>]\n"
 msgstr "         [-cc <c compiler>]\n"
 
-#: ./epj2make.ec:233
+#: ./epj2make.ec:243
 msgid "         [-cpp <c preprocessor>]\n"
 msgstr "         [-cpp <c preprocessor>]\n"
 
-#: ./epj2make.ec:245
+#: ./epj2make.ec:255
 msgid "         [-d <intermediate objects directory>]\n"
 msgstr "         [-d <intermediate objects directory>]\n"
 
-#: ./epj2make.ec:238
+#: ./epj2make.ec:248
 msgid "         [-ear <Ecere Archiver>]\n"
 msgstr "         [-ear <Ecere Archiver>]\n"
 
-#: ./epj2make.ec:236
+#: ./epj2make.ec:246
 msgid "         [-ecc <eC compiler>]\n"
 msgstr "         [-ecc <eC compiler>]\n"
 
-#: ./epj2make.ec:235
+#: ./epj2make.ec:245
 msgid "         [-ecp <eC preprocessor>]\n"
 msgstr "         [-ecp <eC preprocessor>]\n"
 
-#: ./epj2make.ec:237
+#: ./epj2make.ec:247
 msgid "         [-ecs <eC symbol generator>]\n"
 msgstr "         [-ecs <eC symbol generator>]\n"
 
-#: ./epj2make.ec:240
+#: ./epj2make.ec:250
 msgid "         [-i <include dir[;inc dir[...]]>]\n"
 msgstr "         [-i <include dir[;inc dir[...]]>]\n"
 
-#: ./epj2make.ec:246
+#: ./epj2make.ec:256
 msgid "         [-includemk <crossplatform.mk path>]\n"
 msgstr "         [-includemk <crossplatform.mk path>]\n"
 
-#: ./epj2make.ec:241
+#: ./epj2make.ec:251
 msgid "         [-l <library dir[;lib dir[...]]>]\n"
 msgstr "         [-l <library dir[;lib dir[...]]>]\n"
 
-#: ./epj2make.ec:232
+#: ./epj2make.ec:242
 msgid "         [-make <make tool>]\n"
 msgstr "         [-make <make tool>]\n"
 
-#: ./epj2make.ec:243
+#: ./epj2make.ec:253
 msgid "         [-noglobalsettings]\n"
 msgstr "         [-noglobalsettings]\n"
 
-#: ./epj2make.ec:244
+#: ./epj2make.ec:254
 msgid "         [-noresources]\n"
 msgstr "         [-noresources]\n"
 
-#: ./epj2make.ec:239
+#: ./epj2make.ec:249
 msgid "      directories:\n"
 msgstr "      directories:\n"
 
-#: ./epj2make.ec:242
+#: ./epj2make.ec:252
 msgid "      options:\n"
 msgstr "      options:\n"
 
-#: ./epj2make.ec:231
+#: ./epj2make.ec:241
 msgid "      toolchain:\n"
 msgstr "      toolchain:\n"
 
-#: ./epj2make.ec:230
+#: ./epj2make.ec:240
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
@@ -90,31 +90,35 @@ msgstr " to compile instead of "
 msgid "Compiling source file "
 msgstr "Compiling source file "
 
-#: ./epj2make.ec:380
+#: ./../ide/src/IDESettings.ec:1982
+msgid "Error creating compiler configs directory at "
+msgstr "Error creating compiler configs directory at "
+
+#: ./epj2make.ec:392
 msgid "Error: Input file (%s) does not exist.\n"
 msgstr "Error: Input file (%s) does not exist.\n"
 
-#: ./epj2make.ec:316
+#: ./epj2make.ec:328
 msgid "Error: Project configuration (%s) was not found.\n"
 msgstr "Error: Project configuration (%s) was not found.\n"
 
-#: ./epj2make.ec:376
+#: ./epj2make.ec:388
 msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr "Error: Unable to open project file (%s) due to unknown error.\n"
 
-#: ./../ide/src/IDESettings.ec:775
+#: ./../ide/src/IDESettings.ec:1435
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./../ide/src/IDESettings.ec:778
+#: ./../ide/src/IDESettings.ec:1438
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:779
+#: ./../ide/src/IDESettings.ec:1439
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:781
+#: ./../ide/src/IDESettings.ec:1441
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -122,19 +126,19 @@ msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgid "No compilation required for header file "
 msgstr "No compilation required for header file "
 
-#: ./epj2make.ec:332
+#: ./epj2make.ec:344
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Notice: Project configuration (%s) will be used.\n"
 
-#: ./../ide/src/IDESettings.ec:777
+#: ./../ide/src/IDESettings.ec:1437
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: ./epj2make.ec:229
+#: ./epj2make.ec:239
 msgid "Syntax:\n"
 msgstr "Syntax:\n"
 
-#: ./../ide/src/IDESettings.ec:776
+#: ./../ide/src/IDESettings.ec:1436
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -146,7 +150,39 @@ msgstr "Unable to locate source file "
 msgid "\n"
 msgstr "\n"
 
-#: ./epj2make.ec:208
+#: ./../ide/src/IDESettings.ec:857
+msgid "error: could not parse configuration file: "
+msgstr "error: could not parse configuration file: "
+
+#: ./../ide/src/IDESettings.ec:831
+msgid "error: could not safely open file for writing configuration: "
+msgstr "error: could not safely open file for writing configuration: "
+
+#: ./epj2make.ec:218
 msgid "invalid option: %s\n"
 msgstr "invalid option: %s\n"
+
+#: ./../ide/src/IDESettings.ec:925
+msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
+msgstr "warning: SafeFile::open: does not yet support FileOpenMode::"
+
+#: ./../ide/src/IDESettings.ec:912
+msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:914
+msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+msgstr "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+
+#: ./../ide/src/IDESettings.ec:919
+msgid "warning: SafeFile::open: unable to open file for reading: "
+msgstr "warning: SafeFile::open: unable to open file for reading: "
+
+#: ./../ide/src/IDESettings.ec:917
+msgid "warning: SafeFile::open: unable to open temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to open temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:967
+msgid "warning: SafeFile::sync: failed to lock file for "
+msgstr "warning: SafeFile::sync: failed to lock file for "
 

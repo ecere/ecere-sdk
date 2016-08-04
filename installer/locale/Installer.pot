@@ -92,6 +92,10 @@ msgstr "Associate with text files (*.txt)"
 msgid "Audio"
 msgstr "Audio"
 
+#: ./src/installer.ec:2
+msgid "August 3, 2016"
+msgstr "August 3, 2016"
+
 #: ./src/installer.ec:820
 msgid "Avail. Space"
 msgstr "Avail. Space"
@@ -137,7 +141,7 @@ msgstr "Close"
 msgid "Component"
 msgstr "Component"
 
-#: ./src/installer.ec:1440
+#: ./src/installer.ec:1441
 msgid "Configuring Ecere IDE..."
 msgstr "Configuring Ecere IDE..."
 
@@ -185,15 +189,19 @@ msgstr "Ecere Extras"
 
 #: ./src/installer.ec:449
 #: ./src/installer.ec:1197
-msgid "Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition"
-msgstr "Ecere Software Development Kit Setup - v0.44.14 \"Ryōan-ji\" 64 Bit Edition"
+msgid "Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Edition"
+msgstr "Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Edition"
 
 #: ./src/installer.ec:314
 #: ./src/installer.ec:315
 msgid "Ecere Vanilla"
 msgstr "Ecere Vanilla"
 
-#: ./src/installer.ec:1833
+#: ./../ide/src/IDESettings.ec:1982
+msgid "Error creating compiler configs directory at "
+msgstr "Error creating compiler configs directory at "
+
+#: ./src/installer.ec:1842
 msgid "Finish"
 msgstr "Finish"
 
@@ -213,7 +221,7 @@ msgstr "GDB Docs"
 msgid "GNU C Compiler"
 msgstr "GNU C Compiler"
 
-#: ./../ide/src/IDESettings.ec:775
+#: ./../ide/src/IDESettings.ec:1435
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
@@ -263,11 +271,11 @@ msgstr "Installation Cancelled"
 msgid "Installation Cancelled."
 msgstr "Installation Cancelled."
 
-#: ./src/installer.ec:1837
+#: ./src/installer.ec:1846
 msgid "Installation Complete"
 msgstr "Installation Complete"
 
-#: ./src/installer.ec:1836
+#: ./src/installer.ec:1845
 msgid "Installation Complete."
 msgstr "Installation Complete."
 
@@ -275,25 +283,21 @@ msgstr "Installation Complete."
 msgid "Installing %s..."
 msgstr "Installing %s..."
 
-#: ./src/installer.ec:1726
+#: ./src/installer.ec:1735
 msgid "Installing Desktop Icon..."
 msgstr "Installing Desktop Icon..."
 
-#: ./src/installer.ec:1756
+#: ./src/installer.ec:1765
 msgid "Installing Quicklaunch Icon..."
 msgstr "Installing Quicklaunch Icon..."
 
-#: ./src/installer.ec:1640
+#: ./src/installer.ec:1649
 msgid "Installing Start Menu Icons..."
 msgstr "Installing Start Menu Icons..."
 
 #: ./src/installer.ec:1250
 msgid "Installing the Ecere SDK"
 msgstr "Installing the Ecere SDK"
-
-#: ./src/installer.ec:2
-msgid "January 13, 2016"
-msgstr "January 13, 2016"
 
 #: ./../ide/src/licensing.ec:38
 msgid "License Agreements"
@@ -303,15 +307,15 @@ msgstr "License Agreements"
 msgid "Make Docs"
 msgstr "Make Docs"
 
-#: ./../ide/src/IDESettings.ec:778
+#: ./../ide/src/IDESettings.ec:1438
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:779
+#: ./../ide/src/IDESettings.ec:1439
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ./../ide/src/IDESettings.ec:781
+#: ./../ide/src/IDESettings.ec:1441
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -331,7 +335,7 @@ msgstr "Networking"
 msgid "Please wait while the Ecere Software Development Kit is being installed."
 msgstr "Please wait while the Ecere Software Development Kit is being installed."
 
-#: ./../ide/src/IDESettings.ec:777
+#: ./../ide/src/IDESettings.ec:1437
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -339,11 +343,11 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Quicklaunch Icon"
 msgstr "Quicklaunch Icon"
 
-#: ./src/installer.ec:1785
+#: ./src/installer.ec:1794
 msgid "Registering File Types..."
 msgstr "Registering File Types..."
 
-#: ./src/installer.ec:1545
+#: ./src/installer.ec:1554
 msgid "Registering uninstaller..."
 msgstr "Registering uninstaller..."
 
@@ -384,7 +388,7 @@ msgstr "Space Required: "
 msgid "Start Menu Group"
 msgstr "Start Menu Group"
 
-#: ./src/installer.ec:1838
+#: ./src/installer.ec:1847
 msgid "Thank you for using the Ecere SDK."
 msgstr "Thank you for using the Ecere SDK."
 
@@ -400,7 +404,7 @@ msgstr "This program is based on these free open source software components."
 msgid "Threading"
 msgstr "Threading"
 
-#: ./../ide/src/IDESettings.ec:776
+#: ./../ide/src/IDESettings.ec:1436
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
@@ -421,6 +425,14 @@ msgstr "built on "
 msgid "eC Compiler"
 msgstr "eC Compiler"
 
+#: ./../ide/src/IDESettings.ec:857
+msgid "error: could not parse configuration file: "
+msgstr "error: could not parse configuration file: "
+
+#: ./../ide/src/IDESettings.ec:831
+msgid "error: could not safely open file for writing configuration: "
+msgstr "error: could not safely open file for writing configuration: "
+
 #: ./src/installer.ec:348
 msgid "gnurx Docs"
 msgstr "gnurx Docs"
@@ -428,4 +440,28 @@ msgstr "gnurx Docs"
 #: ./src/installer.ec:598
 msgid "terms and conditions"
 msgstr "terms and conditions"
+
+#: ./../ide/src/IDESettings.ec:925
+msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
+msgstr "warning: SafeFile::open: does not yet support FileOpenMode::"
+
+#: ./../ide/src/IDESettings.ec:912
+msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:914
+msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+msgstr "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+
+#: ./../ide/src/IDESettings.ec:919
+msgid "warning: SafeFile::open: unable to open file for reading: "
+msgstr "warning: SafeFile::open: unable to open file for reading: "
+
+#: ./../ide/src/IDESettings.ec:917
+msgid "warning: SafeFile::open: unable to open temporary file for writing: "
+msgstr "warning: SafeFile::open: unable to open temporary file for writing: "
+
+#: ./../ide/src/IDESettings.ec:967
+msgid "warning: SafeFile::sync: failed to lock file for "
+msgstr "warning: SafeFile::sync: failed to lock file for "
 
