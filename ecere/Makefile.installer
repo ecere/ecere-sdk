@@ -595,6 +595,12 @@ $(OBJ)Condition.sym: src/sys/Condition.ec
 $(OBJ)BMPFormat.sym: src/gfx/bitmaps/BMPFormat.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/BMPFormat.ec) -o $(call quote_path,$@)
 
+$(OBJ)PCXFormat.sym: src/gfx/bitmaps/PCXFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PCXFormat.ec) -o $(call quote_path,$@)
+
+$(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PNGFormat.ec) -o $(call quote_path,$@)
+
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.sym: src/gfx/drivers/GDIDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/GDIDisplayDriver.ec) -o $(call quote_path,$@)
