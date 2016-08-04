@@ -766,6 +766,18 @@ private:
                      }
                   }
                }
+               if(type && type.templateClass && type.templateClass == class(Container))
+               {
+                  char * br = strchr(type.fullName, '<');
+                  if(br)
+                  {
+                     char className[1024];
+                     strcpy(className, "Array");
+                     strcat(className, br);
+                     type = superFindClass(className, objectType.module);
+                  }
+               }
+
                // Find Member in Object Class
                {
                   DataValue value { };
