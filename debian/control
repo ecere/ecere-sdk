@@ -37,12 +37,7 @@ Description: Ecere cross-platform SDK
 
 Package: ecere-dev
 Architecture: any
-Recommends: fonts-freefont-ttf
-Depends: libecc0 (= ${binary:Version}),
-         libecerecom0 (= ${binary:Version}),
-         ${devel:Depends},
-         ${misc:Depends},
-         ${shlibs:Depends},
+Recommends: fonts-freefont-ttf,
          libasound2-dev,
          libffi-dev,
          libfontconfig1-dev,
@@ -57,6 +52,11 @@ Depends: libecc0 (= ${binary:Version}),
          libxext-dev,
          libxrender-dev,
          linux-libc-dev
+Depends: libecc0 (= ${binary:Version}),
+         libecerecom0 (= ${binary:Version}),
+         ${devel:Depends},
+         ${misc:Depends},
+         ${shlibs:Depends}
 Description: Ecere SDK Development Tools
  This package provides the compiling tools
  for the eC language, the Ecere IDE,
