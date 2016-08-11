@@ -165,16 +165,29 @@ private:
       }
       else if(ch == '{')
       {
-         void * object = value.p;
-         result = GetObject(type, &object);
-         if(result)
+         if(type.type == structClass || type.type == normalClass || type.type == noHeadClass)
          {
-            if(type && type.type == structClass);
-            else if(type && (type.type == normalClass || type.type == noHeadClass || type.type == bitClass))
+            void * object = value.p;
+            result = GetObject(type, &object);
+            if(result)
             {
-               value.p = object;
+               if(type && type.type == structClass);
+               else
+                  value.p = object;
             }
-            else
+         }
+         else if(type.type == bitClass)
+         {
+            uint64 object = 0;
+            result = GetObject(type, (void **)&object);
+            if(result)
+               value.ui64 = object;
+         }
+         else
+         {
+            void * object = value.p;
+            result = GetObject(type, &object);
+            if(result)
             {
                result = typeMismatch;
                if(type)
@@ -632,7 +645,12 @@ private:
    {
       JSONResult result = syntaxError;
       if(!objectType || objectType.type != structClass)
-         *object = null;
+      {
+         if(objectType && objectType.type == bitClass)
+            *(uint64 *)object = 0;
+         else
+            *object = null;
+      }
       SkipEmpty();
       if(ch == '{')
       {
@@ -641,6 +659,18 @@ private:
          DataMember curMember = null;
          DataMember subMemberStack[256];
          int subMemberStackPos = 0;
+         uint64 bits = 0;
+
+         if(objectType.type == bitClass)
+         {
+            switch(objectType.typeSize)
+            {
+               case 1: bits = (byte  )*(uint64 *)object; break;
+               case 2: bits = (uint16)*(uint64 *)object; break;
+               case 4: bits = (uint32)*(uint64 *)object; break;
+               case 8: bits = (uint64)*(uint64 *)object; break;
+            }
+         }
 
          if(objectType && objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
          {
@@ -650,13 +680,7 @@ private:
 
          result = success;
          if(objectType && (objectType.type == noHeadClass || objectType.type == normalClass))
-         {
             *object = eInstance_New(objectType);
-         }
-         else if(objectType && objectType.type != structClass)
-         {
-            *object = eSystem_New(objectType.typeSize);
-         }
 
          while(result)
          {
@@ -815,6 +839,7 @@ private:
                               PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString);
                            else if(itemResult == success)
                            {
+                              BitMember bitMember = objectType.type == bitClass ? (BitMember) member : null;
                               // Set value
                               if(member)
                               {
@@ -834,41 +859,127 @@ private:
                                  }
                                  else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
                                  {
-                                    *(double *)((byte *)*object + offset) = value.d;
+                                    if(objectType.type != bitClass)
+                                    {
+                                       *(double *)((byte *)*object + offset) = value.d;
+                                    }
                                  }
                                  else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
                                  {
-                                    *(float *)((byte *)*object + offset) = value.f;
+                                    if(objectType.type != bitClass)
+                                    {
+                                       *(float *)((byte *)*object + offset) = value.f;
+                                    }
                                  }
                                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                                  {
-                                    *(uint64 *)((byte *)*object + offset) = value.ui64;
+                                    if(objectType.type == bitClass)
+                                    {
+                                       bits &= ~bitMember.mask;
+                                       bits |= (value.ui64 << bitMember.pos) & bitMember.mask;
+                                    }
+                                    else
+                                    {
+                                       *(uint64 *)((byte *)*object + offset) = value.ui64;
+                                    }
                                  }
                                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                  {
-                                    *(int *)((byte *)*object + offset) = value.i;
+                                    if(objectType.type == bitClass)
+                                    {
+                                       bits &= ~bitMember.mask;
+                                       bits |= (value.ui << bitMember.pos) & bitMember.mask;
+                                    }
+                                    else
+                                    {
+                                       *(int *)((byte *)*object + offset) = value.i;
+                                    }
                                  }
                                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
                                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                                     !strcmp(type.dataTypeString, "int16"))
                                  {
-                                    *(short *)((byte *)*object + offset) = value.s;
+                                    if(objectType.type == bitClass)
+                                    {
+                                       bits &= ~bitMember.mask;
+                                       bits |= (value.us << bitMember.pos) & bitMember.mask;
+                                    }
+                                    else
+                                    {
+                                       *(short *)((byte *)*object + offset) = value.s;
+                                    }
                                  }
                                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                                  {
-                                    *(char *)((byte *)*object + offset) = value.c;
+                                    if(objectType.type == bitClass)
+                                    {
+                                       bits &= ~bitMember.mask;
+                                       bits |= (value.uc << bitMember.pos) & bitMember.mask;
+                                    }
+                                    else
+                                    {
+                                       *(char *)((byte *)*object + offset) = value.c;
+                                    }
                                  }
                                  else
                                  {
-                                    *(void **)((byte *)*object + offset) = value.p;
+                                    if(objectType.type != bitClass)
+                                       *(void **)((byte *)*object + offset) = value.p;
                                  }
                               }
                               else if(prop && prop.Set)
                               {
-                                 if(!strcmp(type.dataTypeString, "char *"))
+                                 if(objectType.type == bitClass)
+                                 {
+                                    if(type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass)
+                                    {
+                                       switch(objectType.typeSize)
+                                       {
+                                          case 1:
+                                             switch(type.typeSize)
+                                             {
+                                                case 1: ((byte (*)(byte, byte))  (void *)prop.Set)((byte)bits, value.uc); break;
+                                                case 2: ((byte (*)(byte, uint16))(void *)prop.Set)((byte)bits, value.us); break;
+                                                case 4: ((byte (*)(byte, uint32))(void *)prop.Set)((byte)bits, value.ui); break;
+                                                case 8: ((byte (*)(byte, uint64))(void *)prop.Set)((byte)bits, value.ui64); break;
+                                             }
+                                             break;
+                                          case 2:
+                                             switch(type.typeSize)
+                                             {
+                                                case 1: ((uint16 (*)(uint16, byte))  (void *)prop.Set)((uint16)bits, value.uc); break;
+                                                case 2: ((uint16 (*)(uint16, uint16))(void *)prop.Set)((uint16)bits, value.us); break;
+                                                case 4: ((uint16 (*)(uint16, uint32))(void *)prop.Set)((uint16)bits, value.ui); break;
+                                                case 8: ((uint16 (*)(uint16, uint64))(void *)prop.Set)((uint16)bits, value.ui64); break;
+                                             }
+                                             break;
+                                          case 4:
+                                             switch(type.typeSize)
+                                             {
+                                                case 1: ((uint32 (*)(uint32, byte))  (void *)prop.Set)((uint32)bits, value.uc); break;
+                                                case 2: ((uint32 (*)(uint32, uint16))(void *)prop.Set)((uint32)bits, value.us); break;
+                                                case 4: ((uint32 (*)(uint32, uint32))(void *)prop.Set)((uint32)bits, value.ui); break;
+                                                case 8: ((uint32 (*)(uint32, uint64))(void *)prop.Set)((uint32)bits, value.ui64); break;
+                                             }
+                                             break;
+                                          case 8:
+                                             switch(type.typeSize)
+                                             {
+                                                case 1: ((uint64 (*)(uint64, byte))  (void *)prop.Set)((uint64)bits, value.uc); break;
+                                                case 2: ((uint64 (*)(uint64, uint16))(void *)prop.Set)((uint64)bits, value.us); break;
+                                                case 4: ((uint64 (*)(uint64, uint32))(void *)prop.Set)((uint64)bits, value.ui); break;
+                                                case 8: ((uint64 (*)(uint64, uint64))(void *)prop.Set)((uint64)bits, value.ui64); break;
+                                             }
+                                             break;
+                                       }
+                                    }
+                                    else
+                                       ; // TODO: Generate error
+                                 }
+                                 else if(!strcmp(type.dataTypeString, "char *"))
                                  {
                                     ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
                                     if(!isKey)
@@ -950,6 +1061,17 @@ private:
                }
                else if(ch != ',' && (!eCON || ch != ';'))
                   result = syntaxError;
+            }
+         }
+
+         if(objectType.type == bitClass)
+         {
+            switch(objectType.typeSize)
+            {
+               case 1: *(uint64 *)object = (byte)   bits; break;
+               case 2: *(uint64 *)object = (uint16) bits; break;
+               case 4: *(uint64 *)object = (uint32) bits; break;
+               case 8: *(uint64 *)object = (uint64) bits; break;
             }
          }
       }
