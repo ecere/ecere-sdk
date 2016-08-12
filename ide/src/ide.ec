@@ -555,6 +555,13 @@ class IDEWorkSpace : Window
       outputView.findBox.foreground = cs.outputText;
       outputView.findBox.selectionColor = cs.selectionColor;
       outputView.findBox.selectionText = cs.selectionText;
+
+#ifdef GDB_DEBUG_OUTPUT
+      outputView.findBox.background = cs.outputBackground;
+      outputView.findBox.foreground = cs.outputText;
+      outputView.findBox.selectionColor = cs.selectionColor;
+      outputView.findBox.selectionText = cs.selectionText;
+#endif
    }
 
    ProjectView projectView;
