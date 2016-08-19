@@ -1,3 +1,8 @@
+ifneq ($(wildcard config.mk),)
+$(info Using config.mk configuration file.)
+include config.mk
+endif
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
