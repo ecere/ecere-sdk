@@ -1,3 +1,8 @@
+ifneq ($(wildcard config.mk),)
+$(info Using config.mk configuration file.)
+include config.mk
+endif
+
 NOT_PARALLEL_TARGETS += realclean wipeclean distclean install
 
 # HOST PLATFORM DETECTION

@@ -53,7 +53,9 @@ WINDRES_FLAGS := -F pe-x86-64
   endif
  endif
 endif
+ifndef UPX
 UPX := upx
+endif
 
 ifndef ARCH
 TARGET_ARCH :=$(shell $(CC) -dumpmachine)
