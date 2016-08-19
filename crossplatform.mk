@@ -1,3 +1,8 @@
+ifneq ($(wildcard config.mk),)
+$(info Using config.mk configuration file.)
+include config.mk
+endif
+
 ifneq ($(V),9)
 ifeq ($(V),1)
 MAKEFLAGS += --no-print-directory
