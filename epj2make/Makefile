@@ -250,6 +250,7 @@ wipeclean:
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
-Makefile: ;
-$(_CF_DIR)crossplatform.mk: ;
-$(_CF_DIR)default.cf: ;
+$(MAKEFILE_LIST): ;
+$(SOURCES): ;
+# filtering out crossplatform.mk which already has an empty recipe via $(MAKEFILE_LIST)
+$(filter-out $(_CF_DIR)crossplatform.mk,$(RESOURCES)): ;
