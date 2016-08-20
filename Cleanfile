@@ -62,3 +62,7 @@ ifdef _SDK_SRC_ROOT
 	$(call rm,*.ews)
  endif
 endif
+
+$(MAKEFILE_LIST): ;
+$(SOURCES): ;
+$(RESOURCES): ;

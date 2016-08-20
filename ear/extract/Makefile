@@ -281,6 +281,6 @@ realclean: cleantarget
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
-Makefile: ;
-$(_CF_DIR)crossplatform.mk: ;
-$(_CF_DIR)default.cf: ;
+$(MAKEFILE_LIST): ;
+$(SOURCES): ;
+$(RESOURCES): ;
