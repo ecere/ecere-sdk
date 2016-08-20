@@ -497,9 +497,9 @@ distclean:
 
 DOC = doc
 
-Makefile: ;
-crossplatform.mk: ;
-default.cf: ;
+$(MAKEFILE_LIST): ;
+$(SOURCES): ;
+$(RESOURCES): ;
 
 BINARIES = \
 	ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV) \
