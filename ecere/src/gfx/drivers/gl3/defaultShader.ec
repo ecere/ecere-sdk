@@ -240,8 +240,10 @@ public:
 
 #if defined(__EMSCRIPTEN__)
       defs.concatf("#version 100\n");
+      defs.concatf("#define GLSL_FLOAT_PRECISION   1\n");
 #else
       defs.concatf("#version 110\n");
+      defs.concatf("#define GLSL_FLOAT_PRECISION   0\n");
 #endif
       defs.concatf("\n#define NUM_LIGHTS %d",               8);
       defs.concatf("\n#define MODELVIEW %d",                state.modelView          ? 1 : 0);

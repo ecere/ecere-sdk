@@ -1,4 +1,6 @@
-// precision highp float;
+#if GLSL_FLOAT_PRECISION
+precision highp float;
+#endif
 
 #if LIGHTING_ON
    #if PER_VERTEX_COLOR
