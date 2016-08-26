@@ -170,6 +170,7 @@ public:
       Array array = eInstance_New(_class); //.fullName);
       uint count, c;
       Class Dclass = class(D);
+      incref array;
       channel.Get(count);
 #ifdef _DEBUG
       //printf("%d %ss\n", count, Dclass.name);

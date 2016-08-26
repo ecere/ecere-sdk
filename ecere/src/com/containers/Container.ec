@@ -314,6 +314,7 @@ public:
       Class Dclass = class(D);
       D data;
       bool isStruct = Dclass.type == structClass;
+      incref container;
 
       channel.Get(count);
       if(isStruct)

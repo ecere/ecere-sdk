@@ -423,6 +423,7 @@ public class File : IOChannel
                if(uncompressed || !size)
                {
                   this = TempFile { };
+                  incref this;
                   uncompress(uncompressed, &size, compressed, cSize);
                   Write(uncompressed, 1, (uint)size);
                   Seek(0, start);

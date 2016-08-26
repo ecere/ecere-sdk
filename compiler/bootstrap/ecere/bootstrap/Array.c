@@ -597,6 +597,7 @@ struct __ecereNameSpace__ecere__com__Instance * array = __ecereNameSpace__ecere_
 unsigned int count, c;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 
+array->_refCount++;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
 __ecereProp___ecereNameSpace__ecere__com__Array_Set_size(array, count);
 for(c = 0; c < count; c++)

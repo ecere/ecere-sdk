@@ -1312,6 +1312,7 @@ struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__a
 uint64 data;
 unsigned int isStruct = Dclass->type == 1;
 
+container->_refCount++;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
 if(isStruct)
 data = (uint64)(uintptr_t)(__ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (Dclass->structSize)));

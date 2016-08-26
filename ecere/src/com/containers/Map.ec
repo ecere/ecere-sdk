@@ -319,6 +319,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       thisclass container = eInstance_New(_class.fullName);
       Class Kclass = class(MT);
       Class Dclass = class(V);
+      incref container;
 
       channel.Get(count);
       for(c = 0; c < count; c++)

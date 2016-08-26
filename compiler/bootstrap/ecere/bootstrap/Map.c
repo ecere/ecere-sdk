@@ -972,6 +972,7 @@ struct __ecereNameSpace__ecere__com__Instance * container = __ecereNameSpace__ec
 struct __ecereNameSpace__ecere__com__Class * Kclass = class->templateArgs[5].__anon1.__anon1.dataTypeClass;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[6].__anon1.__anon1.dataTypeClass;
 
+container->_refCount++;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
 for(c = 0; c < count; c++)
 {
