@@ -64,7 +64,7 @@ To install, type 'make install' ('mingw32-make install' on Windows).
 
 Executables can also be deployed to the Android platform using the Android NDK. Please refer to http://ecere.org/android .
 
-They can also deployed to the Web using Emscripten ( http://emscripten.org ) .
+They can also deployed to the Web using [Emscripten](http://emscripten.org). Please refer to http://ecere.org/web .
 
 ## DOCUMENTATION
 [![Tao](http://ecere.com/images/tao.png)](http://ecere.org/tao.pdf)  
