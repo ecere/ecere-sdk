@@ -5,8 +5,8 @@ FileDialog fileDialog { type = selectDir, text = $"Select project directory" };
 class NewProjectDialog : Window
 {
    background = formColor;
-   minClientSize = { 316, 170 };
-   maxClientSize = { 640, 170 };
+   minClientSize = { 316, 186 };
+   maxClientSize = { 640, 186 };
    borderStyle = sizable;
    tabCycle = true;
    hasClose = true;
@@ -31,9 +31,33 @@ class NewProjectDialog : Window
    };
    Label { this, position = { 10, 60 }, labeledWindow = locationEditBox };
 
-   DropBox targetType { this, position = { 10, 130 }, size = { 130 }, hotKey = altT, text = $"Target Type" };
+   DropBox targetType
+   {
+      this, position = { 10, 130 }, size = { 130 }, hotKey = altT, text = $"Target Type";
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         bool dis = !(row && row.tag == TargetTypes::executable);
+         if(consoleApp.disabled != dis)
+         {
+            if(dis)
+            {
+               consoleApp.id = consoleApp.checked;
+               consoleApp.checked = false;
+            }
+            else
+               consoleApp.checked = (bool)consoleApp.id;
+            consoleApp.disabled = dis;
+         }
+         return true;
+      }
+   };
 
    Label { this, position = { 10, 110 }, labeledWindow = targetType };
+   Button consoleApp
+   {
+      parent = this, text = $"Console Application", hotKey = altC, position = { 10, 160 };
+      isCheckbox = true;
+   };
 
    Button okBtn
    {
@@ -348,8 +372,8 @@ class NewProjectDialog : Window
 class QuickProjectDialog : Window
 {
    background = formColor;
-   minClientSize = { 316, 110 };
-   maxClientSize = { 640, 110 };
+   minClientSize = { 316, 124 };
+   maxClientSize = { 640, 124 };
    borderStyle = sizable;
    tabCycle = true;
    hasClose = true;
@@ -360,8 +384,32 @@ class QuickProjectDialog : Window
 
    Label message { this, position = { 10, 10 }, text = $"Do you want to quickly create a temporary project?" };
 
-   DropBox targetType { this, position = { 10, 70 }, size = { 130 }, hotKey = altT, text = $"Target Type" };
+   DropBox targetType
+   {
+      this, position = { 10, 70 }, size = { 130 }, hotKey = altT, text = $"Target Type";
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         bool dis = !(row && row.tag == TargetTypes::executable);
+         if(consoleApp.disabled != dis)
+         {
+            if(dis)
+            {
+               consoleApp.id = consoleApp.checked;
+               consoleApp.checked = false;
+            }
+            else
+               consoleApp.checked = (bool)consoleApp.id;
+            consoleApp.disabled = dis;
+         }
+         return true;
+      }
+   };
    Label { this, position = { 10, 50 }, labeledWindow = targetType };
+   Button consoleApp
+   {
+      parent = this, text = $"Console Application", hotKey = altC, position = { 10, 100 };
+      isCheckbox = true;
+   };
 
    Button okBtn
    {
@@ -446,6 +494,7 @@ class QuickProjectDialog : Window
             // TOFIX: Precomp problems withou the extra ( )
             targetType = ((TargetTypes)targetType.GetTag());
             targetFileName = /*CopyString(*/prjName/*)*/;
+            console = consoleApp.checked ? true : unset;
          };
 
          if(project.options.targetType != staticLibrary)
@@ -458,6 +507,7 @@ class QuickProjectDialog : Window
             strcpy(workspaceFile, filePath);
             ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
             workspace = Workspace { activeCompiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
+            workspace.Init();
          }
 
          workspace.Init();
