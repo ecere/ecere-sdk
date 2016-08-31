@@ -155,8 +155,6 @@ private:
             if(array)
                array.Free();
             delete array;
-            if(result != success)
-               result = typeMismatch;
          }
       }
       else if(ch == '-' || isdigit(ch))
@@ -1381,7 +1379,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || type.typeSize == sizeof(int64))
    {
-      if(useHex)
+      if(useHex && eCON)
          sprintf(buffer, __runtimePlatform == win32 ? "0x%016I64X" : "0x%016llX", value.ui64);
       else
          ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
@@ -1390,7 +1388,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint") || type.typeSize == sizeof(int))
    {
-      if(useHex)
+      if(useHex && eCON)
          sprintf(buffer, "0x%08X", value.ui);
       else
          ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
