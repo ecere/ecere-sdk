@@ -45,9 +45,11 @@ public:
    String string;
    // Identifier badID;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print(string);
+      printEnd(o);
    }
 
    ASTIdentifier ::parse()
@@ -74,10 +76,12 @@ public:
       return null;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(qualifiers) qualifiers.print();
-      if(declarator) { if(qualifiers) out.Print(" "); declarator.print(); }
+      printStart(o);
+      if(qualifiers) qualifiers.print(o);
+      if(declarator) { if(qualifiers) out.Print(" "); declarator.print(o); }
+      printEnd(o);
    }
 };
 
@@ -280,9 +284,11 @@ public class ExpConstant : ASTExpression
 public:
    String constant;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print(constant);
+      printEnd(o);
    }
 
    ExpConstant ::parse()
@@ -301,9 +307,11 @@ public class ExpString : ASTExpression
 public:
    String string;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print(string);
+      printEnd(o);
    }
 
    ExpString ::parse()
@@ -317,9 +325,11 @@ public class ExpIdentifier : ASTExpression
 public:
    ASTIdentifier identifier;
 
-   void print()
+   void print(OutputOptions o)
    {
-      identifier.print();
+      printStart(o);
+      identifier.print(o);
+      printEnd(o);
    }
 
    ExpIdentifier ::parse()
@@ -334,11 +344,13 @@ public:
    TokenType2 op;
    ASTExpression exp1, exp2;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(exp1) { exp1.print(); if(exp2) out.Print(" "); }
-      op.print();
-      if(exp2) { if(exp1) out.Print(" "); exp2.print(); }
+      printStart(o);
+      if(exp1) { exp1.print(o); if(exp2) out.Print(" "); }
+      op.print(o);
+      if(exp2) { if(exp1) out.Print(" "); exp2.print(o); }
+      printEnd(o);
    }
 
    ASTExpression ::parse(int prec)
@@ -390,11 +402,13 @@ public class ExpBrackets : ASTExpression
 public:
    ExpList list;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("(");
-      if(list) list.print();
+      if(list) list.print(o);
       out.Print(")");
+      printEnd(o);
    }
 
    float compute()
@@ -410,14 +424,16 @@ public:
    ExpList expList;
    ASTExpression elseExp;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(condition) condition.print();
+      printStart(o);
+      if(condition) condition.print(o);
       out.Print(" ? ");
-      if(expList) expList.print();
+      if(expList) expList.print(o);
       out.Print(" : ");
       if(elseExp)
-         elseExp.print();
+         elseExp.print(o);
+      printEnd(o);
    }
 
    ASTExpression ::parse()
@@ -439,12 +455,14 @@ public:
    ASTExpression exp;
    ExpList index;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(exp) exp.print();
+      printStart(o);
+      if(exp) exp.print(o);
       out.Print("[");
-      if(index) index.print();
+      if(index) index.print(o);
       out.Print("]");
+      printEnd(o);
    }
 
    ExpIndex ::parse(ASTExpression e)
@@ -466,12 +484,14 @@ public:
    // MemberType memberType;
    // bool thisPtr;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(exp) exp.print();
+      printStart(o);
+      if(exp) exp.print(o);
       out.Print(".");
       if(member)
-         member.print();
+         member.print(o);
+      printEnd(o);
    }
 
    ExpMember ::parse(ASTExpression e)
@@ -484,12 +504,14 @@ public:
 public class ExpPointer : ExpMember
 {
 public:
-   void print()
+   void print(OutputOptions o)
    {
-      if(exp) exp.print();
+      printStart(o);
+      if(exp) exp.print(o);
       out.Print("->");
       if(member)
-         member.print();
+         member.print(o);
+      printEnd(o);
    }
 
    ExpPointer ::parse(ASTExpression e)
@@ -506,12 +528,14 @@ public:
    ExpList arguments;
    // Location argLoc;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(exp) exp.print();
+      printStart(o);
+      if(exp) exp.print(o);
       out.Print("(");
-      if(arguments) arguments.print();
+      if(arguments) arguments.print(o);
       out.Print(")");
+      printEnd(o);
    }
 
    ExpCall ::parse(ASTExpression e)
@@ -549,9 +573,11 @@ public:
       return { instance = ASTInstantiation::parse(specs, decls) };
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(instance) instance.print();
+      printStart(o);
+      if(instance) instance.print(o);
+      printEnd(o);
    }
 }
 /*
@@ -661,9 +687,11 @@ public:
       return { members = list };
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(members) members.print();
+      printStart(o);
+      if(members) members.print(o);
+      printEnd(o);
    }
 }
 
@@ -677,9 +705,11 @@ public:
       return { function = ASTClassFunction::parse(specs, decls) };
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(function) function.print();
+      printStart(o);
+      if(function) function.print(o);
+      printEnd(o);
    }
 }
 
@@ -691,9 +721,11 @@ public:
       return (InstInitList)ASTList::parse(class(InstInitList), InstanceInit::parse, 0);
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      ASTList::print();
+      printStart(o);
+      ASTList::print(o);
+      printEnd(o);
    }
 }
 
@@ -727,9 +759,10 @@ public:
       return inst;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
       bool multiLine = false;
+      printStart(o);
       if(members)
       {
          for(m : members; m._class == class(InstInitFunction))
@@ -739,8 +772,8 @@ public:
          }
       }
 
-      if(_class) { _class.print(); if(!multiLine || exp) out.Print(" "); }
-      if(exp) { exp.print(); if(!multiLine) out.Print(" "); }
+      if(_class) { _class.print(o); if(!multiLine || exp) out.Print(" "); }
+      if(exp) { exp.print(o); if(!multiLine) out.Print(" "); }
       if(multiLine)
       {
          out.PrintLn("");
@@ -763,7 +796,7 @@ public:
                Link nextLink = (Link)members.GetNext(it.pointer);
                if(init._class != class(InstInitFunction))
                   printIndent();
-               init.print();
+               init.print(o);
                if(init._class == class(InstInitMember))
                   out.Print(";");
                if(nextLink)
@@ -780,7 +813,7 @@ public:
          else
          {
             out.Print(" ");
-            members.print();
+            members.print(o);
             out.Print(" ");
          }
       }
@@ -792,5 +825,6 @@ public:
          printIndent();
       }
       out.Print("}");
+      printEnd(o);
    }
 };
