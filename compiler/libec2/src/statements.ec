@@ -99,9 +99,11 @@ public:
       }
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.PrintLn(";");
+      printEnd(o);
    }
 };
 
@@ -110,10 +112,12 @@ public class StmtExpression : ASTStatement
 public:
    ExpList expressions;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(expressions) expressions.print();
+      printStart(o);
+      if(expressions) expressions.print(o);
       out.Print(";");
+      printEnd(o);
    }
 
    StmtExpression ::parse()
@@ -152,8 +156,9 @@ public:
    // Context context;
    // bool isSwitch;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       printIndent();
       out.PrintLn("{");
       indent++;
@@ -162,7 +167,7 @@ public:
          for(d : declarations)
          {
             printIndent();
-            d.print();
+            d.print(o);
             out.PrintLn("");
          }
          if(statements)
@@ -176,7 +181,7 @@ public:
                indent = caseIndent;
             if(s._class != class(StmtLabeled) && s._class != class(StmtCompound))
                printIndent();
-            s.print();
+            s.print(o);
             if(s._class == class(StmtExpression))
                out.PrintLn("");
          }
@@ -186,6 +191,7 @@ public:
          indent--;
       printIndent();
       out.PrintLn("}");
+      printEnd(o);
    }
 
    StmtCompound ::parse()
@@ -247,16 +253,17 @@ public:
    ASTStatement stmt;
    ASTStatement elseStmt;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("if(");
-      if(exp) exp.print();
+      if(exp) exp.print(o);
       out.PrintLn(")");
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
-         stmt.print();
+         stmt.print(o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
@@ -266,10 +273,11 @@ public:
          out.Print("else");
          if(elseStmt._class != class(StmtCompound)) { out.PrintLn(""); indent++; }
          printIndent();
-         if(elseStmt._class != class(StmtCompound)) elseStmt.print();
+         if(elseStmt._class != class(StmtCompound)) elseStmt.print(o);
          if(elseStmt._class == class(StmtExpression)) out.PrintLn("");
          indent--;
       }
+      printEnd(o);
    }
 
    StmtIf ::parse()
@@ -300,19 +308,21 @@ public:
    ExpList exp;
    ASTStatement stmt;
 
-   void print()
+   void print(OutputOptions o)
    {
       int backCaseIndent = caseIndent;
+      printStart(o);
       out.Print("switch(");
-      if(exp) exp.print();
+      if(exp) exp.print(o);
       out.PrintLn(")");
       if(stmt)
       {
          caseIndent = indent+1;
-         stmt.print();
+         stmt.print(o);
          indent = caseIndent-1;
       }
       caseIndent = backCaseIndent;
+      printEnd(o);
    }
 
    StmtSwitch ::parse()
@@ -336,11 +346,13 @@ public:
    ASTIdentifier id;
    ASTStatement stmt;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(id) id.print();
+      printStart(o);
+      if(id) id.print(o);
       out.PrintLn(":");
-      if(stmt) stmt.print();
+      if(stmt) stmt.print(o);
+      printEnd(o);
    }
 
    StmtLabeled ::parse()
@@ -359,12 +371,13 @@ public:
    ASTExpression exp;
    ASTStatement stmt;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(exp)
       {
          out.Print("case ");
-         exp.print();
+         exp.print(o);
          out.PrintLn(":");
       }
       else
@@ -373,9 +386,10 @@ public:
       {
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
-         stmt.print();
+         stmt.print(o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
       }
+      printEnd(o);
    }
 
    StmtCase ::parse()
@@ -447,20 +461,21 @@ public:
    ExpList increment;
    ASTStatement stmt;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("for(");
       if(init)
-         init.print();
+         init.print(o);
       if(check)
       {
          out.Print(" ");
-         check.print();
+         check.print(o);
       }
       if(increment)
       {
          out.Print(" ");
-         increment.print();
+         increment.print(o);
       }
       out.PrintLn(")");
 
@@ -468,10 +483,11 @@ public:
       {
          if(stmt._class != class(StmtCompound)) indent++;
          printIndent();
-         stmt.print();
+         stmt.print(o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
+      printEnd(o);
    }
 
    StmtFor ::parse()
@@ -497,9 +513,11 @@ public:
 public class StmtBreak : ASTStatement
 {
 public:
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.PrintLn("break;");
+      printEnd(o);
    }
 
    StmtBreak ::parse()
@@ -513,9 +531,11 @@ public:
 public class StmtContinue : ASTStatement
 {
 public:
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.PrintLn("continue;");
+      printEnd(o);
    }
 
    StmtContinue ::parse()
@@ -530,15 +550,17 @@ public class StmtReturn : ASTStatement
 {
 public:
    ExpList exp;
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("return");
       if(exp)
       {
          out.Print(" ");
-         exp.print();
+         exp.print(o);
       }
       ::out.PrintLn(";");
+      printEnd(o);
    }
 
    StmtReturn ::parse()
@@ -556,11 +578,13 @@ public class StmtGoto : ASTStatement
 public:
    ASTIdentifier id;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("goto ");
-      if(id) id.print();
+      if(id) id.print(o);
       ::out.PrintLn(";");
+      printEnd(o);
    }
 
    StmtGoto ::parse()
@@ -618,8 +642,10 @@ public class StmtDecl : ASTStatement
 public:
    ASTDeclaration decl;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(decl) { decl.print(); out.PrintLn(""); }
+      printStart(o);
+      if(decl) { decl.print(o); out.PrintLn(""); }
+      printEnd(o);
    }
 }

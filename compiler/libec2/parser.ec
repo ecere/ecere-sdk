@@ -17,14 +17,14 @@ class Form1 : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         File f = FileOpen("test.ec", read);
+         File f = FileOpen("t1.ec", read); // test t1
          if(f)
          {
             initParser(f, console);
             {
                AST ast = AST::parse();
                if(ast)
-                  ast.print();
+                  ast.print({ /*astType = true*/ });
             }
             /*
             {

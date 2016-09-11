@@ -25,15 +25,17 @@ public:
    SpecsList specifiers;
    InitDeclList declarators;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(specifiers)
       {
-         specifiers.print();
+         specifiers.print(o);
          if(declarators) out.Print(" ");
       }
-      if(declarators) declarators.print();
+      if(declarators) declarators.print(o);
       out.Print(";");
+      printEnd(o);
    }
 }
 
@@ -54,13 +56,15 @@ public:
       return null;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(inst)
       {
-         inst.print();
+         inst.print(o);
          out.Print(";");
       }
+      printEnd(o);
    }
 }
 
@@ -79,21 +83,23 @@ public:
    List<ASTDeclaration> oldStyleDeclarations;
    StmtCompound body;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       // out.PrintLn("");
       printIndent();
       if(specifiers)
       {
          for(s : specifiers)
-            s.print();
+            s.print(o);
          out.Print(" ");
       }
       if(declarator)
-         declarator.print();
+         declarator.print(o);
       out.PrintLn("");
       if(body)
-         body.print();
+         body.print(o);
+      printEnd(o);
    }
 
    ASTFunctionDefinition ::parse(SpecsList specs, InitDeclList decls)
@@ -124,10 +130,12 @@ class ASTImport : ASTNode
 {
    String importString;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("import ");
       out.PrintLn(importString);
+      printEnd(o);
    }
 }
 
@@ -229,12 +237,14 @@ public:
       return ast;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       for(n : this)
       {
-         n.print();
+         n.print(o);
          out.PrintLn("");
       }
+      printEnd(o);
    }
 }
