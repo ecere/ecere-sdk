@@ -55,10 +55,10 @@ public:
             readToken();
             if(!specs) specs = { };
             specs.Add(SpecBase { specifier = token.type });
-            if(!token.type.isQualifier)
+            if(!token.type.isQualifier && token.type != _typedef)
                gotSpec = true;
          }
-         else if(nextToken.type == identifier)
+         else if(nextToken.type == identifier || nextToken.type == typeName)
          {
             bool isType = false;
             if(isType || !gotSpec)
