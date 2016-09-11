@@ -45,7 +45,7 @@ public enum TokenType2 : TokenType
       }
    }
 
-   void print()
+   void print(OutputOptions o)
    {
       if(this < 256)
          out.Print((char)this);
@@ -227,4 +227,15 @@ public void initParser(File input, File output)
    tokenStack.size = 0;
    stackPos = 0;
    ambiguous = 0;
+}
+
+public void setOut(File output)
+{
+   out = output;
+}
+
+public class OutputOptions : uint
+{
+public:
+   bool astType:1;
 }

@@ -5,6 +5,58 @@ public class ASTNode : Container
 public:
    Location loc;
 
+//private:
+   LinkList<TopoEdge, link = out> outgoing { };
+   LinkList<TopoEdge, link = in> incoming { };
+   int nonBreakableIncoming;
+//public:
+   virtual void print(OutputOptions o);
+
+   void printStart(OutputOptions o)
+   {
+      if(o.astType)
+         out.Print(_class.name, "[[");
+   }
+
+   void printEnd(OutputOptions o)
+   {
+      if(o.astType)
+         out.Print("]]");
+   }
+
+   void createUniqueEdge(ASTNode from, bool soft)
+   {
+      for(i : from.outgoing; i.to == this)
+      {
+         if(i.breakable && !soft)
+         {
+#ifdef _DEBUG
+            if(from == this)
+               PrintLn("bug: self-dependency");
+#endif
+            i.breakable = false;
+            nonBreakableIncoming++;
+         }
+         return;
+      }
+      createEdge(from, soft);
+   }
+
+   void createEdge(ASTNode from, bool soft)
+   {
+      TopoEdge e { from = from, to = this, breakable = soft };
+
+#ifdef _DEBUG
+      if(from == this && !soft)
+         PrintLn("bug: self-dependency");
+
+      /*for(i : from.outgoing)
+      {
+         if(i.to == this)
+            PrintLn("Warning: adding a duplicate edge");
+      }*/
+#endif
+
    virtual void print();
 }
 
@@ -38,15 +90,17 @@ public:
       out.Print(", ");
    }
 
-   void print()
+   void print(OutputOptions o)
    {
       Iterator<ASTNode> it { list };
+      printStart(o);
       while(it.Next())
       {
-         it.data.print();
+         it.data.print(o);
          if(list.GetNext(it.pointer))
             printSep();
       }
+      printEnd(o);
    }
 
    Container ::parse(subclass(Container) c, ASTNode parser(), char sep)
@@ -71,6 +125,6 @@ public:
 
    ~ASTList()
    {
-      list.Free();
+      Free();
    }
 }
