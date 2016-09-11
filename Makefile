@@ -183,6 +183,10 @@ ifdef CROSS_TARGET
 endif
 
 bootstrap: outputdirs
+ifdef CI
+	@$(call echo,$(CC))
+	@$(CC) --version
+endif
 	+cd compiler && $(_MAKE) $(XBOOT) bootstrap
 
 deps:

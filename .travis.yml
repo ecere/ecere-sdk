@@ -1,0 +1,41 @@
+language: c
+cache: ccache
+
+git:
+  depth: 3
+
+compiler:
+  - clang
+  - gcc
+
+os:
+  - linux
+  - osx
+
+matrix:
+  exclude:
+    - os: osx
+      compiler: gcc
+
+addons:
+  apt:
+    packages:
+      - zlib1g-dev
+      - libpng12-dev
+      - libjpeg62-dev
+      - libgif-dev
+      - libncurses5-dev
+      - libfreetype6-dev
+      - libfontconfig1-dev
+      - libx11-dev
+      - libxrender-dev
+      - libgl1-mesa-dev
+      - libxext-dev
+      - upx-ucl
+      - libsqlite3-dev
+      - libssl-dev
+      - libffi-dev
+      - libasound2-dev
+
+script:
+  - make -j1 V=1 ENABLE_SSL=y

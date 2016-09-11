@@ -26,8 +26,12 @@ HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 .SUFFIXES: .c .ec .sym .imp .bowl $(O) $(A)
 
 # TOOLCHAIN
+ifdef TRAVIS
+export CPP     = $(CC)
+else
 export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)
 export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
+endif
 export AS      = $(GCC_PREFIX)as
 export LD      = $(GCC_PREFIX)ld
 export AR      = $(GCC_PREFIX)ar
