@@ -6,11 +6,13 @@ public:
    SpecsList qualifiers;
    ASTPointer pointer;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("*");
-      if(qualifiers) qualifiers.print();
-      if(pointer) pointer.print();
+      if(qualifiers) qualifiers.print(o);
+      if(pointer) pointer.print(o);
+      printEnd(o);
    }
 
    ASTPointer ::parse()
@@ -106,12 +108,14 @@ public class DeclFunction : ASTDeclarator
 public:
    TypeNameList parameters;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(declarator) declarator.print();
+      printStart(o);
+      if(declarator) declarator.print(o);
       out.Print("(");
-      if(parameters) parameters.print();
+      if(parameters) parameters.print(o);
       out.Print(")");
+      printEnd(o);
    }
 
    DeclFunction ::parse(ASTDeclarator d)
@@ -130,9 +134,11 @@ public class DeclIdentifier : ASTDeclarator
 public:
    ASTIdentifier identifier;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(identifier) identifier.print();
+      printStart(o);
+      if(identifier) identifier.print(o);
+      printEnd(o);
    }
 
    DeclIdentifier ::parse()
@@ -144,11 +150,13 @@ public:
 public class DeclBrackets : ASTDeclarator
 {
 public:
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       out.Print("(");
-      if(declarator) declarator.print();
+      if(declarator) declarator.print(o);
       out.Print(")");
+      printEnd(o);
    }
 
    DeclBrackets ::parse()
@@ -171,12 +179,14 @@ public:
    ASTExpression exp;
    // ASTSpecifier enumClass;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(declarator) declarator.print();
+      printStart(o);
+      if(declarator) declarator.print(o);
       out.Print("[");
-      if(exp) exp.print();
+      if(exp) exp.print(o);
       out.Print("]");
+      printEnd(o);
    }
 
    DeclArray ::parse(ASTDeclarator d)
@@ -194,10 +204,12 @@ public class DeclPointer : ASTDeclarator
 public:
    ASTPointer pointer;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(pointer) pointer.print();
-      if(declarator) declarator.print();
+      printStart(o);
+      if(pointer) pointer.print(o);
+      if(declarator) declarator.print(o);
+      printEnd(o);
    }
 
    DeclPointer ::parse()
@@ -249,10 +261,12 @@ public class InitExp : ASTInitializer
 public:
    ASTExpression exp;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(exp)
-         exp.print();
+         exp.print(o);
+      printEnd(o);
    }
 
    InitExp ::parse()
@@ -266,14 +280,16 @@ public class InitList : ASTInitializer
 public:
    ASTList<ASTInitializer> list;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(list)
       {
          out.Print("{ ");
-         list.print();
+         list.print(o);
          out.Print(" }");
       }
+      printEnd(o);
    }
 
    InitList ::parse()
@@ -289,14 +305,16 @@ public:
    ASTDeclarator declarator;
    ASTInitializer initializer;
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(declarator) declarator.print();
+      printStart(o);
+      if(declarator) declarator.print(o);
       if(initializer)
       {
          out.Print(" = ");
-         initializer.print();
+         initializer.print(o);
       }
+      printEnd(o);
    }
 
    ASTInitDeclarator ::parse()

@@ -43,21 +43,23 @@ public:
       return init;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(identifiers)
       {
          Iterator<ASTIdentifier> it { identifiers };
          while(it.Next())
          {
-            it.data.print();
+            it.data.print(o);
             if(identifiers.GetNext(it.pointer))
                out.Print(".");
          }
          out.Print(" = ");
       }
       if(initializer)
-         initializer.print();
+         initializer.print(o);
+      printEnd(o);
    }
 };
 
@@ -173,11 +175,13 @@ public:
       return null;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       printIndent();
-      if(decl) decl.print();
+      if(decl) decl.print(o);
       out.PrintLn("");
+      printEnd(o);
    }
 }
 
@@ -216,9 +220,11 @@ public:
       return null;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      if(function) function.print();
+      printStart(o);
+      if(function) function.print(o);
+      printEnd(o);
    }
 }
 
@@ -235,14 +241,16 @@ public:
       return null;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(defValues)
       {
          printIndent();
-         defValues.print();
+         defValues.print(o);
          out.PrintLn(";");
       }
+      printEnd(o);
    }
 }
 
