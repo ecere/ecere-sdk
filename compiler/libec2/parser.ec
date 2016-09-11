@@ -20,7 +20,7 @@ class Form1 : Window
          File f = FileOpen("test.ec", read);
          if(f)
          {
-            initParser(f);
+            initParser(f, console);
             {
                AST ast = AST::parse();
                if(ast)
