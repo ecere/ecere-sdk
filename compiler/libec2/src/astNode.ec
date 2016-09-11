@@ -35,7 +35,7 @@ public:
 public:
    virtual void printSep()
    {
-      Print(", ");
+      out.Print(", ");
    }
 
    void print()

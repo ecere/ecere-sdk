@@ -47,7 +47,7 @@ public:
 
    void print()
    {
-      Print(string);
+      out.Print(string);
    }
 
    ASTIdentifier ::parse()
@@ -77,7 +77,7 @@ public:
    void print()
    {
       if(qualifiers) qualifiers.print();
-      if(declarator) { if(qualifiers) Print(" "); declarator.print(); }
+      if(declarator) { if(qualifiers) out.Print(" "); declarator.print(); }
    }
 };
 
@@ -282,7 +282,7 @@ public:
 
    void print()
    {
-      Print(constant);
+      out.Print(constant);
    }
 
    ExpConstant ::parse()
@@ -303,7 +303,7 @@ public:
 
    void print()
    {
-      Print(string);
+      out.Print(string);
    }
 
    ExpString ::parse()
@@ -336,9 +336,9 @@ public:
 
    void print()
    {
-      if(exp1) { exp1.print(); if(exp2) Print(" "); }
+      if(exp1) { exp1.print(); if(exp2) out.Print(" "); }
       op.print();
-      if(exp2) { if(exp1) Print(" "); exp2.print(); }
+      if(exp2) { if(exp1) out.Print(" "); exp2.print(); }
    }
 
    ASTExpression ::parse(int prec)
@@ -392,9 +392,9 @@ public:
 
    void print()
    {
-      Print("(");
+      out.Print("(");
       if(list) list.print();
-      Print(")");
+      out.Print(")");
    }
 
    float compute()
@@ -413,9 +413,9 @@ public:
    void print()
    {
       if(condition) condition.print();
-      Print(" ? ");
+      out.Print(" ? ");
       if(expList) expList.print();
-      Print(" : ");
+      out.Print(" : ");
       if(elseExp)
          elseExp.print();
    }
@@ -442,9 +442,9 @@ public:
    void print()
    {
       if(exp) exp.print();
-      Print("[");
+      out.Print("[");
       if(index) index.print();
-      Print("]");
+      out.Print("]");
    }
 
    ExpIndex ::parse(ASTExpression e)
@@ -469,7 +469,7 @@ public:
    void print()
    {
       if(exp) exp.print();
-      Print(".");
+      out.Print(".");
       if(member)
          member.print();
    }
@@ -487,7 +487,7 @@ public:
    void print()
    {
       if(exp) exp.print();
-      Print("->");
+      out.Print("->");
       if(member)
          member.print();
    }
@@ -509,9 +509,9 @@ public:
    void print()
    {
       if(exp) exp.print();
-      Print("(");
+      out.Print("(");
       if(arguments) arguments.print();
-      Print(")");
+      out.Print(")");
    }
 
    ExpCall ::parse(ASTExpression e)
@@ -739,17 +739,17 @@ public:
          }
       }
 
-      if(_class) { _class.print(); if(!multiLine || exp) Print(" "); }
-      if(exp) { exp.print(); if(!multiLine) Print(" "); }
+      if(_class) { _class.print(); if(!multiLine || exp) out.Print(" "); }
+      if(exp) { exp.print(); if(!multiLine) out.Print(" "); }
       if(multiLine)
       {
-         PrintLn("");
+         out.PrintLn("");
          printIndent();
       }
-      Print("{");
+      out.Print("{");
       if(multiLine)
       {
-         PrintLn("");
+         out.PrintLn("");
          indent++;
       }
       if(members && members[0])
@@ -765,32 +765,32 @@ public:
                   printIndent();
                init.print();
                if(init._class == class(InstInitMember))
-                  Print(";");
+                  out.Print(";");
                if(nextLink)
                {
                   InstanceInit next = nextLink ? (InstanceInit)nextLink.data : null;
-                  PrintLn("");
+                  out.PrintLn("");
                   if(next._class == class(InstInitFunction))
-                     PrintLn("");
+                     out.PrintLn("");
                }
                else if(init._class != class(InstInitFunction))
-                  PrintLn("");
+                  out.PrintLn("");
             }
          }
          else
          {
-            Print(" ");
+            out.Print(" ");
             members.print();
-            Print(" ");
+            out.Print(" ");
          }
       }
       else
-         Print(" ");
+         out.Print(" ");
       if(multiLine)
       {
          indent--;
          printIndent();
       }
-      Print("}");
+      out.Print("}");
    }
 };

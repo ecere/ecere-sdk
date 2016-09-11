@@ -48,62 +48,62 @@ public enum TokenType2 : TokenType
    void print()
    {
       if(this < 256)
-         Print((char)this);
+         out.Print((char)this);
       else
       {
          switch(this)
          {
-            case _void: Print("void"); break;
-            case _char: Print("char"); break;
-            case _short: Print("short"); break;
-            case _int: Print("int"); break;
-            case _long: Print("long"); break;
-            case _int64: Print("int64"); break;
-            case _unsigned: Print("unsigned"); break;
-            case _signed: Print("signed"); break;
-            case _float: Print("float"); break;
-            case _double: Print("double"); break;
-            case _typedef: Print("typedef"); break;
-            case _extern: Print("extern"); break;
-            case _static: Print("static"); break;
-            case _auto: Print("auto"); break;
-            case _register: Print("register"); break;
-            case _uint: Print("uint"); break;
-            case _const: Print("const"); break;
-            case _volatile: Print("volatile"); break;
-            case _valist: Print("va_list"); break;
-            case thisClass: Print("thisclass"); break;
-            case typedObject: Print("typed_Object"); break;
-            case anyObject: Print("any_object"); break;
-            case _struct: Print("struct"); break;
-            case _union: Print("union"); break;
-            case _enum: Print("enum"); break;
-            case _class: Print("class"); break;
+            case _void: out.Print("void"); break;
+            case _char: out.Print("char"); break;
+            case _short: out.Print("short"); break;
+            case _int: out.Print("int"); break;
+            case _long: out.Print("long"); break;
+            case _int64: out.Print("int64"); break;
+            case _unsigned: out.Print("unsigned"); break;
+            case _signed: out.Print("signed"); break;
+            case _float: out.Print("float"); break;
+            case _double: out.Print("double"); break;
+            case _typedef: out.Print("typedef"); break;
+            case _extern: out.Print("extern"); break;
+            case _static: out.Print("static"); break;
+            case _auto: out.Print("auto"); break;
+            case _register: out.Print("register"); break;
+            case _uint: out.Print("uint"); break;
+            case _const: out.Print("const"); break;
+            case _volatile: out.Print("volatile"); break;
+            case _valist: out.Print("va_list"); break;
+            case thisClass: out.Print("thisclass"); break;
+            case typedObject: out.Print("typed_object"); break;
+            case anyObject: out.Print("any_object"); break;
+            case _struct: out.Print("struct"); break;
+            case _union: out.Print("union"); break;
+            case _enum: out.Print("enum"); break;
+            case _class: out.Print("class"); break;
 
-            case _typeof: Print("typeof"); break;
-            case subClass: Print("subclass"); break;
+            case _typeof: out.Print("typeof"); break;
+            case subClass: out.Print("subclass"); break;
 
-            case incOp: Print("++"); break;
-            case decOp: Print("--"); break;
-            case sizeOf: Print("sizeof "); break;
-            case leftOp: Print("<<"); break;
-            case rightOp: Print(">>"); break;
-            case leOp: Print("<="); break;
-            case geOp: Print(">="); break;
-            case eqOp: Print("=="); break;
-            case neOp: Print("!="); break;
-            case andOp: Print("&&"); break;
-            case orOp: Print("||"); break;
-            case mulAssign: Print("*="); break;
-            case divAssign: Print("/="); break;
-            case modAssign: Print("%="); break;
-            case addAssign: Print("+="); break;
-            case subAssign: Print("-="); break;
-            case leftAssign: Print("<<="); break;
-            case rightAssign: Print(">>="); break;
-            case andAssign: Print("&="); break;
-            case xorAssign: Print("^="); break;
-            case orAssign: Print("|="); break;
+            case incOp: out.Print("++"); break;
+            case decOp: out.Print("--"); break;
+            case sizeOf: out.Print("sizeof "); break;
+            case leftOp: out.Print("<<"); break;
+            case rightOp: out.Print(">>"); break;
+            case leOp: out.Print("<="); break;
+            case geOp: out.Print(">="); break;
+            case eqOp: out.Print("=="); break;
+            case neOp: out.Print("!="); break;
+            case andOp: out.Print("&&"); break;
+            case orOp: out.Print("||"); break;
+            case mulAssign: out.Print("*="); break;
+            case divAssign: out.Print("/="); break;
+            case modAssign: out.Print("%="); break;
+            case addAssign: out.Print("+="); break;
+            case subAssign: out.Print("-="); break;
+            case leftAssign: out.Print("<<="); break;
+            case rightAssign: out.Print(">>="); break;
+            case andAssign: out.Print("&="); break;
+            case xorAssign: out.Print("^="); break;
+            case orAssign: out.Print("|="); break;
          }
       }
    }
@@ -210,15 +210,18 @@ public void lexAll()
    while(readToken())
    {
       if(token.type < 256)
-         PrintLn((char)token.type);
+         out.PrintLn((char)token.type);
       else
-         PrintLn(token.type, " (", token.text, ")");
+         out.PrintLn(token.type, " (", token.text, ")");
    }
 }
 
-public void initParser(File f)
+File out;
+public void initParser(File input, File output)
 {
-   SetFileInput(f);
+   SetFileInput(input);
+   out = output;
+   resetScanner();
    delete token;
    delete nextToken;
    tokenStack.size = 0;
