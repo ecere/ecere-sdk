@@ -83,9 +83,11 @@ public class SpecBase : ASTSpecifier
 public:
    TokenType2 specifier;
 
-   void print()
+   void print(OutputOptions o)
    {
-      specifier.print();
+      printStart(o);
+      specifier.print(o);
+      printEnd(o);
    }
 }
 
@@ -97,9 +99,11 @@ public:
    //Symbol symbol;
    //List<ClassTemplateArgument> templateArgs;
 
-   void print()
+   void print(OutputOptions o)
    {
+      printStart(o);
       if(name) out.Print(name);
+      printEnd(o);
    }
 }
 
@@ -145,16 +149,17 @@ public:
       return spec;
    }
 
-   void print()
+   void print(OutputOptions o)
    {
-      type.print();
-      if(type)
+      printStart(o);
+      type.print(o);
+      if(type && id)
          out.Print(" ");
-      if(id) id.print();
+      if(id) id.print(o);
       if(baseSpecs)
       {
          out.Print(" : ");
-         baseSpecs.print();
+         baseSpecs.print(o);
       }
       if(definitions)
       {
@@ -162,11 +167,12 @@ public:
          printIndent();
          out.PrintLn("{");
          indent++;
-         definitions.print();
+         definitions.print(o);
          indent--;
          printIndent();
          out.Print("}");
       }
+      printEnd(o);
    }
 }
 
