@@ -30,7 +30,7 @@ public class SpecsList : ASTList<ASTSpecifier>
 public:
    void printSep()
    {
-      Print(" ");
+      out.Print(" ");
    }
 
    SpecsList ::parse()
@@ -99,7 +99,7 @@ public:
 
    void print()
    {
-      if(name) Print(name);
+      if(name) out.Print(name);
    }
 }
 
@@ -148,23 +148,24 @@ public:
    void print()
    {
       type.print();
-      Print(" ");
+      if(type)
+         out.Print(" ");
       if(id) id.print();
       if(baseSpecs)
       {
-         Print(" : ");
+         out.Print(" : ");
          baseSpecs.print();
       }
       if(definitions)
       {
-         PrintLn("");
+         out.PrintLn("");
          printIndent();
-         PrintLn("{");
+         out.PrintLn("{");
          indent++;
          definitions.print();
          indent--;
          printIndent();
-         Print("}");
+         out.Print("}");
       }
    }
 }
