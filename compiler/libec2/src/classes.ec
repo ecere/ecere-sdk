@@ -52,9 +52,9 @@ public:
          {
             it.data.print();
             if(identifiers.GetNext(it.pointer))
-               Print(".");
+               out.Print(".");
          }
-         Print(" = ");
+         out.Print(" = ");
       }
       if(initializer)
          initializer.print();
@@ -177,7 +177,7 @@ public:
    {
       printIndent();
       if(decl) decl.print();
-      PrintLn("");
+      out.PrintLn("");
    }
 }
 
@@ -241,7 +241,7 @@ public:
       {
          printIndent();
          defValues.print();
-         PrintLn(";");
+         out.PrintLn(";");
       }
    }
 }

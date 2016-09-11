@@ -8,7 +8,7 @@ public:
 
    void print()
    {
-      Print("*");
+      out.Print("*");
       if(qualifiers) qualifiers.print();
       if(pointer) pointer.print();
    }
@@ -109,9 +109,9 @@ public:
    void print()
    {
       if(declarator) declarator.print();
-      Print("(");
+      out.Print("(");
       if(parameters) parameters.print();
-      Print(")");
+      out.Print(")");
    }
 
    DeclFunction ::parse(ASTDeclarator d)
@@ -146,9 +146,9 @@ public class DeclBrackets : ASTDeclarator
 public:
    void print()
    {
-      Print("(");
+      out.Print("(");
       if(declarator) declarator.print();
-      Print(")");
+      out.Print(")");
    }
 
    DeclBrackets ::parse()
@@ -174,9 +174,9 @@ public:
    void print()
    {
       if(declarator) declarator.print();
-      Print("[");
+      out.Print("[");
       if(exp) exp.print();
-      Print("]");
+      out.Print("]");
    }
 
    DeclArray ::parse(ASTDeclarator d)
@@ -270,9 +270,9 @@ public:
    {
       if(list)
       {
-         Print("{ ");
+         out.Print("{ ");
          list.print();
-         Print(" }");
+         out.Print(" }");
       }
    }
 
@@ -294,7 +294,7 @@ public:
       if(declarator) declarator.print();
       if(initializer)
       {
-         Print(" = ");
+         out.Print(" = ");
          initializer.print();
       }
    }
