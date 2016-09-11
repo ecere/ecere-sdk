@@ -30,10 +30,10 @@ public:
       if(specifiers)
       {
          specifiers.print();
-         if(declarators) Print(" ");
+         if(declarators) out.Print(" ");
       }
       if(declarators) declarators.print();
-      Print(";");
+      out.Print(";");
    }
 }
 
@@ -59,7 +59,7 @@ public:
       if(inst)
       {
          inst.print();
-         Print(";");
+         out.Print(";");
       }
    }
 }
@@ -81,17 +81,17 @@ public:
 
    void print()
    {
-      // PrintLn("");
+      // out.PrintLn("");
       printIndent();
       if(specifiers)
       {
          for(s : specifiers)
             s.print();
-         Print(" ");
+         out.Print(" ");
       }
       if(declarator)
          declarator.print();
-      PrintLn("");
+      out.PrintLn("");
       if(body)
          body.print();
    }
@@ -126,8 +126,8 @@ class ASTImport : ASTNode
 
    void print()
    {
-      Print("import ");
-      PrintLn(importString);
+      out.Print("import ");
+      out.PrintLn(importString);
    }
 }
 
@@ -234,7 +234,7 @@ public:
       for(n : this)
       {
          n.print();
-         PrintLn("");
+         out.PrintLn("");
       }
    }
 }
