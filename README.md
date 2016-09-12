@@ -1,5 +1,5 @@
 [![GitHub version](https://badge.fury.io/gh/ecere%2Fecere-sdk.svg)](https://github.com/ecere/ecere-sdk/releases/latest)
-[![Travis status](https://api.travis-ci.org/ecere/ecere-sdk.svg?branch=master)](https://travis-ci.org/ecere/ecere-sdk)
+[![Travis status](https://api.travis-ci.org/ecere/ecere-sdk.svg?branch=ec2)](https://travis-ci.org/ecere/ecere-sdk)
 [![Ecere docs](https://img.shields.io/badge/docs-being_improved-yellow.svg)](http://ecere.org/overview)<br>
 [![GitHub size](https://reposs.herokuapp.com/?path=ecere/ecere-sdk&style=flat)](https://github.com/ecere/ecere-sdk/graphs/traffic)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause%20(Revised)-blue.svg)](https://tldrlegal.com/license/bsd-3-clause-license-(revised))<br>
