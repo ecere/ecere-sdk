@@ -85,7 +85,7 @@ import "network"
 #endif
 
 #if defined(__APPLE__) && !defined(ECERE_VANILLA)
-import "CocoaInterface"
+// import "CocoaInterface"
 #endif
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
