@@ -193,6 +193,8 @@ public:
 
    float color[4];
 
+   DefaultShaderBits backLightState; backLightState = DefaultShaderBits { separateSpecular = true };
+
    DefaultShader()
    {
       color[0] = 1, color[1] = 1, color[2] = 1, color[3] = 1;
@@ -477,17 +479,21 @@ public:
          ((DefaultShaderBits)state).lighting = on;
          uniformsModified = true;
          if(!on)
-            state &= ~DefaultShaderBits
-            {
-               nonLocalViewer = true;
-               twoSided = true;
-               specular = true;
-               separateSpecular = true;
-               blinnSpecular = true;
-               lightBits = 0xFFFFFF;
-            };
+         {
+            backLightState = state &
+               DefaultShaderBits
+               {
+                  nonLocalViewer = true;
+                  twoSided = true;
+                  specular = true;
+                  separateSpecular = true;
+                  blinnSpecular = true;
+                  lightBits = 0xFFFFFF;
+               };
+            state &= ~backLightState;
+         }
          else
-            state |= DefaultShaderBits { separateSpecular = true };
+            state |= backLightState;
       }
    }
 
