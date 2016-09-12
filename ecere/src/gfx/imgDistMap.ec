@@ -2,6 +2,8 @@ import "instance"
 
 #include <math.h>
 
+// Written by Alexis Naveros 2015
+
 // Based on The ‘‘dead reckoning’’ signed distance transform
 // by George J. Grevera
 
