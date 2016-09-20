@@ -1,11 +1,15 @@
+/*
+   Original Copyright (c) 2015 Alexis Naveros
+   Ecere Corporation has unlimited/unrestricted rights.
+
+   Based on The ‘‘dead reckoning’’ signed distance transform
+   by George J. Grevera
+
+   Copyright (c) 2015-2016 Ecere Corporation
+*/
 import "instance"
 
 #include <math.h>
-
-// Written by Alexis Naveros 2015
-
-// Based on The ‘‘dead reckoning’’ signed distance transform
-// by George J. Grevera
 
 struct MapDistMapPoint
 {
