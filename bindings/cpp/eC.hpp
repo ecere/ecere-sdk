@@ -33,6 +33,16 @@
 // For C++ classes proxying eC classes:
 #define REGISTER_CPP_CLASS(n, a)       n::_class.setup(_REGISTER_CLASS(n, "CPP" #n, #n, a));
 
+#define EVOLVE_APP(ac, a) \
+   Instance_evolve(&(a).impl, ac::_class.impl); \
+   _INSTANCE((a).impl, (a).impl->_class) = &(a); \
+   __thisModule = (a).impl; \
+   (a).vTbl = _class.vTbl;
+
+#define REGISTER_APP_CLASS(ac, b, a) \
+   REGISTER_CLASS(ac, b, a); \
+   EVOLVE_APP(ac, a)
+
 #define _CONSTRUCT(c, b) \
    INSTANCE_VIRTUAL_METHODS(c) \
    static TCPPClass<c> _class; \

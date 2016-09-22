@@ -58,9 +58,9 @@ extern "C"
                                                       bool (* method)(eC_Window, eC_Button, int, int, Modifiers) = (bool (*)(eC_Window, eC_Button, int, int, Modifiers))(i ? i->_vTbl : class_Button->_vTbl)[Button_notifyClicked_vTblID]; \
                                                       method ? method(m, b, x, y, mods) : true; })
 
-#define GuiApplication_cycle(x)    ({  eC_GuiApplication i = x; \
-                                  bool (* method)(eC_GuiApplication) = (bool (*)(eC_Instance))(i ? i->_vTbl : class_GuiApplication->_vTbl)[GuiApplication_cycle_vTblID]; \
-                                  method ? method(i) : true; })
+#define GuiApplication_cycle(x, idle)    ({  eC_GuiApplication i = x; \
+                                  bool (* method)(eC_GuiApplication, bool) = (bool (*)(eC_Instance, bool))(i ? i->_vTbl : class_GuiApplication->_vTbl)[GuiApplication_cycle_vTblID]; \
+                                  method ? method(i, idle) : true; })
 
 // Bit Class Member Access
 #define COLOR_r_MASK       0x00FF0000

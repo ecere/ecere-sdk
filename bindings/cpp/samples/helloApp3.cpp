@@ -7,11 +7,24 @@ class MyApp : public GuiApplication
 public:
    APP_CONSTRUCT(MyApp, GuiApplication)
    {
-      cycle = +[](GuiApplication & app)
+      REGISTER_APP_CLASS(MyApp, GuiApplication, *this);
+      /*
+      cycle = +[](GuiApplication & app, bool idle)
       {
          PrintLn(class_String, "   Cycling!", null);
          return true;
       };
+      */
+   }
+
+   REGISTER()
+   {
+      GuiApplication_class_registration(GuiApplication);
+      register_cycle(_class, [](GuiApplication & app, bool idle)
+      {
+         PrintLn(class_String, "   Cycling!", null);
+         return true;
+      });
    }
 
    void main()
@@ -23,7 +36,5 @@ public:
 
 MyApp app;
 Window w;
-
-REGISTER_CLASS_DEF(MyApp, GuiApplication, app);
-
+CLASS_DEF(MyApp);
 MAIN_DEFINITION
