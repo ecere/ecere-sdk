@@ -2,6 +2,8 @@
 
 #include "eC.hpp"
 
+// Demonstrates overriding Application class, evolving instance from constructor
+
 class MyApp : public Application
 {
 public:
