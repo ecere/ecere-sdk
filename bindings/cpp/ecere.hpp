@@ -208,6 +208,11 @@ public:
 };
 
 ///////////// GuiApplication Class /////////////////////////////////////////////////
+#define GuiApplication_class_registration(d) \
+   Application_class_registration(d); \
+   REGISTER_METHOD("Cycle", cycle, GuiApplication, d, \
+      bool, (eC_GuiApplication a), a, a, return fn(*i), (a), true);
+
 class GuiApplication : public Application
 {
 public:
@@ -219,7 +224,9 @@ public:
       vTbl = _class.vTbl;
    }
 
-   REGISTER() { Application_class_registration(GuiApplication); }
+   REGISTER() { GuiApplication_class_registration(GuiApplication); }
+   VIRTUAL_METHOD(cycle, GuiApplication, GuiApplication, bool, GuiApplication &, , ,
+      return GuiApplication_cycle(self->impl));
 };
 
 #endif
