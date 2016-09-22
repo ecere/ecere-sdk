@@ -211,22 +211,15 @@ public:
 #define GuiApplication_class_registration(d) \
    Application_class_registration(d); \
    REGISTER_METHOD("Cycle", cycle, GuiApplication, d, \
-      bool, (eC_GuiApplication a), a, a, return fn(*i), (a), true);
+      bool, (eC_GuiApplication a, bool idle), a, a, return fn(*i, idle), (a, idle), true);
 
 class GuiApplication : public Application
 {
 public:
-   APP_CONSTRUCT(GuiApplication, Application)
-   {
-      Instance_evolve(&impl, GuiApplication::_class.impl);
-      _INSTANCE(impl, impl->_class) = this;
-      __thisModule = impl;
-      vTbl = _class.vTbl;
-   }
-
+   APP_CONSTRUCT(GuiApplication, Application) { EVOLVE_APP(GuiApplication, *this); }
    REGISTER() { GuiApplication_class_registration(GuiApplication); }
-   VIRTUAL_METHOD(cycle, GuiApplication, GuiApplication, bool, GuiApplication &, , ,
-      return GuiApplication_cycle(self->impl));
+   VIRTUAL_METHOD(cycle, GuiApplication, GuiApplication, bool, GuiApplication & _ARG, , bool idle,
+      return GuiApplication_cycle(self->impl, idle));
 };
 
 #endif
