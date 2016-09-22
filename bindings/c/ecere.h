@@ -58,6 +58,10 @@ extern "C"
                                                       bool (* method)(eC_Window, eC_Button, int, int, Modifiers) = (bool (*)(eC_Window, eC_Button, int, int, Modifiers))(i ? i->_vTbl : class_Button->_vTbl)[Button_notifyClicked_vTblID]; \
                                                       method ? method(m, b, x, y, mods) : true; })
 
+#define GuiApplication_cycle(x)    ({  eC_GuiApplication i = x; \
+                                  bool (* method)(eC_GuiApplication) = (bool (*)(eC_Instance))(i ? i->_vTbl : class_GuiApplication->_vTbl)[GuiApplication_cycle_vTblID]; \
+                                  method ? method(i) : true; })
+
 // Bit Class Member Access
 #define COLOR_r_MASK       0x00FF0000
 #define COLOR_r_SHIFT      16
@@ -383,6 +387,8 @@ typedef Window DataBox;
 extern Class * class_GuiApplication;
 
 typedef Instance GuiApplication;
+
+extern int GuiApplication_cycle_vTblID;
 
 Module ecere_init(Module fromModule);
 

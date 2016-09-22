@@ -131,6 +131,9 @@ constString (* Picture_get_image)(Picture p);
 
 Class * class_GuiApplication;
 
+Method * method_GuiApplication_cycle;
+int GuiApplication_cycle_vTblID;
+
 Class * class_MessageBox;
 
 Property * property_MessageBox_contents;
@@ -359,6 +362,12 @@ Module ecere_init(Module fromModule)
       }
 
       class_GuiApplication = eC_findClass(module, "GuiApplication");
+      if(class_GuiApplication)
+      {
+         method_GuiApplication_cycle = Class_findMethod(class_GuiApplication, "Cycle", module);
+         if(method_GuiApplication_cycle)
+            GuiApplication_cycle_vTblID = method_GuiApplication_cycle->vid;
+      }
    }
    return module;
 }
