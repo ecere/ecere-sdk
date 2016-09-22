@@ -2,6 +2,8 @@
 
 #include "eC.hpp"
 
+// Demonstrates 'main()' C++ style override (MyApp is not registered with eC COM)
+
 class MyApp : public Application
 {
 public:

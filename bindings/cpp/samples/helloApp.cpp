@@ -2,6 +2,8 @@
 
 #include "eC.hpp"
 
+// Demonstrates overriding Application class, evolving instance from REGISTER()
+
 class MyApp;
 extern MyApp app;
 
@@ -11,6 +13,7 @@ public:
    APP_CONSTRUCT(MyApp, Application) { }
    REGISTER()
    {
+      Application::class_registration(_class);
       register_main(_class, [](Application & app)
       {
          PrintLn(class_String, "C++: Hello, eC", null);
