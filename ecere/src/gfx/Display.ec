@@ -797,7 +797,8 @@ public:
    void SelectMesh(Mesh mesh)
    {
       displaySystem.driver.SelectMesh(this, mesh);
-      display3D.mesh = mesh;
+      if(display3D)
+         display3D.mesh = mesh;
    }
 
    bool DrawMesh(Object object)
@@ -1140,7 +1141,7 @@ public:
 
    void DrawTranslucency(void)
    {
-      if(display3D.camera)
+      if(display3D && display3D.camera)
       {
          // *** Render translucent primitives ***
          if(display3D.nTriangles)
