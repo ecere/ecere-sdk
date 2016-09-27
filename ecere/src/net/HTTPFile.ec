@@ -424,6 +424,7 @@ private:
                         connection = c;      // TOFIX: 'incref c' doesn't work
                         incref connection;      // HTTPFile reference if we keep it
                         connectionsMutex.Release();
+                        connection.OnReceive = Socket::OnReceive;
                         connection.ProcessTimeOut(0.000001);
                         connectionsMutex.Wait();
                         if(!connection.connected || connection.file)
@@ -559,9 +560,17 @@ private:
             // ::PrintLn("Sending GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
             connection.Send(msg, len);
 
-            while(this.connection && this.connection.connected && !done)
             {
-               this.connection.Process();
+               Time startTime = GetTime();
+               while(this.connection && this.connection.connected && !done)
+               {
+                  //this.connection.Process();
+                  if(!this.connection.ProcessTimeOut(5) || GetTime() - startTime > 5)
+                  {
+                     status = 0;
+                     break;
+                  }
+               }
             }
             //::PrintLn("Got DONE for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
 
@@ -759,7 +768,10 @@ private:
                // First time check if we already have bytes, second time wait for an event
                connection.Process();
                if(wait && bufferCount - bufferPos == 0 && GetTime() - lastTime > 5)
+               {
+                  connection.Disconnect(remoteClosed);
                   eof = true;
+               }
                wait = true;
             }
          }
