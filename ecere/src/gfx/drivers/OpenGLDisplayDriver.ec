@@ -3989,10 +3989,11 @@ class OpenGLDisplayDriver : DisplayDriver
       if(mesh)
       {
          OGLMesh oglMesh = mesh.data;
+         bool collectingHits = display.display3D && display.display3D.collectingHits;
 
          // *** Vertex Stream ***
          GLEnableClientState(VERTICES);
-         if(!display.display3D.collectingHits && oglMesh)
+         if(!collectingHits && oglMesh)
          {
             oglMesh.vertices.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
@@ -4059,7 +4060,7 @@ class OpenGLDisplayDriver : DisplayDriver
          else
          {
             noAB.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
-            if((mesh.normals || mesh.flags.normals) && !display.display3D.collectingHits)
+            if((mesh.normals || mesh.flags.normals) && !collectingHits)
             {
                GLEnableClientState(NORMALS);
                noAB.use(normal, 3, GL_FLOAT, 0, mesh.normals);
@@ -4069,7 +4070,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_SHADERS
             if(glCaps_shaders)
             {
-               if((mesh.tangents || mesh.flags.tangents) && !display.display3D.collectingHits)
+               if((mesh.tangents || mesh.flags.tangents) && !collectingHits)
                {
                   GLEnableClientState(TANGENTS1);
                   GLEnableClientState(TANGENTS2);
@@ -4084,7 +4085,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
 #endif
 
-            if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
+            if((mesh.texCoords || mesh.flags.texCoords1) && !collectingHits)
             {
                GLEnableClientState(TEXCOORDS);
                noAB.use(texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
@@ -4095,7 +4096,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
             if(!glCaps_shaders)
             {
-               if((mesh.lightVectors || mesh.flags.lightVectors) && !display.display3D.collectingHits)
+               if((mesh.lightVectors || mesh.flags.lightVectors) && !collectingHits)
                {
                   GLEnableClientState(LIGHTVECTORS);
                   noAB.use(lightVector, 3, GL_FLOAT, sizeof(ColorRGB), mesh.lightVectors);
@@ -4105,7 +4106,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
 #endif
-            if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
+            if((mesh.colors || mesh.flags.colors) && !collectingHits)
             {
                GLEnableClientState(COLORS);
                noAB.use(color, 4, GL_FLOAT, 0, mesh.colors);
@@ -4135,7 +4136,8 @@ class OpenGLDisplayDriver : DisplayDriver
       else
       {
          OGLIndices oglIndices = primitive->data;
-         GLEAB eab = ((!display.display3D.collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
+         bool collectingHits = display.display3D && display.display3D.collectingHits;
+         GLEAB eab = ((!collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
          if(!glCaps_intAndDouble && !glCaps_vertexBuffer && primitive->type.indices32bit)
          {
             uint16 * temp = new uint16[primitive->nIndices];
@@ -4167,7 +4169,7 @@ class OpenGLDisplayDriver : DisplayDriver
    void SetTransform(Display display, Matrix transMatrix, bool viewSpace, bool useCamera)
    {
       Matrix matrix = transMatrix;
-      Camera camera = useCamera ? display.display3D.camera : null;
+      Camera camera = useCamera && display.display3D ? display.display3D.camera : null;
 
       if(viewSpace)
       {
