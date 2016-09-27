@@ -791,8 +791,10 @@ private:
          gotEvent |= ProcessSocket(&rs, &ws, &es);
       }
       mutex.Wait();
+      this.mutex = null;
       delete this;
       mutex.Release();
+      delete mutex;
       return gotEvent;
    }
 
