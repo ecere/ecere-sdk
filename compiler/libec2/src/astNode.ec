@@ -78,6 +78,22 @@ public:
    }
 }
 
+public class ASTRawString : ASTNode
+{
+public:
+   char * string;
+
+   void print(OutputOptions o)
+   {
+      out.Puts(string);
+   }
+
+   ~ASTRawString()
+   {
+      delete string;
+   }
+}
+
 public class ASTList : ASTNode
 {
 public:
