@@ -392,7 +392,7 @@ public:
    void Sort(bool ascending)
    {
       Class Dclass = class(D);
-      bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
+      bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass || Dclass.type == structClass;
       _qsortrx(array, count, Dclass.typeSize, (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare], null, Dclass, !byRef, ascending);
    }
 };
