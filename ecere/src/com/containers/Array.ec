@@ -30,14 +30,14 @@ private:
 static inline void quickSort(void *base, uintsize nel, uintsize w, char * piv, int (*compare)(void *, const void *, const void *), void *arg)
 {
    #define MAX_LEVELS  300
-   uintsize beg[MAX_LEVELS], end[MAX_LEVELS];
+   intsize beg[MAX_LEVELS], end[MAX_LEVELS];
    int frame = 0;
 
    beg[0] = 0;
    end[0] = nel;
    while(frame >= 0)
    {
-      uintsize L = beg[frame], R = end[frame]-1;
+      intsize L = beg[frame], R = end[frame]-1;
       if(L < R)
       {
          memcpy(piv, (char *)base + L*w, w);
@@ -64,7 +64,7 @@ static inline void quickSort(void *base, uintsize nel, uintsize w, char * piv, i
          // Process smaller partition first
          if(end[frame]-beg[frame] > end[frame-1]-beg[frame-1])
          {
-            uintsize swap;
+            intsize swap;
             swap = beg[frame]; beg[frame] = beg[frame-1]; beg[frame-1] = swap;
             swap = end[frame]; end[frame] = end[frame-1]; end[frame-1] = swap;
          }
