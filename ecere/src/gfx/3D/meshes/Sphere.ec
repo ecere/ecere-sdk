@@ -68,7 +68,9 @@ public:
                      }
 
                      //pTangents[index*2 + 1].CrossProduct(pNormals[index], pTangents[index*2]);
-                     pTexCoords[index] = { (float)l / (w-1), (float)lat / (numLat) };
+                     // pTexCoords[index] = { (float)l / (w-1), (float)lat / (numLat) };
+
+                     pTexCoords[index] = { pVertices[index].x/2 + 0.4f + pVertices[index].y/2 * 0.2, pVertices[index].z/2 + 0.4f + pVertices[index].y/2 * 0.2 };
                      index++;
                   }
                }

@@ -74,6 +74,12 @@ void DualPipe_Destructor(_DualPipe * dp)
    }
    if(dp->hProcess)
       CloseHandle(dp->hProcess);
+#else
+   if(!dp->gotExitCode)
+   {
+      int status = 0;
+      waitpid(dp->pid, &status, WNOHANG);
+   }
 #endif
    free(dp);
 }

@@ -6673,7 +6673,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
    LoadCOM(app);
 
    app._class = eSystem_FindClass(app, "Application");
-
+   // app._vTbl = app._class._vTbl;
    return app;
 }
 

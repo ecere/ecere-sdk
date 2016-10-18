@@ -781,7 +781,7 @@ public:
             if(GetCurrentThreadID() == (int64)thread.id)
                ProcessTimeOut(0.01);
             else
-               ecere::sys::Sleep(0.01);//thread.semaphore.Wait();
+               ecere::sys::Sleep(0); //0.01);//thread.semaphore.Wait();
             mutex.Wait();
             guiApp.LockEx(lockCount);
          }

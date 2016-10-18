@@ -351,7 +351,7 @@ public:
             if(error)
    #endif
             {
-               //Print("~");
+               Print("~");
             }
 
             // This is what was making eCom jam...
@@ -803,7 +803,9 @@ private:
       FD_SET(s, &es);
 
       mutex.Release();
-      selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
+
+      //if(!leftOver)
+         selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
 
       if(s != -1 && _refCount && (leftOver || selectResult))
       {

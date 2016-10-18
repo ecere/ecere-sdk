@@ -1,5 +1,7 @@
 #ifndef ECERE_NONET
 
+ #define HTTP_DEBUGGING
+
 #include <stdio.h>
 
 import "List"
@@ -134,6 +136,8 @@ private class HTTPConnection : SSLSocket
       HTTPFile file = this.file;
       int pos = 0;
       int c;
+
+      //printf("Open_OnReceive called with %d bytes\n", count);
       while(!file.done)
       {
          bool gotEndLine = false;
@@ -141,18 +145,22 @@ private class HTTPConnection : SSLSocket
          {
             if(buffer[c] == '\r' && buffer[c+1] == '\n')
             {
+               //printf("This packet is complete (EOL included)\n");
                gotEndLine = true;
                break;
             }
          }
          if(!gotEndLine)
+         {
+            //printf("Incomplete packet, waiting for more data...\n");
             // Incomplete packet
             return pos;
+         }
          if(c<count)
          {
             const char * string = (const char *)buffer;
 
-#ifdef _DEBUG
+#ifdef HTTP_DEBUGGING
             fwrite(buffer, 1, c, stdout);
             puts("");
 #endif
@@ -248,6 +256,7 @@ private class HTTPConnection : SSLSocket
    uint Read_OnReceive(const byte * buffer, uint count)
    {
       HTTPFile file = this.file;
+      // printf("Read_OnReceive called with %d bytes\n", count);
       if(file)
       {
          int read;
@@ -557,8 +566,15 @@ private:
             //::PrintLn("Releasing connectionsMutex before GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
             connectionsMutex.Release();
 
-            // ::PrintLn("Sending GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-            connection.Send(msg, len);
+            #if /*defined(_DEBUG) && */defined(HTTP_DEBUGGING)
+            ::PrintLn("Sending GET for ", name, " ", (uint64)(uintptr)this, " in thread ", GetCurrentThreadID(), "\n");
+            #endif
+            if(!connection.Send(msg, len))
+            {
+            #if defined(_DEBUG) && defined(HTTP_DEBUGGING)
+               ::PrintLn("Send() returned false!");
+            #endif
+            }
 
             {
                Time startTime = GetTime();
@@ -567,12 +583,19 @@ private:
                   //this.connection.Process();
                   if(!this.connection.ProcessTimeOut(5) || GetTime() - startTime > 5)
                   {
+                     //close = true;
                      status = 0;
                      break;
+               #if /*defined(_DEBUG) && */defined(HTTP_DEBUGGING)
+                     ::PrintLn("Taking too long!");
+               #endif
+                     //this.connection.Send(msg, len);
                   }
                }
             }
-            //::PrintLn("Got DONE for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
+            #if /*defined(_DEBUG) && */defined(HTTP_DEBUGGING)
+            ::PrintLn("Got DONE for ", name, " ", (uint64)(uintptr)this, " in thread ", GetCurrentThreadID(), "\n");
+            #endif
 
             if(this.connection)
             {
