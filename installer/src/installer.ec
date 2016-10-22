@@ -1481,7 +1481,7 @@ class InstallThread : Thread
                   char path[MAX_LOCATION];
                   if(c == extras || !additional[c].selected || !additional[c].available) continue;
                   additional[c].GetFullPath(path, false);
-                  if(c != upx && c != eda && c != vanilla && c != eda32 && c != vanilla32)
+                  if(c != upx && c != eda && c != vanilla && c != eda32 && c != vanilla32 && c != audio && c != audio32)
                      PathCat(path, "bin");
                   MakeSlashPath(path);
                   if(c == vanilla || c == vanilla32)
