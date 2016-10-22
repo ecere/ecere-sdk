@@ -63,17 +63,17 @@ void DualPipe_Destructor(_DualPipe * dp)
 {
 #if defined(__WIN32__)
    if(dp->outputHandle)
-   {
       CloseHandle(dp->outputHandle);
-      dp->outputHandle = null;
-   }
    if(dp->inputHandle)
-   {
       CloseHandle(dp->inputHandle);
-      dp->inputHandle = null;
-   }
    if(dp->hProcess)
       CloseHandle(dp->hProcess);
+#else
+   if(!dp->gotExitCode)
+   {
+      int status = 0;
+      waitpid(dp->pid, &status, WNOHANG);
+   }
 #endif
    free(dp);
 }
