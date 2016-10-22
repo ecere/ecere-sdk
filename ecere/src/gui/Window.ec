@@ -4580,7 +4580,9 @@ private:
 
          if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown)
             status = OnSysKeyDown(key, character);
-         else if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit)
+         if(status &&
+            (method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown ||
+             method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit))
             status = OnSysKeyHit(key, character);
          else if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp)
             status = OnSysKeyUp(key, character);
