@@ -25,7 +25,7 @@ public import "ecere"
 public class Regex : struct
 {
 public:
-   property String regex
+   property const String regex
    {
       set
       {
