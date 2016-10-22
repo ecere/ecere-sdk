@@ -460,6 +460,7 @@ class QuickProjectDialog : Window
             workspace = Workspace { activeCompiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
          }
 
+         workspace.Init();
          workspace.AddProject(project, null);
          ide.findInFilesDialog.AddProjectItem(project);
          ide.findInFilesDialog.mode = FindInFilesMode::project;
