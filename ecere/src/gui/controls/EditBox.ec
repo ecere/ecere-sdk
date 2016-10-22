@@ -298,6 +298,15 @@ public:
       else
          delete action;
    }
+
+   void Clear()
+   {
+      actions.Free();
+      actions.size = 8;
+      count = 0;
+      curAction = 0;
+      firstEvent = true;
+   }
 };
 
 static class AddCharAction : UndoAction
@@ -816,6 +825,8 @@ public:
       {
          if(this)
          {
+            undoBuffer.Clear();
+
             undoBuffer.dontRecord++;
             Deselect();
             DelCh(this.lines.first, 0, 0, this.lines.last, this.lineCount-1, ((EditLine)(this.lines.last)).count, true);
