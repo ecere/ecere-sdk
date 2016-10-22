@@ -530,6 +530,7 @@ class IDESettingsContainer : GlobalSettings
             int c;
             bool locked;
             for(c = 0; c < 10 && !(locked = f.Lock(shared, 0, 0, false)); c++) ecere::sys::Sleep(0.01);
+            if(!recentProjects) recentProjects = { };
             recentProjects.read(this);
             f.Unlock(0,0,true);
             delete f;
@@ -653,7 +654,15 @@ private:
       if(result == fileNotFound || (settingsFilePath && isGlobalPath))
       {
          bool retryNewConfig = settingsFilePath && isGlobalPath;
-         oldConfig = true;
+
+         if(retryNewConfig)
+         {
+            // Need to load the data outside of main config file first
+            data.compilerConfigs.read(this);
+            data.recentFiles.read(this);
+            data.recentProjects.read(this);
+         }
+         oldConfig = true; // WARNING: This is being used with two meanings: Old format and loaded from system-wide settings
          useNewConfigurationFiles = false;
          if(retryNewConfig)
          {
