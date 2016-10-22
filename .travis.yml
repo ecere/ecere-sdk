@@ -42,6 +42,7 @@ addons:
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link openssl --force ; fi
 
 script:
   - make -j1 V=1 ENABLE_SSL=y

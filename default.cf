@@ -81,7 +81,7 @@ endif
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
 LDFLAGS +=$(if $(LINUX_TARGET), -Wl$(comma)--no-undefined,)
-LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL,)
+LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL -L/usr/local/opt/openssl/lib,)
 
 ifdef BSD_TARGET
 EXCLUDED_LIBS += $(space)dl
@@ -90,7 +90,7 @@ LDFLAGS += -L/usr/local/lib
 endif
 
 ifdef OSX_TARGET
-CFLAGS += -I$(SYSROOT)/usr/include/ffi
+CFLAGS += -I$(SYSROOT)/usr/include/ffi -I$(SYSROOT)/usr/local/opt/openssl/include
 else
 # OFLAGS += -L/usr/lib/$(TARGET_ARCH)/ec
 endif
