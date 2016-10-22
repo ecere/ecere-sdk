@@ -16,7 +16,7 @@
       "   void Main()<br>"
       "   {<br>"
       "      char * helloString = \"Hello, World!\";<br>"
-      "      printf(\"%s\<br>\", helloString);<br>"
+      "      printf(\"%s\\n\", helloString);<br>"
       "   }<br>"
       "}<br>"
       "<br>"

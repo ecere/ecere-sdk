@@ -1479,6 +1479,17 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   f.Puts("\\t");
                   b = 0;
                }
+               else if(c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
+               {
+                  // Add an automatic newline for <br> as this is how we imported documentor data...
+                  int i;
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts(">\"\n");
+                  for(i = 0; i<indent; i++) f.Puts("   ");
+                  f.Puts("   \"");
+                  b = 0;
+               }
                else if(ch == '\n')
                {
                   int i;
