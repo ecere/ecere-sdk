@@ -325,12 +325,16 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       for(c = 0; c < count; c++)
       {
          MapNode<MT, V> destNode;
-         MT key = (KT)0;
-         D data = (D)0;
+         uint64 key  = (Kclass.type == structClass) ? (uint64)(uintptr)new byte[Kclass.structSize] : 0;
+         uint64 data = (Dclass.type == structClass) ? (uint64)(uintptr)new byte[Dclass.structSize] : 0;
          ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, &key, channel);
-         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
-         destNode = (MapNode<MT, V>)container.GetAtPosition(key, true, null);
-         container.SetData(destNode, data);
+         ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, (Dclass.type == structClass) ? (void *)data : &data, channel);
+         destNode = (MapNode<MT, V>)container.GetAtPosition((MT)key, true, null);
+         container.SetData(destNode, (V)data);
+         if(Kclass.type == structClass)
+            delete (void *)key;
+         if(Dclass.type == structClass)
+            delete (void *)data;
       }
       this = container;
    }
