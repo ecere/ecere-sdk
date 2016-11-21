@@ -702,24 +702,13 @@ private:
                bool isKey = false;
                bool isTemplateArg = false;
                uint offset = 0;
-               if(eCON)
+
+               ch = 0;
+               SkipEmpty();
+
+               if(eCON && (ch != '=' && ch != ':'))
                {
-                  SkipEmpty();
-                  prop = null; member = null;
-                  if(ch == '=' || ch == ':')
-                  {
-                     if(wasQuoted)
-                        string[0] = (char)tolower(string[0]);
-                     while(1)
-                     {
-                        eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
-                        if(!curMember) break;
-                        if(!strcmp(curMember.name, string))
-                           break;
-                     }
-                  }
-                  else
-                     eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
+                  eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
                   if(curMember)
                   {
                      prop = curMember.isProperty ? (Property)curMember : null;
@@ -754,9 +743,10 @@ private:
                         PrintLn("Warning: default member assignment: no more members");
                   }
                }
-               if(objectType && !eCON)
+               else if(objectType)
                {
-                  string[0] = (char)tolower(string[0]);
+                  if(!eCON || wasQuoted)
+                     string[0] = (char)tolower(string[0]);
                   if(mapKeyClass && !strcmp(string, "key"))
                   {
                      prop = eClass_FindProperty(objectType, "key", objectType.module);
@@ -772,17 +762,23 @@ private:
                   }
                   else
                   {
-                     member = eClass_FindDataMember(objectType, string, objectType.module, null, null);
+                     member = eClass_FindDataMember(objectType, string, objectType.module, subMemberStack, &subMemberStackPos);
                      if(member)
                      {
                         type = superFindClass(member.dataTypeString, objectType.module);
                         offset = member._class.offset + member.offset;
+                        curMember = member;
+                        curClass = member._class;
                      }
                      else if(!member)
                      {
                         prop = eClass_FindProperty(objectType, string, objectType.module);
                         if(prop)
+                        {
                            type = superFindClass(prop.dataTypeString, objectType.module);
+                           curMember = (DataMember)prop;
+                           curClass = prop._class;
+                        }
                         else
                            PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
                      }
@@ -815,11 +811,6 @@ private:
                      {
                         value.p = new0 byte[type.structSize];
                      }
-                  }
-                  if(!eCON)
-                  {
-                     ch = 0;
-                     SkipEmpty();
                   }
                   if(eCON && ch != '=' && ch != ':')
                   {
