@@ -495,8 +495,22 @@ public:
    {
       if(!active)
       {
-         if(modifiedDocument && !DataBox::SaveData())
-            Refresh();
+         if(modifiedDocument)
+         {
+            bool thisActive = this.active;
+            bool parentActive = parent.active;
+            Window parentActiveChild = parent.activeChild;
+
+            if(!DataBox::SaveData())
+               Refresh();
+            else
+            {
+               if(this.active == thisActive && parentActive == parent.active && parentActiveChild == parent.activeChild)
+                  ;
+               else
+                  *goOnWithActivation = false;
+            }
+         }
       }
       return true;
    }
