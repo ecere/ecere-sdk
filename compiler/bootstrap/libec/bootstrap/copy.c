@@ -1224,9 +1224,9 @@ static struct Initializer * CopyInitializer(struct Initializer * initializer)
 struct Initializer * copy = (((void *)0));
 
 ;
-if(initializer->type == 0)
+if(initializer && initializer->type == 0)
 copy = MkInitializerAssignment(CopyExpression(initializer->__anon1.exp));
-else if(initializer->type == 1)
+else if(initializer && initializer->type == 1)
 copy = MkInitializerList(CopyList(initializer->__anon1.list, (void *)(CopyInitializer)));
 if(copy)
 {
