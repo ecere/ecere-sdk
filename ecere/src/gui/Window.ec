@@ -7149,13 +7149,15 @@ public:
 
          while(child)
          {
+            Window parentActiveChild = child.parent.activeChild;
+            if(!parentActiveChild) parentActiveChild = child;
             while(true)
             {
                if(backward)
                   child = child.cycle.prev.data;
                else
                   child = child.cycle.next.data;
-               if(child == child.parent.activeChild)
+               if(child == parentActiveChild)
                   return result;
                else if(!child.disabled && child.created && (!clientOnly || child.style.isActiveClient) && !child.style.hidden && child.FindModal() != activeChild)
                   break;
