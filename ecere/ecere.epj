@@ -377,14 +377,15 @@ if distributed with the Ecere SDK Windows installer.
       {
          "Name" : "WSMS",
          "Options" : {
-            "Optimization" : "Size",
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "ECERE_NO3D",
                "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereWSMS"
+            "TargetFileName" : "ecereWSMS",
+            "FastMath" : true
          },
          "Platforms" : [
             {
@@ -1262,6 +1263,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "WSMS",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               },
@@ -1291,6 +1298,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "Installer",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "WSMS",
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
@@ -2205,7 +2218,15 @@ if distributed with the Ecere SDK Windows installer.
                         "IncludeDirs" : [
                            "src/gfx/newFonts/cc"
                         ]
-                     }
+                     },
+                     "Configurations" : [
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
                   },
                   "Bitmap.ec",
                   "BitmapResource.ec",

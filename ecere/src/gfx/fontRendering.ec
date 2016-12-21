@@ -2,7 +2,7 @@ namespace gfx;
 
 import "fontManagement"
 
-#if (defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER)) && defined(__WIN32__)
+#if (defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER) || defined(ECERE_NO3D)) && defined(__WIN32__)
 #define ECERE_NOTRUETYPE
 #endif
 
