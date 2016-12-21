@@ -550,7 +550,7 @@ public:
             r.Add();
             {
                // Patch for SQLite driver which auto-increments IDs
-               int curId = 0;
+               Id curId = 0;
                if(r.GetData(idField, curId))
                   id = curId;
                else
