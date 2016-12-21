@@ -18,7 +18,7 @@ extern int __ecereVMethodID_class_OnCompare;
    #define BSD
    extern void qsort_r(void *base, uintsize nel, uintsize width, void *arg, int (*compare)(void *, const void *, const void *));
 #elif defined(__WIN32__)
-   extern void qsort_s(void *base, uintsize nel, uintsize width, int (*compare)(void *, const void *, const void *), void * arg);
+   __declspec(dllimport) __cdecl extern void qsort_s(void *base, uintsize nel, uintsize width, int (*compare)(void *, const void *, const void *), void * arg);
 #elif (defined __GLIBC__ && ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 8)))
    #define GLIBC
    extern void qsort_r(void *base, uintsize nel, uintsize width, int(* compare)(const void *, const void *, void *), void *arg);
@@ -107,7 +107,7 @@ static inline void _qsortrx(void *base, uintsize nel, uintsize width,
    {
    #if defined(BSD) && !defined(ECERE_BOOTSTRAP)
       qsort_r(base, nel, width, arg, compare);
-   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
+   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP) && !defined(ECERE_STATIC)
       qsort_s(base, nel, width, compare, arg);
    #else
       {
@@ -123,7 +123,7 @@ static inline void _qsortrx(void *base, uintsize nel, uintsize width,
       #define compare_fn   !deref ? compareDesc : ascending ? compareDeref : compareDescDeref
    #if defined(BSD) && !defined(ECERE_BOOTSTRAP)
       qsort_r(base, nel, width, s, compare_fn);
-   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
+   #elif defined(__WIN32__) && !defined(ECERE_BOOTSTRAP) && !defined(ECERE_STATIC)
       qsort_s(base, nel, width, compare_fn, s);
    #else
       {
