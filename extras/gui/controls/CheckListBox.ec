@@ -99,6 +99,23 @@ class CheckListBox : ListBox
       return false;
    }
 
+   public void DeleteRow(DataRow row)
+   {
+      MapIterator<uintptr, CheckListBoxButton> it { map = buttonMaps };
+      NotifyCollapse(master, this, row, true);
+
+      if(it.Index((uintptr)row, false))
+      {
+         CheckListBoxButton button = it.data;
+         if(button)
+         {
+            button.Destroy(0);
+            it.Remove();
+         }
+      }
+      ListBox::DeleteRow(row);
+   }
+
    void SetupButtons(DataRow row, bool recurse)
    {
       DataRow parent;
