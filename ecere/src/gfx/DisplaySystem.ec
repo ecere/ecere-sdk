@@ -162,7 +162,7 @@ public:
          resources.Add(res);
 
          // This will load e.g. the Bitmap *
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
          if(fm)
          {
             ((FontResource)res.resource).LoadFM((FontResource)resource, this, fm);
@@ -171,7 +171,7 @@ public:
 #endif
             res.resource.Load(resource, this);
       }
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
       else if(fm)
       {
          FontResource fr = (FontResource)res.resource;
@@ -200,7 +200,7 @@ public:
       return _LoadResource(resource, null);
    }
 
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
    void * LoadResourceFM(Resource resource, FontManager fm)
    {
       return _LoadResource(resource, fm);

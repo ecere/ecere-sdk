@@ -31,7 +31,7 @@ import "Quaternion"
 import "Vector3D"
 #endif
 
-#if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER))
+#if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D))
 import "OpenGLDisplayDriver"
 
 #define near _near
@@ -1282,7 +1282,7 @@ public:
    property bool useSharedMemory { set { useSharedMemory = value; } get { return useSharedMemory; } };
    property void * systemWindow { get { return window; } };
    property DisplaySystem displaySystem { get { return displaySystem; } };
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
    property GLCapabilities glCapabilities
    {
       get { return ((OGLDisplay)driverData).capabilities; }
