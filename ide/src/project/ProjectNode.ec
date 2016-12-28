@@ -518,11 +518,13 @@ private:
       }
    }
 
-   char * GetFullFilePath(char * buffer, bool resolveVars)
+   char * GetFullFilePath(char * buffer, bool absolute, bool resolveVars)
    {
       if(buffer)
       {
-         strcpy(buffer, root.path);
+         *buffer = 0;
+         if(absolute)
+            strcpy(buffer, root.path);
          if(resolveVars)
          {
             if(path && path[0])
@@ -1137,7 +1139,7 @@ private:
                else if(child.name && !fstrcmp(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
-                  child.GetFullFilePath(p, true);
+                  child.GetFullFilePath(p, true, true);
                   if(!fstrcmp(p, path))
                   {
                      result = child;
@@ -2453,7 +2455,7 @@ private:
             if(!strcmpi(extension, &h2s))
             {
                char filePath[MAX_LOCATION];
-               GetFullFilePath(filePath, true);
+               GetFullFilePath(filePath, true, true);
                OutputLog($"No compilation required for header file "); OutputLog(filePath); OutputLog("\n");
                ChangeExtension(moduleName, h2s, moduleName);
                if(prj.topNode.Find(moduleName, false))
