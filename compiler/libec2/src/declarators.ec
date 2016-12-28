@@ -55,6 +55,8 @@ public:
                   decl = DeclArray::parse(decl);
                else if(nextToken.type == '(')
                   decl = DeclFunction::parse(decl);
+               else if(nextToken.type == ':')
+                  decl = DeclBitField::parse(decl);
                else
                   break;
             }
@@ -228,6 +230,27 @@ public:
    DeclStruct ::parse()
    {
       return { declarator = ASTDeclarator::parse(); };
+   }
+}
+
+public class DeclBitField : ASTDeclarator
+{
+public:
+   ExpConstant size;
+
+   void print(OutputOptions o)
+   {
+      printStart(o);
+      if(declarator) declarator.print(o);
+      out.Print(":");
+      if(size) size.print(o);
+      printEnd(o);
+   }
+
+   DeclBitField ::parse(ASTDeclarator d)
+   {
+      readToken();
+      return { declarator = d, size = ExpConstant::parse(); };
    }
 }
 
