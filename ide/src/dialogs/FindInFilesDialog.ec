@@ -259,7 +259,7 @@ private:
                DataRow r = null;
                ProjectNode node = prj.topNode;
                char filePath[MAX_LOCATION];
-               prj.topNode.GetFullFilePath(filePath, true);
+               prj.topNode.GetFullFilePath(filePath, true, true);
                lastSelectionProject = CopyString(filePath);
                findWherePrjNode.Clear();
                ListProjectNodeFolders(node, null);
@@ -318,7 +318,7 @@ private:
             if(node)
             {
                char filePath[MAX_LOCATION];
-               node.GetFullFilePath(filePath, true);
+               node.GetFullFilePath(filePath, true, true);
                lastSelectionProjectNode = CopyString(filePath);
             }
          }
@@ -466,7 +466,7 @@ private:
                Project p = (Project)(intptr)row.tag;
                if(p)
                {
-                  p.topNode.GetFullFilePath(filePath, true);
+                  p.topNode.GetFullFilePath(filePath, true, true);
                   if(!fstrcmp(filePath, lastSelectionProject))
                      break;
                }
@@ -844,6 +844,17 @@ private:
 
             for(frame = 1; frame && !abort && frame < stackSize-1;)
             {
+               bool relative = true; // would be option
+               char fileRelative[MAX_LOCATION];
+               char filePath[MAX_LOCATION];
+               filePath[0] = '\0';
+               fileRelative[0] = '\0';
+               if(stack[frame].type == file || stack[frame].type == folder || stack[frame].type == folderOpen)
+               {
+                  stack[frame].GetFullFilePath(filePath, true, true);
+                  //MakePathRelative(filePath, prj.topNode.path, fileRelative);
+                  MakePathRelative(filePath, prj.topNode.path, fileRelative);
+               }
                switch(stack[frame].type)
                {
                   case project:
@@ -857,16 +868,6 @@ private:
                      break;
                   case file:
                   {
-                     bool relative = true;
-                     char fileRelative[MAX_LOCATION];
-                     char filePath[MAX_LOCATION];
-                     filePath[0] = '\0';
-                     PathCat(filePath, prj.topNode.path);
-                     PathCat(filePath, stack[frame].path);
-                     PathCat(filePath, stack[frame].name);
-                     fileRelative[0] = '\0';
-                     PathCat(fileRelative, stack[frame].path);
-                     PathCat(fileRelative, stack[frame].name);
                      if(relative && mode == workspace && prj != ide.project)
                      {
                         char special[MAX_LOCATION];
@@ -913,14 +914,6 @@ private:
                   }
                   case folder:
                   {
-                     bool relative = true;
-                     char fileRelative[MAX_LOCATION];
-                     char filePath[MAX_LOCATION];
-                     filePath[0] = '\0';
-                     PathCat(filePath, prj.topNode.path);
-                     PathCat(filePath, stack[frame].path);
-                     fileRelative[0] = '\0';
-                     PathCat(fileRelative, stack[frame].path);
                      if(relative && mode == workspace && prj != ide.project)
                      {
                         char special[MAX_LOCATION];

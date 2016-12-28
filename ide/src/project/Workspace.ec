@@ -370,7 +370,7 @@ public:
       }
       if(prj)
       {
-         node.GetFullFilePath(absolute, true);
+         node.GetFullFilePath(absolute, true, true);
          return CopyString(absolute);
       }
 

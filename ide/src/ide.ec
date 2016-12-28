@@ -2826,7 +2826,7 @@ class IDEWorkSpace : Window
                {
                   if((n = p.topNode.Find(filePath, false)))
                   {
-                     n.GetFullFilePath(selectedPath, true);
+                     n.GetFullFilePath(selectedPath, true, true);
                      if((fileAttribs = FileExists(selectedPath)).isFile)
                      {
                         if(node) *node = n;
@@ -2940,6 +2940,18 @@ class IDEWorkSpace : Window
       else if(path && !colon)
       {
          strcpy(filePath, path);
+      }
+
+      if(filePath[0] && strstr(filePath, "$("))
+      {
+         DirExpression pathExp { };
+         CompilerConfig compiler = GetCompilerConfig();
+         ProjectConfig config = prj.config;
+         int bitDepth = GetBitDepth();
+         pathExp.Evaluate(filePath, prj, compiler, config, bitDepth);
+         PathCatSlash(filePath, pathExp.dir);
+         delete compiler;
+         delete pathExp;
       }
 
       if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath, objectFileExt)))

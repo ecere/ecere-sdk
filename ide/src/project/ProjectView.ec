@@ -1959,7 +1959,7 @@ class ProjectView : Window
    {
       char filePath[MAX_LOCATION];
       char ext[MAX_EXTENSION];
-      node.GetFullFilePath(filePath, true);
+      node.GetFullFilePath(filePath, true, true);
 
       GetExtension(filePath, ext);
       if(binaryDocExt.Find(ext))
@@ -2149,7 +2149,7 @@ class ProjectView : Window
          fileDialog.master = parent;
          while(node)
          {
-            node.GetFullFilePath(path, true);
+            node.GetFullFilePath(path, true, true);
             while(path[0])
             {
                StripLastDirectory(path, path);
