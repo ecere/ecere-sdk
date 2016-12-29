@@ -93,6 +93,32 @@ public:
    }
 }
 
+public class ASTPreprocessorCondition : ASTNode
+{
+public:
+   char * condition;
+   char * closing;
+   ASTList<ASTNode> ast;
+
+   void print(OutputOptions o)
+   {
+      out.PrintLn(condition);
+      if(ast)
+      {
+         ast.print(o);
+         out.PrintLn("");
+      }
+      if(closing)
+         out.PrintLn(closing);
+   }
+
+   ~ASTPreprocessorCondition()
+   {
+      delete condition;
+      delete closing;
+   }
+}
+
 public class ASTList : ASTNode
 {
 public:
