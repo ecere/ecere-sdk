@@ -69,6 +69,11 @@ Thumbs.db
 *.pyd
 __pycache__/
 
+# Python packaging stuff
+build/
+dist/
+EcereSDK.egg-info/
+
 # CFFI generated source
 _py*.c
 
@@ -77,3 +82,9 @@ _py*.c
 /dist/
 /.eggs
 /*.egg-info
+
+# dont commit gnosis files
+*gnosis*
+helloController.*
+helloGnosIS.*
+helloGnosIS_template.*
