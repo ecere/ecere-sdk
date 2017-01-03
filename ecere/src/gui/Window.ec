@@ -42,7 +42,34 @@ import "MessageBox"
 import "WindowList"
 import "i18n"
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+#undef byte
+#undef bool
+#undef true
+#undef false
+
+#endif
+
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 #define property _property
 #define new _new
 #define class _class
@@ -616,7 +643,7 @@ private:
       if(fileMonitor)
       {
          int i, lockCount = guiApp.lockMutex.lockCount;
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
          if(xGlobalDisplay)
             XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -626,7 +653,7 @@ private:
          delete fileMonitor;
          for(i = 0; i < lockCount; i++)
             guiApp.lockMutex.Wait();
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
 #endif
@@ -2713,6 +2740,8 @@ private:
    {
       Surface surface = null;
 
+      //printf("Window::UpdateExtent() for %s\n", _class.name);
+
       if(!manageDisplay) { OnRedraw(null);return; }
       _ShowDecorations(refresh, false);
 
@@ -3165,8 +3194,14 @@ private:
       }
 
       for(child = children.first; child; child = child.next)
+      {
+         //printf("In here for %s (created = %d, rootWindow = %p)\n", child._class.name, child.created, child.rootWindow);
          if(!child.style.hidden && child.created && !child.is3D && child.rootWindow && !child.nonClient)
+         {
+            //printf("Calling Render() %s\n", child._class.name);
             child.Render(updateExtent);
+         }
+      }
 
       if(rootWindow.fullRender)
          DrawOverChildren(box);
@@ -5077,6 +5112,8 @@ private:
          if(!displaySystem)
          {
             displaySystem = DisplaySystem { glCapabilities = glCapabilities };
+            printf("Creating Display System\n");
+
             if(!displaySystem.Create(dDriver.name, guiApp.fullScreenMode ? windowHandle : windowHandle /*null*/, guiApp.fullScreenMode))
             {
                delete displaySystem;
@@ -5085,6 +5122,7 @@ private:
          if(displaySystem)
          {
             display = Display { alphaBlend = alphaBlend, useSharedMemory = useSharedMemory, glCapabilities = glCapabilities, windowDriverData = windowData };
+            printf("Creating Display \n");
             if(display.Create(displaySystem, windowHandle))
                result = true;
             else

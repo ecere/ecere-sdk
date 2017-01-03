@@ -283,6 +283,8 @@
 #  define PNGAPI PNGCAPI
 #endif
 
+#define PNGAPI __attribute__ ((visibility("hidden"))) 
+
 /* PNG_IMPEXP may be set on the compilation system command line or (if not set)
  * then in an internal header file when building the library, otherwise (when
  * using the library) it is set here.

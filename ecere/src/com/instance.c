@@ -6,6 +6,30 @@
 #include <ctype.h>
 #include <string.h>
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+#undef bool
+
+#endif
+
 #if defined(__GNUC__) || defined(__WATCOMC__) || defined(__WIN32__)
 #include <time.h>
 #include <sys/types.h>
@@ -312,6 +336,7 @@ bool Instance_LocateModule(const char * name, char * fileName)
             }
             else
             {
+#if 1 //!defined(__TIZEN__)
                char name[MAX_FILENAME];
                GetLastDirectory(path, name);
                if(!exeName[0] || !strcmp(name, exeName))
@@ -322,6 +347,7 @@ bool Instance_LocateModule(const char * name, char * fileName)
                   fclose(f);
                   return true;
                }
+#endif
             }
          }
       }
@@ -382,9 +408,16 @@ bool Instance_LocateModule(const char * name, char * fileName)
             return true;
       }
 #endif
+   #if 0 //defined(__TIZEN__)
+      printf("Setting it to /opt/usr/apps/org.example.hello3d/bin/hello3d\n");
+      strcpy(fileName, "/opt/usr/apps/org.example.hello3d/bin/hello3d");
+      return true;
+   #endif
+
 #if !defined(__linux__)
       {
          char * env;
+
          if(!access("/proc/curproc/file", F_OK))
          {
             strcpy(fileName, "/proc/curproc/file");

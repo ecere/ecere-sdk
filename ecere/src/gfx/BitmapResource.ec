@@ -2,6 +2,29 @@ namespace gfx;
 
 import "Window"
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+
+#endif
+
 static Array<FileFilter> filters
 { [
    {
@@ -70,6 +93,7 @@ public class BitmapResource : Resource
             (!mipMaps && !mono && !grayed && transparent && !bitmap.LoadT(fileName, null, ds)) ||
             (!mipMaps && !mono && !grayed && !transparent && !bitmap.Load(fileName, null, ds)))
                delete bitmap;
+
          if(bitmap && bitmap.alphaBlend)
          {
             bitmap.Convert(null, pixelFormat888, null);

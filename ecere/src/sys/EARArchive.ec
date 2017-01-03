@@ -1,5 +1,28 @@
 namespace sys;
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+
+#endif
+
 #define uint _uint
 #include "zlib.h"
 #undef uint
@@ -76,7 +99,9 @@ static File EAROpenArchive(const char * archive, EARHeader header)
       f.Seek(-(int)archiveSize, end);
       if(f.Read(header, sizeof(EARHeader), 1) == 1 &&
          !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
+      {
          return f;
+      }
 
       delete f;
    }

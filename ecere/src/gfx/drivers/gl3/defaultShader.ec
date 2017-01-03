@@ -240,7 +240,7 @@ public:
        //PrintLn("Compiling shader for state: ", state);
 #endif
 
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) || defined(__TIZEN__)
       defs.concatf("#version 100\n");
       defs.concatf("#define GLSL_FLOAT_PRECISION   1\n");
 #else

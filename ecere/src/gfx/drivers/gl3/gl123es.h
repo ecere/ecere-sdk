@@ -1,4 +1,4 @@
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) || defined(__TIZEN__)
    #if !defined(_GLES2)
       #define _GLES2
    #endif
@@ -9,7 +9,19 @@
 #endif
 
 #if defined(_GLES2)
+#if defined(__TIZEN__)
+#define property _property
+#define __FUNCTION__
+#define EINA_UNLIKELY(a, b)
+//#include <Evas_GL.h>
+
+#include <Evas_GL_GLES2_Helpers.h>
+#undef property
+#undef __FUNCTION__
+
+#else
    #include <GLES2/gl2.h>
+#endif
 #elif defined(_GLES)
 /*
 #define uint _uint

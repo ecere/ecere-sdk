@@ -2604,6 +2604,33 @@ public char * PrintLnString(const typed_object object, ...)
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #endif
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+#undef byte
+#undef bool
+#undef true
+#undef false
+
+#endif
+
 public void PrintLn(const typed_object object, ...)
 {
    va_list args;
@@ -2613,6 +2640,8 @@ public void PrintLn(const typed_object object, ...)
    va_end(args);
 #if defined(__ANDROID__) && !defined(ECERE_NOFILE)
    LOGI("%s", buffer);
+#elif defined(__TIZEN__)
+   printf("%s", buffer);
 #else
    puts(buffer);
 #endif

@@ -1,7 +1,34 @@
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+//#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+#undef byte
+#undef bool
+#undef true
+#undef false
+
+#endif
+
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
-// #define DIAGNOSTICS
-#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+ #define DIAGNOSTICS
+#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__TIZEN__)
  #define GL_DEBUGGING
 #endif
 
@@ -30,6 +57,11 @@ namespace gfx::drivers;
          #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
       #endif
 
+   #elif defined(__TIZEN__)
+      import "evasGL"
+
+      int eglWidth = 320, eglHeight = 320;
+
    // Emscripten
    #elif defined(__EMSCRIPTEN__)
       #define property _property
@@ -42,7 +74,7 @@ namespace gfx::drivers;
       #undef uint
 
    // GLX
-   #elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+   #elif !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
       #define pointer _pointer
       #define GL_GLEXT_PROTOTYPES
 
@@ -112,7 +144,7 @@ namespace gfx::drivers;
 #endif
 
 #if defined(__WIN32__)
-#elif !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#elif !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
 default:
 private:
 #endif
@@ -394,7 +426,7 @@ class OGLDisplay : struct
    int imageBuffers[2];
    byte * pboMemory1, * pboMemory2;
    */
-#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
    GLXContext glContext;
 
    Pixmap pixmap;
@@ -424,7 +456,9 @@ class OGLSystem : struct
    HWND hwnd;
 #elif defined(__EMSCRIPTEN__)
    EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glc;
-#elif !defined(__ANDROID__) && !defined(__ODROID__)
+#elif defined(__TIZEN__)
+   void * glc;
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__TIZEN__)
    XVisualInfo * visualInfo;
    GLXContext glContext;
    GLXDrawable glxDrawable;
@@ -535,7 +569,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__EMSCRIPTEN__)
       OGLSystem oglSystem = displaySystem.driverData;
       emscripten_webgl_make_context_current(oglSystem.glc);
-#elif !defined(__ANDROID__) && !defined(__ODROID__)
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__TIZEN__)
       OGLSystem oglSystem = displaySystem.driverData;
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -559,7 +593,7 @@ class OpenGLDisplayDriver : DisplayDriver
       wglMakeCurrent(null, null);
    #elif defined(__unix__) || defined(__APPLE__)
       // printf("Making NULL current\n");
-      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__) || defined(__TIZEN__)
       #else
       glXMakeCurrent(xGlobalDisplay, None, null);
       #endif
@@ -569,7 +603,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool Lock(Display display)
    {
-#if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
       OGLDisplay oglDisplay = display.driverData;
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -619,7 +653,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap);
 
    #elif defined(__unix__) || defined(__APPLE__)
-      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__) || defined(__TIZEN__)
       #else
          if(oglDisplay.shapePixmap)
             XFreePixmap(xGlobalDisplay, oglDisplay.shapePixmap);
@@ -667,7 +701,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if !defined(_GLES2)
       const char * extensions = (canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
 #endif
-#ifdef DIAGNOSTICS
+#if defined(DIAGNOSTICS) && !defined(_GLES2)
       printf("extensions: %s\n", extensions);
 #endif
 
@@ -676,7 +710,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(_GLES)
       capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
-      capabilities = { glCaps_shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
 #else
       capabilities =
       {
@@ -858,11 +892,13 @@ class OpenGLDisplayDriver : DisplayDriver
          }
       }
    #elif defined(__unix__) || defined(__APPLE__)
-      #if defined(__ANDROID__) || defined(__ODROID__)
+      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__TIZEN__)
          #if defined(__ANDROID__)
          egl_init_display(guiApp.desktop.windowHandle);
          #elif defined(__ODROID__)
          egl_init_display((uint)displaySystem.window);
+         #elif defined(__TIZEN__)
+
          #endif
          CheckCapabilities(oglSystem, null, true);
 
@@ -888,14 +924,20 @@ class OpenGLDisplayDriver : DisplayDriver
          GLMatrixMode(GL_MODELVIEW);
          GLScaled(1.0, 1.0, -1.0);
          GLMatrixMode(GL_PROJECTION);
+#if !defined(__TIZEN__)
          glShadeModel(GL_FLAT);
+#endif
 
 #if !defined(_GLES)
          if(!glCaps_shaders)
             ;//GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
+#if !defined(__TIZEN__)
          glFogi(GL_FOG_MODE, GL_EXP);
+#endif
+#if !defined(__TIZEN__)
          glFogf(GL_FOG_DENSITY, 0);
+#endif
          glEnable(GL_NORMALIZE);
          glDepthFunc(GL_LESS);
          glClearDepth(1.0);
@@ -1015,6 +1057,7 @@ class OpenGLDisplayDriver : DisplayDriver
          egl_term_display();
       #elif defined(__EMSCRIPTEN__)
          emscripten_webgl_destroy_context(oglSystem.glc);
+      #elif defined(__TIZEN__)
       #else
       if(oglSystem.visualInfo)
       {
@@ -1043,7 +1086,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = display.displaySystem.driverData;
       bool result = true;
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__TIZEN__)
       if(loadExtensions && ogl_LoadFunctions() == ogl_LOAD_FAILED)
          PrintLn("ogl_LoadFunctions() failed!");
       CheckCapabilities(oglSystem, oglDisplay, canCheckExtensions);
@@ -1228,7 +1271,7 @@ class OpenGLDisplayDriver : DisplayDriver
          else
             ReleaseDC(display.window, oglDisplay.hdc);
 #elif defined(__unix__) || defined(__APPLE__)
-#  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+#  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__) || defined(__TIZEN__)
          result = true;
 #  else
          XVisualInfo * visualInfo = ((XWindowData)display.windowDriverData).visual;
@@ -1298,7 +1341,7 @@ class OpenGLDisplayDriver : DisplayDriver
    #if defined(__WIN32__)
          wglMakeCurrent(null, null);
    #elif defined(__unix__) || defined(__APPLE__)
-      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
+      #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__) || defined(__TIZEN__)
          result = true;
       #else
          glXMakeCurrent(xGlobalDisplay, None, null);
@@ -1842,6 +1885,8 @@ class OpenGLDisplayDriver : DisplayDriver
 #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__) || defined(__ODROID__)
          egl_swap_buffers();
+      #elif defined(__TIZEN__)
+
       #elif defined(__EMSCRIPTEN__)
       #else
          glXSwapBuffers(xGlobalDisplay, (GLXDrawable)display.window);
@@ -1923,6 +1968,7 @@ class OpenGLDisplayDriver : DisplayDriver
          convBitmap = { };
          convBitmap.Copy(bitmap);
       }
+
 
       // Pre process the bitmap... First make it 32 bit
       if(/*bitmap.pixelFormat == pixelFormatRGBA || */convBitmap.Convert(null, pixelFormat888, null))
@@ -3444,6 +3490,7 @@ class OpenGLDisplayDriver : DisplayDriver
             GLSetupTexturing(true);
 #endif
 
+         //printf("Enabling base map: %d\n", (uint)map.driverData);
          glBindTexture(diffuseTarget, (GLuint)(uintptr)map.driverData);
 
 #if ENABLE_GL_FFP
@@ -3991,7 +4038,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-#if !defined( __ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined( __ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
@@ -4127,7 +4174,7 @@ class OpenGLDisplayDriver : DisplayDriver
                GLDisableClientState(COLORS);
          }
 
-#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__TIZEN__)
 
 #if defined(__WIN32__)
          if(glLockArraysEXT)
@@ -4229,6 +4276,9 @@ IS_GLGetContext(DisplaySystem displaySystem)
 #elif defined(__ANDROID__) || defined(__ODROID__)
       return eglContext;
 #elif defined(__EMSCRIPTEN__)
+      OGLSystem system = displaySystem.driverData;
+      return (void *)system.glc;
+#elif defined(__TIZEN__)
       OGLSystem system = displaySystem.driverData;
       return (void *)system.glc;
 #else

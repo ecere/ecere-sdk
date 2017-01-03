@@ -7,11 +7,29 @@ namespace gui;
 #include <html5.h>
 #endif
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+#ifdef __TIZEN__
+   import "TizenInterface"
+
+   #define property _property
+   #define watch _watch
+   #define set _set
+   #define get _get
+
+   #include <Elementary.h>
+   #include <watch_app.h>
+   #include <app.h>
+   #include <system_settings.h>
+   #include <dlog.h>
+
+   #undef get
+   #undef set
+   #undef watch
+   #undef property
+
+   #define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 #define property _property
 #define new _new
 #define class _class
@@ -88,7 +106,7 @@ import "network"
 // import "CocoaInterface"
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 import "XInterface"
 #endif
 
@@ -228,7 +246,7 @@ public class GuiApplication : Application
       delete desktop;
       customCursors.Clear();
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -638,6 +656,14 @@ public class GuiApplication : Application
             else
                defaultDriver = "OpenGL";
          }
+   #elif defined(__TIZEN__)
+         {
+            if(driver)
+               defaultDriver = driver;
+            else
+               defaultDriver = "OpenGL";
+            switchMode = false;
+         }
    #else
          if((this.isGUIApp & 1) && !textMode)
          {
@@ -697,6 +723,8 @@ public:
    {
       Window window;
 
+      printf("Coming into Main()\n");
+
 #ifdef __EMSCRIPTEN__
       {
          int w = 0, h = 0;
@@ -718,6 +746,22 @@ public:
       {
          if(desktop)
          {
+#ifdef __TIZEN__
+            {
+               int ret;
+               printf("Caling ui_app_main()\n");
+               // ret = ui_app_main(argc, argv, &event_callback, &ad);
+               ret = watch_app_main(argc, argv, &event_callback, &ad);
+               if(ret != APP_ERROR_NONE)
+               {
+                  printf("error: %x\n", ret);
+                  if(ret == APP_ERROR_INVALID_CONTEXT)
+                     printf("APP_ERROR_INVALID_CONTEXT\n");
+               }
+               printf("Done with ui_app_main()\n");
+            }
+#else
+
             // better solution when designing tab order/activated window etc, why do windows move in the list?
             while(true)
             {
@@ -731,12 +775,12 @@ public:
                }
                if(!window) break;
             }
+#endif
          }
 
 #ifdef __EMSCRIPTEN__
-      emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
+         emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
 #endif
-
          if(desktop)
          {
             int terminated = 0;
@@ -787,7 +831,7 @@ public:
                   Wait();
                else
                {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
                   if(xGlobalDisplay)
                      XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -797,7 +841,7 @@ public:
                   lockMutex.Wait();
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
                   if(xGlobalDisplay)
                      XLockDisplay(xGlobalDisplay);
 #endif
@@ -816,7 +860,7 @@ public:
 
    void Wait(void)
    {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -836,7 +880,7 @@ public:
       lockMutex.Wait();
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1195,6 +1239,8 @@ public:
       subclass(Interface) inter;
       subclass(Skin) skin = null;
 
+      printf("SwitchMode\n");
+
       if(skinName)
       {
          OldLink link;
@@ -1343,6 +1389,10 @@ public:
                   }
                }
 
+#if defined(__TIZEN__)
+               return true;
+#endif
+
                if(currentSkin && desktop.SetupDisplay())
                {
                   desktop.active = true;
@@ -1459,7 +1509,7 @@ public:
    {
 #if !defined(__EMSCRIPTEN__)
       lockMutex.Wait();
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
@@ -1469,7 +1519,7 @@ public:
    void Unlock(void)
    {
 #if !defined(__EMSCRIPTEN__)
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -1484,7 +1534,7 @@ public:
       for(i = 0; i < count; i++)
       {
          lockMutex.Wait();
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
 #endif
@@ -1500,7 +1550,7 @@ public:
       count = lockMutex.owningThread == GetCurrentThreadID() ? lockMutex.lockCount : 0;
       for(i = 0; i < count; i++)
       {
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__TIZEN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
          if(xGlobalDisplay)
             XUnlockDisplay(xGlobalDisplay);
 #endif
@@ -1615,6 +1665,7 @@ private void emscripten_main_loop_callback()
 {
    guiApp.ProcessInput(false);
    guiApp.Cycle(false);
-   guiApp.UpdateDisplay();
+   guiApp.
+   splay();
 }
 #endif

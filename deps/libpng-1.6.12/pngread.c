@@ -1,3 +1,25 @@
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+
+#endif
 
 /* pngread.c - read a PNG file
  *
@@ -26,6 +48,8 @@ PNG_FUNCTION(png_structp,PNGAPI
 png_create_read_struct,(png_const_charp user_png_ver, png_voidp error_ptr,
     png_error_ptr error_fn, png_error_ptr warn_fn),PNG_ALLOCATED)
 {
+   printf("Coming into my own png_create_read_struct()!\n");
+
 #ifndef PNG_USER_MEM_SUPPORTED
    png_structp png_ptr = png_create_png_struct(user_png_ver, error_ptr,
       error_fn, warn_fn, NULL, NULL, NULL);

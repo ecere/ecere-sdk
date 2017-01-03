@@ -6,6 +6,33 @@ import "defaultShader"
 
 namespace gfx::drivers;
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+#undef byte
+#undef bool
+#undef true
+#undef false
+
+#endif
+
 #if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
 public union Matrix
 {
@@ -285,6 +312,7 @@ public void glmsMatrixMode(MatrixMode mode)
 public void glmsFlushMatrices()
 {
    int stack;
+   //printf("glmsFlushMatrices\n");
    for(stack = 0; stack < 3; stack++)
    {
       if(stackModified[stack])

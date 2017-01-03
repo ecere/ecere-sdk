@@ -98,9 +98,9 @@ if distributed with the Ecere SDK Windows installer.
       "TargetDirectory" : "",
       "Libraries" : [
          "jpeg",
-         "png",
          "z",
-         "freetype"
+         "freetype",
+         "E:/ecere-sdk/deps/libpng-1.6.12/obj/release.linux.tizen/libpng.a"
       ]
    },
    "Platforms" : [
@@ -215,7 +215,25 @@ if distributed with the Ecere SDK Windows installer.
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ]
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "ncurses",
+                     "pthread",
+                     "m",
+                     "dl",
+                     "fontconfig",
+                     "ungif",
+                     "GL",
+                     "ssl",
+                     "crypto"
+                  ]
+               }
+            }
+         ]
       },
       {
          "Name" : "MemoryGuard",
@@ -1174,6 +1192,17 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "Debug",
+                                       "Platforms" : [
+                                          {
+                                             "Name" : "linux",
+                                             "Options" : {
+                                                "ExcludeFromBuild" : true
+                                             }
+                                          }
+                                       ]
                                     }
                                  ]
                               },
@@ -1189,7 +1218,7 @@ if distributed with the Ecere SDK Windows installer.
                                     {
                                        "Name" : "Debug",
                                        "Options" : {
-                                          "ExcludeFromBuild" : false
+                                          "ExcludeFromBuild" : true
                                        }
                                     },
                                     {
@@ -1289,6 +1318,22 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "FileName" : "src/gfx/drivers/evasGL.ec",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Platforms" : [
+                                          {
+                                             "Name" : "linux",
+                                             "Options" : {
+                                                "ExcludeFromBuild" : false
+                                             }
+                                          }
+                                       ]
                                     }
                                  ]
                               }
@@ -1707,6 +1752,17 @@ if distributed with the Ecere SDK Windows installer.
                               },
                               {
                                  "Name" : "MinEmscripten",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Debug",
                                  "Platforms" : [
                                     {
                                        "Name" : "linux",
@@ -2157,6 +2213,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Debug",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         }
@@ -2446,6 +2513,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Debug",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2613,6 +2691,17 @@ if distributed with the Ecere SDK Windows installer.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Debug",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "linux",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2644,7 +2733,18 @@ if distributed with the Ecere SDK Windows installer.
                               }
                            ]
                         },
-                        "test_html5.c"
+                        "test_html5.c",
+                        {
+                           "FileName" : "TizenInterface.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Debug",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        }
                      ],
                      "Options" : {
                         "ExcludeFromBuild" : true

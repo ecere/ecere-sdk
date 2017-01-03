@@ -78,7 +78,7 @@
 #endif
 
 #ifdef PNG_USER_CONFIG
-#  include "pngusr.h"
+//#  include "pngusr.h"
    /* These should have been defined in pngusr.h */
 #  ifndef PNG_USER_PRIVATEBUILD
 #    define PNG_USER_PRIVATEBUILD "Custom libpng build"

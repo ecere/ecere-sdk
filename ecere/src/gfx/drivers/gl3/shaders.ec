@@ -5,6 +5,29 @@ import "String"
 
 #include "gl123es.h"
 
+#ifdef __TIZEN__
+
+#define property _property
+#define watch _watch
+#define set _set
+#define get _get
+
+#include <dlog.h>
+#include <app.h>
+#include <Elementary.h>
+#include <system_settings.h>
+#include <efl_extension.h>
+#include <Evas_GL_GLES2_Helpers.h> // TODO: Move GLES2_USE to OpenGLDisplayDriver?
+
+#define printf(...) ((void)dlog_print(DLOG_INFO, "ecere-app", __VA_ARGS__))
+
+#undef get
+#undef set
+#undef watch
+#undef property
+
+#endif
+
 namespace gfx::drivers;
 
 // Generic Shader
@@ -137,6 +160,8 @@ public:
    CompiledShader load(uint64 state)
    {
       CompiledShader shader = null;
+      //printf("Shader::load()\n");
+
 #if ENABLE_GL_SHADERS
       MapIterator<uint64, CompiledShader> it { map = programs };
       if(!vertexShaderSource && vertexShaderFile)
@@ -183,9 +208,9 @@ public:
             if(compileLog[0])
 #endif
             {
-               puts("Vertex Shader Compile Log:");
-               puts("--------------------------");
-               puts(compileLog[0] ? compileLog : "Success.");
+               printf("Vertex Shader Compile Log:\n");
+               printf("--------------------------\n");
+               printf("%s\n", compileLog[0] ? compileLog : "Success.");
             }
 
             glCompileShader(fShader);
@@ -195,11 +220,11 @@ public:
             if(compileLog[0])
 #endif
             {
-               puts("");
-               puts("");
-               puts("Fragment Shader Compile Log:");
-               puts("--------------------------");
-               puts(compileLog[0] ? compileLog : "Success.");
+               printf("\n");
+               printf("\n");
+               printf("Fragment Shader Compile Log:\n");
+               printf("--------------------------\n");
+               printf("%s\n", compileLog[0] ? compileLog : "Success.");
             }
 
             if(vStatus && fStatus)
@@ -218,11 +243,11 @@ public:
                if(compileLog[0])
    #endif
                {
-                  puts("");
-                  puts("");
-                  puts("Shader Program Linking Log:");
-                  puts("--------------------------");
-                  puts(compileLog[0] ? compileLog : "Success.");
+                  printf("\n");
+                  printf("\n");
+                  printf("Shader Program Linking Log:\n");
+                  printf("--------------------------\n");
+                  printf("%s\n", compileLog[0] ? compileLog : "Success.");
                }
 
                glValidateProgram(program);
@@ -231,11 +256,11 @@ public:
                if(compileLog[0])
    #endif
                {
-                  puts("");
-                  puts("");
-                  puts("Shader Program Validation Log:");
-                  puts("--------------------------");
-                  puts(compileLog[0] ? compileLog : "Success.");
+                  printf("\n");
+                  printf("\n");
+                  printf("Shader Program Validation Log:\n");
+                  printf("--------------------------\n");
+                  printf("%s\n", compileLog[0] ? compileLog : "Success.");
                }
                glGetProgramiv(program, GL_LINK_STATUS, &pStatus);
 
