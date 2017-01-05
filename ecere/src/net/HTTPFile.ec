@@ -8,309 +8,326 @@ import "network"
 import "SSLSocket"
 #endif
 
-class ConnectionsHolder
+#include <curl.h>
+
+#undef CompareString
+
+
+#include <stdio.h>
+#include <string.h>
+#ifndef WIN32
+#  include <sys/time.h>
+#endif
+#include <stdlib.h>
+#include <errno.h>
+
+enum fcurl_type_e
 {
-   List<HTTPConnection> connections { };
-
-   ~ConnectionsHolder()
-   {
-      HTTPConnection c;
-      while((c = connections[0]))
-         delete c;   // The HTTPConnection destructor will take out from the list
-   }
-}
-
-static ConnectionsHolder holder { };
-
-namespace net;
-
-/*static */define HTTPFILE_BUFFERSIZE = 65536;
-
-static Mutex connectionsMutex { };
-
-static class ServerNode : BTNode
-{
-   char address[24];
-   bool resolved;
-   ~ServerNode()
-   {
-      delete (char *)key;
-   }
-}
-
-static class ServerNameCache
-{
-   BinaryTree servers
-   {
-      CompareKey = (void *)BinaryTree::CompareString;
-   };
-   Mutex mutex { };
-
-   ~ServerNameCache()
-   {
-      ServerNode server;
-      while((server = (ServerNode)servers.root))
-      {
-         servers.Remove(server);
-         delete server;
-      }
-   }
-   bool Resolve(const char * host, char * address)
-   {
-      ServerNode server;
-      mutex.Wait();
-      server = (ServerNode)servers.FindString(host);
-      if(!server)
-      {
-         server = ServerNode { key = (uintptr)CopyString(host) };
-         servers.Add(server);
-         server.resolved = GetAddressFromName(host, server.address);
-      }
-      mutex.Release();
-      if(server.resolved)
-         strcpy(address, server.address);
-      return server.resolved;
-   }
+  CFTYPE_NONE=0,
+  CFTYPE_FILE=1,
+  CFTYPE_CURL=2
 };
 
-static ServerNameCache serverNameCache { };
-
-static const char * GetString(const char * string, const char * what, int count)
+struct URL_FILE
 {
-   int c;
-   for(c = 0; what[c]; c++)
-   {
-      if((count && c >= count) || (string[c] != what[c] && tolower(string[c]) != tolower(what[c])))
-         return null;
-   }
-   return string + c;
+  CURLM *multi_handle;
+  fcurl_type_e type;     /* type of handle */
+  union {
+    CURL *curl;
+    FILE *file;
+  };                   /* handle */
+
+  char *buffer;               /* buffer to store cached data*/
+  size_t buffer_len;          /* currently allocated buffers length */
+  size_t buffer_pos;          /* end of data in buffer*/
+  int still_running;          /* Is background url fetch still in progress */
+};
+
+/* we use a global one for convenience */
+// CURLM *multi_handle;
+
+/* curl calls this routine to get more data */
+static size_t write_callback(char *buffer,
+                             size_t size,
+                             size_t nitems,
+                             void *userp)
+{
+  char *newbuff;
+  size_t rembuff;
+
+  URL_FILE *url = (URL_FILE *)userp;
+  size *= nitems;
+
+  rembuff=url->buffer_len - url->buffer_pos; /* remaining space in buffer */
+
+  if(size > rembuff) {
+    /* not enough space in buffer */
+    newbuff=realloc(url->buffer, url->buffer_len + (size - rembuff));
+    if(newbuff==NULL) {
+      fprintf(stderr, "callback buffer grow failed\n");
+      size=rembuff;
+    }
+    else {
+      /* realloc succeeded increase buffer size*/
+      url->buffer_len+=size - rembuff;
+      url->buffer=newbuff;
+    }
+  }
+
+  memcpy(&url->buffer[url->buffer_pos], buffer, size);
+  url->buffer_pos += size;
+
+  return size;
 }
 
-#ifdef ECERE_NOSSL
-private class HTTPConnection : Socket
-#else
-private class HTTPConnection : SSLSocket
-#endif
+/* use to attempt to fill the read buffer up to requested number of bytes */
+static int fill_buffer(URL_FILE *file, size_t want)
 {
-   class_no_expansion;
-   char * server;
-   int port;
-   HTTPFile file;
-   bool secure;
+  fd_set fdread;
+  fd_set fdwrite;
+  fd_set fdexcep;
+  struct timeval timeout;
+  int rc;
+  CURLMcode mc; /* curl_multi_fdset() return code */
 
-   processAlone = true;
+  /* only attempt to fill buffer if transactions still running and buffer
+   * doesn't exceed required size already
+   */
+  if((!file->still_running) || (file->buffer_pos > want))
+    return 0;
 
-   ~HTTPConnection()
-   {
-      // printf("Before TakeOut we have %d connections:\n", holder.connections.count); for(c : holder.connections) ::PrintLn(c.server); ::PrintLn("");
-      holder.connections.TakeOut(this);
-      /*
-      PrintLn(server, " Connection Closed (", holder.connections.count, ") opened");
-      printf("Now we have %d connections:\n", holder.connections.count);
-      for(c : holder.connections)
-      {
-         ::PrintLn(c.server);
-      }
-      ::PrintLn("");
-      */
-      delete server;
-   }
+  /* attempt to fill buffer */
+  do {
+    int maxfd = -1;
+    long curl_timeo = -1;
 
-   void OnDisconnect(int code)
-   {
-      connectionsMutex.Wait();
-      if(file)
-         delete file.connection; // This decrements the file's reference
+    FD_ZERO(&fdread);
+    FD_ZERO(&fdwrite);
+    FD_ZERO(&fdexcep);
 
-      connectionsMutex.Release();
+    /* set a suitable timeout to fail on */
+    timeout.tv_sec = 60; /* 1 minute */
+    timeout.tv_usec = 0;
 
-      // PrintLn(server, " Disconnected Us");
-
-      delete this;         // The 'connections' reference
-   }
-
-   uint Open_OnReceive(const byte * buffer, uint count)
-   {
-      HTTPFile file = this.file;
-      int pos = 0;
-      int c;
-      while(!file.done)
-      {
-         bool gotEndLine = false;
-         for(c = 0; c<(int)count-1; c++)
-         {
-            if(buffer[c] == '\r' && buffer[c+1] == '\n')
-            {
-               gotEndLine = true;
-               break;
-            }
-         }
-         if(!gotEndLine)
-            // Incomplete packet
-            return pos;
-         if(c<count)
-         {
-            const char * string = (const char *)buffer;
-
-#ifdef _DEBUG
-            fwrite(buffer, 1, c, stdout);
-            puts("");
-#endif
-
-            if(!c)
-            {
-               //if(file.openStarted)
-                  file.done = true;
-            }
-            else
-            {
-               //file.openStarted = true;
-               if((string = GetString((const char *)buffer, "HTTP/1.1 ", count)) ||
-                  (string = GetString((const char *)buffer, "HTTP/1.0 ", count)))
-               {
-                  file.status = atoi(string);
-               }
-               else if((string = GetString((const char *)buffer, "Transfer-Encoding: ", count)))
-               {
-                  if(!strnicmp(string, "chunked", strlen("chunked")))
-                  {
-                     file.chunked = true;
-                  }
-               }
-               else if((string = GetString((const char *)buffer, "Content-Length: ", count)))
-               {
-                  file.totalSize = atoi(string);
-                  file.totalSizeSet = true;
-               }
-               else if((string = GetString((const char *)buffer, "Content-Type: ", count)))
-               {
-                  char * cr = strstr(string, "\r");
-                  char * lf = strstr(string, "\n");
-                  int len;
-                  if(cr)
-                     len = cr - string;
-                  else if(lf)
-                     len = lf - string;
-                  else
-                     len = strlen(string);
-
-                  file.contentType = new char[len+1];
-                  memcpy(file.contentType, string, len);
-                  file.contentType[len] = 0;
-               }
-               else if((string = GetString((const char *)buffer, "Content-disposition: ", count)))
-               {
-                  char * cr = strstr(string, "\r");
-                  char * lf = strstr(string, "\n");
-                  int len;
-                  if(cr)
-                     len = cr - string;
-                  else if(lf)
-                     len = lf - string;
-                  else
-                     len = strlen(string);
-
-                  file.contentDisposition = new char[len+1];
-                  memcpy(file.contentDisposition, string, len);
-                  file.contentDisposition[len] = 0;
-               }
-               else if((string = GetString((const char *)buffer, "Connection: ", count)))
-               {
-                  if(!strnicmp(string, "close", strlen("close")))
-                  {
-                     file.close = true;
-                  }
-               }
-               else if((string = GetString((const char *)buffer, "Location: ", count)))
-               {
-                  if(file.relocation)
-                  {
-                     strncpy(file.relocation, (const char *)buffer + 10, c - 10);
-                     file.relocation[c - 10] = '\0';
-                  }
-               }
-            }
-            // return c+2;
-            if(buffer[c] == '\r') c++;
-            if(buffer[c] == '\n') c++;
-            pos += c;
-            count -= c;
-            buffer += c;
-
-         }
-         else
-            break;
-      }
-
-      return pos;
-   }
-
-   uint Read_OnReceive(const byte * buffer, uint count)
-   {
-      HTTPFile file = this.file;
-      if(file)
-      {
-         int read;
-         if(file.chunked && !file.chunkSize)
-         {
-            int pos = 0, c = 0;
-            const char * string = null;
-            bool ready = false;
-            while(pos + c < (int)count-3)
-            {
-               if(buffer[pos+c] == '\r' && buffer[pos+c+1] == '\n')
-               {
-                  if(string)
-                  {
-                     ready = true;
-                     pos += c + 2;
-                     if(buffer[pos] == '\r' && buffer[pos+1] =='\n') pos+= 2;
-                     break;
-                  }
-                  else
-                  {
-                     pos += 2;
-                     c = 0;
-                  }
-               }
-               else
-               {
-                  if(!string)
-                     string = (const char *)buffer + pos;
-                  c++;
-               }
-            }
-            if(ready)
-            {
-               file.chunkSize = strtol(string, null, 16);
-               if(!file.chunkSize)
-               {
-                  file.connection.file = null;
-                  if(file.close)
-                     file.connection.Disconnect(0);
-                  delete file.connection; // This decrements the file's reference
-               }
-            }
-            return pos;
-         }
-
-         read = Min(count, HTTPFILE_BUFFERSIZE - file.bufferCount);
-         if(file.chunked)
-         {
-            read = Min(read, file.chunkSize);
-            file.chunkSize -= read;
-         }
-         if(read)
-         {
-            memcpy(file.buffer + file.bufferCount, buffer, read);
-            file.bufferCount += read;
-         }
-         return read;
-      }
+    curl_multi_timeout(file->multi_handle, &curl_timeo);
+    if(curl_timeo >= 0) {
+      timeout.tv_sec = curl_timeo / 1000;
+      if(timeout.tv_sec > 1)
+        timeout.tv_sec = 1;
       else
-         return count;
-   }
+        timeout.tv_usec = (curl_timeo % 1000) * 1000;
+    }
+
+    /* get file descriptors from the transfers */
+    mc = curl_multi_fdset(file->multi_handle, &fdread, &fdwrite, &fdexcep, &maxfd);
+
+    if(mc != CURLM_OK) {
+      fprintf(stderr, "curl_multi_fdset() failed, code %d.\n", mc);
+      break;
+    }
+
+    /* On success the value of maxfd is guaranteed to be >= -1. We call
+       select(maxfd + 1, ...); specially in case of (maxfd == -1) there are
+       no fds ready yet so we call select(0, ...) --or Sleep() on Windows--
+       to sleep 100ms, which is the minimum suggested value in the
+       curl_multi_fdset() doc. */
+
+    if(maxfd == -1) {
+#ifdef _WIN32
+      Sleep(100);
+      rc = 0;
+#else
+      /* Portable sleep for platforms other than Windows. */
+      struct timeval wait = { 0, 100 * 1000 }; /* 100ms */
+      rc = select(0, NULL, NULL, NULL, &wait);
+#endif
+    }
+    else {
+      /* Note that on some platforms 'timeout' may be modified by select().
+         If you need access to the original value save a copy beforehand. */
+      rc = select(maxfd+1, &fdread, &fdwrite, &fdexcep, &timeout);
+    }
+
+    switch(rc) {
+    case -1:
+      /* select error */
+      break;
+
+    case 0:
+    default:
+      /* timeout or readable/writable sockets */
+      curl_multi_perform(file->multi_handle, &file->still_running);
+      break;
+    }
+  } while(file->still_running && (file->buffer_pos < want));
+  return 1;
 }
+
+/* use to remove want bytes from the front of a files buffer */
+static int use_buffer(URL_FILE *file, size_t want)
+{
+  /* sort out buffer */
+  if((file->buffer_pos - want) <=0) {
+    /* ditch buffer - write will recreate */
+    free(file->buffer);
+    file->buffer=NULL;
+    file->buffer_pos=0;
+    file->buffer_len=0;
+  }
+  else {
+    /* move rest down make it available for later */
+    memmove(file->buffer,
+            &file->buffer[want],
+            (file->buffer_pos - want));
+
+    file->buffer_pos -= want;
+  }
+  return 0;
+}
+
+URL_FILE *url_fopen(const char *url, const char *operation)
+{
+  /* this code could check for URLs or types in the 'url' and
+     basically use the real fopen() for standard files */
+
+  URL_FILE *file;
+  (void)operation;
+
+  file = malloc(sizeof(URL_FILE));
+  if(!file)
+    return NULL;
+
+  memset(file, 0, sizeof(URL_FILE));
+
+  if((file->file=fopen(url, operation)))
+    file->type = CFTYPE_FILE; /* marked as URL */
+
+  else {
+    file->type = CFTYPE_CURL; /* marked as URL */
+    file->curl = curl_easy_init();
+
+    curl_easy_setopt(file->curl, CURLOPT_URL, url);
+    curl_easy_setopt(file->curl, CURLOPT_WRITEDATA, file);
+    curl_easy_setopt(file->curl, CURLOPT_VERBOSE, 0L);
+    curl_easy_setopt(file->curl, CURLOPT_WRITEFUNCTION, write_callback);
+
+    if(!file->multi_handle)
+      file->multi_handle = curl_multi_init();
+
+    curl_multi_add_handle(file->multi_handle, file->curl);
+
+    /* lets start the fetch */
+    curl_multi_perform(file->multi_handle, &file->still_running);
+
+    if((file->buffer_pos == 0) && (!file->still_running)) {
+      /* if still_running is 0 now, we should return NULL */
+
+      /* make sure the easy handle is not in the multi handle anymore */
+      curl_multi_remove_handle(file->multi_handle, file->curl);
+
+      /* cleanup */
+      curl_easy_cleanup(file->curl);
+
+      free(file);
+
+      file = NULL;
+    }
+  }
+  return file;
+}
+
+int url_fclose(URL_FILE *file)
+{
+  int ret=0;/* default is good return */
+
+  switch(file->type) {
+  case CFTYPE_FILE:
+    ret=fclose(file->file); /* passthrough */
+    break;
+
+  case CFTYPE_CURL:
+    /* make sure the easy handle is not in the multi handle anymore */
+    curl_multi_remove_handle(file->multi_handle, file->curl);
+
+    /* cleanup */
+    curl_easy_cleanup(file->curl);
+    break;
+
+  default: /* unknown or supported type - oh dear */
+    ret=EOF;
+    errno=EBADF;
+    break;
+  }
+
+  free(file->buffer);/* free any allocated buffer space */
+  free(file);
+
+  return ret;
+}
+
+int url_feof(URL_FILE *file)
+{
+  int ret=0;
+
+  switch(file->type) {
+  case CFTYPE_FILE:
+    ret=feof(file->file);
+    break;
+
+  case CFTYPE_CURL:
+    if((file->buffer_pos == 0) && (!file->still_running))
+      ret = 1;
+    break;
+
+  default: /* unknown or supported type - oh dear */
+    ret=-1;
+    errno=EBADF;
+    break;
+  }
+  return ret;
+}
+
+size_t url_fread(void *ptr, size_t size, size_t nmemb, URL_FILE *file)
+{
+  size_t want;
+
+  switch(file->type) {
+  case CFTYPE_FILE:
+    want=fread(ptr, size, nmemb, file->file);
+    break;
+
+  case CFTYPE_CURL:
+    want = nmemb * size;
+
+    fill_buffer(file, want);
+
+    /* check if theres data in the buffer - if not fill_buffer()
+     * either errored or EOF */
+    if(!file->buffer_pos)
+      return 0;
+
+    /* ensure only available data is considered */
+    if(file->buffer_pos < want)
+      want = file->buffer_pos;
+
+    /* xfer data to caller */
+    memcpy(ptr, file->buffer, want);
+
+    use_buffer(file, want);
+
+    want = want / size;     /* number of items */
+    break;
+
+  default: /* unknown or supported type - oh dear */
+    want=0;
+    errno=EBADF;
+    break;
+
+  }
+  return want;
+}
+
+namespace net;
 
 public class HTTPFile : File
 {
@@ -333,452 +350,20 @@ public:
 
    bool OpenURL(const char * name, const char * referer, char * relocation)
    {
-      return RetrieveHead(name, referer, relocation, false);
+      f = url_fopen(name, "rb");
+      return f != null;
    }
 
 private:
 
-   bool RetrieveHead(const char * name, const char * referer, char * relocation, bool askBody)
-   {
-      bool result = false;
-      const String http, https;
-      if(!this || !name) return false;
-      http = strstr(name, "http://");
-      if(http != name) http = null;
-      https = http ? null : strstr(name, "https://"); if(https && https != name) https = null;
-
-      askedBody = askBody;
-
-      done = false;
-      delete contentType;
-      delete contentDisposition;
-      // ::PrintLn("Opening ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-      if(this && (http || https))
-      {
-         char server[1024];
-         char msg[1024];
-         int len;
-         const char * serverStart = http ? ecere::net::GetString(name, "http://", 0) : ecere::net::GetString(name, "https://", 0);
-         char * fileName = strstr(serverStart, "/");
-         int port = https ? 443 : 80;
-         char * colon;
-         bool reuse = false;
-         HTTPConnection connection = null;
-         close = false;
-
-         if(fileName)
-         {
-            fileName++;
-            memcpy(server, serverStart, fileName - serverStart - 1);
-            server[fileName - serverStart - 1] = '\0';
-         }
-         else
-            strcpy(server, serverStart);
-
-         if(relocation && !fileName && name[strlen(name)-1] != '/')
-         {
-            strcpy(relocation, http ? "http://" : "https://");
-            strcat(relocation, server);
-            strcat(relocation, "/");
-         }
-
-         colon = strchr(server, ':');
-         if(colon)
-         {
-            port = atoi(colon+1);
-            *colon = '\0';
-         }
-
-         connectionsMutex.Wait();
-         if(this.connection)
-         {
-            this.connection.file = null;
-            if(close)
-               this.connection.Disconnect(0);
-            delete this.connection;
-         }
-
-         if(chunked)
-         {
-            while(this.connection && this.connection.connected && this.connection.file)
-            {
-               connectionsMutex.Release();
-               this.connection.Process();
-               connectionsMutex.Wait();
-            }
-         }
-
-         if(reuseConnection)
-         {
-            bool retry = true;
-            while(retry)
-            {
-               retry = false;
-               connection = null;
-               for(c : holder.connections)
-               {
-                  if(!strcmpi(c.server, server) && c.port == port && c.secure == (https ? true : false))
-                  {
-                     if(!c.file && c.connected)
-                     {
-                        connection = c;      // TOFIX: 'incref c' doesn't work
-                        incref connection;      // HTTPFile reference if we keep it
-                        connectionsMutex.Release();
-                        connection.OnReceive = Socket::OnReceive;
-                        connection.ProcessTimeOut(0.000001);
-                        connectionsMutex.Wait();
-                        if(!connection.connected || connection.file)
-                        {
-                           // We're disconnected or reused already...
-                           retry = true;
-                           delete connection;
-                        }
-                        break;
-                     }
-                  }
-               }
-            }
-            if(connection)
-            {
-               // ::PrintLn("Reusing Connection ", (uint64)connection, " for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-               reuse = true;
-               connection.file = this;
-            }
-         }
-
-      tryagain:
-         if(!connection)
-         {
-            char ipAddress[1024];
-            connection = HTTPConnection
-            {
-#ifndef ECERE_NOSSL
-               autoEstablish = https ? true : false
-#endif
-            };
-            incref connection;      // HTTPFile reference on success
-
-            connection.file = this;
-
-            connectionsMutex.Release();
-
-            if(serverNameCache.Resolve(server, ipAddress))
-            {
-               // ::PrintLn("No Connection - Connecting ", (uint64)connection, " for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-               if(connection.Connect(ipAddress /*server*/, port))
-               {
-                  //::PrintLn("Successfully Connected for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-                  //::PrintLn("Waiting on connectionsMutex for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-                  connectionsMutex.Wait();
-
-                  connection.server = CopyString(server);
-                  connection.port = port;
-                  connection.secure = https ? true : false;
-
-                  //::PrintLn("Got connectionsMutex for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-                  holder.connections.Add(connection);
-                  /*
-                  printf("Now we have %d connections:\n", holder.connections.count);
-                  for(c : holder.connections)
-                  {
-                     String s = c.server;
-                     ::Print("Server: ");
-                     ::PrintLn(c.server);
-                  }
-                  ::PrintLn("");
-                  */
-                  incref connection;   // Global List Reference
-               }
-               else
-               {
-                  // ::PrintLn("Connection Failed for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-                  connectionsMutex.Wait();
-                  delete connection;
-               }
-            }
-            else
-            {
-               connectionsMutex.Wait();
-               delete connection;
-            }
-         }
-
-         if(connection)
-         {
-            incref connection;      // local reference
-
-            connection.OnReceive = HTTPConnection::Open_OnReceive;
-            connection.file = this;
-            this.connection = connection;
-            this.relocation = relocation;
-            //openStarted = false;
-
-            totalSizeSet = false;   // HEAD will sometimes give you 0!
-            strcpy(msg, askBody ? "GET /" : "HEAD /");
-
-            if(fileName)
-            {
-               byte ch;
-               int c;
-               len = strlen(msg);
-               for(c = 0; (ch = fileName[c]); c++)
-               {
-                  if(ch <= 32 || ch > 128)
-                  {
-                     byte nibble;
-                     msg[len++] = '%';
-                     nibble = (ch & 0xF0) >> 4;
-                     msg[len++] = (byte)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
-                     nibble = ch & 0x0F;
-                     msg[len++] = (byte)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
-                  }
-                  else
-                     msg[len++] = ch;
-               }
-               msg[len] = '\0';
-            }
-
-            strcat(msg, " HTTP/1.1\r\nHost: ");
-            //strcat(msg, " HTTP/1.0\r\nHost: ");
-            strcat(msg, server);
-            strcat(msg, "\r\n");
-            strcat(msg, "Accept-Charset: UTF-8\r\n");
-            //strcat(msg, "Accept-Charset: ISO-8859-1\r\n");
-            strcat(msg, "Connection: Keep-Alive\r\n");
-            if(referer)
-            {
-               strcat(msg, "Referer: ");
-               strcat(msg, referer);
-               strcat(msg, "\r\n");
-            }
-            strcat(msg, "\r\n");
-            len = strlen(msg);
-
-            //::PrintLn("Releasing connectionsMutex before GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
-            connectionsMutex.Release();
-
-            // ::PrintLn("Sending GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-            connection.Send(msg, len);
-
-            {
-               Time startTime = GetTime();
-               while(this.connection && this.connection.connected && !done)
-               {
-                  //this.connection.Process();
-                  if(!this.connection.ProcessTimeOut(5) || GetTime() - startTime > 5)
-                  {
-                     status = 0;
-                     break;
-                  }
-               }
-            }
-            //::PrintLn("Got DONE for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID(), "\n");
-
-            if(this.connection)
-            {
-               if(name != location)
-               {
-                  delete location;
-                  location = CopyString(name);
-               }
-               if(status == 200 || (!status && totalSizeSet))
-               {
-                  if(askBody)
-                     this.connection.OnReceive = HTTPConnection::Read_OnReceive;
-
-                  result = true;
-                  connectionsMutex.Wait();
-               }
-               else
-               {
-                  if(askBody)
-                  {
-                     if(chunked)
-                     {
-                        //bool wait = false;
-                        this.connection.OnReceive = HTTPConnection::Read_OnReceive;
-                        while(!eof)
-                        {
-                           if(!this.connection)
-                              eof = true;
-                           else
-                           {
-                              // First time check if we already have bytes, second time wait for an event
-                              this.connection.Process();
-                              //wait = true;
-                           }
-                        }
-                     }
-                     else if(totalSizeSet)
-                     {
-                        // Is it possible to have Content-Length set but not chunked?
-                        done = false;
-                        this.connection.OnReceive = HTTPConnection::Read_OnReceive;
-                        while(this.connection && this.connection.connected && position + (bufferCount - bufferPos) < totalSize)
-                        {
-                           connection.Process();
-                           position += bufferCount - bufferPos;
-                           bufferCount = 0;
-                           bufferPos = 0;
-                        }
-                     }
-                  }
-
-                  connectionsMutex.Wait();
-                  if(this.connection)
-                  {
-                     this.connection.OnReceive = null;
-                     this.connection.file = null;
-
-                     if(close)
-                     {
-                        this.connection.Disconnect(0);
-                        connection = null;
-                     }
-                  }
-
-                  status = 0;
-                  delete this.connection; // This decrements the file's reference
-                  this.relocation = null;
-                  totalSize = 0;
-                  totalSizeSet = false;
-                  done = false;
-                  eof = false;
-                  position = 0;
-                  bufferPos = 0;
-                  bufferCount = 0;
-                  chunked = false;
-               }
-            }
-            else
-            {
-               connectionsMutex.Wait();
-            }
-            if(reuse && !status && connection && !connection.connected)
-            {
-               delete connection;
-               reuse = false;
-               goto tryagain;
-            }
-            else
-               delete connection;
-         }
-         connectionsMutex.Release();
-      }
-      return result;
-   }
-
    ~HTTPFile()
    {
-      delete location;
-      delete contentType;
-      delete contentDisposition;
-      {
-         connectionsMutex.Wait();
-         if(connection)
-         {
-            if(totalSizeSet && askedBody)
-            {
-               done = false;
-               this.connection.OnReceive = HTTPConnection::Read_OnReceive;
-               while(this.connection && this.connection.connected && position + (bufferCount - bufferPos) < totalSize)
-               {
-                  connectionsMutex.Release();
-                  connection.Process();
-                  connectionsMutex.Wait();
-                  position += bufferCount - bufferPos;
-                  bufferCount = 0;
-                  bufferPos = 0;
-               }
-               position = 0;
-            }
-
-            if(connection)
-            {
-               connection.file = null;
-               if(close)
-                  connection.Disconnect(0);
-               delete connection;
-            }
-         }
-         connectionsMutex.Release();
-
-         if(chunked)
-         {
-            while(connection && connection.connected && connection.file)
-            {
-               connectionsMutex.Release();
-               connection.Process();
-               connectionsMutex.Wait();
-            }
-         }
-         //::PrintLn("Done with ", (uint64)this);
-      }
+      url_fclose(f);
    }
 
    uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
-      uintsize readSize = size * count;
-      uintsize read = 0;
-      bool wait = false;
-      Time lastTime = GetTime();
-
-      if(!askedBody)
-      {
-         askedBody = true;
-         if(!RetrieveHead(this.location, null, null, true))
-            return 0;
-      }
-
-      if(totalSizeSet && position >= totalSize)
-         eof = true;
-      while(!eof && read < readSize && !aborted)
-      {
-         uint64 numbytes = bufferCount - bufferPos;
-         numbytes = Min(numbytes, readSize - read);
-         if(totalSizeSet)
-            numbytes = Min(numbytes, totalSize - position);
-
-         if(numbytes)
-         {
-            lastTime = GetTime();
-            memcpy(buffer + read, this.buffer + bufferPos, numbytes);
-            bufferPos += numbytes;
-            position += numbytes;
-            read += numbytes;
-
-            lastTime = GetTime();
-
-            if(bufferPos > HTTPFILE_BUFFERSIZE / 2)
-            {
-               // Shift bytes back to beginning of buffer
-               uint64 shift = bufferCount - bufferPos;
-               if(shift)
-                  memmove(this.buffer, this.buffer + bufferPos, shift);
-               bufferCount -= bufferPos;
-               bufferPos = 0;
-            }
-         }
-         else
-         {
-            if(!connection || !connection.connected)
-               eof = true;
-            else
-            {
-               // First time check if we already have bytes, second time wait for an event
-               connection.Process();
-               if(wait && bufferCount - bufferPos == 0 && GetTime() - lastTime > 5)
-               {
-                  connection.Disconnect(remoteClosed);
-                  eof = true;
-               }
-               wait = true;
-            }
-         }
-         if(totalSizeSet && position >= totalSize)
-            eof = true;
-      }
-      return read / size;
+      return url_fread(buffer, size, count, f);
    }
 
    uintsize Write(const byte * buffer, uintsize size, uintsize count)
@@ -789,7 +374,7 @@ private:
    bool Getc(char * ch)
    {
       uintsize read = Read(ch, 1, 1);
-      return !eof && read != 0;
+      return !url_feof(f) && read != 0;
    }
 
    bool Putc(char ch)
@@ -804,19 +389,19 @@ private:
 
    bool Seek(int64 pos, FileSeekMode mode)
    {
-      if(mode == start && bufferPos == 0 && pos <= bufferCount && pos >= 0)
+      if(mode == start) // && bufferPos == 0 && pos <= bufferCount && pos >= 0)
       {
-         bufferPos = pos;
+         //bufferPos = pos;
          return true;
       }
-      else if(mode == current && bufferPos == 0 && ((int)position + pos) <= bufferCount && ((int)position + pos) >= 0)
+      else if(mode == current) // && bufferPos == 0 && ((int)position + pos) <= bufferCount && ((int)position + pos) >= 0)
       {
-         bufferPos = position + pos;
+         //bufferPos = position + pos;
          return true;
       }
-      else if(mode == end && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && ((int)totalSize - pos) <= bufferCount && ((int)totalSize - pos) >= 0)
+      else if(mode == end) // && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && ((int)totalSize - pos) <= bufferCount && ((int)totalSize - pos) >= 0)
       {
-         bufferPos = totalSize - pos;
+         //bufferPos = totalSize - pos;
          return true;
       }
       return false;
@@ -824,48 +409,29 @@ private:
 
    uint64 Tell()
    {
-      return position;
+      return 0; //position;
    }
 
    bool Eof()
    {
-      return eof;
+      return (bool)url_feof(f);
    }
 
    uint64 GetSize()
    {
-      return totalSize;
+      return 0; //totalSize;
    }
 
    void Abort()
    {
-      aborted = true;
+      //aborted = true;
    }
 private:
 
-   bool askedBody;
-
-   HTTPConnection connection;
-   uint64 position;
-   bool done;
-   bool eof;
-   int status;
-   uint64 totalSize;
-   bool chunked;
-   bool close;
-   uint64 chunkSize;
-   char * relocation;
-   String location;
-
-   // Buffering...
-   byte buffer[HTTPFILE_BUFFERSIZE];
-   uint64 bufferPos;
-   uint64 bufferCount;
-   bool aborted;
-   bool totalSizeSet;
-
    String contentType;
    String contentDisposition;
+
+   URL_FILE * f;
 }
 
 public HTTPFile FileOpenURL(const char * name)
