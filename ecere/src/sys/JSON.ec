@@ -163,7 +163,7 @@ private:
       }
       else if(ch == '{')
       {
-         if(type.type == structClass || type.type == normalClass || type.type == noHeadClass)
+         if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
          {
             void * object = value.p;
             result = GetObject(type, &object);
@@ -174,7 +174,7 @@ private:
                   value.p = object;
             }
          }
-         else if(type.type == bitClass)
+         else if(type && type.type == bitClass)
          {
             uint64 object = 0;
             result = GetObject(type, (void **)&object);
@@ -659,7 +659,7 @@ private:
          int subMemberStackPos = 0;
          uint64 bits = 0;
 
-         if(objectType.type == bitClass)
+         if(objectType && objectType.type == bitClass)
          {
             switch(objectType.typeSize)
             {
@@ -1053,7 +1053,7 @@ private:
             }
          }
 
-         if(objectType.type == bitClass)
+         if(objectType && objectType.type == bitClass)
          {
             switch(objectType.typeSize)
             {
