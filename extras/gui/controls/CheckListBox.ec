@@ -88,6 +88,12 @@ class CheckListBox : ListBox
       return true;
    }
 
+   void NotifyMoved(ListBox listBox, DataRow row, Modifiers mods)
+   {
+      // Brute force for now...
+      ((CheckListBox)listBox).UpdateButtons();
+   }
+
    bool CheckPartialChecks(DataRow row)
    {
       DataRow r;
