@@ -171,12 +171,17 @@ public:
 
    bool Process()
    {
+      return ProcessTimeOut(0.2); // 200 ms is a long time!
+   }
+
+   bool ProcessTimeOut(Seconds timeOut)
+   {
       bool gotEvent = false;
       if(s != -1)
       {
          fd_set rs, ws, es;
          int selectResult;
-         struct timeval tvTO = {0, 200000};
+         struct timeval tvTO = {0, (int)(timeOut * 1000000) };
 
          FD_ZERO(&rs);
          FD_ZERO(&ws);
