@@ -88,7 +88,7 @@ class XMLParser
 
    bool Parse(const char * inputString, int count)
    {
-      bool insideTag = false;
+      int insideTag = 0;
       char tag[MAX_TAG_LEN];
       int tagLen = 0;
       bool commented = false;
@@ -110,7 +110,8 @@ class XMLParser
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
             {
-               tag[tagLen++] = ch;
+               if(tagLen < MAX_TAG_LEN-1)
+                  tag[tagLen++] = ch;
                tag[tagLen] = '\0';
                if(!strcmp(tag,  "-->"))
                {
@@ -147,14 +148,16 @@ class XMLParser
                   tag[tagLen] = '\0';
                else
                {
-                  tag[tagLen++] = ch;
+                  if(tagLen < MAX_TAG_LEN-1)
+                     tag[tagLen++] = ch;
                   tag[tagLen] = '\0';
                }
                closingTag = false;
             }
             else if(ch != '/' || lastCh != '<')
             {
-               tag[tagLen++] = ch;
+               if(tagLen < MAX_TAG_LEN-1)
+                  tag[tagLen++] = ch;
                tag[tagLen] = '\0';
             }
             else
@@ -162,7 +165,7 @@ class XMLParser
             if(!strcmp(tag, "!--"))
             {
                commented = true;
-               insideTag = false;
+               insideTag = 0;
                tagLen = 0;
                tag[tagLen] = '\0';
             }
@@ -172,7 +175,7 @@ class XMLParser
             if(ch == '<')
             {
                openingTag = true;
-               insideTag = true;
+               insideTag = 1;
                tagLen = 0;
             }
          }
@@ -188,10 +191,11 @@ class XMLParser
       commented = false;
       lastCh = ' ';
       charLen = 0;
-      insideTag = false;
+      insideTag = 0;
       closingTag = false;
       openingTag = false;
       tag[0] = 0;
+      tagLen = 0;
 
       // Parse entire file
       for(stringPos = 0; stringPos < count; stringPos++)
@@ -202,7 +206,8 @@ class XMLParser
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
             {
-               tag[tagLen++] = ch;
+               if(tagLen < MAX_TAG_LEN-1)
+                  tag[tagLen++] = ch;
                tag[tagLen] = '\0';
                if(!strcmp(tag,  "-->"))
                {
@@ -237,7 +242,6 @@ class XMLParser
                if(!insideTag)
                {
                   tag[tagLen] = '\0';
-                  insideTag = false;
 
                   string = tag;
 
@@ -248,14 +252,16 @@ class XMLParser
                }
                else
                {
-                  tag[tagLen++] = ch;
+                  if(tagLen < MAX_TAG_LEN-1)
+                     tag[tagLen++] = ch;
                   tag[tagLen] = '\0';
                }
                closingTag = false;
             }
             else if(ch != '/' || lastCh != '<')
             {
-               tag[tagLen++] = ch;
+               if(tagLen < MAX_TAG_LEN-1)
+                  tag[tagLen++] = ch;
                tag[tagLen] = '\0';
             }
             else
@@ -263,7 +269,7 @@ class XMLParser
             if(!strcmp(tag, "!--"))
             {
                commented = true;
-               insideTag = false;
+               insideTag = 0;
                tagLen = 0;
                tag[tagLen] = '\0';
             }
@@ -280,7 +286,7 @@ class XMLParser
             if(ch == '<')
             {
                openingTag = true;
-               insideTag = true;
+               insideTag = 1;
                tagLen = 0;
             }
             else
