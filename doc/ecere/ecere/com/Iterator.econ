@@ -1,3 +1,29 @@
 {
-   description = "Iterator template to iterate within containers (except Map)"
+   description = "Iterator template to iterate within containers (except Map where MapIterator should be used)",
+   also = "Container, MapIterator",
+   methods = [
+      {
+         "Index",
+         {
+            description = "Index a container by its index type (e.g. int for an Array, the key for a Map or AVL tree)",
+            parameters = [
+               {
+                  "create",
+                  {
+                     description = "True if a slot for the value being indexed should be created if it does not already exist",
+                     position = 2
+                  }
+               },
+               {
+                  "index",
+                  {
+                     description = "What to index by",
+                     position = 1
+                  }
+               }
+            ],
+            returnValue = "Returns true if the value being indexed was already present in the container."
+         }
+      }
+   ]
 }
