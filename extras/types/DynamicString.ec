@@ -47,6 +47,8 @@ public class DynamicString : Array<char>
       {
          int pos = size-1;
          if(pos == -1) { Add('\0'); pos = 0; }
+         if(size + len > minAllocSize)
+            minAllocSize += len + (minAllocSize >> 1);
          size += len;
          memcpy(&(this[pos]), s, len+1);
       }
