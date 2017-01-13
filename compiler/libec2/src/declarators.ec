@@ -210,6 +210,7 @@ public:
    {
       printStart(o);
       if(pointer) pointer.print(o);
+      if(pointer && declarator) out.Print(" ");
       if(declarator) declarator.print(o);
       printEnd(o);
    }
