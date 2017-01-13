@@ -24,6 +24,7 @@ public class DeclarationInit : ASTDeclaration
 public:
    SpecsList specifiers;
    InitDeclList declarators;
+   String comment;
 
    void print(OutputOptions o)
    {
@@ -35,6 +36,7 @@ public:
       }
       if(declarators) declarators.print(o);
       out.Print(";");
+      if(comment) out.Print(" // ", comment);
       printEnd(o);
    }
 }
