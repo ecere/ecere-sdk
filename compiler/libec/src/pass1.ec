@@ -111,6 +111,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
                {
                   if(owningClass.templateArgs)
                   {
+                     // This code path is compiled is used by WindowController, where methods are defined with template parameter as their this class (V::OnLeftButtonDown)
                      ClassTemplateArgument * arg = FindTemplateArg(owningClass, method.dataType.thisClassTemplate);
                      type.byReference = method.dataType.byReference;
 

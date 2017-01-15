@@ -6968,10 +6968,20 @@ namespace sys;
 define LEAD_OFFSET      = 0xD800 - (0x10000 >> 10);
 define SURROGATE_OFFSET = 0x10000 - (0xD800 << 10) - 0xDC00;
 
+default uint32 ccUtf8ToUnicode( uint32 byte, uint32 *state, unichar *retunicode ); // In String.ec`
+static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, retCodePoint); }
+
 public bool UTF8Validate(const char * source)
 {
    if(source)
    {
+      const byte * s = (const byte *)source;
+      unichar codepoint;
+      uint32 state = 0;
+      while (*s)
+         decodeUTF8(*s++, &state, &codepoint);
+      return state == 0;
+      /*
       int c;
       for(c = 0; source[c];)
       {
@@ -7021,6 +7031,7 @@ public bool UTF8Validate(const char * source)
            (codePoint < 0x10000 && numBytes > 3))
             return false;
       }
+      */
    }
    return true;
 }

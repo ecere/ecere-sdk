@@ -18445,6 +18445,9 @@ if(exp->expType)
 exp->expType->refCount++;
 exp->type = 5;
 exp->__anon1.list = MkListOne(MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl)), newExp));
+((struct Expression *)(*exp->__anon1.list).first)->expType = exp->expType;
+if(exp->expType)
+exp->expType->refCount++;
 }
 }
 FinishTemplatesContext(context);

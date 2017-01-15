@@ -276,61 +276,7 @@ unsigned int __ecereNameSpace__ecere__com__poolingDisabled;
 
 
 
-unsigned int __ecereNameSpace__ecere__sys__UTF8Validate(const char * source)
-{
-if(source)
-{
-int c;
-
-for(c = 0; source[c]; )
-{
-unsigned char ch = source[c];
-unsigned int codePoint = 0;
-int numBytes = 1;
-int i;
-unsigned char mask = 0x7F;
-
-if(ch & 0x80)
-{
-if(ch & 0x40)
-{
-mask >>= 2;
-numBytes++;
-if(ch & 0x20)
-{
-numBytes++;
-mask >>= 1;
-if(ch & 0x10)
-{
-if(ch & 0x08)
-return 0;
-numBytes++;
-mask >>= 1;
-}
-}
-}
-else
-return 0;
-}
-for(i = 0; i < numBytes && (ch = source[c]); i++, c++)
-{
-codePoint <<= 6;
-codePoint |= ch & mask;
-mask = 0x3F;
-if(i > 1)
-{
-if(!(ch & 0x80) || (ch & 0x40))
-return 0;
-}
-}
-if(i < numBytes)
-return 0;
-if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) || (codePoint < 0x80 && numBytes > 1) || (codePoint < 0x800 && numBytes > 2) || (codePoint < 0x10000 && numBytes > 3))
-return 0;
-}
-}
-return 1;
-}
+unsigned int ccUtf8ToUnicode(unsigned int byte, unsigned int * state, unsigned int * retunicode);
 
 int __ecereNameSpace__ecere__sys__ISO8859_1toUTF8(const char * source, char * dest, int max)
 {
@@ -913,6 +859,11 @@ void __ecereNameSpace__ecere__com__eSystem_SetPoolingDisabled(unsigned int disab
 __ecereNameSpace__ecere__com__poolingDisabled = disabled;
 }
 
+static inline unsigned int __ecereNameSpace__ecere__sys__decodeUTF8(unsigned int b, unsigned int * state, unsigned int * retCodePoint)
+{
+return ccUtf8ToUnicode(b, state, retCodePoint);
+}
+
 struct __ecereNameSpace__ecere__com__EnumClassData
 {
 struct __ecereNameSpace__ecere__sys__OldList values;
@@ -1127,6 +1078,21 @@ if(!strcasecmp(value, __ecereNameSpace__ecere__com__platformNames[c]))
 return c;
 }
 return 0;
+}
+
+unsigned int __ecereNameSpace__ecere__sys__UTF8Validate(const char * source)
+{
+if(source)
+{
+const unsigned char * s = (const unsigned char *)source;
+unsigned int codepoint;
+unsigned int state = 0;
+
+while(*s)
+__ecereNameSpace__ecere__sys__decodeUTF8(*s++, &state, &codepoint);
+return state == 0;
+}
+return 1;
 }
 
 struct __ecereNameSpace__ecere__com__Class;
