@@ -498,6 +498,7 @@ OFLAGS += \
 LIBS += \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \
+	$(call _L,curl) \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,fontconfig) \

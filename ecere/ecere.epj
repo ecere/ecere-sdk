@@ -125,7 +125,8 @@ if distributed with the Ecere SDK Windows installer.
                "Xrender",
                "GL",
                "ssl",
-               "crypto"
+               "crypto",
+               "curl"
             ],
             "LibraryDirs" : [
                "/usr/X11R6/lib"
@@ -3267,7 +3268,42 @@ if distributed with the Ecere SDK Windows installer.
                "../deps/curl-7.51.0/include",
                "../deps/curl-7.51.0/lib"
             ]
-         }
+         },
+         "Configurations" : [
+            {
+               "Name" : "Debug",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Name" : "Release",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Name" : "Static",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            }
+         ]
       }
    ],
    "ResourcesPath" : "res",
