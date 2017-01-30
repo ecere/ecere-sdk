@@ -8138,10 +8138,11 @@ public:
    virtual void OnChildResized(Window child, int x, int y, int w, int h);
 
    // Skins Virtual Functions
-   virtual void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h);
-   virtual void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh);
+   virtual void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h) { *w = 0, *h = 0; }
+   virtual void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh) { *mw = 0, *mh = 0; }
    virtual void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
+      *x = 0, *y = 0;
       *cw = *w;
       *ch = *h;
    }
