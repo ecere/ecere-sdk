@@ -4,7 +4,7 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-class GuiConfigData
+public class GuiConfigData
 {
    virtual bool onSave();
    virtual void onModified()
@@ -98,16 +98,22 @@ private:
    {
       timer.Stop();
 
-      if(windows)
+      if(windows) { windows.Free(); delete windows; }
+      if(paneSplitters) { paneSplitters.Free(); delete paneSplitters; }
+   }
+
+   thisclass copy()
+   {
+      if(this)
       {
-         windows.Free();
-         delete windows;
+         GuiConfigData configData
+         {
+            windows = windows ? { mapSrc = windows } : null;
+            paneSplitters = paneSplitters ? { mapSrc = paneSplitters } : null;
+         };
+         return configData;
       }
-      if(paneSplitters)
-      {
-         paneSplitters.Free();
-         delete paneSplitters;
-      }
+      return null;
    }
 
    Timer timer
