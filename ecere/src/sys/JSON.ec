@@ -10,8 +10,10 @@ __attribute__((unused)) static void UnusedFunction()
    int a;
    a.OnGetDataFromString(null);
    a.OnGetString(null, 0, 0);
+   a.OnCopy(0);
    a.OnFree();
 }
+extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnFree;
@@ -86,6 +88,11 @@ private:
    }
 
    JSONResult GetValue(Class type, DataValue value)
+   {
+      return _GetValue(type, value, null);
+   }
+
+   static inline JSONResult _GetValue(Class type, DataValue value, Container forMap)
    {
       JSONResult result = syntaxError;
       ch = 0;
@@ -166,7 +173,7 @@ private:
          if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
          {
             void * object = value.p;
-            result = GetObject(type, &object);
+            result = _GetObject(type, &object, forMap);
             if(result)
             {
                if(type && type.type == structClass);
@@ -425,7 +432,7 @@ private:
 
             JSONResult itemResult;
 
-            itemResult = GetValue(mapNodeType, value);
+            itemResult = _GetValue(mapNodeType, value, *map);
             if(itemResult == success)
             {
                String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
@@ -640,6 +647,11 @@ private:
    }
 
    public JSONResult GetObject(Class objectType, void ** object)
+   {
+      return _GetObject(objectType, object, null);
+   }
+
+   static inline JSONResult _GetObject(Class objectType, void ** object, Container forMap)
    {
       JSONResult result = syntaxError;
       if(!objectType || objectType.type != structClass)
@@ -1014,7 +1026,21 @@ private:
                                  else
                                  {
                                     if(isTemplateArg)
-                                       ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
+                                    {
+                                       if(forMap && objectType.templateClass == class(MapNode))
+                                       {
+                                          if(isKey)
+                                          {
+                                             Class keyClass = objectType.templateArgs[0].dataTypeClass;
+                                             void (* onCopy)(void *, void *, void *) = keyClass._vTbl[__ecereVMethodID_class_OnCopy];
+                                             onCopy(keyClass, (byte *)&((MapNode)*object).key + __ENDIAN_PAD(sizeof(void *)), value.p);
+                                          }
+                                          else
+                                             forMap.SetData(*object, (uint64)(uintptr)value.p);
+                                       }
+                                       else
+                                          ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
+                                    }
                                     else
                                        ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
                                  }
@@ -1270,7 +1296,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
          else
             isFirst = false;
          for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false);
+         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, map);
       }
       f.Puts("\n");
       indent--;
@@ -1572,7 +1598,7 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    }
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      WriteONObject(f, type, value.p, indent, eCON, false);
+      WriteONObject(f, type, value.p, indent, eCON, false, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
    {
@@ -1596,7 +1622,7 @@ public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, false, false);
+      result = WriteONObject(f, objectType, object, indent, false, false, null);
       f.Puts("\n");
    }
    return result;
@@ -1607,13 +1633,13 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, true, false);
+      result = WriteONObject(f, objectType, object, indent, true, false, null);
       f.Puts("\n");
    }
    return result;
 }
 
-static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier)
+static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
 {
    if(object)
    {
@@ -1681,15 +1707,18 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      DataValue value { };
                      bool isTemplateArg = false;
                      Class type;
+                     bool isMapNodeValue = false, isMapNodeKey = false;
 
                      if(mapKeyClass && !strcmp(prop.name, "key"))
                      {
                         isTemplateArg = true;
+                        isMapNodeKey = true;
                         type = mapKeyClass;
                      }
                      else if(mapDataClass && !strcmp(prop.name, "value"))
                      {
                         isTemplateArg = true;
+                        isMapNodeValue = true;
                         type = mapDataClass;
                      }
                      else
@@ -1735,7 +1764,13 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         else if(type.type == structClass)
                         {
                            value.p = new0 byte[type.structSize];
-                           ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
+                           if(forMap && (isMapNodeKey || isMapNodeValue))
+                           {
+                              void * p = isMapNodeValue ? (void *)forMap.GetData(object) : (void *)((Map)forMap).GetKey(object);
+                              memcpy(value.p, p, type.structSize);
+                           }
+                           else
+                              ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
                         }
                         else
                         {
