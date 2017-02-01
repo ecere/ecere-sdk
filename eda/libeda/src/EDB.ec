@@ -891,6 +891,11 @@ public:
    void Free() { delete this; }
 }
 
+class Id32 : uint32
+{
+}
+import "idList"
+
 static class EDBRow : DriverRow
 {
    DBTable tbl;
@@ -937,7 +942,14 @@ static class EDBRow : DriverRow
             if(((field.num < numFields && offsets[field.num-1] && offsets[field.num-1] != offsets[field.num]) || (field.num == numFields && offsets[field.num-1])))
             {
                f.Seek(offsets[field.num-1], start);
-               ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnUnserialize])(field.type, data, f);
+               if(eClass_IsDerived(field.type, class(Id)))
+               {
+                  Id32 id;
+                  ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnUnserialize])(class(Id32), &id, f);
+                  *(Id *)data = (Id)id;
+               }
+               else
+                  ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnUnserialize])(field.type, data, f);
                result = true;
             }
 
@@ -1189,7 +1201,14 @@ static class EDBRow : DriverRow
                f.Seek(offsets[field.num-1], start);
                if(type.type == structClass)
                   read = (int64)(intptr)new0 byte[type.structSize];
-               ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)(intptr)read : &read, f);
+               if(eClass_IsDerived(type, class(Id)))
+               {
+                  Id32 id;
+                  ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(class(Id32), &id, f);
+                  read = (Id)id;
+               }
+               else
+                  ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)(intptr)read : &read, f);
             }
             //if(data._class == type)
             {
