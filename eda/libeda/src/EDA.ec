@@ -336,6 +336,7 @@ public:
       list.ClearFields();
       for(fld = firstField; fld; fld = fld.next)
       {
+         Class c = fld.type;
          DataField df
          {
             alignment = left;
@@ -364,32 +365,32 @@ public:
             {
                int64 data = 0;
                Class type = fld.type;
-               if(type.type == unitClass && !type.typeSize)
+               if(type && type.type == unitClass && !type.typeSize)
                {
                   Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
                   if(dataType)
                      type = dataType;
                }
-               if(type.type == structClass)
+               if(type && type.type == structClass)
                   data = (int64)(intptr)new0 byte[type.structSize];
                if(!df.prev)
                {
                   dr = list.AddRow();
                   dr.tag = r.sysID;
                }
-               ((bool (*)())(void *)r.GetData)(r, fld, type, (type.type == structClass) ? (void *)(intptr)data : &data);
-               if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+               ((bool (*)())(void *)r.GetData)(r, fld, type, (type && type.type == structClass) ? (void *)(intptr)data : &data);
+               if(type && (type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   dr.SetData(df, (void *)&data);
                else
                   dr.SetData(df, (void *)(intptr)data);
 
                // Is this missing some frees here? strings? Probably not: freeData = true?
                // ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
-               if(type.type == structClass)
+               if(type && type.type == structClass)
                {
                   delete (void *)(intptr)data;
                }
-               else if(!strcmp(type.dataTypeString, "char *"))
+               else if(type && !strcmp(type.dataTypeString, "char *"))
                {
                   // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
                   delete (char *)(intptr)data;
