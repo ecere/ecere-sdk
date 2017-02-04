@@ -47,7 +47,7 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
          int cr = key->color.color.r;
          int cg = key->color.color.g;
          int cb = key->color.color.b;
-         int na = nextKey->color.color.r;
+         int na = nextKey->color.a;
          int nr = nextKey->color.color.r;
          int ng = nextKey->color.color.g;
          int nb = nextKey->color.color.b;
@@ -56,7 +56,7 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
          int g = (int)(cg + (ng - cg) * scale);
          int b = (int)(cb + (nb - cb) * scale);
 
-         a = Max(Min(r, 255),0);
+         a = Max(Min(a, 255),0);
          r = Max(Min(r, 255),0);
          g = Max(Min(g, 255),0);
          b = Max(Min(b, 255),0);
