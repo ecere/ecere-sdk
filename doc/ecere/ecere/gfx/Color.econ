@@ -5,32 +5,14 @@
    example = "Color red = { r = 255 }; // High intensity red.<br>"
       "Color yellow = { 0xFFFF00 }; // High intensity yellow. r = 0xFF(255), g = 0xFF(255), b = 0x00(0)",
    also = "Color444, Color555, Color565, ColorAlpha, ColorCMYK, ColorHSV, ColorKey, ColorLab, ColorRGB, ColorRGBA, DefinedColor, PixelFormat, SystemColor",
-   fields = [
-      {
-         "b",
-         {
-            description = "The green component of the color. A value between 0 and 255(0x0 and 0xFF)."
-         }
-      },
-      {
-         "g",
-         {
-            description = "The green component of the color. A value between 0 and 255(0x0 and 0xFF)."
-         }
-      },
-      {
-         "r",
-         {
-            description = "The red component of the color. A value between 0 and 255(0x0 and 0xFF)."
-         }
-      }
-   ],
-   conversions = [
-      {
-         "ColorRGB",
-         {
-            description = "Enables the conversion from the Color type, to the ColorRGB type where each color element is stored as a floating point number."
-         }
-      }
-   ]
+   fields = [ {"b", {
+      description = "The green component of the color. A value between 0 and 255(0x0 and 0xFF)."
+   }}, {"g", {
+      description = "The green component of the color. A value between 0 and 255(0x0 and 0xFF)."
+   }}, {"r", {
+      description = "The red component of the color. A value between 0 and 255(0x0 and 0xFF)."
+   }} ],
+   conversions = [ {"ColorRGB", {
+      description = "Enables the conversion from the Color type, to the ColorRGB type where each color element is stored as a floating point number."
+   }} ]
 }

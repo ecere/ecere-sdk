@@ -1,0 +1,5 @@
+{
+   methods = [ {"Free", {
+      description = "This only needs to be called if a \"name\" was set; otherwise it can just be deleted when it is done being used"
+   }} ]
+}

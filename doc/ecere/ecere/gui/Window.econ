@@ -1,360 +1,206 @@
 {
    name = "Window",
    description = "Base class for all GUI elements (controls, dialogs and forms)",
-   fields = [
-      {
-         "sbh",
-         {
-            description = "This is the instance of the horizontal ScrollBar. Generally only used internally by eC."
-         }
-      },
-      {
-         "sbv",
-         {
-            description = "This is the instance of the vertical ScrollBar. Generally only used internally by eC."
-         }
-      }
-   ],
-   properties = [
-      {
-         "alphaBlend",
-         {
-            description = "Set to true to blend with the desktop environment's. Support & performance varies."
-         }
-      },
-      {
-         "anchor",
-         {
-            description = "Very similar to position, only with more versatility. Anchor allows you to set the top, left, bottom, and right settings relative to the top, left, bottom and right of the Window/Controls parent's clientArea."
-         }
-      },
-      {
-         "background",
-         {
-            description = "Color the client area is filled with"
-         }
-      },
-      {
-         "borderStyle",
-         {
-            description = "The type of Window frame your Window has."
-         }
-      },
-      {
-         "caption",
-         {
-            description = "The text which should appear in the caption of this window. For forms/dialogs with title bars, this will appear in the title bar. For controls, this is typically the text which should appear in the label associated with th control through the 'labeledWindow' property."
-         }
-      },
-      {
-         "clickThrough",
-         {
-            description = "When true, this Window/Control redirects mouse clicks to its parent rather than processing the mouse clicks itself. Essentially, the mouse becomes invisible to this item."
-         }
-      },
-      {
-         "clientSize",
-         {
-            description = "Sets the size of the interior of the Window; the Client Area.<br>"
-               "Example: clientSize = { 190, 290 };"
-         }
-      },
-      {
-         "closeButton",
-         {
-            description = "This is the control for the CloseButton at the top right of the Window."
-         }
-      },
-      {
-         "disabled",
-         {
-            description = "Greys out ALL controls within the Window making them unusable, including the controls on the TitleBar. When applied to an individual control, rather than an entire Window, then only that control is greyed out an unusable."
-         }
-      },
-      {
-         "dontHideScroll",
-         {
-            description = "When true, the Horizontal and Vertical Scroll Bars are not hidden when all the contents are within the viewspace."
-         }
-      },
-      {
-         "drawBehind",
-         {
-            description = "When true(default), then the contents of the screen behind the Window are still redrawn. If false, then the screen behind is not redrawn, which can leave \"ghosts\" of the Window on the screen when it is moved or resized."
-         }
-      },
-      {
-         "font",
-         {
-            description = "Default font used for rendering the text within this Window and its controls.."
-         }
-      },
-      {
-         "foreground",
-         {
-            description = "The Color of the text in the Client Area.<br>"
-               "Example: foreground = { r = 0, g = 0, b = 0 };"
-         }
-      },
-      {
-         "hasClose",
-         {
-            description = "When true, the Window will contain a Close button on the top right side of the Title Bar."
-         }
-      },
-      {
-         "hasHorzScroll",
-         {
-            description = "When true, the Window has a Horizontal Scroll bar across its bottom. When the contents of the Window exceeds its horizontal borders."
-         }
-      },
-      {
-         "hasMaximize",
-         {
-            description = "When true, the Window will contain a Maximize button on the right side of the Title Bar."
-         }
-      },
-      {
-         "hasMenuBar",
-         {
-            description = "When true, the Window will contain a Menu Bar immediately below the Title Bar."
-         }
-      },
-      {
-         "hasMinimize",
-         {
-            description = "When true, the Window will contain a Minimize button on the right side of the Title Bar."
-         }
-      },
-      {
-         "hasStatusBar",
-         {
-            description = "When true, the Window will contain a Status Bar at the bottom."
-         }
-      },
-      {
-         "hasVertScroll",
-         {
-            description = "When true, the Window has a Vertical Scroll bar along the right hand side. When the contents of the Window exceeds its vertical borders."
-         }
-      },
-      {
-         "hotKey",
-         {
-            description = "The key associated with a particular Window or Control. Pressing this key, or key combination will automatically activate the associated Window or Control.<br>"
-               "Note: If the tabCycle property of the parent is not true, then hotKey will not work unless the parent is active."
-         }
-      },
-      {
-         "id",
-         {
-            description = "An integer id to uniquely identify the window (e.g. when sharing method implementations among multiple controls), or for storing arbitrary user data."
-         }
-      },
-      {
-         "isDocument",
-         {
-            description = "When true, this Window/Control would be treated as a document, enabling things like having the path show up in the Title Bar. <br>"
-               "Note: For best results, set this property true on a Window rather than on a Control."
-         }
-      },
-      {
-         "master",
-         {
-            description = "The owner of this Window which should receive notifications (e.g. if this Window is a control)."
-         }
-      },
-      {
-         "maxClientSize",
-         {
-            description = "The Maximum allowable size for the Client Area within the window.<br>"
-               "Example: maxClientSize = { 120, 400 };"
-         }
-      },
-      {
-         "maximizeButton",
-         {
-            description = "This is the control for the MaximizeButton at the top right of the Window."
-         }
-      },
-      {
-         "menu",
-         {
-            description = "The Menu portion of the Window."
-         }
-      },
-      {
-         "minClientSize",
-         {
-            description = "The Minimum allowable size for the Client Area within the window.<br>"
-               "Example: minClientSize = { 50, 50 };"
-         }
-      },
-      {
-         "minimizeButton",
-         {
-            description = "This is the control for the MinimizeButton at the top right of the Window."
-         }
-      },
-      {
-         "name",
-         {
-            description = "(internal field for the Ecere IDE's Object Designer which matches the instance or class name)"
-         }
-      },
-      {
-         "noCycle",
-         {
-            description = "When true, then the particular control which this is set on becomes exempt from the Tab cycling normally available from it's parents tabCycle property."
-         }
-      },
-      {
-         "nonClient",
-         {
-            description = "When true, enables the Window/Control to inhabit a region outside of the clientArea, but still constrained to the Parent. Normally this is used for system controls like the buttons in the Title Bar."
-         }
-      },
-      {
-         "normalAnchor",
-         {
-            description = "The anchor of the Window in its normal state, that is not minimized or maximized."
-         }
-      },
-      {
-         "opacity",
-         {
-            description = "A value between 0.0f and 1.0f specifying the opacity which wthich the client area's background will be filled using the background color."
-         }
-      },
-      {
-         "parent",
-         {
-            description = "The Window within whose client area this window is constrained."
-         }
-      },
-      {
-         "position",
-         {
-            description = "The position of a Window/Control relative to the top left client area of the Parent. <br>"
-               "Example: position = { 10, 10 };"
-         }
-      },
-      {
-         "size",
-         {
-            description = "Sets the size of the Window, including all the decorations.<br>"
-               "Example: size = { 200, 300 };"
-         }
-      },
-      {
-         "state",
-         {
-            description = "Sets the state of the Window, either Normal, Minimized, or Maximized.<br>"
-               "state = Normal;"
-         }
-      },
-      {
-         "stayOnTop",
-         {
-            description = "When true, the Window will stay on top of all other windows. Does not apply to controls."
-         }
-      },
-      {
-         "tabCycle",
-         {
-            description = "When true, then it becomes possible to use the tab key to cycle through all of the children of this Window/Control. The order of cycling is determined by the order of instantiation. Note: If tabCycle is not true on the parent, then children with hotKeys set, will not be activated by pressing the hotKey, unless the parent is currently active."
-         }
-      },
-      {
-         "text",
-         {
-            description = "Deprecated. Use 'caption'."
-         }
-      },
-      {
-         "visible",
-         {
-            description = "When true, the Window/Control is actually visible on the screen."
-         }
-      }
-   ],
-   methods = [
-      {
-         "Destroy",
-         {
-            description = "Destroys the current Window/Control.",
-            usage = "Used in the statement section of the source code.",
-            example = "Window<br>"
-               "{<br>"
-               "   text = \"Destroy Example\";<br>"
-               "   Button <br>"
-               "   {<br>"
-               "      text = \"Destroy this Window!\";",
-            parameters = [
-               {
-                  "code",
-                  {
-                     description = "0",
-                     position = 1
-                  }
-               }
-            ]
-         }
-      },
-      {
-         "OnCreate",
-         {
-            description = "Called any time a Window is created. And can be overridden to perform actions at the time that a window is created.",
-            returnValue = "When true, the Window creation was successful."
-         }
-      },
-      {
-         "OnRedraw",
-         {
-            description = "This method is called anytime the Window is redrawn. Usually when it is resized or moved, however can also be called manually by calling Update() to redraw the contents of the window.",
-            usage = "Use this method by overriding it in your own code, within the Window class that it belongs to.",
-            example = "class Form1 : Window<br>"
-               "{<br>"
-               "   void OnRedraw(Surface surface)<br>"
-               "   {<br>"
-               "      surface.blit( image, xdest, ydest, sourceX, sourceY, sourceW, sourceH );<br>"
-               "   }<br>"
-               "}",
-            remarks = "Typically this method is responsible for the actual drawing of all the graphics for your program.",
-            also = "OnApplyGraphics(), OnLoadGraphics(), OnResize(), OnResizing(), Update(), Window",
-            parameters = [
-               {
-                  "surface",
-                  {
-                     description = "The graphical context which is obtained for this window, which will be drawn to.",
-                     position = 1
-                  }
-               }
-            ]
-         }
-      },
-      {
-         "Update",
-         {
-            description = "Causes the OnRedraw() method of the Window to be called.",
-            usage = "Used in the statement section of the code.",
-            example = "class Form1 : Window<br>"
-               "{<br>"
-               "   Update( null ); // update the entire window<br>"
-               "   Update( { 0, 0, 50, 50 } ); // update the region from 0 to 50 on the x axis, and 0 to 50 on the y axis.<br>"
-               "} ",
-            remarks = "One should only update the necessary areas when possible, as updating the entire window indiscriminately can hog precious CPU cycles.",
-            also = "UpdateDisplay(), OnRedraw()",
-            parameters = [
-               {
-                  "region",
-                  {
-                     description = "Defines the area of the Window to be updated. If null is specified, then the entire window is updated.",
-                     position = 1
-                  }
-               }
-            ]
-         }
-      }
-   ]
+   fields = [ {"sbh", {
+      description = "This is the instance of the horizontal ScrollBar. Generally only used internally by eC."
+   }}, {"sbv", {
+      description = "This is the instance of the vertical ScrollBar. Generally only used internally by eC."
+   }} ],
+   properties = [ {"alphaBlend", {
+      description = "Set to true to blend with the desktop environment's. Support & performance varies."
+   }}, {"anchor", {
+      description = "Very similar to position, only with more versatility. Anchor allows you to set the top, left, bottom, and right settings relative to the top, left, bottom and right of the Window/Controls parent's clientArea."
+   }}, {"background", {
+      description = "Color the client area is filled with"
+   }}, {"borderStyle", {
+      description = "The type of Window frame your Window has."
+   }}, {"caption", {
+      description = "The text which should appear in the caption of this window. For forms/dialogs with title bars, this will appear in the title bar. For controls, this is typically the text which should appear in the label associated with th control through the 'labeledWindow' property."
+   }}, {"clickThrough", {
+      description = "When true, this Window/Control redirects mouse clicks to its parent rather than processing the mouse clicks itself. Essentially, the mouse becomes invisible to this item."
+   }}, {"clientSize", {
+      description = "Sets the size of the interior of the Window; the Client Area.<br>"
+         "Example: clientSize = { 190, 290 };"
+   }}, {"closeButton", {
+      description = "This is the control for the CloseButton at the top right of the Window."
+   }}, {"disabled", {
+      description = "Greys out ALL controls within the Window making them unusable, including the controls on the TitleBar. When applied to an individual control, rather than an entire Window, then only that control is greyed out an unusable."
+   }}, {"dontHideScroll", {
+      description = "When true, the Horizontal and Vertical Scroll Bars are not hidden when all the contents are within the viewspace."
+   }}, {"drawBehind", {
+      description = "When true(default), then the contents of the screen behind the Window are still redrawn. If false, then the screen behind is not redrawn, which can leave \"ghosts\" of the Window on the screen when it is moved or resized."
+   }}, {"font", {
+      description = "Default font used for rendering the text within this Window and its controls.."
+   }}, {"foreground", {
+      description = "The Color of the text in the Client Area.<br>"
+         "Example: foreground = { r = 0, g = 0, b = 0 };"
+   }}, {"hasClose", {
+      description = "When true, the Window will contain a Close button on the top right side of the Title Bar."
+   }}, {"hasHorzScroll", {
+      description = "When true, the Window has a Horizontal Scroll bar across its bottom. When the contents of the Window exceeds its horizontal borders."
+   }}, {"hasMaximize", {
+      description = "When true, the Window will contain a Maximize button on the right side of the Title Bar."
+   }}, {"hasMenuBar", {
+      description = "When true, the Window will contain a Menu Bar immediately below the Title Bar."
+   }}, {"hasMinimize", {
+      description = "When true, the Window will contain a Minimize button on the right side of the Title Bar."
+   }}, {"hasStatusBar", {
+      description = "When true, the Window will contain a Status Bar at the bottom."
+   }}, {"hasVertScroll", {
+      description = "When true, the Window has a Vertical Scroll bar along the right hand side. When the contents of the Window exceeds its vertical borders."
+   }}, {"hotKey", {
+      description = "The key associated with a particular Window or Control. Pressing this key, or key combination will automatically activate the associated Window or Control.<br>"
+         "Note: If the tabCycle property of the parent is not true, then hotKey will not work unless the parent is active."
+   }}, {"id", {
+      description = "An integer id to uniquely identify the window (e.g. when sharing method implementations among multiple controls), or for storing arbitrary user data."
+   }}, {"isDocument", {
+      description = "When true, this Window/Control would be treated as a document, enabling things like having the path show up in the Title Bar. <br>"
+         "Note: For best results, set this property true on a Window rather than on a Control."
+   }}, {"master", {
+      description = "The owner of this Window which should receive notifications (e.g. if this Window is a control)."
+   }}, {"maxClientSize", {
+      description = "The Maximum allowable size for the Client Area within the window.<br>"
+         "Example: maxClientSize = { 120, 400 };"
+   }}, {"maximizeButton", {
+      description = "This is the control for the MaximizeButton at the top right of the Window."
+   }}, {"menu", {
+      description = "The Menu portion of the Window."
+   }}, {"minClientSize", {
+      description = "The Minimum allowable size for the Client Area within the window.<br>"
+         "Example: minClientSize = { 50, 50 };"
+   }}, {"minimizeButton", {
+      description = "This is the control for the MinimizeButton at the top right of the Window."
+   }}, {"name", {
+      description = "(internal field for the Ecere IDE's Object Designer which matches the instance or class name)"
+   }}, {"noCycle", {
+      description = "When true, then the particular control which this is set on becomes exempt from the Tab cycling normally available from it's parents tabCycle property."
+   }}, {"nonClient", {
+      description = "When true, enables the Window/Control to inhabit a region outside of the clientArea, but still constrained to the Parent. Normally this is used for system controls like the buttons in the Title Bar."
+   }}, {"normalAnchor", {
+      description = "The anchor of the Window in its normal state, that is not minimized or maximized."
+   }}, {"opacity", {
+      description = "A value between 0.0f and 1.0f specifying the opacity which wthich the client area's background will be filled using the background color."
+   }}, {"parent", {
+      description = "The Window within whose client area this window is constrained."
+   }}, {"position", {
+      description = "The position of a Window/Control relative to the top left client area of the Parent. <br>"
+         "Example: position = { 10, 10 };"
+   }}, {"size", {
+      description = "Sets the size of the Window, including all the decorations.<br>"
+         "Example: size = { 200, 300 };"
+   }}, {"state", {
+      description = "Sets the state of the Window, either Normal, Minimized, or Maximized.<br>"
+         "state = Normal;"
+   }}, {"stayOnTop", {
+      description = "When true, the Window will stay on top of all other windows. Does not apply to controls."
+   }}, {"tabCycle", {
+      description = "When true, then it becomes possible to use the tab key to cycle through all of the children of this Window/Control. The order of cycling is determined by the order of instantiation. Note: If tabCycle is not true on the parent, then children with hotKeys set, will not be activated by pressing the hotKey, unless the parent is currently active."
+   }}, {"text", {
+      description = "Deprecated. Use 'caption'."
+   }}, {"visible", {
+      description = "When true, the Window/Control is actually visible on the screen."
+   }} ],
+   methods = [ {"AcquireInput", {
+      description = "Acquires the mouse input"
+   }}, {"Create", {
+      description = "Creates the Window in the display "
+   }}, {"Destroy", {
+      description = "Destroys the current Window/Control.",
+      usage = "Used in the statement section of the source code.",
+      example = "Window<br>"
+         "{<br>"
+         "   text = \"Destroy Example\";<br>"
+         "   Button <br>"
+         "   {<br>"
+         "      text = \"Destroy this Window!\";",
+      parameters = [ {"code", {
+         description = "0",
+         position = 1
+      }} ]
+   }}, {"OnClose", {
+      description = "Called when the window is set to be closed. Making this return false will prevent the window from closing."
+   }}, {"OnCreate", {
+      description = "Called any time a Window is created. And can be overridden to perform actions at the time that a window is created.",
+      returnValue = "When true, the Window creation was successful."
+   }}, {"OnDestroy", {
+      description = "Called when the Window is flagged for destruction, but before destruction has completed"
+   }}, {"OnDestroyed", {
+      description = "Called after destruction of the Window has completed."
+   }}, {"OnKeyDown", {
+      description = "Called when any key is pressed"
+   }}, {"OnKeyHit", {
+      description = "Called when any key is pressed and released"
+   }}, {"OnKeyUp", {
+      description = "Called when any key is released"
+   }}, {"OnLeftButtonDown", {
+      description = "Called when the left mouse button is pressed"
+   }}, {"OnLeftButtonUp", {
+      description = "Called when the left mouse button is released"
+   }}, {"OnLeftDoubleClick", {
+      description = "Called when the left mouse button is double-clicked"
+   }}, {"OnLoadGraphics", {
+      description = "Called when the graphics are loaded"
+   }}, {"OnMiddleButtonDown", {
+      description = "Called when the middle mouse button is pressed"
+   }}, {"OnMiddleButtonUp", {
+      description = "Called when the middle mouse button is released"
+   }}, {"OnMiddleDoubleClick", {
+      description = "Called when the middle mouse button is double-clicked"
+   }}, {"OnMouseCaptureLost", {
+      description = "Called when the mouse capture is lost"
+   }}, {"OnMouseLeave", {
+      description = "Called when the mouse leaves the Window area"
+   }}, {"OnMouseMove", {
+      description = "Called when the mouse moves"
+   }}, {"OnMouseOver", {
+      description = "Called when the mouse moves over this Window"
+   }}, {"OnMultiTouch", {
+      description = "Used to handle multi-touch events for touch devices"
+   }}, {"OnRedraw", {
+      description = "This method is called anytime the Window is redrawn. Usually when it is resized or moved, however can also be called manually by calling Update() to redraw the contents of the window.",
+      usage = "Use this method by overriding it in your own code, within the Window class that it belongs to.",
+      example = "class Form1 : Window<br>"
+         "{<br>"
+         "   void OnRedraw(Surface surface)<br>"
+         "   {<br>"
+         "      surface.blit( image, xdest, ydest, sourceX, sourceY, sourceW, sourceH );<br>"
+         "   }<br>"
+         "}",
+      remarks = "Typically this method is responsible for the actual drawing of all the graphics for your program.",
+      also = "OnApplyGraphics(), OnLoadGraphics(), OnResize(), OnResizing(), Update(), Window",
+      parameters = [ {"surface", {
+         description = "The graphical context which is obtained for this window, which will be drawn to.",
+         position = 1
+      }} ]
+   }}, {"OnResize", {
+      description = "Called when the Window is resized"
+   }}, {"OnRightButtonDown", {
+      description = "Called when the right mouse button is pressed"
+   }}, {"OnRightButtonUp", {
+      description = "Called when the right mouse button is released"
+   }}, {"OnRightDoubleClick", {
+      description = "Called when the right mouse button is double-clicked"
+   }}, {"OnSysKeyDown", {
+      description = "Called when a system key is pressed"
+   }}, {"OnSysKeyHit", {
+      description = "Called when a system key is pressed and released"
+   }}, {"OnSysKeyUp", {
+      description = "Called when a system key is released"
+   }}, {"OnUnloadGraphics", {
+      description = "Called when the graphics are unloaded"
+   }}, {"Update", {
+      description = "Causes the OnRedraw() method of the Window to be called.",
+      usage = "Used in the statement section of the code.",
+      example = "class Form1 : Window<br>"
+         "{<br>"
+         "   Update( null ); // update the entire window<br>"
+         "   Update( { 0, 0, 50, 50 } ); // update the region from 0 to 50 on the x axis, and 0 to 50 on the y axis.<br>"
+         "} ",
+      remarks = "One should only update the necessary areas when possible, as updating the entire window indiscriminately can hog precious CPU cycles.",
+      also = "UpdateDisplay(), OnRedraw()",
+      parameters = [ {"region", {
+         description = "Defines the area of the Window to be updated. If null is specified, then the entire window is updated.",
+         position = 1
+      }} ]
+   }} ]
 }

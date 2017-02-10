@@ -1,0 +1,78 @@
+{
+   properties = [
+      {
+         "bevel",
+         {
+            description = "Whether the Button has a default bevel image"
+         }
+      },
+      {
+         "bitmap",
+         {
+            description = "Image for the Button"
+         }
+      },
+      {
+         "checked",
+         {
+            description = "Whether the checkbox is checked or not; see isCheckBox flag"
+         }
+      },
+      {
+         "isCheckbox",
+         {
+            description = "Makes this Button a checkbox"
+         }
+      },
+      {
+         "opacity",
+         {
+            description = "The opacity of the Button"
+         }
+      }
+   ],
+   methods = [
+      {
+         "NotifyClicked",
+         {
+            description = "Called when the button is clicked. The return value is deprecated, but to be safe, always set it to true. In the future, this will return void."
+         }
+      },
+      {
+         "NotifyDoubleClick",
+         {
+            description = "Called when the Button is double-clicked."
+         }
+      },
+      {
+         "NotifyMouseLeave",
+         {
+            description = "Called when the mouse ceases to be over the Button."
+         }
+      },
+      {
+         "NotifyMouseMove",
+         {
+            description = "Called when the mouse is moved."
+         }
+      },
+      {
+         "NotifyMouseOver",
+         {
+            description = "Called when the mouse comes over the Button."
+         }
+      },
+      {
+         "NotifyPushed",
+         {
+            description = "Called when the Button is pressed."
+         }
+      },
+      {
+         "NotifyReleased",
+         {
+            description = "Called when the Button ceases to be pressed."
+         }
+      }
+   ]
+}

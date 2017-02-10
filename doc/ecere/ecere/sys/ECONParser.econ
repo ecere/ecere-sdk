@@ -1,0 +1,13 @@
+{
+   description = "The ECONParser is used to read ECON files and parse the data into an object using the GetObject() method of the JSONParser base class",
+   example = "File f = FileOpen(\"myFile.econ\", read);<br>"
+      "if(f)<br>"
+      "{<br>"
+      "   ECONParser { f = f }.GetObject(class(MyClass), myClass);<br>"
+      "   delete f;<br>"
+      "}",
+   remarks = "This instantiates a new instance, so any existing instantiation for the handle will be leaked.<br>"
+      "<br>"
+      "Private members will be ignored.",
+   also = "WriteECONObject (for writing to an ECON file)"
+}

@@ -87,6 +87,154 @@
                }
             ]
          }
+      },
+      {
+         "Filter",
+         {
+            description = "This function copies a section of a srouce Bitmap, scales it, and copies it to a the surface.",
+            parameters = [
+               {
+                  "dx",
+                  {
+                     description = "the starting x position in the destination surface",
+                     position = 2
+                  }
+               },
+               {
+                  "dy",
+                  {
+                     description = "the starting y position in the destination surface",
+                     position = 3
+                  }
+               },
+               {
+                  "h",
+                  {
+                     description = "The height of the image on the destination surface",
+                     position = 7
+                  }
+               },
+               {
+                  "sh",
+                  {
+                     description = "The height of the region of the source image to read",
+                     position = 9
+                  }
+               },
+               {
+                  "src",
+                  {
+                     description = "The source image to read from",
+                     position = 1
+                  }
+               },
+               {
+                  "sw",
+                  {
+                     description = "The width of the region of the source image to read",
+                     position = 8
+                  }
+               },
+               {
+                  "sx",
+                  {
+                     description = "The x position to start reading from in the source image",
+                     position = 4
+                  }
+               },
+               {
+                  "sy",
+                  {
+                     description = "The y position to start reading from in the source image",
+                     position = 5
+                  }
+               },
+               {
+                  "w",
+                  {
+                     description = "The width of the image on the destination surface",
+                     position = 6
+                  }
+               }
+            ]
+         }
+      },
+      {
+         "Stretch",
+         {
+            description = "Draws an image from a source Bitmap to a destination Surface, stretching the image in either dimension in the process.",
+            example = "// Assuming the Surface is called \"surface\" and there is a Bitmap called \"bitmap\"<br>"
+               "<br>"
+               "surface.Stretch(bitmap, 0, 0, 0, 0, 64, 64, 32, 32);<br>"
+               "<br>"
+               "// This should take a 32x32 pixel section of the source Bitmap and draw it onto the Surface, stretching each dimension to 64 pixels in the process.",
+            also = "Blit(), Filter()",
+            parameters = [
+               {
+                  "dx",
+                  {
+                     description = "The top left x coordinate of the destination.",
+                     position = 2
+                  }
+               },
+               {
+                  "dy",
+                  {
+                     description = "The top left y coordinate of the destination.",
+                     position = 3
+                  }
+               },
+               {
+                  "h",
+                  {
+                     description = "The height that the imageselection will be stretched to.",
+                     position = 7
+                  }
+               },
+               {
+                  "sh",
+                  {
+                     description = "The height of the source image selection.",
+                     position = 9
+                  }
+               },
+               {
+                  "src",
+                  {
+                     description = "The source Bitmap to be copied from",
+                     position = 1
+                  }
+               },
+               {
+                  "sw",
+                  {
+                     description = "The width of the source image selection.",
+                     position = 8
+                  }
+               },
+               {
+                  "sx",
+                  {
+                     description = "The top left x coordinate from the source.",
+                     position = 4
+                  }
+               },
+               {
+                  "sy",
+                  {
+                     description = "The top left y coordinate from the source.",
+                     position = 5
+                  }
+               },
+               {
+                  "w",
+                  {
+                     description = "The width that the image selection will be stretched to.",
+                     position = 6
+                  }
+               }
+            ]
+         }
       }
    ]
 }
