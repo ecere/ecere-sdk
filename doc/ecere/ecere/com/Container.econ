@@ -61,7 +61,9 @@
          "GetAtPosition",
          {
             description = "Return an iterator to the element at position 'pos'. If create is true and the position is not currently occupied, an element will be added at that position. If an element was added as a result (with create set to true) and a non-null 'justAdded' pointer is passed, it will be set to true.",
-            remarks = "Avoid indexing linked lists by index as much as possible.<br><br>This method is used to implement the [ ] container indexing operator.",
+            remarks = "Avoid indexing linked lists by index as much as possible.<br>"
+               "<br>"
+               "This method is used to implement the [ ] container indexing operator.",
             parameters = [
                {
                   "create",
@@ -197,7 +199,9 @@
          "TakeOut",
          {
             description = "Remove an item from a Container by value (implies a Find and is slower than removing from Iterator). The element is not freed.",
-            remarks = "Beware of using TakeOut() with 'class' data types and 'class_no_expansion' not set, as OnCompare() may resolve two different instances as equivalent.<br><br>Even in containers where values are not guaranteed to be unique, only a single element will be taken out per call.",
+            remarks = "Beware of using TakeOut() with 'class' data types and 'class_no_expansion' not set, as OnCompare() may resolve two different instances as equivalent.<br>"
+               "<br>"
+               "Even in containers where values are not guaranteed to be unique, only a single element will be taken out per call.",
             parameters = [
                {
                   "d",

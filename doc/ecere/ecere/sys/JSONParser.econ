@@ -1,0 +1,48 @@
+{
+   description = "The JSONParser is used to read JSON files and parse the data into an object using the GetObject() method",
+   example = "File f = FileOpen(\"myFile.json\", read);<br>"
+      "if(f)<br>"
+      "{<br>"
+      "   JSONParser { f = f }.GetObject(class(MyClass), myObject); <br>"
+      "   delete f;<br>"
+      "}",
+   also = "WriteJSONObject (for writing to a JSON file)",
+   fields = [
+      {
+         "f",
+         {
+            description = "This is the JSON file that the parser will read from"
+         }
+      }
+   ],
+   methods = [
+      {
+         "GetObject",
+         {
+            description = "This method reads the JSON file and parses it into the object provided in the parameters.",
+            example = "File f = FileOpen(\"myFile.json\", read);<br>"
+               "if(f)<br>"
+               "{<br>"
+               "   JSONParser { f = f }.GetObject(class(MyClass), myObject);<br>"
+               "   delete f;<br>"
+               "}",
+            parameters = [
+               {
+                  "object",
+                  {
+                     description = "pointer to the pointer to the object to for the JSON data to be loaded into",
+                     position = 2
+                  }
+               },
+               {
+                  "objectType",
+                  {
+                     description = "class type of the object that the JSON data will be loaded into",
+                     position = 1
+                  }
+               }
+            ]
+         }
+      }
+   ]
+}

@@ -12,6 +12,38 @@
          {
             description = "Run MemoryGuard checks (typically called on exit)"
          }
+      },
+      {
+         "eInstance_StopWatching",
+         {
+            description = "Stops a previously set \"watch\"",
+            usage = "stopwatching(instance, property);",
+            example = "stopwatching(foo, bag);<br>"
+               "stopwatching(foo, box);",
+            also = "eInstance_Watch()"
+         }
+      },
+      {
+         "eInstance_Watch",
+         {
+            description = "watch allows one object to watch some property of another object, allowing it to react when that property changes.",
+            usage = "In classA, add \"watchable\" to the property to be watched.<br>"
+               "In classB, add \"watch classA { propertyA { DoStuffHere() } propertyB { DoStuffHere() } delete { DoStuffWhenClassADeleted() }; ",
+            example = "class Foo<br>"
+               "{<br>"
+               "   int box;<br>"
+               "   property int box { watchable set { box = value; } get { return box; } };<br>"
+               "}<br>"
+               "<br>"
+               "class Bar<br>"
+               "{<br>"
+               "   watch foo { box { PrintLn(“box changed!”); } delete { PrintLn(“foo is gone!”); } };<br>"
+               "}<br>"
+               "<br>"
+               "Foo foo {};<br>"
+               "Bar bar {};",
+            also = "eInstance_WatchDestruction(), eInstance_StopWatching(), eProperty_Watchable()"
+         }
       }
    ]
 }

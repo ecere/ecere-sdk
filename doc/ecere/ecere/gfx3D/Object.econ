@@ -1,0 +1,38 @@
+{
+   description = "3D model class, not to be confused with the \"object\" concept in object-oriented programming, which these Objects (note the capitalization) also happen to be.",
+   properties = [ {"firstChild", {
+      description = "Reference to the first of the children in the Object hierarchy"
+   }}, {"material", {
+      description = "Material that will be applied this Object's surface"
+   }}, {"mesh", {
+      description = "The mesh of the Object, composed of vertices, normals, and texture coordinates"
+   }}, {"name", {
+      description = "Name of the Object, used for referencing it"
+   }}, {"next", {
+      description = "Reference to the next child adjacent to this Object in the hierarchy"
+   }}, {"numChildren", {
+      description = "Number of first generation children this Object has in it's hierarchy"
+   }}, {"parent", {
+      description = "The parent Object of this Object in the Object hierarchy"
+   }}, {"tag", {
+      description = "pointer that can be set to link to through picking"
+   }}, {"transform", {
+      description = "Position, scaling, and orientation of the Object"
+   }} ],
+   methods = [ {"Add", {
+      description = "Adds a child Object without needing a name"
+   }}, {"AddName", {
+      description = "Adds a child Object with a name to reference it by",
+      remarks = "The name String will make it's own copy of the String, so the parameter can be deleted afterwards calling this function."
+   }}, {"Duplicate", {
+      description = "Copies an Object, but shares the same mesh, saving space and time"
+   }}, {"Find", {
+      description = "Looks up and returns a child Object based on its name "
+   }}, {"Free", {
+      description = "Frees the Object and all of its children. This should be called on an Object before the displaySystem that the Object is associated with is lost."
+   }}, {"Load", {
+      description = "Loads a model file into an Object"
+   }}, {"UpdateTransform", {
+      description = "Must be called after modifying the Object transform for the changes to take effect. This is done as a separate step from editing the transform to allow Updating the transform all at once, as opposed to having to call it every single time a small change is made to the transform."
+   }} ]
+}

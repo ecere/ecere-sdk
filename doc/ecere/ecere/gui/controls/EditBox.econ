@@ -2,137 +2,58 @@
    name = "EditBox",
    description = "An empty box, allowing users to input data.",
    remarks = "Currently, Word Wrap is not fully implemented.",
-   properties = [
-      {
-         "allCaps",
-         {
-            description = "When true, all data entered will be uppercase characters."
-         }
-      },
-      {
-         "caretFollowsScrolling",
-         {
-            description = "When true, the Caret does not leave the visible area when it is scrolled."
-         }
-      },
-      {
-         "contents",
-         {
-            description = "The contents of the Edit Box.<br>"
-               "Example: char * contentsOfEditBox = editBox1.contents;"
-         }
-      },
-      {
-         "freeCaret",
-         {
-            description = "When true, the Caret is placed where the mouse is clicked, whether there is text there or not. The Caret cannot be placed on a line that does not yet have text."
-         }
-      },
-      {
-         "maxLineSize",
-         {
-            description = "The maximum number of characters that a line can hold.<br>"
-               "Example: maxLineSize = 30;"
-         }
-      },
-      {
-         "maxNumLines",
-         {
-            description = "The maximum number of lines that the Edit Box contains.<br>"
-               "Example: maxNumLines = 5;"
-         }
-      },
-      {
-         "multiLine",
-         {
-            description = "When true, the user can enter input on more than one line in the Edit Box."
-         }
-      },
-      {
-         "noCaret",
-         {
-            description = "When true, the Caret will not appear in the Edit Box. The property editor will automatically set the Edit Box to read only. This makes it so that the Edit Box can be used for read only information without the distraction or confusion of the Caret."
-         }
-      },
-      {
-         "noSelect",
-         {
-            description = "When true, selection of data is disabled in the Edit Box."
-         }
-      },
-      {
-         "overwrite",
-         {
-            description = "Returns true if the Insert key has been pressed, and false if it hasn't. This property cannot be set."
-         }
-      },
-      {
-         "readOnly",
-         {
-            description = "When true, the text in the edit box cannot be edited and can only be modified using the contents property."
-         }
-      },
-      {
-         "syntaxHighlighting",
-         {
-            description = "When true, text which is recognized as a key word in eC, a number, or a string, are coloured differently from the foreground colour."
-         }
-      },
-      {
-         "tabKey",
-         {
-            description = "When true, the Tab Key is processed within the Edit Box."
-         }
-      },
-      {
-         "tabSize",
-         {
-            description = "The number of spaces to jump when the Tab Key is pressed. Note: tabSize has no meaning if tabKey is not true."
-         }
-      },
-      {
-         "textHorzScroll",
-         {
-            description = "When true, the text will scroll to the left while it is being entered, so that the caret is always visible. This also enables the user to manually scroll left and right on the line using the left and right arrows.<br>"
-               "When false, it is not possible to type past the width of the control."
-         }
-      },
-      {
-         "textVertScroll",
-         {
-            description = "When true, the text can be scrolled vertically using the up and down arrows. For this to work, multiLine must also be true.<br>"
-               "When false, it is not possible to type past the bottom of the control."
-         }
-      },
-      {
-         "wrap",
-         {
-            description = "When true, automatically wraps the text to the next line of a multiLine Edit Box when the caret encounters the right most side of the Edit Box. This wraps from the beginning of the last word on the line."
-         }
-      }
-   ],
-   methods = [
-      {
-         "Load",
-         {
-            description = "Loads a file into the EditBox.",
-            usage = "Used in the statements section of code. Once an instantiation of the EditBox control has been made, then Load() would be accessed through the . operator.",
-            example = "File f = FileOpen(\"C:/fun.txt\", read);<br>"
-               "if(f)<br>"
-               "{<br>"
-               "   myEditBox.Load(f);<br>"
-               "   delete(f);<br>"
-               "}",
-            parameters = [
-               {
-                  "f",
-                  {
-                     description = "Any file already open.",
-                     position = 1
-                  }
-               }
-            ]
-         }
-      }
-   ]
+   properties = [ {"allCaps", {
+      description = "When true, all data entered will be uppercase characters."
+   }}, {"caretFollowsScrolling", {
+      description = "When true, the Caret does not leave the visible area when it is scrolled."
+   }}, {"contents", {
+      description = "The contents of the Edit Box.<br>"
+         "Example: char * contentsOfEditBox = editBox1.contents;"
+   }}, {"freeCaret", {
+      description = "When true, the Caret is placed where the mouse is clicked, whether there is text there or not. The Caret cannot be placed on a line that does not yet have text."
+   }}, {"maxLineSize", {
+      description = "The maximum number of characters that a line can hold.<br>"
+         "Example: maxLineSize = 30;"
+   }}, {"maxNumLines", {
+      description = "The maximum number of lines that the Edit Box contains.<br>"
+         "Example: maxNumLines = 5;"
+   }}, {"multiLine", {
+      description = "When true, the user can enter input on more than one line in the Edit Box."
+   }}, {"noCaret", {
+      description = "When true, the Caret will not appear in the Edit Box. The property editor will automatically set the Edit Box to read only. This makes it so that the Edit Box can be used for read only information without the distraction or confusion of the Caret."
+   }}, {"noSelect", {
+      description = "When true, selection of data is disabled in the Edit Box."
+   }}, {"overwrite", {
+      description = "Returns true if the Insert key has been pressed, and false if it hasn't. This property cannot be set."
+   }}, {"readOnly", {
+      description = "When true, the text in the edit box cannot be edited and can only be modified using the contents property."
+   }}, {"syntaxHighlighting", {
+      description = "When true, text which is recognized as a key word in eC, a number, or a string, are coloured differently from the foreground colour."
+   }}, {"tabKey", {
+      description = "When true, the Tab Key is processed within the Edit Box."
+   }}, {"tabSize", {
+      description = "The number of spaces to jump when the Tab Key is pressed. Note: tabSize has no meaning if tabKey is not true."
+   }}, {"textHorzScroll", {
+      description = "When true, the text will scroll to the left while it is being entered, so that the caret is always visible. This also enables the user to manually scroll left and right on the line using the left and right arrows.<br>"
+         "When false, it is not possible to type past the width of the control."
+   }}, {"textVertScroll", {
+      description = "When true, the text can be scrolled vertically using the up and down arrows. For this to work, multiLine must also be true.<br>"
+         "When false, it is not possible to type past the bottom of the control."
+   }}, {"wrap", {
+      description = "When true, automatically wraps the text to the next line of a multiLine Edit Box when the caret encounters the right most side of the Edit Box. This wraps from the beginning of the last word on the line."
+   }} ],
+   methods = [ {"Load", {
+      description = "Loads a file into the EditBox.",
+      usage = "Used in the statements section of code. Once an instantiation of the EditBox control has been made, then Load() would be accessed through the . operator.",
+      example = "File f = FileOpen(\"C:/fun.txt\", read);<br>"
+         "if(f)<br>"
+         "{<br>"
+         "   myEditBox.Load(f);<br>"
+         "   delete(f);<br>"
+         "}",
+      parameters = [ {"f", {
+         description = "Any file already open.",
+         position = 1
+      }} ]
+   }} ]
 }

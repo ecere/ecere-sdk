@@ -1,3 +1,3 @@
 {
-   description = "Rudimentary string type  (resolved to a C 'char *') meant to hold a null-terminated string of characters. Ecere APIs taking a String or char * representing text expect UTF-8 encoding."
+   description = "Rudimentary string type (resolved to a C 'char *') meant to hold a null-terminated string of characters. Ecere APIs taking a String or char * representing text expect UTF-8 encoding."
 }

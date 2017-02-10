@@ -1,0 +1,49 @@
+{
+   description = "3D mesh of vertices with applied texture.",
+   properties = [
+      {
+         "groups",
+         {
+            description = "List of primitive groups in the mesh."
+         }
+      },
+      {
+         "normals",
+         {
+            description = "Array that stores the normals for the mesh. Note that these are stored at each vertex, so the normal vector should be the average of the normals of all faces adjoining the vertex."
+         }
+      },
+      {
+         "texCoords",
+         {
+            description = "Array that maps coordinates in the texture to verticies on the mesh. Each element in this array corresponds to the element at the same position in the vertices array."
+         }
+      },
+      {
+         "vertices",
+         {
+            description = "Array that stores the positions of the vertices of the mesh"
+         }
+      }
+   ],
+   methods = [
+      {
+         "AddPrimitiveGroup",
+         {
+            description = "Creates a grouping of verticies within the mesh"
+         }
+      },
+      {
+         "Free",
+         {
+            description = "Frees the mesh from the display"
+         }
+      },
+      {
+         "Unlock",
+         {
+            description = "Uploads mesh data to the GPU"
+         }
+      }
+   ]
+}

@@ -1,49 +1,87 @@
 {
    name = "sys",
    description = "Platform independent System API (Files, Multithreading, Unicode, ...)",
-   defines = [
-      {
-         "ecere::sys::Pi",
-         {
-            description = "Ratio of a circle's circumference to its diameter; Measure of a half-circle angle in radians (180°)"
-         }
-      }
-   ],
-   functions = [
-      {
-         "GetRandom",
-         {
-            description = "Returns a random integer from lo to hi inclusive.",
-            usage = "Returns a random integer, based on the Random Seed. If no Random Seed is set with RandomSeed(), then GetRandom() returns lo.",
-            example = "      int Rand;<br>"
-               "      RandomSeed((uint)(GetTime() * 1000));<br>"
-               "      Rand = GetRandom(1, 10);<br>"
-               "      printf(\"%d\<br>\", Rand);     ",
-            also = "GetTime(), RandomSeed()"
-         }
-      },
-      {
-         "GetTime",
-         {
-            description = "Returns the current system time as a Time object.",
-            example = "      int Rand;<br>"
-               "      RandomSeed((uint)(GetTime() * 1000));<br>"
-               "      Rand = GetRandom(1, 10);<br>"
-               "      printf(\"%d\<br>\", Rand);     ",
-            also = "RandomSeed()"
-         }
-      },
-      {
-         "RandomSeed",
-         {
-            description = "This method seeds the random number generator.",
-            usage = "This method needs to be called before any call to GetRandom(), otherwise GetRandom will not retrieve a random number. The seed can be any unsigned integer, however any constant value will produce predictable results each time. For closer to true results, try using GetTime() as the seed.",
-            example = "      int Rand;<br>"
-               "      RandomSeed((uint)(GetTime() * 1000));<br>"
-               "      Rand = GetRandom(1, 10);<br>"
-               "      printf(\"%d\<br>\", Rand);     ",
-            also = "GetRandom(), GetTime()"
-         }
-      }
-   ]
+   defines = [ {"ecere::sys::Pi", {
+      description = "Ratio of a circle's circumference to its diameter; Measure of a half-circle angle in radians (180°)"
+   }} ],
+   functions = [ {"GetRandom", {
+      description = "Returns a random integer from lo to hi inclusive.",
+      usage = "Returns a random integer, based on the Random Seed. If no Random Seed is set with RandomSeed(), then GetRandom() returns lo.",
+      example = "      int Rand;<br>"
+         "      RandomSeed((uint)(GetTime() * 1000));<br>"
+         "      Rand = GetRandom(1, 10);<br>"
+         "      printf(\"%d<br>"
+         "\", Rand);     ",
+      also = "GetTime(), RandomSeed()"
+   }}, {"GetTime", {
+      description = "Returns the current system time as a Time object.",
+      example = "      int Rand;<br>"
+         "      RandomSeed((uint)(GetTime() * 1000));<br>"
+         "      Rand = GetRandom(1, 10);<br>"
+         "      printf(\"%d<br>"
+         "\", Rand);     ",
+      also = "RandomSeed()"
+   }}, {"MakeDir", {
+      description = "Creates a directory in the current folder",
+      example = "MakeDir(\"myDirectoryName\");",
+      parameters = [ {"path", {
+         description = "Path name for the directory to be created",
+         position = 1
+      }} ]
+   }}, {"RandomSeed", {
+      description = "This method seeds the random number generator.",
+      usage = "This method needs to be called before any call to GetRandom(), otherwise GetRandom will not retrieve a random number. The seed can be any unsigned integer, however any constant value will produce predictable results each time. For closer to true results, try using GetTime() as the seed.",
+      example = "      int Rand;<br>"
+         "      RandomSeed((uint)(GetTime() * 1000));<br>"
+         "      Rand = GetRandom(1, 10);<br>"
+         "      printf(\"%d<br>"
+         "\", Rand);     ",
+      also = "GetRandom(), GetTime()"
+   }}, {"StripExtension", {
+      description = "Removes the file extension from the string"
+   }}, {"WriteECONObject", {
+      description = "This function writes an object to an ECON file",
+      example = "File f = FileOpen(\"myFile.econ\", write);<br>"
+         "if(f)<br>"
+         "{<br>"
+         "   WriteECONObject(f, class(MyClass), myClass, 0);<br>"
+         "   delete f;<br>"
+         "}",
+      also = "ECONParser (for reading ECON files), WriteJSONObject (similar function but for writing to JSON files)",
+      parameters = [ {"f", {
+         description = "The ECON file to write the object to",
+         position = 1
+      }}, {"indent", {
+         description = "How much indentation to add",
+         position = 4
+      }}, {"object", {
+         description = "The object that will be written to the JSON file",
+         position = 3
+      }}, {"objectType", {
+         description = "The class type of the object that will be written to the ECON file",
+         position = 2
+      }} ]
+   }}, {"WriteJSONObject", {
+      description = "This function writes an object to a JSON file",
+      example = "File f = FileOpen(\"myFile.json\", write);<br>"
+         "if(f)<br>"
+         "{<br>"
+         "   WriteJSONObject(f, class(MyClass), myClass, 0);<br>"
+         "   delete f;<br>"
+         "}",
+      also = "JSONParser (for reading JSON files), WriteECONObject (similar function but for writing to ECON files)",
+      parameters = [ {"f", {
+         description = "The JSON file to write the object to",
+         position = 1
+      }}, {"indent", {
+         description = "How much indentation to add",
+         position = 4
+      }}, {"object", {
+         description = "The object that will be written to the JSON file",
+         position = 3
+      }}, {"objectType", {
+         description = "The class type of the object that will be written to the JSON file",
+         position = 2
+      }} ]
+   }} ]
 }

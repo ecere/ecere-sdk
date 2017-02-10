@@ -1,50 +1,22 @@
 {
    name = "Bitmap",
    description = "Class reprsenting a rasterized 2D image in a number of formats. Once made device-dependent, the data is stored as a texture on the GPU for hardware- accelerated drivers.",
-   fields = [
-      {
-         "height",
-         {
-            description = "The Height in pixels of the image."
-         }
-      },
-      {
-         "pixelFormat",
-         {
-            description = "The format of the color encoding for the pixels of this image."
-         }
-      },
-      {
-         "size",
-         {
-            description = "The exact size of the image."
-         }
-      },
-      {
-         "sizeBytes",
-         {
-            description = "The size of the image in bytes."
-         }
-      },
-      {
-         "transparent",
-         {
-            description = "When true, the transparency layer of the image is recognized. When the image is later blitted to the screen the transparent regions of the image are not drawn."
-         }
-      },
-      {
-         "width",
-         {
-            description = "The Width in pixels of the image."
-         }
-      }
-   ],
-   methods = [
-      {
-         "Load",
-         {
-            description = "Load the bitmap file from the included resources."
-         }
-      }
-   ]
+   fields = [ {"height", {
+      description = "The Height in pixels of the image."
+   }}, {"pixelFormat", {
+      description = "The format of the color encoding for the pixels of this image."
+   }}, {"size", {
+      description = "The exact size of the image."
+   }}, {"sizeBytes", {
+      description = "The size of the image in bytes."
+   }}, {"transparent", {
+      description = "When true, the transparency layer of the image is recognized. When the image is later blitted to the screen the transparent regions of the image are not drawn."
+   }}, {"width", {
+      description = "The Width in pixels of the image."
+   }} ],
+   methods = [ {"Free", {
+      description = "This doesn't need to be called before the displaySystem is lost, since Bitmaps get associated with the displaySystem, and the displaySystem will Free them automatically when it is lost"
+   }}, {"Load", {
+      description = "Load the bitmap file from the included resources."
+   }} ]
 }

@@ -1,0 +1,16 @@
+{
+   fields = [
+      {
+         "root",
+         {
+            description = "Whether the Object is the root of the Object hierarchy or not"
+         }
+      },
+      {
+         "translucent",
+         {
+            description = "Whether this Object is translucent or opaque"
+         }
+      }
+   ]
+}
