@@ -2,7 +2,19 @@
    name = "BitmapResource",
    description = "A class to automatically manag loading and unloading Bitmap objects",
    usage = "Originally defined in the declaration section of code, typically within the class that will be using this resource.",
-   example = "class Form1 : Window<br>{<br>   text = \"Form1\";<br>   background = activeBorder;<br>   borderStyle = fixed;<br>   hasClose = true;<br>   size = {640, 480};<br>   BitmapResource image { \":image.png\", window = this };<br>   void OnRedraw(Surface surface)<br>   {<br>      surface.Blit( image.bitmap, 0, 0, 0, 0, 20, 20 );<br>   }<br>}",
+   example = "class Form1 : Window<br>"
+      "{<br>"
+      "   text = \"Form1\";<br>"
+      "   background = activeBorder;<br>"
+      "   borderStyle = fixed;<br>"
+      "   hasClose = true;<br>"
+      "   size = {640, 480};<br>"
+      "   BitmapResource image { \":image.png\", window = this };<br>"
+      "   void OnRedraw(Surface surface)<br>"
+      "   {<br>"
+      "      surface.Blit( image.bitmap, 0, 0, 0, 0, 20, 20 );<br>"
+      "   }<br>"
+      "}",
    remarks = "Very similar to the Bitmap class. In fact Bitmap could be said to be low level, while BitmapResource could be said to be a high level object.",
    also = "Bitmap, BitmapFormat",
    properties = [

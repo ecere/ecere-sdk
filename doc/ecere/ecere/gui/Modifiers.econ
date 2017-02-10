@@ -1,0 +1,55 @@
+{
+   example = "Inside of a Button's NotifyClicked function, the Modifier can be used to do something dependent on the Modifiers' values:<br>"
+      "<br>"
+      "      bool NotifyClicked(Button button, int x, int y, Modifiers mods)<br>"
+      "      {<br>"
+      "         if(mods.shift) DoMyFunction();<br>"
+      "         return true;<br>"
+      "      }<br>"
+      "<br>"
+      "This will perform \"DoMyFunction()\" only if the shift key had been held while clicking the Button.",
+   fields = [
+      {
+         "alt",
+         {
+            description = "Indicates whether the alt key had been held at the time of the event"
+         }
+      },
+      {
+         "cmd",
+         {
+            description = "Indicates whether the cmd key had been held at the time of the event"
+         }
+      },
+      {
+         "ctrl",
+         {
+            description = "Indicates whether the ctrl key had been held at the time of the event"
+         }
+      },
+      {
+         "left",
+         {
+            description = "Indicates whether the left mouse button had been held at the time of the event"
+         }
+      },
+      {
+         "middle",
+         {
+            description = "Indicates whether the middle mouse button had been held at the time of the event"
+         }
+      },
+      {
+         "right",
+         {
+            description = "Indicates whether the right mouse button had been held at the time of the event"
+         }
+      },
+      {
+         "shift",
+         {
+            description = "Indicates whether the shift key had been held at the time of the event"
+         }
+      }
+   ]
+}

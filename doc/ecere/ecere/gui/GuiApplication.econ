@@ -1,0 +1,36 @@
+{
+   properties = [
+      {
+         "driver",
+         {
+            description = "Graphics driver that will be used by the program"
+         }
+      },
+      {
+         "timerResolution",
+         {
+            description = "Minimum refresh rate, assuming the hardware allows"
+         }
+      }
+   ],
+   methods = [
+      {
+         "Cycle",
+         {
+            description = "Function that gets called in a constant loop, along with input and OnRedraw, in this order: UpdateDisplay() is called, then ProcessInput(), then Cycle(), and on and on it loops..."
+         }
+      },
+      {
+         "GetKeyState",
+         {
+            description = "Returns true if the key specified in the parameter is currently depressed"
+         }
+      },
+      {
+         "GetMouseState",
+         {
+            description = "Fills the passed parameters with the position and clicked state of any mouse buttons"
+         }
+      }
+   ]
+}

@@ -1,8 +1,19 @@
 {
    name = "Array",
    description = "A dynamically resizable array template",
-   usage = "The array object can be indexed with the [ ] operator.<br><br>Elements of the array individually allocated on the heap are not freed unless Free() is invoked.<br><br>The array itself is must be instantiated and deleted as it is a ckass type.",
-   example = "void test()<br>{<br>   Array points { size = 10 };<br>   points[0] = { 10, 10 };<br>   points.size = 20;<br>   points[19] = { 5, 5 };<br>   delete points;<br>}",
+   usage = "The array object can be indexed with the [ ] operator.<br>"
+      "<br>"
+      "Elements of the array individually allocated on the heap are not freed unless Free() is invoked.<br>"
+      "<br>"
+      "The array itself is must be instantiated and deleted as it is a ckass type.",
+   example = "void test()<br>"
+      "{<br>"
+      "   Array points { size = 10 };<br>"
+      "   points[0] = { 10, 10 };<br>"
+      "   points.size = 20;<br>"
+      "   points[19] = { 5, 5 };<br>"
+      "   delete points;<br>"
+      "}",
    remarks = "The Array container class (like all containr classes) comes with some level of overhead, including an implied extra reference level and the overhead of multiple re-allocations. If dynamic reallocation is not required, stick to regular C arrays (e.g. int array[10]).",
    also = "Container",
    fields = [
