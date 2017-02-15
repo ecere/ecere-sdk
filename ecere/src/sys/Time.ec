@@ -590,6 +590,30 @@ public struct DateTime
       #endif
       }
    };
+
+   property int64 daysSince1970
+   {
+      get
+      {
+         int month = this.month;
+         int monthRemainder = month % 12;
+         bool negativeMonthRemainder = monthRemainder < 0;
+         int monthYears = month / 12 - negativeMonthRemainder;
+         int year = this.year + monthYears;
+         int a4 = (year       / 4) - !(year       & 3);
+         int b4 = (EPOCH_YEAR / 4) - !(EPOCH_YEAR & 3);
+         int a100 = a4 / 25 - (a4 % 25 < 0);
+         int b100 = b4 / 25 - (b4 % 25 < 0);
+         int a400 = a100 / 4;
+         int b400 = b100 / 4;
+         int leapDays = (a4 - b4) - (a100 - b100) + (a400 - b400);
+         int64 days = 365 * (year - EPOCH_YEAR) + leapDays;
+         month = monthRemainder + 12 * negativeMonthRemainder;
+         days += daysInAYearBeforeMonth[ISLEAP(year)][month] + day - 1;
+         return days;
+      }
+   }
+
    property SecSince1970
    {
       set
@@ -631,29 +655,7 @@ public struct DateTime
          }
       }
 
-      get
-      {
-         int month = this.month;
-         int monthRemainder = month % 12;
-         bool negativeMonthRemainder = monthRemainder < 0;
-         int monthYears = month / 12 - negativeMonthRemainder;
-         int year = this.year + monthYears;
-         // if(year >= 1970)
-         {
-            int a4 = (year       / 4) - !(year       & 3);
-            int b4 = (EPOCH_YEAR / 4) - !(EPOCH_YEAR & 3);
-            int a100 = a4 / 25 - (a4 % 25 < 0);
-            int b100 = b4 / 25 - (b4 % 25 < 0);
-            int a400 = a100 / 4;
-            int b400 = b100 / 4;
-            int leapDays = (a4 - b4) - (a100 - b100) + (a400 - b400);
-            int64 days = 365 * (year - EPOCH_YEAR) + leapDays;
-            month = monthRemainder + 12 * negativeMonthRemainder;
-            days += daysInAYearBeforeMonth[ISLEAP(year)][month] + day - 1;
-            return 60 * (60 * (24 * days + hour) + minute) + second;
-         }
-         return 0;
-      }
+      get { return 60 * (60 * (24 * daysSince1970 + hour) + minute) + second; }
    };
    property Date
    {
