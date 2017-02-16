@@ -30,6 +30,9 @@
 /*                          HEADER FILES                            */
 /* ---------------------------------------------------------------- */
 
+#define HAVE_LIBZ 1
+#include <zlib.h>
+
 /* Define if you have the <arpa/inet.h> header file. */
 /* #define HAVE_ARPA_INET_H 1 */
 
