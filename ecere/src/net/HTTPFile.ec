@@ -210,6 +210,7 @@ URL_FILE *url_fopen(const char *url, const char *operation)
     curl_easy_setopt(file->curl, CURLOPT_WRITEDATA, file);
     curl_easy_setopt(file->curl, CURLOPT_VERBOSE, 0L);
     curl_easy_setopt(file->curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(file->curl, CURLOPT_ACCEPT_ENCODING, "");
 
     if(!file->multi_handle)
       file->multi_handle = curl_multi_init();
