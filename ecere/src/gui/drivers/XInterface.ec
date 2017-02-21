@@ -2462,7 +2462,7 @@ class XInterface : Interface
       {
          int samples;
          bool alpha = true;
-         for(samples = 4;; samples /= 2)
+         for(samples = 8;; samples /= 2)
          {
             bool found = false;
             int attrib[30] =
