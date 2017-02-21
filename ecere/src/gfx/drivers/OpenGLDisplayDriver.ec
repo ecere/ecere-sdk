@@ -798,7 +798,7 @@ class OpenGLDisplayDriver : DisplayDriver
                      WGL_STENCIL_BITS_ARB,0,
                      WGL_DOUBLE_BUFFER_ARB,GL_TRUE,
                      WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-                     WGL_SAMPLES_ARB, 4,                  // Check For 4x Multisampling
+                     WGL_SAMPLES_ARB, 8,                  // Check For 4x Multisampling
                      0,0
                   };
 
@@ -807,15 +807,21 @@ class OpenGLDisplayDriver : DisplayDriver
                   valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                   if(!valid || !numFormats)
                   {
-                     //Log("Can't find 4x multi sampling\n");
-                     iAttributes[19] = 2;
+                     //Log("Can't find 8x multi sampling\n");
+                     iAttributes[19] = 4;
                      valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                      if(!valid || !numFormats)
                      {
-                        // Log("Can't find 2x multi sampling\n");
-                        iAttributes[16] = 0;
-                        iAttributes[17] = 0;
+                        //Log("Can't find 4x multi sampling\n");
+                        iAttributes[19] = 2;
                         valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                        if(!valid || !numFormats)
+                        {
+                           // Log("Can't find 2x multi sampling\n");
+                           iAttributes[16] = 0;
+                           iAttributes[17] = 0;
+                           valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                        }
                      }
                   }
                   if(valid && numFormats)
@@ -1341,7 +1347,7 @@ class OpenGLDisplayDriver : DisplayDriver
                WGL_STENCIL_BITS_ARB,0,
                WGL_DOUBLE_BUFFER_ARB,GL_FALSE,
                WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-               WGL_SAMPLES_ARB, 4,                  // Check For 4x Multisampling
+               WGL_SAMPLES_ARB, 8,                  // Check For 4x Multisampling
                0,0
             };
 
@@ -1351,27 +1357,33 @@ class OpenGLDisplayDriver : DisplayDriver
             if(!valid || !numFormats)
             {
                //Log("Can't find 4x multi sampling\n");
-               iAttributes[19] = 2;
+               iAttributes[19] = 4;
                valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                if(!valid || !numFormats)
                {
-                  // Log("Can't find 2x multi sampling\n");
-                  iAttributes[16] = 0;
-                  iAttributes[17] = 0;
+                  //Log("Can't find 4x multi sampling\n");
+                  iAttributes[19] = 2;
                   valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                   if(!valid || !numFormats)
                   {
-                     int iAttributes[] =
-                     {
-                        WGL_DRAW_TO_PBUFFER_ARB,GL_TRUE,
-                        //WGL_DRAW_TO_BITMAP_ARB,GL_TRUE,
-                        WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
-                        WGL_COLOR_BITS_ARB,24,
-                        WGL_ALPHA_BITS_ARB,8,
-                        WGL_DEPTH_BITS_ARB,16,
-                        0,0
-                     };
+                     // Log("Can't find 2x multi sampling\n");
+                     iAttributes[16] = 0;
+                     iAttributes[17] = 0;
                      valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                     if(!valid || !numFormats)
+                     {
+                        int iAttributes[] =
+                        {
+                           WGL_DRAW_TO_PBUFFER_ARB,GL_TRUE,
+                           //WGL_DRAW_TO_BITMAP_ARB,GL_TRUE,
+                           WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
+                           WGL_COLOR_BITS_ARB,24,
+                           WGL_ALPHA_BITS_ARB,8,
+                           WGL_DEPTH_BITS_ARB,16,
+                           0,0
+                        };
+                        valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                     }
                   }
                }
             }
