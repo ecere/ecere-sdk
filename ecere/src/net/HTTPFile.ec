@@ -359,7 +359,8 @@ private:
 
    ~HTTPFile()
    {
-      url_fclose(f);
+      if(f)
+         url_fclose(f);
    }
 
    int Read(byte * buffer, uint size, uint count)
