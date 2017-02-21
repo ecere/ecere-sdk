@@ -22,11 +22,11 @@ extern "C" {
 
 
 
-#define MM_DEBUG 0
+#define MM_DEBUG (0)
 
-#define MM_INLINE_LIST_FUNCTIONS
+#define MM_INLINE_LIST_FUNCTIONS (1)
 
-#define MM_ALLOC_CHECK
+#define MM_ALLOC_CHECK (1)
 
 
 #define MM_DEBUG_GUARD_BYTES (32)
@@ -84,28 +84,37 @@ extern "C" {
 #endif
 
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER)
  #define MM_CACHE_ALIGN __attribute__((aligned(CPUCONF_CACHE_LINE_SIZE)))
  #define MM_RESTRICT __restrict
  #define MM_NOINLINE __attribute__((noinline))
+ #define MM_ALWAYSINLINE __attribute__((always_inline))
+ #define MM_ALIGN8 __attribute__((aligned(8)))
+ #define MM_ALIGN16 __attribute__((aligned(16)))
+ #define MM_ALIGN32 __attribute__((aligned(32)))
+ #define MM_ALIGN64 __attribute__((aligned(64)))
+ #define MM_ALIGN16_SAFE (1)
+#elif defined(_MSC_VER)
+ #define MM_CACHE_ALIGN
+ #define MM_RESTRICT
+ #define MM_NOINLINE
+ #define MM_ALWAYSINLINE
+ #define MM_ALIGN8 __declspec(align(8))
+ #define MM_ALIGN16 __declspec(align(16))
+ #define MM_ALIGN32 __declspec(align(32))
+ #define MM_ALIGN64 __declspec(align(64))
+ #define MM_ALIGN16_SAFE (1)
 #else
  #define MM_CACHE_ALIGN
  #define MM_RESTRICT
  #define MM_NOINLINE
-#endif
-
-
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
- #define MM_ALIGN16 __attribute__((aligned(16)))
- #define MM_ALIGN16_SAFE (1)
-#elif defined(_MSC_VER)
- #define MM_ALIGN16 __declspec(align(16))
- #define MM_ALIGN16_SAFE (1)
-#else
+ #define MM_ALWAYSINLINE
+ #define MM_ALIGN8
  #define MM_ALIGN16
+ #define MM_ALIGN32
+ #define MM_ALIGN64
  #define MM_ALIGN16_SAFE (0)
 #endif
-
 
 
 #define MM_ERROR()  {printf("MM Error at %s:%d\n",file,line);exit(1)}
@@ -198,7 +207,7 @@ typedef struct
   void *last;
 } mmListLoopHead;
 
-#ifndef MM_INLINE_LIST_FUNCTIONS
+#if !MM_INLINE_LIST_FUNCTIONS
 
 void mmListAdd( void **list, void *item, intptr_t offset );
 void mmListRemove( void *item, intptr_t offset );
@@ -624,28 +633,31 @@ void *MM_FUNC(VolumeAlloc)( mmVolumeHead *head, size_t bytes MM_PARAMS );
 void MM_FUNC(VolumeRelease)( mmVolumeHead *head, void *v MM_PARAMS );
 void MM_FUNC(VolumeFree)( mmVolumeHead *head, void *v MM_PARAMS );
 void MM_FUNC(VolumeShrink)( mmVolumeHead *head, void *v, size_t bytes MM_PARAMS );
-size_t MM_FUNC(VolumeGetAllocSize)( mmVolumeHead *head, void *v );
+size_t MM_FUNC(VolumeGetAllocSize)( mmVolumeHead *head, void *v MM_PARAMS );
 void MM_FUNC(VolumeClean)( mmVolumeHead *head MM_PARAMS );
 void MM_FUNC(VolumeFreeAll)( mmVolumeHead *head MM_PARAMS );
 void *MM_FUNC(VolumeRealloc)( mmVolumeHead *head, void *v, size_t bytes MM_PARAMS );
 
 #if MM_DEBUG
  #define mmVolumeInit(w,x,y,z,a) MM_FUNC(VolumeInit)(w,x,y,z,a,__FILE__,__LINE__);
- #define mmVolumeNodeInit(v,w,x,y,z) MM_FUNC(VolumeNodeInit)(v,w,x,y,z,__FILE__,__LINE__);
+ #define mmVolumeNodeInit(v,w,x,y,z,a) MM_FUNC(VolumeNodeInit)(v,w,x,y,z,a,__FILE__,__LINE__);
  #define mmVolumeAlloc(x,y) MM_FUNC(VolumeAlloc)(x,y,__FILE__,__LINE__);
  #define mmVolumeRelease(x,y) MM_FUNC(VolumeRelease)(x,y,__FILE__,__LINE__);
  #define mmVolumeFree(x,y) MM_FUNC(VolumeFree)(x,y,__FILE__,__LINE__);
  #define mmVolumeShrink(x,y,z) MM_FUNC(VolumeShrink)(x,y,z,__FILE__,__LINE__);
- #define mmVolumeGetAllocSize(x) MM_FUNC(VolumeGetAllocSize)(x,y,__FILE__,__LINE__);
+ #define mmVolumeGetAllocSize(x,y) MM_FUNC(VolumeGetAllocSize)(x,y,__FILE__,__LINE__);
  #define mmVolumeClean(x) MM_FUNC(VolumeClean)(x,__FILE__,__LINE__);
  #define mmVolumeFreeAll(x) MM_FUNC(VolumeFreeAll)(x,__FILE__,__LINE__);
- #define mmVolumeRealloc(x) MM_FUNC(VolumeRealloc)(x,y,z,__FILE__,__LINE__);
-
+ #define mmVolumeRealloc(x,y,z) MM_FUNC(VolumeRealloc)(x,y,z,__FILE__,__LINE__);
+/*
  #define mmVolumeAlloc MM_FUNC(VolumeAlloc)
  #define mmVolumeRelease MM_FUNC(VolumeRelease)
  #define mmVolumeFree MM_FUNC(VolumeFree)
-
+*/
 #endif
+
+void mmVolumeDebugList( mmVolumeHead *volumehead );
+int mmVolumeDebugGetTreeDepth( mmVolumeHead *volumehead );
 
 /*
 void mmVolumeRelayByZone( mmVolumeHead *head, void *zonehead );
@@ -709,7 +721,7 @@ void mmListUses( const char *file, int line );
  #define malloc(x) mmAlloc(0,(x),__FILE__,__LINE__)
  #define realloc(x,y) mmRealloc(0,(x),(y),__FILE__,__LINE__)
  #define free(x) mmFree(0,(x),0,__FILE__,__LINE__)
-#elif defined(MM_ALLOC_CHECK)
+#elif MM_ALLOC_CHECK
 
 static inline void *mmAllocCheck( size_t size, const char *file, int line )
 {
