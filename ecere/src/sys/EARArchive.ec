@@ -17,7 +17,7 @@ static byte earRecognition[] = EAR_RECOGNITION;
 static class FreeBlock : struct
 {
    FreeBlock prev, next;
-   uint start, end;
+   uint64 start, end;
 };
 
 static struct EARHeader
@@ -135,18 +135,16 @@ class EARArchive : Archive
    File f;
    //BufferedFile bf { };
    // char path[MAX_LOCATION];
-   uint archiveStart;
-   uint rootDir;
+   uint64 archiveStart;
+   uint64 rootDir;
    OldList freeBlocks;
    bool writeAccess;
 
-   uint Update()
+   uint64 Update()
    {
       if(rootDir)
       {
-         uint end;
-
-         end = ((FreeBlock)freeBlocks.last).start;
+         uint64 end = ((FreeBlock)freeBlocks.last).start;
 
          // Update header
          f.Seek(archiveStart + OFFSET(EARHeader, totalSize), start);
@@ -247,14 +245,14 @@ class EARArchive : Archive
       return result;
    }
 
-   uint Position(uint size)
+   uint64 Position(uint64 size)
    {
       FreeBlock block;
       for(block = freeBlocks.first; block; block = block.next)
       {
          if(block.end - block.start + 1 >= size)
          {
-            uint position = block.start;
+            uint64 position = block.start;
             if(block.end - block.start + 1 == size)
                freeBlocks.Delete(block);
             else
@@ -286,11 +284,11 @@ class EARArchive : Archive
 
    #define MAX_BUFFERSIZE 0x400000
 
-   void Defrag(uint dirPosition)
+   void Defrag(uint64 dirPosition)
    {
       // Update all offsets within the files
       uint first = 0, last = 0;
-      uint position = 0, next = 0;
+      uint64 position = 0, next = 0;
 
       f.Seek(dirPosition, start);
       f.Read(&first, sizeof(uint), 1);
@@ -338,12 +336,12 @@ class EARArchive : Archive
       // Move all the blocks
       if(dirPosition == rootDir)
       {
-         uint bufferSize = 0;
+         uint64 bufferSize = 0;
          byte * buffer = null;
          FreeBlock block, nextBlock;
          for(block = freeBlocks.first; block && block.next; block = nextBlock)
          {
-            uint dataSize, c;
+            uint64 dataSize, c;
 
             nextBlock = block.next;
             dataSize = nextBlock.start - (block.end + 1);
@@ -356,7 +354,7 @@ class EARArchive : Archive
 
             for(c = 0; c<dataSize; c += bufferSize)
             {
-               uint size = (dataSize > c + bufferSize) ? bufferSize : (dataSize - c);
+               uint64 size = (dataSize > c + bufferSize) ? bufferSize : (dataSize - c);
 
                // Read block of data
                f.Seek((block.end + 1) + c, start);
@@ -375,9 +373,9 @@ class EARArchive : Archive
       }
    }
 
-   uint Find(EARArchiveDir directory, const char * namePart, EAREntry entry)
+   uint64 Find(EARArchiveDir directory, const char * namePart, EAREntry entry)
    {
-      uint position;
+      uint64 position;
       for(position = directory.first; position; position = entry.next)
       {
          char fileName[MAX_FILENAME];
@@ -401,7 +399,7 @@ class EARArchive : Archive
       return 0;
    }
 
-   void AddFreeBlock(uint position, uint size)
+   void AddFreeBlock(uint64 position, uint64 size)
    {
       FreeBlock block, prevBlock, nextBlock = null;
 
@@ -470,13 +468,13 @@ class EARArchive : Archive
       }
    }
 
-   void Delete(EARArchiveDir dir, uint position, EAREntry entry)
+   void Delete(EARArchiveDir dir, uint64 position, EAREntry entry)
    {
-      uint size;
+      uint64 size;
       if(entry.type == ENTRY_FOLDER)
       {
          EARArchiveDir subDir {};
-         uint filePosition;
+         uint64 filePosition;
          EAREntry fileEntry;
 
          subDir.position = dir.position;
@@ -688,7 +686,7 @@ class EARArchive : Archive
 class EARArchiveDir : ArchiveDir
 {
    EARArchive archive;
-   uint position;
+   uint64 position;
    uint first, last;
    bool readOnly;
 
@@ -771,7 +769,7 @@ class EARArchiveDir : ArchiveDir
       if(dir)
       {
          char namePart[MAX_LOCATION] = "", nameRest[MAX_LOCATION];
-         uint position;
+         uint64 position;
          EAREntry entry { };
 
          dir.archive = archive;
@@ -807,10 +805,10 @@ class EARArchiveDir : ArchiveDir
          {
             // Write Header if it's not the root directory
             EAREntry entry {};
-            uint position;
+            uint64 position;
 
             entry.nameLen = strlen(namePart);
-            entry.prev = last;
+            entry.prev = (uint)last;
             entry.next = 0;
             entry.type = ENTRY_FOLDER;
             if(!nameRest[0] && stats)
@@ -825,8 +823,8 @@ class EARArchiveDir : ArchiveDir
             archive.f.Write(entry, sizeof(EAREntry), 1);
             archive.f.Write(namePart, entry.nameLen, 1);
 
-            last = position;
-            if(!first) first = position;
+            last = (uint)position;
+            if(!first) first = (uint)position;
 
             // Update the next pointer of previous entry
             if(entry.prev)
@@ -860,7 +858,7 @@ class EARArchiveDir : ArchiveDir
    bool Delete(const char * name)
    {
       EAREntry entry { };
-      uint position;
+      uint64 position;
       char namePart[MAX_LOCATION];
 
       strcpy(namePart, name);
@@ -882,7 +880,7 @@ class EARArchiveDir : ArchiveDir
       if(position != to.position)
       {
          EAREntry entry { };
-         uint position = 0;
+         uint64 position = 0;
          char namePart[MAX_LOCATION];
 
          strcpy(namePart, name);
@@ -916,8 +914,8 @@ class EARArchiveDir : ArchiveDir
                archive.f.Write(&position, sizeof(uint), 1);
             }
             if(!to.first)
-               to.first = position;
-            to.last = position;
+               to.first = (uint)position;
+            to.last = (uint)position;
 
             archive.f.Seek(position + OFFSET(EAREntry, prev), start);
             archive.f.Write(&entry.prev, sizeof(uint), 1);
@@ -933,7 +931,7 @@ class EARArchiveDir : ArchiveDir
    {
       bool result = false;
       EAREntry entry { };
-      uint position = 0;
+      uint64 position = 0;
       char namePart[MAX_LOCATION];
 
       strcpy(namePart, name);
@@ -943,9 +941,9 @@ class EARArchiveDir : ArchiveDir
       position = archive.Find(this, namePart, entry);
       if(position)
       {
-         uint dataSize;
+         uint64 dataSize;
          EAREntry newEntry = entry;
-         uint newPosition = position;
+         uint64 newPosition = position;
 
          if(entry.type == ENTRY_FOLDER)
             dataSize = 2 * sizeof(uint);
@@ -973,8 +971,8 @@ class EARArchiveDir : ArchiveDir
                archive.f.Seek(entry.next + OFFSET(EAREntry, prev), start);
                archive.f.Write(&newPosition, sizeof(uint), 1);
             }
-            if(first == position) first = newPosition;
-            if(last == position) last = newPosition;
+            if(first == position) first = (uint)newPosition;
+            if(last == position) last = (uint)newPosition;
          }
          else
          {
@@ -991,17 +989,17 @@ class EARArchiveDir : ArchiveDir
          if(entry.nameLen != newEntry.nameLen)
          {
             byte * buffer;
-            uint bufferSize = Min(dataSize, MAX_BUFFERSIZE);
+            uint64 bufferSize = Min(dataSize, MAX_BUFFERSIZE);
             buffer = new byte[bufferSize];
             if(buffer)
             {
-               uint readPosition = position + sizeof(EAREntry) + entry.nameLen;
-               uint writePosition = newPosition + sizeof(EAREntry) + newEntry.nameLen;
-               uint c;
+               uint64 readPosition = position + sizeof(EAREntry) + entry.nameLen;
+               uint64 writePosition = newPosition + sizeof(EAREntry) + newEntry.nameLen;
+               uint64 c;
 
                for(c = 0; c<dataSize; c += bufferSize)
                {
-                  uint size = (dataSize > c + bufferSize) ? bufferSize : (dataSize - c);
+                  uint64 size = (dataSize > c + bufferSize) ? bufferSize : (dataSize - c);
 
                   archive.f.Seek(readPosition + c, start);
                   archive.f.Read(buffer, size, 1);
@@ -1038,7 +1036,7 @@ class EARArchiveDir : ArchiveDir
    {
       // Search for identical entry
       EAREntry oldEntry;
-      uint oldPosition = archive.Find(this, name, oldEntry);
+      uint64 oldPosition = archive.Find(this, name, oldEntry);
       return _AddFromFileAtPosition(oldEntry, oldPosition, name, input, stats, addMode, compression, ratio, newPosition);
    }
 
@@ -1053,7 +1051,7 @@ class EARArchiveDir : ArchiveDir
       return _AddFromFileAtPosition(oldEntry, oldPosition, name, input, stats, addMode, compression, ratio, newPosition);
    }
 
-   bool _AddFromFileAtPosition(EAREntry oldEntry, uint oldPosition, const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
+   bool _AddFromFileAtPosition(EAREntry oldEntry, uint64 oldPosition, const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
       bool skip = false;
       FileStats oldStats { };
@@ -1065,7 +1063,7 @@ class EARArchiveDir : ArchiveDir
       }
       if(stats == null)
       {
-         oldStats.size = input.GetSize();
+         oldStats.size = (uint)input.GetSize();
          stats = &oldStats;
       }
 
@@ -1079,7 +1077,7 @@ class EARArchiveDir : ArchiveDir
          // Only updates changed files
          case refresh:
             if(oldPosition &&
-                 (oldEntry.size != stats.size ||
+                 (oldEntry.size != (uint)stats.size ||
                   oldEntry.modified != (TimeStamp32)stats.modified ||
                   oldEntry.created != (TimeStamp32)stats.created))
                   archive.Delete(this, oldPosition, oldEntry);
@@ -1090,7 +1088,7 @@ class EARArchiveDir : ArchiveDir
          case update:
             if(oldPosition)
             {
-               if(oldEntry.size != stats.size ||
+               if(oldEntry.size != (uint)stats.size ||
                   oldEntry.modified != (TimeStamp32)stats.modified ||
                   oldEntry.created != (TimeStamp32)stats.created)
                   archive.Delete(this, oldPosition, oldEntry);
@@ -1103,7 +1101,7 @@ class EARArchiveDir : ArchiveDir
       if(!skip)
       {
          EAREntry entry { };
-         uint position, size;
+         uint64 position, size;
          byte * compressed = null;
 
          // Add the file
@@ -1112,7 +1110,7 @@ class EARArchiveDir : ArchiveDir
          entry.next = 0;
          entry.type = ENTRY_FILE;
 
-         entry.size = stats.size;
+         entry.size = (uint)stats.size;
          entry.created = (TimeStamp32)stats.created;
          entry.modified = (TimeStamp32)stats.modified;
 
@@ -1173,7 +1171,7 @@ class EARArchiveDir : ArchiveDir
          {
             byte buffer[8192];
             uint c;
-            int count = 1;
+            int64 count = 1;
             for(c = 0; c<entry.size && count; c+= count)
             {
                count = input.Read(buffer, 1, sizeof(buffer));
@@ -1192,9 +1190,9 @@ class EARArchiveDir : ArchiveDir
          // Update total size of archive
          archive.totalSize += entry.size;
 
-         last = position;
-         if(!first) first = position;
-         if(newPosition) *newPosition = position;
+         last = (uint)position;
+         if(!first) first = (uint)position;
+         if(newPosition) *newPosition = (uint)position;
       }
       else
       {
@@ -1217,15 +1215,15 @@ class EARDir : struct
 
 class EARFile : File
 {
-   uint position;
-   uint size;
+   uint64 position;
+   uint64 size;
 
    // -- For reading compressed file (entirely buffered)
    byte * buffer;
 
    // -- For reading uncompressed file (not buffered)
    File f;
-   uint start;
+   uint64 start;
 
    ~EARFile()
    {
@@ -1245,9 +1243,9 @@ class EARFile : File
          f.CloseOutput();
    }
 
-   int Read(byte * buffer, uint size, uint count)
+   uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
-      int read = 0;
+      uintsize read = 0;
       if(f)
          f.Seek(position + start, start);
       read = Min(count, (this.size - position) / size);
@@ -1259,7 +1257,7 @@ class EARFile : File
       return read;
    }
 
-   int Write(const byte * buffer, uint size, uint count)
+   uintsize Write(const byte * buffer, uintsize size, uintsize count)
    {
       return 0;
    }
@@ -1294,7 +1292,7 @@ class EARFile : File
       return false;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool Seek(int64 pos, FileSeekMode mode)
    {
       bool result = false;
       switch(mode)
@@ -1333,7 +1331,7 @@ class EARFile : File
       return result;
    }
 
-   uint Tell()
+   uint64 Tell()
    {
       return position;
    }
@@ -1343,7 +1341,7 @@ class EARFile : File
       return position >= size || (f && f.Eof());
    }
 
-   uint GetSize()
+   uint64 GetSize()
    {
       return size;
    }
@@ -1618,7 +1616,7 @@ class EARFileSystem : FileSystem
                {
                   archive.f.Seek(0, start);
                   archive.archiveStart = archive.f.Tell();
-                  archiveSize = archive.f.GetSize();
+                  archiveSize = (uint)archive.f.GetSize();
                   if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
                      !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
                      opened = true;

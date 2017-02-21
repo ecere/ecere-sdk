@@ -83,8 +83,8 @@ static class Request : struct
       connection.mutex.Wait();
       {
          // Check where this goes in the buffer
-         int overlap = file.position + file.bufferCount - (int)readStart;
-         int bytesToRead = numBytes - (int)overlap;
+         int64 overlap = file.position + file.bufferCount - (int)readStart;
+         int64 bytesToRead = numBytes - (int)overlap;
 
          // Make an exception if this is an actual read (it's been waited on...)
          if(!semaphore)
@@ -162,10 +162,10 @@ class FileClientThread : Thread
 public class NetworkClientFile : File
 {
    // The only guys who will be moving where the buffer data is mapped to the file are Read or Seek!
-   int Read(byte * buffer, uint size, uint count)
+   uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
       FileServerConnection connection = this.connection;
-      uint bytesRead = 0;
+      uintsize bytesRead = 0;
 
       count *= size;
 
@@ -193,7 +193,7 @@ public class NetworkClientFile : File
       return bytesRead;
    }
 
-   int Write(const byte * buffer, uint size, uint count)
+   uintsize Write(const byte * buffer, uintsize size, uintsize count)
    {
       return 0;
    }
@@ -213,9 +213,9 @@ public class NetworkClientFile : File
       return 0;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool Seek(int64 pos, FileSeekMode mode)
    {
-      uint newPosition = position;
+      uint64 newPosition = position;
       switch(mode)
       {
          case start:
@@ -256,7 +256,7 @@ public class NetworkClientFile : File
       return true;
    }
 
-   uint Tell()
+   uint64 Tell()
    {
       return position;
    }
@@ -266,7 +266,7 @@ public class NetworkClientFile : File
       return false;
    }
 
-   uint GetSize()
+   uint64 GetSize()
    {
       uint size;
       connection.mutex.Wait();
@@ -285,7 +285,7 @@ public class NetworkClientFile : File
    }
 
    // Returns the last request needed to fill this needed size
-   Request FigureOutMissingData(uint * start, uint * size)
+   Request FigureOutMissingData(uint64 * start, uint64 * size)
    {
       Request lastRequest = null;
       FileServerConnection connection = this.connection;
@@ -296,8 +296,8 @@ public class NetworkClientFile : File
       blocks.Add(block);
 
       // Initialize block to what we need
-      block.start = *start;
-      block.end = *start + *size - 1;
+      block.start = (uint)*start;
+      block.end = (uint)(*start + *size - 1);
 
       for(request = connection.requests.first; request; request = request.next)
       {
@@ -346,7 +346,7 @@ public class NetworkClientFile : File
       return lastRequest;
    }
 
-   void ReadMoreData(uint start, uint size, bool wait)
+   void ReadMoreData(uint64 start, uint64 size, bool wait)
    {
       FileServerConnection connection = this.connection;
       Request lastRequestNeeded;
@@ -358,9 +358,9 @@ public class NetworkClientFile : File
       if(size)
       {
          Request request = connection.AddRequest(4, Request::ReadResultCallback, this, wait);
-         request.readStart = start;
-         request.readSize = size;
-         connection.SendReadPacket(handle, start, size);
+         request.readStart = (uint)start;
+         request.readSize = (uint)size;
+         connection.SendReadPacket(handle, (uint)start, (uint)size);
          connection.mutex.Release();
          if(wait)
          {
@@ -384,9 +384,9 @@ public class NetworkClientFile : File
    FileServerConnection connection;
    int handle;
    byte * buffer;
-   uint bufferSize;
-   uint bufferCount;
-   uint position;
+   uint64 bufferSize;
+   uint64 bufferCount;
+   uint64 position;
 }
 
 public FileServerConnection ConnectToFileServer(const char * hostName, int port)

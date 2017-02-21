@@ -280,9 +280,9 @@ uint64 ui64;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
@@ -2647,14 +2647,14 @@ num_to_read = (*yy_current_buffer).yy_buf_size - number_to_move - 1;
 if(num_to_read > 8192)
 num_to_read = 8192;
 yy_n_chars = (__extension__ ({
-int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, size_t size, size_t count);
 
-__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, size_t size, size_t count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
-__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, (&(*yy_current_buffer).yy_ch_buf[number_to_move]), 1, num_to_read) : (int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, (&(*yy_current_buffer).yy_ch_buf[number_to_move]), 1, num_to_read) : (size_t)1;
 }));
 (*yy_current_buffer).yy_n_chars = yy_n_chars;
 }

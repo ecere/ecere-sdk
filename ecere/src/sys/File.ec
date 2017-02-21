@@ -48,6 +48,8 @@ default:
 #undef String
 #include <io.h>
 
+errno_t _chsize_s(int fd, __int64 size);
+
 BOOL __declspec(dllimport) WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
 
 // Missing function...
@@ -99,6 +101,7 @@ bool FILE_FileGetSize(const char * fileName, FileSize * size);
 bool FILE_FileGetStats(const char * fileName, FileStats stats);
 void FILE_FileFixCase(char * file);
 void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
+int FILE_Seek64(FILE * f, int64 offset, int origin);
 
 private:
 
@@ -225,12 +228,12 @@ public class File : IOChannel
 {
    FILE * input, * output;
 
-   uint ReadData(byte * bytes, uint numBytes)
+   uintsize ReadData(byte * bytes, uintsize numBytes)
    {
       return Read(bytes, 1, numBytes);
    }
 
-   uint WriteData(const byte * bytes, uint numBytes)
+   uintsize WriteData(const byte * bytes, uintsize numBytes)
    {
       return Write(bytes, 1, numBytes);
    }
@@ -267,7 +270,7 @@ public class File : IOChannel
             while(!f.Eof())
             {
                byte buffer[4096];
-               uint read = f.Read(buffer, 1, sizeof(buffer));
+               uintsize read = f.Read(buffer, 1, sizeof(buffer));
                Write(buffer, 1, read);
             }
             delete f;
@@ -336,7 +339,7 @@ public class File : IOChannel
                   while(!input.Eof())
                   {
                      byte buffer[4096];
-                     uint read = input.Read(buffer, 1, sizeof(buffer));
+                     uintsize read = input.Read(buffer, 1, sizeof(buffer));
                      f.Write(buffer, 1, read);
                   }
                   delete f;
@@ -354,14 +357,14 @@ public class File : IOChannel
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NOARCHIVE) && !defined(ECERE_BOOTSTRAP)
    void OnSerialize(IOChannel channel)
    {
-      uint size = this ? GetSize() : MAXDWORD;
+      uintsize size = this ? (uintsize)GetSize() : MAXDWORD;
       if(this)
       {
          byte * uncompressed = new byte[size];
          Seek(0, start);
          if(uncompressed || !size)
          {
-            uint count = Read(uncompressed, 1,  size);
+            uintsize count = Read(uncompressed, 1,  size);
             if(count == size)
             {
                uLongf cSize = size + size / 1000 + 12;
@@ -372,7 +375,7 @@ public class File : IOChannel
 
                   size.OnSerialize(channel);
                   cSize.OnSerialize(channel);
-                  channel.WriteData(compressed, (uint)cSize);
+                  channel.WriteData(compressed, (uintsize)cSize);
 
                   delete compressed;
                }
@@ -394,7 +397,7 @@ public class File : IOChannel
          Seek(0, start);
          for(c = 0; c<size; c += sizeof(data))
          {
-            uint count = Read(data, 1, sizeof(data));
+            uintsize count = Read(data, 1, sizeof(data));
             buffer.WriteData(data, count);
          }
       }
@@ -460,7 +463,7 @@ public class File : IOChannel
 public:
 
    // Virtual Methods
-   virtual bool Seek(int pos, FileSeekMode mode)
+   virtual bool Seek(int64 pos, FileSeekMode mode)
    {
       uint fmode = SEEK_SET;
       switch(mode)
@@ -469,22 +472,23 @@ public:
          case end: fmode = SEEK_END; break;
          case current: fmode = SEEK_CUR; break;
       }
-      return fseek(input ? input : output, pos, fmode) != EOF;
+      return
+         FILE_Seek64(input ? input : output, pos, fmode) != EOF;
    }
 
-   virtual uint Tell(void)
+   virtual uint64 Tell(void)
    {
-      return (uint)(input ? ftell(input) : ftell(output));
+      return (input ? ftell(input) : ftell(output));
    }
 
-   virtual int Read(void * buffer, uint size, uint count)
+   virtual uintsize Read(void * buffer, uintsize size, uintsize count)
    {
-      return input ? (int)fread(buffer, size, count, input) : 0;
+      return input ? fread(buffer, size, count, input) : 0;
    }
 
-   virtual int Write(const void * buffer, uint size, uint count)
+   virtual uintsize Write(const void * buffer, uintsize size, uintsize count)
    {
-      return output ? (int)fwrite(buffer, size, count, output) : 0;
+      return output ? fwrite(buffer, size, count, output) : 0;
    }
 
    // UNICODE OR NOT?
@@ -523,21 +527,21 @@ public:
       return input ? feof(input) != 0 : true;
    }
 
-   virtual bool Truncate(FileSize size)
+   virtual bool Truncate(uint64 size)
    {
    #ifdef ECERE_BOOTSTRAP
       fprintf(stderr, "WARNING:  File::Truncate unimplemented in ecereBootstrap.\n");
       return false;
    #else
    #if defined(__WIN32__)
-      return output ? (_chsize(fileno(output), size) == 0) : false;
+      return output ? (_chsize_s(fileno(output), size) == 0) : false;
    #else
       return output ? (ftruncate(fileno(output), size) == 0) : false;
    #endif
    #endif
    }
 
-   virtual uint GetSize(void)
+   virtual uint64 GetSize(void)
    {
       return FILE_GetSize(input);
    }
@@ -774,7 +778,7 @@ public:
          Seek(0, start);
          while(!Eof())
          {
-            uint count = Read(buffer, 1, sizeof(buffer));
+            uintsize count = Read(buffer, 1, sizeof(buffer));
             if(count && !f.Write(buffer, 1, count))
             {
                result = false;
@@ -872,7 +876,7 @@ public class SecSince1970 : int64;
 public struct FileStats
 {
    FileAttribs attribs;
-   FileSize size;
+   uint64 size;
    SecSince1970 accessed;
    SecSince1970 modified;
    SecSince1970 created;
@@ -1036,7 +1040,7 @@ public void FileFixCase(char * file)
 }
 
 #if !defined(ECERE_BOOTSTRAP)
-public bool FileTruncate(const char * fileName, FileSize size)
+public bool FileTruncate(const char * fileName, uint64 size)
 {
 #if defined(__WIN32__)
    uint16 * _wfileName = UTF8toUTF16(fileName, null);
@@ -1044,7 +1048,7 @@ public bool FileTruncate(const char * fileName, FileSize size)
    bool result = false;
    if(f != -1)
    {
-      if(!_chsize(f, size))
+      if(!_chsize_s(f, size))
          result = true;
       _close(f);
    }

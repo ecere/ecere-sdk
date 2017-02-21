@@ -1599,7 +1599,7 @@ public char * StringFromSpecDecl(OldList specs, Declarator decl)
    char * string;
    TypeName typeName { };
    File f = TempFile { };
-   FileSize size;
+   uint64 size;
 
    typeName.qualifiers = specs;
    typeName.declarator = decl;

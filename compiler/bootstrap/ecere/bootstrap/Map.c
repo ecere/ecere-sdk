@@ -101,9 +101,9 @@ struct __ecereNameSpace__ecere__com__IteratorPointer;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
@@ -993,7 +993,7 @@ uint64 key = (Kclass->type == 1) ? (uint64)(uintptr_t)__ecereNameSpace__ecere__c
 uint64 data = (Dclass->type == 1) ? (uint64)(uintptr_t)__ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (Dclass->structSize)) : 0;
 
 ((void (*)(void *, void *, void *))(void *)Kclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, &key, channel);
-((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, (Dclass->type == 1) ? (void *)data : &data, channel);
+((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, (Dclass->type == 1) ? (void *)(uintptr_t)data : &data, channel);
 destNode = (struct __ecereNameSpace__ecere__com__MapNode *)(__extension__ ({
 struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded);
 
@@ -1015,9 +1015,9 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(container, (void *)(destNode), (uint64)data) : (unsigned int)1;
 }));
 if(Kclass->type == 1)
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)key), key = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)(uintptr_t)key), key = 0);
 if(Dclass->type == 1)
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)data), data = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)(uintptr_t)data), data = 0);
 }
 (*this) = container;
 }

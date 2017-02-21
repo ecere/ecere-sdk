@@ -165,9 +165,9 @@ extern int __ecereVMethodID_class_OnCopy;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char * _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
@@ -1086,9 +1086,9 @@ struct __ecereNameSpace__ecere__com__Module;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, unsigned int *  offset, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
-
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, unsigned int *  offset, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
@@ -1602,28 +1602,28 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 void __ecereNameSpace__ecere__com__Byte_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (size_t)1;
 }));
 }
 
 void __ecereNameSpace__ecere__com__Byte_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, data, 1) : (size_t)1;
 })) != 1)
 *data = 0;
 }
@@ -1638,14 +1638,14 @@ unsigned char bytes[4];
 (bytes)[3] = (unsigned char)((*data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (size_t)1;
 }));
 }
 
@@ -1659,14 +1659,14 @@ unsigned char bytes[4];
 (bytes)[3] = (unsigned char)((data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (size_t)1;
 }));
 }
 
@@ -1675,14 +1675,14 @@ void __ecereNameSpace__ecere__com__Int_OnUnserialize(struct __ecereNameSpace__ec
 unsigned char bytes[4];
 
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (size_t)1;
 })) == 4)
 *data = (unsigned int)(((bytes)[0] << 24) | ((bytes)[1] << 16) | ((bytes)[2] << 8) | (bytes)[3]);
 else
@@ -1703,14 +1703,14 @@ unsigned char bytes[8];
 (bytes)[7] = (unsigned char)((*data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (size_t)1;
 }));
 }
 
@@ -1728,14 +1728,14 @@ unsigned char bytes[8];
 (bytes)[7] = (unsigned char)((data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (size_t)1;
 }));
 }
 
@@ -1744,14 +1744,14 @@ void __ecereNameSpace__ecere__com__Int64_OnUnserialize(struct __ecereNameSpace__
 unsigned char bytes[8];
 
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (size_t)1;
 })) == 8)
 *data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << 16) | ((bytes)[6] << 8) | (bytes)[7]);
 else
@@ -1766,14 +1766,14 @@ unsigned char bytes[2];
 (bytes)[1] = (unsigned char)(((*data)) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (size_t)1;
 }));
 }
 
@@ -1782,14 +1782,14 @@ void __ecereNameSpace__ecere__com__Word_OnUnserialize(struct __ecereNameSpace__e
 unsigned char bytes[2];
 
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 2) : (size_t)1;
 })) == 2)
 *data = (unsigned short)(((bytes)[0] << 8) | (bytes)[1]);
 else
@@ -1806,14 +1806,14 @@ unsigned char bytes[4];
 (bytes)[3] = (unsigned char)((*(unsigned int *)data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (size_t)1;
 }));
 }
 
@@ -1822,14 +1822,14 @@ static void __ecereNameSpace__ecere__com__Float_OnUnserialize(struct __ecereName
 unsigned char bytes[4];
 
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 4) : (size_t)1;
 })) == 4)
 *(unsigned int *)data = (unsigned int)(((bytes)[0] << 24) | ((bytes)[1] << 16) | ((bytes)[2] << 8) | (bytes)[3]);
 else
@@ -1850,14 +1850,14 @@ unsigned char bytes[8];
 (bytes)[7] = (unsigned char)((*(uint64 *)data) & 0xFF);
 ;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (size_t)1;
 }));
 }
 
@@ -1866,14 +1866,14 @@ static void __ecereNameSpace__ecere__com__Double_OnUnserialize(struct __ecereNam
 unsigned char bytes[8];
 
 if((__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, bytes, 8) : (size_t)1;
 })) == 8)
 *(uint64 *)data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << 16) | ((bytes)[6] << 8) | (bytes)[7]);
 else
@@ -1885,14 +1885,14 @@ void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct
 unsigned int len = this ? strlen(this->string) : 0;
 
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, this ? this->string : "", len + 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, this ? this->string : "", len + 1) : (size_t)1;
 }));
 }
 
@@ -1903,14 +1903,14 @@ if(this)
 int c;
 
 for(c = 0; (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*this).string[c], 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*this).string[c], 1) : (size_t)1;
 })) && (*this).string[c]; c++)
 ;
 (*this).string[c++] = '\0';
@@ -1922,14 +1922,14 @@ static void __ecereNameSpace__ecere__com__String_OnSerialize(struct __ecereNameS
 int len = string ? strlen(string) : 0;
 
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, string ? string : "", len + 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, string ? string : "", len + 1) : (size_t)1;
 }));
 }
 
@@ -1942,14 +1942,14 @@ unsigned int size = 64;
 
 *string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (size));
 for(c = 0; (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData]);
-__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*string)[c], 1) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(channel, &(*string)[c], 1) : (size_t)1;
 })) && (*string)[c]; c++)
 {
 if(c == size - 1)
@@ -1972,7 +1972,7 @@ else
 }
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_WriteData(struct __ecereNameSpace__ecere__com__Instance * this, const void * bytes, unsigned int numBytes)
+size_t __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_WriteData(struct __ecereNameSpace__ecere__com__Instance * this, const void * bytes, size_t numBytes)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
@@ -1991,13 +1991,13 @@ return numBytes;
 return 0;
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_ReadData(struct __ecereNameSpace__ecere__com__Instance * this, void * bytes, unsigned int numBytes)
+size_t __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_ReadData(struct __ecereNameSpace__ecere__com__Instance * this, void * bytes, size_t numBytes)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 if(this != (((void *)0)))
 {
-unsigned int __simpleStruct0;
+size_t __simpleStruct0;
 int read = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count - __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos, (numBytes < __simpleStruct0) ? numBytes : __simpleStruct0);
 
 memcpy(bytes, __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->_buffer + __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos, read);
@@ -2577,7 +2577,40 @@ else
 {
 unsigned int offset;
 unsigned char * memberData;
+struct __ecereNameSpace__ecere__com__Property * p = __ecereNameSpace__ecere__com__eClass_FindProperty(m->_class, m->name, m->_class->module);
 
+if(p && p->IsSet && !p->Get && !p->Set)
+{
+unsigned int isSet = 1;
+
+if(_class->type == 0 || _class->type == 5 || _class->type == 1)
+isSet = p->IsSet(data);
+else
+{
+switch(_class->typeSize)
+{
+case 8:
+isSet = ((unsigned int (*)(uint64))(void *)p->IsSet)(*(uint64 *)data);
+break;
+case 4:
+isSet = ((unsigned int (*)(unsigned int))(void *)p->IsSet)(*(unsigned int *)data);
+break;
+case 2:
+isSet = ((unsigned int (*)(unsigned short))(void *)p->IsSet)(*(unsigned short *)data);
+break;
+case 1:
+isSet = ((unsigned int (*)(unsigned char))(void *)p->IsSet)(*(unsigned char *)data);
+break;
+default:
+isSet = 1;
+}
+}
+if(!isSet)
+{
+atMember = 0;
+continue;
+}
+}
 __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(m->_class, m->name, &offset, m->_class->module, (((void *)0)), (((void *)0)));
 if(m->_class->type == 0 || m->_class->type == 5)
 offset += m->_class->base->structSize;
@@ -3464,8 +3497,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64U", "(
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::IOChannel", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__IOChannel = class;
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "WriteData", "uint WriteData(const void * data, unsigned int numBytes)", 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "ReadData", "uint ReadData(void * data, unsigned int numBytes)", 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "WriteData", "uintsize WriteData(const void * data, uintsize numBytes)", 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "ReadData", "uintsize ReadData(void * data, uintsize numBytes)", 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Get", "void Get(typed_object * data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Put", "void Put(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Serialize", "void Serialize(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize, 1);
@@ -3477,9 +3510,9 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "WriteData", 0, __ecereMet
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "ReadData", 0, __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_ReadData, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_buffer", "byte *", sizeof(void *), 0xF000F000, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "uint", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_size", "uint", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pos", "uint", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "uintsize", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_size", "uintsize", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pos", "uintsize", sizeof(void *), 0xF000F000, 1);
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "buffer", "byte *", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_buffer, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_buffer, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer = (void *)0;

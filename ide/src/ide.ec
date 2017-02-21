@@ -4079,7 +4079,7 @@ class IDEApp : GuiApplication
             for(; !include.Eof(); )
             {
                char buffer[4096];
-               int count = include.Read(buffer, 1, 4096);
+               int64 count = include.Read(buffer, 1, 4096);
                f.Write(buffer, 1, count);
             }
             result = true;

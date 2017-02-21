@@ -59,9 +59,9 @@ void DualPipe_CloseInput(_DualPipe * dp);
 
 void DualPipe_CloseOutput(_DualPipe * dp);
 
-int DualPipe_Read(_DualPipe * dp, unsigned char * buffer, unsigned int size, unsigned int count);
+size_t DualPipe_Read(_DualPipe * dp, unsigned char * buffer, size_t size, size_t count);
 
-int DualPipe_Write(_DualPipe * dp, const unsigned char * buffer, unsigned int size, unsigned int count);
+size_t DualPipe_Write(_DualPipe * dp, const unsigned char * buffer, size_t size, size_t count);
 
 unsigned int DualPipe_Getc(_DualPipe * dp, char * ch);
 
@@ -69,13 +69,13 @@ unsigned int DualPipe_Putc(_DualPipe * dp, char ch);
 
 unsigned int DualPipe_Puts(_DualPipe * dp, const char * string);
 
-unsigned int DualPipe_Seek(_DualPipe * dp, int pos, int mode);
+unsigned int DualPipe_Seek(_DualPipe * dp, long long pos, int mode);
 
-unsigned int DualPipe_Tell(_DualPipe * dp);
+uint64 DualPipe_Tell(_DualPipe * dp);
 
 unsigned int DualPipe_Eof(_DualPipe * dp);
 
-unsigned int DualPipe_GetSize(_DualPipe * dp);
+uint64 DualPipe_GetSize(_DualPipe * dp);
 
 unsigned int DualPipe_Peek(_DualPipe * dp);
 
@@ -130,9 +130,9 @@ uint64 ui64;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
@@ -478,7 +478,7 @@ DualPipe_Destructor(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 }
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Read(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char * buffer, unsigned int size, unsigned int count)
+size_t __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Read(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char * buffer, size_t size, size_t count)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
@@ -579,15 +579,15 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
 })) : DualPipe_CloseOutput(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, unsigned int size, unsigned int count)
+size_t __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, size_t size, size_t count)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
 return __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this) ? (__extension__ ({
-int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, size_t size, size_t count);
 
-__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
-__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer, size, count) : (int)1;
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, size_t size, size_t count))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer, size, count) : (size_t)1;
 })) : DualPipe_Write(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, buffer, size, count);
 }
 
@@ -627,39 +627,39 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this, string) : (unsigned in
 })), __ecereMethod___ecereNameSpace__ecere__sys__File_Flush(this)) : DualPipe_Puts(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, string);
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Seek(struct __ecereNameSpace__ecere__com__Instance * this, int pos, int mode)
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Seek(struct __ecereNameSpace__ecere__com__Instance * this, long long pos, int mode)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
 return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this)) ? (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this, pos, mode) : (unsigned int)1;
 })) : DualPipe_Seek(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, pos, mode);
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Tell(struct __ecereNameSpace__ecere__com__Instance * this)
+uint64 __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Tell(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
 return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this)) ? (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell]);
-__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (uint64)1;
 })) : DualPipe_Tell(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetSize(struct __ecereNameSpace__ecere__com__Instance * this)
+uint64 __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetSize(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
 return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this)) ? (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize]);
-__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (uint64)1;
 })) : DualPipe_GetSize(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 

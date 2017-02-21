@@ -12,15 +12,15 @@ typedef struct _DualPipe _DualPipe;
 void DualPipe_Destructor(_DualPipe * dp);
 void DualPipe_CloseInput(_DualPipe * dp);
 void DualPipe_CloseOutput(_DualPipe * dp);
-int DualPipe_Read(_DualPipe * dp, byte * buffer, uint size, uint count);
-int DualPipe_Write(_DualPipe * dp, const byte * buffer, uint size, uint count);
+uintsize DualPipe_Read(_DualPipe * dp, byte * buffer, uintsize size, uintsize count);
+uintsize DualPipe_Write(_DualPipe * dp, const byte * buffer, uintsize size, uintsize count);
 bool DualPipe_Getc(_DualPipe * dp, char * ch);
 bool DualPipe_Putc(_DualPipe * dp, char ch);
 bool DualPipe_Puts(_DualPipe * dp, const char * string);
-bool DualPipe_Seek(_DualPipe * dp, int pos, FileSeekMode mode);
-uint DualPipe_Tell(_DualPipe * dp);
+bool DualPipe_Seek(_DualPipe * dp, int64 pos, FileSeekMode mode);
+uint64 DualPipe_Tell(_DualPipe * dp);
 bool DualPipe_Eof(_DualPipe * dp);
-bool DualPipe_GetSize(_DualPipe * dp);
+uint64 DualPipe_GetSize(_DualPipe * dp);
 bool DualPipe_Peek(_DualPipe * dp);
 void DualPipe_Terminate(_DualPipe * dp);
 int DualPipe_GetExitCode(_DualPipe * dp);
@@ -39,15 +39,15 @@ public class DualPipe : File
    ~DualPipe() { DualPipe_Destructor(dp); }
    void CloseInput() { (input != null) ? File::CloseInput() : DualPipe_CloseInput(dp); }
    void CloseOutput() { (output != null) ? File::CloseOutput() : DualPipe_CloseOutput(dp); }
-   int Read(byte * buffer, uint size, uint count) { return DualPipe_Read(dp, buffer, size, count); }
-   int Write(const byte * buffer, uint size, uint count) { return output ? File::Write(buffer, size, count) : DualPipe_Write(dp, buffer, size, count); }
+   uintsize Read(byte * buffer, uintsize size, uintsize count) { return DualPipe_Read(dp, buffer, size, count); }
+   uintsize Write(const byte * buffer, uintsize size, uintsize count) { return output ? File::Write(buffer, size, count) : DualPipe_Write(dp, buffer, size, count); }
    bool Getc(char * ch) { return input ? File::Getc(ch) : DualPipe_Getc(dp, ch); }
    bool Putc(char ch) { return output ? File::Putc(ch) : DualPipe_Putc(dp, ch); }
    bool Puts(const char * string) { return output ? (File::Puts(string), File::Flush()) : DualPipe_Puts(dp, string); }
-   bool Seek(int pos, FileSeekMode mode) { return (input || output) ? File::Seek(pos, mode) : DualPipe_Seek(dp, pos, mode); }
-   uint Tell() { return (input || output) ? File::Tell() : DualPipe_Tell(dp); }
+   bool Seek(int64 pos, FileSeekMode mode) { return (input || output) ? File::Seek(pos, mode) : DualPipe_Seek(dp, pos, mode); }
+   uint64 Tell() { return (input || output) ? File::Tell() : DualPipe_Tell(dp); }
    bool Eof() { return DualPipe_Eof(dp); }
-   uint GetSize() { return (input || output) ? File::GetSize() : DualPipe_GetSize(dp); }
+   uint64 GetSize() { return (input || output) ? File::GetSize() : DualPipe_GetSize(dp); }
 
 public:
    bool Peek() { return DualPipe_Peek(dp); }

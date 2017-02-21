@@ -7,7 +7,7 @@ public void MoveBytes(void * dest, const void * source, uint count)
    memmove(dest, source, count);
 }
 
-public void CopyBytes(void * dest, const void * source, uint count)
+public void CopyBytes(void * dest, const void * source, uint64 count)
 {
 #if !defined(ECERE_BOOTSTRAP) && (defined(__WATCOMC__) || defined(__MSC__) || defined(__BORLANDC__))
    _asm

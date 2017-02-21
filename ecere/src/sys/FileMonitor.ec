@@ -163,7 +163,7 @@ private:
       if(FileGetStats(filePath, stats))
       {
          attribs = stats.attribs;
-         size = stats.size;
+         size = (uint)stats.size;
          modified = stats.modified;
 #ifdef _DEBUG
          /*if(strstr(filePath, "Debugger"))
@@ -207,7 +207,7 @@ private:
       if(FileGetStats(fileName, stats))
       {
          attribs = stats.attribs;
-         size = stats.size;
+         size = (uint)stats.size;
          modified = stats.modified;
       }
 
@@ -283,7 +283,7 @@ static void GetFileEntries(OldList list, const char * path)
             name = CopyString(listing.name),
             attribs = listing.stats.attribs,
             modified = listing.stats.modified,
-            size = listing.stats.size
+            size = (uint)listing.stats.size
          });
    }
    list.Sort(CompareFiles, null);
@@ -398,7 +398,7 @@ static class MonitorThread : Thread
                            // printf("Modified/size changed, adding file notify...\n");
                            if(stats.modified > monitor.modified || monitor.modified - (TimeStamp)stats.modified > 2)
                               fileActivity |= monitor.AddFileNotify(FileChange { modified = true }, monitor.fileName, null);
-                           monitor.size = stats.size;
+                           monitor.size = (uint)stats.size;
                            monitor.modified = stats.modified;
 #ifdef _DEBUG
                            /*if(strstr(monitor.fileName, "Debugger"))

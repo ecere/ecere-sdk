@@ -368,6 +368,11 @@ CUSTOM1_PRJ_CFLAGS = \
 			 -DECERE_COM_MODULE \
 	 $(PRJ_CFLAGS)
 
+CUSTOM2_PRJ_CFLAGS = \
+	 $(if $(LINUX_TARGET), \
+			 -D_FILE_OFFSET_BITS=64,) \
+	 $(PRJ_CFLAGS)
+
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
@@ -513,7 +518,7 @@ $(OBJ)EARArchive.sym: src/sys/EARArchive.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.sym
 
 $(OBJ)File.sym: src/sys/File.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.sym
 
 $(OBJ)FileMonitor.sym: src/sys/FileMonitor.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.sym
@@ -791,7 +796,7 @@ $(OBJ)EARArchive.c: src/sys/EARArchive.ec $(OBJ)EARArchive.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.c -symbols $(OBJ)
 
 $(OBJ)File.c: src/sys/File.ec $(OBJ)File.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) $(FVISIBILITY) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
 
 $(OBJ)FileMonitor.c: src/sys/FileMonitor.ec $(OBJ)FileMonitor.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.c -symbols $(OBJ)
@@ -1069,7 +1074,7 @@ $(OBJ)EARArchive.o: $(OBJ)EARArchive.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
 
 $(OBJ)File.o: $(OBJ)File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)File.c -o $(OBJ)File.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)File.c -o $(OBJ)File.o
 
 $(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
@@ -1111,7 +1116,7 @@ $(OBJ)units.o: $(OBJ)units.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)units.c -o $(OBJ)units.o
 
 $(OBJ)File.c.o: src/sys/File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
 
 $(OBJ)DualPipe.c.o: src/sys/DualPipe.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o

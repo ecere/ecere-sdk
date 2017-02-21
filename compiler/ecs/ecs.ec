@@ -426,7 +426,7 @@ static void WriteMain(const char * fileName)
          while(!dcomSymbols.Eof())
          {
             char buffer[4096];
-            int read = dcomSymbols.Read(buffer, 1, sizeof(buffer));
+            int64 read = dcomSymbols.Read(buffer, 1, sizeof(buffer));
             if(!read) break;
             f.Write(buffer, 1, read);
          }

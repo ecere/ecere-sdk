@@ -707,10 +707,10 @@ private:
       }
    }
 
-   int Read(byte * buffer, uint size, uint count)
+   uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
-      uint readSize = size * count;
-      uint read = 0;
+      uintsize readSize = size * count;
+      uintsize read = 0;
       bool wait = false;
       Time lastTime = GetTime();
 
@@ -725,7 +725,7 @@ private:
          eof = true;
       while(!eof && read < readSize && !aborted)
       {
-         uint numbytes = bufferCount - bufferPos;
+         uint64 numbytes = bufferCount - bufferPos;
          numbytes = Min(numbytes, readSize - read);
          if(totalSizeSet)
             numbytes = Min(numbytes, totalSize - position);
@@ -743,7 +743,7 @@ private:
             if(bufferPos > HTTPFILE_BUFFERSIZE / 2)
             {
                // Shift bytes back to beginning of buffer
-               uint shift = bufferCount - bufferPos;
+               uint64 shift = bufferCount - bufferPos;
                if(shift)
                   memmove(this.buffer, this.buffer + bufferPos, shift);
                bufferCount -= bufferPos;
@@ -769,14 +769,14 @@ private:
       return read / size;
    }
 
-   int Write(const byte * buffer, uint size, uint count)
+   uintsize Write(const byte * buffer, uintsize size, uintsize count)
    {
       return 0;
    }
 
    bool Getc(char * ch)
    {
-      int read = Read(ch, 1, 1);
+      uintsize read = Read(ch, 1, 1);
       return !eof && read != 0;
    }
 
@@ -790,7 +790,7 @@ private:
       return false;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool Seek(int64 pos, FileSeekMode mode)
    {
       if(mode == start && bufferPos == 0 && pos <= bufferCount && pos >= 0)
       {
@@ -810,7 +810,7 @@ private:
       return false;
    }
 
-   uint Tell()
+   uint64 Tell()
    {
       return position;
    }
@@ -820,7 +820,7 @@ private:
       return eof;
    }
 
-   uint GetSize()
+   uint64 GetSize()
    {
       return totalSize;
    }
@@ -834,21 +834,21 @@ private:
    bool askedBody;
 
    HTTPConnection connection;
-   uint position;
+   uint64 position;
    bool done;
    bool eof;
    int status;
-   uint totalSize;
+   uint64 totalSize;
    bool chunked;
    bool close;
-   uint chunkSize;
+   uint64 chunkSize;
    char * relocation;
    String location;
 
    // Buffering...
    byte buffer[HTTPFILE_BUFFERSIZE];
-   uint bufferPos;
-   uint bufferCount;
+   uint64 bufferPos;
+   uint64 bufferCount;
    bool aborted;
    bool totalSizeSet;
 

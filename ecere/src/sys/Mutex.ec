@@ -1,5 +1,7 @@
 #define _Noreturn
 
+#undef _DEBUG
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 

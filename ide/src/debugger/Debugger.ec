@@ -4270,7 +4270,7 @@ class ValgrindLogThread : Thread
          int result = 0;
          app.Unlock();
          if(vgLogFile)
-            result = vgLogFile.Read(output, 1, sizeof(output));
+            result = (int)vgLogFile.Read(output, 1, sizeof(output));
          app.Lock();
          if(debugger.state == terminated || !vgLogFile) // || vgLogFile.Eof()
             break;
@@ -4414,7 +4414,7 @@ class ValgrindTargetThread : Thread
       {
          int result;
          app.Unlock();
-         result = vgTargetHandle.Read(output, 1, sizeof(output));
+         result = (int)vgTargetHandle.Read(output, 1, sizeof(output));
          app.Lock();
          if(debugger.state == terminated || !vgTargetHandle || vgTargetHandle.Eof())
             break;
@@ -4483,7 +4483,7 @@ class GdbThread : Thread
       {
          int result;
          app.Unlock();
-         result = gdbHandle.Read(output, 1, sizeof(output));
+         result = (int)gdbHandle.Read(output, 1, sizeof(output));
          app.Lock();
          if(debugger.state == terminated || !gdbHandle || gdbHandle.Eof())
             break;

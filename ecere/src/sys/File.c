@@ -3,6 +3,7 @@
 #undef __BLOCKS__
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
@@ -98,7 +99,7 @@ typedef enum
 typedef struct
 {
    FileAttribs attribs;
-   FileSize size;
+   uint64 size;
    SecSince1970 accessed;
    SecSince1970 modified;
    SecSince1970 created;
@@ -627,5 +628,18 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
       case FOM_writeRead:  *input = *output = fopen(fileName, "w+b"); break;
       case FOM_appendRead: *input = *output = fopen(fileName, "a+b"); break;
    }
+#endif
+}
+
+int FILE_Seek64(FILE * f, int64 offset, int origin)
+{
+#if defined(__WIN32__)
+   #if !defined(_WIN64)
+   if(origin == SEEK_CUR) // fseek with -1, SEEK_CUR failing in 32-bit with MinGW-w64 ?
+      return fseek(f, offset, origin);
+   #endif
+   return _fseeki64(f, offset, origin);
+#else
+   return fseek(f, offset, origin);
 #endif
 }

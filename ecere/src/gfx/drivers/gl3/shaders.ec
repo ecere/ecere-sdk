@@ -104,7 +104,7 @@ private:
       // printf("loading shader %s (%p)\n", file, f);
       if(f)
       {
-         *len = f.GetSize();
+         *len = (int)f.GetSize();
          *source = new byte[*len+1];
          f.Read(*source, 1, *len);
          (*source)[*len] = 0;

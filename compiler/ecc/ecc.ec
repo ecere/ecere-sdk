@@ -552,7 +552,7 @@ class CompilerApp : Application
             while(!cppOutput.Eof())
             {
                char junk[4096];
-               int count = cppOutput.Read(junk, 1, 4096);
+               int64 count = cppOutput.Read(junk, 1, 4096);
                fileInput.Write(junk, 1, count);
             }
             exitCode = cppOutput.GetExitCode();

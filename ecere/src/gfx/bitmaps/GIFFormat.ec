@@ -9,7 +9,7 @@ import "Display"
 static int ReadData(GifFileType * gifFile, GifByteType * bytes, int size)
 {
    File f = gifFile->UserData;
-   return f.Read(bytes, 1, size);
+   return (int)f.Read(bytes, 1, size);
 }
 
 /*static int WriteData(GifFileType * gifFile, GifByteType * bytes, int size)

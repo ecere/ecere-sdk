@@ -222,7 +222,7 @@ static uint FT_stream_load(FT_Stream stream, long offset, byte * buffer, long co
 {
     File f = stream->descriptor.pointer;
     f.Seek((int)offset, start);
-    return count ? f.Read(buffer, 1, (uint)count) : 0;
+    return count ? (uint)f.Read(buffer, 1, (uint)count) : 0;
 }
 
 static void FT_stream_close(FT_Stream stream)
@@ -280,7 +280,7 @@ class FontEntry : BTNode
          File file = FileOpen/*Buffered*/(info.fileName, read);
          if(file)
          {
-            FileSize fileSize = file.GetSize();
+            uint64 fileSize = file.GetSize();
             FT_Open_Args args = { 0 };
             FT_Parameter param = { FT_PARAM_TAG_UNPATENTED_HINTING };
             FT_Stream stream = new0 FT_StreamRec[1];
@@ -299,7 +299,7 @@ class FontEntry : BTNode
             //args.num_params = 1;
             args.params = &param;
 
-            stream->size = fileSize;
+            stream->size = (uint)fileSize;
             stream->descriptor.pointer = file;
             stream->read = FT_stream_load;
             stream->close = FT_stream_close;

@@ -44,7 +44,7 @@ public:
             data = new byte[header.data_len];
             if(data)
             {
-               int c = f.Read(data, 1, header.data_len);
+               int64 c = f.Read(data, 1, header.data_len);
                if(c)
                {
                   frequency = header.samples_per_sec;

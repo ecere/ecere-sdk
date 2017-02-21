@@ -199,9 +199,9 @@ uint64 ui64;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
@@ -474,7 +474,7 @@ else
 return (((void *)0));
 }
 
-void __ecereNameSpace__ecere__sys__PrintSize(char * string, unsigned int size, int prec)
+void __ecereNameSpace__ecere__sys__PrintSize(char * string, uint64 size, int prec)
 {
 if(size > 1024)
 {
@@ -498,7 +498,7 @@ strcat(string, " KB");
 }
 }
 else
-sprintf(string, "%d B", size);
+sprintf(string, "%d B", (unsigned int)size);
 }
 
 void __ecereNameSpace__ecere__sys__PrintBigSize(char * string, double size, int prec)
@@ -1756,7 +1756,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PathCat", "c
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakePathRelative", "char * ecere::sys::MakePathRelative(const char * path, const char * to, char * destination)", __ecereNameSpace__ecere__sys__MakePathRelative, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripExtension", "bool ecere::sys::StripExtension(char * string)", __ecereNameSpace__ecere__sys__StripExtension, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeExtension", "char * ecere::sys::ChangeExtension(const char * string, const char * ext, char * output)", __ecereNameSpace__ecere__sys__ChangeExtension, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintSize", "void ecere::sys::PrintSize(char * string, uint size, int prec)", __ecereNameSpace__ecere__sys__PrintSize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintSize", "void ecere::sys::PrintSize(char * string, uint64 size, int prec)", __ecereNameSpace__ecere__sys__PrintSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize", "void ecere::sys::PrintBigSize(char * string, double size, int prec)", __ecereNameSpace__ecere__sys__PrintBigSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);

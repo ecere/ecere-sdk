@@ -872,11 +872,11 @@ public:
       uint offsets[3];
       f.Put(numFields);
       f.Write(offsets, sizeof(uint), numFields);
-      offsets[0] = f.Tell();
+      offsets[0] = (uint)f.Tell();
       f.Put(name);
-      offsets[1] = f.Tell();
+      offsets[1] = (uint)f.Tell();
       f.Put(type);
-      offsets[2] = f.Tell();
+      offsets[2] = (uint)f.Tell();
       f.Put(length);
       f.Seek(sizeof(uint), start);
       f.Write(offsets, sizeof(uint), numFields);
@@ -966,7 +966,7 @@ static class EDBRow : DriverRow
          {
             uint * offsets = new0 uint[numFields];
             byte * buffer = null;
-            uint size;
+            uint64 size;
             f.Read(offsets, sizeof(uint), oldNumFields);
             tf.Put(numFields);
 
@@ -1007,7 +1007,7 @@ static class EDBRow : DriverRow
             }
 
             // Update the offset of the field we're writing to
-            offsets[field.num-1] = tf.Tell();
+            offsets[field.num-1] = (uint)tf.Tell();
             // Serialize the data we're writing
             ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnSerialize])(field.type, data, tf);
 
@@ -1019,14 +1019,14 @@ static class EDBRow : DriverRow
                {
                   if(offsets[c])
                   {
-                     difference = tf.Tell() - offsets[c];
+                     difference = (uint)tf.Tell() - offsets[c];
                      break;
                   }
                }
 
                if(c < numFields)
                {
-                  int fileSize = f.GetSize();
+                  uint fileSize = (uint)f.GetSize();
                   f.Seek(offsets[c], start);
                   size = fileSize - offsets[c];
                   buffer = renew buffer byte[size];

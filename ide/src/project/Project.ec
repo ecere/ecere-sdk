@@ -2458,7 +2458,7 @@ private:
                for(; !include.Eof(); )
                {
                   char buffer[4096];
-                  int count = include.Read(buffer, 1, 4096);
+                  int64 count = include.Read(buffer, 1, 4096);
                   f.Write(buffer, 1, count);
                }
                delete f;
@@ -4031,7 +4031,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
       char section[128];
       char subSection[128];
       char * equal;
-      uint pos;
+      uint64 pos;
 
       pos = f.Tell();
       f.GetLine(buffer, 65536 - 1);
@@ -4166,7 +4166,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
 Project LegacyAsciiLoadProject(File f, const char * filePath)
 {
    Project project = null;
-   int pos;
+   int64 pos;
    char parentPath[MAX_LOCATION];
    char section[128] = "";
    char subSection[128] = "";

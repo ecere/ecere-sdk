@@ -740,7 +740,7 @@ public char * ChangeExtension(const char * string, const char * ext, char * outp
 }
 
 // --- String Stuff (Temporarily outside String class) ---
-public void PrintSize(char * string, uint size, int prec)
+public void PrintSize(char * string, uint64 size, int prec)
 {
    if(size > 1024)
    {
@@ -763,7 +763,7 @@ public void PrintSize(char * string, uint size, int prec)
       }
    }
    else
-      sprintf(string, "%d B", size);
+      sprintf(string, "%d B", (uint)size);
 }
 
 public void PrintBigSize(char * string, double size, int prec)

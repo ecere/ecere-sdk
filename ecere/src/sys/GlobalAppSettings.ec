@@ -452,7 +452,7 @@ public:
          }
 
          if(locked && fileSize)
-            *fileSize = f.GetSize();
+            *fileSize = (FileSize)f.GetSize();
       }
       return f && locked;
    }
@@ -647,7 +647,7 @@ public:
          int lenOutput;
          byte * remainingBuffer = null;
          int remainingLen = 0;
-         uint currentSize = 0, newSize = 0;
+         uint64 currentSize = 0, newSize = 0;
 
          f.Seek(0, start);
 
@@ -701,10 +701,10 @@ public:
          }
          if(!f.Eof())
          {
-            int posBeforeSection = -1;
+            int64 posBeforeSection = -1;
             for(;;)
             {
-               uint pos = f.Tell();
+               uint64 pos = f.Tell();
                if(!f.GetLine(line, sizeof(line)))
                   break;
                if(posBeforeSection == -1 || !line[0])
@@ -727,7 +727,7 @@ public:
                }
                else if(!strncmp(line, name, lenName) && line[lenName] == '=')
                {
-                  uint endLinePos = f.Tell();
+                  uint64 endLinePos = f.Tell();
 
                   // Remember the rest of the file
                   while(!f.Eof())

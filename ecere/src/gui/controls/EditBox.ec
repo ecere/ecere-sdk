@@ -6353,7 +6353,7 @@ public:
 
          for(;;)
          {
-            int count = f.Read(buffer, 1, BUFFER_SIZE-1);
+            int64 count = f.Read(buffer, 1, BUFFER_SIZE-1);
             buffer[count] = '\0';
             AddS(buffer);
             if(!count) break;
@@ -6515,9 +6515,9 @@ public:
       get { return editBox; }
    }
 
-   uint Read(byte * buffer, uint size, uint count)
+   uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
-      uint read = 0;
+      uintsize read = 0;
       EditBox editBox = this.editBox;
       EditLine line = editBox.line;
       int x = editBox.x;
@@ -6527,7 +6527,7 @@ public:
 
       for(;read < count && line; line = (*&line.next))
       {
-         int numBytes = Min(count - read, (*&line.count) - x);
+         intsize numBytes = Min(count - read, (*&line.count) - x);
          if(numBytes > 0)
          {
             memcpy(buffer + read, (*&line.buffer) + x, numBytes);
@@ -6565,7 +6565,7 @@ public:
       return read / size;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool Seek(int64 pos, FileSeekMode mode)
    {
       bool result = true;
       EditBox editBox = this.editBox;
@@ -6578,14 +6578,14 @@ public:
       }
       if(mode == current)
       {
-         uint read = 0;
+         uint64 read = 0;
          int x = editBox.x;
          int y = editBox.y;
          if(pos > 0)
          {
             for(;read < pos && line; line = (*&line.next))
             {
-               int numBytes = Min(pos - read, (*&line.count) - x);
+               intsize numBytes = Min(pos - read, (*&line.count) - x);
                if(numBytes > 0)
                {
                   read += numBytes; x += numBytes;
@@ -6621,7 +6621,7 @@ public:
             pos = -pos;
             for(;read < pos && line; line = (*&line.prev))
             {
-               int numBytes = Min(pos - read, x);
+               intsize numBytes = Min(pos - read, x);
                if(numBytes > 0)
                {
                   read += numBytes;

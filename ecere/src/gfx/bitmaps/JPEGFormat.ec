@@ -42,7 +42,7 @@ static void JPEG_InitSource (j_decompress_ptr cinfo)
 static boolean JPEG_FillInputBuffer (j_decompress_ptr cinfo)
 {
    SourceManager * src = (SourceManager *) cinfo->src;
-   uint nbytes = src->infile.Read(src->buffer, sizeof(byte), INPUT_BUF_SIZE);
+   uint64 nbytes = src->infile.Read(src->buffer, sizeof(byte), INPUT_BUF_SIZE);
    if(nbytes <= 0)
    {
       if(src->startOfFile)
@@ -55,7 +55,7 @@ static boolean JPEG_FillInputBuffer (j_decompress_ptr cinfo)
    }
 
    src->pub.next_input_byte = src->buffer;
-   src->pub.bytes_in_buffer = nbytes;
+   src->pub.bytes_in_buffer = (uint)nbytes;
    src->startOfFile = FALSE;
 
    return TRUE;

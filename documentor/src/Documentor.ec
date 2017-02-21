@@ -2693,7 +2693,7 @@ class HelpView : HTMLView
       Block block;
       bool empty = true;
       String contents = null;
-      uint len;
+      uint64 len;
       TempFile f { };
       for(block = textBlock.parent.subBlocks.first; block; block = block.next)
       {

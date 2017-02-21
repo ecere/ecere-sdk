@@ -38,6 +38,8 @@ public class ECONParser : JSONParser
    eCON = true;
 }
 
+// #define DEBUG_PARSING
+
 public class JSONParser
 {
 public:
@@ -57,6 +59,9 @@ private:
          {
             pch = ch;
             f.Getc(&ch);
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
             if(!lineComment && !comment && pch == '/')
             {
                if(ch == '/')
@@ -75,6 +80,9 @@ private:
          while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
          {
             f.Getc(&ch);
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
          }
       }
    }
@@ -84,6 +92,9 @@ private:
       while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == ';'))
       {
          f.Getc(&ch);
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
       }
    }
 
@@ -276,6 +287,9 @@ private:
             {
                buffer[c++] = ch;
                if(!f.Getc(&ch)) break;
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
             }
             buffer[c] = 0;
             result = success;
@@ -496,10 +510,17 @@ private:
       result = success;
       while(f.Getc(&ch))
       {
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
          if(!comment && ch == '/')
          {
             if(f.Getc(&ch))
             {
+            #ifdef DEBUG_PARSING
+               Print(ch);
+            #endif
+
                if(ch == '/')
                   break;
                else if(ch == '*')
@@ -520,6 +541,10 @@ private:
          {
             if(f.Getc(&ch))
             {
+            #ifdef DEBUG_PARSING
+               Print(ch);
+            #endif
+
                if(ch == '/')
                {
                   comment = false;
@@ -568,6 +593,10 @@ private:
       {
          while(f.Getc(&ch))
          {
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
+
             if(ch == '\\' && !escaped)
                escaped = true;
             else
@@ -600,6 +629,10 @@ private:
                   {
                      pch = ch;
                      f.Getc(&ch);
+
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
                      seekback--;
                      if(!lineComment && !comment && pch == '/')
                      {
@@ -703,7 +736,7 @@ private:
          {
             String string;
             bool wasQuoted = false;
-            int seek;
+            int64 seek;
             ch = 0;
             if(eCON)
             {
@@ -1046,7 +1079,10 @@ private:
                                              onCopy(keyClass, (byte *)&((MapNode)*object).key + __ENDIAN_PAD(sizeof(void *)), value.p);
                                           }
                                           else
-                                             forMap.SetData(*object, (uint64)(uintptr)value.p);
+                                          {
+                                             // TOFIX: Silly cast here to work around eC compiler generics warning
+                                             ((Map<int, uint64>)forMap).SetData(*object, (uint64)(uintptr)value.p);
+                                          }
                                        }
                                        else
                                           ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
@@ -1121,6 +1157,10 @@ private:
             {
                if(f.Getc(&ch))
                {
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
+
                   if(ch == '*')
                      comment = true;
                }
@@ -1134,6 +1174,10 @@ private:
             {
                if(f.Getc(&ch))
                {
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
+
                   if(ch == '/')
                      comment = false;
                }
@@ -1150,6 +1194,10 @@ private:
                buffer[c++] = ch;
             }
             if(!f.Getc(&ch)) break;
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
+
          }
       }
       else
@@ -1158,6 +1206,10 @@ private:
          {
             buffer[c++] = ch;
             if(!f.Getc(&ch)) break;
+         #ifdef DEBUG_PARSING
+            Print(ch);
+         #endif
+
          }
       }
       buffer[c] = 0;

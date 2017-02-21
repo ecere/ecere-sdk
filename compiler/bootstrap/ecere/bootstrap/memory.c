@@ -99,9 +99,9 @@ uint64 ui64;
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+size_t count;
+size_t _size;
+size_t pos;
 } ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
@@ -127,7 +127,7 @@ void __ecereNameSpace__ecere__sys__MoveBytes(void * dest, const void * source, u
 memmove(dest, source, count);
 }
 
-void __ecereNameSpace__ecere__sys__CopyBytes(void * dest, const void * source, unsigned int count)
+void __ecereNameSpace__ecere__sys__CopyBytes(void * dest, const void * source, uint64 count)
 {
 memcpy(dest, source, count);
 }
@@ -283,7 +283,7 @@ void __ecereRegisterModule_memory(struct __ecereNameSpace__ecere__com__Instance 
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveBytes", "void ecere::sys::MoveBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__MoveBytes, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytes", "void ecere::sys::CopyBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytes, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytes", "void ecere::sys::CopyBytes(void * dest, const void * source, uint64 count)", __ecereNameSpace__ecere__sys__CopyBytes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy2", "void ecere::sys::CopyBytesBy2(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy2, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytesBy4", "void ecere::sys::CopyBytesBy4(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytesBy4, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FillBytes", "void ecere::sys::FillBytes(void * area, byte value, uint count)", __ecereNameSpace__ecere__sys__FillBytes, module, 1);

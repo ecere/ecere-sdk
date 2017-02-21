@@ -885,11 +885,11 @@ class HTMLView : Window
          }
          else if(isPlain)
          {
-            uint size;
+            uint64 size;
             TempFile tmp { };
             Block subBlock;
             char * text;
-            int len;
+            int64 len;
             String cd = eClass_IsDerived(f._class, class(HTTPFile)) ? f.contentDisposition : null;
 
             String tmpPath = PrintString("File://", (uintptr)tmp);

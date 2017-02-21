@@ -16,6 +16,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 
 #define POM_output      1
@@ -100,14 +101,14 @@ void DualPipe_CloseOutput(_DualPipe * dp)
 #endif
 }
 
-int DualPipe_Read(_DualPipe * dp, byte * buffer, uint size, uint count)
+size_t DualPipe_Read(_DualPipe * dp, byte * buffer, size_t size, size_t count)
 {
 #if defined(__WIN32__)
    unsigned int read;
    dp->eof = !ReadFile(dp->inputHandle, buffer, size*count, (DWORD *)&read, null);
    return read / size;
 #else
-   int result;
+   ssize_t result;
    result = read(fileno(dp->input), buffer, size * count);
    if(!result || (result < 0 && errno != EAGAIN))
       dp->eof = true;
@@ -115,10 +116,10 @@ int DualPipe_Read(_DualPipe * dp, byte * buffer, uint size, uint count)
 #endif
 }
 
-int DualPipe_Write(_DualPipe * dp, const byte * buffer, uint size, uint count)
+size_t DualPipe_Write(_DualPipe * dp, const byte * buffer, size_t size, size_t count)
 {
 #if defined(__WIN32__)
-   unsigned int written;
+   size_t written;
    WriteFile(dp->outputHandle, buffer, size * count, (DWORD *)&written, null);
    return written / size;
 #endif
@@ -156,7 +157,7 @@ bool DualPipe_Puts(_DualPipe * dp, const char * string)
    return false;
 }
 
-bool DualPipe_Seek(_DualPipe * dp, int pos, FileSeekMode mode)
+bool DualPipe_Seek(_DualPipe * dp, long long int pos, FileSeekMode mode)
 {
 #if defined(__WIN32__)
    bool result = false;
@@ -195,7 +196,7 @@ bool DualPipe_Eof(_DualPipe * dp)
 }
 
 // Not yet supported... Will ever be?
-bool DualPipe_GetSize(_DualPipe * dp)
+uint64_t DualPipe_GetSize(_DualPipe * dp)
 {
    return 0;
 }

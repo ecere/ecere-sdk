@@ -5,11 +5,11 @@ import "System"
 public class TempFile : File
 {
    byte * buffer;
-   uint size;
-   uint position;
+   uintsize size;
+   uintsize position;
    bool eof;
    FileOpenMode openMode;
-   uint allocated;
+   uintsize allocated;
 
    openMode = writeRead;
 
@@ -18,10 +18,10 @@ public class TempFile : File
       delete buffer;
    }
 
-   int Read(byte * buffer, uint size, uint count)
+   uintsize Read(byte * buffer, uintsize size, uintsize count)
    {
-      int readSize = size * count;
-      int read = Min(readSize, this.size - position);
+      uintsize readSize = size * count;
+      uintsize read = Min(readSize, this.size - position);
 
       if(position >= this.size) eof = true;
       if(buffer) memcpy(buffer, this.buffer + position, read);
@@ -31,10 +31,10 @@ public class TempFile : File
       return read / size;
    }
 
-   int Write(const byte * buffer, uint size, uint count)
+   uintsize Write(const byte * buffer, uintsize size, uintsize count)
    {
-      int writeSize = size * count;
-      int written = writeSize;
+      uintsize writeSize = size * count;
+      uintsize written = writeSize;
 
       if(this.size - position < writeSize)
       {
@@ -56,27 +56,27 @@ public class TempFile : File
 
    bool Getc(char * ch)
    {
-      int read = Read(ch, 1, 1);
+      int64 read = Read(ch, 1, 1);
       return !eof && read != 0;
    }
 
    bool Putc(char ch)
    {
-      int written = Write(&ch, 1, 1);
+      int64 written = Write(&ch, 1, 1);
       return written != 0;
    }
 
    bool Puts(const char * string)
    {
       int len = string ? strlen(string) : 0;
-      int written = Write(string, 1, len);
+      int64 written = Write(string, 1, len);
       return written == len;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool Seek(int64 pos, FileSeekMode mode)
    {
       bool result = true;
-      uint increase = 0;
+      uint64 increase = 0;
       switch(mode)
       {
          case start:
@@ -118,7 +118,7 @@ public class TempFile : File
                   result = false;
                }
             }
-            else if((int)position + pos < 0)
+            else if((int64)position + pos < 0)
             {
                position = 0;
                result = false;
@@ -129,7 +129,7 @@ public class TempFile : File
          }
          case end:
          {
-            if((int)size + pos >= (int)size)
+            if((int64)size + pos >= (int64)size)
             {
                if(openMode == readWrite)
                {
@@ -163,7 +163,7 @@ public class TempFile : File
       return result;
    }
 
-   uint Tell()
+   uint64 Tell()
    {
       return position;
    }
@@ -173,12 +173,12 @@ public class TempFile : File
       return eof;
    }
 
-   uint GetSize()
+   uint64 GetSize()
    {
       return size;
    }
 
-   bool Truncate(FileSize size)
+   bool Truncate(uint64 size)
    {
       buffer = renew buffer byte[size];
       this.size = size;

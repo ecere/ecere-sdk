@@ -1,3 +1,4 @@
+import "ecere"
 import "ec"
 import "ecere"
 
@@ -13,7 +14,7 @@ class PoFile
 {
    Map<ContextStringPair, CommentStringsPair> intlStrings { };
 
-   bool Load(String fileName)
+   bool Load(const String fileName)
    {
       bool result = false;
       File f = FileOpen(fileName, read);
@@ -114,7 +115,7 @@ class PoFile
       return result;
    }
 
-   void Save(String fileName)
+   void Save(const String fileName)
    {
       File potFile = FileOpen(fileName, write);
       if(potFile)

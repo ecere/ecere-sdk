@@ -102,8 +102,8 @@ private:
 public class IOChannel
 {
 public:
-   virtual uint WriteData(const void * data, uint numBytes);
-   virtual uint ReadData(void * data, uint numBytes);
+   virtual uintsize WriteData(const void * data, uintsize numBytes);
+   virtual uintsize ReadData(void * data, uintsize numBytes);
 
    dllexport void Serialize(typed_object data)
    {
@@ -130,11 +130,11 @@ public class SerialBuffer : IOChannel
 {
 public:
    byte * _buffer;
-   uint count;
-   uint _size;
-   uint pos;
+   uintsize count;
+   uintsize _size;
+   uintsize pos;
 
-   uint WriteData(const void * bytes, uint numBytes)
+   uintsize WriteData(const void * bytes, uintsize numBytes)
    {
       if(this != null)
       {
@@ -151,7 +151,7 @@ public:
       return 0;
    }
 
-   uint ReadData(void * bytes, uint numBytes)
+   uintsize ReadData(void * bytes, uintsize numBytes)
    {
       if(this != null)
       {
