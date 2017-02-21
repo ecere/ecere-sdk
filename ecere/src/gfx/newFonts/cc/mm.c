@@ -2326,9 +2326,9 @@ void MM_FUNC(AlignFree)( void *v MM_PARAMS )
 void *MM_FUNC(AlignGrow)( void *v, size_t bytes, size_t copybytes, intptr_t align MM_PARAMS )
 {
   void *newv;
-  newv = MM_FUNC(AlignAlloc)( bytes, align );
+  newv = MM_FUNC(AlignAlloc)( bytes, align MM_PASSPARAMS );
   memcpy( newv, v, copybytes );
-  MM_FUNC(AlignFree)( v );
+  MM_FUNC(AlignFree)( v MM_PASSPARAMS );
   return newv;
 }
 
@@ -2502,13 +2502,15 @@ static void mmVolumeAddFreeChunk( mmVolumeChunk *chunk, void **rootfree )
 
 void mmVolumeDebugList( mmVolumeHead *volumehead )
 {
+  int errorcount;
   int32_t prevoffset, nextoffset, chunkflags, volumesize, nextcheck;
   mmVolume *volume;
   mmVolumeChunk *chunk;
 
-  printf( "\n==== BEGIN ====\n" );
+  printf( "\n==== VOLUME DEBUG BEGIN ====\n" );
   fflush( stdout );
 
+  errorcount = 0;
   for( volume = volumehead->volumelist ; volume ; volume = volume->list.next )
   {
     chunk = ADDRESS( volume, volumehead->volumeblocksize );
@@ -2516,21 +2518,31 @@ void mmVolumeDebugList( mmVolumeHead *volumehead )
     volumesize = 0;
     nextcheck = 0;
 
+    printf( "Begin volume block\n" );
     for( ; ; )
     {
       chunkflags = MM_VOLUME_CHUNK_GET_FLAGS( chunk );
       nextoffset = MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk );
       prevoffset = chunk->h.prevoffset;
 
-      printf( "Chunk %p\n", chunk );
+      printf( " Chunk %p ( %p )\n", chunk, ADDRESS( chunk, volumehead->volumechunksize ) );
       printf( "  Prevoffset : %d\n", prevoffset );
       printf( "  Nextoffset : %d\n", nextoffset );
-      printf( "  Chunkflags : %d\n", chunkflags );
+      printf( "  Chunkflags : %d", chunkflags );
+      if( chunkflags & MM_VOLUME_CHUNK_FLAGS_FREE )
+        printf( " (free)" );
+      if( chunkflags & MM_VOLUME_CHUNK_FLAGS_LAST )
+        printf( " (last)" );
+      printf( "\n" );
       fflush( stdout );
 
       volumesize += nextoffset;
-      if( ( nextcheck ) && ( prevoffset != nextcheck ) )
-        exit( 1 );
+      if( !( nextoffset ) || ( ( nextcheck ) && ( prevoffset != nextcheck ) ) )
+      {
+        printf( "    ERROR: Offset corruption!\n" );
+        errorcount++;
+        break;
+      }
       nextcheck = nextoffset;
 
       if( chunkflags & MM_VOLUME_CHUNK_FLAGS_LAST )
@@ -2539,16 +2551,37 @@ void mmVolumeDebugList( mmVolumeHead *volumehead )
       chunk = ADDRESS( chunk, nextoffset );
     }
 
-    printf( "Volume size : %d\n", volumesize );
+    printf( "End volume block, size : %d\n", volumesize );
     printf( "\n" );
   }
 
-  printf( "==== END ====\n\n" );
+  printf( "==== VOLUME DEBUG END ====\n\n" );
+  if( errorcount )
+  {
+    printf( "  ABORTING, ERRORS ENCOUNTERED : %d\n\n", errorcount );
+    exit( 1 );
+  }
   fflush( stdout );
 
   return;
 }
 
+
+int mmVolumeDebugGetTreeDepth( mmVolumeHead *head )
+{
+  int treedepth;
+  mmVolumeChunk *root;
+  treedepth = 0;
+  for( root = head->freeroot ; root ; )
+  {
+    if( root->node.child[0] )
+      root = root->node.child[0];
+    else
+      root = root->node.child[1];
+    treedepth++;
+  }
+  return treedepth;
+}
 
 
 
@@ -2725,7 +2758,7 @@ void MM_FUNC(VolumeRelease)( mmVolumeHead *head, void *v MM_PARAMS )
   {
     volume = ADDRESS( chunk, -head->volumeblocksize );
     mmListRemove( volume, offsetof(mmVolume,list) );
-    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volume->bigsize MM_PASSPARAMS );
+    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volume->bigsize + sizeof(mmVolumeChunkHeader) + sizeof(mmVolumeChunk) + volume->alignment MM_PASSPARAMS );
     mtSpinUnlock( &head->spinlock );
     return;
   }
@@ -2761,7 +2794,7 @@ void MM_FUNC(VolumeFree)( mmVolumeHead *head, void *v MM_PARAMS )
   {
     volume = ADDRESS( chunk, -head->volumeblocksize );
     mmListRemove( volume, offsetof(mmVolume,list) );
-    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volume->bigsize MM_PASSPARAMS );
+    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volume->bigsize + sizeof(mmVolumeChunkHeader) + sizeof(mmVolumeChunk) + volume->alignment MM_PASSPARAMS );
     mtSpinUnlock( &head->spinlock );
     return;
   }
@@ -2776,7 +2809,7 @@ void MM_FUNC(VolumeFree)( mmVolumeHead *head, void *v MM_PARAMS )
     head->totalfreesize = totalfreesize;
     volume = ADDRESS( chunk, -head->volumeblocksize );
     mmListRemove( volume, offsetof(mmVolume,list) );
-    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk ) MM_PASSPARAMS );
+    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk ) + sizeof(mmVolumeChunkHeader) + sizeof(mmVolumeChunk) + volume->alignment MM_PASSPARAMS );
     mtSpinUnlock( &head->spinlock );
     return;
   }
@@ -2801,7 +2834,7 @@ void MM_FUNC(VolumeFree)( mmVolumeHead *head, void *v MM_PARAMS )
 void MM_FUNC(VolumeShrink)( mmVolumeHead *head, void *v, size_t bytes MM_PARAMS )
 {
   int32_t nextoffset, newoffset, chunkflags, nextflags, next2offset;
-  size_t freesize;
+  ssize_t freesize;
   mmVolumeChunk *chunk, *next, *next2, *newchunk;
 
   chunk = ADDRESS( v, -head->volumechunksize );
@@ -2821,7 +2854,7 @@ void MM_FUNC(VolumeShrink)( mmVolumeHead *head, void *v, size_t bytes MM_PARAMS 
     bytes = head->minchunksize;
   bytes = ( bytes + head->alignment ) & ~head->alignment;
   freesize = nextoffset - bytes;
-  if( ( freesize < head->minchunksize ) && ( !( next ) || !( nextflags & MM_VOLUME_CHUNK_FLAGS_FREE ) ) )
+  if( ( freesize < (ssize_t)head->minchunksize ) && ( !( next ) || !( nextflags & MM_VOLUME_CHUNK_FLAGS_FREE ) ) )
   {
     mtSpinUnlock( &head->spinlock );
     return;
@@ -2857,7 +2890,7 @@ void MM_FUNC(VolumeShrink)( mmVolumeHead *head, void *v, size_t bytes MM_PARAMS 
 }
 
 
-size_t MM_FUNC(VolumeGetAllocSize)( mmVolumeHead *head, void *v )
+size_t MM_FUNC(VolumeGetAllocSize)( mmVolumeHead *head, void *v MM_PARAMS )
 {
   mmVolumeChunk *chunk;
   chunk = ADDRESS( v, -head->volumechunksize );
@@ -2884,7 +2917,7 @@ void MM_FUNC(VolumeClean)( mmVolumeHead *head MM_PARAMS )
     {
       head->totalfreesize -= MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk );
       mmListRemove( volume, offsetof(mmVolume,list) );
-      head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk ) MM_PASSPARAMS );
+      head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), MM_VOLUME_CHUNK_GET_NEXTOFFSET( chunk ) + sizeof(mmVolumeChunkHeader) + sizeof(mmVolumeChunk) + volume->alignment MM_PASSPARAMS );
     }
   }
   mtSpinUnlock( &head->spinlock );
@@ -2919,7 +2952,7 @@ void MM_FUNC(VolumeFreeAll)( mmVolumeHead *head MM_PARAMS )
         chunk = ADDRESS( chunk, nextoffset );
       }
     }
-    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volumesize MM_PASSPARAMS );
+    head->relayfree( head->relayvalue, ADDRESS( volume, -volume->alignment ), volumesize + sizeof(mmVolumeChunkHeader) + sizeof(mmVolumeChunk) + volume->alignment MM_PASSPARAMS );
   }
   mtSpinUnlock( &head->spinlock );
   mtSpinDestroy( &head->spinlock );
