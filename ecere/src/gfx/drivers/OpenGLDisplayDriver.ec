@@ -4007,7 +4007,7 @@ class OpenGLDisplayDriver : DisplayDriver
          GLEnableClientState(VERTICES);
          if(!collectingHits && oglMesh)
          {
-            oglMesh.vertices.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
+            oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
@@ -4071,7 +4071,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
          {
-            noAB.use(vertex, 3, (mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
+            noAB.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
             if((mesh.normals || mesh.flags.normals) && !collectingHits)
             {
                GLEnableClientState(NORMALS);
