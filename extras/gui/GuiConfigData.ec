@@ -252,11 +252,10 @@ class SavedConfigWindow : Window
       if(data) data.saveWindowSize(getGuiConfigInstanceId(), this, clientSize);
    }
 
-   bool OnClose(bool parentClosing)
+   void OnDestroy()
    {
       GuiConfigData data = getGuiConfigData();
       if(data) data.saveWindowClose(getGuiConfigInstanceId());
-      return true;
    }
 }
 
