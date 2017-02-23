@@ -143,12 +143,11 @@ public:
 #define FM_SUBPIXEL_ROUNDING_RANGE (16)
 
 
-#define FM_HASH_TABLE_SIZE (4096)
-#define FM_INIT_GLYPHS (1024)
-#define FM_INIT_ATLAS_NODES (512)
+define FM_HASH_TABLE_SIZE = 4096;
+define FM_INIT_GLYPHS = 1024;
+define FM_INIT_ATLAS_NODES = 512;
 
-#define FM_MAX_STATES (16)
-
+define FM_MAX_STATES = 16;
 
 ////
 
