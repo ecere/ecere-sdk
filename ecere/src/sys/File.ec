@@ -961,7 +961,7 @@ public FileAttribs FileExists(const char * fileName)
    {
       return EARFileSystem::Exists(archiveName, archiveFile);
    }
-   else if(strstr(fileName, "http://") == fileName)
+   else if(strstr(fileName, "http://") == fileName || strstr(fileName, "https://") == fileName || strstr(fileName, "wfs://") == fileName)
    {
       return FileAttribs { isFile = true };
    }
