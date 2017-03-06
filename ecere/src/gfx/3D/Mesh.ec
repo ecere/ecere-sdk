@@ -691,6 +691,11 @@ public:
       return data;
    }
 
+   void SetData(void * value)
+   {
+      data = value;
+   }
+
 private:
 
    void SetMinMaxRadius(void)
