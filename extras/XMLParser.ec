@@ -1,4 +1,8 @@
-public import "ecere"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import"ecere"
+#endif
 
 #define MAX_TAG_LEN  2048
 

@@ -550,6 +550,16 @@ if distributed with the Ecere SDK Windows installer.
                   "EARArchive.ec",
                   {
                      "FileName" : "File.ec",
+                     "Platforms" : [
+                        {
+                           "Name" : "linux",
+                           "Options" : {
+                              "PreprocessorDefinitions" : [
+                                 "_FILE_OFFSET_BITS=64"
+                              ]
+                           }
+                        }
+                     ],
                      "Configurations" : [
                         {
                            "Name" : "Bootstrap",

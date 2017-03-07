@@ -1,6 +1,10 @@
 #include <stdarg.h>
 
-public import "ecere"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import"ecere"
+#endif
 
 public int UnescapeString(char * d, char * s, int len)
 {

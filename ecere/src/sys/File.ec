@@ -481,7 +481,13 @@ public:
          case end: fmode = SEEK_END; break;
          case current: fmode = SEEK_CUR; break;
       }
-      return _fseeki64(input ? input : output, pos, fmode) != EOF;
+      return
+#if defined(__WIN32__)
+         _fseeki64
+#else
+         fseek
+#endif
+            (input ? input : output, pos, fmode) != EOF;
    }
 
    virtual uint Tell(void)
