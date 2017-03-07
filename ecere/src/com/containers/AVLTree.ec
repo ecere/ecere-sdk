@@ -28,18 +28,9 @@ public class AVLTree<class AT> : CustomAVLTree<BT = AVLNode<AT>, KT = AT, T = AT
 
    AVLNode<AT> Add(AT value)
    {
-      AVLNode<AT> node;
-      // TODO: Optimize this here to use FindEx/AddEx...
-      if(class(AT).type == structClass)
-      {
-         node = (AVLNode<AT>)new0 byte[sizeof(class AVLNode) + class(AT).structSize - sizeof(node.key)];
-         memcpy((void *)(((byte *)&(uint64)node.key) + __ENDIAN_PAD(sizeof(void *))), (void *)value, class(AT).structSize);
-      }
-      else
-         node = (AVLNode<AT>)AVLNode { key = value };
-      if(!CustomAVLTree::Add((AT)node))
-         delete node;
-      return node;
+      bool justAdded = false;
+      AVLNode<AT> node = (AVLNode<AT>)GetAtPosition(value, true, &justAdded);
+      return justAdded ? node : null;
    }
 
    void Remove(AVLNode<AT> node)
