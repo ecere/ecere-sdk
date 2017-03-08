@@ -731,7 +731,7 @@ public:
    ////
 
    // State setting
-   void setState( FMFont font, int size, int align)
+   void setState( FMFont font, int size, int align)   // TODO: fix this 'align'
    {
      FMState *state;
      if( size >= FM_SIZE_MAX )
@@ -1546,7 +1546,7 @@ public:
      if(font)
      {
         pathdraw.prevGlyphIndex = -1;
-        pathdraw.middleAlign = font.middleAlign * (float)state->size;
+        pathdraw.middleAlign = font.getVertAlign(state->align, state->size); // font.middleAlign * (float)state->size;
         return true;
      }
      return false;
