@@ -443,9 +443,11 @@ public:
       float texinv = 1.0f / DM_TEXCOORD_NORMFACTOR;
 
       GLMatrixMode(MatrixMode::texture);
+      GLPushMatrix();
       GLScalef(texinv,texinv,1);
 
       GLMatrixMode(MatrixMode::projection);
+      GLPushMatrix();
       GLLoadIdentity();
       if(renderingFlipped)
          GLOrtho( 0.0, (float)viewportWidth, 0.0, (float)viewportHeight, -1.0f, 1.0 );
@@ -454,6 +456,7 @@ public:
       GLScalef(norminv, norminv, norminv);
 
       GLMatrixMode(MatrixMode::modelView);
+      GLPushMatrix();
       GLLoadIdentity();
       GLScalef(1,1,1);
 
@@ -493,6 +496,13 @@ public:
    void finish()
    {
       flushImages();
+
+      GLMatrixMode(MatrixMode::texture);
+      GLPopMatrix();
+      GLMatrixMode(MatrixMode::projection);
+      GLPopMatrix();
+      GLMatrixMode(MatrixMode::modelView);
+      GLPopMatrix();
    }
 
    void drawBarrier( )
