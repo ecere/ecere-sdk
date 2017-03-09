@@ -425,7 +425,7 @@ public class TabControl : Window
             *h += CAPTION;
          if(hasMenuBar && state != minimized)
             *h += MENU_HEIGHT;
-         if(statusBar && state != minimized)
+         if(hasStatusBar && state != minimized)
             *h += STATUS_HEIGHT;
       }
       else

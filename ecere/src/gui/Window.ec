@@ -8822,12 +8822,15 @@ public:
             {
                statusBar = StatusBar { this };
                incref statusBar;
-               if(created)
-                  statusBar.Create();
             }
+            if(created)
+               statusBar.Create();
          }
          else if(statusBar)
-            delete statusBar;
+         {
+            // delete statusBar;
+            statusBar.Destroy(0);
+         }
          style.hasStatusBar = value;
       }
       get { return style.hasStatusBar; }
