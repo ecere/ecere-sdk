@@ -537,7 +537,7 @@ public class WindowsSkin_Window : Window
          insideBorder = border;
       }
 
-      if(menuBar)
+      if(hasMenuBar && menuBar)
       {
          if(state == minimized)
             menuBar.visible = false;
