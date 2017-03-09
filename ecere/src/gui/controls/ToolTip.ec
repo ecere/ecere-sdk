@@ -323,9 +323,10 @@ public class ToolSeparator : Window
 
    void OnRedraw(Surface surface)
    {
+      int x = clientSize.w / 2 - 1;
       surface.foreground = Color { 85, 85, 85 };
-      surface.VLine(0, 23, 1);
+      surface.VLine(0, 23, x);
       surface.foreground = white;
-      surface.VLine(0, 23, 2);
+      surface.VLine(0, 23, x+1);
    }
 }
