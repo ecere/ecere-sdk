@@ -2353,7 +2353,7 @@ private:
       if(formDesigner) return null;
       for(menuBarParent = this ? parent : null; menuBarParent; menuBarParent = menuBarParent.parent)
       {
-         if(menuBarParent.menuBar) return menuBarParent.menuBar;
+         if(menuBarParent.style.hasMenuBar && menuBarParent.menuBar) return menuBarParent.menuBar;
          if(menuBarParent && !menuBarParent.isActiveClient)
             return null;
       }
@@ -5847,7 +5847,7 @@ private:
       if(previousActive)
          delete previousActive;
 
-      menuBar = null;
+      delete menuBar;
       // statusBar = null;
       sbv = sbh = null;
 
@@ -6485,13 +6485,17 @@ public:
 
                      if(style.hasMenuBar /*&& menu*/)
                      {
-                        menuBar =
-                           PopupMenu
-                           {
-                              this,
-                              menu = menu, isMenuBar = true, anchor = Anchor { top = 23, left = 1, right = 1 },
-                              interim = false, inactive = true, nonClient = true, size.h = 24
-                           };
+                        if(!menuBar && created)
+                        {
+                           menuBar =
+                              PopupMenu
+                              {
+                                 this,
+                                 menu = menu, isMenuBar = true, anchor = Anchor { top = 23, left = 1, right = 1 },
+                                 interim = false, inactive = true, nonClient = true, size.h = 24
+                              };
+                           incref menuBar;
+                        }
                         menuBar.Create();
                      }
 
@@ -8780,6 +8784,7 @@ public:
       property_category $"Window Style"
       set
       {
+         style.hasMenuBar = value;
          if(value)
          {
             if(!menu)
@@ -8798,15 +8803,19 @@ public:
                      size.h = 24,
                      inactive = true, nonClient = true
                   };
+               incref menuBar;
+            }
+            if(created && !menuBar.created)
+            {
                menuBar.Create();
+               Position(position.x, position.y, size.w, size.h, false, true, true, true, false, false);
             }
          }
          else if(created && menuBar)
          {
             menuBar.Destroy(0);
-            menuBar = null;
+            Position(position.x, position.y, size.w, size.h, false, true, true, true, false, false);
          }
-         style.hasMenuBar = value;
       }
       get { return style.hasMenuBar; }
    };
@@ -8903,7 +8912,7 @@ public:
          if(menuBar && !value)
          {
             menuBar.Destroy(0);
-            menuBar = null;
+            delete menuBar;
          }
          if(created)
          {
@@ -8915,7 +8924,8 @@ public:
                             anchor = Anchor { left = 1, top = 23, right = 1 }, size.h = 24,
                             inactive = true, nonClient = true
                          };
-                menuBar.Create();
+               incref menuBar;
+               menuBar.Create();
             }
             UpdateActiveDocument(null);
          }

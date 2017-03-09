@@ -346,7 +346,7 @@ public class TVisionSkin_Window : Window
       int w = size.w;
       Point clientStart = this.clientStart;
       int sx = clientStart.x, sy = clientStart.y;
-      if(menuBar)
+      if(hasMenuBar && menuBar)
       {
          if(state == normal && style.sizable)
             menuBar.Move(sx,sy - 16,w-16,16);
