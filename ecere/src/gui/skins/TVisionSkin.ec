@@ -89,7 +89,7 @@ public class TVisionSkin_Window : Window
       {
          *h += MENU_HEIGHT;
       }
-      if(statusBar && state != minimized)
+      if(hasStatusBar && state != minimized)
       {
          if(!style.sizable || state == maximized)
             *h += STATUS_HEIGHT;
