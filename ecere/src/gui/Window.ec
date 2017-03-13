@@ -8833,12 +8833,15 @@ public:
                incref statusBar;
             }
             if(created)
+            {
                statusBar.Create();
+               Position(position.x, position.y, size.w, size.h, false, true, true, true, false, false);
+            }
          }
          else if(statusBar)
          {
-            // delete statusBar;
             statusBar.Destroy(0);
+            Position(position.x, position.y, size.w, size.h, false, true, true, true, false, false);
          }
          style.hasStatusBar = value;
       }
