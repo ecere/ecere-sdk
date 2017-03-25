@@ -141,7 +141,8 @@
          "Options" : {
             "Debug" : true,
             "PreprocessorDefinitions" : [
-               "_DEBUG"
+               "_DEBUG",
+               "USE_OPENSSL"
             ]
          }
       },
