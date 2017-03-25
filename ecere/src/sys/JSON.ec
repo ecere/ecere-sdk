@@ -208,11 +208,18 @@ private:
             if(GetIdentifier(&string, null))
             {
                result = success;
-               if(eCON && type && (type.type == enumClass || type.type == unitClass))
+               if(eCON && type && (type.type == enumClass || type.type == unitClass || eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
                {
+                  bool isColorAlpha = type.type != enumClass && type.type != unitClass && eClass_IsDerived(type, class(ColorAlpha));
+                  if(isColorAlpha)
+                     type = class(Color);
                   // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
                   if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
+                  {
+                     if(isColorAlpha)
+                        value.ui |= 0xFF000000;
                      result = success;
+                  }
                   else
                      result = typeMismatch;
                }
@@ -1429,29 +1436,30 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
 
 public bool WriteColorAlpha(File f, Class type, DataValue value, int indent, bool eCON)
 {
-   char buffer[1024];
-   char * string = buffer;
-   ColorAlpha color = value.i;
-   int a = color.a;
-   int len;
-   DefinedColor c = color;
-   buffer[0] = '\0';
-   if(a != 255)
+   char tmpColorString[1024], output[1024];
+   ColorAlpha color = value.ui;
+   DefinedColor c = color.color;
+   bool needBrackets = false, needQuotes = false, needClass = true;
+   const String s = c.class::OnGetString(tmpColorString, null, eCON ? &needClass : null);
+   if(s)
    {
-      a.class::OnGetString(buffer, null, null);
-      len = strlen(buffer);
-      buffer[len++] = ',';
-      buffer[len++] = ' ';
-      buffer[len] = '\0';
-      string += len;
+      if(color.a == 255)
+         strcpy(output, s);
+      else
+      {
+         needQuotes = !eCON;
+         needBrackets = eCON;
+         sprintf(output, "%d, %s", color.a, s);
+      }
    }
-   if(!c.class::OnGetString(string, null, null))
-      sprintf(buffer, "0x%x", color);
-   if(!eCON)
-      f.Puts("\"");
-   f.Puts(buffer);
-   if(!eCON)
-      f.Puts("\"");
+   else
+   {
+      sprintf(output, "0x%x", color);
+      needQuotes = !eCON;
+   }
+   if(needQuotes) f.Puts("\""); else if(needBrackets) f.Puts("{ ");
+   f.Puts(output);
+   if(needQuotes) f.Puts("\""); else if(needBrackets) f.Puts(" }");
    return true;
 }
 
@@ -1464,8 +1472,6 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
       else
       {
          f.Puts("\"");
-         //if(strchr(value.p, '\"') || strchr(value.p, '\\'))
-         if(eCON)
          {
             int c = 0;
             int b = 0;
@@ -1489,14 +1495,24 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   f.Puts("\\\\");
                   b = 0;
                }
-               else if(ch == '\t')
+               else if(eCON && ch == '\t')
                {
                   buffer[b] = 0;
                   f.Puts(buffer);
                   f.Puts("\\t");
                   b = 0;
                }
-               else if(c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
+               else if(eCON && ch == '\n')
+               {
+                  int i;
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\n\"\n");
+                  for(i = 0; i<indent; i++) f.Puts("   ");
+                  f.Puts("   \"");
+                  b = 0;
+               }
+               else if(eCON && c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
                {
                   // Add an automatic newline for <br> as this is how we imported documentor data...
                   int i;
@@ -1507,16 +1523,6 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   f.Puts("   \"");
                   b = 0;
                }
-               else if(ch == '\n')
-               {
-                  int i;
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\n\"\n");
-                  for(i = 0; i<indent; i++) f.Puts("   ");
-                  f.Puts("   \"");
-                  b = 0;
-               }
                else if(b == sizeof(buffer)-2 || !ch)
                {
                   buffer[b++] = ch;
@@ -1529,91 +1535,27 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   buffer[b++] = ch;
             }
          }
-         else
-         {
-            int c = 0;
-            int b = 0;
-            char buffer[1024];
-            char * string = value.p;
-            char ch;
-            while(true)
-            {
-               ch = string[c++];
-               if(ch == '\"')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\"");
-                  b = 0;
-               }
-               else if(ch == '\\')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\\");
-                  b = 0;
-               }
-               else if(b == sizeof(buffer)-2 || !ch)
-               {
-                  buffer[b++] = ch;
-                  if(ch) buffer[b] = 0;
-                  f.Puts(buffer);
-                  b = 0;
-                  if(!ch) break;
-               }
-               else
-                  buffer[b++] = ch;
-            }
-         }
-         /*else
-            f.Puts(value.p);*/
          f.Puts("\"");
       }
    }
    else if(!strcmp(type.name, "bool"))
-   {
-      if(value.i)
-         f.Puts("true");
-      else
-         f.Puts("false");
-   }
+      f.Puts(value.i ? "true" : "false");
    else if(!strcmp(type.name, "SetBool"))
-   {
-      if(value.i == SetBool::true)
-         f.Puts("true");
-      else if(value.i == SetBool::false)
-         f.Puts("false");
-      else
-         f.Puts("unset");
-   }
+      f.Puts(value.i == SetBool::true ? "true" : value.i == SetBool::false ? "false" : "unset");
    else if(type.type == enumClass)
       WriteNumber(f, type, value, indent, eCON, false);
    else if(eClass_IsDerived(type, class(Map)))
-   {
       WriteMap(f, type, value.p, indent, eCON);
-   }
    else if(eClass_IsDerived(type, class(Container)))
-   {
       WriteArray(f, type, value.p, indent, eCON);
-   }
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
-   {
       WriteONObject(f, type, value.p, indent, eCON, false, null);
-   }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
-   {
       WriteColorAlpha(f, type, value, indent, eCON);
-   }
    else if(type.type == bitClass)
-   {
-      Class dataType;
-      dataType = superFindClass(type.dataTypeString, type.module);
-      WriteNumber(f, dataType, value, indent, eCON, true);
-   }
+      WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, eCON, true);
    else if(type.type == systemClass || type.type == unitClass)
-   {
       WriteNumber(f, type, value, indent, eCON, false);
-   }
    return true;
 }
 
