@@ -1426,7 +1426,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
 
-   quote = (type.type == unitClass && ((buffer[0] != '.' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+   quote = (type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
            (type.type == enumClass && !eCON);
    if(quote) f.Puts("\"");
    f.Puts(buffer);
