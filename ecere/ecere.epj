@@ -217,7 +217,8 @@ if distributed with the Ecere SDK Windows installer.
          "Options" : {
             "Debug" : true,
             "PreprocessorDefinitions" : [
-               "_DEBUG"
+               "_DEBUG",
+               "USE_OPENSSL"
             ]
          }
       },
