@@ -145,7 +145,8 @@
          ]
       },
       "EDASQLite.ec",
-      "sqliteDB.ec"
+      "sqliteDB.ec",
+      "fieldValue.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
