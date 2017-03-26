@@ -85,7 +85,7 @@ public:
       SQLiteResult r = (SQLiteResult)sqlite3_open_v2(path, &db, readOnly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_READWRITE | (create ? SQLITE_OPEN_CREATE : 0)), null);
       if(r == ok)
       {
-         result = eInstance_New(_class);
+         result = eInstance_New(_class ? _class : class(SQLiteDB));
          result.db = db;
       }
       else
