@@ -64,7 +64,7 @@ public enum SQLiteResult
    done = SQLITE_DONE               // sqlite3_step() has finished executing
 };
 
-public enum SQLiteType
+public enum FieldType   // Now re-using this for non SQLite-specific APIs  // SQLiteType
 {
    integer = SQLITE_INTEGER,
    real    = SQLITE_FLOAT,
@@ -186,7 +186,7 @@ public:
          sqlite3_bind_null(stmt, pos);
    }
 
-   SQLiteType column_type(int pos) { return (SQLiteType)sqlite3_column_type(stmt, pos); }
+   FieldType column_type(int pos) { return (FieldType)sqlite3_column_type(stmt, pos); }
    int column_int(int pos) { return sqlite3_column_int(stmt, pos); }
    int64 column_int64(int pos) { return sqlite3_column_int64(stmt, pos); }
    double column_double(int pos) { return sqlite3_column_double(stmt, pos); }
