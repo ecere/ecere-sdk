@@ -1,5 +1,7 @@
 #include "sqlite3.h"
 
+import "fieldValue"
+
 #define __restrict
 
 #include <regex.h>
@@ -186,6 +188,18 @@ public:
          sqlite3_bind_null(stmt, pos);
    }
 
+   void bind_value(int pos, FieldValue value)
+   {
+      // TODO: 64 bit ints?
+      switch(value.type.type)
+      {
+         case nil:     bind_null  (pos);          break;
+         case integer: bind_int   (pos, value.i); break;
+         case real:    bind_double(pos, value.r); break;
+         case text:    bind_text  (pos, value.s); break;
+      }
+   }
+
    FieldType column_type(int pos) { return (FieldType)sqlite3_column_type(stmt, pos); }
    int column_int(int pos) { return sqlite3_column_int(stmt, pos); }
    int64 column_int64(int pos) { return sqlite3_column_int64(stmt, pos); }
@@ -200,5 +214,15 @@ public:
       if(text)
          memcpy(s, text, numBytes + 1);
       return s;
+   }
+   void column_value(int pos, FieldValue value)
+   {
+      switch(column_type(pos))
+      {
+         case integer: value = { { integer },    i = column_int      (pos) }; break;
+         case real:    value = { { real },       r = column_double   (pos) }; break;
+         case text:    value = { { text, true }, s = column_text_copy(pos) }; break;
+         default:      value = { { nil } };                                   break;
+      }
    }
 }
