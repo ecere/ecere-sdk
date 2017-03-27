@@ -125,13 +125,6 @@ public:
    bool commit() { return exec("COMMIT;") == done; }
    property const String lockingMode { set { execf("PRAGMA locking_mode=%s", value); } }
 
-   void close()
-   {
-      lockingMode = "normal";
-      sqlite3_close(db);
-      db = null;
-   }
-
    ~SQLiteDB()
    {
       // TOFIX: Doing this here now
@@ -140,7 +133,8 @@ public:
       regfree(&regex);
 #endif
 
-      close();
+      lockingMode = "normal";
+      sqlite3_close(db);
    }
 
 private:
