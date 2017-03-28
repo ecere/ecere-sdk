@@ -123,7 +123,7 @@ public:
 
    bool begin() { return exec("BEGIN;") == done; }
    bool commit() { return exec("COMMIT;") == done; }
-   property const String lockingMode { set { execf("PRAGMA locking_mode=%s", value); } }
+   property const String lockingMode { set { execf("PRAGMA locking_mode=%s; BEGIN IMMEDIATE; COMMIT;", value); } }
 
    ~SQLiteDB()
    {
@@ -134,7 +134,8 @@ public:
 #endif
 
       lockingMode = "normal";
-      sqlite3_close(db);
+      if((SQLiteResult)sqlite3_close(db) == busy)
+         PrintLn("Can't close SQLite DB (busy)");
    }
 
 private:
@@ -155,6 +156,8 @@ public class SQLiteStmt : struct
 public:
    property SQLiteDB db { set { db = value; } get { return db; } }
    property const String query { set { if(stmt) finalize(); sqlite3_prepare_v2(db.db, value, -1, &stmt, null); } }
+
+   ~SQLiteStmt() { finalize(); }
 
    void queryf(const String format, ...)
    {
