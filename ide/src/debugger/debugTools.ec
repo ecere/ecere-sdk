@@ -2300,6 +2300,11 @@ void DebugComputeExpression(Expression exp)
                                     exp.expType.refCount++;
                                     if(exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == unitClass)
                                     {
+                                       if(expNew.type == opExp)
+                                       {
+                                          if(expNew.op.exp1) ProcessExpressionType(expNew.op.exp1);
+                                          if(expNew.op.exp2) ProcessExpressionType(expNew.op.exp2);
+                                       }
                                        expNew.expType = exp.expType;
                                        exp.expType.refCount++;
                                     }
