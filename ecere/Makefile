@@ -417,7 +417,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
-			 -I../deps/curl-7.51.0/include/curl \
+			 -I../deps/curl-7.51.0/include \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2,) \

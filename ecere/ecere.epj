@@ -67,7 +67,7 @@
                "../deps/zlib-1.2.8",
                "../deps/freetype-2.3.12/include",
                "../deps/glext",
-               "../deps/curl-7.51.0/include/curl",
+               "../deps/curl-7.51.0/include",
                "$(OPENSSL_INCLUDE_DIR)"
             ],
             "Libraries" : [
