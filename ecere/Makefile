@@ -442,6 +442,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
+			 -DCURL_DISABLE_TYPECHECK \
 			 -Isrc/gfx/drivers/gl3/ \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \

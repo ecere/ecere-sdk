@@ -85,9 +85,7 @@ if distributed with the Ecere SDK Windows installer.
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
          "BUILDING_ECERE_COM",
-         "CURL_STATICLIB",
-         "BUILDING_LIBCURL",
-         "CURL_DISABLE_LDAP"
+         "CURL_DISABLE_TYPECHECK"
       ],
       "IncludeDirs" : [
          "src/gfx/drivers/harfbuzz",
@@ -220,8 +218,7 @@ if distributed with the Ecere SDK Windows installer.
          "Options" : {
             "Debug" : true,
             "PreprocessorDefinitions" : [
-               "_DEBUG",
-               "USE_OPENSSL"
+               "_DEBUG"
             ]
          }
       },
