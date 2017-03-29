@@ -187,7 +187,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ec
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -412,6 +412,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
@@ -422,11 +423,14 @@ int main(int _argc, char * _argv[])
 {
 int exitCode;
 struct __ecereNameSpace__ecere__com__Instance * module;
+unsigned int setThingsUp = !__thisModule;
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Class * _class;
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Method * method;
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * _property;
 
-__thisModule = __currentModule = module = __ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)1, _argc, (void *)_argv);
+if(setThingsUp)
+__thisModule = __ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)1, _argc, (void *)_argv);
+__currentModule = module = __thisModule;
 __ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, (void *)(__ecereDll_Load_ec), (void *)(__ecereDll_Unload_ec));
 __ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
 __ecereRegisterModule_ecp(module);
@@ -460,6 +464,7 @@ _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::Ol
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
 __ecereNameSpace__ecere__LoadTranslatedStrings((((void *)0)), "ecp");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "PrecompApp");
+if(setThingsUp)
 __ecereNameSpace__ecere__com__eInstance_Evolve((struct __ecereNameSpace__ecere__com__Instance **)&__currentModule, _class);
 __thisModule = __currentModule;
 __ecereCreateModuleInstances_ecp();

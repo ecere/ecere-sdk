@@ -112,8 +112,6 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 struct __ecereNameSpace__ecere__com__Property;
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_handle, * __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_handle;
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_bufferSize, * __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferSize;
@@ -171,6 +169,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpa
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
 
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 struct __ecereNameSpace__ecere__sys__BufferedFile
@@ -179,12 +179,12 @@ int mode;
 struct __ecereNameSpace__ecere__com__Instance * handle;
 unsigned int bufferSize;
 unsigned int bufferCount;
-unsigned int bufferPos;
-unsigned int pos;
+uint64 bufferPos;
+uint64 pos;
 unsigned char * buffer;
 unsigned int eof;
 unsigned int bufferRead;
-unsigned int fileSize;
+uint64 fileSize;
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
@@ -195,7 +195,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
@@ -382,6 +382,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -478,14 +479,14 @@ if(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle)
 {
 unsigned int totalBytesRead = 0;
 unsigned int bufferCount = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount;
-unsigned int bufferPos = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos;
+uint64 bufferPos = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos;
 unsigned char * fileBuffer = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferPos;
 unsigned int readCount = count;
 
 readCount *= size;
 while(1)
 {
-unsigned int bytesRead = (bufferCount > bufferPos) ? (bufferCount - bufferPos) : 0;
+uint64 bytesRead = (bufferCount > bufferPos) ? (bufferCount - bufferPos) : 0;
 
 if(bytesRead > readCount)
 bytesRead = readCount;
@@ -498,7 +499,7 @@ readCount -= bytesRead;
 }
 if(readCount)
 {
-unsigned int read;
+uint64 read;
 
 if(readCount < __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize)
 {
@@ -528,13 +529,13 @@ bufferPos = 0;
 bufferCount = 0;
 }
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos + totalBytesRead - bufferPos + bufferCount, 0) : (unsigned int)1;
 }));
 read = (__extension__ ({
@@ -545,7 +546,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePo
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
-__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferCount, 1, read) : (int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferCount, 1, (unsigned int)read) : (int)1;
 }));
 fileBuffer = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferPos;
 bufferCount += read;
@@ -568,21 +569,21 @@ return 0;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, unsigned int size, unsigned int count)
 {
-unsigned int __simpleStruct0, __simpleStruct1;
+unsigned long long __simpleStruct0, __simpleStruct1;
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
 unsigned int result;
 unsigned int numBytes;
-unsigned int bytesToBuffer;
-unsigned int missing;
+uint64 bytesToBuffer;
+uint64 missing;
 
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0) : (unsigned int)1;
 }));
 result = (__extension__ ({
@@ -623,7 +624,7 @@ unsigned int __simpleStruct0;
 bytesToBuffer = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize, (numBytes < __simpleStruct0) ? numBytes : __simpleStruct0);
 memcpy(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer, buffer + numBytes - bytesToBuffer, bytesToBuffer);
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = bytesToBuffer;
-__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = bytesToBuffer;
+__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = (unsigned int)bytesToBuffer;
 }
 return result;
 }
@@ -647,13 +648,13 @@ else
 {
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = 0;
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0) : (unsigned int)1;
 }));
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = (__extension__ ({
@@ -712,10 +713,10 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this, string, 1, len) : (int
 return written == len;
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek(struct __ecereNameSpace__ecere__com__Instance * this, int pos, int mode)
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile__Seek64(struct __ecereNameSpace__ecere__com__Instance * this, long long pos, int mode)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
-unsigned int newPosition = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
+uint64 newPosition = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
 
 switch(mode)
 {
@@ -739,7 +740,7 @@ if(newPosition < __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos 
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos += newPosition - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
 else
 {
-unsigned int read = newPosition - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount;
+uint64 read = newPosition - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount;
 
 if(read < __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount * 2)
 {
@@ -751,13 +752,13 @@ __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = 0;
 else
 {
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, long long pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 0) : (unsigned int)1;
 }));
 read = (__extension__ ({
@@ -768,7 +769,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePo
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
-__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 1, read) : (int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 1, (unsigned int)read) : (int)1;
 }));
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos += newPosition - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount += read;
@@ -796,7 +797,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Tell(struc
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
 
-return __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
+return (unsigned int)__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Eof(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -810,15 +811,15 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_GetSize(st
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
 
-return __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize;
+return (unsigned int)__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Truncate(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int size)
 {
-unsigned int __simpleStruct1;
+unsigned long long __simpleStruct1;
 unsigned int __simpleStruct0;
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
-unsigned int bytesAhead = (unsigned int)(size - (__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos));
+uint64 bytesAhead = (uint64)(unsigned int)size - (__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos);
 
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, unsigned int size);
@@ -828,7 +829,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePo
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate]);
-__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, size) : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, (unsigned int)size) : (unsigned int)1;
 }));
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, (__simpleStruct0 < bytesAhead) ? __simpleStruct0 : bytesAhead);
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize = (__simpleStruct1 = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize, (__simpleStruct1 < size) ? __simpleStruct1 : size);
@@ -959,6 +960,20 @@ __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferSize = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = (void *)0;
 }
 
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek64(struct __ecereNameSpace__ecere__com__Instance * this, long long pos, int mode)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
+
+return __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile__Seek64(this, pos, mode);
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek(struct __ecereNameSpace__ecere__com__Instance * this, int pos, int mode)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->structSize) : 0);
+
+return __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile__Seek64(this, pos, mode);
+}
+
 void __ecereRegisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
@@ -967,6 +982,7 @@ class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::Buff
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BufferedFile = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek64", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek64, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Tell", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Tell, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Read", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Read, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Write", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Write, 1);

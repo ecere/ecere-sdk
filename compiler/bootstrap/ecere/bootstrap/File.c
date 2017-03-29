@@ -125,6 +125,8 @@ void FILE_FileFixCase(char * file);
 
 void FILE_FileOpen(const char * fileName, int mode, FILE ** input, FILE ** output);
 
+int FILE_Seek64(FILE * f, long long offset, int origin);
+
 struct __ecereNameSpace__ecere__sys__File
 {
 FILE * input, * output;
@@ -321,8 +323,6 @@ return d;
 
 struct __ecereNameSpace__ecere__com__Property;
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_input, * __ecerePropM___ecereNameSpace__ecere__sys__File_input;
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_output, * __ecerePropM___ecereNameSpace__ecere__sys__File_output;
@@ -375,6 +375,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_OpenArchive;
 int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
 
@@ -437,6 +439,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -632,6 +636,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -860,6 +865,26 @@ fmode = 1;
 break;
 }
 return fseek(__ecerePointer___ecereNameSpace__ecere__sys__File->input ? __ecerePointer___ecereNameSpace__ecere__sys__File->input : __ecerePointer___ecereNameSpace__ecere__sys__File->output, pos, fmode) != (-1);
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Seek64(struct __ecereNameSpace__ecere__com__Instance * this, long long pos, int mode)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
+unsigned int fmode = 0;
+
+switch(mode)
+{
+case 0:
+fmode = 0;
+break;
+case 2:
+fmode = 2;
+break;
+case 1:
+fmode = 1;
+break;
+}
+return FILE_Seek64(__ecerePointer___ecereNameSpace__ecere__sys__File->input ? __ecerePointer___ecereNameSpace__ecere__sys__File->input : __ecerePointer___ecereNameSpace__ecere__sys__File->output, pos, fmode) != (-1);
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Tell(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -1614,6 +1639,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, 
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "WriteData", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_WriteData, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "ReadData", 0, __ecereMethod___ecereNameSpace__ecere__sys__File_ReadData, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Seek", "bool Seek(int pos, ecere::sys::FileSeekMode mode)", __ecereMethod___ecereNameSpace__ecere__sys__File_Seek, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Seek64", "bool Seek64(long long pos, ecere::sys::FileSeekMode mode)", __ecereMethod___ecereNameSpace__ecere__sys__File_Seek64, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Tell", "uint Tell(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_Tell, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Read", "int Read(void * buffer, unsigned int size, unsigned int count)", __ecereMethod___ecereNameSpace__ecere__sys__File_Read, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Write", "int Write(const void * buffer, unsigned int size, unsigned int count)", __ecereMethod___ecereNameSpace__ecere__sys__File_Write, 1);
