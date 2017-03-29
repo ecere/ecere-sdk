@@ -961,7 +961,7 @@ char *ccStrAllocPrintf( char *format, ... );
 char *ccStrDup( char *str );
 int ccUnicodeToUtf8( char *s, uint32_t unicode );
 /* Returns 1 when data is insufficient, send more bytes ; state must be initialized to zero */
-uint32_t ccUtf8ToUnicode( uint32_t byte, uint32_t *state, uint32_t *retunicode );
+// This is now in String.ec -- uint32_t ccUtf8ToUnicode( uint32_t byte, uint32_t *state, uint32_t *retunicode );
 
 
 ////

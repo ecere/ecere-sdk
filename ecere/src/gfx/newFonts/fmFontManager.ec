@@ -23,7 +23,7 @@ namespace gfx;
 
 #include "cc.h"
 
-static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, (uint *)retCodePoint); }
+default uint32 ccUtf8ToUnicode( uint32 byte, uint32 *state, unichar *retunicode );
 
 ////
 
@@ -925,7 +925,7 @@ public:
      subpixel = 0;
      for( index = 0 ; index < stringlength ; index++ )
      {
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -986,7 +986,7 @@ public:
        }
        if( index >= stringlength )
          break;
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -1050,7 +1050,7 @@ public:
      subpixel = 0;
      for( index = 0 ; index < stringlength ; index++ )
      {
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -1111,7 +1111,7 @@ public:
      subpixel = 0;
      for( index = 0 ; index < stringlength ; index++ )
      {
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -1160,7 +1160,7 @@ public:
      subpixel = 0;
      for( index = 0 ; index < stringlength ; index++ )
      {
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -1246,7 +1246,7 @@ public:
          fullwidth = advance + ( subpixel >= 32 );
          break;
        }
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )
@@ -1307,7 +1307,7 @@ public:
      bestdistance = abs( targetwidth );
      for( index = 0 ; index < stringlength ; index++ )
      {
-       if( decodeUTF8( (byte)string[index], &utf8state, &codepoint ) )
+       if( ccUtf8ToUnicode( (byte)string[index], &utf8state, &codepoint ) )
          continue;
        glyph = getGlyph(font, codepoint, state->size, subpixel, false );
        if( glyph )

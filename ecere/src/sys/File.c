@@ -629,3 +629,14 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
    }
 #endif
 }
+
+int FILE_Seek64(FILE * f, int64 offset, int origin)
+{
+   return
+#if defined(__WIN32__)
+      _fseeki64
+#else
+      fseek
+#endif
+         (f, offset, origin);
+}

@@ -99,6 +99,7 @@ bool FILE_FileGetSize(const char * fileName, FileSize * size);
 bool FILE_FileGetStats(const char * fileName, FileStats stats);
 void FILE_FileFixCase(char * file);
 void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
+int FILE_Seek64(FILE * f, int64 offset, int origin);
 
 private:
 
@@ -482,12 +483,7 @@ public:
          case current: fmode = SEEK_CUR; break;
       }
       return
-#if defined(__WIN32__)
-         _fseeki64
-#else
-         fseek
-#endif
-            (input ? input : output, pos, fmode) != EOF;
+         FILE_Seek64(input ? input : output, pos, fmode) != EOF;
    }
 
    virtual uint Tell(void)

@@ -650,7 +650,19 @@ if distributed with the Ecere SDK Windows installer.
                   "Time.ec",
                   "unicode.ec",
                   "units.ec",
-                  "File.c",
+                  {
+                     "FileName" : "File.c",
+                     "Platforms" : [
+                        {
+                           "Name" : "linux",
+                           "Options" : {
+                              "PreprocessorDefinitions" : [
+                                 "_FILE_OFFSET_BITS=64"
+                              ]
+                           }
+                        }
+                     ]
+                  },
                   "DualPipe.c",
                   "System.c",
                   {

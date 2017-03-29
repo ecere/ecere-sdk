@@ -6984,9 +6984,8 @@ namespace sys;
 define LEAD_OFFSET      = 0xD800 - (0x10000 >> 10);
 define SURROGATE_OFFSET = 0x10000 - (0xD800 << 10) - 0xDC00;
 
-#include <math.h>
-#include "../gfx/newFonts/cc/cc.h"
-static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, (uint *)retCodePoint); }
+default uint32 ccUtf8ToUnicode( uint32 byte, uint32 *state, unichar *retunicode ); // In String.ec`
+static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, retCodePoint); }
 
 public bool UTF8Validate(const char * source)
 {

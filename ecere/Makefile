@@ -1568,7 +1568,7 @@ $(OBJ)EARArchive.o: $(OBJ)EARArchive.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
 
 $(OBJ)File.o: $(OBJ)File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)File.c -o $(OBJ)File.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)File.c -o $(OBJ)File.o
 
 $(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
@@ -1610,7 +1610,7 @@ $(OBJ)units.o: $(OBJ)units.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)units.c -o $(OBJ)units.o
 
 $(OBJ)File.c.o: src/sys/File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
 
 $(OBJ)DualPipe.c.o: src/sys/DualPipe.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
