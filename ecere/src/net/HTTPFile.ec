@@ -8,7 +8,7 @@ import "network"
 import "SSLSocket"
 #endif
 
-#include <curl.h>
+#include <curl/curl.h>
 
 #undef CompareString
 
