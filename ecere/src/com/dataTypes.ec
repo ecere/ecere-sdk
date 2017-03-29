@@ -597,24 +597,31 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
 
          for(member = _class.membersAndProperties.first; member; member = member.next)
          {
+            DataMember m = member;
             char memberString[1024];
-            Class memberType = member.dataTypeClass;
-            const char * name = member.name;
+            Class memberType;
+            const char * name;
             const char *(* onGetString)(void *, void *, char *, void *, bool *);
-            if(member.id < 0) continue;
+            if(m.id < 0) continue;
+
+            // TODO: Full union & struct member support
+            if(m.type == unionMember && m.members.first)
+               m = m.members.first;
+            name = m.name;
+            memberType = m.dataTypeClass;
 
             memberString[0] = 0;
 
             if(!memberType)
-               memberType = member.dataTypeClass = eSystem_FindClass(module, member.dataTypeString);
+               memberType = m.dataTypeClass = eSystem_FindClass(module, m.dataTypeString);
             if(!memberType)
-               memberType = member.dataTypeClass = eSystem_FindClass(module, "int");
+               memberType = m.dataTypeClass = eSystem_FindClass(module, "int");
 
             onGetString = memberType._vTbl[__ecereVMethodID_class_OnGetString];
 
-            if(member.isProperty)
+            if(m.isProperty)
             {
-               Property prop = (Property) member;
+               Property prop = (Property) m;
 
                if(!prop.conversion && prop.Get && prop.Set && (!prop.IsSet || prop.IsSet(data)))
                {
@@ -663,9 +670,15 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             }
             else
             {
-               uint offset = member.offset + member._class.offset;
-               byte * memberData = (byte *)data + offset;
-               if(member.type == normalMember)
+               uint offset; // = m.offset + m._class.offset;
+               byte * memberData;
+               // TODO: Document/Improve this member offset stuff!!!
+               eClass_FindDataMemberAndOffset(m._class, m.name, &offset, m._class.module, null, null);
+               if(m._class.type == normalClass || m._class.type == noHeadClass)
+                  offset += m._class.base.structSize;
+
+               memberData = (byte *)data + offset;
+               if(m.type == normalMember)
                {
                   if(memberType.type == structClass || memberType.type == normalClass)
                   {
@@ -700,7 +713,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                      DataValue value { };
                      if(_class.type == bitClass)
                      {
-                        BitMember bitMember = (BitMember) member;
+                        BitMember bitMember = (BitMember) m;
                         switch(_class.typeSize)
                         {
                            case 8: value.ui64 = *(uint64*)data; break;
@@ -746,7 +759,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                   /*else
                   {
                      char internalMemberString[1024];
-                     byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
+                     byte * memberData = ((byte *)data + (((m._class.type == normalClass) ? m._class.offset : 0) + m.offset));
                      bool needClass = true;
                      const char * result;
                      result = onGetString(memberType, memberData, internalMemberString, null, &needClass);
@@ -808,7 +821,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
 
                prev = true;
             }
-            else if(member && (!member.isProperty || !((Property)member).conversion))
+            else if(m && (!m.isProperty || !((Property)m).conversion))
                atMember = false;
          }
       }

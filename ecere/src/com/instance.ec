@@ -5074,6 +5074,7 @@ public dllexport DataMember eClass_FindDataMember(Class _class, const char * nam
    return dataMember;
 }
 
+// TODO: Document precisely what DataMember::offset is and why/how eClass_FindDataMemberAndOffset produces the proper offset one really wants to use
 public dllexport DataMember eClass_FindDataMemberAndOffset(Class _class, const char * name, uint * offset, Module module, DataMember * subMemberStack, int * subMemberStackPos)
 {
    //Time startTime = GetTime();

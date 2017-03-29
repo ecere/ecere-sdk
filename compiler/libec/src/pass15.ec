@@ -4882,14 +4882,10 @@ void ComputeInstantiation(Expression exp)
                            else
                            {
                               dataMember = curMember;
-
-                              // CHANGED THIS HERE
+                              // TODO: Document/Improve this!!!
                               eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, privateModule, null, null);
-
-                              // 2013/17/29 -- It seems that this was missing here!
-                              if(_class.type == normalClass)
-                                 dataMemberOffset += _class.base.structSize;
-                              // dataMemberOffset = dataMember.offset;
+                              if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                 dataMemberOffset += dataMember._class.base.structSize;
                            }
                            found = true;
                         }
@@ -4916,6 +4912,9 @@ void ComputeInstantiation(Expression exp)
 
                            if(dataMember)
                            {
+                              if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                 dataMemberOffset += dataMember._class.base.structSize;
+
                               found = true;
                               if(dataMember.memberAccess == publicAccess)
                               {
@@ -4963,7 +4962,11 @@ void ComputeInstantiation(Expression exp)
                                     dataMember = eClass_FindDataMemberAndOffset(type._class.registered,
                                        ident.string, &dataMemberOffset, privateModule, null, null);
                                     if(dataMember)
+                                    {
+                                       if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                          dataMemberOffset += dataMember._class.base.structSize;
                                        type = dataMember.dataType;
+                                    }
                                  }
                               }
                               else if(type.kind == structType || type.kind == unionType)
