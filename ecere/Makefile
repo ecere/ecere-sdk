@@ -404,7 +404,8 @@ LIBS += \
 	$(call _L,jpeg) \
 	$(call _L,png) \
 	$(call _L,z) \
-	$(call _L,freetype)
+	$(call _L,freetype) \
+	$(call _L,curl)
 endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
@@ -416,6 +417,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
+			 -I../deps/curl-7.51.0/include/curl \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2,) \
@@ -460,6 +462,7 @@ OFLAGS += \
 	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))
 LIBS += \
 	$(call _L,dxguid) \
@@ -490,7 +493,6 @@ OFLAGS += \
 LIBS += \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \
-	$(call _L,curl) \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,fontconfig) \
@@ -500,7 +502,8 @@ LIBS += \
 	$(call _L,Xrender) \
 	$(if $(DISABLE_GL),,$(call _L,GL)) \
 	$(if $(ENABLE_SSL),$(call _L,ssl)) \
-	$(if $(ENABLE_SSL),$(call _L,crypto))
+	$(if $(ENABLE_SSL),$(call _L,crypto)) \
+	$(call _L,curl)
 endif
 
 else
