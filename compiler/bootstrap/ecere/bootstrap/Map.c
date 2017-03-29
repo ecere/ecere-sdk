@@ -779,6 +779,18 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode), 1, (((void *)0))) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
 }));
 
+if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1)
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(realNode), (uint64)(uintptr_t)&newNode->value) : (unsigned int)1;
+}));
+else
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
 

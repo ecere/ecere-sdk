@@ -108,7 +108,7 @@ string[c] = ch;
 string[c] = 0;
 }
 
-unsigned int __ecereNameSpace__ecere__sys__GetString(char ** buffer, char * string, int max)
+unsigned int __ecereNameSpace__ecere__sys__GetString(const char ** buffer, char * string, int max)
 {
 int c;
 char ch;
@@ -734,7 +734,7 @@ if(strchr(chars, string[c]))
 string[c] = alt;
 }
 
-int __ecereNameSpace__ecere__sys__GetValue(char ** buffer)
+int __ecereNameSpace__ecere__sys__GetValue(const char ** buffer)
 {
 char string[20];
 
@@ -742,7 +742,7 @@ __ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
 return atoi(string);
 }
 
-unsigned int __ecereNameSpace__ecere__sys__GetHexValue(char ** buffer)
+unsigned int __ecereNameSpace__ecere__sys__GetHexValue(const char ** buffer)
 {
 char string[20];
 
@@ -753,7 +753,7 @@ return (unsigned int)strtoul(string, (((void *)0)), 16);
 double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)
 {
 int c, dig;
-float dec = 0, res = 0;
+double dec = 0, res = 0;
 int neg = 1;
 char ch;
 
@@ -775,16 +775,16 @@ else if(isdigit(ch))
 dig = ch - '0';
 if(dec)
 {
-res += (float)dig / dec;
+res += (double)dig / dec;
 dec *= 10;
 }
 else
-res = res * (float)10 + (float)dig;
+res = res * (double)10 + (double)dig;
 }
 else
 break;
 }
-return (float)neg * res;
+return (double)neg * res;
 }
 
 char * __ecereNameSpace__ecere__sys__ChangeExtension(const char * string, const char * ext, char * output)
@@ -1772,9 +1772,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeCh", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeChars", "void ecere::sys::ChangeChars(char * string, const char * chars, char alt)", __ecereNameSpace__ecere__sys__ChangeChars, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RepeatCh", "void ecere::sys::RepeatCh(char * string, int count, char ch)", __ecereNameSpace__ecere__sys__RepeatCh, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyString", "char * ecere::sys::CopyString(const char * string)", __ecereNameSpace__ecere__sys__CopyString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetString", "bool ecere::sys::GetString(char * * buffer, char * string, int max)", __ecereNameSpace__ecere__sys__GetString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetValue", "int ecere::sys::GetValue(char * * buffer)", __ecereNameSpace__ecere__sys__GetValue, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue", "uint ecere::sys::GetHexValue(char * * buffer)", __ecereNameSpace__ecere__sys__GetHexValue, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetString", "bool ecere::sys::GetString(const char * * buffer, char * string, int max)", __ecereNameSpace__ecere__sys__GetString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetValue", "int ecere::sys::GetValue(const char * * buffer)", __ecereNameSpace__ecere__sys__GetValue, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue", "uint ecere::sys::GetHexValue(const char * * buffer)", __ecereNameSpace__ecere__sys__GetHexValue, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripQuotes", "char * ecere::sys::StripQuotes(const char * string, char * output)", __ecereNameSpace__ecere__sys__StripQuotes, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FloatFromString", "double ecere::sys::FloatFromString(const char * string)", __ecereNameSpace__ecere__sys__FloatFromString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::IsPathInsideOf", "bool ecere::sys::IsPathInsideOf(const char * path, const char * of)", __ecereNameSpace__ecere__sys__IsPathInsideOf, module, 4);

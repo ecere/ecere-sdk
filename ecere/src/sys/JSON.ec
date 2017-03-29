@@ -733,6 +733,11 @@ private:
                      prop = curMember.isProperty ? (Property)curMember : null;
                      member = curMember.isProperty ? null : curMember;
 
+                     // TODO: Document/Improve this!
+                     eClass_FindDataMemberAndOffset(objectType, curMember.name, &offset, objectType.module, null, null);
+                     if(curMember._class.type == normalClass && curMember._class.base.structSize)
+                        offset += curMember._class.base.structSize;
+
                      if(mapKeyClass && !strcmp(prop ? prop.name : member.name, "key"))
                      {
                         type = mapKeyClass;
@@ -749,10 +754,7 @@ private:
                      else if(prop)
                         type = superFindClass(prop.dataTypeString, objectType.module);
                      else if(member)
-                     {
                         type = superFindClass(member.dataTypeString, objectType.module);
-                        offset = member._class.offset + member.offset;
-                     }
                   }
                   else
                   {
@@ -781,11 +783,14 @@ private:
                   }
                   else
                   {
-                     member = eClass_FindDataMember(objectType, string, objectType.module, subMemberStack, &subMemberStackPos);
+                     member = eClass_FindDataMemberAndOffset(objectType, string, &offset, objectType.module, subMemberStack, &subMemberStackPos);
                      if(member)
                      {
                         type = superFindClass(member.dataTypeString, objectType.module);
-                        offset = member._class.offset + member.offset;
+                        if(member._class.type == normalClass && member._class.base.structSize)
+                           offset += member._class.base.structSize;
+                        if(member._class.offset + member.offset != offset)
+                           offset = member._class.offset + member.offset;
                         curMember = member;
                         curClass = member._class;
                      }

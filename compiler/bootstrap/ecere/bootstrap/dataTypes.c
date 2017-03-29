@@ -1577,6 +1577,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 struct __ecereNameSpace__ecere__com__Module
@@ -2496,22 +2498,27 @@ for(_class = mainClass; _class->base != lastClass && _class->base->type != 1000;
 ;
 for(member = _class->membersAndProperties.first; member; member = member->next)
 {
+struct __ecereNameSpace__ecere__com__DataMember * m = member;
 char memberString[1024];
-struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
-const char * name = member->name;
+struct __ecereNameSpace__ecere__com__Class * memberType;
+const char * name;
 const char * (* onGetString)(void *, void *, char *, void *, unsigned int *);
 
-if(member->id < 0)
+if(m->id < 0)
 continue;
+if(m->type == 1 && m->members.first)
+m = m->members.first;
+name = m->name;
+memberType = m->dataTypeClass;
 memberString[0] = 0;
 if(!memberType)
-memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, member->dataTypeString);
+memberType = m->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, m->dataTypeString);
 if(!memberType)
-memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
+memberType = m->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 onGetString = memberType->_vTbl[__ecereVMethodID_class_OnGetString];
-if(member->isProperty)
+if(m->isProperty)
 {
-struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)member;
+struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)m;
 
 if(!prop->conversion && prop->Get && prop->Set && (!prop->IsSet || prop->IsSet(data)))
 {
@@ -2568,10 +2575,14 @@ strcpy(memberString, result);
 }
 else
 {
-unsigned int offset = member->offset + member->_class->offset;
-unsigned char * memberData = (unsigned char *)data + offset;
+unsigned int offset;
+unsigned char * memberData;
 
-if(member->type == 0)
+__ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(m->_class, m->name, &offset, m->_class->module, (((void *)0)), (((void *)0)));
+if(m->_class->type == 0 || m->_class->type == 5)
+offset += m->_class->base->structSize;
+memberData = (unsigned char *)data + offset;
+if(m->type == 0)
 {
 if(memberType->type == 1 || memberType->type == 0)
 {
@@ -2614,7 +2625,7 @@ struct __ecereNameSpace__ecere__com__DataValue value =
 
 if(_class->type == 2)
 {
-struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)member;
+struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)m;
 
 switch(_class->typeSize)
 {
@@ -2706,7 +2717,7 @@ strcat(tempString, memberString);
 atMember = 1;
 prev = 1;
 }
-else if(member && (!member->isProperty || !((struct __ecereNameSpace__ecere__com__Property *)member)->conversion))
+else if(m && (!m->isProperty || !((struct __ecereNameSpace__ecere__com__Property *)m)->conversion))
 atMember = 0;
 }
 }
@@ -3030,8 +3041,13 @@ struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
 
 if(_class->type == 3 || _class->type == 2 || _class->type == 4)
 {
-struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
+const char * dtString = _class->dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataType;
 
+if(!strcmp(dtString, "unsigned int") || !strcmp(dtString, "uint"))
+dataType = __ecereClass_uint;
+else
+dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, dtString);
 if(dataType)
 ((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
 }
@@ -3108,8 +3124,16 @@ __ecereNameSpace__ecere__com__Int_OnSerialize(_class, data, channel);
 
 void __ecereNameSpace__ecere__com__Enum_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, int * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-struct __ecereNameSpace__ecere__com__Class * dataType = strcmp(_class->dataTypeString, "int") ? __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, _class->dataTypeString) : (((void *)0));
+const char * dtString = _class->dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataType = (((void *)0));
 
+if(strcmp(dtString, "int"))
+{
+if(!strcmp(dtString, "uint") || !strcmp(dtString, "unsigned int"))
+dataType = __ecereClass_uint;
+else
+dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, dtString);
+}
 if(dataType)
 ((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
 else

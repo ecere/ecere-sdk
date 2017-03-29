@@ -123,7 +123,7 @@ int _refCount;
 
 struct __ecereNameSpace__ecere__com__BuiltInContainer
 {
-void * _vTbl;
+void ** _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 void * data;
@@ -630,7 +630,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Free", "void Free(
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Delete", "void Delete(ecere::com::IteratorPointer it)", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Sort", "void Sort(bool ascending)", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Sort, 1);
 __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer___ecereNameSpace__ecere__com__Container = __ecereNameSpace__ecere__com__eClass_AddProperty(class, 0, "ecere::com::Container", 0, __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_vTbl", "void *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_vTbl", "void * *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_class", "ecere::com::Class", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_refCount", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "void *", sizeof(void *), 0xF000F000, 1);

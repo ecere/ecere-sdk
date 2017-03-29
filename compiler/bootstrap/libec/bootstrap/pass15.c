@@ -13425,8 +13425,8 @@ else
 {
 dataMember = curMember;
 __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(_class, dataMember->name, &dataMemberOffset, privateModule, (((void *)0)), (((void *)0)));
-if(_class->type == 0)
-dataMemberOffset += _class->base->structSize;
+if(dataMember->_class->type == 0 || dataMember->_class->type == 5)
+dataMemberOffset += dataMember->_class->base->structSize;
 }
 found = 1;
 }
@@ -13451,6 +13451,8 @@ int _subMemberStackPos = 0;
 dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(_class, ident->string, &dataMemberOffset, privateModule, _subMemberStack, &_subMemberStackPos);
 if(dataMember)
 {
+if(dataMember->_class->type == 0 || dataMember->_class->type == 5)
+dataMemberOffset += dataMember->_class->base->structSize;
 found = 1;
 if(dataMember->memberAccess == 1)
 {
@@ -13492,7 +13494,11 @@ else
 {
 dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(type->__anon1._class->__anon1.registered, ident->string, &dataMemberOffset, privateModule, (((void *)0)), (((void *)0)));
 if(dataMember)
+{
+if(dataMember->_class->type == 0 || dataMember->_class->type == 5)
+dataMemberOffset += dataMember->_class->base->structSize;
 type = dataMember->dataType;
+}
 }
 }
 else if(type->kind == 9 || type->kind == 10)

@@ -274,7 +274,7 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 struct __ecereNameSpace__ecere__com__BuiltInContainer
 {
-void *  _vTbl;
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 void *  data;

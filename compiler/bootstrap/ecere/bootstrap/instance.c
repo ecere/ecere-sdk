@@ -4433,7 +4433,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpa
 }
 if(ensureCOM && !strcmp(name, "ecere") && module)
 {
-name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecere" : "ecereCOM";
+name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecereCOM" : "ecere";
 if((!Load && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) || (Load && (!__thisModule || !((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name || !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) && Load != (void *)__ecereDll_Load_ecere))
 {
 struct __ecereNameSpace__ecere__com__Instance * module;

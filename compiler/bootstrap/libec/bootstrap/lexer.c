@@ -377,9 +377,9 @@ extern int printf(const char * , ...);
 
 extern int yyerror(void);
 
-extern int __ecereNameSpace__ecere__sys__GetValue(char * *  buffer);
+extern int __ecereNameSpace__ecere__sys__GetValue(const char * *  buffer);
 
-extern unsigned int __ecereNameSpace__ecere__sys__GetString(char * *  buffer, char *  string, int max);
+extern unsigned int __ecereNameSpace__ecere__sys__GetString(const char * *  buffer, char *  string, int max);
 
 extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
 

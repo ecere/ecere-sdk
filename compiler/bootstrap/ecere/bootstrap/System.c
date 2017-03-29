@@ -382,7 +382,7 @@ extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameS
 
 struct __ecereNameSpace__ecere__com__BuiltInContainer
 {
-void *  _vTbl;
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 void *  data;
