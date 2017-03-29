@@ -735,7 +735,7 @@ private:
 
                      // TODO: Document/Improve this!
                      eClass_FindDataMemberAndOffset(objectType, curMember.name, &offset, objectType.module, null, null);
-                     if(curMember._class.type == normalClass && curMember._class.base.structSize)
+                     if(curMember._class.type == normalClass || curMember._class.type == noHeadClass)
                         offset += curMember._class.base.structSize;
 
                      if(mapKeyClass && !strcmp(prop ? prop.name : member.name, "key"))
@@ -787,10 +787,8 @@ private:
                      if(member)
                      {
                         type = superFindClass(member.dataTypeString, objectType.module);
-                        if(member._class.type == normalClass && member._class.base.structSize)
+                        if(member._class.type == normalClass || member._class.type == noHeadClass)
                            offset += member._class.base.structSize;
-                        if(member._class.offset + member.offset != offset)
-                           offset = member._class.offset + member.offset;
                         curMember = member;
                         curClass = member._class;
                      }
@@ -1754,8 +1752,17 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                   DataMember member = (DataMember)prop;
                   DataValue value { };
                   uint offset;
-                  Class type = superFindClass(member.dataTypeString, _class.module);
-                  offset = member._class.offset + member.offset;
+                  Class type;
+                  // TODO: Proper struct / union support
+                  while(member.type == unionMember && member.members.first)
+                     member = member.members.first;
+
+                  type = superFindClass(member.dataTypeString, _class.module);
+
+                  // offset = member._class.offset + member.offset;
+                  eClass_FindDataMemberAndOffset(member._class, member.name, &offset, member._class.module, null, null);
+                  if(member._class.type == normalClass || member._class.type == noHeadClass)
+                     offset += member._class.base.structSize;
 
                   if(type)
                   {
