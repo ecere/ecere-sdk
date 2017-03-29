@@ -1,586 +1,807 @@
-#***************************************************************************
-#                                  _   _ ____  _
-#  Project                     ___| | | |  _ \| |
-#                             / __| | | | |_) | |
-#                            | (__| |_| |  _ <| |___
-#                             \___|\___/|_| \_\_____|
-#
-# Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
-#
-# This software is licensed as described in the file COPYING, which
-# you should have received as part of this distribution. The terms
-# are also available at https://curl.haxx.se/docs/copyright.html.
-#
-# You may opt to use, copy, modify, merge, publish, distribute and/or sell
-# copies of the Software, and permit persons to whom the Software is
-# furnished to do so, under the terms of the COPYING file.
-#
-# This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
-# KIND, either express or implied.
-#
-###########################################################################
-
-VC=vc6
-
-all:
-	./configure
-	make
-
-ssl:
-	./configure --with-ssl
-	make
-
-borland:
-	cd lib
-	$(MAKE) -f Makefile.b32
-	cd ..\src
-	$(MAKE) -f Makefile.b32
-
-borland-ssl:
-	cd lib
-	$(MAKE) -f Makefile.b32 WITH_SSL=1
-	cd ..\src
-	$(MAKE) -f Makefile.b32 WITH_SSL=1
-
-borland-ssl-zlib:
-	cd lib
-	$(MAKE) -f Makefile.b32 WITH_SSL=1 WITH_ZLIB=1
-	cd ..\src
-	$(MAKE) -f Makefile.b32 WITH_SSL=1 WITH_ZLIB=1
-
-borland-clean:
-	cd lib
-	$(MAKE) -f Makefile.b32 clean
-	cd ..\src
-	$(MAKE) -f Makefile.b32 clean
-
-watcom: .SYMBOLIC
-	cd lib && $(MAKE) -u -f Makefile.Watcom
-	cd src && $(MAKE) -u -f Makefile.Watcom
-
-watcom-clean: .SYMBOLIC
-	cd lib && $(MAKE) -u -f Makefile.Watcom clean
-	cd src && $(MAKE) -u -f Makefile.Watcom clean
-
-watcom-vclean: .SYMBOLIC
-	cd lib && $(MAKE) -u -f Makefile.Watcom vclean
-	cd src && $(MAKE) -u -f Makefile.Watcom vclean
-
-mingw32:
-	$(MAKE) -C lib -f Makefile.m32
-	$(MAKE) -C src -f Makefile.m32
-
-mingw32-clean:
-	$(MAKE) -C lib -f Makefile.m32 clean
-	$(MAKE) -C src -f Makefile.m32 clean
-	$(MAKE) -C docs/examples -f Makefile.m32 clean
-
-mingw32-vclean mingw32-distclean:
-	$(MAKE) -C lib -f Makefile.m32 vclean
-	$(MAKE) -C src -f Makefile.m32 vclean
-	$(MAKE) -C docs/examples -f Makefile.m32 vclean
-
-mingw32-examples%:
-	$(MAKE) -C docs/examples -f Makefile.m32 CFG=$@
-
-mingw32%:
-	$(MAKE) -C lib -f Makefile.m32 CFG=$@
-	$(MAKE) -C src -f Makefile.m32 CFG=$@
-
-vc-clean: $(VC)
-	cd lib
-	nmake -f Makefile.$(VC) clean
-	cd ..\src
-	nmake -f Makefile.$(VC) clean
-
-vc-all: $(VC)
-	cd lib
-	nmake -f Makefile.$(VC) cfg=release
-	nmake -f Makefile.$(VC) cfg=release-ssl
-	nmake -f Makefile.$(VC) cfg=release-zlib
-	nmake -f Makefile.$(VC) cfg=release-ssl-zlib
-	nmake -f Makefile.$(VC) cfg=release-ssl-dll
-	nmake -f Makefile.$(VC) cfg=release-zlib-dll
-	nmake -f Makefile.$(VC) cfg=release-ssl-dll-zlib-dll
-	nmake -f Makefile.$(VC) cfg=release-dll
-	nmake -f Makefile.$(VC) cfg=release-dll-ssl-dll
-	nmake -f Makefile.$(VC) cfg=release-dll-zlib-dll
-	nmake -f Makefile.$(VC) cfg=release-dll-ssl-dll-zlib-dll
-	nmake -f Makefile.$(VC) cfg=debug
-	nmake -f Makefile.$(VC) cfg=debug-ssl
-	nmake -f Makefile.$(VC) cfg=debug-zlib
-	nmake -f Makefile.$(VC) cfg=debug-ssl-zlib
-	nmake -f Makefile.$(VC) cfg=debug-ssl-dll
-	nmake -f Makefile.$(VC) cfg=debug-zlib-dll
-	nmake -f Makefile.$(VC) cfg=debug-ssl-dll-zlib-dll
-	nmake -f Makefile.$(VC) cfg=debug-dll
-	nmake -f Makefile.$(VC) cfg=debug-dll-ssl-dll
-	nmake -f Makefile.$(VC) cfg=debug-dll-zlib-dll
-	nmake -f Makefile.$(VC) cfg=debug-dll-ssl-dll-zlib-dll
-
-vc: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release
-	cd ..\src
-	nmake /f Makefile.$(VC)
-
-vc-x64: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release
-
-vc-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release WINDOWS_SSPI=1
-
-vc-x64-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release WINDOWS_SSPI=1
-
-vc-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release USE_IDN=1
-
-vc-x64-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release USE_IDN=1
-
-vc-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release USE_IDN=1 WINDOWS_SSPI=1
-
-vc-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-zlib
-
-vc-x64-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib
-
-vc-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-zlib WINDOWS_SSPI=1
-
-vc-x64-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib WINDOWS_SSPI=1
-
-vc-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-zlib USE_IDN=1
-
-vc-x64-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib USE_IDN=1
-
-vc-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-ssl: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl
-
-vc-x64-ssl: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl
-
-vc-ssl-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl WINDOWS_SSPI=1
-
-vc-x64-ssl-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl WINDOWS_SSPI=1
-
-vc-ssl-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl USE_IDN=1
-
-vc-x64-ssl-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl USE_IDN=1
-
-vc-ssl-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-ssl-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl USE_IDN=1 WINDOWS_SSPI=1
-
-vc-ssl-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib
-
-vc-x64-ssl-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib
-
-vc-ssl-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib WINDOWS_SSPI=1
-
-vc-x64-ssl-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib WINDOWS_SSPI=1
-
-vc-ssl-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib USE_IDN=1
-
-vc-x64-ssl-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib USE_IDN=1
-
-vc-ssl-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-ssl-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-ssl-ssh2-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib
-
-vc-x64-ssl-ssh2-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib
-
-vc-ssl-ssh2-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib WINDOWS_SSPI=1
-
-vc-x64-ssl-ssh2-zlib-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib WINDOWS_SSPI=1
-
-vc-ssl-ssh2-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib USE_IDN=1
-
-vc-x64-ssl-ssh2-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib USE_IDN=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib USE_IDN=1
-
-vc-ssl-ssh2-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-ssh2-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-ssl-ssh2-zlib-idn-sspi: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-ssl-ssh2-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-winssl: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-winssl WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-winssl WINDOWS_SSPI=1
-
-vc-x64-winssl: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl WINDOWS_SSPI=1
-
-vc-winssl-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-winssl USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-winssl USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-winssl-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl USE_IDN=1 WINDOWS_SSPI=1
-
-vc-winssl-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-winssl-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-winssl-zlib WINDOWS_SSPI=1
-
-vc-x64-winssl-zlib: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl-zlib WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl-zlib WINDOWS_SSPI=1
-
-vc-winssl-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-winssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-winssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-x64-winssl-zlib-idn: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-	cd ..\src
-	nmake /f Makefile.$(VC) MACHINE=x64 cfg=release-winssl-zlib USE_IDN=1 WINDOWS_SSPI=1
-
-vc-ssl-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-dll
-
-vc-dll-ssl-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-dll-ssl-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-dll-ssl-dll
-
-vc-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-dll
-
-vc-dll-zlib-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-dll-zlib-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-dll-zlib-dll
-
-vc-dll-ssl-dll-zlib-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-dll-ssl-dll-zlib-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-dll-ssl-dll-zlib-dll
-
-vc-ssl-dll-zlib-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-ssl-dll-zlib-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-ssl-dll-zlib-dll
-
-vc-zlib-dll: $(VC)
-	cd lib
-	nmake /f Makefile.$(VC) cfg=release-zlib-dll
-	cd ..\src
-	nmake /f Makefile.$(VC) cfg=release-zlib-dll
-
-djgpp:
-	$(MAKE) -C lib -f Makefile.dj
-	$(MAKE) -C src -f Makefile.dj
-
-cygwin:
-	./configure
-	make
-
-cygwin-ssl:
-	./configure --with-ssl
-	make
-
-amiga:
-	cd ./lib && make -f makefile.amiga
-	cd ./src && make -f makefile.amiga
-
-netware:
-	$(MAKE) -C lib -f Makefile.netware
-	$(MAKE) -C src -f Makefile.netware
-
-netware-clean:
-	$(MAKE) -C lib -f Makefile.netware clean
-	$(MAKE) -C src -f Makefile.netware clean
-	$(MAKE) -C docs/examples -f Makefile.netware clean
-
-netware-vclean netware-distclean:
-	$(MAKE) -C lib -f Makefile.netware vclean
-	$(MAKE) -C src -f Makefile.netware vclean
-	$(MAKE) -C docs/examples -f Makefile.netware vclean
-
-netware-install:
-	$(MAKE) -C lib -f Makefile.netware install
-	$(MAKE) -C src -f Makefile.netware install
-
-netware-examples-%:
-	$(MAKE) -C docs/examples -f Makefile.netware CFG=$@
-
-netware-%:
-	$(MAKE) -C lib -f Makefile.netware CFG=$@
-	$(MAKE) -C src -f Makefile.netware CFG=$@
-
-unix: all
-
-unix-ssl: ssl
-
-linux: all
-
-linux-ssl: ssl
-
-# We don't need to do anything for vc6.
-vc6:
-
-# VC7 makefiles are for use with VS.NET and VS.NET 2003
-vc7: lib/Makefile.vc7 src/Makefile.vc7
-
-lib/Makefile.vc7: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s/VC6/VC7/g" lib/Makefile.vc6 > lib/Makefile.vc7
-
-src/Makefile.vc7: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s/VC6/VC7/g" src/Makefile.vc6 > src/Makefile.vc7
-
-# VC8 makefiles are for use with VS2005
-vc8: lib/Makefile.vc8 src/Makefile.vc8
-
-lib/Makefile.vc8: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib bufferoverflowu.lib/g" -e "s/VC6/VC8/g" lib/Makefile.vc6 > lib/Makefile.vc8
-
-src/Makefile.vc8: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib bufferoverflowu.lib/g" -e "s/VC6/VC8/g" src/Makefile.vc6 > src/Makefile.vc8
-
-# VC9 makefiles are for use with VS2008
-vc9: lib/Makefile.vc9 src/Makefile.vc9
-
-lib/Makefile.vc9: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc9/g" -e "s/VC6/VC9/g" lib/Makefile.vc6 > lib/Makefile.vc9
-
-src/Makefile.vc9: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc9/g" -e "s/VC6/VC9/g" src/Makefile.vc6 > src/Makefile.vc9
-
-# VC10 makefiles are for use with VS2010
-vc10: lib/Makefile.vc10 src/Makefile.vc10
-
-lib/Makefile.vc10: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc10/g" -e "s/VC6/VC10/g" lib/Makefile.vc6 > lib/Makefile.vc10
-
-src/Makefile.vc10: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc10/g" -e "s/VC6/VC10/g" src/Makefile.vc6 > src/Makefile.vc10
-
-# VC11 makefiles are for use with VS2012
-vc11: lib/Makefile.vc11 src/Makefile.vc11
-
-lib/Makefile.vc11: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc11/g" -e "s/VC6/VC11/g" lib/Makefile.vc6 > lib/Makefile.vc11
-
-src/Makefile.vc11: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc11/g" -e "s/VC6/VC11/g" src/Makefile.vc6 > src/Makefile.vc11
-
-# VC12 makefiles are for use with VS2013
-vc12: lib/Makefile.vc12 src/Makefile.vc12
-
-lib/Makefile.vc12: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc12/g" -e "s/VC6/VC12/g" lib/Makefile.vc6 > lib/Makefile.vc12
-
-src/Makefile.vc12: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc12/g" -e "s/VC6/VC12/g" src/Makefile.vc6 > src/Makefile.vc12
-
-# VC14 makefiles are for use with VS2015
-vc14: lib/Makefile.vc14 src/Makefile.vc14
-
-lib/Makefile.vc14: lib/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc14/g" -e "s/VC6/VC14/g" lib/Makefile.vc6 > lib/Makefile.vc14
-
-src/Makefile.vc14: src/Makefile.vc6
-	@echo "generate $@"
-	@sed -e "s#/GX /DWIN32 /YX#/EHsc /DWIN32#" -e "s#/GZ#/RTC1#" -e "s/ws2_32.lib/ws2_32.lib/g" -e "s/vc6/vc14/g" -e "s/VC6/VC14/g" src/Makefile.vc6 > src/Makefile.vc14
-
-ca-bundle: lib/mk-ca-bundle.pl
-	@echo "generate a fresh ca-bundle.crt"
-	@perl $< -b -l -u lib/ca-bundle.crt
-
-ca-firefox: lib/firefox-db2pem.sh
-	@echo "generate a fresh ca-bundle.crt"
-	./lib/firefox-db2pem.sh lib/ca-bundle.crt
+.PHONY: all objdir cleantarget clean realclean distclean
+
+# CORE VARIABLES
+
+MODULE := curl
+VERSION := 
+CONFIG := release
+ifndef COMPILER
+COMPILER := default
+endif
+
+TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+LDFLAGS =
+endif
+PRJ_CFLAGS =
+CECFLAGS =
+OFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+CONSOLE = -mwindows
+
+# INCLUDES
+
+_CF_DIR = .configs/
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+
+RES = 
+
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)curl$(OUT)
+
+ifdef WINDOWS_TARGET
+
+_RCSOURCES = \
+	lib/libcurl.rc
+
+RCSOURCES = $(call shwspace,$(_RCSOURCES))
+
+RCOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.rc,%$(O),$(notdir $(_RCSOURCES)))))
+
+else
+RCSOURCES =
+RCOBJECTS =
+endif
+
+_OBJECTS = $(_OBJECTS1) $(_OBJECTS2) $(_OBJECTS3) $(_OBJECTS4) $(_OBJECTS5)
+_OBJECTS1 = \
+	$(OBJ)cleartext$(O) \
+	$(OBJ)cram$(O) \
+	$(OBJ)digest$(O) \
+	$(OBJ)digest_sspi$(O) \
+	$(OBJ)krb5_gssapi$(O) \
+	$(OBJ)krb5_sspi$(O) \
+	$(OBJ)ntlm$(O) \
+	$(OBJ)ntlm_sspi$(O) \
+	$(OBJ)oauth2$(O) \
+	$(OBJ)spnego_gssapi$(O) \
+	$(OBJ)spnego_sspi$(O) \
+	$(OBJ)vauth$(O) \
+	$(OBJ)axtls$(O) \
+	$(OBJ)cyassl$(O) \
+	$(OBJ)darwinssl$(O) \
+	$(OBJ)gskit$(O) \
+	$(OBJ)gtls$(O) \
+	$(OBJ)mbedtls$(O) \
+	$(OBJ)nss$(O) \
+	$(OBJ)openssl$(O) \
+	$(OBJ)polarssl$(O) \
+	$(OBJ)polarssl_threadlock$(O) \
+	$(OBJ)schannel$(O) \
+	$(OBJ)vtls$(O) \
+	$(OBJ)amigaos$(O) \
+	$(OBJ)asyn-ares$(O) \
+	$(OBJ)asyn-thread$(O) \
+	$(OBJ)base64$(O) \
+	$(OBJ)conncache$(O) \
+	$(OBJ)connect$(O)
+_OBJECTS2 = \
+	$(OBJ)content_encoding$(O) \
+	$(OBJ)cookie$(O) \
+	$(OBJ)curl_addrinfo$(O) \
+	$(OBJ)curl_des$(O) \
+	$(OBJ)curl_endian$(O) \
+	$(OBJ)curl_fnmatch$(O) \
+	$(OBJ)curl_gethostname$(O) \
+	$(OBJ)curl_gssapi$(O) \
+	$(OBJ)curl_memrchr$(O) \
+	$(OBJ)curl_multibyte$(O) \
+	$(OBJ)curl_ntlm_core$(O) \
+	$(OBJ)curl_ntlm_wb$(O) \
+	$(OBJ)curl_rtmp$(O) \
+	$(OBJ)curl_sasl$(O) \
+	$(OBJ)curl_sspi$(O) \
+	$(OBJ)curl_threads$(O) \
+	$(OBJ)dict$(O) \
+	$(OBJ)dotdot$(O) \
+	$(OBJ)easy$(O) \
+	$(OBJ)escape$(O) \
+	$(OBJ)file$(O) \
+	$(OBJ)fileinfo$(O) \
+	$(OBJ)formdata$(O) \
+	$(OBJ)ftp$(O) \
+	$(OBJ)ftplistparser$(O) \
+	$(OBJ)getenv$(O) \
+	$(OBJ)getinfo$(O) \
+	$(OBJ)gopher$(O)
+_OBJECTS3 = \
+	$(OBJ)hash$(O) \
+	$(OBJ)hmac$(O) \
+	$(OBJ)hostasyn$(O) \
+	$(OBJ)hostcheck$(O) \
+	$(OBJ)hostip$(O) \
+	$(OBJ)hostip4$(O) \
+	$(OBJ)hostip6$(O) \
+	$(OBJ)hostsyn$(O) \
+	$(OBJ)http$(O) \
+	$(OBJ)http2$(O) \
+	$(OBJ)http_chunks$(O) \
+	$(OBJ)http_digest$(O) \
+	$(OBJ)http_negotiate$(O) \
+	$(OBJ)http_ntlm$(O) \
+	$(OBJ)http_proxy$(O) \
+	$(OBJ)idn_win32$(O) \
+	$(OBJ)if2ip$(O) \
+	$(OBJ)imap$(O) \
+	$(OBJ)inet_ntop$(O) \
+	$(OBJ)inet_pton$(O) \
+	$(OBJ)krb5$(O) \
+	$(OBJ)ldap$(O) \
+	$(OBJ)llist$(O) \
+	$(OBJ)md4$(O) \
+	$(OBJ)md5$(O) \
+	$(OBJ)memdebug$(O) \
+	$(OBJ)mprintf$(O) \
+	$(OBJ)multi$(O) \
+	$(OBJ)netrc$(O)
+_OBJECTS4 = \
+	$(OBJ)non-ascii$(O) \
+	$(OBJ)nonblock$(O) \
+	$(OBJ)nwlib$(O) \
+	$(OBJ)nwos$(O) \
+	$(OBJ)openldap$(O) \
+	$(OBJ)parsedate$(O) \
+	$(OBJ)pingpong$(O) \
+	$(OBJ)pipeline$(O) \
+	$(OBJ)pop3$(O) \
+	$(OBJ)progress$(O) \
+	$(OBJ)rtsp$(O) \
+	$(OBJ)security$(O) \
+	$(OBJ)select$(O) \
+	$(OBJ)sendf$(O) \
+	$(OBJ)share$(O) \
+	$(OBJ)slist$(O) \
+	$(OBJ)smb$(O) \
+	$(OBJ)smtp$(O) \
+	$(OBJ)socks$(O) \
+	$(OBJ)socks_gssapi$(O) \
+	$(OBJ)socks_sspi$(O) \
+	$(OBJ)speedcheck$(O) \
+	$(OBJ)splay$(O) \
+	$(OBJ)ssh$(O) \
+	$(OBJ)strcase$(O) \
+	$(OBJ)strdup$(O) \
+	$(OBJ)strerror$(O) \
+	$(OBJ)strtok$(O) \
+	$(OBJ)strtoofft$(O)
+_OBJECTS5 = \
+	$(OBJ)system_win32$(O) \
+	$(OBJ)telnet$(O) \
+	$(OBJ)tftp$(O) \
+	$(OBJ)timeval$(O) \
+	$(OBJ)transfer$(O) \
+	$(OBJ)url$(O) \
+	$(OBJ)version$(O) \
+	$(OBJ)warnless$(O) \
+	$(OBJ)wildcard$(O) \
+	$(OBJ)x509asn1$(O)
+
+OBJECTS = $(_OBJECTS) $(RCOBJECTS)
+
+SOURCES = $(SOURCES1) $(SOURCES2)
+SOURCES1 = \
+	lib/vauth/cleartext.c \
+	lib/vauth/cram.c \
+	lib/vauth/digest.c \
+	lib/vauth/digest_sspi.c \
+	lib/vauth/krb5_gssapi.c \
+	lib/vauth/krb5_sspi.c \
+	lib/vauth/ntlm.c \
+	lib/vauth/ntlm_sspi.c \
+	lib/vauth/oauth2.c \
+	lib/vauth/spnego_gssapi.c \
+	lib/vauth/spnego_sspi.c \
+	lib/vauth/vauth.c \
+	lib/vtls/axtls.c \
+	lib/vtls/cyassl.c \
+	lib/vtls/darwinssl.c \
+	lib/vtls/gskit.c \
+	lib/vtls/gtls.c \
+	lib/vtls/mbedtls.c \
+	lib/vtls/nss.c \
+	lib/vtls/openssl.c \
+	lib/vtls/polarssl.c \
+	lib/vtls/polarssl_threadlock.c \
+	lib/vtls/schannel.c \
+	lib/vtls/vtls.c \
+	lib/amigaos.c \
+	lib/asyn-ares.c \
+	lib/asyn-thread.c \
+	lib/base64.c \
+	lib/conncache.c \
+	lib/connect.c \
+	lib/content_encoding.c \
+	lib/cookie.c \
+	lib/curl_addrinfo.c \
+	lib/curl_des.c \
+	lib/curl_endian.c \
+	lib/curl_fnmatch.c \
+	lib/curl_gethostname.c \
+	lib/curl_gssapi.c \
+	lib/curl_memrchr.c \
+	lib/curl_multibyte.c \
+	lib/curl_ntlm_core.c \
+	lib/curl_ntlm_wb.c \
+	lib/curl_rtmp.c \
+	lib/curl_sasl.c \
+	lib/curl_sspi.c \
+	lib/curl_threads.c \
+	lib/dict.c \
+	lib/dotdot.c \
+	lib/easy.c \
+	lib/escape.c \
+	lib/file.c \
+	lib/fileinfo.c \
+	lib/formdata.c \
+	lib/ftp.c \
+	lib/ftplistparser.c \
+	lib/getenv.c \
+	lib/getinfo.c \
+	lib/gopher.c \
+	lib/hash.c \
+	lib/hmac.c \
+	lib/hostasyn.c \
+	lib/hostcheck.c \
+	lib/hostip.c \
+	lib/hostip4.c \
+	lib/hostip6.c \
+	lib/hostsyn.c \
+	lib/http.c \
+	lib/http2.c \
+	lib/http_chunks.c \
+	lib/http_digest.c \
+	lib/http_negotiate.c \
+	lib/http_ntlm.c \
+	lib/http_proxy.c \
+	lib/idn_win32.c \
+	lib/if2ip.c \
+	lib/imap.c \
+	lib/inet_ntop.c \
+	lib/inet_pton.c \
+	lib/krb5.c \
+	lib/ldap.c \
+	lib/llist.c \
+	lib/md4.c
+SOURCES2 = \
+	lib/md5.c \
+	lib/memdebug.c \
+	lib/mprintf.c \
+	lib/multi.c \
+	lib/netrc.c \
+	lib/non-ascii.c \
+	lib/nonblock.c \
+	lib/nwlib.c \
+	lib/nwos.c \
+	lib/openldap.c \
+	lib/parsedate.c \
+	lib/pingpong.c \
+	lib/pipeline.c \
+	lib/pop3.c \
+	lib/progress.c \
+	lib/rtsp.c \
+	lib/security.c \
+	lib/select.c \
+	lib/sendf.c \
+	lib/share.c \
+	lib/slist.c \
+	lib/smb.c \
+	lib/smtp.c \
+	lib/socks.c \
+	lib/socks_gssapi.c \
+	lib/socks_sspi.c \
+	lib/speedcheck.c \
+	lib/splay.c \
+	lib/ssh.c \
+	lib/strcase.c \
+	lib/strdup.c \
+	lib/strerror.c \
+	lib/strtok.c \
+	lib/strtoofft.c \
+	lib/system_win32.c \
+	lib/telnet.c \
+	lib/tftp.c \
+	lib/timeval.c \
+	lib/transfer.c \
+	lib/url.c \
+	lib/version.c \
+	lib/warnless.c \
+	lib/wildcard.c \
+	lib/x509asn1.c
+
+RESOURCES =
+
+ifdef USE_RESOURCES_EAR
+RESOURCES_EAR = $(OBJ)resources.ear
+else
+RESOURCES_EAR = $(RESOURCES)
+endif
+
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+PRJ_CFLAGS += \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+			 -DBUILDING_LIBCURL \
+			 -DCURL_DISABLE_LDAP \
+			 -DCURL_STATICLIB \
+			 -Iinclude \
+			 -Ilib
+
+ECFLAGS += -module $(MODULE)
+CECFLAGS += -cpp $(_CPP)
+
+# TARGETS
+
+all: objdir $(TARGET)
+
+objdir:
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
+
+$(SYMBOLS): | objdir
+$(OBJECTS): | objdir
+$(TARGET): $(SOURCES) $(RCSOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
+	@$(call rm,$(OBJ)objects.lst)
+	@$(call touch,$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS1),$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS2),$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS3),$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS4),$(OBJ)objects.lst)
+	$(call addtolistfile,$(_OBJECTS5),$(OBJ)objects.lst)
+ifdef WINDOWS_TARGET
+	$(call addtolistfile,$(RCOBJECTS),$(OBJ)objects.lst)
+endif
+ifndef STATIC_LIBRARY_TARGET
+	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
+	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
+else
+ifdef WINDOWS_HOST
+	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
+endif
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
+endif
+endif
+endif
+
+# SYMBOL RULES
+
+# C OBJECT RULES
+
+# OBJECT RULES
+
+$(OBJ)cleartext$(O): lib/vauth/cleartext.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/cleartext.c) -o $(call quote_path,$@)
+
+$(OBJ)cram$(O): lib/vauth/cram.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/cram.c) -o $(call quote_path,$@)
+
+$(OBJ)digest$(O): lib/vauth/digest.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/digest.c) -o $(call quote_path,$@)
+
+$(OBJ)digest_sspi$(O): lib/vauth/digest_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/digest_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)krb5_gssapi$(O): lib/vauth/krb5_gssapi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/krb5_gssapi.c) -o $(call quote_path,$@)
+
+$(OBJ)krb5_sspi$(O): lib/vauth/krb5_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/krb5_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)ntlm$(O): lib/vauth/ntlm.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/ntlm.c) -o $(call quote_path,$@)
+
+$(OBJ)ntlm_sspi$(O): lib/vauth/ntlm_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/ntlm_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)oauth2$(O): lib/vauth/oauth2.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/oauth2.c) -o $(call quote_path,$@)
+
+$(OBJ)spnego_gssapi$(O): lib/vauth/spnego_gssapi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/spnego_gssapi.c) -o $(call quote_path,$@)
+
+$(OBJ)spnego_sspi$(O): lib/vauth/spnego_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/spnego_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)vauth$(O): lib/vauth/vauth.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vauth/vauth.c) -o $(call quote_path,$@)
+
+$(OBJ)axtls$(O): lib/vtls/axtls.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/axtls.c) -o $(call quote_path,$@)
+
+$(OBJ)cyassl$(O): lib/vtls/cyassl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/cyassl.c) -o $(call quote_path,$@)
+
+$(OBJ)darwinssl$(O): lib/vtls/darwinssl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/darwinssl.c) -o $(call quote_path,$@)
+
+$(OBJ)gskit$(O): lib/vtls/gskit.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/gskit.c) -o $(call quote_path,$@)
+
+$(OBJ)gtls$(O): lib/vtls/gtls.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/gtls.c) -o $(call quote_path,$@)
+
+$(OBJ)mbedtls$(O): lib/vtls/mbedtls.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/mbedtls.c) -o $(call quote_path,$@)
+
+$(OBJ)nss$(O): lib/vtls/nss.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/nss.c) -o $(call quote_path,$@)
+
+$(OBJ)openssl$(O): lib/vtls/openssl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/openssl.c) -o $(call quote_path,$@)
+
+$(OBJ)polarssl$(O): lib/vtls/polarssl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/polarssl.c) -o $(call quote_path,$@)
+
+$(OBJ)polarssl_threadlock$(O): lib/vtls/polarssl_threadlock.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/polarssl_threadlock.c) -o $(call quote_path,$@)
+
+$(OBJ)schannel$(O): lib/vtls/schannel.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/schannel.c) -o $(call quote_path,$@)
+
+$(OBJ)vtls$(O): lib/vtls/vtls.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/vtls/vtls.c) -o $(call quote_path,$@)
+
+$(OBJ)amigaos$(O): lib/amigaos.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/amigaos.c) -o $(call quote_path,$@)
+
+$(OBJ)asyn-ares$(O): lib/asyn-ares.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/asyn-ares.c) -o $(call quote_path,$@)
+
+$(OBJ)asyn-thread$(O): lib/asyn-thread.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/asyn-thread.c) -o $(call quote_path,$@)
+
+$(OBJ)base64$(O): lib/base64.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/base64.c) -o $(call quote_path,$@)
+
+$(OBJ)conncache$(O): lib/conncache.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/conncache.c) -o $(call quote_path,$@)
+
+$(OBJ)connect$(O): lib/connect.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/connect.c) -o $(call quote_path,$@)
+
+$(OBJ)content_encoding$(O): lib/content_encoding.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/content_encoding.c) -o $(call quote_path,$@)
+
+$(OBJ)cookie$(O): lib/cookie.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/cookie.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_addrinfo$(O): lib/curl_addrinfo.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_addrinfo.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_des$(O): lib/curl_des.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_des.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_endian$(O): lib/curl_endian.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_endian.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_fnmatch$(O): lib/curl_fnmatch.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_fnmatch.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_gethostname$(O): lib/curl_gethostname.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_gethostname.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_gssapi$(O): lib/curl_gssapi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_gssapi.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_memrchr$(O): lib/curl_memrchr.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_memrchr.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_multibyte$(O): lib/curl_multibyte.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_multibyte.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_ntlm_core$(O): lib/curl_ntlm_core.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_ntlm_core.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_ntlm_wb$(O): lib/curl_ntlm_wb.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_ntlm_wb.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_rtmp$(O): lib/curl_rtmp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_rtmp.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_sasl$(O): lib/curl_sasl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_sasl.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_sspi$(O): lib/curl_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)curl_threads$(O): lib/curl_threads.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/curl_threads.c) -o $(call quote_path,$@)
+
+$(OBJ)dict$(O): lib/dict.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/dict.c) -o $(call quote_path,$@)
+
+$(OBJ)dotdot$(O): lib/dotdot.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/dotdot.c) -o $(call quote_path,$@)
+
+$(OBJ)easy$(O): lib/easy.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/easy.c) -o $(call quote_path,$@)
+
+$(OBJ)escape$(O): lib/escape.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/escape.c) -o $(call quote_path,$@)
+
+$(OBJ)file$(O): lib/file.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/file.c) -o $(call quote_path,$@)
+
+$(OBJ)fileinfo$(O): lib/fileinfo.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/fileinfo.c) -o $(call quote_path,$@)
+
+$(OBJ)formdata$(O): lib/formdata.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/formdata.c) -o $(call quote_path,$@)
+
+$(OBJ)ftp$(O): lib/ftp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/ftp.c) -o $(call quote_path,$@)
+
+$(OBJ)ftplistparser$(O): lib/ftplistparser.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/ftplistparser.c) -o $(call quote_path,$@)
+
+$(OBJ)getenv$(O): lib/getenv.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/getenv.c) -o $(call quote_path,$@)
+
+$(OBJ)getinfo$(O): lib/getinfo.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/getinfo.c) -o $(call quote_path,$@)
+
+$(OBJ)gopher$(O): lib/gopher.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/gopher.c) -o $(call quote_path,$@)
+
+$(OBJ)hash$(O): lib/hash.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hash.c) -o $(call quote_path,$@)
+
+$(OBJ)hmac$(O): lib/hmac.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hmac.c) -o $(call quote_path,$@)
+
+$(OBJ)hostasyn$(O): lib/hostasyn.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostasyn.c) -o $(call quote_path,$@)
+
+$(OBJ)hostcheck$(O): lib/hostcheck.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostcheck.c) -o $(call quote_path,$@)
+
+$(OBJ)hostip$(O): lib/hostip.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostip.c) -o $(call quote_path,$@)
+
+$(OBJ)hostip4$(O): lib/hostip4.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostip4.c) -o $(call quote_path,$@)
+
+$(OBJ)hostip6$(O): lib/hostip6.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostip6.c) -o $(call quote_path,$@)
+
+$(OBJ)hostsyn$(O): lib/hostsyn.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/hostsyn.c) -o $(call quote_path,$@)
+
+$(OBJ)http$(O): lib/http.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http.c) -o $(call quote_path,$@)
+
+$(OBJ)http2$(O): lib/http2.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http2.c) -o $(call quote_path,$@)
+
+$(OBJ)http_chunks$(O): lib/http_chunks.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http_chunks.c) -o $(call quote_path,$@)
+
+$(OBJ)http_digest$(O): lib/http_digest.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http_digest.c) -o $(call quote_path,$@)
+
+$(OBJ)http_negotiate$(O): lib/http_negotiate.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http_negotiate.c) -o $(call quote_path,$@)
+
+$(OBJ)http_ntlm$(O): lib/http_ntlm.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http_ntlm.c) -o $(call quote_path,$@)
+
+$(OBJ)http_proxy$(O): lib/http_proxy.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/http_proxy.c) -o $(call quote_path,$@)
+
+$(OBJ)idn_win32$(O): lib/idn_win32.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/idn_win32.c) -o $(call quote_path,$@)
+
+$(OBJ)if2ip$(O): lib/if2ip.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/if2ip.c) -o $(call quote_path,$@)
+
+$(OBJ)imap$(O): lib/imap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/imap.c) -o $(call quote_path,$@)
+
+$(OBJ)inet_ntop$(O): lib/inet_ntop.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/inet_ntop.c) -o $(call quote_path,$@)
+
+$(OBJ)inet_pton$(O): lib/inet_pton.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/inet_pton.c) -o $(call quote_path,$@)
+
+$(OBJ)krb5$(O): lib/krb5.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/krb5.c) -o $(call quote_path,$@)
+
+$(OBJ)ldap$(O): lib/ldap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/ldap.c) -o $(call quote_path,$@)
+
+ifdef WINDOWS_TARGET
+
+$(OBJ)libcurl$(O): lib/libcurl.rc
+	$(WINDRES) $(WINDRES_FLAGS) $< "$(call escspace,$(call quote_path,$@))"
+endif
+
+$(OBJ)llist$(O): lib/llist.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/llist.c) -o $(call quote_path,$@)
+
+$(OBJ)md4$(O): lib/md4.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/md4.c) -o $(call quote_path,$@)
+
+$(OBJ)md5$(O): lib/md5.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/md5.c) -o $(call quote_path,$@)
+
+$(OBJ)memdebug$(O): lib/memdebug.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/memdebug.c) -o $(call quote_path,$@)
+
+$(OBJ)mprintf$(O): lib/mprintf.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/mprintf.c) -o $(call quote_path,$@)
+
+$(OBJ)multi$(O): lib/multi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/multi.c) -o $(call quote_path,$@)
+
+$(OBJ)netrc$(O): lib/netrc.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/netrc.c) -o $(call quote_path,$@)
+
+$(OBJ)non-ascii$(O): lib/non-ascii.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/non-ascii.c) -o $(call quote_path,$@)
+
+$(OBJ)nonblock$(O): lib/nonblock.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/nonblock.c) -o $(call quote_path,$@)
+
+$(OBJ)nwlib$(O): lib/nwlib.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/nwlib.c) -o $(call quote_path,$@)
+
+$(OBJ)nwos$(O): lib/nwos.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/nwos.c) -o $(call quote_path,$@)
+
+$(OBJ)openldap$(O): lib/openldap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/openldap.c) -o $(call quote_path,$@)
+
+$(OBJ)parsedate$(O): lib/parsedate.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/parsedate.c) -o $(call quote_path,$@)
+
+$(OBJ)pingpong$(O): lib/pingpong.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/pingpong.c) -o $(call quote_path,$@)
+
+$(OBJ)pipeline$(O): lib/pipeline.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/pipeline.c) -o $(call quote_path,$@)
+
+$(OBJ)pop3$(O): lib/pop3.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/pop3.c) -o $(call quote_path,$@)
+
+$(OBJ)progress$(O): lib/progress.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/progress.c) -o $(call quote_path,$@)
+
+$(OBJ)rtsp$(O): lib/rtsp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/rtsp.c) -o $(call quote_path,$@)
+
+$(OBJ)security$(O): lib/security.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/security.c) -o $(call quote_path,$@)
+
+$(OBJ)select$(O): lib/select.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/select.c) -o $(call quote_path,$@)
+
+$(OBJ)sendf$(O): lib/sendf.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/sendf.c) -o $(call quote_path,$@)
+
+$(OBJ)share$(O): lib/share.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/share.c) -o $(call quote_path,$@)
+
+$(OBJ)slist$(O): lib/slist.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/slist.c) -o $(call quote_path,$@)
+
+$(OBJ)smb$(O): lib/smb.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/smb.c) -o $(call quote_path,$@)
+
+$(OBJ)smtp$(O): lib/smtp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/smtp.c) -o $(call quote_path,$@)
+
+$(OBJ)socks$(O): lib/socks.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/socks.c) -o $(call quote_path,$@)
+
+$(OBJ)socks_gssapi$(O): lib/socks_gssapi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/socks_gssapi.c) -o $(call quote_path,$@)
+
+$(OBJ)socks_sspi$(O): lib/socks_sspi.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/socks_sspi.c) -o $(call quote_path,$@)
+
+$(OBJ)speedcheck$(O): lib/speedcheck.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/speedcheck.c) -o $(call quote_path,$@)
+
+$(OBJ)splay$(O): lib/splay.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/splay.c) -o $(call quote_path,$@)
+
+$(OBJ)ssh$(O): lib/ssh.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/ssh.c) -o $(call quote_path,$@)
+
+$(OBJ)strcase$(O): lib/strcase.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/strcase.c) -o $(call quote_path,$@)
+
+$(OBJ)strdup$(O): lib/strdup.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/strdup.c) -o $(call quote_path,$@)
+
+$(OBJ)strerror$(O): lib/strerror.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/strerror.c) -o $(call quote_path,$@)
+
+$(OBJ)strtok$(O): lib/strtok.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/strtok.c) -o $(call quote_path,$@)
+
+$(OBJ)strtoofft$(O): lib/strtoofft.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/strtoofft.c) -o $(call quote_path,$@)
+
+$(OBJ)system_win32$(O): lib/system_win32.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/system_win32.c) -o $(call quote_path,$@)
+
+$(OBJ)telnet$(O): lib/telnet.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/telnet.c) -o $(call quote_path,$@)
+
+$(OBJ)tftp$(O): lib/tftp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/tftp.c) -o $(call quote_path,$@)
+
+$(OBJ)timeval$(O): lib/timeval.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/timeval.c) -o $(call quote_path,$@)
+
+$(OBJ)transfer$(O): lib/transfer.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/transfer.c) -o $(call quote_path,$@)
+
+$(OBJ)url$(O): lib/url.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/url.c) -o $(call quote_path,$@)
+
+$(OBJ)version$(O): lib/version.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/version.c) -o $(call quote_path,$@)
+
+$(OBJ)warnless$(O): lib/warnless.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/warnless.c) -o $(call quote_path,$@)
+
+$(OBJ)wildcard$(O): lib/wildcard.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/wildcard.c) -o $(call quote_path,$@)
+
+$(OBJ)x509asn1$(O): lib/x509asn1.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,lib/x509asn1.c) -o $(call quote_path,$@)
+
+cleantarget: objdir
+	$(call rm,$(OBJ)objects.lst)
+	$(call rm,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
+
+clean: cleantarget
+	$(call rm,$(_OBJECTS1))
+	$(call rm,$(_OBJECTS2))
+	$(call rm,$(_OBJECTS3))
+	$(call rm,$(_OBJECTS4))
+	$(call rm,$(_OBJECTS5))
+ifdef WINDOWS_TARGET
+	$(call rm,$(_RCOBJECTS))
+endif
+
+realclean: cleantarget
+	$(call rmr,$(OBJ))
+
+distclean: cleantarget
+	$(call rmr,obj/)
+	$(call rmr,.configs/)
+	$(call rm,*.ews)
+	$(call rm,*.Makefile)

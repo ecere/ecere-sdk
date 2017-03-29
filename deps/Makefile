@@ -1,4 +1,4 @@
-.PHONY: freetype jpeg png gif z ffi cleantarget clean realclean wipeclean distclean
+.PHONY: freetype jpeg png gif z curl ffi cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
@@ -8,7 +8,7 @@ include $(_CF_DIR)default.cf
 .NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
 
 ifdef WINDOWS_TARGET
-all: freetype jpeg png gif ffi z
+all: freetype jpeg png gif ffi z curl
 else
 ifdef OSX_TARGET
 all: jpeg gif
@@ -37,6 +37,10 @@ z:
 	@$(call echo,Building zlib...)
 	+cd zlib-1.2.8 && $(_MAKE)
 
+curl:
+	@$(call echo,Building libcurl...)
+	+cd curl-7.51.0 && $(_MAKE)
+
 ffi:
 	@$(call echo,Building libffi...)
 	+cd libffi-3.0.11 && $(_MAKE)
@@ -47,6 +51,7 @@ cleantarget:
 	+cd zlib-1.2.8 && $(_MAKE) cleantarget
 	+cd jpeg-9a && $(_MAKE) cleantarget
 	+cd libungif-4.1.1 && $(_MAKE) cleantarget
+	+cd curl-7.51.0 && $(_MAKE) cleantarget
 	+cd libffi-3.0.11 && $(_MAKE) cleantarget
 
 clean:
@@ -55,6 +60,7 @@ clean:
 	+cd zlib-1.2.8 && $(_MAKE) clean
 	+cd jpeg-9a && $(_MAKE) clean
 	+cd libungif-4.1.1 && $(_MAKE) clean
+	+cd curl-7.51.0 && $(_MAKE) clean
 	+cd libffi-3.0.11 && $(_MAKE) clean
 
 realclean:
@@ -63,6 +69,7 @@ realclean:
 	+cd zlib-1.2.8 && $(_MAKE) realclean
 	+cd jpeg-9a && $(_MAKE) realclean
 	+cd libungif-4.1.1 && $(_MAKE) realclean
+	+cd curl-7.51.0 && $(_MAKE) realclean
 	+cd libffi-3.0.11 && $(_MAKE) realclean
 
 wipeclean:
