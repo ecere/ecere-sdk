@@ -338,6 +338,7 @@ PRJ_CFLAGS += \
 			 -DBUILDING_LIBCURL \
 			 -DCURL_DISABLE_LDAP \
 			 -DCURL_STATICLIB \
+			 -DUSE_OPENSSL \
 			 -Iinclude \
 			 -Ilib
 
