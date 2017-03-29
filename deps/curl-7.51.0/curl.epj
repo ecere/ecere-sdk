@@ -4,9 +4,10 @@
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "CURL_STATICLIB",
          "BUILDING_LIBCURL",
-         "CURL_DISABLE_LDAP"
+         "CURL_STATICLIB",
+         "CURL_DISABLE_LDAP",
+         "USE_OPENSSL"
       ],
       "IncludeDirs" : [
          "include",
