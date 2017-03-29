@@ -67,6 +67,7 @@
                "../deps/zlib-1.2.8",
                "../deps/freetype-2.3.12/include",
                "../deps/glext",
+               "../deps/curl-7.51.0/include/curl",
                "$(OPENSSL_INCLUDE_DIR)"
             ],
             "Libraries" : [
@@ -94,6 +95,7 @@
                "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "$(OPENSSL_BIN_DIR)",
                "$(OPENSSL_LIB_DIR)"
             ]
@@ -2110,8 +2112,34 @@
                   "FontResource.ec",
                   "Resource.ec",
                   "Surface.ec",
-                  "fontManagement.ec",
-                  "fontRendering.ec",
+                  {
+                     "FileName" : "fontManagement.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "fontRendering.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
                   {
                      "FileName" : "imgDistMap.ec",
                      "Options" : {
@@ -2667,14 +2695,7 @@
                         }
                      ]
                   },
-                  {
-                     "FileName" : "HTTPFile.ec",
-                     "Options" : {
-                        "IncludeDirs" : [
-                           "../deps/curl-7.51.0/include/curl"
-                        ]
-                     }
-                  },
+                  "HTTPFile.ec",
                   "network.ec",
                   {
                      "FileName" : "NetworkClientFile.ec",
