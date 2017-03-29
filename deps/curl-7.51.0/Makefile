@@ -31,10 +31,10 @@ CONSOLE = -mwindows
 
 # INCLUDES
 
-_CF_DIR = .configs/
+_CF_DIR = ../../
 
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
@@ -42,7 +42,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)curl$(OUT)
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)curl$(A)
 
 ifdef WINDOWS_TARGET
 
@@ -340,8 +340,9 @@ PRJ_CFLAGS += \
 			 -DCURL_STATICLIB \
 			 -DUSE_OPENSSL \
 			 -Iinclude \
-			 -Ilib
-
+			 -Ilib \
+			 -I../zlib-1.2.8/ \
+			 -I$(OPENSSL_INCLUDE_DIR)
 ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
@@ -801,8 +802,9 @@ endif
 realclean: cleantarget
 	$(call rmr,$(OBJ))
 
-distclean: cleantarget
-	$(call rmr,obj/)
-	$(call rmr,.configs/)
-	$(call rm,*.ews)
-	$(call rm,*.Makefile)
+distclean:
+	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
+
+Makefile: ;
+$(_CF_DIR)crossplatform.mk: ;
+$(_CF_DIR)default.cf: ;
