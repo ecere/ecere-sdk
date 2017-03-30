@@ -78,6 +78,7 @@ public enum FieldType   // Now re-using this for non SQLite-specific APIs  // SQ
 public class SQLiteDB
 {
    sqlite3 * db;
+   bool inBegin;
 
 public:
    SQLiteDB ::open(subclass(SQLiteDB) _class, const String path, bool readOnly, bool create)
@@ -121,8 +122,8 @@ public:
       return result;
    }
 
-   bool begin() { return exec("BEGIN;") == done; }
-   bool commit() { return exec("COMMIT;") == done; }
+   bool begin() { inBegin = true; return exec("BEGIN;") == done; }
+   bool commit() { inBegin = false; return exec("COMMIT;") == done; }
    property const String lockingMode { set { execf("PRAGMA locking_mode=%s; BEGIN IMMEDIATE; COMMIT;", value); } }
 
    ~SQLiteDB()
@@ -133,6 +134,7 @@ public:
       regfree(&regex);
 #endif
 
+      if(inBegin) commit();
       lockingMode = "normal";
       if((SQLiteResult)sqlite3_close(db) == busy)
          PrintLn("Can't close SQLite DB (busy)");
