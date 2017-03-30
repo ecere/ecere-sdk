@@ -2705,7 +2705,25 @@ class Debugger
                else if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass && exp.hasAddress)
                {
                   Class c = exp.expType._class.registered;
-                  byte * data = GdbReadMemory(exp.address, c.structSize);
+                  DataMember m;
+                  bool getString = true;
+                  byte * data = null;
+                  for(m = c.membersAndProperties.first; m; m = m.next)
+                  {
+                     if(!m.isProperty && m.type == normalMember)
+                     {
+                        Class type = m.dataTypeClass;
+                        if(!type)
+                           type = m.dataTypeClass = eSystem_FindClass(c.module, m.dataTypeString);
+                        if(!type || type.type == noHeadClass || type.type == normalClass)
+                        {
+                           // Avoid trying to stringify types referencing debugged process memory
+                           getString = false;
+                           break;
+                        }
+                     }
+                  }
+                  data = getString ? GdbReadMemory(exp.address, c.structSize) : null;
                   if(data)
                   {
                      char tmp[4096];
