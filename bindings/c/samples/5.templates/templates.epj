@@ -1,0 +1,45 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "templates",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "../.."
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "templates",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "bindings",
+         "Files" : [
+            "../../eC.c",
+            "../../eC.h",
+            "../../ecere.c",
+            "../../ecere.h"
+         ]
+      },
+      "templates.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
