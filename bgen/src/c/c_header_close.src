@@ -1,0 +1,9 @@
+
+
+#ifdef __cplusplus
+
+};
+
+#endif
+
+#endif // !defined(__#(LIB_DEF_NAME)#_H__)

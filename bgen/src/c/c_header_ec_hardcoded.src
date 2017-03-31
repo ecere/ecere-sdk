@@ -1,0 +1,22 @@
+// special types
+typedef const void * any_object;
+typedef const char * constString;
+
+// libecere stuff that bleeds into ecereCOM
+#if CPP11
+enum C(Alignment) : int
+#else
+typedef int C(Alignment);
+enum C(Alignment)
+#endif
+{
+   Alignment_left = 0x0,
+   Alignment_right = 0x1,
+   Alignment_center = 0x2
+};
+typedef uint32_t C(DataDisplayFlags);
+
+// libec stuff
+typedef void C(Type);
+typedef void C(Instantiation);
+typedef void C(ClassDefinition);
