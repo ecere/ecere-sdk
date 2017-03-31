@@ -1,0 +1,4 @@
+// more ecere stuff that bleeds into ecereCOM
+typedef C(Window) C(CommonControl);
+typedef C(CommonControl) C(DataBox);
+typedef C(Instance) C(Surface);

@@ -1,0 +1,507 @@
+import "genC"
+
+const char * indent;
+const char * findin;
+
+void cCode(AST out, CGen g)
+{
+   indent = g.lib.ecereCOM ? "         " : "      ";
+   findin = g.lib.ecereCOM ? "app" : "module";
+
+   cInCodeStart(out, g);
+   cInCodeGlobalFunctionPointers(out, g);
+   cInCodeVirtualMethods(out, g);
+   cInCodeMethodFunctionPointers(out, g);
+   cInCodeProperties(out, g);
+   //ffff
+   cInCodeClassPointers(out, g);
+   cInCodeVirtualMethodIDs(out, g);
+   cInCodeGlobalFunctions(out, g);
+
+   cInCodeInitStart(out, g);
+   cInCodeInitClasses(out, g);
+   cInCodeInitFunctions(out, g);
+   cInCodeInitEnd(out, g);
+   if(g.lib.ecereCOM)
+      cInCodeThisModule(out, g);
+}
+
+static void cInCodeStart(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   z.printxln("#include \"", g.lib.bindingName, ".h\"");
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeGlobalFunctionPointers(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Global Functions Pointers\n");
+   while(ns.next())
+   {
+      GlobalFunction fn; IterFunction func { ns.ns };
+      while((fn = func.next()))
+      {
+         BFunction f = fn; // with rename :S
+         if(!f.skip && !f.isDllExport)
+            z.printxln("GlobalFunction * FUNCTION(", f.oname, ");");
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeVirtualMethods(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Virtual Methods\n");
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(all)))
+      {
+         if(!cl.templateClass)
+         {
+            BClass c = cl;
+            Method md; IterMethod met { cl };
+            bool haveContent = false;
+            while((md = met.next(publicOnly)))
+            {
+               BMethod m = md;
+               m.init(md, c);
+               z.printxln("C(Method) * ", m.m, ";");
+               haveContent = true;
+            }
+            if(haveContent) z.printxln("");
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeMethodFunctionPointers(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Methods Function Pointers\n");
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(all)))
+      {
+         BClass c = cl;
+         if(!cl.templateClass)
+         {
+            Method md; IterMethod met { cl };
+            bool haveContent = false;
+            while((md = met.next(publicOnly)))
+            {
+               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload")))) // hack
+               {
+                  BMethod m = md;
+                  m.init(md, c);
+                  if(md.type == normalMethod)
+                  {
+                     ASTNode node = astFunction(m.s, { type = md.dataType, md = md, cl = cl, m = m, c = c }, { pointer = true }, null);
+                     ec2PrintToDynamicString(z, node, true);
+                     //z.printxln("");
+                  }
+                  haveContent = true;
+               }
+            }
+            if(haveContent) z.printxln("");
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeProperties(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Properties\n");
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(all)))
+      {
+         BClass c = cl;
+         if(!cl.templateClass)
+         {
+            Property pt; IterProperty prop { cl };
+            Property cn; IterConversion conv { cl };
+            while((pt = prop.next(publicOnly)))
+               out.Add(astProperty(pt, c, _define, false, &c.first, null));
+            while((cn = conv.next(publicOnly)))
+               out.Add(astProperty(cn, c, _define, false, &c.first, null));
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeClassPointers(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Classes\n");
+   z.printxln("// bitClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(bitOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+         }
+      }
+   }
+   z.printxln("// enumClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(enumOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+         }
+      }
+   }
+   z.printxln("// unitClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(unitOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+         }
+      }
+   }
+   z.printxln("// systemClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(systemOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            if(!c.isUnInt) // hack?
+            {
+               bool skip = /*c.skipTypeDef || *//*c.isUnichar || */c.isBool;
+               z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            }
+         }
+      }
+   }
+   z.printxln("// structClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(structOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+         }
+      }
+   }
+   z.printxln("// noHeadClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(noHeadOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+         }
+      }
+   }
+   z.printxln("// normalClass");
+   ns.ready();
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(normalOnly)))
+      {
+         BClass c = cl;
+         if(!c.skip && !cl.templateClass)
+         {
+            if(!c.isCharPtr)
+            {
+               bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+               z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            }
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeVirtualMethodIDs(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Virtual Method IDs\n");
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(all)))
+      {
+         BClass c = cl;
+         if(!cl.templateClass)
+         {
+            Method md; IterMethod met { cl };
+            bool haveContent = false;
+            while((md = met.next(publicVirtual)))
+            {
+               BMethod m = md;
+               m.init(md, c);
+               z.printxln("int ", m.v, ";");
+               haveContent = true;
+            }
+            if(haveContent) z.printxln("");
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeGlobalFunctions(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("\n// Global Functions\n");
+   while(ns.next())
+   {
+      GlobalFunction fn; IterFunction func { ns.ns };
+      while((fn = func.next()))
+      {
+         BFunction f = fn;
+         if(!f.skip && !f.isDllExport)
+         {
+            ASTNode node = astFunction(f.oname, { type = fn.dataType, fn = fn }, { pointer = true }, null);
+            ec2PrintToDynamicString(z, node, true);
+            //z.printxln("");
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeInitClasses(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   while(ns.next())
+   {
+      Class cl; IterClass cla { ns.ns };
+      while((cl = cla.next(all)))
+      {
+         bool content = false;
+         BClass c = cl;
+         if(!cl.templateClass && !c.skip &&
+               !c.isBool && !c.isByte && !c.isCharPtr && !c.isUnInt) //!c.is_class) // !c.isString?
+         {
+            IterMethod met { cl };
+            z.printxln(indent, "CO(", c.cname, ") = eC_findClass(", findin, ", \"", cl.name, "\");");
+            if(met.next(publicOnly))
+               content = true;
+            else
+            {
+               IterProperty prop { cl };
+               if(prop.next(publicOnly))
+                  content = true;
+               else
+               {
+                  IterConversion conv { cl };
+                  if(conv.next(publicOnly))
+                     content = true;
+               }
+            }
+            if(content)
+            {
+               z.printxln(indent, "if(CO(", c.cname, "))");
+               z.printxln(indent, "{");
+            }
+         }
+         if(content)
+         {
+            Method md; IterMethod met { cl };
+            Property pt; IterProperty prop { cl };
+            Property cn; IterConversion conv { cl };
+            while((md = met.next(publicOnly)))
+            {
+               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload")))) // hack
+               {
+                  BMethod m = md;
+                  m.init(md, c);
+                  if(!c.first)
+                     z.printxln("");
+                  else
+                     c.first = false;
+                  z.printxln(indent, "   ", m.m, " = Class_findMethod(CO(", c.cname, "), \"", md.name, "\", ", findin, ");");
+                  z.printxln(indent, "   if(", m.m, ")");
+                  if(md.type == normalMethod)
+                  {
+                     z.printx(indent, "      ", m.s, " = (");
+                     {
+                        ASTNode node = astFunction(null, { type = md.dataType, md = md, cl = cl }, { pointer = true, anonymous = true }, null);
+                        ec2PrintToDynamicString(z, node, true);
+                        z.size -= 2;
+                     }
+                     z.printxln(")", m.m, "->function;");
+                  }
+                  else
+                     z.printxln(indent, "      ", m.v, " = ", m.m, "->vid;");
+               }
+            }
+            while((cn = conv.next(publicOnly)))
+            {
+               ASTNode node = astProperty(cn, c, assign, false, &c.first, null);
+               ec2PrintToDynamicString(z, node, true);
+            }
+            while((pt = prop.next(publicOnly)))
+            {
+               ASTNode node = astProperty(pt, c, assign, false, &c.first, null);
+               ec2PrintToDynamicString(z, node, true);
+            }
+            z.printxln(indent, "}");
+         }
+      }
+   }
+   ns.cleanup();
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeInitFunctions(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   IterNamespace ns { module = g.mod };
+   z.printxln("");
+   z.printxln("         // Set up all the function pointers, ...");
+   while(ns.next())
+   {
+      GlobalFunction fn; IterFunction func { ns.ns };
+      while((fn = func.next()))
+      {
+         BFunction f = fn; // with rename :S
+         if(!f.skip && !f.isDllExport)
+         {
+            z.printxln("");
+            z.printxln(indent, "FUNCTION(", f.oname, ") = eC_findFunction(", findin, ", \"", f.fname, "\");");
+            z.printxln(indent, "if(FUNCTION(", f.oname, "))");
+            z.printxln(indent, "   ", f.oname, " = (void *)FUNCTION(", f.oname, ")->function;");
+         }
+      }
+   }
+   ns.cleanup();
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeInitStart(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   if(g.lib.ecereCOM)
+   {
+      z.printxln("C(Application) ", g.lib.bindingName, "_init(C(Module) fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])");
+      z.printxln("{");
+      z.printxln("   if(!fromModule)");
+      z.printxln("   {");
+      z.printxln("      fromModule = eC_initApp(guiApp, argc, argv);");
+      z.printxln("      if(fromModule) fromModule->_refCount++;");
+      z.printxln("   }");
+      z.printxln("   __thisModule = fromModule;");
+      z.printxln("   if(fromModule)");
+      z.printxln("   {");
+      z.printxln("      C(Module) app = fromModule;");
+      z.printxln("      C(Module) module = Module_load(fromModule, loadEcere ? \"ecere\" : \"", g.mod.name, "\", ", _publicAccess, ");");
+      z.printxln("      if(module)");
+      z.printxln("      {");
+   }
+   else
+   {
+      z.printxln("C(Module) ", g.lib.bindingName, "_init(Module fromModule)");
+      z.printxln("{");
+      if(g.lib.ecere)
+         z.printxln("   C(Module) module = fromModule;");
+      else
+         z.printxln("   C(Module) module = Module_load(fromModule, \"", g.mod.name, "\", ", _publicAccess, ");");
+      z.printxln("   if(module)");
+      z.printxln("   {");
+   }
+   z.printxln(indent, "// Set up all the CO(x) *, property, method, ...");
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeInitEnd(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   if(g.lib.ecereCOM)
+      z.printxln("      }");
+   z.printxln("   }");
+   z.printxln("   return fromModule ? IPTR(fromModule, Module)->application : null;");
+   z.printxln("}");
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInCodeThisModule(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   z.printxln("C(Module) __thisModule;");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
