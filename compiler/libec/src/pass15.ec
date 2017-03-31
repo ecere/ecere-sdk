@@ -2236,6 +2236,9 @@ static void _DeclareType(External neededFor, Type type, bool needDereference, bo
    }
 }
 
+// this code is not known to be called to compile any existing eC code
+// params <-> args are usually directly matched by id
+// function is a candidate for deletion
 ClassTemplateArgument * FindTemplateArg(Class _class, TemplateParameter param)
 {
    ClassTemplateArgument * arg = null;

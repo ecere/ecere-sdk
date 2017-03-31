@@ -1395,7 +1395,10 @@ public:
          OldList params;
          Symbol thisClass;
          bool staticMethod;
-         TemplateParameter thisClassTemplate;
+         TemplateParameter thisClassTemplate; // for a template parameter being used with the :: scoping operator
+                                              // to refer to a member of the parameterizing class
+         // only known occurence is link = LT::link within the LinkList base class definition:
+         // public class LinkList<class LT:void * = ListItem, bool circ = false, link = LT::link> : Container<LT>
       };
       // For a method
       struct
