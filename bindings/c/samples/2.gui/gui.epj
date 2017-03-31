@@ -1,16 +1,17 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "EcereCAPI",
+   "ModuleName" : "gui",
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         ".."
+         "../.."
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "EcereCAPI",
+      "TargetFileName" : "gui",
       "Libraries" : [
          "ecere"
-      ]
+      ],
+      "Console" : true
    },
    "Configurations" : [
       {
@@ -21,30 +22,21 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Console" : true,
             "FastMath" : false
-         }
-      },
-      {
-         "Name" : "Release",
-         "Options" : {
-            "Debug" : false,
-            "Optimization" : "Speed",
-            "FastMath" : true
          }
       }
    ],
    "Files" : [
       {
-         "Folder" : "c",
+         "Folder" : "bindings",
          "Files" : [
-            "../eC.c",
-            "../eC.h",
-            "../ecere.c",
-            "../ecere.h"
+            "../../eC.c",
+            "../../eC.h",
+            "../../ecere.c",
+            "../../ecere.h"
          ]
       },
-      "form.c"
+      "gui.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [
