@@ -2205,7 +2205,9 @@ if distributed with the Ecere SDK Windows installer.
                               "mm.c",
                               "mm.h",
                               "mmatomic.h",
-                              "mmthread.h"
+                              "mmthread.h",
+                              "ccstr.c",
+                              "ccstr.h"
                            ]
                         },
                         "atlasBuilder.ec",
