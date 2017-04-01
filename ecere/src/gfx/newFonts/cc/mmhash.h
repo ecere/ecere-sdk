@@ -4,6 +4,10 @@
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
 
+#ifndef MMHASH_H
+#define MMHASH_H
+
+
 /*
 #define MM_HASH_DEBUG_STATISTICS
 */
@@ -42,8 +46,9 @@ typedef struct
 
 
 size_t mmHashRequiredSize( size_t entrysize, uint32_t hashbits, uint32_t pageshift );
-void mmHashInit( void *hashtable, mmHashAccess *access, size_t entrysize, uint32_t hashbits, uint32_t pageshift, uint32_t flags );
+void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, uint32_t hashbits, uint32_t pageshift, uint32_t flags );
 int mmHashGetStatus( void *hashtable, int *rethashbits );
+void mmHashReset( void *hashtable, const mmHashAccess *access );
 
 enum
 {
@@ -54,32 +59,32 @@ enum
 };
 
 
-void *mmHashDirectFindEntry( void *hashtable, mmHashAccess *access, void *findentry );
-void *mmHashLockFindEntry( void *hashtable, mmHashAccess *access, void *findentry );
+void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, void *findentry );
+void *mmHashLockFindEntry( void *hashtable, const mmHashAccess *access, void *findentry );
 
-void mmHashDirectListEntry( void *hashtable, mmHashAccess *access, void *listentry, void *opaque );
-void mmHashLockListEntry( void *hashtable, mmHashAccess *access, void *listentry, void *opaque );
+void mmHashDirectListEntry( void *hashtable, const mmHashAccess *access, void *listentry, void *opaque );
+void mmHashLockListEntry( void *hashtable, const mmHashAccess *access, void *listentry, void *opaque );
 
-int mmHashDirectReadEntry( void *hashtable, mmHashAccess *access, void *readentry );
-int mmHashLockReadEntry( void *hashtable, mmHashAccess *access, void *readentry );
+int mmHashDirectReadEntry( void *hashtable, const mmHashAccess *access, void *readentry );
+int mmHashLockReadEntry( void *hashtable, const mmHashAccess *access, void *readentry );
 
-int mmHashDirectCallEntry( void *hashtable, mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag );
-int mmHashLockCallEntry( void *hashtable, mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag );
+int mmHashDirectCallEntry( void *hashtable, const mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag );
+int mmHashLockCallEntry( void *hashtable, const mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag );
 
 /* The hash key for replaced entries must remain the same! */
-int mmHashDirectReplaceEntry( void *hashtable, mmHashAccess *access, void *replaceentry, int addflag );
-int mmHashLockReplaceEntry( void *hashtable, mmHashAccess *access, void *replaceentry, int addflag );
+int mmHashDirectReplaceEntry( void *hashtable, const mmHashAccess *access, void *replaceentry, int addflag );
+int mmHashLockReplaceEntry( void *hashtable, const mmHashAccess *access, void *replaceentry, int addflag );
 
-int mmHashDirectAddEntry( void *hashtable, mmHashAccess *access, void *adddentry, int nodupflag );
-int mmHashLockAddEntry( void *hashtable, mmHashAccess *access, void *adddentry, int nodupflag );
+int mmHashDirectAddEntry( void *hashtable, const mmHashAccess *access, void *adddentry, int nodupflag );
+int mmHashLockAddEntry( void *hashtable, const mmHashAccess *access, void *adddentry, int nodupflag );
 
-int mmHashDirectReadOrAddEntry( void *hashtable, mmHashAccess *access, void *readaddentry, int *readflag );
-int mmHashLockReadOrAddEntry( void *hashtable, mmHashAccess *access, void *readaddentry, int *readflag );
+int mmHashDirectReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *readflag );
+int mmHashLockReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *readflag );
 
-int mmHashDirectDeleteEntry( void *hashtable, mmHashAccess *access, void *deleteentry, int readflag );
-int mmHashLockDeleteEntry( void *hashtable, mmHashAccess *access, void *deleteentry, int readflag );
+int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag );
+int mmHashLockDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag );
 
-void mmHashResize( void *newtable, void *oldtable, mmHashAccess *access, uint32_t hashbits, uint32_t pageshift );
+void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift );
 
 
 enum
@@ -90,9 +95,7 @@ enum
 };
 
 
-
 ////
-
 
 
 typedef struct
@@ -112,24 +115,24 @@ typedef struct
 
 
 void mmHashLockInit( mmHashLock *hashlock, int newcount );
-void mmHashLockAdd( void *hashtable, mmHashAccess *access, void *entry, mmHashLock *hashlock, mmHashLockRange *lockrange );
-void mmHashLockAcquire( void *hashtable, mmHashAccess *access, mmHashLock *hashlock );
+void mmHashLockAdd( void *hashtable, const mmHashAccess *access, void *entry, mmHashLock *hashlock, mmHashLockRange *lockrange );
+void mmHashLockAcquire( void *hashtable, const mmHashAccess *access, mmHashLock *hashlock );
 void mmHashLockRelease( void *hashtable, mmHashLock *hashlock );
 
 void mmHashGlobalLockEnable( void *hashtable );
 void mmHashGlobalLockDisable( void *hashtable );
 
 
-
 ////
 
 
-
-void mmHashDirectDebugDuplicate( void *hashtable, mmHashAccess *access, void (*callback)( void *opaque, void *entry0, void *entry1 ), void *opaque );
+void mmHashDirectDebugDuplicate( void *hashtable, const mmHashAccess *access, void (*callback)( void *opaque, void *entry0, void *entry1 ), void *opaque );
 
 void mmHashDirectDebugPages( void *hashtable );
+
+void mmHashDirectDebugContent( void *hashtable, void (*callback)( uint32_t hashkey, void *entry ) );
 
 void mmHashStatistics( void *hashtable, long *accesscount, long *collisioncount, long *relocationcount, long *entrycount, long *entrycountmax, long *hashsizemax );
 
 
-
+#endif

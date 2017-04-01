@@ -253,6 +253,7 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-thai.o \
 	$(OBJ)gl_compat_4_4.o \
 	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
+	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
 	$(if ,$(OBJ)CocoaEcereBridge.o,) \
 	$(if ,$(OBJ)EcereView.o,) \
@@ -285,6 +286,7 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	src/gfx/drivers/gl3/gl_compat_4_4.c \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
 	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
@@ -1796,6 +1798,9 @@ endif
 
 $(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/cc.c) -o $(call quote_path,$@)
+
+$(OBJ)ccstr$(O): src/gfx/newFonts/cc/ccstr.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/ccstr.c) -o $(call quote_path,$@)
 
 $(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)
