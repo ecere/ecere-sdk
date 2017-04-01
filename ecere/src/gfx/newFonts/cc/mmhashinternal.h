@@ -4,7 +4,8 @@
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
 
-#ifndef MM_HASH_INTERNAL_INCLUDED
+#ifndef MMHASHINTERNAL_H
+#define MMHASHINTERNAL_H
 
 
 ////
@@ -85,6 +86,8 @@ typedef struct
 #define MM_HASH_ENTRY(table,index) (void *)ADDRESS(table,MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((index)*(table)->entrysize))
 #define MM_HASH_PAGELIST(table) (void *)ADDRESS(table,MM_HASH_ALIGN64(MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((table)->hashsize*(table)->entrysize)))
 
+#define MM_HASH_INLINE_ENTRY(table,index,size) (void *)ADDRESS(table,MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((index)*(size)))
+
 
 ////
 
@@ -123,8 +126,6 @@ static inline uint32_t MM_HASH_ENTRYCOUNT_ADD_READ( mmHashTable *t, int32_t c )
 
 ////
 
-
-#define MM_HASH_INTERNAL_INCLUDED
 
 #endif
 

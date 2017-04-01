@@ -13,6 +13,7 @@ Input preprocessor symbols
 #define HASH_ENTRYKEY SomeFunction
 #define HASH_ENTRYCMP SomeFunction
 #define HASH_ENTRYLIST SomeFunction
+#define HASH_SIZEOFENTRY sizeof(EntrStruct)
 
 #define HASH_DECLARE_DIRECTFINDENTRY MyFunctionFindEntry
 #define HASH_DECLARE_DIRECTLISTENTRY MyFunctionListEntry
@@ -20,10 +21,19 @@ Input preprocessor symbols
 #define HASH_DECLARE_DIRECTCALLENTRY MyFunctionCallEntry
 #define HASH_DECLARE_DIRECTREPLACEENTRY MyFunctionReplaceEntry
 #define HASH_DECLARE_DIRECTADDENTRY MyFunctionAddEntry
-#define HASH_DECLARE_DIRECTREADORADDENTRY MyFunctionReadOrAddFindEntry
+#define HASH_DECLARE_DIRECTADDRETENTRY MyFunctionAddRetEntry
+#define HASH_DECLARE_DIRECTREADORADDENTRY MyFunctionReadOrAddEntry
 #define HASH_DECLARE_DIRECTDELETEENTRY MyFunctionDeleteEntry
 
+Inlined function prototypes:
+ void clearentry( void *entry );
+ int entryvalid( void *entry );
+ uint32_t entrykey( void *entry );
+ int entrycmp( void *entry, void *entryref );
+ int entrylist( void *opaque, void *entry, void *entryref );
+
 */
+
 
 #include "mmhashinternal.h"
 
@@ -52,7 +62,11 @@ void *HASH_DECLARE_DIRECTFINDENTRY( void *hashtable, void *findentry )
   /* Search the entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, findentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       break;
@@ -90,7 +104,11 @@ void HASH_DECLARE_DIRECTLISTENTRY( void *hashtable, void *listentry, void *opaqu
   /* Search the entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYLIST( opaque, entry, listentry );
     if( cmpvalue == MM_HASH_ENTRYLIST_BREAK )
       break;
@@ -126,13 +144,21 @@ int HASH_DECLARE_DIRECTREADENTRY( void *hashtable, void *readentry )
   /* Search the entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, readentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       break;
     else if( cmpvalue == MM_HASH_ENTRYCMP_FOUND )
     {
+#ifdef HASH_SIZEOFENTRY
+      memcpy( readentry, entry, HASH_SIZEOFENTRY );
+#else
       memcpy( readentry, entry, table->entrysize );
+#endif
       return MM_HASH_SUCCESS;
     }
 #ifdef MM_HASH_DEBUG_STATISTICS
@@ -167,7 +193,11 @@ int HASH_DECLARE_DIRECTCALLENTRY( void *hashtable, void *callentry, void (*callb
   /* Search an available entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, callentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       break;
@@ -185,7 +215,11 @@ int HASH_DECLARE_DIRECTCALLENTRY( void *hashtable, void *callentry, void (*callb
     return MM_HASH_FAILURE;
 
   /* Store new entry */
+#ifdef HASH_SIZEOFENTRY
+  memcpy( entry, callentry, HASH_SIZEOFENTRY );
+#else
   memcpy( entry, callentry, table->entrysize );
+#endif
   callback( opaque, entry, 1 );
 
   /* Increment count of entries in table */
@@ -229,13 +263,21 @@ int HASH_DECLARE_DIRECTREPLACEENTRY( void *hashtable, void *replaceentry, int ad
   /* Search an available entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, replaceentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       break;
     else if( cmpvalue == MM_HASH_ENTRYCMP_FOUND )
     {
+#ifdef HASH_SIZEOFENTRY
+      memcpy( entry, replaceentry, HASH_SIZEOFENTRY );
+#else
       memcpy( entry, replaceentry, table->entrysize );
+#endif
       return MM_HASH_SUCCESS;
     }
 #ifdef MM_HASH_DEBUG_STATISTICS
@@ -247,7 +289,11 @@ int HASH_DECLARE_DIRECTREPLACEENTRY( void *hashtable, void *replaceentry, int ad
     return MM_HASH_FAILURE;
 
   /* Store new entry */
-  memcpy( entry, replaceentry, table->entrysize );
+#ifdef HASH_SIZEOFENTRY
+  memcpy( entry, replaceentry, HASH_SIZEOFENTRY );
+#else
+  memcpy( entry, replaceentry, HASH_SIZEOFENTRY );
+#endif
 
   /* Increment count of entries in table */
   if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
@@ -290,7 +336,11 @@ int HASH_DECLARE_DIRECTADDENTRY( void *hashtable, void *addentry, int nodupflag 
   /* Search an available entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     /* Do we allow duplicate entries? */
     if( nodupflag )
     {
@@ -311,7 +361,11 @@ int HASH_DECLARE_DIRECTADDENTRY( void *hashtable, void *addentry, int nodupflag 
   }
 
   /* Store new entry */
+#ifdef HASH_SIZEOFENTRY
+  memcpy( entry, addentry, HASH_SIZEOFENTRY );
+#else
   memcpy( entry, addentry, table->entrysize );
+#endif
 
   /* Increment count of entries in table */
   if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
@@ -328,6 +382,78 @@ int HASH_DECLARE_DIRECTADDENTRY( void *hashtable, void *addentry, int nodupflag 
 #endif
 
   return MM_HASH_SUCCESS;
+}
+
+#endif
+
+
+#ifdef HASH_DECLARE_DIRECTADDRETENTRY
+
+void *HASH_DECLARE_DIRECTADDRETENTRY( void *hashtable, void *addentry, int nodupflag )
+{
+  int cmpvalue;
+  uint32_t hashkey, entrycount;
+  void *entry;
+  mmHashTable *table;
+
+  table = hashtable;
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  mmAtomicAddL( &table->accesscount, 1 );
+#endif
+
+  /* Hash key of entry */
+  hashkey = HASH_ENTRYKEY( addentry ) & table->hashmask;
+
+  /* Search an available entry */
+  for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
+  {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
+    entry = MM_HASH_ENTRY( table, hashkey );
+#endif
+    /* Do we allow duplicate entries? */
+    if( nodupflag )
+    {
+      cmpvalue = HASH_ENTRYCMP( entry, addentry );
+      if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
+        break;
+      else if( cmpvalue == MM_HASH_ENTRYCMP_FOUND )
+        return 0;
+    }
+    else
+    {
+      if( !( HASH_ENTRYVALID( entry ) ) )
+        break;
+    }
+#ifdef MM_HASH_DEBUG_STATISTICS
+    mmAtomicAddL( &table->collisioncount, 1 );
+#endif
+  }
+
+  /* Store new entry */
+#ifdef HASH_SIZEOFENTRY
+  memcpy( entry, addentry, HASH_SIZEOFENTRY );
+#else
+  memcpy( entry, addentry, table->entrysize );
+#endif
+
+  /* Increment count of entries in table */
+  if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
+  {
+    entrycount = MM_HASH_ENTRYCOUNT_ADD_READ( table, 1 );
+    if( entrycount >= table->highcount )
+      table->status = MM_HASH_STATUS_MUSTGROW;
+  }
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  int statentrycount = mmAtomicAddReadL( &table->statentrycount, 1 );
+  if( statentrycount > table->entrycountmax )
+    table->entrycountmax = statentrycount;
+#endif
+
+  return entry;
 }
 
 #endif
@@ -355,13 +481,21 @@ int HASH_DECLARE_DIRECTREADORADDENTRY( void *hashtable, void *readaddentry, int 
   *retreadflag = 0;
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, readaddentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       break;
     else if( cmpvalue == MM_HASH_ENTRYCMP_FOUND )
     {
+#ifdef HASH_SIZEOFENTRY
+      memcpy( readaddentry, entry, HASH_SIZEOFENTRY );
+#else
       memcpy( readaddentry, entry, table->entrysize );
+#endif
       *retreadflag = 1;
       return MM_HASH_SUCCESS;
     }
@@ -371,7 +505,11 @@ int HASH_DECLARE_DIRECTREADORADDENTRY( void *hashtable, void *readaddentry, int 
   }
 
   /* Store new entry */
+#ifdef HASH_SIZEOFENTRY
+  memcpy( entry, readaddentry, HASH_SIZEOFENTRY );
+#else
   memcpy( entry, readaddentry, table->entrysize );
+#endif
 
   /* Increment count of entries in table */
   if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
@@ -415,7 +553,11 @@ int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int read
   /* Search the entry */
   for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
   {
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     cmpvalue = HASH_ENTRYCMP( entry, deleteentry );
     if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
       return MM_HASH_FAILURE;
@@ -427,13 +569,24 @@ int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int read
   }
 
   if( readflag )
+  {
+#ifdef HASH_SIZEOFENTRY
+    memcpy( deleteentry, entry, HASH_SIZEOFENTRY );
+#else
     memcpy( deleteentry, entry, table->entrysize );
+#endif
+  }
 
   for( delbase = hashkey ; ; )
   {
     delbase = ( delbase - 1 ) & table->hashmask;
+#ifdef HASH_SIZEOFENTRY
+    if( !( HASH_ENTRYVALID( MM_HASH_INLINE_ENTRY( table, delbase, HASH_SIZEOFENTRY ) ) ) )
+      break;
+#else
     if( !( HASH_ENTRYVALID( MM_HASH_ENTRY( table, delbase ) ) ) )
       break;
+#endif
   }
   delbase = ( delbase + 1 ) & table->hashmask;
 
@@ -448,7 +601,11 @@ int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int read
       srcpos = ( srcpos + 1 ) & table->hashmask;
 
       /* Try next entry */
+#ifdef HASH_SIZEOFENTRY
+      srcentry = MM_HASH_INLINE_ENTRY( table, srcpos, HASH_SIZEOFENTRY );
+#else
       srcentry = MM_HASH_ENTRY( table, srcpos );
+#endif
       if( !( HASH_ENTRYVALID( srcentry ) ) )
         break;
       srckey = HASH_ENTRYKEY( srcentry ) & table->hashmask;
@@ -466,7 +623,11 @@ int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int read
     }
 
     /* No replacement found, just clear it */
+#ifdef HASH_SIZEOFENTRY
+    entry = MM_HASH_INLINE_ENTRY( table, hashkey, HASH_SIZEOFENTRY );
+#else
     entry = MM_HASH_ENTRY( table, hashkey );
+#endif
     if( !( targetentry ) )
     {
       HASH_CLEARENTRY( entry );
@@ -474,7 +635,11 @@ int HASH_DECLARE_DIRECTDELETEENTRY( void *hashtable, void *deleteentry, int read
     }
 
     /* Move entry in place and continue the repair process */
+#ifdef HASH_SIZEOFENTRY
+    memcpy( entry, targetentry, HASH_SIZEOFENTRY );
+#else
     memcpy( entry, targetentry, table->entrysize );
+#endif
 
 #ifdef MM_HASH_DEBUG_STATISTICS
     mmAtomicAddL( &table->relocationcount, 1 );
