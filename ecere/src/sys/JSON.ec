@@ -1633,7 +1633,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          f.Puts("{\n");
          indent++;
 
-         for(baseClass = _class; baseClass; baseClass = baseClass.base)
+         for(baseClass = _class; baseClass; baseClass = baseClass.inheritanceAccess == publicAccess ? baseClass.base : null)
          {
             if(baseClass.isInstanceClass || !baseClass.base)
                break;

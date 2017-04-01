@@ -228,7 +228,7 @@ enum IntermediateFileType
    }
 };
 
-class ProjectNode : ListItem
+class ProjectNode : private ListItem
 {
 public:
    property String
