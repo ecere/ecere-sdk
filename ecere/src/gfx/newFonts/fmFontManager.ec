@@ -22,6 +22,7 @@ namespace gfx;
 #define _Noreturn
 
 #include "cc.h"
+#include "ccstr.h"
 
 static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, (uint *)retCodePoint); }
 

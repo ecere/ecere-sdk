@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2007-2014 Alexis Naveros.
+ * Copyright (c) 2007-2016 Alexis Naveros.
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/

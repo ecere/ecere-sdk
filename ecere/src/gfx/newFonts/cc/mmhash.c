@@ -49,7 +49,7 @@ size_t mmHashRequiredSize( size_t entrysize, uint32_t hashbits, uint32_t pageshi
 }
 
 
-void mmHashInit( void *hashtable, mmHashAccess *access, size_t entrysize, uint32_t hashbits, uint32_t pageshift, uint32_t flags )
+void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, uint32_t hashbits, uint32_t pageshift, uint32_t flags )
 {
   uint32_t hashkey, pageindex;
   void *entry;
@@ -128,12 +128,29 @@ int mmHashGetStatus( void *hashtable, int *rethashbits )
 }
 
 
+void mmHashReset( void *hashtable, const mmHashAccess *access )
+{
+  int hashkey;
+  mmHashTable *table;
+  void *entry;
+
+  /* Clear the table */
+  table = hashtable;
+  entry = MM_HASH_ENTRYLIST( table );
+  for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+  {
+    access->clearentry( entry );
+    entry = ADDRESS( entry, table->entrysize );
+  }
+  return;
+}
+
 
 ////
 
 
 
-void *mmHashDirectFindEntry( void *hashtable, mmHashAccess *access, void *findentry )
+void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, void *findentry )
 {
   int cmpvalue;
   uint32_t hashkey;
@@ -167,7 +184,7 @@ void *mmHashDirectFindEntry( void *hashtable, mmHashAccess *access, void *finden
 }
 
 
-static int mmHashTryFindEntry( mmHashTable *table, mmHashAccess *access, void *findentry, void **retentry )
+static int mmHashTryFindEntry( mmHashTable *table, const mmHashAccess *access, void *findentry, void **retentry )
 {
   uint32_t hashkey;
   uint32_t pageindex, pagestart, pagefinal;
@@ -233,7 +250,7 @@ static int mmHashTryFindEntry( mmHashTable *table, mmHashAccess *access, void *f
 }
 
 
-void *mmHashLockFindEntry( void *hashtable, mmHashAccess *access, void *findentry )
+void *mmHashLockFindEntry( void *hashtable, const mmHashAccess *access, void *findentry )
 {
   int retvalue;
   void *entry;
@@ -260,7 +277,7 @@ void *mmHashLockFindEntry( void *hashtable, mmHashAccess *access, void *findentr
 
 
 
-void mmHashDirectListEntry( void *hashtable, mmHashAccess *access, void *listentry, void *opaque )
+void mmHashDirectListEntry( void *hashtable, const mmHashAccess *access, void *listentry, void *opaque )
 {
   int cmpvalue;
   uint32_t hashkey;
@@ -292,7 +309,7 @@ void mmHashDirectListEntry( void *hashtable, mmHashAccess *access, void *listent
 }
 
 
-static int mmHashTryListEntry( mmHashTable *table, mmHashAccess *access, void *listentry, void *opaque )
+static int mmHashTryListEntry( mmHashTable *table, const mmHashAccess *access, void *listentry, void *opaque )
 {
   uint32_t hashkey;
   uint32_t pageindex, pagestart, pagefinal;
@@ -351,7 +368,7 @@ static int mmHashTryListEntry( mmHashTable *table, mmHashAccess *access, void *l
 }
 
 
-void mmHashLockListEntry( void *hashtable, mmHashAccess *access, void *listentry, void *opaque )
+void mmHashLockListEntry( void *hashtable, const mmHashAccess *access, void *listentry, void *opaque )
 {
   int retvalue;
   mmHashTable *table;
@@ -377,7 +394,7 @@ void mmHashLockListEntry( void *hashtable, mmHashAccess *access, void *listentry
 
 
 
-int mmHashDirectReadEntry( void *hashtable, mmHashAccess *access, void *readentry )
+int mmHashDirectReadEntry( void *hashtable, const mmHashAccess *access, void *readentry )
 {
   int cmpvalue;
   uint32_t hashkey;
@@ -414,7 +431,7 @@ int mmHashDirectReadEntry( void *hashtable, mmHashAccess *access, void *readentr
 }
 
 
-static int mmHashTryReadEntry( mmHashTable *table, mmHashAccess *access, void *readentry )
+static int mmHashTryReadEntry( mmHashTable *table, const mmHashAccess *access, void *readentry )
 {
   uint32_t hashkey;
   uint32_t pageindex, pagestart, pagefinal;
@@ -482,7 +499,7 @@ static int mmHashTryReadEntry( mmHashTable *table, mmHashAccess *access, void *r
 }
 
 
-int mmHashLockReadEntry( void *hashtable, mmHashAccess *access, void *readentry )
+int mmHashLockReadEntry( void *hashtable, const mmHashAccess *access, void *readentry )
 {
   int retvalue;
   mmHashTable *table;
@@ -508,7 +525,7 @@ int mmHashLockReadEntry( void *hashtable, mmHashAccess *access, void *readentry 
 
 
 
-int mmHashDirectCallEntry( void *hashtable, mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
+int mmHashDirectCallEntry( void *hashtable, const mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
 {
   int cmpvalue;
   uint32_t hashkey, entrycount;
@@ -566,7 +583,7 @@ int mmHashDirectCallEntry( void *hashtable, mmHashAccess *access, void *callentr
 }
 
 
-static int mmHashTryCallEntry( mmHashTable *table, mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
+static int mmHashTryCallEntry( mmHashTable *table, const mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
 {
   uint32_t hashkey, entrycount;
   uint32_t pageindex, pagestart, pagefinal;
@@ -656,7 +673,7 @@ static int mmHashTryCallEntry( mmHashTable *table, mmHashAccess *access, void *c
 }
 
 
-int mmHashLockCallEntry( void *hashtable, mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
+int mmHashLockCallEntry( void *hashtable, const mmHashAccess *access, void *callentry, void (*callback)( void *opaque, void *entry, int newflag ), void *opaque, int addflag )
 {
   int retvalue;
   mmHashTable *table;
@@ -682,7 +699,7 @@ int mmHashLockCallEntry( void *hashtable, mmHashAccess *access, void *callentry,
 
 
 
-int mmHashDirectReplaceEntry( void *hashtable, mmHashAccess *access, void *replaceentry, int addflag )
+int mmHashDirectReplaceEntry( void *hashtable, const mmHashAccess *access, void *replaceentry, int addflag )
 {
   int cmpvalue;
   uint32_t hashkey, entrycount;
@@ -739,7 +756,7 @@ int mmHashDirectReplaceEntry( void *hashtable, mmHashAccess *access, void *repla
 }
 
 
-static int mmHashTryReplaceEntry( mmHashTable *table, mmHashAccess *access, void *replaceentry, int addflag )
+static int mmHashTryReplaceEntry( mmHashTable *table, const mmHashAccess *access, void *replaceentry, int addflag )
 {
   uint32_t hashkey, entrycount;
   uint32_t pageindex, pagestart, pagefinal;
@@ -828,7 +845,7 @@ static int mmHashTryReplaceEntry( mmHashTable *table, mmHashAccess *access, void
 }
 
 
-int mmHashLockReplaceEntry( void *hashtable, mmHashAccess *access, void *replaceentry, int addflag )
+int mmHashLockReplaceEntry( void *hashtable, const mmHashAccess *access, void *replaceentry, int addflag )
 {
   int retvalue;
   mmHashTable *table;
@@ -854,7 +871,7 @@ int mmHashLockReplaceEntry( void *hashtable, mmHashAccess *access, void *replace
 
 
 
-int mmHashDirectAddEntry( void *hashtable, mmHashAccess *access, void *addentry, int nodupflag )
+int mmHashDirectAddEntry( void *hashtable, const mmHashAccess *access, void *addentry, int nodupflag )
 {
   int cmpvalue;
   uint32_t hashkey, entrycount;
@@ -914,7 +931,7 @@ int mmHashDirectAddEntry( void *hashtable, mmHashAccess *access, void *addentry,
 }
 
 
-static int mmHashTryAddEntry( mmHashTable *table, mmHashAccess *access, void *addentry, int nodupflag )
+static int mmHashTryAddEntry( mmHashTable *table, const mmHashAccess *access, void *addentry, int nodupflag )
 {
   uint32_t hashkey, entrycount;
   uint32_t pageindex, pagestart, pagefinal;
@@ -1006,7 +1023,7 @@ static int mmHashTryAddEntry( mmHashTable *table, mmHashAccess *access, void *ad
 
 
 
-int mmHashLockAddEntry( void *hashtable, mmHashAccess *access, void *addentry, int nodupflag )
+int mmHashLockAddEntry( void *hashtable, const mmHashAccess *access, void *addentry, int nodupflag )
 {
   int retvalue;
   mmHashTable *table;
@@ -1032,7 +1049,7 @@ int mmHashLockAddEntry( void *hashtable, mmHashAccess *access, void *addentry, i
 
 
 
-int mmHashDirectReadOrAddEntry( void *hashtable, mmHashAccess *access, void *readaddentry, int *retreadflag )
+int mmHashDirectReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *retreadflag )
 {
   int cmpvalue;
   uint32_t hashkey, entrycount;
@@ -1088,7 +1105,7 @@ int mmHashDirectReadOrAddEntry( void *hashtable, mmHashAccess *access, void *rea
 }
 
 
-static int mmHashTryReadOrAddEntry( mmHashTable *table, mmHashAccess *access, void *readaddentry, int *retreadflag )
+static int mmHashTryReadOrAddEntry( mmHashTable *table, const mmHashAccess *access, void *readaddentry, int *retreadflag )
 {
   uint32_t hashkey, entrycount;
   uint32_t pageindex, pagestart, pagefinal;
@@ -1176,7 +1193,7 @@ static int mmHashTryReadOrAddEntry( mmHashTable *table, mmHashAccess *access, vo
 
 
 
-int mmHashLockReadOrAddEntry( void *hashtable, mmHashAccess *access, void *readaddentry, int *retreadflag )
+int mmHashLockReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *retreadflag )
 {
   int retvalue;
   mmHashTable *table;
@@ -1205,7 +1222,7 @@ int mmHashLockReadOrAddEntry( void *hashtable, mmHashAccess *access, void *reada
 #define MM_ROBUST_DELETION
 
 
-int mmHashDirectDeleteEntry( void *hashtable, mmHashAccess *access, void *deleteentry, int readflag )
+int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag )
 {
   int cmpvalue;
   uint32_t hashkey, srckey, srcpos, targetpos, targetkey, entrycount;
@@ -1332,7 +1349,7 @@ int mmHashDirectDeleteEntry( void *hashtable, mmHashAccess *access, void *delete
 }
 
 
-static int mmHashTryDeleteEntry( mmHashTable *table, mmHashAccess *access, void *deleteentry, int readflag )
+static int mmHashTryDeleteEntry( mmHashTable *table, const mmHashAccess *access, void *deleteentry, int readflag )
 {
   uint32_t hashkey, srckey, srcpos, srcend, targetpos, targetkey, entrycount;
   uint32_t pageindex, pagestart, pagefinal;
@@ -1515,7 +1532,7 @@ static int mmHashTryDeleteEntry( mmHashTable *table, mmHashAccess *access, void 
 }
 
 
-int mmHashLockDeleteEntry( void *hashtable, mmHashAccess *access, void *deleteentry, int readflag )
+int mmHashLockDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag )
 {
   int retvalue;
   mmHashTable *table;
@@ -1542,7 +1559,7 @@ int mmHashLockDeleteEntry( void *hashtable, mmHashAccess *access, void *deleteen
 
 
 /* Must be called while NO other thread will ever access the table for writing */
-void mmHashResize( void *newtable, void *oldtable, mmHashAccess *access, uint32_t hashbits, uint32_t pageshift )
+void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift )
 {
   uint32_t hashkey, hashpos, dstkey, dstpos, pageindex;
   void *srcentry, *dstentry;
@@ -1628,7 +1645,7 @@ void mmHashResize( void *newtable, void *oldtable, mmHashAccess *access, uint32_
 ////
 
 
-static int mmHashLockRangeTry( mmHashTable *table, mmHashAccess *access, mmHashLock *hashlock, mmHashLockRange *lockrange, uint32_t hashkey )
+static int mmHashLockRangeTry( mmHashTable *table, const mmHashAccess *access, mmHashLock *hashlock, mmHashLockRange *lockrange, uint32_t hashkey )
 {
   int newcount;
   uint32_t srckey;
@@ -1762,7 +1779,7 @@ static void mmHashLockReleaseAll( mmHashTable *table, mmHashLock *hashlock )
 }
 
 
-static int mmHashLockApplyAll( mmHashTable *table, mmHashAccess *access, mmHashLock *hashlock )
+static int mmHashLockApplyAll( mmHashTable *table, const mmHashAccess *access, mmHashLock *hashlock )
 {
   mmHashLockRange *lockrange, *lockrangenext;
 
@@ -1793,7 +1810,7 @@ void mmHashLockInit( mmHashLock *hashlock, int newcount )
   return;
 }
 
-void mmHashLockAdd( void *hashtable, mmHashAccess *access, void *entry, mmHashLock *hashlock, mmHashLockRange *lockrange )
+void mmHashLockAdd( void *hashtable, const mmHashAccess *access, void *entry, mmHashLock *hashlock, mmHashLockRange *lockrange )
 {
   uint32_t hashkey;
   mmHashTable *table;
@@ -1811,7 +1828,7 @@ void mmHashLockAdd( void *hashtable, mmHashAccess *access, void *entry, mmHashLo
   return;
 }
 
-void mmHashLockAcquire( void *hashtable, mmHashAccess *access, mmHashLock *hashlock )
+void mmHashLockAcquire( void *hashtable, const mmHashAccess *access, mmHashLock *hashlock )
 {
   int status;
   mmHashTable *table;
@@ -1877,7 +1894,7 @@ void mmHashGlobalLockDisable( void *hashtable )
 
 
 
-void mmHashDirectDebugDuplicate( void *hashtable, mmHashAccess *access, void (*callback)( void *opaque, void *entry0, void *entry1 ), void *opaque )
+void mmHashDirectDebugDuplicate( void *hashtable, const mmHashAccess *access, void (*callback)( void *opaque, void *entry0, void *entry1 ), void *opaque )
 {
   uint32_t hashbase, hashkey;
   void *baseentry, *entry;
@@ -1921,6 +1938,24 @@ void mmHashDirectDebugPages( void *hashtable )
   fflush( stdout );
 #endif
 
+  return;
+}
+
+
+void mmHashDirectDebugContent( void *hashtable, void (*callback)( uint32_t hashkey, void *entry ) )
+{
+  uint32_t hashkey;
+  size_t entrysize;
+  void *entry;
+  mmHashTable *table;
+  table = hashtable;
+  entrysize = table->entrysize;
+  entry = MM_HASH_ENTRYLIST( table );
+  for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+  {
+    callback( hashkey, entry );
+    entry = ADDRESS( entry, entrysize );
+  }
   return;
 }
 
