@@ -159,8 +159,95 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleCl
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown;
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp;
 
-private:
+public:
+#ifndef IntPtr
+#define IntPtr  struct HWND__ *
+#endif 
+class SystemHotkey
+{
+private:                        
+   void (*hotkeyFunc)(WPARAM wParam, LPARAM lParam);
+   SystemHotkey prev;
+   SystemHotkey next;
+   Key key;
+   IntPtr windowPtr;
+   int id;              
+public:              
+   SystemHotkey()
+   {
+      this.id = (int)this;
+   }
+   //bool ::RegisterHotkey(Key key,void (*hotkeyFunc)(WPARAM wParam, LPARAM lParam))
+   void ProcessHotkey(WPARAM wParam, LPARAM lParam)
+   {
+      SystemHotkey tmp = systemHotkey;
+      for(;tmp;tmp = tmp.next)
+      {
+         if( wParam == tmp.id)
+            tmp.hotkeyFunc(wParam,lParam);
+      }                            
+   } 
+   void ::CountAll()
+   {
+      SystemHotkey tmp = systemHotkey;          
+      int count=0;
+      for(; tmp ;tmp = tmp.next)  
+         count++;
+      Logf("Count=%d",count);
+   }
+}     
+bool RegisterSystemHotkey(IntPtr windowPtr,Key key,void (*hotkeyFunc)(uint wParam, int lParam))
+{
+   int mod;             
+   SystemHotkey tmp = systemHotkey;
+   SystemHotkey last;
+       
+   for(;tmp;tmp = tmp.next)
+   {
+      if( tmp.key.code == key.code && tmp.key.modifiers == key.modifiers)
+      {
+         //only update hotkeyFunc
+         tmp.hotkeyFunc = hotkeyFunc;
+         return true;
+      } 
+      last=tmp;
+   } 
+   mod = 0;
+   if(key.shift)mod += 0x01   ;
+   if(key.ctrl )mod += 0x01<<1;
+   if(key.alt  )mod += 0x01<<2;
+   tmp = SystemHotkey{windowPtr = windowPtr,prev = last,key=key,next=null,hotkeyFunc=hotkeyFunc};
+   last.next = tmp;
+   SystemHotkey::CountAll();
+   return RegisterSystemHotkey(tmp.windowPtr,tmp.id,(int)mod,(int)key2VK[key.code]);
+}
+bool UnRegisterSystemHotkey(Key key)
+{
+   bool flag;
+   SystemHotkey tmp = systemHotkey;          
 
+   for(; tmp ;tmp = tmp.next)
+   {
+      if( tmp.key.code == key.code && tmp.key.modifiers == key.modifiers)
+      {
+         flag=UnregisterHotKey(tmp.windowPtr,tmp.id);
+         if( tmp.next )
+         {  tmp.next.prev = tmp.prev;
+            tmp.prev.next = tmp.next;                  
+         }else
+         {               
+            tmp.prev.next = null;
+         }
+         delete tmp;
+         break;
+      }
+   }
+   SystemHotkey::CountAll();
+   return flag;   
+}   
+
+private:
+SystemHotkey systemHotkey{id=0,prev=null,next=null};  
 static Box lastMonitorAreas[32];
 static Box monitorAreas[32];
 static int monitor;
@@ -487,6 +574,9 @@ class Win32Interface : Interface
          unichar ch = 0;
          switch(msg)
          {
+            case WM_HOTKEY:
+               systemHotkey.ProcessHotkey(wParam,lParam);       
+               break;   
             case WM_QUERYNEWPALETTE:
             case WM_PALETTECHANGED:
                if(window.display)
