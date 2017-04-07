@@ -110,10 +110,12 @@ private:
       if(type/* && (!readOnly || (autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit]))*/ &&
          (type.type == normalClass || type.type == noHeadClass || data))
       {
-         // IMPORTANT FIX: If keepEditor is true, we were passing editor rather than the editor's current master
+         Window prevEditor = editor;
          editor = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)type._vTbl[__ecereVMethodID_class_OnEdit])(type,
             (type.type == normalClass || type.type == noHeadClass) ? (data ? (*(void **)data) : null) : data,
-            this, (keepEditor && editor) ? editor.master : this, 0, 0, clientSize.w, clientSize.h, fieldData);// null);
+            this, null, 0, 0, clientSize.w, clientSize.h, fieldData);
+         if(prevEditor && editor != prevEditor)
+            prevEditor.Destroy(0);
          if(editor && readOnly && !eClass_IsDerived(editor._class, class(EditBox)) &&
                !(autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit]))
          {
