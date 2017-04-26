@@ -8,7 +8,7 @@ import "OpenGLDisplayDriver"
 namespace gfx::drivers;
 
 // NOTE: Don't call if without vertexBuffer
-void GLABBindBuffer(int target, uint buffer)
+public void GLABBindBuffer(int target, uint buffer)
 {
    if(glCaps_vertexBuffer)
    {
