@@ -195,7 +195,8 @@ private:
       ClassType t = Tclass.type;
       int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
       bool isInt64 = false, isDouble = false;
-      if(onCompare == (void *)class(int64).OnCompare) isInt64 = true;
+      if(onCompare == (void *)class(int64).OnCompare ||
+         (Tclass.type == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id"))) isInt64 = true;
       else if(onCompare == (void *)class(double).OnCompare) isDouble = true;
 
       reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
