@@ -1313,7 +1313,12 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
    Module module = _class.module;
    if(_class.type == unitClass || _class.type == bitClass || _class.type == enumClass)
    {
-      Class dataType = eSystem_FindClass(module, _class.dataTypeString);
+      const String dtString = _class.dataTypeString;
+      Class dataType;
+      if(!strcmp(dtString, "unsigned int") || !strcmp(dtString, "uint"))
+         dataType = class(uint);
+      else
+         dataType = eSystem_FindClass(module, dtString);
       if(dataType)
          ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
    }
@@ -1720,7 +1725,16 @@ static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, const char *
 
 /*static */void Enum_OnUnserialize(Class _class, int * data, IOChannel channel)
 {
-   Class dataType = strcmp(_class.dataTypeString, "int") ? eSystem_FindClass(_class.module, _class.dataTypeString) : null;
+   const String dtString = _class.dataTypeString;
+   Class dataType = null;
+
+   if(strcmp(dtString, "int"))
+   {
+      if(!strcmp(dtString, "uint") || !strcmp(dtString, "unsigned int"))
+         dataType = class(uint);
+      else
+         dataType = eSystem_FindClass(_class.module, dtString);
+   }
    if(dataType)
       ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, channel);
    else
