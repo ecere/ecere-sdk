@@ -12875,7 +12875,7 @@ FreeType(exp->expType);
 if(convert->isGet)
 {
 exp->expType = convert->resultType ? convert->resultType : convert->convert->dataType;
-if(exp->destType->casted)
+if(exp->destType && exp->destType->casted)
 exp->needCast = 1;
 if(exp->expType)
 exp->expType->refCount++;
@@ -12883,7 +12883,7 @@ exp->expType->refCount++;
 else
 {
 exp->expType = convert->resultType ? convert->resultType : MkClassType(convert->convert->_class->fullName);
-if(exp->destType->casted)
+if(exp->destType && exp->destType->casted)
 exp->needCast = 1;
 if(convert->resultType)
 convert->resultType->refCount++;

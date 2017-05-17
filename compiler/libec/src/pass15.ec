@@ -6505,14 +6505,14 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
                if(convert.isGet)
                {
                   exp.expType = convert.resultType ? convert.resultType : convert.convert.dataType;
-                  if(exp.destType.casted)
+                  if(exp.destType && exp.destType.casted)
                      exp.needCast = true;
                   if(exp.expType) exp.expType.refCount++;
                }
                else
                {
                   exp.expType = convert.resultType ? convert.resultType : MkClassType(convert.convert._class.fullName);
-                  if(exp.destType.casted)
+                  if(exp.destType && exp.destType.casted)
                      exp.needCast = true;
                   if(convert.resultType)
                      convert.resultType.refCount++;
