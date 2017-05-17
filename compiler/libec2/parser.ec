@@ -1,6 +1,8 @@
 public import "ecere"
 public import "ec2"
 
+ConsoleFile console { };
+
 class Form1 : Window
 {
    caption = "Form1";
@@ -17,7 +19,7 @@ class Form1 : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         File f = FileOpen("t1.ec", read); // test t1
+         File f = FileOpen("test.ec", read);
          if(f)
          {
             initParser(f, console);
