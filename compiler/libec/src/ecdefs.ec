@@ -92,7 +92,6 @@ public enum TokenType
   _else = ELSE,
   _class = CLASS,
   thisClass = THISCLASS,
-  className = CLASS_NAME,
   _property = PROPERTY,
   setProp = SETPROP,
   getProp = GETPROP,
