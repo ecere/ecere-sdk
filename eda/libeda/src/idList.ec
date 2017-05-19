@@ -832,11 +832,6 @@ public class FixedMultiLineString : String
    }
 };
 
-public class CIString : String
-{
-
-}
-
 public struct DataList : OldList
 {
    class_data Class type;

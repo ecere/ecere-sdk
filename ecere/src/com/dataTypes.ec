@@ -2378,16 +2378,12 @@ static bool String_OnGetDataFromString(Class _class, char ** data, char * newDat
    return true;
 }
 
-/*static */int String_OnCompare(Class _class, const char * string1, const char * string2)
+static int String_OnCompare(Class _class, const String string1, const String string2)
 {
-   int result = 0;
-   if(string1 && string2)
-      result = strcmpi(string1, string2);
-   else if(!string1 && string2)
-      result = 1;
-   else if(string1 && !string2)
-      result = -1;
-   return result;
+   if(string1 && string2)  return strcmp(string1, string2);
+   if(!string1 && string2) return 1;
+   if(string1 && !string2) return -1;
+   return 0;
 }
 
 static char * String_OnGetString(Class _class, char * string, char * tempString, void * fieldData, bool * needClass)
@@ -2459,6 +2455,17 @@ static void RegisterClass_String(Module module)
    stringClass.structSize = 0;
    stringClass.computeSize = false;
    eClass_AddProperty(stringClass, null, "char *", null, null, publicAccess);
+}
+
+public class CIString : String
+{
+   int OnCompare(const String string2)
+   {
+      if(this && string2)  return strcmpi(this, string2);
+      if(!this && string2) return 1;
+      if(this && !string2) return -1;
+      return 0;
+   }
 }
 
 void InitializeDataTypes1(Module module)
