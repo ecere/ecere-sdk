@@ -1,5 +1,12 @@
 import "lexing"
 
+Lexer lexer { };
+
+public void initParser(File f)
+{
+   lexer.init(f);
+}
+
 public class TopoEdge : struct
 {
 public:
@@ -11,21 +18,21 @@ public:
 public class ASTNode : Container
 {
 public:
-   Location loc;
+   //Location loc;
 //private:
    LinkList<TopoEdge, link = out> outgoing { };
    LinkList<TopoEdge, link = in> incoming { };
    int nonBreakableIncoming;
 //public:
-   virtual void print(OutputOptions o);
+   virtual void print(File out, OutputOptions o);
 
-   void printStart(OutputOptions o)
+   void printStart(File out, OutputOptions o)
    {
       if(o.astType)
          out.Print(_class.name, "[[");
    }
 
-   void printEnd(OutputOptions o)
+   void printEnd(File out, OutputOptions o)
    {
       if(o.astType)
          out.Print("]]");
@@ -82,7 +89,7 @@ public class ASTRawString : ASTNode
 public:
    char * string;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
       out.Puts(string);
    }
@@ -100,12 +107,12 @@ public:
    char * closing;
    ASTList<ASTNode> ast;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
       out.PrintLn(condition);
       if(ast)
       {
-         ast.print(o);
+         ast.print(out, o);
          out.PrintLn("");
       }
       if(closing)
@@ -144,22 +151,22 @@ public:
    void Delete(IteratorPointer i)                         { if(list) list.Delete(i); }
 
 public:
-   virtual void printSep()
+   virtual void printSep(File out)
    {
       out.Print(", ");
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
       Iterator<ASTNode> it { list };
-      printStart(o);
+      printStart(out, o);
       while(it.Next())
       {
-         it.data.print(o);
+         it.data.print(out, o);
          if(list.GetNext(it.pointer))
-            printSep();
+            printSep(out);
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    Container ::parse(subclass(Container) c, ASTNode parser(), char sep)
@@ -173,10 +180,12 @@ public:
             if(!list) list = eInstance_New(c);
             list.Add(e);
          }
-         peekToken();
-         if(sep && nextToken.type == sep)
-            readToken();
-         else if(sep || nextToken.type == '}' || !nextToken.type)
+         else
+            break;
+         lexer.peekToken();
+         if(sep && lexer.nextToken.type == sep)
+            lexer.readToken();
+         else if(sep || lexer.nextToken.type == '}' || !lexer.nextToken.type)
             break;
       }
       return list;
