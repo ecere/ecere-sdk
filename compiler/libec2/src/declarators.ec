@@ -6,22 +6,22 @@ public:
    SpecsList qualifiers;
    ASTPointer pointer;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("*");
-      if(qualifiers) qualifiers.print(o);
-      if(pointer) pointer.print(o);
-      printEnd(o);
+      if(qualifiers) qualifiers.print(out, o);
+      if(pointer) pointer.print(out, o);
+      printEnd(out, o);
    }
 
    ASTPointer ::parse()
    {
       ASTPointer ptr { };
-      readToken();
-      while(peekToken().type == '*')
+      lexer.readToken();
+      while(lexer.peekToken().type == '*')
       {
-         readToken();
+         lexer.readToken();
          ptr = { pointer = ptr };
       }
       return ptr;
@@ -31,7 +31,7 @@ public:
 public class ASTDeclarator : ASTNode
 {
 public:
-   DeclaratorType type;
+   //DeclaratorType type;
    ASTDeclarator declarator;
    // Symbol symbol;
 
@@ -39,23 +39,23 @@ public:
    {
       ASTDeclarator decl = null;
 
-      if(peekToken().type == '*')
+      if(lexer.peekToken().type == '*')
          decl = DeclPointer::parse();
       else
       {
-         if(peekToken().type == identifier)
+         if(lexer.peekToken().type == identifier)
             decl = DeclIdentifier::parse();
-         else if(nextToken.type == '(')
+         else if(lexer.nextToken.type == '(')
             decl = DeclBrackets::parse();
          if(decl)
          {
             while(true)
             {
-               if(peekToken().type == '[')
+               if(lexer.peekToken().type == '[')
                   decl = DeclArray::parse(decl);
-               else if(nextToken.type == '(')
+               else if(lexer.nextToken.type == '(')
                   decl = DeclFunction::parse(decl);
-               else if(nextToken.type == ':')
+               else if(lexer.nextToken.type == ':')
                   decl = DeclBitField::parse(decl);
                else
                   break;
@@ -72,21 +72,21 @@ public:
    TypeNameList ::parse()
    {
       TypeNameList list = null;
-      int a = pushAmbiguity();
+      int a = lexer.pushAmbiguity();
       while(true)
       {
          ASTTypeName e = ASTTypeName::parse();
-         peekToken();
-         if(e && (nextToken.type == ',' || nextToken.type == ')'))
+         lexer.peekToken();
+         if(e && (lexer.nextToken.type == ',' || lexer.nextToken.type == ')'))
          {
             if(!list) list = { };
             list.Add(e);
 
-            clearAmbiguity();
-            if(nextToken.type == ',')
+            lexer.clearAmbiguity();
+            if(lexer.nextToken.type == ',')
             {
-               readToken();
-               a = pushAmbiguity();
+               lexer.readToken();
+               a = lexer.pushAmbiguity();
             }
             else
                break;
@@ -96,7 +96,7 @@ public:
             // Error Recovery
             if(list)
                list.Add({});
-            popAmbiguity(a);
+            lexer.popAmbiguity(a);
             break;
          }
       }
@@ -110,23 +110,23 @@ public class DeclFunction : ASTDeclarator
 public:
    TypeNameList parameters;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(declarator) declarator.print(o);
+      printStart(out, o);
+      if(declarator) declarator.print(out, o);
       out.Print("(");
-      if(parameters) parameters.print(o);
+      if(parameters) parameters.print(out, o);
       out.Print(")");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    DeclFunction ::parse(ASTDeclarator d)
    {
       DeclFunction decl { declarator = d };
-      readToken();
-      if(peekToken().type != ')') decl.parameters = TypeNameList::parse();
-      if(peekToken().type == ')')
-         readToken();
+      lexer.readToken();
+      if(lexer.peekToken().type != ')') decl.parameters = TypeNameList::parse();
+      if(lexer.peekToken().type == ')')
+         lexer.readToken();
       return decl;
    }
 }
@@ -136,11 +136,11 @@ public class DeclIdentifier : ASTDeclarator
 public:
    ASTIdentifier identifier;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(identifier) identifier.print(o);
-      printEnd(o);
+      printStart(out, o);
+      if(identifier) identifier.print(out, o);
+      printEnd(out, o);
    }
 
    DeclIdentifier ::parse()
@@ -152,25 +152,25 @@ public:
 public class DeclBrackets : ASTDeclarator
 {
 public:
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("(");
-      if(declarator) declarator.print(o);
+      if(declarator) declarator.print(out, o);
       out.Print(")");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    DeclBrackets ::parse()
    {
       DeclBrackets decl = null;
       ASTDeclarator d;
-      readToken();
+      lexer.readToken();
       d = ASTDeclarator::parse();
       if(d)
          decl = { declarator = d };
-      if(peekToken().type == ')')
-         readToken();
+      if(lexer.peekToken().type == ')')
+         lexer.readToken();
       return decl;
    }
 }
@@ -181,22 +181,22 @@ public:
    ASTExpression exp;
    // ASTSpecifier enumClass;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(declarator) declarator.print(o);
+      printStart(out, o);
+      if(declarator) declarator.print(out, o);
       out.Print("[");
-      if(exp) exp.print(o);
+      if(exp) exp.print(out, o);
       out.Print("]");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    DeclArray ::parse(ASTDeclarator d)
    {
       DeclArray decl { declarator = d };
-      readToken();
-      if(peekToken().type != ']') decl.exp = ExpConditional::parse();
-      if(peekToken().type == ']') readToken();
+      lexer.readToken();
+      if(lexer.peekToken().type != ']') decl.exp = ExpConditional::parse();
+      if(lexer.peekToken().type == ']') lexer.readToken();
       return decl;
    }
 }
@@ -206,13 +206,13 @@ public class DeclPointer : ASTDeclarator
 public:
    ASTPointer pointer;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(pointer) pointer.print(o);
+      printStart(out, o);
+      if(pointer) pointer.print(out, o);
       if(pointer && declarator) out.Print(" ");
-      if(declarator) declarator.print(o);
-      printEnd(o);
+      if(declarator) declarator.print(out, o);
+      printEnd(out, o);
    }
 
    DeclPointer ::parse()
@@ -239,18 +239,18 @@ public class DeclBitField : ASTDeclarator
 public:
    ExpConstant size;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(declarator) declarator.print(o);
+      printStart(out, o);
+      if(declarator) declarator.print(out, o);
       out.Print(":");
-      if(size) size.print(o);
-      printEnd(o);
+      if(size) size.print(out, o);
+      printEnd(out, o);
    }
 
    DeclBitField ::parse(ASTDeclarator d)
    {
-      readToken();
+      lexer.readToken();
       return { declarator = d, size = ExpConstant::parse(); };
    }
 }
@@ -258,7 +258,7 @@ public:
 public class DeclExtended : ASTDeclarator
 {
 public:
-   ExtDecl extended;
+   // TODO: ExtDecl extended;
 }
 
 public class ASTInitializer : ASTNode
@@ -267,12 +267,12 @@ public:
    // bool isConstant;
    ASTInitializer ::parse()
    {
-      if(peekToken().type == '{')
+      if(lexer.peekToken().type == '{')
       {
          InitList init;
-         readToken();
+         lexer.readToken();
          init = InitList::parse();
-         if(peekToken().type == '}') readToken();
+         if(lexer.peekToken().type == '}') lexer.readToken();
          return init;
       }
       else
@@ -285,17 +285,18 @@ public class InitExp : ASTInitializer
 public:
    ASTExpression exp;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(exp)
-         exp.print(o);
-      printEnd(o);
+         exp.print(out, o);
+      printEnd(out, o);
    }
 
    InitExp ::parse()
    {
-      return InitExp { exp = ASTExpression::parse() };
+      ASTExpression exp = ASTExpression::parse();
+      return exp ? InitExp { exp = exp } : null;
    }
 };
 
@@ -304,16 +305,16 @@ public class InitList : ASTInitializer
 public:
    ASTList<ASTInitializer> list;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(list)
       {
          out.Print("{ ");
-         list.print(o);
+         list.print(out, o);
          out.Print(" }");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    InitList ::parse()
@@ -329,16 +330,16 @@ public:
    ASTDeclarator declarator;
    ASTInitializer initializer;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(declarator) declarator.print(o);
+      printStart(out, o);
+      if(declarator) declarator.print(out, o);
       if(initializer)
       {
          out.Print(" = ");
-         initializer.print(o);
+         initializer.print(out, o);
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ASTInitDeclarator ::parse()
@@ -347,9 +348,9 @@ public:
       if(decl)
       {
          ASTInitializer init = null;
-         if(peekToken().type == '=')
+         if(lexer.peekToken().type == '=')
          {
-            readToken();
+            lexer.readToken();
             init = ASTInitializer::parse();
          }
          return { declarator = decl, initializer = init };
