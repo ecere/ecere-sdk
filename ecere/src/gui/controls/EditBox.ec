@@ -123,7 +123,7 @@ public enum SyntaxHighlightMode
 {
    none, config, make, grammar, bash, batch,
    c, cxx, objectivec, ec, csharp, java, go, rust, swift, python,
-   php, javascript, glsl, html, css
+   php, javascript, glsl, html, css, econ
 };
 
 /* TODO:
@@ -1218,6 +1218,8 @@ public:
                syntaxMode = css;
             else if(!strcmpi(ext, "y") || !strcmpi(ext, "l"))
                syntaxMode = grammar;
+            else if(!strcmpi(ext, "json") || !strcmpi(ext, "econ"))
+               syntaxMode = econ;
             else if(!strcmpi(ext, "sh"))
                syntaxMode = bash;
             else if(!strcmpi(ext, "bat"))
