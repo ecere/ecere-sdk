@@ -4466,6 +4466,7 @@ public Operand GetOperand(Expression exp)
                break;
             case intType:
             case longType:
+               // TODO: Support unichar, escaped sequences
                if(exp.constant[0] == '\'')
                {
                   op.i = exp.constant[1];
@@ -4484,7 +4485,13 @@ public Operand GetOperand(Expression exp)
                op.kind = intType;
                break;
             case int64Type:
-               if(type.isSigned)
+               // TODO: Support unichar, escaped sequences
+               if(exp.constant[0] == '\'')
+               {
+                  op.i = exp.constant[1];
+                  op.ops = intOps;
+               }
+               else if(type.isSigned)
                {
                   op.i64 = (int64)_strtoi64(exp.constant, null, 0);
                   op.ops = int64Ops;

@@ -295,6 +295,8 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                      }
                      else if(!strcmp(line, "[Enum Values]"))
                      {
+                        int64 lastValue = -1;
+                        bool lastValueSet = false;
                         for(;;)
                         {
                            char * equal;
@@ -313,11 +315,16 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                  name[equal - line] = '\0';
                                  TrimLSpaces(name, name);
                                  TrimRSpaces(name, name);
-                                 eEnum_AddFixedValue(regClass, name, strtoll(equal + 1, null, 0));
+                                 lastValue = strtoll(equal + 1, null, 0);
+                                 eEnum_AddFixedValue(regClass, name, lastValue);
+                                 lastValueSet = true;
                               }
                               else
                               {
-                                 eEnum_AddValue(regClass, line);
+                                 if(lastValueSet)
+                                    eEnum_AddFixedValue(regClass, line, ++lastValue);
+                                 else
+                                    eEnum_AddValue(regClass, line);
                               }
                            }
                         }

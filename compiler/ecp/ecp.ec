@@ -747,6 +747,8 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
    if(regClass && enumValues)
    {
       Enumerator e;
+      int64 lastValue = -1;
+      bool lastValueSet = false;
       for(e = enumValues.first; e; e = e.next)
       {
          if(e.exp)
@@ -816,6 +818,8 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                      value = op.type.isSigned ? (int64)op.i : (int)op.ui;
                }
                eEnum_AddFixedValue(regClass, e.id.string, value);
+               lastValueSet = true;
+               lastValue = value;
             }
             else
             {
@@ -824,11 +828,19 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                PrintExpression(e.exp, expString);
                printf($"error: could not resolve value %s for enum %s in precompiler\n", expString, regClass.name);
                ((PrecompApp)__thisModule).exitCode = 1;
-               eEnum_AddValue(regClass, e.id.string);
+               if(lastValueSet)
+                  eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+               else
+                  eEnum_AddValue(regClass, e.id.string);
             }
          }
          else
-            eEnum_AddValue(regClass, e.id.string);
+         {
+            if(lastValueSet)
+               eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+            else
+               eEnum_AddValue(regClass, e.id.string);
+         }
       }
    }
 }
