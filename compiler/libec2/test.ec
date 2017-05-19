@@ -1,28 +1,33 @@
+#include "foo.h"
+
 import "ecere"
 
 class Form1 : Window
 {
    Button button1
    {
-      caption = "Click Here", foreground = red;
+      caption = "Click " "Here", foreground = red;
    };
 
    bool OnCreate(
-
+      `
    void OnCreate()
    {
-      MessageBox mb { contents = "Hello, world!!" };
+      MessageBox mb { contents = $"Hello, world!!" };
       mb.Modal();
-      MessageBox { contents = "Hello, world!!", anchor.bottom = 20 }.Modal();
+      MessageBox { contents = $"Hello"."Hello, world!!", anchor.bottom = 20 }.Modal();
       MessageBox mb;
       mb = { };
    }
+
+   // This is a comment
+
    Button button1
    {
       caption = "Click Here";
       foreground = red;
 
-      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      /*bool */NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          MessageBox { contents = "Hello, world!!" }.Modal();
          return true;
@@ -62,6 +67,9 @@ typedef int bla;
 
 int SomeFunction(int * p)
 {
+   int hex = 0x1234;
+   float scientific = 1.456E23;
+   float scientific2 = 1.456E+23;
    int b[3][4] =
    {
       { 1, 0, 0, 0 },
@@ -70,6 +78,8 @@ int SomeFunction(int * p)
    };
    int c, d, e = 4;
    const String name = "Foo";
+   char character = 'a';
+   unichar unicode = '愛';
    b * a;
    bla blo;
 

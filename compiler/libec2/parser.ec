@@ -22,11 +22,11 @@ class Form1 : Window
          File f = FileOpen("test.ec", read);
          if(f)
          {
-            initParser(f, console);
+            initParser(f);
             {
                AST ast = AST::parse();
                if(ast)
-                  ast.print({ /*astType = true*/ });
+                  ast.print(console, { /*astType = true*/ });
             }
             /*
             {

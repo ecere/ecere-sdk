@@ -1,20 +1,21 @@
 import "statements"
+import "lexing"
 
 public class ASTDeclaration : ASTStmtOrDecl
 {
 public:
-   DeclarationType type;
+   // DeclarationType type;
    // ASTSpecifier extStorage;
    // Symbol symbol;
    // AccessMode declMode;
 
    ASTDeclaration ::parse(SpecsList specs, InitDeclList decls)
    {
-      peekToken();
-      if(nextToken.type == '{')
+      lexer.peekToken();
+      if(lexer.nextToken.type == '{')
          return DeclarationInstance::parse(specs, decls);
-      else if(nextToken.type == ';')
-         readToken();
+      else if(lexer.nextToken.type == ';')
+         lexer.readToken();
       return DeclarationInit { specifiers = specs, declarators = decls };
    }
 }
@@ -26,18 +27,18 @@ public:
    InitDeclList declarators;
    String comment;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(specifiers)
       {
-         specifiers.print(o);
+         specifiers.print(out, o);
          if(declarators) out.Print(" ");
       }
-      if(declarators) declarators.print(o);
+      if(declarators) declarators.print(out, o);
       out.Print(";");
       if(comment) out.Print(" // ", comment);
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
@@ -49,8 +50,8 @@ public:
    DeclarationInstance ::parse(SpecsList specs, InitDeclList decls)
    {
       ASTInstantiation inst = ASTInstantiation::parse(specs, decls);
-      if(peekToken().type == ';')
-         readToken();
+      if(lexer.peekToken().type == ';')
+         lexer.readToken();
       if(inst)
       {
          return { inst = inst };
@@ -58,15 +59,15 @@ public:
       return null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(inst)
       {
-         inst.print(o);
+         inst.print(out, o);
          out.Print(";");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
@@ -85,23 +86,23 @@ public:
    List<ASTDeclaration> oldStyleDeclarations;
    StmtCompound body;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       // out.PrintLn("");
-      printIndent();
+      printIndent(out);
       if(specifiers)
       {
          for(s : specifiers)
-            s.print(o);
+            s.print(out, o);
          out.Print(" ");
       }
       if(declarator)
-         declarator.print(o);
+         declarator.print(out, o);
       out.PrintLn("");
       if(body)
-         body.print(o);
-      printEnd(o);
+         body.print(out, o);
+      printEnd(out, o);
    }
 
    ASTFunctionDefinition ::parse(SpecsList specs, InitDeclList decls)
@@ -132,12 +133,12 @@ class ASTImport : ASTNode
 {
    String importString;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("import ");
       out.PrintLn(importString);
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
@@ -182,33 +183,33 @@ public:
       SpecsList specs = null;
       InitDeclList decls = null;
 
-      peekToken();
-      if(nextToken.type == _import)
+      lexer.peekToken();
+      if(lexer.nextToken.type == _import)
       {
          ASTImport astImport { };
-         readToken();
-         peekToken();
-         if(nextToken.type == _static)
+         lexer.readToken();
+         lexer.peekToken();
+         if(lexer.nextToken.type == _static)
          {
-            readToken();
+            lexer.readToken();
          }
-         else if(nextToken.type == identifier)
+         else if(lexer.nextToken.type == identifier)
          {
-            readToken();
+            lexer.readToken();
          }
-         peekToken();
-         if(nextToken.type == stringLiteral)
+         lexer.peekToken();
+         if(lexer.nextToken.type == stringLiteral)
          {
-            readToken();
-            astImport.importString = CopyString(token.text);
+            lexer.readToken();
+            astImport.importString = CopyString(lexer.token.text);
          }
          return astImport;
       }
       else
       {
-         specs = SpecsList::parse();
+         specs = SpecsList::parse(true);
          decls = InitDeclList::parse();
-         if(nextToken.type == '{')
+         if(lexer.nextToken.type == '{')
          {
             ASTDeclarator funcDecl = GetFuncDecl((decls && decls[0]) ? decls[0].declarator : null);
             if(funcDecl)
@@ -220,7 +221,7 @@ public:
             return ASTDeclaration::parse(specs, decls);
          else
          {
-            readToken(); // Error
+            lexer.readToken(); // Error
             return null;
          }
       }
@@ -229,7 +230,7 @@ public:
    AST ::parse()
    {
       AST ast = null;
-      while(peekToken())
+      while(lexer.peekToken())
       {
          ASTNode n = parseExternalDeclaration();
          if(n)
@@ -241,14 +242,14 @@ public:
       return ast;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       for(n : this)
       {
-         n.print(o);
+         n.print(out, o);
          out.PrintLn("");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 }

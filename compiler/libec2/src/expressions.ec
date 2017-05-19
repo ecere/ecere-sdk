@@ -7,14 +7,14 @@ static TokenType2 opPrec[][4] =
 {
    { '*', '/', '%' },
    { '+', '-' },
-   { leftOp, rightOp },
-   { '<', '>', leOp, geOp },
-   { eqOp, neOp },
+   { shiftLeft, shiftRight },
+   { '<', '>', smallerEqual, greaterEqual },
+   { equality, notEqual },
    { '&' },
    { '^' },
    { '|' },
-   { andOp },
-   { orOp }
+   { logicalAnd },
+   { logicalOr }
 };
 
 static define numPrec = sizeof(opPrec) / sizeof(opPrec[0]);
@@ -45,17 +45,17 @@ public:
    String string;
    // Identifier badID;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print(string);
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ASTIdentifier ::parse()
    {
-      readToken();
-      return { string = CopyString(token.text) };
+      lexer.readToken();
+      return { string = CopyString(lexer.token.text) };
    }
 };
 
@@ -64,24 +64,24 @@ public class ASTTypeName : ASTNode
 public:
    SpecsList qualifiers;
    ASTDeclarator declarator;
-   ClassObjectType classObjectType;
+   //ClassObjectType classObjectType;
    ASTExpression bitCount;
 
    ASTTypeName ::parse()
    {
-      SpecsList specs = SpecsList::parse();
+      SpecsList specs = SpecsList::parse(true);
       ASTDeclarator decl = ASTDeclarator::parse();
       if(specs || decl)
          return { qualifiers = specs, declarator = decl };
       return null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(qualifiers) qualifiers.print(o);
-      if(declarator) { if(qualifiers) out.Print(" "); declarator.print(o); }
-      printEnd(o);
+      printStart(out, o);
+      if(qualifiers) qualifiers.print(out, o);
+      if(declarator) { if(qualifiers) out.Print(" "); declarator.print(out, o); }
+      printEnd(out, o);
    }
 };
 
@@ -89,7 +89,7 @@ public:
 public class ASTExpression : ASTNode
 {
 public:
-   ExpressionType type;
+   // ExpressionType type;
 
    virtual float compute();
 
@@ -101,10 +101,10 @@ public:
    bool hasAddress;
 
    // *** COMPILING DATA ***
-   Type expType;
-   Type destType;
+   //Type expType;
+   //Type destType;
 
-   ExpUsage usage;
+   //ExpUsage usage;
    int tempCount;
    bool byReference;
    bool isConstant;
@@ -196,12 +196,12 @@ simple_primary_expression:
    | '[' argument_expression_list ']' { $$ = MkExpArray($2); $$.loc = @$; }
    ;
 */
-   if(peekToken().type == constant)
+   if(lexer.peekToken().type == constant)
       return ExpConstant::parse();
-   else if(nextToken.type == identifier)
+   else if(lexer.nextToken.type == identifier)
    {
       ExpIdentifier exp = ExpIdentifier::parse();
-      if(peekToken().type == '{')
+      if(lexer.peekToken().type == '{')
       {
          SpecsList specs { };
          specs.Add(SpecName { name = exp.identifier.string });
@@ -209,9 +209,9 @@ simple_primary_expression:
       }
       return exp;
    }
-   else if(nextToken.type == stringLiteral)
+   else if(lexer.nextToken.type == dollar || lexer.nextToken.type == stringLiteral)
       return ExpString::parse();
-   else if(nextToken.type == '{')
+   else if(lexer.nextToken.type == '{')
       return ExpInstance::parse(null, null);
    else
       return null;
@@ -219,13 +219,13 @@ simple_primary_expression:
 
 static ASTExpression parsePrimaryExpression()
 {
-   if(peekToken().type == '(')
+   if(lexer.peekToken().type == '(')
    {
       ExpBrackets exp { };
-      readToken();
+      lexer.readToken();
       exp.list = ExpList::parse();
-      if(peekToken().type == ')')
-         readToken();
+      if(lexer.peekToken().type == ')')
+         lexer.readToken();
       return exp;
    }
    else
@@ -237,18 +237,18 @@ static ASTExpression parsePostfixExpression()
    ASTExpression exp = parsePrimaryExpression();
    while(true)
    {
-      if(peekToken().type == '[')
+      if(lexer.peekToken().type == '[')
          exp = ExpIndex::parse(exp);
-      else if(nextToken.type == '(')
+      else if(lexer.nextToken.type == '(')
          exp = ExpCall::parse(exp);
-      else if(nextToken.type == '.')
+      else if(lexer.nextToken.type == '.')
          exp = ExpMember::parse(exp);
-      else if(nextToken.type == ptrOp)
+      else if(lexer.nextToken.type == ptrOp)
          exp = ExpPointer::parse(exp);
-      else if(nextToken.type == incOp || nextToken.type == decOp)
+      else if(lexer.nextToken.type == increment || lexer.nextToken.type == decrement)
       {
-         readToken();
-         exp = ExpOperation { exp1 = exp, op = token.type };
+         lexer.readToken();
+         exp = ExpOperation { exp1 = exp, op = lexer.token.type };
       }
       else
          break;
@@ -258,21 +258,21 @@ static ASTExpression parsePostfixExpression()
 
 static ASTExpression parseUnaryExpression()
 {
-   peekToken();
-   if(nextToken.type == incOp || nextToken.type == decOp)
+   lexer.peekToken();
+   if(lexer.nextToken.type == increment || lexer.nextToken.type == decrement)
    {
-      readToken();
-      return ExpOperation { op = token.type, exp2 = parseUnaryExpression() };
+      lexer.readToken();
+      return ExpOperation { op = lexer.token.type, exp2 = parseUnaryExpression() };
    }
-   else if(nextToken.type.isUnaryOperator)
+   else if(lexer.nextToken.type.isUnaryOperator)
    {
-      readToken();
-      return ExpOperation { op = token.type, exp2 = ExpCast::parse() };
+      lexer.readToken();
+      return ExpOperation { op = lexer.token.type, exp2 = ExpCast::parse() };
    }
    /*
-   else if(nextToken.type == SIZEOF)
+   else if(lexer.nextToken.type == SIZEOF)
       return ExpSizeof::parse();
-   else if(nextToken.type == ALIGNOF)
+   else if(lexer.nextToken.type == ALIGNOF)
       return ExpAlignOf::parse();
    */
    else
@@ -282,18 +282,20 @@ static ASTExpression parseUnaryExpression()
 public class ExpConstant : ASTExpression
 {
 public:
-   String constant;
+   char * constant;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print(constant);
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ExpConstant ::parse()
    {
-      return { constant = CopyString(readToken().text); };
+      Token token = lexer.readToken();
+      ExpConstant e { constant = CopyString(token.text) };
+      return e;
    }
 
    float compute()
@@ -306,17 +308,33 @@ public class ExpString : ASTExpression
 {
 public:
    String string;
+   String i18nContext;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print(string);
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ExpString ::parse()
    {
-      return { string = CopyString(readToken().text) };
+      String i18nContext = null;
+      lexer.readToken();
+      if(lexer.token.type == dollar)
+      {
+         lexer.readToken();
+         if(lexer.peekToken().type == '.')
+         {
+            i18nContext = CopyString(lexer.token.text);
+            lexer.readToken();
+            if(lexer.peekToken().type == stringLiteral)
+               lexer.readToken();
+         }
+         else
+            i18nContext = CopyString("");
+      }
+      return { string = CopyString(lexer.token.text), i18nContext = i18nContext };
    }
 }
 
@@ -325,11 +343,11 @@ public class ExpIdentifier : ASTExpression
 public:
    ASTIdentifier identifier;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      identifier.print(o);
-      printEnd(o);
+      printStart(out, o);
+      identifier.print(out, o);
+      printEnd(out, o);
    }
 
    ExpIdentifier ::parse()
@@ -344,20 +362,20 @@ public:
    TokenType2 op;
    ASTExpression exp1, exp2;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(exp1) { exp1.print(o); if(exp2) out.Print(" "); }
-      op.print(o);
-      if(exp2) { if(exp1) out.Print(" "); exp2.print(o); }
-      printEnd(o);
+      printStart(out, o);
+      if(exp1) { exp1.print(out, o); if(exp2) out.Print(" "); }
+      op.print(out, o);
+      if(exp2) { if(exp1) out.Print(" "); exp2.print(out, o); }
+      printEnd(out, o);
    }
 
    ASTExpression ::parse(int prec)
    {
       ASTExpression exp = (prec > 0) ? parse(prec-1) : ExpCast::parse();
-      while(isPrecedence(peekToken().type, prec))
-         exp = ExpOperation { exp1 = exp, op = readToken().type, exp2 = (prec > 0) ? parse(prec-1) : ExpCast::parse() };
+      while(isPrecedence(lexer.peekToken().type, prec))
+         exp = ExpOperation { exp1 = exp, op = lexer.readToken().type, exp2 = (prec > 0) ? parse(prec-1) : ExpCast::parse() };
       return exp;
    }
 
@@ -391,8 +409,8 @@ public:
    ASTExpression ::parse()
    {
       ASTExpression exp = ExpConditional::parse();
-      if(peekToken().type.isAssignmentOperator)
-         exp = ExpAssignment { exp1 = exp, op = readToken().type, exp2 = ExpAssignment::parse() };
+      if(lexer.peekToken().type.isAssignmentOperator)
+         exp = ExpAssignment { exp1 = exp, op = lexer.readToken().type, exp2 = ExpAssignment::parse() };
       return exp;
    }
 }
@@ -402,13 +420,13 @@ public class ExpBrackets : ASTExpression
 public:
    ExpList list;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("(");
-      if(list) list.print(o);
+      if(list) list.print(out, o);
       out.Print(")");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    float compute()
@@ -424,25 +442,25 @@ public:
    ExpList expList;
    ASTExpression elseExp;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(condition) condition.print(o);
+      printStart(out, o);
+      if(condition) condition.print(out, o);
       out.Print(" ? ");
-      if(expList) expList.print(o);
+      if(expList) expList.print(out, o);
       out.Print(" : ");
       if(elseExp)
-         elseExp.print(o);
-      printEnd(o);
+         elseExp.print(out, o);
+      printEnd(out, o);
    }
 
    ASTExpression ::parse()
    {
       ASTExpression exp = ExpOperation::parse(numPrec-1);
-      if(peekToken().type == '?')
+      if(lexer.peekToken().type == '?')
       {
          exp = ExpConditional { condition = exp, expList = ExpList::parse() };
-         if(peekToken().type == ':')
+         if(lexer.peekToken().type == ':')
             ((ExpConditional)exp).elseExp = ExpConditional::parse();
       }
       return exp;
@@ -455,23 +473,23 @@ public:
    ASTExpression exp;
    ExpList index;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(exp) exp.print(o);
+      printStart(out, o);
+      if(exp) exp.print(out, o);
       out.Print("[");
-      if(index) index.print(o);
+      if(index) index.print(out, o);
       out.Print("]");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ExpIndex ::parse(ASTExpression e)
    {
       ExpIndex exp;
-      readToken();
+      lexer.readToken();
       exp = ExpIndex { exp = e, index = ExpList::parse() };
-      if(peekToken().type == ']')
-         readToken();
+      if(lexer.peekToken().type == ']')
+         lexer.readToken();
       return exp;
    }
 }
@@ -484,19 +502,19 @@ public:
    // MemberType memberType;
    // bool thisPtr;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(exp) exp.print(o);
+      printStart(out, o);
+      if(exp) exp.print(out, o);
       out.Print(".");
       if(member)
-         member.print(o);
-      printEnd(o);
+         member.print(out, o);
+      printEnd(out, o);
    }
 
    ExpMember ::parse(ASTExpression e)
    {
-      readToken();
+      lexer.readToken();
       return { exp = e, member = ASTIdentifier::parse() };
    }
 }
@@ -504,19 +522,19 @@ public:
 public class ExpPointer : ExpMember
 {
 public:
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(exp) exp.print(o);
+      printStart(out, o);
+      if(exp) exp.print(out, o);
       out.Print("->");
       if(member)
-         member.print(o);
-      printEnd(o);
+         member.print(out, o);
+      printEnd(out, o);
    }
 
    ExpPointer ::parse(ASTExpression e)
    {
-      readToken();
+      lexer.readToken();
       return { exp = e, member = ASTIdentifier::parse() };
    }
 }
@@ -528,23 +546,23 @@ public:
    ExpList arguments;
    // Location argLoc;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(exp) exp.print(o);
+      printStart(out, o);
+      if(exp) exp.print(out, o);
       out.Print("(");
-      if(arguments) arguments.print(o);
+      if(arguments) arguments.print(out, o);
       out.Print(")");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    ExpCall ::parse(ASTExpression e)
    {
       ExpCall exp;
-      readToken();
+      lexer.readToken();
       exp = ExpCall { exp = e, arguments = ExpList::parse() };
-      if(peekToken().type == ')')
-         readToken();
+      if(lexer.peekToken().type == ')')
+         lexer.readToken();
       return exp;
    }
 }
@@ -573,11 +591,11 @@ public:
       return { instance = ASTInstantiation::parse(specs, decls) };
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(instance) instance.print(o);
-      printEnd(o);
+      printStart(out, o);
+      if(instance) instance.print(out, o);
+      printEnd(out, o);
    }
 }
 /*
@@ -656,22 +674,45 @@ public class InstanceInit : ASTNode
 public:
    InstanceInit ::parse()
    {
-      int a = pushAmbiguity();
-      SpecsList specs = SpecsList::parse();
+      InstanceInit init = null;
+      int a = lexer.pushAmbiguity();
+      SpecsList specs = SpecsList::parse(true);
       InitDeclList decls = InitDeclList::parse();
 
-      peekToken();
-      if(nextToken.type == '{' || (specs && decls))
+      if(lexer.peekToken().type == '{') // || (specs && decls))
       {
-         clearAmbiguity();
-         return InstInitFunction::parse(specs, decls);
+         init = InstInitFunction::parse(specs, decls);
+         if(init)
+         {
+            lexer.clearAmbiguity();
+            specs = null, decls = null;
+         }
       }
-      else if(nextToken.type != '}')
+      else
       {
-         popAmbiguity(a);
-         return InstInitMember::parse();
+         lexer.popAmbiguity(a);
+         a = lexer.pushAmbiguity();
+         // Method without return type
+         delete specs;
+         delete decls;
+         specs = SpecsList::parse(false);
+         decls = InitDeclList::parse();
+         if(lexer.peekToken().type == '{')
+         {
+            lexer.clearAmbiguity();
+            init = InstInitFunction::parse(specs, decls);
+            if(init)
+               specs = null, decls = null;
+         }
+         else //if(lexer.peekToken().type != '}')
+         {
+            lexer.popAmbiguity(a);
+            init = InstInitMember::parse();
+         }
       }
-      return null;
+      delete specs;
+      delete decls;
+      return init;
    }
 }
 
@@ -683,15 +724,14 @@ public:
    InstInitMember ::parse()
    {
       MemberInitList list = MemberInitList::parse();
-
-      return { members = list };
+      return list ? { members = list } : null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(members) members.print(o);
-      printEnd(o);
+      printStart(out, o);
+      if(members) members.print(out, o);
+      printEnd(out, o);
    }
 }
 
@@ -705,11 +745,11 @@ public:
       return { function = ASTClassFunction::parse(specs, decls) };
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(function) function.print(o);
-      printEnd(o);
+      printStart(out, o);
+      if(function) function.print(out, o);
+      printEnd(out, o);
    }
 }
 
@@ -721,11 +761,11 @@ public:
       return (InstInitList)ASTList::parse(class(InstInitList), InstanceInit::parse, 0);
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      ASTList::print(o);
-      printEnd(o);
+      printStart(out, o);
+      ASTList::print(out, o);
+      printEnd(out, o);
    }
 }
 
@@ -736,11 +776,11 @@ public:
    ASTExpression exp;
 
    InstInitList members;
-   Symbol symbol;
+   //Symbol symbol;
    bool fullSet;
    bool isConstant;
    byte * data;
-   Location nameLoc, insideLoc;
+   //Location nameLoc, insideLoc;
    bool built;
 
    ASTInstantiation ::parse(SpecsList specs, InitDeclList decls)
@@ -752,17 +792,17 @@ public:
       if(decls && decls[0] && decls[0].declarator && decls[0].declarator._class == class(DeclIdentifier))
          inst.exp = ExpIdentifier { identifier = ((DeclIdentifier)decls[0].declarator).identifier };
 
-      readToken();
+      lexer.readToken();
       inst.members = InstInitList::parse();
-      if(peekToken().type == '}')
-         readToken();
+      if(lexer.peekToken().type == '}')
+         lexer.readToken();
       return inst;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
       bool multiLine = false;
-      printStart(o);
+      printStart(out, o);
       if(members)
       {
          for(m : members; m._class == class(InstInitFunction))
@@ -772,12 +812,12 @@ public:
          }
       }
 
-      if(_class) { _class.print(o); if(!multiLine || exp) out.Print(" "); }
-      if(exp) { exp.print(o); if(!multiLine) out.Print(" "); }
+      if(_class) { _class.print(out, o); if(!multiLine || exp) out.Print(" "); }
+      if(exp) { exp.print(out, o); if(!multiLine) out.Print(" "); }
       if(multiLine)
       {
          out.PrintLn("");
-         printIndent();
+         printIndent(out);
       }
       out.Print("{");
       if(multiLine)
@@ -795,8 +835,8 @@ public:
                InstanceInit init = it.data;
                Link nextLink = (Link)members.GetNext(it.pointer);
                if(init._class != class(InstInitFunction))
-                  printIndent();
-               init.print(o);
+                  printIndent(out);
+               init.print(out, o);
                if(init._class == class(InstInitMember))
                   out.Print(";");
                if(nextLink)
@@ -813,7 +853,7 @@ public:
          else
          {
             out.Print(" ");
-            members.print(o);
+            members.print(out, o);
             out.Print(" ");
          }
       }
@@ -822,9 +862,9 @@ public:
       if(multiLine)
       {
          indent--;
-         printIndent();
+         printIndent(out);
       }
       out.Print("}");
-      printEnd(o);
+      printEnd(out, o);
    }
 };
