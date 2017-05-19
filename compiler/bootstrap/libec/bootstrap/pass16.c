@@ -284,6 +284,8 @@ extern void FreeExpression(struct Expression * exp);
 
 extern struct Expression * QMkExpId(const char *  id);
 
+extern struct Expression * MoveExpContents(struct Expression * exp);
+
 extern void CheckTemplateTypes(struct Expression * exp);
 
 static void ProcessExpression(struct Expression *  exp);
@@ -2617,7 +2619,7 @@ void __ecereRegisterModule_pass16(struct __ecereNameSpace__ecere__com__Instance 
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareClass", "void DeclareClass(External neededFor, Symbol classSym, const char * className)", DeclareClass, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionInstPass", "void ProcessExpressionInstPass(Expression exp)", ProcessExpressionInstPass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionInstPass", "void ProcessExpressionInstPass(Expression exp)", ProcessExpressionInstPass, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessInstantiations", "void ProcessInstantiations(void)", ProcessInstantiations, module, 1);
 }
 
@@ -3036,7 +3038,7 @@ if(!curCompound->__anon1.compound.declarations)
 curCompound->__anon1.compound.declarations = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*curCompound->__anon1.compound.declarations), (((void *)0)), dummyDecl);
 }
-sprintf(className, "__simpleStruct%d", curContext->simpleID++);
+sprintf(className, "__simpleStruct%d", curContext ? curContext->simpleID++ : 0);
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
@@ -3078,6 +3080,14 @@ __ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((voi
 decl = dummyDecl;
 }
 ProcessDeclaration(decl);
+if(!curCompound)
+{
+struct Expression * e = MoveExpContents(exp);
+struct Statement * compound = MkCompoundStmt(MkListOne(decl), MkListOne(MkExpressionStmt(MkListOne(e))));
+
+exp->type = 23;
+exp->__anon1.compound = compound;
+}
 }
 }
 }

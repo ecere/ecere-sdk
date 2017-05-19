@@ -752,7 +752,7 @@ public void DeclareClass(External neededFor, Symbol classSym, const char * class
       neededFor.CreateUniqueEdge(classSym.pointerExternal, false);
 }
 
-void ProcessExpressionInstPass(Expression exp)
+public void ProcessExpressionInstPass(Expression exp)
 {
    ProcessExpression(exp);
 }
@@ -951,7 +951,7 @@ static void ProcessExpression(Expression exp)
                         curCompound.compound.declarations->Insert(null, dummyDecl);
                      }
 
-                     sprintf(className, "__simpleStruct%d", curContext.simpleID++);
+                     sprintf(className, "__simpleStruct%d", curContext ? curContext.simpleID++ : 0);
 
                      {
                         OldList * list = MkList();
@@ -1010,6 +1010,14 @@ static void ProcessExpression(Expression exp)
                         curCompound.compound.declarations = MkList();
                      curCompound.compound.declarations->Insert(null, decl);
                      */
+
+                     if(!curCompound)
+                     {
+                        Expression e = MoveExpContents(exp);
+                        Statement compound = MkCompoundStmt(MkListOne(decl), MkListOne(MkExpressionStmt(MkListOne(e))));
+                        exp.type = extensionCompoundExp;
+                        exp.compound = compound;
+                     }
                   }
                }
             }

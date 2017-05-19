@@ -2058,7 +2058,7 @@ void ProcessInstantiationType(Instantiation inst)
       classSym = inst._class.symbol;
       _class = classSym ? classSym.registered : null;
 
-      if(!_class || _class.type != noHeadClass)
+      if(ast && (!_class || _class.type != noHeadClass))
          DeclareStruct(curExternal, inst._class.name, false, true);
 
       afterExternal = afterExternal ? afterExternal : curExternal;

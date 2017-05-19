@@ -14652,7 +14652,7 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 
 classSym = inst->_class->__anon1.__anon1.symbol;
 _class = classSym ? classSym->__anon1.registered : (((void *)0));
-if(!_class || _class->type != 5)
+if(ast && (!_class || _class->type != 5))
 DeclareStruct(curExternal, inst->_class->__anon1.__anon1.name, 0, 1);
 afterExternal = afterExternal ? afterExternal : curExternal;
 if(inst->exp)
