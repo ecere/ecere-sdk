@@ -3,7 +3,7 @@ import "externals"
 public class ASTMemberInit : ASTNode
 {
 public:
-   Location realLoc;
+   // Location realLoc;
    List<ASTIdentifier> identifiers;
    ASTInitializer initializer;
 
@@ -14,52 +14,54 @@ public:
 
    ASTMemberInit ::parse()
    {
-      ASTMemberInit init { };
-      if(peekToken().type == identifier)
+      List<ASTIdentifier> identifiers = null;
+      ASTInitializer initializer = null;
+      if(lexer.peekToken().type == identifier)
       {
-         int a = pushAmbiguity();
+         int a = lexer.pushAmbiguity();
          while(true)
          {
             ASTIdentifier id = ASTIdentifier::parse();
             if(id)
             {
-               if(!init.identifiers) init.identifiers = { };
-               init.identifiers.Add(id);
-               if(peekToken().type != '.')
+               if(!identifiers) identifiers = { };
+               identifiers.Add(id);
+               if(lexer.peekToken().type != '.')
                   break;
                else
-                  readToken();
+                  lexer.readToken();
             }
          }
-         if(peekToken().type == '=')
+         if(lexer.peekToken().type == '=')
          {
-            clearAmbiguity();
-            readToken();
+            lexer.clearAmbiguity();
+            lexer.readToken();
          }
          else
-            popAmbiguity(a);
+            lexer.popAmbiguity(a);
       }
-      init.initializer = InitExp::parse();
-      return init;
+      initializer = InitExp::parse();
+      return (identifiers || initializer) ?
+         ASTMemberInit { identifiers = (void *)identifiers, initializer = initializer } : null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(identifiers)
       {
          Iterator<ASTIdentifier> it { identifiers };
          while(it.Next())
          {
-            it.data.print(o);
+            it.data.print(out, o);
             if(identifiers.GetNext(it.pointer))
                out.Print(".");
          }
          out.Print(" = ");
       }
       if(initializer)
-         initializer.print(o);
-      printEnd(o);
+         initializer.print(out, o);
+      printEnd(out, o);
    }
 };
 
@@ -69,8 +71,8 @@ public:
    MemberInitList ::parse()
    {
       MemberInitList list = (MemberInitList)ASTList::parse(class(MemberInitList), ASTMemberInit::parse, ',');
-      if(peekToken().type == ';')
-         readToken();
+      if(lexer.peekToken().type == ';')
+         lexer.readToken();
       return list;
    }
 }
@@ -84,7 +86,7 @@ public:
    ASTStatement getStmt;
    ASTStatement setStmt;
    ASTStatement issetStmt;
-   Symbol symbol;
+   // Symbol symbol;
    bool conversion;
    bool isWatchable;
    ASTExpression category;
@@ -98,7 +100,7 @@ public:
       return (ClassDefList)ASTList::parse(class(ClassDefList), ASTClassDef::parse, 0);
    }
 
-   void printSep()
+   void printSep(File out)
    {
    }
 }
@@ -118,37 +120,37 @@ public:
       int a = -1;
       ASTDeclarator decl;
 
-      peekToken();
-      if(nextToken.type == '}')
+      lexer.peekToken();
+      if(lexer.nextToken.type == '}')
          return null;
 
-      if(nextToken.type == identifier)
-         a = pushAmbiguity();
+      if(lexer.nextToken.type == identifier)
+         a = lexer.pushAmbiguity();
 
-      specs = SpecsList::parse();
+      specs = SpecsList::parse(true);
       decls = InitDeclList::parse();
-      peekToken();
+      lexer.peekToken();
       decl = GetFuncDecl(decls && decls[0] ? decls[0].declarator : null);
       if(decl)
       {
-         if(a > -1) clearAmbiguity();
+         if(a > -1) lexer.clearAmbiguity();
          return ClassDefFunction::parse(specs, decls);
       }
-      else if((specs || decls) && (nextToken.type != '.' && nextToken.type != '='))
+      else if((specs || decls) && (lexer.nextToken.type != '.' && lexer.nextToken.type != '='))
       {
-         if(a > -1) clearAmbiguity();
+         if(a > -1) lexer.clearAmbiguity();
          return ClassDefDeclaration::parse(specs, decls);
       }
       else if(a > -1)
       {
          ClassDefInitialization init;
-         popAmbiguity(a);
+         lexer.popAmbiguity(a);
 
          init = ClassDefInitialization::parse();
          if(init)
             return init;
       }
-      readToken(); // Error
+      lexer.readToken(); // Error
       return null;
    }
 };
@@ -175,13 +177,13 @@ public:
       return null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      printIndent();
-      if(decl) decl.print(o);
+      printStart(out, o);
+      printIndent(out);
+      if(decl) decl.print(out, o);
       out.PrintLn("");
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
@@ -193,8 +195,8 @@ public:
    AccessMode declMode;
 
    // COMPILING DATA
-   Type type;
-   Symbol propSet;
+   //Type type;
+   //Symbol propSet;
 
    bool isVirtual;
    bool isConstructor, isDestructor;
@@ -220,11 +222,11 @@ public:
       return null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(function) function.print(o);
-      printEnd(o);
+      printStart(out, o);
+      if(function) function.print(out, o);
+      printEnd(out, o);
    }
 }
 
@@ -241,16 +243,16 @@ public:
       return null;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(defValues)
       {
-         printIndent();
-         defValues.print(o);
+         printIndent(out);
+         defValues.print(out, o);
          out.PrintLn(";");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 

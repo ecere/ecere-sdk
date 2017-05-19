@@ -30,25 +30,25 @@ public:
       InitDeclList decls = null;
       bool isType = false;
 
-      peekToken();
-      if(nextToken.type.isSpecifier || (nextToken.type == identifier && isType))
+      lexer.peekToken();
+      if(lexer.nextToken.type.isSpecifier || (lexer.nextToken.type == identifier && isType))
       {
-         specs = SpecsList::parse();
+         specs = SpecsList::parse(true);
          decls = InitDeclList::parse();
          return ASTDeclaration::parse(specs, decls);
       }
-      else if(nextToken.type == identifier)
+      else if(lexer.nextToken.type == identifier)
       {
          ASTStatement stmt;
-         int a = pushAmbiguity();
+         int a = lexer.pushAmbiguity();
          stmt = ASTStatement::parse();
          if(stmt)
          {
-            clearAmbiguity();
+            lexer.clearAmbiguity();
             return stmt;
          }
-         popAmbiguity(a);
-         specs = SpecsList::parse();
+         lexer.popAmbiguity(a);
+         specs = SpecsList::parse(true);
          if(specs)
             decls = InitDeclList::parse();
          if(specs && decls)
@@ -64,13 +64,13 @@ public:
 public class ASTStatement : ASTStmtOrDecl
 {
 public:
-   StmtType type;
+   //StmtType type;
 
    ASTStatement ::parse()
    {
-      switch(peekToken().type)
+      switch(lexer.peekToken().type)
       {
-         case ';':       readToken(); return { };
+         case ';':       lexer.readToken(); return { };
          case '{':       return StmtCompound::parse();
          case _if:       return StmtIf::parse();
          case _switch:   return StmtSwitch::parse();
@@ -86,24 +86,24 @@ public:
          case identifier:
          {
             ASTStatement stmt;
-            int a = pushAmbiguity();
+            int a = lexer.pushAmbiguity();
             stmt = StmtLabeled::parse();
             if(stmt)
             {
-               clearAmbiguity();
+               lexer.clearAmbiguity();
                return stmt;
             }
-            popAmbiguity(a);
+            lexer.popAmbiguity(a);
          }
          default:       return StmtExpression::parse();
       }
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.PrintLn(";");
-      printEnd(o);
+      printEnd(out, o);
    }
 };
 
@@ -112,12 +112,12 @@ public class StmtExpression : ASTStatement
 public:
    ExpList expressions;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(expressions) expressions.print(o);
+      printStart(out, o);
+      if(expressions) expressions.print(out, o);
       out.Print(";");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtExpression ::parse()
@@ -126,11 +126,11 @@ public:
       if(exp)
       {
          StmtExpression stmt { expressions = exp };
-         if(peekToken().type == ';')
-            readToken();
+         if(lexer.peekToken().type == ';')
+            lexer.readToken();
          else
          {
-            if(ambiguous)
+            if(lexer.ambiguous)
                delete stmt;
          }
          return stmt;
@@ -139,7 +139,7 @@ public:
    }
 }
 int indent;
-void printIndent()
+void printIndent(File out)
 {
    int i;
    for(i = 0; i < indent; i++)
@@ -156,18 +156,18 @@ public:
    // Context context;
    // bool isSwitch;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      printIndent();
+      printStart(out, o);
+      printIndent(out);
       out.PrintLn("{");
       indent++;
       if(declarations)
       {
          for(d : declarations)
          {
-            printIndent();
-            d.print(o);
+            printIndent(out);
+            d.print(out, o);
             out.PrintLn("");
          }
          if(statements)
@@ -180,8 +180,8 @@ public:
             if(s._class == class(StmtCase))
                indent = caseIndent;
             if(s._class != class(StmtLabeled) && s._class != class(StmtCompound))
-               printIndent();
-            s.print(o);
+               printIndent(out);
+            s.print(out, o);
             if(s._class == class(StmtExpression))
                out.PrintLn("");
          }
@@ -189,26 +189,26 @@ public:
       indent--;
       if(indent == caseIndent)
          indent--;
-      printIndent();
+      printIndent(out);
       out.PrintLn("}");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtCompound ::parse()
    {
       StmtCompound stmt { };
-      if(peekToken().type == '{')
+      if(lexer.peekToken().type == '{')
       {
          bool inDecls = true;
-         readToken();
+         lexer.readToken();
          while(true)
          {
-            if(peekToken().type == '}')
+            if(lexer.peekToken().type == '}')
             {
-               readToken();
+               lexer.readToken();
                break;
             }
-            else if(!nextToken)
+            else if(!lexer.nextToken)
                break;
             else
             {
@@ -235,9 +235,9 @@ public:
                else
                {
                   // ERROR
-                  /*while(readToken())
+                  /*while(lexer.readToken())
                      if(token == ';' || token == '}') break;*/
-                  readToken();
+                  lexer.readToken();
                }
             }
          }
@@ -253,46 +253,46 @@ public:
    ASTStatement stmt;
    ASTStatement elseStmt;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("if(");
-      if(exp) exp.print(o);
+      if(exp) exp.print(out, o);
       out.PrintLn(")");
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         printIndent();
-         stmt.print(o);
+         printIndent(out);
+         stmt.print(out, o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
       if(elseStmt)
       {
-         printIndent();
+         printIndent(out);
          out.Print("else");
          if(elseStmt._class != class(StmtCompound)) { out.PrintLn(""); indent++; }
-         printIndent();
-         if(elseStmt._class != class(StmtCompound)) elseStmt.print(o);
+         printIndent(out);
+         if(elseStmt._class != class(StmtCompound)) elseStmt.print(out, o);
          if(elseStmt._class == class(StmtExpression)) out.PrintLn("");
          indent--;
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtIf ::parse()
    {
       StmtIf stmt { };
-      readToken();
-      if(peekToken().type == '(')
+      lexer.readToken();
+      if(lexer.peekToken().type == '(')
       {
-         readToken();
+         lexer.readToken();
          stmt.exp = ExpList::parse();
-         if(peekToken().type == ')') readToken();
+         if(lexer.peekToken().type == ')') lexer.readToken();
          stmt.stmt = ASTStatement::parse();
-         if(peekToken().type == _else)
+         if(lexer.peekToken().type == _else)
          {
-            readToken();
+            lexer.readToken();
             stmt.elseStmt = ASTStatement::parse();
          }
       }
@@ -308,32 +308,32 @@ public:
    ExpList exp;
    ASTStatement stmt;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
       int backCaseIndent = caseIndent;
-      printStart(o);
+      printStart(out, o);
       out.Print("switch(");
-      if(exp) exp.print(o);
+      if(exp) exp.print(out, o);
       out.PrintLn(")");
       if(stmt)
       {
          caseIndent = indent+1;
-         stmt.print(o);
+         stmt.print(out, o);
          indent = caseIndent-1;
       }
       caseIndent = backCaseIndent;
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtSwitch ::parse()
    {
       StmtSwitch stmt { };
-      readToken();
-      if(peekToken().type == '(')
+      lexer.readToken();
+      if(lexer.peekToken().type == '(')
       {
-         readToken();
+         lexer.readToken();
          stmt.exp = ExpList::parse();
-         if(peekToken().type == ')') readToken();
+         if(lexer.peekToken().type == ')') lexer.readToken();
          stmt.stmt = ASTStatement::parse();
       }
       return stmt;
@@ -346,19 +346,19 @@ public:
    ASTIdentifier id;
    ASTStatement stmt;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(id) id.print(o);
+      printStart(out, o);
+      if(id) id.print(out, o);
       out.PrintLn(":");
-      if(stmt) stmt.print(o);
-      printEnd(o);
+      if(stmt) stmt.print(out, o);
+      printEnd(out, o);
    }
 
    StmtLabeled ::parse()
    {
       ASTIdentifier id = ASTIdentifier::parse();
-      if(peekToken().type == ':')
+      if(lexer.peekToken().type == ':')
          return StmtLabeled { id = id, stmt = ASTStatement::parse() };
       delete id;
       return null;
@@ -371,13 +371,13 @@ public:
    ASTExpression exp;
    ASTStatement stmt;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(exp)
       {
          out.Print("case ");
-         exp.print(o);
+         exp.print(out, o);
          out.PrintLn(":");
       }
       else
@@ -385,21 +385,21 @@ public:
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         printIndent();
-         stmt.print(o);
+         printIndent(out);
+         stmt.print(out, o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtCase ::parse()
    {
       StmtCase stmt { };
-      if(readToken().type == _case)
+      if(lexer.readToken().type == _case)
          stmt.exp = ExpConditional::parse();
-      if(peekToken().type == ':')
+      if(lexer.peekToken().type == ':')
       {
-         readToken();
+         lexer.readToken();
          stmt.stmt = ASTStatement::parse();
       }
       return stmt;
@@ -415,12 +415,12 @@ public:
    StmtWhile ::parse()
    {
       StmtWhile stmt { };
-      readToken();
-      if(peekToken().type == '(')
+      lexer.readToken();
+      if(lexer.peekToken().type == '(')
       {
-         readToken();
+         lexer.readToken();
          stmt.exp = ExpList::parse();
-         if(peekToken().type == ')') readToken();
+         if(lexer.peekToken().type == ')') lexer.readToken();
          stmt.stmt = ASTStatement::parse();
       }
       return stmt;
@@ -436,18 +436,18 @@ public:
    StmtDoWhile ::parse()
    {
       StmtDoWhile stmt { };
-      readToken();
+      lexer.readToken();
       stmt.stmt = ASTStatement::parse();
-      if(peekToken().type == _while)
+      if(lexer.peekToken().type == _while)
       {
-         readToken();
-         if(peekToken().type == '(')
+         lexer.readToken();
+         if(lexer.peekToken().type == '(')
          {
-            readToken();
+            lexer.readToken();
             stmt.exp = ExpList::parse();
-            if(peekToken().type == ')') readToken();
+            if(lexer.peekToken().type == ')') lexer.readToken();
          }
-         if(peekToken().type == ';') readToken();
+         if(lexer.peekToken().type == ';') lexer.readToken();
       }
       return stmt;
    }
@@ -461,48 +461,48 @@ public:
    ExpList increment;
    ASTStatement stmt;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("for(");
       if(init)
-         init.print(o);
+         init.print(out, o);
       if(check)
       {
          out.Print(" ");
-         check.print(o);
+         check.print(out, o);
       }
       if(increment)
       {
          out.Print(" ");
-         increment.print(o);
+         increment.print(out, o);
       }
       out.PrintLn(")");
 
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
-         printIndent();
-         stmt.print(o);
+         printIndent(out);
+         stmt.print(out, o);
          if(stmt._class == class(StmtExpression)) out.PrintLn("");
          if(stmt._class != class(StmtCompound)) indent--;
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtFor ::parse()
    {
       StmtFor stmt { };
-      readToken();
-      if(peekToken().type == '(')
+      lexer.readToken();
+      if(lexer.peekToken().type == '(')
       {
-         readToken();
+         lexer.readToken();
          stmt.init = ASTStatement::parse();
          stmt.check = ASTStatement::parse();
          stmt.increment = ExpList::parse();
-         if(peekToken().type == ')')
+         if(lexer.peekToken().type == ')')
          {
-            readToken();
+            lexer.readToken();
             stmt.stmt = ASTStatement::parse();
          }
       }
@@ -513,17 +513,17 @@ public:
 public class StmtBreak : ASTStatement
 {
 public:
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.PrintLn("break;");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtBreak ::parse()
    {
-      readToken();
-      if(peekToken().type == ';') readToken();
+      lexer.readToken();
+      if(lexer.peekToken().type == ';') lexer.readToken();
       return { };
    }
 }
@@ -531,17 +531,17 @@ public:
 public class StmtContinue : ASTStatement
 {
 public:
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.PrintLn("continue;");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtContinue ::parse()
    {
-      readToken();
-      if(peekToken().type == ';') readToken();
+      lexer.readToken();
+      if(lexer.peekToken().type == ';') lexer.readToken();
       return { };
    }
 }
@@ -550,25 +550,25 @@ public class StmtReturn : ASTStatement
 {
 public:
    ExpList exp;
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("return");
       if(exp)
       {
          out.Print(" ");
-         exp.print(o);
+         exp.print(out, o);
       }
       ::out.PrintLn(";");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtReturn ::parse()
    {
       StmtReturn stmt { };
-      readToken();
-      if(peekToken().type != ';') stmt.exp = ExpList::parse();
-      if(peekToken().type == ';') readToken();
+      lexer.readToken();
+      if(lexer.peekToken().type != ';') stmt.exp = ExpList::parse();
+      if(lexer.peekToken().type == ';') lexer.readToken();
       return stmt;
    }
 }
@@ -578,21 +578,21 @@ public class StmtGoto : ASTStatement
 public:
    ASTIdentifier id;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       out.Print("goto ");
-      if(id) id.print(o);
+      if(id) id.print(out, o);
       ::out.PrintLn(";");
-      printEnd(o);
+      printEnd(out, o);
    }
 
    StmtGoto ::parse()
    {
       StmtGoto stmt { };
-      readToken();
+      lexer.readToken();
       stmt.id = ASTIdentifier::parse();
-      if(peekToken().type == ';') readToken();
+      if(lexer.peekToken().type == ';') lexer.readToken();
       return stmt;
    }
 }
@@ -631,10 +631,10 @@ public:
 public class StmtForEach : ASTStatement
 {
 public:
-   Identifier id;
+   // Identifier id;
    ExpList exp;
    ExpList filter;
-   Statement stmt;
+   // Statement stmt;
 }
 
 public class StmtDecl : ASTStatement
@@ -642,10 +642,10 @@ public class StmtDecl : ASTStatement
 public:
    ASTDeclaration decl;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      if(decl) { decl.print(o); out.PrintLn(""); }
-      printEnd(o);
+      printStart(out, o);
+      if(decl) { decl.print(out, o); out.PrintLn(""); }
+      printEnd(out, o);
    }
 }

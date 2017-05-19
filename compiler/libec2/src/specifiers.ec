@@ -10,7 +10,7 @@ public:
 public class SpecTypeOf : ASTSpecifier
 {
 public:
-   Expression expression;
+   // Expression expression;
 }
 
 public class SpecSubClass : ASTSpecifier
@@ -22,25 +22,25 @@ public:
 public class SpecTemplateType : ASTSpecifier
 {
 public:
-   TemplateParameter templateParameter;
+   // TemplateParameter templateParameter;
 }
 
 public class SpecsList : ASTList<ASTSpecifier>
 {
 public:
-   void printSep()
+   void printSep(File out)
    {
       out.Print(" ");
    }
 
-   SpecsList ::parse()
+   SpecsList ::parse(bool identifiers)
    {
       SpecsList specs = null;
       bool gotSpec = false;
       while(true)
       {
-         peekToken();
-         if(nextToken.type == _struct || nextToken.type == _union || nextToken.type == _class || nextToken.type == _enum)
+         lexer.peekToken();
+         if(lexer.nextToken.type == _struct || lexer.nextToken.type == _union || lexer.nextToken.type == _class || lexer.nextToken.type == _enum)
          {
             ASTSpecifier s = SpecClass::parse();
             if(s)
@@ -50,22 +50,22 @@ public:
             }
             break;
          }
-         else if(nextToken.type.isSpecifier)
+         else if(lexer.nextToken.type.isSpecifier)
          {
-            readToken();
+            lexer.readToken();
             if(!specs) specs = { };
-            specs.Add(SpecBase { specifier = token.type });
-            if(!token.type.isQualifier && token.type != _typedef)
+            specs.Add(SpecBase { specifier = lexer.token.type });
+            if(!lexer.token.type.isQualifier && lexer.token.type != _typedef)
                gotSpec = true;
          }
-         else if(nextToken.type == identifier || nextToken.type == typeName)
+         else if(identifiers && lexer.nextToken.type == identifier)
          {
             bool isType = false;
             if(isType || !gotSpec)
             {
-               readToken();
+               lexer.readToken();
                if(!specs) specs = { };
-               specs.Add(SpecName { name = CopyString(token.text) });
+               specs.Add(SpecName { name = CopyString(lexer.token.text) });
                gotSpec = true;
             }
             else
@@ -83,11 +83,11 @@ public class SpecBase : ASTSpecifier
 public:
    TokenType2 specifier;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      specifier.print(o);
-      printEnd(o);
+      printStart(out, o);
+      specifier.print(out, o);
+      printEnd(out, o);
    }
 }
 
@@ -99,11 +99,11 @@ public:
    //Symbol symbol;
    //List<ClassTemplateArgument> templateArgs;
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
+      printStart(out, o);
       if(name) out.Print(name);
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
@@ -123,56 +123,56 @@ public:
    //int endid;
    //AccessMode declMode;
    bool addNameSpace;
-   Context ctx;
+   // Context ctx;
    // ExtDecl extDeclStruct;
 
    SpecClass ::parse()
    {
-      SpecClass spec = (peekToken().type == _enum) ? SpecEnum { } : SpecClass { };
-      spec.type = readToken().type;
-      if(peekToken().type == identifier)
+      SpecClass spec = (lexer.peekToken().type == _enum) ? SpecEnum { } : SpecClass { };
+      spec.type = lexer.readToken().type;
+      if(lexer.peekToken().type == identifier)
          spec.id = ASTIdentifier::parse();
-      if(peekToken().type == ':')
+      if(lexer.peekToken().type == ':')
       {
-         readToken();
-         spec.baseSpecs = SpecsList::parse();
+         lexer.readToken();
+         spec.baseSpecs = SpecsList::parse(true);
       }
-      if(peekToken().type == '{')
+      if(lexer.peekToken().type == '{')
       {
-         readToken();
+         lexer.readToken();
          spec.definitions = ClassDefList::parse();
          if(!spec.definitions)
             spec.definitions = { };
-         if(peekToken().type == '}')
-            readToken();
+         if(lexer.peekToken().type == '}')
+            lexer.readToken();
       }
       return spec;
    }
 
-   void print(OutputOptions o)
+   void print(File out, OutputOptions o)
    {
-      printStart(o);
-      type.print(o);
+      printStart(out, o);
+      type.print(out, o);
       if(type && id)
          out.Print(" ");
-      if(id) id.print(o);
+      if(id) id.print(out, o);
       if(baseSpecs)
       {
          out.Print(" : ");
-         baseSpecs.print(o);
+         baseSpecs.print(out, o);
       }
       if(definitions)
       {
          out.PrintLn("");
-         printIndent();
+         printIndent(out);
          out.PrintLn("{");
          indent++;
-         definitions.print(o);
+         definitions.print(out, o);
          indent--;
-         printIndent();
+         printIndent(out);
          out.Print("}");
       }
-      printEnd(o);
+      printEnd(out, o);
    }
 }
 
