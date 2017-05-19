@@ -1,7 +1,7 @@
 import "ecere"
 import "connection"
 
-define ECOMMUNICATOR_PORT = 3113;
+define ECOMMUNICATOR_PORT = 3113;//7778;//
 
 class eComApp;
 
@@ -85,7 +85,7 @@ class MainPanel : Window
    };
    EditBox nameBox
    {
-      this, text = "Name", position = Point { 50, 55 }, size = Size { 160,20 };
+      this, text = "Name", contents = "redj", position = Point { 50, 55 }, size = Size { 160,20 };
 
       void NotifyUpdate(EditBox editBox)
       {
