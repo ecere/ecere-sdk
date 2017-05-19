@@ -2023,7 +2023,7 @@ int CheckType(const char * text)
 #ifdef _TIMINGS
       checkTypeTotalTime += GetTime() - startTime;
 #endif
-      return TYPE_NAME; //CLASS_NAME;
+      return TYPE_NAME;
    }
 #ifdef _TIMINGS
    checkTypeTotalTime += GetTime() - startTime;
