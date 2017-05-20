@@ -865,23 +865,17 @@ class Lexer
                         start = pos.pos+1;
                         lexingState = string;
                         break;
+                     case '~': case '$': case ',': case '(': case ')': case '?': case ';': case '{': case '}': case '[': case ']': case '\0':
+                        type = ch;
+                        break;
                      default:
                         start = pos.pos;
                         if(ch == '.' || isdigit(ch))
                            lexingState = number;
-                        else if(ch == '_' || isalnum(ch))
+                        else if(ch == '_' || isalpha(ch))
                            lexingState = identifier;
                         else
-                        {
-                           bool valid = false;
-                           for(c : ['~','$',',','(',')','?',';','{','}','[',']','\0']; c == ch)
-                           {
-                              valid = true, type = ch;
-                              break;
-                           }
-                           if(!valid)
-                              PrintLn("Invalid character: ", ch, " at line: ", pos.line, ", col: ", pos.col);
-                        }
+                           PrintLn("Invalid character: ", ch, " at line: ", pos.line, ", col: ", pos.col);
                         break;
                   }
                   if(ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n')
