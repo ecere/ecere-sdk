@@ -2446,9 +2446,9 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_%s
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   if(_property) __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);
 if(prop->hasGet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_Get_%s = _property.Get;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   if(_property) __ecereProp_%s_Get_%s = _property.Get;\n", className, propName);
 }
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");

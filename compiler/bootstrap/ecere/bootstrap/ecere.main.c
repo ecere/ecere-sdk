@@ -694,10 +694,13 @@ if(method)
 __ecereVMethodID_class_OnUnserialize = method->vid;
 __ecereClass_double = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "double");
 __ecereProp_double_isInf = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_double, "isInf", module);
+if(_property)
 __ecereProp_double_Get_isInf = _property->Get;
 __ecereProp_double_isNan = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_double, "isNan", module);
+if(_property)
 __ecereProp_double_Get_isNan = _property->Get;
 __ecereProp_double_signBit = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_double, "signBit", module);
+if(_property)
 __ecereProp_double_Get_signBit = _property->Get;
 __ecereClass___ecereNameSpace__ecere__com__AVLNode = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::AVLNode");
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__AVLNode, "maximum", module);
@@ -1009,10 +1012,13 @@ __ecereClass___ecereNameSpace__ecere__sys__StringBTNode = __ecereNameSpace__ecer
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
 __ecereClass_float = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "float");
 __ecereProp_float_isInf = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_float, "isInf", module);
+if(_property)
 __ecereProp_float_Get_isInf = _property->Get;
 __ecereProp_float_isNan = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_float, "isNan", module);
+if(_property)
 __ecereProp_float_Get_isNan = _property->Get;
 __ecereProp_float_signBit = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_float, "signBit", module);
+if(_property)
 __ecereProp_float_Get_signBit = _property->Get;
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 __ecereClass_int64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int64");
