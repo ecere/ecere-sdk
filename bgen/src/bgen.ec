@@ -349,6 +349,9 @@ public class BGen : ConsoleApplication // <ArgSym>
          {
             Gen g = this.gen = gen; // for watches
             //bool plug = false;
+            // todo: fix this, python should not pollute c or globals
+            python = (gen.lang == Python); // todo
+            py = false; // todo
             g_ = (CGen)g;
             // tocheck: just drop?
             /*if(!g.lib.outputDir)
@@ -471,6 +474,7 @@ public class BGen : ConsoleApplication // <ArgSym>
    Gen addGen(Library lib, Directory dir)
    {
       Gen gen = null;
+      python = false; // todo
       switch(dir.lang)
       {
          case C:           gen = CGen { };      break;
@@ -478,6 +482,7 @@ public class BGen : ConsoleApplication // <ArgSym>
          case CSharp:      gen = CSharpGen { }; break;
          case Java:        gen = JavaGen { };   break;
          case Python:
+            python = true; // todo
                            gen = PythonGen { }; break;
          default: check(); break;
       }
@@ -629,3 +634,5 @@ public class BGen : ConsoleApplication // <ArgSym>
 
 define app = ((BGen)__thisModule);
 CGen g_;
+bool python; // todo
+bool py;

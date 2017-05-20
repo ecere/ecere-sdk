@@ -88,9 +88,10 @@
                ]
             },
             {
-               "Folder" : "todo-py",
+               "Folder" : "py",
                "Files" : [
-                  "src/py/genPython.ec"
+                  "genPython.ec",
+                  "pyTools.ec"
                ]
             },
             "bgen.ec",
@@ -118,6 +119,20 @@
                   "c_header_ec_macros.src",
                   "c_header_ec_hardcoded.src",
                   "c_header_ec_hardcoded_after.src"
+               ]
+            },
+            {
+               "Folder" : "py",
+               "Files" : [
+                  "cffi_hardcode_ec_begin.src",
+                  "cffi_hardcode_ec_end.src",
+                  "py_functions_ec_begin.src",
+                  "py_functions_ec_end.src",
+                  "py_hardcode_application.src",
+                  "py_hardcode_array.src",
+                  "py_hardcode_container.src",
+                  "py_hardcode_guiapplication.src",
+                  "py_hardcode_module.src"
                ]
             }
          ]

@@ -1,0 +1,22 @@
+#//// more ecere stuff that bleeds into ecereCOM
+#//typedef Window CommonControl;
+#//typedef CommonControl DataBox;
+#//typedef Instance Surface;
+#//
+// stuff
+uint64 TAc(char x);
+uint64 TAb(byte x);
+uint64 TAs(short x);
+uint64 TAus(uint16 x);
+uint64 TAi(int x);
+uint64 TAui(uint x);
+uint64 TAi64(int64 x);
+uint64 TAui64(uint64 x);
+uint64 TAf(float x);
+uint64 TAd(double x);
+uint64 TAp(void * x);
+// uint64 TAst(void * x);
+uint64 TAo(Instance x);
+
+void * pTAvoid(uint64 x);
+Instance oTAInstance(uint64 x);

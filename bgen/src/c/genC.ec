@@ -18,8 +18,6 @@ define _noHeadClass = "ClassType_noHeadClass";
 define _unionClass = "ClassType_unionClass";
 define _systemClass = "ClassType_systemClass";
 
-AST ast;
-
 class CGen : Gen
 {
    char * cFileName;
@@ -179,6 +177,7 @@ class CGen : Gen
          case CO:          return PrintString(       "CO(", name, ")");
          case SUBCLASS:    return PrintString( "subclass(", name, ")");
          case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
+         case T:           return getTemplateClassSymbol(   name, false);
          case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
          case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
          case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
@@ -220,12 +219,15 @@ class CGen : Gen
       {
          DynamicString z { };
          n = (NameSpacePtr)ns.ns;
-         z.println("");
-         sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
-         sectionComment_hdr(z, _ns); sectionComment_msg(z, ns.fullName); sectionComment_ftr(z); z.println("");;
-         sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
-         z.println("");
-         n.output.Add(ASTRawString { string = CopyString(z.array) });
+         if(!python)
+         {
+            z.println("");
+            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
+            sectionComment_hdr(z, _ns); sectionComment_msg(z, ns.fullName); sectionComment_ftr(z); z.println("");;
+            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
+            z.println("");
+            n.output.Add(ASTRawString { string = CopyString(z.array) });
+         }
          bmod.orderedNamespaces.Add(n);
          delete z;
       }
@@ -256,7 +258,7 @@ class CGen : Gen
    void manualTypes(BNamespace n)
    {
       MapNode<const String, const String> node;
-      for(node = manualTypedefs.root.minimum; node; node = node.next)
+      for(node = !python ? manualTypedefs.root.minimum : pythonManualTypedefs.root.minimum; node; node = node.next)
       {
          if(node.value)
          {
@@ -385,9 +387,17 @@ class CGen : Gen
          d.nspace.addContent(v);
          d.out = out;
          if(lib.ecereCOM && d.isNull)
-            out.output.Add(astNullDefine());
+         {
+            if(!python)
+               out.output.Add(astNullDefine());
+         }
          else
-            out.output.Add(astDefine(df, d, v));
+         {
+            Expression exp = ParseExpressionString((char *)df.value);
+            if(!python || exp.type != instanceExp)
+               out.output.Add(astDefine(df, d, exp, v));
+            FreeExpression(exp);
+         }
       }
    }
 
@@ -467,11 +477,14 @@ class CGen : Gen
          }
          if(!clReduce && cl.type != enumClass)
          {
-            o.output.Add(astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/));
+            if(!python || !pythonSkipHardcodedTypedefs.Find(cl.name))
             {
-               DynamicString z { };
-               ec2PrintToDynamicString(z, o.output.lastIterator.data, false);
-               delete z;
+               o.output.Add(astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/));
+               {
+                  DynamicString z { };
+                  ec2PrintToDynamicString(z, o.output.lastIterator.data, false);
+                  delete z;
+               }
             }
          }
          if(cl.type == bitClass)
@@ -512,7 +525,7 @@ class CGen : Gen
          char * s;
          if(!skip)
          {
-            const char * ext = "extern THIS_LIB_IMPORT ";
+            const char * ext = !python ? "extern THIS_LIB_IMPORT " : "extern ";
             if(g_.lib.ecere && c.isWindow) skip = true;
             s = PrintString(skip ? "// " : "", ext, g_.sym.__class, " * ", c.coSymbol, ";");
             o = c.outClassPointer = bmod.getClassPointerOutput((UIntPtr)c, &init); assert(init);
@@ -620,6 +633,26 @@ Map<const String, const String> manualTypedefs { [
    { null, null }
 ] };
 
+Map<const String, const String> pythonManualTypedefs { [
+   { "constString", "const char *" },
+   { "any_object", "const void *" },
+   /*{ "CommonControl", "Window" },
+   { "DataBox", "CommonControl" },
+   { "Surface", "Instance" },*/
+   { null, null }
+] };
+
+AVLTree<const String> pythonSkipHardcodedTypedefs { [
+   "Instance",
+   "Surface",
+   "Window",
+   "CommonControl",
+   "DataBox",
+   "EditBox",
+   "Size",
+   null
+] };
+
 Map<String, Array<String>> dependencyDefines { };
 AVLTree<String> enumValueNames { }; // through dependencies as well
 
@@ -639,7 +672,8 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
    //   thisClassName = md.dataType.staticMethod ? null : md.dataType.thisClass ? md.dataType.thisClass.className : cl.name;
    // todo: make into an inline function if possible and drop the #define method callers
    // usage comment...
-   z.print("// ");
+   if(!python)
+      z.print("// ");
    zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, from = ti*/ }, { anonymous = true }, vTop);
    if(forInstance)
       z.printx(" Instance_", m.mname, "(");
@@ -725,6 +759,9 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       ec2PrintToDynamicString(z, params, false);
    }
    z.printxln(");");
+
+   if(!python)
+   {
 
    if(forInstance)
       z.printx("#define Instance_", m.mname, "(");
@@ -886,6 +923,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       z.printx(")");
    }
    z.printxln("");
+   } // !python
    //delete classTypeName;
    delete thisTypeName;
 }
@@ -919,7 +957,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
          else
          {
             bool imp = mode == _import;
-            char * port = PrintString(imp ? "extern " : "", imp ? "THIS_LIB_IMPORT " : "LIB_EXPORT ");
+            char * port = PrintString(imp ? "extern " : "", !python ? imp ? "THIS_LIB_IMPORT " : "LIB_EXPORT " : "");
             z.printxln(port, g_.sym._property, " * ", p.p, ";");
             if(pt.Set)
             {
@@ -945,18 +983,21 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
       }
       if(mode == _import && c.cl.type == unitClass && p.cConv && p.cConv.cl.type == unitClass)
       {
-         // TODO: Improve how all this is typically done... see DataValueType char * conversion property
-         DataValueType type = cl.dataTypeString;
-
-         genPropertyConversion(z, c, p, type, pt.Get);
-         genPropertyConversion(z, c, p, type, pt.Set);
-
-         if(!pt.Get && !pt.Set)
+         if(!python)
          {
-            const char * dataType = tokenTypeString(cl.dataType);
-            z.printxln("#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))");
-            z.printxln("#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))");
-            if(haveContent) *haveContent = true;
+            // TODO: Improve how all this is typically done... see DataValueType char * conversion property
+            DataValueType type = cl.dataTypeString;
+
+            genPropertyConversion(z, c, p, type, pt.Get);
+            genPropertyConversion(z, c, p, type, pt.Set);
+
+            if(!pt.Get && !pt.Set)
+            {
+               const char * dataType = tokenTypeString(cl.dataType);
+               z.printxln("#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))");
+               z.printxln("#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))");
+               if(haveContent) *haveContent = true;
+            }
          }
       }
       raw.string = CopyString(z.array);
@@ -1006,7 +1047,7 @@ define cw = 32; //16; //84; // column width
 
 ClassDefDeclaration astClassDefDecl(const char * ident, TypeInfo ti, BVariant vTop)
 {
-   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, /*vTop*/null/*, null*/) };
+   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, /*python ? vTop : */null/*, null*/) };
 }
 
 enum CreateDeclInitMode
@@ -1193,7 +1234,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
             if(!t.tp)
             {
                if(t.c.cl.templateClass.templateClass)
-                  baseName = getTemplateClassSymbol(t.c.cl.templateClass.name);
+                  baseName = g_.allocMacroSymbolName(false, T, t.c.cl.templateClass.name, null, 0);
                else
                {
                   BClass c = t.c.cl.templateClass;
@@ -1328,7 +1369,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          quals.Add(SpecName { name = CopyString("...") });
          break;
       case vaListType:
-         quals.Add(SpecName { name = CopyString("va_list") });
+         quals.Add(SpecName { name = CopyString(!python ? "va_list" : "...") });
          break;
       case voidType: case charType: case shortType: case intType:
       case int64Type: case int128Type: case longType: case floatType:
@@ -1549,7 +1590,25 @@ DeclArray astDeclArray(ASTDeclarator declarator, DeclarationInit di, bool setExp
          if(t.arraySizeExp && t.arraySizeExp.type == constantExp && t.arraySizeExp.constant)
             d.exp = ExpConstant { constant = CopyString(t.arraySizeExp.constant) };
          else
-            d.exp = ExpConstant { constant = Expression2String(t.arraySizeExp) };
+         {
+            char * constant = null;
+            char * exp = Expression2String(t.arraySizeExp);
+            Expression e = ParseExpressionString(exp);
+            SetInBGen(true);
+            SetInCompiler(true);
+            SetParsingType(true);
+            ProcessExpressionType(e);
+            //ProcessExpressionInstPass(e);
+            if(python)
+               ComputeExpression(e);
+            SetInCompiler(false);
+            SetParsingType(false);
+            constant = Expression2String(e);
+            SetInBGen(false);
+            d.exp = ExpConstant { constant = constant };
+            delete exp;
+            FreeExpression(e);
+         }
       }
       *type = type->arrayType;
       decl = d;
@@ -1573,7 +1632,7 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
    int ptr2 = 0;
    if(opt._extern)
       specs.Add(SpecBase { specifier = _extern });
-   if(!opt.anonymous)
+   if(!opt.anonymous && !python)
    {
       if(opt._dllimport)
          specs.Add(SpecName { name = CopyString("LIB_IMPORT") });
@@ -1694,27 +1753,96 @@ bool isOkForPyCFFI(TypeKind kind)
    return kind == charType || kind == intType || kind == longType/* || kind == int64Type || kind == int128Type*/;
 }
 
-ASTRawString astDefine(DefinedExpression df, BDefine d, BVariant v)
+ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v)
 {
    ASTRawString raw { };
    DynamicString z { };
    char * s;
    char * val;
-   Expression e = ParseExpressionString((char *)df.value);
+   bool simple;
+
+   SetInDocumentor(false);
    SetInBGen(true);
    SetInCompiler(true);
    SetParsingType(true);
+   if(python) SetInBGen(false);
    ProcessExpressionType(e);
    ProcessExpressionInstPass(e);
+   if(python) SetInBGen(true);
+   if(python)
+      ComputeExpression(e);
    SetInCompiler(false);
    SetParsingType(false);
    val = Expression2String(e);
    SetInBGen(false);
+   SetInDocumentor(true);
+
+   simple = python && e.type == constantExp && isOkForPyCFFI(e.expType.kind);
    for(s = val; *s; s++) if(*s == '\n') *s = ' ';
 
-   z.printxln("#define ", d.name, " (", val, ")");
+   if(!python)
+      z.printxln("#define ", d.name, " (", val, ")");
+   else if(simple)
+      z.printxln("#define ", d.name, " ", simple ? val : "...");
+   else
+   {
+      if(!strcmp(d.name, "fstrcmp")) // hack // tweaked "inBGen" libec will not give proper e.expType
+         z.printxln("int ", d.name, "(const char *, const char *);");
+      else if(!strcmp(d.name, "strnicmp"))
+      {
+         z.printxln("int strnicmp(const char *, const char *, uintsize n);");
+         {
+            Class clDep = eSystem_FindClass(g_.mod, "uintsize");
+            assert(clDep != null);
+            if(clDep)
+               v.processDependency(oother, otypedef, clDep);
+         }
+      }
+      else if(!strcmp(d.name, "strcmpi"))
+         z.printxln("int strcmpi(const char *, const char *);");
+      else if(!strcmp(d.name, "strnicmp"))
+      {
+         z.printxln("int strnicmp(const char *, const char *, uintsize n);");
+         {
+            Class clDep = eSystem_FindClass(g_.mod, "uintsize");
+            assert(clDep != null);
+            if(clDep)
+               v.processDependency(oother, otypedef, clDep);
+         }
+      }
+      else if(e.expType && (e.type == constantExp || e.type == bracketsExp || e.type == conditionExp ||
+            e.type == extensionCompoundExp || e.type == stringExp || e.type == opExp ||
+            e.type == instanceExp || e.type == identifierExp || e.type == stringExp))
+      {
+         bool constant = e.expType.constant;
+         char * type;
+         Type t = unwrapPointerType(e.expType, null);
+         char * depType = printType(t, true, false);
+         Class clDep = eSystem_FindClass(g_.mod, depType);
+         if(e.expType.kind == pointerType)
+            e.expType.constant = true;
+         type = printType(e.expType, true, false);
+         /*if(e.expType.kind == functionType)
+         {
+            char * s, *d;
+            for(s = d = &type[0]; *s; s++) if(*s != ':') *d++ = *s;
+            if(d != s) *d = 0;
+            z.printxln(type, ";");
+         }
+         else*/
+         {
+            z.printxln("static ", e.expType.constant ? "" : "const ", type, " ", d.name, ";");
+            assert(clDep != null);
+            if(clDep)
+               v.processDependency(oother, otypedef, clDep);
+         }
+         if(e.expType.kind == pointerType)
+            e.expType.constant = constant;
+         delete type;
+         delete depType;
+      }
+   }
    delete val;
-   FreeExpression(e);
    raw.string = CopyString(z.array);
    delete z;
    return raw;
@@ -1731,8 +1859,11 @@ ASTRawString astEnum(Class cl, BClass c)
    {
       ASTNode node = astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/);
       ec2PrintToDynamicString(z, node, true);
-      z.println("#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)");
-      z.print("enum boolean {");
+      if(!python)
+      {
+         z.println("#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)");
+         z.print("enum boolean {");
+      }
    }
    else
    {
@@ -1742,43 +1873,61 @@ ASTRawString astEnum(Class cl, BClass c)
       else
       {
          const char * dataType = tokenTypeString(cl.dataType);
-         z.println("#if CPP11");
-         z.printxln("enum C(", cl.name, ") : ", dataType, noValues ? ";" : "");
-         z.println("#else");
+         if(!python)
+         {
+            z.println("#if CPP11");
+            z.printxln("enum C(", cl.name, ") : ", dataType, noValues ? ";" : "");
+            z.println("#else");
+         }
          {
             ASTNode node = astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/);
             ec2PrintToDynamicString(z, node, true);
          }
-         z.printxln("enum C(", cl.name, ")", noValues ? ";" : "");
-         z.println("#endif");
+         if(!python)
+            z.printxln("enum C(", cl.name, ")", noValues ? ";" : "");
+         else if(!noValues)
+            z.printxln("enum");
+         if(!python)
+            z.println("#endif");
          if(!noValues)
             z.print("{");
       }
    }
-   for(item = enumeration.values.first; item; item = item.next)
+   if(!python || !c.isBool)
    {
-      char b[1024];
-      b[0] = 0;
-      if((int64)item.data >= 0)
-         PrintBuf(b, sizeof(b) - 1, item.data);
-      else
-         PrintBuf(b, sizeof(b) - 1, (int64)item.data);
-      if(!b[0])
-         strcpy(b, "0x0");
-      if(c.isBool)
-         z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", item.name, " = ", b);
-      else
-         z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", cl.name, "_", item.name, " = ", b);
+      for(item = enumeration.values.first; item; item = item.next)
+      {
+         char b[1024];
+         b[0] = 0;
+         if((int64)item.data >= 0)
+            PrintBuf(b, sizeof(b) - 1, item.data);
+         else
+            PrintBuf(b, sizeof(b) - 1, (int64)item.data);
+         if(!b[0])
+            strcpy(b, "0x0");
+         if(c.isBool)
+            z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", item.name, " = ", b);
+         else
+            z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", cl.name, "_", item.name, " = ", b);
+      }
+      if(!noValues)
+         z.println("\n};");
+      else if(!python)
+         z.println("\n");
    }
-   if(!noValues)
-      z.println("\n};");
-   else
-      z.println("\n");
    if(c.isBool)
    {
-      z.println("#endif");
-      z.println("#define eC_true   ((C(bool))1)");
-      z.println("#define eC_false  ((C(bool))0)");
+      if(!python)
+      {
+         z.println("#endif");
+         z.println("#define eC_true   ((C(bool))1)");
+         z.println("#define eC_false  ((C(bool))0)");
+      }
+      else
+      {
+         z.println("#define false 0");
+         z.println("#define true 1");
+      }
    }
    raw.string = CopyString(z.array);
    delete z;
@@ -1792,7 +1941,7 @@ ASTRawString astBitTool(Class cl, BClass c)
    Array<String> bitMembers = null;
    bool haveContent = false;
    DataMember dm; IterDataMember dat { cl };
-   if(cl.members.count <= 4) bitMembers = { };
+   if(!python && cl.members.count <= 4) bitMembers = { };
    while((dm = dat.next(all)))
    {
       BitMember bm = (BitMember)dm;
@@ -1815,11 +1964,14 @@ ASTRawString astBitTool(Class cl, BClass c)
          z.printxln("#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
                dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos);
          z.printxln("#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
-         z.printxln("#define ", n, "(x)", spaces(48, strlen(n) + 3),
-               " ((((", cl.name, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
-         z.printxln("#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
-               " (x) = ((", cl.name, ")(x) & ~((", cl.name, ")", n_,
-               "MASK)) | (((", cl.name, ")(", bm.name, ")) << ", n_, "SHIFT)");
+         if(!python)
+         {
+            z.printxln("#define ", n, "(x)", spaces(48, strlen(n) + 3),
+                  " ((((", cl.name, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
+            z.printxln("#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
+                  " (x) = ((", cl.name, ")(x) & ~((", cl.name, ")", n_,
+                  "MASK)) | (((", cl.name, ")(", bm.name, ")) << ", n_, "SHIFT)");
+         }
          haveContent = true;
          delete x;
          delete n_;
@@ -1868,13 +2020,13 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
    {
       *haveContent = true;
       if(!methodFlag || methodFlag == vTblID)
-         z.printxln("extern ", "THIS_LIB_IMPORT ", "int ", m.v, ";");
+         z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", "int ", m.v, ";");
       if(!methodFlag || methodFlag == virtualMethodCaller)
          cgenPrintVirtualMethodDefs(z, c, m, c.is_class/*assumeTypedObject*/, instanceClass, vTop);
       if(!methodFlag || methodFlag == virtualMethodImport)
       {
          if(!c.is_class || !instanceClass)
-            z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.method, " * ", m.m, ";");
+            z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.method, " * ", m.m, ";");
       }
    }
    else if(md.type == normalMethod)

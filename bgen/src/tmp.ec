@@ -145,6 +145,11 @@ Map<String, const String> easyFuncNames
    ]
 };
 
+AVLTree<const String> skipPyFunctionTree { [
+   "PrintStdArgsToBuffer",
+   null
+] };
+
 AVLTree<const String> skipFunctionTree { [
    "acos",
    "acosh",
@@ -561,7 +566,7 @@ char * getClassTypeName(Class c)
    return name;
 }
 
-char * getTemplateClassSymbol(const char * className)
+char * getTemplateClassSymbol(const char * className, bool preexpanded)
 {
    int count = 0;
    const char * s;
@@ -572,7 +577,7 @@ char * getTemplateClassSymbol(const char * className)
       char * result = getNoNamespaceString(className, null, false);
       int len = strlen(result);
       char * s;
-      char * output = new char[len + count * 3 + 1];
+      char * output = new char[len + count * (preexpanded ? 9 : 3) + 1];
       char * part = result;
       char * close = result + len;
       *output = 0;
@@ -585,16 +590,16 @@ char * getTemplateClassSymbol(const char * className)
          }*/
          if(*s == '<')
          {
-            strcat(output, "T(");
+            strcat(output, preexpanded ? "template_" : "T(");
             *s = 0;
             strcat(output, part);
-            strcat(output, ", ");
+            strcat(output, preexpanded ? "_" : ", ");
             part = s + 1;
             for(close--; *close; close--)
             {
                if(*close == '>')
                {
-                  *close = ')';
+                  *close = preexpanded ? ' ' : ')'; // this might not work in preexpanded. add pass to remove spaces maybe?
                   break;
                }
             }
@@ -774,4 +779,29 @@ SpecialType specialType(Type t)
    else if(isBaseClass)
       return baseClass;
    return normal;
+}
+
+void fileDataCopy(File input, File output)
+{
+   byte buffer[65536];
+   input.Seek(0, start);
+   for(;!input.Eof();)
+   {
+      uint count = input.Read(buffer, 1, sizeof(buffer));
+      if(count)
+         output.Write(buffer, 1, count);
+   }
+}
+
+char * CopyAllNonCapsString(const char * string)
+{
+   int len = strlen(string);
+   char * output = new char[len+1];
+   const char * s = string;
+   char * o = output;
+   char ch;
+   for(; (ch = *s); s++)
+      *o++ = (ch < 128) ? (char)tolower(ch) : ch; // TODO: UNICODE TO UPPER -- REFER EditBox.ec
+   *o = 0;
+   return output;
 }
