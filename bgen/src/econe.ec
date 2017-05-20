@@ -107,6 +107,17 @@ void openModule(const char * filePath)
    SetSymbolsDir(null);
 }
 
+Type typeDataMember(DataMember dm, Class cl)
+{
+   if(!dm.dataType)
+   {
+      Context context = SetupTemplatesContext(cl);
+      dm.dataType = ProcessTypeString(dm.dataTypeString, false);
+      FinishTemplatesContext(context);
+   }
+   return dm.dataType;
+}
+
 void printDependencies(Module start)
 {
    SubModule m;
