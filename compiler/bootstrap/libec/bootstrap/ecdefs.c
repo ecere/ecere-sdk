@@ -2480,7 +2480,6 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ifx", 319);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_else", 320);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_class", 321);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClass", 322);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "className", 323);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_property", 324);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "setProp", 325);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "getProp", 326);

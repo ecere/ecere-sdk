@@ -1326,6 +1326,7 @@ unsigned int isWatchable = 0;
 int classType = 0;
 unsigned int fixed = 0;
 unsigned int noExpansion = 0;
+int accessMode = 1;
 int inheritanceAccess = 1;
 
 for(; ; )
@@ -1340,7 +1341,9 @@ if(line[0] == '[')
 if(!strcmp(line, "[Remote]"))
 isRemote = 1;
 else if(!strcmp(line, "[Static]"))
-isStatic = 1;
+isStatic = 1, accessMode = 3;
+else if(!strcmp(line, "[Private]"))
+accessMode = 2;
 else if(!strcmp(line, "[Fixed]"))
 fixed = 1;
 else if(!strcmp(line, "[No Expansion]"))
@@ -1375,7 +1378,7 @@ const char * baseName = (classType == 0 && importType == 2 && isRemote) ? "DCOMC
 if(!isRemote || (importType != 2) || (!sourceFile || !strstr(sourceFile, ".main.ec")))
 {
 if(!regClass || regClass->internalDecl)
-regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, name, isRemote ? (((void *)0)) : baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
+regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, name, isRemote ? (((void *)0)) : baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : accessMode, inheritanceAccess);
 if(regClass && isRemote)
 regClass->isRemote = (importType == 2) ? 1 : 2;
 if(isRemote)
@@ -1387,7 +1390,7 @@ char className[1024] = "DCOMClient_";
 strcat(className, name);
 if(!existingClass)
 existingClass = DeclClass((((void *)0)), name);
-regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, className, baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
+regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, className, baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : accessMode, inheritanceAccess);
 }
 if(regClass)
 regClass->isRemote = (importType == 2) ? 1 : 3;
@@ -1433,9 +1436,13 @@ isRemote = 0;
 isWatchable = 0;
 fixed = 0;
 isStatic = 0;
+accessMode = 1;
 }
 else if(!strcmp(line, "[Enum Values]"))
 {
+long long lastValue = -1;
+unsigned int lastValueSet = 0;
+
 for(; ; )
 {
 char * equal;
@@ -1456,10 +1463,15 @@ memcpy(name, line, (int)(equal - line));
 name[equal - line] = '\0';
 __ecereNameSpace__ecere__sys__TrimLSpaces(name, name);
 __ecereNameSpace__ecere__sys__TrimRSpaces(name, name);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, name, strtoll(equal + 1, (((void *)0)), 0));
+lastValue = strtoll(equal + 1, (((void *)0)), 0);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, name, lastValue);
+lastValueSet = 1;
 }
 else
 {
+if(lastValueSet)
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, line, ++lastValue);
+else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, line);
 }
 }

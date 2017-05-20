@@ -2316,6 +2316,8 @@ classType = regClass->type;
 if(classType == 4 && enumValues && (inCompiler || !buildingECERECOMModule))
 {
 struct Enumerator * e;
+long long lastValue = -1;
+unsigned int lastValueSet = 0;
 
 for(e = enumValues->first; e; e = e->next)
 {
@@ -2376,13 +2378,25 @@ case 3:
 default:
 value = op.type->isSigned ? (long long)op.__anon1.i : (int)op.__anon1.ui;
 }
+lastValue = value;
+lastValueSet = 1;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, value);
 }
 else
-__ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
-}
+{
+if(lastValueSet)
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, ++lastValue);
 else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
+}
+}
+else
+{
+if(lastValueSet)
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, ++lastValue);
+else
+__ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
+}
 }
 {
 struct __ecereNameSpace__ecere__com__EnumClassData * baseData = regClass->data;

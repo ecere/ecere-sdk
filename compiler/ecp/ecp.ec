@@ -25,8 +25,8 @@ struct ClassDefine : Definition
    bool isRemote;
    bool isWatchable;
    bool fixed;
-   bool isStatic;
    bool noExpansion;
+   AccessMode accessMode;
 };
 
 struct Define : Definition
@@ -564,7 +564,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       type = classDefinition;
       name = CopyString(symbol.string);
       base = baseName[0] ? CopyString(baseName) : null;
-      isStatic = declMode == staticAccess;
+      accessMode = declMode;
       isRemote = symbol.isRemote;
       isWatchable = isWatchable;
    };
@@ -1167,8 +1167,10 @@ static void OutputSymbols(const char * fileName)
             ClassDefine classDefine = (ClassDefine) definition;
 
             f.Printf("   %s\n", definition.name);
-            if(classDefine.isStatic)
+            if(classDefine.accessMode == staticAccess)
                f.Printf("      [Static]\n");
+            if(classDefine.accessMode == privateAccess)
+               f.Printf("      [Private]\n");
             if(classDefine.fixed)
                f.Printf("      [Fixed]\n");
             if(classDefine.noExpansion)
@@ -1258,7 +1260,7 @@ static void OutputSymbols(const char * fileName)
                f.Printf("         .\n");
             }
 
-            if(!classDefine.isStatic)
+            if(classDefine.accessMode != staticAccess)
             {
                if(classDefine.methods.first)
                {

@@ -7658,7 +7658,12 @@ op.ops = uintOps;
 op.kind = 3;
 break;
 case 4:
-if(type->isSigned)
+if(exp->__anon1.__anon1.constant[0] == '\'')
+{
+op.__anon1.i = exp->__anon1.__anon1.constant[1];
+op.ops = intOps;
+}
+else if(type->isSigned)
 {
 op.__anon1.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->__anon1.__anon1.constant, (((void *)0)), 0);
 op.ops = int64Ops;

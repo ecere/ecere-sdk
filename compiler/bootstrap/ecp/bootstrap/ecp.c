@@ -281,8 +281,8 @@ struct __ecereNameSpace__ecere__sys__OldList methods;
 unsigned int isRemote;
 unsigned int isWatchable;
 unsigned int fixed;
-unsigned int isStatic;
 unsigned int noExpansion;
+int accessMode;
 } ecere_gcc_struct;
 
 struct FunctionDefine
@@ -1641,8 +1641,10 @@ struct __ecereNameSpace__ecere__com__Class * _class = __ecereNameSpace__ecere__c
 struct ClassDefine * classDefine = (struct ClassDefine *)definition;
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   %s\n", definition->name);
-if(classDefine->isStatic)
+if(classDefine->accessMode == 3)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      [Static]\n");
+if(classDefine->accessMode == 2)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      [Private]\n");
 if(classDefine->fixed)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      [Fixed]\n");
 if(classDefine->noExpansion)
@@ -1745,7 +1747,7 @@ break;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         .\n");
 }
-if(!classDefine->isStatic)
+if(classDefine->accessMode != 3)
 {
 if(classDefine->methods.first)
 {
@@ -1837,6 +1839,8 @@ struct __ecereNameSpace__ecere__com__Class * regClass = symbol->__anon1.register
 if(regClass && enumValues)
 {
 struct Enumerator * e;
+long long lastValue = -1;
+unsigned int lastValueSet = 0;
 
 for(e = enumValues->first; e; e = e->next)
 {
@@ -1901,6 +1905,8 @@ default:
 value = op.type->isSigned ? (long long)op.__anon1.i : (int)op.__anon1.ui;
 }
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, value);
+lastValueSet = 1;
+lastValue = value;
 }
 else
 {
@@ -1910,11 +1916,19 @@ expString[0] = 0;
 PrintExpression(e->exp, expString);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ecp", "error: could not resolve value %s for enum %s in precompiler\n", (((void *)0))), expString, regClass->name);
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__thisModule) + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->exitCode = 1;
+if(lastValueSet)
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, ++lastValue);
+else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
 }
 }
 else
+{
+if(lastValueSet)
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, ++lastValue);
+else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
+}
 }
 }
 }
@@ -2411,7 +2425,7 @@ regClass->symbol = symbol;
 classDefine = __extension__ ({
 struct ClassDefine * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDefine);
 
-__ecereInstance1->type = 1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), __ecereInstance1->base = baseName[0] ? __ecereNameSpace__ecere__sys__CopyString(baseName) : (((void *)0)), __ecereInstance1->isStatic = declMode == 3, __ecereInstance1->isRemote = symbol->isRemote, __ecereInstance1->isWatchable = isWatchable, __ecereInstance1;
+__ecereInstance1->type = 1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(symbol->string), __ecereInstance1->base = baseName[0] ? __ecereNameSpace__ecere__sys__CopyString(baseName) : (((void *)0)), __ecereInstance1->accessMode = declMode, __ecereInstance1->isRemote = symbol->isRemote, __ecereInstance1->isWatchable = isWatchable, __ecereInstance1;
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&precompDefines, classDefine);
 if(classType == 6)
@@ -3078,8 +3092,8 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fixed", "bool", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isStatic", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "noExpansion", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "accessMode", "ecere::com::AccessMode", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Define", "Definition", sizeof(struct Define), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Define = class;
