@@ -602,9 +602,9 @@ static void WriteMain(const char * fileName)
                      if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                      {
                         if(prop.hasSet)
-                           f.Printf("   __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);
+                           f.Printf("   if(_property) __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);
                         if(prop.hasGet)
-                           f.Printf("   __ecereProp_%s_Get_%s = _property.Get;\n", className, propName);
+                           f.Printf("   if(_property) __ecereProp_%s_Get_%s = _property.Get;\n", className, propName);
                      }
                   }
                   f.Printf("\n");
