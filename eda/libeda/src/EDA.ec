@@ -336,7 +336,6 @@ public:
       list.ClearFields();
       for(fld = firstField; fld; fld = fld.next)
       {
-         Class c = fld.type;
          DataField df
          {
             alignment = left;
