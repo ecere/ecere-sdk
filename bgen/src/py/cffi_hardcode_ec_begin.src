@@ -1,0 +1,34 @@
+// special types
+typedef const void * any_object;
+typedef const char * constString;
+
+// libecere stuff that bleeds into ecereCOM
+typedef int Alignment;
+enum
+{
+   Alignment_left = 0x0,
+   Alignment_right = 0x1,
+   Alignment_center = 0x2
+};
+typedef uint32_t DataDisplayFlags;
+
+// libec stuff
+typedef void Type;
+typedef void Instantiation;
+typedef void ClassDefinition;
+
+// more ecere stuff that bleeds into ecereCOM
+typedef struct class_members_Instance * Instance;
+typedef Instance Surface;
+typedef Instance Window;
+typedef Window CommonControl;
+typedef CommonControl DataBox;
+typedef CommonControl EditBox;
+
+typedef int MinMaxValue;
+struct Size
+{
+   MinMaxValue w;
+   MinMaxValue h;
+};
+typedef struct Size Size;

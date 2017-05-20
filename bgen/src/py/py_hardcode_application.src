@@ -1,0 +1,19 @@
+   # hack: hardcoded content
+   appGlobals = []
+   def __init__(self, appGlobals = None):
+      global app
+      app = self
+      if appGlobals is not None:
+         self.appGlobals.append(appGlobals)
+      else:
+         self.appGlobals.append(globals())
+      self.impl = lib.eC_init(ffi.NULL, True, True, len(sys.argv), [ffi.new("char[]", i.encode('utf8')) for i in sys.argv])
+      self.registerClass(Instance, True)
+      self.registerClass(Module, True)
+      self.registerClass(Application, True)
+
+   @property
+   def lib(self): return self.appGlobals[-1].get("lib", None)
+   @property
+   def ffi(self): return self.appGlobals[-1].get("ffi", None)
+   # hack: end of hardcoded content

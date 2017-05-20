@@ -1,0 +1,19 @@
+
+   # hack: hardcoded content
+   def registerClass(self, n, isWrapper = False):
+      if isWrapper:
+         cn = "Py" + n.__name__
+         bn = n.__name__
+      else:
+         cn = n.__name__
+         b = n
+         while not hasattr(b, 'pyClass_' + b.__name__):
+            b = b.__bases__[0]
+         bn = b.__name__
+      pyClass = lib.eC_registerClass(lib.ClassType_normalClass, cn.encode('utf8'), bn.encode('utf8'), 8, 0,
+         ffi.cast("bool(*)(void *)", cb_Instance_constructor),
+         ffi.cast("void(*)(void *)", cb_Instance_destructor),
+         self.impl, lib.AccessMode_publicAccess, lib.AccessMode_publicAccess)
+      setattr(n, 'pyClass_' + n.__name__, pyClass)
+      pyClass.bindingsClass = ffi.new_handle(n)
+   # hack: end of hardcoded content
