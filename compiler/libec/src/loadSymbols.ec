@@ -172,6 +172,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                ClassType classType = normalClass;
                bool fixed = false;
                bool noExpansion = false;
+               AccessMode accessMode = publicAccess;
                AccessMode inheritanceAccess = publicAccess;
                for(;;)
                {
@@ -184,7 +185,9 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                      if(!strcmp(line, "[Remote]"))
                         isRemote = true;
                      else if(!strcmp(line, "[Static]"))
-                        isStatic = true;
+                        isStatic = true, accessMode = staticAccess;
+                     else if(!strcmp(line, "[Private]"))
+                        accessMode = privateAccess;
                      else if(!strcmp(line, "[Fixed]"))
                         fixed = true;
                      else if(!strcmp(line, "[No Expansion]"))
@@ -231,7 +234,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                            if(!isRemote || (importType != remoteImport) || (!sourceFile || !strstr(sourceFile, ".main.ec")))
                            {
                               if(!regClass || regClass.internalDecl)
-                                 regClass = eSystem_RegisterClass(classType, name, isRemote ? null : baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : publicAccess, inheritanceAccess);
+                                 regClass = eSystem_RegisterClass(classType, name, isRemote ? null : baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : accessMode, inheritanceAccess);
                               if(/*importType == Remote && */regClass && isRemote)
                                  regClass.isRemote = (importType == remoteImport) ? 1 : 2;
 
@@ -243,7 +246,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                     strcat(className, name);
                                     if(!existingClass)
                                        existingClass = DeclClass(null, name);
-                                    regClass = eSystem_RegisterClass(classType, className, baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : publicAccess, inheritanceAccess);
+                                    regClass = eSystem_RegisterClass(classType, className, baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : accessMode, inheritanceAccess);
                                  }
                                  if(regClass)
                                     regClass.isRemote = (importType == remoteImport) ? 1 : 3;
@@ -292,6 +295,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                         isWatchable = false;
                         fixed = false;
                         isStatic = false;
+                        accessMode = publicAccess;
                      }
                      else if(!strcmp(line, "[Enum Values]"))
                      {
