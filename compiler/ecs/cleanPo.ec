@@ -1,4 +1,5 @@
 import "ec"
+import "ecere"
 
 public struct CommentStringsPair
 {
