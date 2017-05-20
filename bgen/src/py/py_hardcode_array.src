@@ -1,0 +1,4 @@
+   # hack: hardcoded content
+   def __init__(self, templateParams = None, copySrc = None, impl = None):
+      Container.__init__(self, templateParams, copySrc, impl=impl)
+   # hack: end of hardcoded content

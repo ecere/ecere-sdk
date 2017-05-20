@@ -14,6 +14,26 @@ public:
    }
 };
 
+struct consttstr
+{
+public:
+   const String a;
+   const String b;
+   int OnCompare(consttstr o)
+   {
+      int result;
+           if(!a && o.a) result = 1;
+      else if(a && !o.a) result = -1;
+      else if(!(result = strcmp(a, o.a)))
+      {
+              if(!b && o.b) result = 1;
+         else if(b && !o.b) result = -1;
+         else result = strcmp(b, o.b);
+      }
+      return result;
+   }
+};
+
 struct tuintptr
 {
 public:

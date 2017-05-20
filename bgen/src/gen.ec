@@ -178,7 +178,7 @@ class SymbolNameCollection
    }
 }
 
-enum MacroType { C, CM, CO, TP, METHOD, PROPERTY, M_VTBLID, SUBCLASS, THISCLASS };
+enum MacroType { C, CM, CO, T, TP, METHOD, PROPERTY, M_VTBLID, SUBCLASS, THISCLASS };
 
 class Directory : struct
 {
@@ -493,10 +493,84 @@ private:
       return false;
    }
 
+   bool indirectlyDependsOn(BOutputPtr b)
+   {
+      /*BOutputPtr z = (BOutputPtr)x;
+
+      AVLTree<BVariantPtr> visited { };
+      List<BVariantPtr> stack { };
+      //if(checkForDependency(a, n, indirectOnly, visited, stack, circularDeps));
+      delete visited;
+      delete stack;
+
+      for(e : outputDependencies)
+      {
+      }
+      return false;*/
+
+      bool result = false;
+      List<BVariantPtr> stack { };
+      AVLTree<BVariantPtr> visited { };
+      stack.Add((BVariantPtr)this);
+      while(stack.count)
+      {
+         BOutput a = (BOutput)stack.firstIterator.data;
+         for(x : a.outputDependencies)
+         {
+            if(x == b)
+            {
+               result = true;
+               stack.RemoveAll();
+               break;
+            }
+            if(visited.Add((BVariantPtr)a))
+               stack.Add((BVariantPtr)a);
+         }
+         if(stack.count)
+            stack.Remove(stack.firstIterator.pointer);
+      }
+      delete visited;
+      delete stack;
+      return result;
+   }
+
+/*
+bool checkForDependency(BOutput a, BOutputPtr b, AVLTree<BVariantPtr> visited, List<BVariantPtr> stack)
+{
+   //Container<BOutputPtr> dependencies
+//    { };
+//   Array<BVariantPtr> stack { };
+//   if(checkForCircularOutputDependencies(a, n, indirectOnly, visited, stack, circularDeps))
+   stack.Add((BVariantPtr)a);
+   while(stack.count)
+   {
+      BOutput a = stack.firstIterator.data;
+      for(x : a.dependencies)
+      {
+         if(x == b)
+            return true;
+         if(visited.Add((BVariantPtr)a))
+            stack.Add((BVariantPtr)a);
+      }
+      stack.Remove(stack.firstIterator);
+   }
+   return false;
+}
+*/
+
    void processOutputDependency(BOutput to)
    {
       BNamespace a = nspace;
       BNamespace b = to.nspace;
+      if(python && py)
+      {
+         /*if(kind == vclass && to.kind == vclass)
+         {
+            //PrintLn(c.name, " depends on ", to.c.name);
+         }
+         //else if(kind == vdefine && to.kind == vclass);
+         else check();*/
+      }
       outputDependencies.Add((BVariantPtr)to);
       // dependencies outside current module already filtered out by BClass::processDependency()
       if(b != a)
@@ -520,7 +594,7 @@ public:
       if(tp)
          cname = g_.allocMacroSymbolName(false, TP, c.name, tp.name, 0);
       else
-         cname = getTemplateClassSymbol(c.cl.name);
+         cname = g_.allocMacroSymbolName(false, T, c.cl.name, null, 0);
    }
 }
 
@@ -762,6 +836,22 @@ class BModule : struct
       delete deps;
    }
 
+   void resetDependencies()
+   {
+/*
+         class BModule : struct
+            List<BNamespace> orderedNamespaces { };
+            Map<BTemplatonKey, BTemplaton> templatons { };
+
+         class BNamespace : struct
+            Array<ASTNode> output { };
+            List<BOutputPtr> orderedBackwardsOutputs { };
+            List<BOutputPtr> orderedOutputs { }; //List<BClass> orderedOutputs { };
+            List<BVariant> contents { };
+            Map<BNamespacePtr, AVLTree<BOutputPtr>> dependencies { }; // namespace dependencies with user ouput count
+*/
+   }
+
    void applyDependencies()
    {
       for(ni : orderedNamespaces)
@@ -907,6 +997,9 @@ class BNamespace : struct
    void sort()
    {
       bool sorted = true;
+      int fix = 0;
+      if(python && py)
+         printCircularOutputDependencies(orderedOutputs, false);
       while(sorted)
       {
          int x; // x
@@ -923,6 +1016,8 @@ class BNamespace : struct
                if((a.nspace == b.nspace || (b.kind == vclass && b.c.cl.templateClass)) && a.dependsOn(b))
                {
                   BOutput swap = (BOutput)orderedOutputs[d];
+                  if(b.indirectlyDependsOn((BOutputPtr)a))
+                     shh();
                   orderedOutputs.Remove(orderedOutputs.GetAtPosition(d, false, null));
                   orderedOutputs.Insert(x ? orderedOutputs.GetAtPosition(x - 1, false, null) : null, (BOutputPtr)swap);
                   sorted = true;
@@ -949,14 +1044,28 @@ class BNamespace : struct
                assert(d > x);
                if(/*a.nspace == b.nspace && */a.dependsOn(b))
                {
+                  if(b.indirectlyDependsOn((BOutputPtr)a))
+                  {
+                     //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
+                     shh();
+                  }
+                  else
+                  {
                   BOutput swap = (BOutput)orderedBackwardsOutputs[d];
                   orderedBackwardsOutputs.Remove(orderedBackwardsOutputs.GetAtPosition(d, false, null));
                   orderedBackwardsOutputs.Insert(x ? orderedBackwardsOutputs.GetAtPosition(x - 1, false, null) : null, (BOutputPtr)swap);
                   sorted = true;
+                  fix++;
                   break;
+                  }
                }
             }
             if(sorted) break;
+         }
+         if(fix > 128)
+         {
+            PrintLn("we were trying to sort ", name, " for ", g_.lang);
+            break;
          }
       }
    }
@@ -1042,7 +1151,7 @@ class BFunction : struct
       name = strptrNoNamespace(fn.name);
       isDllExport = strstr(fn.dataTypeString, "dllexport") == fn.dataTypeString;
       fname = getNoNamespaceString(fn.name, null, false);
-      skip = skipFunctionTree.Find(fname) ? true : false;
+      skip = (skipFunctionTree.Find(fname) || (python && skipPyFunctionTree.Find(fname))) ? true : false;
       ccfname = getNoNamespaceString(fn.name, null, true);
       gname = getMangledFunctionName(fn.name);
       easy = easyFuncNames[gname];
@@ -1094,6 +1203,7 @@ class BClass : struct
    Array<BOutput> outMethods { };
    Array<BOutput> outProperties { };
    Array<BOutput> outConversions { };
+   BOutput pyout;
 
    property Class
    {
@@ -1116,6 +1226,7 @@ class BClass : struct
    char * coSymbol;
    char * symbolName;
    char * baseSymbolName;
+   char * py_initializer;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
       bool ecere = gen.lib.ecere;
@@ -1126,9 +1237,9 @@ class BClass : struct
       // skipping these classes here as they are internal native types or base class/struct
       skipTypeDef = skipClassTypeDef.Find(cl.name) != 0;
       // skipping these classes here since they are hardcoded
-      if(ecere && ((cl.type == structClass && !strcmp(cl.name, "Size")) ||
-                   (cl.type == unitClass && !strcmp(cl.name, "MinMaxValue")) ||
-                   (cl.type == enumClass && !strcmp(cl.name, "Alignment"))))
+      if(ecere && ((!py && cl.type == structClass && !strcmp(cl.name, "Size")) ||
+            (!py && cl.type == unitClass && !strcmp(cl.name, "MinMaxValue")) ||
+            (!py && cl.type == enumClass && !strcmp(cl.name, "Alignment"))))
          skip = true;
       cname = getClassTypeName(cl);
       coSymbol = g_.allocMacroSymbolName(false, CO, cname, null, 0);
@@ -1160,16 +1271,19 @@ class BClass : struct
       noSpecMacro = noMacro || cl.type == enumClass || isString;
 
       if(cl.templateClass)
-         symbolName = getTemplateClassSymbol(cl.name);
+         symbolName = g_.allocMacroSymbolName(false, T, cl.name, null, 0);
       else
          symbolName = g_.allocMacroSymbolName(noMacro, C, name, null, 0);
+
+      if(python && py && isBool)
+         symbolName[0] = (char)toupper(symbolName[0]); // Bool
 
       clBase = getClassBaseAndProcessTemplateDataType(cl);
 
       if(clBase)
       {
          if(clBase.templateClass)
-            baseSymbolName = getTemplateClassSymbol(clBase.name);//getClassTypeName(clBase);
+            baseSymbolName = g_.allocMacroSymbolName(false, T, clBase.name, null, 0);
          else
          {
             bool enumDataType = cl.type == enumClass && clBase.type == systemClass;
@@ -1238,11 +1352,17 @@ class BClass : struct
 
       nativeSpec = checkNativeSpec(spec);
       if(nativeSpec || actualTypeNames.Find(spec)) noSpecMacro = true;
+      if(cl.type == unitClass)
+         //py_initializer = CopyString("0");
+         py_initializer = PrintString(symbolName, "(0)");
+      else
+         py_initializer = PrintString(symbolName, "()");
    }
    void free()
    {
       delete base; delete upper; delete spec; delete cname; delete symbolName; delete baseSymbolName;
       delete coSymbol;
+      delete py_initializer;
    }
    void OnFree() { free(); };
 };
@@ -1586,6 +1706,38 @@ bool checkForCircularNamespaceDependenciesB(BNamespacePtr a, BNamespace n, bool 
    }
    stack.lastIterator.Remove();
    return result;
+}
+
+void printCircularOutputDependencies(Container<BOutputPtr> orderedOutputs, bool indirectOnly)
+{
+   Map<SortedSetUIntPtr, Array<BVariantPtr>> circularDeps { };
+   for(e : orderedOutputs)
+   {
+      BOutput n = (BOutput)e;
+      BVariantPtr a = (BVariantPtr)e;
+      AVLTree<BVariantPtr> visited { };
+      Array<BVariantPtr> stack { };
+      if(checkForCircularOutputDependencies(a, n, indirectOnly, visited, stack, circularDeps))
+         ;//PrintLn("namespace ", n.name, " is involved in a circular namespace dependency");
+      delete visited;
+      delete stack;
+   }
+   if(circularDeps.count)
+   {
+      PrintLn("--------------- we have ", circularDeps.count, indirectOnly ? " indirect" : "", " circular dependencies");
+      for(c : circularDeps)
+      {
+         Array<BVariantPtr> s = c;
+         for(x : s)
+         {
+            //BOutput n = (BOutput)x;
+            //Print(" < -- ", n.info);
+         }
+         PrintLn("");
+         delete s;
+      }
+   }
+   delete circularDeps;
 }
 
 bool checkForCircularOutputDependencies(BVariantPtr a, BOutput n, bool indirectOnly,

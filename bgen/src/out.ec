@@ -104,7 +104,7 @@ void sectionComment_ftr(DynamicString out)
    out.concatx(" ", slashes(32, 0));
 }
 
-void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile, Map<String, String> vars)
+void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile, Map<String, String> vars, bool noComments)
 {
    File f = FileOpen(pathToFile, read);
    if(f)
@@ -117,6 +117,16 @@ void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
          {
             while(comment > line && isspace(*(comment - 1))) comment--;
             *comment = 0;
+         }
+         if(noComments)
+         {
+            char * s = strstr(line, "//");
+            comment = (comment && (!s || comment < s)) ? comment : s;
+            if(comment)
+            {
+               while(comment > line && isspace(*(comment - 1))) comment--;
+               *comment = 0;
+            }
          }
          if(line[0] && vars)
          {
@@ -144,6 +154,63 @@ void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
          }
          else if(line[0] || !comment)
             out.println(line);
+      }
+      delete f;
+   }
+}
+
+// there should be at least a partial common interface between a file and a string class
+// the sourceFileProcessToFile function is a essentially duplicate of sourceFileProcessToDynamicString function
+void sourceFileProcessToFile(File out, const char * pathToFile, Map<String, String> vars, bool noComments)
+{
+   File f = FileOpen(pathToFile, read);
+   if(f)
+   {
+      char line[4096];
+      while(f.GetLine(line, sizeof(line)))
+      {
+         char * comment = strstr(line, "#//");
+         if(comment)
+         {
+            while(comment > line && isspace(*(comment - 1))) comment--;
+            *comment = 0;
+         }
+         if(noComments)
+         {
+            char * s = strstr(line, "//");
+            comment = (comment && (!s || comment < s)) ? comment : s;
+            if(comment)
+            {
+               while(comment > line && isspace(*(comment - 1))) comment--;
+               *comment = 0;
+            }
+         }
+         if(line[0] && vars)
+         {
+            char * end, * search, * open, * close;
+            end = search = line;
+            while(*end && (open = strstr(search, "#(")) && (close = strstr(open + 2, ")#")) && (search = open + 2))
+            {
+               if(close - open > 2)
+               {
+                  char * val;
+                  *close = 0;
+                  if((val = vars[open + 2]))
+                  {
+                     char * part = end;
+                     *open = 0;
+                     out.Print(part);
+                     out.Print(val);
+                     end = search = close + 2;
+                  }
+                  else
+                     *close = ')';
+               }
+            }
+            out.PrintLn(end);
+         }
+         else if(line[0] || !comment)
+            out.PrintLn(line);
       }
       delete f;
    }

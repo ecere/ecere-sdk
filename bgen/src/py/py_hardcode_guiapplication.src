@@ -1,0 +1,10 @@
+   # hack: hardcoded content
+   def __init__(self, appGlobals = None):
+      Application.__init__(self)
+      lib.ecere_init(self.impl)
+      rApp = ffi.new("Instance *", self.impl); lib.Instance_evolve(rApp, lib.class_GuiApplication); self.impl = rApp[0]
+      if appGlobals is not None:
+         self.appGlobals.append(appGlobals)
+      else:
+         self.appGlobals.append(globals())
+   # hack: end of hardcoded content
