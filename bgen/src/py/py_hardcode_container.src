@@ -1,0 +1,79 @@
+   # hack: hardcoded content
+   def __init__(self, templateParams = None, copySrc = None, impl = None):
+      if impl is None:
+         if type(templateParams) != str and copySrc is None:
+            copySrc = templateParams
+            if isinstance(copySrc, list) and len(copySrc) > 0:
+               co = coFromPy(copySrc[0])
+               if co is not None: templateParams = "<" + ffis(co.name) + ">"
+      Instance.__init__(self, templateParams, impl=impl)
+      if copySrc is not None: self.copySrc = copySrc
+
+   def __getitem__(self, index):
+      itPtr = self.getAtPosition(index, False, None)
+      if itPtr == ffi.NULL: raise IndexError()
+      d = OTA(self.impl._class.templateArgs[0].dataTypeClass, self.getData(itPtr))
+      return d
+
+   def __len__(self): return getCount()
+
+   @property
+   def copySrc(self): return lib.Container_get_copySrc(self.impl)
+   @copySrc.setter
+   def copySrc(self, value):
+      if isinstance(value, Container): lib.Container_set_copySrc(self.impl, value)
+      if isinstance(value, list):
+         count = len(value)
+         co = ffi.NULL
+         dt = self.impl._class.templateArgs[0].dataTypeClass
+         if dt != ffi.NULL:
+            co = dt
+         if count > 0:
+            v0 = value[0]
+            pc = None
+            if co is None: co = coFromPy(v0)
+            if co is not None:
+               pcn = ffi.string(co.name).decode('utf8')
+               for ag in app.appGlobals:
+                  pc = ag.get(pcn, None)
+                  if pc is not None: break
+
+            if co == ffi.NULL:
+               # TODO: Have more type checks?
+               data = ffi.NULL
+            else:
+               ag_ffi = app.ffi
+               if co.type == lib.ClassType_normalClass or co.type == lib.ClassType_noHeadClass:
+                  data = ag_ffi.new("void *[]", count)
+                  for i in range(0, count):
+                     v = value[i]
+                     if isinstance(v, tuple) and pc is not None: v = pc(v)
+                     data[i] = v.impl if v is not None else ffi.NULL
+               elif co.type == lib.ClassType_structClass:
+                  data = ag_ffi.new(ffi.string(co.name).decode('utf8') + "[]", count)
+                  for i in range(0, count):
+                     v = value[i]
+                     if isinstance(v, tuple) and pc is not None: v = pc(v)    # TODO: Optimization to use tuple directly?
+                     if v is not None: data[i] = v.impl[0]
+               else:
+                  if co == lib.class_int: data = ag_ffi.new("int []", value)
+                  elif co == lib.class_float: data = ag_ffi.new("float []", value)
+                  elif co == lib.class_double: data = ag_ffi.new("double []", value)
+                  else:
+                     data = ag_ffi.new("uint[]", count)   # TODO: Determine proper data type / size (bit classes, units, enums, system)
+                     for i in range(0, count):
+                        v = value[i]
+                        if isinstance(v, tuple) and pc is not None: v = pc(v)
+                        data[i] = v.impl if v is not None else 0
+
+         bic = ffi.new("BuiltInContainer *", {
+               '_vTbl'     : lib.class_BuiltInContainer._vTbl,
+               '_class'    : lib.class_BuiltInContainer,
+               'data'      : data,
+               '_refCount' : 0,
+               'count'     : count,
+               'type'      : co
+               })
+
+         lib.Container_set_copySrc(self.impl, ffi.cast("Container", bic))
+   # hack: end of hardcoded content

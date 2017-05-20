@@ -2,23 +2,31 @@ import "genC"
 
 void cHeader(AST out, CGen g)
 {
-   cInHeaderFileComment(out, g);
-   cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_open.src");
-   cInHeaderIncludes(out, g);
-   cInHeaderModuleName(out, g);
-
-   if(g.lib.ecereCOM)
+   if(!python)
    {
-      cInHeaderEcereComRuntimeFunctions(out, g);
-      cInHeaderProcessSourceFile(out, g, "binding macros", ":src/c/c_header_ec_macros.src");
-   }
-   else if(g.lib.ecere)
-      cInHeaderEcereRuntimeMacros(out, g);
-   else if(g.lib.eda)
-      cInHeaderEDARuntimeMacros(out, g);
+      cInHeaderFileComment(out, g);
+      cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_open.src");
+      cInHeaderIncludes(out, g);
+      cInHeaderModuleName(out, g);
 
-   if(g.lib.ecereCOM)
-      cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/c/c_header_ec_hardcoded.src");
+      if(g.lib.ecereCOM)
+      {
+         cInHeaderEcereComRuntimeFunctions(out, g);
+         cInHeaderProcessSourceFile(out, g, "binding macros", ":src/c/c_header_ec_macros.src");
+      }
+      else if(g.lib.ecere)
+         cInHeaderEcereRuntimeMacros(out, g);
+      else if(g.lib.eda)
+         cInHeaderEDARuntimeMacros(out, g);
+
+      if(g.lib.ecereCOM)
+         cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/c/c_header_ec_hardcoded.src");
+   }
+   else
+   {
+      if(g.lib.ecereCOM)
+         cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/py/cffi_hardcode_ec_begin.src");
+   }
 
    cInHeaderTypes(out, g);
 
@@ -26,7 +34,13 @@ void cHeader(AST out, CGen g)
    if(g.lib.ecereCOM)
       cInHeaderThisModule(out, g);
    cInHeaderLibraryInitPrototype(out, g);
-   cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_close.src");
+   if(!python)
+      cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_close.src");
+   else
+   {
+      if(g.lib.ecereCOM)
+         cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/py/cffi_hardcode_ec_end.src");
+   }
 }
 
 static void cInHeaderTypes(AST out, CGen g)
@@ -39,7 +53,8 @@ static void cInHeaderTypes(AST out, CGen g)
          out.Add(a);
       if(n.orderedBackwardsOutputs.count)
       {
-         out.Add(ASTRawString { string = CopyString("// start -- moved backwards outputs") });
+         if(!python)
+            out.Add(ASTRawString { string = CopyString("// start -- moved backwards outputs") });
          for(optr : n.orderedBackwardsOutputs)
          {
             BOutput o = (BOutput)optr;
@@ -52,7 +67,8 @@ static void cInHeaderTypes(AST out, CGen g)
                }
             }
          }
-         out.Add(ASTRawString { string = CopyString("// end -- moved backwards outputs") });
+         if(!python)
+            out.Add(ASTRawString { string = CopyString("// end -- moved backwards outputs") });
       }
       for(optr : n.orderedOutputs)
       {
@@ -88,9 +104,9 @@ static void cInHeaderTypes(AST out, CGen g)
 static void cInHeaderProcessSourceFile(AST out, Gen g, const char * comment, const char * pathToFile)
 {
    ASTRawString raw { }; DynamicString z { };
-   if(comment)
+   if(comment && !python)
       bigCommentSection(z, comment);
-   sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars);
+   sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars, python);
    z.size--;
    if(z[z.count-1] == '\n');
       z[z.count-1] = 0;
@@ -266,9 +282,9 @@ static void cInHeaderLibraryInitPrototype(AST out, Gen g)
 {
    ASTRawString raw { }; DynamicString z { };
    if(g.lib.ecereCOM)
-      z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);");
+      z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);");
    else
-      z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);");
+      z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -293,7 +309,8 @@ static void cInHeaderDynamicLinkFunctionImports(AST out, Gen g)
          }
          if(f.isDllExport)
          {
-            ASTNode node = astFunction(f.gname, { type = fn.dataType, fn = fn }, { _extern = true, _dllimport = true }, null);
+            const char * fname = !python ? f.gname : f.easy ? f.easy : getFunctionNameThing(f);
+            ASTNode node = astFunction(fname, { type = fn.dataType, fn = fn }, { _extern = true, _dllimport = true }, null);
             ec2PrintToDynamicString(z, node, true);
          }
       }

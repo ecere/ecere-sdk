@@ -1,0 +1,24 @@
+# hardcoded content
+#// Angle must be defined first
+import math
+
+def tan(x):
+   if not isinstance(x, Angle): x = Angle(x)
+   return math.tan(x.impl)
+def sin(x):
+   if not isinstance(x, Angle): x = Angle(x)
+   return math.sin(x.impl)
+def cos(x):
+   if not isinstance(x, Angle): x = Angle(x)
+   return math.cos(x.impl)
+
+def atan(x):   return Angle(math.atan(x))
+def sin(x):    return Angle(math.asin(x))
+def cos(x):    return Angle(math.acos(x))
+
+def log(x):    return math.log(x)
+def log10(x):  return math.log10(x)
+def pow(x, y): return math.pow(x, y)
+def ceil(x):   return math.ceil(x)
+def floor(x):  return math.floor(x)
+# end of hardcoded content
