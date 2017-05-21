@@ -85,3 +85,16 @@ char * TrimTestCharsCopy(const char * string, int (*CharTest)(char), Trim trim, 
    output = renew output char[len+1];
    return output;
 }
+
+char * CopyAllCapsString(const char * string)
+{
+   int len = strlen(string);
+   char * output = new char[len+1];
+   const char * s = string;
+   char * o = output;
+   char ch;
+   for(; (ch = *s); s++)
+      *o++ = (ch < 128) ? (char)toupper(ch) : ch; // TODO: UNICODE TO UPPER -- REFER EditBox.ec
+   *o = 0;
+   return output;
+}
