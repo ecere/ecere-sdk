@@ -78,6 +78,56 @@ public class DynamicString : Array<char>
       va_end(args);
    }
 
+   void print(const String s)
+   {
+      int len = strlen(s);
+      if(len)
+      {
+         int pos = size-1;
+         if(pos == -1) { Add('\0'); pos = 0; }
+         size += len;
+         memcpy(&(this[pos]), s, len+1);
+      }
+   }
+
+   void println(const String s)
+   {
+      printf("%s\n", s);
+   }
+
+   void printf(const char * format, ...)
+   {
+      char string[MAX_F_STRING];
+      va_list args;
+      va_start(args, format);
+      vsnprintf(string, sizeof(string), format, args);
+      string[sizeof(string)-1] = 0;
+      va_end(args);
+      concat(string);
+   }
+
+   void printx(typed_object object, ...)
+   {
+      char string[MAX_F_STRING];
+      va_list args;
+      //int len;
+      va_start(args, object);
+      /*len = */PrintStdArgsToBuffer(string, sizeof(string), object, args);
+      concat(string);
+      va_end(args);
+   }
+
+   void printxln(typed_object object, ...)
+   {
+      char string[MAX_F_STRING];
+      va_list args;
+      //int len;
+      va_start(args, object);
+      /*len = */PrintStdArgsToBuffer(string, sizeof(string), object, args);
+      printf("%s\n", string);
+      va_end(args);
+   }
+
    void copySingleBlankReplTrim(String s, char replace, bool trim)
    {
       privateCommonCopyLenSingleBlankReplTrim(s, replace, trim, strlen(s));
