@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from pyEcere import *
-app = GuiApplication()
+from pyecere import *
+app = GuiApplication() #driver = "OpenGL")
 printLn("Testing Variadic Functions!\n", 1, " + ", 2, " = ", 1+2)
 printLn("Pi = ", 3.141592653589)
 
@@ -14,9 +14,9 @@ class MyForm(Window):
          hasMinimize = True,
          borderStyle = BorderStyle.sizable,
          clientSize = Size(640, 480),
-         background = Color(b = 255),
-         foreground = Color(r = 235, b = 115, g = 200),
-         font = FontResource("Merriweather", 30, outlineSize = 4.0, outlineFade = 0.2) )
+         background = ColorAlpha(a = 255, color = Color(b = 255)),
+         foreground = ColorAlpha(a = 255, color = Color(r = 235, b = 115, g = 200)),
+         font = FontResource("Merriweather", 30, outlineSize = 4.0, outlineFade = 0.2))
 
       def myOnRedraw(self, surface):
          surface.writeTextf(20, 20, I18N("Writing Stuff on the wall!!"))
@@ -24,11 +24,11 @@ class MyForm(Window):
 
       def button1Clicked(self, button, x, y, mods):
          printLn("I got pushed! (master is ", self.caption, ")")
-         self.background = Color(b = 255, g = 192, r = 64)
+         self.background = ColorAlpha(a = 255, color = Color(b = 255, g = 192, r = 64))
          MessageBox(caption = I18N("Hello, Python!"), contents = I18N("Python is pretty nifty.")).modal()
          return True
 
-      self.picture1 = Picture(parent = self, anchor = Anchor(0,0,0,0), image = BitmapResource("C:/Users/Jerome/Desktop/khaleesi.png"))
+      self.picture1 = Picture(parent = self, anchor = Anchor(0,0,0,0), image = BitmapResource("picture.jpg"))
 
       self.button1 = Button(
           parent = self,
@@ -40,9 +40,9 @@ class MyForm(Window):
 MyForm()
 
 Window(
-   caption = "Bindings are cool, 詠春 too!",
+   caption = "Bindings are cool, 中文 too!",
    hasClose = True,
    clientSize = Size(320, 200),
-   background = Color(255) )
+   background = ColorAlpha(a = 255, color = Color(255) ))
 
 app.main()

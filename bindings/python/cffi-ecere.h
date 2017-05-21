@@ -2,9 +2,11 @@ typedef struct Class Class;
 typedef uint32_t bool;
 typedef uint32_t uint32;
 typedef uint32_t Color;
+typedef uint32_t ColorAlpha;
 typedef uint32 BorderBits;
 
-enum enum_BorderStyle
+typedef BorderBits BorderStyle;
+enum
 {
    none,
    contour      = 0x00000001,
@@ -21,6 +23,15 @@ enum enum_BorderStyle
    deepContour  = 0x00000009
 };
 typedef BorderBits BorderStyle;
+
+typedef int64_t DialogResult;
+enum
+{
+   cancel = 0x0,
+   yes = 0x1,
+   no = 0x2,
+   ok = 0x3
+};
 
 struct class_members_Instance
 {
@@ -132,12 +143,12 @@ void Instance_setMethod(Instance instance, constString name, void *function);
 
 void Instance_evolve(Instance *instancePtr, Class * _class);
 
-Application eC_init(bool loadEcere, bool guiApp, int argc, char * argv[]);
+Application eC_init(Module fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);
 Module ecere_init(Module fromModule);
 
 void Application_main(Application app);
 
-extern void (*PrintLn)(Class * class_object, const void * object, ...);
+extern void (*printLn)(Class * class_object, const void * object, ...);
 
 extern Class * class_int;
 // extern Class * class_float;
@@ -146,6 +157,10 @@ extern Class * class_String;
 extern Class * class_Window;
 extern Class * class_Button;
 extern Class * class_GuiApplication;
+
+typedef Application GuiApplication;
+
+extern void (* GuiApplication_set_driver)(GuiApplication g, const char * value);
 
 extern Class * class_FontResource;
 
@@ -192,10 +207,18 @@ extern float (* FontResource_get_outlineFade)(FontResource f);
 typedef Instance Window;
 typedef Window Button;
 typedef Window MessageBox;
-typedef int64_t DialogResult;
 typedef uint32 Modifiers;
 
-enum AnchorValueType { /*none, */offset = 1, relative, middleRelative, cascade, vTiled, hTiled };
+enum AnchorValueType
+{
+   //none,
+   offset = 1,
+   relative,
+   middleRelative,
+   cascade,
+   vTiled,
+   hTiled
+};
 typedef enum AnchorValueType AnchorValueType;
 
 typedef struct AnchorValue AnchorValue;
@@ -267,21 +290,21 @@ extern constString (* Window_get_caption)(Window w);
 extern void (* Window_set_borderStyle)(Window w, BorderStyle borderStyle);
 extern BorderStyle (* Window_get_borderStyle)(Window w);
 
-extern void (* Window_set_background)(Window w, Color background);
-extern Color (* Window_get_background)(Window w);
+extern void (* Window_set_background)(Window w, ColorAlpha background);
+extern ColorAlpha (* Window_get_background)(Window w);
 
-extern void (* Window_set_foreground)(Window w, Color v);
-extern Color (* Window_get_foreground)(Window w);
+extern void (* Window_set_foreground)(Window w, ColorAlpha v);
+extern ColorAlpha (* Window_get_foreground)(Window w);
 
 extern void (* MessageBox_set_contents)(MessageBox m, constString contents);
-extern constString (* MessageBox_get_contents)(MessageBox m);
+//extern constString (* MessageBox_get_contents)(MessageBox m);
 
 typedef Window Picture;
 
 extern Class * class_Picture;
 
 extern void (* Picture_set_image)(Picture p, BitmapResource v);
-extern constString (* Picture_get_image)(Picture p);
+extern BitmapResource (* Picture_get_image)(Picture p);
 
 #define COLOR_r_MASK       0x00FF0000
 #define COLOR_r_SHIFT      16
@@ -289,6 +312,11 @@ extern constString (* Picture_get_image)(Picture p);
 #define COLOR_g_SHIFT      8
 #define COLOR_b_MASK       0x000000FF
 #define COLOR_b_SHIFT      0
+
+#define COLORALPHA_a_SHIFT                               24
+#define COLORALPHA_a_MASK                                0xFF000000
+#define COLORALPHA_color_SHIFT                           0
+#define COLORALPHA_color_MASK                            0xFFFFFF
 
 #define BORDERBITS_contour_MASK  0x00000001
 #define BORDERBITS_contour_SHIFT 0

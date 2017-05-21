@@ -102,7 +102,7 @@ public:
             printf("after");
             */
             Surface s { };
-            Foo * o = (Foo *)null; o->onDisplay(s, 0,0,0, null, 0, 0);
+            Foo * o = (Foo *)null; o->onDisplay(s, 0,0,0, null, (Alignment)0, (DataDisplayFlags)0);
             //((Foo *)&obj3)->onDisplay(Surface { }, 0,0,0, null, 0, 0);
 
             int r;
