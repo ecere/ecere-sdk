@@ -1,4 +1,4 @@
-from _pyEcere import *
+from _pyecere import *
 import sys
 import inspect
 import os
@@ -18,7 +18,7 @@ def convertTypedArgs(args):
       if type(a) == float: cargs += (lib.class_double, ffi.new("double *", a))
    return cargs + (ffi.NULL,)
 
-def printLn(*args): lib.PrintLn(*convertTypedArgs(args))
+def printLn(*args): lib.printLn(*convertTypedArgs(args))
 
 class BorderBits:
    def __init__(self, this = None, contour = False, fixed = False, sizable = False, deep = False, bevel = False, thin = False):
@@ -97,6 +97,20 @@ class Color:
    @b.setter
    def b(self, value): self.value = ((self.value) & ~(lib.COLOR_b_MASK)) | (((value)) << lib.COLOR_b_SHIFT)
 
+class ColorAlpha:
+   def __init__(self, a = 0, color = Color()):
+      self.value = (a << lib.COLORALPHA_a_SHIFT) | (color.value << lib.COLORALPHA_color_SHIFT)
+
+   @property
+   def a(self): return ((((self.value)) & lib.COLORALPHA_a_MASK) >> lib.COLORALPHA_a_SHIFT)
+   @a.setter
+   def a(self, value): self.value = ((self.value) & ~(lib.COLORALPHA_a_MASK)) | (((value)) << lib.COLORALPHA_a_SHIFT)
+
+   @property
+   def color(self): return ((((self.value)) & lib.COLORALPHA_color_MASK) >> lib.COLORALPHA_color_SHIFT)
+   @color.setter
+   def color(self, value): self.value = ((self.value) & ~(lib.COLORALPHA_color_MASK)) | (((value)) << lib.COLORALPHA_color_SHIFT)
+
 class BitmapResource:
    def __init__(self, fileName = None):
       self.this = lib.Instance_new(lib.class_BitmapResource)
@@ -172,7 +186,7 @@ class Surface(Instance):
 
 class Application(Instance):
    def __init__(self):
-      self.this = lib.eC_init(True, True, len(sys.argv), [ffi.new("char[]", i.encode('utf8')) for i in sys.argv])
+      self.this = lib.eC_init(ffi.NULL, True, True, len(sys.argv), [ffi.new("char[]", i.encode('utf8')) for i in sys.argv])
       lib.ecere_init(self.this)
       Window.pyClass_Window         = lib.eC_registerClass(lib.normalClass, "PyWindow"    .encode('utf8'), "Window"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
       Button.pyClass_Button         = lib.eC_registerClass(lib.normalClass, "PyButton"    .encode('utf8'), "Button"     .encode('utf8'), 8, 0, ffi.NULL, ffi.cast("void(*)(void *)", cb_Window_destructor), self.this, lib.publicAccess, lib.publicAccess);
@@ -183,9 +197,15 @@ class Application(Instance):
       lib.Application_main(self.this)
 
 class GuiApplication(Application):
-   def __init__(self):
+   def __init__(self, driver = None):
       Application.__init__(self)
       rApp = ffi.new("Instance *", self.this); lib.Instance_evolve(rApp, lib.class_GuiApplication); self.this = rApp[0]
+      if driver is not None: self.driver = driver
+
+   @property
+   def driver(self): value = lib.GuiApplication_get_driver(self.this); return ffi.string(value).decode('utf8')
+   @driver.setter
+   def driver(self, value): lib.GuiApplication_set_driver(self.this, value.encode('utf8'))
 
 class Anchor:
    def __init__(self, left = None, right = None, top = None, bottom = None, horz = None, vert = None):
@@ -328,12 +348,12 @@ class Window(Instance):
    def displayDriver(self, value): lib.Window_set_displayDriver(self.this, value.encode('utf8'))
 
    @property
-   def foreground(self): value = Color(); lib.Window_get_foreground(self.this, value.this); return value
+   def foreground(self): value = ColorAlpha(); lib.Window_get_foreground(self.this, value.this); return value
    @foreground.setter
    def foreground(self, value): lib.Window_set_foreground(self.this, value.value)
 
    @property
-   def background(self): value = Color(); lib.Window_get_background(self.this, value.this); return value
+   def background(self): value = ColorAlpha(); lib.Window_get_background(self.this, value.this); return value
    @background.setter
    def background(self, value): lib.Window_set_background(self.this, value.value)
 

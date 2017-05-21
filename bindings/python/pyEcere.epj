@@ -7,7 +7,7 @@
          "../c"
       ],
       "TargetType" : "SharedLibrary",
-      "TargetFileName" : "_pyEcere",
+      "TargetFileName" : "_pyecere",
       "Libraries" : [
          "ecere",
          "python34"
@@ -24,7 +24,7 @@
             ],
             "FastMath" : false,
             "PostbuildCommands" : [
-               "$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_pyEcere.dll,_pyEcere.pyd)"
+               "$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_pyecere.dll,_pyecere.pyd)"
             ]
          }
       },
@@ -50,12 +50,12 @@
       {
          "Folder" : "generated",
          "Files" : [
-            "./_pyEcere.c"
+            "./_pyecere.c"
          ]
       },
       "build_ecere.py",
       "cffi-ecere.h",
-      "pyEcere.py",
+      "pyecere.py",
       "samples/sample.py"
    ],
    "ResourcesPath" : "",

@@ -8,6 +8,8 @@
 #if !defined(__EC_HPP__)
 #define __EC_HPP__
 
+#define ECPRFX eC_
+
 #include "eC.h"
 
 // Syntactic Sugar (NOT GENERATED)
@@ -21,7 +23,7 @@
 
 #define _REGISTER_CLASS(n, ns, bs, a) \
    (Class *)eC_registerClass(normalClass, ns, bs, sizeof(Instance *), 0, \
-      (eC_bool (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, privateAccess, publicAccess)
+      (C(bool) (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, privateAccess, publicAccess)
 
 // For defining _class and registereing together (single translation unit)
 #define REGISTER_CLASS_DEF(n, b, a)    TCPPClass<n> n::_class(_REGISTER_CLASS(n,     #n, b::_class.impl->name, a));
@@ -46,12 +48,12 @@
 #define _CONSTRUCT(c, b) \
    INSTANCE_VIRTUAL_METHODS(c) \
    static TCPPClass<c> _class; \
-   static eC_bool constructor(eC_Instance i, eC_bool alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new c(i, _class) != null : true; } \
-   static void destructor(eC_Instance i) { c * inst = (c *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(c & self))_class.destructor)(*inst); delete inst; } \
-   explicit inline c(eC_Instance _impl, CPPClass & cl = _class) : b(_impl, cl)
+   static C(bool) constructor(C(Instance) i, C(bool) alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new c(i, _class) != null : true; } \
+   static void destructor(C(Instance) i) { c * inst = (c *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(c & self))_class.destructor)(*inst); delete inst; } \
+   explicit inline c(C(Instance) _impl, CPPClass & cl = _class) : b(_impl, cl)
 
 #define CONSTRUCT(c, b) \
-   c() : c(Instance_newEx(_class.impl, false), _class) { } \
+   c() : c((C(Instance))Instance_newEx(_class.impl, false), _class) { } \
    _CONSTRUCT(c, b)
 
 #define DESTRUCT(c) \
@@ -61,7 +63,7 @@
    static void class_registration(CPPClass & _class)
 
 #define APP_CONSTRUCT(c, b) \
-   inline c() : c(eC_init_CALL) { } \
+   inline c() : c(eC_init_CALL(1)) { } \
    _CONSTRUCT(c, b)
 
 #if !defined(__WIN32__) || defined(__CONSOLE_APP__)
@@ -102,7 +104,6 @@
       } \
       inline r operator()(ep p) \
       { \
-         \
          SELF(c, n); \
          d; \
       } \
@@ -169,9 +170,9 @@
 
 #define get(t, n, c, d) inline operator t () const { SELF(c, n); d; }
 
-extern "C" eC_Module ecere_init(eC_Module fromModule);
+extern "C" C(Module) ecere_init(C(Module) fromModule);
 
-class Class : public eC_Class { };
+class Class : public C(Class) { };
 
 class CPPClass
 {
@@ -219,39 +220,39 @@ public:
 
 // GENERATED: (Instance, Module and Application might require some custom tweaks...)
 
-#define Instance_onDisplay_vTblID               onDisplay_vTblID
-#define Instance_onCompare_vTblID               onCompare_vTblID
-#define Instance_onCopy_vTblID                  onCopy_vTblID
-#define Instance_onFree_vTblID                  onFree_vTblID
-#define Instance_onGetString_vTblID             onGetString_vTblID
-#define Instance_onGetDataFromString_vTblID     onGetDataFromString_vTblID
-#define Instance_onEdit_vTblID                  onEdit_vTblID
-#define Instance_onSerialize_vTblID             onSerialize_vTblID
-#define Instance_onUnserialize_vTblID           onUnserialize_vTblID
-#define Instance_onSaveEdit_vTblID              onSaveEdit_vTblID
+#define Instance_onDisplay_vTblID               class_onDisplay_vTblID
+#define Instance_onCompare_vTblID               class_onCompare_vTblID
+#define Instance_onCopy_vTblID                  class_onCopy_vTblID
+#define Instance_onFree_vTblID                  class_onFree_vTblID
+#define Instance_onGetString_vTblID             class_onGetString_vTblID
+#define Instance_onGetDataFromString_vTblID     class_onGetDataFromString_vTblID
+#define Instance_onEdit_vTblID                  class_onEdit_vTblID
+#define Instance_onSerialize_vTblID             class_onSerialize_vTblID
+#define Instance_onUnserialize_vTblID           class_onUnserialize_vTblID
+#define Instance_onSaveEdit_vTblID              class_onSaveEdit_vTblID
 
 // Normal Class Definitions
 
 #define Instance_class_registration(d) \
-   REGISTER_TYPED_METHOD("OnCompare", onCompare, Instance, d, int, (Class * _class, eC_Instance o, eC_Instance o2), \
+   REGISTER_TYPED_METHOD("OnCompare", onCompare, Instance, d, int, (Class * _class, C(Instance) o, C(Instance) o2), \
       o, o, return fn(*i, *(Instance *)INSTANCEL(o2, o2->_class)), (_class, o, o2), 1); \
-   REGISTER_TYPED_METHOD("OnDisplay", onDisplay, Instance, d, void, (Class * _class, eC_Instance o, eC_Instance /*eC_Surface */ s, int x, int y, int w, void * f, Alignment a, DataDisplayFlags df), \
+   REGISTER_TYPED_METHOD("OnDisplay", onDisplay, Instance, d, void, (Class * _class, C(Instance) o, C(Instance) /*Surface */ s, int x, int y, int w, void * f, C(Alignment) a, C(DataDisplayFlags) df), \
       o, o, Surface surface(s); fn(*i, surface, x, y, w, f, a, df), (_class, o, s, x, y, w, f, a, df), ); \
-   REGISTER_TYPED_METHOD("OnCopy", onCopy, Instance, d, void, (Class * _class, eC_Instance * dest, eC_Instance src), \
+   REGISTER_TYPED_METHOD("OnCopy", onCopy, Instance, d, void, (Class * _class, C(Instance) * dest, C(Instance) src), \
       src, dest ? *dest : null, fn(*i, *(Instance *)INSTANCEL(src, src->_class) ), (_class, dest, src), ); \
-   REGISTER_TYPED_METHOD("OnFree", onFree, Instance, d, void, (Class * _class, eC_Instance o), \
+   REGISTER_TYPED_METHOD("OnFree", onFree, Instance, d, void, (Class * _class, C(Instance) o), \
       o, o, fn(*i), (_class, o), ); \
-   REGISTER_TYPED_METHOD("OnGetString", onGetString, Instance, d, constString, (Class * _class, eC_Instance o, String tempString, void * fieldData, eC_bool * needClass), \
-      o, o, bool nc; constString r = fn(*i, tempString, fieldData, needClass ? &nc : null); if(needClass) *needClass = nc; return r;, (_class, o, tempString, fieldData, needClass), (constString)null); \
-   REGISTER_TYPED_METHOD("OnGetDataFromString", onGetDataFromString, Instance, d, bool, (Class * _class, eC_Instance * o, constString string), \
+   REGISTER_TYPED_METHOD("OnGetString", onGetString, Instance, d, constString, (Class * _class, C(Instance) o, C(String) tempString, void * fieldData, C(bool) * needClass), \
+      o, o, C(bool) nc; constString r = fn(*i, tempString, fieldData, needClass ? &nc : null); if(needClass) *needClass = nc; return r;, (_class, o, tempString, fieldData, needClass), (constString)null); \
+   REGISTER_TYPED_METHOD("OnGetDataFromString", onGetDataFromString, Instance, d, /*C(*/bool/*)*/, (Class * _class, C(Instance) * o, constString string), \
       o ? *o : null, o ? *o : null, return fn(*i, string); , (_class, o, string), false); \
-   REGISTER_TYPED_METHOD("OnSerialize", onSerialize, Instance, d, void, (Class * _class, eC_Instance o, eC_Instance /*eC_IOChannel*/ c), \
+   REGISTER_TYPED_METHOD("OnSerialize", onSerialize, Instance, d, void, (Class * _class, C(Instance) o, C(Instance) /*IOChannel*/ c), \
       o, o, IOChannel * ref = (IOChannel *)_INSTANCE(c, c->_class); if(ref) fn(*i, *ref); else { IOChannel channel(c); fn(*i, channel); }, (_class, o, c), ); \
-   REGISTER_TYPED_METHOD("OnUnserialize", onUnserialize, Instance, d, void, (Class * _class, eC_Instance * o, eC_Instance /*eC_IOChannel*/ c), \
+   REGISTER_TYPED_METHOD("OnUnserialize", onUnserialize, Instance, d, void, (Class * _class, C(Instance) * o, C(Instance) /*IOChannel*/ c), \
       o ? *o : null, o, IOChannel * ref = (IOChannel *)_INSTANCE(c, c->_class); if(ref) fn(*i, *ref); else { IOChannel channel(c); fn(*i, channel); }, (_class, o, c), ); \
-   REGISTER_TYPED_METHOD("OnSaveEdit", onSaveEdit, Instance, d, bool, (Class * _class, eC_Instance * o, eC_Instance /*eC_Window*/ w, void * object), \
+   REGISTER_TYPED_METHOD("OnSaveEdit", onSaveEdit, Instance, d, /*C(*/bool/*)*/, (Class * _class, C(Instance) * o, C(Instance) /*Window*/ w, void * object), \
       o ? *o : null, o, Window * ref = (Window *)_INSTANCE(w, w->_class); if(ref) return fn(*i, *ref, object); else { Window window(w); return fn(*i, window, object); }, (_class, o, w, object), false); \
-   REGISTER_TYPED_METHOD("OnEdit", onEdit, Instance, d, eC_Window, (Class * _class, eC_Instance o, eC_Instance /*eC_DataBox */db, void * obsolete, int x, int y, int w, int h, void * userData), \
+   REGISTER_TYPED_METHOD("OnEdit", onEdit, Instance, d, C(Window), (Class * _class, C(Instance) o, C(Instance) /*DataBox */db, void * obsolete, int x, int y, int w, int h, void * userData), \
       o, o, \
       Window /*DataBox*/ * ref = (Window /*DataBox*/ *)_INSTANCE(db, db->_class); \
       Window * ret; \
@@ -259,39 +260,39 @@ public:
       else { Window /*DataBox */dataBox(db); \
       ret = &fn(*i, dataBox, obsolete, x, y, w, h, userData); } \
       return ret ? ret->impl : null;, \
-      (_class, o, db, obsolete, x, y, w, h, userData), (eC_Window)null);
+      (_class, o, db, obsolete, x, y, w, h, userData), (C(Window))null);
 
 #define INSTANCE_VIRTUAL_METHODS(c) \
    VIRTUAL_METHOD(onCompare, c, Instance, \
       int, c & _ARG, , c & b, \
-      return Instance_onCompare(_class.impl, self ? self->impl : (eC_Instance)null, &b ? b.impl : (eC_Instance)null)); \
+      return Instance_onCompare(_class.impl, self ? self->impl : (C(Instance))null, &b ? b.impl : (C(Instance))null)); \
    VIRTUAL_METHOD(onCopy, c, Instance, \
       void, c & _ARG, , c & src, \
-      return Instance_onCopy(_class.impl, self->impl, &src ? src.impl : (eC_Instance)null)); \
+      return Instance_onCopy(_class.impl, self->impl, &src ? src.impl : (C(Instance))null)); \
    VIRTUAL_METHOD(onDisplay, c, Instance, \
-      void, c & _ARG, , Surface & surface _ARG int x _ARG int y _ARG int w _ARG void * fieldData _ARG Alignment alignment _ARG DataDisplayFlags flags, \
-      Instance_onDisplay(_class.impl, self ? self->impl : (eC_Instance)null, &surface ? ((Instance *)&surface)->impl : (eC_Instance)null, x, y, w, fieldData, alignment, flags)); \
+      void, c & _ARG, , Surface & surface _ARG int x _ARG int y _ARG int w _ARG void * fieldData _ARG C(Alignment) alignment _ARG C(DataDisplayFlags) flags, \
+      Instance_onDisplay(_class.impl, self ? self->impl : (C(Instance))null, &surface ? ((Instance *)&surface)->impl : (C(Instance))null, x, y, w, fieldData, alignment, flags)); \
    VIRTUAL_METHOD(onFree, c, Instance, \
       void, c &, , , \
       return Instance_onFree(_class.impl, self->impl)); \
    VIRTUAL_METHOD(onGetString, c, Instance, \
-      constString, c & _ARG, , String tempString _ARG void * fieldData _ARG bool * needClass, \
-      return Instance_onGetString(_class.impl, self ? self->impl : (eC_Instance)null, tempString, fieldData, needClass)); \
+      constString, c & _ARG, , C(String) tempString _ARG void * fieldData _ARG C(bool) * needClass, \
+      return Instance_onGetString(_class.impl, self ? self->impl : (C(Instance))null, tempString, fieldData, needClass)); \
    VIRTUAL_METHOD(onGetDataFromString, c, Instance, \
-      bool, c & _ARG, , constString string, \
+      /*C(*/bool/*)*/, c & _ARG, , constString string, \
       return Instance_onGetDataFromString(_class.impl, self->impl, string)); \
    VIRTUAL_METHOD(onSerialize, c, Instance, \
       void, c & _ARG, , IOChannel & channel, \
-      return Instance_onSerialize(_class.impl, self ? self->impl : (eC_Instance)null, &channel ? ((Instance *)&channel)->impl : (eC_Instance)null)); \
+      return Instance_onSerialize(_class.impl, self ? self->impl : (C(Instance))null, &channel ? ((Instance *)&channel)->impl : (C(Instance))null)); \
    VIRTUAL_METHOD(onUnserialize, c, Instance, \
       void, c & _ARG, , IOChannel & channel, \
-      return Instance_onUnserialize(_class.impl, self->impl, &channel ? ((Instance *)&channel)->impl : (eC_Instance)null)); \
+      return Instance_onUnserialize(_class.impl, self->impl, &channel ? ((Instance *)&channel)->impl : (C(Instance))null)); \
    VIRTUAL_METHOD(onSaveEdit, c, Instance, \
-      bool, c & _ARG, , Window & window _ARG void * object, \
-      return Instance_onSaveEdit(_class.impl, self->impl, &window ? ((Instance *)&window)->impl : (eC_Instance)null, object)); \
+      /*C(*/bool/*)*/, c & _ARG, , Window & window _ARG void * object, \
+      return Instance_onSaveEdit(_class.impl, self->impl, &window ? ((Instance *)&window)->impl : (C(Instance))null, object)); \
    VIRTUAL_METHOD(onEdit, c, Instance, \
       Window &, c & _ARG, , Window /*DataBox*/ & dataBox _ARG void * obsolete _ARG int x _ARG int y _ARG int w _ARG int h _ARG void * userData, \
-      eC_Window window = Instance_onEdit(_class.impl, self->impl, &dataBox ? ((Instance *)&dataBox)->impl : (eC_Instance)null, obsolete, x, y, w, h, userData); \
+      C(Window) window = Instance_onEdit(_class.impl, self->impl, &dataBox ? ((Instance *)&dataBox)->impl : (C(Instance))null, (C(Instance))obsolete, x, y, w, h, userData); \
       return *(Window *)_INSTANCE(window, window->_class); );
 
 class Surface;
@@ -299,16 +300,11 @@ class IOChannel;
 class Window;
 class DataBox;
 
-typedef eC_Window eC_DataBox;
-
-typedef uint32 Alignment;
-typedef uint32 DataDisplayFlags;
-
 class Instance
 {
 public:
    static TCPPClass<Instance> _class;
-   eC_Instance impl;
+   C(Instance) impl;
    void (**vTbl)(void);
 
    void * operator new   (uintsize count) { return eC_new(count); }
@@ -316,18 +312,18 @@ public:
    void operator delete   (void * ptr) { eC_delete(ptr); }
    void operator delete [](void * ptr) { eC_delete(ptr); }
 
-   static eC_bool constructor(eC_Instance i, bool alloc)
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
    {
       if(alloc &&!_INSTANCE(i, _class.impl))
          return new Instance(i, _class) != null;
       return true;
    }
-   static void destructor(eC_Instance i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }
+   static void destructor(C(Instance) i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }
    static void class_registration(CPPClass & _class);
 
    INSTANCE_VIRTUAL_METHODS(Instance);
 
-   inline explicit Instance(eC_Instance _impl, CPPClass & cl = _class)
+   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)
    {
       Class * c = cl.impl;
       impl = _impl;
@@ -360,7 +356,7 @@ public:
                eC_delete(vTbl);
             }
          }
-         Instance_decref(impl);
+         Instance_decRef(impl);
       }
    }
    inline Instance(const Instance & i) = delete;
@@ -375,14 +371,14 @@ class Module : public Instance
 {
 public:
    static TCPPClass<Module> _class;
-   inline explicit Module(eC_Instance _impl, CPPClass & c = _class) : Instance(_impl, c) { }
+   inline explicit Module(C(Instance) _impl, CPPClass & c = _class) : Instance(_impl, c) { }
 };
 
 void eC_cpp_init(Module & module);
 void ecere_cpp_init(Module & module);
 
 #define Application_class_registration(d) \
-   REGISTER_METHOD("Main", main, Application, d, void, (eC_Instance o), o, o, return fn(*i), (o), );
+   REGISTER_METHOD("Main", main, Application, d, void, (C(Instance) o), o, o, return fn(*i), (o), );
 
 class Application : public Module
 {
@@ -405,7 +401,7 @@ public:
 
    static void class_registration(CPPClass & _class) { Application_class_registration(Application); }
 
-   property(exitCode, get(int, exitCode, Application, return self ? _IPTR(self->impl, class_Application, class_members_Application)->exitCode : 0) );
+   property(exitCode, get(int, exitCode, Application, return self ? IPTR(self->impl, Application)->exitCode : 0) );
 
    VIRTUAL_METHOD(main, Application, Application, void, Application &, , ,
       return Application_main(self->impl));
@@ -421,8 +417,8 @@ public:
    inline IteratorPointer getPrev(IteratorPointer * pointer) { return Container_getPrev(impl, pointer); }
    inline IteratorPointer getNext(IteratorPointer * pointer) { return Container_getNext(impl, pointer); }
    inline Container_D getData(IteratorPointer * pointer) { return (return Container_getData(impl, pointer); }
-   inline bool setData(IteratorPointer * pointer, Container_D data) { return Container_setData(impl, pointer, data); }
-   inline IteratorPointer getAtPosition(const Container_I pos, bool create, bool * justAdded) { return Container_getAtPosition(impl, pos, create, justAdded); }
+   inline C(bool) setData(IteratorPointer * pointer, Container_D data) { return Container_setData(impl, pointer, data); }
+   inline IteratorPointer getAtPosition(const Container_I pos, C(bool) create, C(bool) * justAdded) { return Container_getAtPosition(impl, pos, create, justAdded); }
    inline IteratorPointer insert(IteratorPointer * after, Container_T value) { return Container_insert(impl, after, value); }
    inline IteratorPointer add(Container_T value) { return Container_add(impl, value) }
    inline void remove(IteratorPointer * it) { Container_remove(impl, it); }
