@@ -330,3 +330,5 @@ extern BitmapResource (* Picture_get_image)(Picture p);
 #define BORDERBITS_bevel_SHIFT   4
 #define BORDERBITS_thin_MASK     0x00000020
 #define BORDERBITS_thin_SHIFT    5
+
+bool Button_notifyClicked(Button __i, Window __t, Button button, int x, int y, Modifiers mods);

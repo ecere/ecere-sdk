@@ -26,6 +26,7 @@ class MyForm(Window):
          printLn("I got pushed! (master is ", self.caption, ")")
          self.background = ColorAlpha(a = 255, color = Color(b = 255, g = 192, r = 64))
          MessageBox(caption = I18N("Hello, Python!"), contents = I18N("Python is pretty nifty.")).modal()
+         self.button2.notifyClicked(self, button, x, y, mods);
          return True
 
       self.picture1 = Picture(parent = self, anchor = Anchor(0,0,0,0), image = BitmapResource("picture.jpg"))
@@ -36,6 +37,14 @@ class MyForm(Window):
           position = Point(80,80),
           font = FontResource("Merriweather", 30),
           notifyClicked = button1Clicked )
+
+      self.button2 = Button(
+          parent = self,
+          caption = "Another button",
+          position = Point(280,280),
+          font = FontResource("Merriweather", 20)
+          )
+
 
 MyForm()
 

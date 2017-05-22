@@ -396,8 +396,16 @@ class Button(Window):
       if font is not None:          self.font = font
       if notifyClicked is not None: self.notifyClicked = notifyClicked
 
+   def fn_unset_notifyClicked(self, m, b, x, y, mods):
+      return lib.Button_notifyClicked(self.this, m.this, b.this, x, y, mods);
+
    @property
-   def notifyClicked(self): return self.fn_notifyClicked
+   def notifyClicked(self):
+      if hasattr(self, 'fn_notifyClicked'):
+         return self.fn_notifyClicked;
+      else:
+         return self.fn_unset_notifyClicked;
+
    @notifyClicked.setter
    def notifyClicked(self, value):
       self.fn_notifyClicked = value
