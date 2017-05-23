@@ -1,6 +1,12 @@
 typedef struct Class Class;
+
+typedef unsigned char byte;
+typedef uint16_t uint16;
 typedef uint32_t bool;
 typedef uint32_t uint32;
+typedef uint32_t uint;
+typedef int64_t int64;
+typedef uint64_t uint64;
 typedef uint32_t Color;
 typedef uint32_t ColorAlpha;
 typedef uint32 BorderBits;
@@ -8,29 +14,29 @@ typedef uint32 BorderBits;
 typedef BorderBits BorderStyle;
 enum
 {
-   none,
-   contour      = 0x00000001,
-   fixed        = 0x00000003,
-   sizable      = 0x00000007,
-   thin         = 0x00000023,
-   sizableThin  = 0x00000027,
-   deep         = 0x00000008,
-   bevel        = 0x00000010,
-   sizableDeep  = 0x0000000F,
-   sizableBevel = 0x00000017,
-   fixedDeep    = 0x0000000B,
-   fixedBevel   = 0x00000013,
-   deepContour  = 0x00000009
+   BorderStyle_none,
+   BorderStyle_contour      = 0x00000001,
+   BorderStyle_fixed        = 0x00000003,
+   BorderStyle_sizable      = 0x00000007,
+   BorderStyle_thin         = 0x00000023,
+   BorderStyle_sizableThin  = 0x00000027,
+   BorderStyle_deep         = 0x00000008,
+   BorderStyle_bevel        = 0x00000010,
+   BorderStyle_sizableDeep  = 0x0000000F,
+   BorderStyle_sizableBevel = 0x00000017,
+   BorderStyle_fixedDeep    = 0x0000000B,
+   BorderStyle_fixedBevel   = 0x00000013,
+   BorderStyle_deepContour  = 0x00000009
 };
 typedef BorderBits BorderStyle;
 
 typedef int64_t DialogResult;
 enum
 {
-   cancel = 0x0,
-   yes = 0x1,
-   no = 0x2,
-   ok = 0x3
+   DialogResult_cancel = 0x0,
+   DialogResult_yes = 0x1,
+   DialogResult_no = 0x2,
+   DialogResult_ok = 0x3
 };
 
 struct class_members_Instance
@@ -47,22 +53,22 @@ typedef Module Application;
 
 enum AccessMode
 {
-   defaultAccess,
-   publicAccess,
-   privateAccess,
-   staticAccess,
-   baseSystemAccess
+   AccessMode_defaultAccess,
+   AccessMode_publicAccess,
+   AccessMode_privateAccess,
+   AccessMode_staticAccess,
+   AccessMode_baseSystemAccess
 };
 typedef enum AccessMode AccessMode;
 
 enum ClassType
 {
-   normalClass,
-   structClass,
-   bitClass,
-   unitClass,
-   enumClass,
-   noHeadClass
+   ClassType_normalClass,
+   ClassType_structClass,
+   ClassType_bitClass,
+   ClassType_unitClass,
+   ClassType_enumClass,
+   ClassType_noHeadClass
 };
 typedef enum ClassType ClassType;
 
@@ -134,6 +140,8 @@ struct Class
 
 constString getTranslatedString(constString name, constString string, constString stringAndContext);
 
+Class * eC_findClass(Module module, const char * name);
+
 Class * eC_registerClass(ClassType type, const char *name, const char *baseName, int size, int sizeClass,
    bool (*Constructor)(void *), void (*Destructor)(void *), Module module, AccessMode declMode, AccessMode inheritanceAccess);
 
@@ -151,7 +159,7 @@ void Application_main(Application app);
 extern void (*printLn)(Class * class_object, const void * object, ...);
 
 extern Class * class_int;
-// extern Class * class_float;
+extern Class * class_float;
 extern Class * class_double;
 extern Class * class_String;
 extern Class * class_Window;
@@ -209,15 +217,17 @@ typedef Window Button;
 typedef Window MessageBox;
 typedef uint32 Modifiers;
 
+typedef Instance WindowController;
+
 enum AnchorValueType
 {
-   //none,
-   offset = 1,
-   relative,
-   middleRelative,
-   cascade,
-   vTiled,
-   hTiled
+   AnchorValueType_none,
+   AnchorValueType_offset = 1,
+   AnchorValueType_relative,
+   AnchorValueType_middleRelative,
+   AnchorValueType_cascade,
+   AnchorValueType_vTiled,
+   AnchorValueType_hTiled
 };
 typedef enum AnchorValueType AnchorValueType;
 
@@ -296,6 +306,9 @@ extern ColorAlpha (* Window_get_background)(Window w);
 extern void (* Window_set_foreground)(Window w, ColorAlpha v);
 extern ColorAlpha (* Window_get_foreground)(Window w);
 
+extern void (* Window_set_controller)(Window w, WindowController value);
+extern WindowController (* Window_get_controller)(Window w);
+
 extern void (* MessageBox_set_contents)(MessageBox m, constString contents);
 //extern constString (* MessageBox_get_contents)(MessageBox m);
 
@@ -332,3 +345,58 @@ extern BitmapResource (* Picture_get_image)(Picture p);
 #define BORDERBITS_thin_SHIFT    5
 
 bool Button_notifyClicked(Button __i, Window __t, Button button, int x, int y, Modifiers mods);
+
+typedef struct IteratorPointer IteratorPointer;
+
+typedef Instance Container;
+
+IteratorPointer * Container_add(Container __i, uint64_t value);
+
+extern void (* Container_set_copySrc)(Container c, Container value);
+
+struct DataValue
+{
+   union
+   {
+      char c;
+      byte uc;
+      short s;
+      uint16 us;
+      int i;
+      uint ui;
+      void * p;
+      float f;
+      double d;
+      int64 i64;
+      uint64 ui64;
+   };
+};
+typedef struct DataValue DataValue;
+
+uint64 TAc(char x);
+uint64 TAb(byte x);
+uint64 TAs(short x);
+uint64 TAus(uint16 x);
+uint64 TAi(int x);
+uint64 TAui(uint x);
+uint64 TAi64(int64 x);
+uint64 TAui64(uint64 x);
+uint64 TAf(float x);
+uint64 TAd(double x);
+uint64 TAp(void * x);
+// uint64 TAst(void x);
+uint64 TAo(Instance x);
+
+typedef struct BuiltInContainer BuiltInContainer;
+
+struct BuiltInContainer
+{
+   void * _vTbl;
+   Class * _class;
+   int _refCount;
+   void * data;
+   int count;
+   Class * type;
+};
+
+extern Class * class_BuiltInContainer;

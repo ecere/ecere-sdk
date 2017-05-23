@@ -4,6 +4,26 @@ app = GuiApplication() #driver = "OpenGL")
 printLn("Testing Variadic Functions!\n", 1, " + ", 2, " = ", 1+2)
 printLn("Pi = ", 3.141592653589)
 
+a = Array("<int>")
+a.add(3)
+a.add(4)
+a.add(5)
+printLn(a)
+
+b = Array("<int>", [6,7,8])
+printLn(b)
+
+c = Array("<double>", [3.4,5.6,1.4142135])
+printLn(c)
+
+class MyThing:
+   def something(self):
+      pass
+
+class MyController(WindowController):
+   def  __init__(self):
+      WindowController.__init__(self, "<MyThing>")
+
 class MyForm(Window):
    def __init__(self):
       Window.__init__(self,
@@ -12,6 +32,7 @@ class MyForm(Window):
          hasClose = True,
          hasMaximize = True,
          hasMinimize = True,
+         controller = MyController(),
          borderStyle = BorderStyle.sizable,
          clientSize = Size(640, 480),
          background = ColorAlpha(a = 255, color = Color(b = 255)),
@@ -42,8 +63,7 @@ class MyForm(Window):
           parent = self,
           caption = "Another button",
           position = Point(280,280),
-          font = FontResource("Merriweather", 20)
-          )
+          font = FontResource("Merriweather", 20) )
 
 
 MyForm()
