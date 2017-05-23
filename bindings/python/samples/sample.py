@@ -24,6 +24,7 @@ class MyController(WindowController):
    def  __init__(self):
       WindowController.__init__(self, "<MyThing>")
 
+@regclass
 class MyForm(Window):
    def __init__(self):
       Window.__init__(self,
@@ -64,7 +65,6 @@ class MyForm(Window):
           caption = "Another button",
           position = Point(280,280),
           font = FontResource("Merriweather", 20) )
-
 
 MyForm()
 
