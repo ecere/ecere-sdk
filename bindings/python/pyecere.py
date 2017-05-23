@@ -3,7 +3,7 @@ import sys
 import inspect
 import os
 
-app = ffi.NULL
+app = None
 
 class Instance:
    instances = []
@@ -220,29 +220,45 @@ class Surface(Instance):
    def writeTextf(self, x, y, format):
       lib.Surface_writeTextf(self.this, x, y, format.encode('utf8'))
 
-class Application(Instance):
-   def registerClass(module, n):
-      pyClass =  lib.eC_registerClass(lib.ClassType_normalClass, ("Py" + n.__name__).encode('utf8'), n.__name__.encode('utf8'), 8, 0,
+def regclass(c):
+   app.registerClass(c)
+   return c
+
+class Module(Instance):
+   def registerClass(self, n, isWrapper = False):
+      if isWrapper:
+         cn = "Py" + n.__name__
+         bn = n.__name__
+      else:
+         cn = n.__name__
+         b = n
+         while not hasattr(b, 'pyClass_' + b.__name__):
+            b = b.__bases__[0]
+         bn = b.__name__
+      pyClass = lib.eC_registerClass(lib.ClassType_normalClass, cn.encode('utf8'), bn.encode('utf8'), 8, 0,
          ffi.cast("bool(*)(void *)", cb_Instance_constructor),
          ffi.cast("void(*)(void *)", cb_Instance_destructor),
-         module.this, lib.AccessMode_publicAccess, lib.AccessMode_publicAccess);
+         self.this, lib.AccessMode_publicAccess, lib.AccessMode_publicAccess)
       setattr(n, 'pyClass_' + n.__name__, pyClass)
       pyClass.bindingsClass = ffi.new_handle(n)
 
+class Application(Module):
    def __init__(self):
+      global app
+      app = self
       self.this = lib.eC_init(ffi.NULL, True, True, len(sys.argv), [ffi.new("char[]", i.encode('utf8')) for i in sys.argv])
       lib.ecere_init(self.this)
-      self.registerClass(Instance)
-      self.registerClass(Container)
-      self.registerClass(Array)
-      self.registerClass(Surface)
-      self.registerClass(FontResource)
-      self.registerClass(BitmapResource)
-      self.registerClass(Window)
-      self.registerClass(Button)
-      self.registerClass(Picture)
-      self.registerClass(MessageBox)
-      self.registerClass(WindowController)
+      self.registerClass(Instance, True)
+      self.registerClass(Container, True)
+      self.registerClass(Array, True)
+      self.registerClass(Surface, True)
+      self.registerClass(FontResource, True)
+      self.registerClass(BitmapResource, True)
+      self.registerClass(Window, True)
+      self.registerClass(Button, True)
+      self.registerClass(Picture, True)
+      self.registerClass(MessageBox, True)
+      self.registerClass(WindowController, True)
 
    def main(self):
       lib.Application_main(self.this)
