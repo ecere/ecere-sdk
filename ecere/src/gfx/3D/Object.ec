@@ -769,6 +769,17 @@ public:
       return result;
    }
 
+   void Add(Object object)
+   {
+      if(this)
+      {
+         children.Add(object);
+         object.parent = this;
+         object.flags.transform = true;
+         object.flags.root = false;
+      }
+   }
+
    // TODO: Add support to Merge Vertex Colors mesh feature
    bool Merge(DisplaySystem displaySystem)
    {
