@@ -14,7 +14,7 @@ private:
 public struct BuiltInContainer
 {
 public:
-   void * _vTbl;
+   void ** _vTbl;
    Class _class;
    int _refCount;
 public:
