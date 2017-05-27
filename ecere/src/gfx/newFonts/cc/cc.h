@@ -1097,7 +1097,7 @@ static inline double ccFastExpDoubleNearZero( double x )
     double d;
   } u;
   if( x > 88.0 )
-    return expf( x );
+    return exp( x );
   else if( x < -80.0 )
     return 0.0;
   u.i = (int64_t)( x * ( (double)0x10000000000000 * CC_LOG2_E ) ) + (uint64_t)0x3ff0000000000000;
