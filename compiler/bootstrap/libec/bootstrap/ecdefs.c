@@ -126,6 +126,10 @@ unsigned int inCompiler = 0;
 
 unsigned int inDebugger = 0;
 
+unsigned int inBGen = 0;
+
+const char * (* bgenSymbolSwap)(const char * symbol, unsigned int reduce, unsigned int macro);
+
 char * symbolsDir = (((void *)0));
 
 const char * outputFile;
@@ -259,6 +263,16 @@ inCompiler = b;
 void SetInDebugger(unsigned int b)
 {
 inDebugger = b;
+}
+
+void SetInBGen(unsigned int b)
+{
+inBGen = b;
+}
+
+void SetBGenSymbolSwapCallback(const char * (* cb)(const char * spec, unsigned int reduce, unsigned int macro))
+{
+bgenSymbolSwap = cb;
 }
 
 const char * GetSymbolsDir()
@@ -646,8 +660,6 @@ unsigned int isVirtual;
 
 struct __ecereNameSpace__ecere__com__Property;
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst, * __ecerePropM_Type_specConst;
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerTypeSize, * __ecerePropM_Type_isPointerTypeSize;
@@ -684,6 +696,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -1558,6 +1572,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -2556,6 +2571,8 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(str
 __ecereClass_DBIndexItem = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInCompiler", "void SetInCompiler(bool b)", SetInCompiler, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInDebugger", "void SetInDebugger(bool b)", SetInDebugger, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInBGen", "void SetInBGen(bool b)", SetInBGen, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetBGenSymbolSwapCallback", "void SetBGenSymbolSwapCallback(const char * (* cb)(const char * spec, bool reduce, bool macro))", SetBGenSymbolSwapCallback, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetPrivateModule", "void SetPrivateModule(ecere::com::Module module)", SetPrivateModule, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetPrivateModule", "ecere::com::Module GetPrivateModule(void)", GetPrivateModule, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMainModule", "void SetMainModule(ModuleImport moduleImport)", SetMainModule, module, 1);

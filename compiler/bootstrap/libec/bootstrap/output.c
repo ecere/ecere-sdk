@@ -58,6 +58,8 @@ int outputLine;
 
 unsigned int memoryGuard = 0;
 
+extern unsigned int inBGen;
+
 extern unsigned int inCompiler;
 
 extern unsigned int outputLineNumbers;
@@ -65,6 +67,8 @@ extern unsigned int outputLineNumbers;
 extern const char *  sourceFile;
 
 extern const char *  outputFile;
+
+extern const char *  (*  bgenSymbolSwap)(const char *  symbol, unsigned int reduce, unsigned int macro);
 
 struct __ecereNameSpace__ecere__sys__OldList
 {
@@ -135,6 +139,8 @@ int pos;
 int included;
 } ecere_gcc_struct;
 
+extern char *  strstr(const char * , const char * );
+
 extern int strcmp(const char * , const char * );
 
 extern char *  GetIncludeFileFromID(int id);
@@ -185,6 +191,15 @@ struct Location
 struct CodePosition start;
 struct CodePosition end;
 } ecere_gcc_struct;
+
+static inline const char * strptrNoNamespace(const char * str)
+{
+const char * t, * s = str;
+
+while((t = strstr(s, "::")))
+s = t + 2;
+return s;
+}
 
 static void GetSourceName(char * name, const char * src)
 {
@@ -263,16 +278,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
 struct Identifier;
 
 extern struct Identifier * MkIdentifier(const char *  string);
@@ -300,32 +305,6 @@ extern struct Declarator * PlugDeclarator(struct Declarator * decl, struct Decla
 extern struct Identifier * GetDeclId(struct Declarator * decl);
 
 struct Type;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
 
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
@@ -436,10 +415,6 @@ char * attr;
 struct Expression * exp;
 } ecere_gcc_struct;
 
-struct __ecereNameSpace__ecere__com__Module;
-
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
 struct __ecereNameSpace__ecere__com__DataMember;
 
 struct __ecereNameSpace__ecere__com__DataMember
@@ -463,6 +438,46 @@ int memberOffset;
 short structAlignment;
 short pointerAlignment;
 } ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+struct __ecereNameSpace__ecere__com__Module;
+
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 struct AsmField;
 
@@ -1047,6 +1062,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -1119,6 +1135,17 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
 __internal_VirtualMethod ? __internal_VirtualMethod(f, "typed_object") : (unsigned int)1;
 }));
+else if(inBGen)
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, strptrNoNamespace(id->_class->__anon1.__anon1.name)) : (unsigned int)1;
+}));
 else
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
@@ -1132,6 +1159,18 @@ __internal_VirtualMethod ? __internal_VirtualMethod(f, id->_class->__anon1.__ano
 }));
 }
 }
+if(inBGen)
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, "_") : (unsigned int)1;
+}));
+else
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
 
@@ -2845,6 +2884,18 @@ if(!symbol && spec->__anon1.__anon1.name)
 symbol = FindClass(spec->__anon1.__anon1.name);
 if(symbol)
 {
+if(inBGen && bgenSymbolSwap && symbol->string)
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, bgenSymbolSwap(symbol->string, 0, 1)) : (unsigned int)1;
+}));
+else
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
 
