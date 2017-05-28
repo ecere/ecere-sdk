@@ -11,6 +11,13 @@ int outputLine;
 bool memoryGuard = false;
 public void SetMemoryGuard(bool b) { memoryGuard = b; } public bool GetMemoryGuard() { return memoryGuard; }
 
+static inline const char * strptrNoNamespace(const char * str)
+{
+   const char * t, * s = str;
+   while((t = strstr(s, "::"))) s = t + 2;
+   return s;
+}
+
 static void OutputIdentifier(Identifier id, File f)
 {
    if(id)
@@ -34,11 +41,16 @@ static void OutputIdentifier(Identifier id, File f)
             {
                if(!strcmp(id._class.name, "class"))
                   f.Puts("typed_object");
+               else if(inBGen)
+                  f.Puts(strptrNoNamespace(id._class.name));
                else
                   f.Puts(id._class.name);
             }
          }
-         f.Puts("::");
+         if(inBGen)
+            f.Puts("_");
+         else
+            f.Puts("::");
       }
    }
    f.Puts((id && id.string) ? id.string : "(null identifier)");
@@ -1027,7 +1039,10 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
                symbol = FindClass(spec.name);
             if(symbol)
             {
-               f.Puts(symbol.string ? symbol.string : "(null)");
+               if(inBGen && bgenSymbolSwap && symbol.string)
+                  f.Puts(bgenSymbolSwap(symbol.string, false, true));
+               else
+                  f.Puts(symbol.string ? symbol.string : "(null)");
             }
             else if(spec.name)
                f.Puts(spec.name);

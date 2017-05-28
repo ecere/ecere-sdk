@@ -186,6 +186,13 @@ public void SetInCompiler(bool b) { inCompiler = b; }
 bool inDebugger = false;
 public void SetInDebugger(bool b) { inDebugger = b; }
 
+bool inBGen = false;
+public void SetInBGen(bool b) { inBGen = b; }
+
+public void SetBGenSymbolSwapCallback(const char * (*cb)(const char * spec, bool reduce, bool macro)) { bgenSymbolSwap = cb; }
+const char * (*bgenSymbolSwap)(const char * symbol, bool reduce, bool macro);
+
+
 Context curContext;
 Context globalContext;
 OldList * excludedSymbols;
