@@ -40,6 +40,13 @@
             "TargetType" : "StaticLibrary",
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true
+         }
       }
    ],
    "Files" : [

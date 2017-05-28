@@ -58,7 +58,8 @@ _ECSOURCES = \
 	src/EDA.ec \
 	src/ers.ec \
 	src/gui.ec \
-	src/idList.ec
+	src/idList.ec \
+	src/fieldValue.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
@@ -180,6 +181,9 @@ $(OBJ)gui.sym: src/gui.ec
 $(OBJ)idList.sym: src/idList.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/idList.ec -o $(OBJ)idList.sym
 
+$(OBJ)fieldValue.sym: src/fieldValue.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/fieldValue.ec -o $(OBJ)fieldValue.sym
+
 # C OBJECT RULES
 
 $(OBJ)DirFilesDataSource.c: src/DirFilesDataSource.ec $(OBJ)DirFilesDataSource.sym | $(SYMBOLS)
@@ -209,6 +213,9 @@ $(OBJ)gui.c: src/gui.ec $(OBJ)gui.sym | $(SYMBOLS)
 $(OBJ)idList.c: src/idList.ec $(OBJ)idList.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/idList.ec -o $(OBJ)idList.c -symbols $(OBJ)
 
+$(OBJ)fieldValue.c: src/fieldValue.ec $(OBJ)fieldValue.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/fieldValue.ec -o $(OBJ)fieldValue.c -symbols $(OBJ)
+
 # OBJECT RULES
 
 $(OBJ)DirFilesDataSource.o: $(OBJ)DirFilesDataSource.c
@@ -237,6 +244,9 @@ $(OBJ)gui.o: $(OBJ)gui.c
 
 $(OBJ)idList.o: $(OBJ)idList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)idList.c -o $(OBJ)idList.o
+
+$(OBJ)fieldValue$(O): $(OBJ)fieldValue.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fieldValue.c -o $(OBJ)fieldValue.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)

@@ -51,8 +51,7 @@ endif
 
 _ECSOURCES = \
 	EDASQLite.ec \
-	sqliteDB.ec \
-	fieldValue.ec
+	sqliteDB.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
@@ -195,9 +194,6 @@ $(OBJ)EDASQLite.sym: EDASQLite.ec
 $(OBJ)sqliteDB.sym: sqliteDB.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,sqliteDB.ec) -o $(call quote_path,$@)
 
-$(OBJ)fieldValue.sym: fieldValue.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,fieldValue.ec) -o $(call quote_path,$@)
-
 # C OBJECT RULES
 
 $(OBJ)EDASQLite.c: EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
@@ -205,9 +201,6 @@ $(OBJ)EDASQLite.c: EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
 
 $(OBJ)sqliteDB.c: sqliteDB.ec $(OBJ)sqliteDB.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,sqliteDB.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-$(OBJ)fieldValue.c: fieldValue.ec $(OBJ)fieldValue.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,fieldValue.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 # OBJECT RULES
 
@@ -219,9 +212,6 @@ $(OBJ)sqliteDB$(O): $(OBJ)sqliteDB.c
 
 $(OBJ)EDASQLite.o: $(OBJ)EDASQLite.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EDASQLite.c -o $(OBJ)EDASQLite.o
-
-$(OBJ)fieldValue$(O): $(OBJ)fieldValue.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fieldValue.c) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
