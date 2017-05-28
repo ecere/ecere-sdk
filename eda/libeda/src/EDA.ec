@@ -4,6 +4,8 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+import "fieldValue"
+
 #define uint _uint
 #include "ffi.h"
 #undef uint
@@ -215,6 +217,7 @@ public class Database
    DataSourceDriver ds;
    OldList listTbl { offset = (uint)(uintptr)&((Table)0).prev };
    public virtual String GetName();
+   // TOCHECK: Deprecate this? isn't used anywhere
    public virtual Array<String> GetTables(); // TODO: make this Container<Table> GetTables(); // if supported, filled with ready to open Tables
 
    ~Database()
@@ -243,9 +246,11 @@ public:
    property uint viewsCount { get { return ObjectsCount(view); } }
    property Array<String> tables { get { return GetTables(); } }
 
+   // TODO: Get rid of all these, they are not defined anywhere and we have no need for a common API for these different 'ObjectTypes'
    virtual uint ObjectsCount(ObjectType type);
    virtual bool RenameObject(ObjectType type, const String name, const String rename);
    virtual bool DeleteObject(ObjectType type, const String name);
+
    virtual Table OpenTable(const String name, OpenOptions open);
    virtual bool Begin();
    virtual bool Commit();
@@ -308,6 +313,7 @@ public:
    virtual Field FindField(const String name);
    virtual bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init);
    virtual Container<Field> GetFields();
+   virtual uint GetRecordSize();
 
    bool Index(int count, FieldIndex * fieldIndexes)
    {
@@ -592,6 +598,9 @@ public:
    }
 
    property uint64 sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
+
+   bool GetDataFieldValue(Field field, FieldValue value) { return row ? row.GetDataFieldValue(field, value) : false; }
+   const void * GetRowData() { return row ? row.GetRowData() : null; }
 };
 
 public class DriverRow
@@ -617,6 +626,8 @@ public:
    virtual const char * GetColumn(int paramID);
    virtual bool BindQueryData(int paramID, Field fld, typed_object value);
    virtual bool GetQueryData(int paramID, Field fld, typed_object & value);
+   virtual bool GetDataFieldValue(Field fld, FieldValue value);
+   virtual const void * GetRowData();
 };
 
 public class SQLCustomFunction

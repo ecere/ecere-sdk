@@ -25,7 +25,7 @@ class EDABetterTestForm : Window
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          const char * select = row.string;
-         if(!strcmp(select, "EDB") || !strcmp(select, "SQLite"))
+         if(!strcmp(select, "EDB") || !strcmp(select, "SQLite") || !strcmp(select, "dBASE"))
          {
             char path[MAX_LOCATION];
             GetWorkingDir(path, MAX_LOCATION);
@@ -69,7 +69,7 @@ class EDABetterTestForm : Window
             nameDb.contents = "mysql";
             groupDs.disabled = false;
          }
-         else if (!strcmp(select, "Oracle"))
+         else if(!strcmp(select, "Oracle"))
          {
             host.contents = "localhost";
             username.contents = "test";
@@ -93,7 +93,8 @@ class EDABetterTestForm : Window
          AddString("PostgreSQL");
          AddString("SQLite");
          AddString("SQLiteCipher");
-         SelectRow(AddString("Oracle"));
+         AddString("Oracle");
+         SelectRow(AddString("dBASE"));
 
          return true;
       }

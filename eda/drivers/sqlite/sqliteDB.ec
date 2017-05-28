@@ -1,6 +1,12 @@
 #include "sqlite3.h"
 
-import "fieldValue"
+#ifdef ECERE_STATIC
+public import static "ecere"
+public import static "EDA"
+#else
+public import "ecere"
+public import "EDA"
+#endif
 
 #define __restrict
 
@@ -64,15 +70,6 @@ public enum SQLiteResult
    warning = SQLITE_WARNING,        // Warnings from sqlite3_log()
    rowReady = SQLITE_ROW,           // sqlite3_step() has another row ready
    done = SQLITE_DONE               // sqlite3_step() has finished executing
-};
-
-public enum FieldType   // Now re-using this for non SQLite-specific APIs  // SQLiteType
-{
-   integer = SQLITE_INTEGER,
-   real    = SQLITE_FLOAT,
-   text    = SQLITE_TEXT,
-   blob    = SQLITE_BLOB,
-   nil     = SQLITE_NULL
 };
 
 public class SQLiteDB

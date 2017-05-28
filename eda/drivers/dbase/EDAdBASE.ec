@@ -46,18 +46,10 @@ struct DBFFieldInfo
    char productionFlag;
 };
 
-struct Value // TODO: get rid of this, just use a data pointer array for "values"
-{
-   char dataType;
-   String string;
-   double doubleValue;
-};
-
-define driverName = "dBASE";
-class dBaseDataSource : DirFilesDataSourceDriver
+static define driverName = "dBASE";
+public class dBaseDataSource : DirFilesDataSourceDriver
 {
    class_property(name) = driverName;
-   class_property(databaseFileExtension) = "dbf"; // TODO: comment this <-- temporary
    class_property(tableFileExtension) = "dbf";
 
    bool IsDatabaseFile(const char *fullPath)
@@ -73,29 +65,15 @@ class dBaseDataSource : DirFilesDataSourceDriver
             while(listing.Find())
             {
                if(listing.stats.attribs.isFile)
+               {
+                  listing.Stop();
                   return true;
+               }
             }
          }
       }
       return false;
    }
-
-   /*String MakeDatabasePath(const String name)
-   {
-      if(name)
-      {
-         char dbPath[MAX_LOCATION];
-         char *ext = databaseFileExt ? databaseFileExt : "";
-         char *fileName = new char[strlen(name)+strlen(ext)+8];
-         strcpy(dbPath, path ? path : "");
-         strcpy(fileName, name);
-         if(*ext)
-            ChangeExtension(fileName, ext, fileName);
-         PathCat(dbPath, fileName);
-         return CopyString(dbPath);
-      }
-      return null;
-   }*/
 
    Database OpenDatabase(const String name, CreateOptions createOptions, DataSource ds)
    {
@@ -108,8 +86,6 @@ class dBaseDataSource : DirFilesDataSourceDriver
          {
             MakeDir(path);
             attribs = FileExists(path);
-            /*if(attribs.isDirectory)
-               databasesCount++;*/
          }
          if(attribs.isDirectory)
             db = { dds = this, path = CopyString(path) };
@@ -123,21 +99,166 @@ class dBaseDataSource : DirFilesDataSourceDriver
    }
 }
 
-class DBTable : struct
+class dBaseRow : DriverRow
 {
-   DBTable prev, next;
-   String apath; // TODO: find and replace all apath by path
-   File f;
-   int pos;
-   LinkList<dBaseField> fields { };
+   dBaseTable tbl;
+   int id;  // 0 when null, 1 based index
+   int maxID;
 
+   virtual bool ReadRecord() { return true; }
+
+   bool Find(dBaseField field, MoveOptions move, MatchOptions match, typed_object data) { return false; }
+   bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields) { return false; }
+   bool Synch(DriverRow to) { return false; }
+   bool Add(uint64 id) { return false; }
+   bool Delete() { return false; }
+   int GetSysID() { return id; }
+   bool GoToSysID(int id)
+   {
+      if(this.id == id) return true;
+      if(id > 0 && id <= maxID)
+      {
+         this.id = id;
+         if(ReadRecord()) return true;
+      }
+      this.id = 0;
+      return false;
+   }
+   bool Nil() { return !id; }
+   bool Select(MoveOptions move)
+   {
+      if(maxID)
+      {
+         switch(move)
+         {
+            case first: id = -1;
+            case next: while(++id <= maxID) if(ReadRecord()) return true; break;
+            case last: id = maxID + 1;
+            case previous: while(--id > 0) if(ReadRecord()) return true; break;
+            case middle: id = (maxID+1)/2; if(ReadRecord()) return true; break;
+            case nil: break;
+         }
+      }
+      id = 0;
+      return false;
+   }
+}
+
+class dBaseTablesListRow : dBaseRow
+{
+   Array<String> tables;
+
+   bool GetData(dBaseField field, typed_object & data)
+   {
+      if(id)
+      {
+         *(String *)data = CopyString(tables[id-1]);
+         return true;
+      }
+      *(String *)data = null;
+      return false;
+   }
+}
+
+class dBaseFieldsListRow : dBaseRow
+{
+   Array<dBaseField> fields;
+
+   bool GetData(dBaseField field, typed_object & data)
+   {
+      if(id)
+      {
+         switch(field.n)
+         {
+            case 0: *(String *)data = CopyString(fields[id-1].info.name); break;
+            case 1: *(Class *)data = fields[id].type; break;
+            case 2: *(int *)data = fields[id].info.length * 8; break;   // Length is in pixels?
+            default: return false;
+         }
+         return true;
+      }
+      switch(field.n)
+      {
+         case 0: *(String *)data = null; break;
+         case 1: *(Class *)data = null; break;
+         case 2: *(int *)data = 0; break;
+      }
+      return false;
+   }
+}
+
+class dBaseTable : Table
+{
+   OpenType tblType;
+   String apath;
+   File f;
+   Array<dBaseField> fields { };
+   int recordSize;
+   bool isUTF8;
    DBFHeader header;
    int deletedRowsCount;
 
-   //DBTable fieldsTable;
-
-   ~DBTable()
+   Field FindField(const String name)
    {
+      for(fld : fields)
+         if(!strcmp(fld.name, name))
+            return fld;
+      return null;
+   }
+
+   Field GetFirstField()
+   {
+      return fields.count ? fields[0] : null;
+   }
+
+   DriverRow CreateRow()
+   {
+      switch(tblType)
+      {
+         case tableRows:  return dBaseTableRow { tbl = this, data = new byte[recordSize], maxID = header.rowsCount  };
+         case tablesList:
+         {
+            Array<String> tables = db.GetTables();
+            return dBaseTablesListRow { tbl = this, tables = tables, maxID = tables.count };
+         }
+         case fieldsList:
+         {
+            dBaseTable tbl = db.GetDBTable(apath, { tableRows });
+            Array<dBaseField> fields = (Array<dBaseField>)tbl.fields;
+            return dBaseFieldsListRow { tbl = tbl, fields = fields, maxID = fields.count };
+         }
+      }
+      return null;
+   }
+
+   const String GetName()
+   {
+      return apath;
+   }
+
+   uint GetFieldsCount()
+   {
+      return fields.count;
+   }
+
+   uint GetRowsCount()
+   {
+      return header.rowsCount - deletedRowsCount;
+   }
+
+   Container<Field> GetFields()
+   {
+      return (Container<Field>)fields;
+   }
+
+   uint GetRecordSize()
+   {
+      return recordSize;
+   }
+
+   ~dBaseTable()
+   {
+      fields.Free();
       delete apath;
       delete f;
    }
@@ -148,57 +269,82 @@ class DBTable : struct
    {
       bool result = false;
       delete f;
-      f = FileOpen(apath, read); // use of a buffered file?
+      f = FileOpenBuffered(apath, read);
       if(f)
       {
-         uint fileSize = f.GetSize();
-         if(fileSize > sizeof(DBFHeader))
+         FileSize64 fileSize = f.GetSize();
+         if(fileSize > (FileSize64)sizeof(DBFHeader)) // TOFIX: fix this warning
          {
+            char encodingFile[MAX_LOCATION];
+            // Encoding File
+            ChangeExtension(apath, "cpg", encodingFile);
+
+            // Check encoding
+            {
+               File f = FileOpen(encodingFile, read);
+               if(f)
+               {
+                  char encoding[256];
+                  if(f.GetLine(encoding, sizeof(encoding)) && (!strcmpi(encoding, "UTF-8") || !strcmpi(encoding, "UTF8")))
+                     isUTF8 = true;
+                  delete f;
+               }
+            }
+
             f.Read(&header, sizeof(DBFHeader), 1);
 #if 0
             bigEndian = determineEndian();
-            if(bigEndian) reverseEndian(SHORT_SIZE, &(header.headerLength));
-            if(bigEndian) reverseEndian(SHORT_SIZE, &(header.recordLength));
-            if(bigEndian) reverseEndian(INT_SIZE, &(header.rowsCount));
+            if(bigEndian) reverseEndian(sizeof(short), &header.headerLength);
+            if(bigEndian) reverseEndian(sizeof(short), &header.recordLength);
+            if(bigEndian) reverseEndian(sizeof(int),   &header.rowsCount);
 #endif
+
+            recordSize = header.recordLength-1;
             if(fileSize >= (header.headerLength + header.recordLength) && (header.headerLength > sizeof(DBFHeader) + 1))
             {
                int activeRowsCount = 0;
                int i, fieldsCount = (header.headerLength - sizeof(DBFHeader) - 1) / sizeof(DBFFieldInfo);
-               char c;
-               for(i=0; i<fieldsCount; i++)
+               uint offset = 0;
+               fields.size = fieldsCount;
+               for(i = 0; i < fieldsCount; i++)
                {
                   dBaseField fld { tbl = this, n = i };
                   incref fld;
-                  fld.Read();
-                  fields.Add(fld);
+                  f.Read(&fld.info, sizeof(DBFFieldInfo), 1);
+                  fld.type = dbfType(fld.info.type);
+                  fld.offset = offset;
+                  fields[i] = fld;
+                  offset += fld.info.length;
                }
+               i = 0;
                f.Seek(header.headerLength, start);
-               for(;;)
+               // TOCHECK: Potential performance issue reading tons of rows at startup?
+               while(i < header.rowsCount)
                {
-                  f.Getc(&c);
+                  char c = 0;
+                  if(!f.Getc(&c))
+                  {
+                     // dBASE level 5 does not seem to have this marker...
+                     //PrintLn(driverName, ": It seems the ", apath, " table file is truncated.");
+                     break;
+                  }
                   if(c == ' ')
                      activeRowsCount++;
                   else if(c == '*')
                      deletedRowsCount++;
                   else if(c == 26)
                   {
-                     f.Getc(&c);
-                     if(!f.eof)
+                     if(f.Getc(&c))
                         PrintLn(driverName, ": There is data past the end of file marker in the ", apath, " table file.");
                      break;
                   }
                   else
                      PrintLn(driverName, ": There appears to be some corruption among the records of the ", apath, " table file.");
                   f.Seek(header.recordLength-1, current);
-                  if(f.eof)
-                  {
-                     PrintLn(driverName, ": It seems the ", apath, " table file is truncated.");
-                     break;
-                  }
+                  i++;
                }
                if(activeRowsCount != header.rowsCount - deletedRowsCount)
-                  PrintLn(driverName, ": A bad rocords count is stored in the ", apath, " table file.");
+                  PrintLn(driverName, ": A bad records count is stored in the ", apath, " table file.");
                f.Seek(header.headerLength, start);
                result = true;
             }
@@ -217,15 +363,12 @@ class dBaseDatabase : Database
 {
    dBaseDataSource dds;
    String path;
-   OldList dbTables;
+   Map<String, dBaseTable> dbTables { };
    Array<String> tables { };
-#if 0
-   uint tablesCountPosition;
-#endif
 
    ~dBaseDatabase()
    {
-      dbTables.RemoveAll(DBTable::Free);
+      dbTables.Free();
       delete path;
       tables.Free();
    }
@@ -236,12 +379,6 @@ class dBaseDatabase : Database
    }
 
    Array<String> GetTables()
-   {
-      UpdateTablesList();
-      return tables;
-   }
-
-   void UpdateTablesList()
    {
       FileListing listing { path, dds.tableFileExt };
       tables.Free();
@@ -261,477 +398,294 @@ class dBaseDatabase : Database
             tables.Add(fileName);
          }
       }
+      return tables;
    }
 
-   DBTable GetDBTable(char * apath, OpenOptions options)
+   dBaseTable GetDBTable(char * apath, OpenOptions options)
    {
-      DBTable dbTbl { };
-      for(dbTbl = dbTables.first; dbTbl; dbTbl = dbTbl.next)
-         if(!fstrcmp(apath, dbTbl.apath))
-            break;
-      if(!dbTbl)
+      if(options.type == tableRows && FileExists(apath).isFile)
       {
-         if(FileExists(apath).isFile)
+         MapIterator<String, dBaseTable> it { map = dbTables };
+         if(!it.Index(apath, true))
          {
-            dbTbl = DBTable { this, apath = CopyString(apath) };
+            dBaseTable dbTbl { tblType = tableRows, apath = CopyString(apath) };
+            incref dbTbl;
             dbTbl.Open();
-            dbTables.Add(dbTbl);
+            it.data = dbTbl;
+            return dbTbl;
          }
-
-         if(options.type == tablesList)
-         {
-#if 0
-            dbTbl.fields.Add(dBaseField
-               {
-                  tbl = dbTbl,
-                  name = CopyString("Name"),
-                  type = class(String),
-                  length = 0,
-                  num = 1
-               });
-#endif
-         }
-         else if(options.type == fieldsList)
-         {
-#if 0
-            dbTbl.fields.Add(dBaseField
-               {
-                  tbl = dbTbl,
-                  name = CopyString("Name"),
-                  type = class(String),
-                  length = 0,
-                  num = 1
-               });
-            dbTbl.fields.Add(dBaseField
-               {
-                  tbl = dbTbl,
-                  name = CopyString("Type"),
-                  type = class(Class),
-                  length = 0,
-                  num = 2
-               });
-            dbTbl.fields.Add(dBaseField
-               {
-                  tbl = dbTbl,
-                  name = CopyString("Length"),
-                  type = class(int),
-                  length = 0,
-                  num = 3
-               });
-#endif
-         }
-         else
-         {
-            //int num, rowsCount, deletedRowsCount;
-            //DBTable fieldsTable = dbTbl.fieldsTable;
-            //if(!fieldsTable) fieldsTable = dbTbl.fieldsTable = GetDBTable(dbTbl.apathFields, { fieldsList });
-            //RowsCountFileEdit(archive, dbTbl.apathFields, init, &rowsCount, &deletedRowsCount, &dbTbl.fieldsTable.rowsCountPosition /-*fieldsCountPosition*-/);
-
-            /*for(num = 1; num <= rowsCount; num++)          // TOFIX in future a field position might have been deleted
-            {
-               dBaseField fld { tbl = dbTbl, num = num };
-               incref fld;
-               fld.Read();
-               dbTbl.fields.Add(fld);
-            }*/
-         }
+         return it.data;
       }
-      return dbTbl;
-   }
+      else if(options.type == tablesList && FileExists(apath).isDirectory)
+      {
+         dBaseTable dbTbl { tblType = tablesList, db = this, apath = CopyString(apath) };
+         dBaseField field { type = class(String) };
+         incref dbTbl;
+         strcpy(field.info.name, "Name");
+         dbTbl.fields.Add(field);
+         return dbTbl;
+      }
+      else if(options.type == fieldsList)
+      {
+         dBaseTable dbTbl { tblType = fieldsList, db = this, apath = CopyString(apath) };
+         dBaseField fldName { n = 0, type = class(String) };
+         dBaseField fldType { n = 1, type = class(Class) };
+         dBaseField fldLen  { n = 2, type = class(int) };
+         incref dbTbl;
+         strcpy(fldName.info.name, "Name");
+         dbTbl.fields.Add(fldName);
 
-   uint ObjectsCount(ObjectType type)
-   {
-      // TODO
-      return 0;
-   }
+         strcpy(fldType.info.name, "Type");
+         dbTbl.fields.Add(fldType);
 
-   bool RenameObject(ObjectType type, const String name, const String rename)
-   {
-      // TODO
-      return false;
-   }
-
-   bool DeleteObject(ObjectType type, const String name)
-   {
-      // TODO
-      return false;
+         strcpy(fldLen.info.name, "Length");
+         dbTbl.fields.Add(fldLen);
+         return dbTbl;
+      }
+      return null;
    }
 
    Table OpenTable(const String name, OpenOptions options)
    {
       dBaseTable tbl = null;
-      char apath[MAX_LOCATION] = "";
-      switch(options.type)
+      if(name || options.type == tablesList)
       {
-         case tableRows:
-            if(name)
-            {
-               const char *ext = dds.tableFileExt;
-               strcpy(apath, path ? path : "");
-               if(ext && *ext)
-               {
-                  char *fileName = new char[strlen(name)+strlen(ext)+8];
-                  char nameExt[MAX_EXTENSION];
-                  GetExtension(name, nameExt);
-                  strcpy(fileName, name);
-                  if(!nameExt[0] || strcmp(nameExt, ext))
-                  {
-                     strcat(fileName, ".");
-                     strcat(fileName, ext);
-                  }
-                  PathCat(apath, fileName);
-                  delete fileName;
-               }
-               else
-                  PathCat(apath, name);
-               /*if(FileExists(tablePath).isFile)
-               {
-                  tbl = { db = this, apath = tablePath };
-               }*/
-            }
-            break;
-         case viewRows:
-            break;
-         case processesList:
-            break;
-         case databasesList:
-            break;
-         case queryRows:
-            break;
-         case tablesList:
-            break;
-         case fieldsList:
-            break;
-      }
-
-      if(apath[0])
-      {
-         DBTable dbTable = GetDBTable(apath, options);
-         if(dbTable)
+         char apath[MAX_LOCATION];
+         const char *ext = dds.tableFileExt;
+         strcpy(apath, path ? path : "");
+         if(name)
          {
-            tbl = dBaseTable { dbTable = dbTable };
-            LinkTable(tbl);
+            if(ext && *ext)
+            {
+               char *fileName = new char[strlen(name)+strlen(ext)+8];
+               char nameExt[MAX_EXTENSION];
+               GetExtension(name, nameExt);
+               strcpy(fileName, name);
+               if(!nameExt[0] || strcmp(nameExt, ext))
+               {
+                  strcat(fileName, ".");
+                  strcat(fileName, ext);
+               }
+               PathCat(apath, fileName);
+               delete fileName;
+            }
+            else
+               PathCat(apath, name);
+         }
+         if(apath[0])
+         {
+            tbl = GetDBTable(apath, options);
+            if(tbl)
+            {
+               incref tbl;
+               LinkTable(tbl);
+            }
          }
       }
       return tbl;
    }
 }
 
-class dBaseTable : Table
+private static inline Class dbfType(char ch)
 {
-   DBTable dbTable;
-   //DBIndex index;
-
-   Field FindField(const String name)
+   switch(ch)
    {
-      for(fld : dbTable.fields)
-         if(!strcmp(fld.name, name))
-            return fld;
-      return null;
+      case 'B': case 'G': case 'M': PrintLn(driverName, ": no .DBT support for type (", ch, ")");
+      case 'C': return class(String);
+      case 'N': case 'I': case '+': return class(int);
+      case 'F': case 'O': return class(double);
+      case 'D': return class(Date);
+      case 'L': return class(bool);
+      case '@': return class(SecSince1970);
    }
-
-   Field GetFirstField()
-   {
-      return dbTable.fields.first;
-   }
-
-   DriverRow CreateRow()
-   {
-      return dBaseRow { tbl = dbTable/*, index = index*/, num = 0 };
-   }
-
-   const String GetName()
-   {
-      return dbTable.apath;
-   }
-
-   uint GetFieldsCount()
-   {
-      return dbTable.fields.count;
-   }
-
-   uint GetRowsCount()
-   {
-      return dbTable.header.rowsCount - dbTable.deletedRowsCount;
-   }
-
-   Container<Field> GetFields()
-   {
-      return (Container<Field>)dbTable.fields;
-   }
+   PrintLn(driverName, ": Unknown field type (", ch, ")");
+   return class(String);
 }
 
 class dBaseField : Field
 {
-   DBTable tbl;
+   dBaseTable tbl;
    int n;
    DBFFieldInfo info;
    Class type;
-   // public LinkElement<dBaseField> link;
+   uint offset;
 
    const String GetName()   { return info.name; }
    Class  GetType()   { return type; }
    int    GetLength() { return info.length; }
-   Field  GetNext()   { return next; }
-   Field  GetPrev()   { return prev; }
+   Field  GetNext()   { Array<dBaseField> fields = (Array<dBaseField>)*&tbl.fields; return n < fields.count-1 ? fields[n+1] : null; }
+   Field  GetPrev()   { Array<dBaseField> fields = (Array<dBaseField>)*&tbl.fields; return n > 0 ? fields[n-1] : null; }
    Table  GetTable()  { return (Table)tbl; }
-
-   void Read()
-   {
-      tbl.f.Read(&info, sizeof(DBFFieldInfo), 1);
-      switch(info.type)
-      {
-         case 'C': // Char
-            type = class(String);
-            break;
-         case 'N': // Number
-            type = class(int);
-            break;
-         case 'D': // Date
-            type = class(Date);
-            break;
-         case 'L': // Logic
-            type = class(bool);
-            break;
-         case 'F': // Float -- Really?
-            type = class(float);
-            break;
-         case 'G': // General
-         case 'M': // Memo
-         case 'B': // Binary
-            PrintLn(driverName, ": Field type (", info.type, ") not supported yet");
-            //type = class(byte *);
-            break;
-         default:
-            PrintLn(driverName, ": Unknown field type (", info.type, ")");
-      }
-   }
-
-   void Write()
-   {
-   }
 
    void Free() { delete this; }
 }
 
-class dBaseRow : DriverRow
+class dBaseTableRow : dBaseRow
 {
-   DBTable tbl;
-   // DBIndex index;
-   BTNode node;
+   File f;
+   byte * data;
 
-   int num;
-
-   Value *values;
-
-   ~dBaseRow()
+   ~dBaseTableRow()
    {
-      delete values;
+      delete data;
    }
 
-   bool GetData(dBaseField field, typed_object & data)
+   // Reference: http://www.dbase.com/KnowledgeBase/int/db7_file_fmt.htm
+   private static inline bool _GetData(dBaseField field, typed_object & data)
    {
-      Class c = *data._class; // TOFIX: The '*' should not be required here
-      if(eClass_IsDerived(c, class(String)))
+      bool result = false;
+      if(id)
       {
-         *(char **)data = CopyString(values[field.n].string);
-         return true;
+         char fldData[1024];
+         uint fSize = field.length;
+         memcpy(fldData, this.data + field.offset, fSize);
+         fldData[fSize] = 0;
+
+         switch(field.info.type)
+         {
+            // *** Types stored as strings... ***
+            case 'B': // Binary (.DBT block number)
+            case 'G': // OLE (.DBT block number)
+            case 'M': // Memo (.DBT block number)
+               TrimLSpaces(fldData, fldData);
+               TrimRSpaces(fldData, fldData);
+               if(fldData[0])
+               {
+                  *(String *)data = CopyString(fldData);
+                  PrintLn(driverName, ": .DBT support not implemented");
+                  result = true;
+               }
+               break;
+            case 'C': // Strings
+               TrimLSpaces(fldData, fldData);
+               TrimRSpaces(fldData, fldData);
+               if(fldData[0])
+               {
+                  // Assume ISO8859-1 Encoding
+                  if(!tbl.isUTF8 || !UTF8Validate(fldData))
+                  {
+                     char utf8[1024];
+                     ISO8859_1toUTF8(fldData, utf8, sizeof(utf8));
+                     *(String *)data = CopyString(utf8);
+                  }
+                  else
+                     *(String *)data = CopyString(fldData);
+                  result = true;
+               }
+               break;
+            case 'D': // Dates (as YYYYMMDD strings)
+               if(fldData[0])
+               {
+                  int day, month, year;
+                  day = atoi(fldData+6); fldData[6] = '\0';
+                  month = atoi(fldData+4); fldData[4] = '\0';
+                  year = atoi(fldData);
+                  if(year /*>= 1970*/ && month >= 1 && month <= 12 && day >= 1 && day <= 31)
+                  {
+                     *(Date *)data = { year, (Month)(month-1), day };
+                     result = true;
+                  }
+                  else
+                     PrintLn(driverName, ": Invalid date(", fldData, ")");
+               }
+               break;
+            case 'L':  // Logical (true or false)
+               *(bool *)data = fldData[0] == 'T';
+               result = fldData[0] == 'T' || fldData[0] == 'F';
+               break;
+            case 'N': // Integer (as strings)
+            {
+               char * p;
+               *(int *)data = strtol(fldData, &p, 10);
+               result = p > fldData;
+               break;
+            }
+            case 'F': // Floats (as strings)
+            {
+               char * p;
+               *(double *)data = strtod(fldData, &p);
+               if(p > fldData && !(*(double *)data).isNan)
+                  result = true;
+               break;
+            }
+            // *** Types stored in binary... ***
+            case '@': // Timestamp  8 bytes - two longs, first for date, second for time.  The date is the number of days since  01/01/4713 BC. Time is hours * 3600000L + minutes * 60000L + Seconds * 1000L
+            {
+               #define DAYS_FROM_4713BC_TO_1970 2440588
+               uint date, time;
+               memcpy(&date, (uint *)fldData, 4);
+               memcpy(&time, (uint *)(fldData + 4), 4);
+               *(SecSince1970 *)data = (SecSince1970) (((int64)date - DAYS_FROM_4713BC_TO_1970) * 24*60*60 + time / 1000);   // No ms support for now...
+               result = true;
+               break;
+            }
+            case 'I':  // Integer: 4 bytes. Leftmost bit used to indicate sign, 0 negative.
+            case '+':  // (Autoincrement)
+            {
+               int * iPtr = (int *)fldData;
+               *(int *)data = *iPtr;
+               result = true;
+               break;
+            }
+            case 'O': // double
+            {
+               double * dPtr = (double *)fldData;
+               *(double *)data = *dPtr;
+               if(!(*(double *)data).isNan)
+                  result = true;
+               break;
+            }
+            default:
+               PrintLn(driverName, ": Field type (", field.info.type, ") not supported yet");
+         }
       }
-      else
+      return result;
+   }
+
+   bool ReadRecord()
+   {
+      File f = tbl.f;
+      uint recordSize = tbl.recordSize;
+      char recState = 0;
+      return f.Seek(tbl.header.headerLength + (id-1) * (1+recordSize), start) &&
+             f.Getc(&recState) && recState == ' ' &&
+             f.Read(data, 1, recordSize) == recordSize;
+   }
+
+   const void * GetRowData() { return id ? data : null; }
+
+   bool GetData(dBaseField field, typed_object & data) { return _GetData(field, data); }
+
+   // To return as FieldValue
+   bool GetDataFieldValue(dBaseField field, FieldValue value)
+   {
+      value = { { nil } };
+      if(id)
       {
          switch(field.info.type)
          {
-            //case 'B':
-            //case 'G':
-            //case 'M':
-            case 'D':
-               if(values[field.n].string[0])
-               {
-                  int year, month, day;
-                  Date date { };
-                  String s = CopyString(values[field.n].string);
-                  day = atoi(s+6);   *(s+6) = '\0';
-                  month = atoi(s+4); *(s+4) = '\0';
-                  year = atoi(s);
-                  delete s;
-                  if(year >= 1970 && month >= 1 && month <= 12 && day >= 1 && day <= 31)
-                  {
-                     date.year = year;
-                     date.month = (Month)(month-1);
-                     date.day = day;
-                     *(Date *)data = date;
-                  }
-                  else
-                  {
-                     PrintLn(driverName, ": Invalid date(", values[field.n].string, ")");
-                     return false;
-                  }
-               }
-               else
-                  *(Date *)data = Date { };
-               return true;
-            //case 'C':
-            //case 'L': // TODO: Support Logical
-            //case 'F': // TODO: Support Numbers
-            case 'N':
-               if(eClass_IsDerived(c, class(double))/* <-- this doesn't work!! (class Currency : double) work around --> */ || !strcmp(data._class.name, "Currency"))
-                  *(double *)data = values[field.n].string[0] ? atof(values[field.n].string) : 0;
-               else if(eClass_IsDerived(c, class(float)))///* <-- this doesn't work!! (class Currency : double) work around --> */ || !strcmp(data._class.name, "Currency"))
-                  *(float *)data = values[field.n].string[0] ? (float)atof(values[field.n].string) : 0;
-               else
-               {
-                  PrintLn(driverName, ": Data type (", data._class, ") for field type (", field.info.type, ") not supported yet");
-                  return false;
-               }
-               return true;
-            default:
-               PrintLn(driverName, ": Field type (", field.info.type, ") not supported yet");
-               return false;
-         }
-      }
-   }
-
-   bool Nil()
-   {
-      return !num;
-   }
-
-   bool Select(MoveOptions move)
-   {
-      if(tbl.header.rowsCount)
-      {
-         switch(move)
-         {
-            case first:
-               ResetPosition();
-            case next:
-               for(;;)
-               {
-                  if(num < tbl.header.rowsCount)
-                  {
-                     char c = 0;
-                     tbl.f.Getc(&c);
-                     if(c == ' ')
-                     {
-                        ReadRecord();
-                        return true;
-                     }
-                     else if(c == '*')
-                     {
-                        tbl.f.Seek(tbl.header.recordLength-1, current);
-                        num++;
-                     }
-                     else
-                        break;
-                  }
-                  else if(num == tbl.header.rowsCount)
-                  {
-                     ResetPosition();
-                     break;
-                  }
-               }
-               break;
-            case last:
-            case previous:
-            case middle:
-               // Not supported. Forward only.
-               break;
-            case nil:
-               num = 0;
-               break;
-         }
-      }
-      return false;
-   }
-
-   void ResetPosition()
-   {
-      num = 0;
-      tbl.f.Seek(tbl.header.headerLength, start);
-   }
-
-   void ReadRecord()
-   {
-      char * data;
-      if(!values)
-         values = new Value[tbl.fields.count];
-      for(f : tbl.fields)
-      {
-         int len = f.length;
-         if(len > 0 && len < 1024)
-         {
-            data = new char[len+1];
-            tbl.f.Read(data, 1, len);
-            data[len] = '\0';
-            switch(f.info.type)
+            case 'B': case 'G': case 'M': case 'C': if(_GetData(field, value.s)) value.type = { text, true }; break;
+            case 'I': case '+': case 'N': case 'L': if(_GetData(field, value.i)) value.type = { integer }; break;
+            case 'F': case 'O':                     if(_GetData(field, value.r)) value.type = { real }; break;
+            // TODO: Should probably support additional types, at least dates?
+            case 'D': // Dates (as YYYYMMDD strings)
             {
-               case 'B':
-               case 'G':
-               case 'M':
-               case 'D':
-               case 'C':
-                  if(!UTF8Validate(data))
-                  {
-                     char * temp = new char[len*2];
-                     ISO8859_1toUTF8(data, temp, len*2);
-                     delete data;
-                     data = renew temp char[strlen(temp)+1];
-                  }
-                  TrimLSpaces(data, data);
-                  TrimRSpaces(data, data);
-                  values[f.n].string = data;
-                  break;
-               case 'L':
-               case 'F':
-               case 'N':
-                  TrimLSpaces(data, data);
-                  TrimRSpaces(data, data);
-                  values[f.n].string = CopyString(data);
-                  if(values[f.n].string)
-                     values[f.n].doubleValue = atof(values[f.n].string);
-                  else
-                     values[f.n].doubleValue =-1;
-                  break;
+               char date[9];
+               memcpy(date, data + field.offset, Min(8, field.length));
+               date[8] = 0;
+               if(date[0])
+                  value = { { text, true }, s = CopyString(date) };
+               break;
+            }
+            case '@': // Timestamp  8 bytes - two longs, first for date, second for time.  The date is the number of days since  01/01/4713 BC. Time is hours * 3600000L + minutes * 60000L + Seconds * 1000L
+            {
+               SecSince1970 t;
+               if(_GetData(field, &t))
+                  value = { { real }, r = t }; // Returning time stamps in double for now (watch out for bad precision)
+               break;
             }
          }
-         else
-            PrintLn(driverName, ": Field length (", len, ") outside of valid range (1-1023)");
       }
-      num++;
-   }
-
-   bool Find(dBaseField field, MoveOptions move, MatchOptions match, typed_object data)
-   {
-      return false;
-   }
-
-   bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields)
-   {
-      return false;
-   }
-
-   bool Synch(DriverRow to)
-   {
-      return false;
-   }
-
-   bool Add(uint64 id)
-   {
-      return false;
-   }
-
-   bool Delete()
-   {
-      return false;
-   }
-
-   int GetSysID()
-   {
-      return num;
-   }
-
-   bool GoToSysID(int id)
-   {
-      return false;
+      return value.type.type != nil;
    }
 }

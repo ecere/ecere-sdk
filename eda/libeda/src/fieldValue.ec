@@ -1,4 +1,17 @@
-import "sqliteDB"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import "ecere"
+#endif
+
+public enum FieldType   // Note: these match SQLiteType
+{
+   integer = 1,
+   real    = 2,
+   text    = 3,
+   blob    = 4,
+   nil     = 5
+};
 
 public class FieldTypeEx : FieldType
 {

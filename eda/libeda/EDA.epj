@@ -133,7 +133,8 @@
             "EDA.ec",
             "ers.ec",
             "gui.ec",
-            "idList.ec"
+            "idList.ec",
+            "fieldValue.ec"
          ]
       },
       "todo.txt"
