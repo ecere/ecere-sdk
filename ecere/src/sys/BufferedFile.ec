@@ -252,7 +252,7 @@ public class BufferedFile : File
          eof = newPosition > fileSize;
          this.pos = newPosition;
       }
-      return true;
+      return !eof;
    }
 
    bool Seek64(int64 pos, FileSeekMode mode)
