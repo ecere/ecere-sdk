@@ -1670,6 +1670,18 @@ static void __ecereNameSpace__ecere__com__FreeEnumValue(struct __ecereNameSpace_
 (__ecereNameSpace__ecere__com__eSystem_Delete(value->name), value->name = 0);
 }
 
+static void *  __ecereNameSpace__ecere__com__Instance_New(struct __ecereNameSpace__ecere__com__Class *  _class, unsigned int bindingsAlloc);
+
+void * __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class)
+{
+return __ecereNameSpace__ecere__com__Instance_New(_class, 1);
+}
+
+void * __ecereNameSpace__ecere__com__eInstance_NewEx(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int bindingsAlloc)
+{
+return __ecereNameSpace__ecere__com__Instance_New(_class, bindingsAlloc);
+}
+
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__Method
@@ -1786,7 +1798,7 @@ void (* callback)(void *, void *);
 struct __ecereNameSpace__ecere__com__Instance * object;
 } ecere_gcc_struct;
 
-void __ecereNameSpace__ecere__com__eInstance_Watch(void * instance, struct __ecereNameSpace__ecere__com__Property * _property, void * object, void (* callback)(void *, void *))
+void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void * object, void (* callback)(void *, void *))
 {
 if(_property->isWatchable)
 {
@@ -2171,6 +2183,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void * bindingsClass;
 } ecere_gcc_struct;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Angle;
@@ -2450,13 +2463,13 @@ break;
 return (((void *)0));
 }
 
-static unsigned int __ecereNameSpace__ecere__com__ConstructInstance(void * instance, struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from)
+static unsigned int __ecereNameSpace__ecere__com__ConstructInstance(void * instance, struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from, unsigned int bindingsAlloc)
 {
 if(_class->templateClass)
 _class = _class->templateClass;
 if(_class->base && from != _class->base)
 {
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class->base, from))
+if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class->base, from, 0))
 return 0;
 }
 if(_class->Initialize)
@@ -2468,7 +2481,13 @@ Initialize(_class->module);
 }
 if(_class->Constructor)
 {
-if(!_class->Constructor(instance))
+unsigned int result;
+
+if(_class->bindingsClass)
+result = ((unsigned int (*)(void *, unsigned int))(void *)_class->Constructor)(instance, bindingsAlloc);
+else
+result = _class->Constructor(instance);
+if(!result)
 {
 for(; _class; _class = _class->base)
 {
@@ -3390,7 +3409,7 @@ void __ecereNameSpace__ecere__com__eSystem_SetArgs(struct __ecereNameSpace__ecer
 System_SetArgs(argc, argv, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv);
 }
 
-void * __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class)
+static void * __ecereNameSpace__ecere__com__Instance_New(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int bindingsAlloc)
 {
 struct __ecereNameSpace__ecere__com__Instance * instance = (((void *)0));
 
@@ -3422,7 +3441,7 @@ if(instance && _class->type == 0)
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class = _class;
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = _class->_vTbl;
 }
-if(instance && !__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, (((void *)0))))
+if(instance && !__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, (((void *)0)), bindingsAlloc))
 {
 __ecereNameSpace__ecere__com___free(instance);
 instance = (((void *)0));
@@ -3851,7 +3870,7 @@ for(base = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->
 }
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class = _class;
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = _class->_vTbl;
-if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, fromClass))
+if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class, fromClass, 0))
 {
 __ecereNameSpace__ecere__com___free(instance);
 *instancePtr = (((void *)0));
@@ -6577,6 +6596,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatized", "ecere:
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "numParams", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isInstanceClass", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "byValueSystemClass", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "bindingsClass", "void *", sizeof(void *), 0xF000F000, 1);
 if(class)
 class->fixed = (unsigned int)1;
 if(class)
@@ -6840,6 +6860,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_GetPr
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_SetProperty", "void ecere::com::eClass_SetProperty(ecere::com::Class _class, const char * name, int64 value)", __ecereNameSpace__ecere__com__eClass_SetProperty, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_FindMethod", "ecere::com::Method ecere::com::eClass_FindMethod(ecere::com::Class _class, const char * name, ecere::com::Module module)", __ecereNameSpace__ecere__com__eClass_FindMethod, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_New", "void * ecere::com::eInstance_New(ecere::com::Class _class)", __ecereNameSpace__ecere__com__eInstance_New, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_NewEx", "void * ecere::com::eInstance_NewEx(ecere::com::Class _class, bool bindingsAlloc)", __ecereNameSpace__ecere__com__eInstance_NewEx, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Evolve", "void ecere::com::eInstance_Evolve(ecere::com::Instance * instancePtr, ecere::com::Class _class)", __ecereNameSpace__ecere__com__eInstance_Evolve, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Delete", "void ecere::com::eInstance_Delete(ecere::com::Instance instance)", __ecereNameSpace__ecere__com__eInstance_Delete, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_FindProperty", "ecere::com::Property ecere::com::eClass_FindProperty(ecere::com::Class _class, const char * name, ecere::com::Module module)", __ecereNameSpace__ecere__com__eClass_FindProperty, module, 4);
@@ -6878,7 +6899,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Fi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eProperty_Watchable", "void ecere::com::eProperty_Watchable(ecere::com::Property _property)", __ecereNameSpace__ecere__com__eProperty_Watchable, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_DestructionWatchable", "void ecere::com::eClass_DestructionWatchable(ecere::com::Class _class)", __ecereNameSpace__ecere__com__eClass_DestructionWatchable, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eProperty_SelfWatch", "void ecere::com::eProperty_SelfWatch(ecere::com::Class _class, const char * name, void (* callback)(void *))", __ecereNameSpace__ecere__com__eProperty_SelfWatch, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Watch", "void ecere::com::eInstance_Watch(void * instance, ecere::com::Property _property, void * object, void (* callback)(void *, void *))", __ecereNameSpace__ecere__com__eInstance_Watch, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_Watch", "void ecere::com::eInstance_Watch(ecere::com::Instance instance, ecere::com::Property _property, void * object, void (* callback)(void *, void *))", __ecereNameSpace__ecere__com__eInstance_Watch, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_WatchDestruction", "void ecere::com::eInstance_WatchDestruction(ecere::com::Instance instance, ecere::com::Instance object, void (* callback)(void *, void *))", __ecereNameSpace__ecere__com__eInstance_WatchDestruction, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eInstance_StopWatching", "void ecere::com::eInstance_StopWatching(ecere::com::Instance instance, ecere::com::Property _property, ecere::com::Instance object)", __ecereNameSpace__ecere__com__eInstance_StopWatching, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_GetDesigner", "subclass(ecere::com::ClassDesignerBase) ecere::com::eClass_GetDesigner(ecere::com::Class _class)", __ecereNameSpace__ecere__com__eClass_GetDesigner, module, 4);

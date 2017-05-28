@@ -202,42 +202,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-struct __ecereNameSpace__ecere__com__Property;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree
@@ -276,6 +240,30 @@ __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpenEnv(mode, env, commandLine);
 }
 
+struct __ecereNameSpace__ecere__com__DataMember;
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} ecere_gcc_struct;
+
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__Method
@@ -297,65 +285,7 @@ int memberAccess;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-struct __ecereNameSpace__ecere__com__Module;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
-
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
-struct __ecereNameSpace__ecere__com__NameSpace;
-
-struct __ecereNameSpace__ecere__com__NameSpace
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
-struct __ecereNameSpace__ecere__com__NameSpace *  left;
-struct __ecereNameSpace__ecere__com__NameSpace *  right;
-int depth;
-struct __ecereNameSpace__ecere__com__NameSpace *  parent;
-struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
-struct __ecereNameSpace__ecere__sys__BinaryTree classes;
-struct __ecereNameSpace__ecere__sys__BinaryTree defines;
-struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Application
-{
-int argc;
-const char * *  argv;
-int exitCode;
-unsigned int isGUIApp;
-struct __ecereNameSpace__ecere__sys__OldList allModules;
-char *  parsedCommand;
-struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} ecere_gcc_struct;
-
-void __ecereUnregisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
-}
-
-struct __ecereNameSpace__ecere__com__DataMember;
+struct __ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument
 {
@@ -380,10 +310,10 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-struct __ecereNameSpace__ecere__com__DataMember
+struct __ecereNameSpace__ecere__com__Property
 {
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
 const char *  name;
 unsigned int isProperty;
 int memberAccess;
@@ -392,14 +322,50 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-short structAlignment;
-short pointerAlignment;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+struct __ecereNameSpace__ecere__com__Module;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+
+struct __ecereNameSpace__ecere__com__NameSpace;
+
+struct __ecereNameSpace__ecere__com__NameSpace
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
+struct __ecereNameSpace__ecere__com__NameSpace *  left;
+struct __ecereNameSpace__ecere__com__NameSpace *  right;
+int depth;
+struct __ecereNameSpace__ecere__com__NameSpace *  parent;
+struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
+struct __ecereNameSpace__ecere__sys__BinaryTree classes;
+struct __ecereNameSpace__ecere__sys__BinaryTree defines;
+struct __ecereNameSpace__ecere__sys__BinaryTree functions;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Class
@@ -459,6 +425,18 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } ecere_gcc_struct;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__PipeOpenMode;
@@ -468,6 +446,24 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} ecere_gcc_struct;
 
 void __ecereDestructor___ecereNameSpace__ecere__sys__DualPipe(struct __ecereNameSpace__ecere__com__Instance * this)
 {
@@ -661,6 +657,11 @@ uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instan
 __internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this) : (uint64)1;
 })) : DualPipe_GetSize(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
+}
+
+void __ecereUnregisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instance * module)
+{
+
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetLinePeek(struct __ecereNameSpace__ecere__com__Instance * this, char * s, int max, int * charsRead)

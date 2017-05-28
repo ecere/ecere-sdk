@@ -58,6 +58,10 @@ extern unsigned int inCompiler;
 
 extern const char *  outputFile;
 
+extern unsigned int inBGen;
+
+extern const char *  (*  bgenSymbolSwap)(const char *  symbol, unsigned int reduce, unsigned int macro);
+
 static int declTempCount;
 
 struct __ecereNameSpace__ecere__sys__OldList
@@ -149,6 +153,8 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
+extern int strcmp(const char * , const char * );
+
 extern char *  strcpy(char * , const char * );
 
 extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
@@ -159,8 +165,6 @@ void * first;
 void * last;
 int count;
 } ecere_gcc_struct;
-
-extern int strcmp(const char * , const char * );
 
 extern void Compiler_Error(const char *  format, ...);
 
@@ -330,21 +334,11 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void DeclareProperty(struct External * neededBy, struct __ecereNameSpace__ecere__com__Property * prop, char *  setName, char *  getName);
-
 struct Specifier;
 
 extern struct Specifier * MkSpecifier(int specifier);
+
+extern void FreeSpecifier(struct Specifier * spec);
 
 extern struct Specifier * MkSpecifierName(const char *  name);
 
@@ -450,32 +444,6 @@ extern struct Identifier * CopyIdentifier(struct Identifier * id);
 extern void FreeIdentifier(struct Identifier * id);
 
 struct Type;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
 
 extern void FreeType(struct Type * type);
 
@@ -904,6 +872,97 @@ break;
 
 struct ClassImport;
 
+struct ClassImport
+{
+struct ClassImport * prev;
+struct ClassImport * next;
+char *  name;
+struct __ecereNameSpace__ecere__sys__OldList methods;
+struct __ecereNameSpace__ecere__sys__OldList properties;
+unsigned int itself;
+int isRemote;
+} ecere_gcc_struct;
+
+struct MembersInit;
+
+extern struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers);
+
+struct __ecereNameSpace__ecere__sys__BinaryTree;
+
+struct __ecereNameSpace__ecere__sys__BinaryTree
+{
+struct __ecereNameSpace__ecere__sys__BTNode * root;
+int count;
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
+void (*  FreeKey)(void *  key);
+} ecere_gcc_struct;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
+
+struct FunctionDefinition;
+
+extern struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit);
+
+extern void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body);
+
+extern struct External * MkExternalFunction(struct FunctionDefinition * function);
+
+struct FunctionDefinition
+{
+struct FunctionDefinition * prev;
+struct FunctionDefinition * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
+struct Declarator * declarator;
+struct __ecereNameSpace__ecere__sys__OldList *  declarations;
+struct Statement * body;
+struct __ecereNameSpace__ecere__com__Class * _class;
+struct __ecereNameSpace__ecere__sys__OldList attached;
+int declMode;
+struct Type * type;
+struct Symbol * propSet;
+int tempCount;
+unsigned int propertyNoThis;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 struct Symbol
 {
 char *  string;
@@ -968,60 +1027,7 @@ struct Expression * propCategory;
 unsigned int mustRegister;
 } ecere_gcc_struct;
 
-struct ClassImport
-{
-struct ClassImport * prev;
-struct ClassImport * next;
-char *  name;
-struct __ecereNameSpace__ecere__sys__OldList methods;
-struct __ecereNameSpace__ecere__sys__OldList properties;
-unsigned int itself;
-int isRemote;
-} ecere_gcc_struct;
-
-struct MembersInit;
-
-extern struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers);
-
-struct __ecereNameSpace__ecere__sys__BinaryTree;
-
-struct __ecereNameSpace__ecere__sys__BinaryTree
-{
-struct __ecereNameSpace__ecere__sys__BTNode * root;
-int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
-void (*  FreeKey)(void *  key);
-} ecere_gcc_struct;
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
-
-struct FunctionDefinition;
-
-extern struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit);
-
-extern void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body);
-
-extern struct External * MkExternalFunction(struct FunctionDefinition * function);
-
-struct FunctionDefinition
-{
-struct FunctionDefinition * prev;
-struct FunctionDefinition * next;
-struct Location loc;
-struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
-struct Declarator * declarator;
-struct __ecereNameSpace__ecere__sys__OldList *  declarations;
-struct Statement * body;
-struct __ecereNameSpace__ecere__com__Class * _class;
-struct __ecereNameSpace__ecere__sys__OldList attached;
-int declMode;
-struct Type * type;
-struct Symbol * propSet;
-int tempCount;
-unsigned int propertyNoThis;
-} ecere_gcc_struct;
+extern void DeclareProperty(struct External * neededBy, struct __ecereNameSpace__ecere__com__Property * prop, char *  setName, char *  getName);
 
 struct PropertyWatch;
 
@@ -1477,6 +1483,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -2895,6 +2902,17 @@ case 1:
 {
 struct Instantiation * inst = exp->__anon1.instance;
 
+if(inBGen && bgenSymbolSwap && inst->_class)
+{
+struct Specifier * spec = inst->_class;
+const char * name = bgenSymbolSwap(spec->__anon1.__anon1.name, 1, 0);
+
+if(strcmp(name, spec->__anon1.__anon1.name))
+{
+FreeSpecifier(inst->_class);
+inst->_class = MkSpecifierName(name);
+}
+}
 if(inCompiler && inst->_class)
 {
 char className[1024];

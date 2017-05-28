@@ -770,6 +770,16 @@ static void ProcessExpression(Expression exp)
       case instanceExp:
       {
          Instantiation inst = exp.instance;
+         if(inBGen && bgenSymbolSwap && inst._class)
+         {
+            Specifier spec = inst._class;
+            const char * name = bgenSymbolSwap(spec.name, true, false);
+            if(strcmp(name, spec.name))
+            {
+               FreeSpecifier(inst._class);
+               inst._class = MkSpecifierName(name);
+            }
+         }
          if(inCompiler && inst._class)
          {
             char className[1024];

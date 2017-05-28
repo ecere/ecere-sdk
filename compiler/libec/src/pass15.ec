@@ -2705,7 +2705,7 @@ bool DeclareFunction(External neededFor, GlobalFunction function, char * name)
             // WARNING: This is not added anywhere...
             symbol = function.symbol = Symbol {  };
 
-            if(module.name)
+            if(module && module.name)
             {
                if(!function.dataType.dllExport)
                {
@@ -2798,7 +2798,7 @@ bool DeclareFunction(External neededFor, GlobalFunction function, char * name)
             }
             */
             external = MkExternalDeclaration(decl);
-            ast->Add(external);
+            if(ast) ast->Add(external);
             external.symbol = symbol;
             symbol.pointerExternal = external;
 
@@ -4089,7 +4089,17 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                         if(!strcmp(value.name, id.string))
                            break;
                      }
-                     if(value)
+                     if(inBGen && value)
+                     {
+                        if(strcmp(_class.name, "bool"))
+                        {
+                           delete id.string;
+                           id.string = PrintString(_class.name, "_", value.name);
+                        }
+                        FreeType(dest);
+                        return true;
+                     }
+                     else if(value)
                      {
                         FreeType(sourceExp.expType);
 
@@ -7034,7 +7044,12 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
             else
             {
                if(c && c.string)
-                  strcat(string, (fullName || !c.registered) ? c.string : c.registered.name);
+               {
+                  const char * name = (fullName || !c.registered) ? c.string : c.registered.name;
+                  if(inBGen && bgenSymbolSwap)
+                     name = bgenSymbolSwap(name, true, true);
+                  strcat(string, name);
+               }
             }
             if(type.byReference)
                strcat(string, " &");
@@ -7330,7 +7345,12 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
                if(!strcmp(value.name, id.string))
                   break;
             }
-            if(value)
+            if(inBGen && value)
+            {
+               exp.expType = MkClassType(baseClass.fullName);
+               break;
+            }
+            else if(value)
             {
                exp.isConstant = true;
                if(inCompiler || inPreCompiler || inDebugger)
@@ -8102,47 +8122,50 @@ void ProcessExpressionType(Expression exp)
                   definedExp = eSystem_FindDefine(privateModule, id.string);
                if(definedExp)
                {
-                  int c;
-                  for(c = 0; c<definedExpStackPos; c++)
-                     if(definedExpStack[c] == definedExp)
-                        break;
-                  if(c == definedExpStackPos && c < sizeof(definedExpStack) / sizeof(void *))
+                  if(!inBGen)
                   {
-                     Location backupYylloc = yylloc;
-                     File backInput = fileInput;
-                     definedExpStack[definedExpStackPos++] = definedExp;
-
-                     fileInput = TempFile { };
-                     fileInput.Write(definedExp.value, 1, strlen(definedExp.value));
-                     fileInput.Seek(0, start);
-
-                     echoOn = false;
-                     parsedExpression = null;
-                     resetScanner();
-                     expression_yyparse();
-                     delete fileInput;
-                     if(backInput)
-                        fileInput = backInput;
-
-                     yylloc = backupYylloc;
-
-                     if(parsedExpression)
+                     int c;
+                     for(c = 0; c<definedExpStackPos; c++)
+                        if(definedExpStack[c] == definedExp)
+                           break;
+                     if(c == definedExpStackPos && c < sizeof(definedExpStack) / sizeof(void *))
                      {
-                        FreeIdentifier(id);
-                        exp.type = bracketsExp;
-                        exp.list = MkListOne(parsedExpression);
-                        ApplyLocation(parsedExpression, yylloc);
-                        ProcessExpressionType(exp);
+                        Location backupYylloc = yylloc;
+                        File backInput = fileInput;
+                        definedExpStack[definedExpStackPos++] = definedExp;
+
+                        fileInput = TempFile { };
+                        fileInput.Write(definedExp.value, 1, strlen(definedExp.value));
+                        fileInput.Seek(0, start);
+
+                        echoOn = false;
+                        parsedExpression = null;
+                        resetScanner();
+                        expression_yyparse();
+                        delete fileInput;
+                        if(backInput)
+                           fileInput = backInput;
+
+                        yylloc = backupYylloc;
+
+                        if(parsedExpression)
+                        {
+                           FreeIdentifier(id);
+                           exp.type = bracketsExp;
+                           exp.list = MkListOne(parsedExpression);
+                           ApplyLocation(parsedExpression, yylloc);
+                           ProcessExpressionType(exp);
+                           definedExpStackPos--;
+                           return;
+                        }
                         definedExpStackPos--;
-                        return;
                      }
-                     definedExpStackPos--;
-                  }
-                  else
-                  {
-                     if(inCompiler)
+                     else
                      {
-                        Compiler_Error($"Recursion in defined expression %s\n", id.string);
+                        if(inCompiler)
+                        {
+                           Compiler_Error($"Recursion in defined expression %s\n", id.string);
+                        }
                      }
                   }
                }
