@@ -789,7 +789,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = 0;
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->eof = newPosition > __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize;
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos = newPosition;
 }
-return 1;
+return !__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->eof;
 }
 
 uint64 __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Tell(struct __ecereNameSpace__ecere__com__Instance * this)

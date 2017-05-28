@@ -252,7 +252,7 @@ public class BufferedFile : File
          eof = newPosition > fileSize;
          this.pos = newPosition;
       }
-      return true;
+      return !eof;
    }
 
    uint64 Tell()
