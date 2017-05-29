@@ -6,9 +6,11 @@ public import "ecere"
 
 import "fieldValue"
 
+/*
 #define uint _uint
 #include "ffi.h"
 #undef uint
+*/
 
 #include <stdarg.h>
 
@@ -636,10 +638,15 @@ public:
    Method method;
    Class returnType;
    Array<Class> args { };
-   ffi_type * rType;
+   void /*ffi_type*/ * rType;
    // Array<void *> does not work right now :(
    Array</*ffi_type*/ String> argTypes { };
-   ffi_cif cif;
+   void /*ffi_cif*/ * cif;
+
+   ~SQLCustomFunction()
+   {
+      delete cif;
+   }
 }
 
 public struct FieldFindData
