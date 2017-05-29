@@ -507,7 +507,9 @@ class SQLiteDatabase : Database
             customFunction.rType = FFIGetType(customFunction.returnType, true);
             customFunction.argTypes.Add((void *)&ffi_type_pointer);    // This pointer for SQLCustomFunction object
             for(a : customFunction.args) customFunction.argTypes.Add((void *)FFIGetType(a, false));
-            ffi_prep_cif(&customFunction.cif, FFI_DEFAULT_ABI, customFunction.argTypes.count, customFunction.rType, (ffi_type **) customFunction.argTypes.array);
+            delete customFunction.cif;
+            customFunction.cif = new0 ffi_cif[1];
+            ffi_prep_cif(customFunction.cif, FFI_DEFAULT_ABI, customFunction.argTypes.count, customFunction.rType, (ffi_type **) customFunction.argTypes.array);
             result = sqlite3_create_function(db, name, customFunction.args.count, SQLITE_UTF8, customFunction, SQLiteFunctionProcessor, null, null) == SQLITE_OK;
          }
       }
@@ -709,7 +711,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
    }
    if(sqlFunction.returnType && sqlFunction.returnType.type == structClass)
       ret = new byte[sqlFunction.returnType.typeSize];
-   ffi_call(&sqlFunction.cif, (void *)sqlFunction.method.function, ret, args.array);
+   ffi_call(sqlFunction.cif, (void *)sqlFunction.method.function, ret, args.array);
    // Give SQLite the return value
    if(sqlFunction.returnType)
    {
