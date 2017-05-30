@@ -15,11 +15,14 @@ Module         ec1HomeModule;
 bool ec1 = false;
 void ec1init(const char * pathToModule)
 {
+   //PrintLn(pathToModule, ":");
    SetGlobalContext(ec1GlobalContext);
+   SetTopContext(ec1GlobalContext);
    SetExcludedSymbols(&ec1ExcludedSymbols);
    SetDefines(&::ec1Defines);
    SetImports(&ec1Imports);
    SetInDocumentor(true);
+   SetOutputFile("");
    SetGlobalData(ec1GlobalData);
    if(pathToModule)
       openModule(pathToModule);
@@ -71,7 +74,7 @@ void openModule(const char * filePath)
    SetSymbolsDir(symbolsDir);
    GetExtension(filePath, extension);
 
-      ImportModule(filePath, normalImport, publicAccess, false);
+      ImportModule(filePath, normalImport, publicAccess, true);
 
    if(extension[0] && strcmpi(extension, "so") && strcmpi(extension, "dll") && strcmpi(extension, "dylib"))
       ec1ComponentsApp.name = CopyString(filePath);

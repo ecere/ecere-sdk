@@ -119,10 +119,13 @@
 #define stTA(s, x) ({ C(DataValue) p = { .ui64 = x }; *(s *)p.p; })
 #define oTA(c, x)  ((C(c)) pTA(struct CM(Instance), x))
 
+#define oTAInstance(x)  oTA(Instance, x)
+#define pTAvoid(x)      pTA(void, x)
+
 // thisclass(): Used to specify an eC 'thisclass' type, which morphs into the derived class type when inherited
 //              Note: Resolves to the same type so cannot be type checked
 #define thisclass(x)                   C(x)
-#define subclass(x)                    C(Class)
+#define subclass(x)                    C(Class) *
 
 #define PROPERTY(c, p)   CONCATU(property, c, p)
 #define METHOD(c, m)     CONCATU(method, c, m)
@@ -217,6 +220,14 @@
    #define MODULE_EXPORT extern __attribute__ ((visibility("default")))
 #endif
 
-#define MODULE_LOAD     MODULE_EXPORT uint __ecereDll_Load(C(Module) module)
+#if defined(__WIN32__)
+   #define MODULE_EXPORT extern __attribute__((dllexport))
+   #define stdcall       __stdcall
+#else
+   #define MODULE_EXPORT extern __attribute__ ((visibility("default")))
+   #define stdcall
+#endif
 
-#define MODULE_UNLOAD   MODULE_EXPORT uint __ecereDll_Unload(C(Module) module)
+#define MODULE_LOAD     MODULE_EXPORT uint stdcall __ecereDll_Load(C(Module) module)
+
+#define MODULE_UNLOAD   MODULE_EXPORT uint stdcall __ecereDll_Unload(C(Module) module)

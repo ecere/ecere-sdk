@@ -13,7 +13,7 @@ void cCode(AST out, CGen g)
    cInCodeVirtualMethods(out, g);
    cInCodeMethodFunctionPointers(out, g);
    cInCodeProperties(out, g);
-   //ffff
+
    cInCodeClassPointers(out, g);
    cInCodeVirtualMethodIDs(out, g);
    cInCodeGlobalFunctions(out, g);
@@ -45,9 +45,9 @@ static void cInCodeGlobalFunctionPointers(AST out, CGen g)
       GlobalFunction fn; IterFunction func { ns.ns };
       while((fn = func.next()))
       {
-         BFunction f = fn; // with rename :S
+         BFunction f = fn;
          if(!f.skip && !f.isDllExport)
-            z.printxln("GlobalFunction * FUNCTION(", f.oname, ");");
+            z.printxln("LIB_EXPORT ", g.sym.globalFunction, " * FUNCTION(", f.oname, ");");
       }
    }
    ns.cleanup();
@@ -75,7 +75,7 @@ static void cInCodeVirtualMethods(AST out, CGen g)
             {
                BMethod m = md;
                m.init(md, c);
-               z.printxln("C(Method) * ", m.m, ";");
+               z.printxln("LIB_EXPORT ", g_.sym.method, " * ", m.m, ";");
                haveContent = true;
             }
             if(haveContent) z.printxln("");
@@ -105,7 +105,8 @@ static void cInCodeMethodFunctionPointers(AST out, CGen g)
             bool haveContent = false;
             while((md = met.next(publicOnly)))
             {
-               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload")))) // hack
+               // skipping Module::Load and Module::Unload here because we want to use the dllexported methods directly
+               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
                {
                   BMethod m = md;
                   m.init(md, c);
@@ -113,7 +114,6 @@ static void cInCodeMethodFunctionPointers(AST out, CGen g)
                   {
                      ASTNode node = astFunction(m.s, { type = md.dataType, md = md, cl = cl, m = m, c = c }, { pointer = true }, null);
                      ec2PrintToDynamicString(z, node, true);
-                     //z.printxln("");
                   }
                   haveContent = true;
                }
@@ -172,7 +172,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
          }
       }
    }
@@ -187,7 +187,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
          }
       }
    }
@@ -202,7 +202,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
          }
       }
    }
@@ -219,7 +219,7 @@ static void cInCodeClassPointers(AST out, CGen g)
             if(!c.isUnInt) // hack?
             {
                bool skip = /*c.skipTypeDef || *//*c.isUnichar || */c.isBool;
-               z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
             }
          }
       }
@@ -235,7 +235,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
          }
       }
    }
@@ -250,7 +250,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
          }
       }
    }
@@ -267,7 +267,8 @@ static void cInCodeClassPointers(AST out, CGen g)
             if(!c.isCharPtr)
             {
                bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-               z.printxln(skip ? "// SKIPPED " : "", skip ? cl.name : "", skip ? " // " : "", "C(Class) * CO(", c.cname, ");");
+               if(g_.lib.ecere && c.isWindow) skip = true;
+               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
             }
          }
       }
@@ -297,7 +298,7 @@ static void cInCodeVirtualMethodIDs(AST out, CGen g)
             {
                BMethod m = md;
                m.init(md, c);
-               z.printxln("int ", m.v, ";");
+               z.printxln("LIB_EXPORT int ", m.v, ";");
                haveContent = true;
             }
             if(haveContent) z.printxln("");
@@ -325,7 +326,6 @@ static void cInCodeGlobalFunctions(AST out, CGen g)
          {
             ASTNode node = astFunction(f.oname, { type = fn.dataType, fn = fn }, { pointer = true }, null);
             ec2PrintToDynamicString(z, node, true);
-            //z.printxln("");
          }
       }
    }
@@ -378,7 +378,8 @@ static void cInCodeInitClasses(AST out, CGen g)
             Property cn; IterConversion conv { cl };
             while((md = met.next(publicOnly)))
             {
-               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload")))) // hack
+               // skipping Module::Load and Module::Unload here because we want to use the dllexported methods directly
+               if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
                {
                   BMethod m = md;
                   m.init(md, c);
@@ -433,7 +434,7 @@ static void cInCodeInitFunctions(AST out, CGen g)
       GlobalFunction fn; IterFunction func { ns.ns };
       while((fn = func.next()))
       {
-         BFunction f = fn; // with rename :S
+         BFunction f = fn;
          if(!f.skip && !f.isDllExport)
          {
             z.printxln("");
@@ -453,7 +454,8 @@ static void cInCodeInitStart(AST out, CGen g)
    ASTRawString raw { }; DynamicString z { };
    if(g.lib.ecereCOM)
    {
-      z.printxln("C(Application) ", g.lib.bindingName, "_init(C(Module) fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])");
+      z.printxln("LIB_EXPORT ", g_.sym.application, " ", g.lib.bindingName,
+            "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])");
       z.printxln("{");
       z.printxln("   if(!fromModule)");
       z.printxln("   {");
@@ -463,19 +465,19 @@ static void cInCodeInitStart(AST out, CGen g)
       z.printxln("   __thisModule = fromModule;");
       z.printxln("   if(fromModule)");
       z.printxln("   {");
-      z.printxln("      C(Module) app = fromModule;");
-      z.printxln("      C(Module) module = Module_load(fromModule, loadEcere ? \"ecere\" : \"", g.mod.name, "\", ", _publicAccess, ");");
+      z.printxln("      ", g_.sym.module, " app = fromModule;");
+      z.printxln("      ", g_.sym.module, " module = Module_load(fromModule, loadEcere ? \"ecere\" : \"ecereCOM\", ", _publicAccess, ");");
       z.printxln("      if(module)");
       z.printxln("      {");
    }
    else
    {
-      z.printxln("C(Module) ", g.lib.bindingName, "_init(Module fromModule)");
+      z.printxln("LIB_EXPORT ", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule)");
       z.printxln("{");
       if(g.lib.ecere)
-         z.printxln("   C(Module) module = fromModule;");
+         z.printxln("   ", g_.sym.module, " module = fromModule;");
       else
-         z.printxln("   C(Module) module = Module_load(fromModule, \"", g.mod.name, "\", ", _publicAccess, ");");
+         z.printxln("   ", g_.sym.module, " module = Module_load(fromModule, ", g_.lib.defineName, "_MODULE_NAME, ", _publicAccess, ");");
       z.printxln("   if(module)");
       z.printxln("   {");
    }
@@ -491,9 +493,18 @@ static void cInCodeInitEnd(AST out, CGen g)
    if(g.lib.ecereCOM)
       z.printxln("      }");
    z.printxln("   }");
-   z.printxln("   return fromModule ? IPTR(fromModule, Module)->application : null;");
-   z.printxln("}");
-   z.printxln("");
+   z.printxln("   else");
+   if(g.lib.ecereCOM)
+      z.printxln("      printf(\"Unable to load eC module: %s\\n\", loadEcere ? \"ecere\" : \"ecereCOM\");");
+   else if(g.lib.ecere)
+      z.printxln("      printf(\"Unable to load eC module: ecere\\n\");");
+   else
+      z.printxln("      printf(\"Unable to load eC module: %s\\n\", ", g.lib.defineName, "_MODULE_NAME);");
+   if(g.lib.ecereCOM)
+      z.printxln("   return fromModule ? IPTR(fromModule, Module)->application : null;");
+   else
+      z.printxln("   return module;");
+   z.printx("}");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -501,7 +512,8 @@ static void cInCodeInitEnd(AST out, CGen g)
 static void cInCodeThisModule(AST out, CGen g)
 {
    ASTRawString raw { }; DynamicString z { };
-   z.printxln("C(Module) __thisModule;");
+   z.println("");
+   z.printxln(g_.sym.module, " __thisModule;");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
