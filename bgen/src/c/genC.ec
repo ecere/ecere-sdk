@@ -1,9 +1,24 @@
-#include <inttypes.h>
-
 import "bgen"
 
 import "cHeader"
 import "cCode"
+
+define _defaultAccess = "AccessMode_defaultAccess";
+define _publicAccess = "AccessMode_publicAccess";
+define _privateAccess = "AccessMode_privateAccess";
+define _staticAccess = "AccessMode_staticAccess";
+define _baseSystemAccess = "AccessMode_baseSystemAccess";
+
+define _normalClass = "ClassType_normalClass";
+define _structClass = "ClassType_structClass";
+define _bitClass = "ClassType_bitClass";
+define _unitClass = "ClassType_unitClass";
+define _enumClass = "ClassType_enumClass";
+define _noHeadClass = "ClassType_noHeadClass";
+define _unionClass = "ClassType_unionClass";
+define _systemClass = "ClassType_systemClass";
+
+AST ast;
 
 class CGen : Gen
 {
@@ -11,8 +26,6 @@ class CGen : Gen
    char * cFilePath;
    char * hFileName;
    char * hFilePath;
-
-   BModule bmod { gen = this };
 
    AST astH;
    AST astC;
@@ -82,19 +95,21 @@ class CGen : Gen
          astC.print(o, { });
          delete o;
       }
-#ifdef _DEBUG
       {
          char * cFileNameTmp = cFilePath;
          char * hFileNameTmp = hFilePath;
-         prepPaths();
+         cFilePath = null;
+         hFilePath = null;
+         prepPaths(false);
          if(FileExists(cFilePath))
             DeleteFile(cFilePath);
          if(FileExists(hFilePath))
             DeleteFile(hFilePath);
          MoveFile(cFileNameTmp, cFilePath);
          MoveFile(hFileNameTmp, hFilePath);
+         delete cFileNameTmp;
+         delete hFileNameTmp;
       }
-#endif
    }
 
    bool init()
@@ -102,11 +117,7 @@ class CGen : Gen
       bool result = false;
       if(Gen::init() && readyDir())
       {
-#ifndef _DEBUG
-         prepPaths();
-#else
-         prepPathsDebug();
-#endif
+         prepPaths(true);
 
          if(FileExists(cFilePath))
             DeleteFile(cFilePath);
@@ -116,16 +127,12 @@ class CGen : Gen
          if(!FileExists(cFilePath) && !FileExists(hFilePath))
          {
             reset();
-            resetDeclerationsMaps();
 
             astC = { };
             astH = { };
 
-            prepareVars();
-
-            //Platform os = __runtimePlatform;
-            ec1init(lib.moduleName); // todo, use supplied path here
-            mod = bmod.mod = ec1HomeModule;
+            moduleInit();
+            SetBGenSymbolSwapCallback(bgenSymbolSwap);
             result = true;
          }
       }
@@ -138,41 +145,47 @@ class CGen : Gen
       PrintLn(lib.verbose > 1 ? "    " : "", hFileName);
    }
 
-   void prepPaths()
+   void prepPaths(bool tmp)
    {
-      char * path = new char[MAX_LOCATION];
+      int len;
       char * name = new char[MAX_LOCATION];
-      strcpy(path, dir);
+      char * path = new char[MAX_LOCATION];
+      strcpy(path, dir.dir);
+      len = strlen(path);
       strcpy(name, lib.bindingName);
       ChangeExtension(name, "c", name);
       PathCatSlash(path, name);
-      cFileName = CopyString(name);
-      cFilePath = CopyString(path);
+      if(tmp) strcat(path, ".tmp");
+      delete cFileName; cFileName = CopyString(name);
+      delete cFilePath; cFilePath = CopyString(path);
       ChangeExtension(name, "h", name);
-      ChangeExtension(path, "h", path);
-      hFileName = CopyString(name);
-      hFilePath = CopyString(path);
+      path[len] = 0;
+      PathCatSlash(path, name);
+      if(tmp) strcat(path, ".tmp");
+      delete hFileName; hFileName = CopyString(name);
+      delete hFilePath; hFilePath = CopyString(path);
+      delete name;
       delete path;
    }
 
-#ifdef _DEBUG
-   void prepPathsDebug()
+   char * allocMacroSymbolName(bool noMacro, MacroType type, const char * name, const char * name2, int ptr)
    {
-      int len;
-      char * path = new char[MAX_LOCATION];
-      strcpy(path, dir);
-      PathCatSlash(path, lib.bindingName);
-      ChangeExtension(path, "c", path);
-      len = strlen(path);
-      strcat(path, ".tmp");
-      cFilePath = CopyString(path);
-      path[len] = 0;
-      ChangeExtension(path, "h", path);
-      strcat(path, ".tmp");
-      hFilePath = CopyString(path);
-      delete path;
+      switch(type)
+      {
+         case C:
+            if(noMacro)    return                CopyString(name);
+                           return PrintString(       "C(" , name, ")");
+         case CM:          return PrintString(       "CM(", name, ")");
+         case CO:          return PrintString(       "CO(", name, ")");
+         case SUBCLASS:    return PrintString( "subclass(", name, ")");
+         case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
+         case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
+         case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
+         case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
+         case M_VTBLID:    return PrintString( "M_VTBLID(", name, ", ", name2, ")");
+      }
+      return CopyString(name);
    }
-#endif
 
    void reset()
    {
@@ -197,12 +210,6 @@ class CGen : Gen
       allClasses.Free();
       allMethods.Free();
       allProperties.Free();
-   }
-
-   void prepareVars()
-   {
-      sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
-      sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
    }
 
    void prepareNamespaces()
@@ -230,50 +237,55 @@ class CGen : Gen
       IterNamespace ns { module = mod, processFullName = true };
       while(ns.next())
       {
+         BNamespace n = (NameSpacePtr)ns.ns;
          if(!bmod.root_nspace)
          {
             bmod.root_nspace = (NameSpacePtr)ns.ns;
          }
-         processDefines(ns);
+         processDefines(n);
          if(lib.ecereCOM && ns.ns->parent == null && ns.ns->name == null)
-            manualTypes(ns);
-         processClasses(ns);
-         processOptionalClasses(ns);
-         processFunctions(ns);
+            manualTypes(n);
+         processClasses(n);
+         processOptionalClasses(n);
+         processFunctions(n);
       }
       processTemplatons();
       ns.cleanup();
    }
 
-   void manualTypes(IterNamespace ns)
+   void manualTypes(BNamespace n)
    {
       MapNode<const String, const String> node;
-      for(node = manualTypeDefs.root.minimum; node; node = node.next)
+      for(node = manualTypedefs.root.minimum; node; node = node.next)
       {
-         char * ident;
-         char * spec = (!strcmp(node.value, "Instance")) ? PrintString("C(", node.value, ")") : CopyString(node.value);
-         bool noC = false;
-         BOutput out { vmanual };
-         if(actualTypeNames.Find(node.key))
-            noC = true;
-         ident = noC ? CopyString(node.key) : PrintString("C(", node.key, ")");
-         if(!strcmp(node.value, "Instance"))
+         if(node.value)
          {
-            Class clDep = eSystem_FindClass(mod, node.value);
-            assert(clDep != null);
+            char * ident;
+            char * spec = allocMacroSymbolName(strcmp(node.value, "Instance") != 0, C, node.value, null, 0);
+            bool noC = false;
+            BOutput out { vmanual };
+            if(actualTypeNames.Find(node.key))
+               noC = true;
+            ident = allocMacroSymbolName(noC, C, node.key, null, 0);
+            if(!strcmp(node.value, "Instance"))
+            {
+               Class clDep = eSystem_FindClass(mod, node.value);
+               assert(clDep != null);
+            }
+            out.output.Add(astDeclInit(node.key, createTypedef, ident, spec, { }, null, null));
+            delete ident;
+            delete spec;
          }
-         out.output.Add(astDeclInit(node.key, createTypedef, ident, spec, { }, null, null));
-         delete ident;
-         delete spec;
       }
    }
 
-   void processClasses(IterNamespace ns)
+   void processClasses(BNamespace n)
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { n.ns };
       while((cl = cla.next(all)))
       {
-         if(!cl.templateClass) // don't generate templated classes just because they are listed
+         // don't generate templated classes just because they are listed
+         if(!cl.templateClass)
          {
             BClass c = cl;
             BVariant v = c;
@@ -282,7 +294,7 @@ class CGen : Gen
       }
    }
 
-   void processOptionalClasses(IterNamespace ns)
+   void processOptionalClasses(BNamespace n)
    {
       if(optionalClasses.count)
       {
@@ -354,6 +366,7 @@ class CGen : Gen
             BVariant v = t;
             BNamespace n = v.nspace;
             BOutput o = t.outTypedef = bmod.getTypedefOutput((UIntPtr)t, &init); assert(init);
+            o.kind = vtemplaton, o.t = t, o.type = otypedef;
             assert(t.nspace == null);
             n.addContent(v);
             o.output.Add(astDeclInit(t.cname, emptyTypedef, null, null, { t = t }, null, null/*, ast*/));
@@ -361,9 +374,9 @@ class CGen : Gen
       }
    }
 
-   void processDefines(IterNamespace ns)
+   void processDefines(BNamespace n)
    {
-      DefinedExpression df; IterDefine def { ns.ns };
+      DefinedExpression df; IterDefine def { n.ns };
       while((df = def.next()))
       {
          BDefine d = df;
@@ -374,13 +387,13 @@ class CGen : Gen
          if(lib.ecereCOM && d.isNull)
             out.output.Add(astNullDefine());
          else
-            out.output.Add(astDefine(df, d));
+            out.output.Add(astDefine(df, d, v));
       }
    }
 
-   void processFunctions(IterNamespace ns)
+   void processFunctions(BNamespace n)
    {
-      GlobalFunction fn; IterFunction func { ns.ns };
+      GlobalFunction fn; IterFunction func { n.ns };
       while((fn = func.next()))
       {
          BFunction f = fn;
@@ -405,9 +418,7 @@ class CGen : Gen
       {
          if(type._class.registered)
          {
-            Class test = eSystem_FindClass(mod, type._class.string);
-            if(test != type._class.registered) check();
-            cl = type._class.registered;
+            cl = /*(!strcmp(type._class.string, "class") && type.classObjectType == typedObject) ? eSystem_FindClass(mod, "Class") : */type._class.registered;
             if(ecereCOMForwardDeclare) check();
          }
          else
@@ -455,7 +466,14 @@ class CGen : Gen
             o.kind = vtemplaton, o.t = v.t, o.type = otypedef;
          }
          if(!clReduce && cl.type != enumClass)
+         {
             o.output.Add(astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/));
+            {
+               DynamicString z { };
+               ec2PrintToDynamicString(z, o.output.lastIterator.data, false);
+               delete z;
+            }
+         }
          if(cl.type == bitClass)
          {
             o = c.outBitTool = bmod.getBitToolOutput((UIntPtr)c, &init); assert(init);
@@ -472,7 +490,7 @@ class CGen : Gen
          {
             SpecClass sc;
             ClassDefList defs;
-            char * ident = PrintString(cl.type == normalClass ? "CM" : "C", "(", c.cname, ")");
+            char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, c.cname, null, 0);
             if(cl.type == enumClass) check();
             if(cl.type == systemClass) check();
             if(cl.type == unitClass) check();
@@ -494,8 +512,11 @@ class CGen : Gen
          char * s;
          if(!skip)
          {
-            s = PrintString(skip ? "// SKIPPED // " : "", "extern C(Class) * CO(", c.cname, ");");
+            const char * ext = "extern THIS_LIB_IMPORT ";
+            if(g_.lib.ecere && c.isWindow) skip = true;
+            s = PrintString(skip ? "// " : "", ext, g_.sym.__class, " * ", c.coSymbol, ";");
             o = c.outClassPointer = bmod.getClassPointerOutput((UIntPtr)c, &init); assert(init);
+            //o.kind = vclassptr; // todo, set proper kind and type
             o.output.Add(ASTRawString { string = s });
          }
       }
@@ -593,24 +614,10 @@ Class getUnitClassReducedToBase(Class cl)
    return null;
 }
 
-define _defaultAccess = "AccessMode_defaultAccess";
-define _publicAccess = "AccessMode_publicAccess";
-define _privateAccess = "AccessMode_privateAccess";
-define _staticAccess = "AccessMode_staticAccess";
-define _baseSystemAccess = "AccessMode_baseSystemAccess";
-
-define _normalClass = "ClassType_normalClass";
-define _structClass = "ClassType_structClass";
-define _bitClass = "ClassType_bitClass";
-define _unitClass = "ClassType_unitClass";
-define _enumClass = "ClassType_enumClass";
-define _noHeadClass = "ClassType_noHeadClass";
-define _unionClass = "ClassType_unionClass";
-define _systemClass = "ClassType_systemClass";
-
-Map<const String, const String> manualTypeDefs { [
+Map<const String, const String> manualTypedefs { [
    { "constString", "const char *" },
-   { "any_object", "const void *" }
+   { "any_object", "const void *" },
+   { null, null }
 ] };
 
 Map<String, Array<String>> dependencyDefines { };
@@ -621,31 +628,109 @@ enum EnumGenFlag { normal, prototype };
 
 void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assumeTypedObject, bool forInstance, BVariant vTop)
 {
-   int charCount = 0;
    uint ap;
-   const char * thisClassName = null;
-   Class cl = c.cl;
+   //const char * thisClassName = null;
+   Class cl = c.clAlt ? c.clAlt : c.cl;
    Method md = m.md;
-   char * classTypeName = cl && cl.type != systemClass && !md.dataType.staticMethod ? oldGetClassTypeName(cl.name) : null;
+   //char * classTypeName = cl && cl.type != systemClass && !md.dataType.staticMethod ? oldGetClassTypeName(cl.name) : null;
    char * thisTypeName = md.dataType.staticMethod ? null : md.dataType.thisClass ? oldGetClassTypeName(md.dataType.thisClass.string) : null;
-   bool prev = true;
-   if(md.dataType)
-      thisClassName = md.dataType.staticMethod ? null : md.dataType.thisClass ? md.dataType.thisClass.className : cl.name;
+   //bool prev = true;
+   //if(md.dataType)
+   //   thisClassName = md.dataType.staticMethod ? null : md.dataType.thisClass ? md.dataType.thisClass.className : cl.name;
+   // todo: make into an inline function if possible and drop the #define method callers
+   // usage comment...
+   z.print("// ");
+   zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, from = ti*/ }, { anonymous = true }, vTop);
    if(forInstance)
+      z.printx(" Instance_", m.mname, "(");
+   else
+      z.printx(" ", m.s, "(");
    {
-      charCount = 23 + strlen(m.s) + 2 + (thisClassName ? 3 : 0) + (assumeTypedObject ? 3 : 0);
-      z.printx("#define Instance_", m.mname, "(");
+      Type param;
+      TypeNameList params { };
+      bool prevParam = false;
+      {
+         if(md.dataType.thisClass && md.dataType.thisClass.string)
+         {
+            Type t = ProcessTypeString(md.dataType.thisClass.string, false);
+            if(c.is_class)
+            {
+               if(!md.dataType.staticMethod)
+               {
+                  // Note: this should really be checking typed_object right here
+                  zTypeName(z, "__c", { type = ProcessTypeString("Class", false), md = md, cl = cl }, { param = true }, vTop);
+                  prevParam = true;
+               }
+               if(prevParam) z.printx(", ");
+               z.printx(forInstance ? g_.sym.instance : "any_object", " __i");
+               prevParam = true;
+            }
+            else// if(!md.dataType.staticMethod)
+            {
+               Type t = ProcessTypeString(cl.name, false);
+               if(prevParam) z.printx(", ");
+               //astTypeName("__i", { type = t, md = md, cl = cl }, { param = true }, vTop, params);
+               zTypeName(z, "__i", { type = t, md = md, cl = cl }, { param = true }, vTop);
+               FreeType(t);
+               // This 2 different ways to mix stuff up... params & z!!
+               //ec2PrintToDynamicString(z, params, false);
+               prevParam = true;
+               //params.Free();
+            }
+
+            if(!md.dataType.staticMethod && !c.is_class)
+            {
+               if(prevParam) z.printx(", ");
+               zTypeName(z, "__t", { type = t, md = md, cl = cl }, { param = true }, vTop);
+               prevParam = true;
+            }
+
+            FreeType(t);
+         }
+         else if(!md.dataType.staticMethod)
+         {
+            Type t = ProcessTypeString(cl.name, false);
+            //astTypeName("__i", { type = t, md = md, cl = cl }, { param = true }, vTop, params);
+            zTypeName(z, "__i", { type = t, md = md, cl = cl }, { param = true }, vTop);
+            prevParam = true;
+            FreeType(t);
+         }
+         else
+         {
+            Type t = ProcessTypeString(cl.name, false);
+            if(prevParam) z.printx(", ");
+            //astTypeName("__i", { type = t, md = md, cl = cl }, { param = true }, vTop, params);
+            zTypeName(z, "__i", { type = t, md = md, cl = cl }, { param = true }, vTop);
+            FreeType(t);
+            // This 2 different ways to mix stuff up... params & z!!
+            //ec2PrintToDynamicString(z, params, false);
+            prevParam = true;
+            //params.Free();
+         }
+      }
+      if(md.dataType.params.count && (md.dataType.staticMethod ||
+         !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
+      {
+         if(prevParam) z.printx(", ");
+         ap = 0;
+         for(param = md.dataType.params.first; param; param = param.next)
+         {
+            char * apname = null;
+            if(!param.name)
+               apname = PrintString("ap", ++ap);
+            astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { param = true }, vTop, params);
+            delete apname;
+         }
+      }
+      ec2PrintToDynamicString(z, params, false);
    }
+   z.printxln(");");
+
+   if(forInstance)
+      z.printx("#define Instance_", m.mname, "(");
    else
    {
-      charCount += 10 + 2 + (c.is_class ? 0 : strlen(c.cname)) + strlen(m.mname);
-      prev = thisClassName || assumeTypedObject;
-      if(prev)
-      {
-         charCount += 4;
-         if(assumeTypedObject)
-            charCount += 6;
-      }
+      //prev = thisClassName || assumeTypedObject;
       z.printx("#define ", m.s, "(");
    }
    // macro params
@@ -694,10 +779,15 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
          if(forInstance)
             z.printx("__c, class, ", m.mname, ", __i, ");
          else
-            z.printx("__c, class, ", m.mname, ", (C(Instance))null, ");
+            z.printx("__c, class, ", m.mname, ", (", g_.sym.instance, ")null, ");
       }
       else
-         z.printx("CO(", c.cname, "), ", c.cname, ", ", m.mname, ", __i, ");
+      {
+         if(cl.type == noHeadClass)
+            z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", (", g_.sym.instance, ")null, ");
+         else
+            z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", __i, ");
+      }
       {
          zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, from = ti*/ }, { anonymous = true }, vTop);
       }
@@ -706,43 +796,54 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       {
          Type param;
          ARGPrintTypeNameList params { };
-         if(/*md && cl && */!md.dataType.staticMethod)
+      bool prevParam = false;
+      {
+         if(md.dataType.thisClass && md.dataType.thisClass.string)
          {
-            if(md.dataType.thisClass && md.dataType.thisClass.string)
+            Type t = ProcessTypeString(md.dataType.thisClass.string, false);
+            if(c.is_class)
             {
-               Type t = ProcessTypeString(md.dataType.thisClass.string, false);
-               zTypeName(z, null, { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop);
-               if(c.is_class || (md.dataType.params.count && (md.dataType.staticMethod ||
-                     !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType))))
-                  z.printx(" _ARG ");
-               FreeType(t);
+               if(!md.dataType.staticMethod)
+               {
+                  // Note: this should really be checking typed_object right here
+                  zTypeName(z, "__c", { type = ProcessTypeString("Class", false), md = md, cl = cl }, { anonymous = true, param = true }, vTop);
+                  prevParam = true;
+               }
+               if(prevParam) z.printx(" _ARG ");
+               z.printx(forInstance ? g_.sym.instance : "any_object"/*, " __i"*/);
+               prevParam = true;
+            }
 
-               if(c.is_class/* && !forInstance*/)
-                  z.printx("void *");
-               if(c.is_class && (md.dataType.params.count && (md.dataType.staticMethod ||
-                     !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType))))
-                  z.printx(" _ARG ");
-            }
-            else
+            if(!md.dataType.staticMethod && !c.is_class)
             {
-               Type t = ProcessTypeString(cl.name, false);
-               astTypeName(null, { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
-               FreeType(t);
+               if(prevParam) z.printx(" _ARG ");
+               zTypeName(z, "__t", { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop);
+               prevParam = true;
             }
+
+            FreeType(t);
          }
-         if(md.dataType.params.count && (md.dataType.staticMethod ||
-            !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
+         else if(!md.dataType.staticMethod)
          {
-            ap = 0;
-            for(param = md.dataType.params.first; param; param = param.next)
-            {
-               char * apname = null;
-               if(!param.name)
-                  apname = PrintString("ap", ++ap);
-               astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
-               delete apname;
-            }
+            Type t = ProcessTypeString(cl.name, false);
+            astTypeName("__i", { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
+            FreeType(t);
          }
+      }
+      if(md.dataType.params.count && (md.dataType.staticMethod ||
+         !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
+      {
+         if(prevParam) z.printx(" _ARG ");
+         ap = 0;
+         for(param = md.dataType.params.first; param; param = param.next)
+         {
+            char * apname = null;
+            if(!param.name)
+               apname = PrintString("ap", ++ap);
+            astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
+            delete apname;
+         }
+      }
          ec2PrintToDynamicString(z, params, false);
       }
       z.printx(", \\\n      ");
@@ -785,99 +886,8 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       z.printx(")");
    }
    z.printxln("");
-   delete classTypeName;
+   //delete classTypeName;
    delete thisTypeName;
-}
-
-enum DataValueType { charType, byteType, shortType, uint16Type, intType, uintType, pointerType, floatType, doubleType, int64Type, uint64Type };
-
-#include <float.h>
-
-static bool checkLinearMapping(DataValueType type, void * fn, double * m, double * b)
-{
-   bool result = false;
-   double testValues[5] = { 0, 10, 50, 100, 200 }, results[5];
-   int i;
-
-   for(i = 0; i < 5; i++)
-   {
-      switch(type)
-      {
-         case doubleType:
-         {
-            double (* function)(double) = fn;
-            results[i] = (double)function((double)testValues[i]);
-            break;
-         }
-         case floatType:
-         {
-            float (* function)(float) = fn;
-            results[i] = (double)function((float)testValues[i]);
-            break;
-         }
-         case charType:
-         {
-            char (* function)(char) = fn;
-            results[i] = (double)function((char)testValues[i]);
-            break;
-         }
-         case byteType:
-         {
-            byte (* function)(byte) = fn;
-            results[i] = (double)function((byte)testValues[i]);
-            break;
-         }
-         case shortType:
-         {
-            short (* function)(short) = fn;
-            results[i] = (double)function((short)testValues[i]);
-            break;
-         }
-         case uint16Type:
-         {
-            uint16 (* function)(uint16) = fn;
-            results[i] = (double)function((uint16)testValues[i]);
-            break;
-         }
-         case intType:
-         {
-            int (* function)(int) = fn;
-            results[i] = (double)function((int)testValues[i]);
-            break;
-         }
-         case uintType:
-         {
-            uint (* function)(uint) = fn;
-            results[i] = (double)function((uint)testValues[i]);
-            break;
-         }
-         case int64Type:
-         {
-            int64 (* function)(int64) = fn;
-            results[i] = (double)function((int64)testValues[i]);
-            break;
-         }
-         case uint64Type:
-         {
-            uint64 (* function)(uint64) = fn;
-            results[i] = (double)function((uint64)testValues[i]);
-            break;
-         }
-      }
-   }
-   *m = (results[1] - results[0]) / testValues[1];
-   *b = results[0];
-   result = true;
-   for(i = 2; i < 5; i++)
-   {
-      double value = testValues[i] * *m + *b;
-      if(fabs(value - results[i]) > FLT_EPSILON)
-      {
-         result = false;
-         break;
-      }
-   }
-   return result;
 }
 
 enum GenPropertyMode { _define, _import, assign };
@@ -898,7 +908,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
          {
             if(!*first) z.printxln("");
             else *first = false;
-            z.printxln(indent, "   ", p.p, " = Class_findProperty(CO(", p.cc, "), \"", p.pt.name, "\", ", findin, ");");
+            z.printxln(indent, "   ", p.p, " = Class_findProperty(", p.c.coSymbol, ", \"", p.pt.name, "\", ", findin, ");");
             if(p.any)      z.printxln(indent, "   if(", p.p, ")");
             if(p.more)     z.printxln(indent, "   {");
             if(pt.Set)     z.printxln(indent, "      ", p.fpnSet, " = (void *)", p.p, "->Set;");
@@ -909,42 +919,34 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
          else
          {
             bool imp = mode == _import;
-            z.printxln(imp ? "extern " : "", "C(Property) * ", p.p, ";");
+            char * port = PrintString(imp ? "extern " : "", imp ? "THIS_LIB_IMPORT " : "LIB_EXPORT ");
+            z.printxln(port, g_.sym._property, " * ", p.p, ";");
             if(pt.Set)
             {
                if(pt.conversion && /*cl.type != normalClass && */cl.type != structClass && cl.type != noHeadClass)
-                  z.printxln(imp ? "extern " : "", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.r, " ", p.paramName, ");");
+                  z.printxln(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.r, " ", p.paramName, ");");
                else
-                  z.printxln(imp ? "extern " : "",   "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);");
+                  z.printxln(port, "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);");
             }
             if(pt.Get)
             {
                if(*p.v)
-                  z.printxln(imp ? "extern " : "",   "void (* ", p.fpnGet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);");
+                  z.printxln(port, "void (* ", p.fpnGet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);");
                else
-                  z.printxln(imp ? "extern " : "", p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
+                  z.printxln(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
             }
 
             if(pt.IsSet)
-               z.printxln(imp ? "extern " : "",   "bool (* ", p.fpnIst, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
+               z.printxln(port, "bool (* ", p.fpnIst, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
+            delete port;
             //z.printxln("");
          }
          if(haveContent) *haveContent = true;
       }
       if(mode == _import && c.cl.type == unitClass && p.cConv && p.cConv.cl.type == unitClass)
       {
-         DataValueType type = intType;
-         // TODO: Improve how all this is typically done...
-         if(!strcmp(cl.dataTypeString, "double"))     type = doubleType;
-         else if(!strcmp(cl.dataTypeString, "float")) type = floatType;
-         else if(!strcmp(cl.dataTypeString, "char")) type = charType;
-         else if(!strcmp(cl.dataTypeString, "short")) type = shortType;
-         else if(!strcmp(cl.dataTypeString, "int")) type = intType;
-         else if(!strcmp(cl.dataTypeString, "int64") || !strcmp(cl.dataTypeString, "long long")) type = int64Type;
-         else if(!strcmp(cl.dataTypeString, "byte") || !strcmp(cl.dataTypeString, "unsigned char")) type = byteType;
-         else if(!strcmp(cl.dataTypeString, "uint16") || !strcmp(cl.dataTypeString, "unsigned short")) type = uint16Type;
-         else if(!strcmp(cl.dataTypeString, "uint") || !strcmp(cl.dataTypeString, "uint32") || !strcmp(cl.dataTypeString, "unsigned int")) type = uintType;
-         else if(!strcmp(cl.dataTypeString, "uint64") || !strcmp(cl.dataTypeString, "unsigned long long")) type = uint64Type;
+         // TODO: Improve how all this is typically done... see DataValueType char * conversion property
+         DataValueType type = cl.dataTypeString;
 
          genPropertyConversion(z, c, p, type, pt.Get);
          genPropertyConversion(z, c, p, type, pt.Set);
@@ -1001,18 +1003,10 @@ void genPropertyConversion(DynamicString z, BClass c, BProperty p, DataValueType
 }
 
 define cw = 32; //16; //84; // column width
-void resetDeclerationsMaps()
-{
-   typedefs.RemoveAll();
-   structs.RemoveAll();
-}
 
-Map<String, DeclarationInit> typedefs { };
-Map<String, DeclarationInit> structs { };
-
-ClassDefDeclaration astClassDefDecl(const char * ident, TypeInfo ti)
+ClassDefDeclaration astClassDefDecl(const char * ident, TypeInfo ti, BVariant vTop)
 {
-   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, null/*, null*/) };
+   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, /*vTop*/null/*, null*/) };
 }
 
 enum CreateDeclInitMode
@@ -1138,9 +1132,10 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
 
             if(typedefType == _struct)
             {
+               char * symbolName = g_.allocMacroSymbolName(false, C, c.spec, null, 0);
                typedefDI.specifiers = { [
                   SpecBase { specifier = _typedef },
-                  SpecClass { type = _struct, id = ASTIdentifier { string = PrintString("C(", c.spec, ")") } }
+                  SpecClass { type = _struct, id = ASTIdentifier { string = symbolName } }
                ] };
             }
             else if(typedefType == identifier)
@@ -1154,9 +1149,10 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                }
                else
                {
+                  char * symbolName = g_.allocMacroSymbolName(c.noSpecMacro, C, c.spec, null, 0);
                   typedefDI.specifiers = { [
                      SpecBase { specifier = _typedef },
-                     SpecClass { id = ASTIdentifier { string = c.noSpecMacro ? CopyString(c.spec) : PrintString("C(", c.spec, ")") } }
+                     SpecClass { id = ASTIdentifier { string = symbolName } }
                   ] };
                }
             }
@@ -1270,7 +1266,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
 
    if(t.kind == classType || t.kind == subClassType)
    {
-      _class = ((CGen)app.gen).getClassFromType(t, true);
+      _class = g_.getClassFromType(t, true);
       if(_class)
          c = _class;
       isBaseClass = /*!t._class || !t._class.string || */c && c.is_class/*_class && !strcmp(_class.name, "class")*/;
@@ -1311,7 +1307,8 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          if(!strcmp(name, "class"))
          {
             delete name;
-            name = CopyString("Class");
+            name = CopyString("any_object");
+            nativeSpec = true;
          }
       }
    }
@@ -1331,7 +1328,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          quals.Add(SpecName { name = CopyString("...") });
          break;
       case vaListType:
-         quals.Add(SpecName { name = CopyString("__builtin_va_list") });
+         quals.Add(SpecName { name = CopyString("va_list") });
          break;
       case voidType: case charType: case shortType: case intType:
       case int64Type: case int128Type: case longType: case floatType:
@@ -1349,10 +1346,17 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          break;
       case classType:
       {
+         BOutputType vTopOutputType = vTop ? BOutputType::getFromVariantKind(vTop.kind) : nil;//vTop.kind;
          if(_class && _class.type == systemClass)
          {
             if(isBaseClass)
-               quals.Add(SpecName { name = nativeSpec ? CopyString(name) : PrintString("C(", name, ")") });
+            {
+               char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, name, null, 0);
+               quals.Add(SpecName { name = symbolName });
+               if(vTopOutputType)
+                  vTop.processDependency(vTopOutputType, otypedef, _class);
+
+            }
             else
             {
                if(t.constant)
@@ -1362,22 +1366,25 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            quals.Add(SpecName { name = nativeSpec ? CopyString(name) : PrintString("C(", name, ")") });
-            if(vTop && t._class.registered)
-            {
-               BOutputType value = BOutputType::getFromVariantKind(vTop.kind);//vTop.kind;
-               if(value)
-                  vTop.processDependency(value, otypedef, t._class.registered);
-            }
+            char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, name, null, 0);
+            quals.Add(SpecName { name = symbolName });
+            if(vTopOutputType && (_class || t._class.registered))
+               vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
          }
          break;
       }
       case thisClassType:
-         quals.Add(SpecName { name = PrintString("thisclass(", ti.cl.name, ti.cl.type == noHeadClass ? " *" : "", ")") });
+      {
+         char * symbolName = g_.allocMacroSymbolName(false, THISCLASS, ti.cl.name, null, ti.cl.type == noHeadClass ? 1 : 0);
+         quals.Add(SpecName { name = symbolName });
          break;
+      }
       case subClassType:
-         quals.Add(SpecName { name = PrintString("subclass(", name, ")") });
+      {
+         char * symbolName = g_.allocMacroSymbolName(false, SUBCLASS, name, null, 0);
+         quals.Add(SpecName { name = symbolName });
          break;
+      }
       case templateType:
          if(t.templateParameter)
          {
@@ -1386,7 +1393,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
             ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, ti.cl, &cl);
             if(tp.type == type && tp.identifier && tp.identifier.string)
             {
-               BTemplaton t = ((CGen)app.gen).bmod.addTempleton(ctp, cl);
+               BTemplaton t = g_.bmod.addTempleton(ctp, cl);
                quals.Add(SpecName { name = CopyString(t.cname) });
                if(vTop && vTop.kind == vclass)
                   vTop.processDependency(ostruct, otypedef, t);
@@ -1448,7 +1455,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          quals = { };
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
-         quals.Add(SpecName { name = CopyString("C(Class) *") }); // hack
+         quals.Add(SpecName { name = PrintString(g_.sym.__class, " *") });
       }
       tn =  ASTTypeName
             {
@@ -1566,15 +1573,20 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
    int ptr2 = 0;
    if(opt._extern)
       specs.Add(SpecBase { specifier = _extern });
-   if(opt._dllimport)
-      specs.Add(SpecName { name = CopyString("__attribute__((dllimport))") });
+   if(!opt.anonymous)
+   {
+      if(opt._dllimport)
+         specs.Add(SpecName { name = CopyString("LIB_IMPORT") });
+      else
+         specs.Add(SpecName { name = CopyString(opt._extern ? "THIS_LIB_IMPORT" : "LIB_EXPORT") });
+   }
 
    s = astTypeSpec(ti, &ptr2, &t, null, opt, vTop);
+   if(s); // get rid of warning
    if(t)
    {
       Type t3 = null;
       int ptr3 = 0;
-      if(s) check();
       if(t.kind == functionType)
       {
          OptBits opt2 = opt;
@@ -1601,7 +1613,6 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
          for(param = t.params.first; param; param = param.next)
             astTypeName(param.name, { type = param, from = ti }, opt2, vTop, params);
       }
-      else check();
    }
    else check();
    return declInit;
@@ -1676,35 +1687,31 @@ char * getReducedTypesExpressionString(char * str)
    return result;
 }
 
-ASTRawString astDefine(DefinedExpression df, BDefine d)
+bool isOkForPyCFFI(TypeKind kind)
+{
+   //kind == enumType?
+   //kind == intPtrType || kind == intSizeType
+   return kind == charType || kind == intType || kind == longType/* || kind == int64Type || kind == int128Type*/;
+}
+
+ASTRawString astDefine(DefinedExpression df, BDefine d, BVariant v)
 {
    ASTRawString raw { };
    DynamicString z { };
-   // hardcoded hack -- todo toposort / namespace order / nice usable bindings
-   //if(g.lib.ecere && strcmp(d.name, "LIGHTSHIFT") && strcmp(d.name, "LIGHTSTEPS")) // hack (moved defines)
-   char buf[4096];
+   char * s;
    char * val;
    Expression e = ParseExpressionString((char *)df.value);
-   String v;
+   SetInBGen(true);
    SetInCompiler(true);
    SetParsingType(true);
    ProcessExpressionType(e);
    ProcessExpressionInstPass(e);
    SetInCompiler(false);
    SetParsingType(false);
-   v = Expression2String(e);
-   val = getNoNamespaceString(v, buf, false);
-   delete v;
-   {
-      int i;
-      char ch;
-      for(i = 0; (ch = val[i]); i++)
-         if(ch == '\n')
-            val[i] = ' ';
-   }
-   v = CopyString(val);
-   val = getReducedTypesExpressionString(v);
-   delete v;
+   val = Expression2String(e);
+   SetInBGen(false);
+   for(s = val; *s; s++) if(*s == '\n') *s = ' ';
+
    z.printxln("#define ", d.name, " (", val, ")");
    delete val;
    FreeExpression(e);
@@ -1797,15 +1804,14 @@ ASTRawString astBitTool(Class cl, BClass c)
       }
       if(bm.type == normalMember) // todo, recurse struct/union? members for bitfields inside structs i.e.: PolygonRing
       {
-         char x[1024];
          String n_ = PrintString(c.upper, "_", bm.name, "_");
          String n = CopyString(n_);
          String s = PrintString(c.upper, "_SET_", bm.name);
+         String x;
          if(bitMembers) bitMembers.Add(CopyString(bm.name));
          n[strlen(n)-1] = 0;
-         x[0] = 0;
-         PrintBuf(x, sizeof(x) - 1, (void*)bm.mask); //sprintf(x, "0x%"PRIX64, bm.mask);
-         if(!x[0]) strcpy(x, "0x0");                     // todo, bitfield, get shift and mask
+         x = PrintHexUInt64(bm.mask);
+         if(!(x && x[0])) check();
          z.printxln("#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
                dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos);
          z.printxln("#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
@@ -1815,6 +1821,7 @@ ASTRawString astBitTool(Class cl, BClass c)
                " (x) = ((", cl.name, ")(x) & ~((", cl.name, ")", n_,
                "MASK)) | (((", cl.name, ")(", bm.name, ")) << ", n_, "SHIFT)");
          haveContent = true;
+         delete x;
          delete n_;
          delete n;
          delete s;
@@ -1861,21 +1868,29 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
    {
       *haveContent = true;
       if(!methodFlag || methodFlag == vTblID)
-         z.printxln("extern int ", m.v, ";");
+         z.printxln("extern ", "THIS_LIB_IMPORT ", "int ", m.v, ";");
       if(!methodFlag || methodFlag == virtualMethodCaller)
          cgenPrintVirtualMethodDefs(z, c, m, c.is_class/*assumeTypedObject*/, instanceClass, vTop);
       if(!methodFlag || methodFlag == virtualMethodImport)
-         z.printx("extern C(Method) * ", m.m, ";");
+      {
+         if(!c.is_class || !instanceClass)
+            z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.method, " * ", m.m, ";");
+      }
    }
    else if(md.type == normalMethod)
    {
       if(!methodFlag || methodFlag == nonVirtualMethodImport)
       {
-         if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload")))) // hack
+         // skipping Module::Load and Module::Unload here because we want to use the dllexported methods directly
+         if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
          {
+            if(md.dataType.kind != functionType)
+               PrintLn(m.n, " ", md.dataType.kind, " ", md.dataTypeString);
+            {
             ASTNode node = astFunction(m.n, { type = md.dataType, md = md, cl = cl }, { _extern = true, pointer = true }, vTop);
             ec2PrintToDynamicString(z, node, true);
             *haveContent = true;
+            }
          }
       }
    }
@@ -1889,16 +1904,7 @@ void recurseBaseClassMembers(CGen g, BClass c, BClass cTop, bool local, ClassDef
 {
    Class cl = c.cl;
    MemberOrProperty mb;
-   if((cl.type == structClass || cl.type == noHeadClass) && cl.base && !cl.base.templateClass &&
-         strcmp(cl.base.name, "IteratorPointer") &&   // hack
-         strcmp(cl.base.name, "Module") &&            // hack
-         strcmp(cl.base.name, "Container") &&         // hack
-         strcmp(cl.base.name, "Window") &&            // hack
-         strcmp(cl.base.name, "ListItem") &&          // hack
-         strcmp(cl.base.name, "IOChannel") &&         // hack
-         strcmp(cl.base.name, "Instance") &&          // hack
-         strcmp(cl.base.name, "struct") &&            // hack
-         strcmp(cl.base.name, "class"))               // hack
+   if((cl.type == structClass || cl.type == noHeadClass) && cl.base && !cl.base.templateClass)
    {
       BClass cBase = cl.base;
       recurseBaseClassMembers(g, cBase, cTop, cBase.isFromCurrentModule, defs, opt);
@@ -1916,8 +1922,7 @@ void recurseBaseClassMembers(CGen g, BClass c, BClass cTop, bool local, ClassDef
                dm.dataType = ProcessTypeString(dm.dataTypeString, false);
                FinishTemplatesContext(context);
             }
-            if(dm && cl.type != bitClass &&
-                  //dm.name && dm.dataTypeString &&
+            if(dm && cl.type != bitClass && //dm.name && dm.dataTypeString &&
                   (dm.memberAccess == privateAccess || dm.memberAccess == publicAccess))
             {
                if(defs)
@@ -1961,9 +1966,10 @@ void addDataMemberToDeclInit(CGen g, DataMember dm, ClassDefList defs, BClass c,
             mdm.dataType = ProcessTypeString(mdm.dataTypeString, false);
             FinishTemplatesContext(context);
          }
-         if(mdm.dataType.bitFieldCount)
+         // todo: (somewhere else) support bitfield with setters and getters? or not since these are c bit fields
+         /*if(mdm.dataType.bitFieldCount)
             ;// todo, bitfield, add space and also add setters and getters, etc
-         else
+         else*/
             addDataMemberToDeclInit(g, mdm, memberDefs, c, cTop, local, opt);
       }
       defs.Add(declMember);
@@ -1981,7 +1987,7 @@ void addDataMemberToDeclInit(CGen g, DataMember dm, ClassDefList defs, BClass c,
          if(local)
             processTypeDependency(g, dm.dataType, dm.dataTypeString, ostruct, cTop);
 
-         def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl });
+         def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl }, cTop);
          if(!def) check();
          if(def)
             defs.Add(def);
@@ -1989,51 +1995,81 @@ void addDataMemberToDeclInit(CGen g, DataMember dm, ClassDefList defs, BClass c,
    }
 }
 
-void processTypeDependency(CGen g, Type type, const char * dataTypeString, BOutputType from, BVariant vTop)
+void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOutputType from, BVariant vTop)
 {
    bool native;
    bool pointer;
-   Type t = unwrapType(type, &native, &pointer);
+   Type t = unwrapType(_type, &native, &pointer);
    if(!native)
    {
       Class clDep = null;
       if(t.kind == functionType)
-         Print(""); // todo;
+      {
+         Type param;
+         for(param = t.params.first; param; param = param.next)
+         {
+            if(param.kind == classType)
+               clDep = g.getClassFromType(param, true);
+            if(clDep) _processTypeDependency(g, from, vTop, pointer, clDep);
+            clDep = null;
+         }
+      }
+      // tocheck: todo: are there more missing dependencies?
       else if(t.kind == structType)
-         Print("");
+         shh();
       else if(t.kind == classType)
          clDep = g.getClassFromType(t, true);
       else if(t.kind == subClassType)
-         Print("");
+         shh();
       else if(t.kind == thisClassType)
-         Print("");
+         shh();
       else if(t.kind == templateType)
-         Print("");
-      else
-         Print("");
-
-      if(vTop.kind == vclass && clDep == vTop.c.cl && from == otypedef) clDep = null;
-      if(vTop.kind == vproperty && clDep == vTop.p.c.cl) clDep = null;
-      if(clDep)
       {
-         BOutputType to = nil;
-         if(clDep.templateClass)
+         Class _class = vTop.kind == vclass ? vTop.c.cl : vTop.kind == vproperty ? vTop.p.c.cl : null;
+         if(_class && t.templateParameter)
          {
-            BTemplaton tDep = g.bmod.addTemplateType(clDep, g.bmod.root_nspace);
-            vTop.processDependency(from, otypedef, tDep);
-         }
-         else
-            vTop.processDependency(from, otypedef, clDep);
-         if(!pointer && clDep.type != systemClass && clDep.type != unitClass && clDep.type != bitClass)
-         {
-            if(clDep.type == enumClass) to = oenum;
-            else if(clDep.type == structClass || clDep.type == noHeadClass ||
-                  clDep.type == normalClass) to = ostruct;
-            else check();
-            if(!clDep.templateClass)
-               vTop.processDependency(from, to, clDep);
+            TemplateParameter tp = t.templateParameter;
+            Class cl = null;
+            ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, _class, &cl);
+            if(tp.type == type && tp.identifier && tp.identifier.string && cl)
+            {
+               BTemplaton t = g_.bmod.addTempleton(ctp, cl);
+               if(vTop && vTop.kind == vclass)
+                  vTop.processDependency(ostruct, otypedef, t);
+            }
          }
       }
+      else
+         shh();
+
+      if(clDep) _processTypeDependency(g, from, vTop, pointer, clDep);
    }
-   if(type.bitMemberSize) check();
+   if(_type.bitMemberSize) check();
+}
+
+void _processTypeDependency(CGen g, BOutputType from, BVariant vTop, bool pointer, Class clDep)
+{
+   if(vTop.kind == vclass && clDep == vTop.c.cl && from == otypedef) clDep = null;
+   if(vTop.kind == vproperty && clDep == vTop.p.c.cl) clDep = null;
+   if(clDep)
+   {
+      BOutputType to = nil;
+      if(clDep.templateClass)
+      {
+         BTemplaton tDep = g.bmod.addTemplateType(clDep, g.bmod.root_nspace);
+         vTop.processDependency(from, otypedef, tDep);
+         clDep = clDep.templateClass;
+      }
+      else
+         vTop.processDependency(from, otypedef, clDep);
+      if(!pointer && clDep.type != systemClass && clDep.type != unitClass && clDep.type != bitClass)
+      {
+         if(clDep.type == enumClass) to = oenum;
+         else if(clDep.type == structClass || clDep.type == noHeadClass ||
+               clDep.type == normalClass) to = ostruct;
+         else check();
+         if(!clDep.templateClass)
+            vTop.processDependency(from, to, clDep);
+      }
+   }
 }
