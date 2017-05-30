@@ -3,10 +3,13 @@ import "ecere" // must keep this or compilation outside this file will fail
 import "bgen"
 
 #define storeMapGetInstantiate(BType, ECType, array, _map, init) \
-   BType result; \
-   MapIterator<ECType, BType> i { map = ((CGen)app.gen)._map }; \
+   BType result = null; \
+   if(value) \
+   { \
+   MapIterator<ECType, BType> i { map = g_._map }; \
    if(i.Index(value, true)) result = i.data; \
-   else i.data = result = BType { }, ((CGen)app.gen).array.Add(result), result.init; \
+   else i.data = result = BType { }, g_.array.Add(result), result.init; \
+   } \
    return result;
 
 enum Language
@@ -35,17 +38,36 @@ enum Language
    }
 };
 
+Map<String, DeclarationInit> typedefs { }; // todo: maybe move this into class Gen
+Map<String, DeclarationInit> structs { }; // same
+
 class Gen
 {
 public:
    Language lang;
    Module mod;
-   Library lib { };
+   //Library lib { };
+   Library lib;
+   Directory dir;
+   SymbolNameCollection sym { };
    Map<String, String> sourceProcessorVars { };
+   BModule bmod { gen = (CGen)this };
+   List<Library> libDeps { };
 private:
-   char * dir;
+   //char * dir;
    virtual bool init()
    {
+      //PrintLn(lang, ":");
+      sym.init(this);
+
+      //resetDeclerationsMaps
+      typedefs.RemoveAll();
+      structs.RemoveAll();
+
+      // prepareVars
+      sourceProcessorVars.RemoveAll();
+      sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
+      sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
       return true;
    }
    virtual void process();
@@ -55,26 +77,151 @@ private:
    virtual bool readyDir()
    {
       bool ready = false;
+      //delete dir;
+      //dir = new char[MAX_LOCATION];
+      //*dir = 0;
+      //GetWorkingDir(dir, MAX_LOCATION - 1);
+      //dir[MAX_LOCATION - 1] = 0;
+      //MakeSlashPath(dir);
+      if(dir.dir)
+      {
+         if(!FileExists(dir.dir))
+            MakeDir(dir.dir); // todo: check will this create multiple nested dirs
+      }
+      ready = FileExists(dir.dir).isDirectory;
+      return ready;
+   }
+   virtual void moduleInit()
+   {
+      //Platform os = __runtimePlatform;
+      ec1init(lib.loadModuleName); // todo, use supplied path here
+      mod = bmod.mod = ec1HomeModule;
+      assert(mod != null);
+      {
+         //ec1HomeModule
+         //Module module = null;
+         SubModule subModule;
+         /*for(module = ec1ComponentsApp.allModules.first; module; module = module.next)
+         {
+            PrintLn("                ", "module.name: ", module.name);
+            for(subModule = mod.modules.first; subModule; subModule = subModule.next)
+            {
+               PrintLn("                ", "    subModule: ", subModule.importMode, " ", subModule.module.name);
+            }
+         }*/
+
+         for(subModule = mod.modules.first; subModule; subModule = subModule.next)
+         {
+            if(subModule.importMode == publicAccess)
+               libDeps.Insert(null, createLibrary(subModule.module.name));
+         }
+         if(!lib.ecereCOM && libDeps.count == 0)
+            libDeps.Insert(null, createLibrary("ecereCOM"));
+      }
+   }
+
+   virtual char * allocMacroSymbolName(bool noMacro, MacroType type, const char * name, const char * name2, int ptr);
+
+   virtual void prepareNamespaces();
+   virtual void processNamespaces();
+   virtual void processDefines(BNamespace n);
+   virtual void processFunctions(BNamespace n);
+   virtual void processClasses(BNamespace n);
+
+   ~Gen()
+   {
+      reset();
+      sourceProcessorVars.Free();
+      //delete dir;
+   }
+}
+
+class SymbolNameCollection
+{
+   char * instance;
+   char * module;
+   char * application;
+   char * __class;
+   char * method;
+   char * _property;
+   char * _define;
+   char * globalFunction;
+
+   char * cm_instance;
+
+   void init(Gen g)
+   {
+      instance        = g.allocMacroSymbolName(false, C, "Instance"       , null, 0);
+      module          = g.allocMacroSymbolName(false, C, "Module"         , null, 0);
+      application     = g.allocMacroSymbolName(false, C, "Application"    , null, 0);
+      __class         = g.allocMacroSymbolName(false, C, "Class"          , null, 0);
+      method          = g.allocMacroSymbolName(false, C, "Method"         , null, 0);
+      _property       = g.allocMacroSymbolName(false, C, "Property"       , null, 0);
+      _define         = g.allocMacroSymbolName(false, C, "Define"         , null, 0);
+      globalFunction  = g.allocMacroSymbolName(false, C, "GlobalFunction" , null, 0);
+
+      cm_instance     = g.allocMacroSymbolName(false, CM, "Instance"      , null, 0);
+   }
+
+   ~SymbolNameCollection()
+   {
+      delete instance;
+      delete module;
+      delete application;
+      delete __class;
+      delete method;
+      delete _property;
+      delete _define;
+      delete globalFunction;
+
+      delete cm_instance;
+   }
+}
+
+enum MacroType { C, CM, CO, TP, METHOD, PROPERTY, M_VTBLID, SUBCLASS, THISCLASS };
+
+class Directory : struct
+{
+   Language lang;
+   char * outputDir;
+   char * dir;
+   lang = C;
+   void init()
+   {
       delete dir;
       dir = new char[MAX_LOCATION];
       *dir = 0;
       GetWorkingDir(dir, MAX_LOCATION - 1);
       dir[MAX_LOCATION - 1] = 0;
       MakeSlashPath(dir);
-      if(lib.outputDir)
-      {
-         PathCatSlash(dir, lib.outputDir);
-         if(!FileExists(dir))
-            MakeDir(dir); // todo: check will this create multiple nested dirs
-      }
-      ready = FileExists(dir).isDirectory;
-      return ready;
+      if(outputDir)
+         PathCatSlash(dir, outputDir);
    }
-   ~Gen()
+   ~Directory()
    {
-      reset();
-      sourceProcessorVars.Free();
-      delete dir;
+      delete outputDir;
+   }
+}
+
+Library createLibrary(const char * name)
+{
+   Library lib { };
+   lib.name = CopyString(name);
+   lib.init();
+   return lib;
+}
+
+class GenOptions : struct
+{
+   Map<String, String> funcRename;
+
+   ~GenOptions()
+   {
+      if(funcRename)
+      {
+         funcRename.Free();
+         delete funcRename;
+      }
    }
 }
 
@@ -85,13 +232,13 @@ public:
    char * moduleName;
    char * bindingName;
    char * defineName;
-   char * outputDir;
+   char * loadModuleName;
    bool ecereCOM;
    bool ecere;
    bool eda;
+   GenOptions options;
 
    uint verbose;
-   Map<String, String> funcRename;
 
    verbose = 1;
 
@@ -102,7 +249,11 @@ public:
          char str[MAX_LOCATION] = "";
          GetLastDirectory(name, str);
          StripExtension(str);
-         moduleName = CopyString(str);
+         loadModuleName = CopyString(str);
+         if(strstr(loadModuleName, "gnosis2-") == loadModuleName)
+            moduleName = CopyString("gnosis2");
+         else
+            moduleName = CopyString(loadModuleName);
       }
       ecereCOM = !strcmp(moduleName, "ecereCOM");
       ecere = !strcmp(moduleName, "ecere");
@@ -119,12 +270,7 @@ public:
       delete moduleName;
       delete bindingName;
       delete defineName;
-      delete outputDir;
-      if(funcRename)
-      {
-         funcRename.Free();
-         delete funcRename;
-      }
+      delete loadModuleName;
    }
 }
 
@@ -147,9 +293,9 @@ class BOutputPtr : UIntPtr;
 
 #define mapGetCreateVariant(_kind, _ptr) \
    BVariant v; \
-   MapIterator<UIntPtr, BVariant> i { map = ((CGen)app.gen).allVariants }; \
+   MapIterator<UIntPtr, BVariant> i { map = g_.allVariants }; \
    if(i.Index((UIntPtr)value, true)) v = i.data; \
-   else i.data = v = BVariant { }, ((CGen)app.gen).storeVariants.Add(v), v.kind = _kind, _ptr = value; \
+   else i.data = v = BVariant { }, g_.storeVariants.Add(v), v.kind = _kind, _ptr = value; \
    return v;
 
 enum BVariantKind
@@ -273,23 +419,27 @@ private:
 
 enum BOutputType
 {
-   nil, ocomment, ocode, otypedef, obittool, oenum, ostruct, omethod, oproperty, oconversion, eoe;
+   nil, ocomment, ocode, odefine, otypedef, obittool, oenum, ostruct, ofunction, omethod, oproperty, oconversion,
+   oclasspointer, oother, eoe;
 
    const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       switch(this)
       {
-         case nil:         return "<nil>";
-         case ocomment:    return "comment";
-         case ocode:       return "code";
-         case otypedef:    return "typedef";
-         case obittool:    return "bittool";
-         case oenum:       return "enum";
-         case ostruct:     return "struct";
-         case omethod:     return "method";
-         case oproperty:   return "property";
-         case oconversion: return "conversion";
-         case eoe:         return "<eoe>";
+         case nil:            return "<nil>";
+         case ocomment:       return "comment";
+         case ocode:          return "code";
+         case odefine:        return "define";
+         case otypedef:       return "typedef";
+         case obittool:       return "bittool";
+         case oenum:          return "enum";
+         case ostruct:        return "struct";
+         case ofunction:      return "function";
+         case omethod:        return "method";
+         case oproperty:      return "property";
+         case oconversion:    return "conversion";
+         case oclasspointer:  return "classpointer";
+         case eoe:            return "<eoe>";
       }
       return "<invalid>";
    }
@@ -298,6 +448,7 @@ enum BOutputType
    {
               if(kind == vmethod)   return omethod;
          else if(kind == vproperty) return oproperty;
+         else if(kind == vclass)    return otypedef;
          return nil;
    }
 
@@ -323,8 +474,10 @@ class BOutput : BVariant
 {
 public:
    BOutputType type;
+   BOutputType type2; // todo: use only type but make sure no side effects
 private:
    Array<ASTNode> output { };
+   DynamicString ds;
    AVLTree<BOutputPtr> outputDependencies { };
 
    ~BOutput()
@@ -365,7 +518,7 @@ public:
    void init()
    {
       if(tp)
-         cname = PrintString("TP(", c.name, ", ", tp.name, ")");
+         cname = g_.allocMacroSymbolName(false, TP, c.name, tp.name, 0);
       else
          cname = getTemplateClassSymbol(c.cl.name);
    }
@@ -390,6 +543,11 @@ public:
             case oconversion:
             case oproperty:
                               return v.p.outInHeader;
+            case oother:
+               switch(v.kind)
+               {
+                  case vdefine: return v.d.out;
+               }
          }
          check();
          return null;
@@ -401,6 +559,12 @@ public:
       {
          if(vDep.kind == vclass)
          {
+            /*switch(to)
+            {
+               case otypedef: if(!vDep.c.outTypedef) check(); break;
+               case oenum:    if(!vDep.c.outEnum) check(); break;
+               case ostruct:  if(!vDep.c.outStruct) check(); break;
+            }*/
             switch(to)
             {
                case otypedef: return vDep.c.outTypedef;
@@ -479,10 +643,10 @@ struct NamespaceDependencyInfo
 
 //class Namespaces : List<BNamespace>;
 
-#define mapGetCreateOutput(_map, _kind) \
+#define mapGetCreateOutput(_map, _kind, _type) \
    BOutput o; \
-   MapIterator<UIntPtr, BOutput> i { map = ((CGen)app.gen)._map }; \
-   if((*init = !i.Index(object, true))) i.data = o = BOutput { _kind }; \
+   MapIterator<UIntPtr, BOutput> i { map = g_._map }; \
+   if((*init = !i.Index(object, true))) i.data = o = BOutput { _kind, type2 = _type }; \
    else o = i.data; \
    return o;
 
@@ -514,16 +678,17 @@ class BModule : struct
       return t;
    }
    // vmanual, vdefine, vfunction, vclass, vtemplaton, vmethod, vproperty
-   BOutput getDefineOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapDefine,         vdefine    ); }
-   BOutput getFunctionOutput     (UIntPtr object, bool *init) { mapGetCreateOutput(mapFunction,       vfunction  ); }
-   BOutput getTypedefOutput      (UIntPtr object, bool *init) { mapGetCreateOutput(mapTypedef,        vmanual/*vtypedef*/     ); }
-   BOutput getClassPointerOutput (UIntPtr object, bool *init) { mapGetCreateOutput(mapClassPointer,   vmanual/*classpointer*/ ); }
-   BOutput getBitToolOutput      (UIntPtr object, bool *init) { mapGetCreateOutput(mapBitTool,        vmanual/*vbittool*/     ); }
-   BOutput getEnumOutput         (UIntPtr object, bool *init) { mapGetCreateOutput(mapEnum,           vmanual/*venum*/        ); }
-   BOutput getStructOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapStruct,         vmanual/*vstruct*/      ); }
-   BOutput getMethodOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapMethod,         vmethod    ); }
-   BOutput getPropertyOutput     (UIntPtr object, bool *init) { mapGetCreateOutput(mapProperty,       vproperty  ); }
-   BOutput getConversionOutput   (UIntPtr object, bool *init) { mapGetCreateOutput(mapConversion,     vmanual/*vconversion*/  ); }
+   // type -> nil, ocomment, ocode, odefine, otypedef, obittool, oenum, ostruct, ofunction, omethod, oproperty, oconversion, oother, eoe;
+   BOutput getDefineOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapDefine,         vdefine,                   odefine        ); }
+   BOutput getFunctionOutput     (UIntPtr object, bool *init) { mapGetCreateOutput(mapFunction,       vfunction,                 ofunction      ); }
+   BOutput getTypedefOutput      (UIntPtr object, bool *init) { mapGetCreateOutput(mapTypedef,        vmanual/*vtypedef*/,       otypedef       ); }
+   BOutput getClassPointerOutput (UIntPtr object, bool *init) { mapGetCreateOutput(mapClassPointer,   vmanual/*classpointer*/,   oclasspointer  ); }
+   BOutput getBitToolOutput      (UIntPtr object, bool *init) { mapGetCreateOutput(mapBitTool,        vmanual/*vbittool*/,       obittool       ); }
+   BOutput getEnumOutput         (UIntPtr object, bool *init) { mapGetCreateOutput(mapEnum,           vmanual/*venum*/,          oenum          ); }
+   BOutput getStructOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapStruct,         vmanual/*vstruct*/,        ostruct        ); }
+   BOutput getMethodOutput       (UIntPtr object, bool *init) { mapGetCreateOutput(mapMethod,         vmethod,                   omethod        ); }
+   BOutput getPropertyOutput     (UIntPtr object, bool *init) { mapGetCreateOutput(mapProperty,       vproperty,                 oproperty      ); }
+   BOutput getConversionOutput   (UIntPtr object, bool *init) { mapGetCreateOutput(mapConversion,     vmanual/*vconversion*/,    oconversion    ); }
 
    ~BModule()
    {
@@ -662,15 +827,17 @@ class BNamespace : struct
    List<BOutputPtr> orderedOutputs { }; //List<BClass> orderedOutputs { };
    List<BVariant> contents { };
    Map<BNamespacePtr, AVLTree<BOutputPtr>> dependencies { }; // namespace dependencies with user ouput count
+
    property NameSpacePtr
    {
       set
       {
          storeMapGetInstantiate(BNamespace, UIntPtr, storeNamespaces, allNamespaces,
-               init((NameSpace *)value, ((CGen)app.gen).allNamespaces.count));
+               init((NameSpace *)value, g_.allNamespaces.count));
       }
       get { return (NameSpacePtr)ns; }
    }
+
    void init(NameSpace * ns, int pos)
    {
       this.ns = ns;
@@ -848,7 +1015,7 @@ class BDefine : struct
    {
       this.df = df;
       nspace = (NameSpacePtr)df.nameSpace;
-      name = shortName(df.name);
+      name = strptrNoNamespace(df.name);
       isNull = !strcmp(name, "null"); // hack?
    }
    //void free() { }
@@ -861,7 +1028,7 @@ class BFunction : struct
    BOutput out;
    property GlobalFunction
    {
-      set { storeMapGetInstantiate(BFunction, GlobalFunction, storeFunctions, allFunctions, init(value, ((CGen)app.gen).lib.funcRename)); }
+      set { storeMapGetInstantiate(BFunction, GlobalFunction, storeFunctions, allFunctions, init(value, g_.lib.options.funcRename)); }
       get { return fn; }
    }
    bool skip;
@@ -872,7 +1039,7 @@ class BFunction : struct
    {
       this.fn = fn;
       nspace = (NameSpacePtr)fn.nameSpace;
-      name = shortName(fn.name);
+      name = strptrNoNamespace(fn.name);
       isDllExport = strstr(fn.dataTypeString, "dllexport") == fn.dataTypeString;
       fname = getNoNamespaceString(fn.name, null, false);
       skip = skipFunctionTree.Find(fname) ? true : false;
@@ -908,7 +1075,6 @@ AVLTree<const String> skipClassTypeDef { [
    "enum",
    "struct",
    "class",
-   //"cclass" or "class"?,
    ""
 ] };
 
@@ -917,6 +1083,7 @@ class BClass : struct
    Class cl;
    BNamespace nspace;
    Class clBase;
+   Class clAlt;
    DeclarationInit declStruct;
 
    BOutput outTypedef;
@@ -936,15 +1103,17 @@ class BClass : struct
 
    bool first; bool skip; bool skipTypeDef;
    bool isFromCurrentModule;
-   bool is_class; bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
-   bool isModule;
+   bool is_class;// bool is_Class;
+   bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
+   bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor, isWindow;
    bool hasPublicMembers;
    bool noMacro, noSpecMacro, nativeSpec;
    // input names:
    const char * name; char * base;
    // generated names:
-   char * upper; char * spec;/* char * */
+   char * upper; char * spec;
    char * cname;
+   char * coSymbol;
    char * symbolName;
    char * baseSymbolName;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
@@ -953,23 +1122,39 @@ class BClass : struct
       this.cl = cl;
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
-      name = shortName(cl.name);
-      skipTypeDef = skipClassTypeDef.Find(cl.name) != 0; // hardcoded hack
-      if(/*(ecereCOM || */ecere/*)*/ && cl.type == enumClass && !strcmp(cl.name, "Alignment")) // hardcoded hack
+      name = strptrNoNamespace(cl.name);
+      // skipping these classes here as they are internal native types or base class/struct
+      skipTypeDef = skipClassTypeDef.Find(cl.name) != 0;
+      // skipping these classes here since they are hardcoded
+      if(ecere && ((cl.type == structClass && !strcmp(cl.name, "Size")) ||
+                   (cl.type == unitClass && !strcmp(cl.name, "MinMaxValue")) ||
+                   (cl.type == enumClass && !strcmp(cl.name, "Alignment"))))
          skip = true;
       cname = getClassTypeName(cl);
+      coSymbol = g_.allocMacroSymbolName(false, CO, cname, null, 0);
       upper = CopyAllCapsString(cl.type == bitClass ? name : "");
 
       isFromCurrentModule = classIsFromModule(cl, gen.mod, ec1ComponentsApp);
 
-      is_class =  cl.type == systemClass &&   !strcmp(name, "class");
-      isBool =    cl.type == enumClass &&     !strcmp(name, "bool");
-      isString =  cl.type == normalClass &&   !strcmp(name, "String");
-      isUnichar = cl.type == unitClass &&     !strcmp(name, "unichar");
-      isUnInt =   cl.type == systemClass &&   !strcmp(name, "unsigned int");
-      isByte =    cl.type == systemClass &&   !strcmp(name, "byte");
-      isCharPtr = cl.type == normalClass &&   !strcmp(name, "char *");
-      isModule =  cl.type == normalClass &&   !strcmp(name, "Module");
+      is_class          = cl.type == systemClass   && !strcmp(name, "class");
+      isBool            = cl.type == enumClass     && !strcmp(name, "bool");
+      isString          = cl.type == normalClass   && !strcmp(name, "String");
+      isUnichar         = cl.type == unitClass     && !strcmp(name, "unichar");
+      isUnInt           = cl.type == systemClass   && !strcmp(name, "unsigned int");
+      isByte            = cl.type == systemClass   && !strcmp(name, "byte");
+      isCharPtr         = cl.type == normalClass   && !strcmp(name, "char *");
+      isInstance        = cl.type == normalClass   && !strcmp(name, "Instance");
+      isClass           = cl.type == noHeadClass   && !strcmp(name, "Class");
+      isModule          = cl.type == normalClass   && !strcmp(name, "Module");
+      isApplication     = cl.type == normalClass   && !strcmp(name, "Application");
+      isGuiApplication  = cl.type == normalClass   && !strcmp(name, "GuiApplication");
+      isContainer       = cl.type == normalClass   && !strcmp(name, "Container");
+      isArray           = cl.type == normalClass   && !strcmp(name, "Array");
+      isAnchor          = cl.type == structClass   && !strcmp(name, "Anchor");
+      isWindow          = cl.type == normalClass   && !strcmp(name, "Window");
+
+      if(is_class)
+         clAlt = eSystem_FindClass(g_.mod, "Class");
 
       noMacro = cl.type == systemClass || isUnichar;
       noSpecMacro = noMacro || cl.type == enumClass || isString;
@@ -977,7 +1162,7 @@ class BClass : struct
       if(cl.templateClass)
          symbolName = getTemplateClassSymbol(cl.name);
       else
-         symbolName = noMacro ? CopyString(name) : PrintString("C(", name, ")");
+         symbolName = g_.allocMacroSymbolName(noMacro, C, name, null, 0);
 
       clBase = getClassBaseAndProcessTemplateDataType(cl);
 
@@ -989,8 +1174,8 @@ class BClass : struct
          {
             bool enumDataType = cl.type == enumClass && clBase.type == systemClass;
             bool noMacro = cl.type == systemClass || isUnichar || enumDataType;
-            const char * name = enumDataType ? tokenTypeString(cl.dataType) : shortName(clBase.name);
-            baseSymbolName = noMacro ? CopyString(name) : PrintString("C(", name, ")");
+            const char * name = enumDataType ? tokenTypeString(cl.dataType) : strptrNoNamespace(clBase.name);
+            baseSymbolName = g_.allocMacroSymbolName(noMacro, C, name, null, 0);
             if(cl.type == enumClass)
                base = CopyString(name);
          }
@@ -1019,7 +1204,7 @@ class BClass : struct
       }
       else if(cl.type == normalClass && cl.base && !strcmp(cl.base.name, "class"))
       {
-         spec = CopyString("struct CM(Instance) *");
+         spec = PrintString("struct ", g_.sym.cm_instance, " *");
          base = CopyString("Instance");
          noSpecMacro = true;
       }
@@ -1054,9 +1239,86 @@ class BClass : struct
       nativeSpec = checkNativeSpec(spec);
       if(nativeSpec || actualTypeNames.Find(spec)) noSpecMacro = true;
    }
-   void free() { delete base; delete upper; delete spec; delete cname; delete symbolName; delete baseSymbolName; }
+   void free()
+   {
+      delete base; delete upper; delete spec; delete cname; delete symbolName; delete baseSymbolName;
+      delete coSymbol;
+   }
    void OnFree() { free(); };
 };
+
+static inline const char * strptrNoNamespace(const char * str)
+{
+   const char * t, * s = str;
+   while((t = strstr(s, "::"))) s = t + 2;
+   //const char * s = (s = RSearchString(str, "::", strlen(str), false, false), s ? s + 2 : str);
+   return s;
+}
+
+const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
+{
+   Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(symbol));
+   if(cl)
+   {
+      Class cl2 = reduce ? reduceUnitClass(cl) : cl;
+      BClass c = cl2;
+      return macro ? c.symbolName : c.name;
+   }
+   return symbol;
+}
+
+const char * swapInstanceSpecifier(const char * spec/*, bool * isUnitClass*/)
+{
+   Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(spec));
+   if(cl)
+   {
+      Class clReduced = reduceUnitClass(cl);
+      /*if(cl.type == unitClass && isUnitClass)
+         *isUnitClass = true;*/
+      if(clReduced != cl)
+      {
+         BClass cReduced = clReduced;
+         return cReduced.name;
+      }
+   }
+   return spec;
+}
+
+const char * getSpecifierSymbolName(const char * spec)
+{
+   Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(spec));
+   if(cl)
+   {
+      BClass c = cl;
+      return c.symbolName;
+   }
+   return spec;
+}
+
+char * printType(Type t, bool printName, bool fullName)
+{
+   char type[8192];
+   type[0] = 0;
+   SetInBGen(true);
+   PrintType(t, type, printName, fullName);
+   SetInBGen(false);
+   return CopyString(type);
+}
+
+Class findClass(const char * name)
+{
+   Class cl = eSystem_FindClass(g_.mod, name);
+   if(cl) readyClass(cl);
+   return cl;
+}
+
+void readyClass(Class cl)
+{
+   Context context = SetupTemplatesContext(cl);
+   if(!cl.dataType)
+      cl.dataType = ProcessTypeString(cl.dataTypeString, false);
+   FinishTemplatesContext(context);
+}
 
 Class getClassBaseAndProcessTemplateDataType(Class cl)
 {
@@ -1168,19 +1430,15 @@ class BMethod : struct
       if(this.md && this.c) return;
       this.md = md;
       this.c = c;
-      name = shortName(md.name);
+      name = strptrNoNamespace(md.name);
       mname = copyCamelCaseString(md.name);
       //name = PrintString(c.cname, "_", mname);
       n = PrintString(c.cname, "_", mname); // n = PrintString("MN(", c.cname, ", ", mname, ")");
-      m = PrintString("METHOD(", c.cname, ", ", mname, ")");
-      v = PrintString("M_VTBLID(", c.cname, ", ", mname, ")");
+      m = g_.allocMacroSymbolName(false, METHOD, c.cname, mname, 0);
+      v = g_.allocMacroSymbolName(false, M_VTBLID, c.cname, mname, 0);
       s = PrintString(c.is_class ? "" : c.cname, "_", mname);
       if(!md.dataType)
-      {
-         Context context = SetupTemplatesContext(md._class);
          ProcessMethodType(md);
-         FinishTemplatesContext(context);
-      }
    }
    void free() { delete mname;/* delete name;*/ delete m; delete v; delete s; delete n; }
    void OnFree() { free(); };
@@ -1206,7 +1464,7 @@ class BProperty : struct
    char * name;
    char * paramName;
    char * otherParamName;
-   char * cc; char * p; char * t; const char * r; const char * v;
+   char * p; char * t; const char * r; const char * v;
    // pt: property
    char * ptType;
    char * ptTypeUse;
@@ -1234,11 +1492,10 @@ class BProperty : struct
       cUse = reduceUnitClass(c.cl);
       any = pt.Set || pt.Get || pt.IsSet;
       more = any ? (pt.Set && (pt.Get || pt.IsSet)) || (pt.Get && pt.IsSet) : false;
-      cc = oldGetClassTypeName(c.cl.name);
       otherParamName = copyCamelCaseString(c.cl.name);
       if((!pt.conversion || c.cl.type == noHeadClass || c.cl.type == structClass || c.cl.type == normalClass) && *otherParamName)
          otherParamName[1] = 0; // temporary
-      p = PrintString("PROPERTY(", cc, ", ", name, ")");
+      p = gen.allocMacroSymbolName(false, PROPERTY, c.cname, name, 0);
       if(!pt.dataType)
       {
          Context context = SetupTemplatesContext(c.cl);
@@ -1247,7 +1504,7 @@ class BProperty : struct
       }
       t = strTypeName("", { type = pt.dataType, pt = pt, cl = c.cl }, { anonymous = true }, null);
       //else t = null;
-      r = (c.cl.type == noHeadClass) ? " *" : "";
+      r = (c.cl.type == structClass || c.cl.type == noHeadClass) ? " *" : "";
       if(pt.dataType.kind == classType && pt.dataType._class.registered &&
             (pt.dataType._class.registered.type == structClass/* || pt.dataType._class.registered.type == noHeadClass*/))
          v = " *";
@@ -1255,7 +1512,7 @@ class BProperty : struct
       /// new cleaner stuff here:
       {
          bool conv = pt.conversion;
-         const char * className = cc;
+         const char * className = c.cname;
          fpnSet = PrintString(className, conv ? "_from_"  : "_set_", name);
          fpnGet = PrintString(className, conv ? "_to_"    : "_get_", name);
          fpnIst = PrintString(className,        "_isSet_"          , name);
@@ -1287,7 +1544,7 @@ class BProperty : struct
    }
    void free()
    {
-      delete cc; delete p; delete t;
+      delete p; delete t;
       delete ptType;
       delete ptTypeUse;
       delete fpnSet;
@@ -1449,4 +1706,123 @@ void checkNoDoubleOutputEntry(CGen g)
       }
    }
    delete outs;
+}
+
+#include <float.h>
+
+enum DataValueType
+{
+   charType, byteType, shortType, uint16Type, intType, uintType, pointerType, floatType, doubleType, int64Type, uint64Type;
+
+   property const char *
+   {
+      get { return null; }
+      set
+      {
+         if(!strcmp(value, "double"))                    return doubleType;
+         else if(!strcmp(value, "float"))                return floatType;
+         else if(!strcmp(value, "char"))                 return charType;
+         else if(!strcmp(value, "short"))                return shortType;
+         else if(!strcmp(value, "int"))                  return intType;
+         else if(!strcmp(value, "int64") ||
+                 !strcmp(value, "long long"))            return int64Type;
+         else if(!strcmp(value, "byte") ||
+                 !strcmp(value, "unsigned char"))        return byteType;
+         else if(!strcmp(value, "uint16") ||
+                 !strcmp(value, "unsigned short"))       return uint16Type;
+         else if(!strcmp(value, "uint") ||
+                 !strcmp(value, "uint32") ||
+                 !strcmp(value, "unsigned int"))         return uintType;
+         else if(!strcmp(value, "uint64") ||
+                 !strcmp(value, "unsigned long long"))   return uint64Type;
+                                                         return intType;
+      }
+   }
+};
+
+bool checkLinearMapping(DataValueType type, void * fn, double * m, double * b)
+{
+   bool result = false;
+   double testValues[5] = { 0, 10, 50, 100, 200 }, results[5];
+   int i;
+
+   for(i = 0; i < 5; i++)
+   {
+      switch(type)
+      {
+         case doubleType:
+         {
+            double (* function)(double) = fn;
+            results[i] = (double)function((double)testValues[i]);
+            break;
+         }
+         case floatType:
+         {
+            float (* function)(float) = fn;
+            results[i] = (double)function((float)testValues[i]);
+            break;
+         }
+         case charType:
+         {
+            char (* function)(char) = fn;
+            results[i] = (double)function((char)testValues[i]);
+            break;
+         }
+         case byteType:
+         {
+            byte (* function)(byte) = fn;
+            results[i] = (double)function((byte)testValues[i]);
+            break;
+         }
+         case shortType:
+         {
+            short (* function)(short) = fn;
+            results[i] = (double)function((short)testValues[i]);
+            break;
+         }
+         case uint16Type:
+         {
+            uint16 (* function)(uint16) = fn;
+            results[i] = (double)function((uint16)testValues[i]);
+            break;
+         }
+         case intType:
+         {
+            int (* function)(int) = fn;
+            results[i] = (double)function((int)testValues[i]);
+            break;
+         }
+         case uintType:
+         {
+            uint (* function)(uint) = fn;
+            results[i] = (double)function((uint)testValues[i]);
+            break;
+         }
+         case int64Type:
+         {
+            int64 (* function)(int64) = fn;
+            results[i] = (double)function((int64)testValues[i]);
+            break;
+         }
+         case uint64Type:
+         {
+            uint64 (* function)(uint64) = fn;
+            results[i] = (double)function((uint64)testValues[i]);
+            break;
+         }
+      }
+   }
+   *m = (results[1] - results[0]) / testValues[1];
+   *b = results[0];
+   result = true;
+   for(i = 2; i < 5; i++)
+   {
+      double value = testValues[i] * *m + *b;
+      if(fabs(value - results[i]) > FLT_EPSILON)
+      {
+         result = false;
+         break;
+      }
+   }
+   return result;
 }

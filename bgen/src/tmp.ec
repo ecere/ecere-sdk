@@ -235,12 +235,6 @@ bool skipFunction(const char * name, const char * moduleName, NameSpace * ns)
    return false;
 }
 
-const char * shortName(const char * name)
-{
-   const char * n = (n = RSearchString(name, "::", strlen(name), false, false), n ? n + 2 : name);
-   return n;
-}
-
 char * getFunctionPointerDeclFromDataTypeString(const char * str)
 {
    uint len = strlen(str);
@@ -316,7 +310,7 @@ char * getIndirectionTypeString(const char * typeString, int indirection)
    return string;
 }
 
-char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int indirection, bool unknownTypePermissive, bool * prefix)
+char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int indirection, bool unknownTypePermissive, bool ecereCOM, bool * prefix)
 {
    char * name = null;
    switch(dataType.kind)
@@ -354,7 +348,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
             check();
          break;
       case charType:
-         if(!strcmp(dataTypeString, "const char") ||
+         if(!strcmp(dataTypeString, "const char") || !strcmp(dataTypeString, "const char *") ||
                !strcmp(dataTypeString, "char"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else if(strstr(dataTypeString, "char[") == dataTypeString && dataTypeString[strlen(dataTypeString) - 1] == ']')
@@ -398,7 +392,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
       case ellipsisType:
       case vaListType:
          if(!strcmp(dataTypeString, "...") ||
-            !strcmp(dataTypeString, "__builtin_va_list"))
+            !strcmp(dataTypeString, "__builtin_va_list")) // tocheck: __builtin_va_list won't work, should be just va_list
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
             check();
@@ -421,7 +415,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
          char type[8192];
          type[0] = 0;
          PrintType(dataType.arrayType, type, false, false);
-         name = getSimpleDataTypeName(dataType.arrayType, type, indirection, false, null);
+         name = getSimpleDataTypeName(dataType.arrayType, type, indirection, false, ecereCOM, null);
          break;
       }
       case classType:
@@ -443,10 +437,10 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
                !strcmp(dataType._class.string, "ClassDefinition")))
             name = getIndirectionTypeString(dataTypeString, indirection);
          // TODO when encountered in ecereCOM
-         else if(
+         else if(ecereCOM && (
                !strcmp(dataType._class.string, "EditBox") ||
                !strcmp(dataType._class.string, "Surface") ||
-               !strcmp(dataType._class.string, "DataBox"))
+               !strcmp(dataType._class.string, "DataBox")))
          {
             name = getIndirectionTypeString(unknownTypePermissive ? "Instance" : "uint64", indirection);
             if(prefix) *prefix = true;
@@ -485,7 +479,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
          char type[8192];
          type[0] = 0;
          PrintType(dataType.type, type, false, false);
-         name = getSimpleDataTypeName(dataType.type, type, indirection + 1, false, null);
+         name = getSimpleDataTypeName(dataType.type, type, indirection + 1, false, ecereCOM, null);
          break;
       }
       case functionType:
@@ -493,7 +487,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
          char type[8192];
          type[0] = 0;
          PrintType(dataType.returnType, type, false, false);
-         name = getSimpleDataTypeName(dataType.returnType, type, indirection, false, null);
+         name = getSimpleDataTypeName(dataType.returnType, type, indirection, false, ecereCOM, null);
          break;
       }
       default:
