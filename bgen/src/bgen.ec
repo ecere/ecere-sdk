@@ -21,6 +21,8 @@ import "genCSharp"
 import "genJava"
 import "genPython"
 
+char ln = '\n';
+
 ConsoleFile console { };
 //define app = (ConsoleApplication)__thisModule.application;
 
@@ -28,6 +30,8 @@ enum ArgSym : ArgumentSymbol
 {
    language,
    library,
+   all,
+   reset,
    string,
    map,
    tell,
@@ -46,6 +50,7 @@ enum ArgErr : ArgumentError
 {
    taskTwice,
    langTwice,
+   mustSpecifyLib,
    _
 };
 
@@ -74,11 +79,21 @@ class ApplicationData
 
 public class BGen : ConsoleApplication // <ArgSym>
 {
+   bool forAll;
    const char * idnt;
    idnt = " ";
-   Gen def { };
    Gen gen;
-   Array<Gen> gens { };
+   Library lib;
+   Language lang;
+   Directory dir;
+   GenOptions options;
+   GenOptions optionsForAll;
+   List<Gen> gens { };
+   List<Library> libs { };
+   List<Library> ownLibs { };
+   List<Directory> dirs { };
+   List<Directory> ownDirs { };
+   List<GenOptions> ownOptions { };
 
    void onBuildArgumentOptions()
    {
@@ -100,6 +115,8 @@ public class BGen : ConsoleApplication // <ArgSym>
       addArgumentSymbol(ArgSym::Java,        "java",                 strict,  0);
       addArgumentSymbol(ArgSym::Python,      "py",                   strict,  0);
       addArgumentSymbol(ArgSym::Python,      "python",               strict,  0);
+      addArgumentSymbol(ArgSym::all,         "all",                  strict,  0);
+      addArgumentSymbol(ArgSym::reset,       "reset",                strict,  0);
       addArgumentSymbol(ArgSym::string,      "string",               super,   0);
       addArgumentSymbol(ArgSym::enumPrefix,  "enumeration-prefix",   super,   ArgSym::string);
       addArgumentSymbol(ArgSym::map,         "map",                  super,   0);
@@ -138,7 +155,6 @@ public class BGen : ConsoleApplication // <ArgSym>
    {
       ConsoleApplication::init();
 
-      // hack: hacks?
       // reserved or keywords or whatnot
       enumValueNames.Add((char*)"null");
       enumValueNames.Add((char*)"true");
@@ -164,10 +180,9 @@ public class BGen : ConsoleApplication // <ArgSym>
    void Main()
    {
       ArgSym task = null;
-      Language lang = null;
       ArgErr error = null;
       ArgErr argError = null;
-      Map<String, String> m;
+      Map<String, String> m = null;
 
       init();
 
@@ -205,24 +220,21 @@ public class BGen : ConsoleApplication // <ArgSym>
             {
                sym = null;
                if(prev == library)
-               {
-                  if(!lang)
-                     lang = C;
-                  gens.Add(createGen(lang, arg, def));
-               }
+                  lib = addLibrary(arg);
                else if(prev == directory)
-               {
-                  delete def.lib.outputDir;
-                  def.lib.outputDir = CopyString(arg);
-               }
+                  dir = addDirectory(arg);
                else if(prev == string || prev == map)
                {
                   sym = (ArgSym)getSwitchSymbol(arg, scope);
                   if(prev == map && sym == ArgSym::funcRename)
                   {
-                     if(!def.lib.funcRename)
-                        def.lib.funcRename = { };
-                     m = def.lib.funcRename;
+                     m = null;
+                     options = getOptions();
+                     if(options)
+                     {
+                        if(!options.funcRename) options.funcRename = { };
+                        m = options.funcRename;
+                     }
                   }
                   else
                      check(); // todo error
@@ -242,6 +254,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                      case Python:
                         //if(!lang)
                            lang = (Language)sym;
+                           //if(dir) dir.lang = lang;
                         /*else
                            err = langTwice;*/
                         break;
@@ -256,6 +269,14 @@ public class BGen : ConsoleApplication // <ArgSym>
                         else if(sym != library)
                            err = taskTwice;
                         break;
+                     case reset:
+                        generateGens();
+                        break;
+                     case all:
+                     {
+                        forAll = true;
+                        break;
+                     }
                      case string:
                      case map:
                         scope = sym;
@@ -308,6 +329,7 @@ public class BGen : ConsoleApplication // <ArgSym>
             }
          }
       }
+      generateGens();
       if(task == null || error || argError)
       {
          if(task == null)
@@ -326,18 +348,26 @@ public class BGen : ConsoleApplication // <ArgSym>
          for(gen : gens)
          {
             Gen g = this.gen = gen; // for watches
-            bool plug = false;
-            if(!g.lib.outputDir)
-               g.lib.outputDir = CopyString(def.lib.outputDir);
-            g.lib.init();
+            //bool plug = false;
+            g_ = (CGen)g;
+            // tocheck: just drop?
+            /*if(!g.lib.outputDir)
+               g.lib.outputDir = CopyString(def.lib.outputDir);*/
+            //g.lib.init();
+            //PrintLn("doing: ", g.dir.lang, " - ", g.lib.bindingName, " -> ", g.dir.outputDir);
             if(g.lib.name)
             {
                // todo: validate g.lib.name?
-               if(!g.lib.funcRename)
+               /*if(!g.lib.funcRename)
                {
                   plug = true;
-                  g.lib.funcRename = def ? def.lib.funcRename : null;
-               }
+                  // tocheck: must keep it somewhere?
+                  //g.lib.funcRename = def ? def.lib.funcRename : null;
+               }*/
+               if(!g.lib.options)
+                  g.lib.options = optionsForAll;
+               if(!g.lib.options)
+                  g.lib.options = addOptions();
                if(g.init())
                {
                   //parseInspection(null, null, "extern bool (*uTF8Validate)(const char * source);\n");
@@ -351,8 +381,8 @@ public class BGen : ConsoleApplication // <ArgSym>
                   if(g.lib.verbose)
                      g.printOutputFiles();
                }
-               if(plug)
-                  g.lib.funcRename = null;
+               /*if(plug)
+                  g.lib.funcRename = null;*/
                g.reset(); //delete g;
             }
          }
@@ -388,6 +418,102 @@ public class BGen : ConsoleApplication // <ArgSym>
       //pause();
    }
 
+   Directory addDirectory(const char * path)
+   {
+      Directory dir { };
+      if(lang)
+         dir.lang = lang;
+      dir.outputDir = CopyString(path);
+      dir.init();
+      dirs.Add(dir);
+      ownDirs.Add(dir);
+      return dir;
+   }
+
+   Library addLibrary(const char * name)
+   {
+      Library lib = createLibrary(name);
+      libs.Add(lib);
+      ownLibs.Add(lib);
+      return lib;
+   }
+
+   GenOptions addOptions()
+   {
+      GenOptions options { };
+      ownOptions.Add(options);
+      return options;
+   }
+
+   GenOptions getOptions()
+   {
+      GenOptions options = null;
+      if(forAll)
+      {
+         if(!optionsForAll)
+            optionsForAll = addOptions();
+         options = optionsForAll;
+      }
+      else
+      {
+         if(lib)
+         {
+            if(!lib.options)
+               lib.options = addOptions();
+            options = lib.options;
+         }
+         else
+            PrintLn("options error: a library must be specified first!");
+      }
+      return options;
+   }
+
+   Gen addGen(Library lib, Directory dir)
+   {
+      Gen gen = null;
+      switch(dir.lang)
+      {
+         case C:           gen = CGen { };      break;
+         case CPlusPlus:   gen = CPPGen { };    break;
+         case CSharp:      gen = CSharpGen { }; break;
+         case Java:        gen = JavaGen { };   break;
+         case Python:
+                           gen = PythonGen { }; break;
+         default: check(); break;
+      }
+      gen.lib = lib;
+      gen.dir = dir;
+      //if(def.lib.outputDir)
+      //   gen.lib.outputDir = CopyString(def.lib.outputDir);
+      gens.Add(gen);
+      return gen;
+   }
+
+   void generateGens()
+   {
+      if(libs.count)
+      {
+         if(!dirs.count)
+            dir = addDirectory("");
+         for(dir : dirs)
+         {
+            for(lib : libs)
+            {
+               addGen(lib, dir);
+            }
+         }
+      }
+      else if(dirs.count)
+      {
+         //err = mustSpecifyLib;
+         PrintLn("command line error: at least one library must be specified for work to be done!");
+      }
+      lang = null;
+      forAll = false;
+      libs.RemoveAll();
+      dirs.RemoveAll();
+   }
+
    //bool onArgCustom(int symbol) { return true; }
    //bool onArg(const char * arg, int pos, S symbol, S scope, S prev, E error, bool raw)
    //bool onArg(const char * arg, int pos, int symbol, int scope, int prev, int error, bool raw)
@@ -396,11 +522,12 @@ public class BGen : ConsoleApplication // <ArgSym>
       if(raw)
       {
          if(prev == library)
-            gens.Add(createGen(null, arg, def)); // todo if onArg is ever used
+            check();//gens.Add(createGen(null, arg, def)); // todo if onArg is ever used
          else if(prev == directory)
          {
-            delete def.lib.outputDir;
-            def.lib.outputDir = CopyString(arg);
+            check(); // todo?
+            /*delete def.lib.outputDir;
+            def.lib.outputDir = CopyString(arg);*/
          }
          else if(prev == string)
             check(); // todo
@@ -460,7 +587,7 @@ public class BGen : ConsoleApplication // <ArgSym>
          PrintLn(idnt, $"           examples: 'foo' or 'foo.dll' or 'libfoo.so' or 'C:\\path\\to\\foo.dll' or '/path/to/libfoo.so'");
          PrintLn(idnt, $"[options]: optionally, a single instance of [language] as well as");
          PrintLn(idnt, $"           any number of [string] or [map] or [option] in no particular order");
-         PrintLn(idnt, $"[language]: target language of generated bindings (only one at a time)");
+         PrintLn(idnt, $"[language]: target language of generated bindings");
          PrintLn(idnt, $"            case insentitive choices:");
          PrintLn(idnt, $"              'c' or 'c89' for C (default)");
          PrintLn(idnt, $"              'cpp' or 'cxx' or 'cplusplus' or 'c++' for C++");
@@ -493,26 +620,12 @@ public class BGen : ConsoleApplication // <ArgSym>
 
    ~BGen()
    {
+      ownLibs.Free();
+      ownDirs.Free();
+      ownOptions.Free();
       gens.Free();
    }
 }
 
 define app = ((BGen)__thisModule);
-
-Gen createGen(Language lang, const char * libraryName, Gen def)
-{
-   Gen gen = null;
-   switch(lang)
-   {
-      case C:           gen = CGen { };      break;
-      case CPlusPlus:   gen = CPPGen { };    break;
-      case CSharp:      gen = CSharpGen { }; break;
-      case Java:        gen = JavaGen { };   break;
-      case Python:      gen = PythonGen { }; break;
-      default: check(); break;
-   }
-   gen.lib.name = CopyString(libraryName);
-   if(def.lib.outputDir)
-      gen.lib.outputDir = CopyString(def.lib.outputDir);
-   return gen;
-}
+CGen g_;

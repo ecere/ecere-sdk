@@ -5,6 +5,7 @@ void cHeader(AST out, CGen g)
    cInHeaderFileComment(out, g);
    cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_open.src");
    cInHeaderIncludes(out, g);
+   cInHeaderModuleName(out, g);
 
    if(g.lib.ecereCOM)
    {
@@ -20,8 +21,6 @@ void cHeader(AST out, CGen g)
       cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/c/c_header_ec_hardcoded.src");
 
    cInHeaderTypes(out, g);
-   if(g.lib.ecereCOM)
-      cInHeaderProcessSourceFile(out, g, "HARDCODED", ":src/c/c_header_ec_hardcoded_after.src");
 
    cInHeaderDynamicLinkFunctionImports(out, g);
    if(g.lib.ecereCOM)
@@ -92,6 +91,9 @@ static void cInHeaderProcessSourceFile(AST out, Gen g, const char * comment, con
    if(comment)
       bigCommentSection(z, comment);
    sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars);
+   z.size--;
+   if(z[z.count-1] == '\n');
+      z[z.count-1] = 0;
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -114,34 +116,55 @@ static void cInHeaderIncludes(AST out, Gen g)
    bigCommentSection(z, "includes");
    if(g.lib.ecereCOM)
    {
-      z.printxln("#include <stdint.h>");
       z.printxln("#include <stdio.h>");
+      z.printxln("#include <stdint.h>");
+      z.printxln("#include <stdarg.h>");
       z.printxln("#include <string.h>");
    }
-   else // todo? dependency iterating? fix these hardcoded includes!?
+   else
    {
-      if(g.lib.ecere)
-         z.printxln("#include \"eC.h\"");
-      else if(!strcmp(g.lib.moduleName, "EDA"))
-      {
-         z.printxln("#include \"ecere.h\"");
-         z.printxln("#include \"ffi.h\"");
-      }
-      else if(!strcmp(g.lib.moduleName, "EDASQLite"))
-      {
-         z.printxln("#include \"ecere.h\"");
-         z.printxln("#include \"EDA.h\"");
-         z.printxln("#include \"ffi.h\"");
-      }
-      else if(!strcmp(g.lib.moduleName, "gnosis2"))
-      {
-         z.printxln("#include \"ecere.h\"");
-         z.printxln("#include \"EDA.h\"");
-         z.printxln("#include \"EDASQLite.h\"");
-      }
-      else
-         z.printxln("#include \"ecere.h\"");
+      for(libDep : g.libDeps)
+         z.printxln("#include \"", libDep.bindingName, ".h\"");
    }
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInHeaderModuleName(AST out, CGen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   z.printxln("");
+   if(!g.lib.ecere && !g.lib.ecereCOM)
+   {
+      z.printxln("#if !defined(", g.lib.defineName, "_MODULE_NAME)");
+      z.printxln("#define ", g.lib.defineName, "_MODULE_NAME \"", g.lib.ecereCOM ? "ecere" : g.lib.loadModuleName, "\"");
+      z.printxln("#endif");
+   }
+   if(g.lib.ecereCOM)
+   {
+      z.printxln("");
+      z.printxln("#if !defined(BINDINGS_SHARED)");
+      z.printxln("#define LIB_EXPORT");
+      z.printxln("#define LIB_IMPORT");
+      z.printxln("#elif defined(__WIN32__)");
+      z.printxln("#define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility(\"default\")))");
+      z.printxln("#define LIB_IMPORT __attribute__((dllimport))");
+      z.printxln("#else");
+      z.printxln("#define LIB_EXPORT __attribute__ ((visibility(\"default\")))");
+      z.printxln("#define LIB_IMPORT");
+      z.printxln("#endif");
+   }
+   z.printxln("");
+   z.printxln("#undef THIS_LIB_IMPORT");
+   z.printxln("#ifdef ", g.lib.defineName, "_EXPORT");
+   z.printxln("#define THIS_LIB_IMPORT LIB_EXPORT");
+   z.printxln("#elif defined(BINDINGS_SHARED)");
+   z.printxln("#define THIS_LIB_IMPORT LIB_IMPORT");
+   z.printxln("#else");
+   z.printxln("#define THIS_LIB_IMPORT");
+   z.printxln("#endif");
+
+   z.printxln("");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -163,33 +186,8 @@ static void cInHeaderEcereComRuntimeFunctions(AST out, Gen g)
                z.printxln("#define ", f.easy, spaces(cw, strlen(f.easy)), " ", f.gname);
             else
             {
-               strcpySubstring(f.fname, "eSystem", "eC");
-               {
-                  //if(module is ecere/ecereCOM)
-                  char * s = strstr(f.fname, "_");
-                  if(s && *(++s))
-                     *s = (char)tolower(*s);
-                  //endif
-                  s = f.fname;
-                  if(*f.fname == 'e'/* && module is ecere/ecereCOM*/)
-                  {
-                     if(
-                           strstr(f.fname, "eInstance_") == f.fname ||
-                           strstr(f.fname, "eClass_") == f.fname ||
-                           strstr(f.fname, "eModule_") == f.fname ||
-                           strstr(f.fname, "eEnum_") == f.fname ||
-                           strstr(f.fname, "eMember_") == f.fname ||
-                           strstr(f.fname, "eProperty_") == f.fname
-                     )
-                        s++;
-                     else if(strstr(f.fname, "eC_") == f.fname)
-                        ;
-                     else check();
-                  }
-                  else/* if(module is ecere/ecereCOM)*/
-                     *s = (char)tolower(*s);
-                  z.printxln("#define ", s, spaces(cw, strlen(s)), " ", f.gname);
-               }
+               char * s = getFunctionNameThing(f);
+               z.printxln("#define ", s, spaces(cw, strlen(s)), " ", f.gname);
             }
          }
       }
@@ -197,6 +195,38 @@ static void cInHeaderEcereComRuntimeFunctions(AST out, Gen g)
    ns.cleanup();
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
+}
+
+char * getFunctionNameThing(BFunction f)
+{
+   char * s = null;
+   strcpySubstring(f.fname, "eSystem", "eC");
+   {
+      //if(module is ecere/ecereCOM)
+      s = strstr(f.fname, "_");
+      if(s && *(++s))
+         *s = (char)tolower(*s);
+      //endif
+      s = f.fname;
+      if(*f.fname == 'e'/* && module is ecere/ecereCOM*/)
+      {
+         if(
+               strstr(f.fname, "eInstance_") == f.fname ||
+               strstr(f.fname, "eClass_") == f.fname ||
+               strstr(f.fname, "eModule_") == f.fname ||
+               strstr(f.fname, "eEnum_") == f.fname ||
+               strstr(f.fname, "eMember_") == f.fname ||
+               strstr(f.fname, "eProperty_") == f.fname
+         )
+            s++;
+         else if(strstr(f.fname, "eC_") == f.fname)
+            ;
+         else check();
+      }
+      else/* if(module is ecere/ecereCOM)*/
+         *s = (char)tolower(*s);
+   }
+   return s;
 }
 
 static void cInHeaderEcereRuntimeMacros(AST out, Gen g)
@@ -236,9 +266,9 @@ static void cInHeaderLibraryInitPrototype(AST out, Gen g)
 {
    ASTRawString raw { }; DynamicString z { };
    if(g.lib.ecereCOM)
-      z.printxln("C(Application) ", g.lib.bindingName, "_init(C(Module) fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);");
+      z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);");
    else
-      z.printxln("C(Module) ", g.lib.bindingName, "_init(C(Module) fromModule);");
+      z.printxln("extern ", "THIS_LIB_IMPORT ", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -276,7 +306,7 @@ static void cInHeaderDynamicLinkFunctionImports(AST out, Gen g)
 static void cInHeaderThisModule(AST out, Gen g)
 {
    ASTRawString raw { }; DynamicString z { };
-   z.printxln("extern C(Module) __thisModule;");
+   z.printxln("extern ", g_.sym.module, " __thisModule;");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
