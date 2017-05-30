@@ -20,3 +20,18 @@ typedef uint32_t C(DataDisplayFlags);
 typedef void C(Type);
 typedef void C(Instantiation);
 typedef void C(ClassDefinition);
+
+typedef struct CM(Instance) * C(Instance);
+typedef C(Instance) C(Surface);
+typedef C(Instance) C(Window);
+typedef C(Window) C(CommonControl);
+typedef C(CommonControl) C(DataBox);
+typedef C(CommonControl) C(EditBox);
+
+typedef int C(MinMaxValue);
+struct C(Size)
+{
+   C(MinMaxValue) w;
+   C(MinMaxValue) h;
+};
+typedef struct C(Size) C(Size);

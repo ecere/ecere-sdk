@@ -1,4 +1,6 @@
 
+void shh() { }
+
 void check()
 {
    PrintLn("check");
