@@ -29,10 +29,29 @@
             "Optimization" : "Speed",
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "FastMath" : false
+         }
       }
    ],
    "Files" : [
-      "parser.ec",
+      {
+         "FileName" : "parser.ec",
+         "Configurations" : [
+            {
+               "Name" : "Debug",
+               "Options" : {
+                  "MemoryGuard" : true
+               }
+            }
+         ]
+      },
       {
          "FileName" : "test.ec",
          "Options" : {

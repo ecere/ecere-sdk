@@ -57,6 +57,11 @@ public:
       lexer.readToken();
       return { string = CopyString(lexer.token.text) };
    }
+
+   ~ASTIdentifier()
+   {
+      delete string;
+   }
 };
 
 public class ASTTypeName : ASTNode
@@ -82,6 +87,13 @@ public:
       if(qualifiers) qualifiers.print(out, o);
       if(declarator) { if(qualifiers) out.Print(" "); declarator.print(out, o); }
       printEnd(out, o);
+   }
+
+   ~ASTTypeName()
+   {
+      delete qualifiers;
+      delete declarator;
+      delete bitCount;
    }
 };
 
@@ -302,6 +314,11 @@ public:
    {
       return (float)atof(constant);
    }
+
+   ~ExpConstant()
+   {
+      delete constant;
+   }
 }
 
 public class ExpString : ASTExpression
@@ -336,6 +353,12 @@ public:
       }
       return { string = CopyString(lexer.token.text), i18nContext = i18nContext };
    }
+
+   ~ExpString()
+   {
+      delete string;
+      delete i18nContext;
+   }
 }
 
 public class ExpIdentifier : ASTExpression
@@ -353,6 +376,11 @@ public:
    ExpIdentifier ::parse()
    {
       return { identifier = ASTIdentifier::parse() };
+   }
+
+   ~ExpIdentifier()
+   {
+      delete identifier;
    }
 }
 
@@ -401,6 +429,12 @@ public:
       }
       return 0;
    }
+
+   ~ExpOperation()
+   {
+      delete exp1;
+      delete exp2;
+   }
 }
 
 public class ExpAssignment : ExpOperation
@@ -432,6 +466,11 @@ public:
    float compute()
    {
       return (list && list.lastIterator.data) ? list.lastIterator.data.compute() : 0;
+   }
+
+   ~ExpBrackets()
+   {
+      delete list;
    }
 }
 
@@ -465,6 +504,13 @@ public:
       }
       return exp;
    }
+
+   ~ExpConditional()
+   {
+      delete condition;
+      delete expList;
+      delete elseExp;
+   }
 }
 
 public class ExpIndex : ASTExpression
@@ -492,6 +538,12 @@ public:
          lexer.readToken();
       return exp;
    }
+
+   ~ExpIndex()
+   {
+      delete exp;
+      delete index;
+   }
 }
 
 public class ExpMember : ASTExpression
@@ -516,6 +568,12 @@ public:
    {
       lexer.readToken();
       return { exp = e, member = ASTIdentifier::parse() };
+   }
+
+   ~ExpMember()
+   {
+      delete exp;
+      delete member;
    }
 }
 
@@ -565,6 +623,12 @@ public:
          lexer.readToken();
       return exp;
    }
+
+   ~ExpCall()
+   {
+      delete exp;
+      delete arguments;
+   }
 }
 
 public class ExpCast : ASTExpression
@@ -578,6 +642,12 @@ public:
       ASTExpression exp = parseUnaryExpression();
       // TODO: Deal with cast ambiguity
       return exp;
+   }
+
+   ~ExpCast()
+   {
+      delete typeName;
+      delete exp;
    }
 }
 
@@ -596,6 +666,11 @@ public:
       printStart(out, o);
       if(instance) instance.print(out, o);
       printEnd(out, o);
+   }
+
+   ~ExpInstance()
+   {
+      delete instance;
    }
 }
 /*
@@ -733,6 +808,11 @@ public:
       if(members) members.print(out, o);
       printEnd(out, o);
    }
+
+   ~InstInitMember()
+   {
+      delete members;
+   }
 }
 
 public class InstInitFunction : InstanceInit
@@ -750,6 +830,11 @@ public:
       printStart(out, o);
       if(function) function.print(out, o);
       printEnd(out, o);
+   }
+
+   ~InstInitFunction()
+   {
+      delete function;
    }
 }
 
@@ -866,5 +951,14 @@ public:
       }
       out.Print("}");
       printEnd(out, o);
+   }
+
+
+   ~ASTInstantiation()
+   {
+      delete _class;
+      delete exp;
+
+      delete members;
    }
 };

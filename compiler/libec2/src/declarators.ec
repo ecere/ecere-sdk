@@ -26,6 +26,12 @@ public:
       }
       return ptr;
    }
+
+   ~ASTPointer()
+   {
+      delete qualifiers;
+      delete pointer;
+   }
 }
 
 public class ASTDeclarator : ASTNode
@@ -63,6 +69,11 @@ public:
          }
       }
       return decl;
+   }
+
+   ~ASTDeclarator()
+   {
+      delete declarator;
    }
 }
 
@@ -129,6 +140,11 @@ public:
          lexer.readToken();
       return decl;
    }
+
+   ~DeclFunction()
+   {
+      delete parameters;
+   }
 }
 
 public class DeclIdentifier : ASTDeclarator
@@ -146,6 +162,11 @@ public:
    DeclIdentifier ::parse()
    {
       return { identifier = ASTIdentifier::parse() };
+   }
+
+   ~DeclIdentifier()
+   {
+      delete identifier;
    }
 }
 
@@ -199,6 +220,11 @@ public:
       if(lexer.peekToken().type == ']') lexer.readToken();
       return decl;
    }
+
+   ~DeclArray()
+   {
+      delete exp;
+   }
 }
 
 public class DeclPointer : ASTDeclarator
@@ -219,6 +245,11 @@ public:
    {
       return { pointer = ASTPointer::parse(), declarator = ASTDeclarator::parse() };
    }
+
+   ~DeclPointer()
+   {
+      delete pointer;
+   }
 }
 
 public class DeclStruct : ASTDeclarator
@@ -231,6 +262,13 @@ public:
    DeclStruct ::parse()
    {
       return { declarator = ASTDeclarator::parse(); };
+   }
+
+   ~DeclStruct()
+   {
+      delete exp;
+      delete posExp;
+      delete attrib;
    }
 }
 
@@ -253,12 +291,21 @@ public:
       lexer.readToken();
       return { declarator = d, size = ExpConstant::parse(); };
    }
+
+   ~DeclBitField()
+   {
+      delete size;
+   }
 }
 
 public class DeclExtended : ASTDeclarator
 {
 public:
    // TODO: ExtDecl extended;
+
+   ~DeclExtended()
+   {
+   }
 }
 
 public class ASTInitializer : ASTNode
@@ -298,6 +345,11 @@ public:
       ASTExpression exp = ASTExpression::parse();
       return exp ? InitExp { exp = exp } : null;
    }
+
+   ~InitExp()
+   {
+      delete exp;
+   }
 };
 
 public class InitList : ASTInitializer
@@ -321,6 +373,12 @@ public:
    {
       ASTList<ASTInitializer> list = (ASTList<ASTInitializer>)ASTList::parse(class(ASTList<ASTInitializer>), ASTInitializer::parse, ',');
       return list ? { list = (void *)list } : null;
+   }
+
+   ~InitList()
+   {
+      list.Free();
+      delete list;
    }
 };
 
@@ -356,6 +414,12 @@ public:
          return { declarator = decl, initializer = init };
       }
       return null;
+   }
+
+   ~ASTInitDeclarator()
+   {
+      delete declarator;
+      delete initializer;
    }
 };
 

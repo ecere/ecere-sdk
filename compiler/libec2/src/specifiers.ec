@@ -11,12 +11,21 @@ public class SpecTypeOf : ASTSpecifier
 {
 public:
    // Expression expression;
+
+   ~SpecTypeOf()
+   {
+   }
 }
 
 public class SpecSubClass : ASTSpecifier
 {
 public:
    ASTSpecifier _class;
+
+   ~SpecSubClass()
+   {
+      delete _class;
+   }
 }
 
 public class SpecTemplateType : ASTSpecifier
@@ -105,6 +114,11 @@ public:
       if(name) out.Print(name);
       printEnd(out, o);
    }
+
+   ~SpecName()
+   {
+      delete name;
+   }
 }
 
 public class SpecClass : ASTSpecifier
@@ -174,6 +188,13 @@ public:
       }
       printEnd(out, o);
    }
+
+   ~SpecClass()
+   {
+      delete id;
+      delete baseSpecs;
+      delete definitions;
+   }
 }
 
 public class ASTEnumerator : ASTNode
@@ -181,6 +202,12 @@ public class ASTEnumerator : ASTNode
 public:
    ASTIdentifier id;
    ASTExpression exp;
+
+   ~ASTEnumerator()
+   {
+      delete id;
+      delete exp;
+   }
 };
 
 public class EnumeratorList : ASTList<ASTEnumerator>
@@ -192,6 +219,11 @@ public class SpecEnum : SpecClass
 {
 public:
    EnumeratorList enumerators;
+
+   ~SpecEnum()
+   {
+      delete enumerators;
+   }
 }
 
 public class ASTAttribute : ASTNode
@@ -199,6 +231,12 @@ public class ASTAttribute : ASTNode
 public:
    String attr;
    ASTExpression exp;
+
+   ~ASTAttribute()
+   {
+      delete attr;
+      delete exp;
+   }
 }
 
 public class ASTAttrib : ASTNode
@@ -206,6 +244,12 @@ public class ASTAttrib : ASTNode
 public:
    TokenType2 type;
    List<ASTAttribute> attribs;
+
+   ~ASTAttrib()
+   {
+      if(attribs) attribs.Free();
+      delete attribs;
+   }
 }
 
 public class ASTExtDecl : ASTNode { }
@@ -214,10 +258,20 @@ public class ExtDeclString : ASTExtDecl
 {
 public:
    String s;
+
+   ~ExtDeclString()
+   {
+      delete s;
+   }
 }
 
 public class ExtDeclAttrib : ASTExtDecl
 {
 public:
    ASTAttrib attr;
+
+   ~ExtDeclAttrib()
+   {
+      delete attr;
+   }
 }
