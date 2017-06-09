@@ -18,6 +18,10 @@ public:
          lexer.readToken();
       return DeclarationInit { specifiers = specs, declarators = decls };
    }
+
+   ~ASTDeclaration()
+   {
+   }
 }
 
 public class DeclarationInit : ASTDeclaration
@@ -39,6 +43,13 @@ public:
       out.Print(";");
       if(comment) out.Print(" // ", comment);
       printEnd(out, o);
+   }
+
+   ~DeclarationInit()
+   {
+      delete specifiers;
+      delete declarators;
+      delete comment;
    }
 }
 
@@ -69,6 +80,11 @@ public:
       }
       printEnd(out, o);
    }
+
+   ~DeclarationInstance()
+   {
+      delete inst;
+   }
 }
 
 public class DeclarationDefine : ASTDeclaration
@@ -76,6 +92,12 @@ public class DeclarationDefine : ASTDeclaration
 public:
    ASTIdentifier id;
    ASTExpression exp;
+
+   ~DeclarationDefine()
+   {
+      delete id;
+      delete exp;
+   }
 }
 
 public class ASTFunctionDefinition : ASTNode
@@ -127,6 +149,15 @@ public:
    int tempCount;
    bool propertyNoThis; // Not used yet; might use to support both this = and return syntax for conversion properties
    */
+
+   ~ASTFunctionDefinition()
+   {
+      delete specifiers;
+      delete declarator;
+      if(oldStyleDeclarations) oldStyleDeclarations.Free();
+      delete oldStyleDeclarations;
+      delete body;
+   }
 };
 
 class ASTImport : ASTNode

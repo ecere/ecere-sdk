@@ -28,6 +28,15 @@
             "Optimization" : "Speed",
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "FastMath" : false
+         }
       }
    ],
    "Files" : [

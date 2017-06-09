@@ -63,6 +63,12 @@ public:
          initializer.print(out, o);
       printEnd(out, o);
    }
+
+   ~ASTMemberInit()
+   {
+      delete identifiers;
+      delete initializer;
+   }
 };
 
 public class MemberInitList : ASTList<ASTMemberInit>
@@ -90,6 +96,17 @@ public:
    bool conversion;
    bool isWatchable;
    ASTExpression category;
+
+   ~ASTPropertyDef()
+   {
+      delete specifiers;
+      delete declarator;
+      delete id;
+      delete getStmt;
+      delete setStmt;
+      delete issetStmt;
+      delete category;
+   }
 };
 
 public class ClassDefList : ASTList<ASTClassDef>
@@ -160,6 +177,12 @@ public class ClassDefClassPropertyValue : ASTClassDef
 public:
    ASTIdentifier id;
    ASTInitializer initializer;
+
+   ~ClassDefClassPropertyValue()
+   {
+      delete id;
+      delete initializer;
+   }
 }
 
 public class ClassDefDeclaration : ASTClassDef
@@ -185,6 +208,11 @@ public:
       out.PrintLn("");
       printEnd(out, o);
    }
+
+   ~ClassDefDeclaration()
+   {
+      delete decl;
+   }
 }
 
 public class ASTClassFunction : ASTFunctionDefinition
@@ -207,6 +235,10 @@ public:
    {
       return (ASTClassFunction)ASTFunctionDefinition::parse(specs, decls);
    }
+
+   ~ASTClassFunction()
+   {
+   }
 };
 
 public class ClassDefFunction : ASTClassDef
@@ -227,6 +259,11 @@ public:
       printStart(out, o);
       if(function) function.print(out, o);
       printEnd(out, o);
+   }
+
+   ~ClassDefFunction()
+   {
+      delete function;
    }
 }
 
@@ -254,28 +291,53 @@ public:
       }
       printEnd(out, o);
    }
+
+   ~ClassDefInitialization()
+   {
+      delete defValues;
+   }
 }
 
 public class ClassDefProperty : ASTClassDef
 {
 public:
    ASTPropertyDef propertyDef;
+
+   ~ClassDefProperty()
+   {
+      delete propertyDef;
+   }
 }
 
 public class ClassDefPropertyWatch : ASTClassDef
 {
 public:
    ASTPropertyWatch propertyWatch;
+
+   ~ClassDefPropertyWatch()
+   {
+      delete propertyWatch;
+   }
 }
 
 public class ClassDefDesigner : ASTClassDef
 {
 public:
    String designer;
+
+   ~ClassDefDesigner()
+   {
+      delete designer;
+   }
 }
 
 public class ClassDefDefaultProperty : ASTClassDef
 {
 public:
    ASTIdentifier defaultProperty;
+
+   ~ClassDefDefaultProperty()
+   {
+      delete defaultProperty;
+   }
 }

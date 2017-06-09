@@ -26,7 +26,11 @@ class Form1 : Window
             {
                AST ast = AST::parse();
                if(ast)
+               {
                   ast.print(console, { /*astType = true*/ });
+                  ast.Free();
+                  delete ast;
+               }
             }
             /*
             {

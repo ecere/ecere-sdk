@@ -124,6 +124,8 @@ public:
    {
       delete condition;
       delete closing;
+      if(ast) ast.Free();
+      delete ast;
    }
 }
 
@@ -152,6 +154,13 @@ public:
    void Delete(IteratorPointer i)                         { if(list) list.Delete(i); }
 
 public:
+   void OnFree()
+   {
+      Free();
+      delete list;
+      delete this;
+   }
+
    virtual void printSep(File out)
    {
       out.Print(", ");
