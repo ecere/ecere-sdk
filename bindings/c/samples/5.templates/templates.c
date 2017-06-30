@@ -73,7 +73,7 @@ void Foo_add(Foo this, TP(Foo, A) value)
 
 int main(int argc, char *argv[])
 {
-   Application module = eC_init(null, true, false, argc, argv);
+   Application module = eC_init(true, false, argc, argv);
    //C(Window) win = newi(Window);
    double d;
    Foo foo;
