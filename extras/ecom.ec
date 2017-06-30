@@ -103,6 +103,18 @@ bool classIsFromModule(Class c, Module m, Application a)
    return mod == m && !ecereCOM;
 }
 
+List<Class> getClassLineage(Class c)
+{
+   List<Class> lineage { };
+   Class cl;
+   for(cl = c; cl; cl = cl.base)
+   {
+      if(cl.templateClass) cl = cl.templateClass;
+      lineage.Insert(null, cl);
+   }
+   return lineage;
+}
+
 public struct IterNamespace
 {
 public:
@@ -164,7 +176,7 @@ public:
                   INFrame frame = stack.lastIterator.data;
                   ns = (NameSpace *)frame.ns;
                   depth--;
-                  stack.Remove(stack.lastIterator.pointer);
+                  stack.lastIterator.Remove();
                   if(processFullName)
                      fullName[frame.cut] = 0;
                   if(insideFirst)
@@ -250,7 +262,7 @@ private:
    BTNamedLink _it;
 };
 
-public enum ClassTypeFilter
+public enum ClassFilter
 {
    all, normalOnly, structOnly, bitOnly, unitOnly, enumOnly, noHeadOnly, systemOnly;
 public:
@@ -278,15 +290,53 @@ public:
    Class cl;
    property Class { get { return cl; } }
    void reset() { cl = null; _it = null; }
-   Class next(ClassTypeFilter filter)
+   Class next(ClassFilter filter)
    {
-      for(_it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)ns->classes.first;
-          _it && !filter.match(((Class)_it.data).type);
-          _it = (BTNamedLink)((BTNode)_it).next);
+      _it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)ns->classes.first;
+      while(_it && !filter.match(((Class)_it.data).type))
+         _it = (BTNamedLink)((BTNode)_it).next;
       cl = _it ? _it.data : null;
       return cl;
    }
 private:
+   BTNamedLink _it;
+};
+
+public struct IterAllClass
+{
+public:
+   // issue with doing:
+   // IterAllClass itacl { module = g.mod };
+   // have to do this instead:
+   // IterAllClass itacl { itn.module = g.mod };
+   // it's not using the property as first thing to initialize it goes directly to the first member aka itn
+   property Module module { get { return itn.module; } set { itn.module = value; }  }
+   property bool ecereCOM { get { return itn.ecereCOM; } set { itn.ecereCOM = value; }  }
+   IterNamespace itn { };
+   Class cl;
+   property Class { get { return cl; } }
+   void reset() { cl = null; _it = null; }
+   Class next(ClassFilter filter)
+   {
+      while(_next() && !filter.match(((Class)_it.data).type));
+      cl = _it ? _it.data : null;
+      return cl;
+   }
+   void cleanup()
+   {
+      itn.cleanup();
+   }
+private:
+   bool _next()
+   {
+      if(!itn.ns) itn.next();
+      while(itn.ns && !(_it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)itn.ns->classes.first))
+      {
+         itn.next();
+         _it = null;
+      }
+      return itn.ns != null;
+   }
    BTNamedLink _it;
 };
 
@@ -299,8 +349,8 @@ public:
       switch(this)
       {
          case all:               return true;
-         case privateOnly:       return accessMode == privateAccess;
          case publicOnly:        return accessMode == publicAccess;
+         case privateOnly:       return accessMode == privateAccess;
          case privateAndPublic:  return accessMode == privateAccess || accessMode == publicAccess;
          case publicNormal:      return accessMode == publicAccess && methodType == normalMethod;
          case publicVirtual:     return accessMode == publicAccess && methodType == virtualMethod;
@@ -318,9 +368,9 @@ public:
    void reset() { md = null; }
    Method next(MethodFilter filter)
    {
-      for(md = md ? (Method)((BTNode)md).next : (Method)cl.methods.first;
-          md && !filter.match(md.memberAccess, md.type);
-          md = (Method)((BTNode)md).next);
+      md = md ? (Method)((BTNode)md).next : (Method)cl.methods.first;
+      while(md && !filter.match(md.memberAccess, md.type))
+         md = (Method)((BTNode)md).next;
       return md;
    }
 };
@@ -334,9 +384,10 @@ public:
       switch(this)
       {
          case all:               return true;
-         case privateOnly:       return accessMode == privateAccess;
          case publicOnly:        return accessMode == publicAccess;
+         case privateOnly:       return accessMode == privateAccess;
          case privateAndPublic:  return accessMode == privateAccess || accessMode == publicAccess;
+         // defaultAccess, staticAccess, baseSystemAccess
       }
       return false;
    }
@@ -351,6 +402,11 @@ public:
    const char * name;
    bool isProperty;
    AccessMode memberAccess;
+   int id;
+   Class _class;
+   const char * dataTypeString;
+   Class dataTypeClass;
+   //Type dataType;
 }
 
 public struct IterMemberOrProperty
@@ -362,9 +418,9 @@ public:
    void reset() { or = null; }
    MemberOrProperty next(AccessModeFilter filter)
    {
-      for(or = or ? or.next : (MemberOrProperty)cl.membersAndProperties.first;
-          or && !filter.match(or.memberAccess);
-          or = or.next);
+      or = or ? or.next : (MemberOrProperty)cl.membersAndProperties.first;
+      while(or && !filter.match(or.memberAccess))
+         or = or.next;
       return or;
    }
 };
@@ -379,9 +435,9 @@ public:
    Property next(AccessModeFilter filter)
    {
       MemberOrProperty it = (MemberOrProperty)pt;
-      for(it = it ? it.next : (MemberOrProperty)cl.membersAndProperties.first;
-          it && (!it.isProperty || !filter.match(it.memberAccess));
-          it = it.next);
+      it = it ? it.next : (MemberOrProperty)cl.membersAndProperties.first;
+      while(it && (!it.isProperty || !filter.match(it.memberAccess)))
+         it = it.next;
       pt = it ? (Property)it : null;
       return pt;
    }
@@ -397,11 +453,78 @@ public:
    DataMember next(AccessModeFilter filter)
    {
       MemberOrProperty it = (MemberOrProperty)dm;
-      for(it = it ? it.next : (MemberOrProperty)cl.membersAndProperties.first;
-          it && (it.isProperty || !filter.match(it.memberAccess));
-          it = it.next);
+      it = it ? it.next : (MemberOrProperty)cl.membersAndProperties.first;
+      while(it && (it.isProperty || !filter.match(it.memberAccess)))
+         it = it.next;
       dm = it ? (DataMember)it : null;
       return dm;
+   }
+};
+
+public enum MemberOrPropertyFilter
+{
+   all, privateOnly, publicOnly, privateAndPublic, normalOnly, unionOnly, structOnly, publicNormal, privateNormal;
+public:
+   bool match(AccessMode accessMode, DataMemberType type)
+   {
+      switch(this)
+      {
+         case all:               return true;
+         case publicOnly:        return accessMode == publicAccess;
+         case privateOnly:       return accessMode == privateAccess;
+         case privateAndPublic:  return accessMode == privateAccess || accessMode == publicAccess;
+         // defaultAccess, staticAccess, baseSystemAccess
+         case normalOnly:        return type == normalMember;
+         case unionOnly:         return type == unionMember;
+         case structOnly:        return type == structMember;
+         case publicNormal:      return accessMode == publicAccess && type == structMember;
+         case privateNormal:     return accessMode == privateAccess && type == structMember;
+      }
+      return false;
+   }
+};
+
+public struct IterMemberOrPropertyPlus
+{
+   Class cl;
+   Property pt;
+   DataMember dm;
+   MemberOrProperty mp;
+   bool unionFirstsFirstAndFollowingsLast;
+   property MemberOrProperty { get { return mp; } }
+   void reset() { mp = null; }
+   MemberOrProperty next(MemberOrPropertyFilter filter)
+   {
+      while(_next() && !filter.match(mp.memberAccess, mp.isProperty ? normalMember : ((DataMember)mp).type));
+      pt = mp && mp.isProperty ? (Property)mp : null;
+      dm = mp && !mp.isProperty ? (DataMember)mp : null;
+      if(dm && (dm.type == unionMember || dm.type == structMember))
+         stack.Add(dm.members.first);
+      return mp;
+   }
+   void cleanup()
+   {
+      delete stack;
+   }
+private:
+   List<MemberOrProperty> stack;
+   bool _next()
+   {
+      if(!stack) stack = { };
+      if(!mp)
+         stack.Add((mp = (MemberOrProperty)cl.membersAndProperties.first));
+      else
+      {
+         bool first = dm && (dm.type == unionMember || dm.type == structMember);
+         while(stack.count)
+         {
+            mp = first ? stack.lastIterator.data : stack.lastIterator.data.next;
+            if(mp) break;
+            else if(stack.count)
+               stack.lastIterator.Remove();
+         }
+      }
+      return mp != null;
    }
 };
 
@@ -414,9 +537,9 @@ public:
    void reset() { cn = null; }
    Property next(AccessModeFilter filter)
    {
-      for(cn = cn ? cn.next : (Property)cl.conversions.first;
-          cn && !filter.match(cn.memberAccess);
-          cn = cn.next);
+      cn = cn ? cn.next : (Property)cl.conversions.first;
+      while(cn && !filter.match(cn.memberAccess))
+         cn = cn.next;
       return cn;
    }
 };
