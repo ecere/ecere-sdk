@@ -2407,6 +2407,7 @@ class Debugger
          //GdbCommand(0, false, "-gdb-set exec-done-display on");
          GdbCommand(0, false, "-gdb-set step-mode off");
          GdbCommand(0, false, "-gdb-set unwindonsignal on");
+         GdbCommand(0, false, "-gdb-set stop-on-solib-events on");
          //GdbCommand(0, false, "-gdb-set shell on");
          GdbCommand(0, false, "set print elements 992");
          GdbCommand(0, false, "-gdb-set backtrace limit 100000");
@@ -3423,7 +3424,7 @@ class Debugger
    void GdbThreadMain(char * output)
    {
       int i;
-      char * t;
+      // char * t;
       Array<char *> outTokens { minAllocSize = 50 };
       Array<char *> subTokens { minAllocSize = 50 };
       DebugListItem item { };
@@ -3476,6 +3477,7 @@ class Debugger
                ide.outputView.debugBox.Logf($"Target doesn't contain debug information!\n");
                ide.Update(null);
             }
+            /*
             if(!entryPoint && (t = strstr(output, "Entry point:")))
             {
                char * addr = t + strlen("Entry point:");
@@ -3493,6 +3495,7 @@ class Debugger
                   }
                }
             }
+            */
             break;
          case '^':
             gdbReady = false;
