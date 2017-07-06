@@ -393,18 +393,80 @@ class Win32Interface : Interface
    bool ::ProcessKeyMessage(Window window, DWORD msg, WPARAM wParam, LPARAM lParam, unichar ch)
    {
       bool result = true;
+      static Key code2 = 0;
       Key code = 0;
       Key key;
       // UNICODE FIX
       bool frenchShift = (ch < 0x10000) ? (((VkKeyScan((uint16)ch) >> 8) & 6) == 6) : false;
+      unsigned short device = 0;
 
       if(msg == WM_CHAR || msg == WM_DEADCHAR)
       {
          wParam = 0;
          lParam = 0;
       }
+
       if(msg == WM_MOUSEWHEEL)
          code = (((short) HIWORD(wParam)) < 0) ? wheelDown : wheelUp;
+      else if(msg == WM_APPCOMMAND)
+      {
+         short cmd = GET_APPCOMMAND_LPARAM(lParam);
+         int state = GET_KEYSTATE_LPARAM(lParam);
+         device = GET_DEVICE_LPARAM(lParam);
+         /*switch(device)
+         {
+            case FAPPCOMMAND_KEY:
+            case FAPPCOMMAND_MOUSE:
+            case FAPPCOMMAND_OEM:
+               break;
+         }*/
+         switch(state)
+         {
+            case MK_CONTROL:     code.ctrl = true;    break;
+            case MK_SHIFT:       code.shift = true;   break;
+            case MK_LBUTTON:
+            case MK_MBUTTON:
+            case MK_RBUTTON:
+            case MK_XBUTTON1:
+            case MK_XBUTTON2:
+               break;
+         }
+         switch(cmd)
+         {
+            // still unused remote control buttons:
+            // record, pause, rewind, fastForward, eject, remoteHome, back, menu1, menu2, menu3, menu4, select
+            case APPCOMMAND_BASS_BOOST:               code = bassBoost;                break;
+            case APPCOMMAND_BASS_DOWN:                code = bassDown;                 break;
+            case APPCOMMAND_BASS_UP:                  code = bassUp;                   break;
+            case APPCOMMAND_BROWSER_BACKWARD:         code = browserBackward;          break;
+            case APPCOMMAND_BROWSER_FAVORITES:        code = browserFavorites;         break;
+            case APPCOMMAND_BROWSER_FORWARD:          code = browserForward;           break;
+            case APPCOMMAND_BROWSER_HOME:             code = browserHome;              break;
+            case APPCOMMAND_BROWSER_REFRESH:          code = browserRefresh;           break;
+            case APPCOMMAND_BROWSER_SEARCH:           code = browserSearch;            break;
+            case APPCOMMAND_BROWSER_STOP:             code = browserStop;              break;
+            //case APPCOMMAND_DELETE:                   code = delete;                   break;
+            //case APPCOMMAND_DWM_FLIP3D:               code = flip3D;                   break;
+            case APPCOMMAND_LAUNCH_APP1:              code = launchApp1;               break;
+            case APPCOMMAND_LAUNCH_APP2:              code = launchApp2;               break;
+            case APPCOMMAND_LAUNCH_MAIL:              code = launchMail;               break;
+            case APPCOMMAND_LAUNCH_MEDIA_SELECT:      code = launchMediaSelect;        break;
+            case APPCOMMAND_MEDIA_NEXTTRACK:          code = /*mediaN*/nextTrack;      break;
+            case APPCOMMAND_MEDIA_PLAY_PAUSE:         code = /*mediaPlayPause*/play;   break;
+            case APPCOMMAND_MEDIA_PREVIOUSTRACK:      code = /*mediaP*/previousTrack;  break;
+            case APPCOMMAND_MEDIA_STOP:               code = /*mediaS*/stop;           break;
+            case APPCOMMAND_MICROPHONE_VOLUME_DOWN:   code = micVolumeDown;            break;
+            case APPCOMMAND_MICROPHONE_VOLUME_MUTE:   code = micMute;                  break;
+            case APPCOMMAND_MICROPHONE_VOLUME_UP:     code = micVolumeUp;              break;
+            case APPCOMMAND_TREBLE_DOWN:              code = trebleDown;               break;
+            case APPCOMMAND_TREBLE_UP:                code = trebleUp;                 break;
+            case APPCOMMAND_VOLUME_DOWN:              code = volumeDown;               break;
+            case APPCOMMAND_VOLUME_MUTE:              code = /*volumeM*/mute;          break;
+            case APPCOMMAND_VOLUME_UP:                code = volumeUp;                 break;
+         }
+         if(device == FAPPCOMMAND_KEY)
+            code2 = code;
+      }
       else
       {
          key = (byte)((lParam & 0xFF0000)>>16);
@@ -431,7 +493,11 @@ class Win32Interface : Interface
 
          result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, 0);
       }
-      else
+      else if(msg == WM_APPCOMMAND && device != FAPPCOMMAND_KEY)
+      {
+         result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, 0);
+      }
+      else if(msg != WM_APPCOMMAND)
       {
          if(key != leftShift && key != rightShift && ::GetKeyState(VK_SHIFT) & 0x80000)
             code.shift = true;
@@ -447,7 +513,8 @@ class Win32Interface : Interface
 
          if(msg == WM_KEYUP || msg == WM_SYSKEYUP)
          {
-            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, code, ch);
+            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, code2 ? code2 : code, ch);
+            code2 = 0;
          }
          else
          {
@@ -462,10 +529,10 @@ class Win32Interface : Interface
                }
                */
 
-               result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, code, ch);
+               result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, code2 ? code2 : code, ch);
             }
             else if(key<128)
-               result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code,ch);
+               result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code2 ? code2 : code,ch);
          }
       }
 
@@ -754,6 +821,12 @@ class Win32Interface : Interface
                if(msg != WM_MOUSEWHEEL)
                   delete window;
                break;
+
+            case WM_APPCOMMAND:
+            {
+               ProcessKeyMessage(window, msg, wParam, lParam, ch);
+               break;
+            }
 
             case WM_IME_STARTCOMPOSITION:
             {
