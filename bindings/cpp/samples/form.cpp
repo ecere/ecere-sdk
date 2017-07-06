@@ -58,12 +58,12 @@ public:
    CONSTRUCT(HelloForm2, Window)
    {
       caption = $("My Second Ecere/C++ Bindings App");
-      borderStyle = sizable;
+      borderStyle = BorderStyle_sizable;
       clientSize = { 640, 480 };
       hasClose = true;
       hasMaximize = true;
       hasMinimize = true;
-      background = formColor;
+      background = SystemColor_formColor;
       font = { "Arial", 30 };
 
       button.parent = this;
@@ -75,6 +75,7 @@ public:
          double i = 3.14159265;
          char tmp[256];
          constString s = _onGetString(class_double, &i, tmp, null, null);
+         if(s); // silence warning
          //PrintLn(class_String, "Hello! -- ", class_String, s, null); // Need to terminate with a null!
          //HelloForm2 & self = (HelloForm2 &)owner;
          //MessageBox($("C++ Bindings!"), self.button.caption).modal();

@@ -22,8 +22,8 @@
 #define  newi(c) Instance_newEx(c, true)
 
 #define _REGISTER_CLASS(n, ns, bs, a) \
-   (Class *)eC_registerClass(normalClass, ns, bs, sizeof(Instance *), 0, \
-      (C(bool) (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, privateAccess, publicAccess)
+   (Class *)eC_registerClass(ClassType_normalClass, ns, bs, sizeof(Instance *), 0, \
+      (C(bool) (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, AccessMode_privateAccess, AccessMode_publicAccess)
 
 // For defining _class and registereing together (single translation unit)
 #define REGISTER_CLASS_DEF(n, b, a)    TCPPClass<n> n::_class(_REGISTER_CLASS(n,     #n, b::_class.impl->name, a));
