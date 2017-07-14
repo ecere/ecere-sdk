@@ -25,7 +25,7 @@ class EDABetterTestForm : Window
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          const char * select = row.string;
-         if(!strcmp(select, "EDB") || !strcmp(select, "SQLite"))
+         if(!strcmp(select, "EDB") || !strcmp(select, "SQLite") || !strcmp(select, "dBASE"))
          {
             char path[MAX_LOCATION];
             GetWorkingDir(path, MAX_LOCATION);
@@ -69,7 +69,7 @@ class EDABetterTestForm : Window
             nameDb.contents = "mysql";
             groupDs.disabled = false;
          }
-         else if (!strcmp(select, "Oracle"))
+         else if(!strcmp(select, "Oracle"))
          {
             host.contents = "localhost";
             username.contents = "test";
@@ -93,7 +93,8 @@ class EDABetterTestForm : Window
          AddString("PostgreSQL");
          AddString("SQLite");
          AddString("SQLiteCipher");
-         SelectRow(AddString("Oracle"));
+         AddString("Oracle");
+         SelectRow(AddString("dBASE"));
 
          return true;
       }
@@ -128,14 +129,10 @@ class EDABetterTestForm : Window
             openDs.disabled = true;
             closeDs.disabled = false;
             testDs.disabled = true;
-            /*
-            {
-               Table tblDatabases = db.OpenTable(null, { databasesList });
-               if(tblDatabases)
-                  tblDatabases.GUIListBoxAddRowsField(listDatabases, "Name");
-               delete tblDatabases;
-            }
-            */
+
+            if(ds.databases)
+               for(d : ds.databases)
+                  listDatabases.AddString(d);
          }
          return true;
       }
@@ -182,6 +179,13 @@ class EDABetterTestForm : Window
    ListBox listDatabases
    {
       groupDb, this, size = { 200, 88 }, position = { 16, 24 };
+
+      bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
+      {
+         if(listBox.currentRow)
+            nameDb.contents = listBox.currentRow.string;
+         return true;
+      }
 
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
@@ -259,6 +263,13 @@ class EDABetterTestForm : Window
    {
       groupTbl, this, size = { 200, 88 }, position = { 16, 24 };
 
+      bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
+      {
+         if(listBox.currentRow)
+            nameTbl.contents = listBox.currentRow.string;
+         return true;
+      }
+
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
          if(listBox.currentRow)
@@ -279,6 +290,8 @@ class EDABetterTestForm : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
+         if(tbl)
+            closeTbl.NotifyClicked(this, closeTbl, 0, 0, { });
          tbl = db.OpenTable(nameTbl.contents, { type = tableRows, create = tblCreate.checked ? create : no });
          if(tbl)
          {
@@ -426,7 +439,7 @@ class EDABetterTestForm : Window
          {
             DataRow curRow = listBox.firstRow;
             Row row { tbl };
-            int sysID = 0;
+            uint64 sysID = 0;
 
             while(row.Next() && curRow)
             {

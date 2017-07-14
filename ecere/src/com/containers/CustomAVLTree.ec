@@ -194,7 +194,10 @@ private:
       uint offset = 0;
       ClassType t = Tclass.type;
       int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
-      bool isInt64 = onCompare == (void *)class(int64).OnCompare;
+      bool isInt64 = false, isDouble = false;
+      if(onCompare == (void *)class(int64).OnCompare ||
+         (Tclass.type == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id"))) isInt64 = true;
+      else if(onCompare == (void *)class(double).OnCompare) isDouble = true;
 
       reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
       offset = __ENDIAN_PAD(Tclass.typeSize);
@@ -229,8 +232,11 @@ private:
       else
       {
          int64 a64;
+         double aDouble;
          if(isInt64)
             a64 = *(int64 *)a;
+         else if(isDouble)
+            aDouble = *(double *)a;
          while(this)
          {
             byte * b = reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key;
@@ -240,6 +246,13 @@ private:
                int64 b64 = *(int64 *)b;
                     if(a64 > b64) result = 1;
                else if(a64 < b64) result = -1;
+               else result = 0;
+            }
+            else if(isDouble)
+            {
+               double bDouble = *(double *)b;
+                    if(aDouble > bDouble) result = 1;
+               else if(aDouble < bDouble) result = -1;
                else result = 0;
             }
             else
@@ -627,7 +640,31 @@ public:
 
    BT GetAtPosition(const KT pos, bool create, bool * justAdded)
    {
-      // TODO: FindEx / AddEx & create nodes if create is true?
-      return root ? root.Find(class(KT), pos) : null;
+      AVLNode addNode = null;
+      AddSide addSide = compare;
+      AVLNode<KT> node = root ? root.FindEx(class(KT), pos, &addNode, &addSide) : null;
+      if(!node && create)
+      {
+         Class Tclass = class(KT);
+         void (* onCopy)(void *, void *, void *) = Tclass._vTbl[__ecereVMethodID_class_OnCopy];
+         if(class(KT).type == structClass)
+         {
+            uint size = sizeof(class AVLNode<KT>);
+            if(class(KT).type == structClass) size += class(KT).typeSize - sizeof(node.AVLNode::key);
+            node = (AVLNode<KT>)new0 byte[size];
+         }
+         else
+         {
+            node = AVLNode<KT> { key = pos };
+         }
+         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
+            // onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
+            memcpy((byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize), Tclass.typeSize);
+         else
+            onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
+         AddEx((T)(uintptr)node, (T)(uintptr)addNode, addSide);
+         if(justAdded) *justAdded = true;
+      }
+      return node;
    }
 }

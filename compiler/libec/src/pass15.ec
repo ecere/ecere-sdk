@@ -2058,7 +2058,7 @@ void ProcessInstantiationType(Instantiation inst)
       classSym = inst._class.symbol;
       _class = classSym ? classSym.registered : null;
 
-      if(!_class || _class.type != noHeadClass)
+      if(ast && (!_class || _class.type != noHeadClass))
          DeclareStruct(curExternal, inst._class.name, false, true);
 
       afterExternal = afterExternal ? afterExternal : curExternal;
@@ -2236,6 +2236,9 @@ static void _DeclareType(External neededFor, Type type, bool needDereference, bo
    }
 }
 
+// this code is not known to be called to compile any existing eC code
+// params <-> args are usually directly matched by id
+// function is a candidate for deletion
 ClassTemplateArgument * FindTemplateArg(Class _class, TemplateParameter param)
 {
    ClassTemplateArgument * arg = null;
@@ -2697,7 +2700,7 @@ bool DeclareFunction(External neededFor, GlobalFunction function, char * name)
             // WARNING: This is not added anywhere...
             symbol = function.symbol = Symbol {  };
 
-            if(module.name)
+            if(module && module.name)
             {
                if(!function.dataType.dllExport)
                {
@@ -2790,7 +2793,7 @@ bool DeclareFunction(External neededFor, GlobalFunction function, char * name)
             }
             */
             external = MkExternalDeclaration(decl);
-            ast->Add(external);
+            if(ast) ast->Add(external);
             external.symbol = symbol;
             symbol.pointerExternal = external;
 
@@ -4079,7 +4082,17 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                         if(!strcmp(value.name, id.string))
                            break;
                      }
-                     if(value)
+                     if(inBGen && value)
+                     {
+                        if(strcmp(_class.name, "bool"))
+                        {
+                           delete id.string;
+                           id.string = PrintString(_class.name, "_", value.name);
+                        }
+                        FreeType(dest);
+                        return true;
+                     }
+                     else if(value)
                      {
                         FreeType(sourceExp.expType);
 
@@ -4463,6 +4476,7 @@ public Operand GetOperand(Expression exp)
                break;
             case intType:
             case longType:
+               // TODO: Support unichar, escaped sequences
                if(exp.constant[0] == '\'')
                {
                   op.i = exp.constant[1];
@@ -4481,7 +4495,13 @@ public Operand GetOperand(Expression exp)
                op.kind = intType;
                break;
             case int64Type:
-               if(type.isSigned)
+               // TODO: Support unichar, escaped sequences
+               if(exp.constant[0] == '\'')
+               {
+                  op.i = exp.constant[1];
+                  op.ops = intOps;
+               }
+               else if(type.isSigned)
                {
                   op.i64 = (int64)_strtoi64(exp.constant, null, 0);
                   op.ops = int64Ops;
@@ -4882,14 +4902,10 @@ void ComputeInstantiation(Expression exp)
                            else
                            {
                               dataMember = curMember;
-
-                              // CHANGED THIS HERE
+                              // TODO: Document/Improve this!!!
                               eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, privateModule, null, null);
-
-                              // 2013/17/29 -- It seems that this was missing here!
-                              if(_class.type == normalClass)
-                                 dataMemberOffset += _class.base.structSize;
-                              // dataMemberOffset = dataMember.offset;
+                              if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                 dataMemberOffset += dataMember._class.base.structSize;
                            }
                            found = true;
                         }
@@ -4916,6 +4932,9 @@ void ComputeInstantiation(Expression exp)
 
                            if(dataMember)
                            {
+                              if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                 dataMemberOffset += dataMember._class.base.structSize;
+
                               found = true;
                               if(dataMember.memberAccess == publicAccess)
                               {
@@ -4963,7 +4982,11 @@ void ComputeInstantiation(Expression exp)
                                     dataMember = eClass_FindDataMemberAndOffset(type._class.registered,
                                        ident.string, &dataMemberOffset, privateModule, null, null);
                                     if(dataMember)
+                                    {
+                                       if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                          dataMemberOffset += dataMember._class.base.structSize;
                                        type = dataMember.dataType;
+                                    }
                                  }
                               }
                               else if(type.kind == structType || type.kind == unionType)
@@ -6502,14 +6525,14 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
                if(convert.isGet)
                {
                   exp.expType = convert.resultType ? convert.resultType : convert.convert.dataType;
-                  if(exp.destType.casted)
+                  if(exp.destType && exp.destType.casted)
                      exp.needCast = true;
                   if(exp.expType) exp.expType.refCount++;
                }
                else
                {
                   exp.expType = convert.resultType ? convert.resultType : MkClassType(convert.convert._class.fullName);
-                  if(exp.destType.casted)
+                  if(exp.destType && exp.destType.casted)
                      exp.needCast = true;
                   if(convert.resultType)
                      convert.resultType.refCount++;
@@ -7013,7 +7036,12 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
             else
             {
                if(c && c.string)
-                  strcat(string, (fullName || !c.registered) ? c.string : c.registered.name);
+               {
+                  const char * name = (fullName || !c.registered) ? c.string : c.registered.name;
+                  if(inBGen && bgenSymbolSwap)
+                     name = bgenSymbolSwap(name, true, true);
+                  strcat(string, name);
+               }
             }
             if(type.byReference)
                strcat(string, " &");
@@ -7308,7 +7336,12 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
                if(!strcmp(value.name, id.string))
                   break;
             }
-            if(value)
+            if(inBGen && value)
+            {
+               exp.expType = MkClassType(baseClass.fullName);
+               break;
+            }
+            else if(value)
             {
                exp.isConstant = true;
                if(inCompiler || inPreCompiler || inDebugger)
@@ -8072,47 +8105,50 @@ void ProcessExpressionType(Expression exp)
                   definedExp = eSystem_FindDefine(privateModule, id.string);
                if(definedExp)
                {
-                  int c;
-                  for(c = 0; c<definedExpStackPos; c++)
-                     if(definedExpStack[c] == definedExp)
-                        break;
-                  if(c == definedExpStackPos && c < sizeof(definedExpStack) / sizeof(void *))
+                  if(!inBGen)
                   {
-                     Location backupYylloc = yylloc;
-                     File backInput = fileInput;
-                     definedExpStack[definedExpStackPos++] = definedExp;
-
-                     fileInput = TempFile { };
-                     fileInput.Write(definedExp.value, 1, strlen(definedExp.value));
-                     fileInput.Seek(0, start);
-
-                     echoOn = false;
-                     parsedExpression = null;
-                     resetScanner();
-                     expression_yyparse();
-                     delete fileInput;
-                     if(backInput)
-                        fileInput = backInput;
-
-                     yylloc = backupYylloc;
-
-                     if(parsedExpression)
+                     int c;
+                     for(c = 0; c<definedExpStackPos; c++)
+                        if(definedExpStack[c] == definedExp)
+                           break;
+                     if(c == definedExpStackPos && c < sizeof(definedExpStack) / sizeof(void *))
                      {
-                        FreeIdentifier(id);
-                        exp.type = bracketsExp;
-                        exp.list = MkListOne(parsedExpression);
-                        ApplyLocation(parsedExpression, yylloc);
-                        ProcessExpressionType(exp);
+                        Location backupYylloc = yylloc;
+                        File backInput = fileInput;
+                        definedExpStack[definedExpStackPos++] = definedExp;
+
+                        fileInput = TempFile { };
+                        fileInput.Write(definedExp.value, 1, strlen(definedExp.value));
+                        fileInput.Seek(0, start);
+
+                        echoOn = false;
+                        parsedExpression = null;
+                        resetScanner();
+                        expression_yyparse();
+                        delete fileInput;
+                        if(backInput)
+                           fileInput = backInput;
+
+                        yylloc = backupYylloc;
+
+                        if(parsedExpression)
+                        {
+                           FreeIdentifier(id);
+                           exp.type = bracketsExp;
+                           exp.list = MkListOne(parsedExpression);
+                           ApplyLocation(parsedExpression, yylloc);
+                           ProcessExpressionType(exp);
+                           definedExpStackPos--;
+                           return;
+                        }
                         definedExpStackPos--;
-                        return;
                      }
-                     definedExpStackPos--;
-                  }
-                  else
-                  {
-                     if(inCompiler)
+                     else
                      {
-                        Compiler_Error($"Recursion in defined expression %s\n", id.string);
+                        if(inCompiler)
+                        {
+                           Compiler_Error($"Recursion in defined expression %s\n", id.string);
+                        }
                      }
                   }
                }

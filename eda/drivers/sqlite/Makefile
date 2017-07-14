@@ -50,7 +50,8 @@ SONAME =
 endif
 
 _ECSOURCES = \
-	EDASQLite.ec
+	EDASQLite.ec \
+	sqliteDB.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
@@ -114,6 +115,8 @@ ifdef WINDOWS_TARGET
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
+LIBS += \
+	$(call _L,gnurx-0)
 endif
 
 else
@@ -188,15 +191,24 @@ endif
 $(OBJ)EDASQLite.sym: EDASQLite.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c EDASQLite.ec -o $(OBJ)EDASQLite.sym
 
+$(OBJ)sqliteDB.sym: sqliteDB.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,sqliteDB.ec) -o $(call quote_path,$@)
+
 # C OBJECT RULES
 
 $(OBJ)EDASQLite.c: EDASQLite.ec $(OBJ)EDASQLite.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c EDASQLite.ec -o $(OBJ)EDASQLite.c -symbols $(OBJ)
 
+$(OBJ)sqliteDB.c: sqliteDB.ec $(OBJ)sqliteDB.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,sqliteDB.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 # OBJECT RULES
 
 $(OBJ)sqlite3.o: sqlite3.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c sqlite3.c -o $(OBJ)sqlite3.o
+
+$(OBJ)sqliteDB$(O): $(OBJ)sqliteDB.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)sqliteDB.c) -o $(call quote_path,$@)
 
 $(OBJ)EDASQLite.o: $(OBJ)EDASQLite.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EDASQLite.c -o $(OBJ)EDASQLite.o

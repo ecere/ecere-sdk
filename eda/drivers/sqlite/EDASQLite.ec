@@ -40,6 +40,11 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnFree;
 private:
 
+static SerialBuffer collationBuffer1 { };
+static SerialBuffer collationBuffer2 { };
+static char storage1[512];
+static char storage2[512];
+
 int CollationCompare(Class type, int count1, const void * data1, int count2, const void * data2)
 {
    if(type.type == normalClass || type.type ==  noHeadClass)
@@ -66,11 +71,30 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
    {
       void * inst1, * inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
+      //SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
+      //SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
 
-      inst1 = new0 byte[type.structSize];
-      inst2 = new0 byte[type.structSize];
+      SerialBuffer buffer1 = collationBuffer1;
+      SerialBuffer buffer2 = collationBuffer2;
+      buffer1.buffer = (byte*)data1;
+      buffer1.size = count1;
+      buffer1.count = count1;
+      buffer1.pos = 0;
+      buffer2.buffer = (byte*)data2;
+      buffer2.size = count2;
+      buffer2.count = count2;
+      buffer2.pos = 0;
+
+      if(type.structSize > 512)
+      {
+         inst1 = new0 byte[type.structSize];
+         inst2 = new0 byte[type.structSize];
+      }
+      else
+      {
+         inst1 = storage1;
+         inst2 = storage2;
+      }
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst1, buffer1);
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst2, buffer2);
 
@@ -78,10 +102,13 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
 
       buffer1.buffer = null;
       buffer2.buffer = null;
-      delete buffer1;
-      delete buffer2;
-      delete inst1;
-      delete inst2;
+      //delete buffer1;
+      //delete buffer2;
+      if(type.structSize > 512)
+      {
+         delete inst1;
+         delete inst2;
+      }
       return result;
    }
    else
@@ -119,6 +146,7 @@ class SQLiteDataSource : DirFilesDataSourceDriver
             char command[1024];
 
             sqlite3_exec(db, "PRAGMA page_size=4096;", null, null, null);
+            sqlite3_exec(db, "PRAGMA synchronous=off;", null, null, null);
 
             sprintf(command, "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);");
             sqlite3_exec(db, command, null, null, null);
@@ -479,7 +507,9 @@ class SQLiteDatabase : Database
             customFunction.rType = FFIGetType(customFunction.returnType, true);
             customFunction.argTypes.Add((void *)&ffi_type_pointer);    // This pointer for SQLCustomFunction object
             for(a : customFunction.args) customFunction.argTypes.Add((void *)FFIGetType(a, false));
-            ffi_prep_cif(&customFunction.cif, FFI_DEFAULT_ABI, customFunction.argTypes.count, customFunction.rType, (ffi_type **) customFunction.argTypes.array);
+            delete customFunction.cif;
+            customFunction.cif = new0 ffi_cif[1];
+            ffi_prep_cif(customFunction.cif, FFI_DEFAULT_ABI, customFunction.argTypes.count, customFunction.rType, (ffi_type **) customFunction.argTypes.array);
             result = sqlite3_create_function(db, name, customFunction.args.count, SQLITE_UTF8, customFunction, SQLiteFunctionProcessor, null, null) == SQLITE_OK;
          }
       }
@@ -681,7 +711,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
    }
    if(sqlFunction.returnType && sqlFunction.returnType.type == structClass)
       ret = new byte[sqlFunction.returnType.typeSize];
-   ffi_call(&sqlFunction.cif, (void *)sqlFunction.method.function, ret, args.array);
+   ffi_call(sqlFunction.cif, (void *)sqlFunction.method.function, ret, args.array);
    // Give SQLite the return value
    if(sqlFunction.returnType)
    {

@@ -111,6 +111,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
                {
                   if(owningClass.templateArgs)
                   {
+                     // This code path is compiled is used by WindowController, where methods are defined with template parameter as their this class (V::OnLeftButtonDown)
                      ClassTemplateArgument * arg = FindTemplateArg(owningClass, method.dataType.thisClassTemplate);
                      type.byReference = method.dataType.byReference;
 
@@ -902,6 +903,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       if(classType == enumClass && enumValues && (inCompiler || !buildingECERECOMModule))
       {
          Enumerator e;
+         int64 lastValue = -1;
+         bool lastValueSet = false;
          for(e = enumValues.first; e; e = e.next)
          {
             if(e.exp)
@@ -967,14 +970,26 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         value = op.type.isSigned ? (int64)op.i : (int)op.ui;
                   }
 
+                  lastValue = value;
+                  lastValueSet = true;
                   eEnum_AddFixedValue(regClass, e.id.string, value);
                }
                else
+               {
                   // Sort of an error
-                  eEnum_AddValue(regClass, e.id.string);
+                  if(lastValueSet)
+                     eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+                  else
+                     eEnum_AddValue(regClass, e.id.string);
+               }
             }
             else
-               eEnum_AddValue(regClass, e.id.string);
+            {
+               if(lastValueSet)
+                  eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+               else
+                  eEnum_AddValue(regClass, e.id.string);
+            }
          }
          // Fix up derivatives enums largest
          {

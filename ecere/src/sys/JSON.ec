@@ -10,8 +10,10 @@ __attribute__((unused)) static void UnusedFunction()
    int a;
    a.OnGetDataFromString(null);
    a.OnGetString(null, 0, 0);
+   a.OnCopy(0);
    a.OnFree();
 }
+extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnFree;
@@ -86,6 +88,11 @@ private:
    }
 
    JSONResult GetValue(Class type, DataValue value)
+   {
+      return _GetValue(type, value, null);
+   }
+
+   static inline JSONResult _GetValue(Class type, DataValue value, Container forMap)
    {
       JSONResult result = syntaxError;
       ch = 0;
@@ -163,10 +170,10 @@ private:
       }
       else if(ch == '{')
       {
-         if(type.type == structClass || type.type == normalClass || type.type == noHeadClass)
+         if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
          {
             void * object = value.p;
-            result = GetObject(type, &object);
+            result = _GetObject(type, &object, forMap);
             if(result)
             {
                if(type && type.type == structClass);
@@ -174,7 +181,7 @@ private:
                   value.p = object;
             }
          }
-         else if(type.type == bitClass)
+         else if(type && type.type == bitClass)
          {
             uint64 object = 0;
             result = GetObject(type, (void **)&object);
@@ -201,11 +208,18 @@ private:
             if(GetIdentifier(&string, null))
             {
                result = success;
-               if(eCON && type && (type.type == enumClass || type.type == unitClass))
+               if(eCON && type && (type.type == enumClass || type.type == unitClass || eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
                {
+                  bool isColorAlpha = type.type != enumClass && type.type != unitClass && eClass_IsDerived(type, class(ColorAlpha));
+                  if(isColorAlpha)
+                     type = class(Color);
                   // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
                   if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
+                  {
+                     if(isColorAlpha)
+                        value.ui |= 0xFF000000;
                      result = success;
+                  }
                   else
                      result = typeMismatch;
                }
@@ -425,7 +439,7 @@ private:
 
             JSONResult itemResult;
 
-            itemResult = GetValue(mapNodeType, value);
+            itemResult = _GetValue(mapNodeType, value, *map);
             if(itemResult == success)
             {
                String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
@@ -641,6 +655,11 @@ private:
 
    public JSONResult GetObject(Class objectType, void ** object)
    {
+      return _GetObject(objectType, object, null);
+   }
+
+   static inline JSONResult _GetObject(Class objectType, void ** object, Container forMap)
+   {
       JSONResult result = syntaxError;
       if(!objectType || objectType.type != structClass)
       {
@@ -659,7 +678,7 @@ private:
          int subMemberStackPos = 0;
          uint64 bits = 0;
 
-         if(objectType.type == bitClass)
+         if(objectType && objectType.type == bitClass)
          {
             switch(objectType.typeSize)
             {
@@ -714,6 +733,11 @@ private:
                      prop = curMember.isProperty ? (Property)curMember : null;
                      member = curMember.isProperty ? null : curMember;
 
+                     // TODO: Document/Improve this!
+                     eClass_FindDataMemberAndOffset(objectType, curMember.name, &offset, objectType.module, null, null);
+                     if(curMember._class.type == normalClass || curMember._class.type == noHeadClass)
+                        offset += curMember._class.base.structSize;
+
                      if(mapKeyClass && !strcmp(prop ? prop.name : member.name, "key"))
                      {
                         type = mapKeyClass;
@@ -730,10 +754,7 @@ private:
                      else if(prop)
                         type = superFindClass(prop.dataTypeString, objectType.module);
                      else if(member)
-                     {
                         type = superFindClass(member.dataTypeString, objectType.module);
-                        offset = member._class.offset + member.offset;
-                     }
                   }
                   else
                   {
@@ -762,11 +783,12 @@ private:
                   }
                   else
                   {
-                     member = eClass_FindDataMember(objectType, string, objectType.module, subMemberStack, &subMemberStackPos);
+                     member = eClass_FindDataMemberAndOffset(objectType, string, &offset, objectType.module, subMemberStack, &subMemberStackPos);
                      if(member)
                      {
                         type = superFindClass(member.dataTypeString, objectType.module);
-                        offset = member._class.offset + member.offset;
+                        if(member._class.type == normalClass || member._class.type == noHeadClass)
+                           offset += member._class.base.structSize;
                         curMember = member;
                         curClass = member._class;
                      }
@@ -1014,7 +1036,21 @@ private:
                                  else
                                  {
                                     if(isTemplateArg)
-                                       ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
+                                    {
+                                       if(forMap && objectType.templateClass == class(MapNode))
+                                       {
+                                          if(isKey)
+                                          {
+                                             Class keyClass = objectType.templateArgs[0].dataTypeClass;
+                                             void (* onCopy)(void *, void *, void *) = keyClass._vTbl[__ecereVMethodID_class_OnCopy];
+                                             onCopy(keyClass, (byte *)&((MapNode)*object).key + __ENDIAN_PAD(sizeof(void *)), value.p);
+                                          }
+                                          else
+                                             forMap.SetData(*object, (uint64)(uintptr)value.p);
+                                       }
+                                       else
+                                          ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)(uintptr)value.p);
+                                    }
                                     else
                                        ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
                                  }
@@ -1053,7 +1089,7 @@ private:
             }
          }
 
-         if(objectType.type == bitClass)
+         if(objectType && objectType.type == bitClass)
          {
             switch(objectType.typeSize)
             {
@@ -1270,7 +1306,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
          else
             isFirst = false;
          for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false);
+         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, map);
       }
       f.Puts("\n");
       indent--;
@@ -1393,7 +1429,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
 
-   quote = (type.type == unitClass && ((buffer[0] != '.' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+   quote = (type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
            (type.type == enumClass && !eCON);
    if(quote) f.Puts("\"");
    f.Puts(buffer);
@@ -1403,29 +1439,30 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
 
 public bool WriteColorAlpha(File f, Class type, DataValue value, int indent, bool eCON)
 {
-   char buffer[1024];
-   char * string = buffer;
-   ColorAlpha color = value.i;
-   int a = color.a;
-   int len;
-   DefinedColor c = color;
-   buffer[0] = '\0';
-   if(a != 255)
+   char tmpColorString[1024], output[1024];
+   ColorAlpha color = value.ui;
+   DefinedColor c = color.color;
+   bool needBrackets = false, needQuotes = false, needClass = true;
+   const String s = c.class::OnGetString(tmpColorString, null, eCON ? &needClass : null);
+   if(s)
    {
-      a.class::OnGetString(buffer, null, null);
-      len = strlen(buffer);
-      buffer[len++] = ',';
-      buffer[len++] = ' ';
-      buffer[len] = '\0';
-      string += len;
+      if(color.a == 255)
+         strcpy(output, s);
+      else
+      {
+         needQuotes = !eCON;
+         needBrackets = eCON;
+         sprintf(output, "%d, %s", color.a, s);
+      }
    }
-   if(!c.class::OnGetString(string, null, null))
-      sprintf(buffer, "0x%x", color);
-   if(!eCON)
-      f.Puts("\"");
-   f.Puts(buffer);
-   if(!eCON)
-      f.Puts("\"");
+   else
+   {
+      sprintf(output, "0x%x", color);
+      needQuotes = !eCON;
+   }
+   if(needQuotes) f.Puts("\""); else if(needBrackets) f.Puts("{ ");
+   f.Puts(output);
+   if(needQuotes) f.Puts("\""); else if(needBrackets) f.Puts(" }");
    return true;
 }
 
@@ -1438,8 +1475,6 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
       else
       {
          f.Puts("\"");
-         //if(strchr(value.p, '\"') || strchr(value.p, '\\'))
-         if(eCON)
          {
             int c = 0;
             int b = 0;
@@ -1463,14 +1498,24 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   f.Puts("\\\\");
                   b = 0;
                }
-               else if(ch == '\t')
+               else if(eCON && ch == '\t')
                {
                   buffer[b] = 0;
                   f.Puts(buffer);
                   f.Puts("\\t");
                   b = 0;
                }
-               else if(c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
+               else if(eCON && ch == '\n')
+               {
+                  int i;
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\n\"\n");
+                  for(i = 0; i<indent; i++) f.Puts("   ");
+                  f.Puts("   \"");
+                  b = 0;
+               }
+               else if(eCON && c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
                {
                   // Add an automatic newline for <br> as this is how we imported documentor data...
                   int i;
@@ -1481,16 +1526,6 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   f.Puts("   \"");
                   b = 0;
                }
-               else if(ch == '\n')
-               {
-                  int i;
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\n\"\n");
-                  for(i = 0; i<indent; i++) f.Puts("   ");
-                  f.Puts("   \"");
-                  b = 0;
-               }
                else if(b == sizeof(buffer)-2 || !ch)
                {
                   buffer[b++] = ch;
@@ -1503,91 +1538,27 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
                   buffer[b++] = ch;
             }
          }
-         else
-         {
-            int c = 0;
-            int b = 0;
-            char buffer[1024];
-            char * string = value.p;
-            char ch;
-            while(true)
-            {
-               ch = string[c++];
-               if(ch == '\"')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\"");
-                  b = 0;
-               }
-               else if(ch == '\\')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\\");
-                  b = 0;
-               }
-               else if(b == sizeof(buffer)-2 || !ch)
-               {
-                  buffer[b++] = ch;
-                  if(ch) buffer[b] = 0;
-                  f.Puts(buffer);
-                  b = 0;
-                  if(!ch) break;
-               }
-               else
-                  buffer[b++] = ch;
-            }
-         }
-         /*else
-            f.Puts(value.p);*/
          f.Puts("\"");
       }
    }
    else if(!strcmp(type.name, "bool"))
-   {
-      if(value.i)
-         f.Puts("true");
-      else
-         f.Puts("false");
-   }
+      f.Puts(value.i ? "true" : "false");
    else if(!strcmp(type.name, "SetBool"))
-   {
-      if(value.i == SetBool::true)
-         f.Puts("true");
-      else if(value.i == SetBool::false)
-         f.Puts("false");
-      else
-         f.Puts("unset");
-   }
+      f.Puts(value.i == SetBool::true ? "true" : value.i == SetBool::false ? "false" : "unset");
    else if(type.type == enumClass)
       WriteNumber(f, type, value, indent, eCON, false);
    else if(eClass_IsDerived(type, class(Map)))
-   {
       WriteMap(f, type, value.p, indent, eCON);
-   }
    else if(eClass_IsDerived(type, class(Container)))
-   {
       WriteArray(f, type, value.p, indent, eCON);
-   }
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
-   {
-      WriteONObject(f, type, value.p, indent, eCON, false);
-   }
+      WriteONObject(f, type, value.p, indent, eCON, false, null);
    else if(eClass_IsDerived(type, class(ColorAlpha)))
-   {
       WriteColorAlpha(f, type, value, indent, eCON);
-   }
    else if(type.type == bitClass)
-   {
-      Class dataType;
-      dataType = superFindClass(type.dataTypeString, type.module);
-      WriteNumber(f, dataType, value, indent, eCON, true);
-   }
+      WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, eCON, true);
    else if(type.type == systemClass || type.type == unitClass)
-   {
       WriteNumber(f, type, value, indent, eCON, false);
-   }
    return true;
 }
 
@@ -1596,7 +1567,7 @@ public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, false, false);
+      result = WriteONObject(f, objectType, object, indent, false, false, null);
       f.Puts("\n");
    }
    return result;
@@ -1607,13 +1578,13 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, true, false);
+      result = WriteONObject(f, objectType, object, indent, true, false, null);
       f.Puts("\n");
    }
    return result;
 }
 
-static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier)
+static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
 {
    if(object)
    {
@@ -1662,7 +1633,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          f.Puts("{\n");
          indent++;
 
-         for(baseClass = _class; baseClass; baseClass = baseClass.base)
+         for(baseClass = _class; baseClass; baseClass = baseClass.inheritanceAccess == publicAccess ? baseClass.base : null)
          {
             if(baseClass.isInstanceClass || !baseClass.base)
                break;
@@ -1681,15 +1652,18 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      DataValue value { };
                      bool isTemplateArg = false;
                      Class type;
+                     bool isMapNodeValue = false, isMapNodeKey = false;
 
                      if(mapKeyClass && !strcmp(prop.name, "key"))
                      {
                         isTemplateArg = true;
+                        isMapNodeKey = true;
                         type = mapKeyClass;
                      }
                      else if(mapDataClass && !strcmp(prop.name, "value"))
                      {
                         isTemplateArg = true;
+                        isMapNodeValue = true;
                         type = mapDataClass;
                      }
                      else
@@ -1735,7 +1709,13 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         else if(type.type == structClass)
                         {
                            value.p = new0 byte[type.structSize];
-                           ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
+                           if(forMap && (isMapNodeKey || isMapNodeValue))
+                           {
+                              void * p = isMapNodeValue ? (void *)forMap.GetData(object) : (void *)((Map)forMap).GetKey(object);
+                              memcpy(value.p, p, type.structSize);
+                           }
+                           else
+                              ((void (*)(void *, void *))(void *)prop.Get)(object, value.p);
                         }
                         else
                         {
@@ -1772,8 +1752,17 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                   DataMember member = (DataMember)prop;
                   DataValue value { };
                   uint offset;
-                  Class type = superFindClass(member.dataTypeString, _class.module);
-                  offset = member._class.offset + member.offset;
+                  Class type;
+                  // TODO: Proper struct / union support
+                  while(member.type == unionMember && member.members.first)
+                     member = member.members.first;
+
+                  type = superFindClass(member.dataTypeString, _class.module);
+
+                  // offset = member._class.offset + member.offset;
+                  eClass_FindDataMemberAndOffset(member._class, member.name, &offset, member._class.module, null, null);
+                  if(member._class.type == normalClass || member._class.type == noHeadClass)
+                     offset += member._class.base.structSize;
 
                   if(type)
                   {

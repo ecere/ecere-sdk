@@ -2408,24 +2408,20 @@ class CodeEditor : Window
 
    watch(fileName)
    {
-      char ext[MAX_EXTENSION];
       const char * fileName = property::fileName;
 
-      if(SearchString(fileName, 0, "Makefile", false, true))
-         editBox.useTab = true;
       designer.fileName = fileName;
 
       if(fileName)
       {
+         char ext[MAX_EXTENSION];
+         char name[MAX_FILENAME];
          GetExtension(fileName, ext);
-
-         if(!strcmpi(ext, "ec") || !strcmpi(ext, "eh") || !strcmpi(ext, "c") || !strcmpi(ext, "h") || !strcmpi(ext, "cpp") ||
-               !strcmpi(ext, "hpp") || !strcmpi(ext, "cxx") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cc") || !strcmpi(ext, "hh") ||
-               !strcmpi(ext, "m") || !strcmpi(ext, "mm") || !strcmpi(ext, "cs") || !strcmpi(ext, "java") || !strcmpi(ext, "y") || !strcmpi(ext, "l"))
-            editBox.syntaxHighlighting = true;
-         else
-            editBox.syntaxHighlighting = false;
-
+         GetLastDirectory(fileName, name);
+         if(!strcmpi(ext, "mk") || !strcmpi(ext, "Makefile") || strstr(name, "Makefile") == name)
+            editBox.useTab = true;
+         editBox.syntaxHighlighting = true;
+         editBox.syntaxModeCue = name;
          if(parsing && !strcmpi(ext, "ec"))
          {
             codeModified = true;

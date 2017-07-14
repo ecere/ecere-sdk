@@ -92,7 +92,6 @@ public enum TokenType
   _else = ELSE,
   _class = CLASS,
   thisClass = THISCLASS,
-  className = CLASS_NAME,
   _property = PROPERTY,
   setProp = SETPROP,
   getProp = GETPROP,
@@ -186,6 +185,13 @@ public void SetInCompiler(bool b) { inCompiler = b; }
 
 bool inDebugger = false;
 public void SetInDebugger(bool b) { inDebugger = b; }
+
+bool inBGen = false;
+public void SetInBGen(bool b) { inBGen = b; }
+
+public void SetBGenSymbolSwapCallback(const char * (*cb)(const char * spec, bool reduce, bool macro)) { bgenSymbolSwap = cb; }
+const char * (*bgenSymbolSwap)(const char * symbol, bool reduce, bool macro);
+
 
 Context curContext;
 Context globalContext;
@@ -1395,7 +1401,10 @@ public:
          OldList params;
          Symbol thisClass;
          bool staticMethod;
-         TemplateParameter thisClassTemplate;
+         TemplateParameter thisClassTemplate; // for a template parameter being used with the :: scoping operator
+                                              // to refer to a member of the parameterizing class
+         // only known occurence is link = LT::link within the LinkList base class definition:
+         // public class LinkList<class LT:void * = ListItem, bool circ = false, link = LT::link> : Container<LT>
       };
       // For a method
       struct

@@ -88,6 +88,12 @@ class CheckListBox : ListBox
       return true;
    }
 
+   void NotifyMoved(ListBox listBox, DataRow row, Modifiers mods)
+   {
+      // Brute force for now...
+      ((CheckListBox)listBox).UpdateButtons();
+   }
+
    bool CheckPartialChecks(DataRow row)
    {
       DataRow r;
@@ -97,6 +103,23 @@ class CheckListBox : ListBox
             return true;
       }
       return false;
+   }
+
+   public void DeleteRow(DataRow row)
+   {
+      MapIterator<uintptr, CheckListBoxButton> it { map = buttonMaps };
+      NotifyCollapse(master, this, row, true);
+
+      if(it.Index((uintptr)row, false))
+      {
+         CheckListBoxButton button = it.data;
+         if(button)
+         {
+            button.Destroy(0);
+            it.Remove();
+         }
+      }
+      ListBox::DeleteRow(row);
    }
 
    void SetupButtons(DataRow row, bool recurse)

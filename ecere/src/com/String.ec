@@ -27,6 +27,39 @@ default:
 #undef strlen
 private:
 
+/* Copyright (c) 2008-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de> */
+/* See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details. */
+
+/* Returns 1 when data is insufficient, send more bytes */
+default dllexport uint32 ccUtf8ToUnicode( uint32 b, uint32 *state, unichar *retunicode )
+{
+  uint32 type;
+  static const byte utf8d[] =
+  {
+    /* The first part of the table maps bytes to character classes that */
+    /* to reduce the size of the transition table and create bitmasks. */
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,  9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+    7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+    8,8,2,2,2,2,2,2,2,2,2,2,2,2,2,2,  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    10,3,3,3,3,3,3,3,3,3,3,3,3,4,3,3, 11,6,6,6,5,8,8,8,8,8,8,8,8,8,8,8,
+    /* The second part is a transition table that maps a combination */
+    /* of a state of the automaton and a character class to a state. */
+    0,12,24,36,60,96,84,12,12,12,48,72, 12,12,12,12,12,12,12,12,12,12,12,12,
+    12, 0,12,12,12,12,12, 0,12, 0,12,12, 12,24,12,12,12,12,12,24,12,24,12,12,
+    12,12,12,12,12,12,12,24,12,12,12,12, 12,24,12,12,12,12,12,12,12,24,12,12,
+    12,12,12,12,12,12,12,36,12,36,12,12, 12,36,12,12,12,12,12,36,12,36,12,12,
+    12,36,12,12,12,12,12,12,12,12,12,12
+  };
+  type = utf8d[b];
+  *retunicode = ( (*state != 0) ? ( ( b & 0x3fu ) | ( *retunicode << 6 ) ) : ( ( 0xff >> type ) & ( b ) ) );
+  *state = utf8d[ 256 + *state + type ];
+  return *state;
+}
+
 import "instance"
 
 default extern Platform runtimePlatform;

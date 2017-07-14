@@ -1,0 +1,112 @@
+{
+   version = 0.2,
+   moduleName = "butterbur",
+   options = {
+      warnings = all,
+      includeDirs = [
+         "../ecere/src/gfx/drivers/gl3"
+      ],
+      targetType = executable,
+      targetFileName = "butterbur",
+      libraries = [
+         "ecere"
+      ]
+   },
+   platforms = [
+      {
+         name = "linux",
+         options = {
+            libraries = [
+               "m",
+               "GL"
+            ]
+         }
+      },
+      {
+         name = "apple",
+         options = {
+            libraries = [
+               "m"
+            ]
+         }
+      },
+      {
+         name = "win32",
+         options = {
+            libraries = [
+               "opengl32"
+            ]
+         }
+      }
+   ],
+   configurations = [
+      {
+         name = "Debug",
+         options = {
+            debug = true,
+            optimization = none,
+            preprocessorDefinitions = [
+               "_DEBUG"
+            ],
+            console = true,
+            fastMath = false
+         }
+      },
+      {
+         name = "Release",
+         options = {
+            debug = false,
+            optimization = speed,
+            fastMath = true
+         }
+      }
+   ],
+   files = [
+      {
+         folder = "deps",
+         files = [
+            {
+               folder = "libtess",
+               files = [
+                  "../deps/libtess/dict.c",
+                  "../deps/libtess/dict.h",
+                  "../deps/libtess/dictList.h",
+                  "../deps/libtess/geom.c",
+                  "../deps/libtess/geom.h",
+                  "../deps/libtess/gluos.h",
+                  "../deps/libtess/memalloc.h",
+                  "../deps/libtess/mesh.h",
+                  "../deps/libtess/normal.c",
+                  "../deps/libtess/normal.h",
+                  "../deps/libtess/priorityq.c",
+                  "../deps/libtess/priorityq.h",
+                  "../deps/libtess/priorityqSort.h",
+                  "../deps/libtess/render.c",
+                  "../deps/libtess/render.h",
+                  "../deps/libtess/sweep.c",
+                  "../deps/libtess/sweep.h",
+                  "../deps/libtess/tess.c",
+                  "../deps/libtess/tess.h",
+                  "../deps/libtess/tessmono.c",
+                  "../deps/libtess/tessmono.h",
+                  "../deps/libtess/glutess.h",
+                  "../deps/libtess/mesh.c"
+               ]
+            }
+         ]
+      },
+      "src/butterbur.ec",
+      {
+         fileName = "src/tesselation.ec",
+         options = {
+            includeDirs = [
+               "../deps/libtess"
+            ]
+         }
+      }
+   ],
+   resourcesPath = "",
+   resources = [
+
+   ]
+}

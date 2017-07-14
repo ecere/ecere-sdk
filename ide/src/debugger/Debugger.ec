@@ -1806,7 +1806,7 @@ class Debugger
                            {
                               char path[MAX_LOCATION];
                               char relative[MAX_LOCATION];
-                              node.GetFullFilePath(path, true);
+                              node.GetFullFilePath(path, true, true);
                               bp.absoluteFilePath = path;
                               MakePathRelative(path, prj.topNode.path, relative);
                               bp.relativeFilePath = relative;
@@ -2407,6 +2407,7 @@ class Debugger
          //GdbCommand(0, false, "-gdb-set exec-done-display on");
          GdbCommand(0, false, "-gdb-set step-mode off");
          GdbCommand(0, false, "-gdb-set unwindonsignal on");
+         GdbCommand(0, false, "-gdb-set stop-on-solib-events on");
          //GdbCommand(0, false, "-gdb-set shell on");
          GdbCommand(0, false, "set print elements 992");
          GdbCommand(0, false, "-gdb-set backtrace limit 100000");
@@ -2705,14 +2706,25 @@ class Debugger
                else if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass && exp.hasAddress)
                {
                   Class c = exp.expType._class.registered;
-                  char structString[1024];
-                  strcpy(structString, "*(struct ");
-                  FullClassNameCat(structString, c.fullName, false);
-                  strcat(structString, " *)");
-                  strcatf(structString, "0x%p", exp.address);
-                  GDBFallBack(exp, structString);
-                  /*
-                  byte * data = GdbReadMemory(exp.address, c.structSize);
+                  DataMember m;
+                  bool getString = true;
+                  byte * data = null;
+                  for(m = c.membersAndProperties.first; m; m = m.next)
+                  {
+                     if(!m.isProperty && m.type == normalMember)
+                     {
+                        Class type = m.dataTypeClass;
+                        if(!type)
+                           type = m.dataTypeClass = eSystem_FindClass(c.module, m.dataTypeString);
+                        if(!type || type.type == noHeadClass || type.type == normalClass)
+                        {
+                           // Avoid trying to stringify types referencing debugged process memory
+                           getString = false;
+                           break;
+                        }
+                     }
+                  }
+                  data = getString ? GdbReadMemory(exp.address, c.structSize) : null;
                   if(data)
                   {
                      char tmp[4096];
@@ -2723,11 +2735,19 @@ class Debugger
                         FreeExpContents(exp);
                         exp.type = constantExp;
                         exp.isConstant = true;
-                        exp.constant = CopyString(s);
+                        exp.constant = PrintString("{ ", s, " }");
                      }
                      delete data;
                   }
-                  */
+                  else
+                  {
+                     char structString[1024];
+                     strcpy(structString, "*(struct ");
+                     FullClassNameCat(structString, c.fullName, false);
+                     strcat(structString, " *)");
+                     strcatf(structString, "0x%p", exp.address);
+                     GDBFallBack(exp, structString);
+                  }
                }
 
                if(ExpressionIsError(exp) && exp.type != functionCallErrorExp)
@@ -3457,6 +3477,7 @@ class Debugger
                ide.outputView.debugBox.Logf($"Target doesn't contain debug information!\n");
                ide.Update(null);
             }
+            /*
             if(!entryPoint && (t = strstr(output, "Entry point:")))
             {
                char * addr = t + strlen("Entry point:");
@@ -3474,6 +3495,7 @@ class Debugger
                   }
                }
             }
+            */
             break;
          case '^':
             gdbReady = false;

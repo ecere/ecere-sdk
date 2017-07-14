@@ -495,8 +495,22 @@ public:
    {
       if(!active)
       {
-         if(modifiedDocument && !DataBox::SaveData())
-            Refresh();
+         if(modifiedDocument)
+         {
+            bool thisActive = this.active;
+            bool parentActive = parent.active;
+            Window parentActiveChild = parent.activeChild;
+
+            if(!DataBox::SaveData())
+               Refresh();
+            else
+            {
+               if(this.active == thisActive && parentActive == parent.active && parentActiveChild == parent.activeChild)
+                  ;
+               else
+                  *goOnWithActivation = false;
+            }
+         }
       }
       return true;
    }
@@ -779,7 +793,7 @@ public:
                r.Add();
                {
                   // Patch for SQLite driver which auto-increments IDs
-                  int curID = 0;
+                  Id curID = 0;
                   if(r.GetData(fldId, curID))
                      id = curID;
                   else

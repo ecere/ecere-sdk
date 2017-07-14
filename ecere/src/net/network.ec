@@ -170,6 +170,8 @@ bool Network_Initialize()
       network.networkTerminated = false;
 #if defined(__WIN32__)
       WSAStartup(0x0002, &wsaData);
+#else
+      signal(SIGPIPE, SIG_IGN);
 #endif
 
       network.services.Clear();

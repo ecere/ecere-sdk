@@ -177,16 +177,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
 struct Identifier;
 
 extern struct Identifier * MkIdentifier(const char *  string);
@@ -529,190 +519,46 @@ return MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString(extDecl->__anon1
 return (((void *)0));
 }
 
+struct __ecereNameSpace__ecere__com__DataMember;
+
+struct __ecereNameSpace__ecere__com__Property;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 struct __ecereNameSpace__ecere__com__Method;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} ecere_gcc_struct __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Module;
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
-struct Type;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Method
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__Method * parent;
-struct __ecereNameSpace__ecere__com__Method * left;
-struct __ecereNameSpace__ecere__com__Method * right;
-int depth;
-int (*  function)();
-int vid;
-int type;
-struct __ecereNameSpace__ecere__com__Class * _class;
-void *  symbol;
-const char *  dataTypeString;
-struct Type * dataType;
-int memberAccess;
-} ecere_gcc_struct;
-
-struct Symbol
-{
-char *  string;
-struct Symbol * parent;
-struct Symbol * left;
-struct Symbol * right;
-int depth;
-struct Type * type;
-union
-{
-struct __ecereNameSpace__ecere__com__Method * method;
-struct __ecereNameSpace__ecere__com__Property * _property;
-struct __ecereNameSpace__ecere__com__Class * registered;
-} ecere_gcc_struct __anon1;
-unsigned int notYetDeclared;
-union
-{
-struct
-{
-struct External * pointerExternal;
-struct External * structExternal;
-} ecere_gcc_struct __anon1;
-struct
-{
-struct External * externalGet;
-struct External * externalSet;
-struct External * externalPtr;
-struct External * externalIsSet;
-} ecere_gcc_struct __anon2;
-struct
-{
-struct External * methodExternal;
-struct External * methodCodeExternal;
-} ecere_gcc_struct __anon3;
-} ecere_gcc_struct __anon2;
-unsigned int imported;
-unsigned int declaredStructSym;
-struct __ecereNameSpace__ecere__com__Class * _class;
-unsigned int declaredStruct;
-unsigned int needConstructor;
-unsigned int needDestructor;
-char *  constructorName;
-char *  structName;
-char *  className;
-char *  destructorName;
-struct ModuleImport * module;
-struct ClassImport * _import;
-struct Location nameLoc;
-unsigned int isParam;
-unsigned int isRemote;
-unsigned int isStruct;
-unsigned int fireWatchersDone;
-int declaring;
-unsigned int classData;
-unsigned int isStatic;
-char *  shortName;
-struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
-struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
-struct Context * ctx;
-int isIterator;
-struct Expression * propCategory;
-unsigned int mustRegister;
-} ecere_gcc_struct;
-
-struct Type
-{
-struct Type * prev;
-struct Type * next;
-int refCount;
-union
-{
-struct Symbol * _class;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList members;
-char *  enumName;
-} ecere_gcc_struct __anon1;
-struct
-{
-struct Type * returnType;
-struct __ecereNameSpace__ecere__sys__OldList params;
-struct Symbol * thisClass;
-unsigned int staticMethod;
-struct TemplateParameter * thisClassTemplate;
-} ecere_gcc_struct __anon2;
-struct
-{
-struct __ecereNameSpace__ecere__com__Method * method;
-struct __ecereNameSpace__ecere__com__Class * methodClass;
-struct __ecereNameSpace__ecere__com__Class * usedClass;
-} ecere_gcc_struct __anon3;
-struct
-{
-struct Type * arrayType;
-int arraySize;
-struct Expression * arraySizeExp;
-unsigned int freeExp;
-struct Symbol * enumClass;
-} ecere_gcc_struct __anon4;
-struct Type * type;
-struct TemplateParameter * templateParameter;
-} ecere_gcc_struct __anon1;
-int kind;
-unsigned int size;
-char *  name;
-char *  typeName;
-struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
-int promotedFrom;
-int classObjectType;
-int alignment;
-unsigned int offset;
-int bitFieldCount;
-int count;
-int bitMemberSize;
-unsigned int isSigned : 1;
-unsigned int constant : 1;
-unsigned int truth : 1;
-unsigned int byReference : 1;
-unsigned int extraParam : 1;
-unsigned int directClassAccess : 1;
-unsigned int computing : 1;
-unsigned int keepCast : 1;
-unsigned int passAsTemplate : 1;
-unsigned int dllExport : 1;
-unsigned int attrStdcall : 1;
-unsigned int declaredWithStruct : 1;
-unsigned int typedByReference : 1;
-unsigned int casted : 1;
-unsigned int pointerAlignment : 1;
-unsigned int isLong : 1;
-unsigned int signedBeforePromotion : 1;
-unsigned int isVector : 1;
-} ecere_gcc_struct;
 
 struct Instantiation;
 
@@ -763,131 +609,6 @@ int declMode;
 } ecere_gcc_struct;
 
 struct TypeName;
-
-struct Expression
-{
-struct Expression * prev;
-struct Expression * next;
-struct Location loc;
-int type;
-union
-{
-struct
-{
-char *  constant;
-struct Identifier * identifier;
-} ecere_gcc_struct __anon1;
-struct Statement * compound;
-struct Instantiation * instance;
-struct
-{
-char *  string;
-unsigned int intlString;
-unsigned int wideString;
-} ecere_gcc_struct __anon2;
-struct __ecereNameSpace__ecere__sys__OldList *  list;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * specifiers;
-struct Declarator * decl;
-} ecere_gcc_struct _classExp;
-struct
-{
-struct Identifier * id;
-} ecere_gcc_struct classData;
-struct
-{
-struct Expression * exp;
-struct __ecereNameSpace__ecere__sys__OldList * arguments;
-struct Location argLoc;
-} ecere_gcc_struct call;
-struct
-{
-struct Expression * exp;
-struct __ecereNameSpace__ecere__sys__OldList * index;
-} ecere_gcc_struct index;
-struct
-{
-struct Expression * exp;
-struct Identifier * member;
-int memberType;
-unsigned int thisPtr;
-} ecere_gcc_struct member;
-struct
-{
-int op;
-struct Expression * exp1;
-struct Expression * exp2;
-} ecere_gcc_struct op;
-struct TypeName * typeName;
-struct Specifier * _class;
-struct
-{
-struct TypeName * typeName;
-struct Expression * exp;
-} ecere_gcc_struct cast;
-struct
-{
-struct Expression * cond;
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct Expression * elseExp;
-} ecere_gcc_struct cond;
-struct
-{
-struct TypeName * typeName;
-struct Expression * size;
-} ecere_gcc_struct _new;
-struct
-{
-struct TypeName * typeName;
-struct Expression * size;
-struct Expression * exp;
-} ecere_gcc_struct _renew;
-struct
-{
-char * table;
-struct Identifier * id;
-} ecere_gcc_struct db;
-struct
-{
-struct Expression * ds;
-struct Expression * name;
-} ecere_gcc_struct dbopen;
-struct
-{
-struct TypeName * typeName;
-struct Initializer * initializer;
-} ecere_gcc_struct initializer;
-struct
-{
-struct Expression * exp;
-struct TypeName * typeName;
-} ecere_gcc_struct vaArg;
-struct
-{
-struct TypeName * typeName;
-struct Identifier * id;
-} ecere_gcc_struct offset;
-} ecere_gcc_struct __anon1;
-unsigned int debugValue;
-struct __ecereNameSpace__ecere__com__DataValue val;
-uint64 address;
-unsigned int hasAddress;
-struct Type * expType;
-struct Type * destType;
-unsigned int usage;
-int tempCount;
-unsigned int byReference;
-unsigned int isConstant;
-unsigned int addedThis;
-unsigned int needCast;
-unsigned int thisPtr;
-unsigned int opDestType;
-unsigned int usedInComparison;
-unsigned int ambiguousUnits;
-unsigned int parentOpDestType;
-unsigned int needTemplateCast;
-} ecere_gcc_struct;
 
 extern struct Expression * MkExpTypeSize(struct TypeName * typeName);
 
@@ -1090,52 +811,7 @@ void __ecereUnregisterModule_copy(struct __ecereNameSpace__ecere__com__Instance 
 
 }
 
-struct __ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} ecere_gcc_struct __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct __anon2;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__DataMember
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-short structAlignment;
-short pointerAlignment;
-} ecere_gcc_struct;
+struct Type;
 
 struct __ecereNameSpace__ecere__com__Class
 {
@@ -1194,6 +870,331 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Method
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__Method * parent;
+struct __ecereNameSpace__ecere__com__Method * left;
+struct __ecereNameSpace__ecere__com__Method * right;
+int depth;
+int (*  function)();
+int vid;
+int type;
+struct __ecereNameSpace__ecere__com__Class * _class;
+void *  symbol;
+const char *  dataTypeString;
+struct Type * dataType;
+int memberAccess;
+} ecere_gcc_struct;
+
+struct Symbol
+{
+char *  string;
+struct Symbol * parent;
+struct Symbol * left;
+struct Symbol * right;
+int depth;
+struct Type * type;
+union
+{
+struct __ecereNameSpace__ecere__com__Method * method;
+struct __ecereNameSpace__ecere__com__Property * _property;
+struct __ecereNameSpace__ecere__com__Class * registered;
+} ecere_gcc_struct __anon1;
+unsigned int notYetDeclared;
+union
+{
+struct
+{
+struct External * pointerExternal;
+struct External * structExternal;
+} ecere_gcc_struct __anon1;
+struct
+{
+struct External * externalGet;
+struct External * externalSet;
+struct External * externalPtr;
+struct External * externalIsSet;
+} ecere_gcc_struct __anon2;
+struct
+{
+struct External * methodExternal;
+struct External * methodCodeExternal;
+} ecere_gcc_struct __anon3;
+} ecere_gcc_struct __anon2;
+unsigned int imported;
+unsigned int declaredStructSym;
+struct __ecereNameSpace__ecere__com__Class * _class;
+unsigned int declaredStruct;
+unsigned int needConstructor;
+unsigned int needDestructor;
+char *  constructorName;
+char *  structName;
+char *  className;
+char *  destructorName;
+struct ModuleImport * module;
+struct ClassImport * _import;
+struct Location nameLoc;
+unsigned int isParam;
+unsigned int isRemote;
+unsigned int isStruct;
+unsigned int fireWatchersDone;
+int declaring;
+unsigned int classData;
+unsigned int isStatic;
+char *  shortName;
+struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
+struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
+struct Context * ctx;
+int isIterator;
+struct Expression * propCategory;
+unsigned int mustRegister;
+} ecere_gcc_struct;
+
+struct Expression
+{
+struct Expression * prev;
+struct Expression * next;
+struct Location loc;
+int type;
+union
+{
+struct
+{
+char *  constant;
+struct Identifier * identifier;
+} ecere_gcc_struct __anon1;
+struct Statement * compound;
+struct Instantiation * instance;
+struct
+{
+char *  string;
+unsigned int intlString;
+unsigned int wideString;
+} ecere_gcc_struct __anon2;
+struct __ecereNameSpace__ecere__sys__OldList *  list;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * specifiers;
+struct Declarator * decl;
+} ecere_gcc_struct _classExp;
+struct
+{
+struct Identifier * id;
+} ecere_gcc_struct classData;
+struct
+{
+struct Expression * exp;
+struct __ecereNameSpace__ecere__sys__OldList * arguments;
+struct Location argLoc;
+} ecere_gcc_struct call;
+struct
+{
+struct Expression * exp;
+struct __ecereNameSpace__ecere__sys__OldList * index;
+} ecere_gcc_struct index;
+struct
+{
+struct Expression * exp;
+struct Identifier * member;
+int memberType;
+unsigned int thisPtr;
+} ecere_gcc_struct member;
+struct
+{
+int op;
+struct Expression * exp1;
+struct Expression * exp2;
+} ecere_gcc_struct op;
+struct TypeName * typeName;
+struct Specifier * _class;
+struct
+{
+struct TypeName * typeName;
+struct Expression * exp;
+} ecere_gcc_struct cast;
+struct
+{
+struct Expression * cond;
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct Expression * elseExp;
+} ecere_gcc_struct cond;
+struct
+{
+struct TypeName * typeName;
+struct Expression * size;
+} ecere_gcc_struct _new;
+struct
+{
+struct TypeName * typeName;
+struct Expression * size;
+struct Expression * exp;
+} ecere_gcc_struct _renew;
+struct
+{
+char * table;
+struct Identifier * id;
+} ecere_gcc_struct db;
+struct
+{
+struct Expression * ds;
+struct Expression * name;
+} ecere_gcc_struct dbopen;
+struct
+{
+struct TypeName * typeName;
+struct Initializer * initializer;
+} ecere_gcc_struct initializer;
+struct
+{
+struct Expression * exp;
+struct TypeName * typeName;
+} ecere_gcc_struct vaArg;
+struct
+{
+struct TypeName * typeName;
+struct Identifier * id;
+} ecere_gcc_struct offset;
+} ecere_gcc_struct __anon1;
+unsigned int debugValue;
+struct __ecereNameSpace__ecere__com__DataValue val;
+uint64 address;
+unsigned int hasAddress;
+struct Type * expType;
+struct Type * destType;
+unsigned int usage;
+int tempCount;
+unsigned int byReference;
+unsigned int isConstant;
+unsigned int addedThis;
+unsigned int needCast;
+unsigned int thisPtr;
+unsigned int opDestType;
+unsigned int usedInComparison;
+unsigned int ambiguousUnits;
+unsigned int parentOpDestType;
+unsigned int needTemplateCast;
+} ecere_gcc_struct;
+
+struct Type
+{
+struct Type * prev;
+struct Type * next;
+int refCount;
+union
+{
+struct Symbol * _class;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList members;
+char *  enumName;
+} ecere_gcc_struct __anon1;
+struct
+{
+struct Type * returnType;
+struct __ecereNameSpace__ecere__sys__OldList params;
+struct Symbol * thisClass;
+unsigned int staticMethod;
+struct TemplateParameter * thisClassTemplate;
+} ecere_gcc_struct __anon2;
+struct
+{
+struct __ecereNameSpace__ecere__com__Method * method;
+struct __ecereNameSpace__ecere__com__Class * methodClass;
+struct __ecereNameSpace__ecere__com__Class * usedClass;
+} ecere_gcc_struct __anon3;
+struct
+{
+struct Type * arrayType;
+int arraySize;
+struct Expression * arraySizeExp;
+unsigned int freeExp;
+struct Symbol * enumClass;
+} ecere_gcc_struct __anon4;
+struct Type * type;
+struct TemplateParameter * templateParameter;
+} ecere_gcc_struct __anon1;
+int kind;
+unsigned int size;
+char *  name;
+char *  typeName;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
+int classObjectType;
+int alignment;
+unsigned int offset;
+int bitFieldCount;
+int count;
+int bitMemberSize;
+unsigned int isSigned : 1;
+unsigned int constant : 1;
+unsigned int truth : 1;
+unsigned int byReference : 1;
+unsigned int extraParam : 1;
+unsigned int directClassAccess : 1;
+unsigned int computing : 1;
+unsigned int keepCast : 1;
+unsigned int passAsTemplate : 1;
+unsigned int dllExport : 1;
+unsigned int attrStdcall : 1;
+unsigned int declaredWithStruct : 1;
+unsigned int typedByReference : 1;
+unsigned int casted : 1;
+unsigned int pointerAlignment : 1;
+unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
+unsigned int isVector : 1;
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -1224,9 +1225,9 @@ static struct Initializer * CopyInitializer(struct Initializer * initializer)
 struct Initializer * copy = (((void *)0));
 
 ;
-if(initializer->type == 0)
+if(initializer && initializer->type == 0)
 copy = MkInitializerAssignment(CopyExpression(initializer->__anon1.exp));
-else if(initializer->type == 1)
+else if(initializer && initializer->type == 1)
 copy = MkInitializerList(CopyList(initializer->__anon1.list, (void *)(CopyInitializer)));
 if(copy)
 {

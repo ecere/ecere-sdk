@@ -476,14 +476,10 @@ void DebugComputeExpression(Expression exp)
                                  else
                                  {
                                     dataMember = curMember;
-
-                                    // CHANGED THIS HERE
+                                    // TODO: Document/Improve this!!!
                                     eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, GetPrivateModule(), null, null);
-
-                                    // 2013/17/29 -- It seems that this was missing here!
-                                    if(_class.type == normalClass)
-                                       dataMemberOffset += _class.base.structSize;
-                                    // dataMemberOffset = dataMember.offset;
+                                    if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                       dataMemberOffset += dataMember._class.base.structSize;
                                  }
                                  found = true;
                               }
@@ -510,6 +506,8 @@ void DebugComputeExpression(Expression exp)
 
                                  if(dataMember)
                                  {
+                                    if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                       dataMemberOffset += dataMember._class.base.structSize;
                                     found = true;
                                     if(dataMember.memberAccess == publicAccess)
                                     {
@@ -557,7 +555,11 @@ void DebugComputeExpression(Expression exp)
                                           dataMember = eClass_FindDataMemberAndOffset(type._class.registered,
                                              ident.string, &dataMemberOffset, GetPrivateModule(), null, null);
                                           if(dataMember)
+                                          {
+                                             if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
+                                                dataMemberOffset += dataMember._class.base.structSize;
                                              type = dataMember.dataType;
+                                          }
                                        }
                                     }
                                     else if(type.kind == structType || type.kind == unionType)
@@ -1809,6 +1811,9 @@ void DebugComputeExpression(Expression exp)
                */
                // member = eClass_FindDataMember(_class, memberID.string);
                member = eClass_FindDataMemberAndOffset(_class, memberID.string, &offset, _class.module.application, null, null);
+               if(member && (member._class.type == normalClass || member._class.type == noHeadClass)) // No head class as well?
+                  offset += member._class.base.structSize;
+
                if(!member)
                   prop = eClass_FindProperty(_class, memberID.string, _class.module.application);
             }
@@ -2200,8 +2205,9 @@ void DebugComputeExpression(Expression exp)
                            //offset = member.offset;
 
                            // TESTING NOHEAD HERE?
+                           /* // Testing adding offset above now...
                            if(_class.type == normalClass || _class.type == noHeadClass || _class.type == systemClass)
-                              offset += member._class.offset;
+                              offset += member._class.offset;*/
 
                            // VERIFY THIS: (trying to fix primitive.type)
                            // if(memberExp.type == constantExp)
@@ -2294,6 +2300,11 @@ void DebugComputeExpression(Expression exp)
                                     exp.expType.refCount++;
                                     if(exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == unitClass)
                                     {
+                                       if(expNew.type == opExp)
+                                       {
+                                          if(expNew.op.exp1) ProcessExpressionType(expNew.op.exp1);
+                                          if(expNew.op.exp2) ProcessExpressionType(expNew.op.exp2);
+                                       }
                                        expNew.expType = exp.expType;
                                        exp.expType.refCount++;
                                     }

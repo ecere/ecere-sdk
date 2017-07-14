@@ -180,7 +180,7 @@ public class WindowsSkin_Window : Window
       {
          *h += skinMenuHeight;
       }
-      if(statusBar && state != minimized)
+      if(hasStatusBar && state != minimized)
       {
          *h += statusBarHeight;
       }
@@ -537,7 +537,7 @@ public class WindowsSkin_Window : Window
          insideBorder = border;
       }
 
-      if(menuBar)
+      if(hasMenuBar && menuBar)
       {
          if(state == minimized)
             menuBar.visible = false;
@@ -545,7 +545,7 @@ public class WindowsSkin_Window : Window
             menuBar.visible = true;
          menuBar.Move(clientStart.x, clientStart.y - skinMenuHeight, size.w - insideBorder * 2, skinMenuHeight);
       }
-      if(statusBar)
+      if(hasStatusBar)
       {
          if(state == minimized)
             statusBar.visible = false;

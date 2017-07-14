@@ -1,6 +1,10 @@
 #include <stdarg.h>
 
-public import "ecere"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import"ecere"
+#endif
 
 public int UnescapeString(char * d, char * s, int len)
 {
@@ -35,17 +39,6 @@ public int UnescapeString(char * d, char * s, int len)
    return k;
 }
 
-// to be moved in ecere?
-public class FileHandler
-{
-   public File file;
-
-   ~FileHandler()
-   {
-      delete file;
-   }
-}
-
 public struct CSVParserParameters
 {
    char fieldSeparator;
@@ -68,9 +61,10 @@ public struct CSVParserState
    uint fieldNum;
 };
 
-public class CSVParser : public FileHandler
+public class CSVParser
 {
 public:
+   File file;
    CSVParserParameters options { ',', '\"', 0, false };
    CSVParserState info;
 

@@ -1,0 +1,66 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "rdParser",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "rdParser",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "MemoryGuard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "FastMath" : false
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "FileName" : "parser.ec",
+         "Configurations" : [
+            {
+               "Name" : "Debug",
+               "Options" : {
+                  "MemoryGuard" : true
+               }
+            }
+         ]
+      },
+      {
+         "FileName" : "test.ec",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

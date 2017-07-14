@@ -33,9 +33,9 @@ static Pointer CopyPointer(Pointer ptr)
 static Initializer CopyInitializer(Initializer initializer)
 {
    Initializer copy = null;;
-   if(initializer.type == expInitializer)
+   if(initializer && initializer.type == expInitializer)
       copy = MkInitializerAssignment(CopyExpression(initializer.exp));
-   else if(initializer.type == listInitializer)
+   else if(initializer && initializer.type == listInitializer)
       copy = MkInitializerList(CopyList(initializer.list, CopyInitializer));
    if(copy)
    {

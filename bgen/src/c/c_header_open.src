@@ -1,0 +1,10 @@
+#if !defined(__#(LIB_DEF_NAME)#_H__)
+#define __#(LIB_DEF_NAME)#_H__
+
+#define CPP11 (defined(__cplusplus) && __cplusplus >= 201103L)
+
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif

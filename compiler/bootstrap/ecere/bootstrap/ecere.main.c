@@ -219,6 +219,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64;
+
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
@@ -423,7 +425,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ec
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
 
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -957,6 +959,9 @@ __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Seek", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek = method->vid;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Seek64", module);
+if(method)
+__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek64 = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Tell", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell = method->vid;
@@ -1188,5 +1193,6 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 

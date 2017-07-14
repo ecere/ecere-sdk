@@ -80,6 +80,9 @@ public enum Month
       }
       return false;
    }
+
+public:
+   int getNumDays(int year) { return (this >= january && this <= december) ? monthLengths[ISLEAP(year)][this] : 0; }
 };
 
 default:

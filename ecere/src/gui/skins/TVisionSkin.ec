@@ -89,7 +89,7 @@ public class TVisionSkin_Window : Window
       {
          *h += MENU_HEIGHT;
       }
-      if(statusBar && state != minimized)
+      if(hasStatusBar && state != minimized)
       {
          if(!style.sizable || state == maximized)
             *h += STATUS_HEIGHT;
@@ -346,7 +346,7 @@ public class TVisionSkin_Window : Window
       int w = size.w;
       Point clientStart = this.clientStart;
       int sx = clientStart.x, sy = clientStart.y;
-      if(menuBar)
+      if(hasMenuBar && menuBar)
       {
          if(state == normal && style.sizable)
             menuBar.Move(sx,sy - 16,w-16,16);

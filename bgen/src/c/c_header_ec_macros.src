@@ -1,0 +1,233 @@
+#ifndef ECPRFX
+#define ECPRFX
+#endif
+
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
+
+// Macros to select proper other macro with proper number of arguments
+#define NARG_(...)                           ARGN(__VA_ARGS__)
+#define NARG(...)                            NARG_(__VA_ARGS__, 6, 5, 4, 3, 2)
+#define ARGN(_1, _2, _3, _4, _5, _6, x, ...) x
+
+// CONCATI(): Two level of indirection so that the preprocessor resolve macros rather than concatenating the macro name
+// _CONCAT(): One level of indirection for use by the var args macros
+#define _CONCAT(a, b)                  a ## b
+#define CONCATI(a, b)                  _CONCAT(a, b)
+
+// Apply the ECPRX to an eC class/type
+#define C(x)                           CONCATI(ECPRFX, x)
+
+// CONCATU(): Concatenate with underscores
+#define _CONCATU_2(a, b)               a ## _ ## b
+#define _CONCATU_3(a, b, c)            a ## _ ## b ## _ ## c
+#define _CONCATU_4(a, b, c, d)         a ## _ ## b ## _ ## c ## _ ## d
+#define _CONCATU_5(a, b, c, d, e)      a ## _ ## b ## _ ## c ## _ ## d ## _ ## e
+#define _CONCATU_6(a, b, c, d, e, f)   a ## _ ## b ## _ ## c ## _ ## d ## _ ## e ## _ ## f
+#define _CONCATUN(n, ...)              _CONCAT(_CONCATU_,n)(__VA_ARGS__)
+#define CONCATU(...)                   _CONCATUN(NARG(__VA_ARGS__), __VA_ARGS__)
+
+// T(): Used to typedef a templatized class to its template class, so as to clarify expectations (note: typedef is equivalent, cannot be type-checked)
+//      e.g. typedef C(Array) T(Array, Color); void printColors(T(Array, Color) colors) { printLn(colors); };
+#define T(n...)                        CONCATU(template, n)
+
+// CO(): Used to access or define a first-class Class object
+//       Classes already used in modules are predefined and can be directly accesses and instantiated
+//          e.g. C(Window) win = newi(Window);
+//       New classes can be defined and initialized with return value from registerClass();
+//          e.g. Class * CO(Foo); CO(Foo) = registerClass(module, Foo, Map<String, int>);
+//       Templatized classes can be defined and initialized with eC_findClass()
+//          e.g. C(Class) * CO(Array, ColorAlpha); CO(Array, ColorAlpha) = eC_findClass(module, "Array<ColorAlpha>");
+#define CO(n...)                       CONCATU(class, n)
+
+/* CM(): Used to define/access the class member structure for regular eC classes at a specific level of inheritance
+         e.g.
+            struct CM(Foo) { int foo; };
+            typedef Instance Foo;
+            C(Class) * CO(Foo);
+            bool Foo_constructor(Foo this)
+            {
+               struct CM(Foo) * self = IPTR(this, Foo);
+               return true;
+            }
+            bool Foo_destructor(Foo this) { }
+            ...
+               CO(Foo) = registerClass(module, Foo, Instance);
+            ...
+*/
+#define CM(c)                          CONCATU(class_members, c)
+
+// S(c: class name, x...: for all the initializers):
+//       Used to quickly pass structs by reference
+#define S(c, x...) ({c __i = { x }; &__i;})
+
+// TP(n: class name, p: template parameter name):
+//       Used to specify member method types with a template parameter of a class
+//       e.g.  void Container_add(C(Container) c, TP(Container, T) value);
+#define TP(n, p)                       CONCATU(tparam, n, p)
+
+// template argument macros type abbreviations:
+//          c: char
+//          uc: unsigned char (byte)
+//          s: short,
+//          us: unsigned short (uint16)
+//          i: int
+//          ui: uint
+//          i64: int64
+//          ui64: uint64
+//          f: float
+//          d: double
+//          p: pointer
+//          st: struct
+//          o: object
+
+// TA...(): Used to pass data values as template arguments
+//          e.g. Container_add(ad, TAd(3.14159));
+#define TAc(x)     ({ C(DataValue) p = { .c = x };    p.ui64; })
+#define TAb(x)     ({ C(DataValue) p = { .uc = x };   p.ui64; })
+#define TAs(x)     ({ C(DataValue) p = { .s = x };    p.ui64; })
+#define TAus(x)    ({ C(DataValue) p = { .us = x };   p.ui64; })
+#define TAi(x)     ({ C(DataValue) p = { .i = x };    p.ui64; })
+#define TAui(x)    ({ C(DataValue) p = { .ui = x };   p.ui64; })
+#define TAi64(x)   ({ C(DataValue) p = { .i64 = x };  p.ui64; })
+#define TAui64(x)  (x)
+#define TAf(x)     ({ C(DataValue) p = { .f = x };    p.ui64; })
+#define TAd(x)     ({ C(DataValue) p = { .d = x };    p.ui64; })
+#define TAp(x)     ({ C(DataValue) p = { .p = x };    p.ui64; })
+#define TAst(x)    TAp(&(x))
+#define TAo(x)     TAp(x)
+
+// ...TA(): Used to retreieve data values from template arguments
+//          e.g. void Foo_add(Foo this, TP(Foo, A) value) { double d = dTA(value); }
+
+#define cTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.c; })
+#define bTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.uc; })
+#define sTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.s; })
+#define usTA(x)    ({ C(DataValue) p = { .ui64 = x }; p.us; })
+#define iTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.i; })
+#define uiTA(x)    ({ C(DataValue) p = { .ui64 = x }; p.ui; })
+#define i64TA(x)   ({ C(DataValue) p = { .ui64 = x }; p.i64; })
+#define ui64TA(x)  (x)
+#define fTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.f; })
+#define dTA(x)     ({ C(DataValue) p = { .ui64 = x }; p.d; })
+#define pTA(t, x)  ({ C(DataValue) p = { .ui64 = x }; (t *)p.p; })
+#define stTA(s, x) ({ C(DataValue) p = { .ui64 = x }; *(s *)p.p; })
+#define oTA(c, x)  ((C(c)) pTA(struct CM(Instance), x))
+
+#define oTAInstance(x)  oTA(Instance, x)
+#define pTAvoid(x)      pTA(void, x)
+
+// thisclass(): Used to specify an eC 'thisclass' type, which morphs into the derived class type when inherited
+//              Note: Resolves to the same type so cannot be type checked
+#define thisclass(x)                   C(x)
+#define subclass(x)                    C(Class) *
+
+#define PROPERTY(c, p)   CONCATU(property, c, p)
+#define METHOD(c, m)     CONCATU(method, c, m)
+#define M_VTBLID(c, m)   CONCATU(c, m, vTblID)
+#define FUNCTION(f)      CONCATU(function, f)
+
+// _ARG: Used to specify comma for parameters/arguments list being passed to macros
+#define _ARG ,
+
+// VMETHOD(c: class object, mc: method class, m: method name, i: instance object, r: return type, p: parameters, a: arguments)
+//    Used to define a virtual method invoker, e.g.:
+//    #define Container_add(__i, value) VMETHOD(Container, add, __i, C(IteratorPointer), C(Container) _ARG TP(Container, T), __i _ARG value)
+#define VMETHOD(c, mc, m, i, r, p, a)   ({ r (* method)(p) = (r (*)(p))((i) ? (i)->_vTbl : c->_vTbl)[M_VTBLID(mc, m)]; method ? method(a) : (r)0; })
+
+// Macros for translated strings
+#define $(x)      (constString)getTranslatedString(MODULE_NAME, x, null)
+#define $$(x, c)  (constString)getTranslatedString(MODULE_NAME, x, c)
+
+// More macros
+#define IPTR(x, c) ((struct CM(c) *)((x) ? (((char *)(x)) + CO(c)->offset) : 0))
+
+#define incref(x) (x)->_refCount++;
+
+#define newb(c) eC_new(c)
+#define newi(c...) ({ C(Instance) i = Instance_new(CO(c)); incref(i); i; })
+#define newcs(c...) ((c *)Instance_new(CO(c)))
+#define newc(t, c) (t *)eC_new(CO(t)->structSize * c)
+#define newt(t, c) (t *)eC_new(sizeof(t) * c)
+
+#define deletei(v) Instance_decRef(v), v = null
+#ifndef __cplusplus
+   #define delete(v) eC_delete(v), v = null
+#endif
+
+#define BIC(c, d) \
+   ({ struct BuiltInContainer src = { \
+      CO(BuiltInContainer)->_vTbl, CO(BuiltInContainer), 0, \
+      d, sizeof(d) / sizeof((d)[0]), CO(c) }; \
+   (Container)&src; })
+
+#//#if CPP11
+#//#define ENUM(name, type) enum name : type
+#//#else
+#//#define ENUM(name, type) enum name
+#//#endif
+#//
+#ifndef __cplusplus
+   #define registerClass(a, n, b...)  \
+      eC_registerClass(ClassType_normalClass, #n, #b, sizeof(struct CM(n)), 0, \
+         (void *)n ## _constructor, (void *)n ## _destructor, a, AccessMode_publicAccess, AccessMode_publicAccess)
+#endif
+
+#define addMethod(c, n, m) \
+   Class_addMethod(c, n, null, (void *)m, AccessMode_publicAccess)
+
+#if defined(__WIN32__) && !defined(__CONSOLE_APP__)
+   typedef void * HINSTANCE;
+   #define WINAPI __stdcall
+   #define MAIN_DECLARATION int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char * cmdLine, int show)
+   #define eC_init_CALL(linkEcere) eC_init(null, linkEcere, true, 0, null)
+#else
+   #define MAIN_DECLARATION int main(int argc, char * argv[])
+   #ifdef __cplusplus
+      #if defined(__CONSOLE_APP__)
+         #define eC_init_CALL(linkEcere) eC_init(null, linkEcere, false, null, null)
+      #else
+         #define eC_init_CALL(linkEcere) eC_init(null, linkEcere, true, null, null)
+      #endif
+   #else
+      #if defined(__CONSOLE_APP__)
+         #define eC_init_CALL(linkEcere) eC_init(null, linkEcere, false, argc, argv)
+      #else
+         #define eC_init_CALL(linkEcere) eC_init(null, linkEcere, true, argc, argv)
+      #endif
+   #endif
+#endif
+
+#define APP_INTRO(linkEcere) \
+   MAIN_DECLARATION \
+   { \
+      C(Application) app = eC_init_CALL(linkEcere);
+
+#define APP_OUTRO \
+      int exitCode = IPTR(app, Application)->exitCode; \
+      deletei(app); \
+      return exitCode; \
+   }
+
+#if defined(__WIN32__)
+   #define MODULE_EXPORT extern __attribute__((dllexport))
+#else
+   #define MODULE_EXPORT extern __attribute__ ((visibility("default")))
+#endif
+
+#if defined(__WIN32__)
+   #define MODULE_EXPORT extern __attribute__((dllexport))
+   #define stdcall       __stdcall
+#else
+   #define MODULE_EXPORT extern __attribute__ ((visibility("default")))
+   #define stdcall
+#endif
+
+#define MODULE_LOAD     MODULE_EXPORT uint stdcall __ecereDll_Load(C(Module) module)
+
+#define MODULE_UNLOAD   MODULE_EXPORT uint stdcall __ecereDll_Unload(C(Module) module)

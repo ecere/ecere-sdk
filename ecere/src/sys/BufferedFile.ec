@@ -9,12 +9,12 @@ public class BufferedFile : File
    File handle;
    uint bufferSize;
    uint bufferCount;
-   uint bufferPos;
-   uint pos;
+   uint64 bufferPos;
+   uint64 pos;
    byte * buffer;
    bool eof;
    uint bufferRead;
-   uint fileSize;
+   uint64 fileSize;
 
    // bufferSize = 65536;
    property::bufferSize = 512 * 1024;
@@ -43,7 +43,7 @@ public class BufferedFile : File
       {
          uint totalBytesRead = 0;
          uint bufferCount = this.bufferCount;
-         uint bufferPos = this.bufferPos;
+         uint64 bufferPos = this.bufferPos;
          byte * fileBuffer = this.buffer + bufferPos;
          uint readCount = count;
 
@@ -51,7 +51,7 @@ public class BufferedFile : File
 
          while(true)
          {
-            uint bytesRead = (bufferCount > bufferPos) ? (bufferCount - bufferPos) : 0;
+            uint64 bytesRead = (bufferCount > bufferPos) ? (bufferCount - bufferPos) : 0;
             if(bytesRead > readCount) bytesRead = readCount;
             if(bytesRead)
             {
@@ -62,7 +62,7 @@ public class BufferedFile : File
             }
             if(readCount)
             {
-               uint read;
+               uint64 read;
                if(readCount < bufferSize /*&& bufferPos <= bufferCount*/)
                {
                   read = Max(readCount, bufferRead);
@@ -88,8 +88,8 @@ public class BufferedFile : File
                   bufferPos = 0;
                   bufferCount = 0;
                }
-               handle.Seek(pos + totalBytesRead - bufferPos + bufferCount, start);
-               read = handle.Read(this.buffer + bufferCount, 1, read);
+               handle.Seek64(pos + totalBytesRead - bufferPos + bufferCount, start);
+               read = handle.Read(this.buffer + bufferCount, 1, (uint)read);
                fileBuffer = this.buffer + bufferPos;
                bufferCount += read;
                if(!read)
@@ -113,9 +113,9 @@ public class BufferedFile : File
    {
       uint result;
       uint numBytes;
-      uint bytesToBuffer;
-      uint missing;
-      handle.Seek(pos, start);
+      uint64 bytesToBuffer;
+      uint64 missing;
+      handle.Seek64(pos, start);
       result = handle.Write(buffer, size, count);
       numBytes = result * size;
       bytesToBuffer = (bufferSize > bufferPos) ? (bufferSize - bufferPos) : 0;
@@ -146,7 +146,7 @@ public class BufferedFile : File
          bytesToBuffer = Min(numBytes, bufferSize);
          memcpy(this.buffer, buffer + numBytes - bytesToBuffer, bytesToBuffer);
          bufferPos = bytesToBuffer;
-         bufferCount = bytesToBuffer;
+         bufferCount = (uint)bytesToBuffer;
       }
       return result;
    }
@@ -168,7 +168,7 @@ public class BufferedFile : File
             else
             {
                bufferPos = 0;
-               handle.Seek(pos, start);
+               handle.Seek64(pos, start);
                bufferCount = handle.Read(buffer, 1, bufferSize);
                if(!bufferCount)
                {
@@ -194,9 +194,9 @@ public class BufferedFile : File
       return written == len;
    }
 
-   bool Seek(int pos, FileSeekMode mode)
+   bool _Seek64(int64 pos, FileSeekMode mode)
    {
-      uint newPosition = this.pos;
+      uint64 newPosition = this.pos;
       switch(mode)
       {
          case start:
@@ -220,7 +220,7 @@ public class BufferedFile : File
                bufferPos += newPosition - this.pos;
             else
             {
-               uint read = newPosition - this.pos - bufferCount;
+               uint64 read = newPosition - this.pos - bufferCount;
                if(read < bufferCount * 2)
                {
                   if(read > bufferSize)
@@ -230,8 +230,8 @@ public class BufferedFile : File
                   }
                   else
                   {
-                     handle.Seek(this.pos - bufferPos + bufferCount, start);
-                     read = handle.Read(this.buffer + bufferCount, 1, read);
+                     handle.Seek64(this.pos - bufferPos + bufferCount, start);
+                     read = handle.Read(this.buffer + bufferCount, 1, (uint)read);
                      bufferPos += newPosition - this.pos;
                      bufferCount += read;
                   }
@@ -252,12 +252,22 @@ public class BufferedFile : File
          eof = newPosition > fileSize;
          this.pos = newPosition;
       }
-      return true;
+      return !eof;
+   }
+
+   bool Seek64(int64 pos, FileSeekMode mode)
+   {
+      return _Seek64(pos, mode);
+   }
+
+   bool Seek(int pos, FileSeekMode mode)
+   {
+      return _Seek64(pos, mode);
    }
 
    uint Tell()
    {
-      return pos;
+      return (uint)pos;
    }
 
    bool Eof()
@@ -269,13 +279,13 @@ public class BufferedFile : File
 
    uint GetSize()
    {
-      return fileSize;
+      return (uint)fileSize;
    }
 
    bool Truncate(FileSize size)
    {
-      uint bytesAhead = size - (pos - bufferPos);
-      handle.Truncate(size);
+      uint64 bytesAhead = (uint64)size - (pos - bufferPos);
+      handle.Truncate((uint)size);
       bufferCount = Min(bufferCount, bytesAhead);
       fileSize = Min(fileSize, size);
       return true;

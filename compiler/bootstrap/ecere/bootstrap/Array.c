@@ -162,14 +162,14 @@ return -cs->compare(cs->arg, a, b);
 
 static inline void __ecereNameSpace__ecere__com__quickSort(void * base, size_t nel, size_t w, char * piv, int (* compare)(void *, const void *, const void *), void * arg)
 {
-size_t beg[300], end[300];
+ssize_t beg[300], end[300];
 int frame = 0;
 
 beg[0] = 0;
 end[0] = nel;
 while(frame >= 0)
 {
-size_t L = beg[frame], R = end[frame] - 1;
+ssize_t L = beg[frame], R = end[frame] - 1;
 
 if(L < R)
 {
@@ -197,7 +197,7 @@ end[frame + 1] = end[frame];
 end[frame++] = L;
 if(end[frame] - beg[frame] > end[frame - 1] - beg[frame - 1])
 {
-size_t swap;
+ssize_t swap;
 
 swap = beg[frame];
 beg[frame] = beg[frame - 1];
@@ -250,8 +250,6 @@ __ecereNameSpace__ecere__com___qsortrx(base, nel, width, compare, (((void *)0)),
 }
 
 struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Array_size, * __ecerePropM___ecereNameSpace__ecere__com__Array_size;
 
@@ -319,6 +317,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -503,6 +503,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
+void *  bindingsClass;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
@@ -776,7 +777,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__Array_Sort(struct __ecereNameSp
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
 struct __ecereNameSpace__ecere__com__Class * Dclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass;
-unsigned int byRef = (Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3;
+unsigned int byRef = (Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3 || Dclass->type == 1;
 
 __ecereNameSpace__ecere__com___qsortrx(__ecerePointer___ecereNameSpace__ecere__com__Array->array, __ecerePointer___ecereNameSpace__ecere__com__Array->count, Dclass->typeSize, (void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare], (((void *)0)), Dclass, !byRef, ascending);
 }

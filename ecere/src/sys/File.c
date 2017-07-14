@@ -399,7 +399,7 @@ void FILE_FileFixCase(char * file)
       char parent[MAX_LOCATION] = "";
 
       // Skip network protocols
-      if(strstr(file, "http://") == file) return;
+      if(strstr(file, "http://") == file || strstr(file, "https://") == file || strstr(file, "wfs://") == file) return;
 
       // Copy drive letter to new path
       if(file[0] && file[1] == ':')
@@ -628,4 +628,15 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
       case FOM_appendRead: *input = *output = fopen(fileName, "a+b"); break;
    }
 #endif
+}
+
+int FILE_Seek64(FILE * f, int64 offset, int origin)
+{
+   return
+#if defined(__WIN32__)
+      _fseeki64
+#else
+      fseek
+#endif
+         (f, offset, origin);
 }

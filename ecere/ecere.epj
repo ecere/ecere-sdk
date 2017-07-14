@@ -84,7 +84,8 @@ if distributed with the Ecere SDK Windows installer.
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "BUILDING_ECERE_COM"
+         "BUILDING_ECERE_COM",
+         "CURL_DISABLE_TYPECHECK"
       ],
       "IncludeDirs" : [
          "src/gfx/drivers/harfbuzz",
@@ -100,7 +101,8 @@ if distributed with the Ecere SDK Windows installer.
          "jpeg",
          "png",
          "z",
-         "freetype"
+         "freetype",
+         "curl"
       ]
    },
    "Platforms" : [
@@ -122,7 +124,8 @@ if distributed with the Ecere SDK Windows installer.
                "Xrender",
                "GL",
                "ssl",
-               "crypto"
+               "crypto",
+               "curl"
             ],
             "LibraryDirs" : [
                "/usr/X11R6/lib"
@@ -139,6 +142,7 @@ if distributed with the Ecere SDK Windows installer.
                "../deps/zlib-1.2.8",
                "../deps/freetype-2.3.12/include",
                "../deps/glext",
+               "../deps/curl-7.51.0/include",
                "$(OPENSSL_INCLUDE_DIR)"
             ],
             "Libraries" : [
@@ -166,6 +170,7 @@ if distributed with the Ecere SDK Windows installer.
                "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "$(OPENSSL_BIN_DIR)",
                "$(OPENSSL_LIB_DIR)"
             ]
@@ -371,14 +376,15 @@ if distributed with the Ecere SDK Windows installer.
       {
          "Name" : "WSMS",
          "Options" : {
-            "Optimization" : "Size",
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "ECERE_NO3D",
                "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereWSMS"
+            "TargetFileName" : "ecereWSMS",
+            "FastMath" : true
          },
          "Platforms" : [
             {
@@ -545,6 +551,16 @@ if distributed with the Ecere SDK Windows installer.
                   "EARArchive.ec",
                   {
                      "FileName" : "File.ec",
+                     "Platforms" : [
+                        {
+                           "Name" : "linux",
+                           "Options" : {
+                              "PreprocessorDefinitions" : [
+                                 "_FILE_OFFSET_BITS=64"
+                              ]
+                           }
+                        }
+                     ],
                      "Configurations" : [
                         {
                            "Name" : "Bootstrap",
@@ -634,7 +650,19 @@ if distributed with the Ecere SDK Windows installer.
                   "Time.ec",
                   "unicode.ec",
                   "units.ec",
-                  "File.c",
+                  {
+                     "FileName" : "File.c",
+                     "Platforms" : [
+                        {
+                           "Name" : "linux",
+                           "Options" : {
+                              "PreprocessorDefinitions" : [
+                                 "_FILE_OFFSET_BITS=64"
+                              ]
+                           }
+                        }
+                     ]
+                  },
                   "DualPipe.c",
                   "System.c",
                   {
@@ -1234,6 +1262,12 @@ if distributed with the Ecere SDK Windows installer.
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "WSMS",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               },
@@ -1263,6 +1297,12 @@ if distributed with the Ecere SDK Windows installer.
                                     },
                                     {
                                        "Name" : "Installer",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    },
+                                    {
+                                       "Name" : "WSMS",
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
@@ -2150,6 +2190,51 @@ if distributed with the Ecere SDK Windows installer.
                         }
                      ]
                   },
+                  {
+                     "Folder" : "newFonts",
+                     "Files" : [
+                        {
+                           "Folder" : "cc",
+                           "Files" : [
+                              "cc.c",
+                              "cc.h",
+                              "cchybridsort.h",
+                              "ccmergesort.h",
+                              "cpuconfig.h",
+                              "mm.c",
+                              "mm.h",
+                              "mmatomic.h",
+                              "mmthread.h",
+                              "ccstr.c",
+                              "ccstr.h"
+                           ]
+                        },
+                        "atlasBuilder.ec",
+                        "drawManager.ec",
+                        "fmFontManager.ec",
+                        "fontRenderer.ec",
+                        "textureManager.ec"
+                     ],
+                     "Options" : {
+                        "IncludeDirs" : [
+                           "src/gfx/newFonts/cc"
+                        ]
+                     },
+                     "Configurations" : [
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
                   "Bitmap.ec",
                   "BitmapResource.ec",
                   "Color.ec",
@@ -2158,8 +2243,34 @@ if distributed with the Ecere SDK Windows installer.
                   "FontResource.ec",
                   "Resource.ec",
                   "Surface.ec",
-                  "fontManagement.ec",
-                  "fontRendering.ec",
+                  {
+                     "FileName" : "fontManagement.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
+                  {
+                     "FileName" : "fontRendering.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        }
+                     ]
+                  },
                   {
                      "FileName" : "imgDistMap.ec",
                      "Options" : {

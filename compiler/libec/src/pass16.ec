@@ -752,7 +752,7 @@ public void DeclareClass(External neededFor, Symbol classSym, const char * class
       neededFor.CreateUniqueEdge(classSym.pointerExternal, false);
 }
 
-void ProcessExpressionInstPass(Expression exp)
+public void ProcessExpressionInstPass(Expression exp)
 {
    ProcessExpression(exp);
 }
@@ -770,6 +770,16 @@ static void ProcessExpression(Expression exp)
       case instanceExp:
       {
          Instantiation inst = exp.instance;
+         if(inBGen && bgenSymbolSwap && inst._class)
+         {
+            Specifier spec = inst._class;
+            const char * name = bgenSymbolSwap(spec.name, true, false);
+            if(strcmp(name, spec.name))
+            {
+               FreeSpecifier(inst._class);
+               inst._class = MkSpecifierName(name);
+            }
+         }
          if(inCompiler && inst._class)
          {
             char className[1024];
@@ -951,7 +961,7 @@ static void ProcessExpression(Expression exp)
                         curCompound.compound.declarations->Insert(null, dummyDecl);
                      }
 
-                     sprintf(className, "__simpleStruct%d", curContext.simpleID++);
+                     sprintf(className, "__simpleStruct%d", curContext ? curContext.simpleID++ : 0);
 
                      {
                         OldList * list = MkList();
@@ -1010,6 +1020,14 @@ static void ProcessExpression(Expression exp)
                         curCompound.compound.declarations = MkList();
                      curCompound.compound.declarations->Insert(null, decl);
                      */
+
+                     if(!curCompound)
+                     {
+                        Expression e = MoveExpContents(exp);
+                        Statement compound = MkCompoundStmt(MkListOne(decl), MkListOne(MkExpressionStmt(MkListOne(e))));
+                        exp.type = extensionCompoundExp;
+                        exp.compound = compound;
+                     }
                   }
                }
             }

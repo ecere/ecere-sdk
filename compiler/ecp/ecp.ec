@@ -25,8 +25,8 @@ struct ClassDefine : Definition
    bool isRemote;
    bool isWatchable;
    bool fixed;
-   bool isStatic;
    bool noExpansion;
+   AccessMode accessMode;
 };
 
 struct Define : Definition
@@ -564,7 +564,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       type = classDefinition;
       name = CopyString(symbol.string);
       base = baseName[0] ? CopyString(baseName) : null;
-      isStatic = declMode == staticAccess;
+      accessMode = declMode;
       isRemote = symbol.isRemote;
       isWatchable = isWatchable;
    };
@@ -747,6 +747,8 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
    if(regClass && enumValues)
    {
       Enumerator e;
+      int64 lastValue = -1;
+      bool lastValueSet = false;
       for(e = enumValues.first; e; e = e.next)
       {
          if(e.exp)
@@ -816,6 +818,8 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                      value = op.type.isSigned ? (int64)op.i : (int)op.ui;
                }
                eEnum_AddFixedValue(regClass, e.id.string, value);
+               lastValueSet = true;
+               lastValue = value;
             }
             else
             {
@@ -824,11 +828,19 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                PrintExpression(e.exp, expString);
                printf($"error: could not resolve value %s for enum %s in precompiler\n", expString, regClass.name);
                ((PrecompApp)__thisModule).exitCode = 1;
-               eEnum_AddValue(regClass, e.id.string);
+               if(lastValueSet)
+                  eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+               else
+                  eEnum_AddValue(regClass, e.id.string);
             }
          }
          else
-            eEnum_AddValue(regClass, e.id.string);
+         {
+            if(lastValueSet)
+               eEnum_AddFixedValue(regClass, e.id.string, ++lastValue);
+            else
+               eEnum_AddValue(regClass, e.id.string);
+         }
       }
    }
 }
@@ -1155,8 +1167,10 @@ static void OutputSymbols(const char * fileName)
             ClassDefine classDefine = (ClassDefine) definition;
 
             f.Printf("   %s\n", definition.name);
-            if(classDefine.isStatic)
+            if(classDefine.accessMode == staticAccess)
                f.Printf("      [Static]\n");
+            if(classDefine.accessMode == privateAccess)
+               f.Printf("      [Private]\n");
             if(classDefine.fixed)
                f.Printf("      [Fixed]\n");
             if(classDefine.noExpansion)
@@ -1246,7 +1260,7 @@ static void OutputSymbols(const char * fileName)
                f.Printf("         .\n");
             }
 
-            if(!classDefine.isStatic)
+            if(classDefine.accessMode != staticAccess)
             {
                if(classDefine.methods.first)
                {

@@ -12,18 +12,20 @@ extern int __ecereVMethodID_class_OnSerialize;
 extern int __ecereVMethodID_class_OnUnserialize;
 private:
 
+// NOTE: Although public, MapNode is generally for internal usage only
 public class MapNode<class KT, class V> : private AVLNode<KT>
 {
 class_fixed
 
 public:
    // public(key)
-   // THIS IS MISSING CODE FOR struct KEYS
+   // The 'key' property cannot work if key is a struct; use MapIterator::key instead
    property const KT key
    {
       get { return AVLNode::key; }
       set { AVLNode::key = value; }
    };
+   // The 'value' property cannot work if either key or value is a struct; use MapIterator::value instead
    property V value
    {
       get { return this ? this.value : (V)0; }
@@ -79,7 +81,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       return (MT)0;
    }
 
-   bool SetData(MapNode<MT, V> node, MT value)
+   bool SetData(MapNode<MT, V> node, V value)
    {
       // Adjust node pointer for non-standard AVLNode
       if(class(MT).type == structClass)
@@ -98,7 +100,10 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       if(class(MT).type == structClass || class(V).type == structClass)
       {
          MapNode<MT, V> realNode = (MapNode<MT, V>)GetAtPosition(newNode.key, true, null);
-         SetData(realNode, newNode.value);
+         if(class(V).type == structClass)
+            SetData(realNode, (V)&newNode.value);
+         else
+            SetData(realNode, newNode.value);
          return newNode;
       }
       else

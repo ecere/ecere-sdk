@@ -114,6 +114,11 @@ _ECSOURCES2 = \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/atlasBuilder.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/drawManager.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/fmFontManager.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/fontRenderer.ec) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/textureManager.ec) \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -247,6 +252,9 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
 	$(OBJ)gl_compat_4_4.o \
+	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
+	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
+	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
 	$(if ,$(OBJ)CocoaEcereBridge.o,) \
 	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
@@ -277,6 +285,9 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	src/gfx/drivers/gl3/gl_compat_4_4.c \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
+	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
 	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
@@ -404,7 +415,8 @@ LIBS += \
 	$(call _L,jpeg) \
 	$(call _L,png) \
 	$(call _L,z) \
-	$(call _L,freetype)
+	$(call _L,freetype) \
+	$(call _L,curl)
 endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
@@ -416,6 +428,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
+			 -I../deps/curl-7.51.0/include \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2,) \
@@ -431,13 +444,23 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
+			 -DCURL_DISABLE_TYPECHECK \
 			 -Isrc/gfx/drivers/gl3/ \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
 			 -I/usr/X11R6/include/freetype2 $(FVISIBILITY)
 
 CUSTOM1_PRJ_CFLAGS = \
+	 $(if $(LINUX_TARGET), \
+			 -D_FILE_OFFSET_BITS=64,) \
+	 $(PRJ_CFLAGS)
+
+CUSTOM2_PRJ_CFLAGS = \
 			 -DECERE_COM_MODULE \
+	 $(PRJ_CFLAGS)
+
+CUSTOM3_PRJ_CFLAGS = \
+			 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
@@ -455,6 +478,7 @@ OFLAGS += \
 	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))
 LIBS += \
 	$(call _L,dxguid) \
@@ -494,7 +518,8 @@ LIBS += \
 	$(call _L,Xrender) \
 	$(if $(DISABLE_GL),,$(call _L,GL)) \
 	$(if $(ENABLE_SSL),$(call _L,ssl)) \
-	$(if $(ENABLE_SSL),$(call _L,crypto))
+	$(if $(ENABLE_SSL),$(call _L,crypto)) \
+	$(call _L,curl)
 endif
 
 else
@@ -642,7 +667,7 @@ $(OBJ)EARArchive.sym: src/sys/EARArchive.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.sym
 
 $(OBJ)File.sym: src/sys/File.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.sym
 
 $(OBJ)FileMonitor.sym: src/sys/FileMonitor.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.sym
@@ -660,7 +685,7 @@ $(OBJ)memory.sym: src/sys/memory.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.sym
 
 $(OBJ)Mutex.sym: src/sys/Mutex.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.sym
 
 $(OBJ)Semaphore.sym: src/sys/Semaphore.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.sym
@@ -684,7 +709,7 @@ $(OBJ)units.sym: src/sys/units.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/units.ec -o $(OBJ)units.sym
 
 $(OBJ)i18n.sym: src/sys/i18n.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.sym
 
 $(OBJ)Condition.sym: src/sys/Condition.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/Condition.ec -o $(OBJ)Condition.sym
@@ -816,6 +841,21 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
 endif
+
+$(OBJ)atlasBuilder.sym: src/gfx/newFonts/atlasBuilder.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@)
+
+$(OBJ)drawManager.sym: src/gfx/newFonts/drawManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@)
+
+$(OBJ)fmFontManager.sym: src/gfx/newFonts/fmFontManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@)
+
+$(OBJ)fontRenderer.sym: src/gfx/newFonts/fontRenderer.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@)
+
+$(OBJ)textureManager.sym: src/gfx/newFonts/textureManager.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@)
 
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.sym
@@ -1019,46 +1059,46 @@ $(OBJ)SSLSocket.sym: src/net/SSLSocket.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/SSLSocket.ec -o $(OBJ)SSLSocket.sym
 
 $(OBJ)Array.sym: src/com/containers/Array.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
 
 $(OBJ)AVLTree.sym: src/com/containers/AVLTree.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.sym
 
 $(OBJ)BuiltInContainer.sym: src/com/containers/BuiltInContainer.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.sym
 
 $(OBJ)Container.sym: src/com/containers/Container.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.sym
 
 $(OBJ)CustomAVLTree.sym: src/com/containers/CustomAVLTree.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.sym
 
 $(OBJ)LinkList.sym: src/com/containers/LinkList.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.sym
 
 $(OBJ)List.sym: src/com/containers/List.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.sym
 
 $(OBJ)Map.sym: src/com/containers/Map.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
 $(OBJ)BTNode.sym: src/com/BTNode.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.sym
 
 $(OBJ)dataTypes.sym: src/com/dataTypes.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.sym
 
 $(OBJ)instance.sym: src/com/instance.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.sym
 
 $(OBJ)String.sym: src/com/String.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/String.ec -o $(OBJ)String.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/String.ec -o $(OBJ)String.sym
 
 $(OBJ)OldList.sym: src/com/OldList.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.sym
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.sym
 
 # C OBJECT RULES
 
@@ -1078,7 +1118,7 @@ $(OBJ)EARArchive.c: src/sys/EARArchive.ec $(OBJ)EARArchive.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/EARArchive.ec -o $(OBJ)EARArchive.c -symbols $(OBJ)
 
 $(OBJ)File.c: src/sys/File.ec $(OBJ)File.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/File.ec -o $(OBJ)File.c -symbols $(OBJ)
 
 $(OBJ)FileMonitor.c: src/sys/FileMonitor.ec $(OBJ)FileMonitor.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/FileMonitor.ec -o $(OBJ)FileMonitor.c -symbols $(OBJ)
@@ -1096,7 +1136,7 @@ $(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/memory.ec -o $(OBJ)memory.c -symbols $(OBJ)
 
 $(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/Mutex.ec -o $(OBJ)Mutex.c -symbols $(OBJ)
 
 $(OBJ)Semaphore.c: src/sys/Semaphore.ec $(OBJ)Semaphore.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/Semaphore.ec -o $(OBJ)Semaphore.c -symbols $(OBJ)
@@ -1120,7 +1160,7 @@ $(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/units.ec -o $(OBJ)units.c -symbols $(OBJ)
 
 $(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/sys/i18n.ec -o $(OBJ)i18n.c -symbols $(OBJ)
 
 $(OBJ)Condition.c: src/sys/Condition.ec $(OBJ)Condition.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/sys/Condition.ec -o $(OBJ)Condition.c -symbols $(OBJ)
@@ -1252,6 +1292,22 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
+
+
+$(OBJ)atlasBuilder.c: src/gfx/newFonts/atlasBuilder.ec $(OBJ)atlasBuilder.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)drawManager.c: src/gfx/newFonts/drawManager.ec $(OBJ)drawManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fmFontManager.c: src/gfx/newFonts/fmFontManager.ec $(OBJ)fmFontManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)fontRenderer.c: src/gfx/newFonts/fontRenderer.ec $(OBJ)fontRenderer.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)textureManager.c: src/gfx/newFonts/textureManager.ec $(OBJ)textureManager.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
@@ -1455,46 +1511,46 @@ $(OBJ)SSLSocket.c: src/net/SSLSocket.ec $(OBJ)SSLSocket.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/SSLSocket.ec -o $(OBJ)SSLSocket.c -symbols $(OBJ)
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
 
 $(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/AVLTree.ec -o $(OBJ)AVLTree.c -symbols $(OBJ)
 
 $(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/BuiltInContainer.ec -o $(OBJ)BuiltInContainer.c -symbols $(OBJ)
 
 $(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Container.ec -o $(OBJ)Container.c -symbols $(OBJ)
 
 $(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/CustomAVLTree.ec -o $(OBJ)CustomAVLTree.c -symbols $(OBJ)
 
 $(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/LinkList.ec -o $(OBJ)LinkList.c -symbols $(OBJ)
 
 $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/List.ec -o $(OBJ)List.c -symbols $(OBJ)
 
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
 $(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BTNode.ec -o $(OBJ)BTNode.c -symbols $(OBJ)
 
 $(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/dataTypes.ec -o $(OBJ)dataTypes.c -symbols $(OBJ)
 
 $(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/instance.ec -o $(OBJ)instance.c -symbols $(OBJ)
 
 $(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/String.ec -o $(OBJ)String.c -symbols $(OBJ)
 
 $(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/OldList.ec -o $(OBJ)OldList.c -symbols $(OBJ)
 
 # OBJECT RULES
 
@@ -1514,7 +1570,7 @@ $(OBJ)EARArchive.o: $(OBJ)EARArchive.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)EARArchive.c -o $(OBJ)EARArchive.o
 
 $(OBJ)File.o: $(OBJ)File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)File.c -o $(OBJ)File.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)File.c -o $(OBJ)File.o
 
 $(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)FileMonitor.c -o $(OBJ)FileMonitor.o
@@ -1532,7 +1588,7 @@ $(OBJ)memory.o: $(OBJ)memory.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)memory.c -o $(OBJ)memory.o
 
 $(OBJ)Mutex.o: $(OBJ)Mutex.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Mutex.c -o $(OBJ)Mutex.o
 
 $(OBJ)Semaphore.o: $(OBJ)Semaphore.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Semaphore.c -o $(OBJ)Semaphore.o
@@ -1556,7 +1612,7 @@ $(OBJ)units.o: $(OBJ)units.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)units.c -o $(OBJ)units.o
 
 $(OBJ)File.c.o: src/sys/File.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/sys/File.c -o $(OBJ)File.c.o
 
 $(OBJ)DualPipe.c.o: src/sys/DualPipe.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/DualPipe.c -o $(OBJ)DualPipe.c.o
@@ -1565,7 +1621,7 @@ $(OBJ)System.c.o: src/sys/System.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/sys/System.c -o $(OBJ)System.c.o
 
 $(OBJ)i18n.o: $(OBJ)i18n.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)i18n.c -o $(OBJ)i18n.o
 
 $(OBJ)Condition.o: $(OBJ)Condition.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Condition.c -o $(OBJ)Condition.o
@@ -1739,6 +1795,30 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
+
+$(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/cc.c) -o $(call quote_path,$@)
+
+$(OBJ)ccstr$(O): src/gfx/newFonts/cc/ccstr.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/ccstr.c) -o $(call quote_path,$@)
+
+$(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)
+
+$(OBJ)atlasBuilder$(O): $(OBJ)atlasBuilder.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)atlasBuilder.c) -o $(call quote_path,$@)
+
+$(OBJ)drawManager$(O): $(OBJ)drawManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)drawManager.c) -o $(call quote_path,$@)
+
+$(OBJ)fmFontManager$(O): $(OBJ)fmFontManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fmFontManager.c) -o $(call quote_path,$@)
+
+$(OBJ)fontRenderer$(O): $(OBJ)fontRenderer.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRenderer.c) -o $(call quote_path,$@)
+
+$(OBJ)textureManager$(O): $(OBJ)textureManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)textureManager.c) -o $(call quote_path,$@)
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
@@ -1970,49 +2050,49 @@ $(OBJ)SSLSocket.o: $(OBJ)SSLSocket.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SSLSocket.c -o $(OBJ)SSLSocket.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)Array.c -o $(OBJ)Array.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Array.c -o $(OBJ)Array.o
 
 $(OBJ)AVLTree.o: $(OBJ)AVLTree.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)AVLTree.c -o $(OBJ)AVLTree.o
 
 $(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)BuiltInContainer.c -o $(OBJ)BuiltInContainer.o
 
 $(OBJ)Container.o: $(OBJ)Container.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)Container.c -o $(OBJ)Container.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Container.c -o $(OBJ)Container.o
 
 $(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)CustomAVLTree.c -o $(OBJ)CustomAVLTree.o
 
 $(OBJ)LinkList.o: $(OBJ)LinkList.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)LinkList.c -o $(OBJ)LinkList.o
 
 $(OBJ)List.o: $(OBJ)List.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)List.c -o $(OBJ)List.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)List.c -o $(OBJ)List.o
 
 $(OBJ)Map.o: $(OBJ)Map.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)Map.c -o $(OBJ)Map.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
 
 $(OBJ)BTNode.o: $(OBJ)BTNode.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)BTNode.c -o $(OBJ)BTNode.o
 
 $(OBJ)dataTypes.o: $(OBJ)dataTypes.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)dataTypes.c -o $(OBJ)dataTypes.o
 
 $(OBJ)instance.o: $(OBJ)instance.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)instance.c -o $(OBJ)instance.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)instance.c -o $(OBJ)instance.o
 
 $(OBJ)String.o: $(OBJ)String.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)String.c -o $(OBJ)String.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)String.c -o $(OBJ)String.o
 
 $(OBJ)OldList.o: $(OBJ)OldList.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)OldList.c -o $(OBJ)OldList.o
 
 $(OBJ)instance.c.o: src/com/instance.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
+	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)

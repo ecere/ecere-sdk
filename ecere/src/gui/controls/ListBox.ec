@@ -865,19 +865,17 @@ private:
       for(index = 0, cell1 = cells.first, cell2 = b.cells.first;
           index != sortField.index;
           index++, cell1 = cell1.next, cell2 = cell2.next);
-   /*
+      if(noneRow && !b.noneRow) return -1;
+      else if(!noneRow && b.noneRow) return 1;
+      else if(noneRow && b.noneRow) return 0;
+
       if(!cell1.isSet && !cell2.isSet)
          result = 0;
       else if(!cell1.isSet)
          result = -1;
       else if(!cell2.isSet)
          result = 1;
-      else */
-      if(noneRow && !b.noneRow) return -1;
-      else if(!noneRow && b.noneRow) return 1;
-      else if(noneRow && b.noneRow) return 0;
-
-      if(sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])
+      else if(sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])
       {
          if(sortField.dataType.type == normalClass || sortField.dataType.type == noHeadClass)
          {

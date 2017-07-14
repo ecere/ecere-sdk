@@ -390,6 +390,7 @@ public:
    int numParams;       // TOTAL number of params including all base classes; use templateParams.count for this level
    bool isInstanceClass;
    bool byValueSystemClass;
+   void * bindingsClass;
 
    property const char *
    {
@@ -4618,12 +4619,12 @@ public dllexport Method eClass_FindMethod(Class _class, const char * name, Modul
 }
 
 // Construct an instance
-static bool ConstructInstance(void * instance, Class _class, Class from)
+static bool ConstructInstance(void * instance, Class _class, Class from, bool bindingsAlloc)
 {
    if(_class.templateClass) _class = _class.templateClass;
    if(_class.base && from != _class.base)
    {
-      if(!ConstructInstance(instance, _class.base, from))
+      if(!ConstructInstance(instance, _class.base, from, false))
          return false;
    }
    if(_class.Initialize)
@@ -4634,7 +4635,12 @@ static bool ConstructInstance(void * instance, Class _class, Class from)
    }
    if(_class.Constructor)
    {
-      if(!_class.Constructor(instance))
+      bool result;
+      if(_class.bindingsClass)
+         result = ((bool (*)(void *, bool))(void *)_class.Constructor)(instance, bindingsAlloc);
+      else
+         result = _class.Constructor(instance);
+      if(!result)
       {
          for(; _class; _class = _class.base)
          {
@@ -4649,7 +4655,7 @@ static bool ConstructInstance(void * instance, Class _class, Class from)
    return true;
 }
 
-public dllexport void * eInstance_New(Class _class)
+static void * Instance_New(Class _class, bool bindingsAlloc)
 {
    Instance instance = null;
    if(_class)
@@ -4711,7 +4717,7 @@ public dllexport void * eInstance_New(Class _class)
          // Copy the virtual table initially
          instance._vTbl = _class._vTbl;
       }
-      if(instance && !ConstructInstance(instance, _class, null))
+      if(instance && !ConstructInstance(instance, _class, null, bindingsAlloc))
       {
          _free(instance);
          instance = null;
@@ -4720,6 +4726,16 @@ public dllexport void * eInstance_New(Class _class)
          printf("%s: %d instances\n", _class.name, _class.count);*/
    }
    return instance;
+}
+
+public dllexport void * eInstance_New(Class _class)
+{
+   return Instance_New(_class, true);
+}
+
+public dllexport void * eInstance_NewEx(Class _class, bool bindingsAlloc)
+{
+   return Instance_New(_class, bindingsAlloc);
 }
 
 public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
@@ -4831,7 +4847,7 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
       instance._vTbl = _class._vTbl;
 
       // We don't want to reconstruct the portion already constructed...
-      if(!ConstructInstance(instance, _class, fromClass))
+      if(!ConstructInstance(instance, _class, fromClass, false))
       {
          _free(instance);
          *instancePtr = null;
@@ -5058,6 +5074,7 @@ public dllexport DataMember eClass_FindDataMember(Class _class, const char * nam
    return dataMember;
 }
 
+// TODO: Document precisely what DataMember::offset is and why/how eClass_FindDataMemberAndOffset produces the proper offset one really wants to use
 public dllexport DataMember eClass_FindDataMemberAndOffset(Class _class, const char * name, uint * offset, Module module, DataMember * subMemberStack, int * subMemberStackPos)
 {
    //Time startTime = GetTime();
@@ -5634,7 +5651,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
    }
    if(ensureCOM && !strcmp(name, "ecere") && module)
    {
-      name = !strcmp(module.name, "ecereCOM") ? "ecere" : "ecereCOM";
+      name = !strcmp(module.name, "ecereCOM") ? "ecereCOM" : "ecere";
       if((!Load && !strcmp(module.name, "ecereCOM")) ||
          (Load && (!__thisModule || !__thisModule.name || !strcmp(__thisModule.name, "ecereCOM")) && Load != (void *)COM_LOAD_FUNCTION))
       {
@@ -6284,7 +6301,7 @@ public dllexport void eProperty_SelfWatch(Class _class, const char * name, void 
    }
 }
 
-public dllexport void eInstance_Watch(void * instance, Property _property, void * object, void (*callback)(void *, void *))
+public dllexport void eInstance_Watch(Instance instance, Property _property, void * object, void (*callback)(void *, void *))
 {
    if(_property.isWatchable)
    {
@@ -6968,10 +6985,20 @@ namespace sys;
 define LEAD_OFFSET      = 0xD800 - (0x10000 >> 10);
 define SURROGATE_OFFSET = 0x10000 - (0xD800 << 10) - 0xDC00;
 
+default uint32 ccUtf8ToUnicode( uint32 byte, uint32 *state, unichar *retunicode ); // In String.ec`
+static inline uint32 decodeUTF8( uint32 b, uint32 *state, unichar *retCodePoint ) { return ccUtf8ToUnicode(b, state, retCodePoint); }
+
 public bool UTF8Validate(const char * source)
 {
    if(source)
    {
+      const byte * s = (const byte *)source;
+      unichar codepoint;
+      uint32 state = 0;
+      while (*s)
+         decodeUTF8(*s++, &state, &codepoint);
+      return state == 0;
+      /*
       int c;
       for(c = 0; source[c];)
       {
@@ -7021,6 +7048,7 @@ public bool UTF8Validate(const char * source)
            (codePoint < 0x10000 && numBytes > 3))
             return false;
       }
+      */
    }
    return true;
 }

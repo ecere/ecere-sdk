@@ -4,9 +4,13 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+import "fieldValue"
+
+/*
 #define uint _uint
 #include "ffi.h"
 #undef uint
+*/
 
 #include <stdarg.h>
 
@@ -211,6 +215,7 @@ public class Database
    DataSourceDriver ds;
    OldList listTbl { offset = (uint)(uintptr)&((Table)0).prev };
    public virtual String GetName();
+   // TOCHECK: Deprecate this? isn't used anywhere
    public virtual Array<String> GetTables(); // TODO: make this Container<Table> GetTables(); // if supported, filled with ready to open Tables
 
    ~Database()
@@ -239,9 +244,11 @@ public:
    property uint viewsCount { get { return ObjectsCount(view); } }
    property Array<String> tables { get { return GetTables(); } }
 
+   // TODO: Get rid of all these, they are not defined anywhere and we have no need for a common API for these different 'ObjectTypes'
    virtual uint ObjectsCount(ObjectType type);
    virtual bool RenameObject(ObjectType type, const String name, const String rename);
    virtual bool DeleteObject(ObjectType type, const String name);
+
    virtual Table OpenTable(const String name, OpenOptions open);
    virtual bool Begin();
    virtual bool Commit();
@@ -304,6 +311,7 @@ public:
    virtual Field FindField(const String name);
    virtual bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init);
    virtual Container<Field> GetFields();
+   virtual uint GetRecordSize();
 
    bool Index(int count, FieldIndex * fieldIndexes)
    {
@@ -364,32 +372,32 @@ public:
             {
                int64 data = 0;
                Class type = fld.type;
-               if(type.type == unitClass && !type.typeSize)
+               if(type && type.type == unitClass && !type.typeSize)
                {
                   Class dataType = eSystem_FindClass(type.module, type.dataTypeString);
                   if(dataType)
                      type = dataType;
                }
-               if(type.type == structClass)
+               if(type && type.type == structClass)
                   data = (int64)(intptr)new0 byte[type.structSize];
                if(!df.prev)
                {
                   dr = list.AddRow();
                   dr.tag = r.sysID;
                }
-               ((bool (*)())(void *)r.GetData)(r, fld, type, (type.type == structClass) ? (void *)(intptr)data : &data);
-               if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
+               ((bool (*)())(void *)r.GetData)(r, fld, type, (type && type.type == structClass) ? (void *)(intptr)data : &data);
+               if(type && (type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   dr.SetData(df, (void *)&data);
                else
                   dr.SetData(df, (void *)(intptr)data);
 
                // Is this missing some frees here? strings? Probably not: freeData = true?
                // ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
-               if(type.type == structClass)
+               if(type && type.type == structClass)
                {
                   delete (void *)(intptr)data;
                }
-               else if(!strcmp(type.dataTypeString, "char *"))
+               else if(type && !strcmp(type.dataTypeString, "char *"))
                {
                   // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
                   delete (char *)(intptr)data;
@@ -588,6 +596,9 @@ public:
    }
 
    property uint64 sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
+
+   bool GetDataFieldValue(Field field, FieldValue value) { return row ? row.GetDataFieldValue(field, value) : false; }
+   const void * GetRowData() { return row ? row.GetRowData() : null; }
 };
 
 public class DriverRow
@@ -613,6 +624,8 @@ public:
    virtual const char * GetColumn(int paramID);
    virtual bool BindQueryData(int paramID, Field fld, typed_object value);
    virtual bool GetQueryData(int paramID, Field fld, typed_object & value);
+   virtual bool GetDataFieldValue(Field fld, FieldValue value);
+   virtual const void * GetRowData();
 };
 
 public class SQLCustomFunction
@@ -621,10 +634,15 @@ public:
    Method method;
    Class returnType;
    Array<Class> args { };
-   ffi_type * rType;
+   void /*ffi_type*/ * rType;
    // Array<void *> does not work right now :(
    Array</*ffi_type*/ String> argTypes { };
-   ffi_cif cif;
+   void /*ffi_cif*/ * cif;
+
+   ~SQLCustomFunction()
+   {
+      delete cif;
+   }
 }
 
 public struct FieldFindData

@@ -99,6 +99,7 @@ bool FILE_FileGetSize(const char * fileName, FileSize * size);
 bool FILE_FileGetStats(const char * fileName, FileStats stats);
 void FILE_FileFixCase(char * file);
 void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
+int FILE_Seek64(FILE * f, int64 offset, int origin);
 
 private:
 
@@ -470,6 +471,19 @@ public:
          case current: fmode = SEEK_CUR; break;
       }
       return fseek(input ? input : output, pos, fmode) != EOF;
+   }
+
+   virtual bool Seek64(int64 pos, FileSeekMode mode)
+   {
+      uint fmode = SEEK_SET;
+      switch(mode)
+      {
+         case start: fmode = SEEK_SET; break;
+         case end: fmode = SEEK_END; break;
+         case current: fmode = SEEK_CUR; break;
+      }
+      return
+         FILE_Seek64(input ? input : output, pos, fmode) != EOF;
    }
 
    virtual uint Tell(void)
@@ -949,7 +963,7 @@ public FileAttribs FileExists(const char * fileName)
    {
       return EARFileSystem::Exists(archiveName, archiveFile);
    }
-   else if(strstr(fileName, "http://") == fileName)
+   else if(strstr(fileName, "http://") == fileName || strstr(fileName, "https://") == fileName || strstr(fileName, "wfs://") == fileName)
    {
       return FileAttribs { isFile = true };
    }

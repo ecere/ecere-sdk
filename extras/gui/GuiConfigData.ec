@@ -4,7 +4,7 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-class GuiConfigData
+public class GuiConfigData
 {
    virtual bool onSave();
    virtual void onModified()
@@ -22,11 +22,11 @@ public:
       applyWindowConfig(configId, window);
       {
          bool isNew = false;
-         GuiDataWindow guiData = insertWindowConfig(configId, true, &isNew);
+         GuiDataWindow * guiData = insertWindowConfig(configId, &isNew);
          if(guiData && isNew)
          {
             if(window.state != minimized)
-               guiData.state = window.state;
+               guiData->state = window.state;
             recordWindowPosition(guiData, window);
             recordWindowSize(guiData, window);
             onModified();
@@ -37,18 +37,18 @@ public:
 
    void saveWindowState(const char * configId, Window window, WindowState state)
    {
-      GuiDataWindow guiData = insertWindowConfig(configId, true, null);
+      GuiDataWindow * guiData = insertWindowConfig(configId, null);
       if(guiData)
       {
          if(state != minimized)
-            guiData.state = state;
+            guiData->state = state;
          onModified();
       }
    }
 
    void saveWindowPosition(const char * configId, Window window, Point position, Size size)
    {
-      GuiDataWindow guiData = insertWindowConfig(configId, true, null);
+      GuiDataWindow * guiData = insertWindowConfig(configId, null);
       if(guiData && window.state == normal)
       {
          recordWindowPosition(guiData, window);
@@ -59,7 +59,7 @@ public:
 
    void saveWindowSize(const char * configId, Window window, Size size)
    {
-      GuiDataWindow guiData = insertWindowConfig(configId, true, null);
+      GuiDataWindow * guiData = insertWindowConfig(configId, null);
       if(guiData && window.state == normal)
       {
          recordWindowSize(guiData, window);
@@ -69,23 +69,24 @@ public:
 
    void saveWindowClose(const char * configId)
    {
-      GuiDataWindow guiData = getWindowConfig(configId);
-      if(guiData)
-         guiData.saving = false;
+      getWindowConfig(configId);
       if(modified)
          onSave();
    }
 
    void savePaneSplitterSize(const char * configId, double scaleSplit)
    {
-      GuiDataPaneSplitter guiData = null;
+      GuiDataPaneSplitter * guiData = null;
+      MapIterator<String, GuiDataPaneSplitter> it { map = paneSplitters };
+
       if(!paneSplitters)
-         paneSplitters = { };
-      if(!(guiData = paneSplitters[configId]))
-         paneSplitters[configId] = guiData = { };
-      if(!guiData.loading)
+         it.map = paneSplitters = { };
+      if(!it.Index(configId, true))
+         it.data = { };
+      guiData = (GuiDataPaneSplitter *)paneSplitters.GetData(it.pointer);
+      if(!guiData->loading)
       {
-         guiData.scaleSplit = scaleSplit;
+         guiData->scaleSplit = scaleSplit;
          onModified();
       }
    }
@@ -97,16 +98,22 @@ private:
    {
       timer.Stop();
 
-      if(windows)
+      if(windows) { windows.Free(); delete windows; }
+      if(paneSplitters) { paneSplitters.Free(); delete paneSplitters; }
+   }
+
+   thisclass copy()
+   {
+      if(this)
       {
-         windows.Free();
-         delete windows;
+         GuiConfigData configData
+         {
+            windows = windows ? { mapSrc = windows } : null;
+            paneSplitters = paneSplitters ? { mapSrc = paneSplitters } : null;
+         };
+         return configData;
       }
-      if(paneSplitters)
-      {
-         paneSplitters.Free();
-         delete paneSplitters;
-      }
+      return null;
    }
 
    Timer timer
@@ -123,32 +130,28 @@ private:
       }
    };
 
-   GuiDataWindow getWindowConfig(const char * configId)
+   GuiDataWindow * getWindowConfig(const char * configId)
    {
-      GuiDataWindow guiData = null;
-      if(windows)
-         guiData = windows[configId];
-      return guiData;
+      MapIterator<String, GuiDataWindow> it { map = windows };
+      return (windows && it.Index(configId, false)) ? (GuiDataWindow *)windows.GetData(it.pointer) : null;
    }
 
-   GuiDataWindow insertWindowConfig(const char * configId, bool startSaving, bool *isNew)
+   GuiDataWindow * insertWindowConfig(const char * configId, bool *isNew)
    {
-      GuiDataWindow guiData = null;
-      if(startSaving)
+      GuiDataWindow * guiData = null;
+      MapIterator<String, GuiDataWindow> it { map = windows };
+      if(!windows)
+         it.map = windows = { };
+
+      if(!it.Index(configId, true))
       {
-         if(!windows)
-            windows = { };
-         if(!(guiData = windows[configId]))
-         {
-            windows[configId] = guiData = { };
-            if(isNew)
-               *isNew = true;
-         }
-         guiData.saving = true;
+         it.data = { };
+         if(isNew)
+            *isNew = true;
       }
-      else
-         guiData = getWindowConfig(configId);
-      if(/*!startSaving && */guiData && (!guiData.saving || guiData.loading))
+      guiData = (GuiDataWindow *)windows.GetData(it.pointer);
+
+      if(guiData && guiData->loading)
          guiData = null;
       return guiData;
    }
@@ -165,37 +168,38 @@ private:
 
    void applyWindowConfig(const char * configId, Window window)
    {
-      GuiDataWindow guiData = getWindowConfig(configId);
+      GuiDataWindow * guiData = getWindowConfig(configId);
       if(guiData)
       {
-         guiData.loading = true;
+         guiData->loading = true;
          window.state = normal;
          applyWindowPosition(window, guiData);
          applyWindowSize(window, guiData);
-         window.Move(guiData.position.x, guiData.position.y, guiData.size.w, guiData.size.h);
-         window.state = guiData.state;
-         guiData.loading = false;
+         window.Move(guiData->position.x, guiData->position.y, guiData->size.w, guiData->size.h);
+         window.state = guiData->state;
+         guiData->loading = false;
       }
    }
 
-   void applyWindowPosition(Window window, GuiDataWindow guiData)
+   void applyWindowPosition(Window window, GuiDataWindow * guiData)
    {
-      window.position = guiData.position;
+      window.position = guiData->position;
    }
 
-   void applyWindowSize(Window window, GuiDataWindow guiData)
+   void applyWindowSize(Window window, GuiDataWindow * guiData)
    {
-      window.size = guiData.size;
+      window.size = guiData->size;
    }
 
    void applyPaneSplitterConfig(const char * configId, PaneSplitter paneSplitter)
    {
-      GuiDataPaneSplitter guiData = paneSplitters[configId];
-      if(guiData)
+      MapIterator<String, GuiDataPaneSplitter> it { map = paneSplitters };
+      if(paneSplitters && it.Index(configId, false))
       {
-         guiData.loading = true;
-         paneSplitter.scaleSplit = guiData.scaleSplit;
-         guiData.loading = false;
+         GuiDataPaneSplitter * guiData = (GuiDataPaneSplitter *)paneSplitters.GetData(it.pointer);
+         guiData->loading = true;
+         paneSplitter.scaleSplit = guiData->scaleSplit;
+         guiData->loading = false;
       }
    }
 }
@@ -248,24 +252,22 @@ class SavedConfigWindow : Window
       if(data) data.saveWindowSize(getGuiConfigInstanceId(), this, clientSize);
    }
 
-   bool OnClose(bool parentClosing)
+   void OnDestroy()
    {
       GuiConfigData data = getGuiConfigData();
       if(data) data.saveWindowClose(getGuiConfigInstanceId());
-      return true;
    }
 }
 
-class GuiDataWindow : struct
+struct GuiDataWindow
 {
 public:
    WindowState state;
    Point position;
    Size size;
 private:
-   bool saving;
    bool loading;
-}
+};
 
 class SavedConfigPaneSplitter : PaneSplitter
 {
@@ -287,10 +289,10 @@ class SavedConfigPaneSplitter : PaneSplitter
    }
 }
 
-class GuiDataPaneSplitter : struct
+struct GuiDataPaneSplitter
 {
 public:
    double scaleSplit;
 private:
    bool loading;
-}
+};
