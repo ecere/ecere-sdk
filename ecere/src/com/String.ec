@@ -1323,7 +1323,7 @@ public:
                newSize = maxSize;
             if(newSize > size)
             {
-               _string = renew _string char[newLen];
+               _string = renew _string char[newSize];
                size = newSize;
             }
          }
