@@ -1287,6 +1287,19 @@ public:
          };
       }
    }
+   property const String
+   {
+      get { return _string; }
+      set
+      {
+         return
+         {
+            len = value ? strlen(value) : 0;
+            _string = (char *)value;
+            allocType = pointer;
+         };
+      }
+   }
 
    void concatf(const char * format, ...)
    {
@@ -1335,6 +1348,9 @@ public:
             len += addedLen;
             _string[len] = 0;
          }
+         // WARNING: auto-decref'ing for now when s is of pointer type!
+         if(s.allocType == pointer)
+            delete s;
       }
    }
 

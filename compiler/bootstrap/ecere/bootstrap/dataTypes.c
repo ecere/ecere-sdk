@@ -884,17 +884,15 @@ else
 return 1;
 }
 
-int __ecereNameSpace__ecere__com__String_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, const char * string1, const char * string2)
+static int __ecereNameSpace__ecere__com__String_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, const char * string1, const char * string2)
 {
-int result = 0;
-
 if(string1 && string2)
-result = (strcasecmp)(string1, string2);
-else if(!string1 && string2)
-result = 1;
-else if(string1 && !string2)
-result = -1;
-return result;
+return strcmp(string1, string2);
+if(!string1 && string2)
+return 1;
+if(string1 && !string2)
+return -1;
+return 0;
 }
 
 static char * __ecereNameSpace__ecere__com__String_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, char * string, char * tempString, void * fieldData, unsigned int * needClass)
@@ -1210,6 +1208,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__StaticString;
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CIString;
+
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
 {
 (__extension__ ({
@@ -1519,6 +1519,17 @@ return this ? this->string : (((void *)0));
 
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this)
 {
+}
+
+int __ecereMethod___ecereNameSpace__ecere__com__CIString_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, char * this, const char ** string2)
+{
+if(this && string2)
+return (strcasecmp)(this, (const char *)string2);
+if(!this && string2)
+return 1;
+if(this && !string2)
+return -1;
+return 0;
 }
 
 int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen, struct __ecereNameSpace__ecere__com__Class * class, const void * object, va_list args)
@@ -3541,7 +3552,10 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereM
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "char[1]", 1, 1, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::String_OnCompare", "int ecere::com::String_OnCompare(ecere::com::Class _class, const char * string1, const char * string2)", __ecereNameSpace__ecere__com__String_OnCompare, module, 2);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::CIString", "String", 0, 0, (void *)0, (void *)0, module, 4, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__com__CIString = class;
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__com__CIString_OnCompare, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes1", "void ecere::com::InitializeDataTypes1(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes1, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::InitializeDataTypes", "void ecere::com::InitializeDataTypes(ecere::com::Module module)", __ecereNameSpace__ecere__com__InitializeDataTypes, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::PrintStdArgsToBuffer", "int ecere::com::PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, __builtin_va_list args)", __ecereNameSpace__ecere__com__PrintStdArgsToBuffer, module, 4);
