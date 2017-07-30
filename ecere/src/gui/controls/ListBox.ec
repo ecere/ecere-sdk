@@ -3500,8 +3500,12 @@ private:
                   (x >= rowStart && y >= rowY - rowHeight && x <= rowStart + 18 + plusIndent && y <= rowY + rowHeight-1))
                {
                   if(row.subRows.first && (row.parent || !(style.treeBranch) || (style.rootCollapse)) && x >= plusIndent)
+                  {
                      row.collapsed = !row.collapsed;
-                  return false;
+                     return false;
+                  }
+                  else if(rowY > y)
+                     newCurrentRow = row;
                }
                else
                {
@@ -4090,6 +4094,7 @@ private:
       DataRow row;
       int rowY = (style.header) ? rowHeight : 0;
       int plusIndent = 0;
+      bool result = true;
 
       OnLeftButtonUp(x,y,mods);
       if(style.alwaysEdit)
@@ -4098,42 +4103,39 @@ private:
             if(editData && editData.visible)
             {
                editData.Activate();
-               NotifyDoubleClick(master, this, x, y, mods);
-               return false;
+               result = NotifyDoubleClick(master, this, x, y, mods);
             }
       }
-      for(row = firstRowShown; row; row = row.GetNextRow())
+      if(result)
       {
-         rowY += rowHeight;
-         if(rowY > y || (style.multiSelect && !row.GetNextRow()))
+         for(row = firstRowShown; row; row = row.GetNextRow())
          {
-            if(style.treeBranch)
+            rowY += rowHeight;
+            if(rowY > y || (style.multiSelect && !row.GetNextRow()))
             {
-               DataRow parent;
-               for(parent = (style.rootCollapse) ? row.parent : (row.parent ? row.parent.parent : null); parent; parent = parent.parent)
-                  if(!parent.header)
-                     plusIndent += 20;
-               plusIndent += 4;
+               if(style.treeBranch)
+               {
+                  DataRow parent;
+                  for(parent = (style.rootCollapse) ? row.parent : (row.parent ? row.parent.parent : null); parent; parent = parent.parent)
+                     if(!parent.header)
+                        plusIndent += 20;
+                  plusIndent += 4;
+               }
+               break;
             }
-            break;
          }
-      }
 
-      if((row && style.collapse && (x >= rowStart && x <= rowStart + 18 + plusIndent)) ||
-         NotifyDoubleClick(master, this, x, y, mods))
-      {
-         if(style.collapse)
+         if((row && style.collapse && (x >= rowStart && x <= rowStart + 18 + plusIndent)) ||
+            (result = NotifyDoubleClick(master, this, x, y, mods)))
          {
-            if(row && row.subRows.first)
+            if(style.collapse && row && row.subRows.first)
             {
                row.collapsed = !row.collapsed;
-               return false;
+               result = false;
             }
          }
-         // We need to return true here so that OnLeftButtonDown can popup the DataBox Editors
-         return true;
       }
-      return false;
+      return result;
    }
 
    bool OnRightButtonDown(int x, int y, Modifiers mods)

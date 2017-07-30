@@ -512,6 +512,8 @@ private:
                   {
                      NotifyTextEntry(master, this, editBox.contents, false);
                      editBox.modifiedDocument = false;
+
+                     return false;
                   }
                   //editBox.Deactivate();
                }
@@ -557,6 +559,8 @@ private:
                   {
                      NotifyTextEntry(master, this, editBox.contents, true);
                      editBox.modifiedDocument = false;
+
+                     return false;
                      //editBox.Deactivate();
                   }
 
