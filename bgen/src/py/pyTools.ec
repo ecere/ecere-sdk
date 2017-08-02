@@ -111,14 +111,27 @@ struct IterParamPlus
    //getName = defaultIterParamPlusGetName;
    Type next(ParamFilter filter)
    {
-      int l;
-      /*for(*/pm = pm ? pm.next : ol->first;
-      while(pm && !filter.match(pm.kind))//;
-          pm = pm.next;//);
+      pm = pm ? pm.next : ol->first;
+      while(pm && !filter.match(pm.kind))
+          pm = pm.next;
+      _set();
+      return pm;
+   }
+   Type prev(ParamFilter filter)
+   {
+      pm = pm ? pm.prev : ol->last;
+      while(pm && !filter.match(pm.kind))
+          pm = pm.prev;
+      _set();
+      return pm;
+   }
+   private void _set()
+   {
       delete name;
       last = pm && !pm.next;
       if(pm)
       {
+         int l;
          if(getName) name = (anon && !pm.name) ? PrintString("ap", ++ap) : getName(pm.name);
          if(maxlen && (l = strlen(name)) > len) len = l;
       }
@@ -127,7 +140,6 @@ struct IterParamPlus
          maxlen = false;
          ap = 0;
       }
-      return pm;
    }
    property bool isStruct { get {
          return pm.kind == classType && pm._class.registered && pm._class.registered.type == structClass; } }
