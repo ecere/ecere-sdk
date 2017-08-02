@@ -3,6 +3,8 @@ import "bgen"
 import "cHeader"
 import "cCode"
 
+#define TYPE_INFO_FROM(x) fn = x.fn, pt = x.pt, md = x.md, dm = x.dm, cl = x.cl, f = x.f, p = x.p, m = x.m, c = x.c
+
 define _defaultAccess = "AccessMode_defaultAccess";
 define _publicAccess = "AccessMode_publicAccess";
 define _privateAccess = "AccessMode_privateAccess";
@@ -677,7 +679,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
    // usage comment...
    if(!python)
       z.print("// ");
-   zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, from = ti*/ }, { anonymous = true }, vTop);
+   zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, TYPE_INFO_FROM(ti)*/ }, { anonymous = true }, vTop);
    if(forInstance)
       z.printx(" Instance_", m.mname, "(");
    else
@@ -695,7 +697,9 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
                if(!md.dataType.staticMethod)
                {
                   // Note: this should really be checking typed_object right here
-                  zTypeName(z, "__c", { type = ProcessTypeString("Class", false), md = md, cl = cl }, { param = true }, vTop);
+                  Type tt = ProcessTypeString("Class", false);
+                  zTypeName(z, "__c", { type = tt, md = md, cl = cl }, { param = true }, vTop);
+                  FreeType(tt);
                   prevParam = true;
                }
                if(prevParam) z.printx(", ");
@@ -828,9 +832,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
          else
             z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", __i, ");
       }
-      {
-         zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, from = ti*/ }, { anonymous = true }, vTop);
-      }
+      zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, TYPE_INFO_FROM(ti)*/ }, { anonymous = true }, vTop);
       z.printx(", \\\n      ");
       // function call parameters (for casting)
       {
@@ -1667,13 +1669,13 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
             Type t = ProcessTypeString(ti.cl.name, false);
             //Type t = ProcessTypeString(md.dataType.thisClass.string, false);
             if(ti.cl.type == systemClass) check();
-            astTypeName("__this", { type = t, from = ti }, opt2, vTop, params);
+            astTypeName("__this", { type = t, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
             FreeType(t);
          }
          if(!(ti.md && ti.cl && !ti.md.dataType.staticMethod) ||
             !(ti.md.dataType.params.count == 1 && (param = ti.md.dataType.params.first) && !param.name && param.kind == voidType))
          for(param = t.params.first; param; param = param.next)
-            astTypeName(param.name, { type = param, from = ti }, opt2, vTop, params);
+            astTypeName(param.name, { type = param, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
       }
    }
    else check();
