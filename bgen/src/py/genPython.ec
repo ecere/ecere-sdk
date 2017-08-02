@@ -1743,17 +1743,30 @@ void processPyClass(PythonGen g, BClass c)
                   }
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
+                     bool defNone = true;
+                     Type pm = null;
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      // TODO: Iterate with prev() and keep a flag that = None can be added rather than checking .last
+                     while(itr.prev(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     {
+                        if(itr.isReturnValue) continue;
+                        if(itr.isNullable && itr.pm.constant)
+                        {
+                           if(defNone)
+                              pm = itr.pm;
+                        }
+                        else
+                           defNone = false;
+                     }
+                     defNone = false;
                      while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue) continue;
                         // FIX #05
                         //out.ds.printx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
-                        {
-                           bool defNone = itr.last && itr.isNullable && itr.pm.constant;
-                           out.ds.printx(", ", itr.name, defNone ? " = None" : "");
-                        }
+                        if(itr.pm == pm)
+                           defNone = true;
+                        out.ds.printx(", ", itr.name, defNone ? " = None" : "");
                      }
                   }
                   out.ds.printxln("):");
