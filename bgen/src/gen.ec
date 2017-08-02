@@ -677,38 +677,16 @@ class OptBits
    bool param:1;
 };
 
-class TypeInfo : struct
+struct TypeInfo
 {
-   Type type;
-   GlobalFunction fn;
-   Property pt;
-   Method md;
-   DataMember dm;
-   Class cl;
-
-   BFunction f;
-   BProperty p;
-   BMethod m;
-   BClass c;
+                  Type type;
+                  DataMember dm;
+   BFunction f;   GlobalFunction fn;
+   BProperty p;   Property pt;
+   BMethod m;     Method md;
+   BClass c;      Class cl;
    BTemplaton t;
-
-   property TypeInfo from
-   {
-      set
-      {
-         fn = value.fn;
-         pt = value.pt;
-         md = value.md;
-         dm = value.dm;
-         cl = value.cl;
-
-         f = value.f;
-         p = value.p;
-         m = value.m;
-         c = value.c;
-      }
-   }
-}
+};
 
 struct NamespaceDependencyInfo
 {
