@@ -2005,7 +2005,6 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             char * typeName = printType(thisType, false, false);
             char * iname = null;// = CopyAllNonCapsString(c.cl.name);
             char * t = PrintString("__", "x"); //new char[2];
-            TypeInfo qti;
             out.ds.println("");
             out.ds.printx(sk, "@ffi.callback(\"void(");
             t[2] = (char)tolower(typeName[0]);
@@ -2020,7 +2019,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
                {
                   bool isStruct = itr.isStruct;
-                  char * modern = strTypeName("", (qti = { type = itr.pm, cl = c.cl }), { anonymous = true }, null); delete qti;
+                  char * modern = strTypeName("", { type = itr.pm, cl = c.cl }, { anonymous = true }, null);
                   if(!iname && !strcmp(c.cl.name, modern))
                      iname = CopyString(itr.name);
                   if(itr.pm.kind == templateType)
@@ -2051,7 +2050,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                while(itr.next(noElipsis/-*tofix: { all = true, ellipsisOn = false }*-/))
                {
                   bool isStruct = param_isStruct;
-                  char * modern = strTypeName("", (qti = { type = itr.pm, cl = c.cl }), { anonymous = true }, null); delete qti;
+                  char * modern = strTypeName("", { type = itr.pm, cl = c.cl }, { anonymous = true }, null);
                   if(!iname && !strcmp(c.cl.name, modern))
                      iname = CopyString(itr.name);
                   if(itr.pm.kind == templateType)
@@ -2076,7 +2075,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      // todo tofix -- getSimpleDataTypeName is no longer used anywher... astTypeSpec would be where the newer code is
                      //Type tx = unwrapPointerType(itr.pm, &ptr);
                      //char * simple = getSimpleDataTypeName(tx, type, ptr, true, false, null);
-                     //char * modern = strTypeName("", (qti = { type = itr.pm, cl = c.cl }), { anonymous = true }, null); delete qti;
+                     //char * modern = strTypeName("", { type = itr.pm, cl = c.cl }, { anonymous = true }, null);
                      //if(!strcmp(simple, "class") && !strcmp(type, "any_object"))
                      //   delete simple, simple = CopyString(type);
                      //bool a = strstr(type, "const ") == type;
