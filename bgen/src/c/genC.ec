@@ -171,7 +171,7 @@ class CGen : Gen
       delete path;
    }
 
-   char * allocMacroSymbolName(bool noMacro, MacroType type, const char * name, const char * name2, int ptr)
+   char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
    {
       switch(type)
       {
@@ -265,15 +265,22 @@ class CGen : Gen
       MapNode<const String, const String> node;
       for(node = !python ? manualTypedefs.root.minimum : pythonManualTypedefs.root.minimum; node; node = node.next)
       {
+         Class clDep = null;
+         if(node.value && !strcmp(node.value, "Instance"))
+         {
+            clDep = eSystem_FindClass(mod, node.value);
+            assert(clDep != null);
+         }
          if(node.value)
          {
             char * ident;
-            char * spec = allocMacroSymbolName(strcmp(node.value, "Instance") != 0, C, node.value, null, 0);
+            char * spec = allocMacroSymbolName(strcmp(node.value, "Instance") != 0, C, { cl = clDep }, node.value, null, 0);
             bool noC = false;
             BOutput out { vmanual };
+            Class clKey = eSystem_FindClass(mod, node.key);
             if(actualTypeNames.Find(node.key))
                noC = true;
-            ident = allocMacroSymbolName(noC, C, node.key, null, 0);
+            ident = allocMacroSymbolName(noC, C, { cl = clKey }, node.key, null, 0);
             if(!strcmp(node.value, "Instance"))
             {
                Class clDep = eSystem_FindClass(mod, node.value);
@@ -508,7 +515,7 @@ class CGen : Gen
          {
             SpecClass sc;
             ClassDefList defs;
-            char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, c.cname, null, 0);
+            char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, { c = c }, c.cname, null, 0);
             if(cl.type == enumClass) check();
             if(cl.type == systemClass) check();
             if(cl.type == unitClass) check();
@@ -1178,7 +1185,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
 
             if(typedefType == _struct)
             {
-               char * symbolName = g_.allocMacroSymbolName(false, C, c.spec, null, 0);
+               char * symbolName = g_.allocMacroSymbolName(false, C, { c = c }, c.spec, null, 0);
                typedefDI.specifiers = { [
                   SpecBase { specifier = _typedef },
                   SpecClass { type = _struct, id = ASTIdentifier { string = symbolName } }
@@ -1195,7 +1202,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                }
                else
                {
-                  char * symbolName = g_.allocMacroSymbolName(c.noSpecMacro, C, c.spec, null, 0);
+                  char * symbolName = g_.allocMacroSymbolName(c.noSpecMacro, C, { c = c }, c.spec, null, 0);
                   typedefDI.specifiers = { [
                      SpecBase { specifier = _typedef },
                      SpecClass { id = ASTIdentifier { string = symbolName } }
@@ -1239,7 +1246,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
             if(!t.tp)
             {
                if(t.c.cl.templateClass.templateClass)
-                  baseName = g_.allocMacroSymbolName(false, T, t.c.cl.templateClass.name, null, 0);
+                  baseName = g_.allocMacroSymbolName(false, T, { cl = t.c.cl.templateClass }, t.c.cl.templateClass.name, null, 0);
                else
                {
                   BClass c = t.c.cl.templateClass;
@@ -1397,7 +1404,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          {
             if(isBaseClass)
             {
-               char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, name, null, 0);
+               char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
                quals.Add(SpecName { name = symbolName });
                if(vTopOutputType)
                   vTop.processDependency(vTopOutputType, otypedef, _class);
@@ -1412,7 +1419,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, name, null, 0);
+            char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
             quals.Add(SpecName { name = symbolName });
             if(vTopOutputType && (_class || t._class.registered))
                vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
@@ -1421,13 +1428,13 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       }
       case thisClassType:
       {
-         char * symbolName = g_.allocMacroSymbolName(false, THISCLASS, ti.cl.name, null, ti.cl.type == noHeadClass ? 1 : 0);
+         char * symbolName = g_.allocMacroSymbolName(false, THISCLASS, { cl = ti.cl }, ti.cl.name, null, ti.cl.type == noHeadClass ? 1 : 0);
          quals.Add(SpecName { name = symbolName });
          break;
       }
       case subClassType:
       {
-         char * symbolName = g_.allocMacroSymbolName(false, SUBCLASS, name, null, 0);
+         char * symbolName = g_.allocMacroSymbolName(false, SUBCLASS, { cl = _class }, name, null, 0);
          quals.Add(SpecName { name = symbolName });
          break;
       }

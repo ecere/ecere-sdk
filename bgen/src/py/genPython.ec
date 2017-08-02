@@ -396,7 +396,7 @@ class PythonGen : CGen
       delete path;
    }
 
-   char * allocMacroSymbolName(bool noMacro, MacroType type, const char * name, const char * name2, int ptr)
+   char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
    {
       switch(type)
       {
@@ -2029,7 +2029,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, c.cl, &cl);
                      if(tp.type == type && tp.identifier && tp.identifier.string)
                      {
-                        char * type = g.allocMacroSymbolName(false, TP, c.name, ctp.name, 0);
+                        char * type = g.allocMacroSymbolName(false, TP, { c = c }, c.name, ctp.name, 0);
                         out.ds.printx(prevParam ? ", " : "", type);
                         prevParam = true;
                         delete type;
@@ -2060,7 +2060,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, c.cl, &cl);
                      if(tp.type == type && tp.identifier && tp.identifier.string)
                      {
-                        char * type = g.allocMacroSymbolName(false, TP, c.name, ctp.name, 0);
+                        char * type = g.allocMacroSymbolName(false, TP, { c = c }, c.name, ctp.name, 0);
                         out.ds.printx(prevParam ? ", " : "", type);
                         prevParam = true;
                         delete type;

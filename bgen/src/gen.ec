@@ -121,7 +121,7 @@ private:
       }
    }
 
-   virtual char * allocMacroSymbolName(bool noMacro, MacroType type, const char * name, const char * name2, int ptr);
+   virtual char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr);
 
    virtual void prepareNamespaces();
    virtual void processNamespaces();
@@ -152,16 +152,16 @@ class SymbolNameCollection
 
    void init(Gen g)
    {
-      instance        = g.allocMacroSymbolName(false, C, "Instance"       , null, 0);
-      module          = g.allocMacroSymbolName(false, C, "Module"         , null, 0);
-      application     = g.allocMacroSymbolName(false, C, "Application"    , null, 0);
-      __class         = g.allocMacroSymbolName(false, C, "Class"          , null, 0);
-      method          = g.allocMacroSymbolName(false, C, "Method"         , null, 0);
-      _property       = g.allocMacroSymbolName(false, C, "Property"       , null, 0);
-      _define         = g.allocMacroSymbolName(false, C, "Define"         , null, 0);
-      globalFunction  = g.allocMacroSymbolName(false, C, "GlobalFunction" , null, 0);
+      instance        = g.allocMacroSymbolName(false, C, { }, "Instance"       , null, 0);
+      module          = g.allocMacroSymbolName(false, C, { }, "Module"         , null, 0);
+      application     = g.allocMacroSymbolName(false, C, { }, "Application"    , null, 0);
+      __class         = g.allocMacroSymbolName(false, C, { }, "Class"          , null, 0);
+      method          = g.allocMacroSymbolName(false, C, { }, "Method"         , null, 0);
+      _property       = g.allocMacroSymbolName(false, C, { }, "Property"       , null, 0);
+      _define         = g.allocMacroSymbolName(false, C, { }, "Define"         , null, 0);
+      globalFunction  = g.allocMacroSymbolName(false, C, { }, "GlobalFunction" , null, 0);
 
-      cm_instance     = g.allocMacroSymbolName(false, CM, "Instance"      , null, 0);
+      cm_instance     = g.allocMacroSymbolName(false, CM, { }, "Instance"      , null, 0);
    }
 
    ~SymbolNameCollection()
@@ -593,9 +593,9 @@ public:
    void init()
    {
       if(tp)
-         cname = g_.allocMacroSymbolName(false, TP, c.name, tp.name, 0);
+         cname = g_.allocMacroSymbolName(false, TP, { }, c.name, tp.name, 0);
       else
-         cname = g_.allocMacroSymbolName(false, T, c.cl.name, null, 0);
+         cname = g_.allocMacroSymbolName(false, T, { }, c.cl.name, null, 0);
    }
 }
 
@@ -1221,7 +1221,7 @@ class BClass : struct
             (!py && cl.type == enumClass && !strcmp(cl.name, "Alignment"))))
          skip = true;
       cname = getClassTypeName(cl);
-      coSymbol = g_.allocMacroSymbolName(false, CO, cname, null, 0);
+      coSymbol = g_.allocMacroSymbolName(false, CO, { }, cname, null, 0);
       upper = CopyAllCapsString(cl.type == bitClass ? name : "");
 
       isFromCurrentModule = classIsFromModule(cl, gen.mod, ec1ComponentsApp);
@@ -1250,9 +1250,9 @@ class BClass : struct
       noSpecMacro = noMacro || cl.type == enumClass || isString;
 
       if(cl.templateClass)
-         symbolName = g_.allocMacroSymbolName(false, T, cl.name, null, 0);
+         symbolName = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
       else
-         symbolName = g_.allocMacroSymbolName(noMacro, C, name, null, 0);
+         symbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
 
       if(python && py && isBool)
          symbolName[0] = (char)toupper(symbolName[0]); // Bool
@@ -1262,13 +1262,13 @@ class BClass : struct
       if(clBase)
       {
          if(clBase.templateClass)
-            baseSymbolName = g_.allocMacroSymbolName(false, T, clBase.name, null, 0);
+            baseSymbolName = g_.allocMacroSymbolName(false, T, { }, clBase.name, null, 0);
          else
          {
             bool enumDataType = cl.type == enumClass && clBase.type == systemClass;
             bool noMacro = cl.type == systemClass || isUnichar || enumDataType;
             const char * name = enumDataType ? tokenTypeString(cl.dataType) : strptrNoNamespace(clBase.name);
-            baseSymbolName = g_.allocMacroSymbolName(noMacro, C, name, null, 0);
+            baseSymbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
             if(cl.type == enumClass)
                base = CopyString(name);
          }
@@ -1533,8 +1533,8 @@ class BMethod : struct
       mname = copyCamelCaseString(md.name);
       //name = PrintString(c.cname, "_", mname);
       n = PrintString(c.cname, "_", mname); // n = PrintString("MN(", c.cname, ", ", mname, ")");
-      m = g_.allocMacroSymbolName(false, METHOD, c.cname, mname, 0);
-      v = g_.allocMacroSymbolName(false, M_VTBLID, c.cname, mname, 0);
+      m = g_.allocMacroSymbolName(false, METHOD, { }, c.cname, mname, 0);
+      v = g_.allocMacroSymbolName(false, M_VTBLID, { }, c.cname, mname, 0);
       s = PrintString(c.is_class ? "" : c.cname, "_", mname);
       if(!md.dataType)
          ProcessMethodType(md);
@@ -1594,7 +1594,7 @@ class BProperty : struct
       otherParamName = copyCamelCaseString(c.cl.name);
       if((!pt.conversion || c.cl.type == noHeadClass || c.cl.type == structClass || c.cl.type == normalClass) && *otherParamName)
          otherParamName[1] = 0; // temporary
-      p = gen.allocMacroSymbolName(false, PROPERTY, c.cname, name, 0);
+      p = gen.allocMacroSymbolName(false, PROPERTY, { }, c.cname, name, 0);
       if(!pt.dataType)
       {
          Context context = SetupTemplatesContext(c.cl);
