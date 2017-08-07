@@ -1448,14 +1448,14 @@ void processPyClass(PythonGen g, BClass c)
                                  out.ds.printx(sk, "      else: return None");*/
                                  out.ds.printx("return pyOrNewObject(", typeName, ", lib.", p.fpnGet, "(self.impl))");
                               }
-                              else if(cType.cl.type == structClass/* || cType.cl.type == noHeadClass*/)
+                              else if(cType.cl.type == structClass)
                               {
                                  out.ds.printx("value = ", typeName, "();");
                                  out.ds.printx(" lib.", p.fpnGet, "(self.impl, ffi.cast(\"", typeName, " *\", value.impl));");
                                  out.ds.print(" return value");
                               }
                               // FIX #05 (15.)
-                              else if(cType.cl.type == bitClass)
+                              else if(cType.cl.type == bitClass || cType.cl.type == noHeadClass)
                                  out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(self.impl))");
                               else if(cType.cl.type == enumClass)
                               {
