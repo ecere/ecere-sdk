@@ -672,6 +672,31 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             {
                uint offset; // = m.offset + m._class.offset;
                byte * memberData;
+
+               Property p = eClass_FindProperty(m._class, m.name, m._class.module);
+               if(p && p.IsSet && !p.Get && !p.Set)
+               {
+                  bool isSet = true;
+                  if(_class.type == normalClass || _class.type == noHeadClass || _class.type == structClass)
+                     isSet = p.IsSet(data);
+                  else
+                  {
+                     switch(_class.typeSize)
+                     {
+                        case 8: isSet = ((bool(*)(uint64))(void *)p.IsSet)(*(uint64*)data); break;
+                        case 4: isSet = ((bool(*)(uint32))(void *)p.IsSet)(*(uint32*)data); break;
+                        case 2: isSet = ((bool(*)(uint16))(void *)p.IsSet)(*(uint16*)data); break;
+                        case 1: isSet = ((bool(*)(  byte))(void *)p.IsSet)(*(  byte*)data); break;
+                        default:isSet = true;
+                     }
+                  }
+                  if(!isSet)
+                  {
+                     atMember = false;
+                     continue;
+                  }
+               }
+
                // TODO: Document/Improve this member offset stuff!!!
                eClass_FindDataMemberAndOffset(m._class, m.name, &offset, m._class.module, null, null);
                if(m._class.type == normalClass || m._class.type == noHeadClass)

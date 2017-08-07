@@ -1432,8 +1432,11 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    quote = (type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
            (type.type == enumClass && !eCON);
    if(quote) f.Puts("\"");
+     // TODO: Review / Clarify / Document how needClass should work
+   else if(needClass && type.type == bitClass) f.Puts("{ ");
    f.Puts(buffer);
    if(quote) f.Puts("\"");
+   else if(needClass && type.type == bitClass) f.Puts(" }");
    return true;
 }
 
@@ -1556,7 +1559,12 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
    else if(type.type == bitClass)
-      WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, eCON, true);
+   {
+      if(eCON)
+         WriteNumber(f, type, value, indent, true, false);
+      else
+         WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, false, true);
+   }
    else if(type.type == systemClass || type.type == unitClass)
       WriteNumber(f, type, value, indent, eCON, false);
    return true;
