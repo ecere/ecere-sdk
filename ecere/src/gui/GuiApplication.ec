@@ -274,6 +274,9 @@ public class GuiApplication : Application
             timer.Stop();
          }
       }
+
+      if(guiApp == this)
+         guiApp = null;
    }
 
    bool UpdateTimers()
