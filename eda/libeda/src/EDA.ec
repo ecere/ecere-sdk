@@ -82,7 +82,11 @@ static subclass(DataSourceDriver) GetDataDriver(const char * driverName)
       char moduleName[MAX_LOCATION];
       sprintf(moduleName, "EDA%s", driverName);
       if((module = eModule_Load(__thisModule.application, moduleName, publicAccess)))
+      {
          driver = FindDataDriverDerivative(eSystem_FindClass(module /*__thisModule.application*/, "DataSourceDriver"), driverName);
+         if(!driver || module._refCount > 1)
+            delete module;
+      }
    }
    return driver;
 }
