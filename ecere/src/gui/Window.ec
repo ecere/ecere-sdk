@@ -715,7 +715,6 @@ private:
       delete menu;
       delete statusBar;
 
-      OnDestroyed();
 #if !defined(__EMSCRIPTEN__)
       delete mutex;
 #endif
@@ -5959,6 +5958,8 @@ private:
 
       //autoCreate = false;
       //created = false;
+
+      OnDestroyed();
 
       // SHOULD THIS BE HERE? FIXED CRASH WITH GOTO DIALOG
       if(((subclass(Window))_class).pureVTbl)
