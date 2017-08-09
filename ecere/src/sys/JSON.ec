@@ -242,7 +242,7 @@ private:
                   if(type.type != structClass)
                      value.p = 0;
                }
-               else if(isSubclass(type, string))
+               else if(type && isSubclass(type, string))
                {
                   void * object = value.p;
                   Class subtype = superFindClass(string, type.module);
