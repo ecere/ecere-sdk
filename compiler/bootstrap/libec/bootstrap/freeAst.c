@@ -2247,7 +2247,7 @@ void FreeTypeData(struct __ecereNameSpace__ecere__com__Instance * privateModule)
 {
 struct __ecereNameSpace__ecere__com__Instance * m;
 
-for(m = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->allModules.first; m; m = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)m + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->next)
+for(m = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->allModules.last; m; m = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)m + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->prev)
 {
 FreeModuleData(m);
 }

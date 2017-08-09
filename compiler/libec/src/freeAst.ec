@@ -1355,7 +1355,7 @@ void FreeModuleData(Module module)
 public void FreeTypeData(Module privateModule)
 {
    Module m;
-   for(m = privateModule.application.allModules.first; m; m = m.next)
+   for(m = privateModule.application.allModules.last; m; m = m.prev)
    {
       FreeModuleData(m);
    }
