@@ -134,7 +134,7 @@ static int fill_buffer(URL_FILE *file, size_t want)
 
     if(maxfd == -1) {
 #ifdef _WIN32
-      Sleep(100);
+      ecere::sys::Sleep(0.01);
       rc = 0;
 #else
       /* Portable sleep for platforms other than Windows. */
