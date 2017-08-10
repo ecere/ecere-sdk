@@ -1172,6 +1172,7 @@ int ccStrPrintDouble( char *str, int bufsize, int decimals, double value )
   muldec = 10.0;
   accumsub = 0;
   str += offset + 1;
+  size++;
 
   for( index = 0 ; index < decimals ; index++ )
   {
