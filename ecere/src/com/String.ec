@@ -1068,7 +1068,7 @@ public char * CopyString(const char * string)
       return null;
 }
 
-public bool GetString(char ** buffer, char * string, int max)
+public bool GetString(const char ** buffer, char * string, int max)
 {
    int c;
    char ch;
@@ -1114,14 +1114,14 @@ public bool GetString(char ** buffer, char * string, int max)
    return result;
 }
 
-public int GetValue(char ** buffer)
+public int GetValue(const char ** buffer)
 {
    char string[20];
    GetString(buffer,string,20);
    return atoi(string);
 }
 
-public uint GetHexValue(char ** buffer)
+public uint GetHexValue(const char ** buffer)
 {
    char string[20];
    GetString(buffer,string,20);
@@ -1142,7 +1142,7 @@ public char * StripQuotes(const char * string, char * output)
 public double FloatFromString(const char * string)
 {
    int c, dig;
-   float dec = 0,res = 0;
+   double dec = 0, res = 0;
    int neg = 1;
    char ch;
    for(c = 0; string[c]; c++)
