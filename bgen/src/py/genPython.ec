@@ -145,8 +145,7 @@ class PythonGen : CGen
       if(py)
       {
          BFunction f; IterFunction itf { n.ns };
-         ParamFilter noElipsis { all = true };
-         noElipsis.ellipsisOn = false;
+         ParamFilter paramFilter { all = true };
          while((f = itf.next()))
          {
             if(!f.skip && !f.isDllExport)
@@ -167,7 +166,7 @@ class PythonGen : CGen
                   {
                      //for(param = t.params.first; param; param = param.next)
                      IterParamPlus itr { &t.params };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         SpecialType st = specialType(itr.pm);
                         if(st == typedObject)
@@ -186,22 +185,31 @@ class PythonGen : CGen
                      {
                         const char * comma = "";
                         IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
-                        while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                        while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                         {
-                           out.ds.printx(comma, itr.name);
+                           if(itr.pm.kind == ellipsisType)
+                              out.ds.printx(comma, "*args");
+                           else
+                              out.ds.printx(comma, itr.name);
                            comma = ", ";
                         }
                      }
-                     out.ds.printx("): lib.", f.ccfname, "(");
+                     out.ds.printx("): ");
+                     if(f.fn.dataType.returnType.kind != voidType) // todo, type conversion to py
+                        out.ds.printx("return ");
+                     out.ds.printx("lib.", f.ccfname, "(");
                      if(!paramsIsOnlyVoid(&t.params))
                      {
                         const char * comma = "";
                         IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
-                        while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                        while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                         {
-                           bool ptr = itr.isNullable;
-                           out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
-                           comma = ", ";
+                           if(itr.pm.kind != ellipsisType)
+                           {
+                              bool ptr = itr.isNullable;
+                              out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
+                              comma = ", ";
+                           }
                         }
                      }
                      out.ds.printxln(")");
@@ -527,8 +535,7 @@ void processPyClass(PythonGen g, BClass c)
 {
    bool skip = c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class;
    const char * sk = skip ? "# " : "";
-   ParamFilter noElipsis { all = true };
-   noElipsis.ellipsisOn = false;
+   ParamFilter paramFilter { all = true };
    if(!(c.skip || c.cl.type == systemClass || c.isByte || c.isCharPtr ||
          c.isUnInt || c.isUnichar || c.is_class || c.isInstance ||
          /*c.isString || */c.isBool)) // (skip)
@@ -1664,12 +1671,12 @@ void processPyClass(PythonGen g, BClass c)
                   Type param;
                   out.ds.printx(sk, "   def ", m.mname, "(self");
                   IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                  while(itr.next(noElipsis/-*tofix: { all = true, ellipsisOn = false }*-/))
+                  while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
                      out.ds.printx(", ", itr.name);
                   out.ds.println("):");
                   out.ds.printx(sk, "      lib.", m.s, "(self.impl");
                   IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                  while(itr.next(noElipsis/-*tofix: { all = true, ellipsisOn = false }*-/))
+                  while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
                   {
                      if(param.templateParameter)
                         out.ds.printx(", TA(", itr.name, ")");
@@ -1686,13 +1693,18 @@ void processPyClass(PythonGen g, BClass c)
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
-                        out.ds.printx(", ", itr.name);
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+                     {
+                        if(itr.pm.kind == ellipsisType)
+                           out.ds.printx(", *args");
+                        else
+                           out.ds.printx(", ", itr.name);
+                     }
                   }
                   out.ds.println("):");
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue)
                            out.ds.printxln("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
@@ -1705,11 +1717,14 @@ void processPyClass(PythonGen g, BClass c)
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         bool ptr = itr.isNullable;
                         //BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
-                        out.ds.printx(", ", ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+                        if(itr.pm.kind == ellipsisType)
+                           out.ds.printx(", *ellipsisArgs(args)");
+                        else
+                           out.ds.printx(", ", ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
                      }
                   }
                   out.ds.printxln(")");
@@ -1730,13 +1745,17 @@ void processPyClass(PythonGen g, BClass c)
                else if(m.md.type == normalMethod)
                {
                   int multireturn = 0;
+                  // todo variadic/ellipsis, typed --> bool convertTypedArgs = false;
                   out.ds.println("");
                   out.ds.printx(sk, "   def ", m.mname, "(self");
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix { all = true, ellipsisOn = false }*/))
                      {
+                        /* todo variadic/ellipsis, typed --> SpecialType st = specialType(itr.pm);
+                        if(st == typedObject)
+                           convertTypedArgs = true;*/
                         if(itr.isReturnValue)
                            multireturn++;
                      }
@@ -1747,7 +1766,7 @@ void processPyClass(PythonGen g, BClass c)
                      Type pm = null;
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      // TODO: Iterate with prev() and keep a flag that = None can be added rather than checking .last
-                     while(itr.prev(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.prev(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue) continue;
                         if(itr.isNullable && itr.pm.constant)
@@ -1759,21 +1778,24 @@ void processPyClass(PythonGen g, BClass c)
                            defNone = false;
                      }
                      defNone = false;
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue) continue;
                         // FIX #05
                         //out.ds.printx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
                         if(itr.pm == pm)
                            defNone = true;
-                        out.ds.printx(", ", itr.name, defNone ? " = None" : "");
+                        if(itr.pm.kind == ellipsisType)
+                           out.ds.printx(", *args");
+                        else
+                           out.ds.printx(", ", itr.name, defNone ? " = None" : "");
                      }
                   }
                   out.ds.printxln("):");
                   /*if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/-*tofix: { all = true, ellipsisOn = false }*-/))
+                     while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
                      {
                         if(itr.isReturnValue || !(itr.last && itr.isNullable)) continue;
                         out.ds.printxln("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
@@ -1784,8 +1806,9 @@ void processPyClass(PythonGen g, BClass c)
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
+                        if(itr.pm.kind == ellipsisType) continue;
                         if(itr.isReturnValue)
                         {
                            char * _type = printType(itr.pm, false, false);
@@ -1839,12 +1862,15 @@ void processPyClass(PythonGen g, BClass c)
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         char * _type = printType(itr.pm, false, false);
                         char * type = getNoNamespaceString(_type, null, false);
                         bool cast = itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass;
-                        printArgPassing(out, itr.name, type, itr.pm, false, false, cast);
+                        if(itr.pm.kind == ellipsisType)
+                           out.ds.printx(", *ellipsisArgs(args)");
+                        else
+                           printArgPassing(out, itr.name, type, itr.pm, false, false, cast);
                         delete type;
                         delete _type;
                         /*BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
@@ -1859,7 +1885,7 @@ void processPyClass(PythonGen g, BClass c)
                      const char * comma = "";
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      out.ds.print("      return ");
-                     while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue)
                         {
@@ -1983,7 +2009,7 @@ void initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char * 
 
 void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty userDataProp)
 {
-   ParamFilter noElipsis { all = true };
+   ParamFilter paramFilter { all = true };
    // methods
    {
       BMethod m; IterMethod itm { c.cl };
@@ -2016,7 +2042,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
             {
                IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-               while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+               while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                {
                   bool isStruct = itr.isStruct;
                   char * modern = strTypeName("", { type = itr.pm, cl = c.cl }, { anonymous = true }, null);
@@ -2036,6 +2062,8 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      }
                      else check();
                   }
+                  else if(itr.pm.kind == ellipsisType)
+                     out.ds.printx(", *args");
                   else
                   {
                      char * type = printType(itr.pm, false, false);
@@ -2047,7 +2075,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                   delete modern;
                }
                /*IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-               while(itr.next(noElipsis/-*tofix: { all = true, ellipsisOn = false }*-/))
+               while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
                {
                   bool isStruct = param_isStruct;
                   char * modern = strTypeName("", { type = itr.pm, cl = c.cl }, { anonymous = true }, null);
@@ -2109,9 +2137,12 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
             {
                IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-               while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+               while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                {
-                  out.ds.printx(prevParam ? ", " : "", itr.name);
+                  if(itr.pm.kind == ellipsisType)
+                     out.ds.printx(prevParam ? ", " : "", "*args");
+                  else
+                     out.ds.printx(prevParam ? ", " : "", itr.name);
                   prevParam = true;
                }
             }
@@ -2141,13 +2172,15 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
             {
                IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-               while(itr.next(noElipsis/*tofix: { all = true, ellipsisOn = false }*/))
+               while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                {
                   bool first = thisClass && itr.pm == m.md.dataType.params.first;
                   char * _type = printType(itr.pm, false, false);
                   char * type = getNoNamespaceString(_type, null, false);
                   if(thisTemplate && itr.pm == m.md.dataType.params.first)
                      out.ds.printx(", ", iname);
+                  else if(itr.pm.kind == ellipsisType)
+                     out.ds.printx(", *ellipsisArgs(args)");
                   else
                      printArgPassing(out, itr.name, type, itr.pm, true, first, false);
                   delete type;

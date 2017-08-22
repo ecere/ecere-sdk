@@ -87,6 +87,21 @@ def convertTypedArgs(args):
       if isinstance(a, Instance):   cargs += (a.impl._class, a.impl)
    return cargs + (ffi.NULL,)
 
+def ellipsisArgs(args):
+   cargs = ()
+   for a in args:
+      if type(a) == str:               cargs += (ffi.new("char[]", a.encode('utf8')),) # tocheck
+      elif type(a) == int:             cargs += (ffi.cast("int", a),)
+      elif type(a) == float:           cargs += (ffi.cast("double", a),)
+      elif isinstance(a, Instance):    cargs += (a.impl,)
+      elif hasattr(a, 'impl'):
+         if type(a.impl) == str:       cargs += (ffi.new("char[]", a.impl.encode('utf8')),) # tocheck
+         elif type(a.impl) == int:     cargs += (ffi.cast("int", a.impl),)
+         elif type(a.impl) == float:   cargs += (ffi.cast("double", a.impl),)
+         else:                         print("ellipsisArgs: warning, unknown argument type")
+      else:                            print("ellipsisArgs: warning, unknown argument type")
+   return cargs
+
 def ecPtr(_pyObject):
    if _pyObject is None: return ffi.NULL
    return _pyObject.impl
