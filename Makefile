@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
+.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 ifneq ($(V),1)
 .SILENT:
 endif
@@ -169,7 +169,7 @@ XOBJDIR := obj$(OBJALT)/
 XOBJBINDIR := $(OBJDIR)$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/
 XOBJLIBDIR := $(OBJDIR)$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
 
-all: prepbinaries ide epj2make documentor eda codeguard ecereaudio
+all: prepbinaries ide epj2make bgen documentor eda codeguard ecereaudio
 	@$(call echo,The Ecere SDK is fully built.)
 
 outputdirs:
@@ -243,29 +243,34 @@ endif
 	@$(call echo,Building 2nd stage compiler)
 	+cd compiler && $(_MAKE)
 
-prepbinaries: compiler ecerecom
+prepbinaries: compiler libec2 ecerecom
 	@$(call echo,Enabling 2nd stage binaries...)
 ifdef WINDOWS_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJBINDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV),$(OBJBINDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJBINDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJBINDIR))
 endif
 ifdef LINUX_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJLIBDIR))
 	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO).0
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
+	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO).0
 	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO)
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
+	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO)
 endif
 ifndef WINDOWS_TARGET
 ifndef LINUX_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SO),$(OBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 endif
 endif
 	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
@@ -279,23 +284,28 @@ ifdef WINDOWS_HOST
 	$(call cp,ecere/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecere$(HOST_SOV),$(XOBJBINDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecereCOM$(HOST_SOV),$(XOBJBINDIR))
 	$(call cp,compiler/libec/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec$(HOST_SOV),$(XOBJBINDIR))
+	$(call cp,compiler/libec2/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec2$(HOST_SOV),$(XOBJBINDIR))
 endif
 ifdef WINDOWS_HOST
 	$(call cp,ecere/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecere$(HOST_SOV),$(XOBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecereCOM$(HOST_SOV),$(XOBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec$(HOST_SOV),$(XOBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec2$(HOST_SOV),$(XOBJLIBDIR))
 	ln -sf $(HOST_LP)ecere$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecere$(HOST_SO).0
 	ln -sf $(HOST_LP)ecereCOM$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecereCOM$(HOST_SO).0
 	ln -sf $(HOST_LP)ec$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec$(HOST_SO).0
+	ln -sf $(HOST_LP)ec2$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec2$(HOST_SO).0
 	ln -sf $(HOST_LP)ecere$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecere$(HOST_SO)
 	ln -sf $(HOST_LP)ecereCOM$(HOST_SOV) $(XOBJLIBDIR)$(LP)ecereCOM$(HOST_SO)
 	ln -sf $(HOST_LP)ec$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec$(HOST_SO)
+	ln -sf $(HOST_LP)ec2$(HOST_SOV) $(XOBJLIBDIR)$(LP)ec2$(HOST_SO)
 endif
 ifndef WINDOWS_HOST
 ifndef LINUX_HOST
 	$(call cp,ecere/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecere$(HOST_SO),$(XOBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ecereCOM$(HOST_SO),$(XOBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec$(HOST_SO),$(XOBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec2$(HOST_SO),$(XOBJLIBDIR))
 endif
 endif
 	$(call cp,ear/cmd/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(HOST_E),$(XOBJBINDIR))
@@ -308,6 +318,14 @@ endif
 epj2make: prepbinaries
 	@$(call echo,Building epj2make...)
 	+cd epj2make && $(_MAKE)
+
+libec2: compiler
+	@$(call echo,Building libec2...)
+	+cd compiler/libec2 && $(_MAKE)
+
+bgen: prepbinaries
+	@$(call echo,Building bgen...)
+	+cd bgen && $(_MAKE)
 
 ecereaudio: prepbinaries
 ifneq ($(ECERE_AUDIO),n)
@@ -384,6 +402,7 @@ endif
 	$(call rm,$(SODESTDIR)$(LP)ecere$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)ec$(SOV))
+	$(call rm,$(SODESTDIR)$(LP)ec2$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SOV))
 ifdef EDASQLiteCipher
@@ -398,6 +417,7 @@ endif
 	$(call rm,$(OBJBINDIR)ecp$(E))
 	$(call rm,$(OBJBINDIR)ecs$(E))
 	$(call rm,$(OBJBINDIR)epj2make$(E))
+	$(call rm,$(OBJBINDIR)bgen$(E))
 	$(call rm,$(OBJBINDIR)ecere-ide$(E))
 	$(call rm,$(OBJBINDIR)documentor$(E))
 ifdef CodeGuard
@@ -411,6 +431,8 @@ cleantarget:
 	+cd ecere && $(_MAKE) cleantarget
 	+cd eda && $(_MAKE) cleantarget
 	+cd epj2make && $(_MAKE) cleantarget
+	+cd compiler/libec2 && $(_MAKE) cleantarget
+	+cd bgen && $(_MAKE) cleantarget
 	+cd ide && $(_MAKE) cleantarget
 	+cd installer && $(_MAKE) cleantarget
 ifneq ($(ECERE_AUDIO),n)
@@ -440,6 +462,8 @@ endif
 	+cd compiler && $(_MAKE) clean
 	+cd ear && $(_MAKE) clean
 	+cd epj2make && $(_MAKE) clean
+	+cd compiler/libec2 && $(_MAKE) clean
+	+cd bgen && $(_MAKE) clean
 	+cd ide && $(_MAKE) clean
 	+cd documentor && $(_MAKE) clean
 ifneq ($(ECERE_AUDIO),n)
@@ -459,6 +483,8 @@ endif
 	+cd compiler && $(_MAKE) realclean
 	+cd ear && $(_MAKE) realclean
 	+cd epj2make && $(_MAKE) realclean
+	+cd compiler/libec2 && $(_MAKE) realclean
+	+cd bgen && $(_MAKE) realclean
 	+cd ide && $(_MAKE) realclean
 	+cd documentor && $(_MAKE) realclean
 ifneq ($(ECERE_AUDIO),n)
@@ -485,11 +511,13 @@ BINARIES = \
 	ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV) \
 	ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A) \
 	compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV) \
+	compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV) \
 	compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) \
 	compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) \
 	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E) \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
 	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E) \
+	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
 	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E) \
 	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV) \
@@ -517,6 +545,7 @@ ifdef WINDOWS_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SO),$(OBJBINDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SO),$(OBJBINDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJBINDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJBINDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJBINDIR))
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJBINDIR))
 ifneq ($(ECERE_AUDIO),n)
@@ -531,6 +560,7 @@ ifdef LINUX_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV),$(OBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV),$(OBJLIBDIR))
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
 ifneq ($(ECERE_AUDIO),n)
@@ -542,6 +572,7 @@ endif
 	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO).0
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
+	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO).0
 ifdef EDASQLiteCipher
@@ -554,6 +585,7 @@ endif
 	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO)
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
+	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO)
 ifdef EDASQLiteCipher
@@ -567,6 +599,7 @@ ifndef LINUX_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SO),$(OBJLIBDIR))
 	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SO),$(OBJLIBDIR))
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJLIBDIR))
+	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJLIBDIR))
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
 ifneq ($(ECERE_AUDIO),n)
@@ -584,6 +617,7 @@ endif
 	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJBINDIR))
 	$(call cp,epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E),$(OBJBINDIR))
+	$(call cp,bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E),$(OBJBINDIR))
 	$(call cp,documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E),$(OBJBINDIR))
 ifdef CodeGuard
 	$(call cp,codeGuard/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/CodeGuard$(E),$(OBJBINDIR))
@@ -605,6 +639,7 @@ ifdef WINDOWS_TARGET
 	$(call cp,$(OBJBINDIR)$(LP)ecere$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)ecereCOM$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)ec$(SO),"$(DESTLIBDIR)/")
+	$(call cp,$(OBJBINDIR)$(LP)ec2$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)EDA$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(DESTLIBDIR)/")
 ifdef EDASQLiteCipher
@@ -619,6 +654,7 @@ endif
 	$(call cp,$(OBJBINDIR)ecp$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecs$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)epj2make$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)bgen$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)documentor$(E),"$(BINDIR)/")
 ifdef CodeGuard
 	$(call cp,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
@@ -634,6 +670,7 @@ ifdef OSX_TARGET
 	install $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)ec2$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/
 ifdef EDASQLiteCipher
@@ -648,6 +685,7 @@ endif
 	install $(OBJBINDIR)ecp$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecs$(E) $(BINDIR)/
 	install $(OBJBINDIR)epj2make$(E) $(BINDIR)/
+	install $(OBJBINDIR)bgen$(E) $(BINDIR)/
 	install $(OBJBINDIR)documentor$(E) $(BINDIR)/
 ifdef CodeGuard
 	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
@@ -687,6 +725,7 @@ endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO).0
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO).0
+	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO).0
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0
 ifdef EDASQLiteCipher
@@ -698,6 +737,7 @@ endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
+	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO)
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)
 	ln -sf ../$(LP)ecere$(SOV) $(DESTLIBDIR)/ec/$(LP)ecere$(SO)
@@ -722,6 +762,7 @@ endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(E) $(BINDIR)/bgen$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
 ifdef CodeGuard
 	install $(INSTALL_FLAGS) $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
@@ -757,6 +798,8 @@ ifdef DEBIAN_PACKAGE
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/ecere-sdk/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecc0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecc0/
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecc2
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecc2/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecerecom0
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libeda0
@@ -773,6 +816,7 @@ uninstall:
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecere$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)ec$(SO)")
+	$(call rm,"$(DESTLIBDIR)/$(LP)ec2$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
 ifdef LINUX_TARGET
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)")
@@ -797,6 +841,7 @@ endif
 	$(call rm,"$(BINDIR)/ecp$(E)")
 	$(call rm,"$(BINDIR)/ecs$(E)")
 	$(call rm,"$(BINDIR)/epj2make$(E)")
+	$(call rm,"$(BINDIR)/bgen$(E)")
 	$(call rm,"$(BINDIR)/documentor$(E)")
 ifdef CodeGuard
 	$(call rm,"$(BINDIR)/CodeGuard$(E)")
