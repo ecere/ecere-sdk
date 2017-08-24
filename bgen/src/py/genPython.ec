@@ -347,10 +347,13 @@ class PythonGen : CGen
 
    void printOutputFiles()
    {
-      PrintLn(lib.verbose > 1 ? "    " : "", cffiFileName);
-      PrintLn(lib.verbose > 1 ? "    " : "", pyFileName);
-      //PrintLn(lib.verbose > 1 ? "    " : "", buildFileName);
-      //PrintLn(lib.verbose > 1 ? "    " : "", epjFileName);
+      if(!quiet)
+      {
+         PrintLn(lib.verbose > 1 ? "    " : "", cffiFileName);
+         PrintLn(lib.verbose > 1 ? "    " : "", pyFileName);
+         //PrintLn(lib.verbose > 1 ? "    " : "", buildFileName);
+         //PrintLn(lib.verbose > 1 ? "    " : "", epjFileName);
+      }
    }
 
    void prepPaths(bool tmp)
