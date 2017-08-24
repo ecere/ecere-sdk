@@ -472,8 +472,7 @@ endif
 	@$(call echo,Done.)
 
 distclean:
-	$(MAKE) -f Cleanfile distclean distclean_all_subdirs
-	@$(call echo,Done.)
+	$(_MAKE) -f Cleanfile distclean distclean_all_subdirs
 
 DOC = doc
 

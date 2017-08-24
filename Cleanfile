@@ -1,4 +1,4 @@
-.PHONY: distclean distclean_all_subdirs
+.PHONY: distclean distclean_all_subdirs distclean_all_subdirs_internal
 ifneq ($(V),1)
 .SILENT:
 endif
@@ -26,21 +26,34 @@ $(_SDK_SRC_ROOT)crossplatform.mk: ;
 
 include $(_SDK_SRC_ROOT)crossplatform.mk
 
-subdirs := $(sort $(filter-out obj,$(hs_ls_dir)))
+subdirs := $(sort $(filter-out .configs obj,$(hs_ls_dir)))
 
-cd_make_distclean_all_subdirs = $(cd) $(call fp_opt_quotes,$(1)) && $(_MAKE) -f $(_SDK_SRC_ROOT)../Cleanfile _SDK_SRC_ROOT=$(_SDK_SRC_ROOT)../ $(if $(BUILD_DIR),BUILD_DIR=$(BUILD_DIR)$(1)/ ,) distclean distclean_all_subdirs && cd ..
+cd_make_distclean_all_subdirs = $(cd) $(call fp_opt_quotes,$(1)) && $(_MAKE) -f $(_SDK_SRC_ROOT)../Cleanfile _SDK_SRC_ROOT=$(_SDK_SRC_ROOT)../ $(if $(BUILD_DIR),BUILD_DIR=$(BUILD_DIR)$(1)/ ,) distclean distclean_all_subdirs_internal && cd ..
 
 distclean_all_subdirs:
+	$(call echo,This may take a while...)
+ifdef _SDK_SRC_ROOT
+	$(call hs_crossloop,$(subdirs),cd_make_distclean_all_subdirs)
+endif
+	$(call echo,Done.)
+
+distclean_all_subdirs_internal:
 ifdef _SDK_SRC_ROOT
 	$(call hs_crossloop,$(subdirs),cd_make_distclean_all_subdirs)
 endif
 
 distclean:
 ifdef _SDK_SRC_ROOT
-	$(call rmr,obj/)
-	$(call rmr,.configs/)
- ifndef KEEP_EWS_FILES
+ ifndef KEEP_CONFIGS
+	$(if $(wildcard .configs/),$(call rmr,.configs/),)
+ endif
+ ifndef KEEP_MAKEFILES
+	$(call rm,*.Makefile)
+ endif
+ ifndef KEEP_OBJS
+	$(if $(wildcard obj/),$(call rmr,obj/),)
+ endif
+ ifndef KEEP_WORKSPACES
 	$(call rm,*.ews)
  endif
-	$(call rm,*.Makefile)
 endif
