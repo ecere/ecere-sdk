@@ -2367,12 +2367,14 @@ class ProjectView : Window
       ProjectNode projectNode;
       ProjectNode after = null;
       DataRow row = fileList.currentRow;
+      Project project;
       ProjectNode parentNode;
       int c;
 
-      if(!row) row = project.topNode.row;
+      if(!row) row = this.project.topNode.row;
 
       parentNode = (ProjectNode)(intptr)row.tag;
+      project = parentNode.project;
 
       for(node : parentNode.files)
       {
