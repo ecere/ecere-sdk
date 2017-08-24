@@ -31,7 +31,7 @@ realclean:
 	+cd cmd && $(_MAKE) realclean
 
 distclean:
-	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
+	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;
