@@ -53,6 +53,7 @@ public:
    Map<String, String> sourceProcessorVars { };
    BModule bmod { gen = (CGen)this };
    List<Library> libDeps { };
+   bool quiet;
 private:
    //char * dir;
    virtual bool init()

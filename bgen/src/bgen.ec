@@ -28,6 +28,7 @@ ConsoleFile console { };
 
 enum ArgSym : ArgumentSymbol
 {
+   quiet,
    language,
    library,
    all,
@@ -79,6 +80,7 @@ class ApplicationData
 
 public class BGen : ConsoleApplication // <ArgSym>
 {
+   bool quiet;
    bool forAll;
    const char * idnt;
    idnt = " ";
@@ -97,6 +99,7 @@ public class BGen : ConsoleApplication // <ArgSym>
 
    void onBuildArgumentOptions()
    {
+      addArgumentSymbol(ArgSym::quiet,       "quiet",                super,   0);
       addArgumentSymbol(ArgSym::examples,    "examples",             super,   0);
       addArgumentSymbol(ArgSym::library,     "library",              super,   0);
       addArgumentSymbol(ArgSym::C,           "c",                    strict,  0);
@@ -137,6 +140,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       printAllSymbolMatches(ArgSym::map);
       */
 
+      setArgumentSpec(ArgSym::quiet,     { option, many });
       setArgumentSpec(ArgSym::language,  { option, once });
       setArgumentSpec(ArgSym::examples,  { task, once, goal });
       setArgumentSpec(ArgSym::library,   { task, many, goal });
@@ -257,6 +261,9 @@ public class BGen : ConsoleApplication // <ArgSym>
                            //if(dir) dir.lang = lang;
                         /*else
                            err = langTwice;*/
+                        break;
+                     case quiet:
+                        quiet = true;
                         break;
                      case about:
                      case help:
@@ -486,6 +493,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                            gen = PythonGen { }; break;
          default: check(); break;
       }
+      gen.quiet = quiet;
       gen.lib = lib;
       gen.dir = dir;
       //if(def.lib.outputDir)

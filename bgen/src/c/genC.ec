@@ -139,8 +139,11 @@ class CGen : Gen
 
    void printOutputFiles()
    {
-      PrintLn(lib.verbose > 1 ? "    " : "", cFileName);
-      PrintLn(lib.verbose > 1 ? "    " : "", hFileName);
+      if(!quiet)
+      {
+         PrintLn(lib.verbose > 1 ? "    " : "", cFileName);
+         PrintLn(lib.verbose > 1 ? "    " : "", hFileName);
+      }
    }
 
    void prepPaths(bool tmp)
