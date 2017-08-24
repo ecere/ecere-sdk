@@ -6,7 +6,7 @@ else
  _UNAME := $(shell uname)
  UNAME_P := $(shell uname -p)
  ifeq ($(_UNAME),FreeBSD)
- # Using Linux platform for Unix OSes for now 
+ # Using Linux platform for Unix OSes for now
  #   HOST_PLATFORM := bsd
     BSD_HOST := defined
     HOST_PLATFORM := linux
