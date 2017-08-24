@@ -1,7 +1,7 @@
 ifneq ($(V),1)
 .SILENT:
 endif
-.PHONY: all cmd cleantarget clean realclean distclean
+.PHONY: all cleantarget clean realclean distclean
 
 _CF_DIR = ../
 
@@ -40,7 +40,7 @@ ifdef EDASQLiteCipher
 endif
 
 distclean:
-	$(MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
+	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 Makefile: ;
 $(_CF_DIR)crossplatform.mk: ;
