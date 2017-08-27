@@ -2489,7 +2489,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("               include_dirs=[\"../c\"],"); // todo
    /*out.Print("                 libraries=[\"", g.lib.moduleName, "\"");
    for(libDep : g.libDeps)
-      out.Print(", \"_py", libDep.bindingName, ".pyd\"");
+      out.Print(", \"_py", libDep.bindingName, ".so\"");
    //out.PrintLn("],");*/
    out.PrintLn("               libraries=[\"ecere\"],");
    if(g.libDeps.count)
@@ -2502,11 +2502,11 @@ static void generateBUILD(File out, PythonGen g)
       {
          if(libDep.ecereCOM) ecereCOM = true;
          if(libDep.ecere) ecere = true;
-         out.Print(!first ? ", " : "", "\"_py", libDep.bindingName, ".pyd\"");
+         out.Print(!first ? ", " : "", "\"_py", libDep.bindingName, ".so\"");
          first = false;
       }
       if(ecere && !ecereCOM)
-         out.Print(!first ? ", " : "", "\"_pyeC.pyd\"");
+         out.Print(!first ? ", " : "", "\"_pyeC.so\"");
       out.PrintLn(", \"-O2\"],");
    }
 
@@ -2544,7 +2544,7 @@ static void generateEPJ(File out, PythonGen g)
    out.PrintLn("            ],");
    out.PrintLn("            \"FastMath\" : false,");
    out.PrintLn("            \"PostbuildCommands\" : [");
-   out.PrintLn("               \"$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_py", g.lib.bindingName, ".dll,_py", g.lib.bindingName, ".pyd)\"");
+   out.PrintLn("               \"$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_py", g.lib.bindingName, ".dll,_py", g.lib.bindingName, ".so)\"");
    out.PrintLn("            ]");
    out.PrintLn("         }");
    out.PrintLn("      },");
