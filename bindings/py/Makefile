@@ -2,7 +2,7 @@ include ../bgen_setup.mk
 
 _BGEN_LIBS := ecereCOM ecere EDA
 _BGEN_LANGNAME := Python
-_BGEN_ARGS := -py $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__log Logf=__logf Sleep=__sleep .
+_BGEN_ARGS := -python $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep print=_print .
 _BGEN_OUTPUT := \
 	build_eC.py \
 	cffi-eC.h \
@@ -15,19 +15,19 @@ _BGEN_OUTPUT := \
 	pyEDA.py
 _BINDINGS_OBJECTS := \
 	_pyeC.c \
-	_pyeC.pyd \
+	_pyeC.so \
 	_pyecere.c \
-	_pyecere.pyd \
+	_pyecere.so \
 	_pyEDA.c \
-	_pyEDA.pyd
+	_pyEDA.so
 _BINDINGS_TMP_DIRS := __pycache__ obj
 
 all: $(_BGEN_OUTPUT)
-	@$(call echo,Building Python Bindings for ecereCOM...)
-	py build_eC.py
-	@$(call echo,Building Python Bindings for ecere...)
-	py build_ecere.py
-	@$(call echo,Building Python Bindings for EDA...)
-	py build_EDA.py
+	@$(call echo,Building Python 3 Bindings for ecereCOM...)
+	python3 build_eC.py
+	@$(call echo,Building Python 3 Bindings for ecere...)
+	python3 build_ecere.py
+	@$(call echo,Building Python 3 Bindings for EDA...)
+	python3 build_EDA.py
 
 include ../bgen_targets.mk
