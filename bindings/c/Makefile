@@ -2,7 +2,7 @@ include ../bgen_setup.mk
 
 _BGEN_LIBS := ecereCOM ecere EDA
 _BGEN_LANGNAME := C
-_BGEN_ARGS := -c $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__log Logf=__logf Sleep=__sleep .
+_BGEN_ARGS := -c $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep print=_print .
 _BGEN_OUTPUT := \
 	eC.c \
 	eC.h \
