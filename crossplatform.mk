@@ -298,6 +298,9 @@ ifdef WINDOWS_HOST
       endif
    endif
 endif
+ifdef V
+   export V
+endif
 ifneq ($(V),1)
    SILENT_IS_ON := defined
 endif

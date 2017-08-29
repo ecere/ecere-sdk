@@ -2,7 +2,7 @@ include ../bgen_setup.mk
 
 _BGEN_LIBS := ecereCOM ecere EDA
 _BGEN_LANGNAME := C++
-_BGEN_ARGS := -cpp $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep print=_print .
+_BGEN_ARGS := -cpp $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep Print=_print .
 _BGEN_OUTPUT := \
 	eC.cpp \
 	eC.hpp \
