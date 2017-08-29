@@ -2452,6 +2452,7 @@ static void generateBUILD(File out, PythonGen g)
       }
    }
 
+   out.PrintLn("import os");
    if(g.libDeps.count == 0)
       out.PrintLn("from cffi import FFI");
    else
@@ -2471,6 +2472,7 @@ static void generateBUILD(File out, PythonGen g)
       for(libDep : g.libDeps)
          out.Print(", ffi_", libDep.bindingName);
       out.PrintLn("");
+      out.PrintLn("from distutils.sysconfig import get_config_var");
    }
    out.PrintLn("");
    out.PrintLn("ffi_", g.lib.bindingName, " = FFI()");
@@ -2489,7 +2491,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("               include_dirs=[\"../c\"],"); // todo
    /*out.Print("                 libraries=[\"", g.lib.moduleName, "\"");
    for(libDep : g.libDeps)
-      out.Print(", \"_py", libDep.bindingName, ".so\"");
+      out.Print(", \"_py", libDep.bindingName, "\" + get_config_var('EXT_SUFFIX')");
    //out.PrintLn("],");*/
    out.PrintLn("               libraries=[\"ecere\"],");
    if(g.libDeps.count)
@@ -2502,18 +2504,20 @@ static void generateBUILD(File out, PythonGen g)
       {
          if(libDep.ecereCOM) ecereCOM = true;
          if(libDep.ecere) ecere = true;
-         out.Print(!first ? ", " : "", "\"_py", libDep.bindingName, ".so\"");
+         out.Print(!first ? ", " : "", "\"_py", libDep.bindingName, "\" + get_config_var('EXT_SUFFIX')");
          first = false;
       }
       if(ecere && !ecereCOM)
-         out.Print(!first ? ", " : "", "\"_pyeC.so\"");
+         out.Print(!first ? ", " : "", "\"_pyeC\" + get_config_var('EXT_SUFFIX')");
       out.PrintLn(", \"-O2\"],");
    }
 
    out.PrintLn("               library_dirs=[\"C:/Program Files/Ecere SDK/bin\""/*, g.libDeps.count ? ", \".\"" : ""*/, "])"); // todo
    out.PrintLn("");
    out.PrintLn("if __name__ == \"__main__\":");
-   out.PrintLn("    ffi_", g.lib.bindingName, ".compile(verbose=True)");
+   out.PrintLn("    V = os.getenv('V')");
+   out.PrintLn("    v = True if V == \"1\" or V == \"y\" else False");
+   out.PrintLn("    ffi_", g.lib.bindingName, ".compile(verbose=v)");
 }
 
 static void generateEPJ(File out, PythonGen g)
@@ -2544,7 +2548,7 @@ static void generateEPJ(File out, PythonGen g)
    out.PrintLn("            ],");
    out.PrintLn("            \"FastMath\" : false,");
    out.PrintLn("            \"PostbuildCommands\" : [");
-   out.PrintLn("               \"$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_py", g.lib.bindingName, ".dll,_py", g.lib.bindingName, ".so)\"");
+   out.PrintLn("               \"$(call cp,obj/debug.$(PLATFORM)$(COMPILER_SUFFIX)/_py", g.lib.bindingName, ".dll,_py", g.lib.bindingName, "$(PYSO))\"");
    out.PrintLn("            ]");
    out.PrintLn("         }");
    out.PrintLn("      },");
