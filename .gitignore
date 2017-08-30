@@ -60,3 +60,20 @@ dat/
 ehthumbs.db
 Icon
 Thumbs.db
+
+# Generated Bindings
+bindings/c/*.c
+bindings/c/*.h
+bindings/cpp/*.cpp
+bindings/cpp/*.hpp
+bindings/py/cffi-*.h
+bindings/py/build_*.py
+bindings/py/py*.py
+
+# Compiled Python
+*.pyc
+*.pyd
+__pycache__/
+
+# CFFI generated source
+_py*.c
