@@ -26,7 +26,7 @@ $(_SDK_SRC_ROOT)crossplatform.mk: ;
 
 include $(_SDK_SRC_ROOT)crossplatform.mk
 
-subdirs := $(sort $(filter-out .configs obj,$(hs_ls_dir)))
+subdirs := $(sort $(filter-out .configs obj __pycache__,$(hs_ls_dir)))
 
 cd_make_distclean_all_subdirs = $(cd) $(call fp_opt_quotes,$(1)) && $(_MAKE) -f $(_SDK_SRC_ROOT)../Cleanfile _SDK_SRC_ROOT=$(_SDK_SRC_ROOT)../ $(if $(BUILD_DIR),BUILD_DIR=$(BUILD_DIR)$(1)/ ,) distclean distclean_all_subdirs_internal && cd ..
 
@@ -52,6 +52,11 @@ ifdef _SDK_SRC_ROOT
  endif
  ifndef KEEP_OBJS
 	$(if $(wildcard obj/),$(call rmr,obj/),)
+ endif
+ ifndef KEEP_PY
+	$(call rm,_py*.c)
+	$(call rm,_py*.pyd)
+	$(if $(wildcard __pycache__/),$(call rmr,__pycache__/),)
  endif
  ifndef KEEP_WORKSPACES
 	$(call rm,*.ews)
