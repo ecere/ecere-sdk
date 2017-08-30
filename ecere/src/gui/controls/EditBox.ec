@@ -21,6 +21,425 @@ char * strchrmax(const char * s, int c, int max)
    return null;
 }
 
+class eCSyntaxState : int
+{
+   bool inMultiLineComment:1;
+   bool inPrep:1;
+   bool escaped:1;
+   bool continuedSingleLineComment:1;
+   bool wasInMultiLine:1;
+   bool continuedString:1;
+   bool continuedQuotes:1;
+
+   bool inString:1;
+   bool inQuotes:1;
+   bool inSingleLineComment:1;
+
+   bool lastWasStar:1;
+   bool firstWord:1;
+};
+
+public class SyntaxHighlighting
+{
+   eCSyntaxState viewLineState;
+   eCSyntaxState currentState;
+   eCSyntaxState backedState;
+
+   virtual void InitDraw()
+   {
+      currentState = viewLineState;
+
+      // Should not really need to do this...
+      currentState.inString = false;
+      currentState.inQuotes = false;
+      currentState.inSingleLineComment = false;
+   }
+
+   virtual bool CanImpactOtherLines(EditLine line)
+   {
+      bool hadComment = strstr(line.buffer, "/*") || strstr(line.buffer, "*/");
+      int c;
+
+      if(!hadComment)
+      {
+         for(c = line.count-1; c >= 0; c--)
+         {
+            char ch = line.buffer[c];
+            if(ch == '\\')
+            {
+               hadComment = true;
+               break;
+            }
+            else //if(ch != ' ' && ch != '\t')
+               break;
+         }
+      }
+      return hadComment;
+   }
+
+   virtual void GotSpace(bool beforeEnd)
+   {
+      if(beforeEnd)
+         currentState.escaped = false;
+      currentState.lastWasStar = false;
+   }
+
+   virtual void ResetState()
+   {
+      currentState = backedState;
+   }
+
+   virtual Color Process(char * word, int * wordLen, bool beforeEndOfLine, Color defaultTextColor, SyntaxColorScheme colorScheme,
+         char * buffer, int * c)
+   {
+      Color newTextColor;
+      bool wasEscaped = currentState.escaped;
+
+      backedState = currentState;
+
+      currentState.escaped = false;
+      currentState.lastWasStar = false;
+
+      // Determine Syntax Highlighting
+      newTextColor = defaultTextColor;
+
+      if(currentState.inSingleLineComment || currentState.inMultiLineComment)
+      {
+         newTextColor = colorScheme.commentColor;
+      }
+      else if(currentState.inQuotes)
+      {
+         newTextColor = colorScheme.charLiteralColor;
+      }
+      else if(currentState.inString)
+      {
+         newTextColor = colorScheme.stringLiteralColor;
+      }
+      else if(currentState.inPrep)
+      {
+         newTextColor = colorScheme.preprocessorColor;
+      }
+      if(*wordLen == 1 && word[0] == '/')
+      {
+         if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inQuotes && !currentState.inString)
+         {
+            if(word[1] == '/')
+            {
+               currentState.inSingleLineComment = true;
+               newTextColor = colorScheme.commentColor;
+            }
+            else if(word[1] == '*')
+            {
+               currentState.inMultiLineComment = true;
+               newTextColor = colorScheme.commentColor;
+            }
+         }
+         else if(backedState.lastWasStar)
+            currentState.inMultiLineComment = false;
+      }
+      else if(*wordLen == 1 && word[0] == '*')
+      {
+         if(backedState.inMultiLineComment)
+            currentState.lastWasStar = true;
+      }
+      else if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inQuotes && *wordLen == 1 && word[0] == '\"')
+      {
+         if(currentState.inString && !wasEscaped)
+         {
+            currentState.inString = false;
+         }
+         else
+         {
+            currentState.inString = true;
+            newTextColor = colorScheme.stringLiteralColor;
+         }
+      }
+      else if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inString && *wordLen == 1 && word[0] == '\'')
+      {
+         if(currentState.inQuotes && !wasEscaped)
+            currentState.inQuotes = false;
+         else
+         {
+            currentState.inQuotes = true;
+            newTextColor = colorScheme.charLiteralColor;
+         }
+      }
+      else if(*wordLen == 1 && word[0] == '\\')
+      {
+         if(!wasEscaped)
+            currentState.escaped = true;
+      }
+      else if(beforeEndOfLine && !currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
+      {
+         char * dot = word[*wordLen] == '.' ? word + *wordLen : (word[0] == '.' && (word == buffer || word[-1] == '-' || isspace(word[-1])) ? word : null);
+         bool isReal = dot != null;
+         char * s = null;
+         if(dot)
+            isReal = true;
+         else
+         {
+            char * exponent;
+            bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
+            if(isHex)
+            {
+               exponent = strchrmax(word, 'p', *wordLen);
+               if(!exponent) exponent = strchrmax(word, 'P', *wordLen);
+            }
+            else
+            {
+               exponent = strchrmax(word, 'e', *wordLen);
+               if(!exponent) exponent = strchrmax(word, 'E', *wordLen);
+            }
+            isReal = exponent != null;
+         }
+         if(isReal)
+            strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
+         else
+            strtol(word, &s, 0);
+         if(s && s != word)
+         {
+            // Check suffixes
+            char ch;
+            int i;
+            int gotF = 0, gotL = 0, gotU = 0, gotI = 0;
+            bool valid = true;
+
+            for(i = 0; valid && i < 5 && (ch = s[i]) && (isalnum(ch) || ch == '_'); i++)
+            {
+               switch(ch)
+               {
+                  case 'f': case 'F': gotF++; if(gotF > 1 || !isReal) valid = false; break;
+                  case 'l': case 'L':
+                     gotL++;
+                     if(gotL > 2 || (isReal && (gotL == 2 || gotF)) || (gotL == 2 && (s[i-1] != ch)))
+                     valid = false;
+                     break;
+                  case 'u': case 'U': gotU++; if(gotU > 1 || isReal) valid = false; break;
+                  case 'i': case 'I': case 'j': case 'J': gotI++; if(gotI > 1) valid = false; break;
+                  default: valid = false;
+               }
+            }
+
+            // Don't highlight numbers with too many decimal points
+            if(s[0] == '.' && isdigit(s[1]))
+            {
+               int newWordLen;
+               while(s[0] == '.' && isdigit(s[1]))
+               {
+                  int newWordLen = s - word;
+                  *c += newWordLen - *wordLen;
+                  *wordLen = newWordLen;
+                  strtod(s, &s);
+               }
+               newWordLen = s - word;
+               *c += newWordLen - *wordLen;
+               *wordLen = newWordLen;
+            }
+            else if(valid)
+            {
+               int newWordLen = s + i - word;
+               newTextColor = colorScheme.numberColor;
+               *c += newWordLen - *wordLen;
+               *wordLen = newWordLen;
+            }
+            else if(dot && dot > word && dot < s)
+               newTextColor = colorScheme.numberColor;
+         }
+      }
+      else
+      {
+         if(!currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment && word[0] == '#')
+         {
+            if(currentState.firstWord)
+            {
+               currentState.inPrep = true;
+               newTextColor = *wordLen == 1 ? colorScheme.keywordColors[1] : colorScheme.preprocessorColor;
+            }
+         }
+         if(beforeEndOfLine && !currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment)
+         {
+            int g;
+            for(g = 0; g < ((currentState.inPrep && word[0] != '#') ? 2 : 1); g++)
+            {
+               const char ** keys = keyWords[g];
+               int * len = keyLen[g];
+               int ccc;
+               for(ccc = 0; keys[ccc]; ccc++)
+               {
+                  if(len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen))
+                  {
+                     newTextColor = colorScheme.keywordColors[g];
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      currentState.firstWord = false;
+      return newTextColor;
+   }
+
+   virtual void StartLine()
+   {
+      currentState.lastWasStar = false;
+      currentState.firstWord = true;
+      if(!currentState.escaped) currentState.inPrep = false;
+      currentState.inSingleLineComment = currentState.continuedSingleLineComment;
+      currentState.escaped = false;
+      currentState.inString = currentState.continuedString;
+      currentState.inQuotes = currentState.continuedQuotes;
+   }
+
+   virtual void NextLine(char * buffer, int count)
+   {
+      if(count && buffer[count - 1] == '\\')
+      {
+         currentState.continuedSingleLineComment = currentState.inSingleLineComment;
+         currentState.continuedString = currentState.inString;
+         currentState.continuedQuotes = currentState.inQuotes;
+      }
+      else
+      {
+         currentState.continuedSingleLineComment = false;
+         currentState.continuedString = false;
+         currentState.continuedQuotes = false;
+      }
+   }
+
+   virtual int ParseWord(char * buffer, int count, int wordLen)
+   {
+      int c;
+      for(c = 0; c < count; c++)
+      {
+         unichar ch = buffer[c];
+         unichar bf = (wordLen == 1) ? buffer[c-1] : 0;
+         if(CharMatchCategories(ch, separators) || ch == '\t' ||
+            (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && ch != '#' ) ||
+            (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && bf != '#' && bf != '\t'))
+            break;
+         wordLen++;
+      }
+      return c;
+   }
+
+   virtual void FigureStartSyntaxStates(EditLine firstLine, bool reset, EditLine viewLine)
+   {
+      bool inMultiLineComment = reset ? false : viewLineState.inMultiLineComment;
+      bool wasInMultiLine = reset ? false : viewLineState.wasInMultiLine;
+      bool inString = false;
+      bool inQuotes = false;
+      bool inPrep = reset ? false : viewLineState.inPrep;
+      bool inSingleLineComment = false;
+      bool escaped = reset ? false : viewLineState.escaped;
+      bool continuedSingleLineComment = reset ? false : viewLineState.continuedSingleLineComment;
+      bool continuedString = reset ? false : viewLineState.continuedString;
+      bool continuedQuotes = reset ? false : viewLineState.continuedQuotes;
+      EditLine line = firstLine;
+
+      // int maxBackUp = 1000, c;
+      // for(c = 0, line = viewLine; c < maxBackUp && line && line.prev; line = line.prev);
+      for(; line != viewLine; line = line.next)
+      {
+         char * text = line.buffer;
+         int c;
+         char ch;
+         bool lastWasStar = false;
+         bool firstWord = true;
+         if(!escaped) inPrep = false;
+         inSingleLineComment = continuedSingleLineComment;
+         escaped = false;
+         inString = continuedString;
+         inQuotes = continuedQuotes;
+
+         for(c = 0; (ch = text[c]); c++)
+         {
+            bool wasEscaped = escaped;
+            // FIXME: twice backed up states here? Is this necessary? Simplify? Comments / Test cases?
+            bool backLastWasStar = lastWasStar;
+            bool backWasInMultiLine = wasInMultiLine;
+            escaped = false;
+            lastWasStar = false;
+            wasInMultiLine = inMultiLineComment;
+            if(ch == '/')
+            {
+               if(!inSingleLineComment && !inMultiLineComment && !inQuotes && !inString)
+               {
+                  if(text[c+1] == '/')
+                  {
+                     inSingleLineComment = true;
+                  }
+                  else if(text[c+1] == '*')
+                  {
+                     inMultiLineComment = true;
+                  }
+               }
+               else if(backLastWasStar)
+                  inMultiLineComment = false;
+            }
+            else if(ch == '*')
+            {
+               if(backWasInMultiLine) lastWasStar = true;
+            }
+            else if(ch == '\"' && !inSingleLineComment && !inMultiLineComment && !inQuotes)
+            {
+               if(inString && !wasEscaped)
+               {
+                  inString = false;
+               }
+               else
+               {
+                  inString = true;
+               }
+            }
+            else if(ch == '\'' && !inSingleLineComment && !inMultiLineComment && !inString)
+            {
+               if(inQuotes && !wasEscaped)
+                  inQuotes = false;
+               else
+               {
+                  inQuotes = true;
+               }
+            }
+            else if(ch == '\\')
+            {
+               if(!wasEscaped)
+                  escaped = true;
+            }
+            else if(ch == '#' && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
+            {
+               if(firstWord)
+               {
+                  inPrep = true;
+               }
+            }
+            else if(ch != ' ' && ch != '\t')
+               firstWord = false;
+         }
+         if(line.count && line.text[line.count - 1] == '\\')
+         {
+            continuedSingleLineComment = inSingleLineComment;
+            continuedString = inString;
+            continuedQuotes = inQuotes;
+         }
+         else
+         {
+            continuedSingleLineComment = false;
+            continuedString = false;
+            continuedQuotes = false;
+         }
+      }
+
+      viewLineState.continuedSingleLineComment = continuedSingleLineComment;
+      viewLineState.continuedString = continuedString;
+      viewLineState.continuedQuotes = continuedQuotes;
+      viewLineState.inMultiLineComment = inMultiLineComment;
+      viewLineState.wasInMultiLine = wasInMultiLine;
+      viewLineState.inPrep = inPrep;
+      viewLineState.escaped = escaped;
+   }
+};
+
+
 public class SyntaxColorScheme
 {
 public:
@@ -33,7 +452,13 @@ public:
 
    public property Container<Color> keywordColors
    {
-      set { keywordColors.Copy((void *)value); }
+      set
+      {
+         keywordColors.Copy((void *)value);
+         // JSON/ECON Parser expects we'll hang on to this... Better solution with improved ref counting model?
+         if(value && value._class != class(BuiltInContainer) && !value._refCount)
+            delete value;
+      }
       get { return keywordColors; }
    }
 };
@@ -107,9 +532,6 @@ class EditBoxBits
 {
    bool autoEmpty:1, readOnly:1, multiLine:1, stuckCaret:1, freeCaret:1, select:1, hScroll:1, vScroll:1, smartHome:1;
    bool noCaret:1, noSelect:1, tabKey:1, useTab:1, tabSel:1, allCaps:1, syntax:1, wrap:1;
-
-   // Syntax States
-   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1, wasInMultiLine:1, continuedString:1, continuedQuotes:1;
 
    bool recomputeSyntax:1;
    bool cursorFollowsView:1;
@@ -805,7 +1227,20 @@ public:
    property int maxLineSize { property_category $"Behavior" set { maxLineSize = value; } get { return maxLineSize; } };
    property int maxNumLines { property_category $"Behavior" set { maxLines = value; } get { return maxLines; } };
    property bool useTab { property_category $"Behavior" set { style.useTab = value; itemEditInsertTab.checked = value; } get { return style.useTab; } };
-   property bool syntaxHighlighting { property_category $"Appearance" set { style.syntax = value; } get { return style.syntax; } };
+   property bool syntaxHighlighting
+   {
+      property_category $"Appearance"
+      set
+      {
+         style.syntax = value;
+         delete highlighting;
+         if(value)
+         {
+            highlighting = SyntaxHighlighting { };
+         }
+      }
+      get { return style.syntax; }
+   };
    property bool noSelect { property_category $"Behavior" set { style.noSelect = value; } get { return style.noSelect; } };
    property bool allCaps { property_category $"Behavior" set { style.allCaps = value; } get { return style.allCaps; } };
    property bool autoSize { property_category $"Behavior" set { style.autoSize = value; } get { return style.autoSize; } };
@@ -999,6 +1434,7 @@ private:
    int savedAction;
    ColorAlpha selectionColor, selectionText;
    SyntaxColorScheme colorScheme { };
+   SyntaxHighlighting highlighting;
 
    menu = Menu { };
 
@@ -1276,6 +1712,7 @@ private:
    ~EditBox()
    {
       lines.Free(EditLine::Free);
+      delete highlighting;
    }
 
    void FlushBuffer(Surface surface, EditLine line, int wc, int * renderStart, int * x, int y, int * previousGlyph, int * oh, int numSpaces, bool drawSpaces, Box box)
@@ -1347,125 +1784,6 @@ private:
       return flush;
    }
 
-   void FigureStartSyntaxStates(EditLine firstLine, bool reset)
-   {
-      if(style.syntax)
-      {
-         bool inMultiLineComment = reset ? false : style.inMultiLineComment;
-         bool wasInMultiLine = reset ? false : style.wasInMultiLine;
-         bool inString = false;
-         bool inQuotes = false;
-         bool inPrep = reset ? false : style.inPrep;
-         bool inSingleLineComment = false;
-         bool escaped = reset ? false : style.escaped;
-         bool continuedSingleLineComment = reset ? false : style.continuedSingleLineComment;
-         bool continuedString = reset ? false : style.continuedString;
-         bool continuedQuotes = reset ? false : style.continuedQuotes;
-
-         EditLine line = reset ? lines.first : firstLine;
-         // int maxBackUp = 1000, c;
-         // for(c = 0, line = viewLine; c < maxBackUp && line && line.prev; line = line.prev);
-         for(; line != viewLine; line = line.next)
-         {
-            char * text = line.buffer;
-            int c;
-            char ch;
-            bool lastWasStar = false;
-            bool firstWord = true;
-            if(!escaped) inPrep = false;
-            inSingleLineComment = continuedSingleLineComment;
-            escaped = false;
-            inString = continuedString;
-            inQuotes = continuedQuotes;
-
-            firstWord = true;
-            for(c = 0; (ch = text[c]); c++)
-            {
-               bool wasEscaped = escaped;
-               bool backLastWasStar = lastWasStar;
-               bool backWasInMultiLine = wasInMultiLine;
-               escaped = false;
-               lastWasStar = false;
-               wasInMultiLine = inMultiLineComment;
-               if(ch == '/')
-               {
-                  if(!inSingleLineComment && !inMultiLineComment && !inQuotes && !inString)
-                  {
-                     if(text[c+1] == '/')
-                     {
-                        inSingleLineComment = true;
-                     }
-                     else if(text[c+1] == '*')
-                     {
-                        inMultiLineComment = true;
-                     }
-                  }
-                  else if(backLastWasStar)
-                     inMultiLineComment = false;
-               }
-               else if(ch == '*')
-               {
-                  if(backWasInMultiLine) lastWasStar = true;
-               }
-               else if(ch == '\"' && !inSingleLineComment && !inMultiLineComment && !inQuotes)
-               {
-                  if(inString && !wasEscaped)
-                  {
-                     inString = false;
-                  }
-                  else
-                  {
-                     inString = true;
-                  }
-               }
-               else if(ch == '\'' && !inSingleLineComment && !inMultiLineComment && !inString)
-               {
-                  if(inQuotes && !wasEscaped)
-                     inQuotes = false;
-                  else
-                  {
-                     inQuotes = true;
-                  }
-               }
-               else if(ch == '\\')
-               {
-                  if(!wasEscaped)
-                     escaped = true;
-               }
-               else if(ch == '#' && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
-               {
-                  if(firstWord)
-                  {
-                     inPrep = true;
-                  }
-               }
-               else if(ch != ' ' && ch != '\t')
-                  firstWord = false;
-            }
-            if(line.count && line.text[line.count - 1] == '\\')
-            {
-               continuedSingleLineComment = inSingleLineComment;
-               continuedString = inString;
-               continuedQuotes = inQuotes;
-            }
-            else
-            {
-               continuedSingleLineComment = false;
-               continuedString = false;
-               continuedQuotes = false;
-            }
-         }
-
-         style.continuedSingleLineComment = continuedSingleLineComment;
-         style.continuedString = continuedString;
-         style.continuedQuotes = continuedQuotes;
-         style.inMultiLineComment = inMultiLineComment;
-         style.wasInMultiLine = wasInMultiLine;
-         style.inPrep = inPrep;
-         style.escaped = escaped;
-      }
-   }
-
    /*void OnDrawOverChildren(Surface surface)
    {
       if(style.lineNumbers)
@@ -1535,19 +1853,6 @@ private:
       int overWriteX = 0, overWriteY = 0;
       char overWriteCh;
 
-      // ****** SYNTAX STATES ******
-      bool inMultiLineComment = style.inMultiLineComment;
-      bool inString = false;
-      bool inQuotes = false;
-      bool inPrep = style.inPrep;
-      bool inSingleLineComment = false;
-      bool escaped = style.escaped;
-      bool continuedSingleLineComment = style.continuedSingleLineComment;
-      bool continuedString = style.continuedString;
-      bool continuedQuotes = style.continuedQuotes;
-      bool wasInMultiLine = style.wasInMultiLine;
-      // ****** ************* ******
-
       // For drawing selection background
       EditLine selStartLine = this.y < this.selY ? this.line : this.selLine;
       EditLine selEndLine   = this.y < this.selY ? this.selLine : this.line;
@@ -1609,6 +1914,8 @@ private:
 
       surface.GetBox(box);
 
+      if(style.syntax)
+         highlighting.InitDraw();
       for(line = this.viewLine; line; line = line.next)
       {
          int x = -this.viewX;
@@ -1618,17 +1925,10 @@ private:
          Color newTextColor = textColor = defaultTextColor;
          bool lineComplete = false;
          int overHang = 0;
-
-         // ****** SYNTAX HIGHLIGHTING ******
-         bool lastWasStar = false;
          bool trailingSpace = false;
-         bool firstWord = true;
-         if(!escaped) inPrep = false;
-         inSingleLineComment = continuedSingleLineComment;
-         escaped = false;
-         inString = continuedString;
-         inQuotes = continuedQuotes;
-         // *********************************
+
+         if(style.syntax)
+            highlighting.StartLine();
 
    /*   === DEBUGGING TOOL FOR MAXLINE ===
 
@@ -1737,7 +2037,7 @@ private:
             }
 
             // Look at words
-            for(; c<end && !cantHaveWords;)
+            for(; c <end && !cantHaveWords;)
             {
                if(wordLen)
                {
@@ -1752,22 +2052,18 @@ private:
                }*/
 #endif
                // Parse Words
-               for(; c<line.count; c++)
                {
-                  unichar ch = line.buffer[c];
-                  unichar bf = (wordLen == 1) ? line.buffer[c-1] : 0;
-                  //if(ch == ' ' || ch == '\t' || (wordLen && (ch == '(' || ch == ')' || ch == ';' || ch == ':')) || (wordLen == 1 && line.buffer[c-1] == '('))
-                  if(CharMatchCategories(ch, separators) || /*ch == ' ' ||*/ ch == '\t' ||
-                     (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && ch != '#' /*&& ch != '_'*/) ||
-                     (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && bf != '#' && bf != '\t' /*&& bf != '_' && bf != ' '*/))
-                     break;
-                  wordLen++;
-                  trailingSpace = false;
+                  int wc = style.syntax ? highlighting.ParseWord(line.buffer + c, line.count - c, wordLen) : line.count - c;
+                  if(wc)
+                  {
+                     wordLen += wc;
+                     c += wc;
+                     trailingSpace = false;
+                  }
                }
 
                if(!wordLen)
                {
-
                   for(; c<line.count; c++)
                   {
                      unichar ch = line.buffer[c];
@@ -1796,234 +2092,35 @@ private:
                      cantHaveWords = true;
                   }
 
-                  if(c < end)
-                     escaped = false;
-                  lastWasStar = false;
+                  if(style.syntax)
+                     highlighting.GotSpace(c < end);
                }
                else
                {
-                  if(isEnabled)
+                  if(isEnabled && style.syntax)
                   {
-                     bool backEscaped = escaped;
-                     bool backLastWasStar = lastWasStar;
-                     bool backInMultiLineComment = inMultiLineComment;
-                     bool backInString = inString;
-                     bool backInQuotes = inQuotes;
-                     bool backInPrep = inPrep;
-                     bool backInSingleLineComment = inSingleLineComment;
-                     bool backWasInMultiLine = wasInMultiLine;
+                     newTextColor = highlighting.Process(line.buffer + c - wordLen, &wordLen, x < box.right,
+                        defaultTextColor, colorScheme, line.buffer, &c);
 
-                     char * word = line.buffer + c - wordLen;
-                     int g,ccc;
-                     bool wasEscaped = escaped;
-                     escaped = false;
-                     lastWasStar = false;
-
-                     wasInMultiLine = inMultiLineComment;
-
-                     // Determine Syntax Highlighting
-                     newTextColor = defaultTextColor;
-                     if(style.syntax)
+                     // If highlighting for this word is different, break
+                     if(newTextColor != textColor)
                      {
-                        if(inSingleLineComment || inMultiLineComment)
+                        if(bufferLen)
                         {
-                           newTextColor = colorScheme.commentColor;
-                        }
-                        else if(inQuotes)
-                        {
-                           newTextColor = colorScheme.charLiteralColor;
-                        }
-                        else if(inString)
-                        {
-                           newTextColor = colorScheme.stringLiteralColor;
-                        }
-                        else if(inPrep)
-                        {
-                           newTextColor = colorScheme.preprocessorColor;
-                        }
-                        if(wordLen == 1 && word[0] == '/')
-                        {
-                           if(!inSingleLineComment && !inMultiLineComment && !inQuotes && !inString)
-                           {
-                              if(word[1] == '/')
-                              {
-                                 inSingleLineComment = true;
-                                 newTextColor = colorScheme.commentColor;
-                              }
-                              else if(word[1] == '*')
-                              {
-                                 inMultiLineComment = true;
-                                 newTextColor = colorScheme.commentColor;
-                              }
-                           }
-                           else if(backLastWasStar)
-                              inMultiLineComment = false;
-                        }
-                        else if(wordLen == 1 && word[0] == '*')
-                        {
-                           if(backWasInMultiLine)
-                              lastWasStar = true;
-                        }
-                        else if(!inSingleLineComment && !inMultiLineComment && !inQuotes && wordLen == 1 && word[0] == '\"')
-                        {
-                           if(inString && !wasEscaped)
-                           {
-                              inString = false;
-                           }
-                           else
-                           {
-                              inString = true;
-                              newTextColor = colorScheme.stringLiteralColor;
-                           }
-                        }
-                        else if(!inSingleLineComment && !inMultiLineComment && !inString && wordLen == 1 && word[0] == '\'')
-                        {
-                           if(inQuotes && !wasEscaped)
-                              inQuotes = false;
-                           else
-                           {
-                              inQuotes = true;
-                              newTextColor = colorScheme.charLiteralColor;
-                           }
-                        }
-                        else if(wordLen == 1 && word[0] == '\\')
-                        {
-                           if(!wasEscaped)
-                              escaped = true;
-                        }
-                        else if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
-                        {
-                           char * dot = word[wordLen] == '.' ? word + wordLen : (word[0] == '.' && (word == line.buffer || word[-1] == '-' || isspace(word[-1])) ? word : null);
-                           bool isReal = dot != null;
-                           char * s = null;
-                           if(dot)
-                              isReal = true;
-                           else
-                           {
-                              char * exponent;
-                              bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
-                              if(isHex)
-                              {
-                                 exponent = strchrmax(word, 'p', wordLen);
-                                 if(!exponent) exponent = strchrmax(word, 'P', wordLen);
-                              }
-                              else
-                              {
-                                 exponent = strchrmax(word, 'e', wordLen);
-                                 if(!exponent) exponent = strchrmax(word, 'E', wordLen);
-                              }
-                              isReal = exponent != null;
-                           }
-                           if(isReal)
-                              strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
-                           else
-                              strtol(word, &s, 0);
-                           if(s && s != word)
-                           {
-                              // Check suffixes
-                              char ch;
-                              int i;
-                              int gotF = 0, gotL = 0, gotU = 0, gotI = 0;
-                              bool valid = true;
+                           // Better solution than going back?
+                           c -= wordLen;
 
-                              for(i = 0; valid && i < 5 && (ch = s[i]) && (isalnum(ch) || ch == '_'); i++)
-                              {
-                                 switch(ch)
-                                 {
-                                    case 'f': case 'F': gotF++; if(gotF > 1 || !isReal) valid = false; break;
-                                    case 'l': case 'L':
-                                       gotL++;
-                                       if(gotL > 2 || (isReal && (gotL == 2 || gotF)) || (gotL == 2 && (s[i-1] != ch)))
-                                       valid = false;
-                                       break;
-                                    case 'u': case 'U': gotU++; if(gotU > 1 || isReal) valid = false; break;
-                                    case 'i': case 'I': case 'j': case 'J': gotI++; if(gotI > 1) valid = false; break;
-                                    default: valid = false;
-                                 }
-                              }
-
-                              // Don't highlight numbers with too many decimal points
-                              if(s[0] == '.' && isdigit(s[1]))
-                              {
-                                 int newWordLen;
-                                 while(s[0] == '.' && isdigit(s[1]))
-                                 {
-                                    int newWordLen = s - word;
-                                    c += newWordLen - wordLen;
-                                    wordLen = newWordLen;
-                                    strtod(s, &s);
-                                 }
-                                 newWordLen = s - word;
-                                 c += newWordLen - wordLen;
-                                 wordLen = newWordLen;
-                              }
-                              else if(valid)
-                              {
-                                 int newWordLen = s + i - word;
-                                 newTextColor = colorScheme.numberColor;
-                                 c += newWordLen - wordLen;
-                                 wordLen = newWordLen;
-                              }
-                              else if(dot && dot > word && dot < s)
-                                 newTextColor = colorScheme.numberColor;
-                           }
+                           // Reset syntax flags
+                           highlighting.ResetState();
+                           break;
                         }
                         else
                         {
-                           if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && word[0] == '#')
+                           textColor = newTextColor;
+                           if(!selected)
                            {
-                              if(firstWord)
-                              {
-                                 inPrep = true;
-                                 newTextColor = wordLen == 1 ? colorScheme.keywordColors[1] : colorScheme.preprocessorColor;
-                              }
-                           }
-                           if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
-                           {
-                              for(g = 0; g < ((inPrep && word[0] != '#') ? 2 : 1); g++)
-                              {
-                                 const char ** keys = keyWords[g];
-                                 int * len = keyLen[g];
-                                 for(ccc = 0; keys[ccc]; ccc++)
-                                 {
-                                    if(len[ccc] == wordLen && !strncmp(keys[ccc], word, wordLen))
-                                    {
-                                       newTextColor = colorScheme.keywordColors[g];
-                                       break;
-                                    }
-                                 }
-                              }
-                           }
-                        }
-                        firstWord = false;
-
-                        // If highlighting for this word is different, break
-                        if(newTextColor != textColor)
-                        {
-                           if(bufferLen)
-                           {
-                              // Better solution than going back?
-                              c -= wordLen;
-
-                              // Reset syntax flags
-                              escaped = backEscaped;
-                              lastWasStar = backLastWasStar;
-                              inMultiLineComment = backInMultiLineComment;
-                              inString = backInString;
-                              inQuotes = backInQuotes;
-                              inPrep = backInPrep;
-                              inSingleLineComment = backInSingleLineComment;
-                              wasInMultiLine = backWasInMultiLine;
-                              break;
-                           }
-                           else
-                           {
-                              textColor = newTextColor;
-                              if(!selected)
-                              {
-                                 foreground = textColor;
-                                 surface.SetForeground(textColor);
-                              }
+                              foreground = textColor;
+                              surface.SetForeground(textColor);
                            }
                         }
                      }
@@ -2134,18 +2231,8 @@ private:
             surface.SetForeground(foreground);
          }
 
-         if(line.count && line.text[line.count - 1] == '\\')
-         {
-            continuedSingleLineComment = inSingleLineComment;
-            continuedString = inString;
-            continuedQuotes = inQuotes;
-         }
-         else
-         {
-            continuedSingleLineComment = false;
-            continuedString = false;
-            continuedQuotes = false;
-         }
+         if(style.syntax)
+            highlighting.NextLine(line.buffer, line.count);
 
          y+=this.space.h;
          if(y > box.bottom) // >=clientSize.h)
@@ -2297,28 +2384,6 @@ private:
       _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, true, null);
    }
 
-   bool HasCommentOrEscape(EditLine line)
-   {
-      bool hadComment = strstr(line.buffer, "/*") || strstr(line.buffer, "*/");
-      int c;
-
-      if(!hadComment)
-      {
-         for(c = line.count-1; c >= 0; c--)
-         {
-            char ch = line.buffer[c];
-            if(ch == '\\')
-            {
-               hadComment = true;
-               break;
-            }
-            else //if(ch != ' ' && ch != '\t')
-               break;
-         }
-      }
-      return hadComment;
-   }
-
    int _DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter, bool highlight, int * addedSpacesPtr)
    {
       EditLine line = l1, next;
@@ -2332,7 +2397,7 @@ private:
       int start = c1;
 
       if(style.syntax)
-         hadComment = HasCommentOrEscape(line);
+         hadComment = highlighting.CanImpactOtherLines(line);
 
       if(y2 > y1 || c2 > c1)
       {
@@ -2528,7 +2593,7 @@ private:
       }
       ComputeLength(l1);
       FindMaxLine();
-      if(style.syntax && (hadComment || HasCommentOrEscape(this.line)))
+      if(style.syntax && (hadComment || highlighting.CanImpactOtherLines(this.line)))
       {
          DirtyAll();
          style.recomputeSyntax = true;
@@ -2688,7 +2753,7 @@ private:
          DirtyLine(this.y);
 
          if(style.syntax)
-            hadComment = HasCommentOrEscape(line);
+            hadComment = highlighting.CanImpactOtherLines(line);
 
          // Adjust the size of the line
          if(!line.AdjustBuffer(line.count+count+addedTabs+addedSpaces))
@@ -2740,7 +2805,7 @@ private:
 
             after.x = this.x;
 
-            hasComment = HasCommentOrEscape(line);
+            hasComment = highlighting.CanImpactOtherLines(line);
             if(!undoBuffer.insideRedo)
             {
                int backDontRecord = undoBuffer.dontRecord;
@@ -2886,9 +2951,9 @@ private:
    {
       Box box;
 
-      if(style.recomputeSyntax)
+      if(style.recomputeSyntax && style.syntax)
       {
-         FigureStartSyntaxStates(lines.first, true);
+         highlighting.FigureStartSyntaxStates(lines.first, true, viewLine);
          style.recomputeSyntax = false;
       }
       box.left  = 0;
@@ -3515,8 +3580,12 @@ private:
          }
       }
       mouseMove = false;
+      /*
+      UpdateCaretPosition(false); // when NotifyCaretMove is called through UpdateCaretPosition from OnLeftButtonDown the deselection
+                                  // is not yet apparent or something? this fixes it but there might be a better fix
       // Return false because DataBoxes automatically set EditBox editor's clickThrough to true for MouseMove events
       // ( for tool tips -- see 95ee4962c4c7bc3fe0a04aa6a4f98cacada40884)
+      */
       return false;
    }
 
@@ -5046,7 +5115,8 @@ private:
       {
          EditLine oldViewLine = viewLine;
          for(; position > this.viewY && this.viewLine.next; this.viewLine = this.viewLine.next, this.viewY++);
-         FigureStartSyntaxStates(oldViewLine, false);
+         if(style.syntax)
+            highlighting.FigureStartSyntaxStates(oldViewLine, false, viewLine);
       }
 
       if(action != setRange)
@@ -5925,8 +5995,8 @@ public:
          this.viewLine = this.viewLine.next;
          figureSyntax = true;
       }
-      if(figureSyntax)
-         FigureStartSyntaxStates(oldViewLine, false);
+      if(figureSyntax && style.syntax)
+         highlighting.FigureStartSyntaxStates(oldViewLine, false, viewLine);
 
       this.viewY = viewY;
 
@@ -5978,8 +6048,8 @@ public:
             this.line = line;
             this.y++;
          }
-         if(figureSyntax)
-            FigureStartSyntaxStates(oldViewLine, false);
+         if(figureSyntax && style.syntax)
+            highlighting.FigureStartSyntaxStates(oldViewLine, false, viewLine);
          this.x = AdjustXPosition(line, caretX, true, null, MAXINT, 0);
          ComputeColumn();
 
