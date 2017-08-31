@@ -1200,6 +1200,7 @@ private:
       delete codeEditorFont;
 
       colorSchemes.Free();
+      delete colorSchemes;
       delete activeColorScheme;
    }
 
@@ -2146,6 +2147,7 @@ class CompilerConfigs : List<CompilerConfig>
                   addedConfigs.Add(ccfg.name);
                }
             }
+            addedConfigs.Free();
             delete addedConfigs;
             ensureDefaults();
             compilerConfigsByName.Free();
