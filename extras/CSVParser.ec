@@ -124,7 +124,7 @@ public:
             start = 0;
          }
 
-         readCount = offset + file.Read(&buffer[offset], 1, buffer.minAllocSize - offset);
+         readCount = offset + (int)file.Read(&buffer[offset], 1, buffer.minAllocSize - offset);
          for(c = offset; c < readCount && status; c++)
          {
             char ch = buffer[c];
