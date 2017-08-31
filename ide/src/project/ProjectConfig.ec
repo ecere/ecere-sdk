@@ -133,23 +133,42 @@ class DirExpression : struct
                            c = i;
                            matched = true;
                         }
-                        else if(compiler && compiler.environmentVars && compiler.environmentVars.count)
+                        else
                         {
-                           for(ev : compiler.environmentVars;
-                                 ev.name && ev.string && ev.name[0] && ev.string[0] && !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
+                           if(compiler && compiler.environmentVars && compiler.environmentVars.count)
+                              for(ev : compiler.environmentVars;
+                                    ev.name && ev.string && ev.name[0] && ev.string[0] && !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
+                              {
+                                 buffer[d] = '\0';
+#if defined(__WIN32__)
+                                 ChangeCh(ev.string, '\\', '/');
+#endif
+                                 strcat(buffer, ev.string);
+#if defined(__WIN32__)
+                                 ChangeCh(ev.string, '/', '\\');
+#endif
+                                 d += strlen(ev.string);
+                                 c = i;
+                                 matched = true;
+                                 break;
+                              }
+                           if(!matched)
                            {
-                              buffer[d] = '\0';
+                              char name[512];
+                              char envValue[2048];
+                              memcpy(name, &expr[c + 2], n);
+                              name[n] = '\0';
+                              if(GetEnvironment(name, envValue, sizeof(envValue)))
+                              {
+                                 buffer[d] = '\0';
 #if defined(__WIN32__)
-                              ChangeCh(ev.string, '\\', '/');
+                                 ChangeCh(envValue, '\\', '/');
 #endif
-                              strcat(buffer, ev.string);
-#if defined(__WIN32__)
-                              ChangeCh(ev.string, '/', '\\');
-#endif
-                              d += strlen(ev.string);
-                              c = i;
-                              matched = true;
-                              break;
+                                 strcat(buffer, envValue);
+                                 d += strlen(envValue);
+                                 c = i;
+                                 matched = true;
+                              }
                            }
                         }
                         if(!matched)
