@@ -1322,7 +1322,7 @@ static inline CC_ALWAYSINLINE float ccFastLog2Double( double x )
     double f;
   } u;
   u.f = x;
-  base = ( ( u.i >> 52 ) & 0x7ff ) - 0x400;
+  base = (int)(( ( u.i >> 52 ) & 0x7ff ) - 0x400);
   u.i &= ~( (uint64_t)0x7ff << 52 );
   u.i += (uint64_t)0x3ff << 52;
 #else

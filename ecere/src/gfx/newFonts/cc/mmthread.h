@@ -307,7 +307,7 @@ static inline int mtSignalWaitTimeout( mtSignal *signal, mtMutex *mutex, long mi
     ts.tv_sec++;
     microsecs -= 1000000;
   }
-  ts.tv_nsec = microsecs * 1000;
+  ts.tv_nsec = (long)(microsecs * 1000);
   return ( pthread_cond_timedwait( &signal->pcond, &mutex->pmutex, &ts ) == 0 );
 }
 
@@ -323,8 +323,8 @@ static inline unsigned long long mtSignalTime( long milliseconds )
 static inline int mtSignalWaitTime( mtSignal *signal, mtMutex *mutex, unsigned long long millitime )
 {
   struct timespec ts;
-  ts.tv_sec = millitime / 1000;
-  ts.tv_nsec = ( millitime % 1000 ) * 1000000;
+  ts.tv_sec = (long)(millitime / 1000);
+  ts.tv_nsec = (long)(( millitime % 1000 ) * 1000000);
   return ( pthread_cond_timedwait( &signal->pcond, &mutex->pmutex, &ts ) == 0 );
 }
 
