@@ -695,6 +695,7 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
             {
                if(spec.specifier == INT64) s = "int64";
                else if(spec.specifier == INT128) s = "__int128";
+               else if(spec.specifier == FLOAT128) s = "__float128";
             }
             if(s)
             {
@@ -875,6 +876,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                      {
                         if(spec.specifier == INT64) s = "int64";
                         else if(spec.specifier == INT128) s = "__int128";
+                        else if(spec.specifier == FLOAT128) s = "__float128";
                      }
                      if(s)
                      {
@@ -909,6 +911,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                {
                   if(spec.specifier == INT64) s = "int64";
                   else if(spec.specifier == INT128) s = "__int128";
+                  else if(spec.specifier == FLOAT128) s = "__float128";
                }
                if(s)
                {
@@ -1042,6 +1045,7 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
             {
                if(spec.specifier == INT64) s = "int64";
                else if(spec.specifier == INT128) s = "__int128";
+               else if(spec.specifier == FLOAT128) s = "__float128";
             }
             if(s)
             {
@@ -2379,6 +2383,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
             else if(spec.specifier == INT64) specType.kind = int64Type;
             else if(spec.specifier == INT128) specType.kind = int128Type;
+            else if(spec.specifier == FLOAT128) specType.kind = float128Type;
             else if(spec.specifier == VALIST)
                specType.kind = vaListType;
             else if(spec.specifier == SHORT) specType.kind = shortType;
@@ -2456,6 +2461,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
          {
             specType.kind = enumType;
             specType.enumName = spec.id ? CopyString(spec.id.string) : null;
+            specType.members.Clear();
 
             if(spec.list)
             {

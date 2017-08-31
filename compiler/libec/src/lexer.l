@@ -133,6 +133,7 @@ default:
 "__int64"            { return(INT64); }
 "int64"              { return(INT64); }
 "__int128"           { return(INT128); }
+"__float128"         { return(FLOAT128); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
 "Bool"               { return(BOOL); }
@@ -423,7 +424,7 @@ int preprocessor()
          yylloc.end.line++;
          if(last != '\\')
          {
-            char * pointer = line + 1;
+            const char * pointer = line + 1;
             int lineNumber;
             line[count] = 0;
             lineNumber = GetValue(&pointer);

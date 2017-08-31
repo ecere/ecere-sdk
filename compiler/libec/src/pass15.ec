@@ -3192,6 +3192,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       // RECENTLY ADDED THESE
       else if(dest.kind == doubleType && source.kind == floatType)
          return true;
+      else if(dest.kind == float128Type && (source.kind == floatType || source.kind == doubleType))
+         return true;
       else if(dest.kind == shortType && (source.kind == charType || source.kind == _BoolType))
          return true;
       else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intSizeType /* Exception here for size_t */))
@@ -6983,6 +6985,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case shortType: ListAdd(specs, MkSpecifier(SHORT)); break;
       case int64Type: ListAdd(specs, MkSpecifier(INT64)); break;
       case int128Type: ListAdd(specs, MkSpecifier(INT128)); break;
+      case float128Type: ListAdd(specs, MkSpecifier(FLOAT128)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
       case intSizeType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intsize" : "uintsize")); break;
       case intType:
@@ -7036,6 +7039,7 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case intType:  strcat(string, type.isSigned ? "int" : "uint"); break;
          case int64Type:  strcat(string, type.isSigned ? "int64" : "uint64"); break;
          case int128Type:  strcat(string, type.isSigned ? "__int128" : "unsigned __int128"); break;
+         case float128Type:  strcat(string, type.isSigned ? "__float128" : "unsigned __float128"); break;
          case intPtrType:  strcat(string, type.isSigned ? "intptr" : "uintptr"); break;
          case intSizeType:  strcat(string, type.isSigned ? "intsize" : "uintsize"); break;
          case charType: strcat(string, type.isSigned ? "char" : "byte"); break;

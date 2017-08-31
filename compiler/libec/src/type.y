@@ -145,7 +145,7 @@ default:
 %token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
 %token TYPEDEF EXTERN STATIC AUTO REGISTER
-%token CHAR SHORT INT UINT INT64 INT128 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
+%token CHAR SHORT INT UINT INT64 INT128 FLOAT128 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
 %token STRUCT UNION ENUM ELLIPSIS
 
 %token CASE DEFAULT IF SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
@@ -811,6 +811,7 @@ type_specifier:
    | UINT            { $$ = MkSpecifier(UINT); }
    | INT64           { $$ = MkSpecifier(INT64); }
    | INT128          { $$ = MkSpecifier(INT128); }
+   | FLOAT128        { $$ = MkSpecifier(FLOAT128); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }
@@ -839,6 +840,7 @@ strict_type_specifier:
    | UINT            { $$ = MkSpecifier(UINT); }
    | INT64           { $$ = MkSpecifier(INT64); }
    | INT128          { $$ = MkSpecifier(INT128); }
+   | FLOAT128        { $$ = MkSpecifier(FLOAT128); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }

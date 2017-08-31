@@ -109,7 +109,7 @@ int fileno(FILE * stream);
 
 enum yytokentype
 {
-IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, LONG = 295, SIGNED = 296, UNSIGNED = 297, FLOAT = 298, DOUBLE = 299, CONST = 300, VOLATILE = 301, VOID = 302, VALIST = 303, STRUCT = 304, UNION = 305, ENUM = 306, ELLIPSIS = 307, CASE = 308, DEFAULT = 309, IF = 310, SWITCH = 311, WHILE = 312, DO = 313, FOR = 314, GOTO = 315, CONTINUE = 316, BREAK = 317, RETURN = 318, IFX = 319, ELSE = 320, CLASS = 321, THISCLASS = 322, CLASS_NAME = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375
 };
 
 typedef struct YYLTYPE
@@ -2452,34 +2452,35 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_int", 291);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_uint", 292);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_int64", 293);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_int128", 294);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_long", 295);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_signed", 296);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_unsigned", 297);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_float", 298);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_double", 299);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_const", 300);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_volatile", 301);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_void", 302);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_valist", 303);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_struct", 304);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_union", 305);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_enum", 306);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ellipsis", 307);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_case", 308);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_default", 309);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_if", 310);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_switch", 311);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_while", 312);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_do", 313);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_for", 314);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_goto", 315);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_continue", 316);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_break", 317);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_return", 318);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ifx", 319);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_else", 320);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_class", 321);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClass", 322);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_float128", 295);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_long", 296);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_signed", 297);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_unsigned", 298);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_float", 299);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_double", 300);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_const", 301);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_volatile", 302);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_void", 303);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_valist", 304);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_struct", 305);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_union", 306);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_enum", 307);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ellipsis", 308);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_case", 309);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_default", 310);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_if", 311);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_switch", 312);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_while", 313);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_do", 314);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_for", 315);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_goto", 316);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_continue", 317);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_break", 318);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_return", 319);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ifx", 320);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_else", 321);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_class", 322);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClass", 323);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_property", 324);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "setProp", 325);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "getProp", 326);
@@ -3446,6 +3447,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intPtrType", 22);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intSizeType", 23);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_BoolType", 24);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "int128Type", 25);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "float128Type", 26);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Type = class;

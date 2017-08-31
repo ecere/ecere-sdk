@@ -977,6 +977,9 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
             case INT128:
                f.Puts("__int128");
                break;
+            case FLOAT128:
+               f.Puts("__float128");
+               break;
             case VALIST:
                f.Puts("__builtin_va_list");
                break;
