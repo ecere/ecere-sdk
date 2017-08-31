@@ -1707,7 +1707,7 @@ String Expression2String(Expression e)
 {
    TempFile f { };
    String v;
-   int size;
+   uintsize size;
 
    OutputExpression(e, f);
 
