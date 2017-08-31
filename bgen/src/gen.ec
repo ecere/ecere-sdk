@@ -1366,6 +1366,7 @@ const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
    return symbol;
 }
 
+#if 0
 const char * swapInstanceSpecifier(const char * spec/*, bool * isUnitClass*/)
 {
    Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(spec));
@@ -1393,6 +1394,7 @@ const char * getSpecifierSymbolName(const char * spec)
    }
    return spec;
 }
+#endif // 0
 
 char * printType(Type t, bool printName, bool fullName)
 {
@@ -1401,6 +1403,19 @@ char * printType(Type t, bool printName, bool fullName)
    SetInBGen(true);
    PrintType(t, type, printName, fullName);
    SetInBGen(false);
+   return CopyString(type);
+}
+
+char * cPrintType(Type t, bool printName, bool fullName, bool additionalPointer)
+{
+   char type[8192];
+   type[0] = 0;
+   //SetInBGen(true);
+   PrintType(t, type, printName, fullName);
+   //SetInBGen(false);
+   if(additionalPointer && t.kind == classType && t._class.registered &&
+         (t._class.registered.type == structClass || t._class.registered.type == noHeadClass))
+      strcat(type, " *");
    return CopyString(type);
 }
 
