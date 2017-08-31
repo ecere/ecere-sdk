@@ -17469,9 +17469,27 @@ if(exp->__anon1.call.exp->type == 0)
 struct Expression * idExp = exp->__anon1.call.exp;
 struct Identifier * id = idExp->__anon1.__anon1.identifier;
 
-if(!strcmp(id->string, "__sync_synchronize"))
+if(!strcmp(id->string, "__sync_synchronize") || !strcmp(id->string, "__sync_lock_release"))
 {
-exp->expType = ProcessTypeString("void()", 1);
+exp->expType = ProcessTypeString("void", 1);
+break;
+}
+else if(!strcmp(id->string, "__sync_bool_compare_and_swap"))
+{
+exp->expType = ProcessTypeString("bool", 1);
+break;
+}
+else if(!strcmp(id->string, "__sync_sub_and_fetch") || !strcmp(id->string, "__sync_fetch_and_sub") || !strcmp(id->string, "__sync_add_and_fetch") || !strcmp(id->string, "__sync_fetch_and_add") || !strcmp(id->string, "__sync_or_and_fetch") || !strcmp(id->string, "__sync_fetch_and_or") || !strcmp(id->string, "__sync_and_and_fetch") || !strcmp(id->string, "__sync_fetch_and_and") || !strcmp(id->string, "__sync_xor_and_fetch") || !strcmp(id->string, "__sync_fetch_and_xor") || !strcmp(id->string, "__sync_nand_and_fetch") || !strcmp(id->string, "__sync_fetch_and_nand") || !strcmp(id->string, "__sync_val_compare_and_swap") || !strcmp(id->string, "__sync_lock_test_and_set"))
+{
+if(exp->__anon1.call.arguments && (*exp->__anon1.call.arguments).first && ((struct Expression *)(*exp->__anon1.call.arguments).first)->next)
+ProcessExpressionType((*exp->__anon1.call.arguments).first);
+if(exp->__anon1.call.arguments && (*exp->__anon1.call.arguments).first && ((struct Expression *)(*exp->__anon1.call.arguments).first)->next && ((struct Expression *)(*exp->__anon1.call.arguments).first)->next->expType)
+{
+exp->expType = ((struct Expression *)(*exp->__anon1.call.arguments).first)->next->expType;
+exp->expType->refCount++;
+}
+else
+exp->expType = ProcessTypeString("int", 1);
 break;
 }
 else if(!strcmp(id->string, "__builtin_frame_address"))

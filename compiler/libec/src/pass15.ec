@@ -9601,9 +9601,36 @@ void ProcessExpressionType(Expression exp)
          {
             Expression idExp = exp.call.exp;
             Identifier id = idExp.identifier;
-            if(!strcmp(id.string, "__sync_synchronize"))
+            if(!strcmp(id.string, "__sync_synchronize") || !strcmp(id.string, "__sync_lock_release"))
             {
-               exp.expType = ProcessTypeString("void()", true);
+               exp.expType = ProcessTypeString("void", true);
+               break;
+            }
+            else if(!strcmp(id.string, "__sync_bool_compare_and_swap"))
+            {
+               exp.expType = ProcessTypeString("bool", true);
+               break;
+            }
+            else if(
+                    !strcmp(id.string, "__sync_sub_and_fetch") || !strcmp(id.string, "__sync_fetch_and_sub") ||
+                    !strcmp(id.string, "__sync_add_and_fetch") || !strcmp(id.string, "__sync_fetch_and_add") ||
+                    !strcmp(id.string, "__sync_or_and_fetch")  || !strcmp(id.string, "__sync_fetch_and_or")  ||
+                    !strcmp(id.string, "__sync_and_and_fetch") || !strcmp(id.string, "__sync_fetch_and_and") ||
+                    !strcmp(id.string, "__sync_xor_and_fetch") || !strcmp(id.string, "__sync_fetch_and_xor") ||
+                    !strcmp(id.string, "__sync_nand_and_fetch")|| !strcmp(id.string, "__sync_fetch_and_nand")||
+                    !strcmp(id.string, "__sync_val_compare_and_swap") ||
+                    !strcmp(id.string, "__sync_lock_test_and_set"))
+            {
+               if(exp.call.arguments && exp.call.arguments->first && ((Expression)exp.call.arguments->first).next)
+                  ProcessExpressionType(exp.call.arguments->first);
+               if(exp.call.arguments && exp.call.arguments->first && ((Expression)exp.call.arguments->first).next &&
+                  ((Expression)((Expression)exp.call.arguments->first).next).expType)
+               {
+                  exp.expType = ((Expression)((Expression)exp.call.arguments->first).next).expType;
+                  exp.expType.refCount++;
+               }
+               else
+                  exp.expType = ProcessTypeString("int", true);
                break;
             }
             else if(!strcmp(id.string, "__builtin_frame_address"))
