@@ -44,6 +44,25 @@ public class SyntaxHighlighting
    eCSyntaxState viewLineState;
    eCSyntaxState currentState;
    eCSyntaxState backedState;
+   SyntaxHighlightMode syntaxMode; // TODO: Subclass SyntaxHighlighting instead
+
+   bool cppSingle, cMultiLine, cPrep, hashTagComments, cNumbers, singleQuotes;
+
+   public property SyntaxHighlightMode syntaxMode
+   {
+      set
+      {
+         syntaxMode = value;
+         cppSingle = syntaxMode == none || syntaxMode == SyntaxHighlightMode::c || syntaxMode == ec || syntaxMode == objectivec || syntaxMode == cxx || syntaxMode == java || syntaxMode == csharp ||
+            syntaxMode == bison;
+         cNumbers = cMultiLine = syntaxMode == none || syntaxMode == SyntaxHighlightMode::c || syntaxMode == ec || syntaxMode == objectivec || syntaxMode == cxx || syntaxMode == java || syntaxMode == csharp ||
+            syntaxMode == php || syntaxMode == bison;
+         cPrep = syntaxMode == none || syntaxMode == SyntaxHighlightMode::c || syntaxMode == ec || syntaxMode == objectivec || syntaxMode == cxx || syntaxMode == java || syntaxMode == csharp;
+         hashTagComments = syntaxMode == python || syntaxMode == bash || syntaxMode == make || syntaxMode == config;
+         singleQuotes = syntaxMode == none || syntaxMode == SyntaxHighlightMode::c || syntaxMode == ec || syntaxMode == objectivec || syntaxMode == cxx || syntaxMode == java || syntaxMode == csharp ||
+            syntaxMode == bison || syntaxMode == python;
+      }
+   }
 
    virtual void InitDraw()
    {
@@ -123,12 +142,12 @@ public class SyntaxHighlighting
       {
          if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inQuotes && !currentState.inString)
          {
-            if(word[1] == '/')
+            if(cppSingle && word[1] == '/')
             {
                currentState.inSingleLineComment = true;
                newTextColor = colorScheme.commentColor;
             }
-            else if(word[1] == '*')
+            else if(cMultiLine && word[1] == '*')
             {
                currentState.inMultiLineComment = true;
                newTextColor = colorScheme.commentColor;
@@ -137,7 +156,7 @@ public class SyntaxHighlighting
          else if(backedState.lastWasStar)
             currentState.inMultiLineComment = false;
       }
-      else if(*wordLen == 1 && word[0] == '*')
+      else if(cMultiLine && *wordLen == 1 && word[0] == '*')
       {
          if(backedState.inMultiLineComment)
             currentState.lastWasStar = true;
@@ -154,7 +173,7 @@ public class SyntaxHighlighting
             newTextColor = colorScheme.stringLiteralColor;
          }
       }
-      else if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inString && *wordLen == 1 && word[0] == '\'')
+      else if(!currentState.inSingleLineComment && !currentState.inMultiLineComment && !currentState.inString && singleQuotes && *wordLen == 1 && word[0] == '\'')
       {
          if(currentState.inQuotes && !wasEscaped)
             currentState.inQuotes = false;
@@ -173,6 +192,7 @@ public class SyntaxHighlighting
       {
          char * dot = word[*wordLen] == '.' ? word + *wordLen : (word[0] == '.' && (word == buffer || word[-1] == '-' || isspace(word[-1])) ? word : null);
          bool isReal = dot != null;
+         int base = cNumbers ? 0 : 10;
          char * s = null;
          if(dot)
             isReal = true;
@@ -182,6 +202,7 @@ public class SyntaxHighlighting
             bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
             if(isHex)
             {
+               base = 16;
                exponent = strchrmax(word, 'p', *wordLen);
                if(!exponent) exponent = strchrmax(word, 'P', *wordLen);
             }
@@ -195,7 +216,7 @@ public class SyntaxHighlighting
          if(isReal)
             strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
          else
-            strtol(word, &s, 0);
+            strtol(word, &s, base);
          if(s && s != word)
          {
             // Check suffixes
@@ -250,27 +271,35 @@ public class SyntaxHighlighting
       {
          if(!currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment && word[0] == '#')
          {
-            if(currentState.firstWord)
+            if(cPrep)
             {
-               currentState.inPrep = true;
-               newTextColor = *wordLen == 1 ? colorScheme.keywordColors[1] : colorScheme.preprocessorColor;
+               if(currentState.firstWord)
+               {
+                  currentState.inPrep = true;
+                  newTextColor = *wordLen == 1 ? colorScheme.keywordColors[1] : colorScheme.preprocessorColor;
+               }
+            }
+            else if(hashTagComments)
+            {
+               currentState.inSingleLineComment = true;
+               newTextColor = colorScheme.commentColor;
             }
          }
          if(beforeEndOfLine && !currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment)
          {
-            int g;
-            for(g = 0; g < ((currentState.inPrep && word[0] != '#') ? 2 : 1); g++)
+            int wordStart = *c - *wordLen;
+            SyntaxHighlightMode mode = (currentState.inPrep && word[0] != '#' && cPrep) ? cPreprocessor : syntaxMode;
+            const char ** keys = keyWords[mode];
+            int * len = keyLen[mode];
+            int ccc;
+            for(ccc = 0; keys[ccc]; ccc++)
             {
-               const char ** keys = keyWords[g];
-               int * len = keyLen[g];
-               int ccc;
-               for(ccc = 0; keys[ccc]; ccc++)
+               if((len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen)) ||
+                     (keys[ccc][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
+                           len[ccc] == *wordLen + 1 && !strncmp(keys[ccc] + 1, word, *wordLen)))
                {
-                  if(len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen))
-                  {
-                     newTextColor = colorScheme.keywordColors[g];
-                     break;
-                  }
+                  newTextColor = colorScheme.keywordColors[mode == cPreprocessor];
+                  break;
                }
             }
          }
@@ -364,11 +393,11 @@ public class SyntaxHighlighting
             {
                if(!inSingleLineComment && !inMultiLineComment && !inQuotes && !inString)
                {
-                  if(text[c+1] == '/')
+                  if(cppSingle && text[c+1] == '/')
                   {
                      inSingleLineComment = true;
                   }
-                  else if(text[c+1] == '*')
+                  else if(cMultiLine && text[c+1] == '*')
                   {
                      inMultiLineComment = true;
                   }
@@ -391,7 +420,7 @@ public class SyntaxHighlighting
                   inString = true;
                }
             }
-            else if(ch == '\'' && !inSingleLineComment && !inMultiLineComment && !inString)
+            else if(ch == '\'' && singleQuotes && !inSingleLineComment && !inMultiLineComment && !inString)
             {
                if(inQuotes && !wasEscaped)
                   inQuotes = false;
@@ -407,10 +436,15 @@ public class SyntaxHighlighting
             }
             else if(ch == '#' && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
             {
-               if(firstWord)
+               if(cPrep)
                {
-                  inPrep = true;
+                  if(firstWord)
+                  {
+                     inPrep = true;
+                  }
                }
+               else if(hashTagComments)
+                  inSingleLineComment = true;
             }
             else if(ch != ' ' && ch != '\t')
                firstWord = false;
@@ -528,6 +562,7 @@ public:
       ch; \
    })
 
+
 class EditBoxBits
 {
    bool autoEmpty:1, readOnly:1, multiLine:1, stuckCaret:1, freeCaret:1, select:1, hScroll:1, vScroll:1, smartHome:1;
@@ -538,6 +573,13 @@ class EditBoxBits
 
    // bool lineNumbers:1;
    bool autoSize:1;
+};
+
+public enum SyntaxHighlightMode
+{
+   none, cPreprocessor, config, make, bison, bash, batch,
+   c, cxx, objectivec, ec, csharp, java, go, rust, swift, python,
+   php, javascript, glsl, html, css
 };
 
 /* TODO:
@@ -1102,7 +1144,8 @@ public struct BufferLocation
 
 public enum EditBoxFindResult { notFound, found, wrapped };
 
-static const char * keyWords1[] =
+// SyntaxHighlightMode::none -- only if syntax == true, for old compatibility?
+static const char * kwDefault[] =
 {
    // C
    "return","break","continue","default","switch","case","if","else","for","while", "do","long","short",
@@ -1133,24 +1176,423 @@ static const char * keyWords1[] =
    // Values
    "this", "true", "false", "null", "value",
 
-
    // C++
    "protected",
    /* "defined" */
+
    null
 };
 
-static const char * keyWords2[] =
+// SyntaxHighlightMode::cPreprocessor
+static const char * kwCPreprocessor[] =
 {
    "defined", "warning",
    "include", "pragma", "elif", "ifdef", "ifndef", "endif", "undef", "line",
    null
 };
 
-static const char ** keyWords[] = { keyWords1, keyWords2 };
+// SyntaxHighlightMode::config
+static const char * kwConfig[] =
+{
+   null
+};
+
+// SyntaxHighlightMode::make
+static const char * kwMakefile[] =
+{
+   // Makefile
+   // special target names
+   ".PHONY", ".SUFFIXES", ".DEFAULT", ".PRECIOUS", ".INTERMEDIATE", ".SECONDARY", ".SECONDEXPANSION",
+   ".DELETE_ON_ERROR", ".IGNORE", ".LOW_RESOLUTION_TIME", ".LOW_RESOLUTION_TIME:", ".SILENT",
+   ".EXPORT_ALL_VARIABLES", ".NOTPARALLEL", ".ONESHELL", ".POSIX",
+   // standard targets
+   "all", "install", "install-html", "install-dvi", "install-pdf", "install-ps", "uninstall", "install-strip",
+   "clean", "distclean", "mostlyclean", "maintainer-clean", "TAGS", "info", "dvi", "html", "pdf", "ps", "dist",
+   "check", "installcheck", "installdirs",
+   // additional standard targets
+   "cleantarget", "realclean", "test", "force", "objdir",
+   // keywords
+   "include", "ifdef", "ifndef", "ifeq", "ifneq", "else", "endif",
+   "export", "unexport", "define", "endef", "undefine", "override", "private", "vpath",
+   // shell commands
+   "echo", "cd", "touch", "cat", "cp", "cpr", "rm", "rmr", "mkdir", "rmdir",
+   "for", "in", "do", "done",
+   // built-in functions
+   "subst", "patsubst", "strip", "findstring", "filter", "filter-out", "sort",
+   "word", "wordlist", "words", "firstword", "lastword", "dir", "suffix", "basename",
+   "addsuffix", "addprefix", "join", "wildcard", "realpath", "abspath", "if", "or", "and",
+   "foreach", "file", "call", "value", "eval", "origin", "flavor", "error", "warning", "info", "shell",
+   // special variables
+   "$@", "$%", "$<", "$?", "$^", "$+", "$*", "$0", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9",
+   "MAKEFILES", "VPATH", "SHELL", "MAKESHELL", "MAKE", "MAKE_VERSION", "MAKE_HOST", "MAKELEVEL", "MAKEFLAGS",
+   "GNUMAKEFLAGS", "MAKECMDGOALS", "CURDIR", "SUFFIXES", ".LIBPATTERNS",
+   "MAKEFILE_LIST", ".DEFAULT_GOAL", "MAKE_RESTARTS", "MAKE_TERMOUT", "MAKE_TERMERR", ".RECIPEPREFIX",
+   ".VARIABLES", ".FEATURES", ".INCLUDE_DIRS", "VPATH",
+   null
+};
+
+// SyntaxHighlightMode::bison
+static const char * kwBison[] =
+{
+   "%debug", "%union", "%type",
+   null
+};
+
+// SyntaxHighlightMode::bash
+static const char * kwBash[] =
+{
+   "case", "do", "done", "elif", "else", "esac", "fi", "for", "function", "if", "in",
+   "select", "then", "time", "until", "while",
+   "echo", "printf", "read", "cd", "pwd", "pushd", "popd", "dirs",
+   "let", "eval", "set", "unset", "export", "declare", "typeset", "readonly", "getopts",
+   "source", "exit", "exec", "shopt", "caller", "true", "false", "type", "hash", "bind",
+   "ln", "chmod", "cd", "clear", "diff", "comm", "cmp", "cp", "rm", "ls", "exit",
+   "grep", "mkdir", "rmdir", "more", "mv", "sort", "date", "cat", "touch",
+   null
+};
+
+// SyntaxHighlightMode::batch
+static const char * kwBatch[] =
+{
+   "rem", "not", "nul", "echo", "off", "for", "in", "do", "goto", "pause", "choice",
+   "if", "exist", "call", "command", "cmd", "set", "shift", "sgn", "errorlevel",
+   "con", "prn", "lpt1", "com1",
+   "assign", "attrib", "cd", "chdir", "cls", "comp", "copy", "del", "deltree", "dir",
+   "erase", "exit", "fc", "find", "md", "mkdir", "more", "move", "path", "ren",
+   "rename", "rd", "rmdir", "sort", "time", "type", "xcopy",
+   null
+};
+
+// SyntaxHighlightMode::c
+static const char * kwC[] =
+{
+   "auto", "break", "case", "char", "const", "continue", "default", "do", "double",
+   "else", "enum", "extern", "float", "for", "goto", "if", "int", "long", "register",
+   "return", "short", "signed", "sizeof", "static", "struct", "switch", "typedef",
+   "union", "unsigned", "void", "volatile", "while",
+   "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line",
+   "__attribute__", "_stdcall", "__stdcall", "__stdcall__", "__declspec",
+   "inline", "_inline", "__inline", "__inline__", "__typeof", "__extension__",
+   "asm", "_asm", "__asm", "#cpu", "restrict", "__restrict__", "__restrict",
+   null
+};
+
+// SyntaxHighlightMode::cpp
+static const char * keyCPP[] =
+{
+   // exit()
+   // extern "C"
+   "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool", "break", "case", "catch",
+   "char", "class", "compl", "const", "const_cast", "continue", "default", "#define",
+   "delete", "do", "double", "dynamic_cast", "else", "enum", "explicit", "export",
+   "extern", "false", "float", "for", "friend", "goto", "if", "inline", "int", "long",
+   "mutable", "namespace", "new", "not", "not_eq", "operator", "or", "or_eq", "private",
+   "protected", "public", "register", "reinterpret_cast", "short", "signed", "sizeof",
+   "static", "static_cast", "struct", "switch", "template", "this", "throw", "true",
+   "try", "typedef", "typeid", "typename", "union", "unsigned", "using", "virtual",
+   "void", "volatile", "wchar_t", "while", "xor", "xor_eq",
+
+   null
+};
+
+// SyntaxHighlightMode::objectivec
+static const char * kwObjC[] =
+{
+   null
+};
+
+// SyntaxHighlightMode::ec
+static const char * kweC[] =
+{
+   // C
+   "return","break","continue","default","switch","case","if","else","for","while", "do","long","short",
+   "void", "char","int","float","double","signed","unsigned","static", "extern", "struct", "union", "typedef","enum",
+   "const",   "sizeof",
+   "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line",
+   "__attribute__", "__stdcall", "_stdcall",
+   "__declspec", "goto",
+    "inline", "__inline__", "_inline", "__inline", "__typeof","__extension__",
+   "asm", "__asm", "_asm", "volatile", "#cpu", "__stdcall__",
+   "__restrict__", "__restrict", "restrict",
+
+   // eC
+   "class", "private", "public",
+   "property","import",
+   "delete", "new", "new0", "renew", "renew0", "define",
+   "get", "set",
+   "remote",
+   "dllexport", "dllimport", "stdcall",
+   "subclass", "__on_register_module", "namespace", "using",
+   "typed_object", "any_object", "incref", "register", "watch", "stopwatching", "firewatchers", "watchable", "class_designer",
+   "class_fixed", "class_no_expansion", "isset", "class_default_property", "property_category", "class_data", "class_property",
+   "virtual", "thisclass","unichar", "dbtable", "dbindex", "database_open", "dbfield",
+
+   // Types
+   "uint", "uint32", "uint16", "uint64", "bool", "byte", "int64", "uintptr", "intptr", "intsize", "uintsize",
+
+   // Values
+   "this", "true", "false", "null", "value",
+
+   null
+};
+
+// SyntaxHighlightMode::csharp
+static const char * kwCSharp[] =
+{
+   "abstract", "as", "base", "bool", "break", "byte", "case", "catch", "char",
+   "checked", "class", "const", "continue", "decimal", "default", "delegate", "do",
+   "double", "else", "enum", "event", "explicit", "extern", "false", "finally",
+   "fixed", "float", "for", "foreach", "goto", "if", "implicit", "in", "int",
+   "interface", "internal", "is", "lock", "long", "namespace", "new", "null",
+   "object", "operator", "out", "override", "params", "private", "protected",
+   "public", "readonly", "ref", "return", "sbyte", "sealed", "short", "sizeof",
+   "stackalloc", "static", "string", "struct", "switch", "this", "throw", "true",
+   "try", "typeof", "uint", "ulong", "unchecked", "unsafe", "ushort", "using",
+   "virtual", "void", "volatile", "while",
+   "add", "alias", "ascending", "async", "await", "descending", "dynamic", "from",
+   "get", "global", "group", "into", "join", "let", "orderby", "partial", "remove",
+   "select", "set", "value", "var", "where", "yield",
+   null
+};
+
+// SyntaxHighlightMode::java
+static const char * kwJava[] =
+{
+   "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+   "class", "const", "continue", "default", "do", "double", "else", "enum",
+   "extends", "final", "finally", "float", "for", "goto", "if", "implements",
+   "import", "instanceof", "int", "interface", "long", "native", "new", "package",
+   "private", "protected", "public", "return", "short", "static", "strictfp",
+   "super", "switch", "synchronized", "this", "throw", "throws", "transient",
+   "try", "void", "volatile", "while",
+   "false", "null", "true",
+   null
+};
+
+// SyntaxHighlightMode::go
+static const char * kwGo[] =
+{
+   "break", "case", "chan", "const", "continue", "default", "defer", "else",
+   "fallthrough", "for", "func", "go", "goto", "if", "import", "interface",
+   "package", "map", "range", "return", "select", "switch", "struct", "type",
+   "var",
+   null
+};
+
+// SyntaxHighlightMode::rust
+static const char * kwRust[] =
+{
+   "abstract", "alignof", "as", "become", "box", "break", "const", "continue", "crate", "do",
+   "else", "enum", "extern", "false", "final", "fn", "for", "if", "impl", "in",
+   "let", "loop", "macro", "match", "mod", "move", "mut", "offsetof", "override", "priv",
+   "proc", "pub", "pure", "ref", "return", "Self", "self", "sizeof", "static", "struct",
+   "super", "trait", "true", "type", "typeof", "unsafe", "unsized", "use", "virtual", "where",
+   "while", "yield",
+   null
+};
+
+// SyntaxHighlightMode::swift
+static const char * kwSwift[] =
+{
+   // in declarations
+   "associatedtype", "class", "deinit", "enum", "extension", "func", "import", "init", "inout",
+   "internal", "let", "operator", "private", "protocol", "public", "static", "struct", "subscript",
+   "typealias", "var",
+   // in statements
+   "break", "case", "continue", "default", "defer", "do", "else", "fallthrough", "for", "guard",
+   "if", "in", "repeat", "return", "switch", "where", "while",
+   // in expressions and types
+   "as", "catch", "dynamicType", "false", "is", "nil", "rethrows", "super", "self", "Self", "throw",
+   "throws", "true", "try", "#column", "#file", "#function", "#line",
+   // in patterns
+   "_",
+   // #*
+   "#available", "#column", "#else#elseif", "#endif", "#file", "#function", "#if", "#line", "#selector",
+   // in particular contexts
+   "associativity", "convenience", "dynamic", "didSet", "final", "get", "infix", "indirect", "lazy",
+   "left", "mutating", "none", "nonmutating", "optional", "override", "postfix", "precedence", "prefix",
+   "Protocol", "required", "right", "set", "Type", "unowned", "weak", "willSet",
+   //
+   "true", "false", "nil",
+   null
+};
+
+// a tab:	:between these two columns
+// SyntaxHighlightMode::php
+static const char * kwPHP[] =
+{
+   "__halt_compiler()", "abstract", "and", "array()", "as",
+   "break", "callable", "case", "catch", "class",
+   "clone", "const", "continue", "declare", "default",
+   "die()", "do", "echo", "else", "elseif",
+   "empty()", "enddeclare", "endfor", "endforeach", "endif",
+   "endswitch", "endwhile", "eval()", "exit()", "extends",
+   "final", "finally", "for", "foreach", "function",
+   "global", "goto", "if", "implements", "include",
+   "include_once", "instanceof", "insteadof", "interface", "isset()",
+   "list()", "namespace", "new", "or", "print",
+   "private", "protected", "public", "require", "require_once",
+   "return", "static", "switch", "throw", "trait",
+   "try", "unset()", "use", "var", "while",
+   "xor", "yield",
+   // compile time constants
+   "__CLASS__", "__DIR__", "__FILE__", "__FUNCTION__", "__LINE__", "__METHOD__",
+   "__NAMESPACE__", "__TRAIT__",
+   null
+};
+
+// SyntaxHighlightMode::python
+static const char * kwPython[] =
+{
+   "and", "as", "assert", "break", "class", "continue", "def", "del", "elif",
+   "else", "except", "exec", "finally", "for", "from", "global", "if", "import",
+   "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try",
+   "while", "with", "yield",
+   //
+   "True", "False", "None",
+
+   "self", "super", "isinstance", "getattr", "type",
+
+   "__init__",
+   "__name__",
+   "__neg__",
+   "__int__",
+   "__long__",
+   "__float__",
+   "__truediv__",
+   "__rtruediv__",
+   "__mul__",
+   "__rmul__",
+   "__add__",
+   "__radd__",
+   "__sub__",
+   "__rsub__",
+   "__lt__",
+   "__gt__",
+   "__le__",
+   "__ge__",
+   "__ne__",
+   "__eq__",
+
+   null
+};
+
+// SyntaxHighlightMode::javascript
+static const char * kwJavaScript[] =
+{
+   "break", "case", "catch", "class", "const", "continue", "debugger", "default", "delete",
+   "do", "else", "export", "extends", "finally", "for", "function", "if", "import", "in",
+   "instanceof", "new", "return", "super", "super", "this", "throw", "try", "typeof", "var",
+   "void", "while", "with", "yield",
+   //
+   "enum",
+   //
+   "implements", "interface", "let", "package", "private", "protected", "public", "static",
+   //
+   "await",
+   //
+   "abstract", "boolean", "byte", "char", "double", "final", "float", "goto", "int", "long",
+   "native", "short", "synchronized", "throws", "transient", "volatile",
+   null
+};
+
+// SyntaxHighlightMode::glsl
+static const char * kwGLSL[] =
+{
+   "attribute", "const", "uniform", "varying",
+   "layout",
+   "centroid", "flat", "smooth", "noperspective",
+   "break", "continue", "do", "for", "while", "switch", "case", "default",
+   "if", "else",
+   "in", "out", "inout",
+   "float", "int", "void", "bool", "true", "false",
+   "invariant",
+   "discard", "return",
+   "mat2", "mat3", "mat4",
+   "mat2x2", "mat2x3", "mat2x4",
+   "mat3x2", "mat3x3", "mat3x4",
+   "mat4x2", "mat4x3", "mat4x4",
+   "vec2", "vec3", "vec4", "ivec2", "ivec3", "ivec4", "bvec2", "bvec3", "bvec4",
+   "uint", "uvec2", "uvec3", "uvec4",
+   "lowp", "mediump", "highp", "precision",
+   "sampler1D", "sampler2D", "sampler3D", "samplerCube",
+   "sampler1DShadow", "sampler2DShadow", "samplerCubeShadow",
+   "sampler1DArray", "sampler2DArray",
+   "sampler1DArrayShadow", "sampler2DArrayShadow",
+   "isampler1D", "isampler2D", "isampler3D", "isamplerCube",
+   "isampler1DArray", "isampler2DArray",
+   "usampler1D", "usampler2D", "usampler3D", "usamplerCube",
+   "usampler1DArray", "usampler2DArray",
+   "sampler2DRect", "sampler2DRectShadow", "isampler2DRect", "usampler2DRect",
+   "samplerBuffer", "isamplerBuffer", "usamplerBuffer",
+   "struct",
+   // future
+   "common", "partition", "active",
+   "asm",
+   "class", "union", "enum", "typedef", "template", "this", "packed",
+   "goto",
+   "inline", "noinline", "volatile", "public", "static", "extern", "external", "interface",
+   "long", "short", "double", "half", "fixed", "unsigned", "superp",
+   "input", "output",
+   "hvec2", "hvec3", "hvec4", "dvec2", "dvec3", "dvec4", "fvec2", "fvec3", "fvec4",
+   "sampler2DRect", "sampler3DRect", "sampler2DRectShadow",
+   "samplerBuffer",
+   "filter",
+   "image1D", "image2D", "image3D", "imageCube",
+   "iimage1D", "iimage2D", "iimage3D", "iimageCube",
+   "uimage1D", "uimage2D", "uimage3D", "uimageCube",
+   "image1DArray", "image2DArray",
+   "iimage1DArray", "iimage2DArray", "uimage1DArray", "uimage2DArray",
+   "image1DShadow", "image2DShadow",
+   "image1DArrayShadow", "image2DArrayShadow",
+   "imageBuffer", "iimageBuffer", "uimageBuffer",
+   "sizeof", "cast",
+   "namespace", "using",
+   "row_major",
+   null
+};
+
+// SyntaxHighlightMode::html
+static const char * kwHTML[] =
+{
+   null
+};
+
+// SyntaxHighlightMode::css
+static const char * kwCSS[] =
+{
+   null
+};
+
+// TODO: Move this to SyntaxHighlighting and derived classes...
+static const char ** keyWords[] =
+{
+   kwDefault,
+   kwCPreprocessor, // Second state for C based languages
+   kwConfig,
+   kwMakefile,
+   kwBison,
+   kwBash,
+   kwBatch,
+   kwC,
+   keyCPP,
+   kwObjC,
+   kweC,
+   kwCSharp,
+   kwJava,
+   kwGo,
+   kwRust,
+   kwSwift,
+   kwPython,
+   kwPHP,
+   kwJavaScript,
+   kwGLSL,
+   kwHTML,
+   kwCSS
+};
 #define NUM_KEYWORD_GROUPS (sizeof(keyWords) / sizeof(char **))
-//static int * keyLen[NUM_KEYWORD_GROUPS];
-static int keyLen[NUM_KEYWORD_GROUPS][sizeof(keyWords1)];
+// FIXME: Don't depend on a max number of words, don't have any of this in this file...
+static int keyLen[NUM_KEYWORD_GROUPS][sizeof(kwGLSL)];
 
 static char searchString[1025], replaceString[1025];
 static bool matchCase = false, wholeWord = false, searchUp = false;
@@ -1236,10 +1678,73 @@ public:
          delete highlighting;
          if(value)
          {
-            highlighting = SyntaxHighlighting { };
+            highlighting = SyntaxHighlighting { syntaxMode = syntaxMode };
          }
       }
       get { return style.syntax; }
+   }
+   property const char * syntaxModeCue
+   {
+      property_category $"Appearance"
+      set
+      {
+         if(value)
+         {
+            char fileName[MAX_FILENAME];
+            char ext[MAX_EXTENSION];
+            GetLastDirectory(value, fileName);
+            GetExtension(fileName, ext);
+            if(strstr(fileName, "Makefile") == fileName)
+               syntaxMode = make;
+            else if(!ext[0])
+               syntaxMode = config;
+            else if(!strcmpi(ext, "mk") || !strcmpi(ext, "Makefile"))
+               syntaxMode = make;
+            else if(!strcmpi(ext, "c") || !strcmpi(ext, "h"))
+               syntaxMode = c;
+            else if(!strcmpi(ext, "cxx") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cpp") || !strcmpi(ext, "hpp") ||
+                  !strcmpi(ext, "cc") || !strcmpi(ext, "hh"))
+               syntaxMode = cxx;
+            else if(!strcmpi(ext, "m") || !strcmpi(ext, "mm"))
+               syntaxMode = objectivec;
+            else if(!strcmpi(ext, "ec") || !strcmpi(ext, "eh"))
+               syntaxMode = ec;
+            else if(!strcmpi(ext, "cs"))
+               syntaxMode = csharp;
+            else if(!strcmpi(ext, "java"))
+               syntaxMode = java;
+            else if(!strcmpi(ext, "go"))
+               syntaxMode = go;
+            else if(!strcmpi(ext, "rs"))
+               syntaxMode = rust;
+            else if(!strcmpi(ext, "swift"))
+               syntaxMode = swift;
+            else if(!strcmpi(ext, "py"))
+               syntaxMode = python;
+            else if(!strcmpi(ext, "php"))
+               syntaxMode = php;
+            else if(!strcmpi(ext, "js"))
+               syntaxMode = javascript;
+            else if(!strcmpi(ext, "frag") || !strcmpi(ext, "glsl") || !strcmpi(ext, "vert"))
+               syntaxMode = glsl;
+            else if(!strcmpi(ext, "html") || !strcmpi(ext, "htm") || !strcmpi(ext, "xhtml"))
+               syntaxMode = html;
+            else if(!strcmpi(ext, "css"))
+               syntaxMode = css;
+            else if(!strcmpi(ext, "y") || !strcmpi(ext, "l"))
+               syntaxMode = bison;
+            else if(!strcmpi(ext, "sh"))
+               syntaxMode = bash;
+            else if(!strcmpi(ext, "bat"))
+               syntaxMode = batch;
+            else
+               syntaxMode = config;
+         }
+         else
+            syntaxMode = none;
+         if(highlighting)
+            highlighting.syntaxMode = syntaxMode;
+      }
    };
    property bool noSelect { property_category $"Behavior" set { style.noSelect = value; } get { return style.noSelect; } };
    property bool allCaps { property_category $"Behavior" set { style.allCaps = value; } get { return style.allCaps; } };
@@ -1367,6 +1872,7 @@ public:
 private:
    Font font;
    EditBoxBits style;
+   SyntaxHighlightMode syntaxMode;
    int tabSize;
    int maxLineSize;
    int maxLines;
@@ -1642,8 +2148,6 @@ private:
          syntaxInit = true;
          for(g = 0; g<NUM_KEYWORD_GROUPS; g++)
          {
-            for(c = 0; keyWords[g][c]; c++);
-            //keyLen[g] = new int[c];
             for(c = 0; keyWords[g][c]; c++)
             {
                keyLen[g][c] = strlen(keyWords[g][c]);

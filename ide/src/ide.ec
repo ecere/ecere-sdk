@@ -44,7 +44,16 @@ import "about"
 
 import "FileSystemIterator"
 
-AVLTree<const String> binaryDocExt
+// TODO: Review the whole automatic freeing of container elements
+class FreeingAVLTree : AVLTree
+{
+   ~FreeingAVLTree()
+   {
+      Free();
+   }
+}
+
+FreeingAVLTree<const String> binaryDocExt
 { [
    "wav", "mp3", "flac", "ogg",
    "mid",
@@ -116,8 +125,22 @@ enum OpenMethod { normal, add };
 static Array<FileFilter> fileFilters
 { [
    { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
+   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, eh, c, cpp, cc, cxx" },
    { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
-   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
+   { $"Objective-C Source Files (*.m, *.mm)", "m, mm" },
+   { $"GLSL Source Files (*.glsl, *.vert, *.frag)", "glsl, vert, frag" },
+   { $"Python Source Files (*.py)", "py" },
+   { $"Java Source Files (*.java)", "java" },
+   { $"C# Source Files (*.cs)", "cs" },
+   { $"Rust Source Files (*.rs)", "rs" },
+   { $"Go Source Files (*.go)", "go" },
+   { $"Ruby Source Files (*.rb)", "rb" },
+   { $"JavaScript Source Files (*.js)", "js" },
+   { $"PHP Source Files (*.php)", "php" },
+   { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
+   { $"Swift Source Files (*.swift)", "swift" },
    { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
    { $"Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
    { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },

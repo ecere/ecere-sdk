@@ -44,6 +44,20 @@ static Array<FileFilter> fileFilters
    { $"eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
    { $"eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, eh, c, cpp, cc, cxx" },
    { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"Objective-C Source Files (*.m, *.mm)", "m, mm" },
+   { $"GLSL Source Files (*.glsl, *.vert, *.frag)", "glsl, vert, frag" },
+   { $"Python Source Files (*.py)", "py" },
+   { $"Java Source Files (*.java)", "java" },
+   { $"C# Source Files (*.cs)", "cs" },
+   { $"Rust Source Files (*.rs)", "rs" },
+   { $"Go Source Files (*.go)", "go" },
+   { $"Ruby Source Files (*.rb)", "rb" },
+   { $"JavaScript Source Files (*.js)", "js" },
+   { $"PHP Source Files (*.php)", "php" },
+   { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
+   { $"Swift Source Files (*.swift)", "swift" },
    { $"All files", null }
 ] };
 

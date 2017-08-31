@@ -16,9 +16,24 @@ extern int __attribute__((__stdcall__)) __ecereDll_Unload_ecere(struct __ecereNa
 static Array<FileFilter> fileFilters
 { [
    { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
-   { $"Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
-   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
-   { $"Text files (*.txt)", "txt" },
+   { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, eh, c, cpp, cc, cxx" },
+   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"Objective-C Source Files (*.m, *.mm)", "m, mm" },
+   { $"GLSL Source Files (*.glsl, *.vert, *.frag)", "glsl, vert, frag" },
+   { $"Python Source Files (*.py)", "py" },
+   { $"Java Source Files (*.java)", "java" },
+   { $"C# Source Files (*.cs)", "cs" },
+   { $"Rust Source Files (*.rs)", "rs" },
+   { $"Go Source Files (*.go)", "go" },
+   { $"Ruby Source Files (*.rb)", "rb" },
+   { $"JavaScript Source Files (*.js)", "js" },
+   { $"PHP Source Files (*.php)", "php" },
+   { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
+   { $"Swift Source Files (*.swift)", "swift" },
+   { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
+   { $"Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
    { $"All files", null }
 ] };
 
@@ -2408,24 +2423,20 @@ class CodeEditor : Window
 
    watch(fileName)
    {
-      char ext[MAX_EXTENSION];
       const char * fileName = property::fileName;
 
-      if(SearchString(fileName, 0, "Makefile", false, true))
-         editBox.useTab = true;
       designer.fileName = fileName;
 
       if(fileName)
       {
+         char ext[MAX_EXTENSION];
+         char name[MAX_FILENAME];
          GetExtension(fileName, ext);
-
-         if(!strcmpi(ext, "ec") || !strcmpi(ext, "eh") || !strcmpi(ext, "c") || !strcmpi(ext, "h") || !strcmpi(ext, "cpp") ||
-               !strcmpi(ext, "hpp") || !strcmpi(ext, "cxx") || !strcmpi(ext, "hxx") || !strcmpi(ext, "cc") || !strcmpi(ext, "hh") ||
-               !strcmpi(ext, "m") || !strcmpi(ext, "mm") || !strcmpi(ext, "cs") || !strcmpi(ext, "java") || !strcmpi(ext, "y") || !strcmpi(ext, "l"))
-            editBox.syntaxHighlighting = true;
-         else
-            editBox.syntaxHighlighting = false;
-
+         GetLastDirectory(fileName, name);
+         if(!strcmpi(ext, "mk") || !strcmpi(ext, "Makefile") || strstr(name, "Makefile") == name)
+            editBox.useTab = true;
+         editBox.syntaxHighlighting = true;
+         editBox.syntaxModeCue = name;
          if(parsing && !strcmpi(ext, "ec"))
          {
             codeModified = true;
