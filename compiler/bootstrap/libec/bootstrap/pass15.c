@@ -17428,7 +17428,12 @@ if(exp->__anon1.call.exp->type == 0)
 struct Expression * idExp = exp->__anon1.call.exp;
 struct Identifier * id = idExp->__anon1.__anon1.identifier;
 
-if(!strcmp(id->string, "__builtin_frame_address"))
+if(!strcmp(id->string, "__sync_synchronize"))
+{
+exp->expType = ProcessTypeString("void()", 1);
+break;
+}
+else if(!strcmp(id->string, "__builtin_frame_address"))
 {
 exp->expType = ProcessTypeString("void *", 1);
 if(exp->__anon1.call.arguments && (*exp->__anon1.call.arguments).first)

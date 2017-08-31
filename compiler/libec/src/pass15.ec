@@ -9565,7 +9565,12 @@ void ProcessExpressionType(Expression exp)
          {
             Expression idExp = exp.call.exp;
             Identifier id = idExp.identifier;
-            if(!strcmp(id.string, "__builtin_frame_address"))
+            if(!strcmp(id.string, "__sync_synchronize"))
+            {
+               exp.expType = ProcessTypeString("void()", true);
+               break;
+            }
+            else if(!strcmp(id.string, "__builtin_frame_address"))
             {
                exp.expType = ProcessTypeString("void *", true);
                if(exp.call.arguments && exp.call.arguments->first)
