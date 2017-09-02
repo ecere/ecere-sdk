@@ -5861,7 +5861,7 @@ class CodeEditor : Window
                   }
                   row.icon = bitmap ? bitmap : icons[(member.memberAccess == publicAccess && !isPrivate) ? typeData : typeDataPrivate];
                }
-               else
+               else if(member.type == structMember || member.type == unionMember)
                   ListSubDataMembers(member, member.memberAccess == privateAccess || isPrivate);
             }
          }
