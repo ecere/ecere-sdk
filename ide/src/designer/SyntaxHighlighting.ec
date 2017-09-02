@@ -944,6 +944,71 @@ class ConfigSHL : SyntaxHighlighting
    hashTagComments = true;
 }
 
+enum DiffSHLLineMode { normal, addFile, remFile, pos, add, rem };
+static const char * diffExtensions[] = { "diff", "patch", null };
+class DiffSHL : SyntaxHighlighting
+{
+   class_property(extensions) = diffExtensions;
+   keywords = [ "diff", "index" ];
+
+   Color diffColors[DiffSHLLineMode];
+   DiffSHL()
+   {
+      diffColors[addFile] = lime;
+      diffColors[remFile] = tomato;
+      diffColors[add] = green;
+      diffColors[rem] = crimson;
+      diffColors[pos] = cyan;
+   }
+
+   DiffSHLLineMode lineMode;
+
+   void StartLine()
+   {
+      currentState.firstWord = true;
+      lineMode = normal;
+   }
+
+   Color Process(char * word, int * wordLen, bool beforeEndOfLine, Color defaultTextColor, const char * buffer, int * c)
+   {
+      Color newTextColor;
+
+      if(currentState.firstWord)
+      {
+         if(word[0] == '+')
+            lineMode = word[1] == '+' && word[2] == '+' ? addFile : add;
+         else if(word[0] == '-')
+            lineMode = word[1] == '-' && word[2] == '-' ? remFile : rem;
+         else if(word[0] == '@')
+            lineMode = pos;
+      }
+      newTextColor = lineMode ? diffColors[lineMode] : defaultTextColor;
+
+      if(beforeEndOfLine)
+      {
+         int wordStart = *c - *wordLen;
+         KeywordType kwType = regular;
+         // TOFIX: 'keywords' did not work here
+         Array<const String> keys = allKeywords[kwType];
+         Array<int> len = keyLen[kwType];
+         int ccc;
+         for(ccc = 0; ccc < keys.count; ccc++)
+         {
+            if((len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen)) ||
+                  (keys[ccc][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
+                        len[ccc] == *wordLen + 1 && !strncmp(keys[ccc] + 1, word, *wordLen)))
+            {
+               newTextColor = colorScheme.keywordColors[kwType];
+               break;
+            }
+         }
+      }
+      currentState.firstWord = false;
+      return newTextColor;
+   }
+};
+
+
 static subclass(SyntaxHighlighting) FindHL(Class c, const char * ext)
 {
    subclass(SyntaxHighlighting) hl = null;
