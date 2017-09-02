@@ -685,6 +685,23 @@ class PythonSHL : SyntaxHighlighting
    ];
    hashTagComments = true;
    singleQuotes = true;
+
+   Color Process(char * word, int * wordLen, bool beforeEndOfLine, Color defaultTextColor, const char * buffer, int * c)
+   {
+      Color newTextColor = SyntaxHighlighting::Process(word, wordLen, beforeEndOfLine, defaultTextColor, buffer, c);
+      if(!currentState.inMultiLineComment && !currentState.inSingleLineComment && !currentState.inQuotes && !currentState.inString)
+      {
+         if(beforeEndOfLine && word[0] == '@' && *wordLen == 1)
+         {
+            char * s = word + 1;
+            while(*s == '.' || isalnum(*s)) s++;
+            *wordLen = s-word;
+            *c += (s-word)-1;
+            newTextColor = colorScheme.preprocessorColor;
+         }
+      }
+      return newTextColor;
+   }
 }
 
 static const char * swiftExtensions[] = { "swift", null };
@@ -1025,14 +1042,11 @@ static subclass(SyntaxHighlighting) FindHL(Class c, const char * ext)
             int c;
             for(c = 0; extensions[c] && extensions[c][0]; c++)
                if(!strcmp(extensions[c], ext))
-                  break;
-            if(extensions[c] && extensions[c][0])
-               break;
+                  return hl;
          }
          hl = FindHL(hl, ext);
-         if(hl) break;
+         if(hl) return hl;
       }
-      if(!link) hl = null;
    }
    return hl;
 }
