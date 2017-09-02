@@ -50,7 +50,7 @@ public:
    }
    virtual IteratorPointer GetAtPosition(const uint64 pos, bool create)
    {
-      return data ? (IteratorPointer)((byte *)data + type.typeSize) : null;
+      return data ? (IteratorPointer)((byte *)data + pos * type.typeSize) : null;
    }
    virtual IteratorPointer Insert(IteratorPointer after, uint64 value)
    {
