@@ -2825,6 +2825,7 @@ class CodeEditor : Window
          delete compiler;
       }
       this.privateModule = __ecere_COM_Initialize((bool)(false | ((GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4)), 1, null);
+      ((SyntaxHighlighting)editBox.syntaxHighlighting).privateModule = this.privateModule;
 
       SetPrivateModule(privateModule);
 
