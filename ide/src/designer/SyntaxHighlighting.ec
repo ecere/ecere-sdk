@@ -723,7 +723,7 @@ class PythonSHL : SyntaxHighlighting
 
       "__init__", "__name__", "__neg__", "__int__", "__long__", "__float__", "__truediv__", "__rtruediv__",
       "__mul__", "__rmul__", "__add__", "__radd__", "__sub__", "__rsub__",
-      "__lt__", "__gt__", "__le__", "__ge__", "__ne__", "__eq__"
+      "__lt__", "__gt__", "__le__", "__ge__", "__ne__", "__eq__", "__new__", "__metaclass__","__getitem__","__len__", "__bases__"
    ];
    hashTagComments = true;
    singleQuotes = true;
@@ -808,7 +808,7 @@ class GoSHL : SyntaxHighlighting
 }
 
 static const char * phpExtensions[] = { "php", null };
-class PHPSHL : SyntaxHighlighting
+class PHPSHL : XMLSHL
 {
    class_property(extensions) = phpExtensions;
    keywords =
@@ -834,6 +834,7 @@ class PHPSHL : SyntaxHighlighting
    cMultiLine = true;
    cppSingle = true;
    hashTagComments = true;
+   singleQuotes = true;
 }
 
 static const char * jsExtensions[] = { "js", null };
@@ -982,13 +983,230 @@ class BatchSHL : SyntaxHighlighting
    ];
 }
 
-static const char * htmlExtensions[] = { "html", "htm", "xhtml", null };
-class HTMLSHL : SyntaxHighlighting
+class SyntaxXMLState : int
 {
-   class_property(extensions) = htmlExtensions;
+   bool inTag:1, tagWord:1, xmlComment:1;
 }
 
-static const char * econExtensions[] = { "econ", "json", "epj", null };
+static const char * xmlExtensions[] = { "xml", "xsd", "html", "htm", "xhtml", "gml", "kml", "dae", "svg", null };
+class XMLSHL : SyntaxHighlighting
+{
+   class_property(extensions) = xmlExtensions;
+
+   SyntaxXMLState xmlState, xmlStateBak, xmlViewState;
+
+   void InitDraw()
+   {
+      SyntaxHighlighting::InitDraw();
+      xmlState = xmlViewState;
+   }
+
+   // TODO: in and out of PHP mode
+   Color Process(char * word, int * wordLen, bool beforeEndOfLine, Color defaultTextColor, const char * buffer, int * c)
+   {
+      bool wasInString = currentState.inString;
+      Color newTextColor = xmlState.xmlComment ? colorScheme.commentColor : SyntaxHighlighting::Process(word, wordLen, beforeEndOfLine, defaultTextColor, buffer, c);
+
+      xmlStateBak = xmlState;
+
+      if(!xmlState.xmlComment && !currentState.inMultiLineComment && !currentState.inSingleLineComment && !currentState.inQuotes && !currentState.inString && !wasInString)
+      {
+         if(beforeEndOfLine && word[0] == '<' && *wordLen == 1)
+         {
+            if(word[1] == '!' && word[2] == '-' && word[3] == '-')
+            {
+               xmlState.xmlComment = true;
+               *c += 3 - *wordLen;
+               *wordLen = 3;
+               newTextColor = colorScheme.commentColor;
+            }
+            else
+            {
+               xmlState.inTag = true;
+               xmlState.tagWord = true;
+            }
+         }
+         else if(beforeEndOfLine && word[0] == '>' && *wordLen == 1)
+         {
+            xmlState.inTag = false;
+         }
+         else if(xmlState.tagWord)
+         {
+            char * s = word;
+
+            if(s[0] == '!' && s[1] == '-' && s[2] == '-')
+            {
+               newTextColor = colorScheme.commentColor;
+               s += 3;
+            }
+            else
+            {
+               if(s[0] == '?')
+                  xmlState.inTag = false;
+
+               while(isalnum(*s) || *s == '-' || *s == '_' || *s == ':')
+                  s++;
+            }
+            if(s >= word + *wordLen)
+            {
+               *c += (s - word) - *wordLen;
+               *wordLen = s-word;
+               newTextColor = colorScheme.keywordColors[0];
+            }
+            if(*s != '/')
+               xmlState.tagWord = false;
+         }
+         else if(xmlState.inTag && word[0] != '?' && word[0] != '=' && word[0] != '/')
+            newTextColor = colorScheme.preprocessorColor;
+      }
+      else if(xmlState.xmlComment)
+      {
+         newTextColor = colorScheme.commentColor;
+         if(word[0] == '-' && word[1] == '-' && word[2] == '>')
+         {
+            *c += 3 - *wordLen;
+            *wordLen = 3;
+            xmlState.xmlComment = false;
+         }
+      }
+      return newTextColor;
+   }
+
+   void FigureStartSyntaxStates(EditLine firstLine, bool reset, EditLine viewLine)
+   {
+      bool wasInMultiLine = reset ? false : viewLineState.wasInMultiLine;
+      bool inMultiLineComment = reset ? false : viewLineState.inMultiLineComment;
+      bool inString = false;
+      bool inQuotes = false;
+      bool inSingleLineComment = false;
+      bool escaped = reset ? false : viewLineState.escaped;
+      bool continuedSingleLineComment = reset ? false : viewLineState.continuedSingleLineComment;
+      bool continuedString = reset ? false : viewLineState.continuedString;
+      bool continuedQuotes = reset ? false : viewLineState.continuedQuotes;
+      bool xmlComment = reset ? false : xmlViewState.xmlComment;
+      EditLine line = firstLine;
+
+      for(; line != viewLine; line = line.next)
+      {
+         const char * text = line.text;
+         int c;
+         char ch;
+         bool lastWasStar = false;
+
+         inSingleLineComment = continuedSingleLineComment;
+         escaped = false;
+         inString = continuedString;
+         inQuotes = continuedQuotes;
+
+         for(c = 0; (ch = text[c]); c++)
+         {
+            bool backLastWasStar = lastWasStar;
+            bool backWasInMultiLine = wasInMultiLine;
+            bool wasEscaped = escaped;
+            escaped = false;
+
+            lastWasStar = false;
+            wasInMultiLine = inMultiLineComment;
+            if(ch == '/')
+            {
+               if(!inSingleLineComment && !inMultiLineComment && !xmlComment && !inQuotes && !inString)
+               {
+                  if(cppSingle && text[c+1] == '/')
+                  {
+                     inSingleLineComment = true;
+                  }
+                  else if(cMultiLine && text[c+1] == '*')
+                  {
+                     inMultiLineComment = true;
+                  }
+               }
+               else if(backLastWasStar)
+                  inMultiLineComment = false;
+            }
+            else if(ch == '*')
+            {
+               if(backWasInMultiLine) lastWasStar = true;
+            }
+            else if(ch == '\"' && !inSingleLineComment && !inMultiLineComment && !inQuotes)
+            {
+               if(inString && !wasEscaped)
+               {
+                  inString = false;
+               }
+               else
+               {
+                  inString = true;
+               }
+            }
+            else if(ch == '\'' && singleQuotes && !inSingleLineComment && !inMultiLineComment && !inString)
+            {
+               if(inQuotes && !wasEscaped)
+                  inQuotes = false;
+               else
+               {
+                  inQuotes = true;
+               }
+            }
+            else if(ch == '\\')
+            {
+               if(!wasEscaped)
+                  escaped = true;
+            }
+            else if(ch == '#' && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
+            {
+               if(hashTagComments)
+                  inSingleLineComment = true;
+            }
+
+            if(!inSingleLineComment && !inMultiLineComment && !xmlComment && !inQuotes && !inString)
+            {
+               if(ch == '<' && text[c+1] == '!' && text[c+2] == '-' && text[c+3] == '-')
+               {
+                  xmlComment = true;
+                  c += 3;
+               }
+            }
+            else if(xmlComment)
+            {
+               if(ch == '-' && text[c+1] == '-' && text[c+2] == '>')
+               {
+                  xmlComment = false;
+                  c += 2;
+               }
+            }
+         }
+      }
+
+      viewLineState.continuedSingleLineComment = continuedSingleLineComment;
+      viewLineState.continuedString = continuedString;
+      viewLineState.continuedQuotes = continuedQuotes;
+      viewLineState.inMultiLineComment = inMultiLineComment;
+      viewLineState.escaped = escaped;
+
+      xmlViewState.xmlComment = xmlComment;
+   }
+
+   bool CanImpactOtherLines(EditLine line)
+   {
+      const char * text = line.text;
+      bool canImpact = strstr(text, "<!--") || strstr(text, "-->");
+      return canImpact || SyntaxHighlighting::CanImpactOtherLines(line);
+   }
+
+   void GotSpace(bool beforeEnd)
+   {
+      SyntaxHighlighting::GotSpace(beforeEnd);
+      xmlState.tagWord = false;
+   }
+
+   void ResetState()
+   {
+      SyntaxHighlighting::ResetState();
+      xmlState = xmlStateBak;
+   }
+}
+
+static const char * econExtensions[] = { "econ", "json", "geoecon", "geojson", "topojson", "epj", null };
 class ECONSHL : SyntaxHighlighting
 {
    class_property(extensions) = econExtensions;
