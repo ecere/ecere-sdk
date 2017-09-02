@@ -4,6 +4,40 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+enum KeywordType { regular, preprocessor };
+
+class SyntaxColorScheme
+{
+public:
+   Color commentColor;
+   Color charLiteralColor;
+   Color stringLiteralColor;
+   Color preprocessorColor;
+   Color numberColor;
+
+/*
+   commentColor = dimGray;
+   charLiteralColor = crimson;
+   stringLiteralColor = crimson;
+   preprocessorColor = green;
+   numberColor = teal;
+   keywordColors = [ blue, blue ];
+*/
+   private Array<Color> keywordColors { };   // For each KeywordType
+
+   public property Container<Color> keywordColors
+   {
+      set
+      {
+         keywordColors.Copy((void *)value);
+         // JSON/ECON Parser expects we'll hang on to this... Better solution with improved ref counting model?
+         if(value && value._class != class(BuiltInContainer) && !value._refCount)
+            delete value;
+      }
+      get { return keywordColors; }
+   }
+};
+
 // *** Color Schemes ***
 class IDEColorScheme
 {

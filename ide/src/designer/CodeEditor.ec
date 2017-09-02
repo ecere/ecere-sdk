@@ -4,6 +4,8 @@ import "findCtx"
 import "findExp"
 import "findParams"
 
+import "SyntaxHighlighting"
+
 // UNTIL IMPLEMENTED IN GRAMMAR
 #define ACCESS_CLASSDATA(_class, baseClass) \
    (_class ? ((void *)(((char *)_class.data) + baseClass.offsetClass)) : null)
@@ -29,7 +31,7 @@ static Array<FileFilter> fileFilters
    { $"JavaScript Source Files (*.js)", "js" },
    { $"PHP Source Files (*.php)", "php" },
    { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
-   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php, *.y, *.l)",
       "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
    { $"Swift Source Files (*.swift)", "swift" },
    { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
@@ -845,7 +847,7 @@ class CodeEditor : Window
       tabKey = true, smartHome = true;
       tabSelection = true, /*maxLineSize = 65536, */parent = this, hasHorzScroll = true, hasVertScroll = true;
       selectionColor = colorScheme.selectionColor, selectionText = colorScheme.selectionText,
-      background = colorScheme.codeEditorBG, foreground = colorScheme.codeEditorFG, syntaxColorScheme = colorScheme.syntaxColors,
+      background = colorScheme.codeEditorBG, foreground = colorScheme.codeEditorFG,
       font = font, borderStyle = none;
       anchor = Anchor { left = 0, right = 0, top = 0, bottom = 0 };
 
@@ -2328,6 +2330,7 @@ class CodeEditor : Window
 
    void OnRedraw(Surface surface)
    {
+      bool codeMargin = true;
       // Line Numbers
       surface.SetBackground(colorScheme.marginColor);
       surface.Area(0, 0, editBox.anchor.left.distance, clientSize.h - 1);
@@ -2357,12 +2360,12 @@ class CodeEditor : Window
             }
             sprintf(lineText, lineFormat, currentLineNumber);
             if(currentLineNumber <= editBox.numLines)
-               surface.WriteText(editBox.syntaxHighlighting * 20, i+1,lineText,maxLineNumberLength+1);
+               surface.WriteText(codeMargin * 20, i+1,lineText,maxLineNumberLength+1);
             currentLineNumber++;
          }
       }
 
-      if(editBox.syntaxHighlighting && fileName && ide.projectView)
+      if(codeMargin && fileName && ide.projectView)
       {
          bool error, bpOnTopFrame, breakpointEnabled[128];
          int lineCursor, lineTopFrame, breakpointLines[128];
@@ -2431,12 +2434,15 @@ class CodeEditor : Window
       {
          char ext[MAX_EXTENSION];
          char name[MAX_FILENAME];
+         SyntaxHighlighting highlighting;
          GetExtension(fileName, ext);
          GetLastDirectory(fileName, name);
          if(!strcmpi(ext, "mk") || !strcmpi(ext, "Makefile") || strstr(name, "Makefile") == name)
             editBox.useTab = true;
-         editBox.syntaxHighlighting = true;
-         editBox.syntaxModeCue = name;
+         highlighting = SHLFromFileName(name);
+         highlighting.syntaxColorScheme = colorScheme.syntaxColors;
+         editBox.syntaxHighlighting = highlighting;
+
          if(parsing && !strcmpi(ext, "ec"))
          {
             codeModified = true;
@@ -2450,6 +2456,7 @@ class CodeEditor : Window
 
    bool UpdateMarginSize()
    {
+      bool codeMargin = true;
       if(ideSettings.showLineNumbers)
       {
          int numLen = Max(4, nofdigits(editBox.numLines));
@@ -2458,7 +2465,7 @@ class CodeEditor : Window
          display.FontExtent(font.font, "0", 1, &digitWidth, null);
          editBox.anchor = Anchor
          {
-            left = editBox.syntaxHighlighting * 20 + ideSettings.showLineNumbers * (maxLineNumberLength+2) * digitWidth,
+            left = codeMargin * 20 + ideSettings.showLineNumbers * (maxLineNumberLength+2) * digitWidth,
             right = 0, top = 0, bottom = 0
          };
       }
@@ -2467,7 +2474,7 @@ class CodeEditor : Window
          maxLineNumberLength = 0;
          editBox.anchor = Anchor
          {
-            left = editBox.syntaxHighlighting * 20,
+            left = codeMargin * 20,
             right = 0, top = 0, bottom = 0
          };
       }

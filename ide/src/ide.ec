@@ -138,7 +138,7 @@ static Array<FileFilter> fileFilters
    { $"JavaScript Source Files (*.js)", "js" },
    { $"PHP Source Files (*.php)", "php" },
    { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
-   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php, *.y, *.l)",
       "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
    { $"Swift Source Files (*.swift)", "swift" },
    { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
@@ -526,7 +526,7 @@ class IDEWorkSpace : Window
             eb.selectionText = cs.selectionText;
             eb.background = cs.codeEditorBG;
             eb.foreground = cs.codeEditorFG;
-            eb.syntaxColorScheme = cs.syntaxColors;
+            ((SyntaxHighlighting)eb.syntaxHighlighting).syntaxColorScheme = cs.syntaxColors;
          }
 
       if(projectView)
