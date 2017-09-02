@@ -722,7 +722,19 @@ class CodeEditor : Window
    bool noParsing;
    int maxLineNumberLength;
 
-   property bool parsing { get { return editBox.syntaxHighlighting && !noParsing && !ide.noParsing; } };
+   property bool parsing
+   {
+      get
+      {
+         if(!noParsing && !ide.noParsing)
+         {
+            // Only try to parse C and eC as that is all we currently have a parser for:
+            EditSyntaxHL hl = editBox.syntaxHighlighting;
+            return hl && (hl._class == class(CSHL) || hl._class == class(eCSHL));
+         }
+         return false;
+      }
+   };
 
    void ProcessCaretMove(EditBox editBox, int line, int charPos)
    {
