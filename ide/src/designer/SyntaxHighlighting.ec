@@ -39,6 +39,7 @@ public class SyntaxHighlighting : EditSyntaxHL
       get { return class_data(extensions); }
       set { class_data(extensions) = value; }
    }
+   Module privateModule; // For eC type info
    Array<int> regLen { };
    Array<const String> regKeywords { };
 
@@ -315,19 +316,23 @@ public class SyntaxHighlighting : EditSyntaxHL
          if(beforeEndOfLine && !currentState.inQuotes && !currentState.inString && !currentState.inMultiLineComment && !currentState.inSingleLineComment)
          {
             int wordStart = *c - *wordLen;
-            KeywordType kwType = (currentState.inPrep && word[0] != '#' && cPrep) ? preprocessor : regular;
-            Array<const String> keys = allKeywords[kwType];
-            Array<int> len = keyLen[kwType];
-            int ccc;
-            for(ccc = 0; ccc < keys.count; ccc++)
+            KeywordType kwType, upTo = (currentState.inPrep && word[0] != '#' && cPrep) ? preprocessor : regular;
+            for(kwType = regular; kwType <= upTo; kwType++)
             {
-               if((len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen)) ||
-                     (keys[ccc][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
-                           len[ccc] == *wordLen + 1 && !strncmp(keys[ccc] + 1, word, *wordLen)))
+               Array<const String> keys = allKeywords[kwType];
+               Array<int> len = keyLen[kwType];
+               int k;
+               for(k = 0; k < keys.count; k++)
                {
-                  newTextColor = colorScheme.keywordColors[kwType];
-                  break;
+                  if((len[k] == *wordLen && !strncmp(keys[k], word, *wordLen)) ||
+                        (keys[k][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
+                              len[k] == *wordLen + 1 && !strncmp(keys[k] + 1, word, *wordLen)))
+                  {
+                     newTextColor = colorScheme.keywordColors[kwType];
+                     break;
+                  }
                }
+               if(k < keys.count) break;
             }
          }
       }
@@ -616,6 +621,43 @@ class eCSHL : CSHL
       // Values
       "this", "true", "false", "null", "value"
    ];
+
+   Color Process(char * word, int * wordLen, bool beforeEndOfLine, Color defaultTextColor, const char * buffer, int * c)
+   {
+      Color newTextColor = SyntaxHighlighting::Process(word, wordLen, beforeEndOfLine, defaultTextColor, buffer, c);
+      if(!currentState.inMultiLineComment && !currentState.inSingleLineComment && !currentState.inQuotes && !currentState.inString &&
+         (newTextColor == defaultTextColor || newTextColor == colorScheme.preprocessorColor))
+      {
+         if((word[0] == '_' || isalpha(word[0])) && *wordLen < 256)
+         {
+            bool valid = true;
+            char name[256];
+            int i;
+            for(i = 0; i < *wordLen; i++)
+            {
+               char ch = word[i];
+               if(ch == '_' || isalnum(ch))
+                  name[i] = ch;
+               else
+               {
+                  valid = false;
+                  break;
+               }
+            }
+            if(valid)
+            {
+               name[i] = 0;
+               if(eSystem_FindClass(privateModule, name))
+                  newTextColor = colorScheme.typeColor;
+               else if(eSystem_FindDefine(privateModule, name))
+                  newTextColor = colorScheme.defColor;
+               else if(eSystem_FindFunction(privateModule, name))
+                  newTextColor = colorScheme.fnColor;
+            }
+         }
+      }
+      return newTextColor;
+   }
 }
 
 static const char * objCExtensions[] = { "m", "mm", null };
@@ -1008,12 +1050,12 @@ class DiffSHL : SyntaxHighlighting
          // TOFIX: 'keywords' did not work here
          Array<const String> keys = allKeywords[kwType];
          Array<int> len = keyLen[kwType];
-         int ccc;
-         for(ccc = 0; ccc < keys.count; ccc++)
+         int k;
+         for(k = 0; k < keys.count; k++)
          {
-            if((len[ccc] == *wordLen && !strncmp(keys[ccc], word, *wordLen)) ||
-                  (keys[ccc][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
-                        len[ccc] == *wordLen + 1 && !strncmp(keys[ccc] + 1, word, *wordLen)))
+            if((len[k] == *wordLen && !strncmp(keys[k], word, *wordLen)) ||
+                  (keys[k][0] == '.' && wordStart > 0 && *(word - 1) == '.' &&
+                        len[k] == *wordLen + 1 && !strncmp(keys[k] + 1, word, *wordLen)))
             {
                newTextColor = colorScheme.keywordColors[kwType];
                break;

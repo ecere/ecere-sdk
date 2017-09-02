@@ -14,15 +14,20 @@ public:
    Color stringLiteralColor;
    Color preprocessorColor;
    Color numberColor;
+   Color typeColor;
+   Color defColor;
+   Color fnColor;
 
-/*
    commentColor = dimGray;
    charLiteralColor = crimson;
    stringLiteralColor = crimson;
    preprocessorColor = green;
    numberColor = teal;
-   keywordColors = [ blue, blue ];
-*/
+   property::keywordColors = [ blue, blue ];
+   typeColor = 0x15CE4C;
+   defColor = 0xFFCE7A;
+   fnColor = 0x9CB7FF;
+
    private Array<Color> keywordColors { };   // For each KeywordType
 
    public property Container<Color> keywordColors
@@ -109,6 +114,9 @@ IDEColorScheme darkColorScheme
       stringLiteralColor = Color { 245, 50, 245 };
       preprocessorColor = { 120, 220, 140 };
       numberColor = Color {   0, 192, 192 };
+      typeColor = 0x15CE4C;
+      defColor = 0xFFCE7A;
+      fnColor = 0x9CB7FF;
    };
 };
 
@@ -138,6 +146,9 @@ IDEColorScheme lightColorScheme
       stringLiteralColor = crimson;
       preprocessorColor = green;
       numberColor = teal;
+      typeColor = 0x15CE4C;
+      defColor = 0xFFCE7A;
+      fnColor = 0x9CB7FF;
    };
 };
 
@@ -165,6 +176,9 @@ IDEColorScheme greenColorScheme
       stringLiteralColor = 0x89de00,
       preprocessorColor = 0x0078DC8C,
       numberColor = { 8, 237, 141 },
+      typeColor = 0x15CE4C,
+      defColor = 0xFFCE7A;
+      fnColor = 0x9CB7FF;
       keywordColors = [
          0x00e09d,
          0x00e09d
@@ -196,6 +210,9 @@ IDEColorScheme grayColorScheme
       stringLiteralColor = 0x00707070,
       preprocessorColor = 0x00FAF4C6,
       numberColor = 0x00FF9800,
+      typeColor = 0x15CE4C;
+      defColor = 0xFFCE7A;
+      fnColor = 0x9CB7FF;
       keywordColors = [
          0x00FF9800,
          0x00FF9800
