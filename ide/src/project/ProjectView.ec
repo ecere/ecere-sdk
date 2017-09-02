@@ -55,7 +55,7 @@ static Array<FileFilter> fileFilters
    { $"JavaScript Source Files (*.js)", "js" },
    { $"PHP Source Files (*.php)", "php" },
    { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
-   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php,  *.y, *.l)",
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php, *.y, *.l)",
       "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
    { $"Swift Source Files (*.swift)", "swift" },
    { $"All files", null }

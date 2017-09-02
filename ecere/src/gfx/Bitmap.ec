@@ -9,8 +9,8 @@ public class BitmapFormat
    class_property const char ** extensions
    {
       get { return class_data(extensions); }
-      set { class_data(extensions) = value; }   }
-
+      set { class_data(extensions) = value; }
+   }
 
    virtual bool ::Load(Bitmap bitmap, File f);
    virtual bool ::Save(Bitmap bitmap, const char * fileName, void * options);

@@ -128,7 +128,7 @@ class FontPicker : Window
       hasHorzScroll = true;
       freeCaret = true;
 
-      syntaxHighlighting = true;
+      syntaxHighlighting = SHLFromFileName("sample.ec");
       multiLine = true;
       contents = sampleText;
    };
@@ -199,7 +199,7 @@ class FontPicker : Window
    void SelectColorScheme(IDEColorScheme colorScheme)
    {
       this.colorScheme = colorScheme;
-      sample.syntaxColorScheme = colorScheme.syntaxColors;
+      ((SyntaxHighlighting)sample.syntaxHighlighting).syntaxColorScheme = colorScheme.syntaxColors;
       sample.selectionColor = colorScheme.selectionColor;
       sample.selectionText = colorScheme.selectionText,
       sample.background = colorScheme.codeEditorBG;
@@ -215,7 +215,7 @@ class FontPicker : Window
 
       colorScheme = ::colorScheme;
 
-      sample.syntaxColorScheme = colorScheme.syntaxColors;
+      ((SyntaxHighlighting)sample.syntaxHighlighting).syntaxColorScheme = colorScheme.syntaxColors;
       sample.selectionColor = colorScheme.selectionColor;
       sample.selectionText = colorScheme.selectionText,
       sample.background = colorScheme.codeEditorBG;

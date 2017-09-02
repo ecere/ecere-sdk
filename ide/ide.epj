@@ -216,7 +216,8 @@
                   "findExp.ec",
                   "findParams.ec",
                   "Sheet.ec",
-                  "ToolBox.ec"
+                  "ToolBox.ec",
+                  "SyntaxHighlighting.ec"
                ]
             },
             {

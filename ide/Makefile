@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ecere-ide
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -67,6 +67,7 @@ _ECSOURCES = \
 	src/designer/CodeEditor.ec \
 	src/designer/CodeObject.ec \
 	src/designer/Designer.ec \
+	src/designer/SyntaxHighlighting.ec \
 	src/designer/findCtx.ec \
 	src/designer/findExp.ec \
 	src/designer/findParams.ec \
@@ -365,6 +366,9 @@ $(OBJ)CodeObject.sym: src/designer/CodeObject.ec
 $(OBJ)Designer.sym: src/designer/Designer.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/Designer.ec -o $(OBJ)Designer.sym
 
+$(OBJ)SyntaxHighlighting.sym: src/designer/SyntaxHighlighting.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.sym
+
 $(OBJ)findCtx.sym: src/designer/findCtx.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/findCtx.ec -o $(OBJ)findCtx.sym
 
@@ -506,6 +510,9 @@ $(OBJ)CodeObject.c: src/designer/CodeObject.ec $(OBJ)CodeObject.sym | $(SYMBOLS)
 $(OBJ)Designer.c: src/designer/Designer.ec $(OBJ)Designer.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/Designer.ec -o $(OBJ)Designer.c -symbols $(OBJ)
 
+$(OBJ)SyntaxHighlighting.c: src/designer/SyntaxHighlighting.ec $(OBJ)SyntaxHighlighting.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.c -symbols $(OBJ)
+
 $(OBJ)findCtx.c: src/designer/findCtx.ec $(OBJ)findCtx.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/findCtx.ec -o $(OBJ)findCtx.c -symbols $(OBJ)
 
@@ -642,6 +649,9 @@ $(OBJ)CodeObject.o: $(OBJ)CodeObject.c
 
 $(OBJ)Designer.o: $(OBJ)Designer.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Designer.c -o $(OBJ)Designer.o
+
+$(OBJ)SyntaxHighlighting.o: $(OBJ)SyntaxHighlighting.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SyntaxHighlighting.c -o $(OBJ)SyntaxHighlighting.o
 
 $(OBJ)findCtx.o: $(OBJ)findCtx.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)findCtx.c -o $(OBJ)findCtx.o
