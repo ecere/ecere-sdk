@@ -1220,7 +1220,7 @@ public:
          delete _string;
    }
 
-   void copyString(char * value, int newLen)
+   void copyString(const char * value, int newLen)
    {
       if(allocType == pointer)
       {
@@ -1268,7 +1268,7 @@ public:
       return true;
    }
 
-   property char * string
+   property const char * string
    {
       set { copyString(value, value ? strlen(value) : 0); }
       get { return _string; }
@@ -1305,7 +1305,7 @@ public:
    {
       if(format && allocType != pointer)
       {
-         int addedLen;
+         int addedLen, n;
          va_list args;
          va_start(args, format);
          if(size < minSize)
@@ -1313,7 +1313,24 @@ public:
             _string = renew _string char[minSize];
             size = minSize;
          }
-         addedLen = vsnprintf(string + len, Max(0, size - 1 - len), format, args);
+         n = Max(0, size - 1 - len);
+         if(n < 64)
+         {
+            size += 64 - n;
+            _string = renew _string char[size];
+            n = Max(0, size - 1 - len);
+         }
+
+         while(true)
+         {
+            addedLen = vsnprintf(_string + len, n, format, args);
+            if(addedLen >= 0 && addedLen < n)
+               break;
+            addedLen = Max(n+Max(1, size / 2), addedLen);
+            size += addedLen + 1 - n;
+            _string = renew _string char[size];
+            n = Max(0, size - 1 - len);
+         }
          if(addedLen > 0)
          {
             len += addedLen;
@@ -1351,6 +1368,21 @@ public:
          // WARNING: auto-decref'ing for now when s is of pointer type!
          if(s.allocType == pointer)
             delete s;
+      }
+   }
+
+   void concatx(typed_object object, ...)
+   {
+      if(allocType != pointer)
+      {
+         // TODO: improve this to work directly on the Array<char> instead of calling PrintStdArgsToBuffer
+         char string[MAX_F_STRING];
+         va_list args;
+         // int len;
+         va_start(args, object);
+         /*len = */PrintStdArgsToBuffer(string, sizeof(string), object, args);
+         concat(string);
+         va_end(args);
       }
    }
 

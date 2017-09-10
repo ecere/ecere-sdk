@@ -1355,11 +1355,15 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpac
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-char *  __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string(struct __ecereNameSpace__ecere__com__Instance * this);
+const char *  __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string(struct __ecereNameSpace__ecere__com__Instance * this);
 
-void __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string(struct __ecereNameSpace__ecere__com__Instance * this, char *  value);
+void __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string(struct __ecereNameSpace__ecere__com__Instance * this, const char *  value);
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+const char *  __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Instance * this);
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_char__PTR_(const char *  value);
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
@@ -1544,6 +1548,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__ZString;
 
+extern int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char *  buffer, int maxLen, struct __ecereNameSpace__ecere__com__Class * class, const void * object, __builtin_va_list args);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 struct __ecereNameSpace__ecere__com__Module
@@ -1584,7 +1590,7 @@ if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->allocType == 2)
 }
 }
 
-void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(struct __ecereNameSpace__ecere__com__Instance * this, char * value, int newLen)
+void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(struct __ecereNameSpace__ecere__com__Instance * this, const char * value, int newLen)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
@@ -1638,7 +1644,7 @@ __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string((*this), (char *)st
 return 1;
 }
 
-char *  __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string(struct __ecereNameSpace__ecere__com__Instance * this)
+const char *  __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
@@ -1666,7 +1672,7 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePo
 if(format && __ecerePointer___ecereNameSpace__ecere__sys__ZString->allocType != 0)
 {
 int __simpleStruct0;
-int addedLen;
+int addedLen, n;
 va_list args;
 
 __builtin_va_start(args, format);
@@ -1675,7 +1681,29 @@ if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->size < __ecerePointer__
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->_string = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string, sizeof(char) * (__ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize));
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->size = __ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize;
 }
-addedLen = vsnprintf(__ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string(this) + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__ZString->size - 1 - __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, (0 > __simpleStruct0) ? 0 : __simpleStruct0), format, args);
+n = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__ZString->size - 1 - __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, (0 > __simpleStruct0) ? 0 : __simpleStruct0);
+if(n < 64)
+{
+int __simpleStruct0;
+
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->size += 64 - n;
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string, sizeof(char) * (__ecerePointer___ecereNameSpace__ecere__sys__ZString->size));
+n = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__ZString->size - 1 - __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, (0 > __simpleStruct0) ? 0 : __simpleStruct0);
+}
+while(1)
+{
+int __simpleStruct2;
+int __simpleStruct1;
+int __simpleStruct0;
+
+addedLen = vsnprintf(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, n, format, args);
+if(addedLen >= 0 && addedLen < n)
+break;
+addedLen = (__simpleStruct1 = n + (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__ZString->size / 2, (1 > __simpleStruct0) ? 1 : __simpleStruct0), (__simpleStruct1 > addedLen) ? __simpleStruct1 : addedLen);
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->size += addedLen + 1 - n;
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string, sizeof(char) * (__ecerePointer___ecereNameSpace__ecere__sys__ZString->size));
+n = (__simpleStruct2 = __ecerePointer___ecereNameSpace__ecere__sys__ZString->size - 1 - __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, (0 > __simpleStruct2) ? 0 : __simpleStruct2);
+}
 if(addedLen > 0)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->len += addedLen;
@@ -1743,7 +1771,7 @@ void __ecereUnregisterModule_String(struct __ecereNameSpace__ecere__com__Instanc
 __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = (void *)0;
 }
 
-void __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string(struct __ecereNameSpace__ecere__com__Instance * this, char *  value)
+void __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string(struct __ecereNameSpace__ecere__com__Instance * this, const char *  value)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
@@ -1756,6 +1784,22 @@ void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy(struct __ecereName
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
 __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(this, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->_string, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->len);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
+
+if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->allocType != 0)
+{
+char string[1025];
+va_list args;
+
+__builtin_va_start(args, object);
+__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(string, sizeof (string), class, object, args);
+__ecereMethod___ecereNameSpace__ecere__sys__ZString_concat(this, __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_char__PTR_(string));
+__builtin_va_end(args);
+}
 }
 
 void __ecereRegisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -1814,8 +1858,9 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereM
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__sys__ZString_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "concat", "void concat(ecere::sys::ZString s)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concat, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatf", "void concatf(const char * format, ...)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatf, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatx", "void concatx(typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "copy", "void copy(ecere::sys::ZString s)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "copyString", "void copyString(char * value, int newLen)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "copyString", "void copyString(const char * value, int newLen)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString, 1);
 __ecereProp___ecereNameSpace__ecere__sys__ZString_char__PTR_ = __ecereNameSpace__ecere__com__eClass_AddProperty(class, 0, "const char *", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_char__PTR_, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_char__PTR_, 1);
 __ecereProp___ecereNameSpace__ecere__sys__ZString_String = __ecereNameSpace__ecere__com__eClass_AddProperty(class, 0, "const String", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_String, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_String, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_string", "char *", sizeof(void *), 0xF000F000, 1);
@@ -1824,7 +1869,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "allocType", "ecere::s
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "size", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "minSize", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "maxSize", "int", 4, 4, 1);
-__ecerePropM___ecereNameSpace__ecere__sys__ZString_string = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "string", "char *", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string, 1);
+__ecerePropM___ecereNameSpace__ecere__sys__ZString_string = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "string", "const char *", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__ZString_string = __ecerePropM___ecereNameSpace__ecere__sys__ZString_string, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = (void *)0;
 }
