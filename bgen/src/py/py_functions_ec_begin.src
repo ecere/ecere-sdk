@@ -8,8 +8,17 @@
 #//    a = Array("<" + t.__name__ + ">", l)
 #//    return a
 
+# fix me, conflict in class Class with 'type' arg
+pyType = type
+
+def pyFFI():
+   return app.ffi
+
+def pyTypeByName(n):
+   return app.appGlobals[-1].get(n, None)
+
 def pyObject(eCObject):
-#//   #print("class used to get handle: ", ffi.string(eCObject._class.name).decode('utf8'))
+#//   #print("class used to get handle: ", ffi.string(eCObject._class.name).decode('u8'))
    if eCObject._class.bindingsClass != ffi.NULL:
       handle = ffi.cast("void **", ffi.cast("char *", eCObject) + eCObject._class.offset)[0]
 #//      #print(" handle = ", handle)
@@ -23,6 +32,49 @@ def pyOrNewObject(c, eCObject, templateParams=None):
       if templateParams is not None: o = c(templateParams=templateParams, impl=eCObject)
       else: o = c(impl=eCObject)
    return o
+
+def pyTypedObject(a):
+   cargs = ()
+   if type(a) == str:            cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
+   elif type(a) == int:          cargs += (lib.class_int,    ffi.new("int *", a))
+   elif type(a) == float:        cargs += (lib.class_double, ffi.new("double *", a))
+   elif isinstance(a, Instance): cargs += (a.impl._class, a.impl)
+   else:
+      # TODO: Improve on this
+      c = lib.eC_findClass(app.impl, type(a).__name__.encode('u8'))
+      if c.type == ClassType.structClass:
+         cargs += (c, a.impl)
+      elif c.type == ClassType.noHeadClass:
+         cargs += (c, a.impl)
+      else:
+         cargs += (c, ffi.new("int *", a.impl))
+   return cargs
+
+def pyAddrTypedObject(t):
+   cargs = ()
+   if t == str:            cargs += (lib.class_String, ffi.new("char[]"))
+   elif t == int:          cargs += (lib.class_int,    ffi.new("int *"))
+   elif t == float:        cargs += (lib.class_double, ffi.new("double *"))
+   elif issubclass(t, Instance): cargs += (lib.eC_findClass(app.impl, t.__name__.encode('u8')), ffi.new("Instance *"))
+   else:
+      # TODO: Improve on this
+      c = lib.eC_findClass(app.impl, t.__name__.encode('u8'))
+      if c != ffi.NULL:
+         if c.type == ClassType.structClass:
+            cargs += (c, ffi.new(t.__name__))
+         elif c.type == ClassType.noHeadClass:
+            cargs += (c, ffi.new(t.__name__ + " * "))
+         else:
+            cargs += (c, ffi.new(t.__name__)) # ffi.new("int *"))
+   return cargs
+
+def pyRetAddrTypedObject(t, a):
+   if t == str:            return ffi.string(a[0]).decode('u8')
+   elif t == int:          return a[0]
+   elif t == float:        return a[0]
+   elif issubclass(t, Instance) and a[0] != ffi.NULL:
+      t = pyTypeByName(ffi.string(a[0]._class.name).decode('u8'))
+   return t(impl = a[0])
 #//
 #// def IPTR2(lib, ffi, impl, c):
 #//    if impl == ffi.NULL: return None
@@ -37,7 +89,7 @@ def pyOrNewObject(c, eCObject, templateParams=None):
 #//    if cn == "Display":
 #//       print("impl = ", impl)
 #//       print(s)
-#//       print(ffi.string(impl._class.name).decode('utf8'))
+#//       print(ffi.string(impl._class.name).decode('u8'))
 #//       print(s.width, s.height)
 #//    return s
 
@@ -60,11 +112,11 @@ def cb_Instance_destructor(i):
       Instance.instances.remove(instance)
       instance.handle = 0
    else:
-      _print("No matching instance! for ", ffi.string(i._class.name).decode('utf8'))
+      _print("No matching instance! for ", ffi.string(i._class.name).decode('u8'))
 
 @ffi.callback("bool(Instance, bool)")
 def cb_Instance_constructor(i, a):
-   s = (ffi.string(i._class.name).decode('utf8'))[2:]
+   s = (ffi.string(i._class.name).decode('u8'))[2:]
    if a:
       for ag in app.appGlobals:
          g = ag.get(s, None)
@@ -74,28 +126,47 @@ def cb_Instance_constructor(i, a):
    return True
 
 def I18N(s):
-   return ffi.string(lib.getTranslatedString(os.path.splitext(os.path.basename(inspect.getfile(sys._getframe(1))))[0].encode('utf8'), s.encode('utf8'), ffi.NULL        )).decode('utf8')
+   return ffi.string(lib.getTranslatedString(os.path.splitext(os.path.basename(inspect.getfile(sys._getframe(1))))[0].encode('u8'), s.encode('u8'), ffi.NULL        )).decode('u8')
 def I18NC(s, c):
-   return ffi.string(lib.getTranslatedString(os.path.splitext(os.path.basename(inspect.getfile(sys._getframe(1))))[0].encode('utf8'), s.encode('utf8'), c.encode('utf8'))).decode('utf8')
+   return ffi.string(lib.getTranslatedString(os.path.splitext(os.path.basename(inspect.getfile(sys._getframe(1))))[0].encode('u8'), s.encode('u8'), c.encode('u8'))).decode('u8')
+
+def init_args(c, self, args, kwArgs):
+   super(c, self).init_args(args, kwArgs)
+   for k, v in zip(c.class_members, args[:]):
+      if v is not None:
+         setattr(self, k, v)
+         del args[0]
+   for k, v in {k:v for k,v in kwArgs.items() if k in c.class_members and v is not None}.items():
+      setattr(self, k, v)
+      del kwArgs[k]
 
 def convertTypedArgs(args):
    cargs = ()
    for a in args:
-      if type(a) == str:            cargs += (lib.class_String, ffi.new("char[]", a.encode('utf8')))
-      if type(a) == int:            cargs += (lib.class_int,    ffi.new("int *", a))
-      if type(a) == float:          cargs += (lib.class_double, ffi.new("double *", a))
-      if isinstance(a, Instance):   cargs += (a.impl._class, a.impl)
+      if type(a) == str:            cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
+      elif type(a) == int:            cargs += (lib.class_int,    ffi.new("int *", a))
+      elif type(a) == float:          cargs += (lib.class_double, ffi.new("double *", a))
+      elif isinstance(a, Instance):   cargs += (a.impl._class, a.impl)
+      else:
+         # TODO: Improve on this
+         c = lib.eC_findClass(app.impl, type(a).__name__.encode('u8'))
+         if c.type == ClassType.structClass:
+            cargs += (c, a.impl)
+         elif c.type == ClassType.noHeadClass:
+            cargs += (c, a.impl)
+         else:
+            cargs += (c, ffi.new("int *", a.impl))
    return cargs + (ffi.NULL,)
 
 def ellipsisArgs(args):
    cargs = ()
    for a in args:
-      if type(a) == str:               cargs += (ffi.new("char[]", a.encode('utf8')),) # tocheck
+      if type(a) == str:               cargs += (ffi.new("char[]", a.encode('u8')),) # tocheck
       elif type(a) == int:             cargs += (ffi.cast("int", a),)
       elif type(a) == float:           cargs += (ffi.cast("double", a),)
       elif isinstance(a, Instance):    cargs += (a.impl,)
       elif hasattr(a, 'impl'):
-         if type(a.impl) == str:       cargs += (ffi.new("char[]", a.impl.encode('utf8')),) # tocheck
+         if type(a.impl) == str:       cargs += (ffi.new("char[]", a.impl.encode('u8')),) # tocheck
          elif type(a.impl) == int:     cargs += (ffi.cast("int", a.impl),)
          elif type(a.impl) == float:   cargs += (ffi.cast("double", a.impl),)
          else:                         print("ellipsisArgs: warning, unknown argument type")
@@ -114,7 +185,7 @@ def TA(a):
 
 def OTA(c, value):
    ffi = app.ffi
-   cn = ffi.string(c.name).decode('utf8')
+   cn = ffi.string(c.name).decode('u8')
    pc = app.appGlobals[-1].get(cn, None)
    if pc is not None:
       if c.type == lib.ClassType_normalClass:
@@ -127,7 +198,7 @@ def OTA(c, value):
    # TODO: Fill this up
    return None
 
-def ffis(s): return ffi.string(s).decode('utf8')
+def ffis(s): return ffi.string(s).decode('u8')
 
 def coFromPy(v0):
    t = type(v0)
@@ -167,30 +238,31 @@ class pyBaseClass:
       t = type(self)
       return t(impl=-self.impl)
 
-   def __int__(self):   return self.impl
-   def __long__(self):  return self.impl
-   def __float__(self): return self.impl
+   def __int__(self):   return int(self.impl)
+   def __long__(self):  return long(self.impl)
+   def __float__(self): return float(self.impl)
 
    def __truediv__(self, other):
       t = type(self)
-      buc = t.buc if t.buc is not None else t
-      if not isinstance(other, buc): other = t(other)
-      return t(impl=self.impl / other.impl)
+      #buc = t.buc if t.buc is not None else t
+      #if not isinstance(other, buc): other = t(impl = other)
+      return t(impl=self.impl / float(other))
    def __rtruediv__(self, other):
       t = type(self)
-      buc = t.buc if t.buc is not None else t
-      if not isinstance(other, buc): other = t(other)
-      return t(impl=other.impl / self.impl)
+      #buc = t.buc if t.buc is not None else t
+      #if not isinstance(other, buc): other = t(other)
+      return t(impl=other / float(self.impl)) #self.impl)
    def __mul__(self, other):
       t = type(self)
-      buc = t.buc if t.buc is not None else t
-      if not isinstance(other, buc): other = t(other)
-      return t(impl=self.impl * other.impl)
+      #buc = t.buc if t.buc is not None else t
+      #if not isinstance(other, buc): other = t(other)
+      return t(impl=self.impl * float(other)) #other.impl)
    def __rmul__(self, other):
       t = type(self)
-      buc = t.buc if t.buc is not None else t
-      if not isinstance(other, buc): other = t(other)
-      return t(impl=other.impl * self.impl)
+      #buc = t.buc if t.buc is not None else t
+      #if not isinstance(other, buc): other = t(other)
+      #return t(impl=other.impl * self.impl)
+      return t(impl=other * float(self.impl)) #self.impl)
    def __add__(self, other):
       t = type(self)
       buc = t.buc if t.buc is not None else t
@@ -251,7 +323,10 @@ class Bool:
 
 class Instance:
    instances = []
-   def __init__(self, templateParams=None, impl=None):
+   def __init__(self, *args, **kwArgs): self.init_args(list(args), kwArgs)
+   def init_args(self, args, kwArgs):
+      templateParams = kwArgs.get('templateParams')
+      impl = kwArgs.get('impl')
       if hasattr(self, 'impl') and self.impl is not None: impl = self.impl
       if impl is None:
          c = type(self)
@@ -259,11 +334,11 @@ class Instance:
             c = c.__bases__[0]
          pyClass = getattr(c, 'pyClass_' + c.__name__)
          if templateParams is not None:
-            templateName = ffi.string(pyClass.name).decode('utf8') + templateParams
+            templateName = ffi.string(pyClass.name).decode('u8') + templateParams
             if hasattr(c, templateName):
                template = getattr(c, templateName)
             else:
-               template = lib.eC_findClass(pyClass.module, templateName.encode('utf8'))
+               template = lib.eC_findClass(pyClass.module, templateName.encode('u8'))
                setattr(c, templateName, template)
             self.impl = ffi.cast("Instance", lib.Instance_newEx(template, False))
          else:
@@ -277,6 +352,10 @@ class Instance:
       if impl != ffi.NULL and (impl is None or impl._class.bindingsClass != ffi.NULL):
          ffi.cast("void **", ffi.cast("char *", self.impl) + self.impl._class.offset)[0] = self.handle
 
+   def delete(self):
+      lib.Instance_delete(self.impl)
+      self.impl = ffi.NULL
 #//
 #//class Window(Instance): pass
+
 # end of hardcoded content

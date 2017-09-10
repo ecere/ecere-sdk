@@ -145,19 +145,35 @@ struct IterParamPlus
          return pm.kind == classType && pm._class.registered && pm._class.registered.type == structClass; } }
    property bool isNoHead { get {
          return pm.kind == classType && pm._class.registered && pm._class.registered.type == noHeadClass; } }
+   property bool isTypedObject { get {
+         return pm.kind == classType && !strcmp(pm._class.registered.name, "class") && pm.classObjectType == typedObject && !pm.byReference; } }
+   property bool isReturnTypedObject { get {
+         return pm.kind == classType && !strcmp(pm._class.registered.name, "class") && pm.classObjectType == typedObject && pm.byReference; } }
    property bool isReturnValue { get {
          // return (pm.kind == pointerType && typeIsNative) || isStruct;
-         return pm.kind == pointerType && typeIsNative; } }
+         return (pm.kind == pointerType && typeIsReturnable && !pm.type.constant) || isVoidPtrReturn; } }
+   property bool isVoidPtrReturn { get {
+         return pm.kind == pointerType && pm.type.kind == pointerType && pm.type.type.kind == voidType; } }
+   property bool typeIsReturnable { get {
+         return pm.type.kind == shortType || pm.type.kind == intType || pm.type.kind == int64Type ||
+         pm.type.kind == int128Type || pm.type.kind == longType || pm.type.kind == floatType || pm.type.kind == doubleType ||
+         (pm.type.kind == classType && pm.type._class.registered &&
+            ( pm.type._class.registered.type == bitClass ||
+             (pm.type._class.registered.type == enumClass && !strcmp(pm.type._class.registered.name, "bool")) ||
+             (pm.type._class.registered.type == unitClass && strcmp(pm.type._class.registered.name, "unichar")))); } }
    property bool typeIsNative { get {
          return pm.type.kind == shortType || pm.type.kind == intType || pm.type.kind == int64Type ||
          pm.type.kind == int128Type || pm.type.kind == longType || pm.type.kind == floatType || pm.type.kind == doubleType ||
          (pm.type.kind == classType && pm.type._class.registered && pm.type._class.registered.type == enumClass &&
-         !strcmp(pm.type._class.registered.name, "bool")) || (pm.type.kind == classType && pm.type._class.registered &&
-         pm.type._class.registered.type == unitClass); } }
+         !strcmp(pm.type._class.registered.name, "bool")); } }
    property bool isNullable { get {
          return pm.kind == classType && pm._class.registered && ((pm._class.registered.type == noHeadClass &&
          strcmp(pm._class.registered, "IteratorPointer")) ||
          pm._class.registered.type == normalClass || pm._class.registered.type == structClass); } }
+   property bool isTypeStr { get {
+         return (pm.kind == pointerType && ((pm.type.kind == charType && pm.type.isSigned) ||
+         (pm.type.kind == pointerType && pm.type.type.kind == charType && pm.type.type.isSigned))) ||
+         (pm.kind == classType && pm._class.registered && !strcmp(pm._class.registered.name, "String")); } }
 };
 
 AVLTree<const char *> pySymbolNameConflicts { [
@@ -179,6 +195,69 @@ char * pyGetNoConflictSymbolName(const char * name)
    if(pySymbolNameConflicts.Find(name)) return PrintString("_", name);
    return CopyString(name);
 }
+
+public struct IterMemberOrPropertyPriority
+{
+   Class cl;
+   Property pt;
+   DataMember dm;
+   MemberOrProperty mp;
+   bool unionFirstsFirstAndFollowingsLast;
+   property MemberOrProperty { get { return mp; } }
+   void reset() { mp = null; cleanup(); }
+   MemberOrProperty next(MemberOrPropertyFilter filter)
+   {
+      if(!str)
+      {
+         while(true)
+         {
+            while(_next() && !filter.match(mp.memberAccess, mp.isProperty ? normalMember : ((DataMember)mp).type));
+            if(!mp) break;
+            pt = mp.isProperty ? (Property)mp : null;
+            if(pt && pt.Set)
+               str.Add(mp.name);
+         }
+      }
+      while(_next() && (!filter.match(mp.memberAccess, mp.isProperty ? normalMember : ((DataMember)mp).type) ||
+            (!mp.isProperty && str.Find(mp.name))));
+      pt = mp && mp.isProperty ? (Property)mp : null;
+      dm = mp && !mp.isProperty ? (DataMember)mp : null;
+      if(dm && (dm.type == unionMember || dm.type == structMember))
+         stack.Add(dm.members.first);
+      return mp;
+   }
+   void cleanup()
+   {
+      delete str;
+      delete stack;
+   }
+private:
+   AVLTree<const String> str;
+   List<MemberOrProperty> stack;
+   bool _next()
+   {
+      if(!str) str = { };
+      if(!stack) stack = { };
+      if(!mp)
+      {
+         mp = (MemberOrProperty)cl.membersAndProperties.first;
+         if(mp) stack.Add(mp);
+      }
+      else
+      {
+         bool first = dm && (dm.type == unionMember || dm.type == structMember) && dm.members.first;
+         while(stack.count)
+         {
+            mp = first ? stack.lastIterator.data : stack.lastIterator.data.next;
+            if(!first && mp) stack.lastIterator.data = mp;
+            if(mp) break;
+            else if(stack.count)
+               stack.lastIterator.Remove();
+         }
+      }
+      return mp != null;
+   }
+};
 
 struct IterClassHierarchyMemberOrProperty
 {
