@@ -2163,6 +2163,7 @@ public Symbol FindClass(const char * name)
    Class _class;
    bool global = false;
    char fullName[1024];
+   fullName[0] = 0;
 
    if(name[0] == ':' && name[1] == ':')
    {

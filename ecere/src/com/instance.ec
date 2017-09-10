@@ -3590,9 +3590,14 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
       if(paramEnd > paramStart)
       {
          const char * ptr, * equal = null;
+         int subParamLevel = 0;
          for(ptr = paramStart; ptr <= paramEnd; ptr++)
          {
-            if(*ptr == '=')
+            char ch = *ptr;
+            if(ch == '<') subParamLevel++;
+            else if(ch == '>') subParamLevel--;
+
+            if(subParamLevel == 0 && ch == '=')
             {
                equal = ptr;
                break;

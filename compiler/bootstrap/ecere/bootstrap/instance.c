@@ -5385,10 +5385,17 @@ paramEnd--;
 if(paramEnd > paramStart)
 {
 const char * ptr, * equal = (((void *)0));
+int subParamLevel = 0;
 
 for(ptr = paramStart; ptr <= paramEnd; ptr++)
 {
-if(*ptr == '=')
+char ch = *ptr;
+
+if(ch == '<')
+subParamLevel++;
+else if(ch == '>')
+subParamLevel--;
+if(subParamLevel == 0 && ch == '=')
 {
 equal = ptr;
 break;
