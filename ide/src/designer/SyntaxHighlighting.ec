@@ -988,7 +988,7 @@ class SyntaxXMLState : int
    bool inTag:1, tagWord:1, xmlComment:1;
 }
 
-static const char * xmlExtensions[] = { "xml", "xsd", "html", "htm", "xhtml", "gml", "kml", "dae", "svg", null };
+static const char * xmlExtensions[] = { "xml", "xsd", "html", "htm", "xhtml", "gml", "sld", "kml", "dae", "svg", null };
 class XMLSHL : SyntaxHighlighting
 {
    class_property(extensions) = xmlExtensions;
@@ -1210,6 +1210,7 @@ static const char * econExtensions[] = { "econ", "json", "geoecon", "geojson", "
 class ECONSHL : SyntaxHighlighting
 {
    class_property(extensions) = econExtensions;
+   keywords = [ "false", "true", "null" ];
    cppSingle = true;
    cNumbers = true;
    cMultiLine = true;
