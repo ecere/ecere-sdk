@@ -14,13 +14,15 @@ AVLTree<const String> cppKeywords { [
 ] };
 
 AVLTree<const String> actualTypeNames { [
+   "byte",
    "char",
    "double",
    "float",
    "int",
-   "short",
    "int64",
+   "short",
    "uint",
+   "uint16",
    "uint32",
    "uint64",
    "any_object",

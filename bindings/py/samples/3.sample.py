@@ -23,8 +23,11 @@ class MyThing:
       pass
 
 class MyController(WindowController):
-   def  __init__(self):
-      WindowController.__init__(self, "<MyThing>")
+#   def  __init__(self):
+#      WindowController.__init__(self, "<MyThing>")
+   def init_args(self, args, kwArgs): init_args(MyController, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
 
 @regclass
 class MyForm(Window):

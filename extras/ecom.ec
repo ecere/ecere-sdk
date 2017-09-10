@@ -111,6 +111,8 @@ List<Class> getClassLineage(Class c)
    {
       if(cl.templateClass) cl = cl.templateClass;
       lineage.Insert(null, cl);
+      if(cl.inheritanceAccess == privateAccess)
+         break;
    }
    return lineage;
 }
@@ -512,13 +514,17 @@ private:
    {
       if(!stack) stack = { };
       if(!mp)
-         stack.Add((mp = (MemberOrProperty)cl.membersAndProperties.first));
+      {
+         mp = (MemberOrProperty)cl.membersAndProperties.first;
+         if(mp) stack.Add(mp);
+      }
       else
       {
-         bool first = dm && (dm.type == unionMember || dm.type == structMember);
+         bool first = dm && (dm.type == unionMember || dm.type == structMember) && dm.members.first;
          while(stack.count)
          {
             mp = first ? stack.lastIterator.data : stack.lastIterator.data.next;
+            if(!first && mp) stack.lastIterator.data = mp;
             if(mp) break;
             else if(stack.count)
                stack.lastIterator.Remove();

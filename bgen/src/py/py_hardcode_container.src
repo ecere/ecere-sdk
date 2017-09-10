@@ -1,13 +1,20 @@
    # hack: hardcoded content
-   def __init__(self, templateParams = None, copySrc = None, impl = None):
-      if impl is None:
-         if type(templateParams) != str and copySrc is None:
-            copySrc = templateParams
+   class_members = [ "copySrc" ]
+   def __init__(self, *args, **kwArgs): self.init_args(list(args), kwArgs)
+   def init_args(self, args, kwArgs):
+      if kwArgs.get("impl") is None:
+         templateParams = kwArgs.get("templateParams")
+         if templateParams is None and len(args) > 0 and type(args[0]) == str:
+            kwArgs["templateParams"] = args[0]
+            del args[0]
+         else:
+            copySrc = kwArgs.get("copySrc")
+            if copySrc is None and len(args) > 0: copySrc = args[0]
             if isinstance(copySrc, list) and len(copySrc) > 0:
                co = coFromPy(copySrc[0])
-               if co is not None: templateParams = "<" + ffis(co.name) + ">"
-      Instance.__init__(self, templateParams, impl=impl)
-      if copySrc is not None: self.copySrc = copySrc
+               if co is not None:
+                  kwArgs["templateParams"] = "<" + ffis(co.name) + ">"
+      init_args(Container, self, args, kwArgs)
 
    def __getitem__(self, index):
       itPtr = self.getAtPosition(index, False, None)
@@ -21,7 +28,8 @@
    def copySrc(self): return lib.Container_get_copySrc(self.impl)
    @copySrc.setter
    def copySrc(self, value):
-      if isinstance(value, Container): lib.Container_set_copySrc(self.impl, value)
+      if isinstance(value, Container):
+         lib.Container_set_copySrc(self.impl, value.impl)
       if isinstance(value, list):
          count = len(value)
          co = ffi.NULL
@@ -33,7 +41,7 @@
             pc = None
             if co is None: co = coFromPy(v0)
             if co is not None:
-               pcn = ffi.string(co.name).decode('utf8')
+               pcn = ffi.string(co.name).decode('u8')
                for ag in app.appGlobals:
                   pc = ag.get(pcn, None)
                   if pc is not None: break
@@ -50,10 +58,11 @@
                      if isinstance(v, tuple) and pc is not None: v = pc(v)
                      data[i] = v.impl if v is not None else ffi.NULL
                elif co.type == lib.ClassType_structClass:
-                  data = ag_ffi.new(ffi.string(co.name).decode('utf8') + "[]", count)
+                  data = ag_ffi.new(ffi.string(co.name).decode('u8') + "[]", count)
                   for i in range(0, count):
                      v = value[i]
-                     if isinstance(v, tuple) and pc is not None: v = pc(v)    # TODO: Optimization to use tuple directly?
+#//                     if isinstance(v, tuple) and pc is not None: v = pc(v)    # TODO: Optimization to use tuple directly?
+                     if pc and not isinstance(v, pc): v = pc(v)
                      if v is not None: data[i] = v.impl[0]
                else:
                   if co == lib.class_int: data = ag_ffi.new("int []", value)
@@ -65,6 +74,8 @@
                         v = value[i]
                         if isinstance(v, tuple) and pc is not None: v = pc(v)
                         data[i] = v.impl if v is not None else 0
+         else:
+            data = ffi.NULL
 
          bic = ffi.new("BuiltInContainer *", {
                '_vTbl'     : lib.class_BuiltInContainer._vTbl,

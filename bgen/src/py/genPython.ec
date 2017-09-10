@@ -1,8 +1,6 @@
 import "bgen"
 import "pyTools"
 
-// TODO: Prioritize public properties over public members
-
 /*
 Map<const String, const String> nameSwapMap { [
    { "del", "delete" },
@@ -118,9 +116,50 @@ class PythonGen : CGen
                d.out = out;
 
                {
-                  Class clDep = eSystem_FindClass(mod, eSystem_FindClass(mod, exp.instance._class.name)); //"FileChange");
+                  Class clDep = eSystem_FindClass(mod, exp.instance._class.name);
+                  AVLTree<UIntPtr> visited { };
+                  Array<Class> batch { };
+                  Array<Class> additions { };
+                  Array<Class> swap;
                   char * s = null;
                   char * val = getNoNamespaceString(df.value, null, false);
+                  batch.Add(clDep);
+                  visited.Add((UIntPtr)clDep);
+                  while(batch.count)
+                  {
+                     for(e : batch)
+                     {
+                        Class cl = e;
+                        BProperty p; IterConversion itc { cl };
+                        while((p = itc.next(publicOnly)))
+                        {
+                           if(p.cConv && visited.Add((UIntPtr)p.cConv.cl))
+                              additions.Add(p.cConv.cl);
+                        }
+
+                        {
+                           IterAllClass itacl { itn.module = g_.mod };
+                           while(itacl.next(all))
+                           {
+                              BProperty p; IterConversion itcn { itacl.cl };
+                              while((p = itcn.next(publicOnly)))
+                              {
+                                 if(p.cConv && visited.Add((UIntPtr)p.cConv.cl))
+                                 {
+                                    additions.Add(p.cConv.cl);
+                                    additions.Add(itacl.cl);
+                                    visited.Add((UIntPtr)itacl.cl);
+                                 }
+                              }
+                           }
+                           itacl.cleanup();
+                        }
+                     }
+                     batch.RemoveAll();
+                     swap = additions;
+                     additions = batch;
+                     batch = swap;
+                  }
                   ChangeCh(val, '{', '(');
                   ChangeCh(val, '}', ')');
                   while((s = strstr(s ? s : val, "true")))
@@ -129,8 +168,15 @@ class PythonGen : CGen
                      *s = 'F', s += 5;
                   out.ds.println("");
                   out.ds.printxln(d.name, " = ", val);
-                  v.processDependency(oother, otypedef, clDep);
+                  for(e : visited)
+                  {
+                     Class cl = (Class)e;
+                     v.processDependency(oother, otypedef, cl);
+                  }
                   delete val;
+                  delete batch;
+                  delete additions;
+                  delete visited;
                }
             }
             FreeExpression(exp);
@@ -152,70 +198,12 @@ class PythonGen : CGen
             {
                BVariant v = f;
                BOutput out { vfunction, f = f, ds = { } };
+               char * name = pyGetNoConflictSymbolName(f.oname);
                f.nspace.addContent(v);
                f.out = out;
                // function
-               {
-                  bool convertTypedArgs = false;
-                  Type t = f.fn.dataType;
-                  //Type param;
-                  char * name = pyGetNoConflictSymbolName(f.oname);
-                  t = unwrapPointerType(t, null);
-                  //if(!(t.params.count == 1 && (param = t.params.first) && !param.name && param.kind == voidType))
-                  if(!paramsIsOnlyVoid(&t.params))
-                  {
-                     //for(param = t.params.first; param; param = param.next)
-                     IterParamPlus itr { &t.params };
-                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        SpecialType st = specialType(itr.pm);
-                        if(st == typedObject)
-                        {
-                           convertTypedArgs = true;
-                           break;
-                        }
-                     }
-                  }
-                  if(convertTypedArgs)
-                     out.ds.printxln("def ", name, "(*args): lib.", f.oname, "(*convertTypedArgs(args))");
-                  else
-                  {
-                     out.ds.printx("def ", name, "(");
-                     if(!paramsIsOnlyVoid(&t.params))
-                     {
-                        const char * comma = "";
-                        IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
-                        while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                        {
-                           if(itr.pm.kind == ellipsisType)
-                              out.ds.printx(comma, "*args");
-                           else
-                              out.ds.printx(comma, itr.name);
-                           comma = ", ";
-                        }
-                     }
-                     out.ds.printx("): ");
-                     if(f.fn.dataType.returnType.kind != voidType) // todo, type conversion to py
-                        out.ds.printx("return ");
-                     out.ds.printx("lib.", f.oname, "(");
-                     if(!paramsIsOnlyVoid(&t.params))
-                     {
-                        const char * comma = "";
-                        IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
-                        while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                        {
-                           if(itr.pm.kind != ellipsisType)
-                           {
-                              bool ptr = itr.isNullable;
-                              out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
-                              comma = ", ";
-                           }
-                        }
-                     }
-                     out.ds.printxln(")");
-                  }
-                  delete name;
-               }
+               tmp_merge_FuncMethOutput(out, f, null, null, paramFilter, null, name, f.oname, "", false, null);
+               delete name;
             }
          }
       }
@@ -482,21 +470,75 @@ bool typeReturnTypeRequiresPyObj(Type type)
       (type.returnType._class.registered.type == normalClass || type.returnType._class.registered.type == noHeadClass);
 }
 
-bool typeIsNative(Type type)
+bool typeRequiresImpl(Type t)
 {
-   return type.kind == charType || type.kind == shortType || type.kind == intType || type.kind == int64Type ||
-         type.kind == int128Type || type.kind == longType || type.kind == floatType || type.kind == doubleType;
+   if(t.kind == pointerType || typeIsNative(t) || typeIsStringClass(t) ||
+         (t.kind == classType && t._class.registered && classRequiresImpl(t._class.registered)))
+      return false;
+   return true;
 }
 
-bool typeIsClassNative(Type type)
+bool classRequiresImpl(Class c)
 {
-   return type.kind == classType && type._class.registered && (type._class.registered.type == systemClass ||
-         type._class.registered.type == enumClass/* || type._class.registered.type == unitClass*/);
+   switch(c.type)
+   {
+      case systemClass:
+      case enumClass:
+      // case unitClass:
+         return false;
+   }
+   return true;
+}
+
+bool typeIsNative(Type t)
+{
+   switch(t.kind)
+   {
+      case charType:
+      case shortType:
+      case intType:
+      case int64Type:
+      case int128Type:
+      case intSizeType:
+      case longType:
+      case floatType:
+      case doubleType:
+         return true;
+   }
+   return false;
+}
+
+bool typeIsClassNative(Type t)
+{
+   return t.kind == classType && t._class.registered && (t._class.registered.type == systemClass ||
+         t._class.registered.type == enumClass/* || type._class.registered.type == unitClass*/);
+}
+
+bool typeIsStr(Type t)
+{
+   return (t.kind == pointerType && ((t.type.kind == charType && t.type.isSigned) ||
+         (t.type.kind == pointerType && t.type.type.kind == charType && t.type.type.isSigned))) ||
+         (t.kind == classType && t._class.registered && !strcmp(t._class.registered.name, "String"));
+}
+
+bool typeIsStringClass(Type t)
+{
+   if(t.kind == classType && t._class.registered)
+   {
+      BClass c = t._class.registered;
+      return c.isString;
+   }
+   return false;
 }
 
 bool typeIsUnitClass(Type type)
 {
    return type.kind == classType && type._class.registered && type._class.registered.type == unitClass;
+}
+
+bool typeIsClassType(Type type, ClassType cltype)
+{
+   return type.kind == classType && type._class.registered && type._class.registered.type == cltype;
 }
 
 bool typeHasTemplateClass(Type type)
@@ -513,10 +555,12 @@ bool isTypePythonNative(Type type)
 {
    switch(type.kind)
    {
+      case charType:
       case shortType:
       case intType:
       case int64Type:
       case int128Type:
+      case intSizeType:
       case longType:
       case floatType:
       case doubleType:
@@ -549,6 +593,9 @@ void processPyClass(PythonGen g, BClass c)
       List<Class> lineage = getClassLineage(c.cl);
       List<Class> classOnly { [ c.cl ] };
 
+      char * selfimpl = c.cl.type == noHeadClass ?
+            PrintString("ffi.cast(\"struct ", c.symbolName, " *\", self.impl)") :
+            CopyString("self.impl");
       int memberArgCount = 0;
       int memberLen = 0, len;
       bool hasOneToOneBaseConv = false;
@@ -718,8 +765,10 @@ void processPyClass(PythonGen g, BClass c)
             int charCount = 0;
             bool hasUnion = false; // FIX #06 (16.)
             bool hasNew = false; // FIX #06 (12.)
+            char * firstArg = null;
             char * firstInitializerName = null; // FIX #06 (12.)
             BProperty pFromString = null; // FIX #06 (12.)
+            bool tmpClassTriesNewInitArgs = false;
 
 // ------------------------------------------------------------------------------------------------------------------- //
 //      counting                                                                                                       //
@@ -731,9 +780,10 @@ void processPyClass(PythonGen g, BClass c)
                while(itmpp.next(filter))
                {
                   if(itmpp.dm && itmpp.dm.type == unionMember) hasUnion = true; // FIX #06 (16.)
-                  if(itmpp.dm && itmpp.dm.type != normalMember) continue;
+                  //if(itmpp.dm && itmpp.dm.type != normalMember) continue;
+                  if((itmpp.dm && itmpp.dm.type != normalMember) || (itmpp.pt && !itmpp.pt.Set)) continue;
                   charCount += strlen(itmpp.name) + 4;
-                  if(itmpp.dm)
+                  if(itmpp.dm || itmpp.pt)
                      memberArgCount++;
                   if(!firstInitializerName && c.cl.type == normalClass && ((itmpp.dm && itmpp.dm.type == normalMember) || itmpp.pt))
                      firstInitializerName = CopyString(itmpp.name);
@@ -762,12 +812,15 @@ void processPyClass(PythonGen g, BClass c)
                }
             }
 
+            if(c.cl.type == normalClass)
+               tmpClassTriesNewInitArgs = true;
+
             if(hasNew)
             {
                out.ds.printx(sk, "   def __new__(cls"); //, from_String = None
                initArguments(g, c, v, out, sk, lineage, lin, filter, hasUnion, 15, &memberLen, &otherCount);
                out.ds.printx(sk, "      if isinstance(", firstInitializerName, ", str):", ln,
-                             sk, "         impl = lib.", pFromString.fpnSet, "(", firstInitializerName, ".encode('utf8'))", ln,
+                             sk, "         impl = lib.", pFromString.fpnSet, "(", firstInitializerName, ".encode('u8'))", ln,
                              sk, "         if impl == ffi.NULL: return None", ln,
                              sk, "      o = Instance.__new__(cls)", ln,
                              sk, "      if impl is not None: o.impl = impl", ln,
@@ -779,11 +832,62 @@ void processPyClass(PythonGen g, BClass c)
 //      definition of __init__ function                                                                                //
 // ------------------------------------------------------------------------------------------------------------------- //
             if(c.cl.type != enumClass)
-               out.ds.printx(sk, "   def __init__(self");
+            {
+               if(tmpClassTriesNewInitArgs)
+               {
+                  char * name;
+                  bool added = false;
+                  out.ds.printx(sk, "   class_members = [");
+                  // 'array', 'conut', 'minAllocSize', 'size'
+                  {
+                     IterMemberOrPropertyPriority itmpp { cl = c.cl };
+                     while(itmpp.next(publicOnly))
+                     {
+                        if(itmpp.dm && itmpp.dm.type != normalMember) continue;
+                        name = pyGetNoConflictSymbolName(itmpp.mp.name);
+                        out.ds.printx(added ? "" : sln, sk, "                      '", name, "',", ln);
+                        delete name;
+                        added = true;
+                     }
+                     itmpp.reset();
+                  }
+                  {
+                     BMethod m; IterMethod itm { c.cl };
+                     while((m = itm.next(publicVirtual)))
+                     {
+                        char * mname;
+                        m.init(itm.md, c);
+                        mname = pyGetNoConflictSymbolName(m.mname);
+                        out.ds.printx(added ? "" : sln, sk, "                      '", mname, "',", ln);
+                        delete mname;
+                        added = true;
+                     }
+                  }
+                  /*{
+                     IterMemberOrPropertyPlus itmpp { cl = c.cl };
+                     while(itmpp.next(publicOnly))
+                     {
+                        if(!((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))) continue;
+                        name = pyGetNoConflictSymbolName(itmpp.mp.name);
+                        out.ds.printx(added ? "" : sln, sk, "                      '", name, "',", ln);
+                        delete name;
+                        added = true;
+                     }
+                  }*/
+                  out.ds.printx(sk, added ? "                   " : "", "]", ln);
+                  out.ds.printx(ln);
+                  out.ds.printx(sk, "   def init_args(self, args, kwArgs): init_args(", c.name, ", self, args, kwArgs)", ln);
+                  out.ds.printx(sk, "   def __init__(self, *args, **kwArgs):", ln,
+                                sk, "      self.init_args(list(args), kwArgs)", ln);
+               }
+               else
+                  out.ds.printx(sk, "   def __init__(self");
+            }
 // ------------------------------------------------------------------------------------------------------------------- //
 //      arguments for __init__ function                                                                                //
 // ------------------------------------------------------------------------------------------------------------------- //
-            initArguments(g, c, v, out, sk, lineage, lin, filter, hasUnion, lineEachIndent, &memberLen, &otherCount);
+            if(!tmpClassTriesNewInitArgs)
+               firstArg = initArguments(g, c, v, out, sk, lineage, lin, filter, hasUnion, lineEachIndent, &memberLen, &otherCount);
 // ------------------------------------------------------------------------------------------------------------------- //
 //      content of __init__ function: some initialization of self                                                      //
 // ------------------------------------------------------------------------------------------------------------------- //
@@ -793,8 +897,11 @@ void processPyClass(PythonGen g, BClass c)
             {
                // FIX #05 (8.)
                out.ds.printx(sk, "      if impl is not None:", ln,
-                             sk, "         self.impl = impl", ln,
-                             sk, "      else:", ln,
+                             sk, "         self.impl = impl", ln);
+               if(c.isClass)
+               out.ds.printx(sk, "      elif isinstance(", "prev", ", pyType):", ln,
+                             sk, "         self.impl = getattr(app.lib, 'class_' + ", "prev", ".__name__)", ln);
+               out.ds.printx(sk, "      else:", ln,
                              sk, "         self.impl = ffi.cast(\"", c.name, " *\", lib.Instance_new(lib.class_", c.name, "))", ln);
             }
             else if(c.cl.type == structClass)
@@ -841,11 +948,14 @@ void processPyClass(PythonGen g, BClass c)
                   //out.ds.printxln(sk, "");
                   if(!cBase.isCharPtr)
                   {
-                     out.ds.printx(sk, "      ", cBase.name, ".__init__(self");
-                     if(c.cl.templateParams.count) // todo or base's or base's base's, etc
-                        out.ds.print(", templateParams");
-                     out.ds.print(", impl = impl");
-                     out.ds.println(")");
+                     if(!tmpClassTriesNewInitArgs)
+                     {
+                        out.ds.printx(sk, "      ", cBase.name, ".__init__(self");
+                        if(c.cl.templateParams.count) // todo or base's or base's base's, etc
+                           out.ds.print(", templateParams");
+                        out.ds.print(", impl = impl");
+                        out.ds.println(")");
+                     }
                   }
                   if(userDataProp)
                      out.ds.printxln(sk, "      if self.impl != ffi.NULL: lib.", userDataProp.fpnSet, "(self.impl, self.impl)");
@@ -853,11 +963,12 @@ void processPyClass(PythonGen g, BClass c)
                   if(c.isString)
                   {
                      out.ds.printx(sk, "      if impl is not None: self.impl = impl", ln,
-                                   sk, "      else: self.impl = ffi.NULL", ln,
+                                   sk, "      else: self.impl = ffi.NULL", ln);/*,
                                    sk, "   # hardcoded __str__", ln,
                                    sk, "   def __str__(self):", ln,
-                                   sk, "      return ffi.string(self.impl).decode('utf8') if self.impl != ffi.NULL else str()", ln);
+                                   sk, "      return ffi.string(self.impl).decode('u8') if self.impl != ffi.NULL else str()", ln);*/
                   }
+                  if(!tmpClassTriesNewInitArgs)
                   {
                      IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage };
                      while(itmpp.next(publicOnly))
@@ -866,6 +977,7 @@ void processPyClass(PythonGen g, BClass c)
                            out.ds.printxln(sk, "      if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.name, " = ", itmpp.name);
                      }
                   }
+                  if(!tmpClassTriesNewInitArgs)
                   for(ccc : lineage)
                   {
                      BClass cc = ccc;
@@ -889,7 +1001,8 @@ void processPyClass(PythonGen g, BClass c)
 //      tuple handling (__init__ continued)                                                                            //
 // ------------------------------------------------------------------------------------------------------------------- //
             //if(c.isAnchor || (memberArgCount > 1 && memberArgCount < 6))
-            if((c.cl.type == structClass || c.cl.type == bitClass) && ((memberArgCount > 1 && memberArgCount < 6) || c.isAnchor))
+            if((c.cl.type == structClass || c.cl.type == bitClass || c.cl.type == noHeadClass) &&
+                  ((memberArgCount > 1 && memberArgCount < 7) || c.isAnchor))
             {
                int i = 0;
                bool first = true;
@@ -901,8 +1014,7 @@ void processPyClass(PythonGen g, BClass c)
                   if((itmpp.dm && itmpp.dm.type != normalMember) || (itmpp.pt && !itmpp.pt.Set)) continue;
                   if(first)
                   {
-                     DataMember dm = itmpp.dm;
-                     const char * zeroVal = getTypeZeroValuePy(g, dm.dataType, v);
+                     const char * zeroVal = getTypeZeroValuePy(g, itmpp.type, v);
                      out.ds.printx(sk, "         if isinstance(", itmpp.name, ", tuple):", ln,
                                    sk, "            __tuple = ", itmpp.name, ln,
                                    sk, "            ", itmpp.name, " = ", zeroVal, ln);
@@ -928,9 +1040,11 @@ void processPyClass(PythonGen g, BClass c)
                   BProperty p; IterConversion itc { c.cl };
                   while((p = itc.next(publicOnly)))
                   {
-                     bool dotThis = c.cl.type == bitClass;
+                     ClassType ct = p.cConv ? p.cConv.cl.type : systemClass;
+                     bool impl = p.cConv && (ct == bitClass || ct == unitClass || ct == structClass);
+                     bool zero = impl && ct == structClass;
                      out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", p.name, "):");
-                     out.ds.printxln(sk, "            self.impl = lib.", p.fpnSet, "(", name, dotThis ? ".impl" : "", ")");
+                     out.ds.printxln(sk, "            self.impl = lib.", p.fpnSet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
                      out.ds.printxln(sk, "            return");
                      elif = true;
                      /*out.ds.printxln(sk, "            val = lib.", p.fpnSet, "(", name, ")");
@@ -965,10 +1079,11 @@ void processPyClass(PythonGen g, BClass c)
                               ;//PrintLn("    ", "what's going on with native type conversion ", itacl.cl.name, " <-> ", p.name);
                            else if(p.cConv.cl == c.cl)
                            {
-                              bool dotThis = itacl.cl.type == bitClass;
+                              bool impl = classRequiresImpl(itacl.cl);
+                              bool zero = itacl.cl.type == structClass;
                               //out.ds.printxln(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name);
                               out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):");
-                              out.ds.printxln(sk, "            self.impl = lib.", p.fpnGet, "(", name, dotThis ? ".impl" : "", ")");
+                              out.ds.printxln(sk, "            self.impl = lib.", p.fpnGet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
                               out.ds.printxln(sk, "            return");
                               //v.processDependency(otypedef, otypedef, itacl.cl);
                            }
@@ -998,14 +1113,15 @@ void processPyClass(PythonGen g, BClass c)
                      IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true };
                      while(itmpp.next(publicOnly))
                      {
-                        if((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))
+                        if(((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set)) &&
+                              !(p.cConv && p.cConv.cl.templateClass))
                         {
                            out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", itmpp.name, ", ", type, "):");
                            if(c.cl.type == structClass)
                            {
-                              bool valDotThis = p.cConv && (p.cConv.cl.type == unitClass || p.cConv.cl.type == structClass);
+                              bool impl = p.cConv && (p.cConv.cl.type == unitClass || p.cConv.cl.type == structClass); // nownow
                               out.ds.printx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
-                                            sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, valDotThis ? ".impl" : "", ")", ln,
+                                            sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, impl ? ".impl" : "", ")", ln,
                                             sk, "            return", ln);
                            }
                            elif = true;
@@ -1036,7 +1152,6 @@ void processPyClass(PythonGen g, BClass c)
                                  ;//PrintLn("    ", "what's going on with native type conversion ", itacl.cl.name, " <-> ", p.name);
                               else if(p.cConv.cl == c.cl)
                               {
-                                 //bool dotThis = itacl.cl.type == bitClass;
                                  //out.ds.printxln(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name);
                                  out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):");
                                  out.ds.printxln(sk, "            self.impl = ffi.new(\"", c.name, " *\")");
@@ -1061,7 +1176,8 @@ void processPyClass(PythonGen g, BClass c)
                while(itmpp.next(publicOnly))
                {
                   bool retype;
-                  const char * typeName = itmpp.type.kind == classType && itmpp.type._class.registered ? itmpp.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itmpp.type, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+                  const char * typeName = itmpp.type && itmpp.type.kind == classType && itmpp.type._class.registered ? itmpp.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itmpp.type, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+                  if(itmpp.dm && itmpp.dm.type != normalMember) continue;
                   //if(!itmpp.pt && !(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
                   //      typeIsSomething(itmpp.type) || typeHasTemplateClass(itmpp.type) || typeIsUnitClass(itmpp.type)))// &&
                   //      //itmpp.type._class.registered && reduceUnitClass(itmpp.type._class.registered) != itmpp.type._class.registered)
@@ -1087,7 +1203,7 @@ void processPyClass(PythonGen g, BClass c)
                      //else
                      //   out.ds.printxln(sk, "         ", "if ", itmpp.name, " is not None and not isinstance(", itmpp.name, ", ", clBaseUnit.name, "):");
                      //out.ds.printxln(sk, "            ", inst ? "   " : "", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
-                     if(c.cl.type == structClass)
+                     if(c.cl.type == structClass && !hasUnion)
                      {
                         bool forStruct = itmpp.type.kind == classType && itmpp.type._class.registered && itmpp.type._class.registered.type == structClass;
                         if(!hasUnion) // FIX #06 (16.)
@@ -1098,22 +1214,23 @@ void processPyClass(PythonGen g, BClass c)
                         {
                            if(itmpp.type._class.registered)
                            {
+                              const char * name = itmpp.type._class.registered.name;
                               switch(itmpp.type._class.registered.type)
                               {
                                  case normalClass:
                                  case noHeadClass:
                                     out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ffi.NULL", ln);
                                     break;
-                                 case structClass:
+                                 //case structClass:
                                     //out.ds.printx("# ", "         else:", ln, sk, "            ", itmpp.name,
                                     //      " = ffi.new(\"", itmpp.type._class.registered.name, " *\")",
                                     //      " # init struct class struct member", ln);
-                                    //break;
+                                 //   break;
+                                 case structClass:
                                  case bitClass:
                                  case unitClass:
                                     //out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = 0", ln);
-                                    out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name,
-                                          " = ", itmpp.type._class.registered.name, "()", ln);
+                                    out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ", name, "()", ln);
                                     if(!hasUnion && forStruct)
                                        out.ds.printx(sk, "            ", itmpp.name, " = ", itmpp.name, ".impl", forStruct ? "[0]" : "", ln);
                                     break;
@@ -1172,12 +1289,13 @@ void processPyClass(PythonGen g, BClass c)
                         {
                            const char * name = itmpp.mp.name;
                            BClass cType = itmpp.type.kind == classType ? itmpp.type._class.registered : null;
-                           bool dotThis = !(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
+                           bool impl = !(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
                                  (cType && cType.isString) || (itmpp.type.kind == pointerType &&
                                  (typeIsNative(itmpp.type.type) || itmpp.type.type.kind == voidType)));
+                           bool zero = cType && cType.cl.type == structClass;
                            out.ds.printx(sk, "         if ", name, " is not None:", spaces(memberLen, strlen(name)),
                                  " __members['", name, "']", spaces(memberLen, strlen(name)), " = ", name,
-                                 dotThis ? ".impl[0]" : "", ln);
+                                 impl ? ".impl" : "", zero ? "[0]" : "", ln);
                         }
                      }
                   }
@@ -1188,37 +1306,46 @@ void processPyClass(PythonGen g, BClass c)
                else
                //if(!c.isAnchor)
                {
-                  out.ds.printx(", { ");
+                  int count = 0;
+                  const int limit = 4;
+                  const char * xln, * comma = "";
+                  const char * xsk, * xsp;
+                  IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true, unionFirstsOnly = true };
+                  out.ds.printx(", {");
+                  while(itmpp.next(publicOnly))
+                     if(itmpp.dm && itmpp.dm.type == normalMember)
+                        count++;// += itmpp.name ? strlen(itmpp.name) : 0;
+                  xln = count > limit ? "\n" : "";
+                  xsk = count > limit ? sk : "";
+                  xsp = count > limit ? "                             " : " ";
+                  while(itmpp.next(publicOnly))
                   {
-                     const char * comma = "";
-                     IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true, unionFirstsOnly = true };
-                     while(itmpp.next(publicOnly))
+                     //if(!itmpp.mp.isProperty/* || pt.Set*/)
+                     if(itmpp.dm && itmpp.dm.type == normalMember)
                      {
-                        //if(!itmpp.mp.isProperty/* || pt.Set*/)
-                        if(itmpp.dm && itmpp.dm.type == normalMember)
-                        {
-                           //if(!strcmp(c.name, "Size") && !strcmp(itmpp.name, "w"))
-                           /*if(!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
-                              typeIsSomething(itmpp.type) || typeIsUnitClass(itmpp.type))) // FIX #04
-                              dotThis = true;*/
-                           out.ds.printx(comma, "'", itmpp.mp.name, "' : ", itmpp.name);
-                           comma = ", ";
-                        }
+                        //if(!strcmp(c.name, "Size") && !strcmp(itmpp.name, "w"))
+                        /*if(!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
+                           typeIsSomething(itmpp.type) || typeIsUnitClass(itmpp.type))) // FIX #04
+                           impl = true;*/
+                        //out.ds.printx(comma, "'", itmpp.mp.name, "' : ", itmpp.name);
+                        out.ds.printx(comma, xln, xsk, xsp, count > limit ? "   " : "", "'", itmpp.mp.name, "' : ", itmpp.name);
+                        xln = count > limit ? "\n" : "";
+                        comma = ",";
                      }
                   }
-                  out.ds.printx(" }");
+                  out.ds.printx(xln, xsk, xsp, "}");
                }
                out.ds.printxln(")");
                //if(c.cl.type == structClass)
-               {
+               /*{
                   IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage };
                   while(itmpp.next(publicOnly))
                   {
                      if(itmpp.pt && itmpp.pt.Set)
                         //out.ds.printxln(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/*, itmpp.mp.isProperty ? "" : "impl."*/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/*, dotThis ? ".impl" : ""*/);
+                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/-*, itmpp.mp.isProperty ? "" : "impl."*-/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/-*, impl ? ".impl" : ""*-/);
                   }
-               }
+               }*/
                // FIX #04
                //if(c.cl.type != structClass)
                {
@@ -1229,14 +1356,14 @@ void processPyClass(PythonGen g, BClass c)
                      //if((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))
                      if((itmpp.dm && itmpp.dm.type == normalMember && c.cl.type != structClass) || (itmpp.pt && itmpp.pt.Set))
                         //out.ds.printxln(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/*, itmpp.mp.isProperty ? "" : "impl."*/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/*, dotThis ? ".impl" : ""*/);
+                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/*, itmpp.mp.isProperty ? "" : "impl."*/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/*, impl ? ".impl" : ""*/);
                   }
                }
             }
 // ------------------------------------------------------------------------------------------------------------------- //
 //      retyping of arguments? (__init__ continued)                                                                    //
 // ------------------------------------------------------------------------------------------------------------------- //
-            if(c.cl.type == structClass || c.cl.type == noHeadClass)
+            if(/*c.cl.type == structClass || */c.cl.type == noHeadClass)
             {
                // FIX #05 (8.)
                const char * indent = c.cl.type == structClass ? "      " : "         ";
@@ -1245,13 +1372,13 @@ void processPyClass(PythonGen g, BClass c)
                {
                   if(itmpp.pt && itmpp.pt.Set)
                   {
-                     bool dotThis = false;
+                     bool impl = false;
                      BClass cType = itmpp.type.kind == classType ? itmpp.type._class.registered : null;
                      // FIX #05 (11.)
                      if(c.cl.type == structClass && !(typeIsNative(itmpp.type) ||
                            typeIsClassNative(itmpp.type) || typeIsSomething(itmpp.type)))
-                        dotThis = true;
-                     //out.ds.printx(comma, "'", itmpp.name, "' : ", itmpp.name, dotThis ? ".impl" : "");
+                        impl = true;
+                     //out.ds.printx(comma, "'", itmpp.name, "' : ", itmpp.name, impl ? ".impl" : "");
                      //if(c.cl.type == structClass)
                      {
                         // FIX #05 (11.)
@@ -1266,7 +1393,7 @@ void processPyClass(PythonGen g, BClass c)
                            out.ds.printxln(sk, indent, "if not isinstance(", itmpp.name, ", ", clBaseUnit.name, "): ", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
                         }
                      }
-                     out.ds.printxln(sk, indent, "if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.mp.isProperty ? "" : "impl.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name, dotThis ? ".impl" : "");
+                     out.ds.printxln(sk, indent, "if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.mp.isProperty ? "" : "impl.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name, impl ? ".impl" : "");
                   }
                }
             }
@@ -1371,6 +1498,7 @@ void processPyClass(PythonGen g, BClass c)
                   }
                }
             }
+            delete firstArg;
 // ------------------------------------------------------------------------------------------------------------------- //
 //      next                                                                                                           //
 // ------------------------------------------------------------------------------------------------------------------- //
@@ -1385,21 +1513,37 @@ void processPyClass(PythonGen g, BClass c)
 
       // members and properties
       {
-         IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true };
+         //IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true };
+         AVLTree<const String> propNames { };
+         IterMemberOrPropertyPlus itmpp { cl = c.cl };
          while(itmpp.next(publicOnly))
          {
+            if(itmpp.pt && !itmpp.pt.conversion)
+            {
+               char * itmppname = pyGetNoConflictSymbolName(itmpp.mp.name);
+               propNames.Add(itmppname);
+               delete itmppname;
+            }
+         }
+         while(itmpp.next(publicOnly))
+         {
+            char * itmppname = pyGetNoConflictSymbolName(itmpp.mp.name);
+            Type itmpptype = itmpp.pt ? itmpp.pt.dataType : itmpp.dm ? itmpp.dm.dataType : null;
+            //if(itmpp.c != c) continue;
             // members
-            if(itmpp.dm && itmpp.dm.type == normalMember &&
+
+            if(itmpp.dm && !propNames.Find(itmppname) && itmpp.dm.type == normalMember &&
                   (c.cl.type == noHeadClass || c.cl.type == normalClass || c.cl.type == structClass))
             {
                bool oneliner = true;
-               BClass cType = itmpp.type.kind == classType ? g.getClassFromType(itmpp.type, true) : null;
+               BClass cType = itmpptype.kind == classType ? g.getClassFromType(itmpptype, true) : null;
                //BClass cType = p.pt.dataType.kind == classType ? p.pt.dataType._class.registered : null;
-               char * typeName = getSimpleDataTypeName(itmpp.type, itmpp.dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+               char * typeName = getSimpleDataTypeName(itmpptype, itmpp.dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
                bool wrap = cType && !cType.isBool && cType.cl.type != systemClass;
+               bool retyped = false; // aka no impl, no wrap, use of wrap to be reviewed
                out.ds.printxln(sk, "");
                out.ds.printxln(sk, "   @property");
-               out.ds.printx(sk, "   def ", itmpp.name, "(self):");
+               out.ds.printx(sk, "   def ", itmppname, "(self):");
                if(c.cl.type == structClass || c.cl.type == noHeadClass) // FIX #05 (7.)
                {
                /*if(cType && !cType.isBool && cType.cl.type != systemClass)
@@ -1407,44 +1551,53 @@ void processPyClass(PythonGen g, BClass c)
                   out.ds.printx("value = ", typeName, "(); ");
                   //v.processDependency(otypedef, otypedef, cType.cl);
                }
-               out.ds.printxln("lib.", "_get_", itmpp.name, "(self.impl, value.impl)");*/
-                  if(itmpp.type.kind == classType && itmpp.type._class.registered &&
-                        (itmpp.type._class.registered.type == unitClass ||
-                        itmpp.type._class.registered.type == bitClass || // FIX #06 (11. unclear part about properties)
-                        itmpp.type._class.registered.type == structClass))
-                     out.ds.printxln(" return ", typeName, "(impl = self.impl.", itmpp.name, ")");
+               out.ds.printxln("lib.", "_get_", itmpp.name, "(", selfimpl, ", value.impl)");*/
+                  if(itmpptype.kind == classType && itmpptype._class.registered &&
+                        (itmpptype._class.registered.type == unitClass ||
+                        itmpptype._class.registered.type == bitClass || // FIX #06 (11. unclear part about properties)
+                        itmpptype._class.registered.type == structClass))
+                     out.ds.printxln(" return ", typeName, "(impl = self.impl.", itmppname, ")");
                   // FIX #05 (10.)
-                  else if(itmpp.type.kind == classType && itmpp.type._class.registered &&
-                        itmpp.type._class.registered.type == normalClass)
+                  else if(itmpptype.kind == classType && itmpptype._class.registered &&
+                        itmpptype._class.registered.type == normalClass)
                   {
                      if(cType.isString)
-                        out.ds.printxln(" return String(self.impl.", itmpp.name, ")");
+                        out.ds.printxln(" return String(self.impl.", itmppname, ")");
                      else
-                        out.ds.printxln(" return pyOrNewObject(", typeName, ", self.impl.", itmpp.name, ")");
+                        out.ds.printxln(" return pyOrNewObject(", typeName, ", self.impl.", itmppname, ")");
                   }
                   else
-                     out.ds.printxln(" return self.impl.", itmpp.name);
+                     out.ds.printxln(" return self.impl.", itmppname);
                }
                else
-                  out.ds.printxln(" return ", wrap ? typeName : "", wrap ? "(impl = " : "", "IPTR(lib, ffi, self, ", c.name, ").", itmpp.name, wrap ? ")" : "");
+                  out.ds.printxln(" return ", wrap ? typeName : "", wrap ? "(impl = " : "", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, wrap ? ")" : "");
 
-               out.ds.printxln(sk, "   @", itmpp.name, ".setter");
-               out.ds.printx(sk, "   def ", itmpp.name, "(self, value):");
-               //if(itmpp.type.kind == classType && itmpp.type._class.registered && itmpp.type._class.registered.type == unitClass)
-               if(/*c.cl.type == structClass && */!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
-                     typeIsSomething(itmpp.type) || typeHasTemplateClass(itmpp.type)) &&
-                     itmpp.type.kind == classType && itmpp.type._class.registered)// &&
-                     //itmpp.type._class.registered && reduceUnitClass(itmpp.type._class.registered) != itmpp.type._class.registered)
+               out.ds.printxln(sk, "   @", itmppname, ".setter");
+               out.ds.printx(sk, "   def ", itmppname, "(self, value):");
+
+               if(typeIsStr(itmpptype))
+               {
+                  retyped = true;
+                  out.ds.println("");
+                  out.ds.printxln(sk, "      if isinstance(value, str): value = ffi.new(\"char[]\", value.encode('u8'))");
+                  out.ds.printxln(sk, "      elif value is None: value = ffi.NULL");
+                  oneliner = false;
+               }
+               //else if(itmpptype.kind == classType && itmpptype._class.registered && itmpptype._class.registered.type == unitClass)
+               else if(/*c.cl.type == structClass && */!(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
+                     typeIsSomething(itmpptype) || typeHasTemplateClass(itmpptype)) &&
+                     itmpptype.kind == classType && itmpptype._class.registered)// &&
+                     //itmpptype._class.registered && reduceUnitClass(itmpptype._class.registered) != itmpptype._class.registered)
                      //!c.cl.templateClass)
                {
                   Class clBaseUnit;
-                  for(clBaseUnit = itmpp.type._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
+                  for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
                   out.ds.println("");
                   out.ds.printxln(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)");
-                  //out.ds.printxln(sk, "      self.impl.", itmpp.name, " = value");
+                  //out.ds.printxln(sk, "      self.impl.", itmppname, " = value");
                   oneliner = false;
                }
-               /*if(!isTypePythonNative(itmpp.type) && itmpp.type.kind == classType && !cType.isBool && !cType.isString)
+               /*if(!isTypePythonNative(itmpptype) && itmpptype.kind == classType && !cType.isBool && !cType.isString)
                {
                   if(oneliner) out.ds.printxln("");
                   out.ds.printxln("      if not isinstance(value, ", typeName, "): value = ", typeName, "(value)");
@@ -1453,17 +1606,17 @@ void processPyClass(PythonGen g, BClass c)
                if(c.cl.type == structClass || c.cl.type == noHeadClass) // FIX #05 (7.)
                {
                   if(cType && (/*cType.cl.type == unitClass || */cType.cl.type == structClass))
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmpp.name, " = value.impl[0]");
-                  else if(cType && (cType.isString || cType.cl.type == unitClass || cType.cl.type == bitClass))
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmpp.name, " = value.impl");
+                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value.impl[0]");
+                  else if(cType && (/*cType.isString || */cType.cl.type == unitClass || cType.cl.type == bitClass))
+                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value.impl");
                   else
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmpp.name, " = value");
+                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value");
                }
                else
-                  out.ds.printxln(oneliner ? " " : "      ", "IPTR(lib, ffi, self, ", c.name, ").", itmpp.name, " = value", wrap ? ".impl" : ""); // value.value
+                  out.ds.printxln(oneliner ? " " : "      ", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, " = value", wrap && !retyped ? ".impl" : ""); // value.value
             }
             // properties
-            else if(itmpp.pt && itmpp.c == c && !c.isContainer) // FIX #02 // else if(itmpp.pt && !c.isContainer)
+            else if(itmpp.pt/* && itmpp.c == c */&& !c.isContainer) // FIX #02 // else if(itmpp.pt && !c.isContainer)
             {
                BProperty p = itmpp.pt;
                // property
@@ -1477,7 +1630,7 @@ void processPyClass(PythonGen g, BClass c)
                   else
                   {
                      out.ds.printxln(sk, "   @property");
-                     out.ds.printx(sk, "   def ", itmpp.name, "(self): ");
+                     out.ds.printx(sk, "   def ", itmppname, "(self): ");
                      if(!p.pt.Get)
                         out.ds.printxln(sk, "return None");
                      else
@@ -1492,72 +1645,73 @@ void processPyClass(PythonGen g, BClass c)
                            case floatType:
                            case doubleType:
                               //out.ds.printx("value");
-                              out.ds.printx("return lib.", p.fpnGet, "(self.impl)");
+                              out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               break;
                            case pointerType:
-                              if(p.pt.dataType.type.kind == charType)
+                              if(p.pt.dataType.type.kind == charType && p.pt.dataType.type.isSigned)
                               {
-                                 out.ds.printx("value = lib.", p.fpnGet, "(self.impl); ");
-                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('utf8')");
+                                 out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, "); ");
+                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
                               }
                               //else if(p_pt_dataType_type_kind_isPythonNative)
                               /*else if(isTypePythonNative(p.pt.dataType.type) || p.pt.dataType.type.kind == voidType)
                                  out.ds.printx("lib.", p.fpnGet, "(self); ");*/
                               else
-                                 out.ds.printx("return lib.", p.fpnGet, "(self.impl)");
+                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               break;
                            case classType:
                            {
                               BClass cType = p.pt.dataType._class.registered;
                               if(cType.isBool)
-                                 out.ds.printx("return lib.", p.fpnGet, "(self.impl)");
+                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               else if(cType.isString || cType.isCharPtr)
                               {
-                                 out.ds.printx("value = lib.", p.fpnGet, "(self.impl) if self is not None and self.impl != ffi.NULL else ffi.NULL; ");
-                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('utf8')");
+                                 out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, ") if self is not None and self.impl != ffi.NULL else ffi.NULL; ");
+                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
                               }
                               else if(cType.cl.type == unitClass)
                               {
-                                 out.ds.printx("return ", typeName, "(lib.", p.fpnGet, "(self.impl))");
+                                 out.ds.printx("return ", typeName, "(lib.", p.fpnGet, "(", selfimpl, "))");
                               }
                               else if(cType.nativeSpec)
-                                 out.ds.printx("return lib.", p.fpnGet, "(self.impl)");
+                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               else if(cType.cl.type == normalClass)
-                              {
+                              { // here todo handle Container<GeoPoint> for PolygonContour::points and others
                                  /*out.ds.println("");
-                                 out.ds.printxln(sk, "      value = lib.", p.fpnGet, "(self.impl)");
+                                 out.ds.printxln(sk, "      value = lib.", p.fpnGet, "(", selfimpl, ")");
                                  out.ds.printxln(sk, "      if value != ffi.NULL: return ", typeName, "(impl = value)");
                                  out.ds.printx(sk, "      else: return None");*/
-                                 out.ds.printx("return pyOrNewObject(", typeName, ", lib.", p.fpnGet, "(self.impl))");
+                                 out.ds.printx("return pyOrNewObject(", typeName, ", lib.", p.fpnGet, "(", selfimpl, "))");
                               }
                               else if(cType.cl.type == structClass)
                               {
                                  out.ds.printx("value = ", typeName, "();");
-                                 out.ds.printx(" lib.", p.fpnGet, "(self.impl, ffi.cast(\"", typeName, " *\", value.impl));");
+                                 out.ds.printx(" lib.", p.fpnGet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl));");
                                  out.ds.print(" return value");
                               }
                               // FIX #05 (15.)
                               else if(cType.cl.type == bitClass || cType.cl.type == noHeadClass)
-                                 out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(self.impl))");
+                                 out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
                               else if(cType.cl.type == enumClass)
                               {
-                                 bool impl = cType.cl.base.type != systemClass;
-                                 out.ds.printx("return lib.", p.fpnGet, "(self.impl, value", impl ? ".impl" : "", ")");
+                                 //bool impl = cType.cl.base.type != systemClass;
+                                 //out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value", impl ? ".impl" : "", ")");
+                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               }
                               else
                               //{
                               //   out.ds.printx("value = ", typeName, "(); ");
-                                 out.ds.printx("return lib.", p.fpnGet, "(self.impl, value.impl)");
+                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
                               //}
                               break;
                            }
                            case templateType:
-                              out.ds.printx("value = lib.", p.fpnGet, "(self.impl);");
+                              out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, ");");
                               out.ds.printx(" return pyOrNewObject(Instance, lib.oTAInstance(value))");
                               break;
                            case subClassType:
                               out.ds.printx("value = Class(); ");
-                              out.ds.printx("return lib.", p.fpnGet, "(self.impl, value.impl)");
+                              out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
                               break;
                            case thisClassType:
                               // todo tofix
@@ -1570,71 +1724,73 @@ void processPyClass(PythonGen g, BClass c)
 
                      if(p.pt.Set)
                      {
-                        BClass cType = itmpp.type.kind == classType ? itmpp.type._class.registered : null;
+                        BClass cType = itmpptype.kind == classType ? itmpptype._class.registered : null;
                         //List<Class> lineage = cType ? getClassLineage(cType.cl) : null;
-                        out.ds.printxln(sk, "   @", itmpp.name, ".setter");
-                        out.ds.printxln(sk, "   def ", itmpp.name, "(self, value):");
+                        out.ds.printxln(sk, "   @", itmppname, ".setter");
+                        out.ds.printxln(sk, "   def ", itmppname, "(self, value):");
 #if 0
-                        if(/*c.cl.type == structClass && */!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
-                              typeIsSomething(itmpp.type) || typeHasTemplateClass(itmpp.type)) &&
-                              itmpp.type.kind == classType && itmpp.type._class.registered &&
-                              /*(itmpp.type._class.registered.type == bitClass || itmpp.type._class.registered.type == unitClass ||
-                              itmpp.type._class.registered.type == structClass)*/
+                        if(/*c.cl.type == structClass && */!(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
+                              typeIsSomething(itmpptype) || typeHasTemplateClass(itmpptype)) &&
+                              itmpptype.kind == classType && itmpptype._class.registered &&
+                              /*(itmpptype._class.registered.type == bitClass || itmpptype._class.registered.type == unitClass ||
+                              itmpptype._class.registered.type == structClass)*/
                               !cType.isString && !cType.isBool)// &&
-                              //itmpp.type._class.registered && reduceUnitClass(itmpp.type._class.registered) != itmpp.type._class.registered)
+                              //itmpptype._class.registered && reduceUnitClass(itmpptype._class.registered) != itmpptype._class.registered)
                               //!c.cl.templateClass)
                            ;
 #endif // 0
-                        if(/*c.cl.type == structClass && */!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
-                              typeIsSomething(itmpp.type) || typeHasTemplateClass(itmpp.type)) &&
-                              itmpp.type.kind == classType && itmpp.type._class.registered)// &&
-                              //itmpp.type._class.registered && reduceUnitClass(itmpp.type._class.registered) != itmpp.type._class.registered)
+                        if(/*c.cl.type == structClass && */!(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
+                              typeIsSomething(itmpptype) || typeHasTemplateClass(itmpptype)) &&
+                              itmpptype.kind == classType && itmpptype._class.registered)// &&
+                              //itmpptype._class.registered && reduceUnitClass(itmpptype._class.registered) != itmpptype._class.registered)
                               //!c.cl.templateClass)
                         {
                            Class clBaseUnit;
-                           for(clBaseUnit = itmpp.type._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
+                           for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
                            //out.ds.println("");
                            out.ds.printxln(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)");
-                           //out.ds.printxln(sk, "      self.impl.", itmpp.name, " = value");
+                           //out.ds.printxln(sk, "      self.impl.", itmppname, " = value");
                            //oneliner = false;
                         }
-                        /*if((!mp.isProperty || pt.Set) && !(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
-                              typeIsSomething(itmpp.type) || typeHasTemplateClass(itmpp.type)) &&
+                        /*if((!mp.isProperty || pt.Set) && !(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
+                              typeIsSomething(itmpptype) || typeHasTemplateClass(itmpptype)) &&
                               reduceUnitClass(cType.cl) != cType.cl)// &&
                               //!c.cl.templateClass)
                         {
-                           //const char * typeName = dm.dataType.kind == classType && dm.dataType._class.registered ? dm.dataType._class.registered.itmpp.name : "FixTypeNameIssue"; //getSimpleDataTypeName(dm.dataType, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+                           //const char * typeName = dm.dataType.kind == classType && dm.dataType._class.registered ? dm.dataType._class.registered.itmppname : "FixTypeNameIssue"; //getSimpleDataTypeName(dm.dataType, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
                            Class clBaseUnit;
-                           for(clBaseUnit = itmpp.type._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
+                           for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
                            out.ds.println("");
-                           out.ds.printxln(sk, "         if not isinstance(", itmpp.name, ", ", clBaseUnit.itmpp.name, "): ", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
+                           out.ds.printxln(sk, "         if not isinstance(", itmppname, ", ", clBaseUnit.itmppname, "): ", itmppname, " = ", typeName, "(", itmppname, ")");
                            out.ds.print("        ");
                         }*/
-                        if((itmpp.type.kind == classType && itmpp.type._class.registered &&
-                              itmpp.type._class.registered.type == unitClass) ||
-                              (!isTypePythonNative(itmpp.type) && itmpp.type.kind == classType && !cType.isBool && !cType.isString))
+                        if((itmpptype.kind == classType && itmpptype._class.registered &&
+                              itmpptype._class.registered.type == unitClass) ||
+                              (!isTypePythonNative(itmpptype) && itmpptype.kind == classType && !cType.isBool && !cType.isString))
                            ; //out.ds.println("");
                         else
-                           out.ds.printx("      lib.", p.fpnSet, "(self.impl, ");
-                        /*if(isTypePythonNative(itmpp.type) || (itmpp.type.kind == pointerType &&
-                              (isTypePythonNative(itmpp.type.type) || itmpp.type.type.kind == voidType)))
+                           out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", ");
+                        /*if(isTypePythonNative(itmpptype) || (itmpptype.kind == pointerType &&
+                              (isTypePythonNative(itmpptype.type) || itmpptype.type.kind == voidType)))
                            out.ds.printx("self, ");
                         else
                            out.ds.printx("self.impl, ");*/
-                        //if(!strcmp(c.itmpp.name, "Window") && !strcmp(p.itmpp.name, "hasMaximize"))
-                        //if(isTypePythonNative(itmpp.type)) // tofix right now (since units aren't derived from int / double / float)
+                        //if(!strcmp(c.itmppname, "Window") && !strcmp(p.itmppname, "hasMaximize"))
+                        //if(isTypePythonNative(itmpptype)) // tofix right now (since units aren't derived from int / double / float)
                         //   out.ds.printx("value");         // it would be wrong to say that a unitclass is native and .impl is reqired
-                        if(!(itmpp.type.kind == classType && itmpp.type._class.registered &&
-                              itmpp.type._class.registered.type == unitClass) && isTypePythonNative(itmpp.type))
+                        if(!(itmpptype.kind == classType && itmpptype._class.registered &&
+                              itmpptype._class.registered.type == unitClass) && isTypePythonNative(itmpptype))
                            out.ds.printx("value");
                         else
                         {
-                           switch(itmpp.type.kind)
+                           switch(itmpptype.kind)
                            {
+                              case charType:
+                                 break;
                               case pointerType:
-                                 if(itmpp.type.type.kind == charType)
-                                    out.ds.printx("value.encode('utf8')");
-                                 else if(isTypePythonNative(itmpp.type.type) || itmpp.type.type.kind == voidType)
+                                 if(itmpptype.type.kind == charType && itmpptype.type.isSigned)
+                                    out.ds.printx("value.encode('u8')");
+                                 else if(isTypePythonNative(itmpptype.type) || itmpptype.type.kind == voidType)
                                     out.ds.printx("value");
                                  else
                                     out.ds.printx("value.impl");
@@ -1644,16 +1800,17 @@ void processPyClass(PythonGen g, BClass c)
                                  if(cType.isBool)
                                     out.ds.printx("value");
                                  else if(cType.isString)
-                                    out.ds.printx("value.impl.encode('utf8')");
+                                    out.ds.printx("value.impl.encode('u8')");
                                  else if(cType.cl.type == structClass/* || cType.cl.type == noHeadClass*/)
-                                    out.ds.printx("      lib.", p.fpnSet, "(self.impl, ffi.cast(\"", typeName, " *\", value.impl)");
+                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl)");
                                  else if(cType.cl.type == enumClass)
                                  {
                                     bool impl = cType.cl.base.type != systemClass;
-                                    out.ds.printx("      lib.", p.fpnSet, "(self.impl, value", impl ? ".impl" : "", "");
+                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", value", impl ? ".impl" : "", "");
                                  }
                                  else
                                  {
+                                    Class clType = itmpptype._class.registered;
                                     //int i = 0;
                                     //const char * comma = "";
                                     //DataMember dm; IterDataMember itd { cType.cl };
@@ -1666,14 +1823,22 @@ void processPyClass(PythonGen g, BClass c)
                                        if(!dm.isProperty)
                                        {
                                           typeDataMember(dm, itmp.cl);
-                                          assert(dm.type == normalMember && dm.itmpp.name);
-                                          out.ds.printx(comma, dm.itmpp.name, "=value[", i++, "] if len(value) >= ", i, " else 0");
+                                          assert(dm.type == normalMember && dm.itmppname);
+                                          out.ds.printx(comma, dm.itmppname, "=value[", i++, "] if len(value) >= ", i, " else 0");
                                           comma = ", ";
                                        }
                                     }
                                     out.ds.printxln(")");*/
                                     //out.ds.printxln("      else: value = ", typeName, "()");
-                                    out.ds.printx("      lib.", p.fpnSet, "(self.impl, value.impl");
+                                    if(clType.templateClass && !strcmp(clType.templateClass.name, "Container"))
+                                    {
+                                       const char * tp = strchr(clType.name, '<');
+                                       char * tp2 = getNoNamespaceString(tp, null, false);
+                                       out.ds.printx("      if not isinstance(value, Container):", ln);
+                                       out.ds.printx("         value = Array(\"", tp2, "\", value)", ln); //<GeoPoint>
+                                       delete tp2;
+                                    }
+                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", value.impl");
                                  }
                                  /*else
                                     out.ds.printx("value.impl");*/
@@ -1690,13 +1855,15 @@ void processPyClass(PythonGen g, BClass c)
                      }
                      if(p.pt.IsSet)
                      {
-                        out.ds.printxln(sk, "   # @", itmpp.name, ".isset # tofix: how do we get isset?");
-                        out.ds.printxln(sk, "   # def ", itmpp.name, "(self): lib.", p.fpnIst, "(self.impl)");
+                        out.ds.printxln(sk, "   # @", itmppname, ".isset # tofix: how do we get isset?");
+                        out.ds.printxln(sk, "   # def ", itmppname, "(self): lib.", p.fpnIst, "(", selfimpl, ")");
                      }
                   }
                }
             }
+            delete itmppname;
          }
+         delete propNames;
       }
 
       if(c.cl.type != unitClass)
@@ -1705,37 +1872,53 @@ void processPyClass(PythonGen g, BClass c)
          BProperty p; IterConversion itc { c.cl };
          while((p = itc.next(publicOnly)))
          {
-            //bool df = p.convNative ? false : strcmp(p.name, p.cConv.name) != 0;
             // conversion
-            /*if(p.cConv && p.cConv.cl.type == structClass)
+            //bool df = !p.convNative;
+            if(p.convNative)
             {
-               bool valDotThis = p.cConv && (p.cConv.cl.type == unitClass || p.cConv.cl.type == structClass);
-               PrintLn("NNNNNNNNNNN ", c.cl.name, "::", p.name, df ? " -- " : "", df ? p.cConv.name : "");
-               out.ds.printxln(sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)");
-               out.ds.printx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
-                             sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, valDotThis ? ".impl" : "", ")", ln,
-                             sk, "            return", ln);
+               if(!strcmp(p.name, "int") || !strcmp(p.name, "double") || !strcmp(p.name, "float"))
+               {
+                  const char * type = !strcmp(p.name, "double") ? "float" : p.name;
+                  out.ds.printxln(ln, sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)");
+               }
+               else if(!strcmp(p.name, "char_ptr"))
+               {
+                  if(!strcmp(c.name, "String"))
+                     out.ds.printx(ln, sk, "   def __str__(self): return ffi.string(self.impl).decode('u8') if self.impl != ffi.NULL else str()", ln);
+                  else
+                     out.ds.printx(ln, sk, "   def __str__(self): return ffi.string(lib.", p.fpnGet, "(self.impl)).decode('u8') if self.impl != ffi.NULL else str()", ln);
+               }
+               else check();
             }
-            else */if(!strcmp(p.name, "int") || !strcmp(p.name, "double") || !strcmp(p.name, "float"))
+            else if(p.cConv)
             {
-               const char * type = !strcmp(p.name, "double") ? "float" : p.name;
-               out.ds.println("");
-               out.ds.printxln(sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)");
-               //PrintLn("AAAAAAAAAAA ", c.cl.name, "::", p.name, df ? " -- " : "", df ? p.cConv.name : "");
+               //bool impl = p.cConv.cl.type == unitClass || p.cConv.cl.type == structClass;
+               switch(p.cConv.cl.type)
+               {
+                  case normalClass:
+                     break;
+                  case noHeadClass:
+                     break;
+                  case structClass:
+                     /*out.ds.printxln(sk, "   def __", p.name, "__(self): return lib.", p.fpnGet, "(", selfimpl, ")");
+                     out.ds.printx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
+                                   sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, impl ? ".impl" : "", ")", ln,
+                                   sk, "            return", ln);*/
+                     break;
+                  case bitClass:
+                     break;
+                  case unitClass:
+                     break;
+                  default: check();
+               }
+               out.ds.printx(ln,
+                             sk, "   # here is an unhandled conversion: ",
+                                   c.name, "::", p.name, " (", c.cl.type, " 2 ", p.cConv.cl.type, ")", ln,
+                             //sk, "   @property", ln,
+                             sk, "   # ", p.fpnGet, ln,
+                             sk, "   # ", p.fpnSet, ln);
             }
-            else if(p.convNative)
-            {
-               PrintLn("XXXXXXXXXXX ", c.cl.name, "::", p.name);
-            }
-            /*else
-            {
-               out.ds.println("");
-               out.ds.printxln(sk, "   # here is a conversion (", p.name, ")");
-               //out.ds.printxln(sk, "   @property");
-               out.ds.printxln(sk, "   # ", p.fpnGet);
-               out.ds.printxln(sk, "   # ", p.fpnSet);
-               PrintLn("BBBBBBBBBBB ", c.cl.name, "::", p.name, df ? " -- " : "", df ? p.cConv.name : "");
-            }*/
+            else check();
          }
       }
 
@@ -1744,7 +1927,10 @@ void processPyClass(PythonGen g, BClass c)
          BMethod m; IterMethod itm { c.cl };
          while((m = itm.next(publicOnly))) //publicVirtual
          {
+            bool isStatic = m.md.dataType.staticMethod;
+            const char * comma = isStatic ? "" : ", ";
             m.init(itm.md, c);
+
             // method
             {
                bool thisClass = m.md.dataType.thisClass && m.md.dataType.thisClass.string;
@@ -1780,17 +1966,19 @@ void processPyClass(PythonGen g, BClass c)
                   out.ds.println("");
                   out.ds.printx(sk, "   def fn_unset_", m.s, "(self"); // , m, b, x, y, mods
                      //out.ds.printx(", __", t);
+                  comma = ", ";
                   if(!m.md.dataType.staticMethod && thisClass)
-                     out.ds.printx(", _", name);
+                     out.ds.printx(comma, "_", name);
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.pm.kind == ellipsisType)
-                           out.ds.printx(", *args");
+                           out.ds.printx(comma, "*args");
                         else
-                           out.ds.printx(", ", itr.name);
+                           out.ds.printx(comma, itr.name);
+                        if(!comma[0]) comma = ", ";
                      }
                   }
                   out.ds.println("):");
@@ -1828,7 +2016,7 @@ void processPyClass(PythonGen g, BClass c)
                                 sk, "   @", mname, ".setter", ln,
                                 sk, "   def ", mname, "(self, value):", ln,
                                 sk, "      self.fn_", m.s, " = value", ln,
-                                sk, "      lib.Instance_setMethod(self.impl, \"", m.name, "\".encode('utf8'), cb_", m.s, ")", ln);
+                                sk, "      lib.Instance_setMethod(self.impl, \"", m.name, "\".encode('u8'), cb_", m.s, ")", ln);
                   delete t;
                   delete name;
                   delete typeName;
@@ -1836,171 +2024,8 @@ void processPyClass(PythonGen g, BClass c)
                }
                else if(m.md.type == normalMethod)
                {
-                  int multireturn = 0;
-                  // todo variadic/ellipsis, typed --> bool convertTypedArgs = false;
-                  out.ds.println("");
-                  out.ds.printx(sk, "   def ", mname, "(self");
-                  if(!paramsIsOnlyVoid(&m.md.dataType.params))
-                  {
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(paramFilter/*tofix { all = true, ellipsisOn = false }*/))
-                     {
-                        /* todo variadic/ellipsis, typed --> SpecialType st = specialType(itr.pm);
-                        if(st == typedObject)
-                           convertTypedArgs = true;*/
-                        if(itr.isReturnValue)
-                           multireturn++;
-                     }
-                  }
-                  if(!paramsIsOnlyVoid(&m.md.dataType.params))
-                  {
-                     bool defNone = true;
-                     Type pm = null;
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     // TODO: Iterate with prev() and keep a flag that = None can be added rather than checking .last
-                     while(itr.prev(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        if(itr.isReturnValue) continue;
-                        if(itr.isNullable && itr.pm.constant)
-                        {
-                           if(defNone)
-                              pm = itr.pm;
-                        }
-                        else
-                           defNone = false;
-                     }
-                     defNone = false;
-                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        if(itr.isReturnValue) continue;
-                        // FIX #05
-                        //out.ds.printx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
-                        if(itr.pm == pm)
-                           defNone = true;
-                        if(itr.pm.kind == ellipsisType)
-                           out.ds.printx(", *args");
-                        else
-                           out.ds.printx(", ", itr.name, defNone ? " = None" : "");
-                     }
-                  }
-                  out.ds.printxln("):");
-                  /*if(!paramsIsOnlyVoid(&m.md.dataType.params))
-                  {
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
-                     {
-                        if(itr.isReturnValue || !(itr.last && itr.isNullable)) continue;
-                        out.ds.printxln("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
-                     }
-                  }*/
-                  //if region is None: region = ffi.NULL
-                  //if(multireturn)
-                  if(!paramsIsOnlyVoid(&m.md.dataType.params))
-                  {
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        if(itr.pm.kind == ellipsisType) continue;
-                        if(itr.isReturnValue)
-                        {
-                           char * _type = printType(itr.pm, false, false, true);
-                           char * type = getNoNamespaceString(_type, null, false);
-                           if(itr.isNoHead)
-                              out.ds.printxln("      ", itr.name, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))"); //int *
-                           else
-                              out.ds.printxln("      ", itr.name, " = ffi.new(\"", type, itr.isStruct ? " *" : "", "\")"); //int *
-                           delete _type;
-                           delete type;
-                        }
-                        else if(!(typeIsNative(itr.pm) || typeIsClassNative(itr.pm) ||
-                              typeIsSomething(itr.pm) || typeHasTemplateClass(itr.pm) || itr.pm.kind == intPtrType))// &&
-                              //itr.pm._class.registered && reduceUnitClass(itr.pm._class.registered) != itr.pm._class.registered)
-                        {
-                           char * name = pyGetNoConflictSymbolName(itr.pm.name);
-                           const char * typeName = itr.pm.kind == classType && itr.pm._class.registered ? itr.pm._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, itr.pm.dataTypeString, 0, false, g.lib.ecereCOM, null);
-                           Class clBaseUnit;
-                           for(clBaseUnit = itr.pm._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-                           out.ds.printxln(sk, "      if ", name, " is not None and not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                           if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
-                              //out.ds.printxln(sk, "      ", name, " = ffi.NULL if ", name, " is None else ffi.cast(\"", typeName, " *\", ", name, ".impl)");
-                              out.ds.printxln(sk, "      ", name, " = ffi.NULL if ", name, " is None else ", name, ".impl");
-                           else
-                           {
-                              out.ds.printxln(sk, "      if ", name, " is None: ", name, " = ", "ffi.NULL");
-                              if(itr.pm.kind == classType && itr.pm._class.registered &&
-                                    (itr.pm._class.registered.type == normalClass || itr.pm._class.registered.type == noHeadClass))
-                                 out.ds.printxln(sk, "      else:", ln, sk, "         ", name, " = ", name, ".impl");
-                           }
-                           //out.ds.printxln(sk, "      if ", name, " is None: ", name, " = ", "ffi.NULL");
-                           //out.ds.printx(sk, "      elif not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                           //if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
-                           //   out.ds.printxln("; ", name, " = ffi.cast(\"", typeName, " *\", ", name, ".impl)");
-                           //else
-                           //   out.ds.println("");
-                           delete name;
-                        }
-                     }
-                  }
-                  if(typeReturnTypeRequiresPyObj(m.md.dataType))
-                  {
-                     // FIX #04
-                     Class clRT = m.md.dataType.returnType._class.registered;
-                     if(clRT.templateClass) clRT = clRT.templateClass;
-                     out.ds.printx(sk, "      return pyOrNewObject(", clRT.name, ", lib.", m.s, "(self.impl");
-                  }
-                  else if(c.cl.type == structClass)
-                     out.ds.printx(sk, "      lib.", m.s, "(ffi.cast(\"", c.name, c.cl.type == structClass ? " *" : "", "\", self.impl)");
-                  else
-                  {
-                     // FIX #05
-                     bool ret = !multireturn && m.md.dataType.returnType.kind != voidType;
-                     out.ds.printx(sk, "      ", ret ? "return " : "", "lib.", m.s, "(self.impl");
-                  }
-                  if(!paramsIsOnlyVoid(&m.md.dataType.params))
-                  {
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        char * _type = printType(itr.pm, false, false, true);
-                        char * type = getNoNamespaceString(_type, null, false);
-                        bool cast = itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass;
-                        if(itr.pm.kind == ellipsisType)
-                           out.ds.printx(", *ellipsisArgs(args)");
-                        else
-                           printArgPassing(out, itr.name, type, itr.pm, false, false, cast);
-                        delete type;
-                        delete _type;
-                        /*BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
-                        out.ds.printx(", ", apname ? apname : name, c && c.cl.type == normalClass ? ".impl" : "");*/
-                     }
-                  }
-                  if(typeReturnTypeRequiresPyObj(m.md.dataType))
-                     out.ds.print(")");
-                  out.ds.println(")");
-                  if(multireturn > 0)
-                  {
-                     const char * comma = "";
-                     IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-                     out.ds.print("      return ");
-                     while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
-                     {
-                        if(itr.isReturnValue)
-                        {
-                           if(multireturn > 1)
-                           {
-                              out.ds.printx(comma, itr.name, "[0]");
-                              if(!*comma) comma = ", ";
-                           }
-                           else
-                           {
-                              const char * typeName = itr.pm.type.kind == classType && itr.pm.type._class.registered ? itr.pm.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
-                              out.ds.printxln(typeName, "(impl = ", itr.name, ")");
-                              break;
-                           }
-                        }
-                     }
-                     out.ds.println("");
-                  }
+                  // method
+                  tmp_merge_FuncMethOutput(out, null, m, c, paramFilter, sk, mname, m.s, comma, !isStatic, selfimpl);
                }
                delete mname;
             }
@@ -2012,15 +2037,17 @@ void processPyClass(PythonGen g, BClass c)
          out.ds.printxln(sk, c.symbolName, ".buc = ", cBase.cl.type == unitClass ? cBase.symbolName : c.symbolName);
       }
       // end of class
+      delete selfimpl;
    }
 }
 
-void initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char * sk, List<Class> lineage, List<Class> lin,
+char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char * sk, List<Class> lineage, List<Class> lin,
       ClassHierarchyMemberOrPropertyFilter filter, bool hasUnion, int lineEachIndent, int * _memberLen, int * _otherCount)
 {
    int len;
    int memberLen = *_memberLen;
    int otherCount = *_otherCount;
+   char * firstArg = null;
    if(c.cl.type == normalClass && c.cl.templateParams.count) // todo? or base's or base's base's, etc?
       out.ds.print(", templateParams = None");
    if(c.cl.type == unitClass)
@@ -2059,8 +2086,11 @@ void initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char * 
          }
          else
          {
-            bool useNone = c.cl.type == noHeadClass || itmpp.pt || !isTypePythonNative(itmpp.dm.dataType) || hasUnion;
+            bool useNone = c.cl.type == noHeadClass || itmpp.pt || hasUnion ||
+                  (!typeIsClassType(itmpp.dm.dataType, enumClass) && !isTypePythonNative(itmpp.dm.dataType));
             printClassInitArgument(out, g, itmpp.name, useNone ? null : itmpp.dm.dataType, lineEachIndent, &memberLen, v);
+            firstArg = CopyString(itmpp.name);
+
          }
       } //itmpp.reset();
    }
@@ -2106,6 +2136,7 @@ void initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char * 
       out.ds.println("):");
    *_memberLen = memberLen;
    *_otherCount = otherCount;
+   return firstArg;
 }
 
 void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty userDataProp)
@@ -2136,8 +2167,8 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             char * returnType = m.md.dataType.returnType.kind == templateType ? CopyString("uint64_t") :
                cPrintType(m.md.dataType.returnType, false, false, true, true); // todo: add a * in some cases?
             const char * ret = m.md.dataType.returnType.kind == voidType ? "" : "return ";
-            out.ds.println("");
-            out.ds.printx(sk, "@ffi.callback(\"", returnType, "(");
+            const char * comma = ", ";
+            out.ds.printx(ln, sk, "@ffi.callback(\"", returnType, "(");
             delete returnType;
             t[2] = (char)tolower(typeName[0]);
             //t[1] = 0;
@@ -2286,9 +2317,9 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                   if(thisTemplate && itr.pm == m.md.dataType.params.first)
                      out.ds.printx(", ", iname);
                   else if(itr.pm.kind == ellipsisType)
-                     out.ds.printx(", *ellipsisArgs(args)");
+                     out.ds.printx(comma, "*ellipsisArgs(args)");
                   else
-                     printArgPassing(out, itr.name, type, itr.pm, true, first, false);
+                     printArgPassing(out, comma, itr.name, type, itr.pm, true, first, false, true);
                   delete type;
                   delete _type;
                }
@@ -2306,7 +2337,341 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
    }
 }
 
-static void printArgPassing(BOutput out, const char * name, const char * type, Type param, bool callback, bool plain, bool cast)
+static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass c, ParamFilter paramFilter,
+      const char * sk, const char * name, const char * libname, const char * comma, bool self, const char * selfimpl)
+{
+   int ind = f ? 0 : 3;
+   int multireturn = 0;
+   bool convertTypedArgs = false;
+   bool returnTypedObject = false;
+   Type dataType = f ? f.fn.dataType : m.md.dataType;
+   Type t = unwrapPointerType(dataType, null);
+   if(!paramsIsOnlyVoid(&t.params))
+   {
+      bool prevIsTypedObject = false;
+      IterParamPlus itr { &t.params/*, anon = true, getName = pyGetNoConflictSymbolName*/ };
+      while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+      {
+         if(prevIsTypedObject && itr.pm.kind == ellipsisType)
+            convertTypedArgs = true;
+         else if(itr.isReturnValue)
+            multireturn++;
+         else if(itr.isReturnTypedObject)
+            returnTypedObject = true;
+         prevIsTypedObject = itr.isTypedObject;
+      }
+   }
+   if(convertTypedArgs)
+      out.ds.printx(sln, sk, spaces(ind, 0), "def ", name,
+            "(", self ? "self, " : "", "*args): lib.", libname,
+            "(", self ? "self.impl, " : "", "*convertTypedArgs(args))", ln);
+#if 0
+   else if(f)
+   {
+      out.ds.printx(sk, "def ", name, "(");
+      if(!paramsIsOnlyVoid(&t.params))
+      {
+         const char * comma = "";
+         IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.pm.kind == ellipsisType)
+               out.ds.printx(comma, "*args");
+            else
+               out.ds.printx(comma, itr.name);
+            comma = ", ";
+         }
+      }
+      out.ds.printx("): ");
+      if(dataType.returnType.kind != voidType) // todo, type conversion to py
+         out.ds.printx("return ");
+      out.ds.printx("lib.", libname, "(");
+      if(!paramsIsOnlyVoid(&t.params))
+      {
+         const char * comma = "";
+         IterParamPlus itr { &t.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.pm.kind != ellipsisType)
+            {
+               bool ptr = itr.isNullable;
+               out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
+               comma = ", ";
+            }
+         }
+      }
+      out.ds.printxln(")");
+   }
+#endif // 0
+   else
+   {
+      bool ret = /*!multireturn && */dataType.returnType.kind != voidType;
+      Type rt = dataType.returnType;
+      Class clRT = rt.kind == classType ? rt._class.registered : null;
+      BClass cRT = clRT;
+
+      out.ds.printx(sln, sk, spaces(ind, 0), "def ", name, "(", self ? "self" : "");
+      if(!paramsIsOnlyVoid(&dataType.params))
+      {
+         bool defNone = true;
+         Type pm = null;
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.prev(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.isReturnValue) continue;
+            if(itr.isNullable/* && itr.pm.constant*/) // todo -- test this... see diffs...
+            {
+               if(defNone)
+                  pm = itr.pm;
+            }
+            else
+               defNone = false;
+         }
+         defNone = false;
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.isReturnValue) continue;
+            // FIX #05
+            //out.ds.printx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
+            if(itr.pm == pm)
+               defNone = true;
+            if(itr.pm.kind == ellipsisType)
+               out.ds.printx(comma, "*args");
+            else
+               out.ds.printx(comma, itr.name, defNone ? " = None" : "");
+            if(!comma[0]) comma = ", ";
+         }
+         comma = self ? ", " : "";
+      }
+      out.ds.printxln("):");
+      ind += 3;
+      /*if(!paramsIsOnlyVoid(&dataType.params))
+      {
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
+         {
+            if(itr.isReturnValue || !(itr.last && itr.isNullable)) continue;
+            out.ds.printxln(sk, spaces(ind, 0), "if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
+         }
+      }*/
+      //if region is None: region = ffi.NULL
+      //if(multireturn)
+      if(!paramsIsOnlyVoid(&dataType.params))
+      {
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            const char * pn = itr.name;
+            if(itr.pm.kind == ellipsisType) continue;
+            //if(itr.pm.kind == classType && itr.pm._class.registered && !strcmp(itr.pm._class.registered.name, "class"))
+            if(itr.isReturnTypedObject)
+               out.ds.printxln(sk, spaces(ind, 0), "_", pn, " = pyAddrTypedObject(", pn, ")");
+            else if(itr.isReturnValue)
+            {
+               char * _type = printType(itr.pm, false, false, true);
+               char * type = getNoNamespaceString(_type, null, false);
+               if(itr.isNoHead)
+                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))"); //int *
+               else
+                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.new(\"", type, itr.isStruct ? " *" : "", "\")"); //int *
+               delete _type;
+               delete type;
+            }
+            else if(itr.pm.kind == pointerType && itr.pm.type.kind == voidType)
+            {
+               out.ds.printxln(sk, spaces(ind, 0), "if hasattr(", pn, ", 'impl'): ", pn, " = ", pn, ".impl");
+               out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ffi.NULL");
+            }
+            else if(itr.isTypeStr)
+            {
+               out.ds.printxln(sk, spaces(ind, 0), "if isinstance(", pn, ", str): ", pn, " = ffi.new(\"char[]\", ", pn, ".encode('u8'))");
+               out.ds.printxln(sk, spaces(ind, 0), "elif ", pn, " is None: ", pn, " = ffi.NULL");
+            }
+            else if(!(typeIsNative(itr.pm) || typeIsClassNative(itr.pm) ||
+                  typeIsSomething(itr.pm) || typeHasTemplateClass(itr.pm) || itr.pm.kind == intPtrType))// &&
+                  //itr.pm._class.registered && reduceUnitClass(itr.pm._class.registered) != itr.pm._class.registered)
+            {
+               const char * typeName = itr.pm.kind == classType && itr.pm._class.registered ? itr.pm._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, itr.pm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+               Class clBaseUnit;
+               for(clBaseUnit = itr.pm._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
+               out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is not None and not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")");
+               if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
+                  //out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ffi.cast(\"", typeName, " *\", ", pn, ".impl)");
+                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl");
+               else if(itr.pm.kind == classType && itr.pm._class.registered &&
+                        (itr.pm._class.registered.type == normalClass || itr.pm._class.registered.type == noHeadClass))
+               {
+                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl");
+               }
+               else
+               {
+                  out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL");
+                  /*if(itr.pm.kind == classType && itr.pm._class.registered &&
+                        (itr.pm._class.registered.type == normalClass || itr.pm._class.registered.type == noHeadClass))
+                     out.ds.printxln(sk, spaces(ind, 0), "else:", ln, sk, spaces(ind+3, 0), pn, " = ", pn, ".impl");*/
+               }
+               //out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL");
+               //out.ds.printx(sk, spaces(ind, 0), "elif not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")");
+               //if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
+               //   out.ds.printxln("; ", pn, " = ffi.cast(\"", typeName, " *\", ", pn, ".impl)");
+               //else
+               //   out.ds.println("");
+            }
+         }
+      }
+
+      out.ds.printx(sk, spaces(ind, 0));
+      if(ret)
+      {
+         if(multireturn > 0)
+            out.ds.printx("r = ");
+         else
+            out.ds.printx("return ");
+      }
+      if(typeReturnTypeRequiresPyObj(dataType))
+      {
+         // FIX #04
+         Class cl = clRT.templateClass ? clRT.templateClass : clRT;
+         out.ds.printx("pyOrNewObject(", cl.name, ", lib.", libname, "(", self ? selfimpl : "");
+         // todo or use pyornewobject
+         //out.ds.printx(sk, spaces(ind, 0), "impl = lib.", libname, "(", self ? selfimpl : "");
+      }
+      /*else if(c && c.cl.type == structClass)
+      {
+         out.ds.printx(sk, spaces(ind, 0), "lib.", libname, "(");
+         if(self)
+            out.ds.printx("ffi.cast(\"", c.name, c.cl.type == structClass ? " *" : "", "\", self.impl)");
+      }*/
+      else
+      {
+         // FIX #05
+         if(clRT && (clRT.type == unitClass || clRT.type == bitClass || clRT.type == structClass))
+            out.ds.printx(cRT.name, "(impl = ");
+         else if(clRT && clRT.type == normalClass)
+         {
+            if(cRT.isString)
+               out.ds.printx("String(");
+            else
+               out.ds.printx("pyOrNewObject(", cRT.name, ", ");
+         }
+         //out.ds.printx(sk, spaces(ind, 0), ret ? "return " : "", "lib.", libname, "(", self ? "self.impl" : "");
+         out.ds.printx("lib.", libname, "(");
+         if(self && c && c.cl.type == structClass)
+            out.ds.printx("ffi.cast(\"", c.name, " *", "\", self.impl)"); // todo: move this case (structClass) to selfimpl initialization
+         else if(self)
+            out.ds.printx(selfimpl);
+      }
+      if(!paramsIsOnlyVoid(&dataType.params))
+      {
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            char * _type = printType(itr.pm, false, false, true);
+            char * type = getNoNamespaceString(_type, null, false);
+            if(itr.pm.kind == ellipsisType)
+               out.ds.printx(comma, "*ellipsisArgs(args)");
+            else
+               printArgPassing(out, comma, itr.name, type, itr.pm, false, false, true, false);
+            if(!comma[0]) comma = ", ";
+            delete type;
+            delete _type;
+            /*BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
+            out.ds.printx(", ", itr.name, c && c.cl.type == normalClass ? ".impl" : "");*/
+         }
+      }
+      out.ds.print(")");
+      if(typeReturnTypeRequiresPyObj(dataType))
+      {
+         if(clRT.templateClass)
+         {
+            const char * tp = strchr(clRT.name, '<');
+            char * tp2 = getNoNamespaceString(tp, null, false);
+            out.ds.printx(", \"", tp2, "\")");
+            delete tp2;
+         }
+         else
+            out.ds.print(")");
+      }
+      else if((clRT &&
+            (clRT.type == unitClass || clRT.type == bitClass || clRT.type == structClass || clRT.type == normalClass)))
+         out.ds.print(")");
+      out.ds.printx(ln);
+      if(multireturn > 0)
+      {
+         Type tPrev { };
+         BClass cPrev = null;
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            // shaky non-hack -- this might be too general to be acceptable? should be a hardcoded hack instead?
+            //      non-hack / detection: void ** parameter preceded by a Class parameter
+            if(itr.isVoidPtrReturn)
+            {
+               out.ds.printx(sk, spaces(ind, 0), "if ", itr.name, "[0] == ffi.NULL: _", itr.name, " = None", ln);
+               if(cPrev && cPrev.isClass)
+               {
+                  // todo: support more class types?
+                  out.ds.printx(sk, spaces(ind  , 0), "else:", ln);
+                  ind += 3;
+                  out.ds.printx(sk, spaces(ind  , 0), "if ", tPrev.name, ".type == ClassType.normalClass:", ln);
+                  out.ds.printx(sk, spaces(ind+3, 0), "i = ffi.cast(\"Instance\", ", itr.name, "[0])", ln);
+                  out.ds.printx(sk, spaces(ind+3, 0), "n = ffi.string(i._class.name).decode('u8')", ln);
+                  out.ds.printx(sk, spaces(ind  , 0), "else:", ln);
+                  out.ds.printx(sk, spaces(ind+3, 0), "n = ffi.string(", tPrev.name, ".name).decode('u8')", ln);
+                  out.ds.printx(sk, spaces(ind  , 0), "t = pyTypeByName(n)", ln);
+                  out.ds.printx(sk, spaces(ind  , 0), "ct = n + \" * \" if ", tPrev.name, ".type == ClassType.noHeadClass else n", ln);
+                  out.ds.printx(sk, spaces(ind  , 0), "_", itr.name, " = t(impl = pyFFI().cast(ct, ", itr.name, "[0]))", ln);
+                  ind -= 3;
+               }
+               else
+                  out.ds.printx(sk, spaces(ind  , 0), "else: _", itr.name, " = ", itr.name, "[0]", ln);
+            }
+            cPrev = itr.pm.kind == classType ? itr.pm._class.registered : null;
+            tPrev = itr.pm;
+         }
+      }
+      if(multireturn > 0)
+      {
+         const char * comma = "";
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         out.ds.printx(sk, spaces(ind, 0), "return ", ret ? "r, " : "");
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.isReturnValue)
+            {
+               if(itr.isVoidPtrReturn)
+                  out.ds.printx(comma, "_", itr.name);
+               else if(itr.pm.kind == pointerType && itr.typeIsReturnable && itr.typeIsNative)
+                  out.ds.printx(comma, itr.name, "[0]");
+               else
+               {
+                  const char * typeName = itr.pm.type.kind == classType && itr.pm.type._class.registered ? itr.pm.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
+                  out.ds.printx(comma, typeName, "(impl = ", itr.name, "[0]", ")");
+               }
+               if(!*comma) comma = ", ";
+            }
+         }
+         out.ds.println("");
+      }
+      else if(returnTypedObject)
+      {
+         IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
+         out.ds.printx(sk, spaces(ind, 0), "return pyRetAddrTypedObject(");
+         while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
+         {
+            if(itr.isReturnTypedObject)
+            {
+               out.ds.printx(itr.name, ", _", itr.name, "[1]");
+               break;
+            }
+         }
+         out.ds.println(")");
+      }
+   }
+}
+
+static void printArgPassing(BOutput out, const char * comma, const char * name, const char * type, Type param,
+      bool callback, bool plain, bool cast, bool encode)
 {
    switch(param.kind)
    {
@@ -2315,21 +2680,24 @@ static void printArgPassing(BOutput out, const char * name, const char * type, T
       case charType: case shortType: case intType:
       case int64Type: case int128Type: case longType: case floatType:
       case doubleType: case intPtrType:
-         out.ds.printx(", ", name);
+         out.ds.printx(comma, name);
          break;
       case pointerType:
       {
          switch(param.type.kind)
          {
             case charType:
-               out.ds.printx(", ", name, ".encode('utf8')");
+               if(param.type.isSigned)
+                  out.ds.printx(comma, name, encode ? ".encode('u8')" : "");
+               else
+                  out.ds.printx(comma, name);
                break;
             case voidType: case shortType: case intType:
             case int64Type: case int128Type: case longType: case floatType:
             case doubleType: case intPtrType:
             case classType:
             case pointerType:
-               out.ds.printx(", ", name);
+               out.ds.printx(comma, name);
                break;
             case functionType:
                break;
@@ -2341,54 +2709,64 @@ static void printArgPassing(BOutput out, const char * name, const char * type, T
       case classType:
       {
          BClass c = param._class.registered;
-         if(c && (c.nativeSpec || c.isBool || (c.is_class && !strcmp(type, "typed_object &"))))
-            out.ds.printx(", ", name);
+         if(c && c.is_class && param.classObjectType == typedObject && param.byReference)
+            out.ds.printx(comma, "*_", name);
+         else if(c && c.is_class && param.classObjectType == typedObject && !param.byReference)
+            out.ds.printx(comma, "*pyTypedObject(", name, ")");
+         else if(c && (c.nativeSpec || c.isBool))
+            out.ds.printx(comma, name);
          else if(c && c.cl.templateClass)
          {
             char * str = strchr(type, '<');
             if(callback)
-               out.ds.printx(", ", c.cl.templateClass.name, "(\"", str, "\", impl = ", name, ")");
+               out.ds.printx(comma, c.cl.templateClass.name, "(\"", str, "\", impl = ", name, ")");
             else // todo tofix likely not right // only 3 instances of this :P
-               out.ds.printx(", ", c.cl.templateClass.name, c && c.cl.type == normalClass ? ".impl" : "");
+               out.ds.printx(comma, c.cl.templateClass.name, c && c.cl.type == normalClass ? ".impl" : "");
          }
          else
          {
             if(plain)
-               out.ds.printx(", ", name);
+               out.ds.printx(comma, name);
             else if(callback)
             {
                if(!c)
                   c = eSystem_FindClass(__thisModule.application, param._class.string);   // Cheat for ec module depending on ecere module
                if(c.cl.type == normalClass)
-                  out.ds.printx(", pyOrNewObject(", type, ", ", name, ")");
+                  out.ds.printx(comma, "pyOrNewObject(", type, ", ", name, ")");
                else
-                  out.ds.printx(", ", type, "(impl = ", name, ")");
+                  out.ds.printx(comma, type, "(impl = ", name, ")");
             }
-            else if(cast)
-               out.ds.printx(", ", "ffi.cast(\"", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
+            else if(cast && param.kind == classType && param._class.registered &&
+                  (param._class.registered.type == noHeadClass || param._class.registered.type == structClass))
+            {
+               if(param._class.registered.type == noHeadClass)
+                  out.ds.printx(comma, "ffi.cast(\"struct ", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
+               else
+                  out.ds.printx(comma, "ffi.cast(\"", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
+            }
             else
             {
                //bool ptr = true;
                //if(c.cl.type == structClass)
-               //   out.ds.printx(", ", "ffi.cast(\"", c.name, " *", "\", ", name, ".impl)");
+               //   out.ds.printx(comma, "ffi.cast(\"", c.name, " *", "\", ", name, ".impl)");
                //else
-               //   out.ds.printx(", ", ptr ? "ffi.NULL if " : "", ptr ? name : "", ptr ? " is None else " : "", name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
-               //out.ds.printx(", ", prefix ? "__i_" : "", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
-               out.ds.printx(", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               //   out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? name : "", ptr ? " is None else " : "", name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               //out.ds.printx(comma, prefix ? "__i_" : "", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               out.ds.printx(comma, name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
             }
          }
          break;
       }
       case templateType:
-         out.ds.printx(", ", "TA(", name, ")");
+         out.ds.printx(comma, "TA(", name, ")");
          break;
       default:
          if(!strcmp(type, "const String") || !strcmp(type, "String") || !strcmp(type, "const char *") || !strcmp(type, "char *"))
-            out.ds.printx(", ", name, ".encode('utf8')");
+            out.ds.printx(comma, name, ".encode('u8')");
          else if(param.kind == classType && param._class && param._class.registered/* && param._class.registered.type == normalClass*/)
-            out.ds.printx(", ", type, "(impl = ", name, ")");
+            out.ds.printx(comma, type, "(impl = ", name, ")");
          else
-            out.ds.printx(", ", name);
+            out.ds.printx(comma, name);
    }
 }
 
