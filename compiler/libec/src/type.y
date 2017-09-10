@@ -924,6 +924,8 @@ template_argument:
          Specifier spec = $1.specifiers->first;
          if(spec.type == nameSpecifier)
             $$.name = MkIdentifier(spec.name);
+         else if(spec.type == templateTypeSpecifier)
+            $$.name = MkIdentifier(spec.templateParameter.identifier.string);
       }
       FreeTemplateDataType($1);
       $$.loc = @$;
@@ -948,6 +950,8 @@ template_argument:
          Specifier spec = $1.specifiers->first;
          if(spec.type == nameSpecifier)
             $$.name = MkIdentifier(spec.name);
+         else if(spec.type == templateTypeSpecifier)
+            $$.name = MkIdentifier(spec.templateParameter.identifier.string);
       }
       FreeTemplateDataType($1);
       $$.loc = @$;

@@ -2876,6 +2876,7 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 unsigned int global = 0;
 char fullName[1024];
 
+fullName[0] = 0;
 if(name[0] == ':' && name[1] == ':')
 {
 global = 1;

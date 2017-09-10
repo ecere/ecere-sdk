@@ -91,7 +91,7 @@ static const yytype_int16 yyrhs[] =
 
 static const yytype_uint16 yyrline[] =
 {
-0, 231, 231, 249, 273, 313, 314, 341, 345, 346, 347, 364, 366, 371, 376, 381, 383, 388, 393, 394, 399, 401, 403, 405, 406, 408, 409, 410, 413, 414, 415, 416, 417, 418, 419, 420, 421, 425, 426, 427, 428, 429, 430, 443, 444, 445, 449, 478, 479, 480, 481, 485, 486, 487, 489, 490, 492, 493, 497, 498, 507, 508, 509, 510, 511, 512, 513, 517, 518, 522, 523, 524, 525, 529, 530, 531, 535, 536, 537, 541, 549, 550, 551, 552, 553, 557, 558, 559, 563, 564, 568, 569, 573, 574, 578, 579, 583, 584, 588, 589, 593, 594, 595, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 613, 614, 618, 622, 623, 624, 625, 629, 630, 631, 632, 633, 634, 635, 636, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 653, 654, 655, 656, 657, 658, 659, 660, 661, 662, 666, 667, 668, 669, 670, 671, 672, 673, 674, 675, 676, 677, 681, 682, 686, 687, 688, 689, 690, 691, 692, 693, 694, 702, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 731, 740, 741, 745, 746, 750, 751, 752, 753, 754, 755, 759, 760, 761, 765, 766, 767, 772, 773, 774, 775, 776, 780, 781, 785, 786, 787, 791, 792, 796, 800, 801, 802, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 864, 865, 866, 867, 868, 871, 872, 873, 874, 875, 880, 881, 884, 886, 891, 892, 897, 898, 909, 913, 915, 916, 918, 919, 943, 958, 959, 963, 964, 968, 969, 973, 977, 978, 982, 984, 986, 988, 990, 993, 995, 997, 999, 1001, 1004, 1006, 1008, 1010, 1012, 1015, 1017, 1019, 1021, 1023, 1028, 1029, 1030, 1031, 1032, 1033, 1034, 1035, 1039, 1041, 1046, 1048, 1050, 1052, 1054, 1059, 1060, 1064, 1066, 1067, 1068, 1069, 1073, 1075, 1080, 1082, 1088, 1090, 1092, 1094, 1096, 1098, 1100, 1102, 1104, 1106, 1108, 1113, 1115, 1117, 1119, 1121, 1126, 1127, 1128, 1129, 1130, 1131, 1135, 1136, 1137, 1138, 1139, 1140, 1186, 1187, 1189, 1191, 1196, 1198, 1200, 1202, 1204, 1209, 1210, 1213, 1215, 1217, 1223, 1227, 1229, 1231, 1236, 1237, 1238, 1240, 1245, 1246, 1247, 1248, 1249, 1253, 1254, 1258, 1259, 1260, 1261, 1265, 1266, 1270, 1271, 1275, 1276, 1277, 1278, 1279, 1290, 1315, 1316, 1320, 1321, 1325, 1326, 1330, 1332, 1334, 1350, 1352, 1374, 1376, 1381, 1382, 1383, 1384, 1385, 1386, 1390, 1392, 1394, 1399, 1400, 1404, 1405, 1408, 1412, 1413, 1414, 1418, 1422, 1430, 1435, 1436, 1440, 1441, 1442, 1446, 1447, 1448, 1449, 1451, 1452, 1453, 1457, 1458, 1459, 1460, 1461, 1465, 1469, 1471, 1476, 1478, 1503, 1505, 1507, 1509, 1514, 1516, 1520, 1522, 1524, 1526, 1528, 1534, 1536, 1541, 1546, 1547, 1551, 1553, 1558, 1563, 1564, 1565, 1566, 1567, 1568, 1572, 1573, 1574, 1578, 1579
+0, 231, 231, 249, 273, 313, 314, 341, 345, 346, 347, 364, 366, 371, 376, 381, 383, 388, 393, 394, 399, 401, 403, 405, 406, 408, 409, 410, 413, 414, 415, 416, 417, 418, 419, 420, 421, 425, 426, 427, 428, 429, 430, 443, 444, 445, 449, 478, 479, 480, 481, 485, 486, 487, 489, 490, 492, 493, 497, 498, 507, 508, 509, 510, 511, 512, 513, 517, 518, 522, 523, 524, 525, 529, 530, 531, 535, 536, 537, 541, 549, 550, 551, 552, 553, 557, 558, 559, 563, 564, 568, 569, 573, 574, 578, 579, 583, 584, 588, 589, 593, 594, 595, 599, 600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 613, 614, 618, 622, 623, 624, 625, 629, 630, 631, 632, 633, 634, 635, 636, 640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 653, 654, 655, 656, 657, 658, 659, 660, 661, 662, 666, 667, 668, 669, 670, 671, 672, 673, 674, 675, 676, 677, 681, 682, 686, 687, 688, 689, 690, 691, 692, 693, 694, 702, 711, 712, 713, 714, 715, 716, 717, 718, 719, 720, 721, 722, 723, 731, 740, 741, 745, 746, 750, 751, 752, 753, 754, 755, 759, 760, 761, 765, 766, 767, 772, 773, 774, 775, 776, 780, 781, 785, 786, 787, 791, 792, 796, 800, 801, 802, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 836, 837, 838, 839, 840, 841, 842, 843, 844, 845, 846, 847, 848, 849, 850, 851, 852, 853, 854, 855, 856, 857, 858, 859, 864, 865, 866, 867, 868, 871, 872, 873, 874, 875, 880, 881, 884, 886, 891, 892, 897, 898, 909, 913, 915, 916, 918, 919, 945, 962, 963, 967, 968, 972, 973, 977, 981, 982, 986, 988, 990, 992, 994, 997, 999, 1001, 1003, 1005, 1008, 1010, 1012, 1014, 1016, 1019, 1021, 1023, 1025, 1027, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1043, 1045, 1050, 1052, 1054, 1056, 1058, 1063, 1064, 1068, 1070, 1071, 1072, 1073, 1077, 1079, 1084, 1086, 1092, 1094, 1096, 1098, 1100, 1102, 1104, 1106, 1108, 1110, 1112, 1117, 1119, 1121, 1123, 1125, 1130, 1131, 1132, 1133, 1134, 1135, 1139, 1140, 1141, 1142, 1143, 1144, 1190, 1191, 1193, 1195, 1200, 1202, 1204, 1206, 1208, 1213, 1214, 1217, 1219, 1221, 1227, 1231, 1233, 1235, 1240, 1241, 1242, 1244, 1249, 1250, 1251, 1252, 1253, 1257, 1258, 1262, 1263, 1264, 1265, 1269, 1270, 1274, 1275, 1279, 1280, 1281, 1282, 1283, 1294, 1319, 1320, 1324, 1325, 1329, 1330, 1334, 1336, 1338, 1354, 1356, 1378, 1380, 1385, 1386, 1387, 1388, 1389, 1390, 1394, 1396, 1398, 1403, 1404, 1408, 1409, 1412, 1416, 1417, 1418, 1422, 1426, 1434, 1439, 1440, 1444, 1445, 1446, 1450, 1451, 1452, 1453, 1455, 1456, 1457, 1461, 1462, 1463, 1464, 1465, 1469, 1473, 1475, 1480, 1482, 1507, 1509, 1511, 1513, 1518, 1520, 1524, 1526, 1528, 1530, 1532, 1538, 1540, 1545, 1550, 1551, 1555, 1557, 1562, 1567, 1568, 1569, 1570, 1571, 1572, 1576, 1577, 1578, 1582, 1583
 };
 
 static const char * const yytname[] =
@@ -283,8 +283,6 @@ struct Symbol;
 
 struct PropertyWatch;
 
-struct TemplateParameter;
-
 struct DBTableEntry;
 
 struct DBIndexItem;
@@ -475,39 +473,6 @@ extern struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace
 struct Expression;
 
 extern void FreeExpression(struct Expression * exp);
-
-struct Specifier
-{
-struct Specifier * prev;
-struct Specifier * next;
-struct Location loc;
-int type;
-union
-{
-int specifier;
-struct
-{
-struct ExtDecl * extDecl;
-char *  name;
-struct Symbol * symbol;
-struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-struct Specifier * nsSpec;
-} ecere_gcc_struct __anon1;
-struct
-{
-struct Identifier * id;
-struct __ecereNameSpace__ecere__sys__OldList *  list;
-struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
-struct __ecereNameSpace__ecere__sys__OldList *  definitions;
-unsigned int addNameSpace;
-struct Context * ctx;
-struct ExtDecl * extDeclStruct;
-} ecere_gcc_struct __anon2;
-struct Expression * expression;
-struct Specifier * _class;
-struct TemplateParameter * templateParameter;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
 
 extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
@@ -1132,6 +1097,56 @@ extern struct Instantiation * MkInstantiation(struct Specifier * _class, struct 
 
 struct MembersInit;
 
+extern void FreeMembersInit(struct MembersInit * init);
+
+extern struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers);
+
+struct MembersInit
+{
+struct MembersInit * prev;
+struct MembersInit * next;
+struct Location loc;
+int type;
+union
+{
+struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
+struct ClassFunction * function;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+extern struct MembersInit * MkMembersInitMethod(struct ClassFunction * function);
+
+struct __ecereNameSpace__ecere__sys__BinaryTree;
+
+struct __ecereNameSpace__ecere__sys__BinaryTree
+{
+struct __ecereNameSpace__ecere__sys__BTNode * root;
+int count;
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
+void (*  FreeKey)(void *  key);
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Method;
+
+struct __ecereNameSpace__ecere__com__Method
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__Method * parent;
+struct __ecereNameSpace__ecere__com__Method * left;
+struct __ecereNameSpace__ecere__com__Method * right;
+int depth;
+int (*  function)();
+int vid;
+int type;
+struct __ecereNameSpace__ecere__com__Class * _class;
+void *  symbol;
+const char *  dataTypeString;
+struct Type * dataType;
+int memberAccess;
+} ecere_gcc_struct;
+
+struct TemplateParameter;
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -1196,26 +1211,57 @@ break;
 }
 }
 
-extern void FreeMembersInit(struct MembersInit * init);
-
 YYSTYPE type_yylval;
 
-extern struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers);
-
-struct MembersInit
+struct Specifier
 {
-struct MembersInit * prev;
-struct MembersInit * next;
+struct Specifier * prev;
+struct Specifier * next;
 struct Location loc;
 int type;
 union
 {
-struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
-struct ClassFunction * function;
+int specifier;
+struct
+{
+struct ExtDecl * extDecl;
+char *  name;
+struct Symbol * symbol;
+struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
+} ecere_gcc_struct __anon1;
+struct
+{
+struct Identifier * id;
+struct __ecereNameSpace__ecere__sys__OldList *  list;
+struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
+struct __ecereNameSpace__ecere__sys__OldList *  definitions;
+unsigned int addNameSpace;
+struct Context * ctx;
+struct ExtDecl * extDeclStruct;
+} ecere_gcc_struct __anon2;
+struct Expression * expression;
+struct Specifier * _class;
+struct TemplateParameter * templateParameter;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-extern struct MembersInit * MkMembersInitMethod(struct ClassFunction * function);
+struct TemplateParameter
+{
+struct TemplateParameter * prev;
+struct TemplateParameter * next;
+struct Location loc;
+int type;
+struct Identifier * identifier;
+union
+{
+struct TemplateDatatype * dataType;
+int memberType;
+} ecere_gcc_struct __anon1;
+struct TemplateArgument * defaultArgument;
+const char *  dataTypeString;
+struct Type * baseType;
+} ecere_gcc_struct;
 
 static void yy_symbol_print(FILE * yyoutput, int yytype, YYSTYPE const * const yyvaluep, struct Location const * const yylocationp)
 {
@@ -1243,35 +1289,6 @@ yy_symbol_print((bsl_stderr()), yyrhs[yyprhs[yyrule] + yyi], &(yyvsp[(yyi + 1) -
 fprintf((bsl_stderr()), "\n");
 }
 }
-
-struct __ecereNameSpace__ecere__sys__BinaryTree;
-
-struct __ecereNameSpace__ecere__sys__BinaryTree
-{
-struct __ecereNameSpace__ecere__sys__BTNode * root;
-int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
-void (*  FreeKey)(void *  key);
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Method;
-
-struct __ecereNameSpace__ecere__com__Method
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__Method * parent;
-struct __ecereNameSpace__ecere__com__Method * left;
-struct __ecereNameSpace__ecere__com__Method * right;
-int depth;
-int (*  function)();
-int vid;
-int type;
-struct __ecereNameSpace__ecere__com__Class * _class;
-void *  symbol;
-const char *  dataTypeString;
-struct Type * dataType;
-int memberAccess;
-} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__NameSpace;
 
@@ -4238,6 +4255,8 @@ struct Specifier * spec = (*yyvsp[(1) - (3)].templateDatatype->specifiers).first
 
 if(spec->type == 1)
 yyval.templateArgument->name = MkIdentifier(spec->__anon1.__anon1.name);
+else if(spec->type == 8)
+yyval.templateArgument->name = MkIdentifier(spec->__anon1.templateParameter->identifier->string);
 }
 FreeTemplateDataType(yyvsp[(1) - (3)].templateDatatype);
 yyval.templateArgument->loc = (yyloc);
@@ -4253,6 +4272,8 @@ struct Specifier * spec = (*yyvsp[(1) - (3)].templateDatatype->specifiers).first
 
 if(spec->type == 1)
 yyval.templateArgument->name = MkIdentifier(spec->__anon1.__anon1.name);
+else if(spec->type == 8)
+yyval.templateArgument->name = MkIdentifier(spec->__anon1.templateParameter->identifier->string);
 }
 FreeTemplateDataType(yyvsp[(1) - (3)].templateDatatype);
 yyval.templateArgument->loc = (yyloc);
