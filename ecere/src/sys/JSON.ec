@@ -1684,6 +1684,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
          }
 
+         if(_class && _class.bindingsClass) _class = _class.base;
          if(eCON && _class != objectType && eClass_IsDerived(_class, objectType))
          {
             f.Puts(_class.name);
