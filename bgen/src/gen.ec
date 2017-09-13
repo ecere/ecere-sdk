@@ -612,7 +612,7 @@ public:
       {
          switch(from)
          {
-            case otypedef:    return v.c.outTypedef;
+            case otypedef:    return v.kind == vtemplaton ? v.t.outTypedef : v.kind == vclass ? v.c.outTypedef : null;
             case ostruct:     return v.c.outStruct;
             case omethod:     return v.m.outInHeader;
             case oconversion:
