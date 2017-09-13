@@ -40,6 +40,13 @@ public class ECONParser : JSONParser
 
 // #define DEBUG_PARSING
 
+static struct JSONParserState
+{
+   int pos;
+   char ch;
+   int col, line;
+};
+
 public class JSONParser
 {
 public:
@@ -47,6 +54,48 @@ public:
 private:
    char ch;
    bool eCON;
+
+   int charPos, col, line;
+   int maxPos;
+
+   bool ReadChar(char * ch)
+   {
+      bool result = f.Getc(ch);
+      charPos++;
+      if(charPos > maxPos)
+      {
+         if(*ch == '\r');
+         else if(*ch == '\n')
+         {
+            line++;
+            col = 1;
+         }
+         else
+            col++;
+#ifdef DEBUG_PARSING
+         Print(*ch);
+#endif
+         maxPos = charPos;
+      }
+      return result;
+   }
+
+   void BackUpState(JSONParserState state)
+   {
+      state.ch = ch;
+      state.pos = charPos;
+      state.col = col;
+      state.line = line;
+   }
+
+   void ResetState(JSONParserState state)
+   {
+      ch = state.ch;
+      charPos = state.pos;
+      col = state.col;
+      line = state.line;
+      f.Seek(charPos, start);
+   }
 
    void SkipEmpty()
    {
@@ -58,10 +107,7 @@ private:
          while(!f.Eof() && (!ch || lineComment || comment || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
          {
             pch = ch;
-            f.Getc(&ch);
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
+            ReadChar(&ch);
             if(!lineComment && !comment && pch == '/')
             {
                if(ch == '/')
@@ -79,10 +125,7 @@ private:
       {
          while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
          {
-            f.Getc(&ch);
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
+            ReadChar(&ch);
          }
       }
    }
@@ -91,10 +134,7 @@ private:
    {
       while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == ';'))
       {
-         f.Getc(&ch);
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
+         ReadChar(&ch);
       }
    }
 
@@ -106,12 +146,39 @@ private:
    static inline JSONResult _GetValue(Class type, DataValue value, Container forMap)
    {
       JSONResult result = syntaxError;
-      ch = 0;
+      bool (* onGetDataFromString)(void *, void *, const char *) = type ? (void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString] : null;
+      JSONParserState backState;
+
+      BackUpState(backState);
       SkipEmpty();
-      if(ch == '\"')
+
+      if(ch == '\"' || (ch != '{' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString]))
       {
          String string;
-         result = GetString(&string);
+         if(ch != '\"' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+         {
+            int size = 32, len = 0;
+            char * s = new char[size];
+            while(true)
+            {
+               if(len + 1 >= size)
+               {
+                  size += size >> 1;
+                  s = renew s char[size];
+               }
+               if(ch == ',' || ch == '}')
+                  break;
+               s[len++] = ch;
+
+               ReadChar(&ch);
+            }
+            s[len] = 0;
+            s = renew s char[len + 1];
+            string = s;
+            result = (len > 0) ? success : syntaxError;
+         }
+         else
+            result = GetString(&string);
          if(result)
          {
             Property prop;
@@ -121,7 +188,7 @@ private:
             }
             else if(type && (type.type == enumClass || type.type == unitClass))
             {
-               if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
+               if(onGetDataFromString(type, &value.i, string))
                   result = success;
                else
                   result = typeMismatch;
@@ -141,7 +208,7 @@ private:
             }
             else if(type && (type.type == structClass))
             {
-               if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, value.p, string))
+               if(onGetDataFromString(type, value.p, string))
                   result = success;
                else
                   result = typeMismatch;
@@ -195,14 +262,14 @@ private:
          else if(type && type.type == bitClass)
          {
             uint64 object = 0;
-            result = GetObject(type, (void **)&object);
+            result = _GetObject(type, (void **)&object, null);
             if(result)
                value.ui64 = object;
          }
          else
          {
             void * object = value.p;
-            result = GetObject(type, &object);
+            result = _GetObject(type, &object, null);
             if(result)
             {
                result = typeMismatch;
@@ -258,7 +325,7 @@ private:
                   void * object = value.p;
                   Class subtype = superFindClass(string, type.module);
                   SkipEmpty();
-                  result = GetObject(subtype, &object);
+                  result = _GetObject(subtype, &object, null);
                   if(result)
                   {
                      if(subtype && subtype.type == structClass);
@@ -286,10 +353,7 @@ private:
             while(c < sizeof(buffer)-1 && (isalpha(ch) || isdigit(ch) || ch == '_'))
             {
                buffer[c++] = ch;
-               if(!f.Getc(&ch)) break;
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
+               if(!ReadChar(&ch)) break;
             }
             buffer[c] = 0;
             result = success;
@@ -351,6 +415,7 @@ private:
 
             if(arrayType && arrayType.type == structClass)
                value.p = new0 byte[arrayType.structSize];
+            ch = 0;
             itemResult = GetValue(arrayType, value);
             if(itemResult == success)
             {
@@ -453,6 +518,7 @@ private:
 
             JSONResult itemResult;
 
+            ch = 0;
             itemResult = _GetValue(mapNodeType, value, *map);
             if(itemResult == success)
             {
@@ -508,18 +574,12 @@ private:
       else
          buffer.Add(ch);
       result = success;
-      while(f.Getc(&ch))
+      while(ReadChar(&ch))
       {
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-         if(!comment && ch == '/')
+         if(!comment && !quoted && ch == '/')
          {
-            if(f.Getc(&ch))
+            if(ReadChar(&ch))
             {
-            #ifdef DEBUG_PARSING
-               Print(ch);
-            #endif
 
                if(ch == '/')
                   break;
@@ -539,12 +599,8 @@ private:
          }
          else if(comment && ch == '*')
          {
-            if(f.Getc(&ch))
+            if(ReadChar(&ch))
             {
-            #ifdef DEBUG_PARSING
-               Print(ch);
-            #endif
-
                if(ch == '/')
                {
                   comment = false;
@@ -591,12 +647,8 @@ private:
       SkipEmpty();
       if(ch == '\"' || eCON)
       {
-         while(f.Getc(&ch))
+         while(ReadChar(&ch))
          {
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-
             if(ch == '\\' && !escaped)
                escaped = true;
             else
@@ -612,29 +664,32 @@ private:
                   {
                      // SKIP FOR NOW...
                      char unicode[4];
-                     f.Getc(&unicode[0]);
-                     f.Getc(&unicode[1]);
-                     f.Getc(&unicode[2]);
-                     f.Getc(&unicode[3]);
+                     ReadChar(&unicode[0]);
+                     ReadChar(&unicode[1]);
+                     ReadChar(&unicode[2]);
+                     ReadChar(&unicode[3]);
                   }
                   escaped = false;
                }
                else if(eCON && ch == '\"')
                {
-                  int seekback = 0;
-                  char pch;
                   bool lineComment = false;
                   bool comment = false;
+                  JSONParserState seekBackState;
+                  bool seekBack = false;
+
                   while(!f.Eof())
                   {
-                     pch = ch;
-                     f.Getc(&ch);
+                     JSONParserState backState;
+                     BackUpState(backState);
+                     if(!seekBack)
+                     {
+                        seekBack = true;
+                        seekBackState = backState;
+                     }
+                     ReadChar(&ch);
 
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-                     seekback--;
-                     if(!lineComment && !comment && pch == '/')
+                     if(!lineComment && !comment && backState.ch == '/')
                      {
                         if(ch == '/')
                            lineComment = true;
@@ -643,24 +698,25 @@ private:
                      }
                      else if(lineComment && ch == '\n')
                         lineComment = false;
-                     else if(comment && pch == '*' && ch == '/')
+                     else if(comment && backState.ch == '*' && ch == '/')
                         comment = false;
                      else if(ch == '=' || ch == ':' || ch == ';' || ch == ',' || ch == ']' || ch == '}')
                      {
                         ch = 0;
-                        seekback = -1;
+                        seekBackState = backState;
+                        seekBack = true;
                         break;
                      }
                      else if(ch == '\"')
                      {
-                        seekback = 0;
+                        seekBack = false;
                         ch = 0;
                         break;
                      }
                   }
-                  if(seekback != 0)
+                  if(seekBack)
                   {
-                     f.Seek(seekback, current);
+                     ResetState(seekBackState);
                      break;
                   }
                }
@@ -688,6 +744,7 @@ private:
 
    public JSONResult GetObject(Class objectType, void ** object)
    {
+      charPos = 0, line = 1, col = 1, maxPos = 0;
       return _GetObject(objectType, object, null);
    }
 
@@ -702,6 +759,13 @@ private:
             *object = null;
       }
       SkipEmpty();
+      if(!forMap && eCON && ch != '{')
+      {
+         DataValue value { };
+         JSONResult result = GetValue(objectType, value);
+         *object = value.p;
+         return result;
+      }
       if(ch == '{')
       {
          Class mapKeyClass = null, mapDataClass = null;
@@ -736,7 +800,7 @@ private:
          {
             String string;
             bool wasQuoted = false;
-            int64 seek;
+            JSONParserState backState;
             ch = 0;
             if(eCON)
             {
@@ -745,7 +809,7 @@ private:
                   break;
             }
             SkipEmpty();
-            seek = f.Tell();
+            BackUpState(backState);
             if(eCON ? GetIdentifier(&string, &wasQuoted) : GetString(&string))
             {
                DataMember member = null;
@@ -867,14 +931,15 @@ private:
                         value.p = new0 byte[type.structSize];
                      }
                   }
-                  if(eCON && ch != '=' && ch != ':')
-                  {
-                     f.Seek(seek-1, start);
-                     ch = 0;
-                  }
                   if((ch == ':' || (eCON && ch == '=')) || (eCON && type && (prop || member)))
                   {
-                     JSONResult itemResult = GetValue(type, value);
+                     JSONResult itemResult;
+                     if(ch == ':' || ch == '=')
+                        ch = 0;
+                     else
+                        ResetState(backState);
+
+                     itemResult = GetValue(type, value);
                      if(itemResult != syntaxError)
                      {
                         if(prop || member)
@@ -1155,12 +1220,8 @@ private:
          {
             if(!comment && ch == '/')
             {
-               if(f.Getc(&ch))
+               if(ReadChar(&ch))
                {
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-
                   if(ch == '*')
                      comment = true;
                }
@@ -1172,12 +1233,8 @@ private:
             }
             else if(comment && ch == '*')
             {
-               if(f.Getc(&ch))
+               if(ReadChar(&ch))
                {
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-
                   if(ch == '/')
                      comment = false;
                }
@@ -1193,11 +1250,7 @@ private:
                   hexMode = true;
                buffer[c++] = ch;
             }
-            if(!f.Getc(&ch)) break;
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-
+            if(!ReadChar(&ch)) break;
          }
       }
       else
@@ -1205,11 +1258,7 @@ private:
          while(c < sizeof(buffer)-1 && (ch == '-' || ch == '.' || tolower(ch) == 'e' || ch == '+' || isdigit(ch)))
          {
             buffer[c++] = ch;
-            if(!f.Getc(&ch)) break;
-         #ifdef DEBUG_PARSING
-            Print(ch);
-         #endif
-
+            if(!ReadChar(&ch)) break;
          }
       }
       buffer[c] = 0;
@@ -1345,24 +1394,30 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
    {
       int i;
       bool isFirst = true;
+      bool spacing = true;
       MapIterator it { map = map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
-      f.Puts("[\n");
-      indent++;
+      f.Puts(spacing ? "[\n" : "[ ");
+      if(spacing) indent++;
 
       while(it.Next())
       {
          MapNode n = (MapNode)it.pointer;
          if(!isFirst)
-            f.Puts(",\n");
+            f.Puts(spacing ? ",\n" : ", ");
          else
             isFirst = false;
-         for(i = 0; i<indent; i++) f.Puts("   ");
+         if(spacing)for(i = 0; i<indent; i++) f.Puts("   ");
          WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, map);
       }
-      f.Puts("\n");
-      indent--;
-      for(i = 0; i<indent; i++) f.Puts("   ");
+      if(spacing)
+      {
+         f.Puts("\n");
+         indent--;
+         for(i = 0; i<indent; i++) f.Puts("   ");
+      }
+      else
+         f.Puts(" ");
       f.Puts("]");
    }
    else
@@ -1378,15 +1433,16 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
       bool isFirst = true;
       Iterator it { array };
       Class arrayType = type.templateArgs[0].dataTypeClass;
-      f.Puts("[\n");
-      indent++;
+      bool spacing = true;
+      f.Puts(spacing ? "[\n" : "[ ");
+      if(spacing) indent++;
 
       while(it.Next())
       {
          DataValue value { };
          uint64 t = ((uint64(*)(void *, void *))(void *)array.GetData)(array, it.pointer);
          if(!isFirst)
-            f.Puts(",\n");
+            f.Puts(spacing ? ",\n" : ", ");
          else
             isFirst = false;
 
@@ -1431,12 +1487,17 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
          {
             value.p = (void *)(uintptr)t;
          }
-         for(i = 0; i<indent; i++) f.Puts("   ");
+         if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
          WriteValue(f, arrayType, value, indent, eCON);
       }
-      f.Puts("\n");
-      indent--;
-      for(i = 0; i<indent; i++) f.Puts("   ");
+      if(spacing)
+      {
+         f.Puts("\n");
+         indent--;
+         for(i = 0; i<indent; i++) f.Puts("   ");
+      }
+      else
+         f.Puts(" ");
       f.Puts("]");
    }
    else
@@ -1607,7 +1668,10 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(eClass_IsDerived(type, class(Container)))
       WriteArray(f, type, value.p, indent, eCON);
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
-      WriteONObject(f, type, value.p, indent, eCON, false, null);
+   {
+      bool omitNames = false;
+      WriteONObject(f, type, value.p, indent, eCON, eCON && omitNames, null);
+   }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
    else if(type.type == bitClass)
@@ -1646,26 +1710,26 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
 
 static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
 {
+   bool spacing = true;
    if(object)
    {
       const char * string = null;
+      bool quote = true;
 
       if(objectType._vTbl[__ecereVMethodID_class_OnGetString] != objectType.base._vTbl[__ecereVMethodID_class_OnGetString])
       {
          char buffer[1024];
          buffer[0] = 0;
          string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, null);
+         quote = false;
       }
       if(string)
       {
          // TOCHECK: ProjectNode.ec why do we add quotes in OnGetString there?
-         if(string[0] == '\"')
-            f.Puts(string);
-         else
          {
-            f.Puts("\"");
+            if(quote) f.Puts("\"");
             f.Puts(string);
-            f.Puts("\"");
+            if(quote) f.Puts("\"");
          }
       }
       else
@@ -1691,8 +1755,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             f.Puts(" ");
          }
 
-         f.Puts("{\n");
-         indent++;
+         f.Puts(spacing ? "{\n" : "{ ");
+         if(spacing) indent++;
 
          for(baseClass = _class; baseClass; baseClass = baseClass.inheritanceAccess == publicAccess ? baseClass.base : null)
          {
@@ -1786,8 +1850,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                               value.p = ((void *(*)(void *))(void *)prop.Get)(object);
                         }
 
-                        if(!isFirst) f.Puts(",\n");
-                        for(c = 0; c<indent; c++) f.Puts("   ");
+                        if(!isFirst) f.Puts(spacing ? ",\n" : ", ");
+                        if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
 
                         if(!eCON)
                         {
@@ -1827,6 +1891,12 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 
                   if(type)
                   {
+                     Property p;
+                     for(p = baseClass.membersAndProperties.first; member.name && p; p = p.next)
+                        if(p.isProperty && !p.conversion && p.IsSet && !strcmp(p.name, member.name))
+                           break;
+                     if(p && !p.IsSet(object)) continue;
+
                      if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || !strcmp(type.name, "String"))
                      {
                         if(type.type == structClass)
@@ -1873,8 +1943,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         value.i = *(int *)((byte *)object + offset);
                      }
 
-                     if(!isFirst) f.Puts(",\n");
-                     for(c = 0; c<indent; c++) f.Puts("   ");
+                     if(!isFirst) f.Puts(spacing ? ",\n" : ", ");
+                     if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
 
                      if(!eCON)
                      {
@@ -1897,9 +1967,15 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 
          delete bases;
 
-         indent--;
-         f.Puts("\n");
-         for(c = 0; c<indent; c++) f.Puts("   "); f.Puts("}");
+         if(spacing)
+         {
+            indent--;
+            f.Puts("\n");
+            for(c = 0; c<indent; c++) f.Puts("   ");
+         }
+         else
+            f.Puts(" ");
+         f.Puts("}");
       }
    }
    else
