@@ -2428,7 +2428,7 @@ else if(_class->type == 4)
 {
 return __ecereNameSpace__ecere__com__Enum_OnGetString(_class, data, tempString, fieldData, needClass);
 }
-else if(_class->type == 3)
+else if(_class->type == 3 || _class->type == 1000)
 {
 struct __ecereNameSpace__ecere__com__Class * dataType;
 struct __ecereNameSpace__ecere__com__Property * prop;
