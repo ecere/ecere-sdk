@@ -11341,7 +11341,7 @@ curDeclarations = spec->__anon1.__anon2.definitions;
 break;
 }
 }
-if(declarations && (!(*declarations).count || ((*declarations).count == 1 && addedPadding)))
+if(declarations && (!(*declarations).count || ((*declarations).count == 1 && addedPadding)) && classSym->__anon1.registered->type != 1)
 {
 FreeList(declarations, (void *)(FreeClassDef));
 declarations = (((void *)0));
