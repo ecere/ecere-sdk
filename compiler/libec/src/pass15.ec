@@ -1234,7 +1234,7 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
                }
          }
 
-         if(declarations && (!declarations->count || (declarations->count == 1 && addedPadding)))
+         if(declarations && (!declarations->count || (declarations->count == 1 && addedPadding)) && classSym.registered.type != structClass)
          {
             FreeList(declarations, FreeClassDef);
             declarations = null;
