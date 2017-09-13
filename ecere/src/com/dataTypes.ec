@@ -524,7 +524,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
    {
       return Enum_OnGetString(_class, data, tempString, fieldData, needClass);
    }
-   else if(_class.type == unitClass)
+   else if(_class.type == unitClass || _class.type == systemClass)
    {
       Class dataType;
       Property prop;
