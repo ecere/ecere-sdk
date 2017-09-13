@@ -106,4 +106,64 @@ public struct FieldValue
       if(type.mustFree)
          delete s;
    }
+
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   {
+      switch(type.type)
+      {
+         case integer: sprintf(stringOutput, "%d", i); return stringOutput;
+         case real:
+         {
+            String s = (String)r.OnGetString(stringOutput, null, null);
+            if(!strchr(s, '.') && !strchr(s, 'E'))
+               strcat(s, ".0");
+            return s;
+         }
+         case text:
+         {
+            int len = s ? strlen(s) : 0;
+            stringOutput[0] = '\"';
+            memcpy(stringOutput + 1, s, len);
+            stringOutput[len + 1] = '\"';
+            stringOutput[len + 2] = 0;
+            return stringOutput;
+         }
+         case nil: return "null";
+      }
+      stringOutput[0] = 0;
+      return stringOutput;
+   }
+
+   bool OnGetDataFromString(const char * string)
+   {
+      if(string[0] == '\"')
+      {
+         int len = strlen(string + 1);
+         if(len > 1) len--;
+         s = new char[len + 1];
+         memcpy(s, string, len);
+         s[len] = 0;
+         type = { text, true };
+         return true;
+      }
+      else if(!strcmpi(string, "null"))
+      {
+         type = { nil };
+         s = null;
+         return true;
+      }
+      else if(strchr(string, '.') || strchr(string, 'E'))
+      {
+         type = { real };
+         r = strtod(string, null);
+         return true;
+      }
+      else
+      {
+         type = { integer };
+         i = (int) strtol(string, null, 0);
+         return true;
+      }
+      return false;
+   }
 };
