@@ -69,6 +69,7 @@ private:
       sourceProcessorVars.RemoveAll();
       sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
       sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
+
       return true;
    }
    virtual void process();
@@ -401,12 +402,22 @@ private:
    };
    void noinit() { }
 
+   int OnCompare(BVariant that)
+   {
+      if(this.kind < that.kind)
+         return 1;
+      else if(this.kind > that.kind)
+         return -1;
+      return strcmp(this.name, that.name);
+   }
+
    void processDependency(BOutputType from, BOutputType to, BVariant vDep)
    {
       BNamespace nDep = vDep.nspace;
       BNamespace n = nspace;
       if(from == nil) check();
-      if(nDep == n || (vDep.kind == vclass && (vDep.c.isFromCurrentModule || vDep.c.cl.templateClass)))
+      if(nDep == n || (vDep.kind == vclass && (vDep.c.isFromCurrentModule || vDep.c.cl.templateClass)) ||
+         (vDep.kind == vtemplaton && (vDep.t.c.isFromCurrentModule || vDep.t.c.cl.templateClass)))
       {
          BDependency d { from, to, this, vDep };
          if(!to) check();
@@ -484,6 +495,23 @@ private:
    ~BOutput()
    {
       outputDependencies.Free();
+   }
+
+   int OnCompare(BOutput that)
+   {
+      if(this.kind < that.kind)
+         return 1;
+      else if(this.kind > that.kind)
+         return -1;
+      if(this.type < that.type)
+         return 1;
+      else if(this.type > that.type)
+         return -1;
+      if(this.type2 < that.type2)
+         return 1;
+      else if(this.type2 > that.type2)
+         return -1;
+      return strcmp(this.name, that.name);
    }
 
    bool dependsOn(BOutput x)
@@ -650,7 +678,17 @@ public:
          else if(vDep.kind == vtemplaton)
          {
             if(to == otypedef)
-               return vDep.t.outTypedef;
+            {
+               if(!vDep.t.outTypedef)
+               {
+                  BVariant vD = vDep.t.c.cl.templateClass ? vDep.t.c.cl.templateClass : vDep.t.c.cl;
+                  if(vD.kind == vclass)
+                     return vD.c.outTypedef;
+                  else check();
+               }
+               else
+                  return vDep.t.outTypedef;
+            }
          }
          check();
          return null;
@@ -751,7 +789,7 @@ class BModule : struct
    void sort()
    {
       bool sorted = true;
-      Map<tuintptr, NamespaceDependencyInfo> deps { };
+      Map<consttstr, NamespaceDependencyInfo> deps { };
       for(e : orderedNamespaces)
       {
          BNamespace n = (BNamespace)e;
@@ -760,15 +798,16 @@ class BModule : struct
       for(e : orderedNamespaces)
       {
          BNamespace n = (BNamespace)e;
-         BNamespacePtr a = (BNamespacePtr)e;
+         const String a = n.name;
          for(dependency : n.dependencies)
          {
-            BNamespacePtr b = &dependency;
-            tuintptr t { (uintptr)(a < b ? a : b), (uintptr)(a > b ? a : b) };
+            BNamespace d = (BNamespace)&dependency;
+            const String b = d.name;
+            consttstr t { strcmp(a, b) < 0 ? a : b, strcmp(a, b) > 0 ? a : b };
             bool update = false;
-            MapIterator<tuintptr, NamespaceDependencyInfo> i { map = deps };
+            MapIterator<consttstr, NamespaceDependencyInfo> i { map = deps };
             //PrintLn(dependency.count);
-            assert(a != b);
+            assert(a != b && strcmp(a, b) != 0);
             if(i.Index(t, true))
             {
                NamespaceDependencyInfo info = i.data;
@@ -791,15 +830,15 @@ class BModule : struct
          {
             for(x = 0; x < d; x++)
             {
-               BNamespacePtr a = (BNamespacePtr)orderedNamespaces[x];
-               BNamespacePtr b = (BNamespacePtr)orderedNamespaces[d];
-               tuintptr t { (uintptr)(a < b ? a : b), (uintptr)(a > b ? a : b) };
-               MapIterator<tuintptr, NamespaceDependencyInfo> i { map = deps };
-               assert(a != b);
+               const String a = orderedNamespaces[x].name;
+               const String b = orderedNamespaces[d].name;
+               consttstr t { strcmp(a, b) < 0 ? a : b, strcmp(a, b) > 0 ? a : b };
+               MapIterator<consttstr, NamespaceDependencyInfo> i { map = deps };
+               assert(a != b && strcmp(a, b) != 0);
                if(i.Index(t, false))
                {
                   NamespaceDependencyInfo info = i.data;
-                  if(info.aDependsOnB && a < b)
+                  if(info.aDependsOnB && strcmp(a, b) < 0)
                   {
                      BNamespacePtr swap = (BNamespacePtr)orderedNamespaces[d];
                      orderedNamespaces.Remove(orderedNamespaces.GetAtPosition(d, false, null));
@@ -857,16 +896,16 @@ class BModule : struct
       for(nn : orderedNamespaces)
       {
          BNamespace n = nn;
-         AVLTree<BOutputPtr> deps { };
+         AVLTree<BOutput> deps { };
          for(optr : n.orderedOutputs)
          {
             BOutput o = (BOutput)optr;
             collectBackwardsDependencies(o.outputDependencies, selfOrAboveNamespace, deps);
          }
          selfOrAboveNamespace.Add((BNamespacePtr)n);
-         for(dependency : deps)
+         for(d : deps)
          {
-            BOutput d = (BOutput)dependency;
+            BOutputPtr dependency = (BOutputPtr)d;
             BNamespace dn = d.nspace;
             if(dn.orderedOutputs.Find(dependency))
             {
@@ -995,8 +1034,7 @@ class BNamespace : struct
                if((a.nspace == b.nspace || (b.kind == vclass && b.c.cl.templateClass)) && a.dependsOn(b))
                {
                   BOutput swap = (BOutput)orderedOutputs[d];
-                  if(b.indirectlyDependsOn((BOutputPtr)a))
-                     shh();
+                  if(b.indirectlyDependsOn((BOutputPtr)a)) check();
                   orderedOutputs.Remove(orderedOutputs.GetAtPosition(d, false, null));
                   orderedOutputs.Insert(x ? orderedOutputs.GetAtPosition(x - 1, false, null) : null, (BOutputPtr)swap);
                   sorted = true;
@@ -1026,7 +1064,7 @@ class BNamespace : struct
                   if(b.indirectlyDependsOn((BOutputPtr)a))
                   {
                      //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
-                     shh();
+                     check();
                   }
                   else
                   {
@@ -1251,6 +1289,8 @@ class BClass : struct
 
       if(cl.templateClass)
          symbolName = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
+      else if(cl.type == systemClass)
+         symbolName = CopyString(cl.name);
       else
          symbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
 
@@ -1284,9 +1324,9 @@ class BClass : struct
          }
       }
       if(cl.type == enumClass && isBool)
-         spec = CopyString("uint32"); // hack
-      else if(cl.type == bitClass) // todo?: support multiple size?
-         spec = CopyString("uint32"); // hack
+         spec = CopyString(tmp32_tokenTypeString(cl.dataType));
+      else if(cl.type == bitClass)
+         spec = CopyString(tmp32_tokenTypeString(cl.dataType));
       else if(cl.type == systemClass || cl.type == unitClass || isString)
       {
          bool useBase = false; // = cl.type == unitClass && cl.base.name && strcmp(cl.base.name, "class");
@@ -1305,7 +1345,7 @@ class BClass : struct
          spec = oldGetClassTypeName(clBase.name);
       else if(cl.type == enumClass || cl.type == noHeadClass || cl.type == structClass || cl.type == normalClass)
       {
-         if((cl.type == noHeadClass || cl.type == structClass) && !hasPublicMembers)
+         /*if((cl.type == noHeadClass || cl.type == structClass) && !hasPublicMembers)
          {
             Class cc = null;
             for(cc = cl.base; cc && !spec; cc = cc.base)
@@ -1320,7 +1360,7 @@ class BClass : struct
                   }
                }
             }
-         }
+         }*/
          if(!spec)
             spec = CopyString(cname);
       }
@@ -1396,23 +1436,35 @@ const char * getSpecifierSymbolName(const char * spec)
 }
 #endif // 0
 
-char * printType(Type t, bool printName, bool fullName)
+char * printType(Type t, bool printName, bool fullName, bool printConst)
 {
    char type[8192];
    type[0] = 0;
    SetInBGen(true);
-   PrintType(t, type, printName, fullName);
+   if(printConst)
+      PrintType(t, type, printName, fullName);
+   else
+      PrintTypeNoConst(t, type, printName, fullName);
    SetInBGen(false);
    return CopyString(type);
 }
 
-char * cPrintType(Type t, bool printName, bool fullName, bool additionalPointer)
+char * cPrintType(Type t, bool printName, bool fullName, bool noTemplateArgs, bool additionalPointer)
 {
+   char * d;
    char type[8192];
    type[0] = 0;
    //SetInBGen(true);
    PrintType(t, type, printName, fullName);
    //SetInBGen(false);
+   if(noTemplateArgs && (d = strchr(type, '<')))
+   {
+      char * t, * s = d + 1;
+      //*s = 0;
+      while((t = strchr(s, '>')))
+         s = t + 1;
+      do { *d = *s; } while(*s);
+   }
    if(additionalPointer && t.kind == classType && t._class.registered &&
          (t._class.registered.type == structClass || t._class.registered.type == noHeadClass))
       strcat(type, " *");
@@ -1616,6 +1668,7 @@ class BProperty : struct
          pt.dataType = ProcessTypeString(pt.dataTypeString, false);
          FinishTemplatesContext(context);
       }
+
       t = strTypeName("", { type = pt.dataType, pt = pt, cl = c.cl }, { anonymous = true }, null);
       //else t = null;
       r = (c.cl.type == structClass || c.cl.type == noHeadClass) ? " *" : "";
@@ -1804,12 +1857,12 @@ bool checkForCircularClassDependencies(BClassPtr a, BClass n, bool indirectOnly,
    return result;
 }
 
-void collectBackwardsDependencies(AVLTree<BOutputPtr> in, AVLTree<BNamespacePtr> selfOrAboveNamespace, AVLTree<BOutputPtr> deps)
+void collectBackwardsDependencies(AVLTree<BOutputPtr> in, AVLTree<BNamespacePtr> selfOrAboveNamespace, AVLTree<BOutput> deps)
 {
    for(e : in)
    {
       BOutput d = (BOutput)e;
-      if(!deps.Find(e))
+      if(!deps.Find(d))
       {
          BNamespace n = d.nspace;
          assert(n != null);
@@ -1827,7 +1880,7 @@ void collectBackwardsDependencies(AVLTree<BOutputPtr> in, AVLTree<BNamespacePtr>
             }
             if(!alreadyMoved)
             {
-               deps.Add(e);
+               deps.Add(d);
                collectBackwardsDependencies(d.outputDependencies, selfOrAboveNamespace, deps);
             }
          }

@@ -21,7 +21,8 @@ import "genCSharp"
 import "genJava"
 import "genPython"
 
-char ln = '\n';
+const char ln = '\n';
+const char * sln = "\n";
 
 ConsoleFile console { };
 //define app = (ConsoleApplication)__thisModule.application;
@@ -83,6 +84,7 @@ public class BGen : ConsoleApplication // <ArgSym>
    bool quiet;
    bool forAll;
    const char * idnt;
+   int targetBits;
    idnt = " ";
    Gen gen;
    Library lib;
@@ -179,6 +181,11 @@ public class BGen : ConsoleApplication // <ArgSym>
       enumValueNames.Add((char*)"left");
       enumValueNames.Add((char*)"right");
       enumValueNames.Add((char*)"center");
+
+      // some ec1 app init:
+      targetBits = GetHostBits();
+      SetTargetBits(targetBits);
+      SetBGenSymbolSwapCallback(bgenSymbolSwap);
    }
 
    void Main()

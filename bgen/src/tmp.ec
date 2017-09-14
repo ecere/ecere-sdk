@@ -29,6 +29,10 @@ AVLTree<const String> actualTypeNames { [
 ] };
 
 AVLTree<const String> sysTypeTree { [
+   "byte",
+   "int64",
+   "uintsize",
+   "uintptr",
    "char",
    "unichar",
    "int",
@@ -341,13 +345,13 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
             check();
          break;
       case int64Type:
-         if(!strcmp(dataTypeString, "int64"))
+         if(!strcmp(dataTypeString, "int64") || !strcmp(dataTypeString, "uint64"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
             check();
          break;
       case shortType:
-         if(!strcmp(dataTypeString, "short"))
+         if(!strcmp(dataTypeString, "short") || !strcmp(dataTypeString, "uint16"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
             check();

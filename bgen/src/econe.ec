@@ -17,6 +17,7 @@ void ec1init(const char * pathToModule)
 {
    //PrintLn(pathToModule, ":");
    SetGlobalContext(ec1GlobalContext);
+   SetCurrentContext(ec1GlobalContext);
    SetTopContext(ec1GlobalContext);
    SetExcludedSymbols(&ec1ExcludedSymbols);
    SetDefines(&::ec1Defines);
@@ -26,6 +27,20 @@ void ec1init(const char * pathToModule)
    SetGlobalData(ec1GlobalData);
    if(pathToModule)
       openModule(pathToModule);
+
+   {
+      Context ctx = ec1GlobalContext;
+      ctx.types.Add((BTNode)Symbol { string = CopyString("uint"), type = ProcessTypeString("unsigned int", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("uint64"), type = ProcessTypeString("unsigned int64", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("uint32"), type = ProcessTypeString("unsigned int", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("uint16"), type = ProcessTypeString("unsigned short", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("byte"), type = ProcessTypeString("unsigned char", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("intptr_t"), type = ProcessTypeString("intptr", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
+      ctx.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
+   }
+
    ec1 = true;
 }
 

@@ -132,7 +132,6 @@ class CGen : Gen
             astH = { };
 
             moduleInit();
-            SetBGenSymbolSwapCallback(bgenSymbolSwap);
             result = true;
          }
       }
@@ -511,7 +510,7 @@ class CGen : Gen
             o.output.Add(astEnum(cl, c));
          }
          if(c.declStruct) check();
-         if(c.hasPublicMembers)
+         if(c.hasPublicMembers || (cl.type == structClass && !cl.templateClass))
          {
             SpecClass sc;
             ClassDefList defs;
@@ -526,7 +525,8 @@ class CGen : Gen
 
             sc = declStruct && declStruct.specifiers ? (SpecClass)declStruct.specifiers.firstIterator.data : null;
             defs = sc ? sc.definitions : null;
-            recurseBaseClassMembers(this, cl, cl, c.isFromCurrentModule, defs, { });
+            addMembers(this, cl, cl, null, { }, c.isFromCurrentModule, defs, null);
+
             delete ident;
          }
       }
@@ -952,6 +952,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
       BProperty p = pt;
       //p.init(pt, cl, mode);
       assert(pt._class == cl);
+
       if(!pt.conversion || p.any)
       {
          if(mode == assign)
@@ -974,7 +975,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(pt.Set)
             {
                if(pt.conversion && /*cl.type != normalClass && */cl.type != structClass && cl.type != noHeadClass)
-                  z.printxln(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.r, " ", p.paramName, ");");
+                  z.printxln(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");");
                else
                   z.printxln(port, "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);");
             }
@@ -1271,21 +1272,42 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
    return di;
 }
 
+const char * nonTokenUnsignedTypeName(Type from)
+{
+   switch(from.kind)
+   {
+      case charType:    return "byte";
+      case shortType:   return "uint16";
+      case int64Type:   return "uint64";
+      case int128Type:  return "uint128";
+   }
+   return null;
+}
+
 TokenType2 tokenType(Type from)
 {
    switch(from.kind)
    {
       case voidType:    return _void;
       case charType:    return _char;
-      case shortType:   return _short;
+      case shortType:   return _short; // from.isSigned ? _short : _int16
       case intType:     return from.isSigned ? _int : _uint;
-      case int64Type:   return /*from.isSigned ? */_int64/* : _uint64*/;
+      case int64Type:   return _int64; // from.isSigned ? _int64 : _uint64
       case longType:    return _long;
       case floatType:   return _float;
       case doubleType:  return _double;
-      case int128Type:  return /*from.isSigned ? */_int128/* : _uint128*/;
+      case int128Type:  return _int128; // from.isSigned ? _int128 : _uint128
    }
    return none;
+}
+
+// uint vs uint32 an issue? they are both typedef'ed to uint32_t
+const char * tmp32_tokenTypeString(Type from)
+{
+   const char * str = tokenTypeString(from);
+   if(!strcmp(str, "uint"))
+      return "uint32";
+   return str;
 }
 
 const char * tokenTypeString(Type from)
@@ -1294,13 +1316,13 @@ const char * tokenTypeString(Type from)
    {
       case voidType:    return "void";
       case charType:    return "char";
-      case shortType:   return "short";
+      case shortType:   return from.isSigned ? "short" : "uint16";
       case intType:     return from.isSigned ? "int" : "uint";
-      case int64Type:   return /*from.isSigned ? */"int64"/* : "uint64"*/;
+      case int64Type:   return from.isSigned ? "int64" : "uint64";
       case longType:    return "long";
       case floatType:   return "float";
       case doubleType:  return "double";
-      case int128Type:  return /*from.isSigned ? */"int128"/* : "uint128"*/;
+      case int128Type:  return "int128"; // from.isSigned ? "int128" : "uint128"
       case classType:   return from._class.string; // uint16, and others?
    }
    return null;
@@ -1383,16 +1405,26 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       case vaListType:
          quals.Add(SpecName { name = CopyString(!python ? "va_list" : "...") });
          break;
-      case voidType: case charType: case shortType: case intType:
-      case int64Type: case int128Type: case longType: case floatType:
-      case doubleType:
+      case voidType: case intType: case longType: case floatType: case doubleType:
          quals.Add(SpecBase { specifier = tokenType(t) });
+         break;
+      case charType: case shortType: case int64Type: case int128Type:
+         if(t.isSigned)
+            quals.Add(SpecBase { specifier = tokenType(t) });
+         else
+         {
+            BOutputType vTopOutputType = vTop ? BOutputType::getFromVariantKind(vTop.kind) : nil;//vTop.kind;
+            Class clDep = vTop ? eSystem_FindClass(g_.mod, nonTokenUnsignedTypeName(t)) : null;
+            quals.Add(SpecName { name = CopyString(nonTokenUnsignedTypeName(t)) });
+            if(vTopOutputType)
+               vTop.processDependency(vTopOutputType, otypedef, clDep);
+         }
          break;
       case intPtrType:
          quals.Add(SpecName { name = CopyString(t.isSigned ? "intptr" : "uintptr") });
          break;
       case intSizeType:
-         quals.Add(SpecName { name = CopyString(t.isSigned ? "intzie" : "uintsize") });
+         quals.Add(SpecName { name = CopyString(t.isSigned ? "intsize" : "uintsize") });
          break;
       case structType:
          quals.Add(SpecClass { type = _struct, id = ASTIdentifier { string = CopyString(t.enumName) } });
@@ -1446,7 +1478,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
             ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, ti.cl, &cl);
             if(tp.type == type && tp.identifier && tp.identifier.string)
             {
-               BTemplaton t = g_.bmod.addTempleton(ctp, cl);
+               BTemplaton t = g_.bmod.addTempleton(ctp, cl.templateClass ? cl.templateClass : cl);
                quals.Add(SpecName { name = CopyString(t.cname) });
                if(vTop && vTop.kind == vclass)
                   vTop.processDependency(ostruct, otypedef, t);
@@ -1829,11 +1861,11 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          bool constant = e.expType.constant;
          char * type;
          Type t = unwrapPointerType(e.expType, null);
-         char * depType = printType(t, true, false);
+         char * depType = printType(t, true, false, true);
          Class clDep = eSystem_FindClass(g_.mod, depType);
          if(e.expType.kind == pointerType)
             e.expType.constant = true;
-         type = printType(e.expType, true, false);
+         type = printType(e.expType, true, false, true);
          /*if(e.expType.kind == functionType)
          {
             char * s, *d;
@@ -2064,147 +2096,179 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
    return raw;
 }
 
-void recurseBaseClassMembers(CGen g, BClass c, BClass cTop, bool local, ClassDefList defs, OptBits opt)
+static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, OptBits opt, bool local, ClassDefList defs, uint * retSize)
 {
-   Class cl = c.cl;
-   MemberOrProperty mb;
-   if((cl.type == structClass || cl.type == noHeadClass) && cl.base && !cl.base.templateClass)
+   // see AddMembers in pass15.ec which is commented in need of a major review when implementing private members etc
+   uint totalSize = 0;
+   uint maxSize = 0;
+   int alignment;
+   uint size;
+   DataMember dm;
+   Context context = topMember ? null : SetupTemplatesContext(cl);
+
+   if(!topMember && cl.base)
    {
-      BClass cBase = cl.base;
-      recurseBaseClassMembers(g, cBase, cTop, cBase.isFromCurrentModule, defs, opt);
-   }
-   if(cl.membersAndProperties.first)
-   {
-      for(mb = (MemberOrProperty)cl.membersAndProperties.first; mb; mb = mb.next)
+      maxSize = cl.structSize;
+      if(cl.type == structClass || cl.type == noHeadClass)
+         addMembers(g, cl.base, topClass, null, opt, local, defs, &totalSize);
+      else
       {
-         if(!mb.isProperty)
+         uint baseSize = cl.base.templateClass ? cl.base.templateClass.structSize : cl.base.structSize;
+         if(maxSize > baseSize)
+            maxSize -= baseSize;
+         else
+            maxSize = 0;
+      }
+   }
+
+   for(dm = topMember ? topMember.members.first : cl.membersAndProperties.first; dm; dm = dm.next)
+   {
+      if(!dm.isProperty)
+      {
+         switch(dm.type)
          {
-            DataMember dm = (DataMember)mb;
-            if(dm && !dm.dataType)
+            case normalMember:
             {
-               Context context = SetupTemplatesContext(cl);
-               dm.dataType = ProcessTypeString(dm.dataTypeString, false);
-               FinishTemplatesContext(context);
-            }
-            if(dm && cl.type != bitClass && //dm.name && dm.dataTypeString &&
-                  (dm.memberAccess == privateAccess || dm.memberAccess == publicAccess))
-            {
-               if(defs)
+               if(cl.type == bitClass || topClass.type == bitClass)
+                  check();
+               if(!(dm.memberAccess == publicAccess || dm.memberAccess == privateAccess))
+                  check();
+               if(dm.dataTypeString)
                {
-                  if(cl.templateClass) check();
-                  addDataMemberToDeclInit(g, dm, defs, c, cTop, local, opt);
+                  ASTClassDef def = null;
+                  if(!dm.dataType)
+                     dm.dataType = ProcessTypeString(dm.dataTypeString, false);
+                  if(local)
+                     processTypeDependency(g, dm.dataType, dm.dataTypeString, ostruct, topClass);
+
+                  def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl }, topClass);
+                  if(!def) check();
+                  if(def)
+                     defs.Add(def);
+
+                  ComputeTypeSize(dm.dataType);
+                  size = dm.dataType.size;
+                  alignment = dm.dataType.alignment;
+
+                  if(alignment)
+                  {
+                     if(totalSize % alignment)
+                        totalSize += alignment - (totalSize % alignment);
+                  }
+                  totalSize += size;
                }
-               else check();
+               break;
             }
-            else if(cl.type != bitClass && dm && dm.name && !dm.dataType.bitFieldCount) check();
-         }
-      }
-   }
-}
+            case unionMember:
+            case structMember:
+            {
+               ClassDefList memberDefs { };
+               ClassDefDeclaration declMember
+               {
+                  decl = DeclarationInit
+                  {
+                     specifiers = SpecsList { [
+                        SpecClass {
+                           type = dm.type == structMember ? _struct : _union,
+                           definitions = memberDefs
+                        }
+                     ] }
+                  }
+               };
 
-void addDataMemberToDeclInit(CGen g, DataMember dm, ClassDefList defs, BClass c, BClass cTop, bool local, OptBits opt)
-{
-   Class cl = c.cl;
-   if(!dm.name && (dm.type == unionMember || dm.type == structMember))
-   {
-      DataMember mdm;
-      ClassDefList memberDefs { };
-      ClassDefDeclaration declMember
-      {
-         decl = DeclarationInit
-         {
-            specifiers = SpecsList { [
-               SpecClass {
-                  type = dm.type == structMember ? _struct : _union,
-                  definitions = memberDefs
+               size = 0;
+               addMembers(g, cl, topClass, dm, opt, local, memberDefs, &size);
+               defs.Add(declMember);
+               alignment = dm.structAlignment;
+
+               if(alignment)
+               {
+                  if(totalSize % alignment)
+                     totalSize += alignment - (totalSize % alignment);
                }
-            ] }
+               totalSize += size;
+               break;
+            }
          }
-      };
-      for(mdm = dm.members.first; mdm; mdm = mdm.next)
-      {
-         if(mdm.isProperty) check();
-         if(!mdm.dataType)
-         {
-            Context context = SetupTemplatesContext(cl);
-            mdm.dataType = ProcessTypeString(mdm.dataTypeString, false);
-            FinishTemplatesContext(context);
-         }
-         // todo: (somewhere else) support bitfield with setters and getters? or not since these are c bit fields
-         /*if(mdm.dataType.bitFieldCount)
-            ;// todo, bitfield, add space and also add setters and getters, etc
-         else*/
-            addDataMemberToDeclInit(g, mdm, memberDefs, c, cTop, local, opt);
       }
-      defs.Add(declMember);
    }
-   else
+   if(retSize)
    {
-      if(!dm.dataType)
+      if(topMember && topMember.type == unionMember)
+         *retSize = Max(*retSize, totalSize);
+      else
+         *retSize += totalSize;
+   }
+   else if(totalSize < maxSize && cl.type != systemClass)
+   {
+      int autoPadding = 0;
+      if(!topMember && cl.structAlignment && totalSize % cl.structAlignment)
+         autoPadding = cl.structAlignment - (totalSize % cl.structAlignment);
+      if(totalSize + autoPadding < maxSize)
       {
-         Context context = SetupTemplatesContext(cl);
-         dm.dataType = ProcessTypeString(dm.dataTypeString, false);
-         FinishTemplatesContext(context);
-      }
-      {
-         ASTClassDef def = null;
-         if(local)
-            processTypeDependency(g, dm.dataType, dm.dataTypeString, ostruct, cTop);
-
-         def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl }, cTop);
-         if(!def) check();
-         if(def)
-            defs.Add(def);
+         uint size = maxSize - totalSize;
+         SpecsList specs { };
+         InitDeclList decls { };
+         ClassDefDeclaration def { decl = DeclarationInit { specifiers = specs, declarators = decls }; };
+         ASTInitDeclarator decl { declarator = DeclPointer { declarator = DeclArray { declarator = DeclIdentifier {  identifier = ASTIdentifier { string = CopyString("__ecere_padding") } }, exp = ExpConstant { constant = PrintString(size) } } } };
+         specs.Add(SpecName { name = CopyString("byte") });
+         decls.Add(decl);
+         defs.Add(def);
       }
    }
+   if(context)
+      FinishTemplatesContext(context);
 }
 
 void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOutputType from, BVariant vTop)
 {
    bool native;
    bool pointer;
+   const char * n = null;
    Type t = unwrapType(_type, &native, &pointer);
-   if(!native)
+   if(!native || (!t.isSigned && (n = nonTokenUnsignedTypeName(t))))
    {
       Class clDep = null;
-      if(t.kind == functionType)
+      switch(t.kind)
       {
-         Type param;
-         for(param = t.params.first; param; param = param.next)
+         case functionType:
          {
-            if(param.kind == classType)
-               clDep = g.getClassFromType(param, true);
-            if(clDep) _processTypeDependency(g, from, vTop, pointer, clDep);
-            clDep = null;
+            Type param;
+            for(param = t.params.first; param; param = param.next)
+               processTypeDependency(g, param, null, from, vTop);
+            break;
          }
-      }
-      // tocheck: todo: are there more missing dependencies?
-      else if(t.kind == structType)
-         shh();
-      else if(t.kind == classType)
-         clDep = g.getClassFromType(t, true);
-      else if(t.kind == subClassType)
-         shh();
-      else if(t.kind == thisClassType)
-         shh();
-      else if(t.kind == templateType)
-      {
-         Class _class = vTop.kind == vclass ? vTop.c.cl : vTop.kind == vproperty ? vTop.p.c.cl : null;
-         if(_class && t.templateParameter)
+         case templateType:
          {
-            TemplateParameter tp = t.templateParameter;
-            Class cl = null;
-            ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, _class, &cl);
-            if(tp.type == type && tp.identifier && tp.identifier.string && cl)
+            Class _class = vTop.kind == vclass ? vTop.c.cl : vTop.kind == vproperty ? vTop.p.c.cl : null;
+            if(_class && t.templateParameter)
             {
-               BTemplaton t = g_.bmod.addTempleton(ctp, cl);
-               if(vTop && vTop.kind == vclass)
-                  vTop.processDependency(ostruct, otypedef, t);
+               TemplateParameter tp = t.templateParameter;
+               Class cl = null;
+               ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, _class, &cl);
+               if(tp.type == type && tp.identifier && tp.identifier.string && cl)
+               {
+                  BTemplaton t = g_.bmod.addTempleton(ctp, cl.templateClass ? cl.templateClass : cl);
+                  if(vTop && vTop.kind == vclass)
+                     vTop.processDependency(ostruct, otypedef, t);
+               }
             }
+            break;
          }
+         case classType:
+            clDep = g.getClassFromType(t, true);
+            break;
+         // tocheck: todo: are there more missing dependencies?
+         case structType:
+         case subClassType:
+         case thisClassType:
+            break;
+         default:
+            if(!t.isSigned && n)
+               clDep = eSystem_FindClass(g.mod, n);
+            // else missing dependency?
+            break;
       }
-      else
-         shh();
 
       if(clDep) _processTypeDependency(g, from, vTop, pointer, clDep);
    }
