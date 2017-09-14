@@ -1772,32 +1772,35 @@ class ProjectView : Window
       else if(project.GetDebug(config) ||
          MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, { start, normal }, compiler, config, bitDepth))
+         if(/*prj != project || */!project.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Start Python"))
          {
-            if(compiler.type.isVC)
+            if(/*!IsProjectModified() ||*/ BuildInterrim(project, { start, normal }, compiler, config, bitDepth))
             {
-               //bool result = false;
-               char oldwd[MAX_LOCATION];
-               PathBackup pathBackup { };
-               char command[MAX_LOCATION];
+               if(compiler.type.isVC)
+               {
+                  //bool result = false;
+                  char oldwd[MAX_LOCATION];
+                  PathBackup pathBackup { };
+                  char command[MAX_LOCATION];
 
-               ide.SetPath(false, compiler, config, bitDepth);
+                  ide.SetPath(false, compiler, config, bitDepth);
 
-               GetWorkingDir(oldwd, sizeof(oldwd));
-               ChangeWorkingDir(project.topNode.path);
+                  GetWorkingDir(oldwd, sizeof(oldwd));
+                  ChangeWorkingDir(project.topNode.path);
 
-               sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, config.name, "Debug.Start");
-               Execute(command);
-               ChangeWorkingDir(oldwd);
+                  sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, config.name, "Debug.Start");
+                  Execute(command);
+                  ChangeWorkingDir(oldwd);
 
-               delete pathBackup;
-            }
-            else if(compiler.hasDocumentOutput)
-               project.Run("", compiler, config, bitDepth, true);
-            else
-            {
-               ide.debugger.StartPython(compiler, config, bitDepth, useValgrind);
-               result = true;
+                  delete pathBackup;
+               }
+               else if(compiler.hasDocumentOutput)
+                  project.Run("", compiler, config, bitDepth, true);
+               else
+               {
+                  ide.debugger.StartPython(compiler, config, bitDepth, useValgrind);
+                  result = true;
+               }
             }
          }
       }

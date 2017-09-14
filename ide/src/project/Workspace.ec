@@ -947,12 +947,20 @@ public:
       }
    }
 
-   char * getEnv(const char * name, bool fallback)
+   char * getEnv(const char * name, CompilerConfig compiler, bool fallback)
    {
       for(e : environmentVars)
       {
          if(!strcmp(e.name, name))
             return e.string;
+      }
+      if(compiler)
+      {
+         for(e : compiler.environmentVars)
+         {
+            if(!strcmp(e.name, name))
+               return e.string;
+         }
       }
       if(fallback)
          return getenv(name);

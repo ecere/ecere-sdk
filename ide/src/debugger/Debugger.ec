@@ -345,6 +345,7 @@ class Debugger
    bool signalOn;
    bool needReset;
    bool usingValgrind;
+   bool runPython;
 
    int ideProcessId;
    int gdbProcessId;
@@ -2288,6 +2289,7 @@ class Debugger
       prjConfig = config;
       this.bitDepth = bitDepth;
       usingValgrind = useValgrind;
+      this.runPython = runPython;
       usePython = runPython;
 
       _ChangeState(loaded);
@@ -2312,20 +2314,18 @@ class Debugger
       delete targetDir;
       delete targetFile;
 
+      strcpy(tempPath, ide.workspace.projectDir);
+      PathCatSlash(tempPath, targetDirExp.dir);
+      targetDir = CopyString(tempPath);
+      project.CatTargetFileName(tempPath, compiler, config);
+      targetFile = CopyString(tempPath);
+
       if(runPython)
       {
-         targetDir = CopyString(ide.workspace.getEnv("PYTHON_RUN_DIR", true)); // "C:/gnosis2/tilesAPI/py"
-         targetFile = CopyString(ide.workspace.getEnv("PYTHON_EXEC", true));
-         PrintLn("targetDir: ", targetDir);
-         PrintLn("targetFile: ", targetFile);
-      }
-      else
-      {
-         strcpy(tempPath, ide.workspace.projectDir);
-         PathCatSlash(tempPath, targetDirExp.dir);
-         targetDir = CopyString(tempPath);
-         project.CatTargetFileName(tempPath, compiler, config);
-         targetFile = CopyString(tempPath);
+         targetDir = CopyString(ide.workspace.getEnv("PYTHON_RUN_DIR", compiler, true));
+         targetFile = CopyString(ide.workspace.getEnv("PYTHON_EXEC", compiler, true));
+         ide.outputView.debugBox.Logf("Using targetDir $(PYTHON_RUN_DIR): %s\n", targetDir);
+         ide.outputView.debugBox.Logf("Using targetFile $(PYTHON_EXEC): %s\n", targetFile);
       }
 
       GetWorkingDir(oldDirectory, MAX_LOCATION);
@@ -2378,8 +2378,8 @@ class Debugger
          if(result)
          {
             char * vgRedzoneSizeFlag = PrintString(" --redzone-size=", vgRedzoneSize);
-            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s%s --track-origins=%s %s%s%s",
-                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSize > -1 ? vgRedzoneSizeFlag : "", vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s%s --track-origins=%s %s%s%s%s",
+                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSize > -1 ? vgRedzoneSizeFlag : "", vgTrackOrigins ? "yes" : "no", targetFile, runPython ? " -1" : "", clArgs ? " " : "", clArgs ? clArgs : "");
             delete vgRedzoneSizeFlag;
             vgTargetHandle = DualPipeOpen(PipeOpenMode { output = true, /*error = true, */input = true }, command);
             if(!vgTargetHandle)
@@ -2500,7 +2500,7 @@ class Debugger
 #endif
 
 #if defined(__WIN32__)
-         GdbCommand(0, false, "-gdb-set new-console on");
+         GdbCommand(0, false, "-gdb-set new-console %s", runPython ? "off" : "on");
 #endif
 
 #if defined(__unix__)
@@ -2509,7 +2509,24 @@ class Debugger
 #endif
 
          if(!usingValgrind)
-            GdbCommand(0, false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
+         {
+            const char * pyFile = "";
+            if(runPython && ide.activeClient)
+            {
+               Window client = ide.activeClient;
+               if(client._class == class(CodeEditor))
+               {
+                  char * t;
+                  if((t = strstr(client.fileName, ".py")) && t[3] == 0)
+                    pyFile = client.fileName;
+               }
+               if(*pyFile)
+                  ide.outputView.debugBox.Logf("Using pyFile %s\n", pyFile);
+               else
+                  ide.outputView.debugBox.Logf("Unable to detect opened pyfile\n");
+            }
+            GdbCommand(0, false, "-gdb-set args %s %s", pyFile, ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
+         }
          /*
          for(e : ide.workspace.environmentVars)
          {
@@ -3860,9 +3877,9 @@ class Debugger
                         _ChangeState(loaded);
                         targetProcessId = 0;
                      }
-                     else
-                     {
 #ifdef _DEBUG
+                     else if(!(runPython && !strcmp(item.value, "No symbol table is loaded.  Use the \\\"file\\\" command.")))
+                     {
                         if(strlen(item.value) < MAX_F_STRING)
                         {
                            char * s = null;
@@ -3871,8 +3888,8 @@ class Debugger
                         }
                         else
                            ide.outputView.debugBox.Logf("GDB: %s\n", item.value);
-#endif
                      }
+#endif
                   }
                }
                else

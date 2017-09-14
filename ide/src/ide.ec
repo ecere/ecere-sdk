@@ -1303,7 +1303,7 @@ class IDEWorkSpace : Window
       }
       MenuItem debugStartPython
       {
-         debugMenu, $"Start Python", s, { f5, true, true }, disabled = false;
+         debugMenu, $"Start Python", y, { f5, true, true }, disabled = false;
          bitmap = { ":actions/debug.png" };
          NotifySelect = MenuDebugStartPython;
       };
