@@ -1751,7 +1751,7 @@ void processPyClass(PythonGen g, BClass c)
                const char * classString = thisClass ? !strcmp(m.md.dataType.thisClass.string, "class") ?
                      "Instance" : m.md.dataType.thisClass.string : c.cl.name;
                Type thisType = ProcessTypeString(classString, false);
-               char * typeName = printType(thisType, false, false);
+               char * typeName = printType(thisType, false, false, true);
                char * name = CopyAllNonCapsString(typeName);
                char * mname = pyGetNoConflictSymbolName(m.mname);
                char * t = new char[2];
@@ -1903,7 +1903,7 @@ void processPyClass(PythonGen g, BClass c)
                         if(itr.pm.kind == ellipsisType) continue;
                         if(itr.isReturnValue)
                         {
-                           char * _type = printType(itr.pm, false, false);
+                           char * _type = printType(itr.pm, false, false, true);
                            char * type = getNoNamespaceString(_type, null, false);
                            if(itr.isNoHead)
                               out.ds.printxln("      ", itr.name, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))"); //int *
@@ -1961,7 +1961,7 @@ void processPyClass(PythonGen g, BClass c)
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
-                        char * _type = printType(itr.pm, false, false);
+                        char * _type = printType(itr.pm, false, false, true);
                         char * type = getNoNamespaceString(_type, null, false);
                         bool cast = itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass;
                         if(itr.pm.kind == ellipsisType)
@@ -2129,12 +2129,12 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                   c.cl.name : m.md.dataType.thisClass.string;
             Type thisType = ProcessTypeString(classString, false);
             //Type type = ProcessTypeString(c.cl.name, false);
-            char * typeName = printType(thisType, false, false);
+            char * typeName = printType(thisType, false, false, true);
             char * iname = null;// = CopyAllNonCapsString(c.cl.name);
             char * t = PrintString("__", "x"); //new char[2];
             // todo: uint64_t vs tparam_Container_D (given "D") etc...
             char * returnType = m.md.dataType.returnType.kind == templateType ? CopyString("uint64_t") :
-               cPrintType(m.md.dataType.returnType, false, false, true); // todo: add a * in some cases?
+               cPrintType(m.md.dataType.returnType, false, false, true, true); // todo: add a * in some cases?
             const char * ret = m.md.dataType.returnType.kind == voidType ? "" : "return ";
             out.ds.println("");
             out.ds.printx(sk, "@ffi.callback(\"", returnType, "(");
@@ -2172,7 +2172,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      out.ds.printx(", *args");
                   else
                   {
-                     char * type = printType(itr.pm, false, false);
+                     char * type = printType(itr.pm, false, false, true);
                      //if(strcmp(type, modern)) check();
                      out.ds.printx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
                      prevParam = true;
@@ -2281,7 +2281,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                {
                   bool first = thisClass && itr.pm == m.md.dataType.params.first;
-                  char * _type = printType(itr.pm, false, false);
+                  char * _type = printType(itr.pm, false, false, false);
                   char * type = getNoNamespaceString(_type, null, false);
                   if(thisTemplate && itr.pm == m.md.dataType.params.first)
                      out.ds.printx(", ", iname);
