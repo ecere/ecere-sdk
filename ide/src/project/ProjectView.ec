@@ -1757,6 +1757,54 @@ class ProjectView : Window
       return result;
    }
 
+   bool DebugStartPython()
+   {
+      bool result = false;
+      CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
+      ProjectConfig config = project.config;
+      int bitDepth = ide.workspace.bitDepth;
+      bool useValgrind = ide.workspace.useValgrind;
+      TargetTypes targetType = project.GetTargetType(config);
+      if(targetType == sharedLibrary || targetType == staticLibrary)
+         MessageBox { master = ide, type = ok, text = $"Run", contents = $"Shared and static libraries cannot be run like executables." }.Modal();
+      else if(project.GetCompress(config))
+         MessageBox { master = ide, text = $"Starting Debug", contents = $"Debugging compressed applications is not supported\n" }.Modal();
+      else if(project.GetDebug(config) ||
+         MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
+      {
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, { start, normal }, compiler, config, bitDepth))
+         {
+            if(compiler.type.isVC)
+            {
+               //bool result = false;
+               char oldwd[MAX_LOCATION];
+               PathBackup pathBackup { };
+               char command[MAX_LOCATION];
+
+               ide.SetPath(false, compiler, config, bitDepth);
+
+               GetWorkingDir(oldwd, sizeof(oldwd));
+               ChangeWorkingDir(project.topNode.path);
+
+               sprintf(command, "%s /useenv %s.sln /projectconfig \"%s|Win32\" /command \"%s\"" , "devenv", project.name, config.name, "Debug.Start");
+               Execute(command);
+               ChangeWorkingDir(oldwd);
+
+               delete pathBackup;
+            }
+            else if(compiler.hasDocumentOutput)
+               project.Run("", compiler, config, bitDepth, true);
+            else
+            {
+               ide.debugger.StartPython(compiler, config, bitDepth, useValgrind);
+               result = true;
+            }
+         }
+      }
+      delete compiler;
+      return result;
+   }
+
    void GoToError(const char * line, bool openAsText, bool noParsing, const char * objectFileExt)
    {
       char * colon;

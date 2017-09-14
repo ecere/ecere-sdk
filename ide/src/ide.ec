@@ -1301,6 +1301,22 @@ class IDEWorkSpace : Window
          }
          return true;
       }
+      MenuItem debugStartPython
+      {
+         debugMenu, $"Start Python", s, { f5, true, true }, disabled = false;
+         bitmap = { ":actions/debug.png" };
+         NotifySelect = MenuDebugStartPython;
+      };
+      bool MenuDebugStartPython(MenuItem selection, Modifiers mods)
+      {
+         if(projectView)
+         {
+            debugStartResumeItem.disabled = true; // a very rare exception to calling AdjustDebugMenus
+            if(!projectView.DebugStartPython())
+               debugStartPython.disabled = false; // same exception
+         }
+         return true;
+      }
       bool MenuDebugResume(MenuItem selection, Modifiers mods)
       {
          if(projectView)

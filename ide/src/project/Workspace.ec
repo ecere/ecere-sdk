@@ -947,6 +947,18 @@ public:
       }
    }
 
+   char * getEnv(const char * name, bool fallback)
+   {
+      for(e : environmentVars)
+      {
+         if(!strcmp(e.name, name))
+            return e.string;
+      }
+      if(fallback)
+         return getenv(name);
+      return (char *)"";
+   }
+
    char * getEnvVarsString()
    {
       int len = 0;

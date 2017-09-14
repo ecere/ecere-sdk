@@ -376,6 +376,8 @@ class Debugger
    Breakpoint intBpMain;
    Breakpoint intBpWinMain;
 
+   bool usePython;
+
    OldList stackFrames;
 
    CompilerConfig currentCompiler;
@@ -788,7 +790,7 @@ class Debugger
    {
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Restart");
       _ChangeUserAction(restart);
-      if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
+      if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false) == loaded)
          GdbExecRun();
    }
 
@@ -978,7 +980,7 @@ class Debugger
       targetRunTime = 0;
    }
 
-   DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints)
+   DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints, bool usePython)
    {
       DebuggerState result = none;
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), ignoreBreakpoints(", ignoreBreakpoints, ")");
@@ -1010,7 +1012,7 @@ class Debugger
                bp.breaks = 0;
             }
 
-            if(GdbInit(compiler, config, bitDepth, useValgrind))
+            if(GdbInit(compiler, config, bitDepth, useValgrind, usePython))
                result = state;
             else
                result = error;
@@ -1024,7 +1026,15 @@ class Debugger
    {
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
       _ChangeUserAction(start);
-      if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
+      if(StartSession(compiler, config, bitDepth, useValgrind, true, false, false) == loaded)
+         GdbExecRun();
+   }
+
+   void StartPython(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
+   {
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
+      _ChangeUserAction(start);
+      if(StartSession(compiler, config, bitDepth, useValgrind, true, false, true) == loaded)
          GdbExecRun();
    }
 
@@ -1032,7 +1042,7 @@ class Debugger
    {
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepInto()");
       _ChangeUserAction(stepInto);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, false))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, false, false))
       {
          case loaded:  GdbExecRun();  break;
          case stopped: GdbExecStep(); break;
@@ -1043,7 +1053,7 @@ class Debugger
    {
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOver()");
       _ChangeUserAction(stepOver);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints, false))
       {
          case loaded:  GdbExecRun();  break;
          case stopped: GdbExecNext(); break;
@@ -1054,7 +1064,7 @@ class Debugger
    {
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepUntil()");
       _ChangeUserAction(stepUntil);
-      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
+      switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints, false))
       {
          case loaded:  GdbExecRun();          break;
          case stopped: GdbExecUntil(null, 0); break;
@@ -1089,7 +1099,7 @@ class Debugger
          delete bpRunToCursor;
       }
 
-      StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints);
+      StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints, false);
 
 #if 0
       if(oldImplementation)
@@ -1999,6 +2009,7 @@ class Debugger
          char escaped[MAX_LOCATION];
          strescpy(escaped, targetFile);
          GdbCommand(0, false, "file \"%s\"", escaped); //GDB/MI Missing Implementation in 5.1.1 but we now have -file-exec-and-symbols / -file-exec-file / -file-symbol-file
+         GdbCommand(0, false, "-gdb-set stop-on-solib-events on");
 
          if(!symbols)
             return true;
@@ -2256,7 +2267,7 @@ class Debugger
       return true;
    }
 
-   bool GdbInit(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
+   bool GdbInit(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool runPython)
    {
       bool result = true;
       char oldDirectory[MAX_LOCATION];
@@ -2277,6 +2288,7 @@ class Debugger
       prjConfig = config;
       this.bitDepth = bitDepth;
       usingValgrind = useValgrind;
+      usePython = runPython;
 
       _ChangeState(loaded);
       sentKill = false;
@@ -2297,13 +2309,24 @@ class Debugger
       ide.outputView.gdbBox.Logf("run: Starting GDB\n");
 #endif
 
-      strcpy(tempPath, ide.workspace.projectDir);
-      PathCatSlash(tempPath, targetDirExp.dir);
       delete targetDir;
-      targetDir = CopyString(tempPath);
-      project.CatTargetFileName(tempPath, compiler, config);
       delete targetFile;
-      targetFile = CopyString(tempPath);
+
+      if(runPython)
+      {
+         targetDir = CopyString(ide.workspace.getEnv("PYTHON_RUN_DIR", true)); // "C:/gnosis2/tilesAPI/py"
+         targetFile = CopyString(ide.workspace.getEnv("PYTHON_EXEC", true));
+         PrintLn("targetDir: ", targetDir);
+         PrintLn("targetFile: ", targetFile);
+      }
+      else
+      {
+         strcpy(tempPath, ide.workspace.projectDir);
+         PathCatSlash(tempPath, targetDirExp.dir);
+         targetDir = CopyString(tempPath);
+         project.CatTargetFileName(tempPath, compiler, config);
+         targetFile = CopyString(tempPath);
+      }
 
       GetWorkingDir(oldDirectory, MAX_LOCATION);
       if(ide.workspace.debugDir && ide.workspace.debugDir[0])
