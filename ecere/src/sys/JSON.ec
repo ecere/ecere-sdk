@@ -159,6 +159,7 @@ private:
          {
             int size = 32, len = 0;
             char * s = new char[size];
+            int level = 0;
             while(true)
             {
                if(len + 1 >= size)
@@ -166,8 +167,12 @@ private:
                   size += size >> 1;
                   s = renew s char[size];
                }
-               if(ch == ',' || ch == '}')
+               if(level <= 0 && (ch == ',' || ch == '}'))
                   break;
+               else if(ch == '{') level++;
+               else if(ch == '}') level--;
+               else if(ch == '[') level++;
+               else if(ch == ']') level--;
                s[len++] = ch;
 
                ReadChar(&ch);
@@ -223,7 +228,7 @@ private:
       }
       else if(ch == '[')
       {
-         Container array;
+         Container array = null;
          if(type && eClass_IsDerived(type, class(Map)))
          {
             result = GetMap(type, (Map *)&array);
@@ -237,7 +242,7 @@ private:
          }
          else
          {
-            if(array)
+            if(array && eClass_IsDerived(type, class(Container)))
                array.Free();
             delete array;
          }
@@ -248,7 +253,22 @@ private:
       }
       else if(ch == '{')
       {
-         if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
+         if(type && eClass_IsDerived(type, class(Map)))
+         {
+            Container array;
+            result = GetJSONMap(type, (Map *)&array);
+            if(result == success && type && eClass_IsDerived(type, class(Container)))
+            {
+               value.p = array;
+            }
+            else
+            {
+               if(array)
+                  array.Free();
+               delete array;
+            }
+         }
+         else if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
          {
             void * object = value.p;
             result = _GetObject(type, &object, forMap);
@@ -421,36 +441,36 @@ private:
             {
                // TODO: Verify the matching between template type and uint64
                uint64 t;
-               if(arrayType.type == structClass)
+               if(arrayType && arrayType.type == structClass)
                {
                   t = (uint64)(uintptr)value.p;
                }
-               else if(arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double"))
+               else if(arrayType && (arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double")))
                {
                   t = value.ui64; //*(uint64 *)&value.d;
                }
-               else if(arrayType == class(float) || !strcmp(arrayType.dataTypeString, "float"))
+               else if(arrayType && (arrayType == class(float) || !strcmp(arrayType.dataTypeString, "float")))
                {
                   t = value.ui; //f*(uint *)&value.f;
                }
-               else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
-                  !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64"))
+               else if(arrayType && (arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
+                  !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64")))
                {
                   t = value.ui64;
                }
-               else if(arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") ||
-                  !strcmp(arrayType.dataTypeString, "unsigned int") || !strcmp(arrayType.dataTypeString, "uint"))
+               else if(arrayType && (arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") ||
+                  !strcmp(arrayType.dataTypeString, "unsigned int") || !strcmp(arrayType.dataTypeString, "uint")))
                {
                   t = value.i;
                }
-               else if(arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") ||
+               else if(arrayType && (arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") ||
                   !strcmp(arrayType.dataTypeString, "unsigned short") || !strcmp(arrayType.dataTypeString, "uint16") ||
-                  !strcmp(arrayType.dataTypeString, "int16"))
+                  !strcmp(arrayType.dataTypeString, "int16")))
                {
                   t = value.s;
                }
-               else if(arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") ||
-                  !strcmp(arrayType.dataTypeString, "unsigned char") || !strcmp(arrayType.dataTypeString, "byte"))
+               else if(arrayType && (arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") ||
+                  !strcmp(arrayType.dataTypeString, "unsigned char") || !strcmp(arrayType.dataTypeString, "byte")))
                {
                   t = value.c;
                }
@@ -458,7 +478,8 @@ private:
                {
                   t = (uint64)(uintptr)value.p;
                }
-               ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
+               if(*array)
+                  ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
 
                if(arrayType && arrayType.type == structClass)
                   delete value.p;
@@ -548,6 +569,100 @@ private:
                   SkipEmpty();
                }
                if(ch == ']')
+               {
+                  break;
+               }
+               else if(ch != ',')
+                  result = syntaxError;
+            }
+         }
+      }
+      ch = 0;
+      return result;
+   }
+
+   JSONResult GetJSONMap(Class type, Map * map)
+   {
+      JSONResult result = syntaxError;
+      SkipEmpty();
+      *map = null;
+      if(ch == '{')
+      {
+         Class mapNodeType = type.templateArgs[0].dataTypeClass;
+         Class valueType = mapNodeType.templateArgs[2].dataTypeClass;
+         *map = eInstance_New(type);
+         result = success;
+
+         while(result)
+         {
+            DataValue value { };
+            String string;
+            bool wasQuoted = false;
+
+            ch = 0;
+            if(eCON)
+            {
+               SkipExtraSemicolon();
+               if(ch == '}')
+                  break;
+            }
+            SkipEmpty();
+
+            if(eCON ? GetIdentifier(&string, &wasQuoted) : GetString(&string))
+            {
+               ch = 0;
+               SkipEmpty();
+
+               if(ch == ':' || (eCON && ch == '='))
+               {
+                  JSONResult itemResult;
+                  if(ch == ':' || ch == '=')
+                     ch = 0;
+                  if(valueType.type == structClass)
+                     value.p = new0 byte[valueType.structSize];
+                  itemResult = GetValue(valueType, value);
+                  if(itemResult == success)
+                  {
+                     IteratorPointer node = ((IteratorPointer (*)(Map, uint64, bool, void *))(void *)map->GetAtPosition)(*map, (uint64)(uintptr)string, true, null);
+
+                     switch(valueType.type)
+                     {
+                        case normalClass:
+                        case noHeadClass:
+                        case structClass:
+                           ((bool (*)(Map, IteratorPointer, uint64))(void *)map->SetData)(*map, node, (uint64)(uintptr)value.p);
+                           break;
+                        case systemClass:
+                        default:
+                           Print("Warning: Unhandled class type for JSON map ", (String)valueType.name);
+                           break;
+                     }
+                  }
+                  else
+                  {
+                     if(itemResult == typeMismatch)
+                     {
+                        if(mapNodeType)
+                           PrintLn("Warning: Incompatible value for JSON map value, expected ", (String)valueType.name);
+                     }
+                     else if(itemResult == noItem)
+                        result = success;
+                     else
+                        result = itemResult;
+                  }
+                  if(valueType.type == structClass)
+                     delete value.p;
+               }
+            }
+
+            if(result != syntaxError)
+            {
+               if(ch != '}' && ch != ',')
+               {
+                  ch = 0;
+                  SkipEmpty();
+               }
+               if(ch == '}')
                {
                   break;
                }
@@ -745,7 +860,13 @@ private:
    public JSONResult GetObject(Class objectType, void ** object)
    {
       charPos = 0, line = 1, col = 1, maxPos = 0;
-      return _GetObject(objectType, object, null);
+      if(objectType && objectType.type == structClass)
+      {
+         memset(object, 0, objectType.structSize);
+         return _GetObject(objectType, &object, null);
+      }
+      else
+         return _GetObject(objectType, object, null);
    }
 
    static inline JSONResult _GetObject(Class objectType, void ** object, Container forMap)
@@ -880,26 +1001,37 @@ private:
                   }
                   else
                   {
-                     member = eClass_FindDataMemberAndOffset(objectType, string, &offset, objectType.module, subMemberStack, &subMemberStackPos);
-                     if(member)
+                     int c;
+                     for(c = 0; c < ((!eCON || wasQuoted) ? 2 : 1); c++)
                      {
-                        type = superFindClass(member.dataTypeString, objectType.module);
-                        if(member._class.type == normalClass || member._class.type == noHeadClass)
-                           offset += member._class.base.structSize;
-                        curMember = member;
-                        curClass = member._class;
-                     }
-                     else if(!member)
-                     {
-                        prop = eClass_FindProperty(objectType, string, objectType.module);
-                        if(prop)
+                        if(c == 1)
+                           string[0] = (char)toupper(string[0]);
+                        member = eClass_FindDataMemberAndOffset(objectType, string, &offset, objectType.module, subMemberStack, &subMemberStackPos);
+                        if(member)
                         {
-                           type = superFindClass(prop.dataTypeString, objectType.module);
-                           curMember = (DataMember)prop;
-                           curClass = prop._class;
+                           type = superFindClass(member.dataTypeString, objectType.module);
+                           if(member._class.type == normalClass || member._class.type == noHeadClass)
+                              offset += member._class.base.structSize;
+                           curMember = member;
+                           curClass = member._class;
+                           break;
                         }
-                        else
-                           PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                        else if(!member)
+                        {
+                           prop = eClass_FindProperty(objectType, string, objectType.module);
+                           if(prop)
+                           {
+                              type = superFindClass(prop.dataTypeString, objectType.module);
+                              curMember = (DataMember)prop;
+                              curClass = prop._class;
+                              break;
+                           }
+                           else if(c == 1)
+                           {
+                              string[0] = (char)tolower(string[0]);
+                              PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                           }
+                        }
                      }
                   }
                }
@@ -1553,7 +1685,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    return true;
 }
 
-public bool WriteColorAlpha(File f, Class type, DataValue value, int indent, bool eCON)
+static bool WriteColorAlpha(File f, Class type, DataValue value, int indent, bool eCON)
 {
    char tmpColorString[1024], output[1024];
    ColorAlpha color = value.ui;
@@ -1741,6 +1873,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          Class mapKeyClass = null, mapDataClass = null;
          Class baseClass;
          List<Class> bases { };
+         bool cantOmit = false;
 
          if(objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
          {
@@ -1860,17 +1993,24 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                            f.Puts(prop.name+1);
                            f.Puts("\" : ");
                         }
-                        else if(!omitDefaultIdentifier)
+                        else if(!omitDefaultIdentifier || cantOmit)
                         {
-                           f.Puts(prop.name);
-                           f.Puts(" = ");
+                           if(!cantOmit && isFirst && false);
+                           else
+                           {
+                              f.Puts(prop.name);
+                              f.Puts(" = ");
+                           }
                         }
                         WriteValue(f, type, value, indent, eCON);
                         isFirst = false;
                         if(type.type == structClass)
                            delete value.p;
                      }
+                     cantOmit = false;
                   }
+                  else if(!prop.conversion)
+                     cantOmit = true;
                }
                else
                {
@@ -1953,7 +2093,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         f.Puts(member.name+1);
                         f.Puts("\" : ");
                      }
-                     else if(!omitDefaultIdentifier)
+                     else if(!omitDefaultIdentifier || cantOmit)
                      {
                         f.Puts(member.name);
                         f.Puts(" = ");
