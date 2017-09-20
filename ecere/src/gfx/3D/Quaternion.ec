@@ -141,16 +141,15 @@ public struct Quaternion
 
    void RotationMatrix(Matrix m)
    {
-      double t = m.m[0][0] + m.m[1][1] + m.m[2][2] + 1.0;
+      double t = m.m[0][0] + m.m[1][1] + m.m[2][2];
       if(t > 0)
       {
-         double s = sqrt(t) * 2;
+         double s = sqrt(t + 1.0) * 2;
 
-         w = (double) (0.25f * s);
-         x = (double) (( m.m[2][1] - m.m[1][2] ) / s);
-         y = (double) (( m.m[0][2] - m.m[2][0] ) / s);
-         z = (double) (( m.m[1][0] - m.m[0][1] ) / s);
-
+         w = 0.25 * s;
+         x = ( m.m[2][1] - m.m[1][2] ) / s;
+         y = ( m.m[0][2] - m.m[2][0] ) / s;
+         z = ( m.m[1][0] - m.m[0][1] ) / s;
       }
       else
       {
@@ -165,11 +164,11 @@ public struct Quaternion
          k = nxt[j];
          s = sqrt(m.m[i][i] - (m.m[j][j] + m.m[k][k]) + 1.0) * 2;
 
-         w = (double) ((m.m[k][j] - m.m[j][k]) / s);
+         w = (m.m[k][j] - m.m[j][k]) / s;
 
-         q[i] = (double) (0.25f * s);
-         q[j] = (double) ((m.m[j][i] - m.m[i][j]) / s);
-         q[k] = (double) ((m.m[k][i] - m.m[i][k]) / s);
+         q[i] = 0.25 * s;
+         q[j] = (m.m[j][i] + m.m[i][j]) / s;
+         q[k] = (m.m[k][i] + m.m[i][k]) / s;
 
          x = q[0];
          y = q[1];
