@@ -2051,7 +2051,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      for(p = baseClass.membersAndProperties.first; member.name && p; p = p.next)
                         if(p.isProperty && !p.conversion && p.IsSet && !strcmp(p.name, member.name))
                            break;
-                     if(p && !p.IsSet(object)) continue;
+                     if(p && !p.IsSet(object)) { cantOmit = true; continue; }
 
                      if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || !strcmp(type.name, "String"))
                      {
@@ -2060,7 +2060,10 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         else
                            value.p = *(void **)((byte *)object + offset);
                         if(!value.p)
+                        {
+                           cantOmit = true;
                            continue;
+                        }
                      }
                      else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
                      {
@@ -2081,7 +2084,10 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         value.i = *(int *)((byte *)object + offset);
                         if(!strcmp(type.name, "bool") || type.type == enumClass)
                            if(!value.i)
+                           {
+                              cantOmit = true;
                               continue;
+                           }
                      }
                      else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
                         !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
