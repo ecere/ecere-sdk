@@ -34,6 +34,12 @@ class ListBoxBits
    bool sortable:1, noDragging:1, fillLastField:1, expandOnAdd:1;
 };
 
+public struct DataFieldSort
+{
+   DataField field;
+   int order;
+};
+
 public class DataDisplayFlags
 {
    public bool selected:1, fullRow:1, current:1, active:1, dropBox:1, header:1, firstField:1;
@@ -429,7 +435,7 @@ public:
             }
             // TESTING THIS HERE...
             if(listBox.created)
-               listBox.Sort(listBox.sortField, listBox.sortField.sortOrder);
+               listBox.MultiSort(listBox.sortFields);
 
             {
                int headerSize = ((listBox.style.header) ? listBox.rowHeight : 0);
@@ -857,55 +863,61 @@ private:
       return !this || (!collapsed && (!parent || parent.IsExpanded()));
    }
 
-   int Compare(DataRow b, DataField sortField)
+   int Compare(DataRow b, Array<DataFieldSort> sortFields)
    {
-      int result = 0;
-      ListBoxCell cell1, cell2;
-      uint index;
-      for(index = 0, cell1 = cells.first, cell2 = b.cells.first;
-          index != sortField.index;
-          index++, cell1 = cell1.next, cell2 = cell2.next);
-      if(noneRow && !b.noneRow) return -1;
-      else if(!noneRow && b.noneRow) return 1;
-      else if(noneRow && b.noneRow) return 0;
-
-      if(!cell1.isSet && !cell2.isSet)
-         result = 0;
-      else if(!cell1.isSet)
-         result = -1;
-      else if(!cell2.isSet)
-         result = 1;
-      else if(sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])
+      Iterator<DataFieldSort> it { sortFields };
+      while(it.Prev())
       {
-         if(sortField.dataType.type == normalClass || sortField.dataType.type == noHeadClass)
+         int result = 0;
+         DataField sortField = it.data.field;
+         ListBoxCell cell1, cell2;
+         uint index;
+         for(index = 0, cell1 = cells.first, cell2 = b.cells.first;
+             index != sortField.index;
+             index++, cell1 = cell1.next, cell2 = cell2.next);
+         if(noneRow && !b.noneRow) return -1;
+         else if(!noneRow && b.noneRow) return 1;
+         else if(noneRow && b.noneRow) return 0;
+
+         if(!cell1.isSet && !cell2.isSet)
+            result = 0;
+         else if(!cell1.isSet)
+            result = -1;
+         else if(!cell2.isSet)
+            result = 1;
+         else if(sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])
          {
-            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
-               cell1.isSet ? cell1.data[0] : null,
-               cell2.isSet ? cell2.data[0] : null);
+            if(sortField.dataType.type == normalClass || sortField.dataType.type == noHeadClass)
+            {
+               result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
+                  cell1.isSet ? cell1.data[0] : null,
+                  cell2.isSet ? cell2.data[0] : null);
+            }
+            else
+            {
+               result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
+                  cell1.isSet ? cell1.data : null,
+                  cell2.isSet ? cell2.data : null);
+            }
          }
-         else
-         {
-            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
-               cell1.isSet ? cell1.data : null,
-               cell2.isSet ? cell2.data : null);
-         }
+         return it.data.order * result;
       }
-      return sortField.sortOrder * result;
+      return 0;
    }
 
-   void _SortSubRows(DataField field, int order)
+   void _SortSubRows(Array<DataFieldSort> fields)
    {
       DataRow search;
       for(search = subRows.first; search; search = search.next)
-         search._SortSubRows(field, order);
-      subRows.Sort(Compare, field);
+         search._SortSubRows(fields);
+      subRows.Sort(Compare, fields);
    }
 
    public void SortSubRows(bool scrollToCurrent)
    {
-      if(this && listBox && listBox.sortField)
+      if(this && listBox && listBox.sortFields)
       {
-         _SortSubRows(listBox.sortField, listBox.sortField.sortOrder);
+         _SortSubRows(listBox.sortFields);
 
          {
             DataRow search;
@@ -1241,7 +1253,7 @@ public:
             delete field;
          }
          endBevel.visible = false;
-         sortField = null;
+         sortFields = null;
       }
    }
 
@@ -1254,8 +1266,11 @@ public:
             int index = field.index;
             DataRow row;
 
-            if(sortField == field)
-               sortField = null;
+            if(sortFields)
+            {
+               for(f : sortFields; f.field == field)
+                  sortFields = null;
+            }
 
             for(row = rows.first; row; )
             {
@@ -1793,7 +1808,7 @@ public:
       }
    }
 
-   void Sort(DataField field, int order)
+   void MultiSort(Array<DataFieldSort> fields)
    {
       if(this)
       {
@@ -1801,13 +1816,19 @@ public:
          int headerSize = ((style.header) ? rowHeight : 0);
          int height = clientSize.h + 1 - headerSize;
 
-         if(!field) field = fields.first;
-         sortField = field;
-         field.sortOrder = order ? order : 1;
-         rows.Sort(DataRow::Compare, field);
+         delete sortFields;
+
+         sortFields = fields;
+         if(fields)
+         {
+            incref fields;
+            for(f : fields)
+               f.field.sortOrder = f.order ? f.order : 1;
+         }
+         rows.Sort(DataRow::Compare, fields);
 
          for(search = rows.first; search; search = search.next)
-            search._SortSubRows(field, order);
+            search._SortSubRows(fields);
 
          {
             int index = 0;
@@ -1825,6 +1846,40 @@ public:
          // SetScrollPosition(0, scroll.y);
          // Update(null);
       }
+   }
+
+   void Sort(DataField field, int order)
+   {
+      MultiSort({ [ { field ? field : fields.first, order } ] });
+   }
+
+   void SortAlsoBy(DataField field, int order)
+   {
+      Iterator<DataFieldSort> it { sortFields };
+      if(sortFields)
+      {
+         incref sortFields;
+         while(it.Next())
+            if(it.data.field == field)
+               break;
+      }
+      if(it.pointer)
+      {
+         if(!order && !sortFields.GetNext(it.pointer))
+            it.data.order *= -1;
+         else
+         {
+            it.Remove();
+            sortFields.Add({ field, order ? order : 1 });
+         }
+      }
+      else
+      {
+         if(!sortFields) sortFields = { };
+         sortFields.Add({ field, order ? order : 1 });
+      }
+      if(field)
+         MultiSort(sortFields);
    }
 
    void StopEditing(bool save)
@@ -1891,6 +1946,8 @@ private:
    ~ListBox()
    {
       DataField field;
+
+      delete sortFields;
 
       delete editData;
       delete typedString;
@@ -2648,84 +2705,86 @@ private:
          surface.VLine(0, rowHeight - 1, position - scroll.x - 2);
          surface.VLine(0, rowHeight - 1, position - scroll.x);
       }
-      if(sortField && !style.clearHeader && style.header)
+      if(sortFields && !style.clearHeader && style.header)
       {
-         DataField field = sortField;
-         int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
-            clientSize.w - field.x : (field.width + EXTRA_SPACE);
-         int tw = 0, th = 0;
-         if(field.header)
-            surface.TextExtent(field.header, strlen(field.header), &tw, &th);
-         if(tw < width - EXTRA_SPACE)
+         for(f : sortFields)
          {
-            bool up = field.sortOrder == 1;
-            int x = 4, y = 4;
-            Box clip =
+            DataField field = f.field;
+            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
+               clientSize.w - field.x : (field.width + EXTRA_SPACE);
+            int tw = 0, th = 0;
+            if(field.header)
+               surface.TextExtent(field.header, strlen(field.header), &tw, &th);
+            if(tw < width - EXTRA_SPACE)
             {
-               field.x + 2 - scroll.x, 0,
-               field.x + width + EXTRA_SPACE - 1 - scroll.x, rowHeight
-            };
-            surface.Clip(&clip);
-            if(field.alignment == left || field.alignment == center)
-            {
-               if(field.alignment == center)
-                  x = field.x + (width + EXTRA_SPACE - tw) / 2 + tw + EXTRA_SPACE + 4;
-               else
-                  x = field.x + tw + EXTRA_SPACE + 4;
-
-               x = Min(x, field.x + width - 4);
-            }
-            else if(field.alignment == right)
-            {
-               x = field.x + width - tw - 2*EXTRA_SPACE - 4;
-               x = Max(x, field.x + 2);
-            }
-            x -= scroll.x;
-
-            if(guiApp.textMode)
-            {
-               // surface.SetForeground((wmenu.selectedFlag == item) ? white : black);
-               // surface.WriteText(clientSize.w-8, y+(wmenu.rh - 8)/2, "\020", 1);
-            }
-            else
-            {
-               if(up)
+               bool up = f.order == 1;
+               int x = 4, y = 4;
+               Box clip =
                {
-                  surface.SetForeground(Color { 128,128,128 } );
-                  surface.DrawLine(x + 3, y, x, y + 5);
-                  surface.PutPixel(x + 1, y + 5);
-                  surface.PutPixel(x + 1, y + 3);
-                  surface.PutPixel(x + 2, y + 1);
+                  field.x + 2 - scroll.x, 0,
+                  field.x + width + EXTRA_SPACE - 1 - scroll.x, rowHeight
+               };
+               surface.Clip(&clip);
+               if(field.alignment == left || field.alignment == center)
+               {
+                  if(field.alignment == center)
+                     x = field.x + (width + EXTRA_SPACE - tw) / 2 + tw + EXTRA_SPACE + 4;
+                  else
+                     x = field.x + tw + EXTRA_SPACE + 4;
 
-                  surface.SetForeground(white);
-                  surface.DrawLine(x + 4, y, x + 7, y + 5);
-                  surface.PutPixel(x + 6, y + 5);
-                  surface.PutPixel(x + 6, y + 3);
-                  surface.PutPixel(x + 5, y + 1);
+                  x = Min(x, field.x + width - 4);
+               }
+               else if(field.alignment == right)
+               {
+                  x = field.x + width - tw - 2*EXTRA_SPACE - 4;
+                  x = Max(x, field.x + 2);
+               }
+               x -= scroll.x;
 
-                  surface.DrawLine(x, y + 6, x + 7, y + 6);
+               if(guiApp.textMode)
+               {
+                  // surface.SetForeground((wmenu.selectedFlag == item) ? white : black);
+                  // surface.WriteText(clientSize.w-8, y+(wmenu.rh - 8)/2, "\020", 1);
                }
                else
                {
-                  surface.SetForeground(Color { 128,128,128 });
-                  surface.DrawLine(x + 3, y+6, x, y+1);
-                  surface.PutPixel(x + 1, y+1);
-                  surface.PutPixel(x + 1, y+3);
-                  surface.PutPixel(x + 2, y+5);
+                  if(up)
+                  {
+                     surface.SetForeground(Color { 128,128,128 } );
+                     surface.DrawLine(x + 3, y, x, y + 5);
+                     surface.PutPixel(x + 1, y + 5);
+                     surface.PutPixel(x + 1, y + 3);
+                     surface.PutPixel(x + 2, y + 1);
 
-                  surface.SetForeground(white);
-                  surface.DrawLine(x + 4, y+6, x + 7, y+1);
-                  surface.PutPixel(x + 6, y+1);
-                  surface.PutPixel(x + 6, y+3);
-                  surface.PutPixel(x + 5, y+5);
+                     surface.SetForeground(white);
+                     surface.DrawLine(x + 4, y, x + 7, y + 5);
+                     surface.PutPixel(x + 6, y + 5);
+                     surface.PutPixel(x + 6, y + 3);
+                     surface.PutPixel(x + 5, y + 1);
 
-                  surface.DrawLine(x, y, x + 7, y);
+                     surface.DrawLine(x, y + 6, x + 7, y + 6);
+                  }
+                  else
+                  {
+                     surface.SetForeground(Color { 128,128,128 });
+                     surface.DrawLine(x + 3, y+6, x, y+1);
+                     surface.PutPixel(x + 1, y+1);
+                     surface.PutPixel(x + 1, y+3);
+                     surface.PutPixel(x + 2, y+5);
+
+                     surface.SetForeground(white);
+                     surface.DrawLine(x + 4, y+6, x + 7, y+1);
+                     surface.PutPixel(x + 6, y+1);
+                     surface.PutPixel(x + 6, y+3);
+                     surface.PutPixel(x + 5, y+5);
+
+                     surface.DrawLine(x, y, x + 7, y);
+                  }
                }
+               surface.Clip(null);
             }
-            surface.Clip(null);
          }
       }
-
    }
 
    void OnResize(int w, int h)
@@ -3009,15 +3068,9 @@ private:
       if(style.header && !dropField && style.sortable)
       {
          DataField field = (DataField)(intptr)control.id;
-         if(sortField == field)
-            field.sortOrder *= -1;
-         else
-            sortField = field;
+         SortAlsoBy(field, 0);
          if(field)
-         {
-            Sort(sortField, field.sortOrder);
             NotifySort(master, this, field, mods);
-         }
       }
       return true;
    }
@@ -4631,7 +4684,8 @@ private:
    DataRow clickedRow;
    DataRow currentRow;
    int width;
-   DataField sortField;
+   // DataField sortField;
+   Array<DataFieldSort> sortFields;
    int rowCount;
    int rowHeight;
    int fontH;
