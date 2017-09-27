@@ -479,12 +479,33 @@ public class FrameTrack : struct
    }
 };
 
-static bool FindMaterialAndType(Mesh mesh, Material material, PrimitiveGroupType type)
+struct MaterialAndType
 {
+   Material material;
+   PrimitiveGroupType type;
+
+   int OnCompare(MaterialAndType b)
+   {
+      if((uintptr)material < (uintptr)b.material) return -1;
+      if((uintptr)material > (uintptr)b.material) return  1;
+      if(type < b.type) return -1;
+      if(type > b.type) return  1;
+      return 0;
+   }
+};
+
+static bool FindMaterialAndType(Map<MaterialAndType, PrimitiveGroup> map, Mesh mesh, Material material, PrimitiveGroupType type)
+{
+   if(map.GetAtPosition({ material, type }, false, null))
+   {
+      return true;
+   }
+   /*
    PrimitiveGroup group;
    for(group = mesh.groups.first; group; group = group.next)
       if(group.material == material && group.type == type)
          return true;
+   */
    return false;
 }
 
@@ -794,6 +815,7 @@ public:
          MeshFeatures flags = 0;
          Mesh objectMesh = this.flags.mesh ? mesh : null;
          bool freeMesh = this.flags.ownMesh;
+         Map<MaterialAndType, PrimitiveGroup> map { };
 
          // Count total number of vertices
          if(objectMesh)
@@ -907,7 +929,8 @@ public:
                   {
                      if(!foundGroup && !(group.type.vertexRange))
                      {
-                        if(!FindMaterialAndType(mesh, group.material, group.type))
+                        // TOCHECK: There might be a much more efficent way to do this?
+                        if(!FindMaterialAndType(map, mesh, group.material, group.type))
                         {
                            material = group.material;
                            type = group.type;
@@ -928,7 +951,7 @@ public:
                      {
                         if(!foundGroup && !(group.type.vertexRange))
                         {
-                           if(!FindMaterialAndType(mesh, group.material ? group.material : child.material, group.type))
+                           if(!FindMaterialAndType(map, mesh, group.material ? group.material : child.material, group.type))
                            {
                               material = group.material ? group.material : child.material;
                               type = group.type;
@@ -946,8 +969,12 @@ public:
                if(foundGroup)
                {
                   PrimitiveGroup newGroup = mesh.AddPrimitiveGroup(type, nIndices);
+                  MapIterator<MaterialAndType, PrimitiveGroup> it { map = map };
                   if(newGroup)
                   {
+                     if(!it.Index({ material, type }, true))
+                        it.data = newGroup;
+
                      newGroup.material = material;
                      nIndices = 0;
 
@@ -1133,6 +1160,9 @@ public:
 
             mesh.Unlock(flags);
          }
+
+         delete map;
+
          if(freeMesh && objectMesh)
          {
             if(objectMesh.displaySystem)
