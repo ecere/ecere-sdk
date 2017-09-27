@@ -1453,7 +1453,7 @@ static void ProcessExpression(Expression exp)
                   if(classSym)
                   {
                      Class convertClass = classSym.registered;
-                     if(convertClass)
+                     if(convertClass && _class)
                         revConvert = eClass_FindProperty(convertClass, _class.fullName, privateModule);
                   }
                }
