@@ -3,6 +3,7 @@ namespace sys;
 import "instance"
 import "System"
 import "Array"
+import "AVLTree"
 
 default:
 __attribute__((unused)) static void UnusedFunction()
@@ -420,6 +421,8 @@ private:
       *array = null;
       if(ch == '[')
       {
+         bool isAVLTree = eClass_IsDerived(type, class(AVLTree));
+
          *array = eInstance_New(type);
          result = success;
          while(result)
@@ -478,8 +481,18 @@ private:
                {
                   t = (uint64)(uintptr)value.p;
                }
-               if(*array)
+               if(*array && (arrayType || value.p))
                   ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
+
+               if(isAVLTree && value.p)
+               {
+                  if(arrayType && (!strcmp(arrayType.name, "String") || !strcmp(arrayType.dataTypeString, "char *")))
+                     delete value.p;
+                  else if(arrayType.type == normalClass)
+                     eInstance_Delete(value.p);
+                  else if(arrayType.type == systemClass)
+                     delete value.p;
+               }
 
                if(arrayType && arrayType.type == structClass)
                   delete value.p;
@@ -526,6 +539,7 @@ private:
       {
          Class mapNodeType = type.templateArgs[0].dataTypeClass;
          Class keyType = mapNodeType.templateArgs[0].dataTypeClass;
+         Class valueType = mapNodeType.templateArgs[2].dataTypeClass;
          Property keyProp = null;
          if(keyType && !strcmp(keyType.dataTypeString, "char *"))
             keyProp = eClass_FindProperty(mapNodeType, "key", mapNodeType.module);
@@ -560,6 +574,8 @@ private:
                else
                   result = itemResult;
             }
+            if(valueType && valueType.type == structClass)
+               delete value.p;
 
             if(result != syntaxError)
             {
