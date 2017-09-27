@@ -9,12 +9,13 @@ public union Matrix
 
    const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
+      bool spacing = false; //true;
       int y, x;
       string[0] = 0;
-      strcat(string, "{ ");
+      strcat(string, spacing ? "{\n" : "{ ");
       for(y = 0; y < 4; y++)
       {
-         strcat(string, "{ ");
+         strcat(string, spacing ? "   { " : "{ ");
          for(x = 0; x < 4; x++)
          {
             char member[256];
@@ -24,8 +25,9 @@ public union Matrix
          }
          strcat(string, " }");
          if(y < 3) strcat(string, ", ");
+         if(spacing) strcat(string, "\n");
       }
-      strcat(string, " }");
+      strcat(string, spacing ? "}\n" : " }");
       return string;
    }
 
