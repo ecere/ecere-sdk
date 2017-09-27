@@ -3733,54 +3733,51 @@ class OpenGLDisplayDriver : DisplayDriver
    void FreeMesh(DisplaySystem displaySystem, Mesh mesh)
    {
       OGLMesh oglMesh = mesh.data;
-      if(oglMesh)
-      {
-         OGLSystem oglSystem = displaySystem.driverData;
-         GLCapabilities caps = glCaps;
-         SETCAPS(oglSystem.capabilities);
+      OGLSystem oglSystem = displaySystem.driverData;
+      GLCapabilities caps = glCaps;
+      if(oglSystem) SETCAPS(oglSystem.capabilities);
 
-         if(!mesh.flags.vertices)
-         {
-            oglMesh.vertices.free();
-            delete mesh.vertices;
-         }
-         if(!mesh.flags.normals)
-         {
-            oglMesh.normals.free();
-            delete mesh.normals;
-         }
-         if(!mesh.flags.tangents)
-         {
-            oglMesh.tangents.free();
-            delete mesh.tangents;
-         }
-         if(!mesh.flags.lightVectors)
-         {
-            oglMesh.lightVectors.free();
-            delete mesh.lightVectors;
-         }
-         if(!mesh.flags.texCoords1)
-         {
-            oglMesh.texCoords.free();
-            delete mesh.texCoords;
-         }
-         if(!mesh.flags.texCoords2)
-         {
-            oglMesh.texCoords2.free();
-            // delete mesh.texCoords2;
-         }
-         if(!mesh.flags.colors)
-         {
-            oglMesh.colors.free();
-            delete mesh.colors;
-         }
-         if(!mesh.flags)
-         {
-            delete oglMesh;
-            mesh.data = null;
-         }
-         SETCAPS(caps);
+      if(!mesh.flags.vertices)
+      {
+         if(oglMesh) oglMesh.vertices.free();
+         delete mesh.vertices;
       }
+      if(!mesh.flags.normals)
+      {
+         if(oglMesh) oglMesh.normals.free();
+         delete mesh.normals;
+      }
+      if(!mesh.flags.tangents)
+      {
+         if(oglMesh) oglMesh.tangents.free();
+         delete mesh.tangents;
+      }
+      if(!mesh.flags.lightVectors)
+      {
+         if(oglMesh) oglMesh.lightVectors.free();
+         delete mesh.lightVectors;
+      }
+      if(!mesh.flags.texCoords1)
+      {
+         if(oglMesh) oglMesh.texCoords.free();
+         delete mesh.texCoords;
+      }
+      if(!mesh.flags.texCoords2)
+      {
+         if(oglMesh) oglMesh.texCoords2.free();
+         // delete mesh.texCoords2;
+      }
+      if(!mesh.flags.colors)
+      {
+         if(oglMesh) oglMesh.colors.free();
+         delete mesh.colors;
+      }
+      if(!mesh.flags)
+      {
+         delete oglMesh;
+         mesh.data = null;
+      }
+      if(oglSystem) SETCAPS(caps);
    }
 
    bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
