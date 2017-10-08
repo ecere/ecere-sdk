@@ -135,7 +135,7 @@ static class EDBDataSource : DirFilesDataSourceDriver
          {
             archive = ArchiveOpen(path, { true, true, true });
             if(archive)
-               databases.Add(name);
+               databases.Add(CopyString(name));
          }
          if(archive)
          {
