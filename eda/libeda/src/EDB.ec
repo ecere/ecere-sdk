@@ -1021,7 +1021,13 @@ static class EDBRow : DriverRow
             // Update the offset of the field we're writing to
             offsets[field.num-1] = (uint)tf.Tell();
             // Serialize the data we're writing
-            ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnSerialize])(field.type, data, tf);
+            if(eClass_IsDerived(field.type, class(Id)))
+            {
+               Id32 id = (Id32)*(Id *)data;
+               ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnSerialize])(class(Id32), &id, tf);
+            }
+            else
+               ((void (*)(void *, void *, void *))(void *)field.type._vTbl[__ecereVMethodID_class_OnSerialize])(field.type, data, tf);
 
             if(field.num < numFields)
             {
