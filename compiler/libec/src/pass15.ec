@@ -776,7 +776,7 @@ public int ComputeTypeSize(Type type)
             {
                ProcessExpressionType(type.arraySizeExp);
                ComputeExpression(type.arraySizeExp);
-               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType.kind != intType &&
+               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType && type.arraySizeExp.expType.kind != intType &&
                   type.arraySizeExp.expType.kind != shortType &&
                   type.arraySizeExp.expType.kind != charType &&
                   type.arraySizeExp.expType.kind != longType &&
