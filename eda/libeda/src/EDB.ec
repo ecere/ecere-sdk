@@ -177,7 +177,7 @@ static class EDBArchive : Archive
 static class EDBArchiveDir : ArchiveDir
 {
    EDBArchive archive;
-   uint position;
+   uint64 position;
    uint first, last;
    bool readOnly;
 };
