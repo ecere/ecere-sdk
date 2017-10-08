@@ -161,11 +161,11 @@ static enum EAREntryType { ENTRY_FILE = 1, ENTRY_FOLDER = 2 };
 
 static struct EAREntry
 {
-   EAREntryType type;
-   TimeStamp32 created, modified;
-   FileSize size, cSize;
-   uint prev, next;
-   uint nameLen;
+   EAREntryType type             __attribute__((packed));
+   TimeStamp32 created, modified __attribute__((packed));
+   FileSize size, cSize          __attribute__((packed));
+   uint prev, next               __attribute__((packed));
+   uint nameLen                  __attribute__((packed));
    // null terminated file name follows
 };
 
