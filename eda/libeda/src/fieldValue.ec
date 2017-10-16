@@ -31,6 +31,19 @@ public struct FieldValue
       void * b;
    };
 
+   int OnCompare(FieldValue b)
+   {
+      if(type.type < b.type.type) return -1;
+      if(type.type > b.type.type) return  1;
+      switch(type.type)
+      {
+         case integer:  return compareInt(b);
+         case real:     return compareReal(b);
+         case text:     return compareText(b);
+      }
+      return 0;
+   }
+
    int compareText(FieldValue b)
    {
       if(!s && b.s) return -1;
