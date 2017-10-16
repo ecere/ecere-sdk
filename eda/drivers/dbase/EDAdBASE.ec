@@ -107,7 +107,28 @@ class dBaseRow : DriverRow
 
    virtual bool ReadRecord() { return true; }
 
-   bool Find(dBaseField field, MoveOptions move, MatchOptions match, typed_object data) { return false; }
+   bool Find(dBaseField field, MoveOptions move, MatchOptions match, typed_object data)
+   {
+      // TODO: DBF indexing?
+      bool result = false;
+      int i;
+      FieldValue dataValue { };
+      switch(field.info.type)
+      {
+         case 'B': case 'G': case 'M': case 'C': case 'D': dataValue = { s = (String)data, type = { text    } }; break;
+         case 'I': case '+': case 'N': case 'L':           dataValue = { i = (int)   data, type = { integer } }; break;
+         case 'F': case 'O': case '@':                     dataValue = { r = (double)data, type = { real    } }; break;
+      }
+      for(i = 1; i <= maxID && !result; i++)
+      {
+         FieldValue v { };
+         if(GoToSysID(i) && GetDataFieldValue(field, v) && !v.OnCompare(dataValue))
+            result = true;
+         if(v.type == { text, mustFree = true })
+            delete v.s;
+      }
+      return result;
+   }
    bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields) { return false; }
    bool Synch(DriverRow to) { return false; }
    bool Add(uint64 id) { return false; }
