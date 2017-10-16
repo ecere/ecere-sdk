@@ -11,7 +11,8 @@
       ],
       "IncludeDirs" : [
          "include",
-         "lib"
+         "lib",
+         "../zlib-1.2.8"
       ],
       "TargetType" : "StaticLibrary",
       "TargetFileName" : "curl"
