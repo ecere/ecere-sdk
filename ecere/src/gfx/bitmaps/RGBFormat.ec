@@ -119,7 +119,7 @@ class RGBFormat : BitmapFormat
                               value = scanLine[x++];
                            switch(c)
                            {
-                              case 0: *pic |= channels == 1 ? ColorAlpha { value, white } : Color { r = value } | defaultAlpha; break;
+                              case 0: *pic |= channels == 1 ? ColorAlpha { value, white } : (uint)Color { r = value } | defaultAlpha; break;
                               case 1: *pic |= Color { g = value }; break;
                               case 2: *pic |= Color { b = value }; break;
                               case 3: *pic |= ColorAlpha { a = value }; break;
