@@ -1525,7 +1525,7 @@ private:
    }
 
    // Private for now
-   FrustumPlacement InsideFrustum(Plane * planes)
+   public FrustumPlacement InsideFrustum(Plane * planes)
    {
       FrustumPlacement result = inside;
 
