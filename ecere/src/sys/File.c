@@ -634,7 +634,7 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
 int FILE_Seek64(FILE * f, int64 offset, int origin)
 {
 #if defined(__WIN32__)
-   #if !defined(_WIN64)
+   #if 1 //!defined(_WIN64)    // _fseeki64 is not working well with SEEK_CUR?
    if(origin == SEEK_CUR) // fseek with -1, SEEK_CUR failing in 32-bit with MinGW-w64 ?
       return fseek(f, offset, origin);
    #endif
