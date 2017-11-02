@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all gen genc c gencpp cpp genpy py cleantarget clean realclean distclean
+.PHONY: all gen genc c gencpp cpp genpy py cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
@@ -45,6 +45,11 @@ realclean:
 	+cd c && $(_MAKE) realclean
 	+cd cpp && $(_MAKE) realclean
 	+cd py && $(_MAKE) realclean
+
+wipeclean:
+	+cd c && $(_MAKE) wipeclean
+	+cd cpp && $(_MAKE) wipeclean
+	+cd py && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

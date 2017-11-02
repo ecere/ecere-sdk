@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all cleantarget clean realclean distclean
+.PHONY: all cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
@@ -39,6 +39,11 @@ realclean:
 ifdef EDASQLiteCipher
 	+cd drivers && cd sqliteCipher && $(_MAKE) realclean
 endif
+
+wipeclean:
+	+cd libeda && $(_MAKE) wipeclean
+	+cd drivers && cd sqlite && $(_MAKE) wipeclean
+	+cd drivers && cd sqliteCipher && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

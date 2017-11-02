@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
+.PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean wipeclean distclean
 
 OBJ = obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
@@ -58,6 +58,14 @@ realclean: cleantarget
 	+cd ecp && $(_MAKE) realclean
 	+cd ecc && $(_MAKE) realclean
 	+cd ecs && $(_MAKE) realclean
+
+wipeclean:
+	$(call rmr,obj/)
+	+cd ecere && $(_MAKE) wipeclean
+	+cd libec && $(_MAKE) wipeclean
+	+cd ecp && $(_MAKE) wipeclean
+	+cd ecc && $(_MAKE) wipeclean
+	+cd ecs && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

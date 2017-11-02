@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen bindingsgen bindings ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
+.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen bindingsgen bindings ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 
 _CF_DIR =
 
@@ -507,8 +507,25 @@ endif
 	$(call rmr,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
+wipeclean:
+	$(call rmr,obj/)
+	+cd deps && $(_MAKE) wipeclean
+	+cd ecere && $(_MAKE) wipeclean
+	+cd compiler && $(_MAKE) wipeclean
+	+cd ear && $(_MAKE) wipeclean
+	+cd epj2make && $(_MAKE) wipeclean
+	+cd compiler/libec2 && $(_MAKE) wipeclean
+	+cd bgen && $(_MAKE) wipeclean
+	+cd bindings && $(_MAKE) wipeclean
+	+cd ide && $(_MAKE) wipeclean
+	+cd documentor && $(_MAKE) wipeclean
+	+cd audio && $(_MAKE) wipeclean
+	+cd eda && $(_MAKE) wipeclean
+	@$(call echo,Done.)
+
 distclean:
 	$(_MAKE) -f Cleanfile distclean distclean_all_subdirs
+	@$(call echo,Done.)
 
 DOC = doc
 

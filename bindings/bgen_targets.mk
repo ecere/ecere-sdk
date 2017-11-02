@@ -27,6 +27,12 @@ realclean: cleanobj
 	$(if $(_BGL3),+cd $(_BGL3) && $(_MAKE) realclean,)
 	$(if $(_BGL4),+cd $(_BGL4) && $(_MAKE) realclean,)
 
+wipeclean:
+	$(call bgen_lib_cd_make,1,wipeclean)
+	$(call bgen_lib_cd_make,2,wipeclean)
+	$(call bgen_lib_cd_make,3,wipeclean)
+	$(call bgen_lib_cd_make,4,wipeclean)
+
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 

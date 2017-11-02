@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all nores cleantarget clean realclean distclean
+.PHONY: all nores cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
@@ -30,6 +30,10 @@ clean:
 realclean:
 	+cd extract && $(_MAKE) realclean
 	+cd cmd && $(_MAKE) realclean
+
+wipeclean:
+	+cd extract && $(_MAKE) wipeclean
+	+cd cmd && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
