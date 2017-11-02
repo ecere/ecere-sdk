@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all objdir cleantarget clean realclean distclean pots
+.PHONY: all objdir cleantarget clean realclean wipeclean distclean pots
 
 # CORE VARIABLES
 
@@ -6673,6 +6673,9 @@ endif
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
+
+wipeclean:
+	$(call rmr,obj/)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

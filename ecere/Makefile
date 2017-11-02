@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all objdir cleaneceretarget cleantarget clean realclean distclean nores
+.PHONY: all objdir cleaneceretarget cleantarget clean realclean wipeclean distclean nores
 
 # CORE VARIABLES
 
@@ -2146,6 +2146,9 @@ realclean: cleantarget
 	$(call rmr,$(OBJ))
 	$(_MAKE) -f Makefile.ecereCOM realclean
 	$(_MAKE) -f Makefile.vanilla realclean
+
+wipeclean:
+	$(call rmr,obj/)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
