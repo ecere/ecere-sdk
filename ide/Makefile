@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean src/about.ec
+.PHONY: all objdir cleantarget clean realclean wipeclean distclean src/about.ec
 
 # CORE VARIABLES
 
@@ -758,6 +758,9 @@ endif
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
+
+wipeclean:
+	$(call rmr,obj/)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

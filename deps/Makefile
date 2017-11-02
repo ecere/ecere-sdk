@@ -1,5 +1,4 @@
-.PHONY: freetype jpeg png gif z ffi cleantarget clean realclean distclean
-.SILENT:
+.PHONY: freetype jpeg png gif z ffi cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
@@ -63,6 +62,14 @@ realclean:
 	+cd jpeg-9a && $(_MAKE) realclean
 	+cd libungif-4.1.1 && $(_MAKE) realclean
 	+cd libffi-3.0.11 && $(_MAKE) realclean
+
+wipeclean:
+	+cd freetype-2.3.12 && $(_MAKE) wipeclean
+	+cd libpng-1.6.12 && $(_MAKE) wipeclean
+	+cd zlib-1.2.8 && $(_MAKE) wipeclean
+	+cd jpeg-9a && $(_MAKE) wipeclean
+	+cd libungif-4.1.1 && $(_MAKE) wipeclean
+	+cd libffi-3.0.11 && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

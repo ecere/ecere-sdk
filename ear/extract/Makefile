@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean wipeclean distclean
 
 # CORE VARIABLES
 
@@ -263,6 +263,9 @@ clean: cleantarget
 	$(call rm,$(BOWLS))
 	$(call rm,$(IMPORTS))
 	$(call rm,$(SYMBOLS))
+
+wipeclean:
+	$(call rmr,obj/)
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean openssl_debug
+.PHONY: all objdir cleantarget clean realclean wipeclean distclean openssl_debug
 
 # CORE VARIABLES
 
@@ -247,6 +247,9 @@ clean: cleantarget
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
+
+wipeclean:
+	$(call rmr,obj/)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
