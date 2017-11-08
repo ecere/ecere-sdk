@@ -610,7 +610,11 @@ class IDEWorkSpace : Window
       {
          CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
-         ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
+         bool inFind = ide.outputView.activeBox == ide.outputView.findBox;
+         if(inFind)
+            ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
+         else
+            ide.CodeLocationParseAndGoTo(line, null, null, objectFileExt);
          delete compiler;
       }
 
@@ -2829,6 +2833,7 @@ class IDEWorkSpace : Window
       FileAttribs fileAttribs;
       if(filePath[0])
       {
+         bool done = false;
          if(prj)
             strcpy(selectedPath, prj.topNode.path);
          else if(dir && dir[0])
@@ -2838,10 +2843,40 @@ class IDEWorkSpace : Window
          PathCat(selectedPath, filePath);
 
          if((fileAttribs = FileExists(selectedPath)).isFile)
-            result = fileAttribs;
-         else if(workspace)
          {
-            bool done = false;
+            result = fileAttribs;
+            done = true;
+         }
+         else
+         {
+            char * path = CopyString(selectedPath);
+            StripLastDirectory(path, path);
+            if((fileAttribs = FileExists(path)) && (fileAttribs.isDirectory || fileAttribs.isDrive))
+            {
+               int len = strlen(selectedPath);
+               char * d = &selectedPath[len - 1];
+               char * stop = d - (len - strlen(path));
+               while(d != stop)
+               {
+                  *d = 0;
+                  while(d != stop)
+                  {
+                     d--;
+                     if(!isspace(*d)) break;
+                     *d = 0;
+                  }
+                  if((fileAttribs = FileExists(selectedPath)).isFile)
+                  {
+                     result = fileAttribs;
+                     done = true;
+                     break;
+                  }
+               }
+            }
+            delete path;
+         }
+         if(!done && workspace)
+         {
             for(p : workspace.projects)
             {
                strcpy(selectedPath, p.topNode.path);
@@ -2977,7 +3012,7 @@ class IDEWorkSpace : Window
          strcpy(filePath, path);
       }
 
-      if(filePath[0] && strstr(filePath, "$("))
+      if(prj && filePath[0] && strstr(filePath, "$("))
       {
          DirExpression pathExp { };
          CompilerConfig compiler = GetCompilerConfig();
