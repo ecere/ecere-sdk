@@ -516,6 +516,33 @@ class EARArchive : Archive
       // bf.handle = f;
    }
 
+   File FileOpenCompressed(const char * name, bool * isCompressed, uint64 * ucSize)
+   {
+      File result = null;
+      EARFile file {};
+      if(file)
+      {
+         EAREntry entry { };
+
+         f.Seek(archiveStart + sizeof(EARHeader), start);
+         if(EARGetEntry(f, entry, name, null).isFile)
+         {
+            file.start = f.Tell();
+            file.position = 0;
+            file.size = entry.cSize ? entry.cSize : entry.size;
+            if(ucSize) *ucSize = entry.size;
+            file.f = f;
+            incref file.f;
+            file.f.Seek(file.start, start);
+            result = file;
+            if(isCompressed) *isCompressed = entry.cSize != 0;
+         }
+         if(!result)
+            delete file;
+      }
+      return result;
+   }
+
    File FileOpen(const char * name)
    {
       File result = null;
