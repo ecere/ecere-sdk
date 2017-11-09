@@ -22,6 +22,7 @@ public:
    virtual ArchiveDir OpenDirectory(const char * name, FileStats stats, ArchiveAddMode addMode);
    virtual bool Clear(void);
 
+   virtual File FileOpenCompressed(const char * fileName, bool * isCompressed, uint64 * ucSize);
    virtual File FileOpen(const char * fileName);
    virtual FileAttribs FileExists(const char * fileName);
    virtual File FileOpenAtPosition(uint position);
