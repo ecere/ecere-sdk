@@ -166,6 +166,9 @@ public enum TokenType2
    _typeof,
 
    _uint,
+   _uint16,
+   _uint64,
+   _uint128,
    subClass,
    thisClass,
    typedObject,
