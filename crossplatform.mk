@@ -371,7 +371,7 @@ ifndef REPOSITORY_VER
       else
          ifneq ($(shell $(GIT) log -n 1 --format="%%%%" $(nullerror)),)
             export GIT_REPOSITORY := yes
-            export REPOSITORY_VER := $(shell $(GIT) describe --tags --dirty=" (dirty)" --always)
+            export REPOSITORY_VER := $(shell $(GIT) describe --tags --dirty="-d" --always)
          endif
       endif
    endif
