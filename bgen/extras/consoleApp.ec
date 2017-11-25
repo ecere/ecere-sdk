@@ -271,9 +271,6 @@ public:
          PrintLn($"Examples:");
       else if(task == ArgumentSymbol::help)
          PrintLn($"Syntax:");
-
-      //PrintLn("");
-      //pause();
    }
 
    void Main()
