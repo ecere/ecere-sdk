@@ -182,6 +182,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Free()
    {
       MapNode<MT, V> node = root;
+      memMutex.Wait();
       while(node)
       {
          if(node.left)
@@ -207,6 +208,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             node = parent;
          }
       }
+      memMutex.Release();
       root = null;
       count = 0;
    }
