@@ -69,6 +69,21 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
 
    void Free()
    {
+      Link item = *&first;
+      Class lltClass = class(LLT);
+      bool byAddress = lltClass && lltClass.type == structClass;
+      while(item)
+      {
+         Link next = item.next;
+         D data = byAddress ? (LLT)&item.data : (LLT)item.data;
+         delete data;
+         item = next;
+      }
+      *&first = null;
+      *&last = null;
+      count = 0;
+
+      /*
       LT item;
       while((item = first))
       {
@@ -76,6 +91,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
          delete data;
          Remove(item);
       }
+      */
    }
 
    Link Find(const LLT value)
