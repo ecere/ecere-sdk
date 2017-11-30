@@ -748,7 +748,7 @@ static uint OUTSIDE_MEM = 0;
 
 #if !defined(_NOMUTEX)
 #if !defined(ECERE_BOOTSTRAP)
-static Mutex memMutex { };
+/*static */Mutex memMutex { };
 #endif
 #endif
 
