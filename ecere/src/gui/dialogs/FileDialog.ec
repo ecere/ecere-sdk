@@ -314,7 +314,7 @@ public:
    };
 
    // Stuff currently in config moving to FileDialog:
-   property const char * filePath { set { strcpy(filePath, value); } get { return (char *)filePath; } };
+   property const char * filePath { set { strcpy(filePath, value ? value : ""); } get { return (char *)filePath; } };
    property const char * currentDirectory
    {
       set
