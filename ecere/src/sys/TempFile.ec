@@ -193,5 +193,7 @@ public:
       set { openMode = value; }
       get { return openMode; }
    }
-   property byte * buffer { get { return buffer; } };
+   property byte * buffer { get { return buffer; } set { delete buffer; buffer = value; } };
+   property uintsize size { get { return size; } set { size = value; } }
+   byte * StealBuffer() { byte * result = buffer; buffer = null; return result; }
 };
