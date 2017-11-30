@@ -57,7 +57,7 @@ BLIT(DTF, uint32, uint32, BLIT_INIT_DEC,   FLIP(TRANSPUT(*source)))
 #define BLITSD { { BLIT_D, BLIT_DF}, { BLIT_DT, BLIT_DTF } }
 
 void (* blits_table[PixelFormat][2][2]) (BLIT_ARGS) =
-{ BLITSB, BLITSB, BLITSW, BLITSW, BLITSW, BLITSD, BLITSB, BLITSW, BLITSD };
+{ BLITSB, BLITSB, BLITSW, BLITSW, BLITSW, BLITSD, BLITSB, BLITSW, BLITSD, BLITSW };
 
 // 8 bit to other formats
 #define PALINIT   ColorAlpha * palette = src.palette;
@@ -125,7 +125,8 @@ void (* blits_8bit_table[PixelFormat][2][2]) (BLIT_ARGS) =
    { { BLIT_B888, BLIT_B888F }, { BLIT_B888T, BLIT_B888TF } },
    { { null, null }, { null, null } },
    { { null, null }, { null, null } },
-   { { BLIT_BRGBA, BLIT_BRGBAF }, { BLIT_BRGBAT, BLIT_BRGBATF } }
+   { { BLIT_BRGBA, BLIT_BRGBAF }, { BLIT_BRGBAT, BLIT_BRGBATF } },
+   { { null, null }, { null, null } }
 };
 
 // Using Palette Shades
@@ -155,7 +156,8 @@ void (* shades_blit_table[PixelFormat][2]) (BLIT_ARGS) =
    { BLIT_BI888,BLIT_BI888F },
    { null, null },
    { null, null },
-   { BLIT_BIRGBA,BLIT_BIRGBAF }
+   { BLIT_BIRGBA,BLIT_BIRGBAF },
+   { null, null }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -261,7 +263,8 @@ void (* stretches_8bit_table[PixelFormat][2][2]) (STRETCH_ARGS) =
    { { STRETCH_B888, STRETCH_B888F }, { STRETCH_B888T, STRETCH_B888TF } },
    { { null, null }, { null, null } },
    { { null, null }, { null, null } },
-   { { STRETCH_BRGBA, STRETCH_BRGBAF }, { STRETCH_BRGBAT, STRETCH_BRGBATF } }
+   { { STRETCH_BRGBA, STRETCH_BRGBAF }, { STRETCH_BRGBAT, STRETCH_BRGBATF } },
+   { { null, null }, { null, null } }
 };
 
 // Using Palette Shades
@@ -289,8 +292,9 @@ void (* shades_stretch_table[PixelFormat][2]) (STRETCH_ARGS) =
    { STRETCH_BI888,STRETCH_BI888F },
    { null, null },
    { null, null },
-   { STRETCH_BIRGBA,STRETCH_BIRGBAF }
-   //{ STRETCH_BI888,STRETCH_BI888F }
+   { STRETCH_BIRGBA,STRETCH_BIRGBAF },
+   //{ STRETCH_BI888,STRETCH_BI888F }.
+   { null, null }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -451,5 +455,6 @@ void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
    { { FILTER_888, FILTER_888F }, { FILTER_888T, FILTER_888TF } },
    { { FILTER_A, FILTER_AF },     { FILTER_AT, FILTER_ATF } }, // Alpha
    { { null, null },              { null, null} }, // Text
-   { { FILTER_888, FILTER_888F }, { FILTER_888T, FILTER_888TF } } // RGBA
+   { { FILTER_888, FILTER_888F }, { FILTER_888T, FILTER_888TF } }, // RGBA
+   { { null, null },              { null, null} } // A16
 };
