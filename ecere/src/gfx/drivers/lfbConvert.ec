@@ -425,13 +425,13 @@ static void BMPRGBA_A(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
 
 void (* converters_table[PixelFormat][PixelFormat]) (LFBSystem, Bitmap src, Bitmap dst) =
 {
-   { null,null,null,null,null,null,null, null },
-   { null, BMP8_8, BMP8_444, BMP8_555, BMP8_565, BMP8_888, null, null, BMP8_RGBA },
-   { null, BMP444_8, null, BMP444_555, BMP444_565, BMP444_888, null, null },
-   { null, BMP555_8, BMP555_444, null, BMP555_565, BMP555_888, null, null },
-   { null, BMP565_8, BMP565_444, BMP565_555, null, BMP565_888, null, null },
-   { null, BMP888_8, BMP888_444, BMP888_555, BMP888_565, null, BMP888_A, null, BMP888_RGBA },
-   { null, null, null, null, null, BMPA_888, null, null },
-   { null,null,null,null,null,null,null, null },
-   { null,BMPRGBA_8,null,BMPRGBA_555,BMPRGBA_565,BMPRGBA_888,BMPRGBA_A, null }
+   { null,null,null,null,null,null,null, null, null },
+   { null, BMP8_8, BMP8_444, BMP8_555, BMP8_565, BMP8_888, null, null, BMP8_RGBA, null },
+   { null, BMP444_8, null, BMP444_555, BMP444_565, BMP444_888, null, null, null },
+   { null, BMP555_8, BMP555_444, null, BMP555_565, BMP555_888, null, null, null },
+   { null, BMP565_8, BMP565_444, BMP565_555, null, BMP565_888, null, null, null },
+   { null, BMP888_8, BMP888_444, BMP888_555, BMP888_565, null, BMP888_A, null, BMP888_RGBA, null },
+   { null, null, null, null, null, BMPA_888, null, null, null },
+   { null,null,null,null,null,null,null, null, null },
+   { null,BMPRGBA_8,null,BMPRGBA_555,BMPRGBA_565,BMPRGBA_888,BMPRGBA_A, null, null }
 };

@@ -222,7 +222,8 @@ define textCellH = 16;
 
 public enum PixelFormat // : byte MESSES UP GuiApplication
 {
-   pixelFormat4, pixelFormat8, pixelFormat444, pixelFormat555, pixelFormat565, pixelFormat888, pixelFormatAlpha, pixelFormatText, pixelFormatRGBA
+   pixelFormat4, pixelFormat8, pixelFormat444, pixelFormat555, pixelFormat565, pixelFormat888, pixelFormatAlpha, pixelFormatText, pixelFormatRGBA,
+   pixelFormatA16
 };
 public enum Resolution : int
 {
@@ -2034,7 +2035,7 @@ static Material defaultMaterial
 };
 #endif
 
-static byte colorDepthShifts[PixelFormat] = { 0,0,1,1,1,2,0,1,2 };
+static byte colorDepthShifts[PixelFormat] = { 0,0,1,1,1,2,0,1,2,1 };
 static Size resolutions[Resolution] =
 {
    {80,25},
@@ -2045,7 +2046,7 @@ static Size resolutions[Resolution] =
    {1024,768},{1152,864},{1280,1024},{1600,1200},
    {768,480}
 };
-static int colorDepths[PixelFormat] = {4,8,12,15,16,32,8,16,32};
+static int colorDepths[PixelFormat] = {4,8,12,15,16,32,8,16,32,16};
 
 // --- Query utilities ---
 

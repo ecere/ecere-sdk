@@ -85,6 +85,8 @@ class PNGFormat : BitmapFormat
                channels = png_get_channels(png_ptr, info_ptr);
                if(channels == 3 || channels == 4 || channels == 1 || channels == 2)
                {
+                  PixelFormat pixelFormat = pixelFormatRGBA;
+                  int stride = 0;
                   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                       &interlace_type, null, null);
                   numPasses = png_set_interlace_handling(png_ptr);
@@ -102,7 +104,13 @@ class PNGFormat : BitmapFormat
                   else if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
                       png_set_tRNS_to_alpha(png_ptr);
 
-                  if((result = bitmap.Allocate(null, (uint)width, (uint)height, 0, pixelFormatRGBA, false)))
+                  if(channels == 1 && bit_depth == 16 && color_type == PNG_COLOR_TYPE_GRAY)
+                  {
+                     pixelFormat = pixelFormatA16;
+                     stride = width; // no padding for now...
+                  }
+
+                  if((result = bitmap.Allocate(null, (uint)width, (uint)height, stride, pixelFormat, false)))
                   {
                      int pass;
 
@@ -117,20 +125,26 @@ class PNGFormat : BitmapFormat
                            for (y = 0; y < height; y++)
                            {
                               uint x;
-                              ColorRGBA * destPtr = ((ColorRGBA *)bitmap.picture) + y * bitmap.stride;
                               png_read_rows(png_ptr, &rowPtr, null, 1);
                               if(bit_depth == 16)
                               {
+                                 // We have pixelFormatA16 format for this now...
+                                 /*
                                  for(x = 0; x<width; x++)
                                     destPtr[x] = ColorRGBA { rowPtr[x*2+0], rowPtr[x*2+0], rowPtr[x*2+0], 255 };
+                                 */
+                                 uint16 * destPtr = ((uint16 *)bitmap.picture) + y * bitmap.stride;
+                                 memcpy(destPtr, rowPtr, width*2);
                               }
                               else if(bit_depth == 8)
                               {
+                                 ColorRGBA * destPtr = ((ColorRGBA *)bitmap.picture) + y * bitmap.stride;
                                  for(x = 0; x<width; x++)
                                     destPtr[x] = ColorRGBA { rowPtr[x], rowPtr[x], rowPtr[x], 255 };
                               }
                               else if(bit_depth == 1)
                               {
+                                 ColorRGBA * destPtr = ((ColorRGBA *)bitmap.picture) + y * bitmap.stride;
                                  for(x = 0; x<width; x++)
                                  {
                                     int offset = x >> 3;
@@ -251,7 +265,7 @@ class PNGFormat : BitmapFormat
    {
       bool result = false;
       Bitmap tempBitmap = null;
-      if(bitmap && bitmap.pixelFormat != pixelFormatRGBA)
+      if(bitmap && bitmap.pixelFormat != pixelFormatRGBA && bitmap.pixelFormat != pixelFormatA16)
       {
          tempBitmap = Bitmap { };
          if(tempBitmap.Copy(bitmap) && tempBitmap.Convert(null, pixelFormatRGBA, null))
@@ -274,17 +288,20 @@ class PNGFormat : BitmapFormat
                   if(!setjmp(png_jmpbuf(png_ptr)))
                   {
                      uint y;
+                     uint bytesPerRow = bitmap.stride * (bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
+                     int colorType = bitmap.pixelFormat == pixelFormatA16 ? PNG_COLOR_TYPE_GRAY : PNG_COLOR_TYPE_RGBA;
+                     int bitsPerPixel = bitmap.pixelFormat == pixelFormatA16 ? 16 : 8;
 
                      png_set_write_fn(png_ptr, f, WriteData, null);
 
-                     png_set_IHDR(png_ptr, info_ptr, bitmap.width, bitmap.height, 8, PNG_COLOR_TYPE_RGBA,
+                     png_set_IHDR(png_ptr, info_ptr, bitmap.width, bitmap.height, bitsPerPixel, colorType,
                         PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
                      png_write_info(png_ptr, info_ptr);
 
                      for (y = 0; y < bitmap.height; y++)
                      {
-                        byte * rowPtr = (byte *)(((uint *)bitmap.picture) + y * bitmap.stride);
+                        byte * rowPtr = ((byte *)bitmap.picture) + y * bytesPerRow;
                         png_write_rows(png_ptr, &rowPtr, 1);
                      }
 
