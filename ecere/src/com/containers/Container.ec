@@ -199,8 +199,23 @@ public:
       Class Dclass = class(D);
       bool byRef = (Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass;
       int (* onCompare)(void *, const void *, const void *) = (void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare];
+      bool isInt64 = false;
+      if(onCompare == (void *)class(int64).OnCompare ||
+         (Dclass.type == unitClass && Dclass.typeSize == sizeof(int64) && !strcmp(Dclass.name, "Id")))
+      {
+         onCompare = (void *)uint64::OnCompare;
+         isInt64 = true;
+      }
 
-      if(byRef)
+      if(isInt64)
+      {
+         for(i = GetFirst(); i; i = GetNext(i))
+         {
+            D data = GetData(i);
+            if((uint64)value == (uint64)data) return i;
+         }
+      }
+      else if(byRef)
       {
          for(i = GetFirst(); i; i = GetNext(i))
          {
