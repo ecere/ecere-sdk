@@ -88,7 +88,7 @@ public:
    }
 
    uint64 state;
-   bool uniformsModified;
+   bool matrixModified, lightModified, materialModified, uniformsModified;
 
 private:
    char * vertexShaderFile;
@@ -274,6 +274,9 @@ public:
       {
          if(shader != this.shader)
          {
+            lightModified = true;
+            materialModified = true;
+            matrixModified = true;
             uniformsModified = true;
             activeState = state;
             this.shader = shader;
@@ -283,10 +286,13 @@ public:
             activeProgram = shader.program;
             glUseProgram(shader.program);
          }
-         if(uniformsModified)
+         if(uniformsModified || lightModified || materialModified || matrixModified)
          {
             uploadUniforms(shader);
             uniformsModified = false;
+            lightModified = false;
+            materialModified = false;
+            matrixModified = false;
          }
       }
 #endif
