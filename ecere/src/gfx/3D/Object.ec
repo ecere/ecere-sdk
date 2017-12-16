@@ -871,6 +871,11 @@ public:
       }
    }
 
+   void Remove(Object object)
+   {
+      if(this)
+         children.Remove(object);
+   }
 
    bool Merge(DisplaySystem displaySystem)
    {
