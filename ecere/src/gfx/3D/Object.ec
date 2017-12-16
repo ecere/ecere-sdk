@@ -1651,7 +1651,8 @@ private:
       for(p = 0; p<6; p++)
       {
          Plane * plane = &planes[p];
-         double dot = plane->normal.DotProduct(wcenter);
+         //double dot = plane->normal.DotProduct(wcenter);
+         double dot = plane->normal.x * wcenter.x + plane->normal.y * wcenter.y + plane->normal.z * wcenter.z;
          double distance = dot + plane->d;
          if(distance < -wradius)
          {
@@ -1684,7 +1685,8 @@ private:
             int numGoodPoints = 0;
             for(i = 0; i < 8; ++i)
             {
-               double dot = plane->normal.DotProduct(box[i]);
+               // double dot = plane->normal.DotProduct(box[i]);
+               double dot = plane->normal.x * box[i].x + plane->normal.y * box[i].y + plane->normal.z * box[i].z;
                double distance = dot + plane->d;
    			   if(distance > -1)
                   numGoodPoints++;
