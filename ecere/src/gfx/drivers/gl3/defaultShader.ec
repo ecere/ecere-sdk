@@ -315,81 +315,108 @@ public:
       }
 */
 
-      glUniformMatrix4fv(shader.uPrjMatrix, 1, GL_FALSE, projection);
+      if(matrixModified)
+      {
+         glUniformMatrix4fv(shader.uPrjMatrix, 1, GL_FALSE, projection);
 
-      if(state.modelView)
-         glUniformMatrix4fv(shader.uMVMatrix, 1, GL_FALSE, modelView);
+         if(state.modelView)
+            glUniformMatrix4fv(shader.uMVMatrix, 1, GL_FALSE, modelView);
+      }
 
       if(state.lighting)
       {
          // Lights
-         int i;
-         for(i = 0; i < 8; i++)
+         if(lightModified)
          {
-            LightMode mode = (LightMode)((state.lightBits & (0x7 << (3*i))) >> (3*i));
-            if(mode)
+            int i;
+            for(i = 0; i < 8; i++)
             {
-               if(mode == posSpot || mode == posSpotAtt)
+               LightMode mode = (LightMode)((state.lightBits & (0x7 << (3*i))) >> (3*i));
+               if(mode)
                {
-                  glUniform3fv(shader.uLightsSpotDir[i], 1, lSpotDir[i]);
-                  glUniform1f(shader.uLightsSpotCutOffCos[i], lCutOffCos[i]);
-                  glUniform1f(shader.uLightsSpotExp[i], lSpotExp[i]);
+                  if(mode == posSpot || mode == posSpotAtt)
+                  {
+                     glUniform3fv(shader.uLightsSpotDir[i], 1, lSpotDir[i]);
+                     glUniform1f(shader.uLightsSpotCutOffCos[i], lCutOffCos[i]);
+                     glUniform1f(shader.uLightsSpotExp[i], lSpotExp[i]);
+                  }
+                  if(mode == posAtt || mode == posSpotAtt)
+                     glUniform3fv(shader.uLightsAtt[i], 1, lAtt[i]);
+                  if(state.specular)
+                     glUniform3fv(shader.uLightsSpecular[i], 1, lSpecular[i]);
+                  glUniform3fv(shader.uLightsPos[i], 1, lPosition[i]);
+                  glUniform3fv(shader.uLightsDiffuse[i], 1, lDiffuse[i]);
+                  glUniform3fv(shader.uLightsAmbient[i], 1, lAmbient[i]);
                }
-               if(mode == posAtt || mode == posSpotAtt)
-                  glUniform3fv(shader.uLightsAtt[i], 1, lAtt[i]);
-               if(state.specular)
-                  glUniform3fv(shader.uLightsSpecular[i], 1, lSpecular[i]);
-               glUniform3fv(shader.uLightsPos[i], 1, lPosition[i]);
-               glUniform3fv(shader.uLightsDiffuse[i], 1, lDiffuse[i]);
-               glUniform3fv(shader.uLightsAmbient[i], 1, lAmbient[i]);
             }
+
+            glUniform3fv(shader.uGlobalAmbient, 1, globalAmbient);
          }
 
-         // Material
-         glUniform4fv(shader.uMatDiffuse,  1, diffuse);
-         glUniform3fv(shader.uMatAmbient,  1, ambient);
-         glUniform3fv(shader.uMatEmissive, 1, emissive);
-         if(state.specular)
+         if(materialModified)
          {
-            glUniform3fv(shader.uMatSpecular, 1, specular);
-            glUniform1f(shader.uMatPower, state.blinnSpecular ? power : power / 4.0f);
+            // Material
+            glUniform4fv(shader.uMatDiffuse,  1, diffuse);
+            glUniform3fv(shader.uMatAmbient,  1, ambient);
+            glUniform3fv(shader.uMatEmissive, 1, emissive);
+            if(state.specular)
+            {
+               glUniform3fv(shader.uMatSpecular, 1, specular);
+               glUniform1f(shader.uMatPower, state.blinnSpecular ? power : power / 4.0f);
+            }
+
+            if(state.specularMapping)
+               glUniform1i(shader.uSpecularTex, 2);
+
+            if(state.normalsMapping)
+               glUniform1i(shader.uBumpTex, 1);
          }
 
-         glUniform1f(shader.uNearPlane, nearPlane);
-         glUniform3fv(shader.uGlobalAmbient, 1, globalAmbient);
-
-         glUniformMatrix3fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
-
-         if(state.normalsMapping)
-            glUniform1i(shader.uBumpTex, 1);
-
-         if(state.specularMapping)
-            glUniform1i(shader.uSpecularTex, 2);
+         if(1 || matrixModified)
+         {
+            glUniform1f(shader.uNearPlane, nearPlane);
+            glUniformMatrix3fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
+         }
       }
       else
+      {
          glUniform4fv(shader.uMatDiffuse, 1, color);
+      }
 
       if(state.environmentMapping)
       {
+         if(matrixModified)
+            glUniformMatrix3fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
          glUniform1i(shader.uEnvTex, 3);
-         glUniformMatrix3fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
-         if(state.reflection)
-            glUniform1f(shader.uMatReflectivity, reflectivity);
-         if(state.refraction)
-            glUniform1f(shader.uRefractionETA, refractionETA);
-         if(state.reflectionMap)
-            glUniform1i(shader.uReflectTex, 4);
+
+         if(materialModified)
+         {
+            if(state.reflection)
+               glUniform1f(shader.uMatReflectivity, reflectivity);
+            if(state.refraction)
+               glUniform1f(shader.uRefractionETA, refractionETA);
+            if(state.reflectionMap)
+               glUniform1i(shader.uReflectTex, 4);
+         }
       }
 
-      if(state.texturing || state.cubeMap)
-         glUniform1i(shader.uDiffuseTex, 0);
-      if((state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap) && state.textureMatrix)
-         glUniformMatrix4fv(shader.uTextureMatrix, 1, GL_FALSE, matTexture);
-
-      if(state.fog)
+      if(materialModified)
       {
-         glUniform1f(shader.uFogDensity, fogDensity);
-         glUniform3fv(shader.uFogColor, 1, fogColor);
+         if(state.texturing || state.cubeMap)
+            glUniform1i(shader.uDiffuseTex, 0);
+      }
+      if(matrixModified)
+      {
+         if((state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap) && state.textureMatrix)
+            glUniformMatrix4fv(shader.uTextureMatrix, 1, GL_FALSE, matTexture);
+      }
+      if(materialModified)
+      {
+         if(state.fog)
+         {
+            glUniform1f(shader.uFogDensity, fogDensity);
+            glUniform3fv(shader.uFogColor, 1, fogColor);
+         }
       }
 #endif
    }
@@ -404,7 +431,7 @@ public:
          (float)-c[8], (float) c[9], (float) c[10]
       };
       memcpy(cubemap_matrix, m, 9 * sizeof(float));
-      uniformsModified = true;
+      matrixModified = true;
    }
 
    void updateMatrix(MatrixMode mode, Matrix matrix, bool isIdentity)
@@ -420,7 +447,7 @@ public:
       {
          memcpy(projection, m, 16 * sizeof(float));
          nearPlane = (float)::nearPlane;
-         uniformsModified = true;
+         matrixModified = true;
       }
       else if(mode == modelView)
       {
@@ -447,7 +474,7 @@ public:
             memcpy(normalsMatrix, m, 9 * sizeof(float));
          }
 
-         uniformsModified = true;
+         matrixModified = true;
       }
       else if(mode == texture)
       {
@@ -455,7 +482,7 @@ public:
          ((DefaultShaderBits)state).textureMatrix = !isIdentity;
          if(((DefaultShaderBits)state).texturing || ((DefaultShaderBits)state).normalsMapping || ((DefaultShaderBits)state).specularMapping ||
             ((DefaultShaderBits)state).reflectionMap || ((DefaultShaderBits)state).cubeMap)
-            uniformsModified = true;
+            matrixModified = true;
       }
    }
 
@@ -463,13 +490,13 @@ public:
    {
       globalAmbient[0] = r, globalAmbient[1] = g, globalAmbient[2] = b;
       if(((DefaultShaderBits)state).lighting)
-         uniformsModified = true;
+         lightModified = true;
    }
 
    void setColor(float r, float g, float b, float a)
    {
       color[0] = r, color[1] = g, color[2] = b, color[3] = a;
-      uniformsModified = true;
+      materialModified = true;
    }
 
    void lighting(bool on)
@@ -477,7 +504,7 @@ public:
       if(((DefaultShaderBits)state).lighting != on)
       {
          ((DefaultShaderBits)state).lighting = on;
-         uniformsModified = true;
+         lightModified = true;
          if(!on)
          {
             backLightState = state &
@@ -503,7 +530,7 @@ public:
       {
          fogOn = on;
          ((DefaultShaderBits)state).fog = fogOn && fogDensity;
-         uniformsModified = true;
+         materialModified = true;
       }
    }
 
@@ -514,7 +541,7 @@ public:
          fogDensity = density;
          ((DefaultShaderBits)state).fog = fogOn && fogDensity;
          if(fogOn)
-            uniformsModified = true;
+            lightModified = true;
       }
    }
 
@@ -522,7 +549,7 @@ public:
    {
       fogColor[0] = r, fogColor[1] = g, fogColor[2] = b;
       if(fogOn)
-         uniformsModified = true;
+         lightModified = true;
    }
 
    void texturing(bool on)
@@ -534,7 +561,7 @@ public:
             state &= ~DefaultShaderBits { swizzle = (SwizzleMode)0x3 };
          if(!on && !((DefaultShaderBits)state).normalsMapping && !((DefaultShaderBits)state).specularMapping && !((DefaultShaderBits)state).reflectionMap && !((DefaultShaderBits)state).cubeMap)
             state &= ~DefaultShaderBits { textureMatrix = true };
-         uniformsModified = true;
+         materialModified = true;
       }
    }
 
@@ -557,7 +584,7 @@ public:
       {
          ((DefaultShaderBits)state).swizzle = swizzle;
          if(((DefaultShaderBits)state).texturing || ((DefaultShaderBits)state).cubeMap)
-            uniformsModified = true;
+            materialModified = true;
       }
    }
 
@@ -584,7 +611,7 @@ public:
       ((DefaultShaderBits)state).cubeMap = false;
       ((DefaultShaderBits)state).specular = false;
       ((DefaultShaderBits)state).twoSided = twoSided;
-      uniformsModified = true;
+      materialModified = true;
    }
 
    void setPerVertexColor(bool perVertexColor)
@@ -592,7 +619,7 @@ public:
       if(((DefaultShaderBits)state).perVertexColor != perVertexColor)
       {
          ((DefaultShaderBits)state).perVertexColor = perVertexColor;
-         uniformsModified = true;
+         materialModified = true;
       }
    }
 
@@ -727,7 +754,7 @@ public:
       else
          ((DefaultShaderBits)state).specularMapping = false;
 
-      uniformsModified = true;
+      materialModified = true;
 #endif
    }
 
@@ -741,7 +768,7 @@ public:
          ((DefaultShaderBits)state).lighting = true;
 
       if(lightOn || (lightOn != (mode != off)))
-         uniformsModified = true;
+         lightModified = true;
 
       if(lightOn)
       {

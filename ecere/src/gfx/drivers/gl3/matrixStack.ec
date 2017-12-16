@@ -106,9 +106,12 @@ public void glmsLoadMatrix(Matrix matrix)
 public void glmsLoadIdentity()
 {
    int ix = matrixIndex[curStack];
-   isIdentity[curStack][ix] = true;
-   matrixStack[curStack][ix].Identity();
-   stackModified[curStack] = true;
+   if(!isIdentity[curStack][ix])
+   {
+      isIdentity[curStack][ix] = true;
+      matrixStack[curStack][ix].Identity();
+      stackModified[curStack] = true;
+   }
 }
 
 public void glmsPushMatrix()
