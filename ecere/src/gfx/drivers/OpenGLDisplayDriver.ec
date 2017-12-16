@@ -3882,6 +3882,9 @@ class OpenGLDisplayDriver : DisplayDriver
       if(glCaps_vertexBuffer)
       {
          OGLMesh oglMesh = mesh.data;
+         if(!oglMesh)
+            oglMesh = mesh.data = OGLMesh { };
+
          if(!flags) flags = mesh.flags;
          if(flags.vertices)
             oglMesh.vertices.allocate(
