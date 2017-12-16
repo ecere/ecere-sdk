@@ -562,27 +562,29 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
 {
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    uint16 * _wfileName = __ecereNameSpace__ecere__sys__UTF8toUTF16(fileName, null);
+
    /*
+   struct WinFile { HANDLE handle; } file;
    file.handle = CreateFile(_wfileName,
       ((mode == FOM_read || mode == FOM_readWrite || mode == FOM_writeRead || mode == FOM_appendRead) ? GENERIC_READ : 0) |
       ((mode == FOM_write || mode == FOM_append || mode == FOM_readWrite || mode == FOM_writeRead || mode == FOM_appendRead) ? GENERIC_WRITE: 0),
       FILE_SHARE_READ|FILE_SHARE_WRITE,
       null,
-      (mode == write || mode == writeRead) ? TRUNCATE_EXISTING : ((mode == read || mode == readWrite) ? OPEN_EXISTING : OPEN_ALWAYS), 0, null);
+      (mode == FOM_write || mode == FOM_writeRead) ? TRUNCATE_EXISTING : ((mode == FOM_read || mode == FOM_readWrite) ? OPEN_EXISTING : OPEN_ALWAYS), 0, null);
    if(file.handle)
    {
       int flags;
-      int handle;
+      int handle = -1;
       switch(mode)
       {
-         case FOM_read:       handle = _open_osfhandle((int)file.handle, _O_RDONLY); break;
-         case FOM_write:      handle = _open_osfhandle((int)file.handle, _O_WRONLY | _O_CREAT | _O_TRUNC); break;
-         case FOM_append:     handle = _open_osfhandle((int)file.handle, _O_WRONLY | _O_CREAT | _O_APPEND); break;
-         case FOM_readWrite:  handle = _open_osfhandle((int)file.handle, _O_RDWR); break;
-         case FOM_writeRead:  handle = _open_osfhandle((int)file.handle, _O_RDWR | _O_CREAT | _O_TRUNC); break;
-         case FOM_appendRead: handle = _open_osfhandle((int)file.handle, _O_RDWR | _O_APPEND | _O_CREAT); break;
+         case FOM_read:       handle = _open_osfhandle((intptr_t)file.handle, _O_RDONLY); break;
+         case FOM_write:      handle = _open_osfhandle((intptr_t)file.handle, _O_WRONLY | _O_CREAT | _O_TRUNC); break;
+         case FOM_append:     handle = _open_osfhandle((intptr_t)file.handle, _O_WRONLY | _O_CREAT | _O_APPEND); break;
+         case FOM_readWrite:  handle = _open_osfhandle((intptr_t)file.handle, _O_RDWR); break;
+         case FOM_writeRead:  handle = _open_osfhandle((intptr_t)file.handle, _O_RDWR | _O_CREAT | _O_TRUNC); break;
+         case FOM_appendRead: handle = _open_osfhandle((intptr_t)file.handle, _O_RDWR | _O_APPEND | _O_CREAT); break;
       }
-      if(handle)
+      if(handle != -1)
       {
          switch(mode)
          {
