@@ -296,6 +296,13 @@ public void glimtkEnd()
          defaultShader.setPerVertexColor(true);
 #endif
    }
+   else
+   {
+#if ENABLE_GL_SHADERS
+      if(glCaps_shaders)
+         defaultShader.setPerVertexColor(false);
+#endif
+   }
 
    if(glCaps_vertexBuffer)
       verticesBuf.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
