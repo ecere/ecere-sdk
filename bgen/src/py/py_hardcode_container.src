@@ -4,16 +4,18 @@
    def init_args(self, args, kwArgs):
       if kwArgs.get("impl") is None:
          templateParams = kwArgs.get("templateParams")
-         if templateParams is None and len(args) > 0 and type(args[0]) == str:
-            kwArgs["templateParams"] = args[0]
-            del args[0]
-         else:
-            copySrc = kwArgs.get("copySrc")
-            if copySrc is None and len(args) > 0: copySrc = args[0]
-            if isinstance(copySrc, list) and len(copySrc) > 0:
-               co = coFromPy(copySrc[0])
-               if co is not None:
-                  kwArgs["templateParams"] = "<" + ffis(co.name) + ">"
+         if templateParams is None:
+            if len(args) > 0 and type(args[0]) == str:
+               kwArgs["templateParams"] = args[0]
+               del args[0]
+            else:
+               copySrc = kwArgs.get("copySrc")
+               if copySrc is None and len(args) > 0: copySrc = args[0]
+               if isinstance(copySrc, list) and len(copySrc) > 0:
+                  co = coFromPy(copySrc[0])
+                  if co is not None:
+                     type(co)
+                     kwArgs["templateParams"] = "<" + ffis(co.name) + ">"
       init_args(Container, self, args, kwArgs)
 
    def __getitem__(self, index):

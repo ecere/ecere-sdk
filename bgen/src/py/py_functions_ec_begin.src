@@ -28,6 +28,11 @@ def pyObject(eCObject):
 def pyOrNewObject(c, eCObject, templateParams=None):
    if eCObject == ffi.NULL: return None
    o = pyObject(eCObject)
+#// version that can handle noHeadClass
+#//   if hasattr(eCObject, '_class'):
+#//      o = pyObject(eCObject)
+#//   else:
+#//      o = None
    if o is None:
       if templateParams is not None: o = c(templateParams=templateParams, impl=eCObject)
       else: o = c(impl=eCObject)
@@ -131,7 +136,7 @@ def I18NC(s, c):
    return ffi.string(lib.getTranslatedString(os.path.splitext(os.path.basename(inspect.getfile(sys._getframe(1))))[0].encode('u8'), s.encode('u8'), c.encode('u8'))).decode('u8')
 
 def init_args(c, self, args, kwArgs):
-   super(c, self).init_args(args, kwArgs)
+   super(c, self).init_args([] if hasattr(c, 'private_inheritance') else args, kwArgs)
    for k, v in zip(c.class_members, args[:]):
       if v is not None:
          setattr(self, k, v)

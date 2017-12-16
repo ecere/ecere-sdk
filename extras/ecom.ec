@@ -96,6 +96,22 @@ Module searchModulesForNamespace(Module start, NameSpace * space, bool * markEce
    return module;
 }
 
+uint classTypeLen(ClassType ct)
+{
+   switch(ct)
+   {
+      case bitClass:    return  8;
+      case unitClass:
+      case enumClass:   return  9;
+      case unionClass:  return 10;
+      case normalClass:
+      case structClass:
+      case noHeadClass:
+      case systemClass: return 11;
+   }
+   return 0;
+}
+
 bool classIsFromModule(Class c, Module m, Application a)
 {
    bool ecereCOM = false;

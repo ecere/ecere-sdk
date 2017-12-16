@@ -467,7 +467,7 @@ bool paramsIsOnlyVoid(OldList * params)
 bool typeReturnTypeRequiresPyObj(Type type)
 {
    return type.kind == functionType && type.returnType.kind == classType && type.returnType._class.registered &&
-      (type.returnType._class.registered.type == normalClass || type.returnType._class.registered.type == noHeadClass);
+      (type.returnType._class.registered.type == normalClass/* || type.returnType._class.registered.type == noHeadClass*/);
 }
 
 bool typeRequiresImpl(Type t)
@@ -812,7 +812,7 @@ void processPyClass(PythonGen g, BClass c)
                }
             }
 
-            if(c.cl.type == normalClass)
+            if(c.cl.type == normalClass && !c.isString)
                tmpClassTriesNewInitArgs = true;
 
             if(hasNew)
@@ -837,6 +837,8 @@ void processPyClass(PythonGen g, BClass c)
                {
                   char * name;
                   bool added = false;
+                  if(c.cl.inheritanceAccess == privateAccess)
+                     out.ds.printx(sk, "   private_inheritance = 1", ln);
                   out.ds.printx(sk, "   class_members = [");
                   // 'array', 'conut', 'minAllocSize', 'size'
                   {
@@ -877,8 +879,17 @@ void processPyClass(PythonGen g, BClass c)
                   out.ds.printx(sk, added ? "                   " : "", "]", ln);
                   out.ds.printx(ln);
                   out.ds.printx(sk, "   def init_args(self, args, kwArgs): init_args(", c.name, ", self, args, kwArgs)", ln);
-                  out.ds.printx(sk, "   def __init__(self, *args, **kwArgs):", ln,
-                                sk, "      self.init_args(list(args), kwArgs)", ln);
+                  out.ds.printx(sk, "   def __init__(self, *args, **kwArgs):", ln);
+                  if(hasNew)
+                     out.ds.printx(sk, "      if hasattr(self, 'impl'): return", ln);
+                  if(c.cl.base.templateClass)
+                  {
+                     const char * tp = strchr(c.cl.base.name, '<');
+                     char * tp2 = getNoNamespaceString(tp, null, false);
+                     out.ds.printx(sk, "      kwArgs['templateParams'] = \"", tp2, "\"", ln);
+                     delete tp2;
+                  }
+                  out.ds.printx(sk, "      self.init_args(list(args), kwArgs)", ln);
                }
                else
                   out.ds.printx(sk, "   def __init__(self");
@@ -891,7 +902,7 @@ void processPyClass(PythonGen g, BClass c)
 // ------------------------------------------------------------------------------------------------------------------- //
 //      content of __init__ function: some initialization of self                                                      //
 // ------------------------------------------------------------------------------------------------------------------- //
-            if(hasNew)
+            if(hasNew && !tmpClassTriesNewInitArgs)
                out.ds.printx(sk, "      if hasattr(self, 'impl'): return", ln);
             if(c.cl.type == noHeadClass)
             {
@@ -1461,7 +1472,7 @@ void processPyClass(PythonGen g, BClass c)
                         sk, "   @property", ln,
                         sk, "   def ", name, "(self): return ((((self.impl)) & lib.", c.upper, "_", name, "_MASK) >> lib.", c.upper, "_", name, "_SHIFT)", ln,
                         sk, "   @", name, ".setter", ln,
-                        sk, "   def ", name, "(self, value): self.value = ((self.impl) & ~(lib.", c.upper, "_", name, "_MASK)) | (((value)) << lib.", c.upper, "_", name, "_SHIFT)", ln);
+                        sk, "   def ", name, "(self, value): self.impl = ((self.impl) & ~(lib.", c.upper, "_", name, "_MASK)) | (((value)) << lib.", c.upper, "_", name, "_SHIFT)", ln);
                   delete name;
                }
             }
@@ -1671,7 +1682,7 @@ void processPyClass(PythonGen g, BClass c)
                               }
                               else if(cType.cl.type == unitClass)
                               {
-                                 out.ds.printx("return ", typeName, "(lib.", p.fpnGet, "(", selfimpl, "))");
+                                 out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
                               }
                               else if(cType.nativeSpec)
                                  out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
@@ -1896,18 +1907,19 @@ void processPyClass(PythonGen g, BClass c)
                switch(p.cConv.cl.type)
                {
                   case normalClass:
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return pyOrNewObject(", p.cConv.cl.name, ", lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case noHeadClass:
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case structClass:
-                     /*out.ds.printxln(sk, "   def __", p.name, "__(self): return lib.", p.fpnGet, "(", selfimpl, ")");
-                     out.ds.printx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
-                                   sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, impl ? ".impl" : "", ")", ln,
-                                   sk, "            return", ln);*/
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return ", ln);
                      break;
                   case bitClass:
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case unitClass:
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   default: check();
                }
@@ -1990,7 +2002,15 @@ void processPyClass(PythonGen g, BClass c)
                            out.ds.printxln("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
                      }
                   }
-                  out.ds.printx(sk, "      return lib.", m.s, "(self.impl"); // m.impl, b.impl, x, y, mods
+                  out.ds.printx(sk, "      return ");
+                  if(typeReturnTypeRequiresPyObj(m.md.dataType))
+                  {
+                     Type rt = m.md.dataType.returnType;
+                     Class clRT = rt.kind == classType ? rt._class.registered : null;
+                     Class cl = clRT.templateClass ? clRT.templateClass : clRT;
+                     out.ds.printx("pyOrNewObject(", cl.name, ", ");
+                  }
+                  out.ds.printx("lib.", m.s, "(self.impl"); // m.impl, b.impl, x, y, mods
                      //out.ds.printx(", __", t);
                   if(!m.md.dataType.staticMethod && thisClass)
                      out.ds.printx(", _", name, c && c.cl.type == normalClass ? ".impl" : "");
@@ -2007,6 +2027,8 @@ void processPyClass(PythonGen g, BClass c)
                            out.ds.printx(", ", ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
                      }
                   }
+                  if(typeReturnTypeRequiresPyObj(m.md.dataType))
+                     out.ds.print(")");
                   out.ds.printxln(")");
                   out.ds.println("");
                   out.ds.printx(sk, "   @property", ln,
