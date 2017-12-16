@@ -494,6 +494,14 @@ struct MaterialAndType
    }
 };
 
+static int compareGroupMaterial(PrimitiveGroup a, PrimitiveGroup b, void * data)
+{
+   uintptr ma = (uintptr)a.material, mb = (uintptr)b.material;
+   if(ma < mb) return -1;
+   if(ma > mb) return  1;
+   return 0;
+}
+
 static bool FindMaterialAndType(Map<MaterialAndType, PrimitiveGroup> map, Mesh mesh, Material material, PrimitiveGroupType type)
 {
    if(map.GetAtPosition({ material, type }, false, null))
@@ -669,10 +677,12 @@ public:
          }
          if(flags.ownMesh && mesh)
          {
-            DisplaySystem meshDisplaySystem = mesh.displaySystem;
+            //DisplaySystem meshDisplaySystem = mesh.displaySystem;
             mesh.Free(0);
+            /*
             if(meshDisplaySystem)
                meshDisplaySystem.RemoveMesh(mesh);
+            */
             delete mesh;
          }
 
@@ -767,7 +777,7 @@ public:
          if(mesh)
          {
             FillBytes(mesh, 0, sizeof(class Mesh));
-            displaySystem.AddMesh(mesh);
+            //displaySystem.AddMesh(mesh);
          }
          matrix.Identity();
          return mesh;
@@ -801,8 +811,14 @@ public:
       }
    }
 
-   // TODO: Add support to Merge Vertex Colors mesh feature
+
    bool Merge(DisplaySystem displaySystem)
+   {
+      return _Merge(displaySystem, true);
+   }
+
+   // TODO: Add support to Merge Vertex Colors mesh feature
+   private bool _Merge(DisplaySystem displaySystem, bool lastLevel)
    {
       bool result = false;
 
@@ -816,6 +832,7 @@ public:
          Mesh objectMesh = this.flags.mesh ? mesh : null;
          bool freeMesh = this.flags.ownMesh;
          Map<MaterialAndType, PrimitiveGroup> map { };
+         bool canMerge = true;
 
          // Count total number of vertices
          if(objectMesh)
@@ -826,13 +843,92 @@ public:
 
          for(child = children.first; child; child = child.next)
          {
-            child.Merge(displaySystem);
+            child._Merge(displaySystem, false);
             if(child.flags.mesh && child.mesh)
             {
                nVertices += child.mesh.nVertices;
                flags |= child.mesh.flags;
                this.flags.computeLightVectors |= child.flags.computeLightVectors;
+
+               if(nVertices > 65535 ||
+                  fabs(child.localMatrix.m[3][0]) > 400 ||
+                  fabs(child.localMatrix.m[3][1]) > 400 ||
+                  fabs(child.localMatrix.m[3][2]) > 400)
+                  canMerge = false;
             }
+            else if(child.children.count)
+               canMerge = false;
+         }
+         if(!canMerge)
+         {
+            Object next;
+            //printf("More than 64k vertices -- not merging\n");
+            for(child = children.first; child; child = next)
+            {
+               next = child.next;
+               if(child.flags.mesh && child.mesh)
+               {
+                  PrimitiveGroup group;
+                  Mesh mesh = child.mesh;
+                  int i;
+                  if(!mesh.displaySystem)
+                  {
+                     mesh.driver = displaySystem.driver;
+                     mesh.displaySystem = displaySystem;
+                     for(i = 0; i < mesh.nPrimitives; i++)
+                        mesh.UnlockPrimitive(mesh.primitives[i]);
+                     for(group = mesh.groups.first; group; group = group.next)
+                     {
+                        OGLIndices oglIndices { nIndices = group.nIndices, indices = group.data };
+                        group.data = oglIndices;
+                        mesh.UnlockPrimitiveGroup(group);
+                     }
+                     mesh.Unlock(0);
+
+                     delete *&mesh.vertices;
+                     delete *&mesh.texCoords;
+                     delete *&mesh.normals;
+                  }
+               }
+               if(child.children.count)
+               {
+                  Object c, n;
+                  for(c = child.children.first; c; c = n)
+                  {
+                     n = c.next;
+                     if(child.transform.position.x == 0 &&
+                        child.transform.position.y == 0 &&
+                        child.transform.position.z == 0 &&
+                        c.transform.position.x == 0 &&
+                        c.transform.position.y == 0 &&
+                        c.transform.position.z == 0) /* &&
+                        c.transform.orientation.x == 0 &&
+                        c.transform.orientation.y == 0 &&
+                        c.transform.orientation.z == 0 &&
+                        c.transform.scaling.x == 1 &&
+                        c.transform.scaling.y == 1 &&
+                        c.transform.scaling.z == 1)*/
+                     {
+                        Quaternion angle;
+                        Matrix m;
+                        m.Multiply(c.localMatrix, child.localMatrix);
+                        angle.Multiply(c.transform.orientation, child.transform.orientation);
+
+                        child.children.Remove(c);
+                        Add(c);
+                        c.localMatrix = m;
+                        c.flags.localMatrixSet = true;
+                        c.UpdateTransform();
+                     }
+                  }
+                  if(!child.children.count && !child.flags.mesh)
+                  {
+                     children.Remove(child);
+                     delete child;
+                  }
+               }
+            }
+            return false;
          }
 
          if(!nVertices)
@@ -844,36 +940,30 @@ public:
          mesh = Mesh { };
          this.flags.ownMesh = true;
          this.flags.mesh = true;
-         displaySystem.AddMesh(mesh);
+         //displaySystem.AddMesh(mesh);
 
-         if(mesh.Allocate(flags, nVertices, displaySystem))
+         if(mesh.Allocate(flags, nVertices, lastLevel ? displaySystem : null))
          {
             int c;
             int nTriangles = 0;
             int vertexOffset = 0;
             PrimitiveGroup group = null;
 
-            // Merge vertices
-
             nVertices = 0;
+
+            // Merge vertices
             if(objectMesh)
             {
-               for(c = 0; c<objectMesh.nVertices; c++)
-               {
-                  mesh.vertices[nVertices] = objectMesh.vertices[c];
+               int mnVertices = objectMesh.nVertices;
+               memcpy(mesh.vertices, objectMesh.vertices, mnVertices * sizeof(Vector3Df));
+               if(objectMesh.normals)
+                  memcpy(mesh.normals, objectMesh.normals, mnVertices * sizeof(Vector3Df));
+               if(objectMesh.tangents)
+                  memcpy(mesh.tangents, objectMesh.tangents, 2* mnVertices * sizeof(Vector3Df));
+               if(objectMesh.texCoords)
+                  memcpy(mesh.texCoords, objectMesh.texCoords, mnVertices * sizeof(Pointf));
 
-                  if(objectMesh.normals)
-                     mesh.normals[nVertices] = objectMesh.normals[c];
-                  if(objectMesh.texCoords)
-                     mesh.texCoords[nVertices] = objectMesh.texCoords[c];
-                  if(objectMesh.tangents)
-                  {
-                     mesh.tangents[2*nVertices+0] = objectMesh.tangents[2*c+0];
-                     mesh.tangents[2*nVertices+1] = objectMesh.tangents[2*c+1];
-                  }
-
-                  nVertices++;
-               }
+               nVertices += mnVertices;
             }
 
             for(child = children.first; child; child = child.next)
@@ -897,17 +987,28 @@ public:
 
                if(child.flags.mesh && child.mesh)
                {
-                  for(c = 0; c < child.mesh.nVertices; c++)
+                  Vector3Df * mVertices = mesh.vertices;
+                  Vector3Df * mNormals = mesh.normals;
+                  Pointf * mTexCoords = mesh.texCoords;
+                  Vector3Df * mTangents = mesh.tangents;
+
+                  Vector3Df * cVertices = child.mesh.vertices;
+                  Vector3Df * cNormals = child.mesh.normals;
+                  Pointf * cTexCoords = child.mesh.texCoords;
+                  Vector3Df * cTangents = child.mesh.tangents;
+                  int cCount = child.mesh.nVertices;
+
+                  if(cTexCoords)
+                     memcpy(mTexCoords + nVertices, cTexCoords, sizeof(Pointf) * cCount);
+                  for(c = 0; c < cCount; c++)
                   {
-                     mesh.vertices[nVertices].MultMatrix(child.mesh.vertices[c], matrix);
-                     if(child.mesh.normals)
-                        mesh.normals[nVertices].MultMatrix(child.mesh.normals[c], normalMatrix);
-                     if(child.mesh.texCoords)
-                        mesh.texCoords[nVertices] = child.mesh.texCoords[c];
-                     if(child.mesh.tangents)
+                     mVertices[nVertices].MultMatrix(cVertices[c], matrix);
+                     if(cNormals)
+                        mNormals[nVertices].MultMatrix(cNormals[c], normalMatrix);
+                     if(cTangents)
                      {
-                        mesh.tangents[2*nVertices+0].MultMatrix(child.mesh.tangents[2*c+0], normalMatrix);
-                        mesh.tangents[2*nVertices+1].MultMatrix(child.mesh.tangents[2*c+1], normalMatrix);
+                        mTangents[2*nVertices+0].MultMatrix(cTangents[2*c+0], normalMatrix);
+                        mTangents[2*nVertices+1].MultMatrix(cTangents[2*c+1], normalMatrix);
                      }
                      nVertices++;
                   }
@@ -1019,7 +1120,8 @@ public:
                            vertexOffset += child.mesh.nVertices;
                         }
                      }
-                     mesh.UnlockPrimitiveGroup(newGroup);
+                     if(lastLevel)
+                        mesh.UnlockPrimitiveGroup(newGroup);
                   }
                }
                else
@@ -1104,7 +1206,8 @@ public:
                   else
                      for(i = 0; i<triangle->nIndices; i++)
                         triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
-                  mesh.UnlockPrimitive(triangle);
+                  if(lastLevel)
+                     mesh.UnlockPrimitive(triangle);
                }
                vertexOffset += objectMesh.nVertices;
             }
@@ -1138,7 +1241,8 @@ public:
                         for(i = 0; i<triangle->nIndices; i++)
                            triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
                      }
-                     mesh.UnlockPrimitive(triangle);
+                     if(lastLevel)
+                        mesh.UnlockPrimitive(triangle);
                   }
                   vertexOffset += child.mesh.nVertices;
                }
@@ -1156,20 +1260,33 @@ public:
             mesh.ApplyTranslucency(this);
             // this.flags.translucent = true;
 
+            mesh.groups.Sort(compareGroupMaterial, null);
+
             result = true;
 
-            mesh.Unlock(flags);
+            SetMinMaxRadius(true);
+
+            if(lastLevel)
+               mesh.Unlock(flags);
          }
 
          delete map;
 
          if(freeMesh && objectMesh)
          {
+            /*
             if(objectMesh.displaySystem)
                objectMesh.displaySystem.RemoveMesh(objectMesh);
+            */
             delete objectMesh;
          }
-         SetMinMaxRadius(true);
+
+         if(lastLevel && mesh && !mesh.nPrimitives)
+         {
+            delete *&mesh.vertices;
+            delete *&mesh.texCoords;
+            delete *&mesh.normals;
+         }
       }
       return result;
    }

@@ -258,6 +258,16 @@ public:
    {
       if(this && group && group.data)
       {
+         if(group.data && driver == class(OpenGLDisplayDriver))
+         {
+            // TODO: Review this whole pre-locking thing and how to update before uploading...
+            OGLIndices oglIndices = group.data;
+            if(group.nIndices != oglIndices.nIndices && group.indices != oglIndices.indices)
+            {
+               oglIndices.indices = group.indices;
+               oglIndices.nIndices = group.nIndices;
+            }
+         }
          driver.UnlockIndices(displaySystem, group.data, group.type.indices32bit, group.nIndices);
          //group.indices = null;
       }
