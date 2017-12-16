@@ -1307,7 +1307,7 @@ public:
       {
          int addedLen, n;
          va_list args;
-         va_start(args, format);
+
          if(size < minSize)
          {
             _string = renew _string char[minSize];
@@ -1323,6 +1323,7 @@ public:
 
          while(true)
          {
+            va_start(args, format);
             addedLen = vsnprintf(_string + len, n, format, args);
             if(addedLen >= 0 && addedLen < n)
                break;
