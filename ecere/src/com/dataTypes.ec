@@ -2361,7 +2361,7 @@ static void String_OnCopy(Class _class, char ** data, char * newData)
    if(newData)
    {
       int len = strlen(newData);
-      if(len)
+      if(1) //len) // TOCHECK: What will this break? Turning empty string into null string is problematic e.g. doesn't match OnCompare checks...
       {
          *data = eSystem_New(len+1);
          memcpy(*data, newData, len+1);
