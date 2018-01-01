@@ -156,7 +156,7 @@ private:
       if(ch == '\"' || (ch != '{' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString]))
       {
          String string;
-         if(ch != '\"' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+         if((ch != '\"' || (type && strstr(type.name, "FieldValue"))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
          {
             int size = 32, len = 0;
             char * s = new char[size];
@@ -179,6 +179,8 @@ private:
                ReadChar(&ch);
             }
             s[len] = 0;
+            while(len > 0 && isspace(s[len-1]))
+               s[--len] = 0;
             s = renew s char[len + 1];
             string = s;
             result = (len > 0) ? success : syntaxError;
@@ -1855,6 +1857,23 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
    }
    return result;
 }
+
+public String PrintECONObject(Class objectType, void * object, int indent)
+{
+   String result = null;
+   if(object)
+   {
+      TempFile f { };
+      if(WriteONObject(f, objectType, object, indent, true, false, null))
+      {
+         f.Putc(0);
+         result = (String)f.StealBuffer();
+      }
+      delete f;
+   }
+   return result;
+}
+
 
 static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
 {
