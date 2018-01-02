@@ -445,6 +445,8 @@ FILTER(ATF, byte, byte,-1, 0, color, (byte)color)
 FILTER(AT,  byte, byte, 1, 1, color, (byte)color)
 FILTER(AF,  byte, byte,-1, 1, color, (byte)color)
 
+FILTER(A16, uint16, uint16, 1, 0, color, (uint16)color)
+
 void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
 {
    { { null, null },              { null, null} },
@@ -456,5 +458,5 @@ void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
    { { FILTER_A, FILTER_AF },     { FILTER_AT, FILTER_ATF } }, // Alpha
    { { null, null },              { null, null} }, // Text
    { { FILTER_888, FILTER_888F }, { FILTER_888T, FILTER_888TF } }, // RGBA
-   { { null, null },              { null, null} } // A16
+   { { FILTER_A16, null },              { null, null} } // A16
 };
