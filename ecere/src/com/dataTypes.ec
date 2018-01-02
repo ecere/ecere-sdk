@@ -1107,9 +1107,12 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
             memberData = (byte *)data + offset;
             if(memberType.type == structClass)
             {
-               if(thisMember)
+               if(thisMember && !thisMember.isProperty)
                {
-                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, memberData, memberString))
+                  if(_class.type == bitClass)
+                  {
+                  }
+                  else if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, memberData, memberString))
                      result = false;
                }
             }
