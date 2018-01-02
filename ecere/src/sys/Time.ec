@@ -813,6 +813,8 @@ public struct DateTime
          delete s;
          return true;
       }
+      else
+         this.year = year;
       delete s;
       return this.day != 0;
    }
