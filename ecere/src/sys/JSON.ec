@@ -39,8 +39,6 @@ public class ECONParser : JSONParser
    eCON = true;
 }
 
-// #define DEBUG_PARSING
-
 static struct JSONParserState
 {
    int pos;
@@ -58,6 +56,9 @@ private:
 
    int charPos, col, line;
    int maxPos;
+   bool debug;
+
+   public property bool debug { set { debug = value; } get { return debug; } }
 
    bool ReadChar(char * ch)
    {
@@ -73,8 +74,9 @@ private:
          }
          else
             col++;
-#ifdef DEBUG_PARSING
-         Print(*ch);
+#ifdef _DEBUG
+         if(debug)
+            Print(*ch);
 #endif
          maxPos = charPos;
       }
@@ -348,7 +350,7 @@ private:
                   void * object = value.p;
                   Class subtype = superFindClass(string, type.module);
                   SkipEmpty();
-                  result = _GetObject(subtype, &object, null);
+                  result = _GetObject(subtype, &object, null);  // TO REVIEW: Is this a problem with bitClass here, in 32 bit?
                   if(result)
                   {
                      if(subtype && subtype.type == structClass);
@@ -364,8 +366,46 @@ private:
                      }
                   }
                }
-               else
-                  result = typeMismatch;
+               else if(type)
+               {
+                  Property convProp;
+                  Class cType = superFindClass(string, type.module);
+                  for(convProp = type.conversions.first; convProp; convProp = convProp.next)
+                  {
+                     if(!strcmp(convProp.name, cType.fullName))
+                        break;
+                  }
+                  if(convProp)
+                  {
+                     if(cType.type == unitClass)
+                     {
+                        // TODO: Improve on this...
+                        DataValue v;
+                        SkipEmpty();
+                        if(ch == '{')
+                           ch = 0;
+                        SkipEmpty();
+                        result = GetNumber(cType, v);
+                        SkipEmpty();
+                        if(ch == '}')
+                           ch = 0;
+                        if(result)
+                        {
+                           if(type && (type.type == normalClass || type.type == noHeadClass))
+                           {
+                              if(!strcmp(cType.dataTypeString, "double"))
+                              {
+                                 value.p = ((void *(*)(double))(void *)convProp.Set)(v.d);
+                              }
+                           }
+                           else
+                              result = typeMismatch;
+                        }
+                     }
+                  }
+                  else
+                     result = typeMismatch;
+               }
             }
             delete string;
          }
@@ -961,6 +1001,7 @@ private:
                ch = 0;
                SkipEmpty();
 
+               // Find Member in Object Class
                if(eCON && (ch != '=' && ch != ':'))
                {
                   eClass_FindNextMember(objectType, &curClass, &curMember, subMemberStack, &subMemberStackPos);
@@ -1053,6 +1094,14 @@ private:
                      }
                   }
                }
+
+#ifdef _DEBUG
+               if(objectType && !member && !prop)
+               {
+                  PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+               }
+#endif
+
                if(type && type.templateClass && type.templateClass == class(Container))
                {
                   char * br = strchr(type.fullName, '<');
@@ -1065,7 +1114,6 @@ private:
                   }
                }
 
-               // Find Member in Object Class
                {
                   DataValue value { };
 
