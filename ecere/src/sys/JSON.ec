@@ -366,11 +366,11 @@ private:
                      }
                   }
                }
-               else if(type)
+               else if(ch != '=' && type)
                {
                   Property convProp;
                   Class cType = superFindClass(string, type.module);
-                  for(convProp = type.conversions.first; convProp; convProp = convProp.next)
+                  for(convProp = type.conversions.first; convProp && cType; convProp = convProp.next)
                   {
                      if(!strcmp(convProp.name, cType.fullName))
                         break;
