@@ -2252,7 +2252,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassDesignerBase;
 
-const char * __ecereMethod_unichar_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod_unichar_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 __ecereNameSpace__ecere__sys__UTF32toUTF8Len(&(*this), 1, tempString, 5);
 return tempString;
@@ -2271,7 +2271,7 @@ const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(str
 return this->name;
 }
 
-const char * __ecereMethod___ecereNameSpace__ecere__com__Class_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod___ecereNameSpace__ecere__com__Class_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 return this->name;
 }
@@ -2748,7 +2748,7 @@ return (struct __ecereNameSpace__ecere__com__Class *)__ecereNameSpace__ecere__co
 return (((void *)0));
 }
 
-const char * __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, int * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, int * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 if((*this) >= __ecereNameSpace__ecere__com__firstPlatform && (*this) <= __ecereNameSpace__ecere__com__lastPlatform)
 {
@@ -2975,9 +2975,9 @@ return (((void *)0));
 const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this)
 {
 return (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__Platform, (void *)&this, (((void *)0)), (((void *)0)), (((void *)0))) : (const char * )1;
 }));
 }

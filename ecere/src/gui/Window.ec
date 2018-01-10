@@ -759,7 +759,7 @@ private:
    }
 
 //#if !defined(ECERE_VANILLA)
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       if(this == activeDesigner)
          return "(Desktop)";
@@ -10076,7 +10076,7 @@ public class CommonControl : Window
 
 public class Percentage : float
 {
-   const char * OnGetString(char * string, float * fieldData, bool * needClass)
+   const char * OnGetString(char * string, float * fieldData, ObjectNotationType * onType)
    {
       int c;
       int last = 0;

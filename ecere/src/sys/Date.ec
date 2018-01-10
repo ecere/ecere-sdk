@@ -50,15 +50,15 @@ public enum Month
 {
    january, february, march, april, may, june, july, august, september, october, november, december;
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       Month m = this;
       if(m >= january && m <= december)
       {
-         if(!needClass || !*needClass)
+         if(!onType || !*onType)
             return longMonthsNames[m];
          else
-            return class::OnGetString(string, fieldData, needClass);
+            return class::OnGetString(string, fieldData, onType);
       }
       return null;
    }
@@ -106,7 +106,7 @@ public struct Date
       return 0;
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       if(stringOutput)
       {
@@ -119,7 +119,7 @@ public struct Date
       return stringOutput;
    }
 
-   const char * OnGetStringEn(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetStringEn(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       if(stringOutput)
       {
@@ -365,8 +365,8 @@ public struct Date
       if(day || year || month)
       {
          char tempString[MAX_F_STRING] = "";
-         bool needClass = false;
-         const char * result = OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * result = OnGetString(tempString, null, &onType);
          if(result) string = result;
 
          comboBox.calendar.dateValue = this;
@@ -514,9 +514,9 @@ class DateDropBox : DropBox
       }
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         // char * string = date.OnGetString(tempString, null, &needClass);
-         const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &date, tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         // char * string = date.OnGetString(tempString, null, &onType);
+         const char * string = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &date, tempString, null, &onType);
          dropBox.contents = string;
       }
       return true;

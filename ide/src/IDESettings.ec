@@ -1562,32 +1562,37 @@ public enum CompilerType
       }
    };
 
-   property const char * longName { get { return OnGetString(null, (void*)1, null); } };
-   property const char * versionString { get { return OnGetString(null, (void*)2, null); } };
-   property const char * yearString { get { return OnGetString(null, (void*)3, null); } };
-   property const char * projectFileExtension { get { return OnGetString(null, (void*)4, null); } };
-   property const char * solutionFileVersionString { get { return OnGetString(null, (void*)5, null); } };
+   property const char * longName { get { return getString(null, 1); } };
+   property const char * versionString { get { return getString(null, 2); } };
+   property const char * yearString { get { return getString(null, 3); } };
+   property const char * projectFileExtension { get { return getString(null, 4); } };
+   property const char * solutionFileVersionString { get { return getString(null, 5); } };
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   private static const char * getString(char * tempString, int stringType)
    {
       if(this >= firstCompilerType && this <= lastCompilerType)
       {
          if(tempString)
             strcpy(tempString, compilerTypeNames[this]);
-         if(fieldData == null)
+         if(stringType == 0)
             return compilerTypeNames[this];
-         else if(fieldData == (void*)1)
+         else if(stringType == 1)
             return compilerTypeLongNames[this];
-         else if(fieldData == (void*)2)
+         else if(stringType == 2)
             return compilerTypeVersionString[this];
-         else if(fieldData == (void*)3)
+         else if(stringType == 3)
             return compilerTypeYearString[this];
-         else if(fieldData == (void*)4)
+         else if(stringType == 4)
             return compilerTypeProjectFileExtension[this];
-         else if(fieldData == (void*)5)
+         else if(stringType == 5)
             return compilerTypeSolutionFileVersionString[this];
       }
       return null;
+   }
+
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
+   {
+      return getString(tempString, 0);
    }
 };
 
@@ -2249,7 +2254,7 @@ struct LanguageOption
    const String code;
    BitmapResource res;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       return name;
    }
