@@ -237,7 +237,7 @@ public struct FileName
       name = null;
    }
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       return name;
    }

@@ -3465,7 +3465,7 @@ if(classSym)
 {
 struct __ecereNameSpace__ecere__com__Class * convertClass = classSym->__anon1.registered;
 
-if(convertClass)
+if(convertClass && _class)
 revConvert = __ecereNameSpace__ecere__com__eClass_FindProperty(convertClass, _class->fullName, privateModule);
 }
 }

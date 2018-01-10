@@ -105,9 +105,9 @@ public:
             else
             {
                Key accel = value.code;
-               bool needClass = false;
+               ObjectNotationType onType = none;
                char tempString[50];
-               const char * result = accel.OnGetString(tempString, null, &needClass);
+               const char * result = accel.OnGetString(tempString, null, &onType);
                int len = strlen(accelString);
                if(result) strcpy(accelString + len, result);
                // accelString[len] = toupper(accelString[len]);

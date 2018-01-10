@@ -51,9 +51,9 @@ public:
       {
          char tempString[MAX_F_STRING];
          const char * result;
-         bool needClass = false;
+         ObjectNotationType onType = none;
          tempString[0] = 0;
-         result = OnGetString(tempString, null, &needClass);
+         result = OnGetString(tempString, null, &onType);
          if(result) string = result;
       }
       colorDropBox.contents = string;
@@ -62,25 +62,25 @@ public:
       return colorDropBox;
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       const char * string;
-      if((string = ((DefinedColor)this).class::OnGetString(stringOutput, null, needClass)) ||
-         (string = ((SystemColor)this).class::OnGetString(stringOutput, null, needClass)))
+      if((string = ((DefinedColor)this).class::OnGetString(stringOutput, null, onType)) ||
+         (string = ((SystemColor)this).class::OnGetString(stringOutput, null, onType)))
       {
-         if(needClass) *needClass = false;
+         if(onType) *onType = none;   // TODO: Better document how OnGetString can modify this...
          return string;
       }
       else
       {
          char tempString[256];
          const char * colorValue;
-         bool subNeedClass;
+         ObjectNotationType subONType = none;
          int value;
 
          tempString[0] = '\0';
          value = r;
-         colorValue = value.OnGetString(tempString, null, &subNeedClass);
+         colorValue = value.OnGetString(tempString, null, &subONType);
          strcpy(stringOutput, "r = "); strcat(stringOutput, colorValue);
 
          // Weird bug in VS
@@ -88,7 +88,7 @@ public:
          tempString[0] = '\0';
 
          value = g;
-         colorValue = value.OnGetString(tempString, null, &subNeedClass);
+         colorValue = value.OnGetString(tempString, null, &subONType);
          strcat(stringOutput, ", g = "); strcat(stringOutput, colorValue);
 
          // Weird bug in VS
@@ -96,7 +96,7 @@ public:
          tempString[0] = '\0';
 
          value = b;
-         colorValue = value.OnGetString(tempString, null, &subNeedClass);
+         colorValue = value.OnGetString(tempString, null, &subONType);
          strcat(stringOutput, ", b = "); strcat(stringOutput, colorValue);
          return stringOutput;
       }
@@ -114,14 +114,14 @@ public:
    void OnDisplay(Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)
    {
       char tempString[1024] = "";
-      bool needClass = false;
+      ObjectNotationType onType = none;
       // TODO: This isn't an ideal way of obtaining the clipped height, will fail on hidden areas
       // This doesn't seem to help anymore?
       // - Makes SavingDataBox draw at 2 different spots depending if active or not.
       // - Color property in IDE is fine as well
       // - How is it on Linux?
       int yOffset = 0;//(1+surface.box.bottom - surface.box.top - 17)/2;
-      const char * string = OnGetString(tempString, null, &needClass);
+      const char * string = OnGetString(tempString, null, &onType);
       surface.WriteTextDots(alignment, x + 24, y + 1, width - 24, string, strlen(string));
 
       // Erase background?
@@ -654,8 +654,8 @@ private class ColorValue : Color
 
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         const char * string = color.OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * string = color.OnGetString(tempString, null, &onType);
          contents = string;
       }
       OnKeyDown(escape, 0);
@@ -720,8 +720,8 @@ private class ColorValue : Color
             ((DataBox)master).SetData(&color, false);
             {
                char tempString[1024] = "";
-               bool needClass = false;
-               const char * string = color.OnGetString(tempString, null, &needClass);
+               ObjectNotationType onType = none;
+               const char * string = color.OnGetString(tempString, null, &onType);
                contents = string;
             }
          }
@@ -860,8 +860,8 @@ private class ColorValue : Color
       else
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         const char * string = colorDropBox.color.OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * string = colorDropBox.color.OnGetString(tempString, null, &onType);
          colorDropBox.contents = string;
       }
       return true;

@@ -1629,7 +1629,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__ZString->_string[newLen] = 0;
 }
 }
 
-const char * __ecereMethod___ecereNameSpace__ecere__sys__ZString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod___ecereNameSpace__ecere__sys__ZString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
@@ -1675,7 +1675,6 @@ int __simpleStruct0;
 int addedLen, n;
 va_list args;
 
-__builtin_va_start(args, format);
 if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->size < __ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->_string = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string, sizeof(char) * (__ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize));
@@ -1696,6 +1695,7 @@ int __simpleStruct2;
 int __simpleStruct1;
 int __simpleStruct0;
 
+__builtin_va_start(args, format);
 addedLen = vsnprintf(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, n, format, args);
 if(addedLen >= 0 && addedLen < n)
 break;

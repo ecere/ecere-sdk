@@ -451,7 +451,7 @@ public:
    const char * label;
    bool showPrivate;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       return name;
    }

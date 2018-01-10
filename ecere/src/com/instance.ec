@@ -159,7 +159,7 @@ public class Angle : double;
 public class ::unichar : uint32
 {
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       UTF32toUTF8Len(&this, 1, tempString, 5);
       return tempString;
@@ -406,7 +406,7 @@ public:
       }
    };
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       return name;
    }
@@ -6860,7 +6860,7 @@ public enum Platform
       }
    };
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       if(this >= firstPlatform && this <= lastPlatform)
       {

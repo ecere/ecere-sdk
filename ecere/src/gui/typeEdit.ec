@@ -84,11 +84,11 @@ static void OnDisplay(Class _class, void * data, Surface surface, int x, int y, 
    static char tempString[16384];
    const char * string;
    int len;
-   bool needClass = false;
+   ObjectNotationType onType = none;
    int w, h;
 
    tempString[0] = '\0';
-   string = ((const char * (*)(void *, void *, void *, void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
+   string = ((const char * (*)(void *, void *, void *, void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &onType);
    len = string ? strlen(string) : 0;
 
    //surface.TextOpacity(false);
@@ -200,8 +200,8 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
 
       if(data)
       {
-         bool needClass = false;
-         const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
+         ObjectNotationType onType = none;
+         const char * result = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &onType);
          if(result)
             string = result;
       }

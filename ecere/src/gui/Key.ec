@@ -40,22 +40,22 @@ public:
       }
    };
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       const char * string;
-      if((string = ((PredefinedKey)this).class::OnGetString(stringOutput, null, needClass /*null*/)))
+      if((string = ((PredefinedKey)this).class::OnGetString(stringOutput, null, onType /*null*/)))
       {
-         if(needClass) *needClass = false;
+         if(onType) *onType = none;
          return string;
       }
-      else if((string = ((KeyCode)this).class::OnGetString(stringOutput, null, needClass /*null*/)))
+      else if((string = ((KeyCode)this).class::OnGetString(stringOutput, null, onType /*null*/)))
       {
-         if(needClass) *needClass = false;
+         if(onType) *onType = none;
          return string;
       }
       else
       {
-         return class::OnGetString(stringOutput, fieldData, needClass);
+         return class::OnGetString(stringOutput, fieldData, onType);
       }
    }
 
@@ -257,9 +257,9 @@ public enum KeyCode : Key
 
 public class Modifiers
 {
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
-      if(needClass) *needClass = false;
+      if(onType) *onType = none;
       return 0;
    };
 

@@ -8421,9 +8421,9 @@ static __attribute__((unused)) void UnusedFunction()
 int a;
 
 (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
 }));
 }
@@ -11704,7 +11704,7 @@ if(type->__anon1.__anon4.arraySizeExp)
 {
 ProcessExpressionType(type->__anon1.__anon4.arraySizeExp);
 ComputeExpression(type->__anon1.__anon4.arraySizeExp);
-if(!type->__anon1.__anon4.arraySizeExp->isConstant || (type->__anon1.__anon4.arraySizeExp->expType->kind != 3 && type->__anon1.__anon4.arraySizeExp->expType->kind != 2 && type->__anon1.__anon4.arraySizeExp->expType->kind != 1 && type->__anon1.__anon4.arraySizeExp->expType->kind != 5 && type->__anon1.__anon4.arraySizeExp->expType->kind != 4 && type->__anon1.__anon4.arraySizeExp->expType->kind != 23 && type->__anon1.__anon4.arraySizeExp->expType->kind != 22 && type->__anon1.__anon4.arraySizeExp->expType->kind != 15 && (type->__anon1.__anon4.arraySizeExp->expType->kind != 8 || !type->__anon1.__anon4.arraySizeExp->expType->__anon1._class->__anon1.registered || type->__anon1.__anon4.arraySizeExp->expType->__anon1._class->__anon1.registered->type != 4)))
+if(!type->__anon1.__anon4.arraySizeExp->isConstant || (type->__anon1.__anon4.arraySizeExp->expType && type->__anon1.__anon4.arraySizeExp->expType->kind != 3 && type->__anon1.__anon4.arraySizeExp->expType->kind != 2 && type->__anon1.__anon4.arraySizeExp->expType->kind != 1 && type->__anon1.__anon4.arraySizeExp->expType->kind != 5 && type->__anon1.__anon4.arraySizeExp->expType->kind != 4 && type->__anon1.__anon4.arraySizeExp->expType->kind != 23 && type->__anon1.__anon4.arraySizeExp->expType->kind != 22 && type->__anon1.__anon4.arraySizeExp->expType->kind != 15 && (type->__anon1.__anon4.arraySizeExp->expType->kind != 8 || !type->__anon1.__anon4.arraySizeExp->expType->__anon1._class->__anon1.registered || type->__anon1.__anon4.arraySizeExp->expType->__anon1._class->__anon1.registered->type != 4)))
 {
 struct Location oldLoc = yylloc;
 char expression[10240];
