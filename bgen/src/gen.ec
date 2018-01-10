@@ -22,7 +22,7 @@ enum Language
    Python,
    _;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       switch(this)
       {
@@ -303,7 +303,7 @@ enum BVariantKind
 {
    nil, vmanual, vdefine, vfunction, vclass, vtemplaton, vmethod, vproperty, deprecate_genbit, eoe;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       switch(this)
       {
@@ -423,7 +423,7 @@ enum BOutputType
    nil, ocomment, ocode, odefine, otypedef, obittool, oenum, ostruct, ofunction, omethod, oproperty, oconversion,
    oclasspointer, oother, eoe;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       switch(this)
       {

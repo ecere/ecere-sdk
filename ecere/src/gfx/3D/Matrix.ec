@@ -7,7 +7,7 @@ public union Matrix
    double array[16];
    double m[4][4];
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       bool spacing = false; //true;
       int y, x;

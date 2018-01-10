@@ -27,7 +27,7 @@ public struct AnchorValue
       get { return (double) percent; }
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       if(type == offset)
       {
@@ -56,7 +56,7 @@ public struct AnchorValue
             }
          }
       }
-      if(needClass) *needClass = false;
+      if(onType) *onType = none;   // TODO: Better document how OnGetString can modify this...
       return stringOutput;
    }
 
@@ -119,7 +119,7 @@ public struct MiddleAnchorValue
       get { return (double) percent; }
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       if(type == middleRelative)
       {
@@ -148,7 +148,7 @@ public struct MiddleAnchorValue
       {
          sprintf(stringOutput, "%d", distance);
       }
-      if(needClass) *needClass = false;
+      if(onType) *onType = none;
       return stringOutput;
    }
 
@@ -176,11 +176,11 @@ public struct Anchor
    union { AnchorValue top; MiddleAnchorValue vert; };
    AnchorValue right, bottom;
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       char tempString[256];
       const char * anchorValue;
-      bool subNeedClass;
+      ObjectNotationType subNeedClass = none;
 
       stringOutput[0] = 0;
       tempString[0] = '\0';
@@ -250,8 +250,8 @@ public struct Anchor
 
       {
          char tempString[MAX_F_STRING] = "";
-         bool needClass = false;
-         const char * result = OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * result = OnGetString(tempString, null, &onType);
          if(result) string = result;
       }
       comboBox.contents = string;
@@ -368,8 +368,8 @@ private class AnchorButton : Button
 
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         const char * string = anchor.OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * string = anchor.OnGetString(tempString, null, &onType);
          anchorDropBox.contents = string;
       }
 
@@ -491,8 +491,8 @@ private class AnchorRelButton : Button
 
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         const char * string = anchor.OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * string = anchor.OnGetString(tempString, null, &onType);
          anchorDropBox.contents = string;
       }
 
@@ -607,8 +607,8 @@ private class AnchorDropBox : DropBox
       else
       {
          char tempString[1024] = "";
-         bool needClass = false;
-         const char * string = anchor.OnGetString(tempString, null, &needClass);
+         ObjectNotationType onType = none;
+         const char * string = anchor.OnGetString(tempString, null, &onType);
          dropBox.contents = string;
       }
       return true;

@@ -2873,13 +2873,13 @@ break;
 case 1:
 {
 char memberTypeString[132] = "TemplateMemberType::";
-unsigned int needClass = 1;
+unsigned int onType = 1;
 
 (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType->_vTbl[__ecereVMethodID_class_OnGetString]);
-__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType, (void *)&param->__anon1.memberType, memberTypeString + strlen(memberTypeString), (((void *)0)), &needClass) : (const char * )1;
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType, (void *)&param->__anon1.memberType, memberTypeString + strlen(memberTypeString), (((void *)0)), &onType) : (const char * )1;
 }));
 ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(memberTypeString))));
 break;

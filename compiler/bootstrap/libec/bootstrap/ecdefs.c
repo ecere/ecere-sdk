@@ -1720,7 +1720,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Operand;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_OpTable;
 
-const char * __ecereMethod_Type_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod_Type_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 struct Type * type = (struct Type *)this;
 

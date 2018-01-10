@@ -8421,9 +8421,9 @@ static __attribute__((unused)) void UnusedFunction()
 int a;
 
 (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
 }));
 }

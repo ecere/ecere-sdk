@@ -133,7 +133,7 @@ public class FileSize : uint
       return result;
    }
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       PrintSize(string, this, 2);
       return string;
@@ -168,7 +168,7 @@ public class FileSize64 : uint64
       return result;
    }
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       PrintBigSize(string, this, 2);
       return string;
@@ -280,7 +280,7 @@ public class File : IOChannel
       return false;
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       if(this)
       {

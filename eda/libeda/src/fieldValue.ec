@@ -107,7 +107,7 @@ public struct FieldValue
          delete s;
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       switch(type.type)
       {

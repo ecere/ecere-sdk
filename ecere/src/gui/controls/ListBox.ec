@@ -1614,8 +1614,8 @@ public:
                {
                   void * data = row.GetData(field);
                   char tempString[1024] = "";
-                  bool needClass = false;
-                  const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                  ObjectNotationType onType = none;
+                  const char * string = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &onType);
 
                   if(string && string[0])
                      checkNextField = false;
@@ -1648,8 +1648,8 @@ public:
                   {
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
-                     bool needClass = false;
-                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     ObjectNotationType onType = none;
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &onType);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1686,8 +1686,8 @@ public:
                   {
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
-                     bool needClass = false;
-                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     ObjectNotationType onType = none;
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &onType);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1735,8 +1735,8 @@ public:
                   {
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
-                     bool needClass = false;
-                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     ObjectNotationType onType = none;
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &onType);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -4228,8 +4228,8 @@ private:
             {
                void * data = row.GetData(field);
                char tempString[1024] = "";
-               bool needClass = false;
-               const char * string = data ? ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass) : null;
+               ObjectNotationType onType = none;
+               const char * string = data ? ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &onType) : null;
 
                if(string && string[0])
                   checkNextField = false;

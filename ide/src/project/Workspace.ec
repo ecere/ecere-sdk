@@ -10,7 +10,7 @@ enum ValgrindLeakCheck
       get { return OnGetString(null, null, null); }
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       if(this >= no && this <= full)
       {

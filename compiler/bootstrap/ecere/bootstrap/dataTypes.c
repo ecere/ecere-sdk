@@ -336,7 +336,7 @@ result = -1;
 return result;
 }
 
-const char * __ecereNameSpace__ecere__com__Integer_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * string, void * fieldData, unsigned int * needClass)
+const char * __ecereNameSpace__ecere__com__Integer_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%d", *data);
 return string;
@@ -355,7 +355,7 @@ return 1;
 return 0;
 }
 
-static const char * __ecereNameSpace__ecere__com__Int16_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, short * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__Int16_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, short * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%d", (int)*data);
 return string;
@@ -408,7 +408,7 @@ result = -1;
 return result;
 }
 
-static const char * __ecereNameSpace__ecere__com__UInteger_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UInteger_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%u", *data);
 return string;
@@ -431,13 +431,13 @@ result = -1;
 return result;
 }
 
-static const char * __ecereNameSpace__ecere__com__UInt16_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned short * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UInt16_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned short * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%u", (unsigned int)*data);
 return string;
 }
 
-static const char * __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%x", *data);
 return string;
@@ -486,15 +486,15 @@ result = -1;
 return result;
 }
 
-static const char * __ecereNameSpace__ecere__com__Byte_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__Byte_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, "%u", (int)*data);
 return string;
 }
 
-static const char * __ecereNameSpace__ecere__com__Char_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, char * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__Char_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, char * data, char * string, void * fieldData, unsigned int * onType)
 {
-if(needClass && *needClass)
+if(onType && *onType)
 {
 char ch = *data;
 
@@ -609,19 +609,19 @@ result = -1;
 return result;
 }
 
-static const char * __ecereNameSpace__ecere__com__Int64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__Int64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), *data);
 return string;
 }
 
-static const char * __ecereNameSpace__ecere__com__UInt64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UInt64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, ((__runtimePlatform == 1) ? "%I64u" : "%llu"), *data);
 return string;
 }
 
-static const char * __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * onType)
 {
 sprintf(string, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), *data);
 return string;
@@ -670,7 +670,7 @@ result = -1;
 return result;
 }
 
-static char * __ecereNameSpace__ecere__com__Float_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, float * data, char * string, void * fieldData, unsigned int * needClass)
+static char * __ecereNameSpace__ecere__com__Float_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, float * data, char * string, void * fieldData, unsigned int * onType)
 {
 float f = *data;
 
@@ -788,7 +788,7 @@ result = -1;
 return result;
 }
 
-static char * __ecereNameSpace__ecere__com__Double_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, double * data, char * string, void * fieldData, unsigned int * needClass)
+static char * __ecereNameSpace__ecere__com__Double_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, double * data, char * string, void * fieldData, unsigned int * onType)
 {
 double f = *data;
 
@@ -853,7 +853,7 @@ if(newData)
 {
 int len = strlen(newData);
 
-if(len)
+if(1)
 {
 *data = __ecereNameSpace__ecere__com__eSystem_New(len + 1);
 memcpy(*data, newData, len + 1);
@@ -893,7 +893,7 @@ return -1;
 return 0;
 }
 
-static char * __ecereNameSpace__ecere__com__String_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, char * string, char * tempString, void * fieldData, unsigned int * needClass)
+static char * __ecereNameSpace__ecere__com__String_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, char * string, char * tempString, void * fieldData, unsigned int * onType)
 {
 return string;
 }
@@ -905,6 +905,8 @@ if(string)
 __ecereNameSpace__ecere__com__eSystem_Delete(string);
 }
 }
+
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
 
@@ -966,24 +968,24 @@ int __ecereVMethodID_class_OnSerialize;
 
 int __ecereVMethodID_class_OnUnserialize;
 
-static const char * __ecereNameSpace__ecere__com__IntPtr32_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__IntPtr32_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int data, char * string, void * fieldData, unsigned int * onType)
 {
-return __ecereNameSpace__ecere__com__Integer_OnGetString(_class, &data, string, fieldData, needClass);
+return __ecereNameSpace__ecere__com__Integer_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * __ecereNameSpace__ecere__com__UIntPtr32_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UIntPtr32_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int data, char * string, void * fieldData, unsigned int * onType)
 {
-return __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(_class, &data, string, fieldData, needClass);
+return __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * __ecereNameSpace__ecere__com__IntPtr64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, long long data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__IntPtr64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, long long data, char * string, void * fieldData, unsigned int * onType)
 {
-return __ecereNameSpace__ecere__com__Int64_OnGetString(_class, &data, string, fieldData, needClass);
+return __ecereNameSpace__ecere__com__Int64_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * __ecereNameSpace__ecere__com__UIntPtr64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 data, char * string, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__UIntPtr64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 data, char * string, void * fieldData, unsigned int * onType)
 {
-return __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(_class, &data, string, fieldData, needClass);
+return __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(_class, &data, string, fieldData, onType);
 }
 
 struct __ecereNameSpace__ecere__sys__NamedLink64;
@@ -1207,6 +1209,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ObjectNotationType;
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__StaticString;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CIString;
@@ -1251,7 +1255,7 @@ __internal_VirtualMethod ? __internal_VirtualMethod(class, data, this) : (void)1
 }));
 }
 
-const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * onType)
 {
 struct __ecereNameSpace__ecere__sys__NamedLink64 * item = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * b;
@@ -1285,7 +1289,7 @@ if(item)
 if(tempString)
 {
 strcpy(tempString, item->name);
-if(!needClass || !*needClass)
+if(!onType || !*onType)
 tempString[0] = (char)toupper(tempString[0]);
 return tempString;
 }
@@ -1513,7 +1517,7 @@ result = 1;
 return result;
 }
 
-const char * __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, char * tempString, void * fieldData, unsigned int * onType)
 {
 return this ? this->string : (((void *)0));
 }
@@ -1537,9 +1541,9 @@ int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen
 {
 int len = 0;
 const char * result = (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))class->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))class->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(class, object, buffer, (((void *)0)), (((void *)0))) : (const char * )1;
 }));
 
@@ -2364,9 +2368,9 @@ int __internalValue000;
 int a;
 
 (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
 }));
 (__extension__ ({
@@ -2413,20 +2417,21 @@ __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a
 }));
 }
 
-static const char * __ecereNameSpace__ecere__com__OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
+static const char * __ecereNameSpace__ecere__com__OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * _onType)
 {
+unsigned int onType = _onType ? *_onType : 0;
 struct __ecereNameSpace__ecere__com__Instance * module = _class->templateClass ? _class->templateClass->module : _class->module;
 
 if(_class->type == 0 && _class->base && !_class->base->base)
 {
 if(sizeof(size_t) == 8)
-return __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+return __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(_class, (void *)&data, tempString, fieldData, _onType);
 else
-return __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+return __ecereNameSpace__ecere__com__UIntegerHex_OnGetString(_class, (void *)&data, tempString, fieldData, _onType);
 }
 else if(_class->type == 4)
 {
-return __ecereNameSpace__ecere__com__Enum_OnGetString(_class, data, tempString, fieldData, needClass);
+return __ecereNameSpace__ecere__com__Enum_OnGetString(_class, data, tempString, fieldData, _onType);
 }
 else if(_class->type == 3 || _class->type == 1000)
 {
@@ -2463,25 +2468,25 @@ if(!strcmp(dts, "double"))
 {
 double d = ((double (*)(double))(void *)prop->Set)(*(double *)data);
 
-return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_double, &d, tempString, fieldData, needClass);
+return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_double, &d, tempString, fieldData, _onType);
 }
 else if(!strcmp(dts, "float"))
 {
 float d = ((float (*)(float))(void *)prop->Set)(*(float *)data);
 
-return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_float->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_float, &d, tempString, fieldData, needClass);
+return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_float->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_float, &d, tempString, fieldData, _onType);
 }
 else if(!strcmp(dts, "int"))
 {
 int d = ((int (*)(int))(void *)prop->Set)(*(int *)data);
 
-return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &d, tempString, fieldData, needClass);
+return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &d, tempString, fieldData, _onType);
 }
 else if(!strcmp(dts, "int64"))
 {
 long long d = ((long long (*)(long long))(void *)prop->Set)(*(long long *)data);
 
-return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int64, &d, tempString, fieldData, needClass);
+return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int64, &d, tempString, fieldData, _onType);
 }
 }
 else
@@ -2489,7 +2494,7 @@ break;
 }
 }
 dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
-return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
+return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, _onType);
 }
 else
 {
@@ -2549,8 +2554,8 @@ if(!strcmp(prop->dataTypeString, "float"))
 value.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.f)
 {
-unsigned int needClass = 1;
-const char * result = onGetString(memberType, &value, memberString, (((void *)0)), &needClass);
+unsigned int _onType = onType;
+const char * result = onGetString(memberType, &value, memberString, (((void *)0)), &_onType);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -2563,8 +2568,8 @@ else if(memberType->type == 0 || memberType->type == 5)
 value.__anon1.p = ((void * (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.p || prop->IsSet)
 {
-unsigned int needClass = 1;
-const char * result = onGetString(memberType, (memberType->type == 0) ? value.__anon1.p : &value, memberString, (((void *)0)), &needClass);
+unsigned int onType = 1;
+const char * result = onGetString(memberType, (memberType->type == 0) ? value.__anon1.p : &value, memberString, (((void *)0)), &onType);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -2575,8 +2580,8 @@ else
 value.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.i || prop->IsSet)
 {
-unsigned int needClass = 1;
-const char * result = onGetString(memberType, &value, memberString, (((void *)0)), &needClass);
+unsigned int onType = 1;
+const char * result = onGetString(memberType, &value, memberString, (((void *)0)), &onType);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -2640,14 +2645,14 @@ if(memberData[c])
 break;
 if(c < typeSize)
 {
-unsigned int needClass = 1;
+unsigned int onType = 1;
 const char * result;
 
 if(memberType->type == 0)
-result = onGetString(memberType, *(struct __ecereNameSpace__ecere__com__Instance **)memberData, internalMemberString, (((void *)0)), &needClass);
+result = onGetString(memberType, *(struct __ecereNameSpace__ecere__com__Instance **)memberData, internalMemberString, (((void *)0)), &onType);
 else
-result = onGetString(memberType, memberData, internalMemberString, (((void *)0)), &needClass);
-if(needClass && strcmp(memberType->dataTypeString, "char *"))
+result = onGetString(memberType, memberData, internalMemberString, (((void *)0)), &onType);
+if(onType && strcmp(memberType->dataTypeString, "char *"))
 {
 strcat(memberString, "{ ");
 if(result)
@@ -2692,15 +2697,19 @@ value.__anon1.ui64 = 0;
 value.__anon1.ui64 = (value.__anon1.ui64 & bitMember->mask) >> bitMember->pos;
 if(value.__anon1.ui64 && (memberType != _class))
 {
-unsigned int needClass = 1;
+unsigned int _onType = onType;
 char internalMemberString[1024];
-const char * result = onGetString(memberType, &value, internalMemberString, (((void *)0)), &needClass);
+const char * result = onGetString(memberType, &value, internalMemberString, (((void *)0)), &_onType);
 
-if(needClass && memberType->type != 1000 && memberType->type != 4 && memberType->type != 3)
+if(onType && memberType->type != 1000 && memberType->type != 4 && memberType->type != 3)
 {
 strcat(memberString, " { ");
+if(onType == 2)
+strcat(memberString, "\"");
 if(result)
 strcat(memberString, result);
+if(onType == 2)
+strcat(memberString, "\"");
 strcat(memberString, " }");
 }
 else if(result)
@@ -2711,8 +2720,8 @@ else if(!memberType->noExpansion)
 {
 if(memberType->typeSize > 4 || *(int *)memberData)
 {
-unsigned int needClass = 1;
-const char * result = onGetString(memberType, memberData, memberString, (((void *)0)), &needClass);
+unsigned int onType = 1;
+const char * result = onGetString(memberType, memberData, memberString, (((void *)0)), &onType);
 
 if(result && memberString != result)
 strcpy(memberString, result);
@@ -2725,12 +2734,16 @@ if(memberString[0])
 {
 if(prev)
 strcat(tempString, ", ");
-if(!atMember || !strcmp(memberType->name, "bool"))
+if(!atMember || onType == 2 || !strcmp(memberType->name, "bool"))
 {
+if(onType == 2)
+strcat(tempString, "\"");
 strcat(tempString, name);
-strcat(tempString, " = ");
+if(onType == 2)
+strcat(tempString, "\"");
+strcat(tempString, onType == 2 ? " : " : " = ");
 }
-if(needClass && *needClass && !strcmp(memberType->name, "char *"))
+if(onType == 2 || (onType && !strcmp(memberType->name, "char *")))
 {
 int len = strlen(tempString);
 int c;
@@ -3015,9 +3028,12 @@ offset = thisMember->_class->offset + memberOffset;
 memberData = (unsigned char *)data + offset;
 if(memberType->type == 1)
 {
-if(thisMember)
+if(thisMember && !thisMember->isProperty)
 {
-if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, memberData, memberString))
+if(_class->type == 2)
+{
+}
+else if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, memberData, memberString))
 result = 0;
 }
 }
@@ -3476,7 +3492,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnDisplay", "v
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnCompare", "int typed_object::OnCompare(any_object object)", __ecereNameSpace__ecere__com__OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnCopy", "void typed_object&::OnCopy(any_object newData)", __ecereNameSpace__ecere__com__OnCopy, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnFree", "void typed_object::OnFree(void)", __ecereNameSpace__ecere__com__OnFree, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)", __ecereNameSpace__ecere__com__OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetDataFromString", "bool typed_object&::OnGetDataFromString(const char * string)", __ecereNameSpace__ecere__com__OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnEdit", "Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnSerialize", "void typed_object::OnSerialize(IOChannel channel)", __ecereNameSpace__ecere__com__OnSerialize, 1);
@@ -3542,8 +3558,14 @@ __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___e
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = (void *)0;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, void * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, void * data, char * tempString, void * fieldData, ecere::com::ObjectNotationType * onType)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 2);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::com::ObjectNotationType", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__com__ObjectNotationType = class;
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "none", 0);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "econ", 1);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "json", 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, ecere::com::ObjectNotationType * onType)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSerialize", "void ecere::com::Byte_OnSerialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnSerialize, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int_OnSerialize", "void ecere::com::Int_OnSerialize(ecere::com::Class _class, int * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int_OnSerialize, module, 2);
