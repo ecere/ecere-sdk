@@ -1464,7 +1464,7 @@ public:
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       Type type = (Type)this;
       tempString[0] = '\0';

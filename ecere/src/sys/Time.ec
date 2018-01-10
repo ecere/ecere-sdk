@@ -212,7 +212,7 @@ import "System"
 
 public class Time : double
 {
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       Time time = this;
       int value;
@@ -293,9 +293,9 @@ static time_t MakeTimeTfromDT(DateTime dt)
 
 public class SecSince1970 : int64
 {
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
-      return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
+      return ((DateTime)this).OnGetString(tempString, fieldData, onType);
    }
 
    bool OnGetDataFromString(const char * string)
@@ -429,9 +429,9 @@ public:
 public class TimeStamp32 : uint32
 {
 public:
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
-      return ((DateTime)(TimeStamp)this).OnGetString(tempString, fieldData, needClass);
+      return ((DateTime)(TimeStamp)this).OnGetString(tempString, fieldData, onType);
    }
 
    // Is this required?
@@ -671,7 +671,7 @@ public struct DateTime
       get { value = Date { year, month, day }; }
    }
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       static const char ampm[2][3] = { "AM", "PM" };
       int hour = this.hour;

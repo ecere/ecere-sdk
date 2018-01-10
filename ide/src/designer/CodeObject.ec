@@ -107,7 +107,7 @@ class CodeObject : struct
       delete this;
    }
 
-   const char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, ObjectNotationType * onType)
    {
       return name ? name : "";
    }

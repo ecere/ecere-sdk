@@ -164,7 +164,7 @@ public class Id : uint64
       return dropBox;
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       if(&this)
       {
@@ -358,7 +358,7 @@ public:
    }
    */
 
-   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, ObjectNotationType * onType)
    {
       stringOutput[0] = 0;
       if(this)

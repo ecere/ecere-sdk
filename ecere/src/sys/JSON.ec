@@ -20,6 +20,65 @@ extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnFree;
 private:
 
+// TOFIX: How should this be handled?
+/*static*/ class FreeingAVLTree : AVLTree
+{
+   ~FreeingAVLTree()
+   {
+      Free();
+   }
+}
+
+FreeingAVLTree<const String> compactTypes
+{ [
+   "GeoPosition",
+   "GeoPoint",
+   "GeoExtent",
+   "GeometryData",
+   "PolygonGeometryData",
+   "LineGeometryData",
+   "PointGeometryData",
+   "RecordDataField",
+   "MapNode",
+   "LineString",
+   "PolygonContour",
+   "StartEndPair",
+   "VectorPiece",
+   "ShortPoint",
+   "uint16",
+   "uint32",
+   "PolygonVertexFlags",
+   "byte",
+   "UMSRowsSpecs",
+   "GMLTimeExtent",
+   "EX_TemporalExtent",
+   "RS_Identifier",
+   "CI_Date",
+   "CI_Telephone",
+   "MD_Resolution",
+   "UMSFormat"
+] };
+
+FreeingAVLTree<const String> compactArrays
+{ [
+   //"Polygon",
+   "GeoPosition",
+   "GeoPoint",
+   "PolygonContour",
+   "StartEndPair",
+   "VectorPiece",
+   "ShortPoint",
+   "uint16",
+   "uint32",
+   "PolygonVertexFlags",
+   "byte",
+   "UMSRowsSpecs",
+   "CI_ResponsibleParty",
+   "MD_CharacterSetCode",
+   "MD_Keywords",
+   "EX_Extent"
+] };
+
 public enum JSONResult { syntaxError, success, typeMismatch, noItem };
 
 public enum SetBool : uint
@@ -1592,7 +1651,9 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
    {
       int i;
       bool isFirst = true;
-      bool spacing = true;
+      Class arrayType = (type = map._class, type.templateArgs[0].dataTypeClass);
+      const String tArg = strchr(arrayType.name, '<');
+      bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue"));
       MapIterator it { map = map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
       f.Puts(spacing ? "[\n" : "[ ");
@@ -1631,11 +1692,12 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
       bool isFirst = true;
       Iterator it { array };
       Class arrayType = type.templateArgs[0].dataTypeClass;
-      bool spacing = true;
+      const String tName = arrayType ? (arrayType.templateClass ? arrayType.templateClass.name : arrayType.name) : "";
+      bool spacing = compactArrays.Find(tName) == null;
       f.Puts(spacing ? "[\n" : "[ ");
       if(spacing) indent++;
 
-      while(it.Next())
+      while(arrayType && it.Next())
       {
          DataValue value { };
          uint64 t = ((uint64(*)(void *, void *))(void *)array.GetData)(array, it.pointer);
@@ -1703,51 +1765,51 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
    return true;
 }
 
-static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON, bool useHex)
+static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON, bool useHex, bool jsonBitClass)
 {
    char buffer[1024];
-   bool needClass = eCON;
+   ObjectNotationType onType = eCON ? econ : json;
    bool quote;
    buffer[0] = 0;
    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &onType);
    else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.f, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.f, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "int64"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || type.typeSize == sizeof(int64))
    {
       if(useHex && eCON)
          sprintf(buffer, __runtimePlatform == win32 ? "0x%016I64X" : "0x%016llX", value.ui64);
       else
-         ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
+         ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &onType);
    }
    else if(!strcmp(type.dataTypeString, "int"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint") || type.typeSize == sizeof(int))
    {
       if(useHex && eCON)
          sprintf(buffer, "0x%08X", value.ui);
       else
-         ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
+         ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &onType);
    }
    else if(!strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "int16"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || type.typeSize == sizeof(short int))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.us, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.us, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "char"))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &onType);
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
-      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &onType);
 
-   quote = (type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
-           (type.type == enumClass && !eCON);
+   quote = !jsonBitClass && ((type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+           (type.type == enumClass && !eCON));
    if(quote) f.Puts("\"");
      // TODO: Review / Clarify / Document how needClass should work
-   else if(needClass && type.type == bitClass) f.Puts("{ ");
+   else if((onType == econ || (onType == json && jsonBitClass)) && type.type == bitClass) f.Puts("{ ");
    f.Puts(buffer);
    if(quote) f.Puts("\"");
-   else if(needClass && type.type == bitClass) f.Puts(" }");
+   else if((onType == econ || (onType == json && jsonBitClass)) && type.type == bitClass) f.Puts(" }");
    return true;
 }
 
@@ -1756,8 +1818,9 @@ static bool WriteColorAlpha(File f, Class type, DataValue value, int indent, boo
    char tmpColorString[1024], output[1024];
    ColorAlpha color = value.ui;
    DefinedColor c = color.color;
-   bool needBrackets = false, needQuotes = false, needClass = true;
-   const String s = c.class::OnGetString(tmpColorString, null, eCON ? &needClass : null);
+   bool needBrackets = false, needQuotes = false;
+   ObjectNotationType onType = eCON ? econ : json;
+   const String s = c.class::OnGetString(tmpColorString, null, &onType);
    if(s)
    {
       if(color.a == 255)
@@ -1860,27 +1923,27 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(!strcmp(type.name, "SetBool"))
       f.Puts(value.i == SetBool::true ? "true" : value.i == SetBool::false ? "false" : "unset");
    else if(type.type == enumClass)
-      WriteNumber(f, type, value, indent, eCON, false);
+      WriteNumber(f, type, value, indent, eCON, false, false);
    else if(eClass_IsDerived(type, class(Map)))
       WriteMap(f, type, value.p, indent, eCON);
    else if(eClass_IsDerived(type, class(Container)))
       WriteArray(f, type, value.p, indent, eCON);
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      bool omitNames = false;
+      bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPosition") || !strcmp(type.name, "UMSRowsSpecs"));
       WriteONObject(f, type, value.p, indent, eCON, eCON && omitNames, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
    else if(type.type == bitClass)
    {
-      if(eCON)
-         WriteNumber(f, type, value, indent, true, false);
+      if(eCON || !strcmp(type.name, "MapDataType"))
+         WriteNumber(f, type, value, indent, eCON, false, true);
       else
-         WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, false, true);
+         WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, false, true, false);
    }
    else if(type.type == systemClass || type.type == unitClass)
-      WriteNumber(f, type, value, indent, eCON, false);
+      WriteNumber(f, type, value, indent, eCON, false, false);
    return true;
 }
 
@@ -1925,17 +1988,19 @@ public String PrintECONObject(Class objectType, void * object, int indent)
 
 static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
 {
-   bool spacing = true;
+   const String tName = objectType.templateClass ? objectType.templateClass.name : objectType.name;
+   bool spacing = compactTypes.Find(tName) == null;
    if(object)
    {
       const char * string = null;
       bool quote = true;
+      ObjectNotationType onType = eCON ? econ : json;
 
       if(objectType._vTbl[__ecereVMethodID_class_OnGetString] != objectType.base._vTbl[__ecereVMethodID_class_OnGetString])
       {
          char buffer[1024];
          buffer[0] = 0;
-         string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, null);
+         string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, &onType);
          quote = false;
       }
       if(string)
@@ -1949,7 +2014,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
       }
       else
       {
-         Class _class = (eCON && objectType.type == normalClass) ? ((Instance)object)._class : objectType;
+         Class _class = (objectType.type == normalClass) ? ((Instance)object)._class : objectType;
          Property prop;
          int c;
          bool isFirst = true;
@@ -1957,22 +2022,38 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          Class baseClass;
          List<Class> bases { };
          bool cantOmit = false;
+         Class jsonClass = null;
+         bool jsonDicMap = false;
 
          if(objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
          {
             mapKeyClass = objectType.templateArgs[0].dataTypeClass;
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
+            if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue")))
+               jsonDicMap = true;
          }
 
          if(_class && _class.bindingsClass) _class = _class.base;
-         if(eCON && _class != objectType && eClass_IsDerived(_class, objectType))
+         if(_class != objectType && eClass_IsDerived(_class, objectType))
          {
-            f.Puts(_class.name);
-            f.Puts(" ");
+            if(eCON)
+            {
+               f.Puts(_class.name);
+               f.Puts(" ");
+            }
+            else
+               jsonClass = _class;
          }
 
          f.Puts(spacing ? "{\n" : "{ ");
          if(spacing) indent++;
+
+         if(jsonClass)
+         {
+            if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
+            f.Print("\"JSONType\" : \"", jsonClass.name, "\"");
+            isFirst = false;
+         }
 
          for(baseClass = _class; baseClass; baseClass = baseClass.inheritanceAccess == publicAccess ? baseClass.base : null)
          {
@@ -2069,24 +2150,30 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         if(!isFirst) f.Puts(spacing ? ",\n" : ", ");
                         if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
 
-                        if(!eCON)
+                        if(!jsonDicMap)
                         {
-                           f.Puts("\"");
-                           f.Putc((char)toupper(prop.name[0]));
-                           f.Puts(prop.name+1);
-                           f.Puts("\" : ");
-                        }
-                        else if(!omitDefaultIdentifier || cantOmit)
-                        {
-                           if(!cantOmit && isFirst && false);
-                           else
+                           if(!eCON)
                            {
-                              f.Puts(prop.name);
-                              f.Puts(" = ");
+                              f.Puts("\"");
+                              f.Putc((char)toupper(prop.name[0]));
+                              f.Puts(prop.name+1);
+                              f.Puts("\" : ");
+                           }
+                           else if(!omitDefaultIdentifier || cantOmit)
+                           {
+                              if(!cantOmit && isFirst && (!strcmp(prop.name, "points") || !strcmp(prop.name, "outer")));
+                              else
+                              {
+                                 f.Puts(prop.name);
+                                 f.Puts(" = ");
+                              }
                            }
                         }
+                        else if(isMapNodeValue)
+                           f.Puts(" : ");
                         WriteValue(f, type, value, indent, eCON);
-                        isFirst = false;
+                        if(!jsonDicMap)
+                           isFirst = false;
                         if(type.type == structClass)
                            delete value.p;
                      }

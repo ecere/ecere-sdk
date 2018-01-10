@@ -141,7 +141,7 @@ private:
       return result;
    }
 
-   const char * OnGetString(char * string, void * fieldDat, bool * needClass)
+   const char * OnGetString(char * string, void * fieldDat, ObjectNotationType * onType)
    {
       if(this)
       {

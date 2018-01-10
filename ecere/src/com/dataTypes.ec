@@ -193,7 +193,7 @@ public:
    }
 };
 
-/*static */const char * Enum_OnGetString(Class _class, void * data, char * tempString, void * fieldData, bool * needClass)
+/*static */const char * Enum_OnGetString(Class _class, void * data, char * tempString, void * fieldData, ObjectNotationType * onType)
 {
    NamedLink64 item = null;
    Class b;
@@ -225,7 +225,7 @@ public:
       if(tempString)
       {
          strcpy(tempString, item.name);
-         if(!needClass || !*needClass)
+         if(!onType || !*onType)
             tempString[0] = (char)toupper(tempString[0]);
          return tempString;
       }
@@ -509,20 +509,23 @@ static int OnCompare(Class _class, void * data1, void * data2)
    return 0;
 }
 
-static const char * OnGetString(Class _class, void * data, char * tempString, void * fieldData, bool * needClass)
+public enum ObjectNotationType : bool { none = 0, econ = 1, json = 2 };
+
+static const char * OnGetString(Class _class, void * data, char * tempString, void * fieldData /* ObjectNotationType * notation */, ObjectNotationType * _onType)
 {
+   ObjectNotationType onType = _onType ? *_onType : none;
    // WHY DOES _class.module NOT SEEM TO WORK?
    Module module = _class.templateClass ? _class.templateClass.module : _class.module;
    if(_class.type == normalClass && _class.base && !_class.base.base)
    {
       if(sizeof(uintsize) == 8)
-         return UInt64Hex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+         return UInt64Hex_OnGetString(_class, (void *)&data, tempString, fieldData, _onType);
       else
-         return UIntegerHex_OnGetString(_class, (void *)&data, tempString, fieldData, needClass);
+         return UIntegerHex_OnGetString(_class, (void *)&data, tempString, fieldData, _onType);
    }
    else if(_class.type == enumClass)
    {
-      return Enum_OnGetString(_class, data, tempString, fieldData, needClass);
+      return Enum_OnGetString(_class, data, tempString, fieldData, _onType);
    }
    else if(_class.type == unitClass || _class.type == systemClass)
    {
@@ -554,22 +557,22 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                if(!strcmp(dts, "double"))
                {
                   double d = ((double(*)(double))(void *)prop.Set)(*(double *)data);
-                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &d, tempString, fieldData, _onType);
                }
                else if(!strcmp(dts, "float"))
                {
                   float d = ((float(*)(float))(void *)prop.Set)(*(float *)data);
-                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetString])(class(float), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetString])(class(float), &d, tempString, fieldData, _onType);
                }
                else if(!strcmp(dts, "int"))
                {
                   int d = ((int(*)(int))(void *)prop.Set)(*(int *)data);
-                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetString])(class(int), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetString])(class(int), &d, tempString, fieldData, _onType);
                }
                else if(!strcmp(dts, "int64"))
                {
                   int64 d = ((int64(*)(int64))(void *)prop.Set)(*(int64 *)data);
-                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetString])(class(int64), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetString])(class(int64), &d, tempString, fieldData, _onType);
                }
             }
             else
@@ -577,7 +580,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
          }
       }
       dataType = eSystem_FindClass(module, _class.dataTypeString);
-      return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
+      return ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, _onType);
    }
    else
    {
@@ -601,7 +604,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             char memberString[1024];
             Class memberType;
             const char * name;
-            const char *(* onGetString)(void *, void *, char *, void *, bool *);
+            const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *);
             if(m.id < 0) continue;
 
             // TODO: Full union & struct member support
@@ -633,8 +636,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         value.f = ((float(*)(void *))(void *)prop.Get)(data);
                         if(value.f)
                         {
-                           bool needClass = true;
-                           const char * result = onGetString(memberType, &value, memberString, null, &needClass);
+                           ObjectNotationType _onType = onType;
+                           const char * result = onGetString(memberType, &value, memberString, null, &_onType);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                            // TESTING THIS HERE
@@ -647,9 +650,9 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         value.p = ((void *(*)(void *))(void *)prop.Get)(data);
                         if(value.p || prop.IsSet)
                         {
-                           bool needClass = true;
+                           ObjectNotationType onType = econ;
                            const char * result = onGetString(memberType,
-                              (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
+                              (memberType.type == normalClass) ? value.p : &value, memberString, null, &onType);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                         }
@@ -659,8 +662,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         value.i = ((int(*)(void *))(void *)prop.Get)(data);
                         if(value.i || prop.IsSet)
                         {
-                           bool needClass = true;
-                           const char * result = onGetString(memberType, &value, memberString, null, &needClass);
+                           ObjectNotationType onType = econ;
+                           const char * result = onGetString(memberType, &value, memberString, null, &onType);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                         }
@@ -715,13 +718,13 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                            break;
                      if(c < typeSize)
                      {
-                        bool needClass = true;
+                        ObjectNotationType onType = econ;
                         const char * result;
                         if(memberType.type == normalClass)
-                           result = onGetString(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
+                           result = onGetString(memberType, *(Instance *)memberData, internalMemberString, null, &onType);
                         else
-                           result = onGetString(memberType, memberData, internalMemberString, null, &needClass);
-                        if(needClass && strcmp(memberType.dataTypeString, "char *"))
+                           result = onGetString(memberType, memberData, internalMemberString, null, &onType);
+                        if(onType && strcmp(memberType.dataTypeString, "char *"))
                         {
                            //strcpy(memberString, memberType.name);
                            strcat(memberString, "{ ");
@@ -750,15 +753,17 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         value.ui64 = (value.ui64 & bitMember.mask) >> bitMember.pos;
                         if(value.ui64 && (memberType != _class))  // Avoid infinite recursion on bit classes holding themselves
                         {
-                           bool needClass = true;
+                           ObjectNotationType _onType = onType;
                            char internalMemberString[1024];
-                           const char * result = onGetString(memberType, &value, internalMemberString, null, &needClass);
+                           const char * result = onGetString(memberType, &value, internalMemberString, null, &_onType);
 
-                           if(needClass && memberType.type != systemClass && memberType.type != enumClass && memberType.type != unitClass)
+                           if(onType && memberType.type != systemClass && memberType.type != enumClass && memberType.type != unitClass)
                            {
                               //strcpy(memberString, memberType.name);
                               strcat(memberString, " { ");
+                              if(onType == json) strcat(memberString, "\"");
                               if(result) strcat(memberString, result);
+                              if(onType == json) strcat(memberString, "\"");
                               strcat(memberString, " }");
                            }
                            else if(result)
@@ -774,8 +779,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         // TOCHECK: Is this null check still right??
                         if(memberType.typeSize > 4 || *(int *)memberData)
                         {
-                           bool needClass = true;
-                           const char * result = onGetString(memberType, memberData, memberString, null, &needClass);
+                           ObjectNotationType onType = econ;
+                           const char * result = onGetString(memberType, memberData, memberString, null, &onType);
                            if(result && memberString != result)
                               strcpy(memberString, result);
                         }
@@ -785,10 +790,10 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                   {
                      char internalMemberString[1024];
                      byte * memberData = ((byte *)data + (((m._class.type == normalClass) ? m._class.offset : 0) + m.offset));
-                     bool needClass = true;
+                     ObjectNotationType onType = econ;
                      const char * result;
-                     result = onGetString(memberType, memberData, internalMemberString, null, &needClass);
-                     if(needClass)
+                     result = onGetString(memberType, memberData, internalMemberString, null, &onType);
+                     if(onType)
                      {
                         //strcpy(memberString, memberType.name);
                         strcat(memberString, "{ ");
@@ -807,14 +812,16 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             {
                if(prev)
                   strcat(tempString, ", ");
-               if(!atMember || !strcmp(memberType.name, "bool"))
+               if(!atMember || onType == json || !strcmp(memberType.name, "bool"))
                {
+                  if(onType == json) strcat(tempString, "\"");
                   strcat(tempString, name);
-                  strcat(tempString, " = ");
+                  if(onType == json) strcat(tempString, "\"");
+                  strcat(tempString, onType == json ? " : " : " = ");
                }
 
                // Only quote and escape for data serialization purposes
-               if(needClass && *needClass && !strcmp(memberType.name, "char *"))
+               if(onType == json || (onType && !strcmp(memberType.name, "char *")))
                {
                   int len = strlen(tempString);
                   int c;
@@ -1455,7 +1462,7 @@ static int Integer_OnCompare(Class _class, int * data1, int * data2)
    return result;
 }
 
-/*static */const char * Integer_OnGetString(Class _class, int * data, char * string, void * fieldData, bool * needClass)
+/*static */const char * Integer_OnGetString(Class _class, int * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%d", *data);
    return string;
@@ -1474,7 +1481,7 @@ static bool Integer_OnGetDataFromString(Class _class, int * data, const char * s
    return false;
 }
 
-static const char * Int16_OnGetString(Class _class, short * data, char * string, void * fieldData, bool * needClass)
+static const char * Int16_OnGetString(Class _class, short * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%d", (int)*data);
    return string;
@@ -1515,7 +1522,7 @@ static int UInteger_OnCompare(Class _class, unsigned int * data1, unsigned int *
    return result;
 }
 
-static const char * UInteger_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
+static const char * UInteger_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%u", *data);
    return string;
@@ -1532,14 +1539,14 @@ static int UInt16_OnCompare(Class _class, uint16 * data1, unsigned int * data2)
    return result;
 }
 
-static const char * UInt16_OnGetString(Class _class, uint16 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt16_OnGetString(Class _class, uint16 * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%u", (uint)*data);
    return string;
 }
 
 
-static const char * UIntegerHex_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
+static const char * UIntegerHex_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%x", *data);
    return string;
@@ -1580,15 +1587,15 @@ static int Byte_OnCompare(Class _class, byte * data1, byte * data2)
    return result;
 }
 
-static const char * Byte_OnGetString(Class _class, byte * data, char * string, void * fieldData, bool * needClass)
+static const char * Byte_OnGetString(Class _class, byte * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, "%u", (int)*data);
    return string;
 }
 
-static const char * Char_OnGetString(Class _class, char * data, char * string, void * fieldData, bool * needClass)
+static const char * Char_OnGetString(Class _class, char * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
-   if(needClass && *needClass)
+   if(onType && *onType)
    {
       char ch = *data;
       if(ch == '\t')      strcpy(string, "'\\t'");
@@ -1670,42 +1677,42 @@ static int UIntPtr32_OnCompare(Class _class, uint32 data1, uint32 data2)
    return result;
 }
 
-static const char * Int64_OnGetString(Class _class, int64 * data, char * string, void * fieldData, bool * needClass)
+static const char * Int64_OnGetString(Class _class, int64 * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, FORMAT64D, *data);
    return string;
 }
 
-static const char * UInt64_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt64_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, FORMAT64U, *data);
    return string;
 }
 
-static const char * UInt64Hex_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt64Hex_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    sprintf(string, FORMAT64HEX, *data);
    return string;
 }
 
-static const char * UIntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
+static const char * UIntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, ObjectNotationType * onType)
 {
-   return UInt64Hex_OnGetString(_class, &data, string, fieldData, needClass);
+   return UInt64Hex_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * UIntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
+static const char * UIntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, ObjectNotationType * onType)
 {
-   return UIntegerHex_OnGetString(_class, &data, string, fieldData, needClass);
+   return UIntegerHex_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * IntPtr64_OnGetString(Class _class, int64 data, char * string, void * fieldData, bool * needClass)
+static const char * IntPtr64_OnGetString(Class _class, int64 data, char * string, void * fieldData, ObjectNotationType * onType)
 {
-   return Int64_OnGetString(_class, &data, string, fieldData, needClass);
+   return Int64_OnGetString(_class, &data, string, fieldData, onType);
 }
 
-static const char * IntPtr32_OnGetString(Class _class, int data, char * string, void * fieldData, bool * needClass)
+static const char * IntPtr32_OnGetString(Class _class, int data, char * string, void * fieldData, ObjectNotationType * onType)
 {
-   return Integer_OnGetString(_class, &data, string, fieldData, needClass);
+   return Integer_OnGetString(_class, &data, string, fieldData, onType);
 }
 
 static bool Int64_OnGetDataFromString(Class _class, int64 * data, const char * string)
@@ -2069,7 +2076,7 @@ static int Float_OnCompare(Class _class, float * data1, float * data2)
    return result;
 }
 
-static char * Float_OnGetString(Class _class, float * data, char * string, void * fieldData, bool * needClass)
+static char * Float_OnGetString(Class _class, float * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    float f = *data;
    if(f.isInf)
@@ -2217,7 +2224,7 @@ static int Double_OnCompare(Class _class, double * data1, double * data2)
    return result;
 }
 
-static char * Double_OnGetString(Class _class, double * data, char * string, void * fieldData, bool * needClass)
+static char * Double_OnGetString(Class _class, double * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    double f = *data;
    if(f.isInf)
@@ -2349,7 +2356,7 @@ public struct StaticString
       return result;
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       return this ? string : null;
    }
@@ -2400,7 +2407,7 @@ static int String_OnCompare(Class _class, const String string1, const String str
    return 0;
 }
 
-static char * String_OnGetString(Class _class, char * string, char * tempString, void * fieldData, bool * needClass)
+static char * String_OnGetString(Class _class, char * string, char * tempString, void * fieldData, ObjectNotationType * onType)
 {
    return string;
 }
@@ -2490,7 +2497,7 @@ void InitializeDataTypes1(Module module)
    eClass_AddVirtualMethod(baseClass, "OnCompare", "int typed_object::OnCompare(any_object object)", OnCompare, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnCopy", "void typed_object&::OnCopy(any_object newData)", OnCopy, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnFree", "void typed_object::OnFree(void)", OnFree, publicAccess);
-   eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)", OnGetString, publicAccess);
+   eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * reserved, ObjectNotationType * onType)", OnGetString, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnGetDataFromString", "bool typed_object&::OnGetDataFromString(const char * string)", OnGetDataFromString, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnEdit", "Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)", null, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnSerialize", "void typed_object::OnSerialize(IOChannel channel)", OnSerialize, publicAccess);
@@ -2535,7 +2542,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, const typed_object ob
       if(data)
       {
          // TOFIX: OnGetString will need a maxLen as well
-         result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, null, null);
+         result = ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, null, null);
          if(result)
          {
             int newLen = strlen(result);

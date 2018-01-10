@@ -29,7 +29,7 @@ public class DynamicString : Array<char>
       get { return array; }
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       return array;
    }

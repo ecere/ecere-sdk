@@ -1576,9 +1576,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   case identifier:
                   {
                      char memberTypeString[132] = "TemplateMemberType::";
-                     bool needClass = true;
+                     ObjectNotationType onType = econ;
 
-                     param.memberType.OnGetString(memberTypeString + strlen(memberTypeString), null, &needClass);
+                     param.memberType.OnGetString(memberTypeString + strlen(memberTypeString), null, &onType);
                      ListAdd(args,
                         MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)),
                            MkExpIdentifier(MkIdentifier(memberTypeString))));

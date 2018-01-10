@@ -105,7 +105,7 @@ public:
 
    virtual void Delete(IteratorPointer it) { }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       if(this)
       {

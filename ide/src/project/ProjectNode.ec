@@ -818,11 +818,11 @@ private:
       }
    }
 
-   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
-      if(!needClass)
+      if(onType && *onType)
       {
-         // TOCHECK: Called from JSON writer
+         // TOCHECK: Called from ECON/JSON writer
          if(nodeType == file && !property::options && !property::configurations && !property::platforms && name)
          {
             strcpy(tempString, "\"");
