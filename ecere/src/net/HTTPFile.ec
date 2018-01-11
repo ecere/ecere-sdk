@@ -36,6 +36,8 @@ static intsize writeMemoryCallback(void *contents, intsize size, intsize nmemb, 
 public class HTTPFile : File
 {
    bool reuseConnection;
+   long httpCode;
+
    reuseConnection = true;
 public:
    property bool reuseConnection
@@ -50,6 +52,11 @@ public:
    property String contentDisposition
    {
       get { return contentDisposition; }
+   }
+
+   property int httpCode
+   {
+      get { return httpCode; }
    }
 
    bool OpenURL(const char * name, const char * referer, char * relocation)
@@ -72,7 +79,10 @@ public:
       if(res != CURLE_OK)
          fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
       else
+      {
+         curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &httpCode);
          result = true;
+      }
       return result;
    }
 
