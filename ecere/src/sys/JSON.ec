@@ -1666,7 +1666,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
             f.Puts(spacing ? ",\n" : ", ");
          else
             isFirst = false;
-         if(spacing)for(i = 0; i<indent; i++) f.Puts("   ");
+         if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
          WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, map);
       }
       if(spacing)
@@ -1748,7 +1748,7 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
             value.p = (void *)(uintptr)t;
          }
          if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteValue(f, arrayType, value, indent, eCON);
+         WriteValue(f, arrayType, value, indent, eCON, false);
       }
       if(spacing)
       {
@@ -1765,7 +1765,7 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
    return true;
 }
 
-static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON, bool useHex, bool jsonBitClass)
+static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eCON, bool useHex, bool jsonBitClass, bool forceQuotes)
 {
    char buffer[1024];
    ObjectNotationType onType = eCON ? econ : json;
@@ -1802,8 +1802,8 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &onType);
 
-   quote = !jsonBitClass && ((type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
-           (type.type == enumClass && !eCON));
+   quote = forceQuotes || (!jsonBitClass && ((type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+           (type.type == enumClass && !eCON)));
    if(quote) f.Puts("\"");
      // TODO: Review / Clarify / Document how needClass should work
    else if((onType == econ || (onType == json && jsonBitClass)) && type.type == bitClass) f.Puts("{ ");
@@ -1843,7 +1843,7 @@ static bool WriteColorAlpha(File f, Class type, DataValue value, int indent, boo
    return true;
 }
 
-static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON)
+static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, bool forceQuotes)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
    {
@@ -1923,7 +1923,7 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(!strcmp(type.name, "SetBool"))
       f.Puts(value.i == SetBool::true ? "true" : value.i == SetBool::false ? "false" : "unset");
    else if(type.type == enumClass)
-      WriteNumber(f, type, value, indent, eCON, false, false);
+      WriteNumber(f, type, value, indent, eCON, false, false, forceQuotes);
    else if(eClass_IsDerived(type, class(Map)))
       WriteMap(f, type, value.p, indent, eCON);
    else if(eClass_IsDerived(type, class(Container)))
@@ -1938,12 +1938,12 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(type.type == bitClass)
    {
       if(eCON || !strcmp(type.name, "MapDataType"))
-         WriteNumber(f, type, value, indent, eCON, false, true);
+         WriteNumber(f, type, value, indent, eCON, false, true, forceQuotes);
       else
-         WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, false, true, false);
+         WriteNumber(f, superFindClass(type.dataTypeString, type.module), value, indent, false, true, false, forceQuotes);
    }
    else if(type.type == systemClass || type.type == unitClass)
-      WriteNumber(f, type, value, indent, eCON, false, false);
+      WriteNumber(f, type, value, indent, eCON, false, false, forceQuotes);
    return true;
 }
 
@@ -2171,7 +2171,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         }
                         else if(isMapNodeValue)
                            f.Puts(" : ");
-                        WriteValue(f, type, value, indent, eCON);
+                        WriteValue(f, type, value, indent, eCON, jsonDicMap && isMapNodeKey);
                         if(!jsonDicMap)
                            isFirst = false;
                         if(type.type == structClass)
@@ -2274,7 +2274,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         f.Puts(member.name);
                         f.Puts(" = ");
                      }
-                     WriteValue(f, type, value, indent, eCON);
+                     WriteValue(f, type, value, indent, eCON, false);
                      isFirst = false;
                   }
                }
