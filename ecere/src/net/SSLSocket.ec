@@ -7,7 +7,7 @@
 #define uint _uint
 #define set _set
 #include <openssl/ssl.h>
-#if defined(__WIN32__)
+#if defined(__WIN32__) && OPENSSL_VERSION_NUMBER < 0x1010006fL
 #include <openssl/applink.c>
 #endif
 #undef byte
