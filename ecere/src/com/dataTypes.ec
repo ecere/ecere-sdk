@@ -225,7 +225,7 @@ public:
       if(tempString)
       {
          strcpy(tempString, item.name);
-         if(!onType || !*onType)
+         if(!onType || *onType != econ)
             tempString[0] = (char)toupper(tempString[0]);
          return tempString;
       }
