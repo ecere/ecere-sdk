@@ -1553,11 +1553,13 @@ private:
          value.ui = (uint)strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
          result = success;
       }
-      else
+      else if(type.type != structClass && type.type != noHeadClass && type.type != normalClass)
       {
          value.i = (int)strtol(buffer, null, eCON ? 0 : 10);
          result = success;
       }
+      else
+         result = typeMismatch;
 
       if(result == success && type.type == unitClass)
       {
