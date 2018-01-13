@@ -54,6 +54,11 @@ static void WriteData(png_structp png, png_bytep bytes, png_size_t size)
 
 static const char * extensions[] = { "png", null };
 
+public struct PNGOptions
+{
+   int zlibCompressionLevel;
+};
+
 class PNGFormat : BitmapFormat
 {
    class_property(extensions) = extensions;
@@ -261,7 +266,7 @@ class PNGFormat : BitmapFormat
       return result;
    }
 
-   bool Save(Bitmap bitmap, const char *filename, void * options)
+   bool Save(Bitmap bitmap, const char *filename, PNGOptions options)
    {
       bool result = false;
       Bitmap tempBitmap = null;
@@ -295,7 +300,11 @@ class PNGFormat : BitmapFormat
                      png_set_write_fn(png_ptr, f, WriteData, null);
 
                      png_set_IHDR(png_ptr, info_ptr, bitmap.width, bitmap.height, bitsPerPixel, colorType,
-                        PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+                        PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
+                     if(options != null)
+                        png_set_compression_level(png_ptr, options.zlibCompressionLevel);
+
+                     png_set_filter(png_ptr, PNG_FILTER_TYPE_DEFAULT, PNG_ALL_FILTERS);
 
                      png_write_info(png_ptr, info_ptr);
 
