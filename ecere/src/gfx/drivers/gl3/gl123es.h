@@ -44,7 +44,9 @@
 #undef class
 */
 #else
+   #define Polygon _Polygon
    #include <gl_compat_4_4.h>
+   #undef Polygon
 #endif
 
 #ifdef _GLES
