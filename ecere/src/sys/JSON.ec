@@ -31,7 +31,6 @@ private:
 
 FreeingAVLTree<const String> compactTypes
 { [
-   "GeoPosition",
    "GeoPoint",
    "GeoExtent",
    "GeometryData",
@@ -61,8 +60,7 @@ FreeingAVLTree<const String> compactTypes
 
 FreeingAVLTree<const String> compactArrays
 { [
-   //"Polygon",
-   "GeoPosition",
+   "Polygon",
    "GeoPoint",
    "PolygonContour",
    "StartEndPair",
@@ -434,7 +432,7 @@ private:
                      if(!strcmp(convProp.name, cType.fullName))
                         break;
                   }
-                  if(convProp)
+                  if(convProp && cType)
                   {
                      if(cType.type == unitClass)
                      {
@@ -1845,81 +1843,85 @@ static bool WriteColorAlpha(File f, Class type, DataValue value, int indent, boo
    return true;
 }
 
+public bool WriteONString(File f, String s, bool eCON, int indent)
+{
+   if(!s)
+      f.Puts("null");
+   else
+   {
+      f.Puts("\"");
+      {
+         int c = 0;
+         int b = 0;
+         char buffer[1024];
+         char * string = s;
+         char ch;
+         while(true)
+         {
+            ch = string[c++];
+            if(ch == '\"')
+            {
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\\"");
+               b = 0;
+            }
+            else if(ch == '\\')
+            {
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\\\");
+               b = 0;
+            }
+            else if(eCON && ch == '\t')
+            {
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\t");
+               b = 0;
+            }
+            else if(eCON && ch == '\n')
+            {
+               int i;
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\n\"\n");
+               for(i = 0; i<indent; i++) f.Puts("   ");
+               f.Puts("   \"");
+               b = 0;
+            }
+            else if(eCON && c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
+            {
+               // Add an automatic newline for <br> as this is how we imported documentor data...
+               int i;
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts(">\"\n");
+               for(i = 0; i<indent; i++) f.Puts("   ");
+               f.Puts("   \"");
+               b = 0;
+            }
+            else if(b == sizeof(buffer)-2 || !ch)
+            {
+               buffer[b++] = ch;
+               if(ch) buffer[b] = 0;
+               f.Puts(buffer);
+               b = 0;
+               if(!ch) break;
+            }
+            else
+               buffer[b++] = ch;
+         }
+      }
+      f.Puts("\"");
+   }
+   return true;
+}
+
 static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, bool forceQuotes)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
-   {
-      if(!value.p)
-         f.Puts("null");
-      else
-      {
-         f.Puts("\"");
-         {
-            int c = 0;
-            int b = 0;
-            char buffer[1024];
-            char * string = value.p;
-            char ch;
-            while(true)
-            {
-               ch = string[c++];
-               if(ch == '\"')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\"");
-                  b = 0;
-               }
-               else if(ch == '\\')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\\\");
-                  b = 0;
-               }
-               else if(eCON && ch == '\t')
-               {
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\t");
-                  b = 0;
-               }
-               else if(eCON && ch == '\n')
-               {
-                  int i;
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts("\\n\"\n");
-                  for(i = 0; i<indent; i++) f.Puts("   ");
-                  f.Puts("   \"");
-                  b = 0;
-               }
-               else if(eCON && c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
-               {
-                  // Add an automatic newline for <br> as this is how we imported documentor data...
-                  int i;
-                  buffer[b] = 0;
-                  f.Puts(buffer);
-                  f.Puts(">\"\n");
-                  for(i = 0; i<indent; i++) f.Puts("   ");
-                  f.Puts("   \"");
-                  b = 0;
-               }
-               else if(b == sizeof(buffer)-2 || !ch)
-               {
-                  buffer[b++] = ch;
-                  if(ch) buffer[b] = 0;
-                  f.Puts(buffer);
-                  b = 0;
-                  if(!ch) break;
-               }
-               else
-                  buffer[b++] = ch;
-            }
-         }
-         f.Puts("\"");
-      }
-   }
+      WriteONString(f, value.p, eCON, indent);
    else if(!strcmp(type.name, "bool"))
       f.Puts(value.i ? "true" : "false");
    else if(!strcmp(type.name, "SetBool"))
@@ -1932,7 +1934,7 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
       WriteArray(f, type, value.p, indent, eCON);
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPosition") || !strcmp(type.name, "UMSRowsSpecs"));
+      bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPoint") || !strcmp(type.name, "UMSRowsSpecs"));
       WriteONObject(f, type, value.p, indent, eCON, eCON && omitNames, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
@@ -2047,7 +2049,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                jsonClass = _class;
          }
 
-         f.Puts(spacing ? "{\n" : "{ ");
+         f.Puts(spacing ? "{\n" : omitDefaultIdentifier ? "{" : "{ ");
          if(spacing) indent++;
 
          if(jsonClass)
@@ -2291,7 +2293,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             f.Puts("\n");
             for(c = 0; c<indent; c++) f.Puts("   ");
          }
-         else
+         else if(!omitDefaultIdentifier)
             f.Puts(" ");
          f.Puts("}");
       }
