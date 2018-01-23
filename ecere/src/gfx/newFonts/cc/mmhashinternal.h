@@ -11,7 +11,7 @@
 ////
 
 
-#ifndef MM_ATOMIC_SUPPORT
+#if !defined(MM_ATOMIC_SUPPORT) && !defined(__EMSCRIPTEN__)
  #warning WARNING: Compiling mmhash without atomic support
 #endif
 
@@ -106,10 +106,10 @@ typedef struct
 
  #define MM_HASH_LOCK_TRY_READ(t,p) (mtMutexTryLock(&t->page[p].mutex))
  #define MM_HASH_LOCK_TRY_WRITE(t,p) (mtMutexTryLock(&t->page[p].mutex))
- #define MM_HASH_LOCK_DONE_READ(t,p) (mtMutexUnlock(&t->page[p].mutex))
- #define MM_HASH_LOCK_DONE_WRITE(t,p) (mtMutexUnlock(&t->page[p].mutex))
- #define MM_HASH_GLOBAL_LOCK(t) (mtMutexLock(&t->globalmutex))
- #define MM_HASH_GLOBAL_UNLOCK(t) (mtMutexUnlock(&t->globalmutex))
+ #define MM_HASH_LOCK_DONE_READ(t,p) mtMutexUnlock(&t->page[p].mutex)
+ #define MM_HASH_LOCK_DONE_WRITE(t,p) mtMutexUnlock(&t->page[p].mutex)
+ #define MM_HASH_GLOBAL_LOCK(t) mtMutexLock(&t->globalmutex)
+ #define MM_HASH_GLOBAL_UNLOCK(t) mtMutexUnlock(&t->globalmutex)
 
 static inline uint32_t MM_HASH_ENTRYCOUNT_ADD_READ( mmHashTable *t, int32_t c )
 {

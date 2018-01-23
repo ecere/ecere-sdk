@@ -417,7 +417,8 @@
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "NOBLENDING",
-               "ECERE_NOSSL"
+               "ECERE_NOSSL",
+               "ECERE_NONET"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",
@@ -2710,6 +2711,12 @@
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "Emscripten",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
                         }
                      ]
                   },
@@ -2785,12 +2792,6 @@
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
-                        },
-                        {
-                           "Name" : "Emscripten",
-                           "Options" : {
-                              "ExcludeFromBuild" : true
-                           }
                         }
                      ]
                   }
@@ -2816,6 +2817,12 @@
                   },
                   {
                      "Name" : "MinEmscripten",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  },
+                  {
+                     "Name" : "Emscripten",
                      "Options" : {
                         "ExcludeFromBuild" : true
                      }

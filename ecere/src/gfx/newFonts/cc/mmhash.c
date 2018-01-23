@@ -1922,14 +1922,10 @@ void mmHashDirectDebugDuplicate( void *hashtable, const mmHashAccess *access, vo
 
 void mmHashDirectDebugPages( void *hashtable )
 {
-  uint32_t pageindex;
-  mmHashTable *table;
-  mmHashPage *page;
-
-  table = hashtable;
-
 #ifdef MM_ATOMIC_SUPPORT
-  page = table->page;
+  mmHashTable *table = hashtable;
+  uint32_t pageindex;
+  mmHashPage *page = table->page;
   for( pageindex = 0 ; pageindex < table->pagecount ; pageindex++, page++ )
   {
     if( ( page->lock.v.value ) || mmAtomicReadP( &page->owner ) )
@@ -1937,8 +1933,6 @@ void mmHashDirectDebugPages( void *hashtable )
   }
   fflush( stdout );
 #endif
-
-  return;
 }
 
 
