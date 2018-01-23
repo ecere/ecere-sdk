@@ -406,8 +406,8 @@ public class File : IOChannel
 
    void OnUnserialize(IOChannel channel)
    {
-      uLongf size;
-      uint cSize;
+      uLongf size = 0;
+      uint cSize = 0;
 
       this = null;
 

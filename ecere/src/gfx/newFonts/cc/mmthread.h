@@ -589,15 +589,15 @@ static inline int mtSignalWaitTime( mtSignal *signal, mtMutex *mutex, unsigned l
   #define MT_DISABLED (1)
  #endif
 
-typedef struct { } mtMutex;
-typedef struct { } mtSpin;
-typedef struct { } mtSignal;
+typedef struct mtMutex { int foo; } mtMutex;
+typedef struct mtSpin { int foo; } mtSpin;
+typedef struct mtSignal { int foo; } mtSignal;
 
  #define mtMutexInit(a)
  #define mtMutexDestroy(a)
  #define mtMutexLock(a)
  #define mtMutexUnlock(a)
- #define mtMutexTryLock(a)
+ #define mtMutexTryLock(a) 1
 
  #define mtSpinInit(a)
  #define mtSpinDestroy(a)
@@ -620,7 +620,7 @@ typedef struct { } mtSignal;
 ////
 
 
-#if MT_GNUC
+#if MT_GNUC && !MT_NOTHREADS
 
 
 /* Spin locks, GNUC/clang/ICC implementation */
@@ -671,7 +671,7 @@ static inline int mtSpinTryLock( mtSpin *spin )
 }
 
 
-#elif MT_MSVC
+#elif MT_MSVC && !MT_NOTHREADS
 
 
 /* Spin locks, MSVC implementation */
@@ -719,7 +719,7 @@ static inline int mtSpinTryLock( mtSpin *spin )
 }
 
 
- #else
+ #elif !MT_NOTHREADS
 
 
 typedef struct mtMutex mtSpin;
@@ -737,7 +737,7 @@ typedef struct mtMutex mtSpin;
 ////
 
 
-#if MT_GNUC
+#if MT_GNUC && !MT_NOTHREADS
 
 
 typedef struct

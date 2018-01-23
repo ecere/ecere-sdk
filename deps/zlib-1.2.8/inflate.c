@@ -1,3 +1,4 @@
+#include <stdio.h>
 /* inflate.c -- zlib decompression
  * Copyright (C) 1995-2012 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
@@ -1212,8 +1213,13 @@ int flush;
             ret = Z_STREAM_END;
             goto inf_leave;
         case BAD:
+        {
+#ifdef __EMSCRIPTEN__
+            printf("Just Having This Printf here Avoids Returning Z_DATA_ERROR\n");
+#endif
             ret = Z_DATA_ERROR;
             goto inf_leave;
+        }
         case MEM:
             return Z_MEM_ERROR;
         case SYNC:
