@@ -1656,7 +1656,19 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
       bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue"));
       MapIterator it { map = map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
-      f.Puts(spacing ? "[\n" : "[ ");
+      bool jsonDicMap = false;
+      if(mapNodeClass && mapNodeClass.templateClass && eClass_IsDerived(mapNodeClass.templateClass, class(MapNode)))
+      {
+         Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
+         Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
+         if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue")))
+            jsonDicMap = true;
+      }
+
+      if(jsonDicMap)
+         f.Puts(spacing ? "{\n" : "{ ");
+      else
+         f.Puts(spacing ? "[\n" : "[ ");
       if(spacing) indent++;
 
       while(it.Next())
@@ -1677,7 +1689,10 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
       }
       else
          f.Puts(" ");
-      f.Puts("]");
+      if(jsonDicMap)
+         f.Puts("}");
+      else
+         f.Puts("]");
    }
    else
       f.Puts("null");
@@ -2049,7 +2064,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                jsonClass = _class;
          }
 
-         f.Puts(spacing ? "{\n" : omitDefaultIdentifier ? "{" : "{ ");
+         if(!jsonDicMap)
+            f.Puts(spacing ? "{\n" : omitDefaultIdentifier ? "{" : "{ ");
          if(spacing) indent++;
 
          if(jsonClass)
@@ -2293,9 +2309,10 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             f.Puts("\n");
             for(c = 0; c<indent; c++) f.Puts("   ");
          }
-         else if(!omitDefaultIdentifier)
+         else if(!omitDefaultIdentifier && !jsonDicMap)
             f.Puts(" ");
-         f.Puts("}");
+         if(!jsonDicMap)
+            f.Puts("}");
       }
    }
    else
