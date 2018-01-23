@@ -494,7 +494,8 @@ if distributed with the Ecere SDK Windows installer.
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "NOBLENDING",
-               "ECERE_NOSSL"
+               "ECERE_NOSSL",
+               "ECERE_NONET"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",
@@ -2787,6 +2788,12 @@ if distributed with the Ecere SDK Windows installer.
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "Emscripten",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
                         }
                      ]
                   },
@@ -2862,12 +2869,6 @@ if distributed with the Ecere SDK Windows installer.
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
-                        },
-                        {
-                           "Name" : "Emscripten",
-                           "Options" : {
-                              "ExcludeFromBuild" : true
-                           }
                         }
                      ]
                   }
@@ -2893,6 +2894,12 @@ if distributed with the Ecere SDK Windows installer.
                   },
                   {
                      "Name" : "MinEmscripten",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  },
+                  {
+                     "Name" : "Emscripten",
                      "Options" : {
                         "ExcludeFromBuild" : true
                      }

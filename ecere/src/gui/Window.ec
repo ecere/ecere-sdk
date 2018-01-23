@@ -33,7 +33,7 @@ import "Win32Interface"
 import "Desktop3D"
 #endif
 
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE) && !defined(__EMSCRIPTEN__)
 import "FormDesigner"
 #endif
 
@@ -771,7 +771,7 @@ private:
    }
 //#endif
 
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE) && !defined(__EMSCRIPTEN__)
    bool OnGetDataFromString(const char * string)
    {
       FormDesigner designer = (FormDesigner)activeDesigner.classDesigner;
@@ -9813,7 +9813,7 @@ public:
    {
       get { return (bool)nativeDecorations; }
       set { nativeDecorations = value; }
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE) && !defined(__EMSCRIPTEN__)
       isset
       {
          //return (nativeDecorations && (rootWindow == this || (formDesigner && activeDesigner && ((FormDesigner)activeDesigner.classDesigner).form && parent == ((FormDesigner)activeDesigner.classDesigner).form.parent))) != style.fixed;
