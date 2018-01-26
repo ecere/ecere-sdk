@@ -388,7 +388,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
                exit(0);
             }
          }
-         if(input || output)
+         //if(input || output)
          {
             f = calloc(1, sizeof(_DualPipe));
             *inputPtr = f->input = input;
