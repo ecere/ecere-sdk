@@ -34,7 +34,7 @@ static void WriteFileName(File f, const char * fileName)
    }
 }
 
-#define CONTENT_PATH   "."
+char contentPath[MAX_LOCATION] = ".";
 
 static void CreateDirectoryListing(File f, char * directory)
 {
@@ -92,14 +92,12 @@ class HTTPClient : Socket
 
          if((string = GetString(string, "GET ", count)))
          {
-            char reply[1024];
+            char reply[2048];
             char path[MAX_LOCATION];
             char addedPath[MAX_LOCATION];
             int d, i;
             FileAttribs attribs;
             int len = 0;
-
-            strcpy(path, CONTENT_PATH);
 
             for(d = c; d > 0 && string[d] != ' '; d--);
             for(i = 0; i<d; i++)
@@ -118,7 +116,9 @@ class HTTPClient : Socket
                addedPath[len] = '\0';
             }
 
-            PathCat(path, addedPath+1);
+            strcpy(path, contentPath);
+            if(!strstr(addedPath, "..") && !strstr(addedPath, ":"))
+               PathCat(path, addedPath+1);
 
             attribs = FileExists(path);
 
@@ -167,14 +167,19 @@ class HTTPClient : Socket
             if(f)
             {
                char extension[MAX_EXTENSION];
-               uint size = f.GetSize();
+               uint size = (uint)f.GetSize();
                sprintf(reply, "HTTP/1.1 200 OK\r\n");
 
                GetExtension(addedPath, extension);
                if(attribs.isDirectory || !strcmp(extension, "html") || !strcmp(extension, "htm"))
                   strcat(reply, "Content-Type: text/html\r\n");
+               else if(!strcmp(extension, "wasm"))
+                  strcat(reply, "Content-Type: application/wasm\r\n");
+               else if(!strcmp(extension, "data"))
+                  strcat(reply, "Content-Type: application/octet-stream\r\n");
                else
                   strcat(reply, "Content-Type: text/plain\r\n");
+               strcat(reply, "Access-Control-Allow-Origin: *\r\n");
                sprintf(strchr(reply, 0), "Content-Length: %d\r\n\r\n", size);
             }
             SendString(reply);
@@ -198,6 +203,8 @@ class HTTPApplication : GuiApplication
    bool Init()
    {
       httpServer.Start();
+      if(argc > 1)
+         strcpy(contentPath, argv[1]);
       return true;
    }
 
