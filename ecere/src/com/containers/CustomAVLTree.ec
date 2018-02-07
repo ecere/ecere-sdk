@@ -520,7 +520,7 @@ public:
    IteratorPointer GetLast()  { return (IteratorPointer) (root ? root.maximum : null); }
    IteratorPointer GetPrev(IteratorPointer node) { return ((BT)node).prev; }
    IteratorPointer GetNext(IteratorPointer node) { return ((BT)node).next; }
-   BT GetData(IteratorPointer node) { return (BT)node; }
+   T GetData(IteratorPointer node) { return (T)(BT)node; }
    bool SetData(IteratorPointer node, BT data)
    {
       // Not supported for CustomAVLTree
