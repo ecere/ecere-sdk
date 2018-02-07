@@ -178,10 +178,10 @@ bool DualPipe_Seek(_DualPipe * dp, long long int pos, FileSeekMode mode)
    return false;
 }
 
-uint DualPipe_Tell(_DualPipe * dp)
+uint64_t DualPipe_Tell(_DualPipe * dp)
 {
 #if defined(__WIN32__)
-   return (uint)SetFilePointer(dp->inputHandle, 0, null, FILE_CURRENT);
+   return (uint64_t)SetFilePointer(dp->inputHandle, 0, null, FILE_CURRENT);
 #endif
    return 0;
 }
