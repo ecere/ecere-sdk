@@ -24,8 +24,8 @@ public:
 
    property Container { get { return (void *)this; } }
 
-   virtual IteratorPointer GetFirst() { return data; }
-   virtual IteratorPointer GetLast()  { return (IteratorPointer)(data ? ((byte *)data + (count * type.typeSize) - 1) : null); }
+   virtual IteratorPointer GetFirst() { return count ? data : null; }   // TODO: explicitly set 'null' for data for empty containers
+   virtual IteratorPointer GetLast()  { return (IteratorPointer)(count && data ? ((byte *)data + (count * type.typeSize) - 1) : null); }
    virtual IteratorPointer GetPrev(IteratorPointer pointer)
    {
       return (IteratorPointer)((pointer && (byte *)pointer > (byte *)data) ?
@@ -50,7 +50,7 @@ public:
    }
    virtual IteratorPointer GetAtPosition(const uint64 pos, bool create)
    {
-      return data ? (IteratorPointer)((byte *)data + pos * type.typeSize) : null;
+      return count && data ? (IteratorPointer)((byte *)data + pos * type.typeSize) : null;
    }
    virtual IteratorPointer Insert(IteratorPointer after, uint64 value)
    {
