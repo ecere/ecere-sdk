@@ -22,7 +22,7 @@ public:
    int count;
    Class type;
 
-   property Container { get { return this; } }
+   property Container { get { return (void *)this; } }
 
    virtual IteratorPointer GetFirst() { return data; }
    virtual IteratorPointer GetLast()  { return (IteratorPointer)(data ? ((byte *)data + (count * type.typeSize) - 1) : null); }
