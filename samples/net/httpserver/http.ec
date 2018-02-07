@@ -175,6 +175,8 @@ class HTTPClient : Socket
                   strcat(reply, "Content-Type: text/html\r\n");
                else if(!strcmp(extension, "wasm"))
                   strcat(reply, "Content-Type: application/wasm\r\n");
+               else if(!strcmp(extension, "gz"))
+                  strcat(reply, "Content-Type: application/gzip\r\n");
                else if(!strcmp(extension, "data"))
                   strcat(reply, "Content-Type: application/octet-stream\r\n");
                else
