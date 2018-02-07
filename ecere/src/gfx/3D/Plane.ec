@@ -44,7 +44,7 @@ public struct Plane
    };
    double d;
 
-   void FromPoints(Vector3D v1, Vector3D v2, Vector3D v3)
+   void FromPoints(const Vector3D v1, const Vector3D v2, const Vector3D v3)
    {
       Vector3D a, b;
 
@@ -56,7 +56,7 @@ public struct Plane
       d = -normal.DotProduct(v1);
    }
 
-   void FromPointsf(Vector3Df v1, Vector3Df v2, Vector3Df v3)
+   void FromPointsf(const Vector3Df v1, const Vector3Df v2, const Vector3Df v3)
    {
       Vector3D v1d { (double)v1.x, (double)v1.y, (double)v1.z };
       Vector3D v2d { (double)v2.x, (double)v2.y, (double)v2.z };
@@ -71,7 +71,7 @@ public struct Plane
       d = -normal.DotProduct(v1d);
    }
 
-   void MultMatrix(Plane source, Matrix inverseTranspose)
+   void MultMatrix(const Plane source, const Matrix inverseTranspose)
    {
       a = source.a * inverseTranspose.m[0][0] +
           source.b * inverseTranspose.m[1][0] +
@@ -91,7 +91,7 @@ public struct Plane
           source.d * inverseTranspose.m[3][3];
    }
 
-   void IntersectLine(Line line, Vector3D result)
+   void IntersectLine(const Line line, Vector3D result)
    {
       double divisor = a * line.delta.x + b * line.delta.y + c * line.delta.z;
 
@@ -108,7 +108,7 @@ public struct Plane
                   d * line.delta.z ) / divisor;
    }
 
-   void IntersectLinef(Line line, Vector3Df result)
+   void IntersectLinef(const Line line, Vector3Df result)
    {
       double divisor = a * line.delta.x + b * line.delta.y + c * line.delta.z;
 
@@ -125,7 +125,7 @@ public struct Plane
                   d * line.delta.z ) / divisor);
    }
 
-   void FromPointNormal(Vector3D normal, Vector3D point)
+   void FromPointNormal(const Vector3D normal, const Vector3D point)
    {
       this.normal = normal;
       d = -(normal.x * point.x + normal.y * point.y + normal.z * point.z);
