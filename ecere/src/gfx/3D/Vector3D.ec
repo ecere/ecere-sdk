@@ -6,47 +6,47 @@ public struct Vector3D
 {
    double x, y, z;
 
-   void Add(Vector3D vector1, Vector3D vector2)
+   void Add(const Vector3D vector1, const Vector3D vector2)
    {
       x = vector1.x + vector2.x;
       y = vector1.y + vector2.y;
       z = vector1.z + vector2.z;
    }
 
-   void Subtract(Vector3D vector1, Vector3D vector2)
+   void Subtract(const Vector3D vector1, const Vector3D vector2)
    {
       x = vector1.x - vector2.x;
       y = vector1.y - vector2.y;
       z = vector1.z - vector2.z;
    }
 
-   void Scale(Vector3D vector1, double s)
+   void Scale(const Vector3D vector1, double s)
    {
       x = vector1.x * s;
       y = vector1.y * s;
       z = vector1.z * s;
    }
 
-   double DotProduct(Vector3D vector2)
+   double DotProduct(const Vector3D vector2)
    {
       return x * vector2.x + y * vector2.y + z * vector2.z;
    }
 
-   double DotProductf(Vector3Df vector2)
+   double DotProductf(const Vector3Df vector2)
    {
       return x * vector2.x + y * vector2.y + z * vector2.z;
    }
 
-   void CrossProduct(Vector3D vector1, Vector3D vector2)
+   void CrossProduct(const Vector3D vector1, const Vector3D vector2)
    {
       x = vector1.y * vector2.z - vector1.z * vector2.y;
       y = vector1.z * vector2.x - vector1.x * vector2.z;
       z = vector1.x * vector2.y - vector1.y * vector2.x;
    }
 
-   void Normalize(Vector3D source)
+   void Normalize(const Vector3D source)
    {
-      double m = source.length;
+      double m = source.length;  // FIXME -- get should be fine with const objects
       if(m)
       {
          x = source.x/m;
@@ -57,21 +57,21 @@ public struct Vector3D
          x = y = z = 0;
    }
 
-   void MultMatrix(Vector3D source, Matrix matrix)
+   void MultMatrix(const Vector3D source, const Matrix matrix)
    {
        x = source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0];
        y = source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1];
        z = source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2];
    }
 
-   void MultMatrixf(Vector3Df source, Matrix matrix)
+   void MultMatrixf(const Vector3Df source, const Matrix matrix)
    {
        x = source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0];
        y = source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1];
        z = source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2];
    }
 
-   void DivideMatrix(Vector3D source, Matrix matrix)
+   void DivideMatrix(const Vector3D source, const Matrix matrix)
    {
       /*
       solve(
@@ -175,40 +175,40 @@ public struct Vector3Df
 {
    float x, y, z;
 
-   void Add(Vector3Df vector1, Vector3Df vector2)
+   void Add(const Vector3Df vector1, const Vector3Df vector2)
    {
       x = vector1.x + vector2.x;
       y = vector1.y + vector2.y;
       z = vector1.z + vector2.z;
    }
 
-   void Subtract(Vector3Df vector1, Vector3Df vector2)
+   void Subtract(const Vector3Df vector1, const Vector3Df vector2)
    {
       x = vector1.x - vector2.x;
       y = vector1.y - vector2.y;
       z = vector1.z - vector2.z;
    }
 
-   void Scale(Vector3Df vector1, float s)
+   void Scale(const Vector3Df vector1, float s)
    {
       x = vector1.x * s;
       y = vector1.y * s;
       z = vector1.z * s;
    }
 
-   double DotProduct(Vector3Df vector2)
+   double DotProduct(const Vector3Df vector2)
    {
       return (double)x * (double)vector2.x + (double)y * (double)vector2.y + (double)z * (double)vector2.z;
    }
 
-   void CrossProduct(Vector3Df vector1, Vector3Df vector2)
+   void CrossProduct(const Vector3Df vector1, const Vector3Df vector2)
    {
       x = vector1.y * vector2.z - vector1.z * vector2.y;
       y = vector1.z * vector2.x - vector1.x * vector2.z;
       z = vector1.x * vector2.y - vector1.y * vector2.x;
    }
 
-   void Normalize(Vector3Df source)
+   void Normalize(const Vector3Df source)
    {
       /*
       float m = source.length;
@@ -227,14 +227,14 @@ public struct Vector3Df
       z = source.z * i;
    }
 
-   void MultMatrix(Vector3Df source, Matrix matrix)
+   void MultMatrix(const Vector3Df source, const Matrix matrix)
    {
        x = (float)(source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0]);
        y = (float)(source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1]);
        z = (float)(source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2]);
    }
 
-   void DivideMatrix(Vector3Df source, Matrix matrix)
+   void DivideMatrix(const Vector3Df source, const Matrix matrix)
    {
       /*
       solve(
