@@ -37,7 +37,7 @@ public union Matrix
       m[0][0]=m[1][1]=m[2][2]=m[3][3]=1;
    }
 
-   void Transpose(Matrix source)
+   void Transpose(const Matrix source)
    {
       int i,j;
       for(i=0; i<4; i++)
@@ -45,7 +45,7 @@ public union Matrix
             m[j][i] = source.m[i][j];
    }
 
-   void Multiply(Matrix a, Matrix b)
+   void Multiply(const Matrix a, const Matrix b)
    {
 #if 1
       // We need a full matrix multiplication for the Projection matrix
@@ -91,7 +91,7 @@ public union Matrix
 #endif
    }
 
-   void RotationQuaternion(Quaternion quat)
+   void RotationQuaternion(const Quaternion quat)
    {
       double xx = quat.x*quat.x, yy = quat.y*quat.y, zz = quat.z*quat.z;
       double xy = quat.x*quat.y, xz = quat.x*quat.z, yz = quat.y*quat.z;
@@ -136,7 +136,7 @@ public union Matrix
       this = mat1;
    }
 
-   void Rotate(Quaternion quat)
+   void Rotate(const Quaternion quat)
    {
       Matrix rmat;
       Matrix mat1;
@@ -173,9 +173,9 @@ public union Matrix
       return result;
    }
 
-   void Inverse(Matrix source)
+   void Inverse(const Matrix source)
    {
-      double det = source.Determinant();
+      double det = source.Determinant();  // FIXME: Get should be fine with const objects
       // if(Abs(det) < 0.0005)
       if(Abs(det) < 0.00000000000001)
          Identity();
