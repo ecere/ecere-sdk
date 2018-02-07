@@ -222,14 +222,17 @@ public struct GLEAB
 #endif
          )
       {
+#if !defined(__EMSCRIPTEN__)
          if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+#endif
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
 
          GLFlushMatrices();
 
-         glDrawElements(primType, count, type, indices);
+         if(!this || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
+            glDrawElements(primType, count, type, indices);
       }
    }
 };
