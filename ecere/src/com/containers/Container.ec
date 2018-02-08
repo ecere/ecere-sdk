@@ -292,10 +292,15 @@ public:
    }
 
    // TODO: Warn against the danger of using TakeOut with 'normal' classes, as they will be considered equivalent if onCompare says so
-   void TakeOut(const D d)
+   bool TakeOut(const D d)
    {
       IteratorPointer i = Find(d);
-      if(i) Remove(i);
+      if(i)
+      {
+         Remove(i);
+         return true;
+      }
+      return false;
    }
 
    ~Container()
