@@ -506,6 +506,93 @@ private:
       right.SingleRotateRight();
       SingleRotateLeft();
    }
+
+   bool Check(Class Tclass)
+   {
+      bool valid = true;
+      uint offset = 0;
+      bool reference = false;
+      byte * b;
+      int (* onCompare)(void *, void *, void *);
+      ClassType t;
+      int leftHeight  = left  ? left.depthProp+1  : 0;
+      int rightHeight = right ? right.depthProp+1 : 0;
+
+      // Now get the height of each subtree
+
+      // Verify that AVL tree property is satisfied
+      int diffHeight = rightHeight - leftHeight;
+
+      if(!Tclass)
+         Tclass = class(uint64);
+      t = Tclass.type;
+      onCompare = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
+      if((t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass || t == structClass)
+      {
+         reference = true;
+         offset = __ENDIAN_PAD((t == structClass) ? sizeof(void *) : Tclass.typeSize);
+      }
+
+      if(left)
+      {
+         if(left.parent != this)
+         {
+            printf("Parent not set properly at node %d\n", (int)left.key);
+            valid = false;
+         }
+         valid *= left.Check(Tclass);
+      }
+      if(right)
+      {
+         if(right.parent != this)
+         {
+            printf("Parent not set properly at node %d\n", (int)right.key);
+            valid = false;
+         }
+         valid *= right.Check(Tclass);
+      }
+
+      if(depth != depthProp)
+      {
+         printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", (int)key, depth, depthProp);
+         valid = false;
+      }
+
+      if (diffHeight < -1 || diffHeight > 1)
+      {
+         valid = false;
+         printf("Height difference is %d at node %d\n", diffHeight, (int)key);
+      }
+
+      // Verify that balance-factor is correct
+      if (diffHeight != balanceFactor)
+      {
+         valid = false;
+         printf("Height difference %d doesn't match balance-factor of %d at node %d\n", diffHeight, balanceFactor, (int)key);
+      }
+
+      // Verify that search-tree property is satisfied
+      b = reference ? ((byte *)&this.key + offset) : ((byte *)(uintptr)this.key);
+      if(left)
+      {
+         byte * a = reference ? ((byte *)&left.key + offset) : ((byte *)(uintptr)left.key);
+         if(onCompare(Tclass, a, b) > 0)
+         {
+            valid = false;
+            printf("Node %d is *smaller* than left subtree %d\n", (int)key, (int)left.key);
+         }
+      }
+      if (right)
+      {
+         byte * a = reference ? ((byte *)&right.key + offset) : ((byte *)(uintptr)right.key);
+         if(onCompare(Tclass, a, b) < 0)
+         {
+            valid = false;
+            printf("Node %d is *greater* than right subtree %d\n", (int)key, (int)right.key);
+         }
+      }
+      return valid;
+   }
 }
 
 public class CustomAVLTree<class BT:AVLNode<KT>, class KT = uint64> : Container<BT, I = KT>
@@ -666,5 +753,10 @@ public:
          if(justAdded) *justAdded = true;
       }
       return node;
+   }
+
+   bool Check()
+   {
+      return root ? root.Check(class(KT)) : true;
    }
 }
