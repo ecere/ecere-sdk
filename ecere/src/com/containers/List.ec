@@ -77,6 +77,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
          Link next = item.next;
          D data = byAddress ? (LLT)&item.data : (LLT)item.data;
          delete data;
+         delete item;
          item = next;
       }
       *&first = null;
