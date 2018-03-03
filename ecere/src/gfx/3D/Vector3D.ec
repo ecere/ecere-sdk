@@ -71,6 +71,22 @@ public struct Vector3D
        z = source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2];
    }
 
+   void MultQuaternion(const Vector3D s, const Quaternion quat)
+   {
+      Vector3D v { quat.x, quat.y, quat.z };
+      double w = quat.w, a = w*w - (v.x*v.x+v.y*v.y+v.z*v.z) /*DotProduct(v)*/, dotVS = v.x*s.x+v.y*s.y+v.z*s.z /*v.DotProduct(s)*/;
+      Vector3D cross
+      {
+         s.y * v.z - s.z * v.y,
+         s.z * v.x - s.x * v.z,
+         s.x * v.y - s.y * v.x
+      };
+      //cross.CrossProduct(s, v);
+      x = (float)(2 * dotVS * v.x + a * s.x + 2 * w * cross.x);
+      y = (float)(2 * dotVS * v.y + a * s.y + 2 * w * cross.y);
+      z = (float)(2 * dotVS * v.z + a * s.z + 2 * w * cross.z);
+   }
+
    void DivideMatrix(const Vector3D source, const Matrix matrix)
    {
       /*
@@ -232,6 +248,23 @@ public struct Vector3Df
        x = (float)(source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0]);
        y = (float)(source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1]);
        z = (float)(source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2]);
+   }
+
+   void MultQuaternion(const Vector3Df source, const Quaternion quat)
+   {
+      Vector3D s { source.x, source.y, source.z };
+      Vector3D v { quat.x, quat.y, quat.z };
+      double w = quat.w, a = w*w - (v.x*v.x+v.y*v.y+v.z*v.z) /*DotProduct(v)*/, dotVS = v.x*s.x+v.y*s.y+v.z*s.z /*v.DotProduct(s)*/;
+      Vector3D cross
+      {
+         s.y * v.z - s.z * v.y,
+         s.z * v.x - s.x * v.z,
+         s.x * v.y - s.y * v.x
+      };
+      //cross.CrossProduct(s, v);
+      x = (float)(2 * dotVS * v.x + a * s.x + 2 * w * cross.x);
+      y = (float)(2 * dotVS * v.y + a * s.y + 2 * w * cross.y);
+      z = (float)(2 * dotVS * v.z + a * s.z + 2 * w * cross.z);
    }
 
    void DivideMatrix(const Vector3Df source, const Matrix matrix)
