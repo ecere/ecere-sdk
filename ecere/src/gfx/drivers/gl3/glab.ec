@@ -200,7 +200,7 @@ public struct GLEAB
       {
          if(glabCurArrayBuffer != buffer)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-         glBufferSubData(buffer, offset, size, data);
+         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
       }
    }
 
