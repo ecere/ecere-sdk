@@ -203,14 +203,14 @@ class PictureEdit : Window
 
    bool OnLoadGraphics()
    {
-      if(bitmap.pixelFormat == pixelFormat8)
+      if(bitmap && bitmap.pixelFormat == pixelFormat8)
       {
          bitmapNotIndexed = { };
          bitmapNotIndexed.Copy(bitmap);
          bitmapNotIndexed.Convert(null, pixelFormat888, null);
          bitmapNotIndexed.MakeDD(displaySystem);
       }
-      else
+      else if(bitmap)
          bitmap.MakeDD(displaySystem);
       return true;
    }
