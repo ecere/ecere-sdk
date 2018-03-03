@@ -65,7 +65,11 @@ public:
    // bool mapBuffer       :1;
 
    bool debug           :1;
+
+   GLSamplesCount samples:3;
 };
+
+public enum GLSamplesCount { none, ms2, ms4, ms8, ms16 };
 
 public enum RenderState { fillMode = 1, depthTest, depthWrite, fogDensity, fogColor, blend, ambient, alphaWrite, antiAlias, vSync };
 

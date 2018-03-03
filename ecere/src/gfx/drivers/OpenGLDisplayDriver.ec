@@ -743,6 +743,8 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSystem.hdc = GetDC(oglSystem.hwnd);
       if(oglSystem.hdc)
       {
+         GLSamplesCount sc = displaySystem.glCapabilities.samples;
+         int samplesCount = sc == ms16 ? 16 : sc == ms8 ? 8 : sc == ms4 ? 4 : sc == ms2 ? 2 : 0;
 
          oglSystem.pfd.nSize = (short)sizeof(oglSystem.pfd);
          oglSystem.pfd.nVersion = 1;
@@ -794,33 +796,42 @@ class OpenGLDisplayDriver : DisplayDriver
                      WGL_ACCELERATION_ARB,WGL_FULL_ACCELERATION_ARB,
                      WGL_COLOR_BITS_ARB,24,
                      WGL_ALPHA_BITS_ARB,8,
-                     WGL_DEPTH_BITS_ARB,16,
+                     WGL_DEPTH_BITS_ARB, 32,
                      WGL_STENCIL_BITS_ARB,0,
                      WGL_DOUBLE_BUFFER_ARB,GL_TRUE,
+                     //WGL_DEPTH_FLOAT_EXT,GL_TRUE,
                      WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-                     WGL_SAMPLES_ARB, 8,                  // Check For 4x Multisampling
+                     WGL_SAMPLES_ARB, samplesCount,                  // Check For 4x Multisampling
                      0,0
                   };
+
+                  #define MS_ATTRIB_IX 19 //21
 
                   //Log("Found wglChoosePixelFormatARB\n");
 
                   valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                   if(!valid || !numFormats)
                   {
-                     //Log("Can't find 8x multi sampling\n");
-                     iAttributes[19] = 4;
-                     valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                     //Log("Can't find 16x multi sampling\n");
+                     iAttributes[MS_ATTRIB_IX] = 8;
+                     valid = samplesCount >= 8 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                      if(!valid || !numFormats)
                      {
-                        //Log("Can't find 4x multi sampling\n");
-                        iAttributes[19] = 2;
-                        valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                        //Log("Can't find 8x multi sampling\n");
+                        iAttributes[MS_ATTRIB_IX] = 4;
+                        valid = samplesCount >= 4 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                         if(!valid || !numFormats)
                         {
-                           // Log("Can't find 2x multi sampling\n");
-                           iAttributes[16] = 0;
-                           iAttributes[17] = 0;
-                           valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                           //Log("Can't find 4x multi sampling\n");
+                           iAttributes[MS_ATTRIB_IX] = 2;
+                           valid = samplesCount >= 2 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                           if(!valid || !numFormats)
+                           {
+                              // Log("Can't find 2x multi sampling\n");
+                              iAttributes[MS_ATTRIB_IX-3] = 0;
+                              iAttributes[MS_ATTRIB_IX-2] = 0;
+                              valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                           }
                         }
                      }
                   }
@@ -1335,6 +1346,8 @@ class OpenGLDisplayDriver : DisplayDriver
             int valid;
             int numFormats;
             float fAttributes[] = {0,0};
+            GLSamplesCount sc = display.glCapabilities.samples;
+            int samplesCount = sc == ms16 ? 16 : sc == ms8 ? 8 : sc == ms4 ? 4 : sc == ms2 ? 2 : 0;
             int iAttributes[] =
             {
                //WGL_DRAW_TO_BITMAP_ARB, GL_TRUE,
@@ -1347,7 +1360,7 @@ class OpenGLDisplayDriver : DisplayDriver
                WGL_STENCIL_BITS_ARB,0,
                WGL_DOUBLE_BUFFER_ARB,GL_FALSE,
                WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-               WGL_SAMPLES_ARB, 8,                  // Check For 4x Multisampling
+               WGL_SAMPLES_ARB, samplesCount,                  // Check For 4x Multisampling
                0,0
             };
 
@@ -1356,33 +1369,39 @@ class OpenGLDisplayDriver : DisplayDriver
             valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
             if(!valid || !numFormats)
             {
-               //Log("Can't find 4x multi sampling\n");
-               iAttributes[19] = 4;
-               valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+               //Log("Can't find 16x multi sampling\n");
+               iAttributes[19] = 8;
+               valid = samplesCount >= 8 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                if(!valid || !numFormats)
                {
-                  //Log("Can't find 4x multi sampling\n");
-                  iAttributes[19] = 2;
-                  valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                  //Log("Can't find 8x multi sampling\n");
+                  iAttributes[19] = 4;
+                  valid = samplesCount >= 4 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                   if(!valid || !numFormats)
                   {
-                     // Log("Can't find 2x multi sampling\n");
-                     iAttributes[16] = 0;
-                     iAttributes[17] = 0;
-                     valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                     //Log("Can't find 4x multi sampling\n");
+                     iAttributes[19] = 2;
+                     valid = samplesCount >= 2 && wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
                      if(!valid || !numFormats)
                      {
-                        int iAttributes[] =
-                        {
-                           WGL_DRAW_TO_PBUFFER_ARB,GL_TRUE,
-                           //WGL_DRAW_TO_BITMAP_ARB,GL_TRUE,
-                           WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
-                           WGL_COLOR_BITS_ARB,24,
-                           WGL_ALPHA_BITS_ARB,8,
-                           WGL_DEPTH_BITS_ARB,16,
-                           0,0
-                        };
+                        // Log("Can't find 2x multi sampling\n");
+                        iAttributes[16] = 0;
+                        iAttributes[17] = 0;
                         valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                        if(!valid || !numFormats)
+                        {
+                           int iAttributes[] =
+                           {
+                              WGL_DRAW_TO_PBUFFER_ARB,GL_TRUE,
+                              //WGL_DRAW_TO_BITMAP_ARB,GL_TRUE,
+                              WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
+                              WGL_COLOR_BITS_ARB,24,
+                              WGL_ALPHA_BITS_ARB,8,
+                              WGL_DEPTH_BITS_ARB,16,
+                              0,0
+                           };
+                           valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
+                        }
                      }
                   }
                }
