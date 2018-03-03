@@ -51,9 +51,9 @@ static struct FloatGLAB : GLAB
       if(bufSize > this.bufSize)
       {
          this.bufSize = bufSize;
-         GLAB::allocate(bufSize, null, dynamicDraw);
+         GLAB::allocate(bufSize, null, streamDraw);
       }
-      GLAB::upload(0, bufSize, verticesBuf.pointer);
+      GLAB::upload(0, bufSize, verticesBuf->pointer);
    }
 
    static inline void free()
@@ -66,12 +66,19 @@ static struct FloatGLAB : GLAB
    }
 };
 
-FloatGLAB verticesBuf { stride = 4 };
+#define NUM_BUFFERS  40
+
+FloatGLAB verticesBuffers[NUM_BUFFERS];
 FloatGLAB normalsBuf { stride = 3 };
+FloatGLAB * verticesBuf;
+
+static int curBuf = 0;
 
 void glimtkTerminate()
 {
-   verticesBuf.free();
+   int i;
+   for(i = 0; i < NUM_BUFFERS; i++)
+      verticesBuffers[i].free();
    normalsBuf.free();
 }
 
@@ -87,21 +94,24 @@ public void glimtkRecti(int a, int b, int c, int d)
 
 public void glimtkBegin(GLIMTKMode mode)
 {
+   verticesBuf = &verticesBuffers[curBuf];
+   if(++curBuf >= NUM_BUFFERS) curBuf = 0;
+
    beginMode = mode;
    vertexColorValues = false;
    beginCount = 0;
    vertexOffset = 2;
 
-   verticesBuf.count = 0;
-   verticesBuf.stride = 4;
+   verticesBuf->count = 0;
+   verticesBuf->stride = 4;
    numCoords = 2;
 }
 
 public void glimtkTexCoord2f(float x, float y)
 {
-   int stride = verticesBuf.stride;
+   int stride = verticesBuf->stride;
    bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
-   float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1);
+   float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1);
    buf[0] = x;
    buf[1] = y;
    buf += stride;
@@ -123,14 +133,14 @@ public void glimtkTexCoord2fv(float * a)         { glimtkTexCoord2f(a[0], a[1]);
 public void glimtkVertex2f(float x, float y)
 {
    numCoords = 2;
-   verticesBuf.stride = vertexOffset + numCoords;
+   verticesBuf->stride = vertexOffset + numCoords;
    {
-      int stride = verticesBuf.stride;
+      int stride = verticesBuf->stride;
       bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
-      float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
+      float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1) + vertexOffset;
       buf[0] = x;
       buf[1] = y;
-      verticesBuf.count++;
+      verticesBuf->count++;
       if(quadsAdd)
       {
          buf += stride;
@@ -139,7 +149,7 @@ public void glimtkVertex2f(float x, float y)
          buf += stride;
          buf[0] = buf[-3*stride];
          buf[1] = buf[-3*stride+1];
-         verticesBuf.count+=2;
+         verticesBuf->count+=2;
       }
    }
    beginCount++;
@@ -150,15 +160,15 @@ public void glimtkVertex2d(double x, double y)   { glimtkVertex2f((float)x, (flo
 public void glimtkVertex3f( float x, float y, float z )
 {
    numCoords = 3;
-   verticesBuf.stride = vertexOffset + numCoords;
+   verticesBuf->stride = vertexOffset + numCoords;
    {
-      int stride = verticesBuf.stride;
+      int stride = verticesBuf->stride;
       bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
-      float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + vertexOffset;
+      float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1) + vertexOffset;
       buf[0] = x;
       buf[1] = y;
       buf[2] = z;
-      verticesBuf.count++;
+      verticesBuf->count++;
       if(quadsAdd)
       {
          buf += stride;
@@ -169,7 +179,7 @@ public void glimtkVertex3f( float x, float y, float z )
          buf[0] = buf[-3*stride];
          buf[1] = buf[-3*stride+1];
          buf[2] = buf[-3*stride+2];
-         verticesBuf.count+=2;
+         verticesBuf->count+=2;
       }
    }
    beginCount++;
@@ -186,11 +196,11 @@ public void glimtkColor4f(float r, float g, float b, float a)
       // Called within glBegin()/glEnd()
       vertexColorValues = true;
       vertexOffset = 6;
-      verticesBuf.stride = vertexOffset + numCoords;
+      verticesBuf->stride = vertexOffset + numCoords;
       {
-         int stride = verticesBuf.stride;
+         int stride = verticesBuf->stride;
          bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
-         float * buf = verticesBuf.ensure(quadsAdd ? 3 : 1) + 2;
+         float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1) + 2;
          buf[0] = r, buf[1] = g, buf[2] = b, buf[3] = a;
 
          if(quadsAdd)
@@ -237,7 +247,7 @@ public void glimtkColor4fv(float * a)                       { glimtkColor4f(a[0]
 
 public void glimtkNormal3f(float x, float y, float z)
 {
-   normalsBuf.count = verticesBuf.count;
+   normalsBuf.count = verticesBuf->count;
    {
       int stride = normalsBuf.stride;
       bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
@@ -277,19 +287,19 @@ public void glimtkEnd()
 
    if(glCaps_vertexBuffer)
    {
-      verticesBuf.upload();
-      verticesBuf.use(texCoord, 2, GL_FLOAT, verticesBuf.stride * sizeof(float), 0);
+      verticesBuf->upload();
+      verticesBuf->use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), 0);
    }
    else
-      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer);
+      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer);
 
    if(vertexColorValues)
    {
       GLEnableClientState(COLORS);
       if(glCaps_vertexBuffer)
-         verticesBuf.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(2 * sizeof(float)));
+         verticesBuf->use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), (void *)(2 * sizeof(float)));
       else
-         noAB.use(color, 4, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + 2);
+         noAB.use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer + 2);
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
@@ -305,11 +315,11 @@ public void glimtkEnd()
    }
 
    if(glCaps_vertexBuffer)
-      verticesBuf.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+      verticesBuf->use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
    else
-      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf.stride * sizeof(float), verticesBuf.pointer + vertexOffset);
+      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer + vertexOffset);
 
-   if(normalsBuf.count && normalsBuf.count == verticesBuf.count)
+   if(normalsBuf.count && normalsBuf.count == verticesBuf->count)
    {
       GLEnableClientState(NORMALS);
       if(glCaps_vertexBuffer)
@@ -318,11 +328,11 @@ public void glimtkEnd()
          normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
       }
       else
-         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float),normalsBuf.pointer);
+         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), normalsBuf.pointer);
    }
 
    GLFlushMatrices();
-   glDrawArrays(mode, 0, verticesBuf.count);
+   glDrawArrays(mode, 0, verticesBuf->count);
 
    if(normalsBuf.count)
       GLDisableClientState(NORMALS);
