@@ -75,7 +75,7 @@ public struct Quaternion
       w = 1;
    }
 
-   void Normalize(Quaternion source)
+   void Normalize(const Quaternion source)
    {
       double m = sqrt(source.x * source.x +
                       source.y * source.y +
@@ -93,7 +93,7 @@ public struct Quaternion
          w = x = y = z = 0;
    }
 
-   void Multiply(Quaternion q1, Quaternion q2)
+   void Multiply(const Quaternion q1, const Quaternion q2)
    {
       w = q1.w * q2.w - q2.x * q1.x - q1.y * q2.y - q1.z * q2.z;
       x = q1.w * q2.x + q2.w * q1.x + q1.y * q2.z - q1.z * q2.y;
@@ -101,7 +101,7 @@ public struct Quaternion
       z = q1.w * q2.z + q2.w * q1.z + q1.x * q2.y - q1.y * q2.x;
    }
 
-   void Divide(Quaternion q1, Quaternion q2)
+   void Divide(const Quaternion q1, const Quaternion q2)
    {
       w =  q2.w * q1.w + q2.x * q1.x + q2.y * q1.y + q2.z * q1.z;
       x =  q2.w * q1.x - q2.x * q1.w + q2.y * q1.z - q2.z * q1.y;
@@ -109,7 +109,7 @@ public struct Quaternion
       z =  q2.w * q1.z + q2.x * q1.y - q2.y * q1.x - q2.z * q1.w;
    }
 
-   void RotationAxis(Vector3D axis, Degrees angle)
+   void RotationAxis(const Vector3D axis, Degrees angle)
    {
       double sa = sin( angle / 2 );
       double ca = cos( angle / 2 );
@@ -120,7 +120,7 @@ public struct Quaternion
       w = ca;
    }
 
-   void RotationYawPitchRoll(Euler euler)
+   void RotationYawPitchRoll(const Euler euler)
    {
       Quaternion rotation, result;
 
@@ -132,14 +132,14 @@ public struct Quaternion
       Normalize(result);
    }
 
-   void RotationDirection(Vector3D direction)
+   void RotationDirection(const Vector3D direction)
    {
       Angle yaw = -atan2(direction.x, direction.z);
       Angle pitch = atan2(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z));
       YawPitch(yaw, pitch);
    }
 
-   void RotationMatrix(Matrix m)
+   void RotationMatrix(const Matrix m)
    {
       double t = m.m[0][0] + m.m[1][1] + m.m[2][2];
       if(t > 0)
@@ -178,7 +178,7 @@ public struct Quaternion
 
    #define DELTA 0
 
-   void Slerp(Quaternion from, Quaternion to, float t)
+   void Slerp(const Quaternion from, const Quaternion to, float t)
    {
       double to1[4];
       double omega, cosom, sinom, scale0, scale1;
@@ -313,7 +313,7 @@ public struct Quaternion
       direction.z = (double)(1 - 2 * ( x*x + y*y ));
    }
 
-   void Inverse(Quaternion source)
+   void Inverse(const Quaternion source)
    {
       this = { -source.w, source.x, source.y, source.z };
    }
