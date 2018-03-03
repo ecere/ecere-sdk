@@ -570,7 +570,7 @@ public:
                      if(group.type == primitive->type && group.material == primitive->material)
                      {
                         CopyBytesBy2(group.indices + nIndices,primitive->indices,primitive->nIndices);
-                        nIndices +=primitive->nIndices;
+                        nIndices += primitive->nIndices;
                         CopyBytes(primitives + t, primitives + t + 1, (nPrimitives - t - 1) * sizeof(PrimitiveSingle));
                         nPrimitives--;
                         t--;
@@ -617,72 +617,146 @@ public:
 
                primitives = renew primitives PrimitiveSingle[this.nPrimitives + nPrimitives];
 
-               for(c = offset; c<groupCount; c+= nIndex)
+               if(group.type.indices32bit)
                {
-                  PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
-
-                  if(AllocatePrimitive(primitive, group.type.primitiveType, nPoints))
+                  for(c = offset; c<groupCount; c+= nIndex)
                   {
-                     if(group.type.vertexRange)
+                     PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
+
+                     if(AllocatePrimitive(primitive, group.type & ~PrimitiveGroupType { vertexRange = true }, nPoints))
                      {
-                        if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
+                        if(group.type.vertexRange)
                         {
-                           primitive->indices[0] = (uint16)(group.first + c);
-                           primitive->indices[1] = (uint16)(group.first + c+1);
-                           primitive->indices[2] = (uint16)(group.first + c+2);
-                        }
-                        if(group.type.primitiveType == quads)
-                           primitive->indices[3] = (uint16)(group.first + c+3);
+                           if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
+                           {
+                              primitive->indices32[0] = (uint32)(group.first + c);
+                              primitive->indices32[1] = (uint32)(group.first + c+1);
+                              primitive->indices32[2] = (uint32)(group.first + c+2);
+                           }
+                           if(group.type.primitiveType == quads)
+                              primitive->indices32[3] = (uint32)(group.first + c+3);
 
-                        if(group.type.primitiveType == triFan)
-                        {
-                           primitive->indices[0] = (uint16)group.first;
-                           primitive->indices[1] = (uint16)(group.first + c-1);
-                           primitive->indices[2] = (uint16)(group.first + c);
+                           if(group.type.primitiveType == triFan)
+                           {
+                              primitive->indices32[0] = (uint32)group.first;
+                              primitive->indices32[1] = (uint32)(group.first + c-1);
+                              primitive->indices32[2] = (uint32)(group.first + c);
+                           }
+                           else if(group.type.primitiveType == triStrip)
+                           {
+                              primitive->indices32[0] = (uint32)(group.first + c-1-strip);
+                              primitive->indices32[1] = (uint32)(group.first + c-2+strip);
+                              primitive->indices32[2] = (uint32)(group.first + c);
+                              strip ^= 1;
+                           }
                         }
-                        else if(group.type.primitiveType == triStrip)
+                        else
                         {
-                           primitive->indices[0] = (uint16)(group.first + c-1-strip);
-                           primitive->indices[1] = (uint16)(group.first + c-2+strip);
-                           primitive->indices[2] = (uint16)(group.first + c);
-                           strip ^= 1;
+                           if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
+                              CopyBytesBy4(primitive->indices32, group.indices32 + c, nIndex);
+
+                           if(group.type.primitiveType == triFan)
+                           {
+                              primitive->indices32[0] = group.indices32[0];
+                              primitive->indices32[1] = group.indices32[c-1];
+                              primitive->indices32[2] = group.indices32[c];
+                           }
+                           else if(group.type.primitiveType == triStrip)
+                           {
+                              primitive->indices32[0] = group.indices32[c-1-strip];
+                              primitive->indices32[1] = group.indices32[c-2+strip];
+                              primitive->indices32[2] = group.indices32[c];
+                              strip ^= 1;
+                           }
                         }
+                        primitive->material = group.material;
+
+                        primitive->plane.FromPointsf(
+                           vertices[primitive->indices32[2]],
+                           vertices[primitive->indices32[1]],
+                           vertices[primitive->indices32[0]]);
+
+                        primitive->middle.Add(vertices[primitive->indices32[0]], vertices[primitive->indices32[1]]);
+                        primitive->middle.Add(primitive->middle, vertices[primitive->indices32[2]]);
+                        if(group.type == quads)
+                           primitive->middle.Add(primitive->middle, vertices[primitive->indices32[3]]);
+                        primitive->middle.x /= nPoints;
+                        primitive->middle.y /= nPoints;
+                        primitive->middle.z /= nPoints;
+
+                        UnlockPrimitive(primitive);
                      }
-                     else
+                  }
+               }
+               else
+               {
+                  for(c = offset; c<groupCount; c+= nIndex)
+                  {
+                     PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
+
+                     if(AllocatePrimitive(primitive, group.type & ~ PrimitiveGroupType {vertexRange = true }, nPoints))
                      {
-                        if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
-                           CopyBytesBy2(primitive->indices, group.indices + c, nIndex);
+                        if(group.type.vertexRange)
+                        {
+                           if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
+                           {
+                              primitive->indices[0] = (uint16)(group.first + c);
+                              primitive->indices[1] = (uint16)(group.first + c+1);
+                              primitive->indices[2] = (uint16)(group.first + c+2);
+                           }
+                           if(group.type.primitiveType == quads)
+                              primitive->indices[3] = (uint16)(group.first + c+3);
 
-                        if(group.type.primitiveType == triFan)
-                        {
-                           primitive->indices[0] = group.indices[0];
-                           primitive->indices[1] = group.indices[c-1];
-                           primitive->indices[2] = group.indices[c];
+                           if(group.type.primitiveType == triFan)
+                           {
+                              primitive->indices[0] = (uint16)group.first;
+                              primitive->indices[1] = (uint16)(group.first + c-1);
+                              primitive->indices[2] = (uint16)(group.first + c);
+                           }
+                           else if(group.type.primitiveType == triStrip)
+                           {
+                              primitive->indices[0] = (uint16)(group.first + c-1-strip);
+                              primitive->indices[1] = (uint16)(group.first + c-2+strip);
+                              primitive->indices[2] = (uint16)(group.first + c);
+                              strip ^= 1;
+                           }
                         }
-                        else if(group.type.primitiveType == triStrip)
+                        else
                         {
-                           primitive->indices[0] = group.indices[c-1-strip];
-                           primitive->indices[1] = group.indices[c-2+strip];
-                           primitive->indices[2] = group.indices[c];
-                           strip ^= 1;
+                           if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
+                              CopyBytesBy2(primitive->indices, group.indices + c, nIndex);
+
+                           if(group.type.primitiveType == triFan)
+                           {
+                              primitive->indices[0] = group.indices[0];
+                              primitive->indices[1] = group.indices[c-1];
+                              primitive->indices[2] = group.indices[c];
+                           }
+                           else if(group.type.primitiveType == triStrip)
+                           {
+                              primitive->indices[0] = group.indices[c-1-strip];
+                              primitive->indices[1] = group.indices[c-2+strip];
+                              primitive->indices[2] = group.indices[c];
+                              strip ^= 1;
+                           }
                         }
+                        primitive->material = group.material;
+
+                        primitive->plane.FromPointsf(
+                           vertices[primitive->indices[2]],
+                           vertices[primitive->indices[1]],
+                           vertices[primitive->indices[0]]);
+
+                        primitive->middle.Add(vertices[primitive->indices[0]], vertices[primitive->indices[1]]);
+                        primitive->middle.Add(primitive->middle, vertices[primitive->indices[2]]);
+                        if(group.type == quads)
+                           primitive->middle.Add(primitive->middle, vertices[primitive->indices[3]]);
+                        primitive->middle.x /= nPoints;
+                        primitive->middle.y /= nPoints;
+                        primitive->middle.z /= nPoints;
+
+                        UnlockPrimitive(primitive);
                      }
-                     primitive->material = group.material;
-
-                     primitive->plane.FromPointsf(
-                        vertices[primitive->indices[2]],
-                        vertices[primitive->indices[1]],
-                        vertices[primitive->indices[0]]);
-
-                     primitive->middle.Add(vertices[primitive->indices[0]], vertices[primitive->indices[1]]);
-                     primitive->middle.Add(primitive->middle, vertices[primitive->indices[2]]);
-                     if(group.type == quads)
-                        primitive->middle.Add(primitive->middle, vertices[primitive->indices[3]]);
-                     primitive->middle.x /= nPoints;
-                     primitive->middle.y /= nPoints;
-                     primitive->middle.z /= nPoints;
-
-                     UnlockPrimitive(primitive);
                   }
                }
                FreePrimitiveGroup(group);
