@@ -86,7 +86,7 @@
    #define GL_BGRA_EXT               0x80E1
 #endif
 
-// Compiled In Capabilities
+/* Clang complains about undefined behavior?
 #define ENABLE_GL_SHADERS  (!defined(_GLES))
 #define ENABLE_GL_FFP      (!defined(_GLES2))
 #define ENABLE_GL_POINTER  (!defined(__EMSCRIPTEN__))
@@ -97,6 +97,44 @@
 #define ENABLE_GL_SELECT   (!defined(_GLES) && !defined(_GLES2))
 #define ENABLE_GL_VAO      (!defined(_GLES) && !defined(_GLES2))
 #define ENABLE_GL_COLORMAT (ENABLE_GL_FFP   && !defined(_GLES))
+*/
+
+// Compiled In Capabilities
+#if !defined(_GLES) && !defined(_GLES2)
+   #define ENABLE_GL_LEGACY   1
+   #define ENABLE_GL_INTDBL   1
+   #define ENABLE_GL_MAPBUF   1
+   #define ENABLE_GL_SELECT   1
+   #define ENABLE_GL_VAO      1
+#else
+   #define ENABLE_GL_LEGACY   0
+   #define ENABLE_GL_INTDBL   0
+   #define ENABLE_GL_MAPBUF   0
+   #define ENABLE_GL_SELECT   0
+   #define ENABLE_GL_VAO      0
+#endif
+
+#if defined(_GLES2)
+   #define ENABLE_GL_FFP      0
+#else
+   #define ENABLE_GL_FFP      1
+#endif
+
+#if defined(_GLES)
+   #define ENABLE_GL_SHADERS  0
+   #define ENABLE_GL_COLORMAT 0
+#else
+   #define ENABLE_GL_SHADERS  1
+   #define ENABLE_GL_COLORMAT ENABLE_GL_FFP
+#endif
+
+#if defined(__EMSCRIPTEN__)
+   #define ENABLE_GL_POINTER  0
+   #define ENABLE_GL_FBO      0
+#else
+   #define ENABLE_GL_POINTER  1
+   #define ENABLE_GL_FBO      1
+#endif
 
 #if ENABLE_GL_SHADERS && ENABLE_GL_FFP
    #define GLEnableClientState            (glCaps_shaders ? glEnableVertexAttribArray : glEnableClientState)
