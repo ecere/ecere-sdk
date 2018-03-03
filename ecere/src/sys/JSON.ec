@@ -862,7 +862,7 @@ private:
          *string = CopyString(buffer.array);
       }
       delete buffer;
-      if(ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=' && ch != ':')
+      if(ch != ']' && ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=' && ch != ':')
          ch = 0;
       return result;
    }
