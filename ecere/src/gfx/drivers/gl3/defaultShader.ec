@@ -436,49 +436,73 @@ public:
 
    void updateMatrix(MatrixMode mode, Matrix matrix, bool isIdentity)
    {
-      float m[16] =
-      {
-         (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
-         (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
-         (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
-         (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
-      };
       if(mode == projection)
       {
+         float m[16] =
+         {
+            (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
+            (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
+            (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
+            (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
+         };
          memcpy(projection, m, 16 * sizeof(float));
          nearPlane = (float)::nearPlane;
          matrixModified = true;
       }
       else if(mode == modelView)
       {
-         Matrix t, inv;
-         double * i = inv.array;
-
-         memcpy(modelView, m, 16 * sizeof(float));
+         if(!isIdentity)
+         {
+            float m[16] =
+            {
+               (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
+               (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
+               (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
+               (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
+            };
+            memcpy(modelView, m, 16 * sizeof(float));
+         }
          ((DefaultShaderBits)state).modelView = !isIdentity;
 
          //mvModified = true;
          //prjViewModified = true;
 
-         inv = matrix;
-         inv.Scale(1, -1, 1);
-         t.Transpose(inv);
-         inv.Inverse(t);
+         if(((DefaultShaderBits)state).lighting)
          {
-            float m[9] =
+            Matrix t, inv = matrix;
+            double * i = inv.array;
+            inv = matrix;
+            inv.Scale(1, -1, 1);
+            t.Transpose(inv);
+            if(isIdentity)
+               inv = t;
+            else
+               inv.Inverse(t);
             {
-               (float)i[0],(float)i[1],(float)i[2],
-               (float)i[4],(float)i[5],(float)i[6],
-               (float)i[8],(float)i[9],(float)i[10]
-            };
-            memcpy(normalsMatrix, m, 9 * sizeof(float));
+               float m[9] =
+               {
+                  (float)i[0],(float)i[1],(float)i[2],
+                  (float)i[4],(float)i[5],(float)i[6],
+                  (float)i[8],(float)i[9],(float)i[10]
+               };
+               memcpy(normalsMatrix, m, 9 * sizeof(float));
+            }
          }
-
          matrixModified = true;
       }
       else if(mode == texture)
       {
-         memcpy(matTexture, m, 16 * sizeof(float));
+         if(!isIdentity)
+         {
+            float m[16] =
+            {
+               (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
+               (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
+               (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
+               (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
+            };
+            memcpy(matTexture, m, 16 * sizeof(float));
+         }
          ((DefaultShaderBits)state).textureMatrix = !isIdentity;
          if(((DefaultShaderBits)state).texturing || ((DefaultShaderBits)state).normalsMapping || ((DefaultShaderBits)state).specularMapping ||
             ((DefaultShaderBits)state).reflectionMap || ((DefaultShaderBits)state).cubeMap)
