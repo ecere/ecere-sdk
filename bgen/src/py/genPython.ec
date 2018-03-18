@@ -318,13 +318,14 @@ class PythonGen : CGen
       storeMethods = { };
       storeProperties = { };
 
-      allNamespaces = { };
-      allVariants = { };
-      allDefines = { };
-      allFunctions = { };
-      allClasses = { };
-      allMethods = { };
-      allProperties = { };
+      allNamespaces.Free(); //allNamespaces = { };
+      allVariants.Free(); //allVariants = { };
+      allDefines.Free(); //allDefines = { };
+      allFunctions.Free(); //allFunctions = { };
+      allClasses.Free(); //allClasses = { };
+      allTemplatons.Free(); //allTemplatons = { };
+      allMethods.Free(); //allMethods = { };
+      allProperties.Free(); //allProperties = { };
 
       mapDefine = { };
       mapFunction = { };
