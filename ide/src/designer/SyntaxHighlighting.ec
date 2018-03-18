@@ -721,7 +721,7 @@ class PythonSHL : SyntaxHighlighting
 
       "self", "super", "isinstance", "getattr", "type",
 
-      "__init__", "__name__", "__neg__", "__int__", "__long__", "__float__", "__truediv__", "__rtruediv__",
+      "__init__", "__file__", "__name__", "__neg__", "__int__", "__long__", "__float__", "__truediv__", "__rtruediv__",
       "__mul__", "__rmul__", "__add__", "__radd__", "__sub__", "__rsub__",
       "__lt__", "__gt__", "__le__", "__ge__", "__ne__", "__eq__", "__new__", "__metaclass__","__getitem__","__len__", "__bases__"
    ];
