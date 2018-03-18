@@ -43,6 +43,7 @@ class CGen : Gen
    Map<DefinedExpressionPtr, BDefine> allDefines { };
    Map<GlobalFunctionPtr, BFunction> allFunctions { };
    Map<ClassPtr, BClass> allClasses { };
+   Map<BTemplatonKey, BTemplaton> allTemplatons { };
    Map<MethodPtr, BMethod> allMethods { };
    Map<PropertyPtr, BProperty> allProperties { };
 
@@ -211,6 +212,7 @@ class CGen : Gen
       allDefines.Free();
       allFunctions.Free();
       allClasses.Free();
+      allTemplatons.Free();
       allMethods.Free();
       allProperties.Free();
    }
@@ -370,7 +372,7 @@ class CGen : Gen
 
    void processTemplatons()
    {
-      for(ti : bmod.templatons)
+      for(ti : allTemplatons)
       {
          bool init;
          BTemplaton t = ti;
@@ -854,8 +856,10 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
             {
                if(!md.dataType.staticMethod)
                {
+                  Type t = ProcessTypeString("Class", false);
                   // Note: this should really be checking typed_object right here
-                  zTypeName(z, "__c", { type = ProcessTypeString("Class", false), md = md, cl = cl }, { anonymous = true, param = true }, vTop);
+                  zTypeName(z, "__c", { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop);
+                  FreeType(t);
                   prevParam = true;
                }
                if(prevParam) z.printx(" _ARG ");
