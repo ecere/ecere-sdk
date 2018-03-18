@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "genC"
 
 const char * indent;

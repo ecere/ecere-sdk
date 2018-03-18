@@ -64,8 +64,8 @@ _ECSOURCES = \
 	src/econe.ec \
 	src/ectwo.ec \
 	src/gen.ec \
-	src/debug.ec \
-	src/miscTypes.ec
+	src/miscTypes.ec \
+	src/debug.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
@@ -89,9 +89,13 @@ ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
 
 BOWLS = $(call shwspace,$(_BOWLS))
 
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+_OBJECTS = \
+	$(OBJ)debug.c$(O)
 
-SOURCES = $(ECSOURCES)
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES) \
+	src/debug.c
 
 RESOURCES = \
 	src/c/c_header_open.src \
@@ -123,7 +127,8 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+			 -Isrc
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
@@ -161,7 +166,7 @@ $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) $(OBJ)$(MODULE).main$(O) $(ECOBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) $(OBJ)$(MODULE).main$(O) $(_OBJECTS) $(ECOBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -245,10 +250,10 @@ $(OBJ)ectwo.sym: src/ectwo.ec
 $(OBJ)gen.sym: src/gen.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
-$(OBJ)debug.sym: src/debug.ec
+$(OBJ)miscTypes.sym: src/miscTypes.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
-$(OBJ)miscTypes.sym: src/miscTypes.ec
+$(OBJ)debug.sym: src/debug.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 # C OBJECT RULES
@@ -310,10 +315,10 @@ $(OBJ)ectwo.c: src/ectwo.ec $(OBJ)ectwo.sym | $(SYMBOLS)
 $(OBJ)gen.c: src/gen.ec $(OBJ)gen.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)debug.c: src/debug.ec $(OBJ)debug.sym | $(SYMBOLS)
+$(OBJ)miscTypes.c: src/miscTypes.ec $(OBJ)miscTypes.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)miscTypes.c: src/miscTypes.ec $(OBJ)miscTypes.sym | $(SYMBOLS)
+$(OBJ)debug.c: src/debug.ec $(OBJ)debug.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
 # OBJECT RULES
@@ -375,11 +380,14 @@ $(OBJ)ectwo$(O): $(OBJ)ectwo.c
 $(OBJ)gen$(O): $(OBJ)gen.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
+$(OBJ)miscTypes$(O): $(OBJ)miscTypes.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
 $(OBJ)debug$(O): $(OBJ)debug.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
-$(OBJ)miscTypes$(O): $(OBJ)miscTypes.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
+$(OBJ)debug.c$(O): src/debug.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)

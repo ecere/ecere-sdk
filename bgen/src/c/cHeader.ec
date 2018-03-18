@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "genC"
 
 void cHeader(AST out, CGen g)
@@ -85,7 +87,7 @@ static void cInHeaderTypes(AST out, CGen g)
                }
             }
          }
-         else check();
+         else conmsg("check");
       }
    }
    delete nodes;
@@ -237,7 +239,7 @@ char * getFunctionNameThing(BFunction f)
             s++;
          else if(strstr(f.fname, "eC_") == f.fname)
             ;
-         else check();
+         else conmsg("check");
       }
       else/* if(module is ecere/ecereCOM)*/
          *s = (char)tolower(*s);

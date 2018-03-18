@@ -3,6 +3,9 @@
    "ModuleName" : "bgen",
    "Options" : {
       "Warnings" : "All",
+      "IncludeDirs" : [
+         "src"
+      ],
       "TargetType" : "Executable",
       "TargetFileName" : "bgen",
       "Libraries" : [
@@ -101,8 +104,10 @@
             "econe.ec",
             "ectwo.ec",
             "gen.ec",
+            "miscTypes.ec",
             "debug.ec",
-            "miscTypes.ec"
+            "debug.eh",
+            "debug.c"
          ]
       }
    ],
