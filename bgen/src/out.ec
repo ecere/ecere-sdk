@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "ecere"
 
 import "DynamicString"

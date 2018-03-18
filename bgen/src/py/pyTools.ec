@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "bgen"
 
 //enum FooAllBits : Foo { allBits = { all = 0xFFFFFFFF } };
@@ -65,7 +67,7 @@ class ParamFilter
          case anyObjectType:
          case classPointerType: */
          default:
-            check();
+            conmsg("check");
       }
       return false;
    }

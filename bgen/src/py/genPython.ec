@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "bgen"
 import "pyTools"
 
@@ -662,7 +664,7 @@ void processPyClass(PythonGen g, BClass c)
       out.ds.println("");
 
       if(c.isInstance)
-         check(); // pyHardcodeInstance(out.ds);
+         conmsg("check"); // pyHardcodeInstance(out.ds);
       else if(c.isArray)
          sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_array.src", null, false);
       else if(c.isApplication)
@@ -951,7 +953,7 @@ void processPyClass(PythonGen g, BClass c)
                                 sk, "      elif isinstance(value, ", c.cl.base.name, "): self.impl = value.impl", ln,
                                 sk, "      else: self.", hasOneToOneBaseConv ? "impl" : "value", " = value", ln);
                }
-               else check();
+               else conmsg("check");
             }
             else if(c.cl.type == normalClass)
             {
@@ -1729,7 +1731,7 @@ void processPyClass(PythonGen g, BClass c)
                               // todo tofix
                               break;
                            default:
-                              check();
+                              conmsg("check");
                         }
                         out.ds.println("");
                      }
@@ -1860,7 +1862,7 @@ void processPyClass(PythonGen g, BClass c)
                                  out.ds.printx("TA(value)");
                                  break;
                               default:
-                                 check();
+                                 conmsg("check");
                            }
                         }
                         out.ds.println(")"); // value.value
@@ -1900,7 +1902,7 @@ void processPyClass(PythonGen g, BClass c)
                   else
                      out.ds.printx(ln, sk, "   def __str__(self): return ffi.string(lib.", p.fpnGet, "(self.impl)).decode('u8') if self.impl != ffi.NULL else str()", ln);
                }
-               else check();
+               else conmsg("check");
             }
             else if(p.cConv)
             {
@@ -1922,7 +1924,7 @@ void processPyClass(PythonGen g, BClass c)
                   case unitClass:
                      out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(lib.", p.fpnGet, "(self.impl))", ln);
                      break;
-                  default: check();
+                  default: conmsg("check");
                }
                out.ds.printx(ln,
                              sk, "   # here is an unhandled conversion: ",
@@ -1931,7 +1933,7 @@ void processPyClass(PythonGen g, BClass c)
                              sk, "   # ", p.fpnGet, ln,
                              sk, "   # ", p.fpnSet, ln);
             }
-            else check();
+            else conmsg("check");
          }
       }
 
@@ -2079,7 +2081,7 @@ char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char 
          out.ds.print(", impl = 0");
       else if(c.cl.base.type == unitClass)
          out.ds.print(", value = 0, impl = None");
-      else check();
+      else conmsg("check");
    }
    else if(c.cl.type != enumClass)
    {
@@ -2220,14 +2222,14 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                         prevParam = true;
                         delete type;
                      }
-                     else check();
+                     else conmsg("check");
                   }
                   else if(itr.pm.kind == ellipsisType)
                      out.ds.printx(", *args");
                   else
                   {
                      char * type = printType(itr.pm, false, false, true);
-                     //if(strcmp(type, modern)) check();
+                     //if(strcmp(type, modern)) conmsg("check");
                      out.ds.printx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
                      prevParam = true;
                      delete type;
@@ -2253,7 +2255,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                         prevParam = true;
                         delete type;
                      }
-                     else check();
+                     else conmsg("check");
                   }
                   else
                   {
@@ -2276,11 +2278,11 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      //if(strstr(type, "const ") == type && !strcmp(type + 6, simple))
                      //   ;
                      //else if(strcmp(type, simple))
-                     //   check();
+                     //   conmsg("check");
                      //if(!strcmp(modern, "bool"))
                      //   delete modern, modern = CopyString("uint32_t");
                      if(strcmp(type, modern))
-                        check();
+                        conmsg("check");
                      out.ds.printx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
                      prevParam = true;
                      delete type;
@@ -2725,7 +2727,7 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
             case functionType:
                break;
             default:
-               check();
+               conmsg("check");
          }
          break;
       }
@@ -2962,7 +2964,7 @@ static void thatThing(File out, PythonGen g)
          {
             out.Puts(o.ds.array);
          }
-         else check();
+         else conmsg("check");
       }
    }
    delete nodes;

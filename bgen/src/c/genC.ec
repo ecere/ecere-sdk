@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "bgen"
 
 import "cHeader"
@@ -329,7 +331,7 @@ class CGen : Gen
                BClass c = t.c;
                Class cl = c.cl;
                BNamespace nspace = t.nspace;
-               if(!cl.templateClass) check();
+               if(!cl.templateClass) conmsg("check");
                processClass(c, v, nspace);
             }
             oc.RemoveAll();
@@ -442,7 +444,7 @@ class CGen : Gen
          if(type._class.registered)
          {
             cl = /*(!strcmp(type._class.string, "class") && type.classObjectType == typedObject) ? eSystem_FindClass(mod, "Class") : */type._class.registered;
-            if(ecereCOMForwardDeclare) check();
+            if(ecereCOMForwardDeclare) conmsg("check");
          }
          else
          {
@@ -458,10 +460,10 @@ class CGen : Gen
                ; // toreport: mantis: bug: compiler bug: ProjectionDefinition is private and yet it is used in the public getCartesian
                  //            the compiler need to warn or throw an error or something
                  //            this fits in the 'accessibility bugs in the compiler'
-            else check();
+            else conmsg("check");
          }
       }
-      else check();
+      else conmsg("check");
       if(reduceUnits && cl)
          cl = reduceUnitClass(cl);
       return cl;
@@ -511,15 +513,15 @@ class CGen : Gen
             o = c.outTypedef;
             o.output.Add(astEnum(cl, c));
          }
-         if(c.declStruct) check();
+         if(c.declStruct) conmsg("check");
          if(c.hasPublicMembers || (cl.type == structClass && !cl.templateClass))
          {
             SpecClass sc;
             ClassDefList defs;
             char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, { c = c }, c.cname, null, 0);
-            if(cl.type == enumClass) check();
-            if(cl.type == systemClass) check();
-            if(cl.type == unitClass) check();
+            if(cl.type == enumClass) conmsg("check");
+            if(cl.type == systemClass) conmsg("check");
+            if(cl.type == unitClass) conmsg("check");
             o = c.outStruct = bmod.getStructOutput((UIntPtr)c, &init); assert(init);
             o.kind = vclass, o.c = c, o.type = ostruct;
             declStruct = c.declStruct = astDeclInit(c.cname, createStruct, ident, null, { c = c }, null, null);
@@ -532,7 +534,7 @@ class CGen : Gen
             delete ident;
          }
       }
-      else if(!c.skipTypeDef) check();
+      else if(!c.skipTypeDef) conmsg("check");
       if(!cl.templateClass)
       {
          bool skip = /*c.skip || */c.isUnInt || c.isCharPtr || c.isUnichar || c.isBool;
@@ -1080,7 +1082,7 @@ enum CreateDeclInitMode
 DeclarationInit astDeclInitGet(const char * name, CreateDeclInitMode mode)
 {
    MapIterator<String, DeclarationInit> i { map = mode._struct ? structs : typedefs };
-   if(!mode._get) check();
+   if(!mode._get) conmsg("check");
    if(i.Index(name, false))
       return i.data;
    return null;
@@ -1092,7 +1094,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
    bool build = mode == createField || declInit != null;
    DeclarationInit di = declInit;
    Class cl = ti.cl ? ti.cl : ti.c ? ti.c.cl : null;
-   if(mode._get) check();
+   if(mode._get) conmsg("check");
    if(!di && (mode._typedef || mode._struct))
    {
       MapIterator<String, ASTNode> i { map = mode._struct ? structs : typedefs };
@@ -1127,7 +1129,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
          {
             Type t3 = null;
             int ptr3 = 0;
-            if(s) check();
+            if(s) conmsg("check");
             if(t2.kind == arrayType)
             {
                decl = astDeclArray(declIdent, di, true, &ti.type);
@@ -1236,7 +1238,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                   !strcmp(c.spec, "struct class_members_Instance *") ||
                   !strcmp(c.spec, "struct __ecereNameSpace__ecere__com__Instance")))
                ;
-            else check();
+            else conmsg("check");
             delete baseName;
          }
       }
@@ -1257,7 +1259,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                   BClass c = t.c.cl.templateClass;
                   baseName = CopyString(c.symbolName);
                }
-               if(!baseName) check();
+               if(!baseName) conmsg("check");
             }
             typedefDI.specifiers = { [
                SpecBase { specifier = _typedef },
@@ -1515,9 +1517,9 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
                if(vTop && vTop.kind == vclass)
                   vTop.processDependency(ostruct, otypedef, t);
             }
-            else check();
+            else conmsg("check");
          }
-         else check();
+         else conmsg("check");
          break;
       case arrayType: case functionType:
          break;
@@ -1525,7 +1527,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       case unionType: case enumType: case methodType: case dummyType:
       case _BoolType:
       default:
-         check();
+         conmsg("check");
          delete quals;
    }
    delete name;
@@ -1623,8 +1625,8 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          t = unwrapPointerType(ti.type, &ptr);
       if(t.kind == arrayType)
       {
-         if(ptr) check();
-         if(quals) check();
+         if(ptr) conmsg("check");
+         if(quals) conmsg("check");
          decl = astDeclArray(decl, null, false, &ti.type);
          assert(ti.type == t.arrayType);
          quals = astTypeSpec(ti, &ptr, &t, null, { }, vTop);
@@ -1634,8 +1636,8 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          Type t2 = null;
          TypeNameList list { };
          int ptr2 = 0;
-         //if(ptr) check();
-         if(quals) check();
+         //if(ptr) conmsg("check");
+         if(quals) conmsg("check");
          ti.type = t.returnType;
          quals = astTypeSpec(ti, &ptr2, &t2, null, { }, vTop);
          decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
@@ -1737,7 +1739,7 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
          initDecl.declarator = ptr3 ? astDeclPointer(ptr3, declFunction) : declFunction;
          if(opt.pointer)
          {
-            if(ptr2) check();
+            if(ptr2) conmsg("check");
             ptr2 = 1;
          }
          declFunction.declarator = ptr2 ? DeclBrackets { declarator = astDeclPointer(ptr2, declIdent) } : declIdent;
@@ -1745,7 +1747,7 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
          {
             Type t = ProcessTypeString(ti.cl.name, false);
             //Type t = ProcessTypeString(md.dataType.thisClass.string, false);
-            if(ti.cl.type == systemClass) check();
+            if(ti.cl.type == systemClass) conmsg("check");
             astTypeName("__this", { type = t, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
             FreeType(t);
          }
@@ -1755,7 +1757,7 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
             astTypeName(param.name, { type = param, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
       }
    }
-   else check();
+   else conmsg("check");
    return declInit;
 }
 
@@ -2042,7 +2044,7 @@ ASTRawString astBitTool(Class cl, BClass c)
          if(bitMembers) bitMembers.Add(CopyString(bm.name));
          n[strlen(n)-1] = 0;
          x = PrintHexUInt64(bm.mask);
-         if(!(x && x[0])) check();
+         if(!(x && x[0])) conmsg("check");
          z.printxln("#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
                dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos);
          z.printxln("#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
@@ -2128,7 +2130,7 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
          }
       }
    }
-   else check();
+   else conmsg("check");
    raw.string = CopyString(z.array);
    delete z;
    return raw;
@@ -2168,9 +2170,9 @@ static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, O
             case normalMember:
             {
                if(cl.type == bitClass || topClass.type == bitClass)
-                  check();
+                  conmsg("check");
                if(!(dm.memberAccess == publicAccess || dm.memberAccess == privateAccess))
-                  check();
+                  conmsg("check");
                if(dm.dataTypeString)
                {
                   ASTClassDef def = null;
@@ -2180,7 +2182,7 @@ static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, O
                      processTypeDependency(g, dm.dataType, dm.dataTypeString, ostruct, topClass);
 
                   def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl }, topClass);
-                  if(!def) check();
+                  if(!def) conmsg("check");
                   if(def)
                      defs.Add(def);
 
@@ -2311,7 +2313,7 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
       if(clDep && classIsFromModule(clDep, g.mod, ec1ComponentsApp))
          _processTypeDependency(g, from, vTop, pointer, clDep);
    }
-   if(_type.bitMemberSize) check();
+   if(_type.bitMemberSize) conmsg("check");
 }
 
 void _processTypeDependency(CGen g, BOutputType from, BVariant vTop, bool pointer, Class clDep)
@@ -2334,7 +2336,7 @@ void _processTypeDependency(CGen g, BOutputType from, BVariant vTop, bool pointe
          if(clDep.type == enumClass) to = oenum;
          else if(clDep.type == structClass || clDep.type == noHeadClass ||
                clDep.type == normalClass) to = ostruct;
-         else check();
+         else conmsg("check");
          if(!clDep.templateClass)
             vTop.processDependency(from, to, clDep);
       }

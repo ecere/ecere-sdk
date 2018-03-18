@@ -1,19 +1,54 @@
+#include <stdarg.h>
 
-void shh() { }
+import "ecere"
 
-void check()
+ConsoleFile console { };
+
+#if defined(_DEBUG)
+File dbglog;
+void dbglog_open()
 {
-   PrintLn("check");
+   char * fileName = getTimeString("dbg-", ".log");
+   dbglog = FileOpen(fileName, write);
+   delete fileName;
+}
+void dbglog_close()
+{
+   delete dbglog;
+}
+#endif // defined(_DEBUG)
+
+static char * getTimeString(const char * prefix, const char * suffix)
+{
+   char * time;
+   DateTime now;
+   now.GetLocalTime();
+   time = new char[strlen(prefix) + 15 + strlen(suffix) + 1];
+   sprintf(time, "%s%04d%02d%02d-%02d%02d%02d%s", prefix, now.year, now.month+1, now.day, now.hour, now.minute, now.second, suffix);
+   return time;
 }
 
-bool assert(bool condition)
+void __locfprintx__(const char * loc, File f, typed_object object, ...)
 {
-   if(!condition)
-      PrintLn("assertion failed");
-   return condition;
+   va_list args;
+   char buffer[4096];
+   va_start(args, object);
+   PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+   va_end(args);
+   console.Puts(loc);
+   console.Puts(buffer);
+   console.Flush();
 }
 
-void pause()
+void __locfprintxln__(const char * loc, File f, typed_object object, ...)
 {
-   PrintLn("pause");
+   va_list args;
+   char buffer[4096];
+   va_start(args, object);
+   PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+   va_end(args);
+   console.Puts(loc);
+   console.Puts(buffer);
+   console.Putc('\n');
+   console.Flush();
 }

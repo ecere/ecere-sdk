@@ -1,7 +1,6 @@
 import "ecere"
 import "ec2"
 
-import "debug"
 import "DynamicString"
 
 class ARGPrintTypeNameList : TypeNameList

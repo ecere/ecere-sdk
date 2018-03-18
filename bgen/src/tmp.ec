@@ -1,5 +1,9 @@
+#include "debug.eh"
+
 import "ecere"
 import "ec"
+
+import "debug"
 
 import "DynamicString"
 import "miscTypes"
@@ -280,7 +284,7 @@ char * getFunctionPointerDeclFromDataTypeString(const char * str)
       o += strlen(part);
    }
    else
-      check();
+      conmsgs("check");
    *o = 0;
    return output;
 }
@@ -331,32 +335,32 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
                !strcmp(dataTypeString, "const void"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case intType:
          if(!strcmp(dataTypeString, "int") || !strcmp(dataTypeString, "const int") ||
                !strcmp(dataTypeString, "uint") || !strcmp(dataTypeString, "int (* *)()"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case intPtrType:
          if(!strcmp(dataTypeString, "uintptr"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case int64Type:
          if(!strcmp(dataTypeString, "int64") || !strcmp(dataTypeString, "uint64"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case shortType:
          if(!strcmp(dataTypeString, "short") || !strcmp(dataTypeString, "uint16"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case charType:
          if(!strcmp(dataTypeString, "const char") || !strcmp(dataTypeString, "const char *") ||
@@ -368,19 +372,19 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
                !strcmp(dataTypeString, "byte"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case floatType:
          if(!strcmp(dataTypeString, "float"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case doubleType:
          if(!strcmp(dataTypeString, "double"))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       //case pointerType:
       case subClassType:
@@ -391,14 +395,14 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
          if(!strcmp(dataTypeString, "thisclass"))
             name = getIndirectionTypeString("thisclass", indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case intSizeType:
          if(!strcmp(dataTypeString, "uintsize") ||
             !strcmp(dataTypeString, ""))
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       case ellipsisType:
       case vaListType:
@@ -406,7 +410,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
             !strcmp(dataTypeString, "__builtin_va_list")) // tocheck: __builtin_va_list won't work, should be just va_list
             name = getIndirectionTypeString(dataTypeString, indirection);
          else
-            check();
+            conmsgs("check");
          break;
       //case int64Type:
       case structType:
@@ -419,7 +423,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
       case dummyType: //case subClassType: case thisClassType:
       case unionType:
       case methodType: //case typedObjectType: case anyObjectType: case classPointerType: case int128Type:
-         check();
+         conmsgs("check");
          break;
       case arrayType:
       {
@@ -466,7 +470,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
          break;
       case templateType:
          if(dataType._class && dataType._class.registered && dataType._class.registered.name)
-            check();
+            conmsgs("check");
          else if(!strcmp(dataTypeString, "T") ||
                !strcmp(dataTypeString, "D") ||
                !strcmp(dataTypeString, "I") ||
@@ -483,7 +487,7 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
                !strcmp(dataTypeString, "const KT"))
             name = getIndirectionTypeString(dataTypeString, indirection);//"uintptr64";
          else
-            check();
+            conmsgs("check");
          break;
       case pointerType:
       {
@@ -529,7 +533,7 @@ char * getClassTypeName(Class c)
                {
                   Type argType;
                   ClassTemplateArgument * tArg = &tArgs[n];
-                  if(!tArg->dataTypeString) check();
+                  if(!tArg->dataTypeString) conmsgs("check");
                   argType = ProcessTypeString(tArg->dataTypeString, false);
                   if(argType.kind == templateType)
                      skipAllTemplated = true;
@@ -541,7 +545,7 @@ char * getClassTypeName(Class c)
                   FreeType(argType);
                }
             }
-            if(skipAllTemplated) check();
+            if(skipAllTemplated) conmsgs("check");
                //name = PrintString("C(", cl.templateClass.name, ")");
             else if(tArgs)
             {
@@ -550,7 +554,7 @@ char * getClassTypeName(Class c)
                for(n = baseParam; n < tCount; n++)
                {
                   ClassTemplateArgument * tArg = &tArgs[n];
-                  if(!tArg->dataTypeString) check();
+                  if(!tArg->dataTypeString) conmsgs("check");
                   if(!strcmp(tArg->dataTypeString, "thisclass"))
                      s.concatx(", thisclass(", cl.name, cl.type == noHeadClass ? " *" : "", ")");
                   else
@@ -560,7 +564,7 @@ char * getClassTypeName(Class c)
                name = CopyString(s.array);
                delete s;
             }
-            else check();
+            else conmsgs("check");
    }
    else
       name = CopyString(cl.name);
@@ -675,7 +679,7 @@ char * oldGetClassTypeName(const char * className)
                d += strlen(close);
             }
             else if(!(isalpha(*s) || isdigit(*s) || *s == '_'))
-               check();
+               conmsgs("check");
             else
                *d++ = *s;
          }
@@ -758,7 +762,7 @@ char * getSymbolNameStringFromTypeString(const char * typeString, const char * s
                d += strlen(close);
             }
             else if(!(isalpha(*s) || isdigit(*s) || *s == '_' || (special && (*s == '(' || *s == ')'))))
-               check();
+               conmsgs("check");
             else
                *d++ = *s;
          }

@@ -1,6 +1,9 @@
+#include "debug.eh"
+
 import "ecere"
 
 import "debug"
+
 import "consoleApp"
 import "ecom"
 import "stringTools"
@@ -76,7 +79,7 @@ class ApplicationData
    ~ApplicationData()
    {
       allSpecs.Free();
-      if(allSpecs.GetCount()) check();
+      if(allSpecs.GetCount()) conmsg("check");
       //allSpecs.RemoveAll();
    }
 }
@@ -321,10 +324,10 @@ public class BGen : ConsoleApplication // <ArgSym>
                      }
                   }
                   else
-                     check(); // todo error*/
+                     conmsg("check"); // todo error*/
                }
                else if(prev == tell)
-                  check(); // todo
+                  conmsg("check"); // todo
                else if(nextIsValidSymbol)
                {
                   sym = nsym;
@@ -382,7 +385,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                         err = unknown;
                         PrintLn($"Error: argument ", sym, " (", arg, ") is unknown."); // todo: fix i18n
                         break;
-                     default: check(); break;
+                     default: conmsg("check"); break;
                   }
                   switch(err)
                   {
@@ -397,7 +400,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                      case unknown:
                         if(!argError) argError = err;
                         break;
-                     default: check(); break;
+                     default: conmsg("check"); break;
                   }
                }
                else if(task == bind)
@@ -599,7 +602,7 @@ public class BGen : ConsoleApplication // <ArgSym>
          case Python:
             python = true; // todo
                            gen = PythonGen { }; break;
-         default: check(); break;
+         default: conmsg("check"); break;
       }
       gen.quiet = quiet;
       gen.lib = lib;
@@ -640,19 +643,19 @@ public class BGen : ConsoleApplication // <ArgSym>
       if(raw)
       {
          if(prev == bind)
-            check();//gens.Add(createGen(null, arg, def)); // todo if onArg is ever used
+            conmsg("check");//gens.Add(createGen(null, arg, def)); // todo if onArg is ever used
          else if(prev == directory)
          {
-            check(); // todo?
+            conmsg("check"); // todo?
             /*delete def.lib.outputDir;
             def.lib.outputDir = CopyString(arg);*/
          }
          else if(prev == string)
-            check(); // todo
+            conmsg("check"); // todo
          else if(prev == map)
-            check(); // todo
+            conmsg("check"); // todo
          else if(prev == tell)
-            check(); // todo
+            conmsg("check"); // todo
       }
       else
       {
@@ -744,12 +747,22 @@ public class BGen : ConsoleApplication // <ArgSym>
       return false;
    }
 
+   BGen()
+   {
+#ifdef _DEBUG
+      dbglog_open();
+#endif
+   }
+
    ~BGen()
    {
       ownLibs.Free();
       ownDirs.Free();
       ownOptions.Free();
       gens.RemoveAll();
+#ifdef _DEBUG
+      dbglog_close();
+#endif
    }
 }
 

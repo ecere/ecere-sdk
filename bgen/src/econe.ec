@@ -1,5 +1,9 @@
+#include "debug.eh"
+
 import "ecere"
 import "ec"
+
+import "debug"
 
 import "str"
 
@@ -216,10 +220,10 @@ Type unwrapType(Type type, bool * isNative, bool *isPointer)
    while(t.kind == pointerType || t.kind == arrayType)
    {
       if(t.kind == pointerType) pointer = true;
-      if(!t.type) check();
+      if(!t.type) conmsgs("check");
       if(t.kind == arrayType)
       {
-         if(t.arrayType != t.type) check();
+         if(t.arrayType != t.type) conmsgs("check");
       }
       t = t.type;
    }
@@ -241,7 +245,7 @@ Type unwrapType(Type type, bool * isNative, bool *isPointer)
       case enumType:
       case methodType:
       case dummyType:
-      default: check();
+      default: conmsgs("check");
    }
    if(isNative) *isNative = native;
    if(isPointer) *isPointer = pointer;

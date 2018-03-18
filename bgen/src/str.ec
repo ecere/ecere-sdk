@@ -1,4 +1,4 @@
-import "debug"
+#include <assert.h>
 
 char * s;
 
@@ -109,9 +109,6 @@ char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
          dl = part - i + 2;
          for(n = part - i - 1; n >= 0 && (isalpha(i[n]) || i[n] == '_' || isdigit(i[n]))/*!isspace(i[n])*/; n--)
             ;
-         /*{
-            check();
-         }*/
          kl = n + 1;
          for(n = dl; i[n] && (isalpha(i[n]) || i[n] == '_' || isdigit(i[n]) || i[n] == ':'); n++)
          {
@@ -124,7 +121,7 @@ char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
                }
                else
                {
-                  check();
+                  assert(0);
                   break;
                }
             }

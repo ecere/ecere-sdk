@@ -1,3 +1,5 @@
+#include "debug.eh"
+
 import "ecere" // must keep this or compilation outside this file will fail
 
 import "bgen"
@@ -331,32 +333,32 @@ public:
    property BDefine
    {
       set { mapGetCreateVariant(vdefine, v.d); }
-      get { if(kind == vdefine) return d; assert(false); return null; }
+      get { if(kind == vdefine) return d; assert(0); return null; }
    }
    property BFunction
    {
       set { mapGetCreateVariant(vfunction, v.f); }
-      get { if(kind == vfunction) return f; assert(false); return null; }
+      get { if(kind == vfunction) return f; assert(0); return null; }
    }
    property BClass
    {
       set { mapGetCreateVariant(vclass, v.c); }
-      get { if(kind == vclass) return c; assert(false); return null; }
+      get { if(kind == vclass) return c; assert(0); return null; }
    }
    property BTemplaton
    {
       set { mapGetCreateVariant(vtemplaton, v.t); }
-      get { if(kind == vtemplaton) return t; assert(false); return null; }
+      get { if(kind == vtemplaton) return t; assert(0); return null; }
    }
    property BMethod
    {
       set { mapGetCreateVariant(vmethod, v.m); }
-      get { if(kind == vmethod) return m; assert(false); return null; }
+      get { if(kind == vmethod) return m; assert(0); return null; }
    }
    property BProperty
    {
       set { mapGetCreateVariant(vproperty, v.p); }
-      get { if(kind == vproperty) return p; assert(false); return null; }
+      get { if(kind == vproperty) return p; assert(0); return null; }
    }
    property BNamespace nspace
    {
@@ -415,14 +417,14 @@ private:
    {
       BNamespace nDep = vDep.nspace;
       BNamespace n = nspace;
-      if(from == nil) check();
+      if(from == nil) conmsg("check");
       if(from == ostruct && to == ostruct && kind == vclass && c.cl.type == normalClass && vDep.kind == vclass && vDep.c.cl.type == normalClass)
          return;
       if(nDep == n || (vDep.kind == vclass && (vDep.c.isFromCurrentModule || vDep.c.cl.templateClass)) ||
          (vDep.kind == vtemplaton && (vDep.t.c.isFromCurrentModule || vDep.t.c.cl.templateClass)))
       {
          BDependency d { from, to, this, vDep };
-         if(!to) check();
+         if(!to) conmsg("check");
          if(dependencies.Find(d))
             delete d;
          else
@@ -601,7 +603,7 @@ bool checkForDependency(BOutput a, BOutputPtr b, AVLTree<BVariantPtr> visited, L
             //PrintLn(c.name, " depends on ", to.c.name);
          }
          //else if(kind == vdefine && to.kind == vclass);
-         else check();*/
+         else conmsg("check");*/
       }
       outputDependencies.Add((BVariantPtr)to);
       // dependencies outside current module already filtered out by BClass::processDependency()
@@ -656,7 +658,7 @@ public:
                   case vdefine: return v.d.out;
                }
          }
-         check();
+         conmsg("check");
          return null;
       }
    }
@@ -668,9 +670,9 @@ public:
          {
             /*switch(to)
             {
-               case otypedef: if(!vDep.c.outTypedef) check(); break;
-               case oenum:    if(!vDep.c.outEnum) check(); break;
-               case ostruct:  if(!vDep.c.outStruct) check(); break;
+               case otypedef: if(!vDep.c.outTypedef) conmsg("check"); break;
+               case oenum:    if(!vDep.c.outEnum) conmsg("check"); break;
+               case ostruct:  if(!vDep.c.outStruct) conmsg("check"); break;
             }*/
             switch(to)
             {
@@ -688,13 +690,13 @@ public:
                   BVariant vD = vDep.t.c.cl.templateClass ? vDep.t.c.cl.templateClass : vDep.t.c.cl;
                   if(vD.kind == vclass)
                      return vD.c.outTypedef;
-                  else check();
+                  else conmsg("check");
                }
                else
                   return vDep.t.outTypedef;
             }
          }
-         check();
+         conmsg("check");
          return null;
       }
    }
@@ -915,7 +917,7 @@ class BModule : struct
                dn.orderedOutputs.Remove(dn.orderedOutputs.Find(dependency));
                if(!n.orderedBackwardsOutputs.Find(dependency))
                   n.orderedBackwardsOutputs.Add(dependency);
-               else check();
+               else conmsg("check");
             }
          }
          delete deps;
@@ -1037,7 +1039,7 @@ class BNamespace : struct
                if((a.nspace == b.nspace || (b.kind == vclass && b.c.cl.templateClass)) && a.dependsOn(b))
                {
                   BOutput swap = (BOutput)orderedOutputs[d];
-                  if(b.indirectlyDependsOn((BOutputPtr)a)) check();
+                  if(b.indirectlyDependsOn((BOutputPtr)a)) conmsg("check");
                   orderedOutputs.Remove(orderedOutputs.GetAtPosition(d, false, null));
                   orderedOutputs.Insert(x ? orderedOutputs.GetAtPosition(x - 1, false, null) : null, (BOutputPtr)swap);
                   sorted = true;
@@ -1067,7 +1069,7 @@ class BNamespace : struct
                   if(b.indirectlyDependsOn((BOutputPtr)a))
                   {
                      //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
-                     check();
+                     conmsg("check");
                   }
                   //else
                   {
@@ -1349,7 +1351,7 @@ class BClass : struct
       else if(cl.type == systemClass || cl.type == unitClass || isString)
       {
          bool useBase = false; // = cl.type == unitClass && cl.base.name && strcmp(cl.base.name, "class");
-         //if(useBase) check();
+         //if(useBase) conmsg("check");
          spec = CopyString(systemTypeSubst(cname, useBase ? cl.base.name : cl.dataTypeString));
          /*if(!strcmp(spec, "char *") || !strcmp(spec, "uint32_t"))
             noSpecC = true;*/
