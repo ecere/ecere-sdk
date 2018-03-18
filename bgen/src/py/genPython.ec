@@ -42,12 +42,12 @@ class PythonGen : CGen
       {
          prepPaths(true);
 
-         if(FileExists(pyFileName))
-            DeleteFile(pyFileName);
-         if(FileExists(cffiFileName))
-            DeleteFile(cffiFileName);
+         if(FileExists(pyFilePath))
+            DeleteFile(pyFilePath);
+         if(FileExists(cffiFilePath))
+            DeleteFile(cffiFilePath);
 
-         if(!FileExists(pyFileName) && !FileExists(cffiFileName))
+         if(!FileExists(pyFilePath) && !FileExists(cffiFilePath))
          {
             reset();
 
