@@ -748,13 +748,12 @@ class BModule : struct
                // some stuff will surely move around -- functions that are here may need to go to specific generators instead
    BNamespace root_nspace;
    List<BNamespace> orderedNamespaces { };
-   Map<BTemplatonKey, BTemplaton> templatons { };
 
    BTemplaton addTempleton(ClassTemplateParameter tp, Class cl)
    {
       BTemplaton t;
       BTemplatonKey key { (uintptr)tp, (uintptr)cl };
-      MapIterator<BTemplatonKey, BTemplaton> i { map = templatons };
+      MapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
       if(i.Index(key, true)) t = i.data;
       else i.data = t = BTemplaton { tp, cl }, t.init();
       return t;
@@ -763,7 +762,7 @@ class BModule : struct
    {
       BTemplaton t;
       BTemplatonKey key { (uintptr)0, (uintptr)cl };
-      MapIterator<BTemplatonKey, BTemplaton> i { map = templatons };
+      MapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
       if(i.Index(key, true)) t = i.data;
       else i.data = t = BTemplaton { null, cl, nspace }, t.init();
       return t;
@@ -859,7 +858,7 @@ class BModule : struct
 /*
          class BModule : struct
             List<BNamespace> orderedNamespaces { };
-            Map<BTemplatonKey, BTemplaton> templatons { };
+            Map<BTemplatonKey, BTemplaton> allTemplatons { };
 
          class BNamespace : struct
             Array<ASTNode> output { };

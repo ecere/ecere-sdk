@@ -491,7 +491,8 @@ public class BGen : ConsoleApplication // <ArgSym>
                }
                /*if(plug)
                   g.lib.funcRename = null;*/
-               g.reset(); //delete g;
+               g.reset();
+               delete g;
             }
          }
       }
