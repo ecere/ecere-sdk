@@ -156,7 +156,7 @@ public:
                      err = unknown;
                      PrintLn($"Error: argument ", sym, " (", arg, ") is unknown."); // todo: fix i18n
                      break;
-                  //default: check(); break;
+                  //default: conmsg("check"); break;
                }
                switch(err)
                {
@@ -171,7 +171,7 @@ public:
                   case unknown:
                      if(!argError) argError = err;
                      break;
-                  //default: check(); break;
+                  //default: conmsg("check"); break;
                }
             }
             //if(c + 1 == argc && (sym == library || sym == directory || sym == string || sym == map || sym == tell))
@@ -249,7 +249,7 @@ public:
                case Python:
                   bgen = PythonGen { moduleName, bindingName, defineName, isEcereCOM };
                   break;
-               default: check(); break;
+               default: conmsg("check"); break;
             }
             if(bgen && bgen.init())
                bgen.generate();
