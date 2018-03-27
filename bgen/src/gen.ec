@@ -416,6 +416,8 @@ private:
       BNamespace nDep = vDep.nspace;
       BNamespace n = nspace;
       if(from == nil) check();
+      if(from == ostruct && to == ostruct && kind == vclass && c.cl.type == normalClass && vDep.kind == vclass && vDep.c.cl.type == normalClass)
+         return;
       if(nDep == n || (vDep.kind == vclass && (vDep.c.isFromCurrentModule || vDep.c.cl.templateClass)) ||
          (vDep.kind == vtemplaton && (vDep.t.c.isFromCurrentModule || vDep.t.c.cl.templateClass)))
       {
@@ -459,8 +461,9 @@ enum BOutputType
    BOutputType ::getFromVariantKind(BVariantKind kind)
    {
               if(kind == vmethod)   return omethod;
+         else if(kind == vfunction) return ofunction;
          else if(kind == vproperty) return oproperty;
-         else if(kind == vclass)    return otypedef;
+         else if(kind == vclass)    return ostruct;
          return nil;
    }
 
@@ -643,6 +646,7 @@ public:
             case otypedef:    return v.kind == vtemplaton ? v.t.outTypedef : v.kind == vclass ? v.c.outTypedef : null;
             case ostruct:     return v.c.outStruct;
             case omethod:     return v.m.outInHeader;
+            case ofunction:   return v.f.out;
             case oconversion:
             case oproperty:
                               return v.p.outInHeader;
@@ -1065,7 +1069,7 @@ class BNamespace : struct
                      //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
                      check();
                   }
-                  else
+                  //else
                   {
                   BOutput swap = (BOutput)orderedBackwardsOutputs[d];
                   orderedBackwardsOutputs.Remove(orderedBackwardsOutputs.GetAtPosition(d, false, null));
@@ -1158,6 +1162,7 @@ class BFunction : struct
    }
    bool skip;
    bool isDllExport;
+   bool cleanDataType;
    const char * name;
    char * fname; char * ccfname; char * gname; const char * easy; const char * mapName; const char * oname;
    void init(GlobalFunction fn/*, Module m*/, Map<String, String> funcRename)
@@ -1179,13 +1184,27 @@ class BFunction : struct
             mapName = funcRename[fname];
       }
       oname = mapName ? mapName : ccfname;
-      if(!fn.dataType) fn.dataType = ProcessTypeString(fn.dataTypeString, false);
+      if(!fn.dataType)
+      {
+         fn.dataType = ProcessTypeString(fn.dataTypeString, false);
+         cleanDataType = true;
+      }
       //if(!(m && fn.module && fn.module != ec1HomeModule/* && !(ecereCOM && !fn.module)*/))
       //if(!/*((!m || !m.name) && */skipFunctionTree.Find(fname)/*)*/)
       //   return true;
       //return false;
    }
-   void free() { delete fname; delete ccfname; delete gname; }
+   void free()
+   {
+      if(cleanDataType)
+      {
+         //FreeType(fn.dataType);
+         //fn.dataType = null;
+      }
+      delete fname;
+      delete ccfname;
+      delete gname;
+   }
    void OnFree() { free(); };
 };
 
@@ -1234,6 +1253,7 @@ class BClass : struct
    bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor, isWindow;
    bool hasPublicMembers;
    bool noMacro, noSpecMacro, nativeSpec;
+   bool cleanDataType;
    // input names:
    const char * name; char * base;
    // generated names:
@@ -1296,7 +1316,7 @@ class BClass : struct
       if(python && py && isBool)
          symbolName[0] = (char)toupper(symbolName[0]); // Bool
 
-      clBase = getClassBaseAndProcessTemplateDataType(cl);
+      clBase = getClassBaseAndProcessTemplateDataType(cl, &cleanDataType);
 
       if(clBase)
       {
@@ -1381,6 +1401,11 @@ class BClass : struct
       delete base; delete upper; delete spec; delete cname; delete symbolName; delete baseSymbolName;
       delete coSymbol;
       delete py_initializer;
+      if(cleanDataType)
+      {
+         FreeType(cl.dataType);
+         cl.dataType = null;
+      }
    }
    void OnFree() { free(); };
 };
@@ -1485,7 +1510,7 @@ void readyClass(Class cl)
    FinishTemplatesContext(context);
 }
 
-Class getClassBaseAndProcessTemplateDataType(Class cl)
+Class getClassBaseAndProcessTemplateDataType(Class cl, bool * cleanDataType)
 {
    Class clBase = null;
    Context context = SetupTemplatesContext(cl);
@@ -1529,7 +1554,10 @@ Class getClassBaseAndProcessTemplateDataType(Class cl)
       clBase = skip ? cl.base.templateClass : cl.base;
    }
    if(!cl.dataType)
+   {
       cl.dataType = ProcessTypeString(cl.dataTypeString, false);
+      *cleanDataType = true;
+   }
    FinishTemplatesContext(context);
    return clBase;
 }
