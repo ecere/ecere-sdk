@@ -1064,7 +1064,7 @@ define cw = 32; //16; //84; // column width
 
 ClassDefDeclaration astClassDefDecl(const char * ident, TypeInfo ti, BVariant vTop)
 {
-   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, /*python ? vTop : */null/*, null*/) };
+   return ClassDefDeclaration { decl = astDeclInit(null, createField, ident, null, ti, null, vTop/*, null*/) };
 }
 
 enum CreateDeclInitMode
@@ -1288,6 +1288,19 @@ const char * nonTokenUnsignedTypeName(Type from)
    return null;
 }
 
+const char * nonTokenTypeName(Type from)
+{
+   switch(from.kind)
+   {
+      case charType:    return from.isSigned ? "char" : "byte";
+      case shortType:   return from.isSigned ? "int16" : "uint16";
+      case intType:     return from.isSigned ? null : "uint";
+      case int64Type:   return from.isSigned ? "int64" : "uint64";
+      case int128Type:  return from.isSigned ? "int128" : "uint128";
+   }
+   return null;
+}
+
 TokenType2 tokenType(Type from)
 {
    switch(from.kind)
@@ -1410,26 +1423,41 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          quals.Add(SpecName { name = CopyString(!python ? "va_list" : "...") });
          break;
       case voidType: case intType: case longType: case floatType: case doubleType:
+      {
+         const char * typeName = vTop && t.kind ? nonTokenTypeName(t) : null;
+         Class clDep = typeName ? eSystem_FindClass(g_.mod, typeName) : null;
+         BOutputType vTopOutputType = clDep ? BOutputType::getFromVariantKind(vTop.kind) : nil;
          quals.Add(SpecBase { specifier = tokenType(t) });
+         if(vTopOutputType)
+            vTop.processDependency(vTopOutputType, otypedef, clDep);
          break;
+      }
       case charType: case shortType: case int64Type: case int128Type:
+      {
+         const char * typeName = nonTokenTypeName(t);
+         BOutputType vTopOutputType = vTop ? BOutputType::getFromVariantKind(vTop.kind) : nil;
+         Class clDep = vTop ? eSystem_FindClass(g_.mod, typeName) : null;
          if(t.isSigned)
             quals.Add(SpecBase { specifier = tokenType(t) });
          else
          {
-            BOutputType vTopOutputType = vTop ? BOutputType::getFromVariantKind(vTop.kind) : nil;//vTop.kind;
-            Class clDep = vTop ? eSystem_FindClass(g_.mod, nonTokenUnsignedTypeName(t)) : null;
             quals.Add(SpecName { name = CopyString(nonTokenUnsignedTypeName(t)) });
-            if(vTopOutputType)
-               vTop.processDependency(vTopOutputType, otypedef, clDep);
          }
+         if(clDep && vTopOutputType)
+            vTop.processDependency(vTopOutputType, otypedef, clDep);
          break;
+      }
       case intPtrType:
-         quals.Add(SpecName { name = CopyString(t.isSigned ? "intptr" : "uintptr") });
-         break;
       case intSizeType:
-         quals.Add(SpecName { name = CopyString(t.isSigned ? "intsize" : "uintsize") });
+      {
+         const char * typeName = t.kind == intPtrType ? (t.isSigned ? "intptr" : "uintptr") : (t.isSigned ? "intsize" : "uintsize");
+         BOutputType vTopOutputType = vTop ? BOutputType::getFromVariantKind(vTop.kind) : nil;
+         Class clDep = vTop ? eSystem_FindClass(g_.mod, typeName) : null;
+         quals.Add(SpecName { name = CopyString(typeName) });
+         if(vTopOutputType)
+            vTop.processDependency(vTopOutputType, otypedef, clDep);
          break;
+      }
       case structType:
          quals.Add(SpecClass { type = _struct, id = ASTIdentifier { string = CopyString(t.enumName) } });
          break;
@@ -1457,7 +1485,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          {
             char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
             quals.Add(SpecName { name = symbolName });
-            if(vTopOutputType && (_class || t._class.registered))
+            if(vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))
                vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
          }
          break;
@@ -1545,6 +1573,12 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
          quals.Add(SpecName { name = PrintString(g_.sym.__class, " *") });
+         {
+            Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
+            BOutputType vTopOutputType = clDep ? BOutputType::getFromVariantKind(vTop.kind) : nil;
+            if(vTopOutputType)
+               vTop.processDependency(vTopOutputType, otypedef, clDep);
+         }
       }
       tn =  ASTTypeName
             {
@@ -2274,7 +2308,8 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
             break;
       }
 
-      if(clDep) _processTypeDependency(g, from, vTop, pointer, clDep);
+      if(clDep && classIsFromModule(clDep, g.mod, ec1ComponentsApp))
+         _processTypeDependency(g, from, vTop, pointer, clDep);
    }
    if(_type.bitMemberSize) check();
 }
