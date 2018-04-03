@@ -231,7 +231,7 @@ public struct GLEAB
 
          GLFlushMatrices();
 
-         if(!this || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
+         //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
             glDrawElements(primType, count, type, indices);
       }
    }
