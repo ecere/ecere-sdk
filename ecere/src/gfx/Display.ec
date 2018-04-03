@@ -815,6 +815,7 @@ public:
       {
          Mesh mesh = object.mesh;
          Material objectMaterial = object.material;
+         bool partlyTransparent = false;
 
          if(mesh.groups.first)
          {
@@ -826,6 +827,8 @@ public:
             {
                Material material = group.material ? group.material : objectMaterial;
                if(!material) material = defaultMaterial;
+               if(material.flags.partlyTransparent)
+                  partlyTransparent = true;
 
                if(material != display3D.material)
                {
@@ -882,7 +885,10 @@ public:
                                plane->d * inverseTranspose.m[3][3];
             }
          }
-         else
+         if(partlyTransparent)
+            display3D.partlyTransparentObjects.Add(object);
+
+         if(!object.flags.translucent)
          {
             int c;
             displaySystem.driver.SelectMesh(this, mesh);
@@ -1145,12 +1151,47 @@ public:
       return result;
    }
 
+   private void DrawPartlyTransparentMesh(Object object)
+   {
+      if(!display3D.selection)
+      {
+         Mesh mesh = object.mesh;
+         Material objectMaterial = object.material;
+         if(mesh.groups.first)
+         {
+            PrimitiveGroup group;
+            displaySystem.driver.SelectMesh(this, mesh);
+            display3D.mesh = mesh;
+            display3D.material = null;
+
+            for(group = mesh.groups.first; group; group = group.next)
+            {
+               Material material = group.material ? group.material : objectMaterial;
+               if(!material) material = defaultMaterial;
+               if(material.flags.partlyTransparent)
+               {
+                  if(material != display3D.material)
+                  {
+                     display3D.material = material;
+                     material.flags.partlyTransparent = false;
+                     displaySystem.driver.ApplyMaterial(this, material, mesh);
+                     material.flags.partlyTransparent = true;
+                  }
+
+                  // *** Render Vertex Arrays ***
+                  displaySystem.driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
+               }
+            }
+         }
+      }
+   }
+
    void DrawTranslucency(void)
    {
       if(display3D && display3D.camera)
       {
          // *** Render translucent primitives ***
-         if(display3D.nTriangles)
+         if(display3D.nTriangles || display3D.partlyTransparentObjects.count)
          {
             Matrix * matrix = null;
             int c;
@@ -1162,7 +1203,18 @@ public:
             depthWrite = false;
 
             displaySystem.driver.PushMatrix(this);
-            for(c=0; c<display3D.nTriangles; c++)
+
+            for(o : display3D.partlyTransparentObjects)
+            {
+               displaySystem.driver.PushMatrix(this);
+               SetTransform(o.matrix, o.flags.viewSpace);
+               DrawPartlyTransparentMesh(o);
+               displaySystem.driver.PopMatrix(this, true);
+            }
+            display3D.partlyTransparentObjects.minAllocSize = display3D.partlyTransparentObjects.size;
+            display3D.partlyTransparentObjects.size = 0;
+
+            for(c=0; c<=display3D.nTriangles; c++)
             {
                SortPrimitive * sort = &display3D.triangles[c];
                Mesh mesh = sort->object.mesh;
@@ -1352,6 +1404,7 @@ private class Display3D : struct
    Vector3D points[MAX_CLIP_POINTS];
    Vector3D newPoints[MAX_CLIP_POINTS];
    byte goodPoints[MAX_CLIP_POINTS];
+   Array<Object> partlyTransparentObjects { };
 
    Material material;
    Mesh mesh;
