@@ -1358,6 +1358,8 @@ class Direct3D8DisplayDriver : DisplayDriver
       D3D8System d3dSystem = displaySystem.driverData;
       bool result = false;
       IDirect3DDevice8 * d3dDevice = d3dSystem.d3dDevice;
+      //bool memAllocOnly = flags.memAllocOnly;
+      flags.memAllocOnly = false;
 
       if(!mesh.data)
          mesh.data = D3D8Mesh { };
