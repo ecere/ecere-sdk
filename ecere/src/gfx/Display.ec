@@ -1396,6 +1396,10 @@ public:
          }
       }
    };
+   property int glVersion
+   {
+      get { return ((OGLDisplay)driverData).version; }
+   }
 #endif
 
    int width, height;

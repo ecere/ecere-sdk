@@ -16,6 +16,10 @@ namespace gfx::drivers;
 
 #include "gl123es.h"
 
+#define GL_CLAMP_TO_EDGE 0x812F
+
+#define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
+
 // **********   GL PLATFORMS INCLUDES   **********
 // UNIX
 #if defined(__unix__) || defined(__APPLE__)
@@ -365,8 +369,6 @@ Shader activeShader;
 
 static int displayWidth, displayHeight;
 
-#define GL_CLAMP_TO_EDGE 0x812F
-
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
 {
@@ -476,8 +478,9 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
    HGLRC result = 0;
    if(wglCreateContextAttribsARB)
    {
-      int versions[12][2] =
+      int versions[13][2] =
       {
+         { 4, 6 },
          { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 },
                              { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 },
                                                  { 2, 1 }, { 2, 0 }
@@ -855,7 +858,16 @@ class OpenGLDisplayDriver : DisplayDriver
                      PrintLn("wglMakeCurrent()");
 #endif
                      if(oglSystem.glrc)
+                     {
                         wglMakeCurrent(oglSystem.hdc, oglSystem.glrc);
+
+                        ogl_LoadFunctions();
+                        oglSystem.version = ogl_GetMajorVersion();
+
+#ifdef _DEBUG
+                        printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
+#endif
+                     }
                   }
                }
                /*else
@@ -1138,16 +1150,26 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_LEGACY
       else
       {
-         glDisableVertexAttribArray(GLBufferContents::color);
-         glDisableVertexAttribArray(GLBufferContents::normal);
-         glDisableVertexAttribArray(GLBufferContents::texCoord);
-         glDisableVertexAttribArray(GLBufferContents::vertex);
-         glDisableVertexAttribArray(GLBufferContents::tangent1);
-         glDisableVertexAttribArray(GLBufferContents::tangent2);
+         if(glDisableVertexAttribArray)
+         {
+            glDisableVertexAttribArray(GLBufferContents::color);
+            glDisableVertexAttribArray(GLBufferContents::normal);
+            glDisableVertexAttribArray(GLBufferContents::texCoord);
+            glDisableVertexAttribArray(GLBufferContents::vertex);
+            glDisableVertexAttribArray(GLBufferContents::tangent1);
+            glDisableVertexAttribArray(GLBufferContents::tangent2);
+         }
+         GLDisableClientState(COLORS);
+         GLDisableClientState(NORMALS);
+         GLDisableClientState(TEXCOORDS);
+         GLDisableClientState(TANGENTS1);
+         GLDisableClientState(TANGENTS2);
 #if ENABLE_GL_VAO
-         glBindVertexArray(0);
+         if(glBindVertexArray)
+            glBindVertexArray(0);
 #endif
-         glUseProgram(0);
+         if(glUseProgram)
+            glUseProgram(0);
       }
 #endif
 
@@ -1235,6 +1257,10 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             wglShareLists(oglSystem.glrc, oglDisplay.glrc);
             wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
+
+            ogl_LoadFunctions();
+            oglDisplay.version = ogl_GetMajorVersion();
+
             result = true;
          }
          else
@@ -2032,8 +2058,8 @@ class OpenGLDisplayDriver : DisplayDriver
          //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
          //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-         glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+         glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(oglSystem.version));
+         glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(oglSystem.version));
 
 #ifndef GL_TEXTURE_WRAP_R
    #define GL_TEXTURE_WRAP_R 0x8072
@@ -2041,7 +2067,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if !defined(__EMSCRIPTEN__)
          if(cubeMapFace)
-            glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+            glTexParameteri(target, GL_TEXTURE_WRAP_R, glClampFunction(oglSystem.version));
 #endif
 
 #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
@@ -2836,14 +2862,14 @@ class OpenGLDisplayDriver : DisplayDriver
       int t;
       for(t = lastTMU; t < oglDisplay.maxTMU; t++)
       {
-         glActiveTexture(GL_TEXTURE0 + t);
-         glClientActiveTexture(GL_TEXTURE0 + t);
+         if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + t);
+         if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + t);
          glDisable(GL_TEXTURE_2D);
          glDisable(GL_TEXTURE_CUBE_MAP);
          GLDisableClientState(TEXCOORDS);
       }
-      glActiveTexture(GL_TEXTURE0);
-      glClientActiveTexture(GL_TEXTURE0);
+      if(glActiveTexture) glActiveTexture(GL_TEXTURE0);
+      if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0);
       oglDisplay.maxTMU = lastTMU;
    }
 #endif
@@ -3188,7 +3214,8 @@ class OpenGLDisplayDriver : DisplayDriver
          oglDisplay.depthWrite = true;
 
 #ifndef __EMSCRIPTEN__
-         glEnable(GL_MULTISAMPLE);
+         if(oglDisplay.version >= 2)
+            glEnable(GL_MULTISAMPLE);
 #endif
       }
       else if(surface && display.display3D.camera)
@@ -3239,14 +3266,17 @@ class OpenGLDisplayDriver : DisplayDriver
             disableRemainingTMUs(display, 0);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-            glDisable(GL_TEXTURE_CUBE_MAP);
-         #if _GLES
-            glDisable(GL_TEXTURE_GEN_STR);
-         #else
-            glDisable(GL_TEXTURE_GEN_R);
-            glDisable(GL_TEXTURE_GEN_S);
-            glDisable(GL_TEXTURE_GEN_T);
-         #endif
+            if(oglDisplay.version >= 2)
+            {
+               glDisable(GL_TEXTURE_CUBE_MAP);
+            #if _GLES
+               glDisable(GL_TEXTURE_GEN_STR);
+            #else
+               glDisable(GL_TEXTURE_GEN_R);
+               glDisable(GL_TEXTURE_GEN_S);
+               glDisable(GL_TEXTURE_GEN_T);
+            #endif
+            }
          }
 #endif
 
@@ -3261,20 +3291,21 @@ class OpenGLDisplayDriver : DisplayDriver
             defaultShader.setMaterial(null, 0);
          }
 #endif
-
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
 #if !defined(__EMSCRIPTEN__)
-         glDisable(GL_MULTISAMPLE);
+         if(oglDisplay.version >= 2)
+            glDisable(GL_MULTISAMPLE);
 #endif
       }
    }
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
+      OGLDisplay oglDisplay = display.driverData;
       Shader shader = material.shader ? material.shader : defaultShader;
       MaterialFlags flags = material.flags;
 #if ENABLE_GL_FFP
@@ -3321,8 +3352,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(material.bumpMap && mesh.lightVectors)
          {
             float color[4] = { 1,1,1,1 };
-            glActiveTexture(GL_TEXTURE0 + tmu);
-            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
             glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
             glDisable(GL_TEXTURE_CUBE_MAP);
             glEnable(GL_TEXTURE_2D);
@@ -3367,12 +3398,12 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
             {
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
             }
 
-            glActiveTexture(GL_TEXTURE0 + tmu);
-            glClientActiveTexture(GL_TEXTURE0 + tmu);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
 
             normalMapped = true;
 
@@ -3399,8 +3430,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
                color[0] = material.diffuse.r, color[1] = material.diffuse.g, color[2] = material.diffuse.b, color[3] = 1.0;
                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
-               glActiveTexture(GL_TEXTURE0 + tmu);
-               glClientActiveTexture(GL_TEXTURE0 + tmu);
+               if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+               if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
             }
 
             // Add ambient light
@@ -3428,8 +3459,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
                   color[0] = ambient.r, color[1] = ambient.g, color[2] = ambient.b, color[3] = 1.0;
                   glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
-                  glActiveTexture(GL_TEXTURE0 + tmu);
-                  glClientActiveTexture(GL_TEXTURE0 + tmu);
+                  if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+                  if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
                }
             }
          }
@@ -3453,10 +3484,11 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            glActiveTexture(GL_TEXTURE0 + tmu);
-            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
             glEnable(diffuseTarget);
-            glDisable(flags.cubeMap ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP);
+            if(oglDisplay.version >= 2)
+               glDisable(flags.cubeMap ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP);
          }
 #endif
 
@@ -3523,7 +3555,7 @@ class OpenGLDisplayDriver : DisplayDriver
                   oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
                GLEnableClientState(TEXCOORDS);
             }
-            glClientActiveTexture(GL_TEXTURE0);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0);
          }
 #endif
          if(flags.tile)
@@ -3533,8 +3565,8 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
          {
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
          }
       }
       else
@@ -3548,7 +3580,8 @@ class OpenGLDisplayDriver : DisplayDriver
          int separate = material.flags.separateSpecular ? GL_SEPARATE_SPECULAR_COLOR : GL_SINGLE_COLOR;
          if(separate != lastSeparate)
          {
-            GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, separate);
+            if(oglDisplay.version >= 2)
+               GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, separate);
             lastSeparate = separate;
          }
       }
@@ -3560,8 +3593,8 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            glActiveTexture(GL_TEXTURE0 + tmu - 1);
-            glClientActiveTexture(GL_TEXTURE0 + tmu - 1);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu - 1);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu - 1);
          }
 #endif
          GLMatrixMode(GL_TEXTURE);
@@ -3572,8 +3605,8 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            glActiveTexture(GL_TEXTURE0);
-            glClientActiveTexture(GL_TEXTURE0);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0);
          }
 #endif
       }
@@ -3584,8 +3617,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(material.envMap && material.refractiveIndex)
          {
             float color[4] = { material.opacity, material.opacity, material.opacity, 1.0 };
-            glActiveTexture(GL_TEXTURE0 + tmu);
-            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
             glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
             glEnable(GL_TEXTURE_CUBE_MAP);
          #if _GLES
@@ -3649,8 +3682,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(material.envMap && material.reflectivity)
          {
             float color[4] = { 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0 };
-            glActiveTexture(GL_TEXTURE0 + tmu);
-            glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
             glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
             glEnable(GL_TEXTURE_CUBE_MAP);
          #if _GLES
