@@ -7476,7 +7476,12 @@ public:
 
          guiApp.UpdateDisplay();
          if(!guiApp.ProcessInput(false))
+         {
+            guiApp.Cycle(true);
             guiApp.Wait();
+         }
+         else
+            guiApp.Cycle(false);
       }
       returnCode = this.returnCode;
       delete this;
