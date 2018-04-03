@@ -1384,6 +1384,8 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DSystem d3dSystem = displaySystem.driverData;
       bool result = false;
       IDirect3DDevice9 * d3dDevice = d3dSystem.d3dDevice;
+      //bool memAllocOnly = flags.memAllocOnly;
+      flags.memAllocOnly = false;
 
       if(!mesh.data)
          mesh.data = D3DMesh { };

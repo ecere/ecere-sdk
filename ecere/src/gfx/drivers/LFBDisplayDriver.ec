@@ -2155,6 +2155,9 @@ public class LFBDisplayDriver : DisplayDriver
    bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
    {
       bool result = false;
+      //bool memAllocOnly = flags.memAllocOnly;
+      flags.memAllocOnly = false;
+
       if(mesh.nVertices == nVertices)
       {
          result = true;
