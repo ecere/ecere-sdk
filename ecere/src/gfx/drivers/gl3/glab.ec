@@ -236,3 +236,177 @@ public struct GLEAB
       }
    }
 };
+
+public struct GLFB
+{
+   int w, h;
+   uint fbo;
+   uint color;
+   uint depth;
+   uint samples;
+   uint colorRBO, depthRBO;
+   int depthFormat, colorFormat;
+
+   void free()
+   {
+      if(fbo)
+      {
+         glDeleteFramebuffers(1, &fbo);
+         fbo = 0;
+      }
+      if(color) glDeleteTextures(1, &color);
+      if(depth) glDeleteTextures(1, &depth);
+      color = 0;
+      depth = 0;
+
+      if(colorRBO) glDeleteRenderbuffers(1, &colorRBO);
+      if(depthRBO) glDeleteRenderbuffers(1, &depthRBO);
+      colorRBO = 0;
+      depthRBO = 0;
+   }
+
+   void copyToTexture()
+   {
+      if(colorRBO)
+      {
+         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+         glBindTexture(GL_TEXTURE_2D, color);
+         glCopyTexImage2D(GL_TEXTURE_2D, 0, colorFormat, 0, 0, w, h, 0);
+         glBindTexture(GL_TEXTURE_2D, depth);
+         glCopyTexImage2D(GL_TEXTURE_2D, 0, depthFormat, 0, 0, w, h, 0);
+         glBindTexture(GL_TEXTURE_2D, 0);
+      }
+   }
+
+   bool setup(bool textureFBO, bool allocTextures, int samples, int colorFormat, int depthFormat, int width, int height)
+   {
+      int s;
+      bool allocateColor = colorFormat && (w != width || h != height);
+      bool allocateDepth = depthFormat && (w != width || h != height);
+      bool result = false;
+      int texTarget = samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+
+      if(fbo && (colorRBO == 0) != textureFBO) free();
+
+      if(!fbo) glGenFramebuffers(1, &fbo);
+      glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+      if(colorFormat && !color)
+      {
+         allocateColor = true;
+         if(textureFBO || allocTextures)
+            glGenTextures(1, &color);
+         if(!textureFBO)
+            glGenRenderbuffers(1, &colorRBO);
+      }
+
+      if(depthFormat && !depth)
+      {
+         allocateDepth = true;
+         if(textureFBO || allocTextures)
+            glGenTextures(1, &depth);
+         if(!textureFBO)
+            glGenRenderbuffers(1, &depthRBO);
+      }
+
+      while(glGetError());
+
+      // *** Set up Color attachment first ***
+      if(allocateColor)
+      {
+         this.colorFormat = colorFormat;
+         if(textureFBO || allocTextures)
+            glBindTexture(texTarget, color);
+         if(!textureFBO)
+            glBindRenderbuffer(GL_RENDERBUFFER, colorRBO);
+         for(s = samples; ; s >>= 1)
+         {
+            if(s > 1)
+            {
+               if(textureFBO)
+                  glTexImage2DMultisample(texTarget, s, colorFormat, width, height, GL_FALSE);
+               else
+                  glRenderbufferStorageMultisample(GL_RENDERBUFFER, s, colorFormat, width, height);
+               if(!glGetError())
+                  break;
+            }
+            else
+            {
+               texTarget = GL_TEXTURE_2D;
+               if(textureFBO || allocTextures)
+                  glTexImage2D(texTarget, 0, colorFormat, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+               if(!textureFBO)
+                  glRenderbufferStorage(GL_RENDERBUFFER, colorFormat, width, height);
+               break;
+            }
+         }
+
+         if(textureFBO || allocTextures)
+         {
+            if(samples <= 1)
+            {
+               glTexParameteri(texTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);//GL_LINEAR);
+               glTexParameteri(texTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);//GL_LINEAR);
+               glTexParameteri(texTarget, GL_TEXTURE_MAX_LEVEL, 0);
+               glTexParameteri(texTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+               glTexParameteri(texTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            }
+            glBindTexture(texTarget, 0);
+         }
+         if(textureFBO)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texTarget, color, 0);
+         else
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRBO);
+         samples = s;
+      }
+
+      // *** Set up Depth attachment ***
+      if(allocateDepth)
+      {
+         this.depthFormat = depthFormat;
+         // TODO: try other samples for depth only?
+         if(textureFBO || allocTextures)
+         {
+            glBindTexture(texTarget, depth);
+            if(samples > 1)
+               glTexImage2DMultisample(texTarget, samples, depthFormat, width, height, GL_FALSE);
+            else
+               glTexImage2D(texTarget, 0, depthFormat, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null);
+         }
+         if(!textureFBO)
+         {
+            glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
+            if(samples > 1)
+               glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, depthFormat, width, height);
+            else
+               glRenderbufferStorage(GL_RENDERBUFFER, depthFormat, width, height);
+         }
+
+         if(textureFBO || allocTextures)
+         {
+            if(samples <= 1)
+            {
+               glTexParameteri(texTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+               glTexParameteri(texTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            }
+            glBindTexture(texTarget, 0);
+         }
+         if(textureFBO)
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texTarget, depth, 0);
+         else
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+      }
+
+      this.samples = samples;
+      this.w = width;
+      this.h = height;
+
+      result = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+
+#ifdef _DEBUG
+      if(!result)
+         PrintLn("Incomplete GL Framebuffer\n");
+#endif
+      return result;
+   }
+};
