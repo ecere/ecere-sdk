@@ -2,7 +2,12 @@ namespace gfx3D;
 
 import "Display"
 
-public class MeshFeatures { public bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1, lightVectors:1, tangents:1, intVertices:1; };
+public class MeshFeatures
+{
+public:
+   bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1, lightVectors:1, tangents:1, intVertices:1;
+   bool memAllocOnly:1;
+};
 public class PrimitiveGroupType { public: RenderPrimitiveType primitiveType:8; bool vertexRange:1, indices32bit:1; };
 public enum RenderPrimitiveType : PrimitiveGroupType
 {
@@ -182,6 +187,7 @@ public:
          if(driver.AllocateMesh == DisplayDriver::AllocateMesh) driver = (subclass(DisplayDriver))class(LFBDisplayDriver);
          if(driver.AllocateMesh(displaySystem, this, what, nVertices))
          {
+            what.memAllocOnly = false;
             flags |= what;
             this.nVertices = nVertices;
             if(Lock(what))
@@ -423,8 +429,8 @@ public:
                   if(group.type.vertexRange)
                   {
                      plane.FromPointsf(vertices[c+2],
-                                      vertices[c+1],
-                                      vertices[c]);
+                                       vertices[c+1],
+                                       vertices[c]);
                      planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                      for(i = c; i<c+nIndex; i++)
