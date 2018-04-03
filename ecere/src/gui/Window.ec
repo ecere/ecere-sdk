@@ -9966,7 +9966,7 @@ private:
    void * windowData;
    CreationActivationOption creationActivation;
    GLCapabilities glCapabilities;
-   glCapabilities = { true, true, true, true, true, true, true, true, true /*false*/, true, true, true, true, true, true, true };
+   glCapabilities = { true, true, true, true, true, true, true, true, true /*false*/, true, true, true, true, true, true, true, ms16 };
    struct
    {
       bool active:1;            // true if window and ancestors are active
