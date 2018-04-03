@@ -22,7 +22,20 @@ public enum RenderPrimitiveType : PrimitiveGroupType
    */
 };
 
-public class MaterialFlags { public bool doubleSided:1, translucent:1, tile:1, noFog:1, singleSideLight:1, separateSpecular:1, cubeMap:1, noLighting:1; };
+public class MaterialFlags
+{
+public:
+    bool doubleSided:1;
+    bool translucent:1;
+    bool tile:1;
+    bool noFog:1;
+    bool singleSideLight:1;
+    bool separateSpecular:1;
+    bool cubeMap:1;
+    bool noLighting:1;
+    bool partlyTransparent:1;
+};
+
 public class Material : struct
 {
 public:

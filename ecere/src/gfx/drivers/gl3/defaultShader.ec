@@ -22,6 +22,7 @@ public:
    SwizzleMode swizzle:2;
    bool textureMatrix:1;
    bool texturing:1;
+   bool alphaTest:1;
    bool cubeMap:1;
    bool modelView:1;
    bool fog:1;
@@ -68,6 +69,7 @@ public:
    int uRefractionETA;
    int uMatReflectivity;
    int uCubeMapMatrix;
+   int uAlphaFuncValue;
 
    void registerUniforms(int program, DefaultShaderBits state)
    {
@@ -122,6 +124,8 @@ public:
             uMatPower         = glGetUniformLocation(program, "matPower");
          }
       }
+      if(state.alphaTest)
+         uAlphaFuncValue = glGetUniformLocation(program, "alphaFuncValue");
 
       if((state.specularMapping || state.normalsMapping || state.texturing || state.reflectionMap || state.cubeMap) && state.textureMatrix)
          uTextureMatrix    = glGetUniformLocation(program, "texture_matrix");
@@ -263,6 +267,7 @@ public:
       defs.concatf("\n#define NORMALS_MAPPING %d",          state.normalsMapping     ? 1 : 0);
       defs.concatf("\n#define CUBEMAP_ON %d",               state.cubeMap            ? 1 : 0);
       defs.concatf("\n#define LIGHTING_SPECULAR_BLINN %d",  state.blinnSpecular      ? 1 : 0);
+      defs.concatf("\n#define ALPHATEST_ON %d",             state.alphaTest          ? 1 : 0);
       defs.concatf("\n#define TEXTURE_ON %d",               state.texturing          ? 1 : 0);
       defs.concatf("\n#define TEXTURE_MATRIX %d",           state.textureMatrix      ? 1 : 0);
       defs.concatf("\n#define SWIZZLE_ALPHA %d",            state.swizzle == alpha   ? 1 : 0);
@@ -370,6 +375,8 @@ public:
 
             if(state.normalsMapping)
                glUniform1i(shader.uBumpTex, 1);
+            if(state.alphaTest)
+               glUniform1f(shader.uAlphaFuncValue, 0.5f);
          }
 
          if(1 || matrixModified)
@@ -630,6 +637,7 @@ public:
       ((DefaultShaderBits)state).reflectionMap = false;
       ((DefaultShaderBits)state).specularMapping = false;
       ((DefaultShaderBits)state).reflection = false;
+      ((DefaultShaderBits)state).alphaTest = false;
       ((DefaultShaderBits)state).refraction = false;
       ((DefaultShaderBits)state).texturing = false;
       ((DefaultShaderBits)state).cubeMap = false;
@@ -666,6 +674,7 @@ public:
          specular[0] = material.specular.r, specular[1] = material.specular.g, specular[2] = material.specular.b;
          emissive[0] = material.emissive.r, emissive[1] = material.emissive.g, emissive[2] = material.emissive.b;
          power = material.power;
+         ((DefaultShaderBits)state).alphaTest = material.flags.partlyTransparent;
       }
       else
       {
@@ -674,6 +683,7 @@ public:
          ((DefaultShaderBits)state).separateSpecular = false;
          ((DefaultShaderBits)state).twoSided = false;
          ((DefaultShaderBits)state).textureMatrix = false;
+         ((DefaultShaderBits)state).alphaTest = false;
       }
 
       if(material && material.bumpMap && flags.tangents)
