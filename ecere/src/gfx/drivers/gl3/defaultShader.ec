@@ -664,7 +664,7 @@ public:
          ((DefaultShaderBits)state).specular = material.power && (material.specular.r || material.specular.g || material.specular.b);
          ((DefaultShaderBits)state).perVertexColor = flags.colors;
          ((DefaultShaderBits)state).separateSpecular = ((DefaultShaderBits)state).specular && material.flags.separateSpecular;
-         ((DefaultShaderBits)state).cubeMap = material && material.flags.cubeMap && material.baseMap;
+         ((DefaultShaderBits)state).cubeMap = material.flags.cubeMap && material.baseMap;
          ((DefaultShaderBits)state).twoSided = material.flags.doubleSided && !material.flags.singleSideLight;
          ((DefaultShaderBits)state).lightBits = material.flags.noLighting ? 0 : lightBits;
          ((DefaultShaderBits)state).lighting = (!material.flags.noLighting && lightBits) ? true : false;
