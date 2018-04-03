@@ -298,6 +298,7 @@ struct SortPrimitive
    Object object;
    Vector3Df middle;
    Vector3Df min, max;
+   Material material;
    Plane plane;
    bool marked;
 
@@ -313,11 +314,15 @@ struct SortPrimitive
          return 1;
       else if(value<-EPSILON)
          return -1;
+      else if((uintptr)material < (uintptr)primitive2.material)
+         return -1;
+      else if((uintptr)material > (uintptr)primitive2.material)
+         return 1;
       else
          return 0;
    }
 
-   bool ZOverlap(SortPrimitive poly2)
+   private static inline bool ZOverlap(SortPrimitive poly2)
    {
    	if(min.z > poly2.max.z - EPSILON || poly2.min.z > max.z - EPSILON)
          return false;
@@ -874,6 +879,7 @@ public:
                   display3D.triangles = renew display3D.triangles SortPrimitive[display3D.maxTriangles];
                }
                sort = &display3D.triangles[display3D.nTriangles++];
+               sort->material = triangle->material;
                sort->object = object;
                sort->triangle = triangle;
                sort->middle.MultMatrix(triangle->middle, matrix);
@@ -1195,12 +1201,25 @@ public:
          {
             Matrix * matrix = null;
             int c;
+            int toFlush = 0;
+            #define NUM_ROTATE_BUFS 40
+            static GLEAB transBuffer[NUM_ROTATE_BUFS];
+            static int bufSizes[NUM_ROTATE_BUFS];
+            static int transSize = 0;
+            static uint32 * transIndices = null;
+            static int bufID = 0;
 
             blend = true;
 
             display3D.SortTriangles();
 
             depthWrite = false;
+
+            if(display3D.nTriangles * 3 > transSize)
+            {
+               transSize = Max(transSize, display3D.nTriangles * 3);
+               transIndices = renew transIndices uint32[display3D.nTriangles * 3];
+            }
 
             displaySystem.driver.PushMatrix(this);
 
@@ -1216,12 +1235,36 @@ public:
 
             for(c=0; c<=display3D.nTriangles; c++)
             {
-               SortPrimitive * sort = &display3D.triangles[c];
-               Mesh mesh = sort->object.mesh;
-               PrimitiveSingle * primitive = sort->triangle;
-               Material material;
+               bool past = c == display3D.nTriangles;
+               SortPrimitive * sort = past ? null : &display3D.triangles[c];
+               Mesh mesh = past ? null : sort->object.mesh;
+               PrimitiveSingle * primitive = past ? null : sort->triangle;
+               Material material = past ? null : primitive->material ? primitive->material : sort->object.material;
+               bool newMatrix, newMesh, newMaterial;
+               if(!material) material = defaultMaterial;
+               newMatrix   = past ? false : &sort->object.matrix != matrix;
+               newMesh     = past ? false : mesh != display3D.mesh;
+               newMaterial = past ? false : material != display3D.material;
 
-               if(&sort->object.matrix != matrix)
+               if(past || newMatrix || newMesh || newMaterial)
+               {
+                  if(!transBuffer[bufID].buffer || toFlush > bufSizes[bufID])
+                     transBuffer[bufID].allocate(transSize * sizeof(uint32), null, streamDraw);
+
+                  transBuffer[bufID].upload(0, toFlush * sizeof(uint32), transIndices);
+                  GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, transBuffer[bufID].buffer);
+                  // TODO: Support 16-bit (GL_UNSIGNED_SHORT), no VBO support
+                  transBuffer[bufID].draw(GL_TRIANGLES, toFlush, GL_UNSIGNED_INT, 0);
+                  toFlush = 0;
+                  bufID++;
+                  if(bufID >= NUM_ROTATE_BUFS)
+                     bufID = 0;
+
+                  if(past)
+                     break;
+               }
+
+               if(newMatrix)
                {
                   matrix = &sort->object.matrix;
 
@@ -1229,42 +1272,26 @@ public:
                   displaySystem.driver.PushMatrix(this);
                   SetTransform(matrix, sort->object.flags.viewSpace);
                }
-               if(mesh != display3D.mesh)
+               if(newMesh)
                {
                   displaySystem.driver.SelectMesh(this, mesh);
                   display3D.mesh = mesh;
                }
 
-               material = primitive->material ? primitive->material : sort->object.material;
-               if(!material) material = defaultMaterial;
-
-               if(material != display3D.material)
+               if(newMaterial)
                {
                   displaySystem.driver.ApplyMaterial(this, material, display3D.mesh);
                   display3D.material = material;
                }
 
-               /*
-               {
-                  Material testMaterial { };
-                  float amount;
-
-                  amount = (display3D.triangles[0].middle.z - display3D.triangles[c].middle.z) /
-                     (display3D.triangles[0].middle.z - display3D.triangles[display3D.nTriangles-1].middle.z);
-
-                  testMaterial.flags.doubleSided = { doubleSided = true, translucent = true };
-                  testMaterial.diffuse.a = 1;
-                  testMaterial.emissive.r = testMaterial.emissive.g = testMaterial.emissive.b = amount;
-                  testMaterial.baseMap = material->baseMap;
-
-                  displaySystem.driver.ApplyMaterial(this, testMaterial, display3D.mesh);
-               }
-               */
-
-               // *** Render primitive ***
-               // if(sort->plane.d > 0)
-               displaySystem.driver.DrawPrimitives(this, primitive, display3D.mesh);
+               transIndices[toFlush+0] = primitive->indices32[0];
+               transIndices[toFlush+1] = primitive->indices32[1];
+               transIndices[toFlush+2] = primitive->indices32[2];
+               toFlush += 3;
             }
+
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
             displaySystem.driver.PopMatrix(this, true);
 
             display3D.nTriangles = 0;
