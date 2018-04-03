@@ -801,7 +801,8 @@ class OpenGLDisplayDriver : DisplayDriver
                      WGL_DOUBLE_BUFFER_ARB,GL_TRUE,
                      //WGL_DEPTH_FLOAT_EXT,GL_TRUE,
                      WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-                     WGL_SAMPLES_ARB, samplesCount,                  // Check For 4x Multisampling
+                     samplesCount > 1 ? WGL_SAMPLES_ARB : 0,
+                     samplesCount > 1 ? samplesCount : 0,                  // Check For Multisampling Support
                      0,0
                   };
 
@@ -1360,7 +1361,8 @@ class OpenGLDisplayDriver : DisplayDriver
                WGL_STENCIL_BITS_ARB,0,
                WGL_DOUBLE_BUFFER_ARB,GL_FALSE,
                WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
-               WGL_SAMPLES_ARB, samplesCount,                  // Check For 4x Multisampling
+               samplesCount > 1 ? WGL_SAMPLES_ARB : 0,
+               samplesCount > 1 ? samplesCount : 0,                  // Check For Multisampling Support
                0,0
             };
 
