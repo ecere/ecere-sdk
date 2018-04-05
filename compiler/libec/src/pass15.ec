@@ -668,8 +668,8 @@ void ComputeClassMembers(Class _class, bool isMember)
                   extra += _class.structAlignment - (_class.memberOffset % _class.structAlignment);
             }
             _class.structSize = (_class.base ? (_class.base.templateClass ?
-               (_class.base.type == noHeadClass ? _class.base.templateClass.memberOffset : _class.base.templateClass.structSize) :
-                  (_class.base.type == noHeadClass ? _class.base.memberOffset : _class.base.structSize) ) : 0) + _class.memberOffset + extra;
+               (/*_class.base.type == noHeadClass ? _class.base.templateClass.memberOffset : */_class.base.templateClass.structSize) :
+                  (/*_class.base.type == noHeadClass ? _class.base.memberOffset : */_class.base.structSize) ) : 0) + _class.memberOffset + extra;
             if(!member)
             {
                Property prop;
@@ -693,7 +693,7 @@ void ComputeClassMembers(Class _class, bool isMember)
                   if(deriv.computeSize)
                   {
                      // TESTING THIS NEW CODE HERE... TRYING TO FIX ScrollBar MEMBERS DEBUGGING
-                     deriv.offset = /*_class.offset + */(_class.type == noHeadClass ? _class.memberOffset : _class.structSize);
+                     deriv.offset = /*_class.offset + */(_class.type == noHeadClass ? _class.structSize /*memberOffset*/ : _class.structSize);
                      deriv.memberOffset = 0;
                      // ----------------------
 
@@ -937,12 +937,14 @@ public int ComputeTypeSize(Type type)
    uint maxSize = 0;
    int alignment;
    uint size;
+   static int paddingID = 0;   // WARNING: not thread-safe
    DataMember member;
    int anonID = 1;
    Context context = isMember ? null : SetupTemplatesContext(_class);
    if(addedPadding)
       *addedPadding = false;
 
+   paddingID++;
    if(!isMember && _class.base)
    {
       maxSize = _class.structSize;
@@ -1041,7 +1043,7 @@ public int ComputeTypeSize(Type type)
       else
          *retSize += totalSize;
    }
-   else if(totalSize < maxSize && _class.type != systemClass)
+   /*else */if(totalSize < maxSize && _class.type != systemClass)
    {
       int autoPadding = 0;
       if(!isMember && _class.structAlignment && totalSize % _class.structAlignment)
@@ -1049,16 +1051,19 @@ public int ComputeTypeSize(Type type)
       if(totalSize + autoPadding < maxSize)
       {
          char sizeString[50];
+         String paddingString = PrintString("__ecere_padding", paddingID);
          sprintf(sizeString, "%d", maxSize - totalSize);
          ListAdd(declarations,
             MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)),
-            MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), null)));
+            MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier(paddingString)), MkExpConstant(sizeString))), null)));
          if(addedPadding)
             *addedPadding = true;
+         delete paddingString;
       }
    }
    if(context)
       FinishTemplatesContext(context);
+   paddingID--;
    return topMember ? topMember.memberID : _class.memberID;
 }
 
