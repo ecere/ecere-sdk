@@ -807,6 +807,8 @@ private:
 
       float xRadius, yRadius, zRadius;
 
+      if(!vertices) return;
+
       min = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
       max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
 

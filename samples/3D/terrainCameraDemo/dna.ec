@@ -305,9 +305,7 @@ public:
       bool result = false;
       if(this)
       {
-         InitializeMesh(displaySystem);
-
-         if(mesh)
+         Initialize();
          {
             int c;
             Bitmap map { };
@@ -356,9 +354,9 @@ public:
             helix.ApplyMaterial(displaySystem.GetMaterial("Phosphate"));
 
             //*******************  PHOSPHATE     *******************
-            phosphate = { mesh = helix }; AddName(phosphate, "Phosphate01");
-            phosphate = { mesh = helix }; AddName(phosphate, "Phosphate02");
+            phosphate = { mesh = helix, flags.mesh = true }; AddName(phosphate, "Phosphate01");
             phosphate.transform.orientation = Euler { yaw = 180 };
+            phosphate = { mesh = helix, flags.mesh = true }; AddName(phosphate, "Phosphate02");
 
             //*******************  HYDROGENE     *******************
             hydrogen = { }; AddName(hydrogen, "Hydrogene");
@@ -416,7 +414,7 @@ public:
 
                //*******************  DESOXYRIBOSE  *******************
                sprintf(name, "Desoxyribose%02d", c*2);
-               desoxyribose = { }; AddName(desoxyribose, name);
+               desoxyribose = { flags.mesh = true }; AddName(desoxyribose, name);
                desoxyribose.mesh = box;
                desoxyribose.transform.orientation = angle;
                desoxyribose.transform.scaling = { (float)desoxyriboseWidth / baseWidth, 1,1 };
@@ -425,7 +423,7 @@ public:
                desoxyribose.material = displaySystem.GetMaterial("Desoxyribose");
 
                sprintf(name, "Desoxyribose%02d", c*2+1);
-               desoxyribose = { }; AddName(desoxyribose, name);
+               desoxyribose = { flags.mesh = true }; AddName(desoxyribose, name);
                desoxyribose.mesh = box;
                desoxyribose.transform.orientation = angle;
                desoxyribose.transform.scaling = { (float)desoxyriboseWidth / baseWidth, 1,1 };
@@ -433,14 +431,11 @@ public:
                pos.MultMatrix(position, matrix); desoxyribose.transform.position = pos;
                desoxyribose.material = displaySystem.GetMaterial("Desoxyribose");
             }
-            transform.scaling = { 1,1,1 };
-            transform.orientation = { 1, 0,0,0 };
-            UpdateTransform();
 
-            if(Merge(displaySystem))
-               result = true;
             UpdateTransform();
             SetMinMaxRadius(true);
+            if(Merge(displaySystem))
+               result = true;
 
             delete box;
             delete helix;

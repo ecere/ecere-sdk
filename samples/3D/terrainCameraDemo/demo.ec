@@ -436,6 +436,9 @@ class Scene : Window
       for(c = 0; c<16; c++)
          delete textures[c];
       terrainMesh.FreeMesh();
+      player.Free(displaySystem);
+      sky.Free(displaySystem);
+      dna.Free(displaySystem);
    }
 
    void OnRedraw(Surface surface)

@@ -142,6 +142,7 @@ class Chess3D : Window
 
    void OnUnloadGraphics()
    {
+      chessSet.Free(displaySystem);
       displaySystem.ClearMaterials();
       displaySystem.ClearTextures();
       displaySystem.ClearMeshes();
