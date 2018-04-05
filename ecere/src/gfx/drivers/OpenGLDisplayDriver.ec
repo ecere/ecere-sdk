@@ -3966,7 +3966,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          OGLMesh oglMesh = mesh.data;
          if(!oglMesh)
-            oglMesh = mesh.data = OGLMesh { };
+            oglMesh = mesh.data = OGLMesh { needAlloc = true };
 
          if(!flags) flags = mesh.flags;
          if(oglMesh.needAlloc)
@@ -4072,6 +4072,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
          }
          else
+            // TODO: Upload only???
             oglIndices.buffer.allocate(
                nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
                oglIndices.indices, staticDraw);
@@ -4243,7 +4244,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
-         OGLIndices oglIndices = primitive->data;
+         OGLIndices oglIndices = mesh.displaySystem ? primitive->data : null;
          bool collectingHits = display.display3D && display.display3D.collectingHits;
          GLEAB eab = ((!collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
          if(!glCaps_intAndDouble && !glCaps_vertexBuffer && primitive->type.indices32bit)
