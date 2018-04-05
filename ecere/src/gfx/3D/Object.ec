@@ -879,8 +879,12 @@ public:
                         mesh.UnlockPrimitive(mesh.primitives[i]);
                      for(group = mesh.groups.first; group; group = group.next)
                      {
-                        OGLIndices oglIndices { nIndices = group.nIndices, indices = group.data };
-                        group.data = oglIndices;
+                        if(!(group.type.vertexRange))
+                        {
+                           // FIXME: GL driver specifics
+                           OGLIndices oglIndices { nIndices = group.nIndices, indices = group.data };
+                           group.data = oglIndices;
+                        }
                         mesh.UnlockPrimitiveGroup(group);
                      }
                      mesh.Unlock(0);
@@ -1260,7 +1264,9 @@ public:
             mesh.ApplyTranslucency(this);
             // this.flags.translucent = true;
 
-            mesh.groups.Sort(compareGroupMaterial, null);
+            // NOTE: This was problematic here as groups is OldList!!!
+            //mesh.groups.Sort(compareGroupMaterial, null);
+            (&mesh.groups)->Sort(compareGroupMaterial, null);
 
             result = true;
 
