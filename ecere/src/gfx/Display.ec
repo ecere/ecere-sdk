@@ -1192,6 +1192,14 @@ public:
       }
    }
 
+#if !defined(_GLES) && !defined(_GLES2)
+#define USE_32_BIT_INDICES true
+#define uintindex uint32
+#else
+#define USE_32_BIT_INDICES false
+#define uintindex uint16
+#endif
+
    void DrawTranslucency(void)
    {
       if(display3D && display3D.camera)
@@ -1206,7 +1214,7 @@ public:
             static GLEAB transBuffer[NUM_ROTATE_BUFS];
             static int bufSizes[NUM_ROTATE_BUFS];
             static int transSize = 0;
-            static uint32 * transIndices = null;
+            static uintindex * transIndices = null;
             static int bufID = 0;
 
             blend = true;
@@ -1215,10 +1223,10 @@ public:
 
             depthWrite = false;
 
-            if(display3D.nTriangles * 3 > transSize)
+            if(display3D.nTriangles * 6/*3*/ > transSize)
             {
-               transSize = Max(transSize, display3D.nTriangles * 3);
-               transIndices = renew transIndices uint32[display3D.nTriangles * 3];
+               transSize = Max(transSize, display3D.nTriangles * 6 /*3*/);
+               transIndices = renew transIndices uint32[display3D.nTriangles * 6 /*3*/];
             }
 
             displaySystem.driver.PushMatrix(this);
@@ -1249,20 +1257,25 @@ public:
                if(past || newMatrix || newMesh || newMaterial)
                {
                   if(!transBuffer[bufID].buffer || toFlush > bufSizes[bufID])
-                     transBuffer[bufID].allocate(transSize * sizeof(uint32), null, streamDraw);
-
-                  transBuffer[bufID].upload(0, toFlush * sizeof(uint32), transIndices);
-                  GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, transBuffer[bufID].buffer);
-                  // TODO: Support 16-bit (GL_UNSIGNED_SHORT), no VBO support
-                  transBuffer[bufID].draw(GL_TRIANGLES, toFlush, GL_UNSIGNED_INT, 0);
-                  toFlush = 0;
-                  bufID++;
-                  if(bufID >= NUM_ROTATE_BUFS)
-                     bufID = 0;
+                  {
+                     transBuffer[bufID].allocate(toFlush * sizeof(uint32), null, streamDraw);
+                     bufSizes[bufID] = toFlush;
+                  }
+                  if(toFlush)
+                  {
+                     transBuffer[bufID].upload(0, toFlush * sizeof(uint32), transIndices);
+                     transBuffer[bufID].draw(GL_TRIANGLES, toFlush,
+                        USE_32_BIT_INDICES ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, glCaps_vertexBuffer ? 0 : transIndices);
+                     toFlush = 0;
+                     bufID++;
+                     if(bufID >= NUM_ROTATE_BUFS)
+                        bufID = 0;
+                  }
 
                   if(past)
                      break;
                }
+
 
                if(newMatrix)
                {
@@ -1284,10 +1297,53 @@ public:
                   display3D.material = material;
                }
 
-               transIndices[toFlush+0] = primitive->indices32[0];
-               transIndices[toFlush+1] = primitive->indices32[1];
-               transIndices[toFlush+2] = primitive->indices32[2];
-               toFlush += 3;
+               /*
+               if(primitive->type.vertexRange)
+               {
+                  transIndices[toFlush+0] = primitive->first;
+                  transIndices[toFlush+1] = primitive->first+1;
+                  transIndices[toFlush+2] = primitive->first+2;
+                  toFlush += 3;
+                  if(primitive->type == quads)
+                  {
+                     transIndices[toFlush+0] = primitive->first;
+                     transIndices[toFlush+1] = primitive->first+2;
+                     transIndices[toFlush+2] = primitive->first+3;
+                     toFlush += 3;
+                  }
+               }
+               else*/
+               {
+                  if(primitive->type.indices32bit)
+                  {
+                     transIndices[toFlush+0] = primitive->indices32[0];
+                     transIndices[toFlush+1] = primitive->indices32[1];
+                     transIndices[toFlush+2] = primitive->indices32[2];
+                  }
+                  else
+                  {
+                     transIndices[toFlush+0] = primitive->indices[0];
+                     transIndices[toFlush+1] = primitive->indices[1];
+                     transIndices[toFlush+2] = primitive->indices[2];
+                  }
+                  toFlush += 3;
+                  if(primitive->type == quads)
+                  {
+                     if(primitive->type.indices32bit)
+                     {
+                        transIndices[toFlush+0] = primitive->indices32[0];
+                        transIndices[toFlush+1] = primitive->indices32[2];
+                        transIndices[toFlush+2] = primitive->indices32[3];
+                     }
+                     else
+                     {
+                        transIndices[toFlush+0] = primitive->indices[0];
+                        transIndices[toFlush+1] = primitive->indices[2];
+                        transIndices[toFlush+2] = primitive->indices[3];
+                     }
+                     toFlush += 3;
+                  }
+               }
             }
 
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
