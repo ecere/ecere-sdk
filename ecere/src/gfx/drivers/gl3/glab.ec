@@ -198,7 +198,7 @@ public struct GLEAB
    {
       if(this != null && glCaps_vertexBuffer)
       {
-         if(glabCurArrayBuffer != buffer)
+         if(glabCurElementBuffer != buffer)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
          glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
       }
