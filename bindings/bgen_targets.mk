@@ -10,28 +10,48 @@ cleanobj: cleangen
 	$(call rmr,$(_BINDINGS_TMP_DIRS))
 
 cleantarget: cleanobj
-	$(if $(_BGL1),+cd $(_BGL1) && $(_MAKE) cleantarget,)
-	$(if $(_BGL2),+cd $(_BGL2) && $(_MAKE) cleantarget,)
-	$(if $(_BGL3),+cd $(_BGL3) && $(_MAKE) cleantarget,)
-	$(if $(_BGL4),+cd $(_BGL4) && $(_MAKE) cleantarget,)
+	$(call bgen_lib_cd_make,1,cleantarget)
+	$(call bgen_lib_cd_make,2,cleantarget)
+	$(call bgen_lib_cd_make,3,cleantarget)
+	$(call bgen_lib_cd_make,4,cleantarget)
+	$(call bgen_lib_cd_make,5,cleantarget)
+	$(call bgen_lib_cd_make,6,cleantarget)
+	$(call bgen_lib_cd_make,7,cleantarget)
+	$(call bgen_lib_cd_make,8,cleantarget)
+	$(call bgen_lib_cd_make,9,cleantarget)
 
 clean: cleanobj
-	$(if $(_BGL1),+cd $(_BGL1) && $(_MAKE) clean,)
-	$(if $(_BGL2),+cd $(_BGL2) && $(_MAKE) clean,)
-	$(if $(_BGL3),+cd $(_BGL3) && $(_MAKE) clean,)
-	$(if $(_BGL4),+cd $(_BGL4) && $(_MAKE) clean,)
+	$(call bgen_lib_cd_make,1,clean)
+	$(call bgen_lib_cd_make,2,clean)
+	$(call bgen_lib_cd_make,3,clean)
+	$(call bgen_lib_cd_make,4,clean)
+	$(call bgen_lib_cd_make,5,clean)
+	$(call bgen_lib_cd_make,6,clean)
+	$(call bgen_lib_cd_make,7,clean)
+	$(call bgen_lib_cd_make,8,clean)
+	$(call bgen_lib_cd_make,9,clean)
 
 realclean: cleanobj
-	$(if $(_BGL1),+cd $(_BGL1) && $(_MAKE) realclean,)
-	$(if $(_BGL2),+cd $(_BGL2) && $(_MAKE) realclean,)
-	$(if $(_BGL3),+cd $(_BGL3) && $(_MAKE) realclean,)
-	$(if $(_BGL4),+cd $(_BGL4) && $(_MAKE) realclean,)
+	$(call bgen_lib_cd_make,1,realclean)
+	$(call bgen_lib_cd_make,2,realclean)
+	$(call bgen_lib_cd_make,3,realclean)
+	$(call bgen_lib_cd_make,4,realclean)
+	$(call bgen_lib_cd_make,5,realclean)
+	$(call bgen_lib_cd_make,6,realclean)
+	$(call bgen_lib_cd_make,7,realclean)
+	$(call bgen_lib_cd_make,8,realclean)
+	$(call bgen_lib_cd_make,9,realclean)
 
 wipeclean:
 	$(call bgen_lib_cd_make,1,wipeclean)
 	$(call bgen_lib_cd_make,2,wipeclean)
 	$(call bgen_lib_cd_make,3,wipeclean)
 	$(call bgen_lib_cd_make,4,wipeclean)
+	$(call bgen_lib_cd_make,5,wipeclean)
+	$(call bgen_lib_cd_make,6,wipeclean)
+	$(call bgen_lib_cd_make,7,wipeclean)
+	$(call bgen_lib_cd_make,8,wipeclean)
+	$(call bgen_lib_cd_make,9,wipeclean)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

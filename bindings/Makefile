@@ -2,28 +2,22 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all gen genc c gencpp cpp genpy py cleantarget clean realclean wipeclean distclean
+.PHONY: all gen genc c genpy py cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
 
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
-all: c cpp py
+all: c py
 
-gen: genc gencpp genpy
+gen: genc genpy
 
 genc:
 	+cd c && $(_MAKE) gen
 
 c: genc
 	+cd c && $(_MAKE)
-
-gencpp:
-	+cd cpp && $(_MAKE) gen
-
-cpp: gencpp
-	+cd cpp && $(_MAKE)
 
 genpy:
 	+cd py && $(_MAKE) gen
@@ -33,22 +27,18 @@ py: genc genpy
 
 cleantarget:
 	+cd c && $(_MAKE) cleantarget
-	+cd cpp && $(_MAKE) cleantarget
 	+cd py && $(_MAKE) cleantarget
 
 clean:
 	+cd c && $(_MAKE) clean
-	+cd cpp && $(_MAKE) clean
 	+cd py && $(_MAKE) clean
 
 realclean:
 	+cd c && $(_MAKE) realclean
-	+cd cpp && $(_MAKE) realclean
 	+cd py && $(_MAKE) realclean
 
 wipeclean:
 	+cd c && $(_MAKE) wipeclean
-	+cd cpp && $(_MAKE) wipeclean
 	+cd py && $(_MAKE) wipeclean
 
 distclean:
