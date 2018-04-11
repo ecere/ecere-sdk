@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen bindingsgen bindings ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
+.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen bindingsgen bindingsgenc bindingsgenpy bindings bindingsc bindingspy ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 
 _CF_DIR =
 
@@ -331,8 +331,20 @@ bgen: prepbinaries
 bindingsgen: $(BINARIES)
 	+cd bindings && $(_MAKE) gen
 
+bindingsgenc: $(BINARIES)
+	+cd bindings && $(_MAKE) genc
+
+bindingsgenpy: $(BINARIES)
+	+cd bindings && $(_MAKE) genpy
+
 bindings: $(BINARIES)
 	+cd bindings && $(_MAKE)
+
+bindingsc: $(BINARIES)
+	+cd bindings && $(_MAKE) c
+
+bindingspy: $(BINARIES)
+	+cd bindings && $(_MAKE) py
 
 ecereaudio: prepbinaries
 ifneq ($(ECERE_AUDIO),n)

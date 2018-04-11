@@ -1,15 +1,9 @@
 include ../bgen_setup.mk
 
-_BGEN_LIBS := ecereCOM ecere EDA
 _BGEN_LANGNAME := C++
-_BGEN_ARGS := -cpp $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep Print=_print .
-_BGEN_OUTPUT := # \
-	eC.cpp \
-	eC.hpp \
-	ecere.cpp \
-	ecere.hpp \
-	EDA.cpp \
-	EDA.hpp
+_BGEN_LIBS := ecereCOM ecere EDA
+_BGEN_ARGS := $(_BGEN_AUTO_ARGS) -all -map fren,Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=_print
+_BGEN_OUTPUT := $(addsuffix .hpp,$(_BGEN_OUTS)) $(addsuffix .cpp,$(_BGEN_OUTS))
 
 all: #$(_BGEN_OUTPUT)
 	@$(call echo,TODO: Building C++ Bindings for ecereCOM...)

@@ -1,15 +1,9 @@
 include ../bgen_setup.mk
 
-_BGEN_LIBS := ecereCOM ecere EDA
 _BGEN_LANGNAME := C
-_BGEN_ARGS := -c $(addprefix -lib$(space),$(_BGEN_LIBS)) -quiet -all -map fren Log=__e_log Logf=__e_logf Sleep=__sleep Print=_print .
-_BGEN_OUTPUT := \
-	eC.c \
-	eC.h \
-	ecere.c \
-	ecere.h \
-	EDA.c \
-	EDA.h
+_BGEN_LIBS := ecereCOM ecere EDA
+_BGEN_ARGS := $(_BGEN_AUTO_ARGS) -all -map fren,Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
+_BGEN_OUTPUT := $(addsuffix .h,$(_BGEN_OUTS)) $(addsuffix .c,$(_BGEN_OUTS))
 
 all: $(_BGEN_OUTPUT)
 	@$(call echo,Building C Bindings for ecereCOM...)
