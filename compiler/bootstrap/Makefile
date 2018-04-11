@@ -1,7 +1,8 @@
-.PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
 ifneq ($(V),1)
 .SILENT:
 endif
+
+.PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
 
 OBJ = obj/bin.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 

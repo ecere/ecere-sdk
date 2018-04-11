@@ -1,5 +1,8 @@
-.PHONY: freetype jpeg png gif z curl ffi cleantarget clean realclean distclean
+ifneq ($(V),1)
 .SILENT:
+endif
+
+.PHONY: freetype jpeg png gif z curl ffi cleantarget clean realclean distclean
 
 _CF_DIR = ../
 

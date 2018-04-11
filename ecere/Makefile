@@ -1,3 +1,7 @@
+ifneq ($(V),1)
+.SILENT:
+endif
+
 .PHONY: all objdir cleaneceretarget cleantarget clean realclean distclean nores
 
 # CORE VARIABLES
