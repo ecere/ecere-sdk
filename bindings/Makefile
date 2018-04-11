@@ -1,6 +1,7 @@
 ifneq ($(V),1)
 .SILENT:
 endif
+
 .PHONY: all gen genc c gencpp cpp genpy py cleantarget clean realclean distclean
 
 _CF_DIR = ../

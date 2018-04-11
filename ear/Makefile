@@ -1,6 +1,7 @@
 ifneq ($(V),1)
 .SILENT:
 endif
+
 .PHONY: all nores cleantarget clean realclean distclean
 
 _CF_DIR = ../

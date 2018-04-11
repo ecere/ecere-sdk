@@ -1,3 +1,7 @@
+ifneq ($(V),1)
+.SILENT:
+endif
+
 .PHONY: all objdir cleantarget clean realclean distclean openssl_debug
 
 # CORE VARIABLES
