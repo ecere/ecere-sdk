@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "../.."
+         "$(ECERE_SDK_SRC)/bindings/c"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "gui",
@@ -30,10 +30,10 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "../../eC.c",
-            "../../eC.h",
-            "../../ecere.c",
-            "../../ecere.h"
+            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
          ]
       },
       "gui.c"
