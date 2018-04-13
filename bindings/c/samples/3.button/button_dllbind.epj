@@ -9,7 +9,11 @@
       "TargetType" : "Executable",
       "TargetFileName" : "button",
       "Libraries" : [
-         "ecere"
+         "ecere",
+         "ecere_c"
+      ],
+      "LibraryDirs" : [
+         "$(ECERE_SDK_SRC)/bindings/c/ecere/obj/release.win32"
       ],
       "Console" : true
    },
@@ -30,9 +34,7 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
             "$(ECERE_SDK_SRC)/bindings/c/eC.h",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
             "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
          ]
       },
