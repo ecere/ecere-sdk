@@ -1,15 +1,19 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "button",
+   "ModuleName" : "templates",
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
          "$(ECERE_SDK_SRC)/bindings/c"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "button",
+      "TargetFileName" : "templates",
       "Libraries" : [
-         "ecere"
+         "ecere",
+         "ecere_c"
+      ],
+      "LibraryDirs" : [
+         "$(ECERE_SDK_SRC)/bindings/c/ecere/obj/release.win32"
       ],
       "Console" : true
    },
@@ -30,13 +34,11 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
             "$(ECERE_SDK_SRC)/bindings/c/eC.h",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
             "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
          ]
       },
-      "button.c"
+      "templates.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [
