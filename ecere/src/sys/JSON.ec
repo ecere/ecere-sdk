@@ -302,9 +302,9 @@ private:
          {
             value.p = array;
          }
-         else
+         else if(array && type && (type.type == normalClass || type.type == noHeadClass))
          {
-            if(array && eClass_IsDerived(type, class(Container)))
+            if(type.type == normalClass && eClass_IsDerived(type, class(Container)))
                array.Free();
             delete array;
          }
