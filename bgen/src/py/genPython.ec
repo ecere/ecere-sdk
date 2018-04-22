@@ -726,6 +726,9 @@ void processPyClass(PythonGen g, BClass c)
             }
          }
          out.ds.println("");
+         out.ds.println("      lib.Instance_evolve(rApp, GuiApplication.pyClass_GuiApplication)");
+         out.ds.println("      self.impl = rApp[0]");
+         out.ds.println("      ffi.cast(\"void **\", ffi.cast(\"char *\", self.impl) + self.impl._class.offset)[0] = self.handle");
       }
       else if(c.isContainer)
          sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_container.src", null, false);
@@ -1056,7 +1059,7 @@ void processPyClass(PythonGen g, BClass c)
                   {
                      ClassType ct = p.cConv ? p.cConv.cl.type : systemClass;
                      bool impl = p.cConv && (ct == bitClass || ct == unitClass || ct == structClass);
-                     bool zero = impl && ct == structClass;
+                     bool zero = false;
                      out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", p.name, "):");
                      out.ds.printxln(sk, "            self.impl = lib.", p.fpnSet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
                      out.ds.printxln(sk, "            return");
@@ -1094,7 +1097,7 @@ void processPyClass(PythonGen g, BClass c)
                            else if(p.cConv.cl == c.cl)
                            {
                               bool impl = classRequiresImpl(itacl.cl);
-                              bool zero = itacl.cl.type == structClass;
+                              bool zero = false;
                               //out.ds.printxln(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name);
                               out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):");
                               out.ds.printxln(sk, "            self.impl = lib.", p.fpnGet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
@@ -1583,6 +1586,8 @@ void processPyClass(PythonGen g, BClass c)
                   else
                      out.ds.printxln(" return self.impl.", itmppname);
                }
+               else if(cType && cType.cl.type == normalClass && c.cl.type == normalClass)
+                  out.ds.printxln(" return pyOrNewObject(", typeName, ", IPTR(lib, ffi, self, ", c.name, ").", itmppname, ")");
                else
                   out.ds.printxln(" return ", wrap ? typeName : "", wrap ? "(impl = " : "", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, wrap ? ")" : "");
 
@@ -1619,12 +1624,9 @@ void processPyClass(PythonGen g, BClass c)
                }*/
                if(c.cl.type == structClass || c.cl.type == noHeadClass) // FIX #05 (7.)
                {
-                  if(cType && (/*cType.cl.type == unitClass || */cType.cl.type == structClass))
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value.impl[0]");
-                  else if(cType && (/*cType.isString || */cType.cl.type == unitClass || cType.cl.type == bitClass))
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value.impl");
-                  else
-                     out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value");
+                  bool impl = cType && classRequiresImpl(cType.cl) && !typeIsStr(itmpptype);
+                  bool zero = impl && cType.cl.type == structClass;
+                  out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value", impl ? ".impl" : "", zero ? "[0]" : "");
                }
                else
                   out.ds.printxln(oneliner ? " " : "      ", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, " = value", wrap && !retyped ? ".impl" : ""); // value.value
@@ -2997,6 +2999,14 @@ static void thatThing(File out, PythonGen g)
 static void generateBUILD(File out, PythonGen g)
 {
    bool hasEC = false;
+   char cpath[MAX_FILENAME] = "";
+   if(app.cpath)
+   {
+      MakePathRelative(app.cpath, g.dir.dir, cpath);
+      MakeSlashPath(cpath);
+   }
+   if(!cpath[0]) strcpy(cpath, ".");
+
    for(libDep : g.libDeps)
    {
       if(libDep.ecereCOM)
@@ -3042,7 +3052,7 @@ static void generateBUILD(File out, PythonGen g)
       out.PrintLn("               sources=[\"../c/", g.lib.bindingName, ".c\"],"); // todo
    out.PrintLn("               define_macros=[('BINDINGS_SHARED', None), ('", g.lib.defineName, "_EXPORT', None)],");
    out.PrintLn("               extra_compile_args=[\"-O2\"],");
-   out.PrintLn("               include_dirs=[\"../c\"],"); // todo
+   out.PrintLn("               include_dirs=[\"", cpath, "\"],"); // todo
    /*out.Print("                 libraries=[\"", g.lib.moduleName, "\"");
    for(libDep : g.libDeps)
       out.Print(", \"_py", libDep.bindingName, "\" + get_config_var('EXT_SUFFIX')");
@@ -3066,7 +3076,7 @@ static void generateBUILD(File out, PythonGen g)
       out.PrintLn(", \"-O2\"],");
    }
 
-   out.PrintLn("               library_dirs=[\"C:/Program Files/Ecere SDK/bin\""/*, g.libDeps.count ? ", \".\"" : ""*/, "])"); // todo
+   out.PrintLn("               library_dirs=[\"../../obj/win32/bin\",\"C:/Program Files/Ecere SDK/bin\""/*, g.libDeps.count ? ", \".\"" : ""*/, "])"); // todo
    out.PrintLn("");
    out.PrintLn("if __name__ == \"__main__\":");
    out.PrintLn("    V = os.getenv('V')");
