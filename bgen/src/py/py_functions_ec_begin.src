@@ -147,8 +147,9 @@ def init_args(c, self, args, kwArgs):
 
 def convertTypedArgs(args):
    cargs = ()
+   ag_ffi = app.ffi
    for a in args:
-      if type(a) == str:            cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
+      if type(a) == str:              cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
       elif type(a) == int:            cargs += (lib.class_int,    ffi.new("int *", a))
       elif type(a) == float:          cargs += (lib.class_double, ffi.new("double *", a))
       elif isinstance(a, Instance):   cargs += (a.impl._class, a.impl)
@@ -159,8 +160,18 @@ def convertTypedArgs(args):
             cargs += (c, a.impl)
          elif c.type == ClassType.noHeadClass:
             cargs += (c, a.impl)
+         elif c.type == ClassType.unitClass:
+            tString = ffi.string(c.dataTypeString).decode('u8');
+            if tString == "double" or tString == "float":
+               cargs += (lib.class_double, ffi.new("double *", float(a)))
+            elif tString == "char *":
+               cargs += (lib.class_String, ffi.new("char[]", str(a).encode('u8')))
+            elif tString == "int":
+               cargs += (lib.class_int, ffi.new("int *", int(a)))
+            else:
+               cargs += (c, ag_ffi.new(type(a).__name__ + " *", a.impl))
          else:
-            cargs += (c, ffi.new("int *", a.impl))
+            cargs += (c, ag_ffi.new(type(a).__name__ + " *", a.impl))
    return cargs + (ffi.NULL,)
 
 def ellipsisArgs(args):
@@ -243,9 +254,21 @@ class pyBaseClass:
       t = type(self)
       return t(impl=-self.impl)
 
-   def __int__(self):   return int(self.impl)
-   def __long__(self):  return long(self.impl)
-   def __float__(self): return float(self.impl)
+   def __int__(self):
+      t = type(self)
+      if t.buc is not None and t.buc != t:
+         return int(self.value)
+      return int(self.impl)
+   def __long__(self):
+      t = type(self)
+      if t.buc is not None and t.buc != t:
+         return long(self.value)
+      return long(self.impl)
+   def __float__(self):
+      t = type(self)
+      if t.buc is not None and t.buc != t:
+         return float(self.value)
+      return float(self.impl)
 
    def __truediv__(self, other):
       t = type(self)

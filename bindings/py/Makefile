@@ -2,7 +2,7 @@ include ../bgen_setup.mk
 
 _BGEN_LANGNAME := Python
 _BGEN_LIBS := ecereCOM ecere EDA
-_BGEN_ARGS := $(_BGEN_AUTO_ARGS) -all -map fren,Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
+_BGEN_ARGS := -c -dir ../c $(_BGEN_AUTO_ARGS) -all -map fren,Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
 _BGEN_OUTPUT := $(addsuffix .py,$(addprefix build_,$(_BGEN_OUTS))) $(addsuffix .h,$(addprefix cffi-,$(_BGEN_OUTS))) $(addsuffix .py,$(addprefix py,$(_BGEN_OUTS)))
 
 PYTHON := python
