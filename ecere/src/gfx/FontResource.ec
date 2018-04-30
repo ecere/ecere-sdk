@@ -95,11 +95,22 @@ private:
 
    void OnCopy(FontResource newData)
    {
-      property::size = newData.size;
-      property::faceName = newData.faceName;
-      property::bold = newData.bold;
-      property::outlineSize = newData.outlineSize;
-      property::outlineFade = newData.outlineFade;
+      if(newData)
+      {
+         size = newData.size;
+         delete faceName; faceName = CopyString(newData.faceName);
+         flags = newData.flags;
+         outlineSize = newData.outlineSize;
+         outlineFade = newData.outlineFade;
+      }
+      else
+      {
+         size = 0;
+         flags = 0;
+         outlineSize = 0;
+         outlineFade = 0;
+         delete faceName;
+      }
    }
 
 /*
