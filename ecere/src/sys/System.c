@@ -254,7 +254,7 @@ const char * System_GetEnvironment(const char * envName, char * envValue, int ma
 #if defined(__WIN32__)
    uint16 * _wenvName = __ecereNameSpace__ecere__sys__UTF8toUTF16(envName, null);
    //uint16 * result;
-   uint16 result[2048];
+   uint16 result[4096];
    int success;
 
    success = GetEnvironmentVariable(_wenvName, result, sizeof(result) / sizeof(uint16));
