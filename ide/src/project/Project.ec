@@ -6,7 +6,9 @@ public import "ecere"
 
 import "DynamicString"
 
-#if defined(ECERE_EPJ2MAKE)
+#if defined(TEST_SUITE)
+import "testSuite"
+#elif defined(ECERE_EPJ2MAKE)
 import "epj2make"
 #else
 import "ide"
@@ -34,7 +36,7 @@ private:
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnFree;
 
-#if defined(ECERE_DOCUMENTOR) || defined(ECERE_EPJ2MAKE)
+#if defined(ECERE_DOCUMENTOR) || defined(ECERE_EPJ2MAKE) || defined(TEST_SUITE)
 CompilerConfig defaultCompiler;
 #endif
 
@@ -662,7 +664,7 @@ void CamelCase(char * string)
 
 CompilerConfig GetCompilerConfig()
 {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    CompilerConfig compiler = null;
    if(ide && ide.workspace)
       compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
@@ -675,7 +677,7 @@ CompilerConfig GetCompilerConfig()
 
 int GetBitDepth()
 {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    return ide.workspace ? ide.workspace.bitDepth : 0;
 #else
    return 0; // todo: improve this somehow? add bit depth command line option?
@@ -866,7 +868,7 @@ private:
 
    Map<String, Map<String, NameCollisionInfo>> configsNameCollisions { };
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    FileMonitor fileMonitor
    {
       this, FileChange { modified = true };
@@ -1175,7 +1177,7 @@ private:
 
    bool GetConfigIsInActiveDebugSession(ProjectConfig config)
    {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
 #else
       return false;
@@ -1184,7 +1186,7 @@ private:
 
    bool GetConfigIsInDebugSession(ProjectConfig config)
    {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
 #else
       return false;
@@ -1193,12 +1195,12 @@ private:
 
    void SetPath(bool projectsDirs, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
       ide.SetPath(projectsDirs, compiler, config, bitDepth);
 #endif
    }
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    bool Save(const char * fileName)
    {
       File f;
@@ -1355,7 +1357,7 @@ private:
       sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
    }
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    ProjectNode GetObjectFileNode(const char * filePath, const char * objectFileExt)
    {
       ProjectNode node = null;
@@ -4768,7 +4770,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
    return project;
 }
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
 static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String compilerCommand)
 {
    GccVersionInfo result = unknown;

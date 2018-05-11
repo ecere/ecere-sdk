@@ -1,4 +1,4 @@
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
 import "ide"
 #else
 #ifdef ECERE_STATIC
@@ -16,7 +16,7 @@ static define app = ((GuiApplication)__thisModule);
 
 static void OutputLog(const char * string)
 {
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    ide.outputView.buildBox.Log(string);
 #else
    printf("%s", string);
@@ -1320,7 +1320,7 @@ private:
       return node;
    }
 
-#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE)
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    void OnDisplay(Surface surface, int x, int y, int width, ProjectView projectView, Alignment alignment, DataDisplayFlags displayFlags)
    {
       char label[MAX_FILENAME];
