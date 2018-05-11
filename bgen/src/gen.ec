@@ -100,7 +100,7 @@ private:
       //Platform os = __runtimePlatform;
       ec1init(lib.loadModuleName); // todo, use supplied path here
       mod = bmod.mod = ec1HomeModule;
-      assert(mod != null);
+      conassertctx(mod != null, "?");
       {
          //ec1HomeModule
          //Module module = null;
@@ -333,32 +333,32 @@ public:
    property BDefine
    {
       set { mapGetCreateVariant(vdefine, v.d); }
-      get { if(kind == vdefine) return d; assert(0); return null; }
+      get { if(kind == vdefine) return d; conassertctx(0, "?"); return null; }
    }
    property BFunction
    {
       set { mapGetCreateVariant(vfunction, v.f); }
-      get { if(kind == vfunction) return f; assert(0); return null; }
+      get { if(kind == vfunction) return f; conassertctx(0, "?"); return null; }
    }
    property BClass
    {
       set { mapGetCreateVariant(vclass, v.c); }
-      get { if(kind == vclass) return c; assert(0); return null; }
+      get { if(kind == vclass) return c; conassertctx(0, "?"); return null; }
    }
    property BTemplaton
    {
       set { mapGetCreateVariant(vtemplaton, v.t); }
-      get { if(kind == vtemplaton) return t; assert(0); return null; }
+      get { if(kind == vtemplaton) return t; conassertctx(0, "?"); return null; }
    }
    property BMethod
    {
       set { mapGetCreateVariant(vmethod, v.m); }
-      get { if(kind == vmethod) return m; assert(0); return null; }
+      get { if(kind == vmethod) return m; conassertctx(0, "?"); return null; }
    }
    property BProperty
    {
       set { mapGetCreateVariant(vproperty, v.p); }
-      get { if(kind == vproperty) return p; assert(0); return null; }
+      get { if(kind == vproperty) return p; conassertctx(0, "?"); return null; }
    }
    property BNamespace nspace
    {
@@ -812,7 +812,7 @@ class BModule : struct
             bool update = false;
             MapIterator<consttstr, NamespaceDependencyInfo> i { map = deps };
             //PrintLn(dependency.count);
-            assert(a != b && strcmp(a, b) != 0);
+            conassertctx(a != b && strcmp(a, b) != 0, "?");
             if(i.Index(t, true))
             {
                NamespaceDependencyInfo info = i.data;
@@ -839,7 +839,7 @@ class BModule : struct
                const String b = orderedNamespaces[d].name;
                consttstr t { strcmp(a, b) < 0 ? a : b, strcmp(a, b) > 0 ? a : b };
                MapIterator<consttstr, NamespaceDependencyInfo> i { map = deps };
-               assert(a != b && strcmp(a, b) != 0);
+               conassertctx(a != b && strcmp(a, b) != 0, "?");
                if(i.Index(t, false))
                {
                   NamespaceDependencyInfo info = i.data;
@@ -926,7 +926,7 @@ class BModule : struct
    }
 }
 
-#define addThatThing(_thing) orderedOutputs.Add(_thing), assert(!outs.Find(_thing)), outs.Add(_thing)
+#define addThatThing(_thing) orderedOutputs.Add(_thing), conassertctx(!outs.Find(_thing), "?"), outs.Add(_thing)
 
 class BNamespace : struct
 {
@@ -954,7 +954,7 @@ class BNamespace : struct
    void init(NameSpace * ns, int pos)
    {
       this.ns = ns;
-      assert(!this.pos);
+      conassertctx(!this.pos, "?");
       this.pos = pos;
       name = copyNamespaceFullName(ns, ec1ComponentsApp);
       info = PrintString("// namespace ", (s = copyNamespaceFullName(ns, ec1ComponentsApp))); delete s;
@@ -973,7 +973,7 @@ class BNamespace : struct
    void addContent(BVariant v)
    {
       if(v.kind == vclass)
-         assert(v.c.isFromCurrentModule == true || v.c.nspace != this);
+         conassertctx(v.c.isFromCurrentModule == true || v.c.nspace != this, "?");
       contents.Add(v);
    }
 
@@ -981,13 +981,13 @@ class BNamespace : struct
    {
       AVLTree<BOutputPtr> outs { };
       for(v : contents; v.kind == vdefine)
-         addThatThing((BOutputPtr)v.d.out), assert(v.d.out != null);
+         addThatThing((BOutputPtr)v.d.out), conassertctx(v.d.out != null, "?");
       for(vv : contents; (vv.kind == vclass && vv.c.outTypedef) || (vv.kind == vtemplaton && vv.t.outTypedef))
       {
          BVariant v = vv;
          BOutput o = v.kind == vclass ? v.c.outTypedef : v.t.outTypedef;
          orderedOutputs.Add((BOutputPtr)o);
-         assert(!outs.Find((BOutputPtr)o));
+         conassertctx(!outs.Find((BOutputPtr)o), "?");
          outs.Add((BOutputPtr)o);
       }
       for(v : contents; v.kind == vclass)
@@ -1013,7 +1013,7 @@ class BNamespace : struct
          }
       }
       for(v : contents; v.kind == vfunction)
-         addThatThing((BOutputPtr)v.f.out), assert(v.f.out != null);
+         addThatThing((BOutputPtr)v.f.out), conassertctx(v.f.out != null, "?");
       delete outs;
    }
 
@@ -1035,7 +1035,7 @@ class BNamespace : struct
             {
                BOutput a = (BOutput)orderedOutputs[x];
                BOutput b = (BOutput)orderedOutputs[d];
-               assert(d > x);
+               conassertctx(d > x, "?");
                if((a.nspace == b.nspace || (b.kind == vclass && b.c.cl.templateClass)) && a.dependsOn(b))
                {
                   BOutput swap = (BOutput)orderedOutputs[d];
@@ -1063,7 +1063,7 @@ class BNamespace : struct
             {
                BOutput a = (BOutput)orderedBackwardsOutputs[x];
                BOutput b = (BOutput)orderedBackwardsOutputs[d];
-               assert(d > x);
+               conassertctx(d > x, "?");
                if(/*a.nspace == b.nspace && */a.dependsOn(b))
                {
                   if(b.indirectlyDependsOn((BOutputPtr)a))
@@ -1621,7 +1621,7 @@ class BMethod : struct
    void noinit() { }
    void init(Method md, BClass c)
    {
-      assert(md._class == c.cl);
+      conassertctx(md._class == c.cl, "?");
       if(this.md && this.c) return;
       this.md = md;
       this.c = c;
@@ -1894,7 +1894,7 @@ void collectBackwardsDependencies(AVLTree<BOutputPtr> in, AVLTree<BNamespacePtr>
       if(!deps.Find(d))
       {
          BNamespace n = d.nspace;
-         assert(n != null);
+         conassertctx(n != null, "?");
          if(!selfOrAboveNamespace.Find((BNamespacePtr)n))
          {
             bool alreadyMoved = false;
@@ -1924,12 +1924,12 @@ void checkNoDoubleOutputEntry(CGen g)
    {
       for(optr : n.orderedBackwardsOutputs)
       {
-         assert(!outs.Find(optr));
+         conassertctx(!outs.Find(optr), "?");
          outs.Add(optr);
       }
       for(optr : n.orderedOutputs)
       {
-         assert(!outs.Find(optr));
+         conassertctx(!outs.Find(optr), "?");
          outs.Add(optr);
       }
    }

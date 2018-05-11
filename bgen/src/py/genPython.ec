@@ -688,7 +688,7 @@ void processPyClass(PythonGen g, BClass c)
       else if(c.isGuiApplication)
       {
          sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_guiapplication.src", null, false);
-         assert(g.lib.ecere == true);
+         conassert(g.lib.ecere == true, "?");
          // register all normal classes
          /*{
             IterNamespace itn { module = g.mod };
@@ -1839,7 +1839,7 @@ void processPyClass(PythonGen g, BClass c)
                                        if(!dm.isProperty)
                                        {
                                           typeDataMember(dm, itmp.cl);
-                                          assert(dm.type == normalMember && dm.itmppname);
+                                          conassert(dm.type == normalMember && dm.itmppname, "?");
                                           out.ds.printx(comma, dm.itmppname, "=value[", i++, "] if len(value) >= ", i, " else 0");
                                           comma = ", ";
                                        }

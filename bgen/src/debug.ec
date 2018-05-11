@@ -52,3 +52,24 @@ void __locfprintxln__(const char * loc, File f, typed_object object, ...)
    console.Putc('\n');
    console.Flush();
 }
+
+void __condlocfprintxln__(bool cond, const char * loc, File f, typed_object object, ...)
+{
+//#define DEBUG_ASSERT_MESSAGE_TEST
+#if !defined(DEBUG_ASSERT_MESSAGE_TEST)
+   if(cond)
+      ;
+   else
+#endif
+   {
+      va_list args;
+      char buffer[4096];
+      va_start(args, object);
+      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      va_end(args);
+      console.Puts(loc);
+      console.Puts(buffer);
+      console.Putc('\n');
+      console.Flush();
+   }
+}

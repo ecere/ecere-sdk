@@ -1,4 +1,4 @@
-#include <assert.h>
+//#include <assert.h>
 
 char * s;
 
@@ -121,7 +121,7 @@ char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
                }
                else
                {
-                  assert(0);
+                  //assert(0);
                   break;
                }
             }

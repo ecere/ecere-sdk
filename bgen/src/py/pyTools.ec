@@ -414,7 +414,7 @@ private:
          mp = lp > lasts.count ? null : (MemberOrProperty)lasts[lp - 1];
          if(entering)
          {
-            assert(t == mp);
+            conassert(t == mp, "?");
             atEnd = dm.type == unionMember && mp.next;
          }
          if(!unionFirstsOnly && entering && mp.next)
