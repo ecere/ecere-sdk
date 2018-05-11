@@ -518,7 +518,7 @@ char * getClassTypeName(Class c)
    char * a = oldGetClassTypeName(cl.name);
    char buf[1024];
    char * b = getNoNamespaceString(cl.name, buf, false);
-   assert(cl != null);
+   conassert(cl != null, "?");
    if(cl.templateClass)
    {
             bool skipAllTemplated = false;

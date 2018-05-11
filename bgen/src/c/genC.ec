@@ -272,7 +272,7 @@ class CGen : Gen
          if(node.value && !strcmp(node.value, "Instance"))
          {
             clDep = eSystem_FindClass(mod, node.value);
-            assert(clDep != null);
+            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(mod, \"", node.value, "\") is returning null?");
          }
          if(node.value)
          {
@@ -287,7 +287,7 @@ class CGen : Gen
             if(!strcmp(node.value, "Instance"))
             {
                Class clDep = eSystem_FindClass(mod, node.value);
-               assert(clDep != null);
+               conassertctx(clDep != null, "(bgen?) eSystem_FindClass(mod, \"", node.value, "\") is returning null?");
             }
             out.output.Add(astDeclInit(node.key, createTypedef, ident, spec, { }, null, null));
             delete ident;
@@ -351,7 +351,8 @@ class CGen : Gen
          nspace.addContent(v);
          if(!c.nativeSpec && !c.skipTypeDef)
          {
-            assert(c.clBase != null);
+            conassertctx(c.clBase != null, " for c.name == \"", c.name, "\"?");
+
             if(c.clBase.templateClass)
             {
                clDep = c.clBase;
@@ -361,7 +362,7 @@ class CGen : Gen
             else
             {
                clDep = eSystem_FindClass(mod, c.base);
-               assert(clDep != null);
+               conassertctx(clDep != null, "(bgen?) eSystem_FindClass(mod, \"", c.base, "\") is returning null?");
             }
             if(tDep)
                v.processDependency(otypedef, otypedef, tDep);
@@ -382,9 +383,9 @@ class CGen : Gen
          {
             BVariant v = t;
             BNamespace n = v.nspace;
-            BOutput o = t.outTypedef = bmod.getTypedefOutput((UIntPtr)t, &init); assert(init);
+            BOutput o = t.outTypedef = bmod.getTypedefOutput((UIntPtr)t, &init);
+            conassertctx(init, "(bgen?) getTypedefOutput did not init?");
             o.kind = vtemplaton, o.t = t, o.type = otypedef;
-            assert(t.nspace == null);
             n.addContent(v);
             o.output.Add(astDeclInit(t.cname, emptyTypedef, null, null, { t = t }, null, null/*, ast*/));
          }
@@ -480,14 +481,14 @@ class CGen : Gen
          Class clReduce = getUnitClassReducedToBase(cl);
          if(v.kind == vclass)
          {
-            o = c.outTypedef = bmod.getTypedefOutput((UIntPtr)c, &init); assert(init);
-            assert(init == true);
+            o = c.outTypedef = bmod.getTypedefOutput((UIntPtr)c, &init);
+            conassertctx(init, "(bgen?) getTypedefOutput did not init?");
             o.kind = vclass, o.c = c, o.type = otypedef;
          }
          else if(v.kind == vtemplaton)
          {
-            o = v.t.outTypedef = bmod.getTypedefOutput((UIntPtr)v.t, &init); assert(init);
-            assert(init == true);
+            o = v.t.outTypedef = bmod.getTypedefOutput((UIntPtr)v.t, &init);
+            conassertctx(init, "(bgen?) getTypedefOutput did not init?");
             o.kind = vtemplaton, o.t = v.t, o.type = otypedef;
          }
          if(!clReduce && cl.type != enumClass)
@@ -504,7 +505,8 @@ class CGen : Gen
          }
          if(cl.type == bitClass)
          {
-            o = c.outBitTool = bmod.getBitToolOutput((UIntPtr)c, &init); assert(init);
+            o = c.outBitTool = bmod.getBitToolOutput((UIntPtr)c, &init);
+            conassertctx(init, "(bgen?) getBitToolOutput did not init?");
             o.kind = vclass, o.c = c, o.type = obittool;
             o.output.Add(astBitTool(cl, c));
          }
@@ -522,7 +524,8 @@ class CGen : Gen
             if(cl.type == enumClass) conmsg("check");
             if(cl.type == systemClass) conmsg("check");
             if(cl.type == unitClass) conmsg("check");
-            o = c.outStruct = bmod.getStructOutput((UIntPtr)c, &init); assert(init);
+            o = c.outStruct = bmod.getStructOutput((UIntPtr)c, &init);
+            conassertctx(init, "(bgen?) getStructOutput did not init?");
             o.kind = vclass, o.c = c, o.type = ostruct;
             declStruct = c.declStruct = astDeclInit(c.cname, createStruct, ident, null, { c = c }, null, null);
             o.output.Add(declStruct);
@@ -544,7 +547,8 @@ class CGen : Gen
             const char * ext = !python ? "extern THIS_LIB_IMPORT " : "extern ";
             if(g_.lib.ecere && c.isWindow) skip = true;
             s = PrintString(skip ? "// " : "", ext, g_.sym.__class, " * ", c.coSymbol, ";");
-            o = c.outClassPointer = bmod.getClassPointerOutput((UIntPtr)c, &init); assert(init);
+            o = c.outClassPointer = bmod.getClassPointerOutput((UIntPtr)c, &init);
+            conassertctx(init, "(bgen?) getClassPointerOutput did not init?");
             //o.kind = vclassptr; // todo, set proper kind and type
             o.output.Add(ASTRawString { string = s });
          }
@@ -564,7 +568,7 @@ class CGen : Gen
          {
             BMethod m = md;
             BVariant v = m;
-            assert(m != null);
+            conassertctx(m != null, "?");
             o = m.outInHeader = BOutput { vmethod, m = m, omethod };
             o.output.Add(astMethod(this, md, cl, c, methodFlag, instanceClass, &haveContent, v));
             c.outMethods.Add(o);
@@ -957,7 +961,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
       //BProperty p { };
       BProperty p = pt;
       //p.init(pt, cl, mode);
-      assert(pt._class == cl);
+      conassertctx(pt._class == cl, "?");
 
       if(!pt.conversion || p.any)
       {
@@ -1628,7 +1632,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          if(ptr) conmsg("check");
          if(quals) conmsg("check");
          decl = astDeclArray(decl, null, false, &ti.type);
-         assert(ti.type == t.arrayType);
+         conassertctx(ti.type == t.arrayType, "?");
          quals = astTypeSpec(ti, &ptr, &t, null, { }, vTop);
       }
       else if(t.kind == functionType)
@@ -1877,7 +1881,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          z.printxln("int strnicmp(const char *, const char *, uintsize n);");
          {
             Class clDep = eSystem_FindClass(g_.mod, "uintsize");
-            assert(clDep != null);
+            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"uintsize\") is returning null?");
             if(clDep)
                v.processDependency(oother, otypedef, clDep);
          }
@@ -1889,7 +1893,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          z.printxln("int strnicmp(const char *, const char *, uintsize n);");
          {
             Class clDep = eSystem_FindClass(g_.mod, "uintsize");
-            assert(clDep != null);
+            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_mod, \"uintsize\") is returning null?");
             if(clDep)
                v.processDependency(oother, otypedef, clDep);
          }
@@ -1916,7 +1920,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          else*/
          {
             z.printxln("static ", e.expType.constant ? "" : "const ", type, " ", d.name, ";");
-            assert(clDep != null);
+            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"", depType, "\") is returning null?");
             if(clDep)
                v.processDependency(oother, otypedef, clDep);
          }
