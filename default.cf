@@ -115,6 +115,11 @@ ifdef DISABLE_GL
 CFLAGS += -DECERE_NOGL
 endif
 
+# Always enabling SSL in the dev branch for now because it currently does not build without
+ifndef ENABLE_SSL
+ENABLE_SSL := y
+endif
+
 ifndef ENABLE_SSL
 CFLAGS += -DECERE_NOSSL
 endif
