@@ -2109,10 +2109,12 @@ class OpenGLDisplayDriver : DisplayDriver
             if(result)
             {
                int error;
+               bool sRGB2Linear = bitmap.sRGB2Linear;
+
                //int width = 0;
                glGetError();
                // glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
-               glTexImage2D(cubeMapFace ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + face : GL_TEXTURE_2D, level, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
+               glTexImage2D(cubeMapFace ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + face : GL_TEXTURE_2D, level, sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
                //printf("Calling glTexImage2D\n");
                //glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &width);
                //printf("width = %d (Should be %d, %d)\n", width, w, h);

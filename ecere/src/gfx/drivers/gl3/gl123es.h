@@ -86,6 +86,11 @@
    #define GL_BGRA_EXT               0x80E1
 #endif
 
+// TODO: Compatibility without sRGB support
+#ifndef GL_SRGB8_ALPHA8
+   #define GL_SRGB8_ALPHA8 0x8C43
+#endif
+
 /* Clang complains about undefined behavior?
 #define ENABLE_GL_SHADERS  (!defined(_GLES))
 #define ENABLE_GL_FFP      (!defined(_GLES2))
