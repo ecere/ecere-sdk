@@ -265,6 +265,7 @@ public:
    void * driverData;
    bool keepData;
    bool mipMaps;
+   bool sRGB2Linear;
 
 public:
 
@@ -956,7 +957,7 @@ public:
       for(i = 0; result && i < 6; i++)
       {
          char location[MAX_LOCATION];
-         Bitmap face = i > 0 ? { } : this;
+         Bitmap face = i > 0 ? { sRGB2Linear = sRGB2Linear } : this;
          strcpy(location, names[i]);
          if(extension)
             ChangeExtension(location, extension, location);
