@@ -23,7 +23,7 @@ public:
    property Object target { set { target = value; } get { return target; } };
    property FovDirection fovDirection { set { fovDirection = value; } get { return fovDirection; } };
    property float aspectRatio { set { aspectRatio = value; } get { return aspectRatio; } };
-   property Size focal { get { value = { focalX, focalY }; } };
+   property Size focal { get { value = { focalX, focalY }; } set { focalX = value.w; focalY = value.h; } };
 
    void Setup(int width, int height, Point origin)
    {
