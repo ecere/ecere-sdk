@@ -264,6 +264,10 @@ public:
       bool result = false;
 #if ENABLE_GL_SHADERS
       CompiledShader shader = this.shader;
+
+      if(activeShader != this)
+         activeShader = this;
+
       result = true;
       if(activeState != state || !shader)
       {
