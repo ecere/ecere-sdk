@@ -461,6 +461,7 @@ class OGLMesh : struct
    GLAB texCoords2;
    GLAB colors;
    bool needAlloc;
+   bool interleaved;
 };
 
 class OGLIndices : struct
@@ -3842,7 +3843,8 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       OGLMesh oglMesh = mesh.data;
       bool memAllocOnly = flags.memAllocOnly;
-      flags.memAllocOnly = false;
+      bool interleaved = flags.interleaved;
+      flags &= ~{ memAllocOnly = true, interleaved = true };
 
       if(!oglMesh)
          mesh.data = oglMesh = OGLMesh { };
@@ -3905,54 +3907,64 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             // New number of vertices, reallocate all current and new features
             flags |= mesh.flags;
-            if(flags.vertices)
+            if(interleaved && !flags.doubleVertices && flags.vertices && flags.normals && flags.texCoords1)
             {
-               if(flags.doubleVertices)
+               mesh.vertices = (Vector3Df *)renew mesh.vertices float[8*nVertices];
+               if(!memAllocOnly)
+                  oglMesh.vertices.allocate(nVertices * sizeof(Vector3Df), null, staticDraw);
+            }
+            else
+            {
+               if(flags.vertices)
                {
-                  mesh.vertices = (Vector3Df *)renew mesh.vertices Vector3D[nVertices];
+                  if(flags.doubleVertices)
+                  {
+                     mesh.vertices = (Vector3Df *)renew mesh.vertices Vector3D[nVertices];
+                  }
+                  else
+                     mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.vertices.allocate(nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), null, staticDraw);
                }
-               else
-                  mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
-               if(!memAllocOnly)
-                  oglMesh.vertices.allocate(nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), null, staticDraw);
-            }
-            if(flags.normals)
-            {
-               if(flags.doubleNormals)
+               if(flags.normals)
                {
-                  mesh.normals = (Vector3Df *)renew mesh.normals Vector3D[nVertices];
+                  if(flags.doubleNormals)
+                  {
+                     mesh.normals = (Vector3Df *)renew mesh.normals Vector3D[nVertices];
+                  }
+                  else
+                     mesh.normals = renew mesh.normals Vector3Df[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.normals.allocate(nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), null, staticDraw);
                }
-               else
-                  mesh.normals = renew mesh.normals Vector3Df[nVertices];
-               if(!memAllocOnly)
-                  oglMesh.normals.allocate(nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), null, staticDraw);
-            }
-            if(flags.texCoords1)
-            {
-               mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
-               if(!memAllocOnly)
-                  oglMesh.texCoords.allocate(nVertices * sizeof(Pointf), null, staticDraw);
-            }
-            if(flags.colors)
-            {
-               mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
-               if(!memAllocOnly)
-                  oglMesh.colors.allocate(nVertices * sizeof(ColorRGBAf), null, staticDraw);
-            }
-            if(flags.tangents)
-            {
-               mesh.tangents = renew mesh.tangents Vector3Df[2 * nVertices];
-               if(!memAllocOnly)
-                  oglMesh.tangents.allocate(nVertices * 2*sizeof(Vector3Df), null, staticDraw);
-            }
-            if(flags.lightVectors)
-            {
-               mesh.lightVectors = renew mesh.lightVectors ColorRGB[nVertices];
-               if(!memAllocOnly)
-                  oglMesh.lightVectors.allocate(nVertices * sizeof(ColorRGB), null, staticDraw);
+               if(flags.texCoords1)
+               {
+                  mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.texCoords.allocate(nVertices * sizeof(Pointf), null, staticDraw);
+               }
+               if(flags.colors)
+               {
+                  mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.colors.allocate(nVertices * sizeof(ColorRGBAf), null, staticDraw);
+               }
+               if(flags.tangents)
+               {
+                  mesh.tangents = renew mesh.tangents Vector3Df[2 * nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.tangents.allocate(nVertices * 2*sizeof(Vector3Df), null, staticDraw);
+               }
+               if(flags.lightVectors)
+               {
+                  mesh.lightVectors = renew mesh.lightVectors ColorRGB[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.lightVectors.allocate(nVertices * sizeof(ColorRGB), null, staticDraw);
+               }
             }
          }
          oglMesh.needAlloc = memAllocOnly;
+         oglMesh.interleaved = interleaved;
          result = true;
       }
       return result;
@@ -3973,18 +3985,26 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!flags) flags = mesh.flags;
          if(oglMesh.needAlloc)
          {
-            if(flags.vertices)
-               oglMesh.vertices.allocate(mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, staticDraw);
-            if(flags.normals)
-               oglMesh.normals.allocate(mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, staticDraw);
-            if(flags.texCoords1)
-               oglMesh.texCoords.allocate(mesh.nVertices * sizeof(Pointf), mesh.texCoords, staticDraw);
-            if(flags.colors)
-               oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
-            if(flags.tangents)
-               oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
-            if(flags.lightVectors)
-               oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+            if(oglMesh.interleaved && !flags.doubleVertices && flags.vertices && flags.normals && flags.texCoords1)
+            {
+               // temporary solution for interleaved attributes
+               oglMesh.vertices.allocate(mesh.nVertices * 8 * sizeof(float), mesh.vertices, staticDraw);
+            }
+            else
+            {
+               if(flags.vertices)
+                  oglMesh.vertices.allocate(mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, staticDraw);
+               if(flags.normals)
+                  oglMesh.normals.allocate(mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, staticDraw);
+               if(flags.texCoords1)
+                  oglMesh.texCoords.allocate(mesh.nVertices * sizeof(Pointf), mesh.texCoords, staticDraw);
+               if(flags.colors)
+                  oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
+               if(flags.tangents)
+                  oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
+               if(flags.lightVectors)
+                  oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+            }
             oglMesh.needAlloc = false;
          }
          else
@@ -4106,13 +4126,19 @@ class OpenGLDisplayDriver : DisplayDriver
          GLEnableClientState(VERTICES);
          if(!collectingHits && oglMesh)
          {
-            oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
+            bool interleaved = mesh.flags.normals && mesh.flags.texCoords1 && !mesh.normals && !mesh.texCoords &&
+               !oglMesh.normals.buffer && !oglMesh.texCoords.buffer;
+            oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT),
+               interleaved ? 8*sizeof(float) : 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
                GLEnableClientState(NORMALS);
-               oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
+               if(interleaved)
+                  oglMesh.vertices.use(normal, 3, GL_FLOAT, 8*sizeof(float), (void *)(3*sizeof(float)));
+               else
+                  oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
@@ -4140,7 +4166,10 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.texCoords || mesh.flags.texCoords1)
             {
                GLEnableClientState(TEXCOORDS);
-               oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+               if(interleaved)
+                  oglMesh.vertices.use(texCoord, 2, GL_FLOAT, 8*sizeof(float), (void *)(6*sizeof(float)));
+               else
+                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
             }
             else
                GLDisableClientState(TEXCOORDS);
