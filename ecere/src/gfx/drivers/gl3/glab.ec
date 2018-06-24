@@ -43,7 +43,7 @@ public struct GLAB
 {
    uint buffer;
 
-   void allocate(uint size, void * data, GLBufferUsage usage)
+   void allocate(uint size, const void * data, GLBufferUsage usage)
    {
       if(this != null)
       {
@@ -173,7 +173,7 @@ public struct GLEAB
 {
    uint buffer;
 
-   void allocate(uint size, void * data, GLBufferUsage usage)
+   void allocate(uint size, const void * data, GLBufferUsage usage)
    {
       if(this != null)
       {
