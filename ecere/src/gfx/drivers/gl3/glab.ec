@@ -60,7 +60,7 @@ public struct GLAB
       }
    }
 
-   void upload(uint offset, uint size, void * data)
+   void upload(uint offset, uint size, const void * data)
    {
       if(this != null && glCaps_vertexBuffer)
       {
@@ -101,7 +101,7 @@ public struct GLAB
       }
    }
 
-   void use(GLBufferContents contents, int n, int type, uint stride, void * pointer)
+   void use(GLBufferContents contents, int n, int type, uint stride, const void * pointer)
    {
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
@@ -123,7 +123,7 @@ public struct GLAB
 #endif
    }
 
-   void useVertTrans(uint count, int n, int type, uint stride, void * pointer)
+   void useVertTrans(uint count, int n, int type, uint stride, const void * pointer)
    {
       if(!glCaps_intAndDouble)
       {
@@ -194,7 +194,7 @@ public struct GLEAB
       }
    }
 
-   void upload(uint offset, uint size, void * data)
+   void upload(uint offset, uint size, const void * data)
    {
       if(this != null && glCaps_vertexBuffer)
       {
@@ -214,7 +214,7 @@ public struct GLEAB
       }
    }
 
-   void draw(int primType, int count, int type, void * indices)
+   void draw(int primType, int count, int type, const void * indices)
    {
       if(glCaps_vertexBuffer
 #if ENABLE_GL_POINTER
