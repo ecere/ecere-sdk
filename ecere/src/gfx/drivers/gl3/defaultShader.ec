@@ -379,7 +379,7 @@ public:
                glUniform1f(shader.uAlphaFuncValue, 0.5f);
          }
 
-         if(1 || matrixModified)
+         if(/*1 || */matrixModified)
          {
             glUniform1f(shader.uNearPlane, nearPlane);
             glUniformMatrix3fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
@@ -588,6 +588,8 @@ public:
       if(((DefaultShaderBits)state).texturing != on)
       {
          ((DefaultShaderBits)state).texturing = on;
+         if(on)
+            ((DefaultShaderBits)state).cubeMap = false;
          if(!on)
             state &= ~DefaultShaderBits { swizzle = (SwizzleMode)0x3 };
          if(!on && !((DefaultShaderBits)state).normalsMapping && !((DefaultShaderBits)state).specularMapping && !((DefaultShaderBits)state).reflectionMap && !((DefaultShaderBits)state).cubeMap)
@@ -665,6 +667,7 @@ public:
          ((DefaultShaderBits)state).perVertexColor = flags.colors;
          ((DefaultShaderBits)state).separateSpecular = ((DefaultShaderBits)state).specular && material.flags.separateSpecular;
          ((DefaultShaderBits)state).cubeMap = material.flags.cubeMap && material.baseMap;
+         if(material.flags.cubeMap) ((DefaultShaderBits)state).texturing = false;
          ((DefaultShaderBits)state).twoSided = material.flags.doubleSided && !material.flags.singleSideLight;
          ((DefaultShaderBits)state).lightBits = material.flags.noLighting ? 0 : lightBits;
          ((DefaultShaderBits)state).lighting = (!material.flags.noLighting && lightBits) ? true : false;
