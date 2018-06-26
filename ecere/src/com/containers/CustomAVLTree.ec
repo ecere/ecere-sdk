@@ -195,8 +195,13 @@ private:
       ClassType t = Tclass.type;
       int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
       bool isInt64 = false, isDouble = false;
+      AVLNode to = null;
+      AddSide side = 0;
+
+      // NOTE: Currently using int64 for uint64 may result in wrong order...
       if(onCompare == (void *)class(int64).OnCompare ||
-         (Tclass.type == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id"))) isInt64 = true;
+         (Tclass.type == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id")) ||
+         (Tclass.type == bitClass && Tclass.typeSize == sizeof(int64))) isInt64 = true;
       else if(onCompare == (void *)class(double).OnCompare) isDouble = true;
 
       reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
@@ -208,35 +213,94 @@ private:
          offset = __ENDIAN_PAD(sizeof(void *));
       }
 
-      if(Tclass == class(uint))
+      if(Tclass == class(int))
+      {
+         int ia = *(int *)a;
+         if(reference)
+         {
+            while(this)
+            {
+               byte * b = (((byte *)&this.key) + __ENDIAN_PAD(sizeof(int)));
+               int ib = *(int *)b;
+               int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+               if(result)
+               {
+                  thisclass node = result < 0 ? left : right;
+                  if(!node)
+                     to = this, side = (AddSide)result;
+                  this = node;
+               }
+               else
+                  break;
+            }
+         }
+         else
+         {
+            while(this)
+            {
+               int ib = *(int *)((byte *)(uintptr)this.key);
+               int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+               if(result)
+               {
+                  thisclass node = result < 0 ? left : right;
+                  if(!node)
+                     to = this, side = (AddSide)result;
+                  this = node;
+               }
+               else
+                  break;
+            }
+         }
+      }
+      else if(Tclass == class(uint))
       {
          uint ia = *(uint *)a;
-         while(this)
+         if(reference)
          {
-            uint ib = *(uint *)(reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key);
-            int result = ia > ib ? 1 : ia < ib ? -1 : 0;
-            if(result)
+            while(this)
             {
-               thisclass node = result < 0 ? left : right;
-               if(!node)
+               byte * b = (((byte *)&this.key) + __ENDIAN_PAD(sizeof(uint)));
+               uint ib = *(uint *)b;
+               int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+               if(result)
                {
-                  if(addTo) *addTo = this;
-                  if(addSide) *addSide = (AddSide)result;
+                  thisclass node = result < 0 ? left : right;
+                  if(!node)
+                     to = this, side = (AddSide)result;
+                  this = node;
                }
-               this = node;
+               else
+                  break;
             }
-            else
-               break;
+         }
+         else
+         {
+            while(this)
+            {
+               uint ib = *(uint *)((byte *)(uintptr)this.key);
+               int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+               if(result)
+               {
+                  thisclass node = result < 0 ? left : right;
+                  if(!node)
+                     to = this, side = (AddSide)result;
+                  this = node;
+               }
+               else
+                  break;
+            }
          }
       }
       else
       {
+         int result;
          int64 a64;
          double aDouble;
          if(isInt64)
             a64 = *(int64 *)a;
          else if(isDouble)
             aDouble = *(double *)a;
+         /*
          while(this)
          {
             byte * b = reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key;
@@ -270,7 +334,127 @@ private:
             else
                break;
          }
+         */
+         if(reference)
+         {
+            if(isInt64)
+            {
+               while(this)
+               {
+                  int64 b64 = *(int64 *)&this.key;
+                       if(a64 > b64) result = 1;
+                  else if(a64 < b64) result = -1;
+                  else result = 0;
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+            else if(isDouble)
+            {
+               while(this)
+               {
+                  const byte * b = (byte *)&this.key;
+                  double bDouble = *(double *)(byte *)b;
+                       if(aDouble > bDouble) result = 1;
+                  else if(aDouble < bDouble) result = -1;
+                  else result = 0;
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+            else
+            {
+               while(this)
+               {
+                  const byte * b = ((byte *)&this.key) + offset;
+                  result = onCompare(Tclass, a, (byte *)b);
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+         }
+         else
+         {
+            if(isInt64)
+            {
+               while(this)
+               {
+                  int64 b64 = *(int64 *)(uintptr)this.key;
+                       if(a64 > b64) result = 1;
+                  else if(a64 < b64) result = -1;
+                  else result = 0;
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+            else if(isDouble)
+            {
+               while(this)
+               {
+                  double bDouble = *(double *)(uintptr)this.key;
+                       if(aDouble > bDouble) result = 1;
+                  else if(aDouble < bDouble) result = -1;
+                  else result = 0;
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+            else
+            {
+               while(this)
+               {
+                  const byte * b = (byte *)(uintptr)this.key;
+                  result = onCompare(Tclass, a, (byte *)b);
+                  if(result)
+                  {
+                     thisclass node = result < 0 ? left : right;
+                     if(!node)
+                        to = this, side = (AddSide)result;
+                     this = node;
+                  }
+                  else
+                     break;
+               }
+            }
+         }
       }
+      if(addTo) *addTo = to;
+      if(addSide) *addSide = side;
       return this;
    }
 
