@@ -152,7 +152,6 @@ extern mmContext mmcontext;
 
 
 #include "mmatomic.h"
-#include "mmthread.h"
 
 
 #if MM_DEBUG
@@ -188,6 +187,7 @@ void mmNodeAlignFree( int nodeindex, void *v, size_t size );
 ////
 
 
+#include "mmthread.h"
 
 typedef struct
 {

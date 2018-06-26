@@ -2208,7 +2208,11 @@ if distributed with the Ecere SDK Windows installer.
                               "mmatomic.h",
                               "mmthread.h",
                               "ccstr.c",
-                              "ccstr.h"
+                              "ccstr.h",
+                              "mmhash.c",
+                              "mmhash.h",
+                              "mmhashinline.h",
+                              "mmhashinternal.h"
                            ]
                         },
                         "atlasBuilder.ec",
@@ -2919,7 +2923,23 @@ if distributed with the Ecere SDK Windows installer.
                         "CustomAVLTree.ec",
                         "LinkList.ec",
                         "List.ec",
-                        "Map.ec"
+                        "Map.ec",
+                        {
+                           "FileName" : "HashMap.ec",
+                           "Options" : {
+                              "IncludeDirs" : [
+                                 "src/gfx/newFonts/cc"
+                              ]
+                           }
+                        },
+                        {
+                           "FileName" : "HashTable.ec",
+                           "Options" : {
+                              "IncludeDirs" : [
+                                 "src/gfx/newFonts/cc"
+                              ]
+                           }
+                        }
                      ]
                   },
                   {

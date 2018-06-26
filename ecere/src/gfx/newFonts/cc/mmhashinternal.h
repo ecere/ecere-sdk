@@ -84,6 +84,7 @@ typedef struct
 #define MM_HASH_ALIGN64(x) ((x+0x3F)&~0x3F)
 #define MM_HASH_ENTRYLIST(table) (void *)ADDRESS(table,MM_HASH_SIZEOF_ALIGN64(mmHashTable))
 #define MM_HASH_ENTRY(table,index) (void *)ADDRESS(table,MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((index)*(table)->entrysize))
+#define MM_HASH_HASHKEY(table,entry) (((size_t)((char *)entry - (char *)table) - MM_HASH_SIZEOF_ALIGN64(mmHashTable))/(table)->entrysize)
 #define MM_HASH_PAGELIST(table) (void *)ADDRESS(table,MM_HASH_ALIGN64(MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((table)->hashsize*(table)->entrysize)))
 
 #define MM_HASH_INLINE_ENTRY(table,index,size) (void *)ADDRESS(table,MM_HASH_SIZEOF_ALIGN64(mmHashTable)+((index)*(size)))
