@@ -55,6 +55,7 @@ void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, 
   void *entry;
   mmHashTable *table;
   mmHashPage *page;
+  void (*clearentry)( void *entry ) = access->clearentry;
 
   table = hashtable;
   table->status = MM_HASH_STATUS_NORMAL;
@@ -82,11 +83,16 @@ void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, 
 
   /* Clear the table */
   entry = MM_HASH_ENTRYLIST( table );
-  for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+  if(clearentry)
   {
-    access->clearentry( entry );
-    entry = ADDRESS( entry, entrysize );
+     for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+     {
+       clearentry( entry );
+       entry = ADDRESS( entry, entrysize );
+     }
   }
+  else
+    memset(entry, 0, entrysize * table->hashsize);
 
   /* Clear the lock pages */
   page = table->page;
@@ -133,15 +139,26 @@ void mmHashReset( void *hashtable, const mmHashAccess *access )
   int hashkey;
   mmHashTable *table;
   void *entry;
+  void (*clearentry)( void *entry ) = access->clearentry;
 
   /* Clear the table */
   table = hashtable;
   entry = MM_HASH_ENTRYLIST( table );
-  for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+  if(clearentry)
   {
-    access->clearentry( entry );
-    entry = ADDRESS( entry, table->entrysize );
+     for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+     {
+       clearentry( entry );
+       entry = ADDRESS( entry, table->entrysize );
+     }
   }
+  else
+    memset(entry, 0, table->hashsize * table->entrysize);
+#ifdef MM_ATOMIC_SUPPORT
+  mmAtomicWrite32( &table->entrycount, 0 );
+#else
+  table->entrycount = 0;
+#endif
   return;
 }
 
@@ -150,7 +167,7 @@ void mmHashReset( void *hashtable, const mmHashAccess *access )
 
 
 
-void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, void *findentry )
+void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, const void *findentry )
 {
   int cmpvalue;
   uint32_t hashkey;
@@ -308,6 +325,38 @@ void mmHashDirectListEntry( void *hashtable, const mmHashAccess *access, void *l
   return;
 }
 
+// WARNING: This is ordered by hash, not key values...
+void * mmHashGetNext( void *hashtable, void * entry, const mmHashAccess *access)
+{
+  mmHashTable * table = hashtable;
+  uint32_t hashkey = entry ? MM_HASH_HASHKEY(table, entry) : 0;
+  if(hashkey == table->hashmask) return NULL;
+  if(entry) hashkey++;
+  for( ; ; hashkey = ( hashkey + 1 ))
+  {
+     entry = MM_HASH_ENTRY( table, hashkey );
+     if(access->entryvalid( entry ))
+        return entry;
+     if(hashkey == table->hashmask) break;
+  }
+  return NULL;
+}
+
+void * mmHashGetPrev( void *hashtable, void * entry, const mmHashAccess *access)
+{
+  mmHashTable * table = hashtable;
+  uint32_t hashkey = entry ? MM_HASH_HASHKEY(table, entry) : table->hashmask;
+  if(!hashkey) return NULL;
+  if(entry) hashkey--;
+  for( ; ; hashkey = ( hashkey - 1 ))
+  {
+     entry = MM_HASH_ENTRY( table, hashkey );
+     if(access->entryvalid( entry ))
+        return entry;
+     if(!hashkey) break;
+  }
+  return NULL;
+}
 
 static int mmHashTryListEntry( mmHashTable *table, const mmHashAccess *access, void *listentry, void *opaque )
 {
@@ -930,6 +979,68 @@ int mmHashDirectAddEntry( void *hashtable, const mmHashAccess *access, void *add
   return MM_HASH_SUCCESS;
 }
 
+int mmHashDirectAddEntry2( void *hashtable, const mmHashAccess *access, void *addentry, int nodupflag, void ** retEntry)
+{
+  int cmpvalue;
+  uint32_t hashkey, entrycount;
+  void *entry;
+  mmHashTable *table;
+
+  table = hashtable;
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  mmAtomicAddL( &table->accesscount, 1 );
+#endif
+
+  /* Hash key of entry */
+  hashkey = access->entrykey( addentry ) & table->hashmask;
+
+  /* Search an available entry */
+  for( ; ; hashkey = ( hashkey + 1 ) & table->hashmask )
+  {
+    entry = MM_HASH_ENTRY( table, hashkey );
+    /* Do we allow duplicate entries? */
+    if( nodupflag )
+    {
+      cmpvalue = access->entrycmp( entry, addentry );
+      if( cmpvalue == MM_HASH_ENTRYCMP_INVALID )
+        break;
+      else if( cmpvalue == MM_HASH_ENTRYCMP_FOUND )
+      {
+        if(retEntry) *retEntry = entry;
+        return MM_HASH_FOUND;
+      }
+    }
+    else
+    {
+      if( !( access->entryvalid( entry ) ) )
+        break;
+    }
+#ifdef MM_HASH_DEBUG_STATISTICS
+    mmAtomicAddL( &table->collisioncount, 1 );
+#endif
+  }
+
+  /* Store new entry */
+  memcpy( entry, addentry, table->entrysize );
+
+  /* Increment count of entries in table */
+  if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
+  {
+    entrycount = MM_HASH_ENTRYCOUNT_ADD_READ( table, 1 );
+    if( entrycount >= table->highcount )
+      table->status = MM_HASH_STATUS_MUSTGROW;
+  }
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  int statentrycount = mmAtomicAddReadL( &table->statentrycount, 1 );
+  if( statentrycount > table->entrycountmax )
+    table->entrycountmax = statentrycount;
+#endif
+
+  if(retEntry) *retEntry = entry;
+  return MM_HASH_SUCCESS;
+}
 
 static int mmHashTryAddEntry( mmHashTable *table, const mmHashAccess *access, void *addentry, int nodupflag )
 {
@@ -1232,9 +1343,9 @@ int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *
   int32_t halftablesize, distance;
 #endif
   void *entry, *srcentry, *targetentry;
-  mmHashTable *table;
-
-  table = hashtable;
+  mmHashTable *table = hashtable;
+  size_t entrysize = table->entrysize;
+  void (*clearentry)( void *entry ) = access->clearentry;
 
 #ifdef MM_HASH_DEBUG_STATISTICS
   mmAtomicAddL( &table->accesscount, 1 );
@@ -1319,7 +1430,10 @@ int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *
     entry = MM_HASH_ENTRY( table, hashkey );
     if( !( targetentry ) )
     {
-      access->clearentry( entry );
+      if(clearentry)
+         clearentry( entry );
+      else
+         memset(entry, 0, entrysize);
       break;
     }
 
@@ -1348,6 +1462,122 @@ int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *
   return MM_HASH_SUCCESS;
 }
 
+// WARNING: hen setting dontMoveStuff, a resize must be done after to re-pack!
+int mmHashDirectDeleteEntry2( void *hashtable, const mmHashAccess *access, void *entry, int dontMoveStuff)
+{
+  uint32_t hashkey, srckey, srcpos, targetpos, targetkey, entrycount;
+#ifdef MM_ROBUST_DELETION
+  uint32_t delbase;
+#else
+  int32_t halftablesize, distance;
+#endif
+  void *srcentry, *targetentry;
+  mmHashTable *table = hashtable;
+  size_t entrysize = table->entrysize;
+  void (*clearentry)( void *entry ) = access->clearentry;
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  mmAtomicAddL( &table->accesscount, 1 );
+#endif
+
+  /* Hash key of entry */
+  hashkey = MM_HASH_HASHKEY(table, entry);
+
+#ifdef MM_ROBUST_DELETION
+  for( delbase = hashkey ; ; )
+  {
+    delbase = ( delbase - 1 ) & table->hashmask;
+    if( !( access->entryvalid( MM_HASH_ENTRY( table, delbase ) ) ) )
+      break;
+  }
+  delbase = ( delbase + 1 ) & table->hashmask;
+#else
+  halftablesize = table->hashsize >> 1;
+#endif
+
+  /* Entry found, delete it */
+  for( ; ; )
+  {
+    targetentry = 0;
+    if(dontMoveStuff)
+       targetpos = hashkey;
+    else
+    {
+       /* Find replacement target */
+       targetkey = hashkey;
+       for( srcpos = hashkey ; ; )
+       {
+         srcpos = ( srcpos + 1 ) & table->hashmask;
+
+         /* Try next entry */
+         srcentry = MM_HASH_ENTRY( table, srcpos );
+         if( !( access->entryvalid( srcentry ) ) )
+           break;
+         srckey = access->entrykey( srcentry ) & table->hashmask;
+
+   #ifdef MM_ROBUST_DELETION
+         if( targetkey >= delbase )
+         {
+           if( ( srckey < delbase ) || ( srckey > targetkey ) )
+             continue;
+         }
+         else if( ( srckey > targetkey ) && ( srckey < delbase ) )
+           continue;
+         targetentry = srcentry;
+         targetkey = srckey;
+         targetpos = srcpos;
+   #else
+         /* Check if moving the entry backwards is allowed without breaking chain */
+         distance = (int32_t)targetkey - (int32_t)srckey;
+         if( distance > halftablesize )
+           distance -= table->hashsize;
+         else if( distance < -halftablesize )
+           distance += table->hashsize;
+         if( distance >= 0 )
+         {
+           targetentry = srcentry;
+           targetkey = srckey;
+           targetpos = srcpos;
+         }
+   #endif
+       }
+    }
+
+    /* No replacement found, just clear it */
+    entry = MM_HASH_ENTRY( table, hashkey );
+    if( !( targetentry ) )
+    {
+       if(clearentry)
+          clearentry( entry );
+       else
+          memset(entry, 0, entrysize);
+      break;
+    }
+
+    /* Move entry in place and continue the repair process */
+    memcpy( entry, targetentry, entrysize );
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+    mmAtomicAddL( &table->relocationcount, 1 );
+#endif
+
+    hashkey = targetpos;
+  }
+
+  /* Decrement count of entries in table */
+  if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
+  {
+    entrycount = MM_HASH_ENTRYCOUNT_ADD_READ( table, -1 );
+    if( entrycount < table->lowcount )
+      table->status = MM_HASH_STATUS_MUSTSHRINK;
+  }
+
+#ifdef MM_HASH_DEBUG_STATISTICS
+  mmAtomicAddL( &table->statentrycount, -1 );
+#endif
+
+  return MM_HASH_SUCCESS;
+}
 
 static int mmHashTryDeleteEntry( mmHashTable *table, const mmHashAccess *access, void *deleteentry, int readflag )
 {
@@ -1360,6 +1590,8 @@ static int mmHashTryDeleteEntry( mmHashTable *table, const mmHashAccess *access,
 #endif
   int cmpvalue, retvalue;
   void *entry, *srcentry, *targetentry;
+  size_t entrysize = table->entrysize;
+  void (*clearentry)( void *entry ) = access->clearentry;
 
   /* Hash key of entry */
   hashkey = access->entrykey( deleteentry ) & table->hashmask;
@@ -1492,12 +1724,15 @@ static int mmHashTryDeleteEntry( mmHashTable *table, const mmHashAccess *access,
     entry = MM_HASH_ENTRY( table, hashkey );
     if( !( targetentry ) )
     {
-      access->clearentry( entry );
+      if(clearentry)
+        clearentry( entry );
+      else
+        memset(entry, 0, entrysize);
       break;
     }
 
     /* Move entry in place and continue the repair process */
-    memcpy( entry, targetentry, table->entrysize );
+    memcpy( entry, targetentry, entrysize );
 
 #ifdef MM_HASH_DEBUG_STATISTICS
     mmAtomicAddL( &table->relocationcount, 1 );
@@ -1565,6 +1800,7 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
   void *srcentry, *dstentry;
   mmHashTable *dst, *src;
   mmHashPage *page;
+  void (*clearentry)( void *entry ) = access->clearentry;
 
   dst = newtable;
   src = oldtable;
@@ -1588,11 +1824,16 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
 
   /* Clear the whole destination table */
   dstentry = MM_HASH_ENTRYLIST( dst );
-  for( hashpos = 0 ; hashpos < dst->hashsize ; hashpos++ )
+  if(clearentry)
   {
-    access->clearentry( dstentry );
-    dstentry = ADDRESS( dstentry, dst->entrysize );
+     for( hashpos = 0 ; hashpos < dst->hashsize ; hashpos++ )
+     {
+       clearentry( dstentry );
+       dstentry = ADDRESS( dstentry, dst->entrysize );
+     }
   }
+  else
+     memset(dstentry, 0, dst->hashsize * dst->entrysize);
 
   /* Clear the lock pages */
 #ifdef MM_ATOMIC_SUPPORT
@@ -1640,6 +1881,97 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
   return;
 }
 
+
+void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift, void ** movedEntryPtr)
+{
+  uint32_t hashkey, hashpos, dstkey, dstpos, pageindex;
+  void *srcentry, *dstentry;
+  void *movedentry = movedEntryPtr ? *movedEntryPtr : NULL;
+  mmHashTable *dst, *src;
+  mmHashPage *page;
+  void (*clearentry)( void *entry ) = access->clearentry;
+
+  dst = newtable;
+  src = oldtable;
+  dst->status = MM_HASH_STATUS_NORMAL;
+  dst->flags = src->flags;
+  dst->entrysize = src->entrysize;
+  dst->minhashbits = src->minhashbits;
+  dst->hashbits = hashbits;
+  dst->hashsize = 1 << dst->hashbits;
+  dst->hashmask = dst->hashsize - 1;
+  dst->pageshift = pageshift;
+  dst->pagecount = dst->hashsize >> pageshift;
+  dst->pagemask = dst->pagecount - 1;
+  dst->page = MM_HASH_PAGELIST( dst );
+#ifdef MM_ATOMIC_SUPPORT
+  mmAtomicWrite32( &dst->entrycount, mmAtomicRead32( &src->entrycount ) );
+#else
+  dst->entrycount = src->entrycount;
+#endif
+  mmHashSetBounds( dst );
+
+  /* Clear the whole destination table */
+  dstentry = MM_HASH_ENTRYLIST( dst );
+  if(clearentry)
+  {
+     for( hashpos = 0 ; hashpos < dst->hashsize ; hashpos++ )
+     {
+       clearentry( dstentry );
+       dstentry = ADDRESS( dstentry, dst->entrysize );
+     }
+  }
+  else
+     memset(dstentry, 0, dst->hashsize * dst->entrysize);
+
+  /* Clear the lock pages */
+#ifdef MM_ATOMIC_SUPPORT
+  page = dst->page;
+  for( pageindex = 0 ; pageindex < dst->pagecount ; pageindex++, page++ )
+  {
+    mmAtomicLockInit32( &page->lock );
+    mmAtomicWriteP( &page->owner, (void *)0 );
+  }
+  mmAtomicWrite32( &dst->globallock, 0x0 );
+#else
+  page = src->page;
+  for( pageindex = src->pagecount ; pageindex ; pageindex--, page++ )
+    mtMutexDestroy( &page->mutex );
+  mtMutexDestroy( &src->globalmutex );
+  page = dst->page;
+  for( pageindex = dst->pagecount ; pageindex ; pageindex--, page++ )
+  {
+    mtMutexInit( &page->mutex );
+    page->owner = 0;
+  }
+  mtMutexInit( &dst->globalmutex );
+#endif
+
+  /* Move all entries from the src table to the dst table */
+  srcentry = MM_HASH_ENTRYLIST( src );
+  for( hashpos = 0 ; hashpos < src->hashsize ; hashpos++ )
+  {
+    hashkey = access->entrykey( srcentry );
+    dstkey = hashkey & dst->hashmask;
+
+    /* Search an empty spot in the destination table */
+    for( dstpos = dstkey ; ; dstpos = ( dstpos + 1 ) & dst->hashmask )
+    {
+      dstentry = MM_HASH_ENTRY( dst, dstpos );
+      if( !( access->entryvalid( dstentry ) ) )
+        break;
+    }
+
+    if(srcentry == movedentry)
+      *movedEntryPtr = dstentry;
+
+    /* Copy entry from src table to dst table */
+    memcpy( dstentry, srcentry, src->entrysize );
+    srcentry = ADDRESS( srcentry, src->entrysize );
+  }
+
+  return;
+}
 
 
 ////
@@ -1979,3 +2311,11 @@ void mmHashStatistics( void *hashtable, long *accesscount, long *collisioncount,
   return;
 }
 
+unsigned int mmHashGetCount( void *hashtable)
+{
+   mmHashTable *table = hashtable;
+   unsigned int count = 0;
+   if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
+      count = mmAtomicRead32(&table->entrycount);
+   return count;
+}

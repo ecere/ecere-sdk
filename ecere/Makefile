@@ -58,7 +58,7 @@ else
 SONAME =
 endif
 
-_ECSOURCES = $(_ECSOURCES1) $(_ECSOURCES2) $(_ECSOURCES3)
+_ECSOURCES = $(_ECSOURCES1) $(_ECSOURCES2) $(_ECSOURCES3) $(_ECSOURCES4)
 _ECSOURCES1 = \
 	src/sys/Archive.ec \
 	src/sys/BufferedFile.ec \
@@ -195,6 +195,9 @@ _ECSOURCES3 = \
 	src/com/containers/LinkList.ec \
 	src/com/containers/List.ec \
 	src/com/containers/Map.ec \
+	src/com/containers/HashMap.ec
+_ECSOURCES4 = \
+	src/com/containers/HashTable.ec \
 	src/com/BinaryTree.ec \
 	src/com/BTNode.ec \
 	src/com/dataTypes.ec \
@@ -206,31 +209,37 @@ ECSOURCES = $(call shwspace,$(_ECSOURCES))
 ECSOURCES1 = $(call shwspace,$(_ECSOURCES1))
 ECSOURCES2 = $(call shwspace,$(_ECSOURCES2))
 ECSOURCES3 = $(call shwspace,$(_ECSOURCES3))
+ECSOURCES4 = $(call shwspace,$(_ECSOURCES4))
 
-COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
+COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3) $(COBJECTS4)
 COBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES1)))))
 COBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES2)))))
 COBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES3)))))
+COBJECTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES4)))))
 
-SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
+SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3) $(SYMBOLS4)
 SYMBOLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES1)))))
 SYMBOLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES2)))))
 SYMBOLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES3)))))
+SYMBOLS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES4)))))
 
-IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
+IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3) $(IMPORTS4)
 IMPORTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES1)))))
 IMPORTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES2)))))
 IMPORTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES3)))))
+IMPORTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES4)))))
 
-ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3)
+ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3) $(ECOBJECTS4)
 ECOBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES1)))))
 ECOBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES2)))))
 ECOBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES3)))))
+ECOBJECTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES4)))))
 
-BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3)
+BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3) $(BOWLS4)
 BOWLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES1)))))
 BOWLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES2)))))
 BOWLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES3)))))
+BOWLS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES4)))))
 
 _OBJECTS = \
 	$(OBJ)File.c.o \
@@ -259,6 +268,7 @@ _OBJECTS = \
 	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
+	$(OBJ)mmhash$(O) \
 	$(if ,$(OBJ)CocoaEcereBridge.o,) \
 	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
@@ -292,6 +302,7 @@ SOURCES = $(ECSOURCES) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
+	src/gfx/newFonts/cc/mmhash.c \
 	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
@@ -467,6 +478,10 @@ CUSTOM3_PRJ_CFLAGS = \
 			 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
+CUSTOM5_PRJ_CFLAGS = \
+			 -Isrc/gfx/newFonts/cc \
+	 $(CUSTOM2_PRJ_CFLAGS)
+
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
@@ -571,9 +586,11 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(call addtolistfile,$(SYMBOLS1),$(OBJ)symbols.lst)
 	$(call addtolistfile,$(SYMBOLS2),$(OBJ)symbols.lst)
 	$(call addtolistfile,$(SYMBOLS3),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(SYMBOLS4),$(OBJ)symbols.lst)
 	$(call addtolistfile,$(IMPORTS1),$(OBJ)symbols.lst)
 	$(call addtolistfile,$(IMPORTS2),$(OBJ)symbols.lst)
 	$(call addtolistfile,$(IMPORTS3),$(OBJ)symbols.lst)
+	$(call addtolistfile,$(IMPORTS4),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
@@ -611,6 +628,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(call addtolistfile,$(ECOBJECTS1),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS2),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS3),$(OBJ)objects.lst)
+	$(call addtolistfile,$(ECOBJECTS4),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
 ifndef NOSTRIP
@@ -1088,6 +1106,12 @@ $(OBJ)List.sym: src/com/containers/List.ec
 $(OBJ)Map.sym: src/com/containers/Map.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
+$(OBJ)HashMap.sym: src/com/containers/HashMap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM5_PRJ_CFLAGS) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.sym
+
+$(OBJ)HashTable.sym: src/com/containers/HashTable.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM5_PRJ_CFLAGS) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.sym
+
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
@@ -1298,7 +1322,6 @@ ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
-
 
 $(OBJ)atlasBuilder.c: src/gfx/newFonts/atlasBuilder.ec $(OBJ)atlasBuilder.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -1539,6 +1562,12 @@ $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
 
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
+
+$(OBJ)HashMap.c: src/com/containers/HashMap.ec $(OBJ)HashMap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.c -symbols $(OBJ)
+
+$(OBJ)HashTable.c: src/com/containers/HashTable.ec $(OBJ)HashTable.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
@@ -1807,6 +1836,9 @@ $(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
 
 $(OBJ)ccstr$(O): src/gfx/newFonts/cc/ccstr.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/ccstr.c) -o $(call quote_path,$@)
+
+$(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
 
 $(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)
@@ -2079,6 +2111,12 @@ $(OBJ)List.o: $(OBJ)List.c
 $(OBJ)Map.o: $(OBJ)Map.c
 	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
+$(OBJ)HashMap$(O): $(OBJ)HashMap.c
+	$(CC) $(CFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashMap.c -o $(OBJ)HashMap.o
+
+$(OBJ)HashTable$(O): $(OBJ)HashTable.c
+	$(CC) $(CFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashTable.c -o $(OBJ)HashTable.o
+
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
 	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
 
@@ -2127,18 +2165,23 @@ clean: cleantarget
 	$(call rm,$(ECOBJECTS1))
 	$(call rm,$(ECOBJECTS2))
 	$(call rm,$(ECOBJECTS3))
+	$(call rm,$(ECOBJECTS4))
 	$(call rm,$(COBJECTS1))
 	$(call rm,$(COBJECTS2))
 	$(call rm,$(COBJECTS3))
+	$(call rm,$(COBJECTS4))
 	$(call rm,$(BOWLS1))
 	$(call rm,$(BOWLS2))
 	$(call rm,$(BOWLS3))
+	$(call rm,$(BOWLS4))
 	$(call rm,$(IMPORTS1))
 	$(call rm,$(IMPORTS2))
 	$(call rm,$(IMPORTS3))
+	$(call rm,$(IMPORTS4))
 	$(call rm,$(SYMBOLS1))
 	$(call rm,$(SYMBOLS2))
 	$(call rm,$(SYMBOLS3))
+	$(call rm,$(SYMBOLS4))
 	$(_MAKE) -f Makefile.ecereCOM clean
 	$(_MAKE) -f Makefile.vanilla clean
 

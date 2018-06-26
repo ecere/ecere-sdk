@@ -31,13 +31,13 @@ typedef struct
   /* Clear the entry so that entryvalid() returns zero */
   void (*clearentry)( void *entry );
   /* Returns non-zero if the entry is valid and existing */
-  int (*entryvalid)( void *entry );
+  int (*entryvalid)( const void *entry );
   /* Return key for an arbitrary set of user-defined data */
-  uint32_t (*entrykey)( void *entry );
+  uint32_t (*entrykey)( const void *entry );
   /* Return MM_HASH_ENTRYCMP* to stop or continue the search */
-  int (*entrycmp)( void *entry, void *entryref );
+  int (*entrycmp)( const void *entry, const void *entryref );
   /* Return MM_HASH_ENTRYLIST* to stop or continue the search */
-  int (*entrylist)( void *opaque, void *entry, void *entryref );
+  int (*entrylist)( void *opaque, const void *entry, const void *entryref );
 } mmHashAccess;
 
 
@@ -59,7 +59,7 @@ enum
 };
 
 
-void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, void *findentry );
+void *mmHashDirectFindEntry( void *hashtable, const mmHashAccess *access, const void *findentry );
 void *mmHashLockFindEntry( void *hashtable, const mmHashAccess *access, void *findentry );
 
 void mmHashDirectListEntry( void *hashtable, const mmHashAccess *access, void *listentry, void *opaque );
@@ -78,20 +78,28 @@ int mmHashLockReplaceEntry( void *hashtable, const mmHashAccess *access, void *r
 int mmHashDirectAddEntry( void *hashtable, const mmHashAccess *access, void *adddentry, int nodupflag );
 int mmHashLockAddEntry( void *hashtable, const mmHashAccess *access, void *adddentry, int nodupflag );
 
+int mmHashDirectAddEntry2( void *hashtable, const mmHashAccess *access, void *addentry, int nodupflag, void ** retEntry);
+
 int mmHashDirectReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *readflag );
 int mmHashLockReadOrAddEntry( void *hashtable, const mmHashAccess *access, void *readaddentry, int *readflag );
 
 int mmHashDirectDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag );
 int mmHashLockDeleteEntry( void *hashtable, const mmHashAccess *access, void *deleteentry, int readflag );
+// NOTE: When setting dontmovestuff to 1, a resize must be done to repack!
+int mmHashDirectDeleteEntry2( void *hashtable, const mmHashAccess *access, void *entry, int dontmovestuff);
 
 void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift );
+void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift, void ** movedEntryPtr);
 
+void * mmHashGetNext( void *hashtable, void * entry, const mmHashAccess *access);
+void * mmHashGetPrev( void *hashtable, void * entry, const mmHashAccess *access);
 
 enum
 {
   MM_HASH_FAILURE,
   MM_HASH_SUCCESS,
-  MM_HASH_TRYAGAIN /* Internal, can not be returned by any public call */
+  MM_HASH_TRYAGAIN,
+  MM_HASH_FOUND /* Internal, can not be returned by any public call */
 };
 
 
@@ -134,5 +142,6 @@ void mmHashDirectDebugContent( void *hashtable, void (*callback)( uint32_t hashk
 
 void mmHashStatistics( void *hashtable, long *accesscount, long *collisioncount, long *relocationcount, long *entrycount, long *entrycountmax, long *hashsizemax );
 
+unsigned int mmHashGetCount( void *hashtable);
 
 #endif
