@@ -33,15 +33,8 @@ public class BitmapResource : Resource
 
    ~BitmapResource()
    {
-      if(bitmap != null)
-      {
-         //if(!grayed)
-            // Logf("Freeing %s (%d)\n", fileName, bitmap.picture);
-         // bitmap.Free(bitmap);
-         delete bitmap;
-      }
-      if(fileName)
-         delete fileName;
+      delete bitmap;
+      delete fileName;
    }
 
    void Load(BitmapResource copy, DisplaySystem displaySystem)
