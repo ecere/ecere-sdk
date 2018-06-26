@@ -934,10 +934,6 @@ public:
                   interfaceDriver.Lock(window);
                   if(window.display)
                   {
-                     if(window.display.current)
-                     {
-                        printf("bug");
-                     }
                      window.display.Lock(true);
                      window.UpdateDisplay();
                      window.display.Unlock();
