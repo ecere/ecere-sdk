@@ -53,7 +53,8 @@ public struct GLAB
                glGenBuffers(1, &buffer);
             if(glabCurArrayBuffer != buffer)
                GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
-            glBufferData(GL_ARRAY_BUFFER, size, data, bufferUsages[usage]);
+            if(size)
+               glBufferData(GL_ARRAY_BUFFER, size, data, bufferUsages[usage]);
          }
          else
             buffer = 1;
@@ -186,8 +187,6 @@ public struct GLEAB
                GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
             if(size)
                glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
-            else
-               ;
          }
          else
             buffer = 1;
