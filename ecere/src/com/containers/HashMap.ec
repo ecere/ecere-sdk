@@ -120,6 +120,18 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
          resize(null);
    }
 
+   public void removeIterating(IteratorPointer * it)
+   {
+      HashMapEntry * entry;
+      mmHashDirectDeleteEntry2(tbl, &hashAccess, *it, noRemResize);
+      if(!noRemResize)
+         resize(it);
+
+      entry = (HashMapEntry *)*it;
+      if(entry->key == NULL_KEY)
+         *it = GetNext(*it);
+   }
+
    public void resize(IteratorPointer * movedEntry)
    {
       int bits, status = mmHashGetStatus(tbl, &bits);
