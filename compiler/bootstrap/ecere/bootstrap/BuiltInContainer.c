@@ -211,6 +211,11 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
 
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+return (void *)this;
+}
+
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {
 return this->data;
@@ -254,13 +259,6 @@ void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct 
 
 void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Sort(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, unsigned int ascending)
 {
-}
-
-struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this);
-
-struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-return __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(this);
 }
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;

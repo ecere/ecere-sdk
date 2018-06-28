@@ -16025,6 +16025,8 @@ symbol = FindSymbol(id->string, topContext->parent, globalContext, 0, id->_class
 }
 if(findInGlobal)
 symbol = FindSymbol(id->string, curContext, topContext, 0, id->_class && id->_class->__anon1.__anon1.name == (((void *)0)));
+if(symbol && !symbol->ctx && symbol->type && symbol->type->kind == 11 && (!strcmp(id->string, "sin") || !strcmp(id->string, "cos") || !strcmp(id->string, "tan") || !strcmp(id->string, "asin") || !strcmp(id->string, "acos") || !strcmp(id->string, "atan") || !strcmp(id->string, "atan2") || !strcmp(id->string, "sinh") || !strcmp(id->string, "cosh") || !strcmp(id->string, "tanh") || !strcmp(id->string, "asinh") || !strcmp(id->string, "acosh") || !strcmp(id->string, "atanh")))
+symbol = (((void *)0));
 if(symbol)
 {
 struct Type * type = symbol->type;

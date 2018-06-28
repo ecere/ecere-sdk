@@ -8002,6 +8002,14 @@ void ProcessExpressionType(Expression exp)
             if(findInGlobal)
                symbol = FindSymbol(id.string, curContext, topContext, false, id._class && id._class.name == null);
 
+            // Avoid trigonometric functions from math.h defined without 'Angle' unit
+            if(symbol && !symbol.ctx /*symbol.ctx == globalContext*/ && symbol.type && symbol.type.kind == functionType &&
+               (!strcmp(id.string, "sin") || !strcmp(id.string, "cos") || !strcmp(id.string, "tan") ||
+                !strcmp(id.string, "asin") || !strcmp(id.string, "acos") || !strcmp(id.string, "atan") || !strcmp(id.string, "atan2") ||
+                !strcmp(id.string, "sinh") || !strcmp(id.string, "cosh") || !strcmp(id.string, "tanh") ||
+                !strcmp(id.string, "asinh") || !strcmp(id.string, "acosh") || !strcmp(id.string, "atanh")))
+               symbol = null;
+
             // If we manage to resolve this symbol
             if(symbol)
             {

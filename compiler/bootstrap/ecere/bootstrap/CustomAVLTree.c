@@ -823,11 +823,11 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __e
 return (void *)(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(((struct __ecereNameSpace__ecere__com__AVLNode *)node)));
 }
 
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
+uint64 __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
 
-return (struct __ecereNameSpace__ecere__com__AVLNode *)node;
+return (uint64)(uintptr_t)(struct __ecereNameSpace__ecere__com__AVLNode *)(uintptr_t)node;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_SetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node, uint64 data)
