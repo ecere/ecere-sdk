@@ -7997,11 +7997,13 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -10199,7 +10201,7 @@ if(_class->structAlignment)
 if(_class->memberOffset % _class->structAlignment)
 extra += _class->structAlignment - (_class->memberOffset % _class->structAlignment);
 }
-_class->structSize = (_class->base ? (_class->base->templateClass ? (_class->base->type == 5 ? _class->base->templateClass->memberOffset : _class->base->templateClass->structSize) : (_class->base->type == 5 ? _class->base->memberOffset : _class->base->structSize)) : 0) + _class->memberOffset + extra;
+_class->structSize = (_class->base ? (_class->base->templateClass ? _class->base->templateClass->structSize : _class->base->structSize) : 0) + _class->memberOffset + extra;
 if(!member)
 {
 struct __ecereNameSpace__ecere__com__Property * prop;
@@ -10222,7 +10224,7 @@ struct __ecereNameSpace__ecere__com__Class * deriv = derivative->data;
 
 if(deriv->computeSize)
 {
-deriv->offset = (_class->type == 5 ? _class->memberOffset : _class->structSize);
+deriv->offset = (_class->type == 5 ? _class->structSize : _class->structSize);
 deriv->memberOffset = 0;
 deriv->structSize = deriv->offset;
 ComputeClassMembers(deriv, 0);
@@ -10243,12 +10245,14 @@ unsigned int totalSize = 0;
 unsigned int maxSize = 0;
 int alignment;
 unsigned int size;
+static int paddingID = 0;
 struct __ecereNameSpace__ecere__com__DataMember * member;
 int anonID = 1;
 struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_class);
 
 if(addedPadding)
 *addedPadding = 0;
+paddingID++;
 if(!isMember && _class->base)
 {
 maxSize = _class->structSize;
@@ -10335,7 +10339,7 @@ if(topMember && topMember->type == 1)
 else
 *retSize += totalSize;
 }
-else if(totalSize < maxSize && _class->type != 1000)
+if(totalSize < maxSize && _class->type != 1000)
 {
 int autoPadding = 0;
 
@@ -10344,15 +10348,18 @@ autoPadding = _class->structAlignment - (totalSize % _class->structAlignment);
 if(totalSize + autoPadding < maxSize)
 {
 char sizeString[50];
+char * paddingString = __ecereNameSpace__ecere__com__PrintString(__ecereClass_char__PTR_, "__ecere_padding", __ecereClass_int, (void *)&paddingID, (void *)0);
 
 sprintf(sizeString, "%d", maxSize - totalSize);
-ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), (((void *)0)))));
+ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier(paddingString)), MkExpConstant(sizeString))), (((void *)0)))));
 if(addedPadding)
 *addedPadding = 1;
+(__ecereNameSpace__ecere__com__eSystem_Delete(paddingString), paddingString = 0);
 }
 }
 if(context)
 FinishTemplatesContext(context);
+paddingID--;
 return topMember ? topMember->memberID : _class->memberID;
 }
 

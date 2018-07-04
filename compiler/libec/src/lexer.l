@@ -135,6 +135,7 @@ default:
 "int64"              { return(INT64); }
 "__int128"           { return(INT128); }
 "__float128"         { return(FLOAT128); }
+"_Float128"          { return(FLOAT128); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
 "Bool"               { return(BOOL); }
@@ -179,6 +180,7 @@ default:
 "__declspec("({D}|{L})*")" { return(EXT_STORAGE); }
 "dllexport"                { return(EXT_STORAGE); }
 "dllimport"                { return(EXT_STORAGE); }
+"_Noreturn"                { return(EXT_STORAGE); }
 "__cdecl"                  { return(EXT_DECL); }
 "__stdcall"                { return(EXT_DECL); }
 "__stdcall__"              { return(EXT_DECL); }
