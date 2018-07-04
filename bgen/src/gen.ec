@@ -1251,6 +1251,7 @@ class BClass : struct
    bool first; bool skip; bool skipTypeDef;
    bool isFromCurrentModule;
    bool is_class;// bool is_Class;
+   bool is_struct;
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
    bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor, isWindow;
    bool hasPublicMembers;
@@ -1286,6 +1287,7 @@ class BClass : struct
       isFromCurrentModule = classIsFromModule(cl, gen.mod, ec1ComponentsApp);
 
       is_class          = cl.type == systemClass   && !strcmp(name, "class");
+      is_struct         = cl.type == systemClass   && !strcmp(name, "struct");
       isBool            = cl.type == enumClass     && !strcmp(name, "bool");
       isString          = cl.type == normalClass   && !strcmp(name, "String");
       isUnichar         = cl.type == unitClass     && !strcmp(name, "unichar");

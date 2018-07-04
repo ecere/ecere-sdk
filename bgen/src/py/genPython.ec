@@ -656,6 +656,8 @@ void processPyClass(PythonGen g, BClass c)
          out.ds.printx("(", cBase.symbolName, ")"); // c.baseSymbolName
          v.processDependency(otypedef, otypedef, cBase.cl);
       }
+      else if(c.cl.type == structClass && cBase && cBase.is_struct)
+         out.ds.printx("(Struct)"); // ("(", g.lib.bindingName, "_struct)")
 
       out.ds.print(":");
       if(!skip && !hasContent)

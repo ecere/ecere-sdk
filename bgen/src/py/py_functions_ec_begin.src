@@ -349,6 +349,18 @@ class Bool:
    true  = lib.true
    false = lib.false
 
+class Struct:
+   def onCompare(self, other):
+#//       #if self is None or self.impl == ffi.NULL: return int()
+       if self is not None or other is not None:
+           c = type(self) if self is not None else type(other) if other is not None else None
+           cn = c.__name__ if c is not None else None
+           co = getattr(app.lib, 'class_' + cn) if cn is not None else None
+           first = self.impl if self is not None else ffi.NULL
+           second = other.impl if other is not None else ffi.NULL
+           return lib._onCompare(co, first, second)
+       return 0
+
 class Instance:
    instances = []
    def __init__(self, *args, **kwArgs): self.init_args(list(args), kwArgs)
@@ -373,6 +385,7 @@ class Instance:
             self.impl = ffi.cast("Instance", lib.Instance_newEx(pyClass, False))
       else:
          self.impl = impl
+      self.impl._refCount += 1
       Instance.instances.append(self)
       if not hasattr(self, 'handle'):
          self.handle = ffi.new_handle(self)
@@ -383,6 +396,12 @@ class Instance:
    def delete(self):
       lib.Instance_delete(self.impl)
       self.impl = ffi.NULL
+   '''def onCompare(self, other):
+      if self is None or self.impl == ffi.NULL: return None
+      c = type(self)
+      cn = c.__name__
+      co = getattr(lib, 'class_' + cn)
+      lib.Instance_onCompare(co, self.impl, other.impl)'''
 #//
 #//class Window(Instance): pass
 
