@@ -869,15 +869,17 @@ private:
       int c;
 
       float xRadius, yRadius, zRadius;
+      float * v = (float *)vertices;
+      int increment = flags.interleaved ? 8 : 3;
 
-      if(!vertices) return;
+      if(!v) return;
 
       min = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
       max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
 
-      for(c = 0; c<nVertices; c++)
+      for(c = 0; c<nVertices; c++, v += increment)
       {
-         float x = vertices[c].x, y = vertices[c].y, z = vertices[c].z;
+         float x = v[0], y = v[1], z = v[2];
          if(x.isNan || y.isNan || z.isNan);
          else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
          else
