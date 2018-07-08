@@ -308,7 +308,7 @@ class PNGFormat : BitmapFormat
 
                      png_write_info(png_ptr, info_ptr);
 
-                     for (y = 0; y < bitmap.height; y++)
+                     for(y = 0; y < bitmap.height; y++)
                      {
                         byte * rowPtr = ((byte *)bitmap.picture) + y * bytesPerRow;
                         png_write_rows(png_ptr, &rowPtr, 1);
