@@ -555,6 +555,64 @@ public:
       }
    }
 
+   bool UnapplyTranslucency(Object object)
+   {
+      bool result = false;
+      if(this)
+      {
+         int c;
+
+         // Merge non translucent primitives into groups
+         for(c = 0; c<nPrimitives; )
+         {
+            PrimitiveSingle * primitive = &primitives[c];
+            Material material = (primitive->material || !object) ? primitive->material : object.material;
+            if(true) //!material || !(material.flags.translucent))
+            {
+               int t;
+               PrimitiveGroup group;
+               int nIndices = primitive->nIndices;
+               for(t = c+1; t<nPrimitives; t++)
+               {
+                  PrimitiveSingle * prim = &primitives[t];
+                  if(prim->type == primitive->type && prim->material == primitive->material)
+                     nIndices += prim->nIndices;
+               }
+               group = AddPrimitiveGroup(primitive->type, nIndices);
+               if(group)
+               {
+                  bool use32 = group.type.indices32bit;
+                  nIndices = 0;
+                  group.material = material;
+                  for(t = c; t<nPrimitives; t++)
+                  {
+                     primitive = &primitives[t];
+                     if(group.type == primitive->type && group.material == primitive->material)
+                     {
+                        if(use32)
+                           CopyBytesBy4(group.indices32 + nIndices, primitive->indices32, primitive->nIndices);
+                        else
+                           CopyBytesBy2(group.indices + nIndices, primitive->indices, primitive->nIndices);
+                        nIndices += primitive->nIndices;
+                        CopyBytes(primitives + t, primitives + t + 1, (nPrimitives - t - 1) * sizeof(PrimitiveSingle));
+                        nPrimitives--;
+                        t--;
+                     }
+                  }
+                  UnlockPrimitiveGroup(group);
+               }
+            }
+            else
+               c++;
+         }
+         primitives = renew primitives PrimitiveSingle[this.nPrimitives];
+         result = true;
+         if(object)
+            object.flags.translucent = nPrimitives ? true : false;
+      }
+      return result;
+   }
+
    bool ApplyTranslucency(Object object)
    {
       bool result = false;
@@ -582,6 +640,7 @@ public:
                group = AddPrimitiveGroup(primitive->type, nIndices);
                if(group)
                {
+                  bool use32 = primitive->type.indices32bit;
                   nIndices = 0;
                   group.material = material;
                   for(t = c; t<nPrimitives; t++)
@@ -589,7 +648,10 @@ public:
                      primitive = &primitives[t];
                      if(group.type == primitive->type && group.material == primitive->material)
                      {
-                        CopyBytesBy2(group.indices + nIndices,primitive->indices,primitive->nIndices);
+                        if(use32)
+                           CopyBytesBy4(group.indices32 + nIndices, primitive->indices32, primitive->nIndices);
+                        else
+                           CopyBytesBy2(group.indices + nIndices, primitive->indices, primitive->nIndices);
                         nIndices += primitive->nIndices;
                         CopyBytes(primitives + t, primitives + t + 1, (nPrimitives - t - 1) * sizeof(PrimitiveSingle));
                         nPrimitives--;
