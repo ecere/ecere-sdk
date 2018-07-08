@@ -1095,7 +1095,7 @@ public:
                }
 #endif
 
-               SetTransform(object.matrix, object.flags.viewSpace);
+               SetTransform(&object.matrix, (*&object.flags).viewSpace);
                if(display3D.selection)
                {
                   if(visible == intersecting || display3D.intersecting)

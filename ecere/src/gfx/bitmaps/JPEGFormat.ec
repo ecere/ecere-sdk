@@ -269,7 +269,7 @@ class JPGFormat : BitmapFormat
 
             jpeg_set_defaults(&cinfo);
 
-            jpeg_set_quality(&cinfo, 100, TRUE);
+            jpeg_set_quality(&cinfo, options ? *(int *)options : 100, TRUE);
 
             jpeg_start_compress(&cinfo, TRUE);
 
