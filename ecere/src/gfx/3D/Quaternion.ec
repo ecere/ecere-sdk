@@ -2,68 +2,7 @@ namespace gfx3D;
 
 import "Display"
 
-public struct Euler
-{
-   Degrees yaw, pitch, roll;
-   property Quaternion
-   {
-      set
-      {
-         double y = 2 * ( value.y*value.z + value.w*value.x );
-         if(fabs(y) <= 1.0 - 0.000005)
-         {
-            double x =     2 * ( value.x*value.z - value.w*value.y );
-            double z = 1 - 2 * ( value.x*value.x + value.y*value.y );
-            Angle yaw = -atan2(x, z);
-            Angle pitch = atan2(y, sqrt(x * x + z * z));
-            double sYaw = sin( yaw / 2 );
-            double cYaw = cos( yaw / 2 );
-            double sPitch = sin( pitch / 2 );
-            double cPitch = cos( pitch / 2 );
-            Quaternion yp = { cPitch * cYaw, sPitch * cYaw, cPitch * sYaw, sPitch * sYaw };
-            double rollW = yp.w * value.w + yp.x * value.x + yp.y * value.y + yp.z * value.z;
-            double rollZ = yp.w * value.z + yp.x * value.y - yp.y * value.x - yp.z * value.w;
-
-            this.yaw = yaw;
-            this.pitch = pitch;
-            this.roll = atan2(rollZ, rollW) * 2;
-         }
-         else
-         {
-            // 90 degrees pitch case
-            double sin45 = sin(Pi/4);
-            double yawW = sin45 * value.w + sin45 * value.x;
-            double yawY = sin45 * value.y + sin45 * value.z;
-
-            this.yaw = atan2(yawY, yawW) * 2;
-            this.pitch = Pi/2;
-            this.roll = 0;
-         }
-      }
-      get
-      {
-         double sYaw   = sin( yaw   / 2 );
-         double cYaw   = cos( yaw   / 2 );
-         double sPitch = sin( pitch / 2 );
-         double cPitch = cos( pitch / 2 );
-         double sRoll  = sin( roll  / 2 );
-         double cRoll  = cos( roll  / 2 );
-         Quaternion yp = { cPitch * cYaw, sPitch * cYaw, cPitch * sYaw, sPitch * sYaw };
-
-         value.w = yp.w * cRoll - yp.z * sRoll;
-         value.x = yp.x * cRoll - yp.y * sRoll;
-         value.y = yp.y * cRoll + yp.x * sRoll;
-         value.z = yp.z * cRoll + yp.w * sRoll;
-      }
-   };
-
-   void Add(Euler e1, Euler e2)
-   {
-      yaw   = e1.yaw   + e2.yaw;
-      pitch = e1.pitch + e2.pitch;
-      roll  = e1.roll  + e2.roll;
-   }
-};
+public enum EulerRotationOrder { xyz, xzy, yxz, yzx, zxy, zyx };
 
 public struct Quaternion
 {
@@ -130,6 +69,30 @@ public struct Quaternion
       rotation.Roll(euler.roll);
       result.Multiply(rotation, this);
       Normalize(result);
+   }
+
+   void RotationEuler(Euler euler, EulerRotationOrder rotationOrder)
+   {
+      Quaternion qPitch, qYaw, qRoll;
+      qPitch.RotationAxis({ 1,0,0 }, euler.pitch);
+      qYaw.RotationAxis  ({ 0,1,0 }, euler.yaw);
+      qRoll.RotationAxis ({ 0,0,1 }, euler.roll);
+      rotateQuats(qPitch, qYaw, qRoll, rotationOrder);
+   }
+
+   static void rotateQuats(Quaternion qPitch, Quaternion qYaw, Quaternion qRoll, EulerRotationOrder rotationOrder)
+   {
+      Quaternion q, a;
+      switch(rotationOrder)
+      {
+         case xyz: a.Multiply(qYaw,   qPitch); q.Multiply(qRoll,  a); break;
+         case xzy: a.Multiply(qRoll,  qPitch); q.Multiply(qYaw,   a); break;
+         case yxz: a.Multiply(qPitch, qYaw);   q.Multiply(qRoll,  a); break;
+         case yzx: a.Multiply(qRoll,  qYaw);   q.Multiply(qPitch, a); break;
+         case zyx: a.Multiply(qYaw,   qRoll);  q.Multiply(qPitch, a); break;
+         default:
+         case zxy: a.Multiply(qPitch, qRoll);  q.Multiply(qYaw,   a); break;
+      }
    }
 
    void RotationDirection(const Vector3D direction)
@@ -302,12 +265,13 @@ public struct Quaternion
 
    void ToDirection(Vector3D direction)
    {
-      /*
-      Vector3Df vector { 0,0,1 };
+/*
+      Vector3D vector { 0,0,1 };
       Matrix mat;
       mat.RotationQuaternion(this);
-      direction.Transform(vector, mat);
-      */
+      direction.MultMatrix(vector, mat);
+*/
+
       direction.x = (double)(    2 * ( x*z - w*y ));
       direction.y = (double)(    2 * ( y*z + w*x ));
       direction.z = (double)(1 - 2 * ( x*x + y*y ));
@@ -316,5 +280,121 @@ public struct Quaternion
    void Inverse(const Quaternion source)
    {
       this = { -source.w, source.x, source.y, source.z };
+   }
+};
+
+static struct RotationOrderProperties
+{
+   int yaw, pitch, roll;    // order of yaw, pitch & roll in the rotation order
+   int t0y, t0x, s0y, s0x;  // atan2() terms and signs for 1st component
+   int t1, s1;              // term for determining Gimbal lock and resolving 2nd component with asin()
+   int t2y, t2x, s2y, s2x;  // atan2() terms and signs for 3rd component
+   int fy, fx, sfy, sfx;    // Gimbal lock fallback terms & signs for atan2()
+};
+
+static RotationOrderProperties rotProps[EulerRotationOrder] =
+{
+   // YAW PITCH ROLL | t0y    t0x   s0y s0x | t1     s1 | t2y    t2x   s2y s2x | fy     fx    sfy sfx
+   {  1,  0,    2,     2*4+1, 2*4+2,  1, 1,   2*4+0, -1,  1*4+0, 0*4+0,  1,  1,  0*4+1, 0*4+2,  1,  1 }, // xyz
+   {  2,  0,    1,     1*4+2, 1*4+1, -1, 1,   1*4+0,  1,  2*4+0, 0*4+0, -1,  1,  0*4+2, 0*4+1,  1, -1 }, // xzy
+   {  0,  1,    2,     2*4+0, 2*4+2, -1, 1,   2*4+1,  1,  0*4+1, 1*4+1, -1,  1,  0*4+2, 0*4+0, -1, -1 }, // yxz
+   {  0,  2,    1,     0*4+2, 0*4+0,  1, 1,   0*4+1, -1,  2*4+1, 1*4+1,  1,  1,  1*4+2, 1*4+0,  1,  1 }, // yzx
+   {  2,  1,    0,     1*4+0, 1*4+1,  1, 1,   1*4+2, -1,  0*4+2, 2*4+2,  1,  1,  0*4+1, 0*4+0,  1, -1 }, // zxy
+   {  1,  2,    0,     0*4+1, 0*4+0, -1, 1,   0*4+2,  1,  1*4+2, 2*4+2, -1,  1,  1*4+0, 1*4+1, -1, -1 }  // zyx
+};
+
+
+// FIXME: Having this before Quaternion class now causes problems!!! (Since adding FromQuaternion() ?)
+public struct Euler
+{
+   Degrees yaw, pitch, roll;
+
+   void FromMatrix(const Matrix m, EulerRotationOrder order)
+   {
+      Degrees values[3];
+      RotationOrderProperties p = rotProps[order];
+      double v = m.array[p.t1];
+      if(fabs(v) <= 1.0 - 0.000005)
+      {
+         values[0] = atan2(p.s0y * m.array[p.t0y], p.s0x * m.array[p.t0x]);
+         //values[1] = atan2(p.s1 * v, sqrt(1.0 - v * v));
+         //values[1] = atan2(p.s1 * m.array[t1], sqrt(m.array[p.t0y]*m.array[p.t0y] + m.array[p.t0x]*m.array[p.t0x]));
+         values[1] = asin(p.s1 * v);
+         values[2] = atan2(p.s2y * m.array[p.t2y], p.s2x * m.array[p.t2x]);
+      }
+      else
+      {
+         values[0] = Pi + atan2(p.sfy * m.array[p.fy], p.sfx * m.array[p.fx]);
+         values[1] = (v * p.s1) < 0 ? -Pi/2 : Pi/2;
+         values[2] = 0;
+      }
+      this = { values[p.yaw], values[p.pitch], values[p.roll] };
+   }
+
+   void FromQuaternion(const Quaternion q, EulerRotationOrder order)
+   {
+      Matrix m;
+      m.RotationQuaternion(q);
+      FromMatrix(m, order);
+   }
+
+   property Quaternion
+   {
+      // NOTE: This assumes yaw, pitch, roll (yxz) order
+      set
+      {
+         double y = 2 * ( value.y*value.z + value.w*value.x );
+         if(fabs(y) <= 1.0 - 0.000005)
+         {
+            double x =     2 * ( value.x*value.z - value.w*value.y );
+            double z = 1 - 2 * ( value.x*value.x + value.y*value.y );
+            Angle yaw = -atan2(x, z);
+            Angle pitch = atan2(y, sqrt(x * x + z * z));
+            double sYaw = sin( yaw / 2 );
+            double cYaw = cos( yaw / 2 );
+            double sPitch = sin( pitch / 2 );
+            double cPitch = cos( pitch / 2 );
+            Quaternion yp = { cPitch * cYaw, sPitch * cYaw, cPitch * sYaw, sPitch * sYaw };
+            double rollW = yp.w * value.w + yp.x * value.x + yp.y * value.y + yp.z * value.z;
+            double rollZ = yp.w * value.z + yp.x * value.y - yp.y * value.x - yp.z * value.w;
+
+            this.yaw = yaw;
+            this.pitch = pitch;
+            this.roll = atan2(rollZ, rollW) * 2;
+         }
+         else
+         {
+            // 90 degrees pitch case
+            double sin45 = sin(Pi/4);
+            double yawW = sin45 * value.w + sin45 * value.x;
+            double yawY = sin45 * value.y + sin45 * value.z;
+
+            this.yaw = atan2(yawY, yawW) * 2;
+            this.pitch = Pi/2;
+            this.roll = 0;
+         }
+      }
+      get
+      {
+         double sYaw   = sin( yaw   / 2 );
+         double cYaw   = cos( yaw   / 2 );
+         double sPitch = sin( pitch / 2 );
+         double cPitch = cos( pitch / 2 );
+         double sRoll  = sin( roll  / 2 );
+         double cRoll  = cos( roll  / 2 );
+         Quaternion yp = { cPitch * cYaw, sPitch * cYaw, cPitch * sYaw, sPitch * sYaw };
+
+         value.w = yp.w * cRoll - yp.z * sRoll;
+         value.x = yp.x * cRoll - yp.y * sRoll;
+         value.y = yp.y * cRoll + yp.x * sRoll;
+         value.z = yp.z * cRoll + yp.w * sRoll;
+      }
+   };
+
+   void Add(Euler e1, Euler e2)
+   {
+      yaw   = e1.yaw   + e2.yaw;
+      pitch = e1.pitch + e2.pitch;
+      roll  = e1.roll  + e2.roll;
    }
 };
