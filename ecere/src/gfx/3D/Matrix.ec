@@ -230,4 +230,71 @@ public union Matrix
       set { RotationQuaternion(value); }
       get { value.RotationMatrix(this); }
    }
+private:
+   property Vector3D translation
+   {
+      get { value = { m[3][0], m[3][1], m[3][2] }; }
+   }
+   void extractScaling(Matrix r, Vector3D scaling)
+   {
+      Vector3D x { m[0][0], m[0][1], m[0][2] };
+      Vector3D y { m[1][0], m[1][1], m[1][2] };
+      Vector3D z { m[2][0], m[2][1], m[2][2] };
+      Vector3D s
+      {
+         x = sqrt(x.x * x.x + x.y * x.y + x.z * x.z),
+         y = sqrt(y.x * y.x + y.y * y.y + y.z * y.z),
+         z = sqrt(z.x * z.x + z.y * z.y + z.z * z.z)
+      };
+      Vector3D orth;
+
+      { double ix = 1.0 / s.x; x.x *= ix; x.y *= ix; x.z *= ix; }
+      { double iy = 1.0 / s.y; y.x *= iy; y.y *= iy; y.z *= iy; }
+      { double iz = 1.0 / s.z; z.x *= iz; z.y *= iz; z.z *= iz; }
+
+      orth.CrossProduct(z, y);
+      if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(x.x)) ||
+         (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(x.y)) ||
+         (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(x.z)))
+      {
+         x = orth;
+         s.x *= -1;
+      }
+
+      orth.CrossProduct(x, z);
+      if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(y.x)) ||
+         (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(y.y)) ||
+         (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(y.z)))
+      {
+         y = orth;
+         s.y *= -1;
+      }
+
+      orth.CrossProduct(x, y);
+      if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(z.x)) ||
+         (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(z.y)) ||
+         (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(z.z)))
+      {
+         z = orth;
+         s.z *= -1;
+      }
+
+      if(scaling != null)
+         scaling = s;
+      if(r != null)
+      {
+         r.m[0][0] = x.x, r.m[0][1] = x.y, r.m[0][2] = x.z, r.m[0][3] = 0;
+         r.m[1][0] = y.x, r.m[1][1] = y.y, r.m[1][2] = y.z, r.m[1][3] = 0;
+         r.m[2][0] = z.x, r.m[2][1] = z.y, r.m[2][2] = z.z, r.m[2][3] = 0;
+         r.m[3][0] = 0, r.m[3][1] = 0, r.m[3][2] = 0, r.m[3][3] = 1;
+      }
+   }
+   property Vector3D scaling
+   {
+      get { extractScaling(null, value); }
+   }
+   property Quaternion orientation // This assumes it is a rotation matrix only!
+   {
+      get { value.RotationMatrix(this); }
+   }
 };

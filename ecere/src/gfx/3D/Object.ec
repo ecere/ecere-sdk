@@ -30,6 +30,27 @@ public struct Transform
    Vector3D position;
    Quaternion orientation;
    Vector3Df scaling;
+
+   property Matrix
+   {
+      set
+      {
+         Vector3D s = value.scaling;
+         Matrix r;
+         // bool flipWindings = Sgn(s.x) * Sgn(s.y) * Sgn(s.z) < 0;
+         value.extractScaling(r, s);
+         scaling = { (float)s.x, (float)s.y, (float)s.z };
+         orientation = r.orientation;
+         position = value.translation;
+      }
+      get
+      {
+         value.Identity();
+         value.Scale(scaling.x, scaling.y, scaling.z);
+         value.Rotate(orientation);
+         value.Translate(position.x, position.y, position.z);
+      }
+   }
 };
 
 /*static float ease(float t, float a, float b)
