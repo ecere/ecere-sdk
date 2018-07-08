@@ -14,6 +14,7 @@ public class ObjectFormat
    }
 
    virtual bool ::Load(Object object, const char * fileName, DisplaySystem displaySystem);
+   virtual bool ::Save(Object object, const char * fileName);
 };
 
 // TODO: Review these:
@@ -734,6 +735,34 @@ public:
       if(format)
       {
          if((format.Load(this, fileName, displaySystem)))
+            result = true;
+      }
+      /*if(!result)
+          ErrorLogCode(GERR_LOAD_OBJECT_FAILED, fileName);*/
+      return result;
+   }
+
+   bool Save(const char * fileName, const char * type)
+   {
+      char ext[MAX_EXTENSION];
+      subclass(ObjectFormat) format;
+      OldLink link;
+      bool result = false;
+
+      if(!type && fileName)
+         type = strlwr(GetExtension(fileName, ext));
+
+      for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
+      {
+         format = link.data;
+         if(format.extension && !strcmp(format.extension, type))
+            break;
+      }
+      if(!link) format = null;
+
+      if(format)
+      {
+         if((format.Save(this, fileName)))
             result = true;
       }
       /*if(!result)
