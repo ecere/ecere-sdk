@@ -192,12 +192,15 @@ class PictureEdit : Window
 
    void OnUnloadGraphics()
    {
-      void * picture = bitmap.picture, * palette = bitmap.palette;
-      bitmap.picture = null;
-      bitmap.palette = null;
-      bitmap.Free();
-      bitmap.picture = picture;
-      bitmap.palette = palette;
+      if(bitmap)
+      {
+         void * picture = bitmap.picture, * palette = bitmap.palette;
+         bitmap.picture = null;
+         bitmap.palette = null;
+         bitmap.Free();
+         bitmap.picture = picture;
+         bitmap.palette = palette;
+      }
       delete bitmapNotIndexed;
    }
 
