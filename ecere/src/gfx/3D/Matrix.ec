@@ -211,7 +211,7 @@ public union Matrix
 
    void ToEuler(Euler euler)
    {
-      if(fabs(m[2][1]) <= 1.0 - 0.000005)
+      /*if(fabs(m[2][1]) <= 1.0 - 0.000005)
       {
          euler.yaw   = atan2(-m[2][0], m[2][2]);
          euler.pitch = asin ( m[2][1]);
@@ -223,6 +223,8 @@ public union Matrix
          euler.pitch = Pi/2;
          euler.roll = 0;
       }
+      */
+      euler.FromMatrix(this, yxz);
    }
 
    property Quaternion
