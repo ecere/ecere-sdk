@@ -287,7 +287,10 @@ void System_SetEnvironment(const char * envName, const char * envValue)
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvName);
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvValue);
 #else
-   setenv(envName, envValue, 1);
+   if(envValue)
+      setenv(envName, envValue, 1);
+   else
+      unsetenv(envName);
 #endif
 }
 
