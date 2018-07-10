@@ -31,6 +31,7 @@ public class ToolTip : Window
    String tip;
    int margin; margin = 2;
    Point offset; offset = { 0, 20 };
+   bool over;
 
    public property const String tip
    {
@@ -184,6 +185,7 @@ public class ToolTip : Window
       ToolTip toolTip = ToolTip::Find(this);
       if(toolTip)
       {
+         toolTip.over = true;
          toolTip.pos = { x, y };
          toolTip.closeTimer.Stop();
          if(!mods.isSideEffect && !toolTip.created && rootWindow.active && !mods.left)
@@ -198,7 +200,9 @@ public class ToolTip : Window
       ToolTip toolTip = ToolTip::Find(this);
       if(toolTip)
       {
-         toolTip.timer.Stop();
+         toolTip.over = false;
+         if(toolTip.timer.started)
+            toolTip.timer.Stop();
          toolTip.closeTimer.Start();
          return toolTip.OrigOnMouseLeave ? toolTip.OrigOnMouseLeave(this, mods) : true;
       }
@@ -220,7 +224,7 @@ public class ToolTip : Window
    bool Window::OnMouseMoveHandler(int x, int y, Modifiers mods)
    {
       ToolTip toolTip = ToolTip::Find(this);
-      if(toolTip)
+      if(toolTip && toolTip.over)
       {
          toolTip.pos = { x, y };
          toolTip.closeTimer.Stop();

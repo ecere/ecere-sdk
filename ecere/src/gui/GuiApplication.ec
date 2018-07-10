@@ -760,7 +760,7 @@ public:
                }
 
                for(child = desktop.children.first; child; child = child.next)
-                  if(child.created && child.visible)
+                  if(child.created && child.visible && !child.interim)
                      break;
                if(!child) break;
 
