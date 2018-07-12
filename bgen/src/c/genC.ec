@@ -298,7 +298,7 @@ class CGen : Gen
 
    void processClasses(BNamespace n)
    {
-      Class cl; IterClass cla { n.ns };
+      Class cl; IterClass cla { n.ns, list = lib.options.classList };
       while((cl = cla.next(all)))
       {
          // don't generate templated classes just because they are listed
@@ -394,7 +394,7 @@ class CGen : Gen
 
    void processDefines(BNamespace n)
    {
-      DefinedExpression df; IterDefine def { n.ns };
+      DefinedExpression df; IterDefine def { n.ns, list = lib.options.functionList };
       while((df = def.next()))
       {
          BDefine d = df;
@@ -419,7 +419,7 @@ class CGen : Gen
 
    void processFunctions(BNamespace n)
    {
-      GlobalFunction fn; IterFunction func { n.ns };
+      GlobalFunction fn; IterFunction func { n.ns, list = lib.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;

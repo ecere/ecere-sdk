@@ -240,18 +240,31 @@ private:
 };
 struct INFrame { uintptr ns; uint cut; };
 
+public struct BlackWhiteList
+{
+   bool black;
+   AVLTree<const String> avl;
+
+   bool match(const String name)
+   {
+      bool test = avl ? avl.Find(name) == null : false;
+      Print(test ? "" : "");
+      return !avl || black == (avl.Find(name) == null);
+   }
+};
+
 public struct IterDefine
 {
 public:
    NameSpace * ns;
+   BlackWhiteList list;
    DefinedExpression df;
    property DefinedExpression { get { return df; } }
    void reset() { df = null; _it = null; }
    DefinedExpression next()
    {
-      if(!_it)
-         _it = (BTNamedLink)ns->defines.first;
-      else
+      _it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)ns->defines.first;
+      while(_it && !list.match(((DefinedExpression)_it.data).name))
          _it = (BTNamedLink)((BTNode)_it).next;
       df = _it ? _it.data : null;
       return df;
@@ -264,14 +277,14 @@ public struct IterFunction
 {
 public:
    NameSpace * ns;
+   BlackWhiteList list;
    GlobalFunction fn;
    property GlobalFunction { get { return fn; } }
    void reset() { fn = null; _it = null; }
    GlobalFunction next()
    {
-      if(!_it)
-         _it = (BTNamedLink)ns->functions.first;
-      else
+      _it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)ns->functions.first;
+      while(_it && !list.match(((GlobalFunction)_it.data).name))
          _it = (BTNamedLink)((BTNode)_it).next;
       fn = _it ? _it.data : null;
       return fn;
@@ -305,13 +318,14 @@ public struct IterClass
 {
 public:
    NameSpace * ns;
+   BlackWhiteList list;
    Class cl;
    property Class { get { return cl; } }
    void reset() { cl = null; _it = null; }
    Class next(ClassFilter filter)
    {
       _it = _it ? (BTNamedLink)((BTNode)_it).next : (BTNamedLink)ns->classes.first;
-      while(_it && !filter.match(((Class)_it.data).type))
+      while(_it && !(filter.match(((Class)_it.data).type) && list.match(((Class)_it.data).name)))
          _it = (BTNamedLink)((BTNode)_it).next;
       cl = _it ? _it.data : null;
       return cl;
