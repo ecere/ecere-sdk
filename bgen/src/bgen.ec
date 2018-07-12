@@ -468,25 +468,17 @@ public class BGen : ConsoleApplication // <ArgSym>
             //PrintLn("doing: ", g.dir.lang, " - ", g.lib.bindingName, " -> ", g.dir.outputDir);
             if(g.lib.name)
             {
-               // todo: validate g.lib.name?
-               /*if(!g.lib.funcRename)
-               {
-                  plug = true;
-                  // tocheck: must keep it somewhere?
-                  //g.lib.funcRename = def ? def.lib.funcRename : null;
-               }*/
+               GenOptions options = g.lib.readOptionsFile();
+               if(options)
+                  g.lib.options = options;
                if(!g.lib.options)
                   g.lib.options = optionsForAll;
                if(!g.lib.options)
                   g.lib.options = addOptions();
                if(g.init())
                {
-                  //parseInspection(null, null, "extern bool (*uTF8Validate)(const char * source);\n");
-                  //parseInspection(null, null, "extern const char * __ecereNameSpace__ecere__GetTranslatedString(const String name, const char * string, const char * stringAndContext);\n");
-                  //parseInspection(null, null, "extern Application __ecere_COM_Initialize(bool guiApp, int argc, char * argv[]);\n");
-                  //parseInspection(null, null, "Test fname(...);\n");
-                  //parseInspection(null, null, "myFnPtr = (void (*)(void))myVoidPtr;");
-                  //parseInspection(null, null, "void (*myFnPtr)(void) = (void (*)(void))myVoidPtr;");
+                  // todo: add this as a 'tell' option, for generating complete lists from libs
+                  //g.outLists();
                   g.process();
                   g.generate();
                   if(g.lib.verbose)

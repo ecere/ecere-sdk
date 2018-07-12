@@ -74,6 +74,39 @@ private:
 
       return true;
    }
+   void outLists()
+   {
+      String s = PrintString("out-", lib.moduleName, ".bgen.econ");
+      File f = FileOpen(s, write);
+      if(f)
+      {
+         GenOptions lists { defineList.avl = { }, functionList.avl = { }, classList.avl = { } };
+         IterNamespace itn { module = mod, processFullName = true };
+         while(itn.next())
+         {
+            BNamespace n = (NameSpacePtr)itn.ns;
+            {
+               IterDefine itd { n.ns };
+               while(itd.next())
+                  lists.defineList.avl.Add(CopyString(itd.df.name));
+            }
+            {
+               IterFunction itf { n.ns, list = lib.options.functionList };
+               while(itf.next())
+                  lists.functionList.avl.Add(CopyString(itf.fn.name));
+            }
+            {
+               IterClass itc { n.ns };
+               while(itc.next(all))
+                  lists.classList.avl.Add(CopyString(itc.cl.name));
+            }
+         }
+         WriteECONObject(f, class(GenOptions), lists, 0);
+         delete lists;
+         delete f;
+      }
+      delete s;
+   }
    virtual void process();
    virtual void generate();
    virtual void printOutputFiles();
@@ -217,15 +250,22 @@ Library createLibrary(const char * name)
 
 class GenOptions : struct
 {
+public:
    Map<String, String> funcRename;
+   BlackWhiteList defineList;
+   BlackWhiteList functionList;
+   BlackWhiteList classList;
 
    ~GenOptions()
    {
-      if(funcRename)
-      {
-         funcRename.Free();
-         delete funcRename;
-      }
+      if(funcRename) funcRename.Free();
+      delete funcRename;
+      if(defineList.avl) defineList.avl.Free();
+      delete defineList.avl;
+      if(functionList.avl) functionList.avl.Free();
+      delete functionList.avl;
+      if(classList.avl) classList.avl.Free();
+      delete classList.avl;
    }
 }
 
@@ -266,6 +306,32 @@ public:
          bindingName = ecereCOM ? CopyString("eC") : CopyString(moduleName);
       if(!defineName)
          defineName = CopyAllCapsString(bindingName);
+   }
+
+   GenOptions readOptionsFile()
+   {
+      GenOptions options = null;
+      String s;
+      s = PrintString(moduleName, ".bgen.econ");
+      if(FileExists(s).isFile)
+      {
+         File f = FileOpen(s, read);
+         if(f)
+         {
+            ECONParser parser { f = f };
+            JSONResult jsonResult;
+            jsonResult = parser.GetObject(class(GenOptions), &options);
+            if(jsonResult == success)
+            {
+               // nothing to do
+            }
+            else
+               PrintLn("error: failed to load library options file!");
+            delete f;
+         }
+      }
+      delete s;
+      return options;
    }
 
    ~Library()

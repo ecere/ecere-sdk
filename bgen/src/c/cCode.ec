@@ -44,7 +44,7 @@ static void cInCodeGlobalFunctionPointers(AST out, CGen g)
    z.printxln("\n// Global Functions Pointers\n");
    while(ns.next())
    {
-      GlobalFunction fn; IterFunction func { ns.ns };
+      GlobalFunction fn; IterFunction func { ns.ns, list = g.lib.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
@@ -65,7 +65,7 @@ static void cInCodeVirtualMethods(AST out, CGen g)
    z.printxln("\n// Virtual Methods\n");
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(all)))
       {
          if(!cl.templateClass)
@@ -97,7 +97,7 @@ static void cInCodeMethodFunctionPointers(AST out, CGen g)
    z.printxln("\n// Methods Function Pointers\n");
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(all)))
       {
          BClass c = cl;
@@ -137,7 +137,7 @@ static void cInCodeProperties(AST out, CGen g)
    z.printxln("\n// Properties\n");
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(all)))
       {
          BClass c = cl;
@@ -167,7 +167,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(bitOnly)))
       {
          BClass c = cl;
@@ -182,7 +182,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(enumOnly)))
       {
          BClass c = cl;
@@ -197,7 +197,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(unitOnly)))
       {
          BClass c = cl;
@@ -212,7 +212,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(systemOnly)))
       {
          BClass c = cl;
@@ -230,7 +230,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(structOnly)))
       {
          BClass c = cl;
@@ -245,7 +245,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(noHeadOnly)))
       {
          BClass c = cl;
@@ -260,7 +260,7 @@ static void cInCodeClassPointers(AST out, CGen g)
    ns.ready();
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(normalOnly)))
       {
          BClass c = cl;
@@ -288,7 +288,7 @@ static void cInCodeVirtualMethodIDs(AST out, CGen g)
    z.printxln("\n// Virtual Method IDs\n");
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(all)))
       {
          BClass c = cl;
@@ -320,7 +320,7 @@ static void cInCodeGlobalFunctions(AST out, CGen g)
    z.printxln("\n// Global Functions\n");
    while(ns.next())
    {
-      GlobalFunction fn; IterFunction func { ns.ns };
+      GlobalFunction fn; IterFunction func { ns.ns, list = g.lib.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
@@ -343,7 +343,7 @@ static void cInCodeInitClasses(AST out, CGen g)
    IterNamespace ns { module = g.mod };
    while(ns.next())
    {
-      Class cl; IterClass cla { ns.ns };
+      Class cl; IterClass cla { ns.ns, list = g.lib.options.classList };
       while((cl = cla.next(all)))
       {
          bool content = false;
@@ -433,7 +433,7 @@ static void cInCodeInitFunctions(AST out, CGen g)
    z.printxln("         // Set up all the function pointers, ...");
    while(ns.next())
    {
-      GlobalFunction fn; IterFunction func { ns.ns };
+      GlobalFunction fn; IterFunction func { ns.ns, list = g.lib.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
