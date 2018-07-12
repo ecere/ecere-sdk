@@ -408,4 +408,36 @@ public struct GLFB
 #endif
       return result;
    }
+
+   void copy(const GLFB src, const Box srcExtent, const Box dstExtent, ClearType buffers, bool filter)
+   {
+      int sx = srcExtent != null ? srcExtent.left : 0;
+      int sy = srcExtent != null ? srcExtent.top : 0;
+      int sx1 = srcExtent != null ? srcExtent.right : src.w;
+      int sy1 = srcExtent != null ? srcExtent.bottom : src.h;
+      int dx = dstExtent != null ? dstExtent.left : 0;
+      int dy = dstExtent != null ? dstExtent.top : 0;
+      int dx1 = dstExtent != null ? dstExtent.right : w;
+      int dy1 = dstExtent != null ? dstExtent.bottom : h;
+
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+      glBindFramebuffer(GL_READ_FRAMEBUFFER, src.fbo);
+      glBlitFramebuffer(
+         sx, sy, sx1, sy1,
+         dx, dy, dx1, dy1,
+         buffers == colorAndDepth ? GL_COLOR_BUFFER_BIT :
+         buffers == depthBuffer ? GL_DEPTH_BUFFER_BIT :
+         (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
+         filter ? GL_LINEAR : GL_NEAREST);
+   }
+
+   void read(Bitmap bitmap, ClearType buffer, bool sRGB)
+   {
+      glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+      glReadBuffer(buffer == depthBuffer ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0);
+      if(sRGB) glEnable( GL_FRAMEBUFFER_SRGB );
+      glReadPixels(0, 0, bitmap.width, bitmap.height, GL_BGRA, GL_UNSIGNED_BYTE, bitmap.picture);
+      if(sRGB) glDisable( GL_FRAMEBUFFER_SRGB );
+      glBindFramebuffer(GL_FRAMEBUFFER, 0);
+   }
 };
