@@ -5,6 +5,68 @@ import "HTMLView"
 import "IDESettings"
 import "SettingsDialog"
 
+public struct BlackWhiteList
+{
+   bool black;
+   AVLTree<const String> avl;
+
+   bool match(const String name)
+   {
+      bool test = avl ? avl.Find(name) == null : false;
+      Print(test ? "" : "");
+      return !avl || black == (avl.Find(name) == null);
+   }
+};
+
+class GenOptions : struct
+{
+public:
+   Map<String, String> funcRename;
+   BlackWhiteList defineList;
+   BlackWhiteList functionList;
+   BlackWhiteList classList;
+
+   ~GenOptions()
+   {
+      if(funcRename) funcRename.Free();
+      delete funcRename;
+      if(defineList.avl) defineList.avl.Free();
+      delete defineList.avl;
+      if(functionList.avl) functionList.avl.Free();
+      delete functionList.avl;
+      if(classList.avl) classList.avl.Free();
+      delete classList.avl;
+   }
+}
+
+Map<String, GenOptions> moduleGenOptions { };
+
+GenOptions readOptionsFile(const String modulePath)
+{
+   GenOptions options = null;
+   String s;
+   s = PrintString(modulePath, ".bgen.econ");
+   if(FileExists(s).isFile)
+   {
+      File f = FileOpen(s, read);
+      if(f)
+      {
+         ECONParser parser { f = f };
+         JSONResult jsonResult;
+         jsonResult = parser.GetObject(class(GenOptions), &options);
+         if(jsonResult == success)
+         {
+            // nothing to do
+         }
+         else
+            PrintLn("error: failed to load library options file!");
+         delete f;
+      }
+   }
+   delete s;
+   return options;
+}
+
 IDESettings ideSettings;
 
 IDESettingsContainer settingsContainer
@@ -37,6 +99,8 @@ static __attribute__((unused)) void Dummy()
 
 static bool editing = true;
 
+char tmpLink[1024];
+
 enum CodeObjectType { typeClass, typeData, typeMethod, typeEvent, typeProperty, typeNameSpace, typeDataType, typeEnumValue, typeDataPrivate, typeMethodPrivate, typePropertyPrivate };
 
 static const char * iconNames[CodeObjectType] =
@@ -53,6 +117,23 @@ static const char * iconNames[CodeObjectType] =
    "<:ecere>constructs/methodPrivate.png",
    "<:ecere>constructs/propertyPrivate.png"
 };
+
+const char * getIconName(CodeObjectType type)
+{
+   if(outputtingHTML)
+   {
+      static char tmpIcon[1024];
+      int level = apiLevel;
+      tmpIcon[0] = 0;
+      while(level--)
+         strcat(tmpIcon, "../");
+      strcat(tmpIcon, "images");
+      strcat(tmpIcon, iconNames[type] + 18);
+      return tmpIcon;
+   }
+   else
+      return iconNames[type];
+}
 
 void GetTemplateString(Class c, char * templateString)
 {
@@ -81,7 +162,8 @@ void GetTemplateString(Class c, char * templateString)
             TrimRSpaces(curName, curName);
             pc = eSystem_FindClass(m, curName);
             if(pc)
-               sprintf(d, "%s<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", !strncmp(curName, "const ", 6) ? "const " : "", pc, pc.name);
+               sprintf(d, "%s<a href=\"%s\" style=\"text-decoration: none;\">%s</a>",
+                  !strncmp(curName, "const ", 6) ? "const " : "", getLink(pc, tmpLink), pc.name);
             else
                strcat(d, curName);
          }
@@ -125,12 +207,10 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                {
                   if(type._class.registered)
                   {
-                     char hex[20];
+                     char tmpLink[1024];
                      const char * s = type._class.registered.name;
-                     sprintf(hex, "%p", type._class.registered.templateClass ? type._class.registered.templateClass : type._class.registered);
-                     strcat(string, "<a href=\"api://");
-                     strcat(string, hex);
-                     strcat(string, "\" style=\"text-decoration: none;\">");
+                     strcatf(string, "<a href=\"%s\" style=\"text-decoration: none;\">",
+                        getLink(type._class.registered.templateClass ? type._class.registered.templateClass : type._class.registered, tmpLink));
                      if(strchr(s, '<'))
                      {
                         char n[1024];
@@ -498,6 +578,95 @@ enum DocumentationItem
    returnValue
 };
 
+bool outputtingHTML = false;
+int apiLevel = 0;
+
+const char * getAnchor(const void * object, char * output)
+{
+   if(outputtingHTML)
+   {
+      DataRow row = mainForm.browser.FindSubRow((int64)(intptr)object);
+      output[0] = 0;
+      if(row)
+      {
+         APIPage page = row.GetData(null);
+         if(page)
+         {
+            // Anchor
+            if(page && page.page)
+            {
+               switch(row.tag)
+               {
+                  case 1: strcat(output, "#Classes"); break;
+                  case 2: strcat(output, "#Functions"); break;
+                  case 3: strcat(output, "#Definitions"); break;
+                  case 4: strcat(output, "#VirtualMethods"); break;
+                  case 5: strcat(output, "#Methods"); break;
+                  case 6: strcat(output, "#Members"); break;
+                  case 7: strcat(output, "#Conversions"); break;
+                  case 8: strcat(output, "#EnumerationValues"); break;
+                  default: strcatf(output, "#%s", row.string);
+               }
+            }
+         }
+      }
+   }
+   else
+      sprintf(output, "%p", object);
+   return output;
+}
+
+void addLinkPart(DataRow row, char * output, bool thisItem)
+{
+   APIPage page = row.GetData(null);
+   if(page)
+   {
+      if(row.parent)
+         addLinkPart(row.parent, output, false);
+
+      if(!thisItem || !page.page)
+      {
+         strcat(output, page.name);
+         if(thisItem)
+            strcat(output, ".html");
+         else
+            strcat(output, "/");
+      }
+      if(thisItem && page.page)
+      {
+         switch(row.tag)
+         {
+            case 1: strcat(output, "#Classes"); break;
+            case 2: strcat(output, "#Functions"); break;
+            case 3: strcat(output, "#Definitions"); break;
+            case 4: strcat(output, "#VirtualMethods"); break;
+            case 5: strcat(output, "#Methods"); break;
+            case 6: strcat(output, "#Members"); break;
+            case 7: strcat(output, "#Conversions"); break;
+            case 8: strcat(output, "#EnumerationValues"); break;
+            default: strcatf(output, "#%s", row.string);
+         }
+      }
+   }
+}
+
+const String getLink(const void * object, char * output)
+{
+   if(outputtingHTML)
+   {
+      DataRow row = mainForm.browser.FindSubRow((int64)(intptr)object);
+      int level = apiLevel;
+      output[0] = 0;
+      while(level--)
+         strcat(output, "../");
+      if(row)
+         addLinkPart(row, output, true);
+   }
+   else
+      sprintf(output, "api://%p", object);
+   return output;
+}
+
 static void FigureFileName(char * fileName, Module module, DocumentationType type, void * object, DocumentationItem item, void * data)
 {
    char hex[20];
@@ -799,6 +968,7 @@ class APIPageNameSpace : APIPage
       char nsName[1024], temp[1024];
       NameSpace * ns;
       BTNamedLink link;
+      GenOptions genOptions = module ? moduleGenOptions[module.name] : null;
 
       nsName[0] = 0;
       ns = nameSpace;
@@ -815,7 +985,9 @@ class APIPageNameSpace : APIPage
       if(nsName[0])
       {
          f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
-         f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+         f.Printf($"Module: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink((module && module.name) ? module : null, tmpLink),
+            (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
          f.Printf($"<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n", (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
@@ -831,7 +1003,8 @@ class APIPageNameSpace : APIPage
          ns = ns->parent;
       }
       if(nsName[0])
-         f.Printf($"Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
+         f.Printf($"Parent namespace: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(nameSpace->parent, tmpLink), nsName);
 
       f.Printf("<br>");
       {
@@ -867,7 +1040,8 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeNameSpace], ns, ns->name);
+            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"%s\" style=\"text-decoration: none;\">%s</a></TD>",
+               getIconName(typeNameSpace), getLink(ns, tmpLink), ns->name);
             if(desc)
             {
                if(editing)
@@ -891,10 +1065,14 @@ class APIPageNameSpace : APIPage
       if(nameSpace->classes.first)
       {
          bool first = true;
+         BlackWhiteList * whiteList = genOptions ? &genOptions.classList : null;
+
          for(link = (BTNamedLink)nameSpace->classes.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             Class cl = link.data;
             Module module = cl.module ? cl.module  : this.module;
+            if(whiteList && !whiteList->match(cl.name)) continue;
+
             if(!cl.templateClass) // && !cl.internalDecl)
             {
                char * desc = ReadDoc(module, classDoc, cl, description, null);
@@ -908,7 +1086,8 @@ class APIPageNameSpace : APIPage
 
                f.Printf("<TR>");
 
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? iconNames[typeDataType] : iconNames[typeClass], cl, cl.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"%s\" style=\"text-decoration: none;\">%s</a></TD>",
+                  getIconName((cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? typeDataType : typeClass), getLink(cl, tmpLink), cl.name);
                if(desc)
                {
                   if(editing)
@@ -933,6 +1112,7 @@ class APIPageNameSpace : APIPage
       if(nameSpace->functions.first)
       {
          bool first = true;
+         BlackWhiteList * whiteList = genOptions ? &genOptions.functionList : null;
          for(link = (BTNamedLink)nameSpace->functions.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             GlobalFunction function = link.data;
@@ -940,6 +1120,8 @@ class APIPageNameSpace : APIPage
             char * desc = ReadDoc(module, functionDoc, function, description, null);
             const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
             if(name) name += 2; else name = function.name;
+
+            if(whiteList && !whiteList->match(name)) continue;
             if(first)
             {
                f.Printf($"<a name=Functions></a><H3>Functions</H3><BR>\n");
@@ -947,7 +1129,8 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], function, name);
+            f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"%s\" style=\"text-decoration: none;\">%s</a></TD>",
+               getIconName(typeMethod), getLink(function, tmpLink), name);
             if(desc)
             {
                if(editing)
@@ -971,10 +1154,16 @@ class APIPageNameSpace : APIPage
       if(nameSpace->defines.first)
       {
          bool first = true;
+         BlackWhiteList * whiteList = genOptions ? &genOptions.defineList : null;
          for(link = (BTNamedLink)nameSpace->defines.first; link; link = (BTNamedLink)((BTNode)link).next)
          {
             DefinedExpression def = link.data;
-            char * desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
+            char * desc;
+            const char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
+
+            if(whiteList && !whiteList->match(name)) continue;
+
+            desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
             if(first)
             {
                f.Printf($"<a name=Definitions></a><H3>Definitions</H3><BR>\n");
@@ -982,7 +1171,8 @@ class APIPageNameSpace : APIPage
                first = false;
             }
             f.Printf("<TR>");
-            f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", def, iconNames[typeData], def.name);
+            f.Printf("<TD valign=top height=22 nowrap=1><a name=%s></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>",
+               getAnchor(def, tmpLink), getIconName(typeData), def.name);
             f.Printf("<TD valign=top height=22>%s</TD>", def.value);
             if(desc)
             {
@@ -1044,9 +1234,12 @@ class APIPageClass : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+         getLink((module && module.name) ? module : null, tmpLink),
+         (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
-         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(cl.nameSpace, tmpLink), nsName);
 
       {
          const char * classType = null;
@@ -1087,7 +1280,8 @@ class APIPageClass : APIPage
          else if(cl.type == enumClass && !strcmp(cl.base.name, "enum"))
             f.Printf("%s", cl.dataTypeString);
          else
-            f.Printf("<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", cl.base.templateClass ? cl.base.templateClass : cl.base, cl.base.name);
+            f.Printf("<a href=\"%s\" style=\"text-decoration: none;\">%s</a>",
+               getLink(cl.base.templateClass ? cl.base.templateClass : cl.base, tmpLink), cl.base.name);
          f.Printf("<br>\n");
       }
 
@@ -1153,7 +1347,8 @@ class APIPageClass : APIPage
                   dataClass = base;
 
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", item, iconNames[typeEnumValue], item.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><a name=%s></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>",
+                  getAnchor(item, tmpLink), getIconName(typeEnumValue), item.name);
                if(dataClass.type == systemClass)
                {
                   needClass = false;
@@ -1204,7 +1399,8 @@ class APIPageClass : APIPage
                string[0] = 0;
                DocPrintType(type, string, true, false);
 
-               f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeDataType], string);
+               f.Printf("<TD valign=top height=22 nowrap=1><a name=%s></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>",
+                  getAnchor(prop, tmpLink), getIconName(typeDataType), string);
                if(desc)
                {
                   if(editing)
@@ -1252,7 +1448,8 @@ class APIPageClass : APIPage
                   string[0] = 0;
                   DocPrintType(prop.dataType, string, true, false);
 
-                  f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeProperty], prop.name);
+                  f.Printf("<TD valign=top height=22 nowrap=1><a name=%s></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>",
+                     getAnchor(prop, tmpLink), getIconName(typeProperty), prop.name);
                   f.Printf("<TD valign=top height=22 nowrap=1>%s</TD>", string);
                   if(desc)
                   {
@@ -1299,7 +1496,8 @@ class APIPageClass : APIPage
                   ProcessMethodType(method);
 
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", method.dataType.thisClass ? iconNames[typeEvent] : iconNames[typeMethod], method, method.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"%s\" style=\"text-decoration: none;\">%s</a></TD>",
+                  getIconName(method.dataType.thisClass ? typeEvent : typeMethod), getLink(method, tmpLink), method.name);
                if(desc)
                {
                   if(editing)
@@ -1338,7 +1536,8 @@ class APIPageClass : APIPage
                   ProcessMethodType(method);
 
                f.Printf("<TR>");
-               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a></TD>", iconNames[typeMethod], method, method.name);
+               f.Printf("<TD valign=top height=22 nowrap=1><img valign=center src=\"%s\">&nbsp;&nbsp;<a href=\"%s\" style=\"text-decoration: none;\">%s</a></TD>",
+                  getIconName(typeMethod), getLink(method, tmpLink), method.name);
                if(desc)
                {
                   if(editing)
@@ -1440,7 +1639,7 @@ class APIPageClass : APIPage
                }
                else
                   f.Printf(", ");
-               f.Printf("<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", deriv, deriv.name);
+               f.Printf("<a href=\"%s\" style=\"text-decoration: none;\">%s</a>", getLink(deriv, tmpLink), deriv.name);
              }
          }
          if(!first)
@@ -1505,17 +1704,22 @@ class APIPageMethod : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+         getLink((module && module.name) ? module : null, tmpLink),
+         (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       if(nsName[0])
-         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
-      f.Printf("Class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl, cl.name);
+         f.Printf($"Namespace: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(cl.nameSpace, tmpLink), nsName);
+      f.Printf("Class: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+         getLink(cl, tmpLink), cl.name);
       if(method.dataType.staticMethod)
       {
          f.Printf($"this pointer class: None<br>\n");
       }
       else if(method.dataType.thisClass && method.dataType.thisClass.registered && (method.dataType.thisClass.registered != method._class || method.type == virtualMethod))
       {
-         f.Printf($"this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", method.dataType.thisClass.registered, method.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(method.dataType.thisClass.registered, tmpLink), method.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1739,17 +1943,21 @@ class APIPageFunction : APIPage
       f.Printf($"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n<BODY><FONT SIZE=\"3\">\n");
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
-      f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
+      f.Printf($"Module: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+         getLink((module && module.name) ? module : null, tmpLink), (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
 
       if(nsName[0])
-         f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", function.nameSpace, nsName);
+         f.Printf($"Namespace: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(function.nameSpace, tmpLink), nsName);
 
       if(!function.dataType)
          function.dataType = ProcessTypeString(function.dataTypeString, false);
 
       if(function.dataType.thisClass && function.dataType.thisClass.registered)
       {
-         f.Printf($"this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", function.dataType.thisClass.registered, function.dataType.thisClass.registered.name);
+         f.Printf($"this pointer class: <a href=\"%s\" style=\"text-decoration: none;\">%s</a><br>\n",
+            getLink(function.dataType.thisClass.registered, tmpLink),
+            function.dataType.thisClass.registered.name);
       }
 
       // Generate Method Page
@@ -1945,6 +2153,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
    DataRow classesRow = null;
    DataRow functionsRow = null, definesRow = null;
    APIPage page;
+   GenOptions genOptions = module ? moduleGenOptions[module.name] : null;
 
    strcpy(nsName, parentName ? parentName : "");
    if(nameSpace->name)
@@ -1986,6 +2195,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
 
    if(mainNameSpace.classes.first || (comNameSpace && comNameSpace.classes.first))
    {
+      BlackWhiteList * whiteList = genOptions ? &genOptions.classList : null;
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
       {
          if(nameSpace->classes.first)
@@ -1997,8 +2207,11 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                cl = link.data;
                if(!cl.templateClass /*&& !cl.internalDecl*/ && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
                {
-                  if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
-                  AddClass(classesRow, module, cl, nsName, showPrivate);
+                  if(!whiteList || whiteList->match(cl.name))
+                  {
+                     if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
+                     AddClass(classesRow, module, cl, nsName, showPrivate);
+                  }
                }
             }
          }
@@ -2007,6 +2220,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
 
    if(mainNameSpace.functions.first || (comNameSpace && comNameSpace.functions.first))
    {
+      BlackWhiteList * whiteList = genOptions ? &genOptions.functionList : null;
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
       {
          if(nameSpace->functions.first)
@@ -2019,9 +2233,12 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                if(!module || fn.module == module || (!fn.module.name && !strcmp(module.name, "ecere")))
                {
                   const char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
-                  DataRow fnRow;
-                  if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
-                  fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int64)fn;
+                  if(!whiteList || whiteList->match(name))
+                  {
+                     DataRow fnRow;
+                     if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
+                     fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int64)fn;
+                  }
                }
             }
          }
@@ -2030,6 +2247,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
 
    if(mainNameSpace.defines.first || (comNameSpace && comNameSpace.defines.first))
    {
+      BlackWhiteList * whiteList = genOptions ? &genOptions.defineList : null;
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
       {
          if(nameSpace->defines.first)
@@ -2042,9 +2260,12 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                //if(def.module == module)
                {
                   char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
-                  DataRow defRow;
-                  if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
-                  defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int64)def;
+                  if(!whiteList || whiteList->match(name))
+                  {
+                     DataRow defRow;
+                     if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
+                     defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int64)def;
+                  }
                }
             }
          }
@@ -2063,10 +2284,10 @@ static void AddDataMemberToPage(File f, DataMember member, int indent, bool show
    string[0] = 0;
    DocPrintType(member.dataType, string, true, false);
 
-   f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a>", member);
+   f.Printf("<TD valign=top height=22 nowrap=1><a name=%s></a>", getLink(member, tmpLink));
    for(c = 0; c<indent; c++)
       f.Printf("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-   f.Printf("<img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", iconNames[typeData], member.name ? member.name : ((member.type == structMember) ? "(struct)" : "(union)"));
+   f.Printf("<img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", getIconName(typeData), member.name ? member.name : ((member.type == structMember) ? "(struct)" : "(union)"));
    f.Printf("<TD valign=top height=22 nowrap=1>%s</TD>", (member.type == normalMember) ? string : "");
    if(member.type == normalMember)
    {
@@ -2309,6 +2530,44 @@ class AddressBar : Window
    }
 }
 
+void outputHTML(DataRow row, const String dir)
+{
+   APIPage page = row.GetData(null);
+   char filePath[MAX_LOCATION];
+   strcpy(filePath, dir);
+   PathCat(filePath, page.name);
+   strcat(filePath, ".html");
+
+   // TOCHECK: Separate page is generated for things within same page?
+   if(page._class != class(APIPage))
+   {
+      File f;
+      MakeDir(dir); //if(MakeDir(dir))
+
+      f = FileOpen(filePath, write);
+      if(f)
+      {
+         page.Generate(f);
+         delete f;
+      }
+   }
+
+   if(row.firstRow)
+   {
+      DataRow r;
+      char subDir[MAX_LOCATION];
+
+      strcpy(subDir, dir);
+      PathCat(subDir, page.name);
+      for(r = row.firstRow; r; r = r.next)
+      {
+         apiLevel++;
+         outputHTML(r, subDir);
+         apiLevel--;
+      }
+   }
+}
+
 class MainForm : Window
 {
    size = { 1000, 600 };
@@ -2374,6 +2633,38 @@ class MainForm : Window
       }
    };
    MenuDivider { fileMenu };
+   MenuItem fileExport
+   {
+      fileMenu, $"Export to HTML", h, ctrlE;
+
+      bool NotifySelect(MenuItem selection, Modifiers mods)
+      {
+         CodeObjectType i;
+         editing = false;
+         outputtingHTML = true;
+         apiLevel = 0;
+
+         MakeDir("html/images");
+         for(i = 0; i < CodeObjectType::enumSize; i++)
+         {
+            char path[MAX_LOCATION];
+            const String src = iconNames[i];
+            File f = FileOpen(src, read);
+            if(f)
+            {
+               sprintf(path, "html/images/%s", src + 19);
+               f.CopyTo(path);
+               delete f;
+            }
+         }
+
+         outputHTML(browser.currentRow, "html");
+         editing = true;
+         outputtingHTML = false;
+         return true;
+      }
+   };
+   MenuDivider { fileMenu };
    MenuItem fileExit { fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit };
 
    void OpenModule(const char * filePath)
@@ -2421,9 +2712,9 @@ class MainForm : Window
       }
       if(!module)
          eModule_LoadStrict(componentsApp, "ecereCOM", publicAccess /*privateAccess*/);
-      AddComponents(componentsApp, false);
 
       GetLastDirectory(filePath, moduleName);
+
       // Extension, path and lib prefix get removed in Module::name
       if(extension[0])
       {
@@ -2443,6 +2734,21 @@ class MainForm : Window
       }
       if(!module) module = componentsApp;
       homeModule = module;
+
+      if(module)
+      {
+         char path[MAX_LOCATION];
+         if(LocateModule(module.name, path))
+         {
+            GenOptions genOptions;
+            StripExtension(path);
+            genOptions = readOptionsFile(path);
+            if(genOptions)
+               moduleGenOptions[module.name] = genOptions;
+         }
+      }
+      AddComponents(componentsApp, false);
+
       mainForm.browser.SelectRow(mainForm.browser.FindSubRow((int64)module));
 
       SetSymbolsDir(null);
@@ -2506,8 +2812,8 @@ class MainForm : Window
                   case 8: view.GoToAnchor("EnumerationValues"); break;
                   default:
                   {
-                     char hex[20];
-                     sprintf(hex, "%p", (void *)(uintptr)row.tag);
+                     char hex[1024];
+                     getLink((void *)(uintptr)row.tag, hex);
                      view.GoToAnchor(hex);
                   }
                }
@@ -2576,7 +2882,7 @@ class MainForm : Window
          historyPos++;
          addressBar.back.disabled = (historyPos == 0);
          addressBar.forward.disabled = (historyPos >= history.count-1);
-         sprintf(location, "api://%p", history[historyPos]);
+         sprintf(location, "%s", getLink(history[historyPos], tmpLink));
          dontRecordHistory = true;
          view.OnOpen(location);
          dontRecordHistory = false;
@@ -2593,7 +2899,7 @@ class MainForm : Window
          historyPos--;
          addressBar.back.disabled = (historyPos == 0);
          addressBar.forward.disabled = (historyPos >= history.count-1);
-         sprintf(location, "api://%p", history[historyPos]);
+         sprintf(location, "%s", getLink(history[historyPos], tmpLink));
          dontRecordHistory = true;
          view.OnOpen(location);
          dontRecordHistory = false;
