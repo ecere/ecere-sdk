@@ -629,7 +629,6 @@ class Lexer
          pos.col += newPos - pos.pos;
          pos.pos = newPos;
       }
-      token.type = constant;
       return valid;
    }
 
