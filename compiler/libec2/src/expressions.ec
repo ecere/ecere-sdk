@@ -498,9 +498,13 @@ public:
       ASTExpression exp = ExpOperation::parse(numPrec-1);
       if(lexer.peekToken().type == '?')
       {
+         lexer.readToken();
          exp = ExpConditional { condition = exp, expList = ExpList::parse() };
          if(lexer.peekToken().type == ':')
+         {
+            lexer.readToken();
             ((ExpConditional)exp).elseExp = ExpConditional::parse();
+         }
       }
       return exp;
    }
