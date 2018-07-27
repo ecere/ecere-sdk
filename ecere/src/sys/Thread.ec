@@ -94,12 +94,12 @@ public:
 
    void Create()
    {
-      incref this;
       if(!started)
       {
 #if !defined(__WIN32__) && !defined(__EMSCRIPTEN__)
          sem.TryWait();
 #endif
+         incref this;
          started = true;
          // printf("Creating %s thread\n", _class.name);
 #if !defined(__EMSCRIPTEN__)
