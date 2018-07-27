@@ -38,7 +38,11 @@ public:
             lexer.readToken();
          }
          else
+         {
+            identifiers.Free();
+            delete identifiers;
             lexer.popAmbiguity(a);
+         }
       }
       initializer = InitExp::parse();
       return (identifiers || initializer) ?
