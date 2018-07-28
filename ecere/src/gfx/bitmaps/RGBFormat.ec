@@ -120,8 +120,8 @@ class RGBFormat : BitmapFormat
                            switch(c)
                            {
                               case 0: *pic |= channels == 1 ? ColorAlpha { value, white } : (uint)Color { r = value } | defaultAlpha; break;
-                              case 1: *pic |= Color { g = value }; break;
-                              case 2: *pic |= Color { b = value }; break;
+                              case 1: *pic |= (uint)Color { g = value }; break;
+                              case 2: *pic |= (uint)Color { b = value }; break;
                               case 3: *pic |= ColorAlpha { a = value }; break;
                            }
                            pic++;
