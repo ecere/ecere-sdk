@@ -116,8 +116,14 @@ class dBaseRow : DriverRow
       switch(field.info.type)
       {
          case 'B': case 'G': case 'M': case 'C': case 'D': dataValue = { s = (String)data, type = { text    } }; break;
-         case 'I': case '+': case 'N': case 'L':           dataValue = { i = (int)   data, type = { integer } }; break;
+         case 'I': case '+': case 'L':                     dataValue = { i = (int)   data, type = { integer } }; break;
          case 'F': case 'O': case '@':                     dataValue = { r = (double)data, type = { real    } }; break;
+         case 'N':
+            if(field.info.decimalCount)
+               dataValue = { r = (double) data, type = { real } };
+            else
+               dataValue = { i = (int)    data, type = { integer } };
+            break;
       }
       for(i = 1; i <= maxID && !result; i++)
       {
@@ -333,6 +339,7 @@ class dBaseTable : Table
                   incref fld;
                   f.Read(&fld.info, sizeof(DBFFieldInfo), 1);
                   fld.type = dbfType(fld.info.type);
+                  if(fld.info.type == 'N' && fld.info.decimalCount) fld.type = class(double);
                   fld.offset = offset;
                   fields[i] = fld;
                   offset += fld.info.length;
@@ -513,6 +520,7 @@ private static inline Class dbfType(char ch)
    {
       case 'B': case 'G': case 'M': PrintLn(driverName, ": no .DBT support for type (", ch, ")");
       case 'C': return class(String);
+      // NOTE: Treating 'N' as a float if decimal count is non-zero (handled outside)
       case 'N': case 'I': case '+': return class(int);
       case 'F': case 'O': return class(double);
       case 'D': return class(Date);
@@ -614,12 +622,16 @@ class dBaseTableRow : dBaseRow
                *(bool *)data = fldData[0] == 'T';
                result = fldData[0] == 'T' || fldData[0] == 'F';
                break;
-            case 'N': // Integer (as strings)
+            case 'N': // Numbers (as strings)
             {
-               char * p;
-               *(int *)data = strtol(fldData, &p, 10);
-               result = p > fldData;
-               break;
+               if(!field.info.decimalCount)
+               {
+                  char * p;
+                  *(int *)data = strtol(fldData, &p, 10);
+                  result = p > fldData; // Why do we have **** for 0?
+                  break;
+               }
+               // Fall-through: decimals...
             }
             case 'F': // Floats (as strings)
             {
@@ -686,7 +698,15 @@ class dBaseTableRow : dBaseRow
          switch(field.info.type)
          {
             case 'B': case 'G': case 'M': case 'C': if(_GetData(field, value.s)) value.type = { text, true }; break;
-            case 'I': case '+': case 'N': case 'L': if(_GetData(field, value.i)) value.type = { integer }; break;
+            case 'I': case '+': case 'L': if(_GetData(field, value.i)) value.type = { integer }; break;
+            case 'N':
+               if(!field.info.decimalCount)
+               {
+                  if(_GetData(field, value.i))
+                     value.type = { integer };
+                  break;
+               }
+               // fall-through: decimals...
             case 'F': case 'O':                     if(_GetData(field, value.r)) value.type = { real }; break;
             // TODO: Should probably support additional types, at least dates?
             case 'D': // Dates (as YYYYMMDD strings)
