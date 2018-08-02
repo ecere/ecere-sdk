@@ -115,6 +115,8 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    void Delete(IteratorPointer it)
    {
+      VT d = GetData(it);
+      delete d;
       mmHashDirectDeleteEntry2(tbl, &hashAccess, it, noRemResize);
       if(!noRemResize)
          resize(null);
@@ -172,6 +174,13 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    void Free()
    {
+      IteratorPointer it = GetFirst();
+      while(it)
+      {
+         VT d = GetData(it);
+         delete d;
+         it = GetNext(it);
+      }
       if(tbl)
          mmHashReset(tbl, &hashAccess);
    }
