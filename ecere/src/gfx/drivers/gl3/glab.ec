@@ -24,7 +24,7 @@ public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangen
 
 public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
 
-static GLint bufferUsages[] = { GL_DYNAMIC_DRAW, GL_STATIC_DRAW, 0x88E0 /*GL_STREAM_DRAW*/ };
+static GLint bufferUsages[] = { GL_STATIC_DRAW, GL_DYNAMIC_DRAW, 0x88E0 /*GL_STREAM_DRAW*/ };
 
 public define noAB = GLAB { 0 };
 
