@@ -941,7 +941,7 @@ public:
                      {
                         if(!(group.type.vertexRange))
                         {
-                           // FIXME: GL driver specifics -- Should no longer need this
+                           // FIXME: GL driver specifics -- Should no longer need this; Should be able to merge now with baseVertex
                            OGLIndices oglIndices { nIndices = group.nIndices };
                            group.data = oglIndices;
                         }
@@ -1838,4 +1838,22 @@ private:
    }
 
    Euler eulerOrientation;
+   DisplaySystem displaySystem;
+
+   public property DisplaySystem displaySystem
+   {
+      set { Upload(value, null, null); }
+      get { return displaySystem; }
+   }
+
+   public void Upload(DisplaySystem displaySystem, GLMB mab, GLMB meab)
+   {
+      Object o;
+
+      this.displaySystem = displaySystem;
+      if(flags.mesh && mesh)
+         mesh.Upload(displaySystem, true, mab, meab);
+      for(o = children.first; o; o = o.next)
+         o.Upload(displaySystem, mab, meab);
+   }
 };
