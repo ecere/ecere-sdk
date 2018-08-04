@@ -370,6 +370,8 @@ public:
       return result;
    }
 
+   //#define NORMALS_MERGE_VERTICES
+
    void ComputeNormals(void)
    {
       int c;
@@ -379,9 +381,15 @@ public:
 
       if(Allocate({ normals = true, tangents = texCoords != null }, nVertices, displaySystem))
       {
+#ifdef NORMALS_MERGE_VERTICES
+         Map<uint, uint> ixMap { };
+         Map<SharedVertex, uint> vMap { };
+#endif
          Vector3Df * normals = this.normals;
          Vector3Df * tangents = this.tangents;
          Pointf * texCoords = this.texCoords;
+         int i;
+         Vector3Df * vertices = this.vertices;
          FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
          if(tangents)
             FillBytes(tangents, 0, 2*nVertices * sizeof(Vector3Df));
@@ -418,37 +426,32 @@ public:
             */
             for(c = offset; c<group.nIndices; c += nIndex)
             {
-               int i;
                Plane plane;
                Vector3Df planeNormal;
 
                if(group.type.primitiveType == triFan)
                {
-                  plane.FromPointsf(vertices[group.indices[0]],
-                                   vertices[group.indices[c]],
-                                   vertices[group.indices[c-1]]);
+                  uint ix0 = indices16[0];
+                  uint ix1 = indices16[c];
+                  uint ix2 = indices16[c-1];
+                  plane.FromPointsf(vertices[ix0], vertices[ix1], vertices[ix2]);
                   planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                  normals[group.indices[0]].Add(normals[group.indices[0]], planeNormal);
-                  numShared[group.indices[0]]++;
-                  normals[group.indices[c-1]].Add(normals[group.indices[c-1]], planeNormal);
-                  numShared[group.indices[c-1]]++;
-                  normals[group.indices[c]].Add(normals[group.indices[c]], planeNormal);
-                  numShared[group.indices[c]]++;
+                  normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
+                  normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
+                  normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
                }
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
-                  plane.FromPointsf(vertices[group.indices[c-1-strip]],
-                                   vertices[group.indices[c-2+strip]],
-                                   vertices[group.indices[c]]);
+                  uint ix0 = indices16[c-1-strip];
+                  uint ix1 = indices16[c-2+strip];
+                  uint ix2 = indices16[c];
+                  plane.FromPointsf(vertices[ix0], vertices[ix1], vertices[ix2]);
                   planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                  normals[group.indices[c-1-strip]].Add(normals[group.indices[c-1-strip]], planeNormal);
-                  numShared[group.indices[c-1-strip]]++;
-                  normals[group.indices[c-2+strip]].Add(normals[group.indices[c-2+strip]], planeNormal);
-                  numShared[group.indices[c-2+strip]]++;
-                  normals[group.indices[c]].Add(normals[group.indices[c]], planeNormal);
-                  numShared[group.indices[c]]++;
+                  normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
+                  normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
+                  normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
 
                   strip ^= 1;
                }
@@ -463,8 +466,9 @@ public:
 
                      for(i = c; i<c+nIndex; i++)
                      {
-                        normals[i].Add(normals[i], planeNormal);
-                        numShared[i] ++;
+                        uint ix = i;
+                        normals[ix].Add(normals[ix], planeNormal);
+                        numShared[ix]++;
                      }
                   }
                   else
@@ -475,7 +479,7 @@ public:
 
                      plane.FromPointsf(vertices[i32bit ? indices32[c+2] : indices16[c+2]],
                                        vertices[i32bit ? indices32[c+1] : indices16[c+1]],
-                                       vertices[i32bit ? indices32[c] :   indices16[c]]);
+                                       vertices[i32bit ? indices32[c  ] : indices16[c  ]]);
                      planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                      for(i = c; i<c+nIndex; i++)
@@ -483,6 +487,11 @@ public:
                         int index = i32bit ? indices32[i] : indices16[i];
                         int v = i - c;
                         double w = weights[v];
+
+#ifdef NORMALS_MERGE_VERTICES
+                        index = resolveIndex(index, vMap, ixMap, vertices[index], plane);
+#endif
+
                         //normals[index].Add(normals[index], planeNormal);
                         normals[index].x += planeNormal.x * w;
                         normals[index].y += planeNormal.y * w;
@@ -545,8 +554,9 @@ public:
 
             for(i = 0; i<primitive->nIndices; i++)
             {
-               normals[primitive->indices[i]].Add(normals[primitive->indices[i]], planeNormal);
-               numShared[primitive->indices[i]] ++;
+               uint ix = primitive->indices[i];
+               normals[ix].Add(normals[ix], planeNormal);
+               numShared[ix]++;
             }
          }
 
@@ -562,6 +572,17 @@ public:
                t2->Scale(t2, s), t2->Normalize(t2);
             }
          }
+
+#ifdef NORMALS_MERGE_VERTICES
+         for(i = 0; i < nVertices; i++)
+         {
+            uint ix = ixMap[i];
+            normals[i] = normals[ix];
+         }
+         delete ixMap;
+         delete vMap;
+#endif
+
          delete numShared;
          delete weightSum;
          Unlock({ normals = true, tangents = true });
@@ -1032,3 +1053,66 @@ void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32
    for(i = 0; i < n; i++)
       weights[i] = acos(Min(1.0, Max(-1.0, edges[i].DotProduct(rEdges[i ? i-1 : n-1])))) / ((n-2) * Pi);
 }
+
+#ifdef NORMALS_MERGE_VERTICES
+struct SharedVertex
+{
+   Vector3Df v, n;
+   int count;
+
+   int OnCompare(SharedVertex b)
+   {
+      float dx = v.x - b.v.x;
+      float dy = v.y - b.v.y;
+      float dz = v.z - b.v.z;
+      double dot;
+
+      if(dx > 0.00001) return 1;
+      if(dx <-0.00001) return -1;
+      if(dy > 0.00001) return 1;
+      if(dy <-0.00001) return -1;
+      if(dz > 0.00001) return 1;
+      if(dz <-0.00001) return -1;
+
+      dot = n.DotProduct(b.n);
+
+      if(dot > 0.40)
+         return 0;
+      if(n.x > b.n.x) return  1;
+      if(n.x < b.n.x) return -1;
+      if(n.y > b.n.y) return  1;
+      if(n.y < b.n.y) return -1;
+      if(n.z > b.n.z) return  1;
+      if(n.z < b.n.z) return -1;
+
+      return 0;
+   }
+};
+
+static uint resolveIndex(uint index, Map<SharedVertex, uint> vMap, Map<uint, uint> ixMap, Vector3Df vertex, Plane plane)
+{
+   uint result;
+   //return index;
+   SharedVertex v { vertex, { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z }, 1 };
+   MapIterator<SharedVertex, uint> it { map = vMap };
+   if(it.Index(v, true))
+   {
+      SharedVertex k = it.key;
+      result = it.data;
+      // Update to the average...
+      it.Remove();
+      k.n.Normalize(
+      {
+         (k.n.x * k.count + v.n.x)/(k.count+1),
+         (k.n.y * k.count + v.n.y)/(k.count+1),
+         (k.n.z * k.count + v.n.z)/(k.count+1)
+      });
+      k.count++;
+      vMap[k] = result;
+   }
+   else
+      it.data = result = index;
+   ixMap[index] = result;
+   return result;
+}
+#endif
