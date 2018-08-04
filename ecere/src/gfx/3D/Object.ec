@@ -13,8 +13,8 @@ public class ObjectFormat
       get { return class_data(extension); }
    }
 
-   virtual bool ::Load(Object object, const char * fileName, DisplaySystem displaySystem);
-   virtual bool ::Save(Object object, const char * fileName);
+   virtual bool ::Load(Object object, const char * fileName, DisplaySystem displaySystem, void * options);
+   virtual bool ::Save(Object object, const char * fileName, void * options);
 };
 
 // TODO: Review these:
@@ -36,7 +36,7 @@ public struct Transform
    {
       set
       {
-         Vector3D s = value.scaling;
+         Vector3D s;
          Matrix r;
          // bool flipWindings = Sgn(s.x) * Sgn(s.y) * Sgn(s.z) < 0;
          value.extractScaling(r, s);
@@ -716,33 +716,10 @@ public:
 
    bool Load(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
-      char ext[MAX_EXTENSION];
-      subclass(ObjectFormat) format;
-      OldLink link;
-      bool result = false;
-
-      if(!type && fileName)
-         type = strlwr(GetExtension(fileName, ext));
-
-      for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
-      {
-         format = link.data;
-         if(format.extension && !strcmp(format.extension, type))
-            break;
-      }
-      if(!link) format = null;
-
-      if(format)
-      {
-         if((format.Load(this, fileName, displaySystem)))
-            result = true;
-      }
-      /*if(!result)
-          ErrorLogCode(GERR_LOAD_OBJECT_FAILED, fileName);*/
-      return result;
+       return LoadEx(fileName, type, displaySystem, null);
    }
 
-   bool Save(const char * fileName, const char * type)
+   bool LoadEx(const char * fileName, const char * type, DisplaySystem displaySystem, void * options)
    {
       char ext[MAX_EXTENSION];
       subclass(ObjectFormat) format;
@@ -762,7 +739,40 @@ public:
 
       if(format)
       {
-         if((format.Save(this, fileName)))
+         if((format.Load(this, fileName, displaySystem, options)))
+            result = true;
+      }
+      /*if(!result)
+          ErrorLogCode(GERR_LOAD_OBJECT_FAILED, fileName);*/
+      return result;
+   }
+
+   bool Save(const char * fileName, const char * type)
+   {
+      return SaveEx(fileName, type, null);
+   }
+
+   bool SaveEx(const char * fileName, const char * type, void * options)
+   {
+      char ext[MAX_EXTENSION];
+      subclass(ObjectFormat) format;
+      OldLink link;
+      bool result = false;
+
+      if(!type && fileName)
+         type = strlwr(GetExtension(fileName, ext));
+
+      for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
+      {
+         format = link.data;
+         if(format.extension && !strcmp(format.extension, type))
+            break;
+      }
+      if(!link) format = null;
+
+      if(format)
+      {
+         if((format.Save(this, fileName, options)))
             result = true;
       }
       /*if(!result)

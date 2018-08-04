@@ -2222,7 +2222,7 @@ class Object3DSFormat : ObjectFormat
 {
    class_property(extension) = "3ds";
 
-   bool Load(Object object, const char * fileName, DisplaySystem displaySystem)
+   bool Load(Object object, const char * fileName, DisplaySystem displaySystem, void * options)
    {
       bool result = false;
       if(fileName)
