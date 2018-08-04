@@ -1254,10 +1254,18 @@ public:
             for(i = 0; i < count; i++)
             {
                Object o = partlyTransparentObjects[i];
-               driver.PushMatrix(this);
-               SetTransform(&o.matrix, (*&o.flags).viewSpace);
-               DrawPartlyTransparentMesh(o);
-               driver.PopMatrix(this, true);
+               if(o.mvMatrix[0])
+               {
+                  glmsLoadMatrixf(o.mvMatrix);   // TODO: Handle this properly...
+                  DrawPartlyTransparentMesh(o);
+               }
+               else
+               {
+                  driver.PushMatrix(this);
+                  SetTransform(&o.matrix, (*&o.flags).viewSpace);
+                  DrawPartlyTransparentMesh(o);
+                  driver.PopMatrix(this, true);
+               }
             }
             display3D.partlyTransparentObjects.minAllocSize = display3D.partlyTransparentObjects.size;
             display3D.partlyTransparentObjects.size = 0;
@@ -2296,3 +2304,119 @@ DisplaySystem GetDisplaySystem(const char * driverName)
    subclass(DisplayDriver) displayDriver = GetDisplayDriver(driverName);
    return displayDriver ? displayDriver.displaySystem : null;
 }
+
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
+public struct DrawSlot
+{
+   Object object;
+   Bitmap baseMap;
+
+   int OnCompare(DrawSlot b)
+   {
+      /*
+      uintptr ma = (uintptr)*&(object.mesh), mb = (uintptr)*&(b.object.mesh);
+      Mesh mesh1 = (Mesh)ma, mesh2 = (Mesh)mb;
+      PrimitiveGroup g1 = (&mesh1.groups)->first;
+      PrimitiveGroup g2 = (&mesh2.groups)->first;
+      Material mat1 = g1 ? *&g1.material : null;
+      Material mat2 = g2 ? *&g2.material : null;
+
+      if(mat1.baseMap < mat2.baseMap) return -1;
+      if(mat1.baseMap > mat2.baseMap) return 1;
+      if(mat1 < mat2) return -1;
+      if(mat1 > mat2) return  1;
+      if(ma < mb) return -1;
+      if(ma > mb) return  1;
+      */
+
+      uintptr ma = (uintptr)*&(object.mesh), mb = (uintptr)*&(b.object.mesh);
+      if(baseMap < b.baseMap) return -1;
+      if(baseMap > b.baseMap) return 1;
+      if(ma < mb) return -1;
+      if(ma > mb) return  1;
+      return 0;
+   }
+};
+
+public class DrawList
+{
+   Matrix sm, svm;
+   //Vector3Df sms;
+   Vector3D cp;
+   Plane * vp, * wp;
+   Array<DrawSlot> slots { };
+
+public:
+   void init(Matrix sm, Matrix vm, Vector3D cp, Plane * vp, Plane * wp, int guessCount)
+   {
+      this.sm = sm;
+      svm.Multiply(vm, sm);
+      this.cp = cp;
+      this.vp = vp;
+      this.wp = wp;
+      //sms = { Sgn(sm.m[0][0]), Sgn(sm.m[1][1]), Sgn(sm.m[2][2]) };
+
+      slots.minAllocSize = Max(slots.minAllocSize, guessCount);
+      slots.size = 0;
+   }
+
+   void addObject(Object object)
+   {
+      if(object)
+      {
+         ObjectFlags flags = *&object.flags;
+         bool viewSpace = flags.viewSpace;
+         FrustumPlacement visible = object.InsideFrustum(viewSpace ? vp : wp);
+         if(visible)
+         {
+            Object child;
+            Mesh mesh = flags.mesh ? *&object.mesh : null;
+            /*Object parent = viewSpace ? null : object.parent;
+            Vector3Df scaling = object.transform.scaling;
+            object.mvs = parent ? parent.mvs : sms;
+            object.mvs.x *= scaling.x;
+            object.mvs.y *= scaling.y;
+            object.mvs.z *= scaling.z;*/
+
+            if(mesh)
+            {
+               DrawSlot * slot = &slots[slots.count++];
+               PrimitiveGroup g = (&mesh.groups)->first;
+               Material mat = g ? *&g.material : null;
+               slot->object = object;
+               slot->baseMap = mat ? mat.baseMap : null;
+               object.setTransform(sm, svm, cp);
+            }
+            for(child = (*&object.children).first; child; child = child.next)
+               addObject(child);
+         }
+      }
+   }
+
+   void prepare()
+   {
+      slots.Sort(true);
+   }
+
+   void render(Display display)
+   {
+      int i, count = this.slots.count;
+      DrawSlot * slots = this.slots.array;
+      Shader shader = DefaultShader::shader();
+      glmsFlushMatrices();
+      glEnable(GL_CULL_FACE);
+      for(i = 0; i < count; i++)
+      {
+         Object object = slots[i].object;
+         if(glCaps_shaders)
+            shader.updateMatrix(modelView, object.mvMatrix, /*object.mvs,*/ false);
+#if ENABLE_GL_FFP
+         else
+            glLoadMatrixf(object.mvMatrix);  // GLLoadMatrixf
+#endif
+         display.DrawMesh(object);
+      }
+      GLLoadMatrixd((double *)&svm);
+   }
+}
+#endif
