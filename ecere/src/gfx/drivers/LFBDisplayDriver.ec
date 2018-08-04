@@ -2224,18 +2224,18 @@ public class LFBDisplayDriver : DisplayDriver
       return true;
    }
 
-   void FreeIndices(DisplaySystem displaySystem, uint16 * indices)
+   void FreeIndices(DisplaySystem displaySystem, PrimitiveSingle group)
    {
-      delete indices;
+
    }
 
-   uint16 * AllocateIndices(DisplaySystem displaySystem, int nIndices, bool indices32bit)
+   void * AllocateIndices(DisplaySystem displaySystem, int nIndices, bool indices32bit)
    {
-      return (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
+      return (void *)1;
    }
-   uint16 * LockIndices(DisplaySystem displaySystem, void * indices)
+   void * LockIndices(DisplaySystem displaySystem, void * indices)
    {
-      return indices;
+      return (void *)1;
    }
 #endif
 }

@@ -205,12 +205,12 @@ public:
    virtual bool ::LockMesh(DisplaySystem, Mesh, MeshFeatures flags);
    virtual void ::UnlockMesh(DisplaySystem, Mesh, MeshFeatures flags);
    virtual void * ::AllocateIndices(DisplaySystem, int nIndices, bool indices32bit);
-   virtual void ::FreeIndices(DisplaySystem, void * indices);
-   virtual uint16 * ::LockIndices(DisplaySystem, void * indices);
-   virtual void ::UnlockIndices(DisplaySystem, void * indices, bool indices32bit, int nIndices);
+   virtual void ::FreeIndices(DisplaySystem, PrimitiveSingle group);
+   virtual uint16 * ::LockIndices(DisplaySystem, PrimitiveSingle group);
+   virtual void ::UnlockIndices(DisplaySystem, PrimitiveSingle group, bool indices32bit, int nIndices, void * maeb);
    virtual void ::SelectMesh(Display, Mesh);
    virtual void ::ApplyMaterial(Display, Material, Mesh);
-   virtual void ::DrawPrimitives(Display, PrimitiveSingle *, Mesh mesh);
+   virtual void ::DrawPrimitives(Display, PrimitiveSingle, Mesh mesh);
    virtual void ::PushMatrix(Display);
    virtual void ::PopMatrix(Display, bool);
    virtual void ::SetTransform(Display, Matrix, bool, bool);
