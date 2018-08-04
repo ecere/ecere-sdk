@@ -182,7 +182,7 @@ public void glmsScaled(double a, double b, double c)
 
    m.Identity();
    m.Scale(a,b,c);
-   r.Multiply(m, matrixStack[curStack][ix]);
+   r.Multiply3x4(m, matrixStack[curStack][ix]);
    matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
@@ -195,7 +195,7 @@ public void glmsTranslated( double a, double b, double c)
 
    m.Identity();
    m.Translate(a,b,c);
-   r.Multiply(m, matrixStack[curStack][ix]);
+   r.Multiply3x4(m, matrixStack[curStack][ix]);
    matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }
@@ -243,7 +243,7 @@ public void glmsRotated( double angle, double x, double y, double z)
    n.Normalize({ -x, -y, -z });
    q.RotationAxis(n, angle);
    m.RotationQuaternion(q);
-   r.Multiply(m, matrixStack[curStack][ix]);
+   r.Multiply3x4(m, matrixStack[curStack][ix]);
    matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
 }

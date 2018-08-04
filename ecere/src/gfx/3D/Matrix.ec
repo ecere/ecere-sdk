@@ -47,7 +47,6 @@ public union Matrix
 
    void Multiply(const Matrix a, const Matrix b)
    {
-#if 1
       // We need a full matrix multiplication for the Projection matrix
       m[0][0]=a.m[0][0]*b.m[0][0] + a.m[0][1]*b.m[1][0] + a.m[0][2]*b.m[2][0] + a.m[0][3]*b.m[3][0];
       m[0][1]=a.m[0][0]*b.m[0][1] + a.m[0][1]*b.m[1][1] + a.m[0][2]*b.m[2][1] + a.m[0][3]*b.m[3][1];
@@ -68,7 +67,10 @@ public union Matrix
       m[3][1]=a.m[3][0]*b.m[0][1] + a.m[3][1]*b.m[1][1] + a.m[3][2]*b.m[2][1] + a.m[3][3]*b.m[3][1];
       m[3][2]=a.m[3][0]*b.m[0][2] + a.m[3][1]*b.m[1][2] + a.m[3][2]*b.m[2][2] + a.m[3][3]*b.m[3][2];
       m[3][3]=a.m[3][0]*b.m[0][3] + a.m[3][1]*b.m[1][3] + a.m[3][2]*b.m[2][3] + a.m[3][3]*b.m[3][3];
-#else
+   }
+
+   void Multiply3x4(const Matrix a, const Matrix b)
+   {
       m[0][0]=a.m[0][0]*b.m[0][0] + a.m[0][1]*b.m[1][0] + a.m[0][2]*b.m[2][0];
       m[0][1]=a.m[0][0]*b.m[0][1] + a.m[0][1]*b.m[1][1] + a.m[0][2]*b.m[2][1];
       m[0][2]=a.m[0][0]*b.m[0][2] + a.m[0][1]*b.m[1][2] + a.m[0][2]*b.m[2][2];
@@ -88,7 +90,6 @@ public union Matrix
       m[3][1]=a.m[3][0]*b.m[0][1] + a.m[3][1]*b.m[1][1] + a.m[3][2]*b.m[2][1] + b.m[3][1];
       m[3][2]=a.m[3][0]*b.m[0][2] + a.m[3][1]*b.m[1][2] + a.m[3][2]*b.m[2][2] + b.m[3][2];
       m[3][3]=1;
-#endif
    }
 
    void RotationQuaternion(const Quaternion quat)
@@ -116,24 +117,14 @@ public union Matrix
 
    void Translate(double tx, double ty, double tz)
    {
-      Matrix tmat;
-      Matrix mat1;
-
-      FillBytesBy4(tmat, 0, sizeof(Matrix) >> 2);
-      tmat.m[0][0]=tmat.m[1][1]=tmat.m[2][2]=tmat.m[3][3]=1;
-      tmat.m[3][0]=tx; tmat.m[3][1]=ty; tmat.m[3][2]=tz;
-      mat1.Multiply(this, tmat);
-      this = mat1;
+      m[3][0] += tx; m[3][1] += ty; m[3][2] += tz;
    }
 
    void Scale(double sx, double sy, double sz)
    {
-      Matrix smat;
-      Matrix mat1;
-      FillBytesBy4(smat, 0, sizeof(Matrix) >> 2);
-      smat.m[0][0]=sx; smat.m[1][1]=sy; smat.m[2][2]=sz; smat.m[3][3]=1;
-      mat1.Multiply(this, smat);
-      this = mat1;
+      m[0][0] *= sx; m[1][0] *= sx; m[2][0] *= sx; m[3][0] *= sx;
+      m[0][1] *= sy; m[1][1] *= sy; m[2][1] *= sy; m[3][1] *= sy;
+      m[0][2] *= sz; m[1][2] *= sz; m[2][2] *= sz; m[3][2] *= sz;
    }
 
    void Rotate(const Quaternion quat)
@@ -141,7 +132,7 @@ public union Matrix
       Matrix rmat;
       Matrix mat1;
       rmat.RotationQuaternion(quat);
-      mat1.Multiply(this, rmat);
+      mat1.Multiply3x4(this, rmat);
       this = mat1;
    }
 
@@ -207,6 +198,23 @@ public union Matrix
                m[j][i] = m3det * sign / det;
             }
       }
+   }
+
+   void InverseTransposeTransform(const Matrix source)
+   {
+      Vector3D x { source.array[0], source.array[1], source.array[ 2] };
+      Vector3D y { source.array[4], source.array[5], source.array[ 6] };
+      Vector3D z { source.array[8], source.array[9], source.array[10] };
+      Vector3D s2
+      {
+         x.x * x.x + x.y * x.y + x.z * x.z,
+         y.x * y.x + y.y * y.y + y.z * y.z,
+         z.x * z.x + z.y * z.y + z.z * z.z
+      };
+      double ix = 1.0 / s2.x, iy = 1.0 / s2.y, iz = 1.0 / s2.z;
+      array[0] = x.x * ix; array[1] = x.y * ix; array[ 2] = x.z * ix;
+      array[4] = y.x * iy; array[5] = y.y * iy; array[ 6] = y.z * iy;
+      array[8] = z.x * iz; array[9] = z.y * iz; array[10] = z.z * iz;
    }
 
    void ToEuler(Euler euler)
