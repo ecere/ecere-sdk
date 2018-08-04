@@ -1,5 +1,9 @@
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
+#ifdef _DEBUG
+#define GLSTATS
+#endif
+
 // #define DIAGNOSTICS
 #if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
  #define GL_DEBUGGING
@@ -1947,6 +1951,10 @@ class OpenGLDisplayDriver : DisplayDriver
       // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
 
+#ifdef GLSTATS
+      GLStats::allocTexture(glBitmap, w, h, false);
+#endif
+
       delete mipMap;
 
       bitmap.driverData = (void *)(uintptr)glBitmap;
@@ -2081,6 +2089,10 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
          result = true;
+
+#ifdef GLSTATS
+         GLStats::allocTexture(glBitmap, w, h, true);
+#endif
 
          for(level = 0; result && (w >= 1 || h >= 1); level++, w >>= 1, h >>= 1)
          {

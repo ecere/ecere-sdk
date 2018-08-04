@@ -39,6 +39,10 @@ void glabTerminate()
    delete shortVPBuffer;
 }
 
+#ifdef _DEBUG
+#define GLSTATS
+#endif
+
 public struct GLB
 {
    uint buffer;
@@ -53,6 +57,9 @@ public struct GLB
                glGenBuffers(1, &buffer);
             if(glabCurArrayBuffer != buffer)
                GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
+#ifdef GLSTATS
+            GLStats::allocBuffer(buffer, size);
+#endif
             if(size)
                glBufferData(GL_ARRAY_BUFFER, size, data, bufferUsages[usage]);
          }
@@ -90,7 +97,12 @@ public struct GLB
             }
          }
          if(count && buffers[0].buffer)
+         {
             glDeleteBuffers(count, (GLuint *)buffers);
+#ifdef GLSTATS
+            GLStats::freeBuffers(count, (uint *)buffers);
+#endif
+         }
       }
    }
 
@@ -405,3 +417,74 @@ public struct GLFB
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
    }
 };
+
+static Map<uint, uint> textures { };
+static Map<uint, uint> buffers { };
+
+static uint64 texMem;
+static uint64 bufMem;
+
+public class GLStats
+{
+public:
+   void ::allocTexture(uint tex, uint w, uint h, bool mipMaps)
+   {
+      uint currentMem = textures[tex];
+      uint newMem = w * h;
+
+      if(mipMaps)
+         newMem += (uint)(newMem * 1.33);
+      texMem += (int)newMem - (int)currentMem;
+      textures[tex] = newMem;
+   }
+
+   void ::freeTextures(uint count, uint * texs)
+   {
+      int i;
+      for(i = 0; i < count; i++)
+      {
+         uint tex = texs[i];
+         MapIterator<uint, uint> it { map = textures };
+         if(it.Index(tex, false))
+         {
+            texMem -= it.data;
+            it.Remove();
+         }
+      }
+   }
+
+   void ::allocBuffer(uint buf, uint size)
+   {
+      uint currentMem = buffers[buf];
+      bufMem += (int)size - (int)currentMem;
+      buffers[buf] = size;
+   }
+
+   void ::freeBuffers(uint count, uint * bufs)
+   {
+      int i;
+      for(i = 0; i < count; i++)
+      {
+         uint buf = bufs[i];
+         MapIterator<uint, uint> it { map = buffers };
+         if(it.Index(buf, false))
+         {
+            bufMem -= it.data;
+            it.Remove();
+         }
+      }
+   }
+
+   void ::print()
+   {
+      char tmp[256];
+      PrintLn("");
+      PrintLn("OpenGL Textures & Buffers Memory Stats");
+      PrintLn("======================================");
+      PrintSize(tmp, texMem, 2);
+      PrintLn(textures.count, " textures allocated; ", tmp);
+      PrintSize(tmp, bufMem, 2);
+      PrintLn(buffers.count, " buffers allocated; ", tmp);
+      PrintLn("");
+   }
+}
