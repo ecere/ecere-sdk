@@ -294,21 +294,22 @@ public void glmsFlushMatrices()
       {
          int ix = matrixIndex[stack];
          Matrix * matrix = &matrixStack[stack][ix];
+         double * dm = matrix->array;
+         float m[16] =
+         {
+            (float)dm[0 ], (float)dm[ 1], (float)dm[ 2], (float)dm[ 3],
+            (float)dm[4 ], (float)dm[ 5], (float)dm[ 6], (float)dm[ 7],
+            (float)dm[8 ], (float)dm[ 9], (float)dm[10], (float)dm[11],
+            (float)dm[12], (float)dm[13], (float)dm[14], (float)dm[15]
+         };
 #if ENABLE_GL_SHADERS
          if(glCaps_shaders)
-            activeShader.updateMatrix((MatrixMode) (0x1700 + stack), matrix, isIdentity[stack][ix]);
+            activeShader.updateMatrix((MatrixMode) (0x1700 + stack), m, isIdentity[stack][ix]);
 #endif
 
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
          {
-            float m[16] =
-            {
-               (float)matrix->m[0][0], (float)matrix->m[0][1], (float)matrix->m[0][2], (float)matrix->m[0][3],
-               (float)matrix->m[1][0], (float)matrix->m[1][1], (float)matrix->m[1][2], (float)matrix->m[1][3],
-               (float)matrix->m[2][0], (float)matrix->m[2][1], (float)matrix->m[2][2], (float)matrix->m[2][3],
-               (float)matrix->m[3][0], (float)matrix->m[3][1], (float)matrix->m[3][2], (float)matrix->m[3][3]
-            };
             glMatrixMode(stack + 0x1700);
             glLoadMatrixf(m);
          }
