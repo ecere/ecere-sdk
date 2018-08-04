@@ -2069,7 +2069,7 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl = SpecDeclFromString(_class->dataTypeString, specs, (((void *)0)));
 struct TypeName * type = MkTypeName(specs, decl);
 
-if(bitMember->mask > (0xffffffff))
+if(_class->typeSize > 4)
 sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
 else
 sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
@@ -3840,7 +3840,7 @@ struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereName
 struct Declarator * decl = SpecDeclFromString(bitMember->dataTypeString, specs, (((void *)0)));
 struct TypeName * type = MkTypeName(specs, decl);
 
-if(bitMember->mask > (0xffffffff))
+if(_class->typeSize > 4)
 sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
 else
 sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);

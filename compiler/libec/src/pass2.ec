@@ -671,7 +671,7 @@ static void ProcessExpression(Expression exp)
                          Declarator decl = SpecDeclFromString(_class.dataTypeString, specs, null);
                          TypeName type = MkTypeName(specs, decl);
 
-                         if(bitMember.mask > MAXDWORD)
+                         if(_class.typeSize > 4)
                             sprintf(mask, FORMAT64HEXLL, bitMember.mask);
                          else
                             sprintf(mask, FORMAT64HEX, bitMember.mask);
@@ -2940,7 +2940,7 @@ static void ProcessExpression(Expression exp)
                   BitMember bitMember = (BitMember) member;
                   Declarator decl = SpecDeclFromString(bitMember.dataTypeString, specs, null);
                   TypeName type = MkTypeName(specs, decl);
-                  if(bitMember.mask > MAXDWORD)
+                  if(_class.typeSize > 4)
                      sprintf(mask, FORMAT64HEXLL, bitMember.mask);
                   else
                      sprintf(mask, FORMAT64HEX, bitMember.mask);
