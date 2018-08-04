@@ -818,41 +818,50 @@ public:
          result = display3D.PickMesh(object, null);
       else
       {
-         Mesh mesh = object.mesh;
+         Mesh mesh = *&object.mesh;
          Material objectMaterial = object.material;
-         bool partlyTransparent = false;
+         MaterialFlags partlyTransparent = 0;
+         PrimitiveGroup group = (&mesh.groups)->first;
+         subclass(DisplayDriver) driver = displaySystem.driver;
+         ObjectFlags flags = *&object.flags;
+         int nPrimitives = mesh.nPrimitives;
 
-         if(mesh.groups.first)
+         if(!objectMaterial) objectMaterial = defaultMaterial;
+
+         if(group)
          {
-            PrimitiveGroup group;
-            displaySystem.driver.SelectMesh(this, mesh);
+            Material curMaterial = display3D.material;
+
+            if(display3D.mesh != mesh)
+               driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
-            for(group = mesh.groups.first; group; group = group.next)
+            for(; group; group = group.next)
             {
-               Material material = group.material ? group.material : objectMaterial;
-               if(!material) material = defaultMaterial;
-               if(material.flags.partlyTransparent)
-                  partlyTransparent = true;
-
-               if(material != display3D.material)
+               Material material = group.material;
+               if(!material) material = objectMaterial;
+               partlyTransparent |= material.flags & MaterialFlags { partlyTransparent = true };
+               if(material != curMaterial)
                {
-                  display3D.material = material;
-                  displaySystem.driver.ApplyMaterial(this, material, mesh);
+                  curMaterial = material;
+                  driver.ApplyMaterial(this, material, mesh);
                }
 
                // *** Render Vertex Arrays ***
-               displaySystem.driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
+               driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
             }
+            display3D.material = curMaterial;
          }
 
-         if(object.flags.translucent)
+         if(partlyTransparent)
+            display3D.partlyTransparentObjects.Add(object);
+         if(flags.translucent)
          {
             Matrix matrix;
             Matrix inverse, inverseTranspose;
             int c;
 
-            if(object.flags.viewSpace)
+            if(flags.viewSpace)
                matrix = object.matrix;
             else
             {
@@ -867,7 +876,7 @@ public:
             inverse.Inverse(matrix);
             inverseTranspose.Transpose(inverse);
 
-            for(c = 0; c < mesh.nPrimitives; c++)
+            for(c = 0; c < nPrimitives; c++)
             {
                PrimitiveSingle * triangle = &mesh.primitives[c];
                SortPrimitive * sort;
@@ -891,19 +900,18 @@ public:
                                plane->d * inverseTranspose.m[3][3];
             }
          }
-         if(partlyTransparent)
-            display3D.partlyTransparentObjects.Add(object);
-
-         if(!object.flags.translucent)
+         else if(nPrimitives)
          {
             int c;
-            displaySystem.driver.SelectMesh(this, mesh);
+            PrimitiveSingle * primitives = mesh.primitives;
+
+            if(!group && display3D.mesh != mesh)
+               displaySystem.driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
-            for(c = 0; c<mesh.nPrimitives; c++)
+            for(c = 0; c<nPrimitives; c++)
             {
-               PrimitiveSingle * primitive = &mesh.primitives[c];
-
+               PrimitiveSingle * primitive = &primitives[c];
                Material material = primitive->material ? primitive->material : objectMaterial;
                if(!material) material = defaultMaterial;
 
@@ -912,7 +920,6 @@ public:
                   display3D.material = material;
                   displaySystem.driver.ApplyMaterial(this, material, mesh);
                }
-
                displaySystem.driver.DrawPrimitives(this, primitive, display3D.mesh);
             }
          }
@@ -924,10 +931,13 @@ public:
    bool IsObjectVisible(Object object)
    {
       Plane * planes;
-      if(display3D.selection || !display3D.camera)
-         planes = object.flags.viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
+      ObjectFlags flags = *&object.flags;
+      Display3D display3D = this.display3D;
+      Camera camera = display3D.camera;
+      if(display3D.selection || !camera)
+         planes = flags.viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
       else
-         planes = object.flags.viewSpace ? display3D.camera.viewClippingPlanes : display3D.camera.worldClippingPlanes;
+         planes = flags.viewSpace ? camera.viewClippingPlanes : camera.worldClippingPlanes;
        return object.InsideFrustum(planes) != outside;
    }
 
@@ -939,12 +949,15 @@ public:
          Object child;
          FrustumPlacement visible;
          Plane * planes;
+         Display3D display3D = this.display3D;
          Camera camera = display3D.camera;
+         ObjectFlags flags = *&object.flags;
+         bool viewSpace = flags.viewSpace;
 
          if(display3D.selection || !camera)
-            planes = object.flags.viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
+            planes = viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
          else
-            planes = object.flags.viewSpace ? camera.viewClippingPlanes : camera.worldClippingPlanes;
+            planes = viewSpace ? camera.viewClippingPlanes : camera.worldClippingPlanes;
 
          visible = object.InsideFrustum(planes);
 
@@ -952,7 +965,7 @@ public:
          {
             if(display3D.collectingHits && object.tag)
             {
-               /*if(object.flags.root)
+               /*if(flags.root)
                   this.tags[display3D.tagIndex] = object.tag;
                else if(object.tag)
                   this.tags[++display3D.tagIndex] = object.tag;
@@ -960,13 +973,13 @@ public:
                display3D.tags[display3D.tagIndex++] = object.tag;
             }
 
-            if(object.flags.mesh && object.mesh)
+            if(flags.mesh && object.mesh)
             {
                if(!display3D.selection && displaySystem.driver.PushMatrix)
                   displaySystem.driver.PushMatrix(this);
 
 #if ENABLE_GL_FFP
-               if(object.mesh.tangents && object.mesh.normals && object.flags.computeLightVectors)
+               if(object.mesh.tangents && object.mesh.normals && flags.computeLightVectors)
                {
                   Mesh mesh = object.mesh;
                   if(!glCaps_shaders)
@@ -1095,7 +1108,7 @@ public:
                }
 #endif
 
-               SetTransform(&object.matrix, (*&object.flags).viewSpace);
+               SetTransform(&object.matrix, viewSpace);
                if(display3D.selection)
                {
                   if(visible == intersecting || display3D.intersecting)
@@ -1107,7 +1120,7 @@ public:
                         {
                            Vector3D wresult, vresult;
                            wresult.MultMatrix(rayIntersect, object.matrix);
-                           if(!object.flags.viewSpace)
+                           if(!viewSpace)
                               camera.TransformPoint(vresult, wresult);
                            else
                               vresult = wresult;
@@ -1140,7 +1153,7 @@ public:
                      hit.tags[c] = display3D.tags[c];
                   }
 
-                  if(!object.flags.viewSpace)
+                  if(!viewSpace)
                      camera.TransformPoint(hit.center, object.wcenter);
                   else
                      hit.center = object.wcenter;
@@ -1150,7 +1163,7 @@ public:
             for(child = object.children.first; child; child = child.next)
                result |= DrawObject(child);
 
-            if(display3D.collectingHits && /*!object.flags.root && */object.tag)
+            if(display3D.collectingHits && /*!flags.root && */object.tag)
                display3D.tagIndex--;
          }
       }
@@ -1163,14 +1176,15 @@ public:
       {
          Mesh mesh = object.mesh;
          Material objectMaterial = object.material;
-         if(mesh.groups.first)
+         PrimitiveGroup group = (&mesh.groups)->first;
+         if(group)
          {
-            PrimitiveGroup group;
-            displaySystem.driver.SelectMesh(this, mesh);
+            subclass(DisplayDriver) driver = displaySystem.driver;
+            if(display3D.mesh != mesh)
+               driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
-            display3D.material = null;
 
-            for(group = mesh.groups.first; group; group = group.next)
+            for(; group; group = group.next)
             {
                Material material = group.material ? group.material : objectMaterial;
                if(!material) material = defaultMaterial;
@@ -1180,12 +1194,12 @@ public:
                   {
                      display3D.material = material;
                      material.flags.partlyTransparent = false;
-                     displaySystem.driver.ApplyMaterial(this, material, mesh);
+                     driver.ApplyMaterial(this, material, mesh);
                      material.flags.partlyTransparent = true;
                   }
 
                   // *** Render Vertex Arrays ***
-                  displaySystem.driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
+                  driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
                }
             }
          }
@@ -1216,6 +1230,10 @@ public:
             static int transSize = 0;
             static uintindex * transIndices = null;
             static int bufID = 0;
+            Object * partlyTransparentObjects = display3D.partlyTransparentObjects.array;
+            int count = display3D.partlyTransparentObjects.count;
+            subclass(DisplayDriver) driver = displaySystem.driver;
+            int i;
 
             blend = true;
 
@@ -1229,14 +1247,17 @@ public:
                transIndices = renew transIndices uint32[display3D.nTriangles * 6 /*3*/];
             }
 
-            displaySystem.driver.PushMatrix(this);
+            driver.PushMatrix(this);
+            display3D.material = null;
+            display3D.mesh = null;
 
-            for(o : display3D.partlyTransparentObjects)
+            for(i = 0; i < count; i++)
             {
-               displaySystem.driver.PushMatrix(this);
-               SetTransform(o.matrix, o.flags.viewSpace);
+               Object o = partlyTransparentObjects[i];
+               driver.PushMatrix(this);
+               SetTransform(&o.matrix, (*&o.flags).viewSpace);
                DrawPartlyTransparentMesh(o);
-               displaySystem.driver.PopMatrix(this, true);
+               driver.PopMatrix(this, true);
             }
             display3D.partlyTransparentObjects.minAllocSize = display3D.partlyTransparentObjects.size;
             display3D.partlyTransparentObjects.size = 0;
@@ -1245,7 +1266,7 @@ public:
             {
                bool past = c == display3D.nTriangles;
                SortPrimitive * sort = past ? null : &display3D.triangles[c];
-               Mesh mesh = past ? null : sort->object.mesh;
+               Mesh mesh = past ? null : *&sort->object.mesh;
                PrimitiveSingle * primitive = past ? null : sort->triangle;
                Material material = past ? null : primitive->material ? primitive->material : sort->object.material;
                bool newMatrix, newMesh, newMaterial;
@@ -1281,19 +1302,19 @@ public:
                {
                   matrix = &sort->object.matrix;
 
-                  displaySystem.driver.PopMatrix(this, false);
-                  displaySystem.driver.PushMatrix(this);
+                  driver.PopMatrix(this, false);
+                  driver.PushMatrix(this);
                   SetTransform(matrix, sort->object.flags.viewSpace);
                }
                if(newMesh)
                {
-                  displaySystem.driver.SelectMesh(this, mesh);
+                  driver.SelectMesh(this, mesh);
                   display3D.mesh = mesh;
                }
 
                if(newMaterial)
                {
-                  displaySystem.driver.ApplyMaterial(this, material, display3D.mesh);
+                  driver.ApplyMaterial(this, material, display3D.mesh);
                   display3D.material = material;
                }
 
@@ -1348,7 +1369,7 @@ public:
 
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-            displaySystem.driver.PopMatrix(this, true);
+            driver.PopMatrix(this, true);
 
             display3D.nTriangles = 0;
             blend = false;
