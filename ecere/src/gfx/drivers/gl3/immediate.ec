@@ -51,9 +51,9 @@ static struct FloatGLAB : GLAB
       if(bufSize > this.bufSize)
       {
          this.bufSize = bufSize;
-         GLAB::allocate(bufSize, null, streamDraw);
+         GLB::allocate(bufSize, null, streamDraw);
       }
-      GLAB::upload(0, bufSize, verticesBuf->pointer);
+      GLB::upload(0, bufSize, verticesBuf->pointer);
    }
 
    static inline void free()
@@ -62,7 +62,7 @@ static struct FloatGLAB : GLAB
       count = 0;
       size = 0;
       delete pointer;
-      GLAB::free();
+      GLB::free();
    }
 };
 
