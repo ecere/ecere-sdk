@@ -39,11 +39,11 @@ void glabTerminate()
    delete shortVPBuffer;
 }
 
-public struct GLAB
+public struct GLB
 {
    uint buffer;
 
-   void allocate(uint size, const void * data, GLBufferUsage usage)
+   bool allocate(uint size, const void * data, GLBufferUsage usage)
    {
       if(this != null)
       {
@@ -58,7 +58,9 @@ public struct GLAB
          }
          else
             buffer = 1;
+         return true;
       }
+      return false;
    }
 
    void upload(uint offset, uint size, const void * data)
@@ -71,7 +73,7 @@ public struct GLAB
       }
    }
 
-   void ::deleteBuffers(int count, GLAB * buffers)
+   void ::deleteBuffers(int count, GLB * buffers)
    {
       if(glCaps_vertexBuffer)
       {
@@ -101,7 +103,10 @@ public struct GLAB
          buffer = 0;
       }
    }
+};
 
+public struct GLAB : GLB
+{
    void use(GLBufferContents contents, int n, int type, uint stride, const void * pointer)
    {
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
@@ -170,49 +175,8 @@ uint glabCurElementBuffer;
 
 public define noEAB = GLEAB { 0 };
 
-public struct GLEAB
+public struct GLEAB : GLB
 {
-   uint buffer;
-
-   void allocate(uint size, const void * data, GLBufferUsage usage)
-   {
-      if(this != null)
-      {
-         if(glCaps_vertexBuffer)
-         {
-            if(!buffer)
-               glGenBuffers(1, &buffer);
-
-            if(glCaps_vertexBuffer && glabCurElementBuffer != buffer)
-               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-            if(size)
-               glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
-         }
-         else
-            buffer = 1;
-      }
-   }
-
-   void upload(uint offset, uint size, const void * data)
-   {
-      if(this != null && glCaps_vertexBuffer)
-      {
-         if(glabCurElementBuffer != buffer)
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
-      }
-   }
-
-   void free()
-   {
-      if(this != null && buffer)
-      {
-         if(glCaps_vertexBuffer)
-            GLAB::deleteBuffers(1, (GLAB *)this);
-         buffer = 0;
-      }
-   }
-
    void draw(int primType, int count, int type, const void * indices)
    {
       if(glCaps_vertexBuffer
