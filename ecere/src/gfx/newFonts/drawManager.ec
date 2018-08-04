@@ -397,22 +397,11 @@ public:
          drawBuffer->glType = GL_FLOAT;
          drawBuffer->vertexCount = 0;
          drawBuffer->vertexAlloc = DRAW_BUFFER_VERTEX_ALLOC;
-         if(glCaps_vertexBuffer)
-         {
-            glGenBuffers( 1, &drawBuffer->vbo.buffer );
-            glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo.buffer );
-            glBufferData( GL_ARRAY_BUFFER, drawBuffer->vertexAlloc * vertexSize, 0, GL_DYNAMIC_DRAW );
-         }
+         drawBuffer->vbo.allocate(drawBuffer->vertexAlloc * vertexSize, null, dynamicDraw);
          drawBuffer->vertexBuffer = new byte[drawBuffer->vertexAlloc * vertexSize];
       }
 
       updateCount = 0;
-
-      if(glCaps_vertexBuffer)
-      {
-         glBindBuffer( GL_ARRAY_BUFFER, 0 );
-         glabCurArrayBuffer = 0;
-      }
       return true;
    }
 
@@ -429,7 +418,7 @@ public:
       {
          DMDrawBuffer *db = &drawBuffers[i];
          if(db->vbo.buffer)
-            glDeleteBuffers( 1, &db->vbo.buffer );
+            db->vbo.free();
          delete db->vertexBuffer;
       }
       delete imageBuffers;
