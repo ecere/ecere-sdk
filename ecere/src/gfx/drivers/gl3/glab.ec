@@ -39,6 +39,168 @@ void glabTerminate()
    delete shortVPBuffer;
 }
 
+///////////////
+// FreeBlocks
+public class BlockEntry : uint64
+{
+public:
+   uint start:32:32, end:32:0;
+};
+
+public class FreeBlockMap : Array<BlockEntry>
+{
+   uint totalSize;
+
+   void insert(BlockEntry * after, BlockEntry block)
+   {
+      if(count + 1 > minAllocSize)
+         minAllocSize = Max(count, 16) + count / 2;
+      Insert((IteratorPointer)after, block);
+   }
+
+   void remove(BlockEntry * ptr)
+   {
+      Remove((IteratorPointer)ptr);
+      if(minAllocSize - count > count / 2)
+         minAllocSize = count + count / 2;
+   }
+
+   BlockEntry * find(uint start)
+   {
+      BlockEntry * array = this.array;
+      int lo = 0, hi = (int)count - 1;
+      BlockEntry cmp { start };
+      if(hi >= lo)
+      {
+         int ix = (lo + hi) / 2;
+         do
+         {
+            BlockEntry * ptr = array + ix;
+            BlockEntry block = *ptr;
+            if(block <= cmp)
+            {
+               if(block.end >= start)
+                  return ptr;
+               else
+               {
+                  lo = ix;
+                  ix = (lo + hi)/2;
+               }
+            }
+            else
+            {
+               hi = ix;
+               ix = (lo + hi)/2;
+            }
+         } while(ix != lo);
+      }
+      return null;
+   }
+
+   void addFreeBlock(uint start, uint size)
+   {
+      BlockEntry * prevBlock = start ? find(start-1) : null;
+      BlockEntry * nextBlock = prevBlock && (prevBlock-array) < count-1 ? prevBlock + 1 : (count ? array : null);
+
+      // Try to merge with previous block
+      if(prevBlock && prevBlock->end + 1 == start)
+      {
+         prevBlock->end = prevBlock->end + size; // FIXME: #1200
+
+         // Try to merge with next block as well
+         if(nextBlock && nextBlock->start == prevBlock->end + 1)
+         {
+            prevBlock->end = nextBlock->end;
+            remove(nextBlock);
+         }
+      }
+      // Try to merge with next block
+      else if(nextBlock && nextBlock->start == start + size)
+         nextBlock->start = start;
+      // This free block is not connected to any other block
+      else
+         insert(prevBlock, { start, start + size - 1 });
+   }
+
+public:
+   BlockEntry allocate(uint size)
+   {
+      uint count = this.count;
+      BlockEntry * array = this.array;
+      uint ix;
+      uint endAvailable = 0;
+      uint added;
+      for(ix = 0; ix < count; ix++)
+      {
+         BlockEntry * block = array + ix;
+         endAvailable = block->end - block->start + 1;
+         if(endAvailable >= size)
+         {
+            uint start = block->start;
+            if(block->end - block->start + 1 == size)
+               remove(block);
+            else
+               block->start = block->start + size;
+            return { start, start + size - 1 };
+         }
+      }
+      if((added = onExpand(size - endAvailable)))
+      {
+         BlockEntry * block = count ? array + count - 1 : null;
+         uint start;
+         if(endAvailable)
+            block->end = block->end + added; // FIXME: #1200
+         else
+         {
+            addFreeBlock(totalSize - added, added);
+            block = this.array + this.count - 1;
+         }
+
+         start = block->start;
+         if(block->end - block->start + 1 == size)
+            remove(block);
+         else
+            block->start = block->start + size;
+         return { start, start + size - 1 };
+      }
+      return 0;
+   }
+
+   void freeBlock(BlockEntry block)
+   {
+      addFreeBlock(block.start, block.end - block.start + 1);
+   }
+
+   virtual uint onExpand(uint required) { return 0; }
+}
+
+///////////////
+
+public class GLMB : FreeBlockMap
+{
+public:
+   GLB ab;
+
+   uint onExpand(uint extraNeeded)
+   {
+      uint newSize = totalSize + Max(extraNeeded, totalSize / 2);
+      if(ab.resize(totalSize, newSize, staticDraw))
+      {
+         uint spaceAdded = newSize - totalSize;
+         totalSize = newSize;
+         return spaceAdded;
+      }
+      return 0;
+   }
+
+   void free()
+   {
+      Free();
+      ab.free();
+      totalSize = 0;
+   }
+};
+
 #ifdef _DEBUG
 #define GLSTATS
 #endif
@@ -46,6 +208,30 @@ void glabTerminate()
 public struct GLB
 {
    uint buffer;
+
+   bool resize(uint oldSize, uint newSize, GLBufferUsage usage)
+   {
+      // TODO: Update buffers and defrag instead of doing 2 copy?
+      if(!oldSize)
+         return allocate(newSize, null, usage);
+      else
+      {
+         GLB tmp { };
+         tmp.allocate(newSize, null, usage);
+         tmp.copy(this, 0, 0, oldSize);
+         allocate(newSize, null, usage);
+         copy(tmp, 0, 0, oldSize);
+         tmp.free();
+      }
+      return true;
+   }
+
+   void copy(GLB src, uint srcStart, uint dstStart, uint size)
+   {
+      glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
+      glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
+      glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
+   }
 
    bool allocate(uint size, const void * data, GLBufferUsage usage)
    {
@@ -207,6 +393,31 @@ public struct GLEAB : GLB
          GLFlushMatrices();
 
          //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
+            glDrawElements(primType, count, type, indices);
+      }
+   }
+
+   void draw2(int primType, int count, int type, const void * indices, uint baseVertex)
+   {
+      if(glCaps_vertexBuffer
+#if ENABLE_GL_POINTER
+         || (glCaps_vertexPointer && !buffer && indices)
+#endif
+         )
+      {
+#if !defined(__EMSCRIPTEN__)
+         if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+#endif
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         if(!glCaps_intAndDouble)
+            type = GL_UNSIGNED_SHORT;
+
+         GLFlushMatrices();
+
+         //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
+         if(baseVertex)
+            glDrawElementsBaseVertex(primType, count, type, indices, baseVertex);
+         else
             glDrawElements(primType, count, type, indices);
       }
    }
