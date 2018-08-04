@@ -160,8 +160,11 @@ public:
 
             for(c = 0; c<nPrimitives; c++)
             {
-               if(primitives[c].data)
-                  driver.FreeIndices(displaySystem, primitives[c].data);
+               PrimitiveSingle * prim = &primitives[c];
+               if(prim->data)
+                  driver.FreeIndices(displaySystem, primitives[c]);
+               if(!prim->type.vertexRange)
+                  delete prim->indices;
             }
 
             delete primitives;
@@ -225,7 +228,9 @@ public:
       if(this && group)
       {
          if(group.data)
-            driver.FreeIndices(displaySystem, group.data);
+            driver.FreeIndices(displaySystem, (PrimitiveSingle *)&group.type);
+         if(!group.type.vertexRange)
+            delete group.indices;
          groups.Delete(group);
       }
    }
@@ -243,6 +248,7 @@ public:
             group.nIndices = nIndices;
             if(driver)
             {
+               group.indices = (void *)(flags.indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
                group.data = driver.AllocateIndices(displaySystem, nIndices, flags.indices32bit);
                if(group.data)
                {
@@ -266,9 +272,9 @@ public:
       bool result = false;
       if(this && group)
       {
-         if(group.data)
-            group.indices = driver.LockIndices(displaySystem, group.data);
-         if(group.indices || group.type.vertexRange)
+         if(group.type.vertexRange)
+            result = true;
+         else if(group.data && driver.LockIndices(displaySystem, (PrimitiveSingle *)&group.type))
             result = true;
       }
       return result;
@@ -276,20 +282,9 @@ public:
 
    void UnlockPrimitiveGroup(PrimitiveGroup group)
    {
-      if(this && group && group.data)
+      if(this && group)
       {
-         if(group.data && driver == class(OpenGLDisplayDriver))
-         {
-            // TODO: Review this whole pre-locking thing and how to update before uploading...
-            OGLIndices oglIndices = group.data;
-            if(group.nIndices != oglIndices.nIndices && group.indices != oglIndices.indices)
-            {
-               oglIndices.indices = group.indices;
-               oglIndices.nIndices = group.nIndices;
-            }
-         }
-         driver.UnlockIndices(displaySystem, group.data, group.type.indices32bit, group.nIndices);
-         //group.indices = null;
+         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, null);
       }
    }
 
@@ -298,8 +293,12 @@ public:
       if(this && primitive)
       {
          if(primitive.data)
-            driver.FreeIndices(displaySystem, primitive.data);
-         primitive.data = null;
+         {
+            driver.FreeIndices(displaySystem, primitive);
+            primitive.data = null;
+         }
+         if(!primitive.type.vertexRange)
+            delete primitive.indices;
       }
    }
 
@@ -309,6 +308,8 @@ public:
       if(this && primitive)
       {
          primitive.type = flags;
+         if(!flags.vertexRange)
+            primitive.indices = (void *)(flags.indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
          primitive.data = driver.AllocateIndices(displaySystem, nIndices, flags.indices32bit);
          primitive.nIndices = nIndices;
          if(primitive.data)
@@ -326,8 +327,7 @@ public:
    {
       if(this && primitive)
       {
-         driver.UnlockIndices(this.displaySystem, primitive.data, primitive.type.indices32bit, primitive.nIndices);
-         //primitive.indices = null;
+         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, null);
       }
    }
 
@@ -336,8 +336,7 @@ public:
       bool result = false;
       if(this && primitive)
       {
-         primitive.indices = driver.LockIndices(displaySystem, primitive.data);
-         if(primitive.indices)
+         if(driver.LockIndices(displaySystem, primitive))
             result = true;
       }
       return result;
@@ -776,7 +775,7 @@ public:
                   {
                      PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
 
-                     if(AllocatePrimitive(primitive, group.type & ~ PrimitiveGroupType {vertexRange = true }, nPoints))
+                     if(AllocatePrimitive(primitive, group.type & ~ PrimitiveGroupType { vertexRange = true }, nPoints))
                      {
                         if(group.type.vertexRange)
                         {
