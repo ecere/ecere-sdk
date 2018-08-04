@@ -2,6 +2,10 @@
 precision highp float;
 #endif
 
+#if ALPHATEST_ON
+   uniform float alphaFuncValue;
+#endif
+
 #if LIGHTING_ON
    #if PER_VERTEX_COLOR
       varying vec4 diffuseColor;
@@ -14,11 +18,6 @@ precision highp float;
 #if NORMALS_MAPPING
    varying vec3 tTangent1;
    varying vec3 tTangent2;
-#endif
-
-
-#if ALPHATEST_ON
-   uniform float alphaFuncValue;
 #endif
 
 #if ENVIRONMENT_MAPPING || (LIGHTING_ON && ((!NON_LOCAL_VIEWER && MAT_SPECULAR) || (LIGHT0_POSITIONAL || LIGHT1_POSITIONAL || LIGHT2_POSITIONAL || LIGHT3_POSITIONAL || LIGHT4_POSITIONAL || LIGHT5_POSITIONAL || LIGHT6_POSITIONAL || LIGHT7_POSITIONAL)))
