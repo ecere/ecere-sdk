@@ -3352,7 +3352,8 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
-         glEnable(GL_CULL_FACE);
+         if(!mesh.mab) // TODO: State check
+            glEnable(GL_CULL_FACE);
       }
 
       // Fog
@@ -3807,6 +3808,11 @@ class OpenGLDisplayDriver : DisplayDriver
       GLCapabilities caps = glCaps;
       if(oglSystem) SETCAPS(oglSystem.capabilities);
 
+      if(mesh.mab && oglMesh)
+      {
+         oglMesh.vertices.buffer = 0;
+      }
+
       if(!mesh.flags.vertices)
       {
          if(oglMesh) oglMesh.vertices.free();
@@ -4002,12 +4008,47 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(glCaps_vertexBuffer)
       {
+         GLMB mab = mesh.mab;
          OGLMesh oglMesh = mesh.data;
          if(!oglMesh)
             oglMesh = mesh.data = OGLMesh { needAlloc = true };
 
          if(!flags) flags = mesh.flags;
-         if(oglMesh.interleaved && !flags.doubleVertices && flags.vertices && flags.normals && flags.texCoords1)
+
+         if(mab)
+         {
+            int nVertices = mesh.nVertices;
+            uint vSize = 8 * sizeof(float);
+            if(oglMesh.needAlloc)
+            {
+               BlockEntry block = mab.allocate(nVertices * vSize);
+               oglMesh.interleaved = true;
+               mesh.baseVertex = block.start / vSize;
+               oglMesh.vertices.buffer = mab.ab.buffer;
+               oglMesh.needAlloc = false;
+            }
+            if(flags.interleaved)
+               oglMesh.vertices.upload(vSize * mesh.baseVertex, nVertices * vSize, mesh.vertices);
+            else
+            {
+               // Interleave here for MAB if the data isn't already interleaved..
+               float * buf = new float[nVertices * 8];
+               int i;
+               Vector3Df * vertices = mesh.vertices;
+               Vector3Df * normals = mesh.normals;
+               Pointf * texCoords = mesh.texCoords;
+               for(i = 0; i < nVertices; i++)
+               {
+                  float * v = buf + (i << 3);
+                  memcpy(v, vertices + i, 3 * sizeof(float));
+                  memcpy(v + 3, normals + i, 3 * sizeof(float));
+                  memcpy(v + 6, texCoords + i, 2 * sizeof(float));
+               }
+               oglMesh.vertices.upload(vSize * mesh.baseVertex, nVertices * vSize, buf);
+               delete buf;
+            }
+         }
+         else if(oglMesh.interleaved && !flags.doubleVertices && flags.vertices && flags.normals && flags.texCoords1)
          {
             // temporary solution for interleaved attributes
             if(oglMesh.needAlloc)
@@ -4018,22 +4059,20 @@ class OpenGLDisplayDriver : DisplayDriver
             else
                oglMesh.vertices.upload(0, mesh.nVertices * 8 * sizeof(float), mesh.vertices);
          }
-         else if(oglMesh.needAlloc)
+         else if(!mab && oglMesh.needAlloc)
          {
-            {
-               if(flags.vertices)
-                  oglMesh.vertices.allocate(mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, staticDraw);
-               if(flags.normals)
-                  oglMesh.normals.allocate(mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, staticDraw);
-               if(flags.texCoords1)
-                  oglMesh.texCoords.allocate(mesh.nVertices * sizeof(Pointf), mesh.texCoords, staticDraw);
-               if(flags.colors)
-                  oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
-               if(flags.tangents)
-                  oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
-               if(flags.lightVectors)
-                  oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
-            }
+            if(flags.vertices)
+               oglMesh.vertices.allocate(mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, staticDraw);
+            if(flags.normals)
+               oglMesh.normals.allocate(mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, staticDraw);
+            if(flags.texCoords1)
+               oglMesh.texCoords.allocate(mesh.nVertices * sizeof(Pointf), mesh.texCoords, staticDraw);
+            if(flags.colors)
+               oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
+            if(flags.tangents)
+               oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
+            if(flags.lightVectors)
+               oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
             oglMesh.needAlloc = false;
          }
          else
@@ -4085,7 +4124,7 @@ class OpenGLDisplayDriver : DisplayDriver
       return OGLIndices { nIndices = nIndices };
    }
 
-   void UnlockIndices(DisplaySystem displaySystem, PrimitiveSingle group, bool indices32bit, int nIndices, void * mb)
+   void UnlockIndices(DisplaySystem displaySystem, PrimitiveSingle group, bool indices32bit, int nIndices, GLMB mb)
    {
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities caps = glCaps;
@@ -4112,10 +4151,18 @@ class OpenGLDisplayDriver : DisplayDriver
             size = nIndices * sizeof(uint16);
          }
          if(!oglIndices) { group.data = oglIndices = OGLIndices { nIndices = 0 }; };
-         if(!oglIndices.buffer.buffer || oglIndices.nIndices == nIndices)
+         if(mb == null && (!oglIndices.buffer.buffer || oglIndices.nIndices == nIndices))
             oglIndices.buffer.allocate(size, b, staticDraw);
          else
-            oglIndices.buffer.upload(0, size, b);
+         {
+            if(mb != null)
+            {
+               BlockEntry block = mb.allocate(size);
+               group.baseIndex = block.start / ixSize;
+               oglIndices.buffer.buffer = mb.ab.buffer;
+            }
+            oglIndices.buffer.upload(group.baseIndex * ixSize, size, b);
+         }
       }
       SETCAPS(caps);
    }
@@ -4312,10 +4359,10 @@ class OpenGLDisplayDriver : DisplayDriver
             delete temp;
          }
          else
-            eab.draw(getPrimitiveType(type.primitiveType), nIndices,
+            eab.draw2(getPrimitiveType(type.primitiveType), nIndices,
                indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
-               eab.buffer ? 0 : primitive.indices);
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+               eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices, mesh.baseVertex);
+         // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
    }
 

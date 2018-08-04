@@ -77,6 +77,7 @@ public class PrimitiveGroup : struct
 public:
    PrimitiveGroup prev, next;
    PrimitiveGroupType type;
+   int baseIndex;
    union
    {
       struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
@@ -116,6 +117,7 @@ public struct PrimitiveSingle
 {
 public:
    PrimitiveGroupType type;
+   int baseIndex;
    union
    {
       struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
@@ -162,7 +164,13 @@ public:
             {
                PrimitiveSingle * prim = &primitives[c];
                if(prim->data)
+               {
+                  if(meab)
+                  {
+                     ((OGLIndices)prim->data).buffer.buffer = 0;
+                  }
                   driver.FreeIndices(displaySystem, primitives[c]);
+               }
                if(!prim->type.vertexRange)
                   delete prim->indices;
             }
@@ -228,7 +236,13 @@ public:
       if(this && group)
       {
          if(group.data)
+         {
+            if(meab)
+            {
+               ((OGLIndices)group.data).buffer.buffer = 0;
+            }
             driver.FreeIndices(displaySystem, (PrimitiveSingle *)&group.type);
+         }
          if(!group.type.vertexRange)
             delete group.indices;
          groups.Delete(group);
@@ -284,7 +298,7 @@ public:
    {
       if(this && group)
       {
-         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, null);
+         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, meab);
       }
    }
 
@@ -327,7 +341,7 @@ public:
    {
       if(this && primitive)
       {
-         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, null);
+         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, meab);
       }
    }
 
@@ -861,6 +875,42 @@ public:
       data = value;
    }
 
+   bool Upload(DisplaySystem displaySystem, bool uploadTextures, GLMB mab, GLMB meab)
+   {
+      bool result = false;
+      PrimitiveGroup g;
+      bool clearData = false;
+
+      if(!this.displaySystem)
+      {
+         driver = displaySystem.driver;
+         this.displaySystem = displaySystem;
+         clearData = true;
+      }
+      this.mab = mab;
+      this.meab = meab;
+
+      Unlock(0);
+
+      for(g = groups.first; g; g = g.next)
+      {
+         if(!g.type.vertexRange)
+         {
+            if(clearData)
+               g.data = null;
+            UnlockPrimitiveGroup(g);
+         }
+         if(uploadTextures)
+         {
+            Material mat = g.material;
+            if(mat && mat.baseMap && mat.baseMap.displaySystem != displaySystem)
+               mat.baseMap.MakeMipMaps(displaySystem);
+         }
+      }
+      result = true;
+      return result;
+   }
+
 private:
 
    void SetMinMaxRadius(void)
@@ -942,6 +992,8 @@ private:
    DisplaySystem displaySystem;
    subclass(DisplayDriver) driver;
    void * data;
+   GLMB mab, meab;
+   uint baseVertex;
 };
 
 void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)

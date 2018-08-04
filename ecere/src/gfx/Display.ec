@@ -832,7 +832,7 @@ public:
          {
             Material curMaterial = display3D.material;
 
-            if(display3D.mesh != mesh)
+            if(display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
                driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
@@ -905,7 +905,7 @@ public:
             int c;
             PrimitiveSingle * primitives = mesh.primitives;
 
-            if(!group && display3D.mesh != mesh)
+            if(!group && display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
                displaySystem.driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
@@ -1180,7 +1180,7 @@ public:
          if(group)
          {
             subclass(DisplayDriver) driver = displaySystem.driver;
-            if(display3D.mesh != mesh)
+            if(display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
                driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
@@ -1272,7 +1272,7 @@ public:
                bool newMatrix, newMesh, newMaterial;
                if(!material) material = defaultMaterial;
                newMatrix   = past ? false : &sort->object.matrix != matrix;
-               newMesh     = past ? false : mesh != display3D.mesh;
+               newMesh     = past ? false : (display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab));
                newMaterial = past ? false : material != display3D.material;
 
                if(past || newMatrix || newMesh || newMaterial)
