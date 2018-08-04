@@ -4190,8 +4190,7 @@ class OpenGLDisplayDriver : DisplayDriver
          GLEnableClientState(VERTICES);
          if(!collectingHits && oglMesh)
          {
-            bool interleaved = mesh.flags.normals && mesh.flags.texCoords1 && !mesh.normals && !mesh.texCoords &&
-               !oglMesh.normals.buffer && !oglMesh.texCoords.buffer;
+            bool interleaved = oglMesh.interleaved;
             oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT),
                interleaved ? 8*sizeof(float) : 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
 
