@@ -766,7 +766,7 @@ public:
    bool LoadMipMaps(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
-      if(result)
+      if(result && displaySystem)
          if(!MakeMipMaps(displaySystem))
          {
             Free();
@@ -778,7 +778,7 @@ public:
    bool LoadTMipMaps(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
-      if(result)
+      if(result && displaySystem)
       {
          transparent = true;
          if(displaySystem)
