@@ -2197,7 +2197,7 @@ static Material defaultMaterial
    opacity = 1.0f,
    diffuse = { 1.0f, 1.0f, 1.0f },
    ambient = { 1.0f, 1.0f, 1.0f },
-   flags = { doubleSided = true, noFog = true };
+   flags = { doubleSided = true, noFog = true, setupTextures = true };
 };
 #endif
 

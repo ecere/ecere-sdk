@@ -1230,7 +1230,7 @@ static bool ReadMap(FileInfo * info, Material mat)
       case MAP_OPTIONS:
       {
          MapOptions options = (MapOptions)ReadWORD(info->f);
-         if(!options.dontTile) mat.flags.tile = true;
+         if(!options.dontTile) { mat.flags.tile = true; mat.flags.setupTextures = true; }
          break;
       }
       case MAP_1_U_SCALE:

@@ -33,6 +33,7 @@ public:
    bool reflectionMap:1;
    bool refraction:1;
    bool debugging:1;
+   bool constantColor:1;
 };
 
 public class CompiledDefaultShader : CompiledShader
@@ -70,6 +71,8 @@ public:
    int uMatReflectivity;
    int uCubeMapMatrix;
    int uAlphaFuncValue;
+
+   bool initialSetup; initialSetup = true;
 
    void registerUniforms(int program, DefaultShaderBits state)
    {
@@ -264,6 +267,7 @@ public:
       defs.concatf("\n#define ENVIRONMENT_REFLECTION %d",   state.reflection         ? 1 : 0);
       defs.concatf("\n#define ENVIRONMENT_REFRACTION %d",   state.refraction         ? 1 : 0);
       defs.concatf("\n#define REFLECTION_MAP %d",           state.reflectionMap      ? 1 : 0);
+      defs.concatf("\n#define CONSTANT_COLOR %d",           state.constantColor      ? 1 : 0);
       defs.concatf("\n#define NORMALS_MAPPING %d",          state.normalsMapping     ? 1 : 0);
       defs.concatf("\n#define CUBEMAP_ON %d",               state.cubeMap            ? 1 : 0);
       defs.concatf("\n#define LIGHTING_SPECULAR_BLINN %d",  state.blinnSpecular      ? 1 : 0);
@@ -320,6 +324,18 @@ public:
       }
 */
 
+      if(shader.initialSetup)
+      {
+         shader.initialSetup = false;
+
+         if(state.texturing || state.cubeMap)                  glUniform1i(shader.uDiffuseTex,  0);
+         if(state.normalsMapping)                              glUniform1i(shader.uBumpTex,     1);
+         if(state.specularMapping)                             glUniform1i(shader.uSpecularTex, 2);
+         if(state.environmentMapping)                          glUniform1i(shader.uEnvTex,      3);
+         if(state.environmentMapping && state.reflectionMap)   glUniform1i(shader.uReflectTex,  4);
+         if(state.alphaTest)                                   glUniform1f(shader.uAlphaFuncValue, 0.5f);
+      }
+
       if(matrixModified)
       {
          glUniformMatrix4fv(shader.uPrjMatrix, 1, GL_FALSE, projection);
@@ -361,22 +377,16 @@ public:
          if(materialModified)
          {
             // Material
-            glUniform4fv(shader.uMatDiffuse,  1, diffuse);
-            glUniform3fv(shader.uMatAmbient,  1, ambient);
-            glUniform3fv(shader.uMatEmissive, 1, emissive);
-            if(state.specular)
+            if(state.constantColor)
             {
-               glUniform3fv(shader.uMatSpecular, 1, specular);
-               glUniform1f(shader.uMatPower, state.blinnSpecular ? power : power / 4.0f);
+               glUniform4fv(shader.uMatDiffuse,  1, diffuse);
+               glUniform3fv(shader.uMatAmbient,  1, ambient);
+               glUniform3fv(shader.uMatEmissive, 1, emissive);
+               if(state.specular)
+                  glUniform3fv(shader.uMatSpecular, 1, specular);
             }
-
-            if(state.specularMapping)
-               glUniform1i(shader.uSpecularTex, 2);
-
-            if(state.normalsMapping)
-               glUniform1i(shader.uBumpTex, 1);
-            if(state.alphaTest)
-               glUniform1f(shader.uAlphaFuncValue, 0.5f);
+            if(state.specular)
+               glUniform1f(shader.uMatPower, state.blinnSpecular ? power : power / 4.0f);
          }
 
          if(/*1 || */matrixModified)
@@ -394,7 +404,6 @@ public:
       {
          if(matrixModified)
             glUniformMatrix3fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
-         glUniform1i(shader.uEnvTex, 3);
 
          if(materialModified)
          {
@@ -402,28 +411,15 @@ public:
                glUniform1f(shader.uMatReflectivity, reflectivity);
             if(state.refraction)
                glUniform1f(shader.uRefractionETA, refractionETA);
-            if(state.reflectionMap)
-               glUniform1i(shader.uReflectTex, 4);
          }
       }
 
-      if(materialModified)
+      if(state.textureMatrix && matrixModified && (state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap))
+         glUniformMatrix4fv(shader.uTextureMatrix, 1, GL_FALSE, matTexture);
+      if(materialModified && state.fog)
       {
-         if(state.texturing || state.cubeMap)
-            glUniform1i(shader.uDiffuseTex, 0);
-      }
-      if(matrixModified)
-      {
-         if((state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap) && state.textureMatrix)
-            glUniformMatrix4fv(shader.uTextureMatrix, 1, GL_FALSE, matTexture);
-      }
-      if(materialModified)
-      {
-         if(state.fog)
-         {
-            glUniform1f(shader.uFogDensity, fogDensity);
-            glUniform3fv(shader.uFogColor, 1, fogColor);
-         }
+         glUniform1f(shader.uFogDensity, fogDensity);
+         glUniform3fv(shader.uFogColor, 1, fogColor);
       }
 #endif
    }
@@ -585,16 +581,23 @@ public:
 
    void texturing(bool on)
    {
-      if(((DefaultShaderBits)state).texturing != on)
+      DefaultShaderBits state = this.state;
+      if(state.texturing != on)
       {
-         ((DefaultShaderBits)state).texturing = on;
+         DefaultShaderBits rmBits = 0;
          if(on)
-            ((DefaultShaderBits)state).cubeMap = false;
-         if(!on)
-            state &= ~DefaultShaderBits { swizzle = (SwizzleMode)0x3 };
-         if(!on && !((DefaultShaderBits)state).normalsMapping && !((DefaultShaderBits)state).specularMapping && !((DefaultShaderBits)state).reflectionMap && !((DefaultShaderBits)state).cubeMap)
-            state &= ~DefaultShaderBits { textureMatrix = true };
+         {
+            rmBits |= { cubeMap = true };
+            state.texturing = true;
+         }
+         else
+         {
+            rmBits |= { swizzle = (SwizzleMode)0x3, alphaTest = true, texturing = true };
+            if(!state.normalsMapping && !state.specularMapping && !state.reflectionMap && !state.cubeMap)
+               rmBits |= { textureMatrix = true };
+         }
          materialModified = true;
+         this.state = state & ~rmBits;
       }
    }
 
@@ -609,20 +612,36 @@ public:
 
    void swizzle(SwizzleMode swizzle)
    {
+      DefaultShaderBits state = this.state;
 #ifdef _DEBUG
-      if(swizzle && !((DefaultShaderBits)state).texturing && !((DefaultShaderBits)state).cubeMap)
+      if(swizzle && !state.texturing && !state.cubeMap)
          printf("swizzle() with texturing off\n");
 #endif
-      if(((DefaultShaderBits)state).swizzle != swizzle)
+      if(state.swizzle != swizzle)
       {
-         ((DefaultShaderBits)state).swizzle = swizzle;
-         if(((DefaultShaderBits)state).texturing || ((DefaultShaderBits)state).cubeMap)
+         ((DefaultShaderBits)this.state).swizzle = swizzle;
+         if(state.texturing || state.cubeMap)
             materialModified = true;
       }
    }
 
    void setSimpleMaterial(ColorAlpha color, bool twoSided)
    {
+      DefaultShaderBits rmBits
+      {
+         perVertexColor = true;
+         normalsMapping = true;
+         environmentMapping = true;
+         reflectionMap = true;
+         specularMapping = true;
+         reflection = true;
+         alphaTest = true;
+         refraction = true;
+         texturing = true;
+         cubeMap = true;
+         specular = true;
+         twoSided = true;
+      };
       float r = color.color.r / 255.0f;
       float g = color.color.g / 255.0f;
       float b = color.color.b / 255.0f;
@@ -633,18 +652,7 @@ public:
       diffuse[0] = r, diffuse[1] = g, diffuse[2] = b, diffuse[3] = color.a / 255.0f;
       ambient[0] = r, ambient[1] = g, ambient[2] = b;
       emissive[0] = 0, emissive[1] = 0, emissive[2] = 0;
-      ((DefaultShaderBits)state).perVertexColor = false;
-      ((DefaultShaderBits)state).normalsMapping = false;
-      ((DefaultShaderBits)state).environmentMapping = false;
-      ((DefaultShaderBits)state).reflectionMap = false;
-      ((DefaultShaderBits)state).specularMapping = false;
-      ((DefaultShaderBits)state).reflection = false;
-      ((DefaultShaderBits)state).alphaTest = false;
-      ((DefaultShaderBits)state).refraction = false;
-      ((DefaultShaderBits)state).texturing = false;
-      ((DefaultShaderBits)state).cubeMap = false;
-      ((DefaultShaderBits)state).specular = false;
-      ((DefaultShaderBits)state).twoSided = twoSided;
+      this.state = (this.state & ~rmBits) | DefaultShaderBits { twoSided = twoSided };
       materialModified = true;
    }
 
@@ -661,137 +669,127 @@ public:
    void setMaterial(Material material, MeshFeatures flags)
    {
 #if ENABLE_GL_SHADERS
+      DefaultShaderBits state = (DefaultShaderBits)this.state;
+      state &= ~
+      {
+         cubeMap = true, perVertexColor = true, separateSpecular = true, twoSided = true, textureMatrix = true, alphaTest = true,
+         environmentMapping = true, refraction = true, reflection = true, reflectionMap = true
+      };
+
       if(material)
       {
-         ((DefaultShaderBits)state).specular = material.power && (material.specular.r || material.specular.g || material.specular.b);
-         ((DefaultShaderBits)state).perVertexColor = flags.colors;
-         ((DefaultShaderBits)state).separateSpecular = ((DefaultShaderBits)state).specular && material.flags.separateSpecular;
-         ((DefaultShaderBits)state).cubeMap = material.flags.cubeMap && material.baseMap;
-         if(material.flags.cubeMap) ((DefaultShaderBits)state).texturing = false;
-         ((DefaultShaderBits)state).twoSided = material.flags.doubleSided && !material.flags.singleSideLight;
-         ((DefaultShaderBits)state).lightBits = material.flags.noLighting ? 0 : lightBits;
-         ((DefaultShaderBits)state).lighting = (!material.flags.noLighting && lightBits) ? true : false;
+         MaterialFlags matFlags = material.flags;
+         bool tile = matFlags.tile;
+         float * c = (float *)&material.diffuse;
+
+         state.perVertexColor = flags.colors;
+         state.separateSpecular = state.specular && matFlags.separateSpecular;
+         state.cubeMap = matFlags.cubeMap && material.baseMap;
+         if(matFlags.cubeMap) state.texturing = false;
+         state.twoSided = matFlags.doubleSided && !matFlags.singleSideLight;
+         state.lightBits = matFlags.noLighting ? 0 : lightBits;
+         state.lighting = (!matFlags.noLighting && lightBits) ? true : false;
          color[0] = 1, color[1] = 1, color[2] = 1, color[3] = material.opacity;
-         diffuse[0]  = material.diffuse.r,  diffuse[1]  = material.diffuse.g,  diffuse[2]  = material.diffuse.b, diffuse[3] = material.opacity;
-         ambient[0]  = material.ambient.r,  ambient[1]  = material.ambient.g,  ambient[2]  = material.ambient.b;
-         specular[0] = material.specular.r, specular[1] = material.specular.g, specular[2] = material.specular.b;
-         emissive[0] = material.emissive.r, emissive[1] = material.emissive.g, emissive[2] = material.emissive.b;
+
+         if(matFlags.update)
+         {
+            matFlags.constantColor = material.opacity ||
+               (diffuse[0] != 1 || diffuse[1] != 1 || diffuse[2] != 1 || diffuse[3] != 1) ||
+               (ambient[0] != 1 || ambient[1] != 1 || ambient[2] != 1) ||
+               (state.specular && (specular[0] != 1 || specular[1] != 1 || specular[2] != 1)) ||
+               (emissive[0] != 0 || emissive[1] != 0 || emissive[2] != 0);
+            matFlags.update = 0;
+         }
+         state.constantColor = matFlags.constantColor;
+         if(state.constantColor)
+         {
+            diffuse[0]  = c[0],  diffuse[1]  = c[1],  diffuse[2] = c[2], diffuse[3] = material.opacity;
+            ambient[0]  = c[3],  ambient[1]  = c[4],  ambient[2] = c[5];
+            specular[0] = c[6], specular[1] = c[7],  specular[2] = c[8];
+            emissive[0] = c[9], emissive[1] = c[10], emissive[2] = c[11];
+         }
+
+         state.specular = material.power && state.constantColor && (material.specular.r || material.specular.g || material.specular.b);
          power = material.power;
-         ((DefaultShaderBits)state).alphaTest = material.flags.partlyTransparent;
-      }
-      else
-      {
-         ((DefaultShaderBits)state).cubeMap = false;
-         ((DefaultShaderBits)state).perVertexColor = false;
-         ((DefaultShaderBits)state).separateSpecular = false;
-         ((DefaultShaderBits)state).twoSided = false;
-         ((DefaultShaderBits)state).textureMatrix = false;
-         ((DefaultShaderBits)state).alphaTest = false;
-      }
+         state.alphaTest = matFlags.partlyTransparent;
 
-      if(material && material.bumpMap && flags.tangents)
-      {
-         glActiveTexture(GL_TEXTURE1);
-         glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
-         if(material.flags.tile)
+         // Bump mapping
+         if(material.bumpMap && flags.tangents)
          {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-         }
-         else
-         {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-         }
-
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.bumpMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-         glActiveTexture(GL_TEXTURE0);
-         ((DefaultShaderBits)state).normalsMapping = true;
-      }
-      else
-         ((DefaultShaderBits)state).normalsMapping = false;
-
-      if(material && material.envMap && (material.refractiveIndex || material.refractiveIndexContainer || material.reflectivity || material.reflectMap))
-      {
-         CubeMap cube = material.envMap;
-         glActiveTexture(GL_TEXTURE3);
-         glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)cube.driverData);
-         glActiveTexture(GL_TEXTURE0);
-         ((DefaultShaderBits)state).environmentMapping = true;
-
-         if(material.refractiveIndex || material.refractiveIndexContainer)
-         {
-            refractionETA =
-               (material.refractiveIndexContainer ? material.refractiveIndexContainer : 1.0) /
-               (material.refractiveIndex ? material.refractiveIndex : 1.0);
-
-            ((DefaultShaderBits)state).refraction = true;
-         }
-
-         if(material.reflectivity || material.reflectMap)
-         {
-            reflectivity = material.reflectivity;
-            if(!reflectivity && material.reflectMap) reflectivity = 1.0;
-
-            if(material.reflectMap)
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
+            if(matFlags.setupTextures)
             {
-               glActiveTexture(GL_TEXTURE4);
-               glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.reflectMap.driverData);
-               if(material.flags.tile)
-               {
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-               }
-               else
-               {
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-               }
-
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.reflectMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.bumpMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-               glActiveTexture(GL_TEXTURE0);
-
-               ((DefaultShaderBits)state).reflectionMap = true;
             }
-            else
-               ((DefaultShaderBits)state).reflectionMap = false;
-            ((DefaultShaderBits)state).reflection = true;
+            glActiveTexture(GL_TEXTURE0);
+            state.normalsMapping = true;
          }
-      }
-      else
-      {
-         ((DefaultShaderBits)state).environmentMapping = false;
-         ((DefaultShaderBits)state).refraction = false;
-         ((DefaultShaderBits)state).reflection = false;
-         ((DefaultShaderBits)state).reflectionMap = false;
-      }
 
-      if(material && material.specularMap)
-      {
-         glActiveTexture(GL_TEXTURE2);
-         glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.specularMap.driverData);
-         if(material.flags.tile)
+         // Environment mapping
+         if(material.envMap && (material.refractiveIndex || material.refractiveIndexContainer || material.reflectivity || material.reflectMap))
          {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            CubeMap cube = material.envMap;
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)cube.driverData);
+            glActiveTexture(GL_TEXTURE0);
+            state.environmentMapping = true;
+
+            if(material.refractiveIndex || material.refractiveIndexContainer)
+            {
+               refractionETA =
+                  (material.refractiveIndexContainer ? material.refractiveIndexContainer : 1.0) /
+                  (material.refractiveIndex ? material.refractiveIndex : 1.0);
+
+               state.refraction = true;
+            }
+
+            if(material.reflectivity || material.reflectMap)
+            {
+               reflectivity = material.reflectivity;
+               if(!reflectivity && material.reflectMap) reflectivity = 1.0;
+
+               if(material.reflectMap)
+               {
+                  glActiveTexture(GL_TEXTURE4);
+                  glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.reflectMap.driverData);
+                  if(matFlags.setupTextures)
+                  {
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.reflectMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                  }
+                  glActiveTexture(GL_TEXTURE0);
+
+                  state.reflectionMap = true;
+               }
+               state.reflection = true;
+            }
          }
-         else
+
+         // Specular mapping
+         if(material.specularMap)
          {
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.specularMap.driverData);
+            if(matFlags.setupTextures)
+            {
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.specularMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            }
+            glActiveTexture(GL_TEXTURE0);
+            state.specularMapping = true;
          }
-
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.specularMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-         glActiveTexture(GL_TEXTURE0);
-         ((DefaultShaderBits)state).specularMapping = true;
       }
-      else
-         ((DefaultShaderBits)state).specularMapping = false;
-
       materialModified = true;
+      this.state = state;
 #endif
    }
 
@@ -937,3 +935,19 @@ public:
 }
 
 DefaultShader defaultShader { };
+
+static struct ColorsStruct
+{
+   ColorRGB diffuse;
+   ColorRGB ambient;
+   ColorRGB specular;
+   ColorRGB emissive;
+};
+
+static ColorsStruct defaultColors
+{
+   { 1,1,1 },
+   { 1,1,1 },
+   { 1,1,1 },
+   { 0,0,0 }
+};
