@@ -34,6 +34,7 @@ public:
    bool refraction:1;
    bool debugging:1;
    bool constantColor:1;
+   bool normalsInvScale2:1;
 };
 
 public class CompiledDefaultShader : CompiledShader
@@ -44,6 +45,7 @@ public:
    int uMVMatrix;
    int uTextureMatrix;
    int uNormalsMatrix;
+   int uNormalsInvScale2;
    int uFogDensity;
    int uFogColor;
    int uGlobalAmbient;
@@ -118,6 +120,7 @@ public:
 
          uNearPlane        = glGetUniformLocation(program, "nearPlane");
          uNormalsMatrix    = glGetUniformLocation(program, "normals_matrix");
+         uNormalsInvScale2 = glGetUniformLocation(program, "normals_inv_scale2");
          uGlobalAmbient    = glGetUniformLocation(program, "globalAmbient");
          uMatAmbient       = glGetUniformLocation(program, "matAmbient");
          uMatEmissive      = glGetUniformLocation(program, "matEmissive");
@@ -171,7 +174,7 @@ public:
    float matTexture[16];
    float cubemap_matrix[9];
 
-   float normalsMatrix[9];
+   Vector3Df normalsInvScale2;
    float nearPlane;
    float globalAmbient[3];
 
@@ -278,6 +281,8 @@ public:
       defs.concatf("\n#define SWIZZLE_RED %d",              state.swizzle == red     ? 1 : 0);
       defs.concatf("\n#define FOG_ON %d\n",                 state.fog                ? 1 : 0);
       defs.concatf("\n#define DEBUGGING %d\n",              state.debugging          ? 1 : 0);
+      defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
+
       for(i = 0; i < 8; i++)
       {
          LightMode mode = (LightMode)((state.lightBits & (0x7 << (3*i))) >> (3*i));
@@ -336,18 +341,20 @@ public:
          if(state.alphaTest)                                   glUniform1f(shader.uAlphaFuncValue, 0.5f);
       }
 
-      if(matrixModified)
+      if(modifiedUniforms.matPrj)
       {
+         if(state.lighting)
+            glUniform1f(shader.uNearPlane, nearPlane);
          glUniformMatrix4fv(shader.uPrjMatrix, 1, GL_FALSE, projection);
-
-         if(state.modelView)
-            glUniformMatrix4fv(shader.uMVMatrix, 1, GL_FALSE, modelView);
       }
+
+      if(state.modelView && modifiedUniforms.matMV)
+         glUniformMatrix4fv(shader.uMVMatrix, 1, GL_FALSE, modelView);
 
       if(state.lighting)
       {
          // Lights
-         if(lightModified)
+         if(modifiedUniforms.light)
          {
             int i;
             for(i = 0; i < 8; i++)
@@ -374,7 +381,7 @@ public:
             glUniform3fv(shader.uGlobalAmbient, 1, globalAmbient);
          }
 
-         if(materialModified)
+         if(modifiedUniforms.material)
          {
             // Material
             if(state.constantColor)
@@ -389,11 +396,8 @@ public:
                glUniform1f(shader.uMatPower, state.blinnSpecular ? power : power / 4.0f);
          }
 
-         if(/*1 || */matrixModified)
-         {
-            glUniform1f(shader.uNearPlane, nearPlane);
-            glUniformMatrix3fv(shader.uNormalsMatrix, 1, GL_FALSE, normalsMatrix);
-         }
+         if(modifiedUniforms.matMV && state.normalsInvScale2)
+            glUniform3fv(shader.uNormalsInvScale2, 1, (float *)&normalsInvScale2);
       }
       else
       {
@@ -402,10 +406,10 @@ public:
 
       if(state.environmentMapping)
       {
-         if(matrixModified)
+         if(modifiedUniforms.matTex)
             glUniformMatrix3fv(shader.uCubeMapMatrix, 1, GL_FALSE, cubemap_matrix);
 
-         if(materialModified)
+         if(modifiedUniforms.material)
          {
             if(state.reflection)
                glUniform1f(shader.uMatReflectivity, reflectivity);
@@ -414,9 +418,9 @@ public:
          }
       }
 
-      if(state.textureMatrix && matrixModified && (state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap))
+      if(state.textureMatrix && modifiedUniforms.matTex && (state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap || state.cubeMap))
          glUniformMatrix4fv(shader.uTextureMatrix, 1, GL_FALSE, matTexture);
-      if(materialModified && state.fog)
+      if(modifiedUniforms.material && state.fog)
       {
          glUniform1f(shader.uFogDensity, fogDensity);
          glUniform3fv(shader.uFogColor, 1, fogColor);
@@ -434,37 +438,22 @@ public:
          (float)-c[8], (float) c[9], (float) c[10]
       };
       memcpy(cubemap_matrix, m, 9 * sizeof(float));
-      matrixModified = true;
+      modifiedUniforms.matTex = true;
    }
 
-   void updateMatrix(MatrixMode mode, Matrix matrix, bool isIdentity)
+   void updateMatrix(MatrixMode mode, float * matrix, bool isIdentity)
    {
       if(mode == projection)
       {
-         float m[16] =
-         {
-            (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
-            (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
-            (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
-            (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
-         };
-         memcpy(projection, m, 16 * sizeof(float));
+         memcpy(projection, matrix, 16 * sizeof(float));
          nearPlane = (float)::nearPlane;
-         matrixModified = true;
+         modifiedUniforms.matPrj = true;
       }
       else if(mode == modelView)
       {
          if(!isIdentity)
-         {
-            float m[16] =
-            {
-               (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
-               (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
-               (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
-               (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
-            };
-            memcpy(modelView, m, 16 * sizeof(float));
-         }
+            memcpy(modelView, matrix, 16 * sizeof(float));
+
          ((DefaultShaderBits)state).modelView = !isIdentity;
 
          //mvModified = true;
@@ -472,44 +461,45 @@ public:
 
          if(((DefaultShaderBits)state).lighting)
          {
-            Matrix t, inv = matrix;
-            double * i = inv.array;
-            inv = matrix;
-            inv.Scale(1, -1, 1);
-            t.Transpose(inv);
-            if(isIdentity)
-               inv = t;
-            else
-               inv.Inverse(t);
+            if(isIdentity) // Probably not needed? Checking modelView flag?
             {
-               float m[9] =
+               ((DefaultShaderBits)state).normalsInvScale2 = false;
+            }
+            else
+            {
+               Vector3Df s2;
+               /*if(scale != null)
+                  s2 = { scale.x * scale.x, scale.y * scale.y, scale.z * scale.z };
+               else*/
                {
-                  (float)i[0],(float)i[1],(float)i[2],
-                  (float)i[4],(float)i[5],(float)i[6],
-                  (float)i[8],(float)i[9],(float)i[10]
-               };
-               memcpy(normalsMatrix, m, 9 * sizeof(float));
+                  Vector3Df x { matrix[0], matrix[1], matrix[ 2] };
+                  Vector3Df y { matrix[4], matrix[5], matrix[ 6] };
+                  Vector3Df z { matrix[8], matrix[9], matrix[10] };
+                  s2 = { x.x * x.x + x.y * x.y + x.z * x.z,
+                         y.x * y.x + y.y * y.y + y.z * y.z,
+                         z.x * z.x + z.y * z.y + z.z * z.z };
+               }
+               normalsInvScale2 = { 1.0f / s2.x, 1.0f / s2.y, 1.0f / s2.z };
+               if(fabs(s2.x-s2.y) * normalsInvScale2.x < 0.01 && fabs(s2.x-s2.z) * normalsInvScale2.x < 0.01)
+               {
+                  ((DefaultShaderBits)state).normalsInvScale2 = false;
+               }
+               else
+               {
+                  ((DefaultShaderBits)state).normalsInvScale2 = true;
+               }
             }
          }
-         matrixModified = true;
+         modifiedUniforms.matMV = true;
       }
       else if(mode == texture)
       {
+         DefaultShaderBits state = this.state;
          if(!isIdentity)
-         {
-            float m[16] =
-            {
-               (float)matrix.m[0][0], (float)matrix.m[0][1], (float)matrix.m[0][2], (float)matrix.m[0][3],
-               (float)matrix.m[1][0], (float)matrix.m[1][1], (float)matrix.m[1][2], (float)matrix.m[1][3],
-               (float)matrix.m[2][0], (float)matrix.m[2][1], (float)matrix.m[2][2], (float)matrix.m[2][3],
-               (float)matrix.m[3][0], (float)matrix.m[3][1], (float)matrix.m[3][2], (float)matrix.m[3][3]
-            };
-            memcpy(matTexture, m, 16 * sizeof(float));
-         }
-         ((DefaultShaderBits)state).textureMatrix = !isIdentity;
-         if(((DefaultShaderBits)state).texturing || ((DefaultShaderBits)state).normalsMapping || ((DefaultShaderBits)state).specularMapping ||
-            ((DefaultShaderBits)state).reflectionMap || ((DefaultShaderBits)state).cubeMap)
-            matrixModified = true;
+            memcpy(matTexture, matrix, 16 * sizeof(float));
+         ((DefaultShaderBits)this.state).textureMatrix = !isIdentity;
+         if(state & { texturing = true, normalsMapping = true, specularMapping = true, reflectionMap = true, cubeMap = true })
+            modifiedUniforms.matTex = true;
       }
    }
 
@@ -517,13 +507,13 @@ public:
    {
       globalAmbient[0] = r, globalAmbient[1] = g, globalAmbient[2] = b;
       if(((DefaultShaderBits)state).lighting)
-         lightModified = true;
+         modifiedUniforms.light = true;
    }
 
    void setColor(float r, float g, float b, float a)
    {
       color[0] = r, color[1] = g, color[2] = b, color[3] = a;
-      materialModified = true;
+      modifiedUniforms.material = true;
    }
 
    void lighting(bool on)
@@ -531,7 +521,7 @@ public:
       if(((DefaultShaderBits)state).lighting != on)
       {
          ((DefaultShaderBits)state).lighting = on;
-         lightModified = true;
+         modifiedUniforms.light = true;
          if(!on)
          {
             backLightState = state &
@@ -557,7 +547,7 @@ public:
       {
          fogOn = on;
          ((DefaultShaderBits)state).fog = fogOn && fogDensity;
-         materialModified = true;
+         modifiedUniforms.material = true;
       }
    }
 
@@ -568,7 +558,7 @@ public:
          fogDensity = density;
          ((DefaultShaderBits)state).fog = fogOn && fogDensity;
          if(fogOn)
-            lightModified = true;
+            modifiedUniforms.material = true;
       }
    }
 
@@ -576,7 +566,7 @@ public:
    {
       fogColor[0] = r, fogColor[1] = g, fogColor[2] = b;
       if(fogOn)
-         lightModified = true;
+         modifiedUniforms.material = true;
    }
 
    void texturing(bool on)
@@ -596,7 +586,7 @@ public:
             if(!state.normalsMapping && !state.specularMapping && !state.reflectionMap && !state.cubeMap)
                rmBits |= { textureMatrix = true };
          }
-         materialModified = true;
+         modifiedUniforms.material = true;
          this.state = state & ~rmBits;
       }
    }
@@ -606,7 +596,7 @@ public:
       if(((DefaultShaderBits)state).debugging != on)
       {
          ((DefaultShaderBits)state).debugging = on;
-         uniformsModified = true;
+         modifiedUniforms = { true, true, true, true, true };
       }
    }
 
@@ -621,7 +611,7 @@ public:
       {
          ((DefaultShaderBits)this.state).swizzle = swizzle;
          if(state.texturing || state.cubeMap)
-            materialModified = true;
+            modifiedUniforms.material = true;
       }
    }
 
@@ -653,7 +643,7 @@ public:
       ambient[0] = r, ambient[1] = g, ambient[2] = b;
       emissive[0] = 0, emissive[1] = 0, emissive[2] = 0;
       this.state = (this.state & ~rmBits) | DefaultShaderBits { twoSided = twoSided };
-      materialModified = true;
+      modifiedUniforms.material = true;
    }
 
    void setPerVertexColor(bool perVertexColor)
@@ -661,7 +651,7 @@ public:
       if(((DefaultShaderBits)state).perVertexColor != perVertexColor)
       {
          ((DefaultShaderBits)state).perVertexColor = perVertexColor;
-         materialModified = true;
+         modifiedUniforms.material = true;
       }
    }
 
@@ -788,7 +778,7 @@ public:
             state.specularMapping = true;
          }
       }
-      materialModified = true;
+      modifiedUniforms.material = true;
       this.state = state;
 #endif
    }
@@ -803,7 +793,7 @@ public:
          ((DefaultShaderBits)state).lighting = true;
 
       if(lightOn || (lightOn != (mode != off)))
-         lightModified = true;
+         modifiedUniforms.light = true;
 
       if(lightOn)
       {

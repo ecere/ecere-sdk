@@ -211,6 +211,7 @@ void main(void)
    #else
       n = normalize(tNormal);
    #endif
+      n.y = -n.y;
 
       #if NUM_LIGHTS > 0 && LIGHT0_ON && LIGHT0_POSITIONAL
          lights[0] = lightsPos[0] - nnEyeToSurface;

@@ -19,7 +19,9 @@ uniform mat4 projection_matrix;
    attribute vec3 tangent2;
 
    uniform float nearPlane;
-   uniform mat3 normals_matrix;
+#if NORMALS_INV_SCALE
+   uniform vec3 normals_inv_scale2;
+#endif
 
    #if PER_VERTEX_COLOR
       varying vec4 diffuseColor; // w: opacity
@@ -69,11 +71,24 @@ void main(void)
       ambientColor = color.xyz;
    #endif
 
-   tNormal = normals_matrix * normal;
-#if NORMALS_MAPPING
-   tTangent1 = normals_matrix * tangent1;
-   tTangent2 = normals_matrix * tangent2;
+#if NORMALS_INV_SCALE
+   mat3 normals_matrix = mat3(
+      normals_inv_scale2.x * modelview_matrix[0][0], normals_inv_scale2.x * modelview_matrix[0][1], normals_inv_scale2.x * modelview_matrix[0][2],
+      normals_inv_scale2.y * modelview_matrix[1][0], normals_inv_scale2.y * modelview_matrix[1][1], normals_inv_scale2.y * modelview_matrix[1][2],
+      normals_inv_scale2.z * modelview_matrix[2][0], normals_inv_scale2.z * modelview_matrix[2][1], normals_inv_scale2.z * modelview_matrix[2][2]);
+#else
+   mat3 normals_matrix = mat3(
+      modelview_matrix[0][0], modelview_matrix[0][1], modelview_matrix[0][2],
+      modelview_matrix[1][0], modelview_matrix[1][1], modelview_matrix[1][2],
+      modelview_matrix[2][0], modelview_matrix[2][1], modelview_matrix[2][2]);
 #endif
+
+      tNormal = normals_matrix * normal;
+   #if NORMALS_MAPPING
+      tTangent1 = normals_matrix * tangent1;
+      tTangent2 = normals_matrix * tangent2;
+   #endif
+
 #elif PER_VERTEX_COLOR
    fColor = matDiffuse * color;
 #endif

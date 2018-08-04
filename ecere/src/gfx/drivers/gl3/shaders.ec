@@ -40,6 +40,12 @@ public:
    }
 };
 
+public class ShaderModifiedUniforms : uint32
+{
+public:
+   bool matMV:1, light:1, material:1, matPrj:1, matTex:1;
+}
+
 public class Shader
 {
    Map<uint64, CompiledShader> programs { };
@@ -88,7 +94,9 @@ public:
    }
 
    uint64 state;
-   bool matrixModified, lightModified, materialModified, uniformsModified;
+   ShaderModifiedUniforms modifiedUniforms;
+
+   modifiedUniforms = { true, true, true, true, true };
 
 private:
    char * vertexShaderFile;
@@ -278,10 +286,7 @@ public:
       {
          if(shader != this.shader)
          {
-            lightModified = true;
-            materialModified = true;
-            matrixModified = true;
-            uniformsModified = true;
+            modifiedUniforms = { true, true, true, true, true };
             activeState = state;
             this.shader = shader;
          }
@@ -290,13 +295,10 @@ public:
             activeProgram = shader.program;
             glUseProgram(shader.program);
          }
-         if(uniformsModified || lightModified || materialModified || matrixModified)
+         if(modifiedUniforms)
          {
             uploadUniforms(shader);
-            uniformsModified = false;
-            lightModified = false;
-            materialModified = false;
-            matrixModified = false;
+            modifiedUniforms = 0;
          }
       }
 #endif
@@ -312,7 +314,15 @@ public:
          for(i = 0; i < 3; i++)
          {
             int ix = matrixIndex[i];
-            updateMatrix(MatrixMode::modelView + i, matrixStack[i][ix], isIdentity[i][ix]);
+            double * dm = matrixStack[i][ix].array;
+            float m[16] =
+            {
+               (float)dm[0 ], (float)dm[ 1], (float)dm[ 2], (float)dm[ 3],
+               (float)dm[4 ], (float)dm[ 5], (float)dm[ 6], (float)dm[ 7],
+               (float)dm[8 ], (float)dm[ 9], (float)dm[10], (float)dm[11],
+               (float)dm[12], (float)dm[13], (float)dm[14], (float)dm[15]
+            };
+            updateMatrix(MatrixMode::modelView + i, m, isIdentity[i][ix]);
          }
       }
    }
@@ -328,7 +338,7 @@ public:
 #endif
    }
    virtual CompiledShader registerShader(int program, uint64 state) { return CompiledShader { }; }
-   virtual void updateMatrix(MatrixMode mode, Matrix matrix, bool isIdentity);
+   virtual void updateMatrix(MatrixMode mode, float * matrix, bool isIdentity);
    virtual void uploadUniforms(CompiledShader shader);
    #if !defined(ECERE_NO3D)
    virtual void setMaterial(Material material, MeshFeatures flags);
