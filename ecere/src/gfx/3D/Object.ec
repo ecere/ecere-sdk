@@ -1839,6 +1839,7 @@ private:
 
    Euler eulerOrientation;
    DisplaySystem displaySystem;
+   float mvMatrix[16]; // Model-view matrix
 
    public property DisplaySystem displaySystem
    {
@@ -1855,5 +1856,38 @@ private:
          mesh.Upload(displaySystem, true, mab, meab);
       for(o = children.first; o; o = o.next)
          o.Upload(displaySystem, mab, meab);
+   }
+
+   void setTransform(Matrix sm, Matrix svm, Vector3D cp) // Start-up matrix, Start-up X View Matrix, Camera Position
+   {
+      float * mv = mvMatrix;
+      double * wm = matrix.array, * m;
+      float tx = 0, ty = 0, tz = 0;
+      if(flags.viewSpace)
+         m = sm.array;
+      else
+      {
+         double x = wm[12] - cp.x, y = wm[13] - cp.y, z = wm[14] - cp.z;
+         m = svm.array;
+         tx = (float)(x * m[0] + y * m[4] + z * m[ 8] + m[12]);
+         ty = (float)(x * m[1] + y * m[5] + z * m[ 9] + m[13]);
+         tz = (float)(x * m[2] + y * m[6] + z * m[10] + m[14]);
+      }
+      mv[ 0]=(float)(wm[0]*m[0] + wm[1]*m[4] + wm[2]*m[ 8]);
+      mv[ 1]=(float)(wm[0]*m[1] + wm[1]*m[5] + wm[2]*m[ 9]);
+      mv[ 2]=(float)(wm[0]*m[2] + wm[1]*m[6] + wm[2]*m[10]);
+      mv[ 3]=0;
+      mv[ 4]=(float)(wm[4]*m[0] + wm[4]*m[4] + wm[6]*m[ 8]);
+      mv[ 5]=(float)(wm[4]*m[1] + wm[4]*m[5] + wm[6]*m[ 9]);
+      mv[ 6]=(float)(wm[4]*m[2] + wm[4]*m[6] + wm[6]*m[10]);
+      mv[ 7]=0;
+      mv[ 8]=(float)(wm[8]*m[0] + wm[9]*m[4] + wm[10]*m[ 8]);
+      mv[ 9]=(float)(wm[8]*m[1] + wm[9]*m[5] + wm[10]*m[ 9]);
+      mv[10]=(float)(wm[8]*m[2] + wm[9]*m[6] + wm[10]*m[10]);
+      mv[11]=0;
+      mv[12]=tx;
+      mv[13]=ty;
+      mv[14]=tz;
+      mv[15]=1;
    }
 };
