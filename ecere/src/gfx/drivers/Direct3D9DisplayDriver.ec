@@ -104,7 +104,6 @@ static struct Vertex
 
 static class D3DIndices : struct
 {
-   uint16 * indices;
    IDirect3DIndexBuffer9 * buffer;
    int nIndices;
 };
@@ -1508,13 +1507,13 @@ class Direct3D9DisplayDriver : DisplayDriver
       return true;
    }
 
-   void FreeIndices(DisplaySystem displaySystem, D3DIndices d3dIndices)
+   void FreeIndices(DisplaySystem displaySystem, PrimitiveSingle group)
    {
+      D3DIndices d3dIndices = group.data;
       if(d3dIndices)
       {
          if(d3dIndices.buffer)
             IDirect3DIndexBuffer9_Release(d3dIndices.buffer);
-         delete d3dIndices.indices;
          delete d3dIndices;
       }
    }
@@ -1526,7 +1525,6 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DIndices d3dIndices { };
       if(d3dIndices && nIndices)
       {
-         d3dIndices.indices = (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
          IDirect3DDevice9_CreateIndexBuffer(d3dDevice, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * nIndices, 0, indices32bit ? D3DFMT_INDEX32 : D3DFMT_INDEX16,
             D3DPOOL_MANAGED, &d3dIndices.buffer, null);
          d3dIndices.nIndices = nIndices;
@@ -1534,19 +1532,20 @@ class Direct3D9DisplayDriver : DisplayDriver
       return d3dIndices;
    }
 
-   void UnlockIndices(DisplaySystem displaySystem, D3DIndices d3dIndices, bool indices32bit, int nIndices)
+   void UnlockIndices(DisplaySystem displaySystem, PrimitiveSingle group, bool indices32bit, int nIndices, void * meab)
    {
+      D3DIndices d3dIndices = group.data;
       uint16 * indexBuffer = null;
       if(!IDirect3DIndexBuffer9_Lock(d3dIndices.buffer, 0, 0, (void **)&indexBuffer, 0))
       {
-         memcpy(indexBuffer, d3dIndices.indices, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * d3dIndices.nIndices);
+         memcpy(indexBuffer, group.indices, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * d3dIndices.nIndices);
          IDirect3DIndexBuffer9_Unlock(d3dIndices.buffer);
       }
    }
 
-   uint16 * LockIndices(DisplaySystem displaySystem, D3DIndices d3dIndices)
+   void * LockIndices(DisplaySystem displaySystem, PrimitiveSingle group)
    {
-      return d3dIndices.indices;
+      return (void *)1;
    }
 
    void SelectMesh(Display display, Mesh mesh)
@@ -1580,19 +1579,19 @@ class Direct3D9DisplayDriver : DisplayDriver
       }
    }
 
-   void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
+   void DrawPrimitives(Display display, PrimitiveSingle primitive, Mesh mesh)
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9 * d3dDevice = d3dSystem.d3dDevice;
 
-      if(primitiveTypes[primitive->type.primitiveType])
+      if(primitiveTypes[primitive.type.primitiveType])
       {
-         int numPrimitives = (primitive->type.vertexRange) ? primitive->nVertices : primitive->nIndices;
+         int numPrimitives = (primitive.type.vertexRange) ? primitive.nVertices : primitive.nIndices;
          int c;
 
-         switch(primitive->type.primitiveType)
+         switch(primitive.type.primitiveType)
          {
             case lines:     numPrimitives /= 2; break;
             case triangles: numPrimitives /= 3; break;
@@ -1607,27 +1606,27 @@ class Direct3D9DisplayDriver : DisplayDriver
                numPrimitives /= 4;
                break;
          }
-         if(primitive->type.vertexRange)
+         if(primitive.type.vertexRange)
          {
-            if(primitive->type.primitiveType == quads)
+            if(primitive.type.primitiveType == quads)
             {
                for(c = 0; c<numPrimitives; c++)
-                  IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], primitive->first+c*4, 2);
+                  IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], primitive.first+c*4, 2);
             }
             else
-               IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], primitive->first, numPrimitives);
+               IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], primitive.first, numPrimitives);
          }
          else
          {
-            D3DIndices indices = primitive->data;
+            D3DIndices indices = primitive.data;
             IDirect3DDevice9_SetIndices(d3dDevice, indices.buffer);
-            if(primitive->type.primitiveType == quads)
+            if(primitive.type.primitiveType == quads)
             {
                for(c = 0; c<numPrimitives; c++)
-                  IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], 0, 0, mesh.nVertices, c*4, 2);
+                  IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], 0, 0, mesh.nVertices, c*4, 2);
             }
             else
-               IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], 0, 0, mesh.nVertices, 0, numPrimitives);
+               IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], 0, 0, mesh.nVertices, 0, numPrimitives);
          }
 
          if(display.display3D.material.flags.doubleSided)
@@ -1640,27 +1639,27 @@ class Direct3D9DisplayDriver : DisplayDriver
                      IDirect3DDevice9_SetLight(d3dDevice, c, &d3dDisplay.lightsPI[c]);
             }
 
-            if(primitive->type.vertexRange)
+            if(primitive.type.vertexRange)
             {
-               if(primitive->type.primitiveType == quads)
+               if(primitive.type.primitiveType == quads)
                {
                   for(c = 0; c<numPrimitives; c++)
-                     IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], primitive->first+c*4, 2);
+                     IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], primitive.first+c*4, 2);
                }
                else
-                  IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], primitive->first, numPrimitives);
+                  IDirect3DDevice9_DrawPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], primitive.first, numPrimitives);
             }
             else
             {
-               D3DIndices indices = primitive->data;
+               D3DIndices indices = primitive.data;
                IDirect3DDevice9_SetIndices(d3dDevice, indices.buffer);
-               if(primitive->type.primitiveType == quads)
+               if(primitive.type.primitiveType == quads)
                {
                   for(c = 0; c<numPrimitives; c++)
-                     IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], 0, 0, mesh.nVertices, c*4, 2);
+                     IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], 0, 0, mesh.nVertices, c*4, 2);
                }
                else
-                  IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive->type.primitiveType], 0, 0, mesh.nVertices, 0, numPrimitives);
+                  IDirect3DDevice9_DrawIndexedPrimitive(d3dDevice, primitiveTypes[primitive.type.primitiveType], 0, 0, mesh.nVertices, 0, numPrimitives);
             }
             if(!display.display3D.material.flags.singleSideLight)
             {

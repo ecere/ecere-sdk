@@ -941,8 +941,8 @@ public:
                      {
                         if(!(group.type.vertexRange))
                         {
-                           // FIXME: GL driver specifics
-                           OGLIndices oglIndices { nIndices = group.nIndices, indices = group.data };
+                           // FIXME: GL driver specifics -- Should no longer need this
+                           OGLIndices oglIndices { nIndices = group.nIndices };
                            group.data = oglIndices;
                         }
                         mesh.UnlockPrimitiveGroup(group);

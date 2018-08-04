@@ -466,7 +466,6 @@ class OGLMesh : struct
 
 class OGLIndices : struct
 {
-   uint16 * indices;
    GLEAB buffer;
    uint nIndices;
 };
@@ -3312,6 +3311,8 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLDisplay oglDisplay = display.driverData;
       Shader shader = material.shader ? material.shader : defaultShader;
       MaterialFlags flags = material.flags;
+      Bitmap baseMap = material.baseMap;
+      bool cubeMap = flags.cubeMap;
 #if ENABLE_GL_FFP
       static int lastSeparate = 0;
       int tmu = 0;
@@ -3347,7 +3348,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         activeShader.setMaterial(material, mesh.flags);
+         activeShader.setMaterial(material, *&mesh.flags);
 #endif
 
 #if ENABLE_GL_FFP
@@ -3480,10 +3481,9 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 #endif
       // Maps
-      if(flags.cubeMap || (material.baseMap && (mesh.texCoords || mesh.flags.texCoords1)))
+      if(cubeMap || (baseMap && (mesh.texCoords || mesh.flags.texCoords1)))
       {
-         Bitmap map = material.baseMap;
-         int diffuseTarget = flags.cubeMap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+         int diffuseTarget = cubeMap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
 
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
@@ -3501,7 +3501,7 @@ class OpenGLDisplayDriver : DisplayDriver
             GLSetupTexturing(true);
 #endif
 
-         glBindTexture(diffuseTarget, (GLuint)(uintptr)map.driverData);
+         glBindTexture(diffuseTarget, (GLuint)(uintptr)baseMap.driverData);
 
 #if ENABLE_GL_FFP
          if(!glCaps_shaders)
@@ -3521,7 +3521,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
             */
 
-            if(flags.cubeMap)
+            if(cubeMap)
             {
             #if _GLES
                glEnable(GL_TEXTURE_GEN_STR);
@@ -4053,8 +4053,9 @@ class OpenGLDisplayDriver : DisplayDriver
       return result;
    }
 
-   void FreeIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
+   void FreeIndices(DisplaySystem displaySystem, PrimitiveSingle group)
    {
+      OGLIndices oglIndices = group.data;
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
@@ -4062,7 +4063,6 @@ class OpenGLDisplayDriver : DisplayDriver
       if(oglIndices)
       {
          oglIndices.buffer.free();
-         delete oglIndices.indices;
          delete oglIndices;
       }
       SETCAPS(caps);
@@ -4070,59 +4070,47 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void * AllocateIndices(DisplaySystem displaySystem, int nIndices, bool indices32bit)
    {
-      OGLIndices oglIndices = OGLIndices { };
-      if(oglIndices)
-      {
-         oglIndices.indices = (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
-         oglIndices.nIndices = nIndices;
-      }
-      return oglIndices;
+      return OGLIndices { nIndices = nIndices };
    }
 
-   void UnlockIndices(DisplaySystem displaySystem, OGLIndices oglIndices, bool indices32bit, int nIndices)
+   void UnlockIndices(DisplaySystem displaySystem, PrimitiveSingle group, bool indices32bit, int nIndices, void * mb)
    {
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities caps = glCaps;
+      OGLIndices oglIndices = group.data;
       SETCAPS(oglSystem.capabilities);
 
       if(glCaps_vertexBuffer)
       {
+         uint16 * b = group.indices;
+         uint ixSize = indices32bit ? sizeof(uint32) : sizeof(uint16);
+         uint size = nIndices * ixSize;
          if(!glCaps_intAndDouble && indices32bit)
          {
-            if(!oglIndices.buffer.buffer)
-               glGenBuffers(1, &oglIndices.buffer.buffer);
-            if(glabCurElementBuffer != oglIndices.buffer.buffer)
-               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oglIndices.buffer.buffer);
-
+            uint * pointer = (uint *)b;
+            int i;
+            if(nIndices > oglSystem.shortBDSize)
             {
-               uint * pointer = (uint *)oglIndices.indices;
-               int i;
-               uint16 * b;
-               if(nIndices > oglSystem.shortBDSize)
-               {
-                  oglSystem.shortBDSize = nIndices;
-                  oglSystem.shortBDBuffer = renew oglSystem.shortBDBuffer uint16[oglSystem.shortBDSize];
-               }
-               b = oglSystem.shortBDBuffer;
-               for(i = 0; i < nIndices; i++)
-                  b[i] = (uint16)pointer[i];
-
-               glBufferData(GL_ELEMENT_ARRAY_BUFFER, nIndices * sizeof(uint16), b, GL_STATIC_DRAW);
+               oglSystem.shortBDSize = nIndices;
+               oglSystem.shortBDBuffer = renew oglSystem.shortBDBuffer uint16[oglSystem.shortBDSize];
             }
+            b = oglSystem.shortBDBuffer;
+            for(i = 0; i < nIndices; i++)
+               b[i] = (uint16)pointer[i];
+            size = nIndices * sizeof(uint16);
          }
+         if(!oglIndices) { group.data = oglIndices = OGLIndices { nIndices = 0 }; };
+         if(!oglIndices.buffer.buffer || oglIndices.nIndices == nIndices)
+            oglIndices.buffer.allocate(size, b, staticDraw);
          else
-            // TODO: Upload only???
-            oglIndices.buffer.allocate(
-               nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
-               oglIndices.indices, staticDraw);
+            oglIndices.buffer.upload(0, size, b);
       }
       SETCAPS(caps);
    }
 
-   uint16 * LockIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
+   void * LockIndices(DisplaySystem displaySystem, PrimitiveSingle group)
    {
-
-      return oglIndices.indices;
+      return (void *)1;
    }
 
    void SelectMesh(Display display, Mesh mesh)
@@ -4283,32 +4271,38 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    }
 
-   void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
+   void DrawPrimitives(Display display, PrimitiveSingle primitive, Mesh mesh)
    {
-      if(primitive->type.vertexRange)
+      PrimitiveGroupType type = primitive.type;
+      if(type.vertexRange)
       {
          GLFlushMatrices();
-         glDrawArrays(getPrimitiveType(primitive->type.primitiveType), primitive->first, primitive->nVertices);
+         glDrawArrays(getPrimitiveType(type.primitiveType), primitive.first, primitive.nVertices);
       }
       else
       {
-         OGLIndices oglIndices = mesh.displaySystem ? primitive->data : null;
-         bool collectingHits = display.display3D && display.display3D.collectingHits;
+         Display3D display3D = display.display3D;
+         uint primType = getPrimitiveType(type.primitiveType);
+         bool indices32Bit = type.indices32bit;
+         OGLIndices oglIndices = mesh.displaySystem ? primitive.data : null;
+         bool collectingHits = display3D && display3D.collectingHits;
          GLEAB eab = ((!collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
-         if(!glCaps_intAndDouble && !glCaps_vertexBuffer && primitive->type.indices32bit)
+         uint nIndices = primitive.nIndices;
+
+         if(!glCaps_intAndDouble && !glCaps_vertexBuffer && indices32Bit)
          {
-            uint16 * temp = new uint16[primitive->nIndices];
-            uint32 * src = (uint32 *)(oglIndices ? oglIndices.indices : primitive->indices);
+            uint16 * temp = new uint16[nIndices];
+            uint32 * src = (uint32 *)(oglIndices ? primitive.indices : primitive.indices);
             int i;
-            for(i = 0; i < primitive->nIndices; i++)
+            for(i = 0; i < primitive.nIndices; i++)
                temp[i] = (uint16)src[i];
-            eab.draw(getPrimitiveType(primitive->type.primitiveType), primitive->nIndices, GL_UNSIGNED_SHORT, temp);
+            eab.draw(primType, nIndices, GL_UNSIGNED_SHORT, temp);
             delete temp;
          }
          else
-            eab.draw(getPrimitiveType(primitive->type.primitiveType), primitive->nIndices,
-               primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
-               eab.buffer ? 0 : (oglIndices ? oglIndices.indices : primitive->indices));
+            eab.draw(getPrimitiveType(type.primitiveType), nIndices,
+               indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
+               eab.buffer ? 0 : primitive.indices);
          GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
    }
@@ -4335,10 +4329,11 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else if(camera)
       {
+         Vector3D *cPosition = &camera.cPosition;
          GLTranslated(
-            matrix.m[3][0] - camera.cPosition.x,
-            matrix.m[3][1] - camera.cPosition.y,
-            matrix.m[3][2] - camera.cPosition.z);
+            matrix.m[3][0] - cPosition->x,
+            matrix.m[3][1] - cPosition->y,
+            matrix.m[3][2] - cPosition->z);
       }
       else
          GLTranslated(
