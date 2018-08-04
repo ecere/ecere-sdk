@@ -6,7 +6,7 @@ precision highp float;
    #if PER_VERTEX_COLOR
       varying vec4 diffuseColor;
       varying vec3 ambientColor;
-   #else
+   #elif CONSTANT_COLOR
       uniform vec4 matDiffuse;
       uniform vec3 matAmbient;
    #endif
@@ -27,12 +27,16 @@ precision highp float;
 
 #if MAT_SPECULAR
 
+#if CONSTANT_COLOR
    // Materials
    uniform vec3 matSpecular;
+#endif
    uniform float matPower;
 #endif
 
+#if CONSTANT_COLOR
    uniform vec3 matEmissive;
+#endif
 
    // Lights
    uniform vec3 lightsPos[NUM_LIGHTS];
@@ -179,9 +183,12 @@ void main(void)
    vec3 n;
 #endif
 
-#if LIGHTING_ON && !PER_VERTEX_COLOR
+#if LIGHTING_ON && !PER_VERTEX_COLOR && CONSTANT_COLOR
    vec4 diffuseColor = matDiffuse;
    vec3 ambientColor = matAmbient;
+#else
+   vec4 diffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
+   vec3 ambientColor = vec3(1.0, 1.0, 1.0);
 #endif
 
 #if ENVIRONMENT_MAPPING || (LIGHTING_ON && !NON_LOCAL_VIEWER && MAT_SPECULAR)
@@ -298,9 +305,15 @@ void main(void)
    #endif
 
       c = vec4(min(vec3(1.0),
-            ambientColor * (ambient + globalAmbient) + diffuseColor.xyz * diffuse + matEmissive
+            ambientColor * (ambient + globalAmbient) + diffuseColor.xyz * diffuse
+   #if CONSTANT_COLOR
+            + matEmissive
+   #endif
    #if MAT_SPECULAR && !MAT_SEPARATE_SPECULAR
-            + matSpecular * specular
+            + specular
+      #if CONSTANT_COLOR
+               * matSpecular
+      #endif
    #endif
          ), diffuseColor.w);
    }
@@ -358,7 +371,11 @@ void main(void)
 #endif
 
 #if LIGHTING_ON && MAT_SPECULAR && MAT_SEPARATE_SPECULAR
-   c = min(vec4(1.0), vec4(vec3(c) + matSpecular * specular, 1.0));
+   c = min(vec4(1.0), vec4(vec3(c) + specular
+   #if CONSTANT_COLOR
+      matSpecular
+   #endif
+      , 1.0));
 #endif
 
 #if FOG_ON

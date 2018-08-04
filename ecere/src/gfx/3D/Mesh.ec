@@ -40,6 +40,9 @@ public:
     bool cubeMap:1;
     bool noLighting:1;
     bool partlyTransparent:1;
+    bool setupTextures:1;
+    bool update:1;
+    bool constantColor:1;
 };
 
 public class Material : struct
@@ -66,9 +69,20 @@ public:
    float uScale, vScale;
    Shader shader;
 
+   Material()
+   {
+      flags.setupTextures = true;
+      flags.update = true;
+   }
+
    void Free()
    {
       delete name;
+   }
+
+   int OnCompare(Material b)
+   {
+      return memcmp(&opacity, &b.opacity, (byte *)((&shader) + 1) - (byte *)&opacity);
    }
 };
 

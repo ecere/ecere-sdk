@@ -3409,15 +3409,18 @@ class OpenGLDisplayDriver : DisplayDriver
                GLScalef(material.uScale, material.vScale, 1);
             GLMatrixMode(MatrixMode::modelView);
 
-            if(flags.tile)
+            if(flags.setupTextures)
             {
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            }
-            else
-            {
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
+               if(flags.tile)
+               {
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+               }
+               else
+               {
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
+                  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
+               }
             }
 
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
@@ -3575,15 +3578,18 @@ class OpenGLDisplayDriver : DisplayDriver
             if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0);
          }
 #endif
-         if(flags.tile)
+         if(flags.setupTextures)
          {
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
-         }
-         else
-         {
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
-            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
+            if(flags.tile)
+            {
+               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            }
+            else
+            {
+               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
+               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
+            }
          }
       }
       else
@@ -3799,6 +3805,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
       }
 #endif
+      material.flags.setupTextures = false;
    }
 
    void FreeMesh(DisplaySystem displaySystem, Mesh mesh)
