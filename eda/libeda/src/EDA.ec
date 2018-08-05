@@ -601,7 +601,7 @@ public:
 
    property uint64 sysID { get { return row ? row.GetSysID() : 0; } set { if(row) row.GoToSysID(value); } }
 
-   bool GetDataFieldValue(Field field, FieldValue value) { return row ? row.GetDataFieldValue(field, value) : false; }
+   bool GetDataFieldValue(Field field, FieldValue value) { return field && row ? row.GetDataFieldValue(field, value) : false; }
    const void * GetRowData() { return row ? row.GetRowData() : null; }
 };
 
