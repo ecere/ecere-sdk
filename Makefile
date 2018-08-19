@@ -35,6 +35,10 @@ endif
 endif
 endif
 
+ifndef DISABLE_EDA_SQLITE
+  EDASQLite := defined
+endif
+
 ifdef WINDOWS_HOST
 HOST_SOV := $(HOST_SO)
 else
@@ -387,7 +391,9 @@ emptyoutput: outputdirs
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SO))
 	$(call rm,$(SODESTDIR)$(LP)ec$(SO))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SO))
+ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SO))
+endif
 ifdef EDASQLiteCipher
 	$(call rm,$(SODESTDIR)$(LP)EDASQLiteCipher$(SO))
 endif
@@ -399,7 +405,9 @@ ifdef LINUX_TARGET
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SO).0)
 	$(call rm,$(SODESTDIR)$(LP)ec$(SO).0)
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SO).0)
+ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SO).0)
+endif
 ifdef EDASQLiteCipher
 	$(call rm,$(SODESTDIR)$(LP)EDASQLiteCipher$(SO).0)
 endif
@@ -411,7 +419,9 @@ endif
 	$(call rm,$(SODESTDIR)$(LP)ec$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)ec2$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SOV))
+ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SOV))
+endif
 ifdef EDASQLiteCipher
 	$(call rm,$(SODESTDIR)$(LP)EDASQLiteCipher$(SOV))
 endif
@@ -540,8 +550,12 @@ BINARIES = \
 	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E) \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
 	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
-	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV) \
+	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
+
+ifdef EDASQLite
+BINARIES += \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
+endif
 
 ifndef ECERE_PYTHON_PACKAGE
 BINARIES += \
@@ -574,7 +588,9 @@ ifdef WINDOWS_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJBINDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJBINDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJBINDIR))
+ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJBINDIR))
+endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJBINDIR))
 endif
@@ -589,7 +605,9 @@ ifdef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV),$(OBJLIBDIR))
+ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
+endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV),$(OBJLIBDIR))
 endif
@@ -601,7 +619,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
 	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
+ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO).0
+endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO).0
 endif
@@ -614,7 +634,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
 	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
+ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO)
+endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO)
 endif
@@ -628,7 +650,9 @@ ifndef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJLIBDIR))
+ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
+endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJLIBDIR))
 endif
@@ -670,7 +694,9 @@ ifdef WINDOWS_TARGET
 	$(call cp,$(OBJBINDIR)$(LP)ec$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)ec2$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)EDA$(SO),"$(DESTLIBDIR)/")
+ifdef EDASQLite
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(DESTLIBDIR)/")
+endif
 ifdef EDASQLiteCipher
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(DESTLIBDIR)/")
 endif
@@ -701,7 +727,9 @@ ifdef OSX_TARGET
 	install $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)ec2$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/
+ifdef EDASQLite
 	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/
+endif
 ifdef EDASQLiteCipher
 	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/
 endif
@@ -745,7 +773,9 @@ ifdef LINUX_TARGET
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SOV)
+ifdef EDASQLite
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)
+endif
 ifdef EDASQLiteCipher
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SOV)
 endif
@@ -757,7 +787,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO).0
 	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO).0
+ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0
+endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO).0
 endif
@@ -769,7 +801,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
 	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO)
+ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)
+endif
 	ln -sf ../$(LP)ecere$(SOV) $(DESTLIBDIR)/ec/$(LP)ecere$(SO)
 	ln -sf ../$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/ec/$(LP)ecereCOM$(SO)
 ifdef EDASQLiteCipher
@@ -849,7 +883,9 @@ uninstall:
 	$(call rm,"$(DESTLIBDIR)/$(LP)ec2$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
 ifdef LINUX_TARGET
+ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)")
+endif
 ifdef EDASQLiteCipher
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO)")
 endif
@@ -857,7 +893,9 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EcereAudio$(SO)")
 endif
 else
+ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO)")
+endif
 ifdef EDASQLiteCipher
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)")
 endif
@@ -889,7 +927,9 @@ ifdef LINUX_TARGET
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO).0")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec$(SO).0")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDA$(SO).0")
+ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0")
+endif
 ifdef EDASQLiteCipher
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO).0")
 endif
@@ -899,7 +939,9 @@ endif
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec2$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDA$(SOV)")
+ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)")
+endif
 ifdef EDASQLiteCipher
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SOV)")
 endif
