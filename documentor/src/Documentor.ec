@@ -1126,7 +1126,7 @@ class APIPageNameSpace : APIPage
             const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
             if(name) name += 2; else name = function.name;
 
-            if(whiteList && !whiteList->match(name)) continue;
+            if(whiteList && !whiteList->match(function.name)) continue;
             if(first)
             {
                f.Printf($"<a name=Functions></a><H3>Functions</H3>%s\n", oneBR);
@@ -1164,9 +1164,7 @@ class APIPageNameSpace : APIPage
          {
             DefinedExpression def = link.data;
             char * desc;
-            const char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
-
-            if(whiteList && !whiteList->match(name)) continue;
+            if(whiteList && !whiteList->match(def.name)) continue;
 
             desc = ReadDoc(module, nameSpaceDoc, nameSpace, definition, def);
             if(first)
@@ -2241,7 +2239,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                if(!module || fn.module == module || (!fn.module.name && !strcmp(module.name, "ecere")))
                {
                   const char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
-                  if(!whiteList || whiteList->match(name))
+                  if(!whiteList || whiteList->match(fn.name))
                   {
                      DataRow fnRow;
                      if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
@@ -2268,7 +2266,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                //if(def.module == module)
                {
                   char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
-                  if(!whiteList || whiteList->match(name))
+                  if(!whiteList || whiteList->match(def.name))
                   {
                      DataRow defRow;
                      if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
