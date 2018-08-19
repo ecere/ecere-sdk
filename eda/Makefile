@@ -6,6 +6,10 @@ ifndef DISABLE_EDA_SQLITE
   EDASQLite := defined
 endif
 
+ifndef DISABLE_EDA_SQLITE
+  EDAdBASE := defined
+endif
+
 .PHONY: all cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
@@ -18,6 +22,10 @@ include $(_CF_DIR)default.cf
 all:
 	@$(call echo,Building Ecere Data Access layer...)
 	+cd libeda && $(_MAKE)
+ifdef EDAdBASE
+	@$(call echo,Building EDAdBASE driver...)
+	+cd drivers && cd dbase && $(_MAKE)
+endif
 ifdef EDASQLite
 	@$(call echo,Building EDASQLite driver...)
 	+cd drivers && cd sqlite && $(_MAKE)
@@ -29,6 +37,9 @@ endif
 
 cleantarget:
 	+cd libeda && $(_MAKE) cleantarget
+ifdef EDAdBASE
+	+cd drivers && cd dbase && $(_MAKE) cleantarget
+endif
 ifdef EDASQLite
 	+cd drivers && cd sqlite && $(_MAKE) cleantarget
 endif
@@ -38,6 +49,9 @@ endif
 
 clean:
 	+cd libeda && $(_MAKE) clean
+ifdef EDAdBASE
+	+cd drivers && cd dbase && $(_MAKE) clean
+endif
 ifdef EDASQLite
 	+cd drivers && cd sqlite && $(_MAKE) clean
 endif
@@ -47,6 +61,9 @@ endif
 
 realclean:
 	+cd libeda && $(_MAKE) realclean
+ifdef EDAdBASE
+	+cd drivers && cd dbase && $(_MAKE) realclean
+endif
 ifdef EDASQLite
 	+cd drivers && cd sqlite && $(_MAKE) realclean
 endif
@@ -56,6 +73,7 @@ endif
 
 wipeclean:
 	+cd libeda && $(_MAKE) wipeclean
+	+cd drivers && cd dbase && $(_MAKE) wipeclean
 	+cd drivers && cd sqlite && $(_MAKE) wipeclean
 	+cd drivers && cd sqliteCipher && $(_MAKE) wipeclean
 
