@@ -1387,6 +1387,37 @@ public:
       }
    }
 
+   void concatn(ZString s, int l)
+   {
+      if(s && allocType != pointer)
+      {
+         int addedLen = l;
+         int newLen = len + addedLen;
+         if(allocType == heap && newLen + 1 > size)
+         {
+            int newSize = newLen + 1;
+            if(newSize > maxSize)
+               newSize = maxSize;
+            if(newSize > size)
+            {
+               _string = renew _string char[newSize];
+               size = newSize;
+            }
+         }
+         if(newLen + 1 > size)
+            addedLen = size - 1 - len;
+         if(addedLen > 0)
+         {
+            memcpy(_string + len, s._string, addedLen);
+            len += addedLen;
+            _string[len] = 0;
+         }
+         // WARNING: auto-decref'ing for now when s is of pointer type!
+         if(s.allocType == pointer)
+            delete s;
+      }
+   }
+
    void copy(ZString s)
    {
       copyString(s._string, s.len);
