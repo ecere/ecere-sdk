@@ -80,7 +80,7 @@ private:
       File f = FileOpen(s, write);
       if(f)
       {
-         GenOptions lists { defineList.avl = { }, functionList.avl = { }, classList.avl = { } };
+         GenOptions lists { defineList = { black = true }, functionList = { black = true }, classList = { black = true } };
          IterNamespace itn { module = mod, processFullName = true };
          while(itn.next())
          {
@@ -88,17 +88,17 @@ private:
             {
                IterDefine itd { n.ns };
                while(itd.next())
-                  lists.defineList.avl.Add(CopyString(itd.df.name));
+                  lists.defineList.Add(CopyString(itd.df.name));
             }
             {
                IterFunction itf { n.ns, list = lib.options.functionList };
                while(itf.next())
-                  lists.functionList.avl.Add(CopyString(itf.fn.name));
+                  lists.functionList.Add(CopyString(itf.fn.name));
             }
             {
                IterClass itc { n.ns };
                while(itc.next(all))
-                  lists.classList.avl.Add(CopyString(itc.cl.name));
+                  lists.classList.Add(CopyString(itc.cl.name));
             }
          }
          WriteECONObject(f, class(GenOptions), lists, 0);
@@ -251,7 +251,15 @@ Library createLibrary(const char * name)
 class GenOptions : struct
 {
 public:
+   property bool defineListBlack { get { return defineList.black; } set { defineList.black = value; } isset { return defineList && defineList.black; } }
+   property bool functionListBlack { get { return functionList.black; } set { functionList.black = value; } isset { return functionList && functionList.black; } }
+   property bool classListBlack { get { return classList.black; } set { classList.black = value; } isset { return classList && classList.black; } }
+   property BlackWhiteList defineList { get { return defineList; } set { defineList = value; } isset { return defineList && defineList.count; } }
+   property BlackWhiteList functionList { get { return functionList; } set { functionList = value; } isset { return functionList && functionList.count; } }
+   property BlackWhiteList classList { get { return classList; } set { classList = value; } isset { return classList && classList.count; } }
    Map<String, String> funcRename;
+
+private:
    BlackWhiteList defineList;
    BlackWhiteList functionList;
    BlackWhiteList classList;
@@ -260,12 +268,12 @@ public:
    {
       if(funcRename) funcRename.Free();
       delete funcRename;
-      if(defineList.avl) defineList.avl.Free();
-      delete defineList.avl;
-      if(functionList.avl) functionList.avl.Free();
-      delete functionList.avl;
-      if(classList.avl) classList.avl.Free();
-      delete classList.avl;
+      if(defineList) defineList.Free();
+      delete defineList;
+      if(functionList) functionList.Free();
+      delete functionList;
+      if(classList) classList.Free();
+      delete classList;
    }
 }
 
