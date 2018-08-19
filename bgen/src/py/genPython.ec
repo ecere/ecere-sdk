@@ -127,7 +127,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         DefinedExpression df; IterDefine def { n.ns, list = lib.options.defineList };
+         DefinedExpression df; IterDefine def { n.ns, list = options.defineList };
          while((df = def.next()))
          {
             Expression exp = ParseExpressionString((char *)df.value);
@@ -214,7 +214,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         BFunction f; IterFunction itf { n.ns, list = lib.options.functionList };
+         BFunction f; IterFunction itf { n.ns, list = options.functionList };
          ParamFilter paramFilter { all = true };
          while((f = itf.next()))
          {
@@ -239,7 +239,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         BClass c; IterClass itc { n.ns, list = lib.options.classList };
+         BClass c; IterClass itc { n.ns, list = options.classList };
          while((c = itc.next(all)))
          {
             if(!c.cl.templateClass) // don't generate templated classes just because they are listed
@@ -382,7 +382,7 @@ class PythonGen : CGen
       int len;
       char * name = new char[MAX_LOCATION];
       char * path = new char[MAX_LOCATION];
-      strcpy(path, dir.dir);
+      strcpy(path, dir);
       len = strlen(path);
       strcpy(name, "cffi-");
       strcat(name, lib.bindingName);
@@ -442,14 +442,14 @@ void checkForCircularDependencies(PythonGen g)
    while(itna.next())
    {
       BNamespace na = (NameSpacePtr)itna.ns;
-      BClass ca; IterClass itca { na.ns, list = g.lib.options.classList };
+      BClass ca; IterClass itca { na.ns, list = g.options.classList };
       while((ca = itca.next(all)))
       {
          IterNamespace itnb { module = g.mod, processFullName = true };
          while(itnb.next())
          {
             BNamespace nb = (NameSpacePtr)itnb.ns;
-            BClass cb; IterClass itcb { nb.ns, list = g.lib.options.classList };
+            BClass cb; IterClass itcb { nb.ns, list = g.options.classList };
             while((cb = itcb.next(all)))
             {
                BVariant va = ca.cl;
@@ -679,7 +679,7 @@ void processPyClass(PythonGen g, BClass c)
             IterNamespace itn { module = g.mod, ecereCOM = true };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
                   if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
@@ -699,7 +699,7 @@ void processPyClass(PythonGen g, BClass c)
             IterNamespace itn { module = g.mod };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
                   if(c.cl.type == normalClass && !c.isWindow && !c.cl.templateClass)
@@ -715,7 +715,7 @@ void processPyClass(PythonGen g, BClass c)
             {
                while(itn.next())
                {
-                  BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+                  BClass c; IterClass itc { itn.ns, list = g.options.classList };
                   while((c = itc.next(all)))
                   {
                      if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
@@ -2988,7 +2988,7 @@ static void thatThing(File out, PythonGen g)
             IterNamespace itn { module = g.mod };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
                   if(c.cl.type == normalClass && !c.cl.templateClass)
@@ -3005,9 +3005,10 @@ static void generateBUILD(File out, PythonGen g)
 {
    bool hasEC = false;
    char cpath[MAX_FILENAME] = "";
-   if(app.cpath)
+   if(g.options.cpath)
    {
-      MakePathRelative(app.cpath, g.dir.dir, cpath);
+      const String dir = g.options.dir ? g.options.dir : "";
+      MakePathRelative(g.options.cpath, dir, cpath);
       MakeSlashPath(cpath);
    }
    if(!cpath[0]) strcpy(cpath, ".");
