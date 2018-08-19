@@ -956,7 +956,11 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
       }
       else if(/*_class.type == noHeadClass || */_class.type == structClass)
          memset(data, 0, _class.structSize);
-      // Bit classes cleared outside?
+      else if(_class.type == bitClass)
+      {
+         // TOCHECK: Bit classes were not being cleared here before...
+         memset(data, 0, _class.typeSize);
+      }
 
       memberName[0] = '\0';
 
@@ -1127,8 +1131,14 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                   if(_class.type == bitClass)
                   {
                      BitMember bitMember = (BitMember) thisMember;
-                     // TODO: Check if bit _class is 32 or 64 bit
-                     *(uint *)data = (uint32)(((*(uint *)data & ~bitMember.mask)) | ((value.ui64<<bitMember.pos)&bitMember.mask));
+                     if(_class.typeSize == 4)
+                     {
+                        *(uint *)data = (uint32)(((*(uint *)data & ~bitMember.mask)) | ((value.ui64<<bitMember.pos)&bitMember.mask));
+                     }
+                     else if(_class.typeSize == 8)
+                     {
+                        *(uint64 *)data = (uint64)(((*(uint64 *)data & ~bitMember.mask)) | ((value.ui64<<bitMember.pos)&bitMember.mask));
+                     }
                   }
                   else
                      *(int *)memberData = value.i;

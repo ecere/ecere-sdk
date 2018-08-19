@@ -2878,6 +2878,10 @@ if(_class->type == 0)
 }
 else if(_class->type == 1)
 memset(data, 0, _class->structSize);
+else if(_class->type == 2)
+{
+memset(data, 0, _class->typeSize);
+}
 memberName[0] = '\0';
 for(c = 0; string[c] && count < sizeof (memberString); )
 {
@@ -3039,7 +3043,14 @@ if(_class->type == 2)
 {
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)thisMember;
 
+if(_class->typeSize == 4)
+{
 *(unsigned int *)data = (unsigned int)(((*(unsigned int *)data & ~bitMember->mask)) | ((value.__anon1.ui64 << bitMember->pos) & bitMember->mask));
+}
+else if(_class->typeSize == 8)
+{
+*(uint64 *)data = (((*(uint64 *)data & ~bitMember->mask)) | ((value.__anon1.ui64 << bitMember->pos) & bitMember->mask));
+}
 }
 else
 *(int *)memberData = value.__anon1.i;

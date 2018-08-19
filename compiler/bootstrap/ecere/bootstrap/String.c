@@ -1674,7 +1674,6 @@ int __simpleStruct0;
 int addedLen, n;
 va_list args;
 
-__builtin_va_start(args, format);
 if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->size < __ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->_string = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string, sizeof(char) * (__ecerePointer___ecereNameSpace__ecere__sys__ZString->minSize));
@@ -1695,6 +1694,7 @@ int __simpleStruct2;
 int __simpleStruct1;
 int __simpleStruct0;
 
+__builtin_va_start(args, format);
 addedLen = vsnprintf(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, n, format, args);
 if(addedLen >= 0 && addedLen < n)
 break;
