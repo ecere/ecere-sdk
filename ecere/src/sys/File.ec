@@ -916,6 +916,11 @@ public struct FileStats
    SecSince1970 accessed;
    SecSince1970 modified;
    SecSince1970 created;
+   //uint64 dev;
+   int devmaj;
+   int devmin;
+   uint inode;
+   uint nlink;
 };
 
 #if defined(__WIN32__)
@@ -1485,6 +1490,11 @@ static FileDesc FileFind(const char * path, const char * extensions)
                {
                   file.stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
                   file.stats.size = (FileSize)s.st_size;
+                  //file.stats.dev = s.st_dev;
+                  file.stats.devmaj = major(s.st_dev);
+                  file.stats.devmin = minor(s.st_dev);
+                  file.stats.inode = s.st_ino;
+                  file.stats.nlink = s.st_nlink;
                   file.stats.accessed = s.st_atime;
                   file.stats.modified = s.st_mtime;
                   file.stats.created = s.st_ctime;
@@ -1767,6 +1777,11 @@ private class FileDesc : struct
                   stats.attribs = FileAttribs { };
                   stats.attribs = (s.st_mode&S_IFDIR) ? FileAttribs { isDirectory = true } : FileAttribs { isFile = true };
                   stats.size = (FileSize)s.st_size;
+                  //stats.dev = s.st_dev;
+                  stats.devmaj = major(s.st_dev);
+                  stats.devmin = minor(s.st_dev);
+                  stats.inode = s.st_ino;
+                  stats.nlink = s.st_nlink;
                   stats.accessed = s.st_atime;
                   stats.modified = s.st_mtime;
                   stats.created = s.st_ctime;

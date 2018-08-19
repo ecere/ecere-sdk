@@ -232,6 +232,11 @@ typedef struct
    SecSince1970 accessed;
    SecSince1970 modified;
    SecSince1970 created;
+   //uint64 dev;
+   int devmaj;
+   int devmin;
+   uint inode;
+   uint nlink;
 } FileStats;
 
 char * __ecereNameSpace__ecere__sys__GetLastDirectory(const char * string, char * output);
@@ -465,6 +470,13 @@ bool FILE_FileGetStats(const char * fileName, FileStats * stats)
 #endif
    {
       stats->size = s.st_size;
+      //stats->dev = s.st_dev;
+#if !defined(__WIN32__) // until a windows version is implemented
+      stats->devmaj = major(s.st_dev);
+      stats->devmin = minor(s.st_dev);
+      stats->inode = s.st_ino;
+      stats->nlink = s.st_nlink;
+#endif
       stats->attribs = (s.st_mode & S_IFDIR) ? ((FileAttribs) (isDirectory)): ((FileAttribs) 0);
 
 #if defined(__WIN32__) && !defined(__UWP__)
