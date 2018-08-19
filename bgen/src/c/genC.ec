@@ -134,8 +134,8 @@ class CGen : Gen
             astC = { };
             astH = { };
 
-            moduleInit();
-            result = true;
+            if(moduleInit())
+               result = true;
          }
       }
       return result;
