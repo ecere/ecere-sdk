@@ -54,6 +54,8 @@ SOV := $(SO)
 
 ifndef DESTDIR
 
+ifndef ECERE_SDK_INSTALL_DIR
+
 ifeq ($(TARGET_ARCH),x86_64)
    ifneq ($(wildcard $(SystemDrive)/Program\ Files ),)
       export DESTDIR=$(SystemDrive)/Program Files/Ecere SDK
@@ -71,6 +73,10 @@ else
       endif
    endif
 endif
+
+else
+	export DESTDIR=$(ECERE_SDK_INSTALL_DIR)
+endif # ECERE_SDK_INSTALL_DIR
 
 endif # DESTDIR
 
