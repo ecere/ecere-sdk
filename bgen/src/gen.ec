@@ -219,7 +219,7 @@ class SymbolNameCollection
    }
 }
 
-enum MacroType { C, CM, CO, T, TP, METHOD, PROPERTY, M_VTBLID, SUBCLASS, THISCLASS };
+enum MacroType { C, CM, CO, T, TP, METHOD, PROPERTY, FUNCTION, M_VTBLID, SUBCLASS, THISCLASS };
 
 class Directory : struct
 {
@@ -1245,6 +1245,7 @@ class BFunction : struct
    bool cleanDataType;
    const char * name;
    char * fname; char * ccfname; char * gname; const char * easy; const char * mapName; const char * oname;
+   char * foSymbol;
    void init(GlobalFunction fn/*, Module m*/, Map<String, String> funcRename)
    {
       this.fn = fn;
@@ -1264,6 +1265,7 @@ class BFunction : struct
             mapName = funcRename[fname];
       }
       oname = mapName ? mapName : ccfname;
+      foSymbol = g_.allocMacroSymbolName(false, FUNCTION, { }, oname, null, 0);
       if(!fn.dataType)
       {
          fn.dataType = ProcessTypeString(fn.dataTypeString, false);
@@ -1284,6 +1286,7 @@ class BFunction : struct
       delete fname;
       delete ccfname;
       delete gname;
+      delete foSymbol;
    }
    void OnFree() { free(); };
 };
@@ -1390,8 +1393,6 @@ class BClass : struct
 
       if(cl.templateClass)
          symbolName = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
-      else if(cl.type == systemClass)
-         symbolName = CopyString(cl.name);
       else
          symbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
 
