@@ -240,16 +240,12 @@ private:
 };
 struct INFrame { uintptr ns; uint cut; };
 
-public struct BlackWhiteList
+public class BlackWhiteList : AVLTree<const String>
 {
    bool black;
-   AVLTree<const String> avl;
-
    bool match(const String name)
    {
-      bool test = avl ? avl.Find(name) == null : false;
-      Print(test ? "" : "");
-      return !avl || black == (avl.Find(name) == null);
+      return !this || black == (Find(name) == null);
    }
 };
 
