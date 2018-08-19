@@ -22,6 +22,48 @@ define _noHeadClass = "ClassType_noHeadClass";
 define _unionClass = "ClassType_unionClass";
 define _systemClass = "ClassType_systemClass";
 
+char * Gen::allocMacroSymbolNameC(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
+{
+   switch(type)
+   {
+      case C:
+         if(noMacro)    return                CopyString(name);
+                        return PrintString(        "C(", name, ")");
+      case CM:          return PrintString(       "CM(", name, ")");
+      case CO:          return PrintString(       "CO(", name, ")");
+      case SUBCLASS:    return PrintString( "subclass(", name, ")");
+      case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
+      case T:           return getTemplateClassSymbol(   name, false);
+      case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
+      case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
+      case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
+      case FUNCTION:    return PrintString( "FUNCTION(", name, ")");
+      case M_VTBLID:    return PrintString( "M_VTBLID(", name, ", ", name2, ")");
+   }
+   return CopyString(name);
+}
+
+char * Gen::allocMacroSymbolNameExpandedC(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
+{
+   switch(type)
+   {
+      case C:
+         if(noMacro)    return                    CopyString(name);
+                        return PrintString(           "ec_", name);
+      case CM:          return PrintString("class_members_", name);
+      case CO:          return PrintString(        "class_", name);
+      case SUBCLASS:    return PrintString("ec_Class *");
+      case THISCLASS:   return PrintString(           "ec_", name, ptr ? " *" : "");
+      case T:           return getTemplateClassSymbol(       name, true);
+      case TP:          return PrintString(       "tparam_", name, "_", name2);
+      case METHOD:      return PrintString(       "method_", name, "_", name2);
+      case PROPERTY:    return PrintString(     "property_", name, "_", name2);
+      case FUNCTION:    return PrintString(     "function_", name, "_", name2);
+      case M_VTBLID:    return PrintString(                  name, "_", name2, "_vTblID");
+   }
+   return CopyString(name);
+}
+
 class CGen : Gen
 {
    char * cFileName;
@@ -67,6 +109,7 @@ class CGen : Gen
    }
 
    lang = C;
+   allocMacroSymbolName = allocMacroSymbolNameC;
 
    void process()
    {
@@ -171,26 +214,6 @@ class CGen : Gen
       delete hFilePath; hFilePath = CopyString(path);
       delete name;
       delete path;
-   }
-
-   char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
-   {
-      switch(type)
-      {
-         case C:
-            if(noMacro)    return                CopyString(name);
-                           return PrintString(       "C(" , name, ")");
-         case CM:          return PrintString(       "CM(", name, ")");
-         case CO:          return PrintString(       "CO(", name, ")");
-         case SUBCLASS:    return PrintString( "subclass(", name, ")");
-         case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
-         case T:           return getTemplateClassSymbol(   name, false);
-         case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
-         case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
-         case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
-         case M_VTBLID:    return PrintString( "M_VTBLID(", name, ", ", name2, ")");
-      }
-      return CopyString(name);
    }
 
    void reset()
@@ -2055,10 +2078,10 @@ ASTRawString astBitTool(Class cl, BClass c)
          if(!python)
          {
             z.printxln("#define ", n, "(x)", spaces(48, strlen(n) + 3),
-                  " ((((", cl.name, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
+                  " ((((", c.symbolName, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
             z.printxln("#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
-                  " (x) = ((", cl.name, ")(x) & ~((", cl.name, ")", n_,
-                  "MASK)) | (((", cl.name, ")(", bm.name, ")) << ", n_, "SHIFT)");
+                  " (x) = ((", c.symbolName, ")(x) & ~((", c.symbolName, ")", n_,
+                  "MASK)) | (((", c.symbolName, ")(", bm.name, ")) << ", n_, "SHIFT)");
          }
          haveContent = true;
          delete x;
@@ -2085,7 +2108,7 @@ ASTRawString astBitTool(Class cl, BClass c)
       {
          char * name = bitMembers[i];
          if(i) z.printx(" | ");
-         z.printx("((", cl.name, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
+         z.printx("((", c.symbolName, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
       }
       z.printxln("");
       bitMembers.Free();
