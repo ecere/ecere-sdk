@@ -69,7 +69,8 @@ _ECSOURCES = \
 	src/ectwo.ec \
 	src/gen.ec \
 	src/miscTypes.ec \
-	src/debug.ec
+	src/debug.ec \
+	src/extras.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
@@ -260,6 +261,9 @@ $(OBJ)miscTypes.sym: src/miscTypes.ec
 $(OBJ)debug.sym: src/debug.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
+$(OBJ)extras.sym: src/extras.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
 # C OBJECT RULES
 
 $(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
@@ -323,6 +327,9 @@ $(OBJ)miscTypes.c: src/miscTypes.ec $(OBJ)miscTypes.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)debug.c: src/debug.ec $(OBJ)debug.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)extras.c: src/extras.ec $(OBJ)extras.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
 # OBJECT RULES
@@ -392,6 +399,9 @@ $(OBJ)debug$(O): $(OBJ)debug.c
 
 $(OBJ)debug.c$(O): src/debug.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
+$(OBJ)extras$(O): $(OBJ)extras.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)

@@ -194,7 +194,7 @@ static void cInHeaderEcereComRuntimeFunctions(AST out, Gen g)
    bigCommentSection(z, "functions");
    while(ns.next())
    {
-      GlobalFunction fn; IterFunction func { ns.ns, list = g.lib.options.functionList };
+      GlobalFunction fn; IterFunction func { ns.ns, list = g.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
@@ -298,7 +298,7 @@ static void cInHeaderDynamicLinkFunctionImports(AST out, Gen g)
    IterNamespace ns { module = g.mod };
    while(ns.next())
    {
-      GlobalFunction fn; IterFunction func { ns.ns, list = g.lib.options.functionList };
+      GlobalFunction fn; IterFunction func { ns.ns, list = g.options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
