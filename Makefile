@@ -38,6 +38,9 @@ endif
 ifndef DISABLE_EDA_SQLITE
   EDASQLite := defined
 endif
+ifndef DISABLE_EDA_dBASE
+  EDAdBASE := defined
+endif
 
 ifdef WINDOWS_HOST
 HOST_SOV := $(HOST_SO)
@@ -391,6 +394,9 @@ emptyoutput: outputdirs
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SO))
 	$(call rm,$(SODESTDIR)$(LP)ec$(SO))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SO))
+ifdef EDAdBASE
+	$(call rm,$(SODESTDIR)$(LP)EDAdBASE$(SO))
+endif
 ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SO))
 endif
@@ -405,6 +411,9 @@ ifdef LINUX_TARGET
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SO).0)
 	$(call rm,$(SODESTDIR)$(LP)ec$(SO).0)
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SO).0)
+ifdef EDAdBASE
+	$(call rm,$(SODESTDIR)$(LP)EDAdBASE$(SO).0)
+endif
 ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SO).0)
 endif
@@ -419,6 +428,9 @@ endif
 	$(call rm,$(SODESTDIR)$(LP)ec$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)ec2$(SOV))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SOV))
+ifdef EDAdBASE
+	$(call rm,$(SODESTDIR)$(LP)EDAdBASE$(SOV))
+endif
 ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SOV))
 endif
@@ -552,6 +564,9 @@ BINARIES = \
 	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
 
+ifdef EDAdBASE
+BINARIES += eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SOV)
+endif
 ifdef EDASQLite
 BINARIES += \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
@@ -588,6 +603,9 @@ ifdef WINDOWS_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJBINDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJBINDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJBINDIR))
+ifdef EDAdBASE
+	$(call cp,eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SO),$(OBJBINDIR))
+endif
 ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJBINDIR))
 endif
@@ -605,6 +623,9 @@ ifdef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV),$(OBJLIBDIR))
+ifdef EDAdBASE
+	$(call cp,eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SOV),$(OBJLIBDIR))
+endif
 ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
 endif
@@ -619,6 +640,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO).0
 	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO).0
+ifdef EDAdBASE
+	ln -sf $(LP)EDAdBASE$(SOV) $(OBJLIBDIR)$(LP)EDAdBASE$(SO).0
+endif
 ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO).0
 endif
@@ -634,6 +658,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
 	ln -sf $(LP)ec2$(SOV) $(OBJLIBDIR)$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(OBJLIBDIR)$(LP)EDA$(SO)
+ifdef EDAdBASE
+	ln -sf $(LP)EDAdBASE$(SOV) $(OBJLIBDIR)$(LP)EDAdBASE$(SO)
+endif
 ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(OBJLIBDIR)$(LP)EDASQLite$(SO)
 endif
@@ -650,6 +677,9 @@ ifndef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJLIBDIR))
+ifdef EDAdBASE
+	$(call cp,eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SO),$(OBJLIBDIR))
+endif
 ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
 endif
@@ -694,6 +724,9 @@ ifdef WINDOWS_TARGET
 	$(call cp,$(OBJBINDIR)$(LP)ec$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)ec2$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)EDA$(SO),"$(DESTLIBDIR)/")
+ifdef EDAdBASE
+	$(call cp,$(OBJBINDIR)$(LP)EDAdBASE$(SO),"$(DESTLIBDIR)/")
+endif
 ifdef EDASQLite
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(DESTLIBDIR)/")
 endif
@@ -727,6 +760,9 @@ ifdef OSX_TARGET
 	install $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)ec2$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/
+ifdef EDAdBASE
+	install $(OBJLIBDIR)$(LP)EDAdBASE$(SO) $(DESTLIBDIR)/
+endif
 ifdef EDASQLite
 	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/
 endif
@@ -773,6 +809,9 @@ ifdef LINUX_TARGET
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SOV)
+ifdef EDAdBASE
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDAdBASE$(SOV) $(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SOV)
+endif
 ifdef EDASQLite
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)
 endif
@@ -787,6 +826,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO).0
 	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO).0
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO).0
+ifdef EDAdBASE
+	ln -sf $(LP)EDAdBASE$(SOV) $(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SO).0
+endif
 ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0
 endif
@@ -801,6 +843,9 @@ endif
 	ln -sf $(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SO)
 	ln -sf $(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SO)
 	ln -sf $(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SO)
+ifdef EDAdBASE
+	ln -sf $(LP)EDAdBASE$(SOV) $(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SO)
+endif
 ifdef EDASQLite
 	ln -sf $(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)
 endif
@@ -868,6 +913,7 @@ ifdef DEBIAN_PACKAGE
 	cp $(DESTDIR)$(prefix)/share/doc/libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecerecom0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libeda0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libeda0/
+	# todo or not? add edadbase and edasqlitecipher?
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libedasqlite0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libedasqlite0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecereaudio0
@@ -883,6 +929,9 @@ uninstall:
 	$(call rm,"$(DESTLIBDIR)/$(LP)ec2$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
 ifdef LINUX_TARGET
+ifdef EDAdBASE
+	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SO)")
+endif
 ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)")
 endif
@@ -893,6 +942,9 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EcereAudio$(SO)")
 endif
 else
+ifdef EDAdBASE
+	$(call rm,"$(DESTLIBDIR)/$(LP)EDAdBASE$(SO)")
+endif
 ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO)")
 endif
@@ -927,6 +979,9 @@ ifdef LINUX_TARGET
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO).0")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec$(SO).0")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDA$(SO).0")
+ifdef EDAdBASE
+	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SO).0")
+endif
 ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0")
 endif
@@ -939,6 +994,9 @@ endif
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec2$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDA$(SOV)")
+ifdef EDAdBASE
+	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SOV)")
+endif
 ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)")
 endif
