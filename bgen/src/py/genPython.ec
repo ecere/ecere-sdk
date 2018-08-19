@@ -3,6 +3,27 @@
 import "bgen"
 import "pyTools"
 
+char * Gen::allocMacroSymbolNamePy(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
+{
+   switch(type)
+   {
+      case C:           return                    CopyString(name);
+      case CM:          return PrintString("class_members_", name);
+      case CO:          return PrintString(        "class_", name);
+      case SUBCLASS:    return PrintString("Class *");
+      case THISCLASS:   return PrintString(                  name, ptr ? " *" : "");
+      case T:           return getTemplateClassSymbol(       name, true);
+      case TP:          return PrintString(       "tparam_", name, "_", name2);
+      case METHOD:      return PrintString(       "method_", name, "_", name2);
+      case PROPERTY:    return PrintString(     "property_", name, "_", name2);
+      case FUNCTION:    return PrintString(     "function_", name);
+      case M_VTBLID:    return PrintString(                  name, "_", name2, "_vTblID");
+      default:
+         conmsg("error: unsupported symbol name type (", type, ") in cffi python.");
+   }
+   return CopyString(name);
+}
+
 /*
 Map<const String, const String> nameSwapMap { [
    { "del", "delete" },
@@ -36,6 +57,7 @@ class PythonGen : CGen
    AST astCFFI;
 
    lang = Python;
+   allocMacroSymbolName = allocMacroSymbolNamePy;
 
    bool init()
    {
@@ -55,8 +77,8 @@ class PythonGen : CGen
 
             astCFFI = { };
 
-            moduleInit();
-            result = true;
+            if(moduleInit())
+               result = true;
          }
       }
       return result;
@@ -393,25 +415,6 @@ class PythonGen : CGen
       delete epjFilePath; epjFilePath = CopyString(path);
       delete name;
       delete path;
-   }
-
-   char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
-   {
-      switch(type)
-      {
-         case C:           return                    CopyString(name);
-         case CM:          return PrintString("class_members_", name);
-         case CO:          return PrintString(        "class_", name);
-         case SUBCLASS:    return PrintString("Class *");
-         case THISCLASS:   return PrintString(                  name, ptr ? " *" : "");
-         case T:           return getTemplateClassSymbol(       name, true);
-         case TP:          return PrintString(       "tparam_", name, "_", name2);
-         case METHOD:      return PrintString(       "method_", name, "_", name2);
-         case PROPERTY:    return PrintString(     "property_", name, "_", name2);
-         case M_VTBLID:    return PrintString(                  name, "_", name2, "_vTblID");
-
-      }
-      return CopyString(name);
    }
 
    void reset()
