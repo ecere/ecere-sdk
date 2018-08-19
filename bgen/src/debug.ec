@@ -6,15 +6,16 @@ ConsoleFile console { };
 
 #if defined(_DEBUG)
 File dbglog;
-void dbglog_open()
+void dbglog_open(bool useConsole)
 {
-   char * fileName = getTimeString("dbg-", ".log");
-   dbglog = FileOpen(fileName, write);
+   char * fileName = useConsole ? null : getTimeString("dbg-", ".log");
+   dbglog = useConsole ? console : FileOpen(fileName, write);
    delete fileName;
 }
 void dbglog_close()
 {
-   delete dbglog;
+   if(dbglog != console)
+      delete dbglog;
 }
 #endif // defined(_DEBUG)
 
