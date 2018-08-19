@@ -17,7 +17,7 @@ Application    ec1ComponentsApp;
 Module         ec1HomeModule;
 
 bool ec1 = false;
-void ec1init(const char * pathToModule)
+bool ec1init(const char * pathToModule)
 {
    //PrintLn(pathToModule, ":");
    SetGlobalContext(ec1GlobalContext);
@@ -29,9 +29,11 @@ void ec1init(const char * pathToModule)
    SetInDocumentor(true);
    SetOutputFile("");
    SetGlobalData(ec1GlobalData);
+   ec1 = false;
    if(pathToModule)
-      openModule(pathToModule);
+      ec1 = openModule(pathToModule);
 
+   if(ec1)
    {
       Context ctx = ec1GlobalContext;
       ctx.types.Add((BTNode)Symbol { string = CopyString("uint"), type = ProcessTypeString("unsigned int", false) });
@@ -44,13 +46,12 @@ void ec1init(const char * pathToModule)
       ctx.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
       ctx.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
    }
-
-   ec1 = true;
+   return ec1;
 }
 
 void ec1terminate()
 {
-   if(ec1)
+   //if(ec1)
    {
       FreeContext(ec1GlobalContext);
       FreeExcludedSymbols(ec1ExcludedSymbols);
@@ -64,7 +65,7 @@ void ec1terminate()
    }
 }
 
-void openModule(const char * filePath)
+bool openModule(const char * filePath)
 {
    char moduleName[MAX_FILENAME];
    char extension[MAX_EXTENSION];
@@ -103,8 +104,8 @@ void openModule(const char * filePath)
       if(module.name && (!strcmp(module.name, "ecere") || !strcmp(module.name, "ecereCOM")))
          break;
    }
-   if(!module)
-      eModule_LoadStrict(ec1ComponentsApp, "ecereCOM", publicAccess /*privateAccess*/);
+   //if(!module)
+   //   eModule_LoadStrict(ec1ComponentsApp, "ecereCOM", publicAccess /*privateAccess*/);
 
    GetLastDirectory(filePath, moduleName);
    // Extension, path and lib prefix get removed in Module::name
@@ -124,6 +125,13 @@ void openModule(const char * filePath)
       ec1HomeModule = ec1ComponentsApp;
 
    SetSymbolsDir(null);
+
+   if(ec1ComponentsApp.allModules.count == 0)
+   {
+      PrintLn("error: loading ", filePath, " failed!");
+      return false;
+   }
+   return true;
 }
 
 Type typeDataMember(DataMember dm, Class cl)
