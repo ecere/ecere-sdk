@@ -14,7 +14,7 @@ import "bgen"
    } \
    return result;
 
-enum Language
+public enum Language
 {
    null,
    C = 1025,
@@ -24,19 +24,54 @@ enum Language
    Python,
    _;
 
-   const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)
+   const char * OnGetString(char * buffer, void * fieldData, ObjectNotationType * onType)
    {
-      switch(this)
+      if(onType && (*onType == econ || *onType == json))
       {
-         case null:        return "<null>";
-         case C:           return "C";
-         case CPlusPlus:   return "C++";
-         case CSharp:      return "C#";
-         case Java:        return "Java";
-         case Python:      return "Python";
-         case _:           return "<_>";
+         switch(this)
+         {
+            case null:        strcpy(buffer, "<null>");     break;
+            case C:           strcpy(buffer, "c");          break;
+            case CPlusPlus:   strcpy(buffer, "cpp");        break;
+            case CSharp:      strcpy(buffer, "cs");         break;
+            case Java:        strcpy(buffer, "java");       break;
+            case Python:      strcpy(buffer, "py");         break;
+            case _:           strcpy(buffer, "<_>");        break;
+            default:          strcpy(buffer, "<invalid>");  break;
+         }
+         return buffer;
       }
-      return "<invalid>";
+      else
+      {
+         switch(this)
+         {
+            case null:        return "<null>";
+            case C:           return "C";
+            case CPlusPlus:   return "C++";
+            case CSharp:      return "C#";
+            case Java:        return "Java";
+            case Python:      return "Python";
+            case _:           return "<_>";
+         }
+         return "<invalid>";
+      }
+   }
+
+   bool OnGetDataFromString(const char * string)
+   {
+      if(!strcmpi(string, "c"))
+         this = C;
+      else if(!strcmpi(string, "cpp") || !strcmpi(string, "cplusplus") || !strcmpi(string, "c++"))
+         this = CPlusPlus;
+      else if(!strcmpi(string, "cs") || !strcmpi(string, "csharp"))
+         this = CSharp;
+      else if(!strcmpi(string, "java"))
+         this = Java;
+      else if(!strcmpi(string, "py") || !strcmpi(string, "python"))
+         this = Python;
+      else
+         this = _;
+      return true;
    }
 };
 
@@ -48,16 +83,15 @@ class Gen
 public:
    Language lang;
    Module mod;
-   //Library lib { };
    Library lib;
-   Directory dir;
+   String dir;
+   GenOptions options;
    SymbolNameCollection sym { };
    Map<String, String> sourceProcessorVars { };
    BModule bmod { gen = (CGen)this };
    List<Library> libDeps { };
    bool quiet;
 private:
-   //char * dir;
    virtual bool init()
    {
       //PrintLn(lang, ":");
@@ -74,11 +108,12 @@ private:
 
       return true;
    }
-   void outLists()
+   void outLists(GenOptions options)
    {
-      String s = PrintString("out-", lib.moduleName, ".bgen.econ");
-      File f = FileOpen(s, write);
-      if(f)
+      String path = PrintString(/*"out/", */lib.moduleName, ".bgen.econ");
+      if(options.blackList == yes && FileExists(path))
+         PrintLn("warning: ", path, " file already present, aborting black list output. use force-list to override.");
+      else if(options.blackList)
       {
          GenOptions lists { defineList = { black = true }, functionList = { black = true }, classList = { black = true } };
          IterNamespace itn { module = mod, processFullName = true };
@@ -91,7 +126,7 @@ private:
                   lists.defineList.Add(CopyString(itd.df.name));
             }
             {
-               IterFunction itf { n.ns, list = lib.options.functionList };
+               IterFunction itf { n.ns, list = options.functionList };
                while(itf.next())
                   lists.functionList.Add(CopyString(itf.fn.name));
             }
@@ -101,11 +136,10 @@ private:
                   lists.classList.Add(CopyString(itc.cl.name));
             }
          }
-         WriteECONObject(f, class(GenOptions), lists, 0);
+         lists.writeToFile(path);
          delete lists;
-         delete f;
       }
-      delete s;
+      delete path;
    }
    virtual void process();
    virtual void generate();
@@ -120,12 +154,12 @@ private:
       //GetWorkingDir(dir, MAX_LOCATION - 1);
       //dir[MAX_LOCATION - 1] = 0;
       //MakeSlashPath(dir);
-      if(dir.dir)
+      if(dir)
       {
-         if(!FileExists(dir.dir))
-            MakeDir(dir.dir); // todo: check will this create multiple nested dirs
+         if(!FileExists(dir))
+            MakeDir(dir); // todo: check will this create multiple nested dirs
       }
-      ready = FileExists(dir.dir).isDirectory;
+      ready = FileExists(dir).isDirectory;
       return ready;
    }
    bool moduleInit()
@@ -173,7 +207,9 @@ private:
    {
       reset();
       sourceProcessorVars.Free();
-      //delete dir;
+      delete lib;
+      delete dir;
+      delete options;
    }
 }
 
@@ -221,29 +257,6 @@ class SymbolNameCollection
 
 enum MacroType { C, CM, CO, T, TP, METHOD, PROPERTY, FUNCTION, M_VTBLID, SUBCLASS, THISCLASS };
 
-class Directory : struct
-{
-   Language lang;
-   char * outputDir;
-   char * dir;
-   lang = C;
-   void init()
-   {
-      delete dir;
-      dir = new char[MAX_LOCATION];
-      *dir = 0;
-      GetWorkingDir(dir, MAX_LOCATION - 1);
-      dir[MAX_LOCATION - 1] = 0;
-      MakeSlashPath(dir);
-      if(outputDir)
-         PathCatSlash(dir, outputDir);
-   }
-   ~Directory()
-   {
-      delete outputDir;
-   }
-}
-
 Library createLibrary(const char * name)
 {
    Library lib { };
@@ -252,33 +265,135 @@ Library createLibrary(const char * name)
    return lib;
 }
 
+enum ActionFlag { no, yes, force };
+class ListsBlackBits
+{
+   bool defines:1;
+   bool functions:1;
+   bool classes:1;
+};
+#define fixBlack(v, b) if(v.black) b = v.black; else if(b) v.black = b
 class GenOptions : struct
 {
 public:
-   property bool defineListBlack { get { return defineList.black; } set { defineList.black = value; } isset { return defineList && defineList.black; } }
-   property bool functionListBlack { get { return functionList.black; } set { functionList.black = value; } isset { return functionList && functionList.black; } }
-   property bool classListBlack { get { return classList.black; } set { classList.black = value; } isset { return classList && classList.black; } }
-   property BlackWhiteList defineList { get { return defineList; } set { defineList = value; } isset { return defineList && defineList.count; } }
-   property BlackWhiteList functionList { get { return functionList; } set { functionList = value; } isset { return functionList && functionList.count; } }
-   property BlackWhiteList classList { get { return classList; } set { classList = value; } isset { return classList && classList.count; } }
+   bool quiet;
+   ActionFlag blackList;
+   bool bypassMacros;
+   property const String dir
+   {
+      get { return dir; }
+      set { delete dir; dir = CopyString(value ? value : ""); }
+      isset { return dir && *dir; }
+   };
+   property const String cpath
+   {
+      get { return cpath; }
+      set { delete cpath; cpath = CopyString(value ? value : ""); }
+      isset { return cpath && *cpath; }
+   };
+   property bool defineListBlack { get { return black.defines; } set { black.defines = value; if(defineList) defineList.black = value; } isset { return defineList && black.defines; } }
+   property BlackWhiteList defineList { get { return defineList; } set { fixBlack(value, black.defines); defineList = value; } isset { return defineList && defineList.count; } }
+   property bool functionListBlack { get { return black.functions; } set { black.functions = value; if(functionList) functionList.black = value; } isset { return defineList && black.functions; } }
+   property BlackWhiteList functionList { get { return functionList; } set { fixBlack(value, black.functions); functionList = value; } isset { return functionList && functionList.count; } }
+   property bool classListBlack { get { return black.classes; } set { black.classes = value; if(classList) classList.black = value; } isset { return defineList && black.classes; } }
+   property BlackWhiteList classList { get { return classList; } set { fixBlack(value, black.classes); classList = value; } isset { return classList && classList.count; } }
    Map<String, String> funcRename;
 
 private:
+   String copyDirPath()
+   {
+      String path = new char[MAX_LOCATION];
+      *path = 0;
+      GetWorkingDir(path, MAX_LOCATION - 1);
+      path[MAX_LOCATION - 1] = 0;
+      MakeSlashPath(path);
+      if(dir)
+         PathCatSlash(path, dir);
+      return path;
+   }
+
+private:
+   String dir;
+   String cpath;
    BlackWhiteList defineList;
    BlackWhiteList functionList;
    BlackWhiteList classList;
+   ListsBlackBits black;
+
+   property bool isEmpty
+   {
+      get
+      {
+         return (!dir || !dir[0]) && (!defineList || !defineList.count) && (!functionList || !functionList.count) &&
+               (!classList || !classList.count) && (!funcRename || !funcRename.count);
+      }
+   }
+
+   void merge(GenOptions opt)
+   {
+      if(opt.quiet) quiet = true;
+      if(opt.blackList) blackList = opt.blackList;
+      if(opt.bypassMacros) bypassMacros = true;
+      if(opt.dir && *opt.dir) dir = CopyString(opt.dir);
+      if(opt.cpath && *opt.cpath) cpath = CopyString(opt.cpath);
+      if(opt.defineList && opt.defineList.count)
+      {
+         delete defineList;
+         defineList = { }; //defineList.copySrc = opt.defineList;
+         for(d : opt.defineList)
+            defineList.Add(d);
+         defineList.black = opt.defineList.black;
+      }
+      if(opt.functionList && opt.functionList.count)
+      {
+         delete functionList;
+         functionList = { }; //functionList.copySrc = opt.functionList;
+         for(d : opt.functionList)
+            functionList.Add(d);
+         functionList.black = opt.functionList.black;
+      }
+      if(opt.classList && opt.classList.count)
+      {
+         delete classList;
+         classList = { }; //classList.copySrc = opt.classList;
+         for(d : opt.classList)
+            classList.Add(d);
+         classList.black = opt.classList.black;
+      }
+      if(opt.funcRename && opt.funcRename.count)
+      {
+         if(funcRename) funcRename.Free();
+         delete funcRename;
+         funcRename = { }; // buggy copySrc? -- funcRename.copySrc = opt.funcRename;
+         for(r : opt.funcRename)
+         {
+            funcRename[(char *)&r] = CopyString(r);
+         }
+      }
+   }
 
    ~GenOptions()
    {
-      if(funcRename) funcRename.Free();
-      delete funcRename;
+      delete dir;
       if(defineList) defineList.Free();
       delete defineList;
       if(functionList) functionList.Free();
       delete functionList;
       if(classList) classList.Free();
       delete classList;
+      if(funcRename) funcRename.Free();
+      delete funcRename;
    }
+
+   GenOptions ::loadFromFile(const String path)
+   {
+      GenOptions o = null;
+      if(!loadFromFileECON(path, class(GenOptions), &o))
+         PrintLn("Error: GenOptions file ", path, " failed to load!");
+      return o;
+   }
+
+   void writeToFile(const String path) { writeToFileECON(path, class(GenOptions), this); }
 }
 
 class Library : struct
@@ -292,7 +407,6 @@ public:
    bool ecereCOM;
    bool ecere;
    bool eda;
-   GenOptions options;
 
    uint verbose;
 
@@ -320,28 +434,13 @@ public:
          defineName = CopyAllCapsString(bindingName);
    }
 
-   GenOptions readOptionsFile()
+   GenOptions loadOptionsFile()
    {
       GenOptions options = null;
       String s;
       s = PrintString(moduleName, ".bgen.econ");
       if(FileExists(s).isFile)
-      {
-         File f = FileOpen(s, read);
-         if(f)
-         {
-            ECONParser parser { f = f };
-            JSONResult jsonResult;
-            jsonResult = parser.GetObject(class(GenOptions), &options);
-            if(jsonResult == success)
-            {
-               // nothing to do
-            }
-            else
-               PrintLn("error: failed to load library options file!");
-            delete f;
-         }
-      }
+         options = GenOptions::loadFromFile(s);
       delete s;
       return options;
    }
@@ -1237,7 +1336,7 @@ class BFunction : struct
    BOutput out;
    property GlobalFunction
    {
-      set { storeMapGetInstantiate(BFunction, GlobalFunction, storeFunctions, allFunctions, init(value, g_.lib.options.funcRename)); }
+      set { storeMapGetInstantiate(BFunction, GlobalFunction, storeFunctions, allFunctions, init(value, g_.options.funcRename)); }
       get { return fn; }
    }
    bool skip;

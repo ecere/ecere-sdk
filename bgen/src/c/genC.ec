@@ -198,7 +198,7 @@ class CGen : Gen
       int len;
       char * name = new char[MAX_LOCATION];
       char * path = new char[MAX_LOCATION];
-      strcpy(path, dir.dir);
+      strcpy(path, dir);
       len = strlen(path);
       strcpy(name, lib.bindingName);
       ChangeExtension(name, "c", name);
@@ -321,7 +321,7 @@ class CGen : Gen
 
    void processClasses(BNamespace n)
    {
-      Class cl; IterClass cla { n.ns, list = lib.options.classList };
+      Class cl; IterClass cla { n.ns, list = options.classList };
       while((cl = cla.next(all)))
       {
          // don't generate templated classes just because they are listed
@@ -417,7 +417,7 @@ class CGen : Gen
 
    void processDefines(BNamespace n)
    {
-      DefinedExpression df; IterDefine def { n.ns, list = lib.options.functionList };
+      DefinedExpression df; IterDefine def { n.ns, list = options.functionList };
       while((df = def.next()))
       {
          BDefine d = df;
@@ -442,7 +442,7 @@ class CGen : Gen
 
    void processFunctions(BNamespace n)
    {
-      GlobalFunction fn; IterFunction func { n.ns, list = lib.options.functionList };
+      GlobalFunction fn; IterFunction func { n.ns, list = options.functionList };
       while((fn = func.next()))
       {
          BFunction f = fn;
