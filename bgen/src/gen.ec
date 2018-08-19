@@ -128,33 +128,37 @@ private:
       ready = FileExists(dir.dir).isDirectory;
       return ready;
    }
-   virtual void moduleInit()
+   bool moduleInit()
    {
       //Platform os = __runtimePlatform;
-      ec1init(lib.loadModuleName); // todo, use supplied path here
-      mod = bmod.mod = ec1HomeModule;
-      conassertctx(mod != null, "?");
+      if(ec1init(lib.loadModuleName)) // todo, use supplied path here
       {
-         //ec1HomeModule
-         //Module module = null;
-         SubModule subModule;
-         /*for(module = ec1ComponentsApp.allModules.first; module; module = module.next)
+         mod = bmod.mod = ec1HomeModule;
+         conassertctx(mod != null, "?");
          {
-            PrintLn("                ", "module.name: ", module.name);
+            //ec1HomeModule
+            //Module module = null;
+            SubModule subModule;
+            /*for(module = ec1ComponentsApp.allModules.first; module; module = module.next)
+            {
+               PrintLn("                ", "module.name: ", module.name);
+               for(subModule = mod.modules.first; subModule; subModule = subModule.next)
+               {
+                  PrintLn("                ", "    subModule: ", subModule.importMode, " ", subModule.module.name);
+               }
+            }*/
+
             for(subModule = mod.modules.first; subModule; subModule = subModule.next)
             {
-               PrintLn("                ", "    subModule: ", subModule.importMode, " ", subModule.module.name);
+               if(subModule.importMode == publicAccess)
+                  libDeps.Insert(null, createLibrary(subModule.module.name));
             }
-         }*/
-
-         for(subModule = mod.modules.first; subModule; subModule = subModule.next)
-         {
-            if(subModule.importMode == publicAccess)
-               libDeps.Insert(null, createLibrary(subModule.module.name));
+            if(!lib.ecereCOM && libDeps.count == 0)
+               libDeps.Insert(null, createLibrary("ecereCOM"));
          }
-         if(!lib.ecereCOM && libDeps.count == 0)
-            libDeps.Insert(null, createLibrary("ecereCOM"));
+         return true;
       }
+      return false;
    }
 
    virtual char * allocMacroSymbolName(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr);
