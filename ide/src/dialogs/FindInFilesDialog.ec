@@ -12,7 +12,7 @@ class FindInFilesDialog : Window
    maxClientSize = { 640, 208 };
    hasClose = true;
    tabCycle = true;
-   size = { 440, 208 };
+   size = { 640, 208 };
    autoCreate = false;
 
 public:
@@ -246,6 +246,7 @@ private:
          findWhere.disabled = !inDir;
          findWherePrjNode.visible = inPrj;
          subDirs.disabled = inWrk;
+         objDirs.disabled = gitDirs.disabled = !inDir;
          llfindWhere.size = { llfindWhere.size.w, llfindWhere.size.h };
 
          if(row)
@@ -331,6 +332,14 @@ private:
    Button subDirs
    {
       llsubDirs, this, $"Include Subdirectories", altU, isCheckbox = true, checked = true;
+   };
+   Button objDirs
+   {
+      llsubDirs, this, $"Include 'obj' directories", altO, isCheckbox = true, checked = false;
+   };
+   Button gitDirs
+   {
+      llsubDirs, this, $"Include '.git' directories", altG, isCheckbox = true, checked = false;
    };
 
    Label lfilter { llfilter, this, size.w = 72, labeledWindow = filterDrop };
@@ -512,6 +521,8 @@ private:
       searchThread.project = null;
       searchThread.projectNode = null;
       searchThread.subDirs = subDirs.checked;
+      searchThread.objDirs = objDirs.checked;
+      searchThread.gitDirs = gitDirs.checked;
 
       if(findIn.currentRow == inDirectoryRow)
       {
@@ -607,7 +618,7 @@ static define stackSize = 1024;
 class SearchThread : Thread
 {
 public:
-   bool active, subDirs/*, nameMatchCase, nameWholeWord*/, contentMatchCase, contentWholeWord;
+   bool active, subDirs, objDirs, gitDirs/*, nameMatchCase, nameWholeWord*/, contentMatchCase, contentWholeWord;
    char dir[MAX_DIRECTORY], contentCriteria[1024], contentReplace[1024], nameCriteria[1024];
    FileFilter filter;
    FindInFilesDialog findDialog;
@@ -787,7 +798,9 @@ private:
                   app.Unlock();
                }
 
-               if(subDirs && stack[frame].fileList.stats.attribs.isDirectory && strcmp(stack[frame].fileList.name, ".git"))
+               if(subDirs && stack[frame].fileList.stats.attribs.isDirectory &&
+                     (objDirs || strcmp(stack[frame].fileList.name, "obj")) &&
+                     (gitDirs || strcmp(stack[frame].fileList.name, ".git")))
                {
                   int lastFrame = frame;
                   /*double thisTime = GetTime();
