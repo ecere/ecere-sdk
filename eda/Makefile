@@ -2,6 +2,10 @@ ifndef DISABLE_EDA_SQLITE
   EDASQLite := defined
 endif
 
+ifndef DISABLE_EDA_SQLITE
+  EDASQLite := defined
+endif
+
 .PHONY: all cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
