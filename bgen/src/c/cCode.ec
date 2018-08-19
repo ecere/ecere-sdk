@@ -49,7 +49,7 @@ static void cInCodeGlobalFunctionPointers(AST out, CGen g)
       {
          BFunction f = fn;
          if(!f.skip && !f.isDllExport)
-            z.printxln("LIB_EXPORT ", g.sym.globalFunction, " * FUNCTION(", f.oname, ");");
+            z.printxln("LIB_EXPORT ", g.sym.globalFunction, " * ", f.foSymbol, ";");
       }
    }
    ns.cleanup();
@@ -174,7 +174,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
          }
       }
    }
@@ -189,7 +189,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
          }
       }
    }
@@ -204,7 +204,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
          }
       }
    }
@@ -221,7 +221,7 @@ static void cInCodeClassPointers(AST out, CGen g)
             if(!c.isUnInt) // hack?
             {
                bool skip = /*c.skipTypeDef || *//*c.isUnichar || */c.isBool;
-               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
             }
          }
       }
@@ -237,7 +237,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
          }
       }
    }
@@ -252,7 +252,7 @@ static void cInCodeClassPointers(AST out, CGen g)
          if(!c.skip && !cl.templateClass)
          {
             bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+            z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
          }
       }
    }
@@ -270,7 +270,7 @@ static void cInCodeClassPointers(AST out, CGen g)
             {
                bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
                if(g_.lib.ecere && c.isWindow) skip = true;
-               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * CO(", c.cname, ");");
+               z.printxln(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";");
             }
          }
       }
@@ -352,7 +352,7 @@ static void cInCodeInitClasses(AST out, CGen g)
                !c.isBool && !c.isByte && !c.isCharPtr && !c.isUnInt) //!c.is_class) // !c.isString?
          {
             IterMethod met { cl };
-            z.printxln(indent, "CO(", c.cname, ") = eC_findClass(", findin, ", \"", cl.name, "\");");
+            z.printxln(indent, c.coSymbol, " = eC_findClass(", findin, ", \"", cl.name, "\");");
             if(met.next(publicOnly))
                content = true;
             else
@@ -369,7 +369,7 @@ static void cInCodeInitClasses(AST out, CGen g)
             }
             if(content)
             {
-               z.printxln(indent, "if(CO(", c.cname, "))");
+               z.printxln(indent, "if(", c.coSymbol, ")");
                z.printxln(indent, "{");
             }
          }
@@ -389,7 +389,7 @@ static void cInCodeInitClasses(AST out, CGen g)
                      z.printxln("");
                   else
                      c.first = false;
-                  z.printxln(indent, "   ", m.m, " = Class_findMethod(CO(", c.cname, "), \"", md.name, "\", ", findin, ");");
+                  z.printxln(indent, "   ", m.m, " = Class_findMethod(", c.coSymbol, ", \"", md.name, "\", ", findin, ");");
                   z.printxln(indent, "   if(", m.m, ")");
                   if(md.type == normalMethod)
                   {
@@ -440,9 +440,9 @@ static void cInCodeInitFunctions(AST out, CGen g)
          if(!f.skip && !f.isDllExport)
          {
             z.printxln("");
-            z.printxln(indent, "FUNCTION(", f.oname, ") = eC_findFunction(", findin, ", \"", f.fname, "\");");
-            z.printxln(indent, "if(FUNCTION(", f.oname, "))");
-            z.printxln(indent, "   ", f.oname, " = (void *)FUNCTION(", f.oname, ")->function;");
+            z.printxln(indent, f.foSymbol, " = eC_findFunction(", findin, ", \"", f.fname, "\");");
+            z.printxln(indent, "if(", f.foSymbol, ")");
+            z.printxln(indent, "   ", f.oname, " = (void *)", f.foSymbol, "->function;");
          }
       }
    }
