@@ -225,6 +225,8 @@ simple_primary_expression:
       return ExpString::parse();
    else if(lexer.nextToken.type == '{')
       return ExpInstance::parse(null, null);
+   else if(lexer.nextToken.type == '[')
+      return ExpArray::parse();
    else
       return null;
 }
@@ -632,6 +634,34 @@ public:
    {
       delete exp;
       delete arguments;
+   }
+}
+
+public class ExpArray : ASTExpression
+{
+public:
+   ASTList<ASTExpression> elements;
+
+   ExpArray ::parse()
+   {
+      ExpArray exp { };
+      lexer.readToken();
+      exp.elements = (ASTList<ASTExpression>)ASTList::parse(class(ASTList<ASTExpression>), ASTExpression::parse, ',');
+      if(lexer.peekToken().type == ']')
+         lexer.readToken();
+      return exp;
+   }
+
+   void print(File out, OutputOptions o)
+   {
+      printStart(out, o);
+      if(elements) elements.print(out, o);
+      printEnd(out, o);
+   }
+
+   ~ExpArray()
+   {
+      delete elements;
    }
 }
 
