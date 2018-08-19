@@ -52,6 +52,7 @@ private:
    ColorAlpha borderColor;
    Direction direction;
    bool autoLayoutFlag;
+   bool noWrap;
    Point position; // Position relative to parent's client area, including margin offset
    Point tlPosition;
    HVAlignment hAlignment, vAlignment; // Alignment of content (children or graphics) ?
@@ -208,8 +209,10 @@ private:
          /*if(!cw) cw = MAXINT;
          if(!ch) ch = MAXINT;*/
 
-         //displaySystem.FontExtent(fontObject, caption, strlen(caption), (int *)&graphicsSize.w, (int *)&graphicsSize.h);
-         wrapTextExtent(displaySystem, fontObject, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
+         if(noWrap)
+            displaySystem.FontExtent(fontObject, caption, strlen(caption), (int *)&graphicsSize.w, (int *)&graphicsSize.h);
+         else
+            wrapTextExtent(displaySystem, fontObject, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
          if(graphicsSize.w)
             graphicsSize.w += 1;
          //PrintLn("graphicsSize: ", graphicsSize);
@@ -525,7 +528,7 @@ public:
 
 class AutoLayoutForm : Window
 {
-   displayDriver = "OpenGL";
+   //displayDriver = "OpenGL";
    caption = "";
    background = formColor;
    borderStyle = sizable;

@@ -1272,7 +1272,7 @@ public:
 class AutoLayoutForm : Window
 {
    displayDriver = "OpenGL";
-   caption = "";
+   caption = "AutoLayoutForm -- HELLO?";
    background = formColor;
    borderStyle = sizable;
    hasMaximize = true;

@@ -263,7 +263,7 @@ class ElTitleBar : Col
       Bar main { header, bgColor = clBar/*lightBlue*/, maxSize = { 1.0, szBar - szWindowHighlight }, vAlignment = center };
 
          CElement { main, id = 101, maxSize = { 8, 8 } };
-         //CElement { main, id = 102, caption = $"Hix | New Frank" };
+         CElement { main, id = 102, caption = $"Hix | New Frank" };
          CElement { main, id = 103, maxSize = { 8, 8 } };
          CElButton { main, id = 121, caption = $"All"/*, checked = true*/ };
          CElButton { main, id = 122, caption = $"Test" };
@@ -282,6 +282,7 @@ class CElButton : CElement
    //margin = 8;
    margin.left = 8;
    margin.right = 8;
+   noWrap = true;
 }
 
 class CElement : Element
