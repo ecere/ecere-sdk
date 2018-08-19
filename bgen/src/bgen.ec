@@ -742,7 +742,7 @@ public class BGen : ConsoleApplication // <ArgSym>
    BGen()
    {
 #ifdef _DEBUG
-      dbglog_open();
+      dbglog_open(true);
 #endif
    }
 
