@@ -7,6 +7,7 @@ import "debug"
 import "consoleApp"
 import "ecom"
 import "stringTools"
+import "extras"
 
 import "DynamicString"
 import "miscTypes"
@@ -33,22 +34,33 @@ ConsoleFile console { };
 enum ArgSym : ArgumentSymbol
 {
    quiet,
+   blackList,
+   forceList,
    language,
    bind,
-   all,
-   reset,
-   string,
-   map,
-   tell,
+   clearAll,
+   clearLanguages,
+   clearLibraries,
+   clearMatrix,
+   //tell,
+   batchFile,
+   writeBatchFile,
    directory,
+   pathC,
+   optionsFile,
    enumPrefix,
    funcRename,
-   C = 1025,
+   _1024 = 1024,
+   C,
    CPlusPlus,
    CSharp,
    Java,
    Python,
-   _
+   _,
+   bypassMacros,
+   __;
+
+   property bool valid { get { return !(this == ambiguous || this == null); } }
 };
 
 enum ArgErr : ArgumentError
@@ -56,8 +68,7 @@ enum ArgErr : ArgumentError
    taskTwice,
    langTwice,
    mustSpecifyLib,
-   unspecifiedLibBeforeReset,
-   unspecifiedAdditionalLib,
+   noLibSpecifiedInRunBeforeClear,
    _
 };
 
@@ -84,87 +95,305 @@ class ApplicationData
    }
 }
 
+class LangLib : struct
+{
+public:
+   Language lang;
+   const String lib;
+private:
+   int OnCompare(LangLib o)
+   {
+      if(o.lang > lang)
+         return 1;
+      else if(o.lang < lang)
+         return -1;
+      return strcmp(o.lib, lib);
+   }
+}
+
+class RunLangLib : struct
+{
+public:
+   int run;
+   Language lang;
+   String lib;
+private:
+   int OnCompare(RunLangLib o)
+   {
+      if(o.run > run || (o.run == run && o.lang > lang))
+         return 1;
+      else if(o.run < run || (o.run == run && o.lang < lang))
+         return -1;
+      return strcmp(o.lib, lib);
+   }
+}
+
+class BGenOptions
+{
+public:
+   property Array<BGenRunOptions> runs { get { return runs; } set { delete runs; runs = value; } };
+
+private:
+   Array<BGenRunOptions> runs { };
+   BGenOptions ::loadFromFile(const String path)
+   {
+      BGenOptions o = null;
+      if(!loadFromFileECON(path, class(BGenOptions), &o))
+         PrintLn($"Error: batch file ", path, " failed to load.");
+      return o;
+   }
+
+   void writeToFile(const String path) { writeToFileECON(path, class(BGenOptions), this); }
+}
+
+enum ClearFlag
+{
+   all, languages, libraries, matrix;
+
+   ClearFlag ::fromArgSym(ArgSym sym)
+   {
+      switch(sym)
+      {
+         case clearAll:       return all;
+         case clearLanguages: return languages;
+         case clearLibraries: return libraries;
+         case clearMatrix:    return matrix;
+         default: conmsg("unreachable"); break;
+      }
+      return all;
+   }
+};
+
+class BGenRunOptions
+{
+public:
+   property ClearFlag clear { get { return clear; } set { clear = value; } isset { return clear != all; } };
+   property GenOptions global { get { return global; } set { delete global; global = value; } isset { return global && !global.isEmpty; } };
+   Array<Language> languages;
+   Array<String> libraries;
+   property Map<Language, GenOptions> languageOptions { get { return languageOptions; } set { delete languageOptions; languageOptions = value; } isset { return languageOptions && languageOptions.count; } };
+   property Map<String, GenOptions> libraryOptions { get { return libraryOptions; } set { delete libraryOptions; libraryOptions = value; } isset { return libraryOptions && libraryOptions.count; } };
+   property Map<LangLib, GenOptions> specificOptions { get { return specificOptions; } set { delete specificOptions; specificOptions = value; } isset { return specificOptions && specificOptions.count; } };
+
+private:
+   // data:
+   ClearFlag clear;
+   GenOptions global;
+   AVLTree<Language> _languages;
+   AVLTree<String> _libraries;
+   Map<Language, GenOptions> languageOptions;
+   Map<String, GenOptions> libraryOptions;
+   Map<LangLib, GenOptions> specificOptions;
+   // state:
+   Language lang;
+   String lib;
+   bool liblang;
+
+   void addLanguage(Language language)
+   {
+      lang = language;
+      if(lib) liblang = true;
+      if(!languages) languages = { };
+      if(!_languages) _languages = { };
+      if(!_languages.Find(language))
+      {
+         languages.Add(language);
+         _languages.Add(language);
+      }
+   }
+
+   void addLibrary(const String library)
+   {
+      String str = CopyString(library);
+      lib = str;
+      if(liblang)
+         PrintLn("warning: lib after liblang: ", library);
+      if(!libraries) libraries = { };
+      if(!_libraries) _libraries = { };
+      if(!_libraries.Find(str))
+         libraries.Add(str);
+   }
+
+   property GenOptions optScope
+   {
+      get
+      {
+         if(liblang) return getLibLangOptions(lang, lib, true);
+         if(lib) return getLibraryOptions(lib, true);
+         if(lang) return getLangOptions(lang, true);
+         return gblScope;
+      }
+   }
+
+   property GenOptions libScope
+   {
+      get
+      {
+         if(lib) return getLibraryOptions(lib, true);
+         return gblScope;
+      }
+   }
+
+   property GenOptions gblScope
+   {
+      get
+      {
+         if(!global) global = { };
+         return global;
+      }
+   }
+
+   GenOptions getLangOptions(Language lang, bool create)
+   {
+      GenOptions options = null;
+      if(!languageOptions && create) languageOptions = { };
+      if(languageOptions)
+      {
+         MapIterator<Language, GenOptions> i { map = languageOptions };
+         if(i.Index(lang, true)) options = i.data;
+         else if(create) options = { }, i.data = options;
+      }
+      return options;
+   }
+
+   GenOptions getLibraryOptions(const String library, bool create)
+   {
+      GenOptions options = null;
+      if(!libraryOptions && create) libraryOptions = { };
+      if(libraryOptions)
+      {
+         MapIterator<String, GenOptions> i { map = libraryOptions };
+         if(i.Index(library, true)) options = i.data;
+         else if(create) options = { }, i.data = options;
+      }
+      return options;
+   }
+
+   GenOptions getLibLangOptions(Language lang, const String library, bool create)
+   {
+      GenOptions options = null;
+      if(!specificOptions && create) specificOptions = { };
+      if(specificOptions)
+      {
+         MapIterator<LangLib, GenOptions> i { map = specificOptions };
+         LangLib langlib { lang, library };
+         if(i.Index(langlib, true)) options = i.data;
+         else if(create) options = { }, i.data = options;
+      }
+      return options;
+   }
+
+   ~BGenRunOptions()
+   {
+      if(libraries) libraries.Free();
+      delete libraries;
+      delete _libraries;
+      delete languages;
+      delete _languages;
+      if(languageOptions) languageOptions.Free();
+      delete languageOptions;
+      if(libraryOptions) libraryOptions.Free();
+      delete libraryOptions;
+      if(specificOptions) specificOptions.Free();
+      delete specificOptions;
+   }
+}
+
+class BGenRunData
+{
+public:
+   RunLangLib run;
+   GenOptions options;
+}
+
+class BGenMatrix
+{
+public:
+   Array<BGenRunData> appliedOptions { };
+private:
+   void writeToFile(const String path) { writeToFileECON(path, class(BGenMatrix), this); }
+}
+
 public class BGen : ConsoleApplication // <ArgSym>
 {
-   bool quiet;
    bool forAll;
    const char * idnt;
    int targetBits;
    idnt = " ";
+   ArgSym task;
+   ArgErr error;
+   ArgErr argError;
    Gen gen;
-   Library lib;
-   Language lang;
-   Directory dir;
    GenOptions options;
    GenOptions optionsForAll;
    List<Gen> gens { };
-   List<Library> libs { };
-   List<Library> ownLibs { };
-   List<Directory> dirs { };
-   List<Directory> ownDirs { };
-   List<GenOptions> ownOptions { };
-   String cpath;
+   List<Gen> addGens { };
+   BGenRunOptions opts;
+   BGenOptions bgenopts { };
+   BGenMatrix matrix { };
 
    void onBuildArgumentOptions()
    {
-      addArgumentSymbol(ArgSym::quiet,       "quiet",                super,   0);
-      addArgumentSymbol(ArgSym::examples,    "examples",             super,   0);
-      addArgumentSymbol(ArgSym::C,           "c",                    strict,  0);
-      addArgumentSymbol(ArgSym::C,           "c89",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,           "c90",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,           "c95",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,           "c99",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,           "c11",                  strict,  0);
-      addArgumentSymbol(ArgSym::CPlusPlus,   "c++",                  strict,  0);
-      addArgumentSymbol(ArgSym::CPlusPlus,   "cxx",                  strict,  0);
-      addArgumentSymbol(ArgSym::CPlusPlus,   "cpp",                  strict,  0);
-      addArgumentSymbol(ArgSym::CPlusPlus,   "cplusplus",            strict,  0);
-      addArgumentSymbol(ArgSym::CSharp,      "c#",                   strict,  0);
-      addArgumentSymbol(ArgSym::CSharp,      "cs",                   strict,  0);
-      addArgumentSymbol(ArgSym::CSharp,      "csharp",               strict,  0);
-      addArgumentSymbol(ArgSym::Java,        "java",                 strict,  0);
-      addArgumentSymbol(ArgSym::Python,      "py",                   strict,  0);
-      addArgumentSymbol(ArgSym::Python,      "python",               strict,  0);
-      addArgumentSymbol(ArgSym::all,         "all",                  strict,  0);
-      addArgumentSymbol(ArgSym::reset,       "reset",                strict,  0);
-      addArgumentSymbol(ArgSym::string,      "string",               super,   0);
-      addArgumentSymbol(ArgSym::enumPrefix,  "enumeration-prefix",   super,   ArgSym::string);
-      addArgumentSymbol(ArgSym::map,         "map",                  super,   0);
-      addArgumentSymbol(ArgSym::funcRename,  "function-rename",      super,   ArgSym::map);
-      addArgumentSymbol(ArgSym::tell,        "tell",                 super,   0);
-      addArgumentSymbol(ArgSym::directory,   "output",               super,   0);
-      addArgumentSymbol(ArgSym::directory,   "directory",            super,   0);
+      addArgumentSymbol(ArgSym::quiet,          "quiet",                super,   0);
+      addArgumentSymbol(ArgSym::blackList,      "black-list",           super,   0);
+      addArgumentSymbol(ArgSym::forceList,      "force-list",           super,   0);
+      addArgumentSymbol(ArgSym::examples,       "examples",             super,   0);
+      addArgumentSymbol(ArgSym::C,              "c",                    strict,  0);
+      addArgumentSymbol(ArgSym::C,              "c89",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,              "c90",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,              "c95",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,              "c99",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,              "c11",                  strict,  0);
+      addArgumentSymbol(ArgSym::CPlusPlus,      "c++",                  strict,  0);
+      addArgumentSymbol(ArgSym::CPlusPlus,      "cxx",                  strict,  0);
+      addArgumentSymbol(ArgSym::CPlusPlus,      "cpp",                  strict,  0);
+      addArgumentSymbol(ArgSym::CPlusPlus,      "cplusplus",            strict,  0);
+      addArgumentSymbol(ArgSym::CSharp,         "c#",                   strict,  0);
+      addArgumentSymbol(ArgSym::CSharp,         "cs",                   strict,  0);
+      addArgumentSymbol(ArgSym::CSharp,         "csharp",               strict,  0);
+      addArgumentSymbol(ArgSym::Java,           "java",                 strict,  0);
+      addArgumentSymbol(ArgSym::Python,         "py",                   strict,  0);
+      addArgumentSymbol(ArgSym::Python,         "python",               strict,  0);
+      addArgumentSymbol(ArgSym::bypassMacros,   "bypass-macros",        super,   0);
+      addArgumentSymbol(ArgSym::clearAll,       "clear-all",            super,   0);
+      addArgumentSymbol(ArgSym::clearLanguages, "clear-languages",      super,   0);
+      addArgumentSymbol(ArgSym::clearLibraries, "clear-libraries",      super,   0);
+      addArgumentSymbol(ArgSym::clearMatrix,    "clear-matrix",         super,   0);
+      addArgumentSymbol(ArgSym::enumPrefix,     "enumeration-prefix",   super,   0);
+      addArgumentSymbol(ArgSym::funcRename,     "function-rename",      super,   0);
+      //addArgumentSymbol(ArgSym::tell,           "tell",                 super,   0);
+      addArgumentSymbol(ArgSym::batchFile,      "batch-file",           super,   0);
+      addArgumentSymbol(ArgSym::writeBatchFile, "write-batch-file",     super,   0);
+      addArgumentSymbol(ArgSym::directory,      "output",               super,   0);
+      addArgumentSymbol(ArgSym::directory,      "directory",            super,   0);
+      addArgumentSymbol(ArgSym::pathC,          "path-c",               super,   0);
+      addArgumentSymbol(ArgSym::optionsFile,    "options-file",         super,   0);
+      addArgumentSymbol(ArgSym::optionsFile,    "list-file",            super,   0);
+      //printAllSymbolMatches(0);
 
-      /*
-      PrintLn("------------------------------------------------------------------------------------------");
-      PrintLn("------------------------------------------------------------------------------------------");
-      printAllSymbolMatches(0);
-      PrintLn("------------------------------------------------------------------------------------------");
-      PrintLn("------------------------------------------------------------------------------------------");
-      printAllSymbolMatches(ArgSym::string);
-      PrintLn("------------------------------------------------------------------------------------------");
-      PrintLn("------------------------------------------------------------------------------------------");
-      printAllSymbolMatches(ArgSym::map);
-      */
-
-      setArgumentSpec(ArgSym::quiet,     { option, many });
-      setArgumentSpec(ArgSym::examples,  { task, once, goal });
-      setArgumentSpec(ArgSym::C,         { option, once, ArgSym::language });
-      setArgumentSpec(ArgSym::CPlusPlus, { option, once, ArgSym::language });
-      setArgumentSpec(ArgSym::CSharp,    { option, once, ArgSym::language });
-      setArgumentSpec(ArgSym::Java,      { option, once, ArgSym::language });
-      setArgumentSpec(ArgSym::Python,    { option, once, ArgSym::language });
-      setArgumentSpec(ArgSym::string,    { option, many });
-      setArgumentSpec(ArgSym::map,       { option, many });
-      setArgumentSpec(ArgSym::tell,      { option, many });
-      setArgumentSpec(ArgSym::directory, { option, once });
+      setArgumentSpec(ArgSym::quiet,          { option, many });
+      setArgumentSpec(ArgSym::blackList,      { option, many });
+      setArgumentSpec(ArgSym::forceList,      { option, many });
+      setArgumentSpec(ArgSym::examples,       { task, once, goal });
+      setArgumentSpec(ArgSym::C,              { option, once, ArgSym::language });
+      setArgumentSpec(ArgSym::CPlusPlus,      { option, once, ArgSym::language });
+      setArgumentSpec(ArgSym::CSharp,         { option, once, ArgSym::language });
+      setArgumentSpec(ArgSym::Java,           { option, once, ArgSym::language });
+      setArgumentSpec(ArgSym::Python,         { option, once, ArgSym::language });
+      setArgumentSpec(ArgSym::bypassMacros,   { option, many });
+      //setArgumentSpec(ArgSym::tell,           { option, many });
+      setArgumentSpec(ArgSym::batchFile,      { option, once });
+      setArgumentSpec(ArgSym::writeBatchFile, { option, once });
+      setArgumentSpec(ArgSym::directory,      { option, once });
+      setArgumentSpec(ArgSym::pathC,          { option, once });
+      setArgumentSpec(ArgSym::optionsFile,    { option, once });
    }
 
    void init()
    {
       ConsoleApplication::init();
 
-      // reserved or keywords or whatnot
+      // reserved or keywords
       enumValueNames.Add((char*)"null");
       enumValueNames.Add((char*)"true");
       enumValueNames.Add((char*)"false");
@@ -189,403 +418,402 @@ public class BGen : ConsoleApplication // <ArgSym>
       targetBits = GetHostBits();
       SetTargetBits(targetBits);
       SetBGenSymbolSwapCallback(bgenSymbolSwap);
+
+      // local init
+      bgenopts.runs.Add((opts = { }));
+   }
+
+   bool argsError()
+   {
+      if(error || argError)
+      {
+         task = help;
+         return true;
+      }
+      return false;
    }
 
    void Main()
    {
-      ArgSym task = bind;
-      ArgErr error = null;
-      ArgErr argError = null;
-
       init();
-
-      if(argc > 1)
+      parseArgs();
+      if(argsError())
+         failOutput();
+      else if(task == bind)
       {
-         int c;
-         ArgSym sym = null;
-         ArgSym prev = null;
-         ArgSym nsym = null;
-         ArgSym scope = null;
-         for(c = 1; c < argc; c++)
-         {
-            ArgErr err = null;
-            const char * arg = argv[c];
-            const char * str = arg;
-            bool nextIsValidSymbol = false;
-            if(*str == '-') { str++; if(*str == '-') { str++; if(*str == '-') str++; } }
-            nsym = (ArgSym)getSwitchSymbol(str, scope);
-            nextIsValidSymbol = !(nsym == null || nsym == ambiguous);
-            prev = sym;
-            /*if(arg[0] == '.' && arg[1] == 0)
-            {
-               sym = null;
-               PrintLn("catching . for null sym");
-            }
-            else */if(prev == map)
-            {
-               char * copy = CopyString(arg);
-               char * type = copy;
-               char * next = strchr(copy, ',');
-               if(next) *next = 0;
-               sym = (ArgSym)getSwitchSymbol(type, scope);
-               if(sym == ArgSym::funcRename)
-               {
-                  Map<String, String> m = null;
-                  options = getOptions();
-                  if(options)
-                  {
-                     if(!options.funcRename) options.funcRename = { };
-                     m = options.funcRename;
-                  }
-                  if(m)
-                  {
-                     while(next)
-                     {
-                        char * item = next + 1;
-                        next = strchr(item, ',');
-                        if(next) *next = 0;
-                        if(*item)
-                        {
-                           char * val = strchr(item, '=');
-                           if(val)
-                           {
-                              MapIterator<String, String> i { map = m };
-                              *val = 0;
-                              if(!i.Index(item, true))
-                                 i.data = CopyString(++val);
-                              else
-                                 PrintLn($"Warning: map key '", item, "' is already specified!"); // todo: fix i18n
-                           }
-                           else
-                              PrintLn($"Warning: map item '", item, "' is missing equal sign and will be ignored!"); // todo: fix i18n
-                        }
-                     }
-                  }
-               }
-               else
-               {
-                  err = unknown;
-                  PrintLn($"Error: argument ", sym, " (", type, ") is not a know symbol mapping."); // todo: fix i18n
-               }
-               delete copy;
-            }
-            /*else if(prev == funcRename)
-            {
-               char * key, * s = strstr(arg, "=");
-               if(s)
-               {
-                  MapIterator<String, String> i { map = m };
-                  int len = s - arg;
-                  key = new char[len + 1];
-                  strncpy(key, arg, len);
-                  key[len] = 0;
-                  if(!i.Index(key, true))
-                     i.data = CopyString(++s);
-                  else
-                     PrintLn("map error: key (", key, ") is already specified!");
-                  delete key;
-               }
-            }*/
-            else
-            {
-               sym = null;
-               if(prev == language)
-               {
-                  sym = nsym;
-                  switch(sym)
-                  {
-                     case C:
-                     case CPlusPlus:
-                     case CSharp:
-                     case Java:
-                     case Python:
-                        lang = (Language)sym;
-                        dir = addDirectory("", null);
-                        break;
-                     default:
-                        err = unknown;
-                        PrintLn($"Error: argument ", sym, " (", arg, ") is not a know language."); // todo: fix i18n
-                        break;
-                  }
-               }
-               else if(prev == directory)
-                  dir = addDirectory(arg, dir);
-               else if(prev == string/* || prev == map*/)
-               {
-                  sym = (ArgSym)getSwitchSymbol(arg, scope);
-                  /*if(prev == map && sym == ArgSym::funcRename)
-                  {
-                     m = null;
-                     options = getOptions();
-                     if(options)
-                     {
-                        if(!options.funcRename) options.funcRename = { };
-                        m = options.funcRename;
-                     }
-                  }
-                  else
-                     conmsg("check"); // todo error*/
-               }
-               else if(prev == tell)
-                  conmsg("check"); // todo
-               else if(nextIsValidSymbol)
-               {
-                  sym = nsym;
-                  switch(sym)
-                  {
-                     case C:
-                     case CPlusPlus:
-                     case CSharp:
-                     case Java:
-                     case Python:
-                        //if(!lang)
-                           lang = (Language)sym;
-                           dir = addDirectory("", null);
-                           //if(dir) dir.lang = lang;
-                        /*else
-                           err = langTwice;*/
-                        break;
-                     case quiet:
-                        quiet = true;
-                        break;
-                     case about:
-                     case help:
-                     case examples:
-                     case license:
-                     case version:
-                        if(!task)
-                           task = bind;
-                        else if(sym != bind)
-                           err = taskTwice;
-                        break;
-                     case reset:
-                        if(libs.count == 0)
-                           error = unspecifiedLibBeforeReset;
-                        else
-                           generateGens();
-                        break;
-                     case all:
-                     {
-                        forAll = true;
-                        break;
-                     }
-                     case string:
-                     case map:
-                        scope = sym;
-                        break;
-                     case tell:
-                        break;
-                     case directory:
-                        break;
-                     case ambiguous:
-                        err = ambiguous;
-                        PrintLn($"Error: argument ", sym, " (", arg, ") is ambiguous."); // todo: fix i18n
-                        break;
-                     case null:
-                        err = unknown;
-                        PrintLn($"Error: argument ", sym, " (", arg, ") is unknown."); // todo: fix i18n
-                        break;
-                     default: conmsg("check"); break;
-                  }
-                  switch(err)
-                  {
-                     case null:
-                        break;
-                     case taskTwice:
-                     case langTwice:
-                        if(!error) error = err;
-                        break;
-                     case ambiguous:
-                     case outOfScope:
-                     case unknown:
-                        if(!argError) argError = err;
-                        break;
-                     default: conmsg("check"); break;
-                  }
-               }
-               else if(task == bind)
-                  lib = addLibrary(arg);
-               if(c + 1 == argc && (sym == bind || sym == directory || sym == string || sym == map || sym == tell))
-               {
-                  if(!error) error = missing;
-                  PrintLn($"Error: argument for ", sym, " (", arg, ") is missing."); // todo: fix i18n
-                  /*if(sym == bind)
-                     ;
-                  else if(sym == directory)
-                     ;
-                  else if(sym == string)
-                     ;
-                  else if(sym == map)
-                     ;
-                  else if(sym == tell)
-                     ;*/
-               }
-            }
-         }
+         buildMatrix();
+/*#ifdef _DEBUG
+         matrix.writeToFile("matrix.bgen.econ");
+#endif // def _DEBUG*/
+         execute();
       }
-      if(libs.count == 0)
-      {
-         if(gens.count == 0)
-            error = mustSpecifyLib;
-         else
-            error = unspecifiedAdditionalLib;
-      }
-      if(error || argError) task = help;
-      else if(task == bind/* || task == tell?*/)
-         generateGens();
-      if(error || argError)
-      {
-         if(error == mustSpecifyLib)
-            PrintLn($"Error: at least one library must be specified for bgen to generate bindings.");
-         else if(error == unspecifiedLibBeforeReset)
-            PrintLn($"Error: at least one library must be specified before the 'reset' switch.");
-         else if(error == unspecifiedAdditionalLib)
-            PrintLn($"Error: although some library(ies) have been specified, no additional library(ies) have been specified after the 'reset' switch.");
-         else if(error == taskTwice)
-            PrintLn($"Error: you can only specify one task at a time.");
-         else if(error == langTwice)
-            PrintLn($"Error: you can only specify one target language at a time.");
-         else if(!argError && error != missing)
-            PrintLn($"Error: ", error);
-         PrintLn($"Please follow appropriate syntax.");
-         PrintLn("");
-         idnt = "  ";
-      }
-      else if(gens.count)
-      {
-         for(gen : gens)
-         {
-            Gen g = this.gen = gen; // for watches
-            //bool plug = false;
-            // todo: fix this, python should not pollute c or globals
-            python = (gen.lang == Python); // todo
-            py = false; // todo
-            g_ = (CGen)g;
-            // tocheck: just drop?
-            /*if(!g.lib.outputDir)
-               g.lib.outputDir = CopyString(def.lib.outputDir);*/
-            //g.lib.init();
-            //PrintLn("doing: ", g.dir.lang, " - ", g.lib.bindingName, " -> ", g.dir.outputDir);
-            if(g.lib.name)
-            {
-               GenOptions options = g.lib.readOptionsFile();
-               if(options)
-                  g.lib.options = options;
-               if(!g.lib.options)
-                  g.lib.options = optionsForAll;
-               if(!g.lib.options)
-                  g.lib.options = addOptions();
-               if(g.init())
-               {
-                  // todo: add this as a 'tell' option, for generating complete lists from libs
-                  //g.outLists();
-                  g.process();
-                  g.generate();
-                  if(g.lib.verbose)
-                     g.printOutputFiles();
-               }
-               /*if(plug)
-                  g.lib.funcRename = null;*/
-               g.reset();
-               delete g;
-            }
-         }
-      }
-
-      /*if(def.funcRename)
-      {
-         MapIterator<String, String> i { map = def.funcRename };
-         PrintLn("---------------------");
-         while(i.Next())
-         {
-            PrintLn(i.key, " -> ", i.data);
-         }
-         PrintLn("---------------------");
-      }*/
-
-      // command-line options to select
-      //
-      //  - <input library>     // path/to/ecereCOM.dll or .so or just ecereCOM.dll or .so or just ecereCOM
-      //     - [binding name]   // same as name part of input library if not specified (ecereCOM)
-      //     - [define prefix]  // all uppercase version of binding name if not specified (ECERECOM)
-      //  - [target language] (defaults to C) caseInsensitive(c|c89|cpp|c++|c#|csharp|java|python|py)
-      //  - [output directory] (default to current)
-      //  - generating (mangling) options
-      //     - global prefix
-      //     - name spaces
-      //     - context-sensitive enumerations prefixes
-      //  - ? other useful options ?
       onTask(task);
-
-      //PrintLn("");
       //ad.printAllSpecs();
    }
 
-   Directory addDirectory(const char * path, Directory preset)
+   void failOutput()
    {
-      if(preset && preset.lang == lang)
-      {
-         delete preset.outputDir;
-         preset.outputDir = CopyString(path);
-         preset.init();
-         return preset;
-      }
-      else
-      {
-         Directory dir { };
-         if(lang)
-            dir.lang = lang;
-         dir.outputDir = CopyString(path);
-         dir.init();
-         dirs.Add(dir);
-         ownDirs.Add(dir);
-         return dir;
-      }
+      if(error == mustSpecifyLib)
+         PrintLn($"Error: at least one library must be specified for bgen to generate bindings.");
+      else if(error == noLibSpecifiedInRunBeforeClear)
+         PrintLn($"Error: at least one library must be specified before the 'reset' switch.");
+      else if(error == taskTwice)
+         PrintLn($"Error: you can only specify one task at a time.");
+      else if(error == langTwice)
+         PrintLn($"Error: you can only specify one target language at a time.");
+      else if(!argError && error != missing)
+         PrintLn($"Error: ", error);
+      PrintLn($"Please follow appropriate syntax.");
+      PrintLn("");
+      idnt = "  ";
    }
 
-   Library addLibrary(const char * name)
+   void parseArgs()
    {
-      Library lib = createLibrary(name);
-      libs.Add(lib);
-      ownLibs.Add(lib);
-      return lib;
-   }
-
-   GenOptions addOptions()
-   {
-      GenOptions options { };
-      ownOptions.Add(options);
-      return options;
-   }
-
-   GenOptions getOptions()
-   {
-      GenOptions options = null;
-      if(forAll)
+      int c;
+      ArgSym sym = null;
+      ArgSym expect = null;
+      Array<String> libs;
+      for(c = 1; c < argc; c++)
       {
-         if(!optionsForAll)
-            optionsForAll = addOptions();
-         options = optionsForAll;
-      }
-      else
-      {
-         if(lib)
+         ArgErr err = null;
+         const char * arg = argv[c];
+         const char * str = arg;
+         if(*str == '-') { str++; if(*str == '-') { str++; if(*str == '-') str++; } }
+         sym = (ArgSym)getSwitchSymbol(str, expect);
+         if(sym.valid && sym > ArgSym::_1024 && sym < ArgSym::_)
+            expect = language;
+         switch(expect)
          {
-            if(!lib.options)
-               lib.options = addOptions();
-            options = lib.options;
+            case null:
+            {
+               switch(sym)
+               {
+                  case quiet:
+                     opts.optScope.quiet = true;
+                     break;
+                  case blackList:
+                     opts.libScope.blackList = yes;
+                     break;
+                  case forceList:
+                     opts.libScope.blackList = force;
+                     break;
+                  case bypassMacros:
+                     opts.optScope.bypassMacros = true;
+                     break;
+                  case about:
+                  case help:
+                  case examples:
+                  case license:
+                  case version:
+                     if(!task)
+                        task = sym;
+                     else if(sym != bind)
+                        err = taskTwice;
+                     break;
+                  case clearAll:
+                  case clearLanguages:
+                  case clearLibraries:
+                  case clearMatrix:
+                     if(libs && libs.count)
+                     {
+                        addRun();
+                        opts.clear = ClearFlag::fromArgSym(sym);
+                        if(sym != clearLanguages)
+                           libs = null;
+                     }
+                     else
+                        error = noLibSpecifiedInRunBeforeClear;
+                     break;
+                  case enumPrefix:
+                  case funcRename:
+                  case batchFile:
+                  case writeBatchFile:
+                  case directory:
+                  case pathC:
+                  case optionsFile:
+                     expect = sym;
+                     break;
+                  //case tell:
+                  //   break;
+                  case ambiguous:
+                     err = ambiguous;
+                     PrintLn($"Error: argument ", sym, " (", arg, ") is ambiguous.");
+                     break;
+                  case null: // maybe todo: some library names might conflict with switch matching. find a way to favor library over flag?
+                     if(!task || task == bind)
+                     {
+                        task = bind;
+                        opts.addLibrary(arg);
+                        if(!libs)
+                           libs = opts.libraries;
+                     }
+                     else
+                        PrintLn($"Warning: argument ", arg, " is ignored.");
+                     //err = unknown;
+                     //PrintLn($"Error: argument ", sym, " (", arg, ") is unknown.");
+                     break;
+                  default: conmsg("unreachable"); break;
+               }
+               break;
+            }
+            case language:
+               switch(sym)
+               {
+                  case C:
+                  case CPlusPlus:
+                  case CSharp:
+                  case Java:
+                  case Python:
+                  {
+                     ActionFlag blackFlag = opts.gblScope.blackList ? opts.gblScope.blackList : opts.libScope.blackList ? opts.libScope.blackList : no;
+                     if(blackFlag)
+                        PrintLn($"Error: language ", sym, " argument will be ignored since ",
+                              blackFlag == yes ? ArgSym::blackList : ArgSym::forceList,
+                              " is already specified.");
+                     else
+                        opts.addLanguage((Language)sym);
+                     break;
+                  }
+                  default:
+                     err = unknown;
+                     PrintLn($"Error: argument ", sym, " (", arg, ") is not a know language.");
+                     break;
+               }
+               expect = null;
+               break;
+            case batchFile:
+            {
+               const String path = arg;
+               if(FileExists(path).isFile)
+               {
+                  delete bgenopts;
+                  bgenopts = BGenOptions::loadFromFile(path);
+                  if(bgenopts)
+                     task = bind; // we will assume the batch file contains bind tasks for now... as it should!
+               }
+               else
+                  PrintLn($"Error: batch file ", path, " does not exist.");
+               expect = null;
+               break;
+            }
+            case writeBatchFile:
+            {
+               const String path = arg;
+               bgenopts.writeToFile(path);
+               expect = null;
+               break;
+            }
+            case directory:
+            {
+               GenOptions o = opts.optScope;
+               const String dir = o.dir = arg;
+               if(opts.lang == C)
+               {
+                  GenOptions o = opts.libScope;
+                  o.cpath = dir;
+               }
+               expect = null;
+               break;
+            }
+            case pathC:
+            {
+               GenOptions o = opts.optScope;
+               o.cpath = arg;
+               expect = null;
+               break;
+            }
+            case optionsFile:
+            {
+               const String path = arg;
+               if(FileExists(path).isFile)
+               {
+                  GenOptions o = GenOptions::loadFromFile(path);
+                  if(o)
+                     opts.optScope.merge(o);
+               }
+               else
+                  PrintLn($"Error: options file ", path, " does not exist.");
+               expect = null;
+               break;
+            }
+            case funcRename:
+            {
+               GenOptions options = opts.optScope;
+               if(!options.funcRename) options.funcRename = { };
+               err = parseMapArgument(arg, options.funcRename, expect);
+               expect = null;
+               break;
+            }
+            case enumPrefix:
+               conmsg("uniplemented");
+               expect = null;
+               break;
+            /*case tell:
+               conmsg("task 'tell' isn't implemented yet. (todo)");
+               expect = null;
+               break;*/
+            default: conmsg("unreachable"); break;
+         }
+         switch(err)
+         {
+            case null:
+               break;
+            case taskTwice:
+            case langTwice:
+               if(!error)
+                  error = err;
+               break;
+            case ambiguous:
+            case outOfScope:
+            case unknown:
+               if(!argError)
+                  argError = err;
+               break;
+            default: conmsg("unreachable"); break;
+         }
+         if(c + 1 == argc && expect != null) //(sym == directory || sym == string || sym == map || sym == tell))
+         {
+            if(!error)
+               error = missing;
+            PrintLn($"Error: argument for ", expect, " (", arg, ") is missing.");
+            /*if(sym == directory);
+            else if(sym == string);
+            else if(sym == map);
+            else if(sym == tell);*/
+         }
+      }
+      if(!(libs && libs.count))
+         error = noLibSpecifiedInRunBeforeClear;
+
+      if(!task)
+         task = help;
+   }
+
+   ArgErr parseMapArgument(const char * arg, Map<String, String> m, ArgSym option)
+   {
+      char * copy = CopyString(arg);
+      char * next = copy;
+      ArgErr err = null;
+      while(next)
+      {
+         char * item = next;
+         next = strchr(item, ',');
+         if(next) *next = 0, next++;
+         if(*item)
+         {
+            char * val = strchr(item, '=');
+            if(val)
+            {
+               MapIterator<String, String> i { map = m };
+               *val = 0;
+               if(!i.Index(item, true))
+                  i.data = CopyString(++val);
+               else
+                  PrintLn($"Warning: ", option, " map key '", item, "' is already specified!");
+            }
+            else
+               PrintLn($"Warning: ", option, " map item '", item, "' is missing equal sign and will be ignored!");
+         }
+      }
+      delete copy;
+      return err;
+   }
+
+   BGenRunOptions addRun()
+   {
+      BGenRunOptions runOpts { };
+      opts = runOpts;
+      bgenopts.runs.Add(runOpts);
+      return runOpts;
+   }
+
+   void buildMatrix()
+   {
+      int rn = 0;
+      Array<Language> lngs { };
+      Array<String> libs { };
+      Array<BGenRunOptions> gblRunOpts { };
+      Array<BGenRunOptions> lngRunOpts { };
+      Array<BGenRunOptions> libRunOpts { };
+      for(r : bgenopts.runs)
+      {
+         BGenRunOptions run = r;
+         rn++;
+         switch(run.clear)
+         {
+            case all:
+               gblRunOpts.RemoveAll();
+            case matrix:
+               lngs.RemoveAll();
+               lngRunOpts.RemoveAll();
+            case libraries:
+               libs.RemoveAll();
+               libRunOpts.RemoveAll();
+               break;
+            case languages:
+               lngs.RemoveAll();
+               lngRunOpts.RemoveAll();
+               break;
+         }
+         if(run.languages && run.languages.count)
+         {
+            for(lang : run.languages)
+               lngs.Add(lang);
          }
          else
-            PrintLn("options error: a library must be specified first!");
+            lngs.Add(C);
+         if(run.libraries)
+         {
+            for(lib : run.libraries)
+               libs.Add(lib);
+         }
+         gblRunOpts.Add(run);
+         lngRunOpts.Add(run);
+         libRunOpts.Add(run);
+         if(libs.count > 0)
+         {
+            for(g : lngs)
+            {
+               Language lang = g;
+               for(lib : libs)
+               {
+                  RunLangLib key { rn, lang, lib };
+                  GenOptions liblangOpts = run.getLibLangOptions(lang, lib, false);
+                  GenOptions opts { };
+                  matrix.appliedOptions.Add({ key, opts });
+                  for(optsr : gblRunOpts)
+                  {
+                     BGenRunOptions optsrun = optsr;
+                     if(optsrun.global) opts.merge(optsrun.global);
+                  }
+                  for(optsr : lngRunOpts)
+                  {
+                     BGenRunOptions optsrun = optsr;
+                     GenOptions langOpts = optsrun.getLangOptions(lang, false);
+                     if(langOpts) opts.merge(langOpts);
+                  }
+                  for(optsr : libRunOpts)
+                  {
+                     BGenRunOptions optsrun = optsr;
+                     GenOptions libOpts = optsrun.getLibraryOptions(lib, false);
+                     if(libOpts) opts.merge(libOpts);
+                  }
+                  if(liblangOpts) opts.merge(liblangOpts);
+                  addGen(lang, lib, opts);
+               }
+            }
+         }
       }
-      return options;
+      delete lngs;
+      delete libs;
    }
 
-   Gen addGen(Library lib, Directory dir)
+   Gen addGen(Language lang, const String lib, GenOptions opts)
    {
       Gen gen = null;
       python = false; // todo
-      switch(dir.lang)
+      switch(lang)
       {
          case C:           gen = CGen { };      break;
          case CPlusPlus:   gen = CPPGen { };    break;
@@ -594,66 +822,46 @@ public class BGen : ConsoleApplication // <ArgSym>
          case Python:
             python = true; // todo
                            gen = PythonGen { }; break;
-         default: conmsg("check"); break;
+         default: conmsg("unreachable"); break;
       }
-      gen.quiet = quiet;
-      gen.lib = lib;
-      gen.dir = dir;
-      //if(def.lib.outputDir)
-      //   gen.lib.outputDir = CopyString(def.lib.outputDir);
+      gen.lib = createLibrary(lib);
+      gen.options = opts;
+      gen.dir = opts.copyDirPath();
       gens.Add(gen);
       return gen;
    }
 
-   void generateGens()
+   void execute()
    {
-      if(libs.count)
+      for(gen : gens)
       {
-         if(!dirs.count)
-            dir = addDirectory("", null);
-         for(dir : dirs)
+         Gen g = this.gen = gen;
+         g_ = (CGen)g; // maybe todo: remove global, favor parameter
+         python = (gen.lang == Python), py = false; // todo: fix this, python should not pollute c or globals
+         if(g.lib.name)
          {
-            for(lib : libs)
+            if(g.init())
             {
-               if(!cpath && dir.lang == C)
-                  cpath = CopyString(dir.dir);
-               addGen(lib, dir);
+               if(g.options.blackList)
+                  g.outLists(g.options);
+               else
+               {
+                  g.process();
+                  g.generate();
+                  if(g.lib.verbose)
+                     g.printOutputFiles();
+               }
             }
+            g.reset();
+            delete g;
          }
       }
-      lang = null;
-      forAll = false;
-      libs.RemoveAll();
-      dirs.RemoveAll();
    }
 
    //bool onArgCustom(int symbol) { return true; }
    //bool onArg(const char * arg, int pos, S symbol, S scope, S prev, E error, bool raw)
    //bool onArg(const char * arg, int pos, int symbol, int scope, int prev, int error, bool raw)
-   bool onArg(const char * arg, int pos, ArgSym symbol, ArgSym scope, ArgSym prev, ArgErr error, bool raw)
-   {
-      if(raw)
-      {
-         if(prev == bind)
-            conmsg("check");//gens.Add(createGen(null, arg, def)); // todo if onArg is ever used
-         else if(prev == directory)
-         {
-            conmsg("check"); // todo?
-            /*delete def.lib.outputDir;
-            def.lib.outputDir = CopyString(arg);*/
-         }
-         else if(prev == string)
-            conmsg("check"); // todo
-         else if(prev == map)
-            conmsg("check"); // todo
-         else if(prev == tell)
-            conmsg("check"); // todo
-      }
-      else
-      {
-      }
-      return false;
-   }
+   //bool onArg(const char * arg, int pos, ArgSym symbol, ArgSym scope, ArgSym prev, ArgErr error, bool raw)
 
    bool onTask(int symbol)
    {
@@ -717,8 +925,7 @@ public class BGen : ConsoleApplication // <ArgSym>
             "\n"
             //"   --enum-prefix <prefix><string>        Prefix enumeration types by 'prefix'\n"
             //"\n"
-            "     -m fren[,<oldname>=<newname>]+     Use an alternate name for a function\n"
-            // "     -fren <key>=<value>[,<key>=<value>]*     Rename a function\n"
+            "     -fren <key>=<value>[,<key>=<value>]*     Rename a function\n"
             "\n"
             //"   -tell <telltype>                     Tell you something\n"
             //"                        where telltype is something\n"
@@ -745,7 +952,7 @@ public class BGen : ConsoleApplication // <ArgSym>
             "   Notes:\n"
             "      All switches are case insensitive.\n"
             "      The use of - or -- is optional for all switches.\n"
-            "      All non-ambiguous truncated shorthand are accepted for all switches.\n"
+            "      All non-ambiguous truncated shorthands are accepted for all switches.\n"
          );
 
 #if 0
@@ -767,9 +974,6 @@ public class BGen : ConsoleApplication // <ArgSym>
 
    ~BGen()
    {
-      ownLibs.Free();
-      ownDirs.Free();
-      ownOptions.Free();
       gens.RemoveAll();
 #ifdef _DEBUG
       dbglog_close();
@@ -778,6 +982,6 @@ public class BGen : ConsoleApplication // <ArgSym>
 }
 
 define app = ((BGen)__thisModule);
-CGen g_;
+CGen g_; // todo
 bool python; // todo
-bool py;
+bool py; // todo

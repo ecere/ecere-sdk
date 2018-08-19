@@ -107,7 +107,8 @@
             "miscTypes.ec",
             "debug.ec",
             "debug.eh",
-            "debug.c"
+            "debug.c",
+            "extras.ec"
          ]
       }
    ],

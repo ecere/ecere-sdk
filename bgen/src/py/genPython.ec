@@ -127,7 +127,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         DefinedExpression df; IterDefine def { n.ns, list = lib.options.defineList };
+         DefinedExpression df; IterDefine def { n.ns, list = options.defineList };
          while((df = def.next()))
          {
             Expression exp = ParseExpressionString((char *)df.value);
@@ -214,7 +214,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         BFunction f; IterFunction itf { n.ns, list = lib.options.functionList };
+         BFunction f; IterFunction itf { n.ns, list = options.functionList };
          ParamFilter paramFilter { all = true };
          while((f = itf.next()))
          {
@@ -239,7 +239,7 @@ class PythonGen : CGen
    {
       if(py)
       {
-         BClass c; IterClass itc { n.ns, list = lib.options.classList };
+         BClass c; IterClass itc { n.ns, list = options.classList };
          while((c = itc.next(all)))
          {
             if(!c.cl.templateClass) // don't generate templated classes just because they are listed
@@ -382,7 +382,7 @@ class PythonGen : CGen
       int len;
       char * name = new char[MAX_LOCATION];
       char * path = new char[MAX_LOCATION];
-      strcpy(path, dir.dir);
+      strcpy(path, dir);
       len = strlen(path);
       strcpy(name, "cffi-");
       strcat(name, lib.bindingName);
@@ -442,14 +442,14 @@ void checkForCircularDependencies(PythonGen g)
    while(itna.next())
    {
       BNamespace na = (NameSpacePtr)itna.ns;
-      BClass ca; IterClass itca { na.ns, list = g.lib.options.classList };
+      BClass ca; IterClass itca { na.ns, list = g.options.classList };
       while((ca = itca.next(all)))
       {
          IterNamespace itnb { module = g.mod, processFullName = true };
          while(itnb.next())
          {
             BNamespace nb = (NameSpacePtr)itnb.ns;
-            BClass cb; IterClass itcb { nb.ns, list = g.lib.options.classList };
+            BClass cb; IterClass itcb { nb.ns, list = g.options.classList };
             while((cb = itcb.next(all)))
             {
                BVariant va = ca.cl;
@@ -679,7 +679,7 @@ void processPyClass(PythonGen g, BClass c)
             IterNamespace itn { module = g.mod, ecereCOM = true };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
                   if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
@@ -695,40 +695,19 @@ void processPyClass(PythonGen g, BClass c)
          sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_guiapplication.src", null, false);
          conassert(g.lib.ecere == true, "?");
          // register all normal classes
-         /*{
+         {
             IterNamespace itn { module = g.mod };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
-                  if(c.cl.type == normalClass && !c.isWindow && !c.cl.templateClass)
+                  if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
+                        !c.isModule && !c.isApplication && !c.cl.templateClass) // !c.isWindow
                      out.ds.printxln("      self.registerClass(", c.name, ", True)");
                }
             }
             itn.cleanup();
-         }*/
-         {
-            // todo: use IterAllClass to spare this double nested loop and iterators
-            IterNamespace itn { module = g.mod, ecereCOM = true/*, processFullName = true*/ };
-            while(true)
-            {
-               while(itn.next())
-               {
-                  BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
-                  while((c = itc.next(all)))
-                  {
-                     if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
-                           !c.isModule && !c.isApplication && !c.cl.templateClass)
-                        out.ds.printxln("      self.registerClass(", c.name, ", True)");
-                  }
-               }
-               itn.cleanup();
-               if(itn.ecereCOM)
-                  itn.ecereCOM = false;
-               else
-                  break;
-            }
          }
          out.ds.println("");
          out.ds.println("      lib.Instance_evolve(rApp, GuiApplication.pyClass_GuiApplication)");
@@ -1923,7 +1902,7 @@ void processPyClass(PythonGen g, BClass c)
                      out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case structClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return ", ln);
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return", ln);
                      break;
                   case bitClass:
                      out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
@@ -2976,7 +2955,7 @@ static void thatThing(File out, PythonGen g)
    }
    delete nodes;
    {
-      const String moduleName = g.lib.name;
+      const String moduleName = g.lib.moduleName;
       if(!g.lib.ecere && !g.lib.ecereCOM)
       {
          out.PrintLn("");
@@ -2988,7 +2967,7 @@ static void thatThing(File out, PythonGen g)
             IterNamespace itn { module = g.mod };
             while(itn.next())
             {
-               BClass c; IterClass itc { itn.ns, list = g.lib.options.classList };
+               BClass c; IterClass itc { itn.ns, list = g.options.classList };
                while((c = itc.next(all)))
                {
                   if(c.cl.type == normalClass && !c.cl.templateClass)
@@ -3005,9 +2984,11 @@ static void generateBUILD(File out, PythonGen g)
 {
    bool hasEC = false;
    char cpath[MAX_FILENAME] = "";
-   if(app.cpath)
+   if(g.options.cpath)
    {
-      MakePathRelative(app.cpath, g.dir.dir, cpath);
+      const String dir = g.options.dir ? g.options.dir : "";
+      strcpy(cpath, dir);
+      PathCatSlash(cpath, g.options.cpath);
       MakeSlashPath(cpath);
    }
    if(!cpath[0]) strcpy(cpath, ".");

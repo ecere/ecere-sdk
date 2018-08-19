@@ -478,7 +478,8 @@ char * getSimpleDataTypeName(Type dataType, const char * dataTypeString, int ind
                !strcmp(dataTypeString, "NT") ||
                !strcmp(dataTypeString, "BT") ||
                !strcmp(dataTypeString, "LT") ||
-               !strcmp(dataTypeString, "V"))
+               !strcmp(dataTypeString, "V") ||
+               !strcmp(dataTypeString, "VT"))
             name = getIndirectionTypeString(dataTypeString, indirection);//"uintptr64";
          else if(!strcmp(dataTypeString, "const T") ||
                !strcmp(dataTypeString, "const D") ||
