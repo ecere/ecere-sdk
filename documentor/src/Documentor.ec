@@ -568,6 +568,7 @@ static void AddCVNamespace(DataRow parentRow, Module module, NameSpace mainNameS
    //DataRow classesRow = null;
    DataRow functionsRow = null, definesRow = null;
    APIPage page;
+   GenOptions genOptions = module ? moduleGenOptions[module.name] : null;
 
    strcpy(nsName, parentName ? parentName : "");
    if(nameSpace->name)
@@ -623,9 +624,11 @@ static void AddCVNamespace(DataRow parentRow, Module module, NameSpace mainNameS
          {
             BTNamedLink link;
             GlobalFunction fn;
+            BlackWhiteList * whiteList = genOptions ? &genOptions.functionList : null;
             for(link = (BTNamedLink)nameSpace->functions.first; link; link = (BTNamedLink)((BTNode)link).next)
             {
                fn = link.data;
+               if(whiteList && !whiteList->match(fn.name)) continue;
                if(!module || fn.module == module || (!fn.module.name && !strcmp(module.name, "ecere")))
                {
                   const char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
@@ -646,9 +649,11 @@ static void AddCVNamespace(DataRow parentRow, Module module, NameSpace mainNameS
          {
             BTNamedLink link;
             Definition def;
+            BlackWhiteList * whiteList = genOptions ? &genOptions.defineList : null;
             for(link = (BTNamedLink)nameSpace->defines.first; link; link = (BTNamedLink)((BTNode)link).next)
             {
                def = link.data;
+               if(whiteList && !whiteList->match(def.name)) continue;
                //if(def.module == module)
                {
                   char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
@@ -672,9 +677,12 @@ void AddCVNSClasses(Module module, NameSpace nameSpace, Class base, DataRow pare
       Class _class = eSystem_FindClass(module, "class");
       Class _instance = eSystem_FindClass(module, "Instance");
       BTNamedLink link;
+      GenOptions genOptions = module ? moduleGenOptions[module.name] : null;
+      BlackWhiteList * whiteList = genOptions ? &genOptions.classList : null;
       for(link = (BTNamedLink)nameSpace.classes.first; link; link = (BTNamedLink)((BTNode)link).next)
       {
          cl = link.data;
+         if(whiteList && !whiteList->match(cl.name)) continue;
          if(!cl.templateClass && (!module || cl.module == module || (!cl.module.name && !strcmp(module.name, "ecere"))))
          {
             //if(!classesRow) { classesRow = row.AddRow(); classesRow.SetData(null, APIPage { $"Classes", page = page }); classesRow.collapsed = true; classesRow.icon = mainForm.icons[typeClass]; classesRow.tag = 1; }
@@ -704,8 +712,11 @@ void AddCVClasses(Module module, Class base, DataRow parentRow)
    Class _class = eSystem_FindClass(module, "class");
    Class _instance = eSystem_FindClass(module, "Instance");
    Map<String, Class> sort { };
+   GenOptions genOptions = module ? moduleGenOptions[module.name] : null;
+   BlackWhiteList * whiteList = genOptions ? &genOptions.classList : null;
    for(cl = module.classes.first; cl; cl = cl.next)
    {
+      if(whiteList && !whiteList->match(cl.name)) continue;
       if(cl.base == base || (!base && (cl.base == _enum || cl.base == _struct || cl.base == _class || cl.base == _instance || cl.base.module != module)))
          sort[cl.name] = cl;
       /*else
