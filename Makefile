@@ -452,7 +452,7 @@ cleantarget:
 	+cd epj2make && $(_MAKE) cleantarget
 	+cd compiler/libec2 && $(_MAKE) cleantarget
 	+cd bgen && $(_MAKE) cleantarget
-	+cd bindings && $(_MAKE) realclean
+	+cd bindings && $(_MAKE) cleantarget
 	+cd ide && $(_MAKE) cleantarget
 	+cd installer && $(_MAKE) cleantarget
 ifneq ($(ECERE_AUDIO),n)
