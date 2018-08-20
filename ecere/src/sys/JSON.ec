@@ -1416,7 +1416,7 @@ private:
 
                removeDashes(string);
 
-               ch = 0;
+               //ch = 0;
                SkipEmpty();
 
                // Find Member in Object Class
