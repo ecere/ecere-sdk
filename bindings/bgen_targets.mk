@@ -5,7 +5,7 @@ gen:
 cleangen:
 	$(call rm,$(_BGEN_OUTPUT))
 
-cleanobj: cleangen
+cleanobj:
 	$(call rm,$(_BINDINGS_OBJECTS))
 	$(call rmr,$(_BINDINGS_TMP_DIRS))
 
@@ -42,7 +42,7 @@ realclean: cleanobj
 	$(call bgen_lib_cd_make,8,realclean)
 	$(call bgen_lib_cd_make,9,realclean)
 
-wipeclean:
+wipeclean: cleanobj cleangen
 	$(call bgen_lib_cd_make,1,wipeclean)
 	$(call bgen_lib_cd_make,2,wipeclean)
 	$(call bgen_lib_cd_make,3,wipeclean)
