@@ -140,7 +140,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
                // printf("Found one window with processID\n");
                {
                   XRaiseWindow(xGlobalDisplay, children[c]);
-                  WaitForViewableWindow(xGlobalDisplay, children[c]);
+                  // WaitForViewableWindow(xGlobalDisplay, children[c]);
                   if(xa_activeWindow)
                   {
                      XClientMessageEvent event = { 0 };
