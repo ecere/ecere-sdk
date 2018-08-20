@@ -2556,7 +2556,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
       else
       {
          // FIX #05
-         if(clRT && (clRT.type == unitClass || clRT.type == bitClass || clRT.type == structClass))
+         if(clRT && ((clRT.type == unitClass && !cRT.isUnichar) || clRT.type == bitClass || clRT.type == structClass))
             out.ds.printx(cRT.name, "(impl = ");
          else if(clRT && clRT.type == normalClass)
          {
@@ -2604,7 +2604,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             out.ds.print(")");
       }
       else if((clRT &&
-            (clRT.type == unitClass || clRT.type == bitClass || clRT.type == structClass || clRT.type == normalClass)))
+            ((clRT.type == unitClass && !cRT.isUnichar) || clRT.type == bitClass || clRT.type == structClass || clRT.type == normalClass)))
          out.ds.print(")");
       out.ds.printx(ln);
       if(multireturn > 0)
@@ -2724,6 +2724,8 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
             out.ds.printx(comma, "*_", name);
          else if(c && c.is_class && param.classObjectType == typedObject && !param.byReference)
             out.ds.printx(comma, "*pyTypedObject(", name, ")");
+         else if(c && c.cl.type == unitClass && !c.isUnichar)
+            out.ds.printx(comma, name, ".impl");
          else if(c && (c.nativeSpec || c.isBool))
             out.ds.printx(comma, name);
          else if(c && c.cl.templateClass)
