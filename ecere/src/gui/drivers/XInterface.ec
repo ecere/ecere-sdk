@@ -1665,7 +1665,7 @@ class XInterface : Interface
    }
 
    #define DBLCLICK_DELAY  300   // 0.3 second
-   #define DBLCLICK_DELTA  1
+   #define DBLCLICK_DELTA  3 //1
 
    bool ProcessInput(bool processAll)
    {
@@ -1763,7 +1763,7 @@ class XInterface : Interface
                {
                   XButtonEvent * event = (XButtonEvent *) thisEvent;
 
-                  static double lastTime[3];
+                  static X11Time lastTime[3];
                   static Window lastWindow[3];
                   static Point lastPos[3];
 
@@ -1814,8 +1814,8 @@ class XInterface : Interface
                   {
                      doubleClick = event->time - lastTime[whichButton] < DBLCLICK_DELAY &&
                         window == lastWindow[whichButton] &&
-                        Abs(event->x_root - lastPos[whichButton].x) < DBLCLICK_DELTA &&
-                        Abs(event->y_root - lastPos[whichButton].y) < DBLCLICK_DELTA;
+                        Abs((int)event->x_root - lastPos[whichButton].x) < DBLCLICK_DELTA &&
+                        Abs((int)event->y_root - lastPos[whichButton].y) < DBLCLICK_DELTA;
                      lastTime[whichButton] = doubleClick ? 0 : event->time;
                      lastWindow[whichButton] = window;
                      lastPos[whichButton].x = event->x_root;
