@@ -1,3 +1,5 @@
+namespace com;
+
 import "Container"
 
 #include <math.h>
