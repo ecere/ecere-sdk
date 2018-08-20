@@ -13,7 +13,7 @@ class ProcessingThread : Thread
    {
       ProcessingStage stage = this.stage;
       while(!terminate)
-         if(!stage.performTask(this))
+         if(!stage.performTask(this) && !terminate)
             stage.semaphore.Wait();
       return 0;
    }
@@ -324,7 +324,7 @@ public:
       bool result = true;
       int s;
       // Process all tasks marked as 'ready' for a given stage
-      for(s = stage ? stage - 1 : 0; s < stages.count; s++)
+      for(s = stage ? stage - 1 : 0; stages && s < stages.count; s++)
       {
          result |= stages[s].processTasks(maxTasks);
          if(stage) break;
