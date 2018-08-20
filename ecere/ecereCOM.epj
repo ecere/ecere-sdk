@@ -114,8 +114,16 @@
                         "CustomAVLTree.ec",
                         "LinkList.ec",
                         "List.ec",
-                        "Map.ec"
-                     ]
+                        "Map.ec",
+                        "HashMap.ec",
+                        "HashTable.ec",
+                        "src/gfx/newFonts/cc/mmhash.c"
+                     ],
+                     "Options" : {
+                        "IncludeDirs" : [
+                           "src/gfx/newFonts/cc"
+                        ]
+                     }
                   },
                   "BinaryTree.ec",
                   "BTNode.ec",
