@@ -2745,6 +2745,8 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
             out.ds.printx(comma, "*_", name);
          else if(c && c.is_class && param.classObjectType == typedObject && !param.byReference)
             out.ds.printx(comma, "*pyTypedObject(", name, ")");
+         else if(c && c.cl.type == unitClass && !c.isUnichar)
+            out.ds.printx(comma, name, ".impl");
          else if(c && (c.nativeSpec || c.isBool))
             out.ds.printx(comma, name);
          else if(c && c.cl.templateClass)
