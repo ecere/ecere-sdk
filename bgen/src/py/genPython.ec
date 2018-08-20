@@ -1923,7 +1923,7 @@ void processPyClass(PythonGen g, BClass c)
                      out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case structClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return ", ln);
+                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return", ln);
                      break;
                   case bitClass:
                      out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
