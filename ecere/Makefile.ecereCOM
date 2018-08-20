@@ -69,6 +69,8 @@ _ECSOURCES = \
 	src/com/containers/LinkList.ec \
 	src/com/containers/List.ec \
 	src/com/containers/Map.ec \
+	src/com/containers/HashMap.ec \
+	src/com/containers/HashTable.ec \
 	src/com/BinaryTree.ec \
 	src/com/BTNode.ec \
 	src/com/dataTypes.ec \
@@ -89,6 +91,7 @@ ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(
 BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
 
 _OBJECTS = \
+	$(OBJ)mmhash$(O) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
@@ -109,6 +112,10 @@ PRJ_CFLAGS += \
 			 -DBUILDING_ECERE_COM \
 			 -DECERE_COM_MODULE \
 			 -DECERE_NOFILE
+
+CUSTOM1_PRJ_CFLAGS = \
+			 -Isrc/gfx/newFonts/cc \
+	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
@@ -198,6 +205,12 @@ $(OBJ)List.sym: src/com/containers/List.ec
 $(OBJ)Map.sym: src/com/containers/Map.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
+$(OBJ)HashMap.sym: src/com/containers/HashMap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/HashMap.ec) -o $(call quote_path,$@)
+
+$(OBJ)HashTable.sym: src/com/containers/HashTable.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/HashTable.ec) -o $(call quote_path,$@)
+
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
@@ -248,6 +261,12 @@ $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
+$(OBJ)HashMap.c: src/com/containers/HashMap.ec $(OBJ)HashMap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/HashMap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)HashTable.c: src/com/containers/HashTable.ec $(OBJ)HashTable.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/HashTable.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
@@ -297,6 +316,15 @@ $(OBJ)List.o: $(OBJ)List.c
 
 $(OBJ)Map.o: $(OBJ)Map.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+
+$(OBJ)HashMap$(O): $(OBJ)HashMap.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HashMap.c) -o $(call quote_path,$@)
+
+$(OBJ)HashTable$(O): $(OBJ)HashTable.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HashTable.c) -o $(call quote_path,$@)
+
+$(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
