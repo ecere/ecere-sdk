@@ -359,7 +359,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
             if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == DIR_SEP || directory[2] == '/'))
             {
                int strLen = strlen(fileName) - 1;
-               if(strLen > -1)
+               if(strLen > -1 && strcmp(fileName, "."))
                {
                   // Go back one directory
                   for(;strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--);
@@ -577,7 +577,7 @@ public char * PathCat(char * string, const char * addedPath)
             if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == DIR_SEP))
             {
                int strLen = strlen(fileName) - 1;
-               if(strLen > -1)
+               if(strLen > -1 && strcmp(fileName, "."))
                {
                   bool separator = false;
 
