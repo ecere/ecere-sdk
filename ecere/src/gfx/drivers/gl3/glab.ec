@@ -228,9 +228,11 @@ public struct GLB
 
    void copy(GLB src, uint srcStart, uint dstStart, uint size)
    {
+#if !defined(__ANDROID__) // TODO:
       glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
       glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
       glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
+#endif
    }
 
    bool allocate(uint size, const void * data, GLBufferUsage usage)
@@ -415,9 +417,11 @@ public struct GLEAB : GLB
          GLFlushMatrices();
 
          //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
+#if !defined(_GLES) && !defined(_GLES2)
          if(baseVertex)
             glDrawElementsBaseVertex(primType, count, type, indices, baseVertex);
          else
+#endif
             glDrawElements(primType, count, type, indices);
       }
    }
@@ -470,7 +474,11 @@ public struct GLFB
       bool allocateColor = colorFormat && (w != width || h != height);
       bool allocateDepth = depthFormat && (w != width || h != height);
       bool result = false;
+#if !defined(_GLES) && !defined(_GLES2)
       int texTarget = samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+#else
+      int texTarget = GL_TEXTURE_2D;
+#endif
 
       if(fbo && (colorRBO == 0) != textureFBO) free();
 
@@ -507,6 +515,7 @@ public struct GLFB
             glBindRenderbuffer(GL_RENDERBUFFER, colorRBO);
          for(s = samples; ; s >>= 1)
          {
+#if !defined(_GLES) && !defined(_GLES2)
             if(s > 1)
             {
                if(textureFBO)
@@ -517,6 +526,7 @@ public struct GLFB
                   break;
             }
             else
+#endif
             {
                texTarget = GL_TEXTURE_2D;
                if(textureFBO || allocTextures)
@@ -533,7 +543,9 @@ public struct GLFB
             {
                glTexParameteri(texTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);//GL_LINEAR);
                glTexParameteri(texTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);//GL_LINEAR);
+#if !defined(_GLES) && !defined(_GLES2)
                glTexParameteri(texTarget, GL_TEXTURE_MAX_LEVEL, 0);
+#endif
                glTexParameteri(texTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                glTexParameteri(texTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
@@ -554,17 +566,21 @@ public struct GLFB
          if(textureFBO || allocTextures)
          {
             glBindTexture(texTarget, depth);
+#if !defined(_GLES) && !defined(_GLES2)
             if(samples > 1)
                glTexImage2DMultisample(texTarget, samples, depthFormat, width, height, GL_FALSE);
             else
+#endif
                glTexImage2D(texTarget, 0, depthFormat, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, null);
          }
          if(!textureFBO)
          {
             glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
+#if !defined(_GLES) && !defined(_GLES2)
             if(samples > 1)
                glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, depthFormat, width, height);
             else
+#endif
                glRenderbufferStorage(GL_RENDERBUFFER, depthFormat, width, height);
          }
 
@@ -598,6 +614,7 @@ public struct GLFB
 
    void copy(const GLFB src, const Box srcExtent, const Box dstExtent, ClearType buffers, bool filter)
    {
+#if !defined(_GLES) && !defined(_GLES2)
       int sx = srcExtent != null ? srcExtent.left : 0;
       int sy = srcExtent != null ? srcExtent.top : 0;
       int sx1 = srcExtent != null ? srcExtent.right : src.w;
@@ -616,16 +633,19 @@ public struct GLFB
          buffers == depthBuffer ? GL_DEPTH_BUFFER_BIT :
          (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
          filter ? GL_LINEAR : GL_NEAREST);
+#endif
    }
 
    void read(Bitmap bitmap, ClearType buffer, bool sRGB)
    {
+#if !defined(_GLES) && !defined(_GLES2)
       glBindFramebuffer(GL_FRAMEBUFFER, fbo);
       glReadBuffer(buffer == depthBuffer ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0);
       if(sRGB) glEnable( GL_FRAMEBUFFER_SRGB );
       glReadPixels(0, 0, bitmap.width, bitmap.height, GL_BGRA, GL_UNSIGNED_BYTE, bitmap.picture);
       if(sRGB) glDisable( GL_FRAMEBUFFER_SRGB );
       glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
    }
 };
 

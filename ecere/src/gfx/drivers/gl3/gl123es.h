@@ -1,8 +1,8 @@
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) // Moving Android to GLES 2
    #if !defined(_GLES2)
       #define _GLES2
    #endif
-#elif defined(__ANDROID__) || defined(__ODROID__)
+#elif /*defined(__ANDROID__) || */defined(__ODROID__)
    #ifndef _GLES
       #define _GLES
    #endif

@@ -1,8 +1,9 @@
-#ifndef ECERE_NONET
-
 #include <stdio.h>
 
 import "List"
+
+#if !defined(ECERE_NONET) && !defined(__ANDROID__) // Curl / OpenSSL not set up right now for Android builds
+
 import "network"
 #ifndef ECERE_NOSSL
 import "SSLSocket"

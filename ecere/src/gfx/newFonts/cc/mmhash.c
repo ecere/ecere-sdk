@@ -2316,6 +2316,12 @@ unsigned int mmHashGetCount( void *hashtable)
    mmHashTable *table = hashtable;
    unsigned int count = 0;
    if( !( table->flags & MM_HASH_FLAGS_NO_COUNT ) )
+   {
+#ifdef MM_ATOMIC_SUPPORT
       count = mmAtomicRead32(&table->entrycount);
+#else
+      count = table->entrycount;
+#endif
+   }
    return count;
 }

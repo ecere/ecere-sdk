@@ -426,11 +426,11 @@ if distributed with the Ecere SDK Windows installer.
                "ECERE_NOFONTCONFIG",
                "HIGH_DPI",
                "ECERE_NOSSL",
-               "_GLES"
+               "_GLES2"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-9a",
-               "../deps/libpng-1.4.0",
+               "../deps/libpng-1.6.12",
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
                "../deps/freetype-2.3.12/include",
@@ -449,7 +449,7 @@ if distributed with the Ecere SDK Windows installer.
                      "log",
                      "android",
                      "EGL",
-                     "GLESv1_CM"
+                     "GLESv2"
                   ],
                   "LibraryDirs" : [
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
@@ -3292,7 +3292,7 @@ if distributed with the Ecere SDK Windows installer.
          ]
       },
       {
-         "FileName" : "C:/Windows/Fonts/tahoma.ttf",
+         "FileName" : "res/fonts/tahomabd.ttf",
          "Options" : {
             "ExcludeFromBuild" : true
          },
@@ -3306,35 +3306,7 @@ if distributed with the Ecere SDK Windows installer.
          ]
       },
       {
-         "FileName" : "C:/Windows/Fonts/tahomabd.ttf",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         },
-         "Configurations" : [
-            {
-               "Name" : "Android",
-               "Options" : {
-                  "ExcludeFromBuild" : false
-               }
-            }
-         ]
-      },
-      {
-         "FileName" : "C:/Windows/Fonts/arial.ttf",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         },
-         "Configurations" : [
-            {
-               "Name" : "Android",
-               "Options" : {
-                  "ExcludeFromBuild" : false
-               }
-            }
-         ]
-      },
-      {
-         "FileName" : "C:/Windows/Fonts/arialbd.ttf",
+         "FileName" : "res/fonts/tahoma.ttf",
          "Options" : {
             "ExcludeFromBuild" : true
          },
