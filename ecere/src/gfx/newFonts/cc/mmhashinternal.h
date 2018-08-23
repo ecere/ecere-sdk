@@ -11,7 +11,7 @@
 ////
 
 
-#if !defined(MM_ATOMIC_SUPPORT) && !defined(__EMSCRIPTEN__)
+#if !defined(MM_ATOMIC_SUPPORT) && !defined(__EMSCRIPTEN__) && !defined(__ANDROID__)
  #warning WARNING: Compiling mmhash without atomic support
 #endif
 
