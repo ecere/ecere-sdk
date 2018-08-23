@@ -8,6 +8,8 @@ import "Condition"
 
 #define uint _uint
 #define set _set
+#include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <locale.h>
 #include <pthread.h>

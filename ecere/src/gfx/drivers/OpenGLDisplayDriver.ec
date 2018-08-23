@@ -22,7 +22,13 @@ namespace gfx::drivers;
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
+#if defined _GLES1
+#define glClampFunction(version) (GL_CLAMP)
+#elif defined _GLES2
+#define glClampFunction(version) (GL_CLAMP_TO_EDGE)
+#else
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
+#endif
 
 // **********   GL PLATFORMS INCLUDES   **********
 // UNIX
@@ -684,7 +690,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(_GLES)
       capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
-      capabilities = { glCaps_shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
 #else
       capabilities =
       {
@@ -914,21 +920,28 @@ class OpenGLDisplayDriver : DisplayDriver
          matrixStack[1][0].Identity();
          matrixStack[2][0].Identity();
 
-         GLMatrixMode(GL_MODELVIEW);
+         GLMatrixMode(MatrixMode::modelView);
          GLScaled(1.0, 1.0, -1.0);
-         GLMatrixMode(GL_PROJECTION);
+         GLMatrixMode(MatrixMode::projection);
+#if ENABLE_GL_FFP
          glShadeModel(GL_FLAT);
+#endif
 
 #if !defined(_GLES)
          if(!glCaps_shaders)
             ;//GLLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 #endif
+
+#if ENABLE_GL_FFP
          glFogi(GL_FOG_MODE, GL_EXP);
          glFogf(GL_FOG_DENSITY, 0);
          glEnable(GL_NORMALIZE);
+#endif
          glDepthFunc(GL_LESS);
          glClearDepth(1.0);
+#if !defined(_GLES) && !defined(_GLES2)
          glDisable(GL_MULTISAMPLE);
+#endif
 
          glViewport(0,0,eglWidth,eglHeight);
          GLLoadIdentity();
@@ -1231,7 +1244,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       glDepthFunc(GL_LESS);
       glClearDepth(1.0);
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
       glDisable(GL_MULTISAMPLE);
 #endif
 
@@ -2896,7 +2909,7 @@ class OpenGLDisplayDriver : DisplayDriver
       switch(state)
       {
          case antiAlias:
-#ifndef __EMSCRIPTEN__
+#if !defined(_GLES) && !defined(_GLES2)
             if(value)
                glEnable(GL_MULTISAMPLE);
             else
@@ -3228,7 +3241,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
-#ifndef __EMSCRIPTEN__
+#if !defined(_GLES) && !defined(_GLES2)
          if(oglDisplay.version >= 2)
             glEnable(GL_MULTISAMPLE);
 #endif
@@ -3311,7 +3324,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
-#if !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2)
          if(oglDisplay.version >= 2)
             glDisable(GL_MULTISAMPLE);
 #endif

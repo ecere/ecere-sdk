@@ -10,7 +10,7 @@ EGLContext eglContext;
 int eglWidth, eglHeight;
 
 #if defined(__ANDROID__)
-bool egl_init_display(ANativeWindow* window)
+bool egl_init_display(struct ANativeWindow * window)
 #else
 bool egl_init_display(uint window)
 #endif

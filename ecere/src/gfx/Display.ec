@@ -1241,10 +1241,11 @@ public:
 
             depthWrite = false;
 
+            // TODO: Review rendering 32 bit index meshes with OpenGL ES
             if(display3D.nTriangles * 6/*3*/ > transSize)
             {
                transSize = Max(transSize, display3D.nTriangles * 6 /*3*/);
-               transIndices = renew transIndices uint32[display3D.nTriangles * 6 /*3*/];
+               transIndices = renew transIndices uintindex[display3D.nTriangles * 6 /*3*/];
             }
 
             driver.PushMatrix(this);
@@ -1345,9 +1346,9 @@ public:
                {
                   if(primitive->type.indices32bit)
                   {
-                     transIndices[toFlush+0] = primitive->indices32[0];
-                     transIndices[toFlush+1] = primitive->indices32[1];
-                     transIndices[toFlush+2] = primitive->indices32[2];
+                     transIndices[toFlush+0] = (uintindex)primitive->indices32[0];
+                     transIndices[toFlush+1] = (uintindex)primitive->indices32[1];
+                     transIndices[toFlush+2] = (uintindex)primitive->indices32[2];
                   }
                   else
                   {
@@ -1360,9 +1361,9 @@ public:
                   {
                      if(primitive->type.indices32bit)
                      {
-                        transIndices[toFlush+0] = primitive->indices32[0];
-                        transIndices[toFlush+1] = primitive->indices32[2];
-                        transIndices[toFlush+2] = primitive->indices32[3];
+                        transIndices[toFlush+0] = (uintindex)primitive->indices32[0];
+                        transIndices[toFlush+1] = (uintindex)primitive->indices32[2];
+                        transIndices[toFlush+2] = (uintindex)primitive->indices32[3];
                      }
                      else
                      {
