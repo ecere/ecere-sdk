@@ -795,6 +795,9 @@ private:
          }
       }
 
+      if(!path)
+         path = CopyString("");
+
       indent = parent ? parent.indent + 1 : 0;
 
       if(type == file)
