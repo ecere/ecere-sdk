@@ -4714,7 +4714,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
 
             project.resNode = project.topNode.Add(project, "Resources", project.topNode.files.last, resources, archiveFile, false);
             delete project.resNode.path;
-            project.resNode.path = project.resourcesPath;
+            project.resNode.path = project.resourcesPath ? project.resourcesPath : CopyString("");
             project.resourcesPath = null;
             project.resNode.nodeType = (ProjectNodeType)-1;
             delete project.resNode.files;
