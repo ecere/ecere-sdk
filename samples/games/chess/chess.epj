@@ -41,15 +41,17 @@
             "TargetFileName" : "Chess",
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call mkdir,$(OBJ)apk/lib/x86)",
-               "$(call mkdir,$(OBJ)apk/lib/armeabi)",
-               "$(call cp,../../../ecere/obj/android.linux.$(COMPILER)/libecere.so,$(OBJ)apk/lib/armeabi)",
-               "$(call cp,$(TARGET),$(OBJ)apk/lib/armeabi)",
-               "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I C:/android-sdk/platforms/android-20/android.jar -S android/res $(OBJ)apk",
-               "jarsigner -storepass android -sigalg MD5withRSA -digestalg SHA1 $(OBJ)$(MODULE)-unsigned.apk androiddebugkey -keystore C:/users/jerome/debug.keystore -signedjar $(OBJ)$(MODULE).apk",
+               "$(call mkdir,$(OBJ)classes)",
+               "$(call mkdir,$(OBJ)apk/lib/arm64-v8a)",
+               "javac -verbose -d $(OBJ)/classes -classpath /android/platforms/android-28/android.jar:$(OBJ) -sourcepath . android/$(MODULE).java",
+               "dx --dex --verbose --output=$(OBJ)apk/classes.dex $(OBJ)classes",
+               "$(call cp,../../../ecere/obj/android.linux.$(COMPILER)/libecere.so.0.44,$(OBJ)apk/lib/arm64-v8a/libecere.so)",
+               "$(call cp,$(TARGET),$(OBJ)apk/lib/arm64-v8a)",
+               "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I /android/platforms/android-28/android.jar -S android/res $(OBJ)apk",
+               "jarsigner -storepass android -sigalg MD5withRSA -digestalg SHA1 $(OBJ)$(MODULE)-unsigned.apk androiddebugkey -keystore /android/debug.keystore -signedjar $(OBJ)$(MODULE).apk",
                "adb uninstall com.ecere.$(MODULE)",
                "adb install $(OBJ)$(MODULE).apk",
-               "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/android.app.NativeActivity"
+               "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/.$(MODULE)"
             ]
          }
       },
@@ -121,7 +123,8 @@
                   }
                ]
             },
-            "AndroidManifest.xml"
+            "AndroidManifest.xml",
+            "Chess.java"
          ]
       }
    ],
