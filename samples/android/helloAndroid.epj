@@ -1,0 +1,75 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "hello",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "hello",
+      "Libraries" : [
+         "ecere",
+         "log",
+         "android",
+         "EGL",
+         "GLESv1_CM"
+      ],
+      "PostbuildCommands" : [
+         "$(call mkdir,$(OBJ)classes)",
+         "$(call mkdir,$(OBJ)apk/lib/arm64-v8a)",
+         "javac -verbose -d $(OBJ)/classes -classpath /android/platforms/android-28/android.jar:$(OBJ) -sourcepath . $(MODULE).java",
+         "dx --dex --verbose --output=$(OBJ)apk/classes.dex $(OBJ)classes",
+         "$(call cp,../../ecere/obj/android.linux.$(COMPILER)/libecere.so.0.44,$(OBJ)apk/lib/arm64-v8a/libecere.so)",
+         "$(call cp,$(TARGET),$(OBJ)apk/lib/arm64-v8a)",
+         "aapt package -v -f -m -M android/AndroidManifest.xml -F $(OBJ)$(MODULE)-unsigned.apk -I /android/platforms/android-28/android.jar -S android/res $(OBJ)apk",
+         "jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore /android/debug.keystore -storepass android $(OBJ)$(MODULE)-unsigned.apk androiddebugkey -signedjar $(OBJ)$(MODULE).apk",
+         "adb uninstall com.ecere.$(MODULE)",
+         "adb install $(OBJ)$(MODULE).apk",
+         "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/.hello"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "android",
+         "Files" : [
+            {
+               "Folder" : "res",
+               "Files" : [
+                  {
+                     "Folder" : "values",
+                     "Files" : [
+                        "strings.xml"
+                     ]
+                  }
+               ]
+            },
+            "AndroidManifest.xml"
+         ]
+      },
+      "helloAndroid.ec",
+      "note.txt",
+      "hello.java"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "res/ecere sdk.png"
+   ]
+}
