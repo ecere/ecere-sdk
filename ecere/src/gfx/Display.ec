@@ -881,7 +881,7 @@ public:
                PrimitiveSingle * triangle = &mesh.primitives[c];
                SortPrimitive * sort;
                Plane * plane = &triangle->plane;
-               if(!triangle->material.opacity) continue;
+               if(!triangle->material || !triangle->material.opacity) continue;
                if(display3D.nTriangles >= display3D.maxTriangles)
                {
                   display3D.maxTriangles = display3D.maxTriangles ? (display3D.maxTriangles * 3 / 2) : 32768;
