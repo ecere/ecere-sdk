@@ -184,6 +184,14 @@ public:
          sqlite3_bind_null(stmt, pos);
    }
 
+   void bind_blob(int pos, const void * d, uint size)
+   {
+      if(d)
+         sqlite3_bind_text(stmt, pos, d, size, SQLITE_TRANSIENT);
+       else
+         sqlite3_bind_null(stmt, pos);
+   }
+
    void bind_value(int pos, FieldValue value)
    {
       // TODO: 64 bit ints?
