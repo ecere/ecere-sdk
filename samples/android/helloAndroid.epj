@@ -23,7 +23,7 @@
          "jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore /android/debug.keystore -storepass android $(OBJ)$(MODULE)-unsigned.apk androiddebugkey -signedjar $(OBJ)$(MODULE).apk",
          "adb uninstall com.ecere.$(MODULE)",
          "adb install $(OBJ)$(MODULE).apk",
-         "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/.hello"
+         "adb shell am start -a android.intent.action.MAIN -n com.ecere.$(MODULE)/.$(MODULE)"
       ]
    },
    "Configurations" : [
