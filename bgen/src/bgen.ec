@@ -473,7 +473,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       int c;
       ArgSym sym = null;
       ArgSym expect = null;
-      Array<String> libs;
+      Array<String> libs = null;
       for(c = 1; c < argc; c++)
       {
          ArgErr err = null;
@@ -683,11 +683,11 @@ public class BGen : ConsoleApplication // <ArgSym>
             else if(sym == tell);*/
          }
       }
-      if(!(libs && libs.count))
-         error = noLibSpecifiedInRunBeforeClear;
 
-      if(!task)
+      if(argc == 1)
          task = help;
+      else if((!task || task == bind) && !(libs && libs.count))
+         error = noLibSpecifiedInRunBeforeClear;
    }
 
    ArgErr parseMapArgument(const char * arg, Map<String, String> m, ArgSym option)
