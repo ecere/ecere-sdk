@@ -753,6 +753,7 @@ ifdef LINUX_TARGET
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)
 ifdef EDASQLiteCipher
@@ -906,6 +907,7 @@ endif
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecere$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)ecereCOM$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec$(SOV)")
+	$(call rm,"$(DESTLIBDIR)/ec/$(LP)ec2$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDA$(SOV)")
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)")
 ifdef EDASQLiteCipher
