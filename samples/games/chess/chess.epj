@@ -313,8 +313,8 @@
                   "../../../ecere/src/gfx/drivers/gl3/default.vert"
                ]
             },
-            "C:/Windows/Fonts/tahoma.ttf",
-            "C:/Windows/Fonts/tahomabd.ttf"
+            "$(ECERE_SDK_SRC)/ecere/res/fonts/tahoma.ttf",
+            "$(ECERE_SDK_SRC)/ecere/res/fonts/tahomabd.ttf"
          ],
          "Options" : {
             "ExcludeFromBuild" : true
