@@ -10,6 +10,10 @@
 *  3 Sep 90 - Version 1.1 by Gershon Elber (Support for Gif89, Unique names). *
 ******************************************************************************/
 
+#if defined(__EMSCRIPTEN__)
+#include <unistd.h>
+#endif
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
