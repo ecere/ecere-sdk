@@ -230,7 +230,7 @@ public struct GLB
 
    void copy(GLB src, uint srcStart, uint dstStart, uint size)
    {
-#if !defined(__ANDROID__) // TODO:
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) // TODO:
       glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
       glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
       glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
