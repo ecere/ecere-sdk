@@ -205,6 +205,8 @@ public:
 #define GLSTATS
 #endif
 
+public enum GLBType { elements, attributes };
+
 public struct GLB
 {
    uint buffer;
@@ -235,7 +237,7 @@ public struct GLB
 #endif
    }
 
-   bool allocate(uint size, const void * data, GLBufferUsage usage)
+   bool _allocate(GLBType type, uint size, const void * data, GLBufferUsage usage)
    {
       if(this != null)
       {
@@ -244,12 +246,12 @@ public struct GLB
             if(!buffer)
                glGenBuffers(1, &buffer);
             if(glabCurArrayBuffer != buffer)
-               GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
+               GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
 #ifdef GLSTATS
             GLStats::allocBuffer(buffer, size);
 #endif
             if(size)
-               glBufferData(GL_ARRAY_BUFFER, size, data, bufferUsages[usage]);
+               glBufferData(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
          }
          else
             buffer = 1;
@@ -258,14 +260,24 @@ public struct GLB
       return false;
    }
 
-   void upload(uint offset, uint size, const void * data)
+   void _upload(GLBType type, uint offset, uint size, const void * data)
    {
       if(this != null && glCaps_vertexBuffer)
       {
          if(glabCurArrayBuffer != buffer)
-            GLABBindBuffer(GL_ARRAY_BUFFER, buffer);
-         glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+            GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
+         glBufferSubData(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
       }
+   }
+
+   bool allocate(uint size, const void * data, GLBufferUsage usage)
+   {
+      return _allocate(attributes, size, data, usage);
+   }
+
+   void upload(uint offset, uint size, const void * data)
+   {
+      _upload(attributes, offset, size, data);
    }
 
    void ::deleteBuffers(int count, GLB * buffers)
@@ -377,6 +389,16 @@ public define noEAB = GLEAB { 0 };
 
 public struct GLEAB : GLB
 {
+   bool allocate(uint size, const void * data, GLBufferUsage usage)
+   {
+      return _allocate(elements, size, data, usage);
+   }
+
+   void upload(uint offset, uint size, const void * data)
+   {
+      _upload(elements, offset, size, data);
+   }
+
    void draw(int primType, int count, int type, const void * indices)
    {
       if(glCaps_vertexBuffer
