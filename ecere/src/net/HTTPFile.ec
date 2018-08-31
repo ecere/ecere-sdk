@@ -57,7 +57,7 @@ public:
 
    property int httpCode
    {
-      get { return httpCode; }
+      get { return (int)httpCode; }
    }
 
    bool OpenURL(const char * name, const char * referer, char * relocation)
