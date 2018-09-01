@@ -116,6 +116,22 @@
             ],
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "Android",
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "NoLineNumbers" : true,
+                  "Optimization" : "Speed",
+                  "Libraries" : [
+                     "pthread",
+                     "dl"
+                  ]
+               }
+            }
+         ]
       }
    ],
    "Files" : [
@@ -131,6 +147,19 @@
                   "ExcludeFromBuild" : true
                }
             }
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : false
+                     }
+                  }
+               ]
+            }
          ]
       },
       {
@@ -144,8 +173,38 @@
             }
          ]
       },
-      "EDASQLite.ec",
-      "sqliteDB.ec"
+      {
+         "FileName" : "EDASQLite.ec",
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "FastMath" : true
+                     }
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "FileName" : "sqliteDB.ec",
+         "Configurations" : [
+            {
+               "Name" : "Android",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "FastMath" : true
+                     }
+                  }
+               ]
+            }
+         ]
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [
