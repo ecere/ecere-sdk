@@ -1285,6 +1285,11 @@ class OpenGLDisplayDriver : DisplayDriver
             ReleaseDC(display.window, oglDisplay.hdc);
 #elif defined(__unix__) || defined(__APPLE__)
 #  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
+         #if defined(__ODROID__)
+         oglDisplay.version = 1;
+         #else
+         oglDisplay.version = 2;
+         #endif
          result = true;
 #  else
          XVisualInfo * visualInfo = ((XWindowData)display.windowDriverData).visual;
