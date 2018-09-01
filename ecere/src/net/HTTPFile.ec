@@ -187,5 +187,13 @@ public HTTPFile FileOpenURL(const char * name)
       return null;
    }
 }
+#else
+
+namespace net;
+
+public HTTPFile FileOpenURL(const char * name)
+{
+   return null;
+}
 
 #endif
