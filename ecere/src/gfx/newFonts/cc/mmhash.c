@@ -1849,6 +1849,8 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
   for( pageindex = src->pagecount ; pageindex ; pageindex--, page++ )
     mtMutexDestroy( &page->mutex );
   mtMutexDestroy( &src->globalmutex );
+  mtMutexDestroy( &src->countmutex );
+
   page = dst->page;
   for( pageindex = dst->pagecount ; pageindex ; pageindex--, page++ )
   {
@@ -1856,6 +1858,7 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
     page->owner = 0;
   }
   mtMutexInit( &dst->globalmutex );
+  mtMutexInit( &dst->countmutex );
 #endif
 
   /* Move all entries from the src table to the dst table */
@@ -1938,6 +1941,8 @@ void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, 
   for( pageindex = src->pagecount ; pageindex ; pageindex--, page++ )
     mtMutexDestroy( &page->mutex );
   mtMutexDestroy( &src->globalmutex );
+  mtMutexDestroy( &src->countmutex );
+
   page = dst->page;
   for( pageindex = dst->pagecount ; pageindex ; pageindex--, page++ )
   {
@@ -1945,6 +1950,7 @@ void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, 
     page->owner = 0;
   }
   mtMutexInit( &dst->globalmutex );
+  mtMutexInit( &dst->countmutex );
 #endif
 
   /* Move all entries from the src table to the dst table */
@@ -2067,7 +2073,7 @@ static int mmHashLockRangeTry( mmHashTable *table, const mmHashAccess *access, m
   lockrange->pagefinal = pagefinal;
 
   return MM_HASH_SUCCESS;
-} 
+}
 
 
 static void mmHashLockReleaseAll( mmHashTable *table, mmHashLock *hashlock )
