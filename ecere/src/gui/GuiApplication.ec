@@ -330,76 +330,74 @@ public class GuiApplication : Application
 
    void PreserveAndDrawCursor()
    {
-      /*
-      if(!acquiredWindow && cursorUpdate && currentCursor && currentCursor->bitmap)
+      if(!acquiredWindow && cursorUpdate && currentCursor && currentCursor.bitmap)
       {
+         Bitmap bitmap = currentCursor.bitmap;
          int mouseX, mouseY;
          Surface surface;
-         Box against = {0,0, desktop.w-1,desktop.h-1};
-         Box box = {0, 0, currentCursor->bitmap->width,currentCursor->bitmap->height};
+         Box against = {0,0, desktop.size.w-1,desktop.size.h-1};
+         Box box = {0, 0, bitmap.width, bitmap.height};
+         Display display = desktop.display;
+         DisplayFlags flags = display.flags;
 
-         interfaceDriver->GetMousePosition(&mouseX, &mouseY);
+         interfaceDriver.GetMousePosition(&mouseX, &mouseY);
 
-         mouseX -= currentCursor->hotSpotX;
-         mouseY -= currentCursor->hotSpotY;
+         mouseX -= currentCursor.hotSpotX;
+         mouseY -= currentCursor.hotSpotY;
 
          // Preserve Background
-         if(!(eDisplay_GetFlags(desktop.display) & DISPLAY_FLIPPING))
+         if(!flags.flipping)
          {
             cursorBackgroundX = mouseX;
             cursorBackgroundY = mouseY;
-            cursorBackgroundW = currentCursor->bitmap->width;
-            cursorBackgroundH = currentCursor->bitmap->height;
-            eDisplay_Grab(desktop.display, cursorBackground,
-               mouseX, mouseY, cursorBackgroundW, cursorBackgroundH);
+            cursorBackgroundW = bitmap.width;
+            cursorBackgroundH = bitmap.height;
+            display.Grab(cursorBackground, mouseX, mouseY, cursorBackgroundW, cursorBackgroundH);
          }
 
-         eBox_ClipOffset(&box, &against, mouseX, mouseY);
+         box.ClipOffset(&against, mouseX, mouseY);
 
-         if(!(eDisplay_GetFlags(desktop.display) & DISPLAY_FLIPPING))
-            eDisplay_StartUpdate(desktop.display);
+         if(!flags.flipping)
+            display.StartUpdate();
          // Display Cursor
-         surface = eDisplay_GetSurface(desktop.display, mouseX, mouseY, &box);
+         surface = display.GetSurface(mouseX, mouseY, box);
          if(surface)
          {
-            eSurface_SetForeground(surface, WHITE);
-            eSurface_Blit(surface, currentCursor->bitmap, 0,0, 0,0,
-               currentCursor->bitmap->width,currentCursor->bitmap->height);
-            eInstance_Delete(surface);
+            surface.foreground = white;
+            surface.Blit(bitmap, 0,0, 0,0,
+               bitmap.width, bitmap.height);
+            delete surface;
 
-            if(!(eDisplay_GetFlags(desktop.display) & DISPLAY_FLIPPING))
+            if(!flags.flipping)
             {
                box.left += mouseX;
                box.right += mouseX;
                box.top += mouseY;
                box.bottom += mouseY;
-               eDisplay_Update(desktop.display, &box);
+               display.Update(box);
             }
          }
-         if(!(eDisplay_GetFlags(desktop.display) & DISPLAY_FLIPPING))
-            eDisplay_EndUpdate(desktop.display);
+         if(!flags.flipping)
+            display.EndUpdate();
       }
-      */
    }
 
    void RestoreCursorBackground()
    {
-      /*
       // Restore Cursor Background
       if(cursorBackground && desktop.active)
       {
          Box box = {0, 0, cursorBackgroundW-1,cursorBackgroundH-1};
-         Box against = {0,0, desktop.w-1,desktop.h-1};
+         Box against = {0,0, desktop.size.w-1,desktop.size.h-1};
          Surface surface;
 
-         eBox_ClipOffset(&box, &against, cursorBackgroundX, cursorBackgroundY);
-         if((surface = eDisplay_GetSurface(desktop.display, cursorBackgroundX,cursorBackgroundY, &box)))
+         box.ClipOffset(against, cursorBackgroundX, cursorBackgroundY);
+         if((surface = desktop.display.GetSurface(cursorBackgroundX, cursorBackgroundY, &box)))
          {
-            eSurface_Blit(surface, cursorBackground, 0, 0, 0,0, cursorBackgroundW,cursorBackgroundH);
-            eInstance_Delete(surface);
+            surface.Blit(cursorBackground, 0, 0, 0,0, cursorBackgroundW, cursorBackgroundH);
+            delete surface;
          }
       }
-      */
    }
 
    bool IsModeSwitching()
