@@ -4272,6 +4272,7 @@ class ValgrindLogThread : Thread
       {
          int result = 0;
          app.Unlock();
+         Sleep(0.05);
          if(vgLogFile)
             result = (int)vgLogFile.Read(output, 1, sizeof(output));
          app.Lock();
