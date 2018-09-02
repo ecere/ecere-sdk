@@ -20,6 +20,31 @@ private:
    char * bitmapName;
    SystemCursor systemCursor;
 public:
-   bool Load(const char * name, int hotSpotX, int hotSpotY, byte * paletteShades) { return false; }
+   bool Load(const char * name, int hotSpotX, int hotSpotY, byte * paletteShades, DisplaySystem ds)
+   {
+      Bitmap bitmap { };
+      if(bitmap.LoadT(name, null, ds))
+      {
+         this.bitmap = bitmap;
+         this.hotSpotX = hotSpotX;
+         this.hotSpotY = hotSpotY;
+         this.paletteShades = paletteShades;
+         return true;
+      }
+      delete bitmap;
+      return false;
+   }
+   void Free()
+   {
+      if(bitmap)
+      {
+         bitmap.Free();
+         delete bitmap;
+      }
+   }
+   ~Cursor()
+   {
+      Free();
+   }
    property SystemCursor systemCursor { set { systemCursor = value; } }
 };
