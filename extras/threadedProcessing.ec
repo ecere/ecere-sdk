@@ -1,4 +1,8 @@
-import "ecere"
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import "ecere"
+#endif
 
 class ProcessingThread : Thread
 {
