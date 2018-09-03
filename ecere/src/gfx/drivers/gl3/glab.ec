@@ -401,12 +401,13 @@ public struct GLEAB : GLB
 
    void draw(int primType, int count, int type, const void * indices)
    {
-      if(glCaps_vertexBuffer
+      if(count && (glCaps_vertexBuffer
 #if ENABLE_GL_POINTER
          || (glCaps_vertexPointer && !buffer && indices)
 #endif
-         )
+         ))
       {
+
 #if !defined(__EMSCRIPTEN__)
          if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
 #endif
@@ -423,11 +424,11 @@ public struct GLEAB : GLB
 
    void draw2(int primType, int count, int type, const void * indices, uint baseVertex)
    {
-      if(glCaps_vertexBuffer
+      if(count && (glCaps_vertexBuffer
 #if ENABLE_GL_POINTER
          || (glCaps_vertexPointer && !buffer && indices)
 #endif
-         )
+         ))
       {
 #if !defined(__EMSCRIPTEN__)
          if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
