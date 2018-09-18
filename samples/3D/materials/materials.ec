@@ -161,6 +161,8 @@ class MaterialsTest : Window
          doubleSided = true;
          tile = true;
          separateSpecular = true;
+         setupTextures = true;
+         update = true;
       };
       uScale = 4, vScale = 4;
       reflectivity = 0.3;
@@ -182,6 +184,7 @@ class MaterialsTest : Window
       double r = model.radius * model.transform.scaling.z; //wradius;
       material.uScale = uvScale;
       material.vScale = uvScale;
+      material.flags |= { update = true, setupTextures = true };
       camera.position = { 0, 0, -r * distance };
       cameraTarget.transform.position =
       {
@@ -196,8 +199,18 @@ class MaterialsTest : Window
    void selectEnv(SkyBox sky, CubeMap cubeMap)
    {
       material.envMap = cubeMap;
+      material.flags |= { update = true, setupTextures = true };
       this.sky = sky;
       Update(null);
+   }
+
+   void OnUnloadGraphics()
+   {
+      teapot.Free(displaySystem);
+      sphere.Free(displaySystem);
+      roundedCylinder.Free(displaySystem);
+      cube.Free(displaySystem);
+      waterBox.Free(displaySystem);
    }
 
    bool OnLoadGraphics()
@@ -450,6 +463,7 @@ class MaterialsTest : Window
          }
          case b:
             material.bumpMap = material.bumpMap ? null : bumpMap.bitmap;
+            material.flags |= { update = true, setupTextures = true };
             Update(null);
             break;
          case r:
@@ -476,6 +490,7 @@ class MaterialsTest : Window
                material.refractiveIndex = rGlass;
                material.opacity = 0.3;
             }
+            material.flags |= { update = true, setupTextures = true };
             Update(null);
             break;
       }

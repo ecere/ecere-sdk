@@ -46,9 +46,8 @@ uniform mat4 projection_matrix;
 
 #if CUBEMAP_ON
    varying vec3 fTexCoord;
-#endif
-
-#if TEXTURE_ON || NORMALS_MAPPING || SPECULAR_MAPPING || REFLECTION_MAP
+   attribute vec3 texCoord;
+#elif TEXTURE_ON || NORMALS_MAPPING || SPECULAR_MAPPING || REFLECTION_MAP
    attribute vec2 texCoord;
    varying vec2 fTexCoord;
 #endif
