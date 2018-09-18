@@ -3638,7 +3638,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu - 1);
          }
 #endif
-         GLMatrixMode(GL_TEXTURE);
+         GLMatrixMode(MatrixMode::texture);
          GLLoadIdentity();
          if(material.uScale && material.vScale)
             GLScalef(material.uScale, material.vScale, 1);
