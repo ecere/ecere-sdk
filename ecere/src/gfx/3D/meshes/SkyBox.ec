@@ -88,7 +88,7 @@ public:
                material = displaySystem.AddNamedMaterial(materialName);
                if(material)
                {
-                  material.flags = { noFog = true, cubeMap = true, noLighting = true  };
+                  material.flags = { noFog = true, cubeMap = true, noLighting = true, setupTextures = true, update = true };
                   material.opacity = 1;
                   material.emissive.r = material.emissive.g = material.emissive.b = 1;
                   material.baseMap = cubeMap;
@@ -139,7 +139,7 @@ public:
                   material = displaySystem.AddNamedMaterial(materialName);
                   if(material)
                   {
-                     material.flags = { noFog = true, noLighting = true };
+                     material.flags = { noFog = true, noLighting = true, setupTextures = true, update = true };
                      material.opacity = 1;
                      material.emissive.r = material.emissive.g = material.emissive.b = 1;
                      material.baseMap = Bitmap { };
