@@ -663,7 +663,7 @@ public:
       state &= ~
       {
          cubeMap = true, perVertexColor = true, separateSpecular = true, twoSided = true, textureMatrix = true, alphaTest = true,
-         environmentMapping = true, refraction = true, reflection = true, reflectionMap = true
+         environmentMapping = true, refraction = true, reflection = true, reflectionMap = true, normalsMapping = true, specularMapping = true
       };
 
       if(material)

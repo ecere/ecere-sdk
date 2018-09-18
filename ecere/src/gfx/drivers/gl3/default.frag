@@ -167,9 +167,7 @@ void main(void)
    #else
        texCoord = fTexCoord;
    #endif
-#endif
-
-#if NORMALS_MAPPING || TEXTURE_ON || SPECULAR_MAPPING || REFLECTION_MAP
+#elif NORMALS_MAPPING || TEXTURE_ON || SPECULAR_MAPPING || REFLECTION_MAP
    vec2 texCoord;
    #if TEXTURE_MATRIX
        texCoord = (vec4(fTexCoord, 0, 1) * texture_matrix).xy;
