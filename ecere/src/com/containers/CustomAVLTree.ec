@@ -921,7 +921,7 @@ public:
          if(class(KT).type == structClass)
          {
             uint size = sizeof(class AVLNode<KT>);
-            if(class(KT).type == structClass) size += class(KT).typeSize - sizeof(node.AVLNode::key);
+            if(class(KT).type == structClass) size += class(KT).typeSize - sizeof(node./*AVLNode::*/key);
             node = (AVLNode<KT>)new0 byte[size];
          }
          else
