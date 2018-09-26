@@ -741,9 +741,9 @@ bool allocateInternal;
 
 #endif
 
-static uint TOTAL_MEM = 0;
+static uint64 TOTAL_MEM = 0;
 #if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
-static uint OUTSIDE_MEM = 0;
+static uint64 OUTSIDE_MEM = 0;
 #endif
 
 #if !defined(_NOMUTEX)
@@ -947,9 +947,9 @@ private struct BlockPool
 
    bool Expand(uint numBlocks)
    {
-      byte * memory = malloc(numBlocks * blockSpace);
-      // byte * memory = calloc(1, numBlocks * blockSpace);
-      TOTAL_MEM += numBlocks * blockSpace;
+      byte * memory = malloc((uintsize)numBlocks * blockSpace);
+      // byte * memory = calloc(1, (uintsize)numBlocks * blockSpace);
+      TOTAL_MEM += (uint64)numBlocks * blockSpace;
 #ifdef _DEBUG
       /*if(blockSize == 28)
          printf("Expanding pool %x (%d)\n", this, blockSize);*/
@@ -1114,7 +1114,7 @@ private struct BlockPool
          if(prev)
             prev.next = null;
 
-         TOTAL_MEM -= part.size * blockSpace;
+         TOTAL_MEM -= (uint64)part.size * blockSpace;
          TOTAL_MEM -= sizeof(class MemPart);
          numParts--;
 
