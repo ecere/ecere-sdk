@@ -187,7 +187,7 @@ public:
    void bind_blob(int pos, const void * d, uint size)
    {
       if(d)
-         sqlite3_bind_text(stmt, pos, d, size, SQLITE_TRANSIENT);
+         sqlite3_bind_blob(stmt, pos, d, size, SQLITE_TRANSIENT);
        else
          sqlite3_bind_null(stmt, pos);
    }
@@ -209,6 +209,7 @@ public:
    int64 column_int64(int pos) { return sqlite3_column_int64(stmt, pos); }
    double column_double(int pos) { return sqlite3_column_double(stmt, pos); }
    int column_bytes(int pos) { return sqlite3_column_bytes(stmt, pos); }
+   const void * column_blob(int pos) { return (const void *)sqlite3_column_blob(stmt, pos); }
    const String column_text(int pos) { return (const String)sqlite3_column_text(stmt, pos); }
    String column_text_copy(int pos)
    {
