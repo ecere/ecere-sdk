@@ -10047,7 +10047,7 @@ public class CommonControl : Window
          if(created) CommonControl::OnDestroy();
          delete toolTip;
          toolTip = value ? ToolTip { tip = value; } : null;
-         incref toolTip;
+         if(toolTip) incref toolTip;
          if(created) CommonControl::OnCreate();
       }
       get { return toolTip ? toolTip.tip : null; }
