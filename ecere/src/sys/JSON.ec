@@ -534,7 +534,7 @@ private:
       else if(ch == '}' || ch == ']')
          result = noItem;
       if(result == typeMismatch)
-         PrintLn("Warning: Value type mismatch");
+         PrintLn("Warning: Value type mismatch (", line, ":", col, ")");
       if(rType)
          *rType = type;
       return result;
@@ -638,7 +638,7 @@ private:
                if(itemResult == typeMismatch)
                {
                   if(arrayType)
-                     PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name);
+                     PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name, " (", line, ":", col, ")");
                }
                else if(itemResult == noItem)
                   result = success;
@@ -703,7 +703,7 @@ private:
                if(itemResult == typeMismatch)
                {
                   if(mapNodeType)
-                     PrintLn("Warning: Incompatible value for array value, expected ", (String)mapNodeType.name);
+                     PrintLn("Warning: Incompatible value for array value, expected ", (String)mapNodeType.name, " (", line, ":", col, ")");
                }
                else if(itemResult == noItem)
                   result = success;
@@ -786,7 +786,7 @@ private:
                            break;
                         case systemClass:
                         default:
-                           Print("Warning: Unhandled class type for JSON map ", (String)valueType.name);
+                           Print("Warning: Unhandled class type for JSON map ", (String)valueType.name, " (", line, ":", col, ")");
                            break;
                      }
                   }
@@ -795,7 +795,7 @@ private:
                      if(itemResult == typeMismatch)
                      {
                         if(mapNodeType)
-                           PrintLn("Warning: Incompatible value for JSON map value, expected ", (String)valueType.name);
+                           PrintLn("Warning: Incompatible value for JSON map value, expected ", (String)valueType.name, " (", line, ":", col, ")");
                      }
                      else if(itemResult == noItem)
                         result = success;
@@ -1137,9 +1137,9 @@ private:
                   else
                   {
                      if(ch == '=' || ch == ':')
-                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                      else
-                        PrintLn("Warning: default member assignment: no more members");
+                        PrintLn("Warning: default member assignment: no more members (", line, ":", col, ")");
                   }
                }
                else if(objectType)
@@ -1194,7 +1194,7 @@ private:
                            else if(c == 1)
                            {
                               string[0] = (char)tolower(string[0]);
-                              PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                              PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                            }
                         }
                      }
@@ -1204,7 +1204,7 @@ private:
 #ifdef _DEBUG
                if(objectType && !member && !prop)
                {
-                  PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                  PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                }
 #endif
 
@@ -1260,7 +1260,7 @@ private:
                         if(prop || member)
                         {
                            if(!type)
-                              PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString);
+                              PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
                            else if(itemResult == success)
                            {
                               BitMember bitMember = objectType.type == bitClass ? (BitMember) member : null;
@@ -1475,7 +1475,7 @@ private:
                            else
                            {
                               PrintLn("Warning: Incompatible value for ", member ? (String)member.name : (String)prop.name,
-                                 ", expected ", member ? (String)member.dataTypeString : (String)prop.dataTypeString);
+                                 ", expected ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
                            }
                         }
                      }
