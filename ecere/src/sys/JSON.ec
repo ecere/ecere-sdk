@@ -1815,7 +1815,7 @@ private:
                                  }
                               }
                            }
-                           else if(warnings)
+                           else if(warnings && itemResult != noItem)
                            {
                               PrintLn("Warning: Incompatible value for ", member ? (String)member.name : (String)prop.name,
                                  ", expected ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
