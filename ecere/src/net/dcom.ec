@@ -289,6 +289,7 @@ class DCOMServerThread : Thread
    unsigned int Main()
    {
       incref socket;
+      incref socket;
       while(connected)
       {
          socket.ProcessTimeOut(0.01);
@@ -297,6 +298,8 @@ class DCOMServerThread : Thread
          guiApp.Unlock();
          semaphore.Release();
       }
+      // TOCHECK: Why isn't the first incref enough?
+      socket._refCount--;
       delete socket;
       return 0;
    }
