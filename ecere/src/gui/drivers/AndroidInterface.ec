@@ -104,6 +104,72 @@ private:
       return 0;
    }
 
+   void setupLocation()
+   {
+      JNIEnv * env = activity->env;
+      JavaVM * vm = activity->vm;
+      jclass cContext;
+      jclass cLocationManager;
+      jclass cCriteria;
+      jmethodID criteriaConstID;
+      jmethodID setAccuracyID;
+      jfieldID lsFID;
+      jfieldID fineFID;
+      jstring jstr;
+      jmethodID getSystemServiceID;
+      jobject lm = NULL;
+      jclass cActivityThread;
+      jobject at;
+      jmethodID currentActivityThreadID;
+      jmethodID getApplicationID;
+      jmethodID getBestProviderID;
+      jmethodID requestLocationUpdatesID;
+      jobject criteria;
+      jobject context;
+      int accuracyFine;
+
+      //(*vm)->AttachCurrentThread(vm, &env, NULL);
+      cActivityThread = (*env)->FindClass(env,"android/app/ActivityThread");
+      cCriteria = (*env)->FindClass(env,"android/location/Criteria");
+      currentActivityThreadID = (*env)->GetStaticMethodID(env, cActivityThread, "currentActivityThread", "()Landroid/app/ActivityThread;");
+      at = (*env)->CallStaticObjectMethod(env, cActivityThread, currentActivityThreadID);
+      getApplicationID = (*env)->GetMethodID(env, cActivityThread, "getApplication", "()Landroid/app/Application;");
+      context = (*env)->CallObjectMethod(env, at, getApplicationID);
+      cLocationManager = (*env)->FindClass(env, "android/location/LocationManager");
+      getBestProviderID = (*env)->GetMethodID(env, cLocationManager, "getBestProvider", "(Landroid/location/Criteria;Z)Ljava/lang/String;");
+      requestLocationUpdatesID = (*env)->GetMethodID(env, cLocationManager, "requestLocationUpdates", "(Ljava/lang/String;JFLandroid/location/LocationListener;)V");
+
+      cContext = (*env)->FindClass(env, "android/content/Context");
+      lsFID = (*env)->GetStaticFieldID(env, cContext, "LOCATION_SERVICE", "Ljava/lang/String;");
+      jstr = (*env)->GetStaticObjectField(env, cContext, lsFID);
+
+      criteriaConstID = (*env)->GetMethodID(env, cCriteria, "<init>", "()V");
+      criteria = (*env)->NewObject(env, cCriteria, criteriaConstID);
+
+      //locationListener = (*env)->NewObject(env, cLocationListener, locationListenerConstID);
+
+       fineFID = (*env)->GetStaticFieldID(env, cCriteria, "ACCURACY_FINE", "I");
+      //fineFID = (*env)->GetStaticFieldID(env, cCriteria, "ACCURACY_COARSE", "I");
+      accuracyFine = (*env)->GetStaticIntField(env, cCriteria, fineFID);
+      setAccuracyID = (*env)->GetMethodID(env, cCriteria, "setAccuracy", "(I)V");
+      (*env)->CallVoidMethod(env, criteria, setAccuracyID, accuracyFine);
+      context = (*env)->CallObjectMethod(env, at, getApplicationID);
+
+      getSystemServiceID = (*env)->GetMethodID(env, cContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+      lm = (*env)->CallObjectMethod(env, context, getSystemServiceID, jstr);
+      jstr = (*env)->CallObjectMethod(env, lm, getBestProviderID, criteria, (jboolean)0);
+
+      const char *s = (*env)->GetStringUTFChars(env, jstr, 0);
+
+      PrintLn("Requesting location from: ", s);
+
+      (*env)->ReleaseStringUTFChars(env, jstr, s);
+
+      (*env)->CallVoidMethod(env, lm, requestLocationUpdatesID, jstr, (jlong)1000, (jfloat)1.0f, activity->clazz);
+
+      //(*vm)->DetachCurrentThread(vm);
+   }
+
    void destroy()
    {
       free_saved_state();
@@ -465,6 +531,23 @@ static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
    app.set_input(null);
 }
 
+default dllexport const void * Android_getJNIEnv()
+{
+   const void * foo = androidActivity ? androidActivity.activity->env : null;
+   PrintLn("getJNIEnv returned ", (uint64)foo);
+   return foo;
+}
+
+default dllexport const void * Android_getJavaVM()
+{
+   return androidActivity ? androidActivity.activity->vm : null;
+}
+
+default dllexport const void * Android_getActivity()
+{
+   return androidActivity ? androidActivity.activity->clazz : null;
+}
+
 default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void* savedState, size_t savedStateSize)
 {
    AndroidAppGlue app;
@@ -542,6 +625,8 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    activity->callbacks->onInputQueueDestroyed = onInputQueueDestroyed;
    activity->instance = app;
    app.Create();
+
+   app.setupLocation();
 }
 
 // *** END OF NATIVE APP GLUE ******
@@ -618,17 +703,38 @@ class AndroidInterface : Interface
             source.process(source.userData);
 
          // If a sensor has data, process it now.
-         /*
          if(androidActivity.ident == user)
          {
-            if(androidActivity.accelerometerSensor)
+            if(androidActivity.accelerometerSensor || androidActivity.compassSensor)
             {
                ASensorEvent event;
                while (ASensorEventQueue_getEvents(androidActivity.sensorEventQueue, &event, 1) > 0)
-                  LOGI("accelerometer: x=%f y=%f z=%f", event.acceleration.x, event.acceleration.y, event.acceleration.z);
+               {
+                  switch(event.type)
+                  {
+                     case ASENSOR_TYPE_ROTATION_VECTOR:
+                     {
+                        Quaternion q { x = event.vector.x, y = event.vector.z, z = event.vector.y };
+                        Euler e;
+                        double m = sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
+                        q.w = cos(asin(m));
+                        /*
+                        LOGI("raw: x=%.05f y=%.05f z=%.05f w=%.05f (%.05f)",
+                           event.vector.x, event.vector.y, event.vector.z, event.data[3], q.w);
+                        */
+                        q.w = event.data[3];
+                        //e.FromQuaternion(q, yxz);
+                        e = q;
+                        LOGI("orientation: yaw=%.02f pitch=%.02f roll=%.02f", (double)e.yaw, (double)e.pitch, (double)e.roll);
+                        break;
+                     }
+                     case ASENSOR_TYPE_ACCELEROMETER:
+                        // LOGI("accelerometer: x=%.02f y=%.02f z=%.02f", event.acceleration.x, event.acceleration.y, event.acceleration.z);
+                        break;
+                  }
+               }
             }
          }
-         */
 
          eventAvailable = true;
          if(androidActivity.destroyRequested)
@@ -1136,11 +1242,13 @@ class AndroidActivity : AndroidAppGlue
    AndroidPollSource source;
    int events;
    LooperID ident;
-   /*
+
    ASensorManager* sensorManager;
-   const ASensor* accelerometerSensor;
    ASensorEventQueue* sensorEventQueue;
-   */
+
+   const ASensor* accelerometerSensor;
+   const ASensor* compassSensor;
+
    SavedState state;
 
    int onInputEvent(AInputEvent* event)
@@ -1156,7 +1264,7 @@ class AndroidActivity : AndroidAppGlue
          //uint index  = (actionAndIndex & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
          //uint flags = AMotionEvent_getFlags(event);
          uint meta = AMotionEvent_getMetaState(event);
-         //uint edge = AMotionEvent_getEdgeFlags(event);
+         uint edge = AMotionEvent_getEdgeFlags(event);
          //int64 downTime = AMotionEvent_getDownTime(event);     // nanotime
          //int64 eventTime = AMotionEvent_getDownTime(event);
          //float axis;
@@ -1321,19 +1429,27 @@ class AndroidActivity : AndroidAppGlue
          case gainedFocus:
             guiApp.desktop.Update(null);
             guiApp.SetAppFocus(true);
-            /*
+
             if(accelerometerSensor)
             {
                ASensorEventQueue_enableSensor(sensorEventQueue, accelerometerSensor);
                ASensorEventQueue_setEventRate(sensorEventQueue, accelerometerSensor, (1000L/60)*1000);
             }
-            */
+            if(compassSensor)
+            {
+               ASensorEventQueue_enableSensor(sensorEventQueue, compassSensor);
+               ASensorEventQueue_setEventRate(sensorEventQueue, compassSensor, (1000L/60)*1000);
+            }
+
             break;
          case lostFocus:
-            /*
+
             if(accelerometerSensor)
                ASensorEventQueue_disableSensor(sensorEventQueue, accelerometerSensor);
-            */
+
+            if(compassSensor)
+               ASensorEventQueue_disableSensor(sensorEventQueue, compassSensor);
+
             guiApp.SetAppFocus(false);
             guiApp.desktop.Update(null);
             break;
@@ -1347,11 +1463,12 @@ class AndroidActivity : AndroidAppGlue
    void main()
    {
       androidActivity = this;
-      /* Let's have fun with sensors when we have an actual device to play with
+      // Let's have fun with sensors when we have an actual device to play with
       sensorManager = ASensorManager_getInstance();
-      accelerometerSensor = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
       sensorEventQueue = ASensorManager_createEventQueue(sensorManager, looper, LooperID::user, null, null);
-      */
+
+      accelerometerSensor = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+      compassSensor       = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ROTATION_VECTOR);
 
       if(savedState)
          state = *(SavedState*)savedState;
