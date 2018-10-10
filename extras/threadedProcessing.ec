@@ -30,6 +30,8 @@ public:
    int threadID:16;
    bool active:1;
    bool ready:1;
+   bool cancel:1;
+   bool waitedOn:1;
 }
 
 class ProcessingTask : ListItem
@@ -46,6 +48,7 @@ class ProcessingStage
    LinkList<ProcessingTask> readyTasks { };
    Mutex mutex { };
    Semaphore semaphore { };
+   int thisStage;
 
    bool performTask(ProcessingThread thread)
    {
@@ -81,7 +84,7 @@ class ProcessingStage
          task.status.threadID = 0;
          task.status.active = false;
          thread.activeTask = null;
-         if(thread.terminate) action = clear;
+         if(thread.terminate || task.status.cancel) action = clear;
 
          if(!thread.canceled)
          {
@@ -93,10 +96,18 @@ class ProcessingStage
                   break;
                case clear:
                   processing.onTaskCleared(task);
+                  if(task.status.waitedOn)
+                     delete task;
                   break;
                default:
                   mutex.Release();
+                  processing.addTask(task, action, task.priority);
+                  /*
+                  if(action > processing.stages.count)
+                     processing.setup(action, 0);
+                  task.status.stage = action;
                   processing.stages[action-1].addTask(task, task.priority);
+                  */
                   mutex.Wait();
                   break;
             }
@@ -116,6 +127,7 @@ class ProcessingStage
       for(i = 0; !maxTasks || i < maxTasks; i++)
       {
          ProcessingTask task = null;
+         bool hadTask = true;
 
          mutex.Wait();
          task = readyTasks.first;
@@ -123,6 +135,7 @@ class ProcessingStage
          {
             ProcessingAction action;
 
+            hadTask = true;
             readyTasks.Remove(task);
             task.status.active = true;
 
@@ -131,11 +144,14 @@ class ProcessingStage
             mutex.Wait();
 
             task.status.active = false;
+            if(task.status.cancel) action = clear;
+
             switch(action)
             {
                case awaitProcessing:   // error to mark for processing again...
                case clear:
                   processing.onTaskCleared(task);
+                  delete task;
                   break;
                default:
                   mutex.Release();
@@ -146,7 +162,7 @@ class ProcessingStage
             result = true;
          }
          mutex.Release();
-         if(!task) break;
+         if(!hadTask) break;
       }
       return result;
    }
@@ -155,6 +171,7 @@ class ProcessingStage
    {
       int i;
 
+      semaphore.maxCount = numThreads;
       threads.size = numThreads;
       for(i = 0; i < numThreads; i++)
       {
@@ -173,14 +190,22 @@ class ProcessingStage
 
       for(i = 0; i < threads.count; i++)
       {
-         threads[i].terminate = true;
-         semaphore.Release();
+         ProcessingThread t = threads[i];
+         if(t)
+            t.terminate = true;
       }
       for(i = 0; i < threads.count; i++)
-      {
          semaphore.Release();
-         threads[i].Wait();
-         delete threads[i];
+
+      for(i = 0; i < threads.count; i++)
+      {
+         ProcessingThread t = threads[i];
+         if(t)
+         {
+            semaphore.Release();
+            t.Wait();
+            delete threads[i];
+         }
       }
       threads.size = 1;
 
@@ -198,22 +223,33 @@ class ProcessingStage
       mutex.Release();
    }
 
-   void cancelTask(ProcessingTask task)
+   void cancelTask(ProcessingTask task, bool wait)
    {
-      mutex.Wait();
-
-      while(task.status.active)
+      // Mutex is locked when coming in from ThreadedProcessing::cancelTask()
+      //mutex.Wait();
+      task.status.cancel = true;
+      if(wait)
       {
-         mutex.Release();
-         Sleep(0.01);
-         mutex.Wait();
+         task.status.waitedOn = true;
+         while(wait && task.status.active)
+         {
+            mutex.Release();
+            Sleep(0.01);
+            mutex.Wait();
+         }
+
+         if(!task.status.active)
+         {
+            if(task.status.ready)
+               readyTasks.Remove(task);
+            else
+               tasks.Remove(task);
+            processing.onTaskCleared(task);
+            delete task;
+         }
       }
-      if(task.status.ready)
-         readyTasks.Remove(task);
-      else
-         tasks.Remove(task);
-      processing.onTaskCleared(task);
-      mutex.Release();
+
+      //mutex.Release();
    }
 
    void cancelAllTasks()
@@ -223,6 +259,8 @@ class ProcessingStage
       mutex.Wait();
       while((task = tasks.first))
       {
+         task.status.cancel = true;
+         task.status.waitedOn = true;
          while(task.status.active)
          {
             mutex.Release();
@@ -231,11 +269,13 @@ class ProcessingStage
          }
          tasks.Remove(task);
          processing.onTaskCleared(task);
+         delete task;
       }
       while((task = readyTasks.first))
       {
          readyTasks.Remove(task);
          processing.onTaskCleared(task);
+         delete task;
       }
       mutex.Release();
    }
@@ -243,8 +283,21 @@ class ProcessingStage
    void prioritizeTask(ProcessingTask task, int priority)
    {
       mutex.Wait();
-      task.priority = priority;
-      tasks.Move(task, null);
+      if(task.status.stage == thisStage)
+      {
+         task.priority = priority;
+
+         if(task.status.ready)
+         {
+            if(task.prev || task == readyTasks.first)
+               readyTasks.Move(task, null);
+         }
+         else
+         {
+            if(task.prev || task == tasks.first)
+               tasks.Move(task, null);
+         }
+      }
       mutex.Release();
    }
 
@@ -279,7 +332,7 @@ public:
          if(stage > stages.count)
             stages.size = stage;
          if(!stages[stage-1])
-            stages[stage-1] = { processing = this };
+            stages[stage-1] = { processing = this, thisStage = stage };
          if(numThreads >= stages[stage-1].threads.count)
             stages[stage-1].init(numThreads);
       }
@@ -297,15 +350,33 @@ public:
 
    void addTask(ProcessingTask task, int stage, int priority)
    {
-      if(stage-1 >= stages.count)
-         setup(stage, 0);
-      task.status = { stage };
-      stages[stage-1].addTask(task, priority);
+      if(stage > 0)
+      {
+         if(stage-1 >= stages.count)
+            setup(stage, 0);
+         task.status = { stage };
+         stages[stage-1].addTask(task, priority);
+      }
    }
 
-   void cancelTask(ProcessingTask task)
+   void cancelTask(ProcessingTask task, bool wait)
    {
-      stages[task.status.stage-1].cancelTask(task);
+      if(task)
+      {
+         bool done = false;
+         while(!done && task.status.active)
+         {
+            int s = task.status.stage;
+            ProcessingStage stage = stages[s-1];
+            stage.mutex.Wait();
+            if(task.status.stage == s)
+            {
+               stage.cancelTask(task, wait);
+               done = true;
+            }
+            stage.mutex.Release();
+         }
+      }
    }
 
    void cancelAllTasks(int stage)
