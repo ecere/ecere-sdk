@@ -1,0 +1,40 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "bgentest",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "bgentest",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "bgentest.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
