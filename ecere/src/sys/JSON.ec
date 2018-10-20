@@ -1207,6 +1207,17 @@ private:
                      else
                         ResetState(backState);
 
+                     if(!eCON && type && type.type == normalClass)
+                     {
+                        // Fancy stuff: allow instantiation through 'type' property
+                        if(member)
+                        {
+                           Instance * instance = (Instance *)((byte *)*object + offset);
+                           if(*instance)
+                              type = instance->_class;
+                        }
+                     }
+
                      itemResult = GetValue(type, value);
                      if(itemResult != syntaxError)
                      {
