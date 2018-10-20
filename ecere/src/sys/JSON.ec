@@ -217,22 +217,35 @@ private:
          String string;
          if((ch != '\"' || (type && strstr(type.name, "FieldValue"))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
          {
+            bool escaped = false, quoted = ch == '\"', done = false;
             int size = 32, len = 0;
             char * s = new char[size];
             int level = 0;
-            while(true)
+            while(ch && !done)
             {
                if(len + 1 >= size)
                {
                   size += size >> 1;
                   s = renew s char[size];
                }
-               if(level <= 0 && (ch == ',' || ch == '}'))
-                  break;
-               else if(ch == '{') level++;
-               else if(ch == '}') level--;
-               else if(ch == '[') level++;
-               else if(ch == ']') level--;
+               if(!quoted)
+               {
+                  if(level <= 0 && (ch == ',' || ch == '}'))
+                     break;
+                  else if(ch == '{') level++;
+                  else if(ch == '}') level--;
+                  else if(ch == '[') level++;
+                  else if(ch == ']') level--;
+               }
+               else if(quoted)
+               {
+                  if(escaped)
+                     escaped = false;
+                  else if(ch == '\\')
+                     escaped = true;
+                  else if(ch == '\"' && len > 1)
+                     done = true;
+               }
                s[len++] = ch;
 
                ReadChar(&ch);
