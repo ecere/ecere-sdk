@@ -200,10 +200,10 @@ private:
 
    JSONResult GetValue(Class type, DataValue value)
    {
-      return _GetValue(type, value, null);
+      return _GetValue(type, value, null, null);
    }
 
-   static inline JSONResult _GetValue(Class type, DataValue value, Container forMap)
+   static inline JSONResult _GetValue(Class type, DataValue value, Container forMap, Class * rType)
    {
       JSONResult result = syntaxError;
       bool (* onGetDataFromString)(void *, void *, const char *) = type ? (void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString] : null;
@@ -258,7 +258,10 @@ private:
             result = (len > 0) ? success : syntaxError;
          }
          else
+         {
+            if(!type) type = class(String);
             result = GetString(&string);
+         }
          if(result)
          {
             Property prop;
@@ -309,7 +312,9 @@ private:
             result = GetMap(type, (Map *)&array);
          }
          else
-            result = GetArray(type, &array);
+            result = GetArray(type ? type : class(Array), &array);
+
+         if(array) type = array._class;
 
          if(result == success && type && eClass_IsDerived(type, class(Container)))
          {
@@ -324,6 +329,7 @@ private:
       }
       else if(ch == '-' || isdigit(ch))
       {
+         if(!type) type = class(double);
          result = GetNumber(type, value);
       }
       else if(ch == '{')
@@ -523,6 +529,8 @@ private:
          result = noItem;
       if(result == typeMismatch)
          PrintLn("Warning: Value type mismatch");
+      if(rType)
+         *rType = type;
       return result;
    }
 
@@ -541,6 +549,7 @@ private:
          {
             DataValue value { };
             Class arrayType = null;
+            Class rType = null;
             JSONResult itemResult;
 
             if(eClass_IsDerived(type, class(Container)))
@@ -551,7 +560,16 @@ private:
             if(arrayType && arrayType.type == structClass)
                value.p = new0 byte[arrayType.structSize];
             ch = 0;
-            itemResult = GetValue(arrayType, value);
+            itemResult = _GetValue(arrayType, value, null, &rType);
+            if(!arrayType && rType)
+            {
+               char className[1024];
+               sprintf(className, "%s<%s>", type.name, rType.name);
+               type = eSystem_FindClass(type.module.application, className);
+               delete *array;
+               *array = eInstance_New(type);
+               arrayType = rType;
+            }
             if(itemResult == success)
             {
                // TODO: Verify the matching between template type and uint64
@@ -666,7 +684,7 @@ private:
             JSONResult itemResult;
 
             ch = 0;
-            itemResult = _GetValue(mapNodeType, value, *map);
+            itemResult = _GetValue(mapNodeType, value, *map, null);
             if(itemResult == success)
             {
                String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
