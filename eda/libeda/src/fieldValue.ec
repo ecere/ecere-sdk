@@ -141,7 +141,7 @@ public struct FieldValue
          int len = strlen(string + 1);
          if(len > 1) len--;
          s = new char[len + 1];
-         memcpy(s, string, len);
+         memcpy(s, string+1, len);
          s[len] = 0;
          type = { text, true };
          return true;

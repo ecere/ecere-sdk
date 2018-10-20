@@ -243,11 +243,11 @@ private:
                      escaped = false;
                   else if(ch == '\\')
                      escaped = true;
-                  else if(ch == '\"' && len > 1)
+                  else if(ch == '\"' && len > 0)
                      done = true;
                }
-               s[len++] = ch;
 
+               s[len++] = ch;
                ReadChar(&ch);
             }
             s[len] = 0;
