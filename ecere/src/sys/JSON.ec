@@ -1687,7 +1687,7 @@ private:
    }
 }
 
-static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
+static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, bool capitalize)
 {
    if(map)
    {
@@ -1721,7 +1721,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
          else
             isFirst = false;
          if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, map);
+         WriteONObject(f, mapNodeClass, n, indent, eCON, eCON ? true : false, capitalize, map);
       }
       if(spacing)
       {
@@ -1741,7 +1741,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON)
    return true;
 }
 
-static bool WriteArray(File f, Class type, Container array, int indent, bool eCON)
+static bool WriteArray(File f, Class type, Container array, int indent, bool eCON, bool capitalize)
 {
    if(array)
    {
@@ -1805,7 +1805,7 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
             value.p = (void *)(uintptr)t;
          }
          if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
-         WriteValue(f, arrayType, value, indent, eCON, false);
+         WriteValue(f, arrayType, value, indent, eCON, false, capitalize);
       }
       if(spacing)
       {
@@ -1975,7 +1975,7 @@ public bool WriteONString(File f, String s, bool eCON, int indent)
    return true;
 }
 
-static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, bool forceQuotes)
+static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, bool forceQuotes, bool capitalize)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
       WriteONString(f, value.p, eCON, indent);
@@ -1986,13 +1986,13 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(type.type == enumClass)
       WriteNumber(f, type, value, indent, eCON, false, false, forceQuotes);
    else if(eClass_IsDerived(type, class(Map)))
-      WriteMap(f, type, value.p, indent, eCON);
+      WriteMap(f, type, value.p, indent, eCON, capitalize);
    else if(eClass_IsDerived(type, class(Container)))
-      WriteArray(f, type, value.p, indent, eCON);
+      WriteArray(f, type, value.p, indent, eCON, capitalize);
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
       bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPoint") || !strcmp(type.name, "UMSRowsSpecs"));
-      WriteONObject(f, type, value.p, indent, eCON, eCON && omitNames, null);
+      WriteONObject(f, type, value.p, indent, eCON, eCON && omitNames, capitalize, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
@@ -2013,7 +2013,18 @@ public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, false, false, null);
+      result = WriteONObject(f, objectType, object, indent, false, false, true, null);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+public bool WriteJSONObject2(File f, Class objectType, void * object, int indent, bool capitalize)
+{
+   bool result = false;
+   if(object)
+   {
+      result = WriteONObject(f, objectType, object, indent, false, false, capitalize, null);
       f.Puts("\n");
    }
    return result;
@@ -2024,7 +2035,7 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, true, false, null);
+      result = WriteONObject(f, objectType, object, indent, true, false, true, null);
       f.Puts("\n");
    }
    return result;
@@ -2036,7 +2047,7 @@ public String PrintECONObject(Class objectType, void * object, int indent)
    if(object)
    {
       TempFile f { };
-      if(WriteONObject(f, objectType, object, indent, true, false, null))
+      if(WriteONObject(f, objectType, object, indent, true, false, true, null))
       {
          f.Putc(0);
          result = (String)f.StealBuffer();
@@ -2047,7 +2058,7 @@ public String PrintECONObject(Class objectType, void * object, int indent)
 }
 
 
-static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, Container forMap)
+static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, bool omitDefaultIdentifier, bool capitalize, Container forMap)
 {
    const String tName = objectType.templateClass ? objectType.templateClass.name : objectType.name;
    bool spacing = compactTypes.Find(tName) == null;
@@ -2217,7 +2228,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                            if(!eCON)
                            {
                               f.Puts("\"");
-                              f.Putc((char)toupper(prop.name[0]));
+                              f.Putc(capitalize ? (char)toupper(prop.name[0]) : prop.name[0]);
                               f.Puts(prop.name+1);
                               f.Puts("\" : ");
                            }
@@ -2233,7 +2244,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         }
                         else if(isMapNodeValue)
                            f.Puts(" : ");
-                        WriteValue(f, type, value, indent, eCON, jsonDicMap && isMapNodeKey);
+                        WriteValue(f, type, value, indent, eCON, jsonDicMap && isMapNodeKey, capitalize);
                         if(!jsonDicMap)
                            isFirst = false;
                         if(type.type == structClass)
@@ -2327,7 +2338,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      if(!eCON)
                      {
                         f.Puts("\"");
-                        f.Putc((char)toupper(member.name[0]));
+                        f.Putc(capitalize ? (char)toupper(member.name[0]) : member.name[0]);
                         f.Puts(member.name+1);
                         f.Puts("\" : ");
                      }
@@ -2336,7 +2347,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         f.Puts(member.name);
                         f.Puts(" = ");
                      }
-                     WriteValue(f, type, value, indent, eCON, false);
+                     WriteValue(f, type, value, indent, eCON, false, capitalize);
                      isFirst = false;
                   }
                }
