@@ -72,6 +72,7 @@ public:
          curlInited = true;
       }
       curl_handle = curl_easy_init();
+      curl_easy_setopt(curl_handle, CURLOPT_ACCEPT_ENCODING, /*"br, */ "gzip, deflate");
       curl_easy_setopt(curl_handle, CURLOPT_URL, name);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
