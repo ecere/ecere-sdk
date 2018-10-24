@@ -400,7 +400,7 @@ void FILE_FileFixCase(char * file)
       char parent[MAX_LOCATION] = "";
 
       // Skip network protocols
-      if(strstr(file, "http://") == file || strstr(file, "https://") == file || strstr(file, "wfs://") == file) return;
+      if(strstr(file, "http://") == file || strstr(file, "https://") == file || strstr(file, "wfs://") == file || strstr(file, "wfs3://") == file || strstr(file, "wfs3s://") == file) return;
 
       // Copy drive letter to new path
       if(file[0] && file[1] == ':')

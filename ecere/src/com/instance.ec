@@ -1473,7 +1473,6 @@ static void * _malloc(unsigned int size)
 #else
    void * pointer;
 
-
 #if !defined(_NOMUTEX)
    memMutex.Wait();
 #endif
