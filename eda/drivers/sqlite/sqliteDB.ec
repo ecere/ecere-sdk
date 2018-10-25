@@ -158,7 +158,7 @@ public:
 
    ~SQLiteStmt() { finalize(); }
 
-   void queryf(const String format, ...)
+   bool queryf(const String format, ...)
    {
       char cmd[MAX_F_STRING];
       va_list args;
@@ -167,6 +167,7 @@ public:
       cmd[sizeof(cmd)-1] = 0;
       query = cmd;
       va_end(args);
+      return stmt != null;
    }
    void reset() { sqlite3_reset(stmt); }
    void finalize() { sqlite3_finalize(stmt); stmt = null; }
