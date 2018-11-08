@@ -11104,6 +11104,21 @@ void ProcessExpressionType(Expression exp)
          FreeType(type);
          break;
       }
+      case typeAlignExp:
+      {
+         //Type type = ProcessType(exp.typequalifiers, exp.typeName.declarator);
+         // TODO:
+         exp.expType = Type
+         {
+            refCount = 1;
+            kind = intSizeType;
+         };
+         exp.isConstant = true;
+
+         //DeclareType(curExternal, type, true, false);
+         //FreeType(type);
+         break;
+      }
       case castExp:
       {
          Type type = ProcessType(exp.cast.typeName.qualifiers, exp.cast.typeName.declarator);
