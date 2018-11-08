@@ -1630,6 +1630,12 @@ class PrecompApp : Application
                FreeASTTree(ast);
             }
          }
+         else
+         {
+            PrintLn("(ecp) error: failed to execute C preprocessor");
+            this.exitCode = 1;
+         }
+
 
          FreeContext(globalContext);
          FreeExcludedSymbols(_excludedSymbols);
