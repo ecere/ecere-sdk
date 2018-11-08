@@ -746,6 +746,11 @@ class CompilerApp : Application
                FreeASTTree(ast);
             }
          }
+         else
+         {
+            this.exitCode = 1;
+            PrintLn("(ecc) error: failed to execute C preprocessor");
+         }
 
          FreeContext(globalContext);
          FreeExcludedSymbols(_excludedSymbols);
