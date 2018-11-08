@@ -5,6 +5,13 @@ import "String"
 
 #include "gl123es.h"
 
+#if defined(__ANDROID__)
+#include <android/log.h>
+#define printf(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
+#define puts PrintLn
+// #define _DEBUG
+#endif
+
 namespace gfx::drivers;
 
 // Generic Shader

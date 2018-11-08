@@ -15,13 +15,13 @@ bool egl_init_display(struct ANativeWindow * window)
 bool egl_init_display(uint window)
 #endif
 {
-   const EGLint attribs[] =
+   EGLint attribs[] =
    {
       EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
       EGL_BLUE_SIZE, 8,
       EGL_GREEN_SIZE, 8,
       EGL_RED_SIZE, 8,
-      EGL_DEPTH_SIZE, 16, //24,
+      EGL_DEPTH_SIZE, 32,
       /*EGL_SAMPLE_BUFFERS, 1,
       EGL_SAMPLES, 0, //2,*/
       EGL_NONE
@@ -31,14 +31,23 @@ bool egl_init_display(uint window)
    EGLConfig config;
    EGLSurface surface;
    EGLContext context;
+   EGLint ctxattr[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
 
    EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
    eglInitialize(display, 0, 0);
    eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+   if(numConfigs == 0)
+   {
+#ifdef _DEBUG
+      PrintLn("EGL: No 32 bit depth buffer support");
+#endif
+      attribs[9] = 16;
+      eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+   }
    eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
 
    surface = eglCreateWindowSurface(display, config, window, null);
-   context = eglCreateContext(display, config, null, null);
+   context = eglCreateContext(display, config, null, ctxattr);
 
    if(!eglMakeCurrent(display, surface, surface, context))
       return false;

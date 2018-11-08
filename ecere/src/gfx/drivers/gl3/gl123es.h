@@ -9,7 +9,11 @@
 #endif
 
 #if defined(_GLES2)
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
    #include <GLES2/gl2.h>
+#else
+   #include <gl_compat_4_4.h>
+#endif
 #elif defined(_GLES)
 /*
 #define uint _uint
