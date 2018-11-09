@@ -1688,7 +1688,16 @@ class SymbolgenApp : Application
             else if(!strcmp(arg, "-t"))
             {
                if(++c < argc)
+               {
                   targetPlatform = argv[c];
+                  if(targetPlatform == unknown)
+                  {
+                     PrintLn("Unknown platform: ", argv[c]);
+                     if(!strcmp(argv[c], "32") || !strcmp(argv[c], "64"))
+                        PrintLn("hint: bitness is specified with -t32 or -t64 without a space");
+                     valid = false;
+                  }
+               }
                else
                   valid = false;
             }
