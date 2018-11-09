@@ -158,14 +158,13 @@ private:
       getSystemServiceID = (*env)->GetMethodID(env, cContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
       lm = (*env)->CallObjectMethod(env, context, getSystemServiceID, jstr);
       jstr = (*env)->CallObjectMethod(env, lm, getBestProviderID, criteria, (jboolean)0);
-
-      const char *s = (*env)->GetStringUTFChars(env, jstr, 0);
-
-      PrintLn("Requesting location from: ", s);
-
-      (*env)->ReleaseStringUTFChars(env, jstr, s);
-
-      (*env)->CallVoidMethod(env, lm, requestLocationUpdatesID, jstr, (jlong)1000, (jfloat)1.0f, activity->clazz);
+      if(jstr) // Note: location system service will be null if location wasn't enabled in manifest
+      {
+         const char *s = (*env)->GetStringUTFChars(env, jstr, 0);
+         PrintLn("Requesting location from: ", s);
+         (*env)->ReleaseStringUTFChars(env, jstr, s);
+         (*env)->CallVoidMethod(env, lm, requestLocationUpdatesID, jstr, (jlong)1000, (jfloat)1.0f, activity->clazz);
+      }
 
       //(*vm)->DetachCurrentThread(vm);
    }
