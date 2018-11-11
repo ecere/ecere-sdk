@@ -1,9 +1,10 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "EDATest",
+   "ModuleName" : "Serveda",
    "Options" : {
+      "Warnings" : "All",
       "TargetType" : "Executable",
-      "TargetFileName" : "EDALibTest",
+      "TargetFileName" : "Serveda",
       "Libraries" : [
          "ecere"
       ],
@@ -14,39 +15,30 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
+            "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "DefaultNameSpace" : "eda",
             "FastMath" : false
          }
       },
       {
          "Name" : "Release",
          "Options" : {
+            "Debug" : false,
             "Optimization" : "Speed",
-            "DefaultNameSpace" : "eda",
             "FastMath" : true
-         }
-      },
-      {
-         "Name" : "MemoryGuard",
-         "Options" : {
-            "Debug" : true,
-            "MemoryGuard" : true,
-            "PreprocessorDefinitions" : [
-               "_DEBUG"
-            ],
-            "FastMath" : false
          }
       }
    ],
    "Files" : [
-      "EDATest.ec",
-      "$(ECERE_SDK_SRC)/eda/serveda/src/commonServeda.ec"
-   ],
-   "ResourcesPath" : "",
-   "Resources" : [
-
+      {
+         "Folder" : "src",
+         "Files" : [
+            "main.ec",
+            "Serveda.ec",
+            "commonServeda.ec"
+         ]
+      }
    ]
 }

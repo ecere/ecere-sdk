@@ -2,6 +2,8 @@ import "ecere"
 
 import "EDA"
 
+import "commonServeda"
+
 class EDABetterTestForm : Window
 {
    text = "EDA Test";
@@ -78,6 +80,15 @@ class EDABetterTestForm : Window
             nameDb.contents = "xe";
             groupDs.disabled = false;
          }
+         else if(!strcmp(select, "Serveda"))
+         {
+            host.contents = "localhost";
+            username.contents = "test";
+            password.contents = "test";
+            port.contents = servedaPortString;
+            nameDb.contents = "test";
+            groupDs.disabled = false;
+         }
          return true;
       }
 
@@ -94,7 +105,8 @@ class EDABetterTestForm : Window
          AddString("SQLite");
          AddString("SQLiteCipher");
          AddString("Oracle");
-         SelectRow(AddString("dBASE"));
+         AddString("dBASE");
+         SelectRow(AddString("Serveda"));
 
          return true;
       }

@@ -76,7 +76,7 @@ private:
    {
       delete (void *)path;
       path = CopyString(locator);
-      if(path && FileExists(path))
+      if(path && (path[0] == '\0' || FileExists(path)))
       {
          UpdateDatabaseList();
          return true;
