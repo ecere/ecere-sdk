@@ -85,8 +85,8 @@
                "winspool",
                "imm32",
                "ungif",
-               "ssl",
-               "crypto"
+               "crypto-1_1-x64",
+               "ssl-1_1-x64"
             ],
             "LibraryDirs" : [
                "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
