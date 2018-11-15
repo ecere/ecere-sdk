@@ -245,8 +245,8 @@ public struct GLB
          {
             if(!buffer)
                glGenBuffers(1, &buffer);
-            if(glabCurArrayBuffer != buffer)
-               GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
+
+            GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
 #ifdef GLSTATS
             GLStats::allocBuffer(buffer, size);
 #endif
@@ -264,8 +264,7 @@ public struct GLB
    {
       if(this != null && glCaps_vertexBuffer)
       {
-         if(glabCurArrayBuffer != buffer)
-            GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
+         GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
          glBufferSubData(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
       }
    }
