@@ -585,6 +585,9 @@ public struct GLFB
       {
          this.depthFormat = depthFormat;
          // TODO: try other samples for depth only?
+#if defined(_GLES2)
+         textureFBO = false;  // No support for depth texture on OpenGL ES 2, except with OES_depth_texture
+#endif
          if(textureFBO || allocTextures)
          {
             glBindTexture(texTarget, depth);
@@ -625,12 +628,15 @@ public struct GLFB
       this.w = width;
       this.h = height;
 
-      result = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+      {
+         int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+         result = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 
 #ifdef _DEBUG
-      if(!result)
-         PrintLn("Incomplete GL Framebuffer\n");
+         if(!result)
+            PrintLn("Incomplete GL Framebuffer (", status, ")\n");
 #endif
+      }
       return result;
    }
 
