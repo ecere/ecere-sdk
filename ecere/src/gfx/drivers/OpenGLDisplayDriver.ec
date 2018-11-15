@@ -4066,8 +4066,14 @@ class OpenGLDisplayDriver : DisplayDriver
                {
                   float * v = buf + (i << 3);
                   memcpy(v, vertices + i, 3 * sizeof(float));
-                  memcpy(v + 3, normals + i, 3 * sizeof(float));
-                  memcpy(v + 6, texCoords + i, 2 * sizeof(float));
+                  if(normals)
+                     memcpy(v + 3, normals + i, 3 * sizeof(float));
+                  else
+                     memset(v + 3, 0, 3 * sizeof(float));
+                  if(texCoords)
+                     memcpy(v + 6, texCoords + i, 2 * sizeof(float));
+                  else
+                     memset(v + 6, 0, 2 * sizeof(float));
                }
                oglMesh.vertices.upload(vSize * mesh.baseVertex, nVertices * vSize, buf);
                delete buf;
