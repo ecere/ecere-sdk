@@ -307,6 +307,14 @@
    #define GLColorMaterial(a,b)
 #endif
 
+#if defined(_GLES2)
+   #define GLClearDepth(a)                   glClearDepthf(a)
+   #define GLDepthRange(a,b)                 glDepthRangef(a,b)
+#else
+   #define GLClearDepth(a)                   if(glClearDepth) glClearDepth(a)
+   #define GLDepthRange(a,b)                 glDepthRange(a,b)
+#endif
+
 #ifdef _GLES
    #define GLLightModeli                     glsupLightModeli
 #else

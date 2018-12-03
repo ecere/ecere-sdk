@@ -388,7 +388,7 @@
          "Name" : "GLES",
          "Options" : {
             "PreprocessorDefinitions" : [
-               "_GLES"
+               "_GLES2"
             ]
          }
       },
