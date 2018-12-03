@@ -2,13 +2,13 @@ namespace gfx3D::models;
 
 import "Object"
 
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #if !defined(_GLES2)
 #define _GLES2
 #endif
 #endif
 
-#if (defined(__ANDROID__) || defined(__ODROID__)) && !defined(_GLES)
+#if defined(__ODROID__) && !defined(_GLES)
 #define _GLES
 #endif
 

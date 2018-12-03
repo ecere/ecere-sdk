@@ -465,7 +465,7 @@ if distributed with the Ecere SDK Windows installer.
          "Name" : "GLES",
          "Options" : {
             "PreprocessorDefinitions" : [
-               "_GLES"
+               "_GLES2"
             ]
          }
       },

@@ -488,6 +488,13 @@ public struct GLFB
          glCopyTexImage2D(GL_TEXTURE_2D, 0, depthFormat, 0, 0, w, h, 0);
          glBindTexture(GL_TEXTURE_2D, 0);
       }
+      else if(depthRBO)
+      {
+         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+         glBindTexture(GL_TEXTURE_2D, depth);
+         glCopyTexImage2D(GL_TEXTURE_2D, 0, depthFormat, 0, 0, w, h, 0);
+         glBindTexture(GL_TEXTURE_2D, 0);
+      }
    }
 
    bool setup(bool textureFBO, bool allocTextures, int samples, int colorFormat, int depthFormat, int width, int height)
@@ -496,6 +503,9 @@ public struct GLFB
       bool allocateColor = colorFormat && (w != width || h != height);
       bool allocateDepth = depthFormat && (w != width || h != height);
       bool result = false;
+#if defined(_GLES) || defined(_GLES2)
+      samples = 1;
+#endif
 #if !defined(_GLES) && !defined(_GLES2)
       int texTarget = samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 #else
@@ -514,15 +524,6 @@ public struct GLFB
             glGenTextures(1, &color);
          if(!textureFBO)
             glGenRenderbuffers(1, &colorRBO);
-      }
-
-      if(depthFormat && !depth)
-      {
-         allocateDepth = true;
-         if(textureFBO || allocTextures)
-            glGenTextures(1, &depth);
-         if(!textureFBO)
-            glGenRenderbuffers(1, &depthRBO);
       }
 
       while(glGetError());
@@ -580,14 +581,24 @@ public struct GLFB
          samples = s;
       }
 
+#if defined(_GLES2) || defined(_GLES)
+      textureFBO = false;  // No support for depth texture on OpenGL ES 2, except with OES_depth_texture
+#endif
+
+      if(depthFormat && !depth)
+      {
+         allocateDepth = true;
+         if(textureFBO || allocTextures)
+            glGenTextures(1, &depth);
+         if(!textureFBO)
+            glGenRenderbuffers(1, &depthRBO);
+      }
+
       // *** Set up Depth attachment ***
       if(allocateDepth)
       {
          this.depthFormat = depthFormat;
          // TODO: try other samples for depth only?
-#if defined(_GLES2)
-         textureFBO = false;  // No support for depth texture on OpenGL ES 2, except with OES_depth_texture
-#endif
          if(textureFBO || allocTextures)
          {
             glBindTexture(texTarget, depth);
