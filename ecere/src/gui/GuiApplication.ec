@@ -1612,3 +1612,14 @@ private void emscripten_main_loop_callback()
    guiApp.UpdateDisplay();
 }
 #endif
+
+#if !defined(ECERE_VANILLA)
+import "Quaternion"
+
+Euler compass;
+
+public void QueryCompass(Euler value)
+{
+   value = compass;
+}
+#endif
