@@ -704,7 +704,7 @@ class AndroidInterface : Interface
          // If a sensor has data, process it now.
          if(androidActivity.ident == user)
          {
-            if(androidActivity.accelerometerSensor || androidActivity.compassSensor)
+            if(androidActivity.accelerometerSensor || androidActivity.compassSensor || androidActivity.dofSensor)
             {
                ASensorEvent event;
                while (ASensorEventQueue_getEvents(androidActivity.sensorEventQueue, &event, 1) > 0)
@@ -723,13 +723,60 @@ class AndroidInterface : Interface
                         */
                         q.w = event.data[3];
                         //e.FromQuaternion(q, yxz);
-                        e = q;
-                        LOGI("orientation: yaw=%.02f pitch=%.02f roll=%.02f", (double)e.yaw, (double)e.pitch, (double)e.roll);
+                        Matrix rm;
+                        double values[3];
+                        getRotationMatrixFromVector(rm, event.data);
+
+                        getOrientation(rm, values);
+                        compass.yaw = Radians { values[0] };
+                        compass.pitch = Radians { values[1] };
+                        compass.roll = Radians { values[2] };
+
+                        Quaternion q1 = compass;
+                        Quaternion q2;
+                        q2.RotationYawPitchRoll({ 0, 90, 0 });
+                        Quaternion q3;
+                        q3.Multiply(q2, q1);
+                        compass = q3;
+                        compass.roll = -compass.roll;
+
+                        //PrintLn("Yaw: ", (double)compass.yaw, ", Pitch: ", (double)compass.pitch, ", Roll: ", (double)compass.roll);
                         break;
                      }
                      case ASENSOR_TYPE_ACCELEROMETER:
                         // LOGI("accelerometer: x=%.02f y=%.02f z=%.02f", event.acceleration.x, event.acceleration.y, event.acceleration.z);
                         break;
+                     case ASENSOR_TYPE_POSE_6DOF:
+                     {
+                        Quaternion q { event.data[0], event.data[1], event.data[2], event.data[3] };
+                        Vector3D t { event.data[4], event.data[5], event.data[6] };
+                        Euler e;
+
+                        e.FromQuaternion(q, yxz);
+
+                        LOGI("orientation: yaw=%.02f pitch=%.02f roll=%.02f", (double)e.yaw, (double)e.pitch, (double)e.roll);
+                        LOGI("translation: x=%.02f y=%.02f z=%.02f", (double)t.x, (double)t.y, (double)t.z);
+                        LOGI("---");
+
+                        /*
+                        values[0]: x*sin(θ/2)
+                        values[1]: y*sin(θ/2)
+                        values[2]: z*sin(θ/2)
+                        values[3]: cos(θ/2)
+                        values[4]: Translation along x axis from an arbitrary origin.
+                        values[5]: Translation along y axis from an arbitrary origin.
+                        values[6]: Translation along z axis from an arbitrary origin.
+                        values[7]: Delta quaternion rotation x*sin(θ/2)
+                        values[8]: Delta quaternion rotation y*sin(θ/2)
+                        values[9]: Delta quaternion rotation z*sin(θ/2)
+                        values[10]: Delta quaternion rotation cos(θ/2)
+                        values[11]: Delta translation along x axis.
+                        values[12]: Delta translation along y axis.
+                        values[13]: Delta translation along z axis.
+                        values[14]: Sequence number
+                        */
+                        break;
+                     }
                   }
                }
             }
@@ -1247,6 +1294,7 @@ class AndroidActivity : AndroidAppGlue
 
    const ASensor* accelerometerSensor;
    const ASensor* compassSensor;
+   const ASensor* dofSensor;
 
    SavedState state;
 
@@ -1439,7 +1487,6 @@ class AndroidActivity : AndroidAppGlue
                ASensorEventQueue_enableSensor(sensorEventQueue, compassSensor);
                ASensorEventQueue_setEventRate(sensorEventQueue, compassSensor, (1000L/60)*1000);
             }
-
             break;
          case lostFocus:
 
@@ -1466,8 +1513,13 @@ class AndroidActivity : AndroidAppGlue
       sensorManager = ASensorManager_getInstance();
       sensorEventQueue = ASensorManager_createEventQueue(sensorManager, looper, LooperID::user, null, null);
 
-      accelerometerSensor = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+      // accelerometerSensor = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ACCELEROMETER);
       compassSensor       = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_ROTATION_VECTOR);
+      /*
+      dofSensor           = ASensorManager_getDefaultSensor(sensorManager, ASENSOR_TYPE_POSE_6DOF);
+      if(!dofSensor)
+         PrintLn("error obtaining ASENSOR_TYPE_POSE_6DOF");
+      */
 
       if(savedState)
          state = *(SavedState*)savedState;
@@ -1523,4 +1575,50 @@ class AndroidActivity : AndroidAppGlue
          }
       }
    }
+}
+
+static void getRotationMatrixFromVector(Matrix R, const float * rotationVector)
+{
+   double q0;
+   double q1 = rotationVector[0];
+   double q2 = rotationVector[1];
+   double q3 = rotationVector[2];
+   if (1) //rotationVector.length >= 4)
+      q0 = rotationVector[3];
+   else
+   {
+      q0 = 1 - q1 * q1 - q2 * q2 - q3 * q3;
+      q0 = (q0 > 0) ? (float) sqrt(q0) : 0;
+   }
+   double sq_q1 = 2 * q1 * q1;
+   double sq_q2 = 2 * q2 * q2;
+   double sq_q3 = 2 * q3 * q3;
+   double q1_q2 = 2 * q1 * q2;
+   double q3_q0 = 2 * q3 * q0;
+   double q1_q3 = 2 * q1 * q3;
+   double q2_q0 = 2 * q2 * q0;
+   double q2_q3 = 2 * q2 * q3;
+   double q1_q0 = 2 * q1 * q0;
+
+   R.array[0] = 1 - sq_q2 - sq_q3;
+   R.array[1] = q1_q2 - q3_q0;
+   R.array[2] = q1_q3 + q2_q0;
+   R.array[3] = 0.0f;
+   R.array[4] = q1_q2 + q3_q0;
+   R.array[5] = 1 - sq_q1 - sq_q3;
+   R.array[6] = q2_q3 - q1_q0;
+   R.array[7] = 0.0f;
+   R.array[8] = q1_q3 - q2_q0;
+   R.array[9] = q2_q3 + q1_q0;
+   R.array[10] = 1 - sq_q1 - sq_q2;
+   R.array[11] = 0.0;
+   R.array[12] = R.array[13] = R.array[14] = 0.0;
+   R.array[15] = 1.0;
+}
+
+static void getOrientation(const Matrix R, double * values)
+{
+   values[0] = atan2(R.array[1], R.array[5]);
+   values[1] = asin(-R.array[9]);
+   values[2] = atan2(-R.array[8], R.array[10]);
 }
