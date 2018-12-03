@@ -215,7 +215,7 @@ private:
       if(ch == '\"' || (ch != '{' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString]))
       {
          String string;
-         if((ch != '\"' || (type && strstr(type.name, "FieldValue"))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+         if((ch != '\"' || (type && (strstr(type.name, "FieldValue") || strstr(type.name, "GeoJSONValue")))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
          {
             bool escaped = false, quoted = ch == '\"', done = false;
             int size = 32, len = 0;
