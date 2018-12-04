@@ -250,15 +250,11 @@ public:
        //PrintLn("Compiling shader for state: ", state);
 #endif
 
-#if defined(__EMSCRIPTEN__)
-      defs.concatf("#version 100\n");
-#else
-      defs.concatf("#version 110\n");
-#endif
-
 #if defined(_GLES2)
+      defs.concatf("#version 100\n");
       defs.concatf("#define GLSL_FLOAT_PRECISION   1\n");
 #else
+      defs.concatf("#version 110\n");
       defs.concatf("#define GLSL_FLOAT_PRECISION   0\n");
 #endif
 
