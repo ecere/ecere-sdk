@@ -50,6 +50,10 @@
 #  endif
 #endif
 
+#if defined(__ANDROID__)
+#  include "config-android.h"
+#endif
+
 #if defined(macintosh) && defined(__MRC__)
 #  include "config-mac.h"
 #endif

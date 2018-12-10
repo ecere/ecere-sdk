@@ -2,7 +2,7 @@
 
 import "List"
 
-#if !defined(ECERE_NONET) && !defined(__ANDROID__) // Curl / OpenSSL not set up right now for Android builds
+#if !defined(ECERE_NONET) //&& !defined(__ANDROID__) // Curl / OpenSSL not set up right now for Android builds
 
 import "network"
 #ifndef ECERE_NOSSL

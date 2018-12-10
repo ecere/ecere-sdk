@@ -434,7 +434,8 @@ if distributed with the Ecere SDK Windows installer.
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
                "../deps/freetype-2.3.12/include",
-               "../deps/glext"
+               "../deps/glext",
+               "../deps/curl-7.51.0/include"
             ],
             "FastMath" : true
          },
@@ -455,7 +456,8 @@ if distributed with the Ecere SDK Windows installer.
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/libpng-1.6.12/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/jpeg-9a/obj/release.$(PLATFORM).$(COMPILER)",
-                     "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)"
+                     "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/curl-7.51.0/obj/release.$(PLATFORM).$(COMPILER)"
                   ]
                }
             }
