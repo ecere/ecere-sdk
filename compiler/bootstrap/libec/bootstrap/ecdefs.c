@@ -159,6 +159,11 @@ unsigned int skipErrors;
 
 int targetPlatform;
 
+int GetRuntimeBits()
+{
+return (sizeof(uintptr_t) == 8) ? 64 : 32;
+}
+
 int targetBits;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -720,7 +725,7 @@ fileInput = file;
 
 int GetHostBits()
 {
-int hostBits = (sizeof(uintptr_t) == 8) ? 64 : 32;
+int hostBits = GetRuntimeBits();
 char * hostType = getenv("HOSTTYPE");
 char host[256];
 
@@ -3621,6 +3626,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNumWarnings", "int Ge
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Warning", "void Compiler_Warning(const char * format, ...)", Compiler_Warning, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("yyerror", "int yyerror(void)", yyerror, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetHostBits", "int GetHostBits(void)", GetHostBits, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetRuntimeBits", "int GetRuntimeBits(void)", GetRuntimeBits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetPlatform", "void SetTargetPlatform(ecere::com::Platform platform)", SetTargetPlatform, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetBits", "void SetTargetBits(int bits)", SetTargetBits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTargetBits", "int GetTargetBits(void)", GetTargetBits, module, 1);

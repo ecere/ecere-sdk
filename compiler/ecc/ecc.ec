@@ -246,7 +246,7 @@ class CompilerApp : Application
       bool buildingBootStrap = false;
 
       Platform targetPlatform = __runtimePlatform;
-      int targetBits = GetHostBits();
+      int targetBits = GetRuntimeBits();
 
 #ifdef _DEBUG
       // buildingBootStrap = true;
