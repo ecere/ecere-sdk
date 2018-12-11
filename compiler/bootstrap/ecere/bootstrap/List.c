@@ -500,25 +500,6 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(((struct __ec
 }));
 }
 
-void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpace__ecere__com__Instance * this)
-{
-struct __ecereNameSpace__ecere__com__Link * item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first;
-struct __ecereNameSpace__ecere__com__Class * lltClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass;
-unsigned int byAddress = lltClass && lltClass->type == 1;
-
-while(item)
-{
-struct __ecereNameSpace__ecere__com__Link * next = item->__anon1.__anon1.next;
-uint64 data = byAddress ? (uint64)(uintptr_t)&item->data : (uint64)item->data;
-
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(data)))), data = 0);
-item = next;
-}
-((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first = (((void *)0));
-((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->last = (((void *)0));
-((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count = 0;
-}
-
 void __ecereMethod___ecereNameSpace__ecere__com__List_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Link * link)
 {
 (__extension__ ({
@@ -532,6 +513,30 @@ void * __ecerePtrToDelete = (link);
 
 __ecereClass___ecereNameSpace__ecere__com__Link->Destructor ? __ecereClass___ecereNameSpace__ecere__com__Link->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor ? __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), link = 0);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+struct __ecereNameSpace__ecere__com__Link * item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first;
+struct __ecereNameSpace__ecere__com__Class * lltClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass;
+unsigned int byAddress = lltClass && lltClass->type == 1;
+
+while(item)
+{
+struct __ecereNameSpace__ecere__com__Link * next = item->__anon1.__anon1.next;
+uint64 data = byAddress ? (uint64)(uintptr_t)&item->data : (uint64)item->data;
+
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(data)))), data = 0);
+((item ? __extension__ ({
+void * __ecerePtrToDelete = (item);
+
+__ecereClass___ecereNameSpace__ecere__com__Link->Destructor ? __ecereClass___ecereNameSpace__ecere__com__Link->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor ? __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), item = 0);
+item = next;
+}
+((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first = (((void *)0));
+((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->last = (((void *)0));
+((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count = 0;
 }
 
 struct __ecereNameSpace__ecere__com__Link * __ecereMethod___ecereNameSpace__ecere__com__List_Find(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 value)

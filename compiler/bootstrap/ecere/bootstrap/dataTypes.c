@@ -1289,7 +1289,7 @@ if(item)
 if(tempString)
 {
 strcpy(tempString, item->name);
-if(!onType || !*onType)
+if(!onType || *onType != 1)
 tempString[0] = (char)toupper(tempString[0]);
 return tempString;
 }

@@ -415,7 +415,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       enumValueNames.Add((char*)"center");
 
       // some ec1 app init:
-      targetBits = GetHostBits();
+      targetBits = GetRuntimeBits();
       SetTargetBits(targetBits);
       SetBGenSymbolSwapCallback(bgenSymbolSwap);
 

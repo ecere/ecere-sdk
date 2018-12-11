@@ -156,9 +156,9 @@ uint64 ui64;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-static unsigned int __ecereNameSpace__ecere__com__TOTAL_MEM = 0;
+static uint64 __ecereNameSpace__ecere__com__TOTAL_MEM = 0;
 
-static unsigned int __ecereNameSpace__ecere__com__OUTSIDE_MEM = 0;
+static uint64 __ecereNameSpace__ecere__com__OUTSIDE_MEM = 0;
 
 static unsigned int __ecereNameSpace__ecere__com__log1_5i(unsigned int number)
 {
@@ -1257,9 +1257,9 @@ unsigned int size;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(struct __ecereNameSpace__ecere__com__BlockPool * this, unsigned int numBlocks)
 {
-unsigned char * memory = malloc(numBlocks * this->blockSpace);
+unsigned char * memory = malloc((size_t)numBlocks * this->blockSpace);
 
-__ecereNameSpace__ecere__com__TOTAL_MEM += numBlocks * this->blockSpace;
+__ecereNameSpace__ecere__com__TOTAL_MEM += (uint64)numBlocks * this->blockSpace;
 if(memory)
 {
 int c;
@@ -1327,7 +1327,7 @@ next = next->next;
 ;
 if(prev)
 prev->next = (((void *)0));
-__ecereNameSpace__ecere__com__TOTAL_MEM -= part->size * this->blockSpace;
+__ecereNameSpace__ecere__com__TOTAL_MEM -= (uint64)part->size * this->blockSpace;
 __ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemPart);
 this->numParts--;
 free(part->memory);

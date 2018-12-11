@@ -1715,8 +1715,10 @@ static void * _crealloc(void * pointer, unsigned int size)
    if(!size) { free(pointer); return null; }
 
    p = realloc(pointer, size);
-   if(size > s)
+   if(size > s && p)
       memset((byte *)p + s, 0, size - s);
+   if(size && !p)
+      printf("_crealloc failed allocating %d bytes!\n", size);
    return p;
 #else
    if(!size) { _free(pointer); return null; }

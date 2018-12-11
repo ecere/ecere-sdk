@@ -18811,6 +18811,16 @@ DeclareType(curExternal, type, 1, 0);
 FreeType(type);
 break;
 }
+case 36:
+{
+exp->expType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 23, __ecereInstance1;
+});
+exp->isConstant = 1;
+break;
+}
 case 11:
 {
 struct Type * type = ProcessType(exp->__anon1.cast.typeName->qualifiers, exp->__anon1.cast.typeName->declarator);
