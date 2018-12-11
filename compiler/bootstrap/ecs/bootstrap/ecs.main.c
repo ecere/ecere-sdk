@@ -135,6 +135,8 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_String_;
@@ -464,6 +466,7 @@ __currentModule = module = __thisModule;
 __ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, (void *)(__ecereDll_Load_ec), (void *)(__ecereDll_Unload_ec));
 __ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
 __ecereRegisterModule_ecs(module);
+__ecereClass_char__PTR_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "char *");
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_String_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<String>");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<String> >");

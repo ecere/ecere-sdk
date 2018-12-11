@@ -1289,7 +1289,7 @@ if(item)
 if(tempString)
 {
 strcpy(tempString, item->name);
-if(!onType || !*onType)
+if(!onType || *onType != 1)
 tempString[0] = (char)toupper(tempString[0]);
 return tempString;
 }
@@ -1541,9 +1541,9 @@ int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen
 {
 int len = 0;
 const char * result = (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  reserved, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))class->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  reserved, unsigned int *  onType))class->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(class, object, buffer, (((void *)0)), (((void *)0))) : (const char * )1;
 }));
 
@@ -2368,9 +2368,9 @@ int __internalValue000;
 int a;
 
 (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  reserved, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  reserved, unsigned int *  onType))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
 }));
 (__extension__ ({
@@ -3492,7 +3492,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnDisplay", "v
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnCompare", "int typed_object::OnCompare(any_object object)", __ecereNameSpace__ecere__com__OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnCopy", "void typed_object&::OnCopy(any_object newData)", __ecereNameSpace__ecere__com__OnCopy, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnFree", "void typed_object::OnFree(void)", __ecereNameSpace__ecere__com__OnFree, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)", __ecereNameSpace__ecere__com__OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * reserved, ObjectNotationType * onType)", __ecereNameSpace__ecere__com__OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnGetDataFromString", "bool typed_object&::OnGetDataFromString(const char * string)", __ecereNameSpace__ecere__com__OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnEdit", "Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(baseClass, "OnSerialize", "void typed_object::OnSerialize(IOChannel channel)", __ecereNameSpace__ecere__com__OnSerialize, 1);

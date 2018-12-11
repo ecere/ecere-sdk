@@ -112,7 +112,7 @@ int included;
 
 struct Expression;
 
-extern int GetHostBits(void);
+extern int GetRuntimeBits(void);
 
 extern void SetSymbolsDir(const char *  s);
 
@@ -766,6 +766,8 @@ void __ecereUnregisterModule_ecc(struct __ecereNameSpace__ecere__com__Instance *
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_CompilerApp;
 
+extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
@@ -779,6 +781,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__DualPipe;
 
@@ -880,7 +884,7 @@ unsigned int valid = 1;
 char defaultOutputFile[797];
 unsigned int buildingBootStrap = 0;
 int targetPlatform = __runtimePlatform;
-int targetBits = GetHostBits();
+int targetBits = GetRuntimeBits();
 
 SetSymbolsDir("");
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc; c++)
@@ -926,7 +930,16 @@ buildingBootStrap = 1;
 else if(!strcmp(arg + 1, "t"))
 {
 if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc)
+{
 targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv[c]);
+if(targetPlatform == 0)
+{
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "Unknown platform: ", __ecereClass_char__PTR_, ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv[c], (void *)0);
+if(!strcmp(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv[c], "32") || !strcmp(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argv[c], "64"))
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "hint: bitness is specified with -t32 or -t64 without a space", (void *)0);
+valid = 0;
+}
+}
 else
 valid = 0;
 }
@@ -1314,6 +1327,11 @@ if(ast)
 {
 FreeASTTree(ast);
 }
+}
+else
+{
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->exitCode = 1;
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "(ecc) error: failed to execute C preprocessor", (void *)0);
 }
 FreeContext(globalContext);
 FreeExcludedSymbols(&_excludedSymbols);

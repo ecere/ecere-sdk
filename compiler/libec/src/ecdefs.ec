@@ -1771,7 +1771,7 @@ Platform targetPlatform;
 public int GetHostBits()
 {
    // Default to runtime platform in case we fail to determine host
-   int hostBits = (sizeof(uintptr) == 8) ? 64 : 32;
+   int hostBits = GetRuntimeBits();
    String hostType = getenv("HOSTTYPE");
    char host[256];
    if(!hostType)
@@ -1792,6 +1792,11 @@ public int GetHostBits()
          hostBits = 32;
    }
    return hostBits;
+}
+
+public int GetRuntimeBits()
+{
+   return (sizeof(uintptr) == 8) ? 64 : 32;
 }
 
 public void SetTargetPlatform(Platform platform) { targetPlatform = platform; };

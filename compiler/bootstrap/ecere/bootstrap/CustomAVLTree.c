@@ -112,6 +112,8 @@ struct __ecereNameSpace__ecere__com__AVLNode;
 
 extern int strcmp(const char * , const char * );
 
+extern int printf(const char * , ...);
+
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__AVLNode;
@@ -772,6 +774,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
@@ -937,8 +941,10 @@ unsigned int offset = 0;
 int t = Tclass->type;
 int (* onCompare)(void *, void *, void *) = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
 unsigned int isInt64 = 0, isDouble = 0;
+struct __ecereNameSpace__ecere__com__AVLNode * to = (((void *)0));
+int side = (int)0;
 
-if(onCompare == (void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnCompare] || (Tclass->type == 3 && Tclass->typeSize == sizeof(long long) && !strcmp(Tclass->name, "Id")))
+if(onCompare == (void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnCompare] || (Tclass->type == 3 && Tclass->typeSize == sizeof(long long) && !strcmp(Tclass->name, "Id")) || (Tclass->type == 2 && Tclass->typeSize == sizeof(long long)))
 isInt64 = 1;
 else if(onCompare == (void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnCompare])
 isDouble = 1;
@@ -950,13 +956,16 @@ if(t == 1)
 reference = 1;
 offset = __ENDIAN_PAD(sizeof(void *));
 }
-if(Tclass == __ecereClass_uint)
+if(Tclass == __ecereClass_int)
 {
-unsigned int ia = *(unsigned int *)a;
+int ia = *(int *)a;
 
+if(reference)
+{
 while(this)
 {
-unsigned int ib = *(unsigned int *)(reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key));
+unsigned char * b = (((unsigned char *)&this->key) + __ENDIAN_PAD(sizeof(int)));
+int ib = *(int *)b;
 int result = ia > ib ? 1 : ia < ib ? -1 : 0;
 
 if(result)
@@ -964,12 +973,7 @@ if(result)
 struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
 
 if(!node)
-{
-if(addTo)
-*addTo = this;
-if(addSide)
-*addSide = (int)result;
-}
+to = this, side = (int)result;
 this = node;
 }
 else
@@ -978,6 +982,71 @@ break;
 }
 else
 {
+while(this)
+{
+int ib = *(int *)((unsigned char *)(uintptr_t)(uint64)(this->key));
+int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+}
+else if(Tclass == __ecereClass_uint)
+{
+unsigned int ia = *(unsigned int *)a;
+
+if(reference)
+{
+while(this)
+{
+unsigned char * b = (((unsigned char *)&this->key) + __ENDIAN_PAD(sizeof(unsigned int)));
+unsigned int ib = *(unsigned int *)b;
+int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+else
+{
+while(this)
+{
+unsigned int ib = *(unsigned int *)((unsigned char *)(uintptr_t)(uint64)(this->key));
+int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+}
+else
+{
+int result;
 long long a64;
 double aDouble;
 
@@ -985,14 +1054,13 @@ if(isInt64)
 a64 = *(long long *)a;
 else if(isDouble)
 aDouble = *(double *)a;
-while(this)
+if(reference)
 {
-unsigned char * b = reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key);
-int result;
-
 if(isInt64)
 {
-long long b64 = *(long long *)b;
+while(this)
+{
+long long b64 = this->key;
 
 if(a64 > b64)
 result = 1;
@@ -1000,10 +1068,24 @@ else if(a64 < b64)
 result = -1;
 else
 result = 0;
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
 }
 else if(isDouble)
 {
-double bDouble = *(double *)b;
+while(this)
+{
+const unsigned char * b = (unsigned char *)&this->key;
+double bDouble = *(double *)(unsigned char *)b;
 
 if(aDouble > bDouble)
 result = 1;
@@ -1011,26 +1093,113 @@ else if(aDouble < bDouble)
 result = -1;
 else
 result = 0;
-}
-else
-result = onCompare(Tclass, a, b);
 if(result)
 {
 struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
 
 if(!node)
-{
-if(addTo)
-*addTo = this;
-if(addSide)
-*addSide = (int)result;
-}
+to = this, side = (int)result;
 this = node;
 }
 else
 break;
 }
 }
+else
+{
+while(this)
+{
+const unsigned char * b = ((unsigned char *)&this->key) + offset;
+
+result = onCompare(Tclass, a, (unsigned char *)b);
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+}
+else
+{
+if(isInt64)
+{
+while(this)
+{
+long long b64 = *(long long *)(uintptr_t)(uint64)(this->key);
+
+if(a64 > b64)
+result = 1;
+else if(a64 < b64)
+result = -1;
+else
+result = 0;
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+else if(isDouble)
+{
+while(this)
+{
+double bDouble = *(double *)(uintptr_t)(uint64)(this->key);
+
+if(aDouble > bDouble)
+result = 1;
+else if(aDouble < bDouble)
+result = -1;
+else
+result = 0;
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+else
+{
+while(this)
+{
+const unsigned char * b = (unsigned char *)(uintptr_t)(uint64)(this->key);
+
+result = onCompare(Tclass, a, (unsigned char *)b);
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+to = this, side = (int)result;
+this = node;
+}
+else
+break;
+}
+}
+}
+}
+if(addTo)
+*addTo = to;
+if(addSide)
+*addSide = side;
 return this;
 }
 
@@ -1196,6 +1365,108 @@ if(justAdded)
 return node;
 }
 
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(struct __ecereNameSpace__ecere__com__AVLNode *  this);
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+if(this->left)
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->left);
+if(this->right)
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->right);
+((this ? __extension__ ({
+void * __ecerePtrToDelete = (this);
+
+__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), this = 0);
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Check(struct __ecereNameSpace__ecere__com__AVLNode *  this, struct __ecereNameSpace__ecere__com__Class *  Tclass);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Check(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass)
+{
+unsigned int valid = 1;
+unsigned int offset = 0;
+unsigned int reference = 0;
+unsigned char * b;
+int (* onCompare)(void *, void *, void *);
+int t;
+int leftHeight = this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->left) + 1 : 0;
+int rightHeight = this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->right) + 1 : 0;
+int diffHeight = rightHeight - leftHeight;
+
+if(!Tclass)
+Tclass = __ecereClass_uint64;
+t = Tclass->type;
+onCompare = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
+if((t == 1000 && !Tclass->byValueSystemClass) || t == 2 || t == 4 || t == 3 || t == 1)
+{
+reference = 1;
+offset = __ENDIAN_PAD((t == 1) ? sizeof(void *) : Tclass->typeSize);
+}
+if(this->left)
+{
+if(this->left->parent != this)
+{
+printf("Parent not set properly at node %d\n", (int)(uint64)(this->left->key));
+valid = 0;
+}
+valid *= __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Check(this->left, Tclass);
+}
+if(this->right)
+{
+if(this->right->parent != this)
+{
+printf("Parent not set properly at node %d\n", (int)(uint64)(this->right->key));
+valid = 0;
+}
+valid *= __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Check(this->right, Tclass);
+}
+if(this->depth != __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this))
+{
+printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", (int)(uint64)(this->key), this->depth, __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this));
+valid = 0;
+}
+if(diffHeight < -1 || diffHeight > 1)
+{
+valid = 0;
+printf("Height difference is %d at node %d\n", diffHeight, (int)(uint64)(this->key));
+}
+if(diffHeight != __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this))
+{
+valid = 0;
+printf("Height difference %d doesn't match balance-factor of %d at node %d\n", diffHeight, __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this), (int)(uint64)(this->key));
+}
+b = reference ? ((unsigned char *)&this->key + offset) : ((unsigned char *)(uintptr_t)(uint64)(this->key));
+if(this->left)
+{
+unsigned char * a = reference ? ((unsigned char *)&this->left->key + offset) : ((unsigned char *)(uintptr_t)(uint64)(this->left->key));
+
+if(onCompare(Tclass, a, b) > 0)
+{
+valid = 0;
+printf("Node %d is *smaller* than left subtree %d\n", (int)(uint64)(this->key), (int)(uint64)(this->left->key));
+}
+}
+if(this->right)
+{
+unsigned char * a = reference ? ((unsigned char *)&this->right->key + offset) : ((unsigned char *)(uintptr_t)(uint64)(this->right->key));
+
+if(onCompare(Tclass, a, b) < 0)
+{
+valid = 0;
+printf("Node %d is *greater* than right subtree %d\n", (int)(uint64)(this->key), (int)(uint64)(this->right->key));
+}
+}
+return valid;
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Check(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+
+return __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root ? __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Check(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))), ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4].__anon1.__anon1.dataTypeClass) : 1;
+}
+
 void __ecereRegisterModule_CustomAVLTree(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
@@ -1262,6 +1533,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", 0, __ecereMethod
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Delete, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "Check", "bool Check()", __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Check, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FreeKey", "void FreeKey(ecere::com::AVLNode<KT> item)", __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_FreeKey, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "root", "BT", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
@@ -1270,20 +1542,5 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "KT", 0, 0, &__
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 if(class)
 class->fixed = (unsigned int)1;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(struct __ecereNameSpace__ecere__com__AVLNode *  this);
-
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-if(this->left)
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->left);
-if(this->right)
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->right);
-((this ? __extension__ ({
-void * __ecerePtrToDelete = (this);
-
-__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), this = 0);
 }
 

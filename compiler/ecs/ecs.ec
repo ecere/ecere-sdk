@@ -1612,7 +1612,7 @@ class SymbolgenApp : Application
       outputPot = false;
       disabledPooling = false;
       targetPlatform = __runtimePlatform;
-      targetBits = GetHostBits();
+      targetBits = GetRuntimeBits();
 
       /*
       for(c = 0; c<this.argc; c++)

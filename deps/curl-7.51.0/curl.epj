@@ -309,7 +309,8 @@
             "wildcard.c",
             "wildcard.h",
             "x509asn1.c",
-            "x509asn1.h"
+            "x509asn1.h",
+            "config-android.h"
          ]
       },
       {

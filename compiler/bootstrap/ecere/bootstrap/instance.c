@@ -156,9 +156,9 @@ uint64 ui64;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-static unsigned int __ecereNameSpace__ecere__com__TOTAL_MEM = 0;
+static uint64 __ecereNameSpace__ecere__com__TOTAL_MEM = 0;
 
-static unsigned int __ecereNameSpace__ecere__com__OUTSIDE_MEM = 0;
+static uint64 __ecereNameSpace__ecere__com__OUTSIDE_MEM = 0;
 
 static unsigned int __ecereNameSpace__ecere__com__log1_5i(unsigned int number)
 {
@@ -1257,9 +1257,9 @@ unsigned int size;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(struct __ecereNameSpace__ecere__com__BlockPool * this, unsigned int numBlocks)
 {
-unsigned char * memory = malloc(numBlocks * this->blockSpace);
+unsigned char * memory = malloc((size_t)numBlocks * this->blockSpace);
 
-__ecereNameSpace__ecere__com__TOTAL_MEM += numBlocks * this->blockSpace;
+__ecereNameSpace__ecere__com__TOTAL_MEM += (uint64)numBlocks * this->blockSpace;
 if(memory)
 {
 int c;
@@ -1327,7 +1327,7 @@ next = next->next;
 ;
 if(prev)
 prev->next = (((void *)0));
-__ecereNameSpace__ecere__com__TOTAL_MEM -= part->size * this->blockSpace;
+__ecereNameSpace__ecere__com__TOTAL_MEM -= (uint64)part->size * this->blockSpace;
 __ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemPart);
 this->numParts--;
 free(part->memory);
@@ -2975,9 +2975,9 @@ return (((void *)0));
 const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this)
 {
 return (__extension__ ({
-const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  onType);
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  reserved, unsigned int *  onType);
 
-__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  onType))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  reserved, unsigned int *  onType))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__Platform, (void *)&this, (((void *)0)), (((void *)0)), (((void *)0))) : (const char * )1;
 }));
 }

@@ -218,7 +218,7 @@ return (void *)this;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {
-return this->data;
+return this->count ? this->data : (((void *)0));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
@@ -442,7 +442,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetLast(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {
-return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(this->data ? ((unsigned char *)this->data + (this->count * this->type->typeSize) - 1) : (((void *)0)));
+return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(this->count && this->data ? ((unsigned char *)this->data + (this->count * this->type->typeSize) - 1) : (((void *)0)));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
@@ -464,7 +464,7 @@ return ((((this->type->type == 1) ? ((uint64)(uintptr_t)item) : ((this->type->ty
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, const uint64 pos, unsigned int create)
 {
-return this->data ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)((unsigned char *)this->data + pos * this->type->typeSize) : (((void *)0));
+return this->count && this->data ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)((unsigned char *)this->data + pos * this->type->typeSize) : (((void *)0));
 }
 
 const char * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__BuiltInContainer * this, char * tempString, void * fieldData, unsigned int * onType)
