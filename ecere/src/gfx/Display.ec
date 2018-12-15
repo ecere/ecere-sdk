@@ -832,8 +832,13 @@ public:
          {
             Material curMaterial = display3D.material;
 
-            if(display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
-               driver.SelectMesh(this, mesh);
+            if(display3D.mesh != mesh)
+            {
+#if !defined(_GLES) && !defined(_GLES2)
+               if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+#endif
+                  driver.SelectMesh(this, mesh);
+            }
             display3D.mesh = mesh;
 
             for(; group; group = group.next)

@@ -430,8 +430,9 @@ public struct GLEAB : GLB
          ))
       {
 #if !defined(__EMSCRIPTEN__)
-         if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+         if(glCaps_vertexBuffer)
 #endif
+         if(glabCurElementBuffer != ((this != null) ? buffer : 0))
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
