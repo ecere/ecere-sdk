@@ -4205,7 +4205,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-#if !defined( __ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__APPLE__)
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
@@ -4216,6 +4216,11 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          OGLMesh oglMesh = mesh.data;
          bool collectingHits = display.display3D && display.display3D.collectingHits;
+         int baseVertexOffset = 0;
+
+#if defined(_GLES) || defined(_GLES2)
+         baseVertexOffset = mesh.baseVertex;
+#endif
 
          // *** Vertex Stream ***
          GLEnableClientState(VERTICES);
@@ -4223,16 +4228,17 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             bool interleaved = oglMesh.interleaved;
             oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT),
-               interleaved ? 8*sizeof(float) : 0, oglMesh.vertices.buffer ? null : (double *)mesh.vertices);
+               interleaved ? 8*sizeof(float) : 0,
+               oglMesh.vertices.buffer ? (void *)((baseVertexOffset*8)*sizeof(float)) : (void *)mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
                GLEnableClientState(NORMALS);
                if(interleaved)
-                  oglMesh.vertices.use(normal, 3, GL_FLOAT, 8*sizeof(float), (void *)(3*sizeof(float)));
+                  oglMesh.vertices.use(normal, 3, GL_FLOAT, 8*sizeof(float), (void *)((baseVertexOffset*8+3)*sizeof(float)));
                else
-                  oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? null : mesh.normals);
+                  oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? (void *)((baseVertexOffset*3)*sizeof(float)) : mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
@@ -4245,8 +4251,8 @@ class OpenGLDisplayDriver : DisplayDriver
                {
                   GLEnableClientState(TANGENTS1);
                   GLEnableClientState(TANGENTS2);
-                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? null : mesh.tangents);
-                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)sizeof(Vector3Df) : mesh.tangents+1);
+                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)(baseVertexOffset * 6 * sizeof(float)) : mesh.tangents);
+                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)((baseVertexOffset*6 + 3) * sizeof(float)) : mesh.tangents+1);
                }
                else
                {
@@ -4261,9 +4267,9 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                GLEnableClientState(TEXCOORDS);
                if(interleaved)
-                  oglMesh.vertices.use(texCoord, 2, GL_FLOAT, 8*sizeof(float), (void *)(6*sizeof(float)));
+                  oglMesh.vertices.use(texCoord, 2, GL_FLOAT, 8*sizeof(float), (void *)((baseVertexOffset*8 + 6)*sizeof(float)));
                else
-                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? (void *)(baseVertexOffset*2 *sizeof(float)) : mesh.texCoords);
             }
             else
                GLDisableClientState(TEXCOORDS);
@@ -4286,7 +4292,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.colors || mesh.flags.colors)
             {
                GLEnableClientState(COLORS);
-               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? null : mesh.colors);
+               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? (void *)(baseVertexOffset * 4 * sizeof(float)) : mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
