@@ -758,4 +758,27 @@ public:
       PrintLn(buffers.count, " buffers allocated; ", tmp);
       PrintLn("");
    }
+
+   void ::printBuf(char * output, uint size)
+   {
+      char tmp[256];
+      char * s = output;
+      int l;
+
+      *s = 0;
+      l = PrintLnBuf(output, size, "");
+      size -= l, s += l;
+      l = PrintLnBuf(s, size, "OpenGL Textures & Buffers Memory Stats");
+      size -= l, s += l;
+      l = PrintLnBuf(s, size, "======================================");
+      size -= l, s += l;
+      PrintSize(tmp, texMem, 2);
+      l = PrintLnBuf(s, size, textures.count, " textures allocated; ", tmp);
+      size -= l, s += l;
+      PrintSize(tmp, bufMem, 2);
+      l = PrintLnBuf(s, size, buffers.count, " buffers allocated; ", tmp);
+      size -= l, s += l;
+      l = PrintLnBuf(s, size, "");
+      size -= l, s += l;
+   }
 }
