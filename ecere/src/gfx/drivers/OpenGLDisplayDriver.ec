@@ -4046,7 +4046,7 @@ class OpenGLDisplayDriver : DisplayDriver
             uint vSize = 8 * sizeof(float);
             if(oglMesh.needAlloc)
             {
-               BlockEntry block = mab.allocate(nVertices * vSize);
+               BlockEntry block = mab.allocate(attributes, nVertices * vSize);
                oglMesh.interleaved = true;
                mesh.baseVertex = block.start / vSize;
                oglMesh.vertices.buffer = mab.ab.buffer;
@@ -4188,7 +4188,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(mb != null)
             {
-               BlockEntry block = mb.allocate(size);
+               BlockEntry block = mb.allocate(elements, size);
                group.baseIndex = block.start / ixSize;
                oglIndices.buffer.buffer = mb.ab.buffer;
             }
