@@ -927,6 +927,12 @@ public:
 
       Unlock(0);
 
+      delete vertices;
+      delete texCoords;
+      delete normals;
+      delete colors;
+      delete lightVectors;
+
       for(g = groups.first; g; g = g.next)
       {
          if(!g.type.vertexRange)
@@ -941,6 +947,7 @@ public:
             if(mat && mat.baseMap && mat.baseMap.displaySystem != displaySystem)
                mat.baseMap.MakeMipMaps(displaySystem);
          }
+         delete g.indices;
       }
       result = true;
       return result;
