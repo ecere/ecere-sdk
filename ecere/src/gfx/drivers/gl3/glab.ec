@@ -123,7 +123,7 @@ public class FreeBlockMap : Array<BlockEntry>
    }
 
 public:
-   BlockEntry allocate(uint size)
+   BlockEntry allocate(GLBType type, uint size)
    {
       uint count = this.count;
       BlockEntry * array = this.array;
@@ -144,7 +144,7 @@ public:
             return { start, start + size - 1 };
          }
       }
-      if((added = onExpand(size - endAvailable)))
+      if((added = onExpand(type, size - endAvailable)))
       {
          BlockEntry * block = count ? array + count - 1 : null;
          uint start;
@@ -171,7 +171,7 @@ public:
       addFreeBlock(block.start, block.end - block.start + 1);
    }
 
-   virtual uint onExpand(uint required) { return 0; }
+   virtual uint onExpand(GLBType type, uint required) { return 0; }
 }
 
 ///////////////
@@ -181,10 +181,10 @@ public class GLMB : FreeBlockMap
 public:
    GLB ab;
 
-   uint onExpand(uint extraNeeded)
+   uint onExpand(GLBType type, uint extraNeeded)
    {
       uint newSize = totalSize + Max(extraNeeded, totalSize / 2);
-      if(ab.resize(totalSize, newSize, staticDraw))
+      if(ab.resize(type, totalSize, newSize, staticDraw))
       {
          uint spaceAdded = newSize - totalSize;
          totalSize = newSize;
@@ -211,17 +211,17 @@ public struct GLB
 {
    uint buffer;
 
-   bool resize(uint oldSize, uint newSize, GLBufferUsage usage)
+   bool resize(GLBType type, uint oldSize, uint newSize, GLBufferUsage usage)
    {
       // TODO: Update buffers and defrag instead of doing 2 copy?
       if(!oldSize)
-         return allocate(newSize, null, usage);
+         return _allocate(type, newSize, null, usage);
       else
       {
          GLB tmp { };
-         tmp.allocate(newSize, null, usage);
+         tmp._allocate(type, newSize, null, usage);
          tmp.copy(this, 0, 0, oldSize);
-         allocate(newSize, null, usage);
+         _allocate(type, newSize, null, usage);
          copy(tmp, 0, 0, oldSize);
          tmp.free();
       }
@@ -701,7 +701,7 @@ public:
    void ::allocTexture(uint tex, uint w, uint h, bool mipMaps)
    {
       uint currentMem = textures[tex];
-      uint newMem = w * h;
+      uint newMem = w * h * 4;
 
       if(mipMaps)
          newMem += (uint)(newMem * 1.33);
