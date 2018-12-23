@@ -227,7 +227,7 @@ define textCellH = 16;
 public enum PixelFormat // : byte MESSES UP GuiApplication
 {
    pixelFormat4, pixelFormat8, pixelFormat444, pixelFormat555, pixelFormat565, pixelFormat888, pixelFormatAlpha, pixelFormatText, pixelFormatRGBA,
-   pixelFormatA16, pixelFormatRGBAGL /* TODO: clarify pixelFormatRGBA vs. GL-ready */
+   pixelFormatA16, pixelFormatRGBAGL /* TODO: clarify pixelFormatRGBA vs. GL-ready */, pixelFormatETC2RGBA8
 };
 public enum Resolution : int
 {

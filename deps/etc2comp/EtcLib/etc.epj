@@ -1,0 +1,119 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "etc",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "EtcCodec",
+         "Etc"
+      ],
+      "TargetType" : "SharedLibrary",
+      "TargetFileName" : "etc"
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "m",
+               "stdc++"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "Speed",
+            "Libraries" : [
+
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Android",
+         "Options" : {
+            "Optimization" : "Speed"
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "pthread",
+                     "m",
+                     "gnustl_static"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            "Etc/EtcConfig.h",
+            "Etc/EtcMath.cpp",
+            "Etc/EtcFilter.cpp",
+            "Etc/EtcColor.h",
+            "Etc/Etc.h",
+            "Etc/EtcColorFloatRGBA.h",
+            "Etc/Etc.cpp",
+            "Etc/EtcImage.h",
+            "Etc/EtcFilter.h",
+            "Etc/EtcImage.cpp",
+            "Etc/EtcMath.h"
+         ]
+      },
+      {
+         "Folder" : "codecs",
+         "Files" : [
+            "EtcCodec/EtcBlock4x4Encoding.cpp",
+            "EtcCodec/EtcDifferentialTrys.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_RG11.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_ETC1.h",
+            "EtcCodec/EtcBlock4x4Encoding_RGB8.h",
+            "EtcCodec/EtcBlock4x4Encoding_R11.h",
+            "EtcCodec/EtcBlock4x4Encoding_RGB8A1.cpp",
+            "EtcCodec/EtcBlock4x4.h",
+            "EtcCodec/EtcSortedBlockList.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_RGBA8.cpp",
+            "EtcCodec/EtcErrorMetric.h",
+            "EtcCodec/EtcBlock4x4Encoding_R11.cpp",
+            "EtcCodec/EtcBlock4x4EncodingBits.h",
+            "EtcCodec/EtcBlock4x4Encoding_RGB8.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_ETC1.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_RGB8A1.h",
+            "EtcCodec/EtcIndividualTrys.h",
+            "EtcCodec/EtcBlock4x4Encoding_RG11.h",
+            "EtcCodec/EtcSortedBlockList.h",
+            "EtcCodec/EtcBlock4x4Encoding.h",
+            "EtcCodec/EtcBlock4x4.cpp",
+            "EtcCodec/EtcDifferentialTrys.h",
+            "EtcCodec/EtcIndividualTrys.cpp",
+            "EtcCodec/EtcBlock4x4Encoding_RGBA8.h"
+         ]
+      },
+      "../etcAPI.cpp"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
