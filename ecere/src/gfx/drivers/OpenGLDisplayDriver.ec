@@ -540,6 +540,62 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
 }
 #endif
 
+#if defined(__unix__)
+#define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
+#define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
+typedef GLXContext (*glXCreateContextAttribsARBProc)(void *, GLXFBConfig, GLXContext, Bool, const int*);
+
+static bool ctxErrorOccurred = false;
+static int ctxErrorHandler( void *dpy, XErrorEvent *ev )
+{
+    ctxErrorOccurred = true;
+    return 0;
+}
+
+GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig config, XVisualInfo * visualInfo)
+{
+   GLXContext ctx = 0;
+   const String glxExts = glXQueryExtensionsString( display, DefaultScreen( display ) );
+   int (*oldHandler)(void*, XErrorEvent*) = (void *)XSetErrorHandler((void *)&ctxErrorHandler);
+   glXCreateContextAttribsARBProc glXCreateContextAttribsARB =
+      (void *)glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB" );
+
+   ctxErrorOccurred = false;
+   if (!config || !glXCreateContextAttribsARB || !strstr(glxExts, "GLX_ARB_create_context" ))
+   {
+      if(config)
+         ctx = glXCreateNewContext( display, config, GLX_RGBA_TYPE, oglSystem ? oglSystem.glContext : 0, True );
+      else
+         ctx = glXCreateContext(display, visualInfo, oglSystem ? oglSystem.glContext : 0, True);
+   }
+   else
+   {
+      int context_attribs[] =
+      {
+         GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
+         GLX_CONTEXT_MINOR_VERSION_ARB, 5,
+         GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+         None
+      };
+
+      ctx = glXCreateContextAttribsARB( display, config, oglSystem ? oglSystem.glContext : 0, True, context_attribs );
+
+      XSync( display, False );
+      if(ctxErrorOccurred || !ctx)
+      {
+         // TODO: Use a loop like in winCreateContext() to try different versions...
+         context_attribs[1] = 1;
+         context_attribs[3] = 0;
+         ctxErrorOccurred = false;
+         ctx = glXCreateContextAttribsARB( display, config, 0, True, context_attribs );
+      }
+   }
+   XSync( display, False );
+   XSetErrorHandler( (void *)oldHandler );
+   return ctx;
+}
+#endif
+
 class OpenGLDisplayDriver : DisplayDriver
 {
    class_property(name) = "OpenGL";
@@ -1008,7 +1064,8 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       if(oglSystem.visualInfo)
       {
-         oglSystem.glContext = glXCreateContext(xGlobalDisplay, oglSystem.visualInfo, null, True);
+         oglSystem.glContext = GLX_CreateContext(null, xGlobalDisplay, null, oglSystem.visualInfo);
+         oglSystem.compat = false; // TODO: Have GLX_CreateContext set that up
          if(oglSystem.glContext)
          {
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
@@ -1293,6 +1350,7 @@ class OpenGLDisplayDriver : DisplayDriver
          result = true;
 #  else
          XVisualInfo * visualInfo = ((XWindowData)display.windowDriverData).visual;
+         GLXFBConfig fbConfig = ((XWindowData)display.windowDriverData).config;
          /*
 #if defined(__APPLE__)
          XVisualInfo template = { 0 };
@@ -1319,7 +1377,8 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             //printf("visualInfo is not null\n");
             // printf("Creating Display Context, sharing with %x!\n", oglSystem.glContext);
-            oglDisplay.glContext = glXCreateContext(xGlobalDisplay, visualInfo, oglSystem.glContext, True);
+            oglDisplay.glContext = GLX_CreateContext(oglSystem, xGlobalDisplay, fbConfig, visualInfo);
+            oglDisplay.compat = false; // TODO: Have GLX_CreateContext set that up
             //XFree(visualInfo);
          }
 
@@ -1639,7 +1698,8 @@ class OpenGLDisplayDriver : DisplayDriver
             oglDisplay.pBuffer = glXCreatePbuffer(xGlobalDisplay, config[0], PBattrib);
             if(oglDisplay.pBuffer)
             {
-               oglDisplay.glContext = glXCreateNewContext(xGlobalDisplay, config[0], GLX_RGBA_TYPE, oglSystem.glContext, True);
+               oglDisplay.glContext = GLX_CreateContext(oglSystem, xGlobalDisplay, config[0], visualInfo);
+               oglDisplay.compat = false; // TODO: Have GLX_CreateContext set that up
                if(oglDisplay.glContext)
                {
                   glXMakeCurrent(xGlobalDisplay, None, null);
