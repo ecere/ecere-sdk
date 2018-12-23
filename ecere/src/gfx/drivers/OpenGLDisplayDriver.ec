@@ -540,7 +540,7 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
 }
 #endif
 
-#if defined(__unix__)
+#if defined(__unix__) && !defined(__ANDROID__) && !defined(__ODROID__)
 #define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
 typedef GLXContext (*glXCreateContextAttribsARBProc)(void *, GLXFBConfig, GLXContext, Bool, const int*);
@@ -2051,12 +2051,13 @@ class OpenGLDisplayDriver : DisplayDriver
       GLCapabilities capabilities = oglSystem.capabilities;
       Bitmap convBitmap = bitmap;
 
-      if(convBitmap.pixelFormat != pixelFormatRGBAGL)
+      if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
          convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
       if(convBitmap)
       {
          bool sRGB2Linear = bitmap.sRGB2Linear;
-         int internalFormat =
+         int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+            (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
             (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA);
          int minFilter = oglSystem.loadingFont ? GL_NEAREST : mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
          int maxFilter = oglSystem.loadingFont ? GL_NEAREST : GL_LINEAR;
@@ -2119,7 +2120,10 @@ class OpenGLDisplayDriver : DisplayDriver
                int type = GL_UNSIGNED_BYTE;
                int error;
 
-               glTexImage2D(target, level, internalFormat, width, height, 0, format, type, mipMap.picture);
+               if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
+                  glCompressedTexImage2D(target, level, internalFormat, width, height, 0, mipMap.sizeBytes, mipMap.picture);
+               else
+                  glTexImage2D(target, level, internalFormat, width, height, 0, format, type, mipMap.picture);
 
                //int width = 0;
                glGetError();
@@ -3308,7 +3312,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
+#if ENABLE_GL_FFP
       OGLDisplay oglDisplay = display.driverData;
+#endif
       Shader shader = material.shader ? material.shader : defaultShader;
       MaterialFlags flags = material.flags;
       Bitmap baseMap = material.baseMap;

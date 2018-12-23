@@ -2,6 +2,12 @@ namespace gfx;
 
 import "Display"
 
+#ifdef ETC2_COMPRESS
+default extern void * etc2Compress(float * pixelData, unsigned int width, unsigned int height,
+   unsigned int * size, unsigned int * dw, unsigned int * dh);
+default extern void etc2Free(void * data);
+#endif
+
 public class BitmapFormat
 {
    class_data const char ** extensions;
@@ -875,9 +881,23 @@ public:
 
          for(i = 0; i < numMipMaps; i++)
          {
+            if(bitmaps[i] && pixelFormat == pixelFormatETC2RGBA8)
+            {
+   #ifdef ETC2_COMPRESS
+               etc2Free(bitmaps[i].picture);
+   #endif
+               bitmaps[i].picture = null;
+            }
             delete bitmaps[i];
          }
          delete bitmaps;
+      }
+      if(this && pixelFormat == pixelFormatETC2RGBA8)
+      {
+#ifdef ETC2_COMPRESS
+         etc2Free(picture);
+#endif
+         picture = null;
       }
 
       if(this && driver)
@@ -1114,7 +1134,7 @@ public:
                   if(!retValue)
                   {
                      retValue = { mipMaps = true };
-                     retValue.pixelFormat = pixelFormatRGBAGL;
+                     retValue.pixelFormat = compress ? pixelFormatETC2RGBA8 : pixelFormatRGBAGL;
                      retValue.width = w;
                      retValue.height = h;
                      retValue.bitmaps = new0 Bitmap[numMipMaps];
@@ -1124,11 +1144,39 @@ public:
                else
                {
                   retValue = convBitmap;
-                  retValue.pixelFormat = pixelFormatRGBAGL;
+                  retValue.pixelFormat = compress ? pixelFormatETC2RGBA8 : pixelFormatRGBAGL;
                }
             }
             if(!mipMaps) break;
          }
+#ifdef ETC2_COMPRESS
+         if(retValue && compress)
+         {
+            for(level = 0; level < (mipMaps ? retValue.numMipMaps : 1); level++)
+            {
+               uint size = 0;
+               int i;
+               Bitmap mipMap = mipMaps ? retValue.bitmaps[level] : retValue;
+               void * pixelData = mipMap.picture;
+               uint width = mipMap.width, height = mipMap.height;
+               float * fData = new float[width * height * 4];
+
+               for(i = 0; i < width * height; i++)
+               {
+                  ColorRGBA * pix = &((ColorRGBA *)pixelData)[i];
+                  fData[4*i+0] = pix->r / 255.0f;
+                  fData[4*i+1] = pix->g / 255.0f;
+                  fData[4*i+2] = pix->b / 255.0f;
+                  fData[4*i+3] = pix->a / 255.0f;
+               }
+
+               delete pixelData;
+               mipMap.picture = etc2Compress(fData, width, height, &size, &width, &height);
+               mipMap.sizeBytes = size;
+               delete fData;
+            }
+         }
+#endif
       }
       if(!retValue)
          delete convBitmap;
