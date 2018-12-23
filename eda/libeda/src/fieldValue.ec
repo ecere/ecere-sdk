@@ -25,7 +25,7 @@ public struct FieldValue
    FieldTypeEx type;
    union
    {
-      int i;
+      int64 i;
       double r;
       String s;
       void * b;
@@ -71,7 +71,7 @@ public struct FieldValue
       char temp[128];
       switch(type.type)
       {
-         case integer: sprintf(temp, "%d", i); return CopyString(temp);
+         case integer: sprintf(temp, FORMAT64D, i); return CopyString(temp);
          case real:    return CopyString(r.OnGetString(temp, null, null));
          case text:    return s;
       }
@@ -111,7 +111,7 @@ public struct FieldValue
    {
       switch(type.type)
       {
-         case integer: sprintf(stringOutput, "%d", i); return stringOutput;
+         case integer: sprintf(stringOutput, FORMAT64D, i); return stringOutput;
          case real:
          {
             String s = (String)r.OnGetString(stringOutput, null, null);
@@ -161,7 +161,7 @@ public struct FieldValue
       else
       {
          type = { integer };
-         i = (int) strtol(string, null, 0);
+         i = (int64) strtoll(string, null, 0);
          return true;
       }
       return false;
