@@ -199,7 +199,7 @@ public:
       switch(value.type.type)
       {
          case nil:     bind_null  (pos);          break;
-         case integer: bind_int   (pos, value.i); break;
+         case integer: bind_int64 (pos, value.i); break;
          case real:    bind_double(pos, value.r); break;
          case text:    bind_text  (pos, value.s); break;
       }
