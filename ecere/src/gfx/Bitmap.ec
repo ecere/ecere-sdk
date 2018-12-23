@@ -266,6 +266,8 @@ public:
    bool keepData;
    bool mipMaps;
    bool sRGB2Linear;
+   int numMipMaps;
+   Bitmap * bitmaps;
 
 public:
 
@@ -399,6 +401,11 @@ public:
 
    bool Copy(Bitmap source)
    {
+      return Copy2(source, false);
+   }
+
+   bool Copy2(Bitmap source, bool moveStuff)
+   {
       bool result = false;
       if(source)
       {
@@ -416,21 +423,30 @@ public:
          displaySystem = source.displaySystem;
          driver = source.driver;
          driverData = source.driverData;
-
-         picture = new byte[sizeBytes];
+         mipMaps = source.mipMaps;
+         numMipMaps = source.numMipMaps;
+         bitmaps = source.bitmaps;
          palette = source.palette;
-         allocatePalette = false;
 
-         if(picture)
+         if(!moveStuff)
          {
-            memcpy(picture, source.picture, sizeBytes);
-            result = true;
+            picture = new byte[sizeBytes];
+            allocatePalette = false;
+            if(source.picture)
+               memcpy(picture, source.picture, sizeBytes);
+            else
+               memset(picture, 0, sizeBytes);
          }
          else
-            memset(picture, 0, sizeBytes);
-
-         if(!result)
-            Free();
+         {
+            source.picture = null;
+            source.palette = null;
+            source.bitmaps = null;
+            source.numMipMaps = 0;
+            picture = source.picture;
+            allocatePalette = source.allocatePalette;
+         }
+         result = true;
       }
       return result;
    }
@@ -853,6 +869,17 @@ public:
 
    void Free()
    {
+      if(this && bitmaps)
+      {
+         uint i;
+
+         for(i = 0; i < numMipMaps; i++)
+         {
+            delete bitmaps[i];
+         }
+         delete bitmaps;
+      }
+
       if(this && driver)
       {
          driver.FreeBitmap(displaySystem, this);
@@ -944,6 +971,168 @@ public:
          nodeList.Free(null);
       }
       return palette;
+   }
+
+   Bitmap ProcessDD(bool mipMaps, uint cubeMapFace, bool compress, int maxTextureSize, bool makePow2)
+   {
+      Bitmap bitmap = this;
+      Bitmap retValue = null;
+      Bitmap convBitmap { mipMaps = false };
+
+      convBitmap.width = bitmap.width;
+      convBitmap.height = bitmap.height;
+      convBitmap.pixelFormat = bitmap.pixelFormat;
+      convBitmap.picture = bitmap.picture;
+      convBitmap.stride = bitmap.stride;
+      convBitmap.size = bitmap.stride;
+      convBitmap.transparent = bitmap.transparent;
+      convBitmap.shadeShift = bitmap.shadeShift;
+      convBitmap.paletteShades = bitmap.paletteShades;
+      convBitmap.sizeBytes = bitmap.sizeBytes;
+      convBitmap.displaySystem = bitmap.displaySystem;
+      convBitmap.driver = bitmap.driver;
+      convBitmap.driverData = bitmap.driverData;
+
+      if(bitmap.keepData)
+      {
+         convBitmap.picture = new byte[convBitmap.sizeBytes];
+         if(bitmap.picture)
+            memcpy(convBitmap.picture, bitmap.picture, bitmap.sizeBytes);
+         else
+            memset(convBitmap.picture, 0, convBitmap.sizeBytes);
+      }
+      else
+      {
+         convBitmap.picture = bitmap.picture;
+         bitmap.picture = null;
+      }
+
+      convBitmap.palette = bitmap.palette;
+      convBitmap.allocatePalette = false;
+
+      // Pre process the bitmap... First make it 32 bit
+      if(convBitmap.Convert(null, pixelFormat888, null))
+      {
+         int c, level;
+         uint w = bitmap.width, h = bitmap.height;
+         bool oldStyleCubeMap = (cubeMapFace >> 3) != 0;
+         bool result = true;
+         int numMipMaps = 0;
+
+         if(makePow2)
+         {
+            w = pow2i(w);
+            h = pow2i(h);
+         }
+         if(compress)
+         {
+            w = (w + 3) & (~3);
+            h = (h + 3) & (~3);
+         }
+         w = Min(w, maxTextureSize);
+         h = Min(h, maxTextureSize);
+
+         if(mipMaps)
+         {
+            while(w * 2 < h) w *= 2;
+            while(h * 2 < w) h *= 2;
+            numMipMaps = 1+Max(log2i(w), log2i(h));
+         }
+
+         // Switch ARGB to RGBA
+         {
+            int size = convBitmap.stride * convBitmap.height;
+            uint * pic = (uint *)convBitmap.picture;
+            for(c = 0; c < size; c++)
+            {
+               ColorAlpha color = pic[c];
+               pic[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
+            }
+         }
+
+         if(cubeMapFace && oldStyleCubeMap)
+         {
+            int face = (cubeMapFace & 7) - 1;
+            if(face == 0 || face == 1 || face == 4 || face == 5)
+            {
+               uint w = convBitmap.width;
+               uint32 * tmp = new uint [convBitmap.width];
+               int x, y;
+               for(y = 0; y < convBitmap.height; y++)
+               {
+                  uint32 * pic = (uint32 *)((byte *)convBitmap.picture + y * w * 4);
+                  for(x = 0; x < w; x++)
+                     tmp[x] = pic[w-1-x];
+                  memcpy(pic, tmp, w*4);
+               }
+               delete tmp;
+            }
+            else if(face == 2 || face == 3)
+            {
+               int y;
+               Bitmap tmp { };
+               tmp.Allocate(null, convBitmap.width, convBitmap.height, 0, convBitmap.pixelFormat, false);
+               for(y = 0; y < convBitmap.height; y++)
+               {
+                  memcpy(tmp.picture + convBitmap.width * 4 * y,
+                     convBitmap.picture + (convBitmap.height-1-y) * convBitmap.width * 4,
+                     convBitmap.width * 4);
+               }
+               memcpy(convBitmap.picture, tmp.picture, convBitmap.sizeBytes);
+               delete tmp;
+            }
+         }
+
+         for(level = 0; result && (w >= 1 || h >= 1); level++, w >>= 1, h >>= 1)
+         {
+            Bitmap mipMap;
+            if(!w) w = 1;
+            if(!h) h = 1;
+            if(bitmap.width != w || bitmap.height != h)
+            {
+               mipMap = Bitmap { };
+               if(mipMap.Allocate(null, w, h, w, pixelFormat888, false))
+               {
+                  Surface mipSurface = mipMap.GetSurface(0,0,null);
+                  mipSurface.blend = false;
+                  mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
+                  delete mipSurface;
+               }
+               else
+               {
+                  result = false;
+                  delete mipMap;
+               }
+            }
+            else
+               mipMap = convBitmap;
+
+            if(result)
+            {
+               if(mipMaps)
+               {
+                  if(!retValue)
+                  {
+                     retValue = { mipMaps = true };
+                     retValue.pixelFormat = pixelFormatRGBAGL;
+                     retValue.width = w;
+                     retValue.height = h;
+                     retValue.bitmaps = new0 Bitmap[numMipMaps];
+                  }
+                  retValue.bitmaps[retValue.numMipMaps++] = mipMap;
+               }
+               else
+               {
+                  retValue = convBitmap;
+                  retValue.pixelFormat = pixelFormatRGBAGL;
+               }
+            }
+            if(!mipMaps) break;
+         }
+      }
+      if(!retValue)
+         delete convBitmap;
+      return retValue;
    }
 };
 

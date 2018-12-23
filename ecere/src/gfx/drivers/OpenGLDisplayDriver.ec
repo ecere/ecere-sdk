@@ -2050,80 +2050,20 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities capabilities = oglSystem.capabilities;
       Bitmap convBitmap = bitmap;
-      bool oldStyleCubeMap = (cubeMapFace >> 3) != 0;
-      int face = (cubeMapFace & 7) - 1;
-      if(bitmap.keepData)
-      {
-         convBitmap = { };
-         convBitmap.Copy(bitmap);
-      }
 
-      // Pre process the bitmap... First make it 32 bit
-      if(/*bitmap.pixelFormat == pixelFormatRGBA || */convBitmap.Convert(null, pixelFormat888, null))
+      if(convBitmap.pixelFormat != pixelFormatRGBAGL)
+         convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+      if(convBitmap)
       {
-         int c, level;
-         uint w = bitmap.width, h = bitmap.height;
-         GLuint glBitmap = cubeMapFace && face > 0 ? (GLuint)(uintptr)bitmap.driverData : 0;
+         bool sRGB2Linear = bitmap.sRGB2Linear;
+         int internalFormat =
+            (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA);
+         int minFilter = oglSystem.loadingFont ? GL_NEAREST : mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+         int maxFilter = oglSystem.loadingFont ? GL_NEAREST : GL_LINEAR;
+         int face = (cubeMapFace & 7) - 1;
          int target = cubeMapFace ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-         if(!capabilities.nonPow2Textures)
-         {
-            w = pow2i(w);
-            h = pow2i(h);
-         }
-         w = Min(w, oglSystem.maxTextureSize);
-         h = Min(h, oglSystem.maxTextureSize);
-
-         if(mipMaps)
-         {
-            while(w * 2 < h) w *= 2;
-            while(h * 2 < w) h *= 2;
-         }
-
-         // Switch ARGB to RGBA
-         //if(bitmap.format != pixelFormatRGBA)
-         {
-            int size = convBitmap.stride * convBitmap.height;
-            for(c = 0; c < size; c++)
-            {
-               // ((ColorRGBA *)bitmap.picture)[c] = ((ColorAlpha *)bitmap.picture)[c];
-               // TODO:
-               ColorAlpha color = ((ColorAlpha *)convBitmap.picture)[c];
-               ((ColorRGBA *)convBitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
-            }
-         }
-         // convBitmap.pixelFormat = pixelFormat888;
-
-         if(cubeMapFace && oldStyleCubeMap)
-         {
-            if(face == 0 || face == 1 || face == 4 || face == 5)
-            {
-               uint w = convBitmap.width;
-               uint32 * tmp = new uint [convBitmap.width];
-               int x, y;
-               for(y = 0; y < convBitmap.height; y++)
-               {
-                  uint32 * pic = (uint32 *)((byte *)convBitmap.picture + y * w * 4);
-                  for(x = 0; x < w; x++)
-                     tmp[x] = pic[w-1-x];
-                  memcpy(pic, tmp, w*4);
-               }
-               delete tmp;
-            }
-            else if(face == 2 || face == 3)
-            {
-               int y;
-               Bitmap tmp { };
-               tmp.Allocate(null, convBitmap.width, convBitmap.height, 0, convBitmap.pixelFormat, false);
-               for(y = 0; y < convBitmap.height; y++)
-               {
-                  memcpy(tmp.picture + convBitmap.width * 4 * y,
-                     convBitmap.picture + (convBitmap.height-1-y) * convBitmap.width * 4,
-                     convBitmap.width * 4);
-               }
-               memcpy(convBitmap.picture, tmp.picture, convBitmap.sizeBytes);
-               delete tmp;
-            }
-         }
+         GLuint glBitmap = cubeMapFace && face > 0 ? (GLuint)(uintptr)bitmap.driverData : 0;
+         int level;
 
          glGetError();
          if(!glBitmap)
@@ -2131,19 +2071,16 @@ class OpenGLDisplayDriver : DisplayDriver
          if(glBitmap == 0)
          {
             //int error = glGetError();
+            if(convBitmap != bitmap)
+               delete convBitmap;
             return false;
          }
 
          glBindTexture(target, glBitmap);
          glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-         //glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-         //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
-         //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
+         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter);
+         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, maxFilter);
 
          glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(oglSystem.version));
          glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(oglSystem.version));
@@ -2162,49 +2099,30 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
 #if ENABLE_GL_FFP
-      if(!capabilities.shaders)
-         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+         if(!capabilities.shaders)
+            glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 #endif
 
          result = true;
 
 #ifdef GLSTATS
-         GLStats::allocTexture(glBitmap, w, h, true);
+         GLStats::allocTexture(glBitmap, convBitmap.width, convBitmap.height, mipMaps);
 #endif
-
-         for(level = 0; result && (w >= 1 || h >= 1); level++, w >>= 1, h >>= 1)
+         for(level = 0; level < (convBitmap.mipMaps ? convBitmap.numMipMaps : 1); level++)
          {
-            Bitmap mipMap;
-            if(!w) w = 1;
-            if(!h) h = 1;
-            if(bitmap.width != w || bitmap.height != h)
+            Bitmap mipMap = convBitmap.mipMaps ? convBitmap.bitmaps[level] : convBitmap;
+            if(mipMap)
             {
-               mipMap = Bitmap { };
-               if(mipMap.Allocate(null, w, h, w, convBitmap.pixelFormat, false))
-               {
-                  Surface mipSurface = mipMap.GetSurface(0,0,null);
-                  mipSurface.blend = false;
-                  mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
-                  delete mipSurface;
-               }
-               else
-               {
-                  result = false;
-                  delete mipMap;
-               }
-            }
-            else
-               mipMap = convBitmap;
-
-            if(result)
-            {
+               int target = cubeMapFace ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + face : GL_TEXTURE_2D;
+               uint width = mipMap.width, height = mipMap.height;
+               int format = GL_RGBA;
+               int type = GL_UNSIGNED_BYTE;
                int error;
-               bool sRGB2Linear = bitmap.sRGB2Linear;
+
+               glTexImage2D(target, level, internalFormat, width, height, 0, format, type, mipMap.picture);
 
                //int width = 0;
                glGetError();
-               // glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
-               glTexImage2D(cubeMapFace ? GL_TEXTURE_CUBE_MAP_POSITIVE_X + face : GL_TEXTURE_2D, level, sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
                //printf("Calling glTexImage2D\n");
                //glGetTexLevelParameteriv(GL_TEXTURE_2D, level, GL_TEXTURE_WIDTH, &width);
                //printf("width = %d (Should be %d, %d)\n", width, w, h);
@@ -2215,24 +2133,16 @@ class OpenGLDisplayDriver : DisplayDriver
                   result = false;
                }
             }
-            if(mipMap != convBitmap)
-               delete mipMap;
-            if(!mipMaps) break;
          }
 
-         convBitmap.driver.FreeBitmap(convBitmap.displaySystem, convBitmap);
-         bitmap.driverData = (void *)(uintptr)glBitmap;
-         bitmap.driver = displaySystem.driver;
-         if(bitmap.keepData)
+         if(convBitmap != bitmap)
             delete convBitmap;
-
-         if(!result)
-            FreeBitmap(displaySystem, bitmap);
-         else if(oglSystem.loadingFont)
+         else if(!bitmap.keepData)
+            bitmap.Free();
+         if(result)
          {
-            glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            oglSystem.loadingFont = false;
+            bitmap.driverData = (void *)(uintptr)glBitmap;
+            bitmap.driver = displaySystem.driver;
          }
       }
       return result;
