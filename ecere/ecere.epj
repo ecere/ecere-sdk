@@ -349,7 +349,8 @@
                "ECERE_NOFONTCONFIG",
                "HIGH_DPI",
                "ECERE_NOSSL",
-               "_GLES2"
+               "_GLES2",
+               "ETC2_COMPRESS"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-9a",
@@ -373,14 +374,16 @@
                      "log",
                      "android",
                      "EGL",
-                     "GLESv2"
+                     "GLESv2",
+                     "etc"
                   ],
                   "LibraryDirs" : [
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/libpng-1.6.12/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/jpeg-9a/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)",
-                     "../deps/curl-7.51.0/obj/release.$(PLATFORM).$(COMPILER)"
+                     "../deps/curl-7.51.0/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/etc2comp/EtcLib/obj/android.$(PLATFORM).$(COMPILER)"
                   ]
                }
             }
@@ -786,7 +789,8 @@
                                  }
                               }
                            ]
-                        }
+                        },
+                        "ETC2Format.ec"
                      ],
                      "Configurations" : [
                         {
