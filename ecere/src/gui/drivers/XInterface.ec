@@ -283,6 +283,9 @@ public:
    Box decor;
    bool gotFrameExtents;
    bool currentlyVisible;
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)
+   GLXFBConfig config;
+#endif
 };
 
 bool XGetBorderWidths(Window window, Box box)
@@ -2450,6 +2453,9 @@ class XInterface : Interface
       Visual * visual;
       XIC ic = null;
       unsigned long mask = EVENT_MASK;
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)
+      GLXFBConfig fbconfig = null;
+#endif
 
       // Old WM (e.g. TWM), use built-in decorations
       if(!atomsSupported[_net_wm_state])
@@ -2477,7 +2483,7 @@ class XInterface : Interface
             };
             int numAttribs = 14;
 
-            GLXFBConfig *fbconfigs = null, fbconfig;
+            GLXFBConfig *fbconfigs = null;
             int numfbconfigs;
             int i;
             //printf("Samples = %d, alpha = %d\n", samples, alpha);
@@ -2521,6 +2527,7 @@ class XInterface : Interface
                   else
                   {
                      //printf("Found what we're looking for\n");
+                     fbconfig = fbconfigs[i];
                      found = true;
                      break;
                   }
@@ -2848,7 +2855,11 @@ class XInterface : Interface
       }
 
       // XFlush(xGlobalDisplay);
-      window.windowData = XWindowData { visualInfo, ic };
+      window.windowData = XWindowData { visualInfo, ic
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)
+         , config = fbconfig
+#endif
+          };
 
       XSaveContext(xGlobalDisplay, windowHandle, windowContext, (XPointer)window);
 
