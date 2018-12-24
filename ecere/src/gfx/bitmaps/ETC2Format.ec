@@ -22,6 +22,8 @@ class ETCFormat : BitmapFormat
       int i;
 
       f.Read(&count, sizeof(count), 1);
+      if(count > 16)
+         return false;
       bitmap.pixelFormat = pixelFormatETC2RGBA8;
       bitmap.numMipMaps = count > 1 ? count : 0;
       if(bitmap.numMipMaps)
