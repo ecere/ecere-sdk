@@ -1100,9 +1100,14 @@ private:
 
                      // TODO: Document/Improve this!
                      eClass_FindDataMemberAndOffset(objectType, curMember.name, &offset, objectType.module, null, null);
-                     if(curMember._class.type == normalClass || curMember._class.type == noHeadClass)
-                        offset += curMember._class.base.structSize;
 
+                     if(curMember._class.type == normalClass || curMember._class.type == noHeadClass)
+                     {
+                        int add = curMember._class.base.structSize;
+                        if(curMember._class.base.structSize % curMember._class.structAlignment)
+                           add += curMember._class.structAlignment - curMember._class.base.structSize % curMember._class.structAlignment;
+                        offset += add;
+                     }
                      if(mapKeyClass && !strcmp(prop ? prop.name : member.name, "key"))
                      {
                         type = mapKeyClass;
@@ -1158,7 +1163,12 @@ private:
                         {
                            type = superFindClass(member.dataTypeString, objectType.module);
                            if(member._class.type == normalClass || member._class.type == noHeadClass)
-                              offset += member._class.base.structSize;
+                           {
+                              int add = member._class.base.structSize;
+                              if(member._class.base.structSize % member._class.structAlignment)
+                                 add += member._class.structAlignment - member._class.base.structSize % member._class.structAlignment;
+                              offset += add;
+                           }
                            curMember = member;
                            curClass = member._class;
                            break;
@@ -2270,8 +2280,12 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                   // offset = member._class.offset + member.offset;
                   eClass_FindDataMemberAndOffset(member._class, member.name, &offset, member._class.module, null, null);
                   if(member._class.type == normalClass || member._class.type == noHeadClass)
-                     offset += member._class.base.structSize;
-
+                  {
+                     int add = member._class.base.structSize;
+                     if(member._class.base.structSize % member._class.structAlignment)
+                        add += member._class.structAlignment - member._class.base.structSize % member._class.structAlignment;
+                     offset += add;
+                  }
                   if(type)
                   {
                      Property p;
