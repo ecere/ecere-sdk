@@ -102,7 +102,7 @@ uintsize _msize(void * p);
 uintsize malloc_usable_size(void * p);
 #endif
 
-#  define msize malloc_usable_size
+// #  define msize malloc_usable_size  // malloc_usable_size is not requested size!!
 #endif
 
 #endif
@@ -1469,7 +1469,15 @@ static void * _mycrealloc(void * pointer, unsigned int size)
 static void * _malloc(unsigned int size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+
+#if defined(msize)
    return size ? malloc(size) : null;
+#else
+   byte * p = size ? malloc(size + sizeof(size_t)) : null;
+   if(p) *(size_t *)p = size;
+   return p ? p + sizeof(size_t) : null;
+#endif
+
 #else
    void * pointer;
 
@@ -1536,7 +1544,15 @@ static void * _malloc(unsigned int size)
 static void * _calloc(int n, unsigned int size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+
+#if defined(msize)
    return size ? calloc(n, size) : null;
+#else
+   byte * p = size ? calloc(n, size + sizeof(size_t)) : null;
+   if(p) *(size_t *)p = size;
+   return p ? p + sizeof(size_t) : null;
+#endif
+
 #else
    void * pointer;
 
@@ -1602,8 +1618,18 @@ static void * _calloc(int n, unsigned int size)
 static void * _realloc(void * pointer, unsigned int size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+
+#if defined(msize)
    if(!size) { free(pointer); return null; }
    return realloc(pointer, size);
+#else
+   byte * p;
+   if(!size) { if(pointer) free((byte *)pointer - sizeof(size_t)); return null; }
+   p = realloc(pointer ? (byte *)pointer - sizeof(size_t) : null, size + sizeof(size_t));
+   if(p) *(size_t *)p = size;
+   if(p) p += sizeof(size_t);
+   return p;
+#endif
 
 #else
    if(!size) { _free(pointer); return null; }
@@ -1710,11 +1736,19 @@ static void * _realloc(void * pointer, unsigned int size)
 static void * _crealloc(void * pointer, unsigned int size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
-   uintsize s = pointer ? msize(pointer) : 0;
-   void * p;
-   if(!size) { free(pointer); return null; }
+   byte * p;
 
+#if defined(msize)
+   uintsize s = pointer ? msize(pointer) : 0;
+   if(!size) { free(pointer); return null; }
    p = realloc(pointer, size);
+#else
+   uintsize s = pointer ? *(size_t *)((byte *)pointer - sizeof(size_t)) : 0;
+   if(!size) { free((byte *)pointer - sizeof(size_t)); return null; }
+   p = realloc(pointer ? (byte *)pointer - sizeof(size_t) : null, size + sizeof(size_t));
+   if(p) *(size_t *)p = size;
+   if(p) p += sizeof(size_t);
+#endif
    if(size > s && p)
       memset((byte *)p + s, 0, size - s);
    if(size && !p)
@@ -1827,7 +1861,13 @@ static void _free(void * pointer)
    if(pointer)
    {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+
+#if defined(msize)
       free(pointer);
+#else
+      free((byte *)pointer - sizeof(size_t));
+#endif
+
 #else
 #if !defined(_NOMUTEX)
       if(memMutex != pointer) memMutex.Wait();
