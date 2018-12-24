@@ -885,8 +885,10 @@ public:
             {
    #ifdef ETC2_COMPRESS
                etc2Free(bitmaps[i].picture);
-   #endif
                bitmaps[i].picture = null;
+   #else
+               delete bitmaps[i].picture;
+   #endif
             }
             delete bitmaps[i];
          }
@@ -896,8 +898,10 @@ public:
       {
 #ifdef ETC2_COMPRESS
          etc2Free(picture);
-#endif
          picture = null;
+#else
+         delete picture;
+#endif
       }
 
       if(this && driver)

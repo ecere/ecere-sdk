@@ -426,8 +426,7 @@ if distributed with the Ecere SDK Windows installer.
                "ECERE_NOFONTCONFIG",
                "HIGH_DPI",
                "ECERE_NOSSL",
-               "_GLES2",
-               "ETC2_COMPRESS"
+               "_GLES2"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-9a",
@@ -451,8 +450,7 @@ if distributed with the Ecere SDK Windows installer.
                      "log",
                      "android",
                      "EGL",
-                     "GLESv2",
-                     "etc"
+                     "GLESv3"
                   ],
                   "LibraryDirs" : [
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
