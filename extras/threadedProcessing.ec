@@ -127,7 +127,7 @@ class ProcessingStage
       for(i = 0; !maxTasks || i < maxTasks; i++)
       {
          ProcessingTask task = null;
-         bool hadTask = true;
+         bool hadTask = false;
 
          mutex.Wait();
          task = readyTasks.first;
