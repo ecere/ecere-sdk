@@ -979,7 +979,11 @@ public File FileOpen(const char * fileName, FileOpenMode mode)
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NONET) /*&& !defined(__ANDROID__)*/ // Curl version not supported yet
       else if(strstr(fileName, "http://") == fileName || strstr(fileName, "https://"))
       {
-         result = FileOpenURL(fileName);
+         HTTPFile r = FileOpenURL(fileName);
+         if(r && r.httpCode != 200)
+            delete r;
+         else
+            result = r;
       }
 #endif
       else
