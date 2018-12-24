@@ -2,14 +2,11 @@ namespace gfx::bitmaps;
 
 import "Bitmap"
 
-#ifdef ETC2_COMPRESS
-
 static const char * extensions[] = { "etc2", null };
 
-default extern void * etc2Compress(float * pixelData, unsigned int width, unsigned int height,
-   unsigned int * size, unsigned int * dw, unsigned int * dh);
-default extern void etc2Free(void * data);
+#ifdef ETC2_COMPRESS
 default extern void * etc2Alloc(size_t size);
+#endif
 
 class ETCFormat : BitmapFormat
 {
@@ -39,7 +36,11 @@ class ETCFormat : BitmapFormat
          f.Read(&mipMap.width, sizeof(mipMap.width), 1);
          f.Read(&mipMap.height, sizeof(mipMap.height), 1);
          f.Read(&mipMap.sizeBytes, sizeof(mipMap.sizeBytes), 1);
+#ifdef ETC2_COMPRESS
          mipMap.picture = etc2Alloc(mipMap.sizeBytes);
+#else
+         mipMap.picture = new byte[mipMap.sizeBytes];
+#endif
          f.Read(mipMap.picture, 1, mipMap.sizeBytes);
       }
       result = true;
@@ -81,5 +82,3 @@ class ETCFormat : BitmapFormat
       return result;
    }
 }
-
-#endif
