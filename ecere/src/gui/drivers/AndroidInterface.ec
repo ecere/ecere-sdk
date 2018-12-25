@@ -533,7 +533,7 @@ static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 default dllexport const void * Android_getJNIEnv()
 {
    const void * foo = androidActivity ? androidActivity.activity->env : null;
-   PrintLn("getJNIEnv returned ", (uint64)foo);
+   PrintLn("getJNIEnv returned ", (uintptr)foo);
    return foo;
 }
 
@@ -625,6 +625,43 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    activity->instance = app;
    app.Create();
 
+   {
+      JNIEnv * env = activity->env;
+      if(env)
+      {
+         jclass classNativeActivity = (*env)->FindClass(env, "android/app/NativeActivity");
+         jclass classWindowManager = (*env)->FindClass(env, "android/view/WindowManager");
+         jclass classDisplay = (*env)->FindClass(env, "android/view/Display");
+         if(classWindowManager)
+         {
+            jmethodID idNativeActivity_getWindowManager = (*env)->GetMethodID(env, classNativeActivity, "getWindowManager", "()Landroid/view/WindowManager;");
+            jmethodID idWindowManager_getDefaultDisplay = (*env)->GetMethodID(env, classWindowManager, "getDefaultDisplay", "()Landroid/view/Display;");
+            jmethodID idWindowManager_getRotation = (*env)->GetMethodID(env, classDisplay, "getRotation", "()I");
+            if(idWindowManager_getRotation)
+            {
+               jobject windowManager = (*env)->CallObjectMethod(env, activity->clazz, idNativeActivity_getWindowManager);
+               if(windowManager)
+               {
+                  jobject display = (*env)->CallObjectMethod(env, windowManager, idWindowManager_getDefaultDisplay);
+                  if(display)
+                  {
+                     int rotation = (*env)->CallIntMethod(env, display, idWindowManager_getRotation);
+                     ((AndroidActivity)app).defaultRotation = rotation;
+                     switch(rotation)
+                     {
+                        case 0: PrintLn("Default rotation is ROTATION_0"); break;
+                        case 1: PrintLn("Default rotation is ROTATION_90"); break;
+                        case 2: PrintLn("Default rotation is ROTATION_180"); break;
+                        case 3: PrintLn("Default rotation is ROTATION_270"); break;
+                     }
+                  }
+               }
+            }
+         }
+
+      }
+   }
+
    app.setupLocation();
 }
 
@@ -713,34 +750,40 @@ class AndroidInterface : Interface
                   {
                      case ASENSOR_TYPE_ROTATION_VECTOR:
                      {
-                        Quaternion q { x = event.vector.x, y = event.vector.z, z = event.vector.y };
-                        Euler e;
-                        double m = sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
-                        q.w = cos(asin(m));
-                        /*
-                        LOGI("raw: x=%.05f y=%.05f z=%.05f w=%.05f (%.05f)",
-                           event.vector.x, event.vector.y, event.vector.z, event.data[3], q.w);
-                        */
-                        q.w = event.data[3];
-                        //e.FromQuaternion(q, yxz);
-                        Matrix rm;
+                        Matrix rm, tmp;
                         double values[3];
+                        Quaternion q1, q2, q3;
+
+                        // LOGI("raw: x=%.05f y=%.05f z=%.05f w=%.05f (%.05f)", event.vector.x, event.vector.y, event.vector.z, event.data[3], q.w);
+
                         getRotationMatrixFromVector(rm, event.data);
 
-                        getOrientation(rm, values);
-                        compass.yaw = Radians { values[0] };
-                        compass.pitch = Radians { values[1] };
-                        compass.roll = Radians { values[2] };
+                        #define AXIS_MINUS_X 0x81
+                        #define AXIS_MINUS_Y 0x82
+                        #define AXIS_MINUS_Z 0x83
+                        #define AXIS_X       0x01
+                        #define AXIS_Y       0x02
+                        #define AXIS_Z       0x03
 
-                        Quaternion q1 = compass;
-                        Quaternion q2;
+                        switch(androidActivity.defaultRotation)
+                        {
+                           case 0:                                                                       break; // 0
+                           case 1: remapCoordinateSystem(rm, AXIS_Y,       AXIS_MINUS_X, tmp); rm = tmp; break; // 90
+                           case 2: remapCoordinateSystem(rm, AXIS_MINUS_X, AXIS_MINUS_Y, tmp); rm = tmp; break; // 180
+                           case 3: remapCoordinateSystem(rm, AXIS_MINUS_Y, AXIS_X,       tmp); rm = tmp; break; // 270
+                        }
+                        getOrientation(rm, values);
+                        compass.yaw   = Radians { values[0] };
+                        compass.pitch = Radians { values[1] };
+                        compass.roll  = Radians { values[2] };
+
+                        q1 = compass;
                         q2.RotationYawPitchRoll({ 0, 90, 0 });
-                        Quaternion q3;
                         q3.Multiply(q2, q1);
                         compass = q3;
                         compass.roll = -compass.roll;
 
-                        //PrintLn("Yaw: ", (double)compass.yaw, ", Pitch: ", (double)compass.pitch, ", Roll: ", (double)compass.roll);
+                        // PrintLn("Yaw: ", (double)compass.yaw, ", Pitch: ", (double)compass.pitch, ", Roll: ", (double)compass.roll);
                         break;
                      }
                      case ASENSOR_TYPE_ACCELEROMETER:
@@ -1298,6 +1341,8 @@ class AndroidActivity : AndroidAppGlue
 
    SavedState state;
 
+   int defaultRotation;
+
    int onInputEvent(AInputEvent* event)
    {
       static Time lastTime = 0;
@@ -1583,12 +1628,10 @@ static void getRotationMatrixFromVector(Matrix R, const float * rotationVector)
    double q1 = rotationVector[0];
    double q2 = rotationVector[1];
    double q3 = rotationVector[2];
-   if (1) //rotationVector.length >= 4)
-      q0 = rotationVector[3];
-   else
+   // if(0) q0 = rotationVector[3]; else
    {
       q0 = 1 - q1 * q1 - q2 * q2 - q3 * q3;
-      q0 = (q0 > 0) ? (float) sqrt(q0) : 0;
+      q0 = (q0 > 0) ? sqrt(q0) : 0;
    }
    double sq_q1 = 2 * q1 * q1;
    double sq_q2 = 2 * q2 * q2;
@@ -1621,4 +1664,35 @@ static void getOrientation(const Matrix R, double * values)
    values[0] = atan2(R.array[1], R.array[5]);
    values[1] = asin(-R.array[9]);
    values[2] = atan2(-R.array[8], R.array[10]);
+}
+
+static void remapCoordinateSystem(const Matrix inR, int X, int Y, Matrix outR)
+{
+   int Z = X ^ Y;
+   int x = (X & 0x3) - 1;
+   int y = (Y & 0x3) - 1;
+   int z = (Z & 0x3) - 1;
+   int axis_y = (z + 1) % 3;
+   int axis_z = (z + 2) % 3;
+   bool sx, sy, sz;
+   int j;
+
+   if(((x ^ axis_y) | (y ^ axis_z)) != 0)
+      Z ^= 0x80;
+   sx = (X >= 0x80);
+   sy = (Y >= 0x80);
+   sz = (Z >= 0x80);
+
+   for(j = 0; j < 3; j++)
+   {
+      int offset = j * 4, i;
+      for(i = 0; i < 3; i++)
+      {
+         if(x == i) outR.array[offset + i] = sx ? -inR.array[offset + 0] : inR.array[offset + 0];
+         if(y == i) outR.array[offset + i] = sy ? -inR.array[offset + 1] : inR.array[offset + 1];
+         if(z == i) outR.array[offset + i] = sz ? -inR.array[offset + 2] : inR.array[offset + 2];
+      }
+   }
+   outR.array[3] = outR.array[7] = outR.array[11] = outR.array[12] = outR.array[13] = outR.array[14] = 0;
+   outR.array[15] = 1;
 }
