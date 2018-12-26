@@ -3528,11 +3528,16 @@ class IDEWorkSpace : Window
 
       for(item : compiler.libraryDirs)
       {
+         char path[MAX_LOCATION];
          if(!libPathExists[item])  // fstrcmp should be used
          {
-            String s = CopyString(item);
-            newLibPaths.Add(s);
-            libPathExists[s] = true;
+            DirExpression pathExp { };
+            pathExp.Evaluate(item, projectView.project, compiler, config, bitDepth);
+            path[0] = '\0';
+            PathCatSlash(path, pathExp.dir);
+            newLibPaths.Add(CopyString(path));
+            libPathExists[path] = true;
+            delete pathExp;
          }
       }
 
