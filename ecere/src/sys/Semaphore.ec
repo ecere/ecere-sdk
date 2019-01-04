@@ -94,6 +94,8 @@ public:
 #else
       result = sem_trywait(&semaphore) != EAGAIN;
 #endif
+#else
+      result = false;
 #endif
       return result;
    }

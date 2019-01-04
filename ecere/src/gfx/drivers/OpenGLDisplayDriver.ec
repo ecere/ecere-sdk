@@ -540,7 +540,7 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
 }
 #endif
 
-#if defined(__unix__) && !defined(__ANDROID__) && !defined(__ODROID__)
+#if defined(__unix__) && !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
 #define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
 typedef GLXContext (*glXCreateContextAttribsARBProc)(void *, GLXFBConfig, GLXContext, Bool, const int*);
@@ -2057,7 +2057,11 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          bool sRGB2Linear = bitmap.sRGB2Linear;
          int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+#if !defined(__EMSCRIPTEN__)
             (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+#else
+            0 :
+#endif
             (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA);
          int minFilter = oglSystem.loadingFont ? GL_NEAREST : mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
          int maxFilter = oglSystem.loadingFont ? GL_NEAREST : GL_LINEAR;
