@@ -215,7 +215,7 @@ private:
       if(ch == '\"' || (ch != '{' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString]))
       {
          String string;
-         if((ch != '\"' || (type && (strstr(type.name, "FieldValue") || strstr(type.name, "GeoJSONValue")))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+         if((ch != '\"' || (type && (strstr(type.name, "FieldValue") || strstr(type.name, "GeoJSONValue") || strstr(type.name, "MBGLFilterValue")))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
          {
             bool escaped = false, quoted = ch == '\"', done = false;
             int size = 32, len = 0;
@@ -228,27 +228,31 @@ private:
                   size += size >> 1;
                   s = renew s char[size];
                }
-               if(!quoted)
+               if(ch != '\n' && ch != 32)
                {
-                  if(level <= 0 && (ch == ',' || ch == '}'))
-                     break;
-                  else if(ch == '{') level++;
-                  else if(ch == '}') level--;
-                  else if(ch == '[') level++;
-                  else if(ch == ']') level--;
-               }
-               else if(quoted)
-               {
-                  if(escaped)
-                     escaped = false;
-                  else if(ch == '\\')
-                     escaped = true;
-                  else if(ch == '\"' && len > 0)
-                     done = true;
+                  if(!quoted)
+                  {
+                     if(level <= 0 && (ch == ',' || ch == '}' || ch == ']'))
+                        break;
+                     else if(ch == '{') level++;
+                     else if(ch == '}') level--;
+                     else if(ch == '[') level++;
+                     else if(ch == ']') level--;
+                  }
+                  else if(quoted)
+                  {
+                     if(escaped)
+                        escaped = false;
+                     else if(ch == '\\')
+                        escaped = true;
+                     else if(ch == '\"' && len > 0)
+                        done = true;
+                  }
                }
 
                s[len++] = ch;
-               ReadChar(&ch);
+               if(!ReadChar(&ch))
+                  ; //ch = 0;
             }
             s[len] = 0;
             while(len > 0 && isspace(s[len-1]))
@@ -1085,6 +1089,8 @@ private:
                bool isKey = false;
                bool isTemplateArg = false;
                uint offset = 0;
+
+               removeDashes(string);
 
                ch = 0;
                SkipEmpty();
@@ -2403,4 +2409,19 @@ static bool isSubclass(Class type, const String name)
    if(eClass_IsDerived(_class, type))
       return true;
    return false;
+}
+
+static void removeDashes(String string)
+{
+   char ch;
+   int i = 0;
+   int len = strlen(string);
+   for(i = 0; (ch = string[i]); i++)
+   {
+      if(ch == '-')
+      {
+         memmove(&string[i], &string[i + 1], len - i);
+         len--;
+      }
+   }
 }
