@@ -79,7 +79,7 @@
 #define SIZEOF_INT             4
 #define SIZEOF_LONG_DOUBLE     16
 #define SIZEOF_SHORT           2
-#define SIZEOF_SIZE_T          4
+#define SIZEOF_SIZE_T          4    // 8 on 64 bit?
 #define STDC_HEADERS           1
 #define TIME_WITH_SYS_TIME     1
 
@@ -119,10 +119,10 @@
 /* #define CURLDEBUG */
 
 /* USE_ZLIB on cmd-line */
-#ifdef USE_ZLIB
+//#ifdef USE_ZLIB
   #define HAVE_ZLIB_H            1
   #define HAVE_LIBZ              1
-#endif
+//#endif
 
 #undef USE_OPENSSL
 
