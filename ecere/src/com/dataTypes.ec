@@ -281,7 +281,15 @@ static bool Enum_OnGetDataFromString(Class _class, void * data, const char * str
       return true;
    }
    else
-      return Int64_OnGetDataFromString(_class, data, string);
+   {
+      switch(_class.typeSize)
+      {
+         case 1: return Byte_OnGetDataFromString(_class, data, string);
+         case 2: return Int16_OnGetDataFromString(_class, data, string);
+         case 4: return Integer_OnGetDataFromString(_class, data, string);
+         case 8: return Int64_OnGetDataFromString(_class, data, string);
+      }
+   }
    return false;
 }
 
