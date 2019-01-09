@@ -277,6 +277,16 @@ class ProcessingStage
          processing.onTaskCleared(task);
          delete task;
       }
+      for(t : threads; t)
+      {
+         ProcessingThread thread = t;
+         while(thread.activeTask)
+         {
+            mutex.Release();
+            Sleep(0.01);
+            mutex.Wait();
+         }
+      }
       mutex.Release();
    }
 
