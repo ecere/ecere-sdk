@@ -183,7 +183,7 @@ void main(void)
 #if LIGHTING_ON && !PER_VERTEX_COLOR && CONSTANT_COLOR
    vec4 diffuseColor = matDiffuse;
    vec3 ambientColor = matAmbient;
-#else
+#elif !PER_VERTEX_COLOR
    vec4 diffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
    vec3 ambientColor = vec3(1.0, 1.0, 1.0);
 #endif
