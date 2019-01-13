@@ -3497,7 +3497,8 @@ class XInterface : Interface
          if(x) *x = lastMouse.x - acquireStart.x;
          if(y) *y = lastMouse.y - acquireStart.y;
          *buttons = buttonsState;
-         SetMousePosition(acquireStart.x, acquireStart.y);
+         if(*x || *y)
+            SetMousePosition(acquireStart.x, acquireStart.y);
          lastMouse = acquireStart;
          result = true;
       }
