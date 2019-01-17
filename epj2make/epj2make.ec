@@ -94,7 +94,21 @@ class epj2makeApp : GuiApplication
          const char * arg = argv[c];
          if(arg[0] == '-')
          {
-            if(!strcmpi(arg+1, "make"))
+            if(!strcmpi(arg+1, "compiler-config"))
+            {
+               if(++c < argc)
+               {
+                  const String path = argv[c];
+                  delete optionsCompiler;
+                  if(FileExists(path))
+                     optionsCompiler = CompilerConfig::read(path);
+                  else
+                     printf($"Error: Project compiler configuration file (%s) was not found.\n", path);
+               }
+               else
+                  valid = false;
+            }
+            else if(!strcmpi(arg+1, "make"))
             {
                if(++c < argc)
                   optionsCompiler.makeCommand = argv[c];
@@ -239,6 +253,7 @@ class epj2makeApp : GuiApplication
          printf("%s", $"Syntax:\n");
          printf("%s", $"   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n");
          printf("%s", $"      toolchain:\n");
+         printf("%s", $"         [-compiler-config <path to compiler configuration file>]\n");
          printf("%s", $"         [-make <make tool>]\n");
          printf("%s", $"         [-cpp <c preprocessor>]\n");
          printf("%s", $"         [-cc <c compiler>]\n");
