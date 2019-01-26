@@ -281,11 +281,15 @@ class XMLParser
          else
          {
             if(!characterData)
+            {
                this.characterData = characterData = new byte[charBufSize];
+               characterData[0] = 0;
+            }
             if(ch == '<' || charLen == charBufSize - 1)
             {
                ProcessCharacterData(characterData);
                charLen = 0;
+               characterData[0] = 0;
             }
             if(ch == '<')
             {
