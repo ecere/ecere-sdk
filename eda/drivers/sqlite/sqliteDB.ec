@@ -154,7 +154,18 @@ public class SQLiteStmt : struct
 
 public:
    property SQLiteDB db { set { db = value; } get { return db; } }
-   property const String query { set { if(stmt) finalize(); sqlite3_prepare_v2(db.db, value, -1, &stmt, null); } }
+   property const String query
+   {
+      set
+      {
+         if(stmt) finalize();
+         sqlite3_prepare_v2(db.db, value, -1, &stmt, null);
+#ifdef _DEBUG
+         if(!stmt)
+            printf($"SQLite Error preparing statement:\n   %s\n", value);
+#endif%
+      }
+   }
 
    ~SQLiteStmt() { finalize(); }
 
