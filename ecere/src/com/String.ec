@@ -1230,7 +1230,7 @@ public:
       }
       if(allocType == heap)
       {
-         int newSize = newLen ? newLen + 1 : 0;
+         int newSize = newLen ? newLen + 1 : 1;
          if(newSize != size)
          {
             if(newSize < minSize) newSize = minSize;
