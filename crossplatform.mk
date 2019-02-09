@@ -419,15 +419,21 @@ endif
 
 # COMMON LIBRARIES DETECTION
 ifdef WINDOWS_TARGET
- ifdef OPENSSL_CONF
-  _OPENSSL_CONF = $(call hidspace,$(call slash_path,$(OPENSSL_CONF)))
-  OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENSSL_CONF)))
-  OPENSSL_LIB_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/lib,$(_OPENSSL_CONF)))
-  OPENSSL_BIN_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/bin,$(_OPENSSL_CONF)))
+ ifdef OPENSSL_DIR
+  OPENSSL_INCLUDE_DIR = $(if $(wildcard $(OPENSSL_DIR)/include),$(OPENSSL_DIR)/include,$(OPENSSL_DIR))
+  OPENSSL_LIB_DIR = $(if $(wildcard $(OPENSSL_DIR)/lib),$(OPENSSL_DIR)/lib,$(OPENSSL_DIR))
+  OPENSSL_BIN_DIR = $(if $(wildcard $(OPENSSL_DIR)/lib),$(OPENSSL_DIR)/lib,$(OPENSSL_DIR))
  else
+  ifdef OPENSSL_CONF
+   _OPENSSL_CONF = $(call hidspace,$(call slash_path,$(OPENSSL_CONF)))
+   OPENSSL_INCLUDE_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/include,$(_OPENSSL_CONF)))
+   OPENSSL_LIB_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/lib,$(_OPENSSL_CONF)))
+   OPENSSL_BIN_DIR = $(call shwspace,$(subst /bin/openssl.cfg,/bin,$(_OPENSSL_CONF)))
+  else
 # to avoid issues with empty -L/-I
-  OPENSSL_INCLUDE_DIR = .
-  OPENSSL_LIB_DIR = .
-  OPENSSL_BIN_DIR = .
+   OPENSSL_INCLUDE_DIR = .
+   OPENSSL_LIB_DIR = .
+   OPENSSL_BIN_DIR = .
+  endif
  endif
 endif
