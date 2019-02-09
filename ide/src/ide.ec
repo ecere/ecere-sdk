@@ -530,7 +530,8 @@ class IDEWorkSpace : Window
             eb.selectionText = cs.selectionText;
             eb.background = cs.codeEditorBG;
             eb.foreground = cs.codeEditorFG;
-            ((SyntaxHighlighting)eb.syntaxHighlighting).syntaxColorScheme = cs.syntaxColors;
+            if((SyntaxHighlighting)eb.syntaxHighlighting)
+               ((SyntaxHighlighting)eb.syntaxHighlighting).syntaxColorScheme = cs.syntaxColors;
          }
 
       if(projectView)
