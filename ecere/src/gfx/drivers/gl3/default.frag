@@ -1,6 +1,9 @@
 #if GLSL_FLOAT_PRECISION
 precision highp float;
 #endif
+#if TEXTURE_EXTERNAL
+#extension GL_OES_EGL_image_external : enable
+#endif
 
 #if ALPHATEST_ON
    uniform float alphaFuncValue;
@@ -84,7 +87,11 @@ precision highp float;
    #endif
 
    #if TEXTURE_ON
+   #if TEXTURE_EXTERNAL
+      uniform samplerExternalOES diffuseTex;
+   #else
       uniform sampler2D diffuseTex;
+   #endif
    #endif
 
    #if NORMALS_MAPPING
