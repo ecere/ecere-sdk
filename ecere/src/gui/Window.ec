@@ -4917,17 +4917,28 @@ private:
                      if(sbv && !guiApp.windowScrolling)
                         result = sbv.Action((key == ctrlUp) ? up : down, 0, key);
                      break;
-                  case wheelUp: case wheelDown:
-                     if(sbv && !guiApp.windowScrolling)
-                     {
-                        result = sbv.Action((key == wheelUp) ? wheelUp : wheelDown, 0, key);
-                        // Do we want to do a consequential move regardless of result in this case?
-                        ConsequentialMouseMove(false);
-                     }
-                     break;
                   case ctrlPageUp: case ctrlPageDown:
                      if(sbh && !guiApp.windowScrolling)
                         result = sbh.Action((key == ctrlPageUp) ? up : down, 0, key);
+                     break;
+                  default:
+                     switch(key.code)
+                     {
+                        case wheelUp: case wheelDown:
+                           if(!key.shift && sbv && !guiApp.windowScrolling)
+                           {
+                              result = sbv.Action((key == wheelUp) ? wheelUp : wheelDown, 0, key);
+                              // Do we want to do a consequential move regardless of result in this case?
+                              ConsequentialMouseMove(false);
+                           }
+                           else if(key.shift && sbh && !guiApp.windowScrolling)
+                           {
+                              result = sbh.Action((key.code == wheelUp) ? wheelUp : wheelDown, 0, key);
+                              // Do we want to do a consequential move regardless of result in this case?
+                              ConsequentialMouseMove(false);
+                           }
+                           break;
+                     }
                      break;
                }
                if(result)
