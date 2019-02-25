@@ -35,6 +35,7 @@ public:
    bool debugging:1;
    bool constantColor:1;
    bool normalsInvScale2:1;
+   bool externalTexture:1;
 };
 
 public class CompiledDefaultShader : CompiledShader
@@ -283,6 +284,7 @@ public:
       defs.concatf("\n#define FOG_ON %d\n",                 state.fog                ? 1 : 0);
       defs.concatf("\n#define DEBUGGING %d\n",              state.debugging          ? 1 : 0);
       defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
+      defs.concatf("\n#define TEXTURE_EXTERNAL %d",         state.externalTexture    ? 1 : 0);
 
       for(i = 0; i < 8; i++)
       {
@@ -568,6 +570,15 @@ public:
       fogColor[0] = r, fogColor[1] = g, fogColor[2] = b;
       if(fogOn)
          modifiedUniforms.material = true;
+   }
+
+   void useExternalTexture(bool on)
+   {
+      if(((DefaultShaderBits)state).externalTexture != on)
+      {
+         ((DefaultShaderBits)state).externalTexture = on;
+         modifiedUniforms.material = true;
+      }
    }
 
    void texturing(bool on)
