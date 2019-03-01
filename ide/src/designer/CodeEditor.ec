@@ -5783,7 +5783,7 @@ class CodeEditor : Window
                      }
                      row.icon = bitmap ? bitmap : icons[(member.memberAccess == publicAccess && !isPrivate) ? typeData : typeDataPrivate];
                   }
-                  else
+                  else if(_class.type != bitClass)  // TOFIX: This was not handled properly?
                      ListSubDataMembers(member, member.memberAccess == privateAccess);
                }
             }
