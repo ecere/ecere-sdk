@@ -1,3 +1,4 @@
+import "ecere" // FIXME: Why is this crashing now?
 import "EDA"
 
 class GenericEditor : Window
