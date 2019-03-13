@@ -220,7 +220,36 @@ if distributed with the Ecere SDK Windows installer.
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ]
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "dxguid",
+                     "ddraw",
+                     "dinput",
+                     "winmm",
+                     "opengl32",
+                     "ws2_32",
+                     "kernel32",
+                     "user32",
+                     "gdi32",
+                     "mpr",
+                     "advapi32",
+                     "shell32",
+                     "winspool",
+                     "imm32",
+                     "ungif",
+                     "ssl-1_1-x64",
+                     "crypto-1_1-x64"
+                  ],
+                  "LibraryDirs" : [
+                     "C:/OpenSSL-Win64/lib"
+                  ]
+               }
+            }
+         ]
       },
       {
          "Name" : "MemoryGuard",
