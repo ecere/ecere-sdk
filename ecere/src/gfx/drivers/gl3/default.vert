@@ -70,6 +70,7 @@ void main(void)
       ambientColor = color.xyz;
    #endif
 
+#if MODELVIEW
 #if NORMALS_INV_SCALE
    mat3 normals_matrix = mat3(
       normals_inv_scale2.x * modelview_matrix[0][0], normals_inv_scale2.x * modelview_matrix[0][1], normals_inv_scale2.x * modelview_matrix[0][2],
@@ -87,6 +88,14 @@ void main(void)
       tTangent1 = normals_matrix * tangent1;
       tTangent2 = normals_matrix * tangent2;
    #endif
+#else
+      tNormal = normal;
+   #if NORMALS_MAPPING
+      tTangent1 = tangent1;
+      tTangent2 = tangent2;
+   #endif
+
+#endif
 
 #elif PER_VERTEX_COLOR
    fColor = matDiffuse * color;
