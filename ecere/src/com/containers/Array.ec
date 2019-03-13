@@ -185,8 +185,8 @@ public:
    }
 
    // Generic iterator support
-   IteratorPointer GetFirst() { return (IteratorPointer)array; }
-   IteratorPointer GetLast() { return (IteratorPointer)(array ? (array + (count - 1)) : null); }
+   IteratorPointer GetFirst() { return (IteratorPointer)(count ? array : null); }
+   IteratorPointer GetLast() { return (IteratorPointer)(count && array ? (array + (count - 1)) : null); }
    IteratorPointer GetPrev(IteratorPointer ip)
    {
       T * item = (T *)ip;
