@@ -866,7 +866,7 @@ private:
    String lastBuildConfigName;
    String lastBuildCompilerName;
 
-   Map<String, Map<String, NameCollisionInfo>> configsNameCollisions { };
+   Map<String, Map<CIString, NameCollisionInfo>> configsNameCollisions { };
 
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    FileMonitor fileMonitor
@@ -1415,8 +1415,8 @@ private:
 
    void ModifiedAllConfigs(bool making, bool compiling, bool linking, bool symbolGen)
    {
-      Map<String, NameCollisionInfo> cfgNameCollision;
-      MapIterator<const String, Map<String, NameCollisionInfo>> it { map = configsNameCollisions };
+      Map<CIString, NameCollisionInfo> cfgNameCollision;
+      MapIterator<const String, Map<CIString, NameCollisionInfo>> it { map = configsNameCollisions };
       if(it.Index("", false))
       {
          cfgNameCollision = it.data;
@@ -2109,7 +2109,7 @@ private:
       int numJobs = compiler.numJobs;
       char command[MAX_F_STRING*4];
       char * compilerName = CopyString(compiler.name);
-      Map<String, NameCollisionInfo> cfgNameCollisions;
+      Map<CIString, NameCollisionInfo> cfgNameCollisions;
 
       delete lastBuildConfigName;
       lastBuildConfigName = CopyString(config ? config.name : "Common");
@@ -2777,7 +2777,7 @@ private:
          int rcSourcesParts = 0;
          Array<String> listItems { };
          Map<String, int> varStringLenDiffs { };
-         Map<String, NameCollisionInfo> namesInfo { };
+         Map<CIString, NameCollisionInfo> namesInfo { };
 
          Map<String, int> cflagsVariations { };
          Map<intptr, int> nodeCFlagsMapping { };
@@ -3856,7 +3856,7 @@ private:
 static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
 {
    const char * cfgName = cfg ? cfg.name : "";
-   Map<String, NameCollisionInfo> cfgNameCollisions = prj.configsNameCollisions[cfgName];
+   Map<CIString, NameCollisionInfo> cfgNameCollisions = prj.configsNameCollisions[cfgName];
    if(cfgNameCollisions)
    {
       cfgNameCollisions.Free();
