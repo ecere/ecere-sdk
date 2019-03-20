@@ -167,7 +167,7 @@ public:
 #ifdef _DEBUG
          if(!stmt)
             printf($"SQLite Error preparing statement:\n   %s\n", value);
-#endif%
+#endif
       }
    }
 
