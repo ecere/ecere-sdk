@@ -550,7 +550,7 @@ private:
       return buffer;
    }
 
-   char * GetObjectFileName(char * buffer, Map<String, NameCollisionInfo> namesInfo, IntermediateFileType type, bool dotMain, const char * objectFileExt)
+   char * GetObjectFileName(char * buffer, Map<CIString, NameCollisionInfo> namesInfo, IntermediateFileType type, bool dotMain, const char * objectFileExt)
    {
       if(buffer && (this.type == file || (this.type == project && dotMain == true)))
       {
@@ -1154,7 +1154,7 @@ private:
       return result;
    }
 
-   ProjectNode FindByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo, const char * objectFileExt)
+   ProjectNode FindByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, Map<CIString, NameCollisionInfo> namesInfo, const char * objectFileExt)
    {
       char p[MAX_LOCATION];
       ProjectNode result = null;
@@ -1462,7 +1462,7 @@ private:
       return false;
    }
 
-   void GenMakefileGetNameCollisionInfo(Map<String, NameCollisionInfo> namesInfo, ProjectConfig prjConfig)
+   void GenMakefileGetNameCollisionInfo(Map<CIString, NameCollisionInfo> namesInfo, ProjectConfig prjConfig)
    {
       if(type == file)
       {
@@ -1512,7 +1512,7 @@ private:
    }
 
    int GenMakefilePrintNode(File f, Project project, GenMakefilePrintTypes printType,
-      Map<String, NameCollisionInfo> namesInfo, Array<String> items,
+      Map<CIString, NameCollisionInfo> namesInfo, Array<String> items,
       ProjectConfig prjConfig, bool * containsCXX)
    {
       int count = 0;
@@ -1955,7 +1955,7 @@ private:
    }
 
    void GenMakefilePrintObjectRules(File f, Project project,
-      Map<String, NameCollisionInfo> namesInfo,
+      Map<CIString, NameCollisionInfo> namesInfo,
       ProjectConfig prjConfig,
       //Map<Platform, bool> parentExcludedPlatforms,
       Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
@@ -2432,7 +2432,7 @@ private:
       return platforms;
    }
 
-   void GetTargets(ProjectConfig prjConfig, Map<String, NameCollisionInfo> namesInfo, char * objDir, const char * objectFileExt, DynamicString output)
+   void GetTargets(ProjectConfig prjConfig, Map<CIString, NameCollisionInfo> namesInfo, char * objDir, const char * objectFileExt, DynamicString output)
    {
       char moduleName[MAX_FILENAME];
       if(type == file)
@@ -2529,7 +2529,7 @@ private:
       }
    }
 
-   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, int bitDepth, Map<String, NameCollisionInfo> namesInfo, bool onlyCObject)
+   void DeleteIntermediateFiles(CompilerConfig compiler, ProjectConfig prjConfig, int bitDepth, Map<CIString, NameCollisionInfo> namesInfo, bool onlyCObject)
    {
       if(type == file)
       {

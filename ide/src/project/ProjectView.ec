@@ -1267,7 +1267,7 @@ class ProjectView : Window
          result = false;
          if(ProjectPrepareForToolchain(project, normal, true, true, compiler, config))
          {
-            Map<String, NameCollisionInfo> namesInfo { };
+            Map<CIString, NameCollisionInfo> namesInfo { };
             project.topNode.GenMakefileGetNameCollisionInfo(namesInfo, config);
             for(node : nodes)
             {

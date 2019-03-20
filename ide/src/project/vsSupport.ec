@@ -125,7 +125,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
       const char * targetFrameworkVersion = "196613";
       const char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
       char * rootNamespace = projectName;
-      Map<String, NameCollisionInfo> namesInfo { };
+      Map<CIString, NameCollisionInfo> namesInfo { };
       // TOFIX: Collision and Config-specific!
       project.topNode.GenMakefileGetNameCollisionInfo(namesInfo, project.config);
 
@@ -575,7 +575,7 @@ void CollectPlatformSpecificDirs(Project project, ProjectConfig config, Array<St
 }
 
 enum FilesFilter { source, header, resource, other };
-bool PrintNodes(File f, Project prj, ProjectNode node, Map<String, NameCollisionInfo> namesInfo, FilesFilter filter, bool justHasChild, bool usePrecompiledHeaders)
+bool PrintNodes(File f, Project prj, ProjectNode node, Map<CIString, NameCollisionInfo> namesInfo, FilesFilter filter, bool justHasChild, bool usePrecompiledHeaders)
 {
    if(node.type == file)
    {
@@ -694,7 +694,7 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<String, NameCollision
    return false;
 }
 
-void PrintFile(File f, Project prj, ProjectNode node, Map<String, NameCollisionInfo> namesInfo, bool usePrecompiledHeaders)
+void PrintFile(File f, Project prj, ProjectNode node, Map<CIString, NameCollisionInfo> namesInfo, bool usePrecompiledHeaders)
 {
    char modulePath[MAX_LOCATION];
    char moduleName[MAX_FILENAME];
@@ -733,7 +733,7 @@ void PrintFile(File f, Project prj, ProjectNode node, Map<String, NameCollisionI
 }
 
 void PrintFileConfiguration(File f, Project prj, ProjectNode node,
-      Map<String, NameCollisionInfo> namesInfo, ProjectConfig config,
+      Map<CIString, NameCollisionInfo> namesInfo, ProjectConfig config,
       Array<String> perFilePreprocessorDefs, Array<DirPath> perFileIncludeDirs,
       bool usePrecompiledHeaders)
 {
