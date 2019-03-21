@@ -96,7 +96,8 @@ class ProcessingStage
                   break;
                case clear:
                   processing.onTaskCleared(task);
-                  if(task.status.waitedOn)
+                  // TO REVIEW: This was leaking?
+                  // if(task.status.waitedOn)
                      delete task;
                   break;
                default:
