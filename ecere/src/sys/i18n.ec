@@ -24,7 +24,7 @@ static Map<const String, Map<const String, const String>> moduleMaps { };
 
 public dllexport void LoadTranslatedStrings(const String moduleName, const char * name)
 {
-#if !defined(ECERE_NOFILE) && !defined(__EMSCRIPTEN__)
+#if !defined(ECERE_NOFILE) && !defined(__EMSCRIPTEN__) && !defined(__LUMIN__)
    File f;
    char fileName[MAX_LOCATION];
 

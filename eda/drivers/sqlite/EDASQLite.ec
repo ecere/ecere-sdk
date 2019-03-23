@@ -6,14 +6,16 @@ public import "ecere"
 public import "EDA"
 #endif
 
-#ifdef __linux__
+#if defined(__linux__) && !defined(__LUMIN__)
 #include <sqlite3.h>
 #else
 #include "sqlite3.h"
 #endif
 
 #define uint _uint
+#if !defined(__LUMIN__)
 #include "ffi.h"
+#endif
 #undef uint
 
 __attribute__((unused)) static void UnusedFunction()

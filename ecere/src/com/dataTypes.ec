@@ -2619,6 +2619,15 @@ public char * PrintLnString(const typed_object object, ...)
 
 #if defined(__ANDROID__)
 #include <android/log.h>
+#if defined(__LUMIN__)
+#define bool _bool
+#define false _false
+#define true _true
+#include <ml_logging.h>
+#undef bool
+#undef false
+#undef true
+#endif
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #endif
 
@@ -2629,8 +2638,10 @@ public void PrintLn(const typed_object object, ...)
    va_start(args, object);
    PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
    va_end(args);
-#if defined(__ANDROID__) && !defined(ECERE_NOFILE)
+#if defined(__ANDROID__) && !defined(ECERE_NOFILE) && !defined(__LUMIN__)
    LOGI("%s", buffer);
+#elif defined(__LUMIN__)
+   ML_LOG(Info, "%s", buffer);
 #else
    puts(buffer);
 #endif

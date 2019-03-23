@@ -132,6 +132,24 @@
                }
             }
          ]
+      },
+      {
+         "Name" : "Lumin",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "EDASQLiteLuminStatic",
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse3",
+               "-msse4"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [
@@ -151,6 +169,17 @@
          "Configurations" : [
             {
                "Name" : "Android",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : false
+                     }
+                  }
+               ]
+            },
+            {
+               "Name" : "Lumin",
                "Platforms" : [
                   {
                      "Name" : "linux",

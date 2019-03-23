@@ -135,7 +135,12 @@ private:
          return true;
       }
       else
+      {
          printf("Error accessing shader %s.\n", file);
+#if defined(__LUMIN__)
+         PrintLn("Error accessing shader ", file, ".");
+#endif
+      }
       return false;
    }
 

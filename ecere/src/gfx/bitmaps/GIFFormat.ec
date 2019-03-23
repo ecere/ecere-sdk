@@ -2,7 +2,7 @@ namespace gfx::bitmaps;
 
 import "Display"
 
-#if !defined(__EMSCRIPTEN__)
+#if !defined(__EMSCRIPTEN__) && !defined(__LUMIN__)
 
 #include "gif_lib.h"
 

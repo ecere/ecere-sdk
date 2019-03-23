@@ -336,7 +336,8 @@ public struct GLB
 
    void copy(GLB src, uint srcStart, uint dstStart, uint size)
    {
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) // TODO:
+      // TODO: Additional version check for full GL?
+#if defined(__LUMIN__) || defined(_GLES3) || (!defined(__ANDROID__) && !defined(__EMSCRIPTEN__)) // TODO:
       glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
       glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
       glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
@@ -546,7 +547,7 @@ public struct GLEAB : GLB
          GLFlushMatrices();
 
          //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
-#if !defined(_GLES) && !defined(_GLES2)
+#if defined(__LUMIN__) || (!defined(_GLES) && !defined(_GLES2))
          if(baseVertex)
             glDrawElementsBaseVertex(primType, count, type, indices, baseVertex);
          else
