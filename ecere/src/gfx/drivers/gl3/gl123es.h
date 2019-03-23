@@ -17,9 +17,29 @@
    #endif
 #endif
 
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(_GLES3)
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+
+#if defined(__LUMIN__)
+   #include <GLES3/gl32.h>
+
+   #define glMultiDrawElementsIndirect _ptrc_glMultiDrawElementsIndirect
+   extern void (* _ptrc_glMultiDrawElementsIndirect)(GLenum, GLenum, const void *, GLsizei, GLsizei);
+
+   #define glMapBuffer _ptrc_glMapBuffer
+   extern void * (* _ptrc_glMapBuffer)(GLenum, GLenum);
+
+   #define GL_FILL 0x1B02
+   #define GL_LINE 0x1B01
+
+#else
+#if defined(_GLES3)
+   #include <GLES3/gl3.h>
+#else
    #include <GLES2/gl2.h>
+#endif
+#endif
+
 #else
    #include <gl_compat_4_4.h>
 #endif
@@ -124,7 +144,19 @@
 */
 
 // Compiled In Capabilities
-#if !defined(_GLES) && !defined(_GLES2)
+#if defined(__LUMIN__)
+   #define ENABLE_GL_LEGACY   0
+   #define ENABLE_GL_INTDBL   0
+   #define ENABLE_GL_MAPBUF   0     // TODO: Lumin in theory supports full GL so all of these could be 1 (testing required)
+   #define ENABLE_GL_SELECT   0
+   #define ENABLE_GL_VAO      1
+#elif defined(_GLES3)
+   #define ENABLE_GL_LEGACY   0
+   #define ENABLE_GL_INTDBL   0
+   #define ENABLE_GL_MAPBUF   (!defined(__EMSCRIPTEN__))      // WebGL 2 still doesn't support MapBuffer
+   #define ENABLE_GL_SELECT   0
+   #define ENABLE_GL_VAO      1
+#elif !defined(_GLES) && !defined(_GLES2)
    #define ENABLE_GL_LEGACY   1
    #define ENABLE_GL_INTDBL   1
    #define ENABLE_GL_MAPBUF   1
@@ -138,7 +170,7 @@
    #define ENABLE_GL_VAO      0
 #endif
 
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(_GLES3)
    #define ENABLE_GL_FFP      0
 #else
    #define ENABLE_GL_FFP      1
@@ -363,4 +395,16 @@ extern bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legac
    #define GL_INDEX_INT GL_UNSIGNED_INT
 #else
    #define GL_INDEX_INT GL_UNSIGNED_SHORT
+#endif
+
+#if defined(__LUMIN__)
+#define bool _bool
+#define false _false
+#define true _true
+
+#include <ml_logging.h>
+
+#undef bool
+#undef false
+#undef true
 #endif

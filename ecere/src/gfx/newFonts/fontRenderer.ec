@@ -9,6 +9,7 @@ import "Color"
 
 #define _Noreturn
 
+#define set _set
 #include <math.h>
 #include <stdlib.h>
 
@@ -18,6 +19,8 @@ namespace gfx;
 
 #include "cc.h"
 #include "mm.h"
+
+#undef set
 
 import "fmFontManager"
 import "textureManager"
