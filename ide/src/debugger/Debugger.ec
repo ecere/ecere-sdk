@@ -1900,7 +1900,7 @@ class Debugger
                GdbDataBreakpoint first = null;
                for(n : bpItem.multipleBPs)
                {
-                  if(!fstrcmp(n.fullname, bp.absoluteFilePath) && !first)
+                  if(bp.absoluteFilePath && !fstrcmp(n.fullname, bp.absoluteFilePath) && !first)
                   {
                      count++;
                      first = n;
