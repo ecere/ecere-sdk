@@ -117,9 +117,19 @@ private:
 default const char * AndroidInterface_GetLibLocation(Module m);
 
 #include <android/log.h>
+#if !defined(__LUMIN__)
 #include <android/native_activity.h>
 
 #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+#else
+#define bool _bool
+#define false _false
+#define true _true
+#include <ml_logging.h>
+#undef bool
+#undef false
+#undef true
+#endif
 #endif
 
 #undef property
@@ -5660,8 +5670,10 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
       else
       {
          const char * libLocation = null;
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) && !defined(__LUMIN__)
          libLocation = AndroidInterface_GetLibLocation(fromModule.application);
+#elif defined(__LUMIN__)
+         libLocation = "";
 #endif
          library = Instance_Module_Load(libLocation, name, &Load, &Unload);
       }

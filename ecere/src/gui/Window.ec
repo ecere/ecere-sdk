@@ -2682,6 +2682,9 @@ private:
 
    void _ShowDecorations(Box box, bool post)
    {
+#if defined(__LUMIN__)
+      return;
+#endif
       if(rootWindow == this && nativeDecorations && !is3D) return;
       if(visible && this != guiApp.desktop)
       {
@@ -2725,6 +2728,7 @@ private:
          surface.DrawingChar(' ');
          if(this == rootWindow)
          {
+#if !defined(__LUMIN__)
             if(style.drawBehind || background.a)
             {
                int a = background.a;
@@ -2733,6 +2737,7 @@ private:
                surface.Clear(colorBuffer);
                surface.SetBackground(background);
             }
+#endif
          }
          else if(background.a)
          {

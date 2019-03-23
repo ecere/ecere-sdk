@@ -39,9 +39,13 @@ namespace gfx::drivers;
       import "egl"
 
       #if defined(__ANDROID__)
-         #include <android/native_activity.h>
          #include <android/log.h>
-         #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+         #if defined(__LUMIN__)
+            #define printf(...)  ML_LOG(Info, __VA_ARGS__)
+         #else
+            #include <android/native_activity.h>
+            #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
+         #endif
       #endif
 
    // Emscripten
@@ -799,7 +803,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
 
-#if defined(_GLES)
+#if defined(__LUMIN__)
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true };
+#elif defined(_GLES)
       capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
       capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
@@ -828,7 +834,7 @@ class OpenGLDisplayDriver : DisplayDriver
          vertexPointer = oglDisplay.compat;
 #endif
 #if ENABLE_GL_VAO
-         vao = glBindVertexArray != null && !oglDisplay.compat;
+         vao = glBindVertexArray != null && !oglDisplay.compat;   // NOTE: Compat must be turned off to use VAOs!
 #endif
 #if ENABLE_GL_FBO
          frameBuffer = glBindFramebuffer != null;
@@ -851,7 +857,9 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
 
-#ifdef _GLES
+#if defined(__LUMIN__)
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true };
+#elif defined(_GLES)
       oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #elif defined(_GLES2)
       oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
@@ -988,7 +996,7 @@ class OpenGLDisplayDriver : DisplayDriver
                         oglSystem.version = ogl_GetMajorVersion();
 
 #ifdef _DEBUG
-                        printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
+                        PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
 #endif
                      }
                   }
@@ -1414,7 +1422,9 @@ class OpenGLDisplayDriver : DisplayDriver
             ReleaseDC(display.window, oglDisplay.hdc);
 #elif defined(__unix__) || defined(__APPLE__)
 #  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
-         #if defined(__ODROID__)
+         #if defined(__LUMIN__)
+         oglDisplay.version = 4;
+         #elif defined(__ODROID__)
          oglDisplay.version = 1;
          #else
          oglDisplay.version = 2;
@@ -2129,7 +2139,8 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          bool sRGB2Linear = bitmap.sRGB2Linear;
          int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
-#if !defined(__EMSCRIPTEN__)
+         // TODO: Proper _GLES3 setup...
+#if defined(_GLES3) && !defined(__EMSCRIPTEN__)
             (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
 #else
             0 :

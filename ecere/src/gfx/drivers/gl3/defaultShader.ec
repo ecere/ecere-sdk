@@ -166,8 +166,13 @@ public:
 
 public class DefaultShader : Shader
 {
+#if defined(__LUMIN__)
+   vertexShaderFile   = "data/ecere/shaders/default.vert";
+   fragmentShaderFile = "data/ecere/shaders/default.frag";
+#else
    vertexShaderFile   = "<:ecere>shaders/default.vert";
    fragmentShaderFile = "<:ecere>shaders/default.frag";
+#endif
 
 public:
    float modelView[16];
