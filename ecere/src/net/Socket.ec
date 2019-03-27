@@ -144,6 +144,8 @@ static class SocketConnectThread : Thread
 
 };
 
+   #define MAX_RECEIVE  (2 * 65536)
+
 public class Socket
 {
 public:
@@ -642,7 +644,7 @@ private:
       return result;
    }
 
-   #define MAX_RECEIVE  65536
+   bool hadLeftOver;
 
    bool ProcessSocket(fd_set * rs, fd_set * ws, fd_set * es)
    {
@@ -659,8 +661,9 @@ private:
          int count = 0;
 
          result = true;
-         if(!leftOver)
+         if(!leftOver || hadLeftOver)
          {
+            hadLeftOver = false;
             if((int)recvBufferSize - recvBytes < MAX_RECEIVE)
             {
                recvBuffer = renew recvBuffer byte[recvBufferSize + MAX_RECEIVE];
@@ -694,6 +697,8 @@ private:
                }
             }
          }
+         else
+            hadLeftOver = true;
 
          if(count > 0 || (leftOver && !count))
          {
