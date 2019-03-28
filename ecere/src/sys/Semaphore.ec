@@ -172,7 +172,7 @@ public:
 #if !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
          if(handle) CloseHandle(handle);
-         handle = CreateSemaphore(null, value, maxCount, null);
+         handle = CreateSemaphore(null, 0, value, null);
 #endif
 #endif
          maxCount = value;
