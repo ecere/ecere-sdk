@@ -2920,7 +2920,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          else if(type == bitClass || type == enumClass || type == unitClass)
          {
-            Class dataTypeClass = System_FindClass(_class.module, dataTypeString, true);
+            Class dataTypeClass = dataTypeString ? System_FindClass(_class.module, dataTypeString, true) : null;
             if(dataTypeClass)
                _class.typeSize = dataTypeClass.typeSize;
             _class.structSize = 0;
