@@ -6,6 +6,9 @@
       "Debug" : true,
       "Profile" : false,
       "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
       "IncludeDirs" : [
          "..\\eModel"
       ],
@@ -44,7 +47,8 @@
    "Files" : [
       "demo.ec",
       "terrain.ec",
-      "dna.ec"
+      "dna.ec",
+      "../../../extras/BinaryTriangle.ec"
    ],
    "ResourcesPath" : "res",
    "Resources" : [
