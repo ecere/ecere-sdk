@@ -130,19 +130,30 @@ public:
       uint ix;
       uint endAvailable = 0;
       uint added;
+      int chosen = -1;
+      uint chosenAvailable = MAXDWORD;
       for(ix = 0; ix < count; ix++)
       {
          BlockEntry * block = array + ix;
          endAvailable = block->end - block->start + 1;
          if(endAvailable >= size)
          {
-            uint start = block->start;
-            if(block->end - block->start + 1 == size)
-               remove(block);
-            else
-               block->start = block->start + size;
-            return { start, start + size - 1 };
+            if(endAvailable < chosenAvailable)
+            {
+               chosenAvailable = endAvailable;
+               chosen = ix;
+            }
          }
+      }
+      if(chosen != -1)
+      {
+         BlockEntry * block = array + chosen;
+         uint start = block->start;
+         if(block->end - block->start + 1 == size)
+            remove(block);
+         else
+            block->start = block->start + size;
+         return { start, start + size - 1 };
       }
       if((added = onExpand(type, size - endAvailable)))
       {
@@ -180,6 +191,26 @@ public class GLMB : FreeBlockMap
 {
 public:
    GLB ab;
+
+   void printStats()
+   {
+      int i;
+      uint totalFree = 0;
+      uint maxFree = 0, minFree = MAXDWORD;
+      PrintLn("GLMB Stats (", ab.buffer, ")");
+      PrintLn("Total Size: ", totalSize / 1048576.0, " mb");
+      PrintLn("Free Blocks: ", count);
+      for(i = 0; i < count; i++)
+      {
+         uint size = this[i].end - this[i].start + 1;
+         if(size < minFree) minFree = size;
+         if(size > maxFree) maxFree = size;
+         totalFree += size;
+      }
+      PrintLn("Total Free: ", totalFree / 1048576.0, " mb");
+      PrintLn("Smallest free block: ", minFree / 1048576.0, " mb");
+      PrintLn("Largest free block: ", maxFree / 1048576.0, " mb");
+   }
 
    uint onExpand(GLBType type, uint extraNeeded)
    {
