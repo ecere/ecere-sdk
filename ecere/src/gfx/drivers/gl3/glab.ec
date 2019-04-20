@@ -132,6 +132,7 @@ public:
       uint added;
       int chosen = -1;
       uint chosenAvailable = MAXDWORD;
+
       for(ix = 0; ix < count; ix++)
       {
          BlockEntry * block = array + ix;
@@ -142,6 +143,8 @@ public:
             {
                chosenAvailable = endAvailable;
                chosen = ix;
+               if(chosenAvailable == size)
+                  break;
             }
          }
       }
