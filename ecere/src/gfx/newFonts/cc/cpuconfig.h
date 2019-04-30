@@ -1,6 +1,14 @@
 #ifndef __CPUCONFIG_H__
 #define __CPUCONFIG_H__
 
+#if defined(__LUMIN__)
+#define CPU_DISABLE_SSE    1
+#endif
+
+#if CPU_DISABLE_SSE && !defined(CPU_ENABLE_SSE)
+#define CPU_ENABLE_SSE 0
+#endif
+
 /* Automatically generated CPU information header */
 
 #define CPUCONF_CHAR_SIZE (1)
