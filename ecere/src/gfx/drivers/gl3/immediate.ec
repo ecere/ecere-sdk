@@ -94,6 +94,8 @@ public void glimtkRecti(int a, int b, int c, int d)
 
 public void glimtkBegin(GLIMTKMode mode)
 {
+   int stride = 4;
+
    verticesBuf = &verticesBuffers[curBuf];
    if(++curBuf >= NUM_BUFFERS) curBuf = 0;
 
@@ -102,8 +104,10 @@ public void glimtkBegin(GLIMTKMode mode)
    beginCount = 0;
    vertexOffset = 2;
 
+   if(verticesBuf->stride != stride)
+      verticesBuf->size = verticesBuf->size * verticesBuf->stride / stride;
    verticesBuf->count = 0;
-   verticesBuf->stride = 4;
+   verticesBuf->stride = stride;
    numCoords = 2;
 }
 
@@ -132,8 +136,13 @@ public void glimtkTexCoord2fv(float * a)         { glimtkTexCoord2f(a[0], a[1]);
 
 public void glimtkVertex2f(float x, float y)
 {
+   int stride;
+
    numCoords = 2;
-   verticesBuf->stride = vertexOffset + numCoords;
+   stride = vertexOffset + numCoords;
+   if(verticesBuf->stride != stride)
+      verticesBuf->size = verticesBuf->size * verticesBuf->stride / stride;
+   verticesBuf->stride = stride;
    {
       int stride = verticesBuf->stride;
       bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
@@ -159,10 +168,14 @@ public void glimtkVertex2d(double x, double y)   { glimtkVertex2f((float)x, (flo
 
 public void glimtkVertex3f( float x, float y, float z )
 {
+   int stride;
+
    numCoords = 3;
-   verticesBuf->stride = vertexOffset + numCoords;
+   stride = vertexOffset + numCoords;
+   if(verticesBuf->stride != stride)
+      verticesBuf->size = verticesBuf->size * verticesBuf->stride / stride;
+   verticesBuf->stride = stride;
    {
-      int stride = verticesBuf->stride;
       bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
       float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1) + vertexOffset;
       buf[0] = x;
@@ -193,12 +206,16 @@ public void glimtkColor4f(float r, float g, float b, float a)
 {
    if(beginMode != unset)
    {
+      int stride;
       // Called within glBegin()/glEnd()
       vertexColorValues = true;
       vertexOffset = 6;
-      verticesBuf->stride = vertexOffset + numCoords;
+      stride = vertexOffset + numCoords;
+      if(verticesBuf->stride != stride)
+         verticesBuf->size = verticesBuf->size * verticesBuf->stride / stride;
+      verticesBuf->stride = stride;
+
       {
-         int stride = verticesBuf->stride;
          bool quadsAdd = beginMode == quads && !glCaps_quads && ((beginCount % 4) == 3);
          float * buf = verticesBuf->ensure(quadsAdd ? 3 : 1) + 2;
          buf[0] = r, buf[1] = g, buf[2] = b, buf[3] = a;
