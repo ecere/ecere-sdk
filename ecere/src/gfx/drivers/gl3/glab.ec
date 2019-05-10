@@ -182,6 +182,17 @@ public:
 
    void freeBlock(BlockEntry block)
    {
+#if 0 // def _DEBUG
+      int i;
+      if(block.start > totalSize || block.end >= totalSize)
+         PrintLn("Start or end beyond size!");
+      for(i = 0; i < count; i++)
+      {
+         BlockEntry * b = &array[i];
+         if(block.start <= b->end && block.end >= b->start)
+            PrintLn("Overlapping with free block already here!");
+      }
+#endif
       addFreeBlock(block.start, block.end - block.start + 1);
    }
 
