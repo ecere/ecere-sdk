@@ -185,6 +185,10 @@ public:
 #endif
          return { start, start + size - 1 };
       }
+
+      if(count && array[count-1].end != totalSize-1)
+         endAvailable = 0;
+
       if((added = onExpand(type, size - endAvailable)))
       {
          BlockEntry * block = count ? array + count - 1 : null;
