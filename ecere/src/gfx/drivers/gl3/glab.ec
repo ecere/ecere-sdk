@@ -53,9 +53,10 @@ public class FreeBlockMap : Array<BlockEntry>
 
    void insert(BlockEntry * after, BlockEntry block)
    {
+      int i = after ? after - array : -1;
       if(count + 1 > minAllocSize)
          minAllocSize = Max(count, 16) + count / 2;
-      Insert((IteratorPointer)after, block);
+      Insert(i == -1 ? null : (IteratorPointer)(array + i), block);
    }
 
    void remove(BlockEntry * ptr)
@@ -77,23 +78,41 @@ public class FreeBlockMap : Array<BlockEntry>
          {
             BlockEntry * ptr = array + ix;
             BlockEntry block = *ptr;
+            bool last = hi == lo;
+
             if(block <= cmp)
             {
-               if(block.end >= start)
+               if(ix == count-1 || array[ix+1].start > start)
                   return ptr;
                else
                {
-                  lo = ix;
+                  lo = ix+1;
                   ix = (lo + hi)/2;
                }
             }
             else
             {
-               hi = ix;
+               hi = ix-1;
                ix = (lo + hi)/2;
             }
-         } while(ix != lo);
+            if(last || lo > hi) break;
+         } while(true);
       }
+
+#if 0 // def _DEBUG
+      {
+         int i;
+         for(i = 0; i < count; i++)
+         {
+            BlockEntry * b = &array[i];
+            if(b->end < start)
+            {
+               PrintLn("Bad bug!");
+               return find(start);
+            }
+         }
+      }
+#endif
       return null;
    }
 
@@ -120,6 +139,9 @@ public class FreeBlockMap : Array<BlockEntry>
       // This free block is not connected to any other block
       else
          insert(prevBlock, { start, start + size - 1 });
+#if 0 //def _DEBUG
+      checkConsistency();
+#endif
    }
 
 public:
@@ -132,6 +154,7 @@ public:
       uint added;
       int chosen = -1;
       uint chosenAvailable = MAXDWORD;
+      // if(size == 1) PrintLn("single byte block?");
 
       for(ix = 0; ix < count; ix++)
       {
@@ -156,6 +179,10 @@ public:
             remove(block);
          else
             block->start = block->start + size;
+
+#if 0 //def _DEBUG
+         checkConsistency();
+#endif
          return { start, start + size - 1 };
       }
       if((added = onExpand(type, size - endAvailable)))
@@ -175,14 +202,40 @@ public:
             remove(block);
          else
             block->start = block->start + size;
+
+#if 0 //def _DEBUG
+         checkConsistency();
+#endif
+
          return { start, start + size - 1 };
       }
+#if 0 //def _DEBUG
+      checkConsistency();
+#endif
       return 0;
    }
 
+#ifdef _DEBUG
+   void checkConsistency()
+   {
+      int i;
+      for(i = 1; i < count; i++)
+      {
+         BlockEntry * l = &array[i-1];
+         BlockEntry * b = &array[i];
+         if(b->start <= l->end)
+            PrintLn("bad block order!");
+         if(b->end >= totalSize)
+            PrintLn("bad block!");
+         if(b->end <= b->start)
+            PrintLn("bad block!");
+      }
+   }
+#endif
+
    void freeBlock(BlockEntry block)
    {
-#if 0 // def _DEBUG
+#if 0 //def _DEBUG
       int i;
       if(block.start > totalSize || block.end >= totalSize)
          PrintLn("Start or end beyond size!");
@@ -194,6 +247,10 @@ public:
       }
 #endif
       addFreeBlock(block.start, block.end - block.start + 1);
+
+#if 0 //def _DEBUG
+      checkConsistency();
+#endif
    }
 
    virtual uint onExpand(GLBType type, uint required) { return 0; }
@@ -687,7 +744,7 @@ public struct GLFB
 
       {
          int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-         result = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+         result = status == GL_FRAMEBUFFER_COMPLETE;
 
 #ifdef _DEBUG
          if(!result)
