@@ -113,7 +113,7 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
    {
       mmHashDirectDeleteEntry2(tbl, &hashAccess, it, noRemResize);
       if(!noRemResize)
-         resize(null);
+         resizeEx(null, false);
    }
 
    void Delete(IteratorPointer it)
@@ -122,7 +122,7 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
       delete d;
       mmHashDirectDeleteEntry2(tbl, &hashAccess, it, noRemResize);
       if(!noRemResize)
-         resize(null);
+         resizeEx(null, false);
    }
 
    public void removeIterating(IteratorPointer * it)
@@ -130,19 +130,19 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
       HashMapEntry * entry;
       mmHashDirectDeleteEntry2(tbl, &hashAccess, *it, noRemResize);
       if(!noRemResize)
-         resize(it);
+         resizeEx(it, false);
 
       entry = (HashMapEntry *)*it;
       if(entry->key == NULL_KEY)
          *it = GetNext(*it);
    }
 
-   public void resize(IteratorPointer * movedEntry)
+   private static inline void resizeEx(IteratorPointer * movedEntry, bool forceResize)
    {
       int bits, status = mmHashGetStatus(tbl, &bits);
       if(status == MM_HASH_STATUS_MUSTGROW) bits++;
       else if(status == MM_HASH_STATUS_MUSTSHRINK && bits > 12) bits--;
-      else if(!noRemResize) return; // Must re-pack if we were not doing mem resize
+      else if(!forceResize || !noRemResize) return; // Must re-pack if we were not doing mem resize
       {
          uint pageShift = 4;
          uintsize memSize = mmHashRequiredSize(sizeof(HashMapEntry), bits, pageShift);
@@ -151,6 +151,11 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
          free(tbl);
          tbl = newTbl;
       }
+   }
+
+   public void resize(IteratorPointer * movedEntry)
+   {
+      resizeEx(movedEntry, true);
    }
 
    IteratorPointer GetFirst() { return mmHashGetNext(tbl, null, &hashAccess); }
@@ -167,7 +172,7 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
          int r = mmHashDirectAddEntry2(tbl, &hashAccess, &newEntry, bool::true, &entry);
          if(r != MM_HASH_FOUND)
          {
-            resize((IteratorPointer *)&entry);
+            resizeEx((IteratorPointer *)&entry, false);
             if(justAdded) *justAdded = true;
          }
          return (IteratorPointer)entry;
