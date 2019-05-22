@@ -95,7 +95,9 @@ class ProcessingStage
                   readyTasks.Add(task);
                   break;
                case clear:
+                  mutex.Release();
                   processing.onTaskCleared(task);
+                  mutex.Wait();
                   // TO REVIEW: This was leaking?
                   // if(task.status.waitedOn)
                      delete task;
@@ -245,7 +247,9 @@ class ProcessingStage
                readyTasks.Remove(task);
             else
                tasks.Remove(task);
+            mutex.Release();
             processing.onTaskCleared(task);
+            mutex.Wait();
             delete task;
          }
       }
@@ -269,13 +273,18 @@ class ProcessingStage
             mutex.Wait();
          }
          tasks.Remove(task);
+         mutex.Release();
          processing.onTaskCleared(task);
+         mutex.Wait();
+
          delete task;
       }
       while((task = readyTasks.first))
       {
          readyTasks.Remove(task);
+         mutex.Release();
          processing.onTaskCleared(task);
+         mutex.Wait();
          delete task;
       }
       for(t : threads; t)
