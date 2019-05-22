@@ -5,6 +5,7 @@ import "Container"
 #include <math.h>
 #include <stdlib.h>
 
+#include "cpuconfig.h"
 #include "cc.h"
 #include "mmhash.h"
 

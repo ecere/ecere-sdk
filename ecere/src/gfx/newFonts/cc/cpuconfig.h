@@ -87,6 +87,8 @@
    #define CPUCONF_LONG_SIZESHIFT ((sizeof(long) == 4) ? 2 : 3)
    #define CPUCONF_LONG_BITS (sizeof(long) * 8)
 
+   #define CPUCONF_WORD_SIZE (64)
+
 #else
 
 #if !defined(__EMSCRIPTEN__) && (defined(__i386) || defined(_M_IX86))
@@ -106,6 +108,9 @@
    #define CPUCONF_LONG_BITSHIFT (5)
    #define CPUCONF_LONG_SIZESHIFT (2)
    #define CPUCONF_LONG_BITS (32)
+
+   #define CPUCONF_WORD_SIZE (32)
+
 #endif
 #define CPUCONF_VENDOR_INTEL
 
@@ -115,7 +120,7 @@
 #define CPUCONF_SOCKET_PHYSICAL_CORES (8)
 #define CPUCONF_TOTAL_CORE_COUNT (8)
 #define CPUCONF_SYSTEM_MEMORY (17072009216LL)
-#define CPUCONF_WORD_SIZE (64)
+
 #define CPUCONF_CACHE_LINE_SIZE (64)
 #define CPUCONF_CACHE_L1CODE_SIZE (32768)
 #define CPUCONF_CACHE_L1CODE_LINE (64)
