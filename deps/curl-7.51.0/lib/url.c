@@ -3979,7 +3979,7 @@ static CURLcode findprotocol(struct Curl_easy *data,
      variables based on the URL. Now that the handler may be changed later
      when the protocol specific setup function is called. */
   for(pp = protocols; (p = *pp) != NULL; pp++) {
-    if(strcasecompare(p->scheme, protostr)) {
+    if(p->scheme && strcasecompare(p->scheme, protostr)) {
       /* Protocol found in table. Check if allowed */
       if(!(data->set.allowed_protocols & p->protocol))
         /* nope, get out */
