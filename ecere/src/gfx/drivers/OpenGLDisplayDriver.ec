@@ -2521,7 +2521,21 @@ class OpenGLDisplayDriver : DisplayDriver
 
       GLBegin(GLIMTKMode::quads);
 
-      if(h < 0)
+      if(w < 0 && h < 0)
+      {
+         GLTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+
+         GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy)/ bitmap.height);
+         GLVertex2i(dx-w+surface.offset.x, dy-h+surface.offset.y);
+
+         GLTexCoord2f((float)(sx) / bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx-w+surface.offset.x, dy+surface.offset.y);
+
+         GLTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
+         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+      }
+      else if(h < 0)
       {
          GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
          GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
