@@ -487,7 +487,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                               MemberInit member = null;
                               for(member = members.dataMembers->first; member; member = member.next)
                               {
-                                 if(member.identifiers)
+                                 if(member.identifiers && member.identifiers->first)
                                  {
                                     DataMember _subMemberStack[256];
                                     int _subMemberStackPos = 0;
