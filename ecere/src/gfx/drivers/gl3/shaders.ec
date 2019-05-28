@@ -100,6 +100,14 @@ public:
       }
    }
 
+   property CompiledShader activeCompiledShader
+   {
+      get
+      {
+         return shader;
+      }
+   }
+
    uint64 state;
    ShaderModifiedUniforms modifiedUniforms;
 
