@@ -1865,7 +1865,7 @@ private:
 #if !defined(__EMSCRIPTEN__)
                   !guiApp.fullScreenMode &&
 #endif
-                  this != guiApp.desktop && (windowResized || windowMoved))
+                  this != guiApp.desktop && (windowResized || windowMoved) && visible)
                   for(child = parent.children.first; child && child != this; child = child.next)
                      if(child.rootWindow)
                         guiApp.interfaceDriver.UpdateRootWindow(child.rootWindow);
