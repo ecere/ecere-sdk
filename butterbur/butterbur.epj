@@ -159,10 +159,11 @@
             "VersionedShader.ec",
             "tesselation.ec",
             "GraphicalPresentation.ec",
-            "GraphicalSurface.ec"
+            "GraphicalSurface.ec",
+            "AnchoredPresentation.ec"
          ]
       },
-      "src/butterbur.ec"
+      "tests/butterbur.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [

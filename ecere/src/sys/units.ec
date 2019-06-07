@@ -4,6 +4,7 @@ import "instance"
 
 public struct Point { int x, y; };
 public struct Pointf { float x, y; };
+public struct Pointd { double x, y; };
 
 public class MinMaxValue : int
 {
