@@ -9,7 +9,7 @@
       "IncludeDirs" : [
          "../ecere/src/gfx/drivers/gl3",
          "../ecere/src/gfx/newFonts/cc",
-         "src/c",
+         "src/imagesAndText",
          "$(ECERE_SDK_SRC)/deps/freetype-2.3.12/include",
          "../deps/libtess"
       ],
@@ -109,28 +109,28 @@
          "Folder" : "src",
          "Files" : [
             {
-               "Folder" : "c",
+               "Folder" : "imagesAndText",
                "Files" : [
                   {
-                     "Folder" : "cc",
+                     "Folder" : "../ecere/src/gfx/newFonts/cc/cc",
                      "Files" : [
-                        "../ecere/src/gfx/newFonts/cc/mmhash.h",
-                        "../ecere/src/gfx/newFonts/cc/mmthread.h",
-                        "../ecere/src/gfx/newFonts/cc/ccstr.h",
-                        "../ecere/src/gfx/newFonts/cc/ccstr.c",
-                        "../ecere/src/gfx/newFonts/cc/mmbitmap.c",
-                        "../ecere/src/gfx/newFonts/cc/mm.h",
-                        "../ecere/src/gfx/newFonts/cc/mmatomic.h",
-                        "../ecere/src/gfx/newFonts/cc/mmhash.c",
-                        "../ecere/src/gfx/newFonts/cc/mm.c",
-                        "../ecere/src/gfx/newFonts/cc/cpuconfig.h",
-                        "../ecere/src/gfx/newFonts/cc/mmbitmap.h",
-                        "../ecere/src/gfx/newFonts/cc/cchybridsort.h",
-                        "../ecere/src/gfx/newFonts/cc/mmhashinline.h",
-                        "../ecere/src/gfx/newFonts/cc/cc.c",
-                        "../ecere/src/gfx/newFonts/cc/mmhashinternal.h",
-                        "../ecere/src/gfx/newFonts/cc/ccmergesort.h",
-                        "../ecere/src/gfx/newFonts/cc/cc.h"
+                        "mmhash.h",
+                        "mmthread.h",
+                        "ccstr.h",
+                        "ccstr.c",
+                        "mmbitmap.c",
+                        "mm.h",
+                        "mmatomic.h",
+                        "mmhash.c",
+                        "mm.c",
+                        "cpuconfig.h",
+                        "mmbitmap.h",
+                        "cchybridsort.h",
+                        "mmhashinline.h",
+                        "cc.c",
+                        "mmhashinternal.h",
+                        "ccmergesort.h",
+                        "cc.h"
                      ]
                   },
                   "drawmanager.c",
@@ -149,25 +149,50 @@
                   "img.c"
                ]
             },
-            "Presentation.ec",
-            "shapesTesselation.ec",
+            {
+               "Folder" : "opengl",
+               "Files" : [
+                  "ButterburShader.ec",
+                  "GLMultiDraw.ec",
+                  "VersionedShader.ec"
+               ]
+            },
+            {
+               "Folder" : "tesselation",
+               "Files" : [
+                  "shapesTesselation.ec",
+                  "tesselation.ec"
+               ]
+            },
+            {
+               "Folder" : "presentation",
+               "Files" : [
+                  "Presentation.ec",
+                  "TIManager.ec",
+                  "DrawingManager.ec",
+                  "AnchoredPresentation.ec",
+                  "GraphicalPresentation.ec",
+                  "GraphicalSurface.ec"
+               ]
+            },
             "GraphicalElement.ec",
-            "ButterburShader.ec",
-            "TIManager.ec",
-            "DrawingManager.ec",
-            "GLMultiDraw.ec",
-            "VersionedShader.ec",
-            "tesselation.ec",
-            "GraphicalPresentation.ec",
-            "GraphicalSurface.ec",
-            "AnchoredPresentation.ec"
+            "GraphicalStyle.ec"
+         ]
+      },
+      {
+         "Folder" : "../compiler/eccss/eccss",
+         "Files" : [
+            "astNode.ec",
+            "lexing.ec",
+            "expressions.ec",
+            "eccss.ec"
          ]
       },
       "tests/butterbur.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "src/shaders/butterbur.frag",
-      "src/shaders/butterbur.vert"
+      "src/opengl/shaders/butterbur.frag",
+      "src/opengl/shaders/butterbur.vert"
    ]
 }
