@@ -27,8 +27,6 @@ void checkGLErrors()
 }
 #endif
 
-public struct Pointd { double x, y; };
-
 // FIXME: This is currently duplicated here from Ecere's OGL display driver because there is no other mechanism to access defualt VAO
 class TempOGLDisplay : struct
 {

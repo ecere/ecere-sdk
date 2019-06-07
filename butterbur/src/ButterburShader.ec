@@ -180,12 +180,14 @@ public:
 
 class ButterburShader : VersionedShader
 {
+#if defined(__GNOSIS3__)
 #if defined(__LUMIN__)
-   vertexShaderFile   = "data/butterbur.vert";
-   fragmentShaderFile = "data/butterbur.frag";
-#elif defined(__GNOSIS3__)
+   vertexShaderFile   = "data/gnosis3/butterbur.vert";
+   fragmentShaderFile = "data/gnosis3/butterbur.frag";
+#else
    vertexShaderFile   = "<:gnosis3>butterbur.vert";
    fragmentShaderFile = "<:gnosis3>butterbur.frag";
+#endif
 #else
    vertexShaderFile   = ":butterbur.vert";
    fragmentShaderFile = ":butterbur.frag";
