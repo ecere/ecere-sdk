@@ -1,0 +1,53 @@
+
+ECERE Project File
+
+Version 0.1a
+
+Target "Style"
+
+   Configurations
+
+    + Debug
+
+         Compiler Options
+
+            Intermediate Directory = debug
+            Debug = True
+            Optimize = None
+            AllWarnings = True
+
+            Preprocessor Definitions = _DEBUG
+
+         Linker Options
+
+            Target Name = Style
+            Target Type = Executable
+            Target Directory = debug
+
+            Libraries = ecere
+
+    + Release
+
+         Compiler Options
+
+            Intermediate Directory = release
+            Debug = False
+            Optimize = Speed
+            AllWarnings = True
+
+         Linker Options
+
+            Target Name = Style
+            Target Type = Executable
+            Target Directory = release
+
+            Libraries = ecere
+
+   Files
+
+    - Style.ec
+    - Layout.ec
+    - Test.ec
+    - Image.ec
+    - Animation.ec
+    - Button.ec
