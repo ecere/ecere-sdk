@@ -2,9 +2,7 @@ public import IMPORT_STATIC "ecere"
 
 enum GEType { none, shape, text, image, path3D, multi };
 
-// TODO: Add more screen and world units: em, feet, inches/cm (both screen and world version?)
-// TODO: Also add percent as a unit for relative to parent?
-public enum GraphicalUnit { pixels, meters };
+public enum GraphicalUnit { pixels, meters, feet, percent, points, em, screenInches, screenCM, screenMM };
 
 public enum VAlignment { top, middle, bottom };
 public enum HAlignment { left, center, right };
@@ -513,6 +511,9 @@ public class Image : GraphicalElement
 public:
    ImageResource image;
    Pointf hotSpot;
+   Color tint;
+
+   tint = white;
 
    property Pointf hotSpot
    {
