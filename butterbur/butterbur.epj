@@ -1,73 +1,81 @@
 {
-   version = 0.2,
-   moduleName = "butterbur",
-   options = {
-      warnings = all,
-      includeDirs = [
-         "../ecere/src/gfx/drivers/gl3"
+   "Version" : 0.2,
+   "ModuleName" : "butterbur",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
       ],
-      targetType = executable,
-      targetFileName = "butterbur",
-      libraries = [
-         "ecere"
+      "IncludeDirs" : [
+         "../ecere/src/gfx/drivers/gl3",
+         "../ecere/src/gfx/newFonts/cc",
+         "src/c",
+         "$(ECERE_SDK_SRC)/deps/freetype-2.3.12/include",
+         "../deps/libtess"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "butterbur",
+      "Libraries" : [
+         "ecere",
+         "freetype"
       ]
    },
-   platforms = [
+   "Platforms" : [
       {
-         name = "linux",
-         options = {
-            libraries = [
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
                "m",
                "GL"
             ]
          }
       },
       {
-         name = "apple",
-         options = {
-            libraries = [
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
                "m"
             ]
          }
       },
       {
-         name = "win32",
-         options = {
-            libraries = [
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
                "opengl32"
             ]
          }
       }
    ],
-   configurations = [
+   "Configurations" : [
       {
-         name = "Debug",
-         options = {
-            debug = true,
-            optimization = none,
-            preprocessorDefinitions = [
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            console = true,
-            fastMath = false
+            "Console" : true,
+            "FastMath" : false
          }
       },
       {
-         name = "Release",
-         options = {
-            debug = false,
-            optimization = speed,
-            fastMath = true
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],
-   files = [
+   "Files" : [
       {
-         folder = "deps",
-         files = [
+         "Folder" : "deps",
+         "Files" : [
             {
-               folder = "libtess",
-               files = [
+               "Folder" : "libtess",
+               "Files" : [
                   "../deps/libtess/dict.c",
                   "../deps/libtess/dict.h",
                   "../deps/libtess/dictList.h",
@@ -92,21 +100,73 @@
                   "../deps/libtess/glutess.h",
                   "../deps/libtess/mesh.c"
                ]
-            }
+            },
+            "../ecere/src/gfx/drivers/gl3/gl_compat_4_4.h",
+            "../ecere/src/gfx/drivers/gl3/gl_compat_4_4.c"
          ]
       },
-      "src/butterbur.ec",
       {
-         fileName = "src/tesselation.ec",
-         options = {
-            includeDirs = [
-               "../deps/libtess"
-            ]
-         }
-      }
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "c",
+               "Files" : [
+                  {
+                     "Folder" : "cc",
+                     "Files" : [
+                        "../ecere/src/gfx/newFonts/cc/mmhash.h",
+                        "../ecere/src/gfx/newFonts/cc/mmthread.h",
+                        "../ecere/src/gfx/newFonts/cc/ccstr.h",
+                        "../ecere/src/gfx/newFonts/cc/ccstr.c",
+                        "../ecere/src/gfx/newFonts/cc/mmbitmap.c",
+                        "../ecere/src/gfx/newFonts/cc/mm.h",
+                        "../ecere/src/gfx/newFonts/cc/mmatomic.h",
+                        "../ecere/src/gfx/newFonts/cc/mmhash.c",
+                        "../ecere/src/gfx/newFonts/cc/mm.c",
+                        "../ecere/src/gfx/newFonts/cc/cpuconfig.h",
+                        "../ecere/src/gfx/newFonts/cc/mmbitmap.h",
+                        "../ecere/src/gfx/newFonts/cc/cchybridsort.h",
+                        "../ecere/src/gfx/newFonts/cc/mmhashinline.h",
+                        "../ecere/src/gfx/newFonts/cc/cc.c",
+                        "../ecere/src/gfx/newFonts/cc/mmhashinternal.h",
+                        "../ecere/src/gfx/newFonts/cc/ccmergesort.h",
+                        "../ecere/src/gfx/newFonts/cc/cc.h"
+                     ]
+                  },
+                  "drawmanager.c",
+                  "drawmanager.h",
+                  "atlasbuilder.h",
+                  "img.h",
+                  "fontrenderer.h",
+                  "atlasbuilder.c",
+                  "texturemanager.c",
+                  "imgdistmap.c",
+                  "fontmanager.h",
+                  "texturemanager.h",
+                  "fontmanager.c",
+                  "imgdistmap.h",
+                  "fontrenderer.c",
+                  "img.c"
+               ]
+            },
+            "Presentation.ec",
+            "shapesTesselation.ec",
+            "GraphicalElement.ec",
+            "ButterburShader.ec",
+            "TIManager.ec",
+            "DrawingManager.ec",
+            "GLMultiDraw.ec",
+            "VersionedShader.ec",
+            "tesselation.ec",
+            "GraphicalPresentation.ec",
+            "GraphicalSurface.ec"
+         ]
+      },
+      "src/butterbur.ec"
    ],
-   resourcesPath = "",
-   resources = [
-
+   "ResourcesPath" : "",
+   "Resources" : [
+      "src/shaders/butterbur.frag",
+      "src/shaders/butterbur.vert"
    ]
 }
