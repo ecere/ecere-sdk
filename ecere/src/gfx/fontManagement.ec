@@ -88,6 +88,7 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
 
 public class FaceInfo : struct
 {
+public:
    String fileName;
    bool fakeItalic;
    int fontID;
