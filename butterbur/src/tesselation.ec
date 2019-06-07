@@ -2,7 +2,7 @@
 #include <glutess.h>
 #undef property
 
-import "ecere"
+public import IMPORT_STATIC "ecere"
 
 #if defined(__WIN32__)
 #define TESS_CALLBACK_FUNCTION_PROTOTYPE void (__stdcall*)(void)
@@ -19,7 +19,7 @@ Mutex tessMutex { };
 
 static Array<Vector3D> vertices { };
 
-static GLUtesselator * butterburTesselator = null;
+/*static */ GLUtesselator * butterburTesselator = null;
 
 static double ccw(Pointf a, Pointf b, Pointf c)
 {
