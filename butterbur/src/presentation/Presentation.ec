@@ -14,8 +14,12 @@ public class Presentation
 
    // TODO: Review whether we should use LinkElement here to have link in place
 
+   bool visible;
    bool needUpdate;
+   bool visibilityUpdate;
    needUpdate = true;
+   visible = true;
+   visibilityUpdate = true;
 
    //int commandsCount; //Number of draw commands this takes to draw
 
@@ -29,15 +33,22 @@ public class Presentation
       {
          if(parent != value)
          {
+            visibilityUpdate = true;
             incref this;
             if(parent)
             {
+               Presentation p = parent;
+               while(p && *&p.visible)
+                  p.visibilityUpdate = true, p = *&p.parent;
                if(parent.subElements.TakeOut(this))
                   _refCount--;
             }
             parent = value;
             if(value)
             {
+               Presentation p = parent;
+               while(p && *&p.visible)
+                  p.visibilityUpdate = true, p = *&p.parent;
                value.subElements.Add(this);
                incref this;
             }
@@ -61,6 +72,21 @@ public class Presentation
          needUpdate = value;
       }
       get { return needUpdate; }
+   }
+
+   public property bool visible
+   {
+      set
+      {
+         Presentation p = parent;
+
+         visible = value;
+         needUpdate = true;
+         visibilityUpdate = true;
+         while(p && *&p.visible)
+            p.visibilityUpdate = true, p = *&p.parent;
+      }
+      get { return visible; }
    }
 }
 
