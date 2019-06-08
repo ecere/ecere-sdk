@@ -256,21 +256,26 @@ class LWFontManager
          float alphaFactor = 1.0f / (0.2f + 0.2f /*font.outline.fade*/);
          int paddingWidth = Max(2, (int)(1+font.outline.size));
          Array<FaceInfo> infos = ResolveFont(key.face, key.size, key.flags);
+         char tmp[400];
                                                           // Until 'fileName' access is fixed in libecere
          const String fileName = infos && infos.count ? ((TmpFaceInfo)infos[0]).fileName : null;
          //bool fakeItalic = infos[0].fakeItalic;
          if(!fileName)
          {
+            /*
             key.face = DEFAULT_FACE;
             result = loadedFonts[key];
             if(result)
                return result;
+            */
+            const String baseName = key.flags.bold ? "DejaVuSans-Bold.ttf" : "DejaVuSans.ttf";
 
-            fileName =
 #if defined(__LUMIN__)
-               "data/"
+            sprintf(tmp, "data/%s", baseName);
+#else
+            strcpy(tmp, baseName);
 #endif
-               "DejaVuSans.ttf";
+            fileName = tmp;
          }
          result = addFont(fileName, paddingWidth);
          if(result && font.outline.size)
