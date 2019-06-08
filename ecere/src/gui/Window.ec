@@ -6226,7 +6226,7 @@ private:
       return Redraw((box == null) ? this.box : box);
    }
 
-   void SetMousePosition(int x, int y)
+   public void SetMousePosition(int x, int y)
    {
       guiApp.interfaceDriver.SetMousePosition(x + absPosition.x + clientStart.x, y + absPosition.y + clientStart.y);
    }
