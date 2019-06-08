@@ -9,6 +9,8 @@ namespace gui::drivers;
 #include <ml_perception.h>
 #include <ml_lifecycle.h>
 #include <ml_logging.h>
+#include <ml_controller.h>
+#include <ml_input.h>
 
 import "Window"
 import "Interface"
@@ -19,7 +21,32 @@ static bool initialized;
 
 static int desktopW, desktopH;
 static char * clipBoardData;
-static int mouseX, mouseY;
+static float mouseX = 320, mouseY = 240;
+static bool acquiredInputMode;
+static MouseButtons buttonsState;
+static Pointf lastButtonPressedPos[2];
+static float relMouseX, relMouseY;
+
+static MLHandle inputTracker;
+static Pointf lastTouchPos[2];
+static bool touchPadDown[2];
+static bool wasActiveLastPass[2];
+static float lastTouchPadForce[2];
+static bool wasButtonPressedLastPass_trigger[2];
+static bool wasButtonPressedLastPass_bumper[2];
+
+enum MouseEvent { OnTrigger, OnBumper, OnTouchpad };
+static MouseEvent prevMouseButtonEvent[2];
+
+default:
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp;
+extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick;
+private:
 
 const char application_name[] = "com.magicleap.ecereapp -- but not really"; // minor todo
 
@@ -56,6 +83,7 @@ static void onResume(void * appContext)
    ML_LOG(Info, "On resume called.");
 }
 
+
 class LuminInterface : Interface
 {
    class_property(name) = "Lumin";
@@ -77,6 +105,18 @@ class LuminInterface : Interface
          ML_LOG(Error, "Failed to initialize lifecycle.");
          return false;
       }
+
+      MLInputConfiguration config;
+      MLResult r;
+      int i;
+      for(i = 0; i < MLInput_MaxControllers; i++)
+         config.dof[i] = MLInputControllerDof_6;
+      r = MLInputCreate(&config, &inputTracker);
+      if(r != MLResult_Ok) //&mlContext->inputTracker
+      {
+         ML_LOG(Error, "Failed to create input tracker: %d:%s", r, MLGetResultString(r));//application_name
+         return false;
+      }
       return true;
    }
 
@@ -87,6 +127,12 @@ class LuminInterface : Interface
       // clean up system
       MLGraphicsDestroyClient(&graphics_client);
       MLPerceptionShutdown();
+
+      MLResult r = MLInputDestroy(inputTracker);
+      if(r != MLResult_Ok)
+      {
+         ML_LOG(Error, "Failed to destroy input tracker: %d:%s", r, MLGetResultString(r));
+      }
    }
 
    #define DBLCLICK_DELAY  300   // 0.3 second
@@ -94,10 +140,15 @@ class LuminInterface : Interface
 
    bool ProcessInput(bool processAll)
    {
+      static Time lastTime, lastClickTime;
+      Time time = GetTime();
       bool eventAvailable = false;
-      int w = 640;
-      int h = 480;
+      int w = 640 * 2;
+      int h = 480 * 2;
       MLResult r;
+      int controllerID = 1; //or 2
+      Time diffTime;
+
       if(!initialized)
       {
          const char * loc = "LuminInterface::ProcessInput()/initialize";
@@ -132,7 +183,181 @@ class LuminInterface : Interface
          }
 
          initialized = true;
+
+         lastTime = time;
+         lastClickTime = time;
       }
+
+      int i = 0;
+      //MLResult r;
+
+      diffTime = time - lastTime;
+      lastTime = time;
+
+      MLInputControllerState inputStates[MLInput_MaxControllers];
+      r = MLInputGetControllerState(inputTracker, inputStates);   //
+      //if(result == MLResult_Ok)
+      for(i = 0; i < MLInput_MaxControllers; ++i)
+      {
+         MLInputControllerState * ctrlState = &inputStates[i];  // is this yielding position from having input only?
+         bool is_connected = ctrlState->is_connected;
+         if(is_connected)
+         {
+            //int myresult = MLResult_Ok;
+            //PrintLn("ok is ", myresult);
+            float trigger = ctrlState->trigger_normalized;
+            float bumper = ctrlState->button_state[MLInputControllerButton_Bumper] ? 1.0f : 0.0f;
+            float home = ctrlState->button_state[MLInputControllerButton_HomeTap] ? 1.0f : 0.0f;
+            bool isTouchActive = ctrlState->is_touch_active[i];
+            MLVec3f * touchPosAndForce = &ctrlState->touch_pos_and_force[i];
+            float triggerThreshPos = 0.2f;
+            float touchPadPressedForce = 0.05f;
+            float dxButtonPressed = 0, dyButtonPressed = 0;
+            bool triggerPressed = trigger > triggerThreshPos;
+            bool touchPadPressed = isTouchActive ? touchPosAndForce->z > touchPadPressedForce : false;
+
+            Modifiers keyFlags = 0;
+            if(isTouchActive)
+            {
+               MLInputControllerTouchpadGesture gesture = ctrlState->touchpad_gesture;
+               MLInputControllerTouchpadGestureState gestureState = ctrlState->touchpad_gesture_state;
+               float tx = touchPosAndForce->x, ty = touchPosAndForce->y, dx = 0, dy = 0;
+
+               if(wasActiveLastPass[i])
+               {
+                  dx = tx - lastTouchPos[i].x;
+                  dy = ty - lastTouchPos[i].y;
+               }
+
+               if(dx) dx = Sgn(dx) * pow(fabs(dx), 1.3);
+               if(dy) dy = Sgn(dy) * pow(fabs(dy), 1.3);
+
+               // Non-Acquired Input Mode
+               if(acquiredInputMode == false)
+               {
+                  float deltaMouseX = 0;
+                  float deltaMouseY = 0;
+
+                  if(wasActiveLastPass[i] == true)
+                  {
+                     deltaMouseX = dx * 500;
+                     deltaMouseY = dy * 500;
+
+                     //PrintLn("dx: ", deltaMouseX, ", dy: ", deltaMouseY);
+                  }
+
+                  mouseX += deltaMouseX;
+                  mouseY -= deltaMouseY;
+
+                  mouseX = Min(w-1, Max(0.0f, mouseX));
+                  mouseY = Min(h-1, Max(0.0f, mouseY));
+
+                  dxButtonPressed = Abs(mouseX - lastButtonPressedPos[i].x);
+                  dyButtonPressed = Abs(mouseY - lastButtonPressedPos[i].y);
+
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove,
+                     (int)mouseX, (int)mouseY, &keyFlags, true, true);
+               }
+               else
+               {
+                  relMouseX += dx;
+                  relMouseY += dy;
+               }
+               lastTouchPos[i] = { tx, ty };
+               lastTouchPadForce[i] = touchPosAndForce->z;
+            }
+            else
+            {
+               touchPadDown[i] = false;
+               lastTouchPadForce[i] = 0;
+            }
+
+            if(acquiredInputMode == false)
+            {
+               dxButtonPressed = Abs(mouseX - lastButtonPressedPos[i].x);
+               dyButtonPressed = Abs(mouseY - lastButtonPressedPos[i].y);
+
+               // on button up - touchpad
+               if(!touchPadPressed && touchPadDown[i])
+               {
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp,
+                     (int)mouseX, (int)mouseY,&keyFlags,true, true);
+
+                  if(prevMouseButtonEvent[i] == OnTouchpad && (time - lastClickTime) < 0.4 && dxButtonPressed < 2 && dyButtonPressed < 2)
+                     guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick,
+                        mouseX, mouseY, &keyFlags, true, true);
+
+                  lastClickTime = time;
+                  prevMouseButtonEvent[i] = OnTouchpad;
+                  lastButtonPressedPos[i].x = mouseX;
+                  lastButtonPressedPos[i].y = mouseY;
+                  touchPadDown[i] = false;
+
+               }
+               // on button down - touchpad
+               else if(touchPadPressed && !touchPadDown[i])
+               {
+                  touchPadDown[i] = true;
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,
+                     mouseX, mouseY, &keyFlags, true, true);
+               }
+
+               // on button up - trigger
+               if(wasButtonPressedLastPass_trigger[i] && !triggerPressed)
+               {
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp,
+                     mouseX, mouseY, &keyFlags, true, true);
+
+                  if(prevMouseButtonEvent[i] == OnTrigger && (time - lastClickTime) < 0.4 && dxButtonPressed < 2 && dyButtonPressed < 2)
+                     guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick,
+                        mouseX, mouseY, &keyFlags, true, true);
+
+                  lastClickTime = time;
+                  prevMouseButtonEvent[i] = OnTrigger;
+               }
+               // on button down - trigger
+               else if(!wasButtonPressedLastPass_trigger[i] && triggerPressed)
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown,
+                     mouseX, mouseY, &keyFlags, true, true);
+
+               // on button up - bumper
+               if(wasButtonPressedLastPass_bumper[i] && !bumper)
+               {
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp,
+                     mouseX, mouseY, &keyFlags, true, true);
+
+                  if(prevMouseButtonEvent[i] == OnBumper && (time - lastClickTime) < 0.4 && dxButtonPressed < 2 && dyButtonPressed < 2)
+                     guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick,
+                        mouseX, mouseY, &keyFlags, true, true);
+
+                  prevMouseButtonEvent[i] = OnBumper;
+                  lastClickTime = time;
+               }
+               // on button down - bumper
+               else if(!wasButtonPressedLastPass_bumper[i] && bumper)
+                  guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,
+                     mouseX, mouseY, &keyFlags, true, true);
+            }
+            wasButtonPressedLastPass_trigger[i] = triggerPressed;
+            wasButtonPressedLastPass_bumper[i] = bumper ? true : false;
+            wasActiveLastPass[i] = isTouchActive;
+
+            buttonsState =
+            {
+               left = triggerPressed,
+               right = bumper ? true : false
+            };
+         }
+         else
+         {
+            wasButtonPressedLastPass_trigger[i] = false;
+            wasButtonPressedLastPass_bumper[i] = false;
+            wasActiveLastPass[i] = false;
+            lastTouchPadForce[i] = 0;
+            touchPadDown[i] = false;
+         }
+      }
+
       if(desktopW != w || desktopH != h)
       {
          guiApp.SetDesktopPosition(0, 0, w, h, true);
@@ -140,6 +365,7 @@ class LuminInterface : Interface
          desktopH = h;
          guiApp.desktop.Update(null);
       }
+
       return eventAvailable;
    }
 
@@ -271,8 +497,8 @@ class LuminInterface : Interface
 
    void GetMousePosition(int *x, int *y)
    {
-      *x = mouseX;
-      *y = mouseY;
+      *x = (int)mouseX;
+      *y = (int)mouseY;
    }
 
    void SetMousePosition(int x, int y)
@@ -368,14 +594,33 @@ class LuminInterface : Interface
 
    bool AcquireInput(Window window, bool state)
    {
-      return false;
+      acquiredInputMode = state;
+      if(acquiredInputMode)
+      {
+         relMouseX = 0;
+         relMouseY = 0;
+      }
+      return true;
    }
 
    bool GetMouseState(MouseButtons * buttons, int * x, int * y)
    {
       bool result = false;
-      if(x) *x = 0;
-      if(y) *y = 0;
+      if(acquiredInputMode == true)
+      {
+         if(x) *x = (int)(relMouseX * 1000);
+         if(y) *y = (int)(relMouseY * 1000);
+         relMouseX = 0;
+         relMouseY = 0;
+         *buttons = buttonsState;
+         result = true;
+      }
+      else
+      {
+         if(x) *x = 0;
+         if(y) *y = 0;
+         if(buttons) *buttons = 0;
+      }
       return result;
    }
 
