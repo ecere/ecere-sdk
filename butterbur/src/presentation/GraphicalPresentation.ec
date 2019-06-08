@@ -59,7 +59,12 @@ public:
          switch(geType)
          {
             // TODO: buffers and stuff...
-            case shape: tShape.free(); break;
+            case shape:
+            {
+               tShape.free();
+               vertexBase = -1;
+               break;
+            }
          }
 
          ge = value;
@@ -148,7 +153,8 @@ public:
 
                   vertexBase = dm.md.allocateVbo(tShape.vCount, sizeof(tShape.points[0]), tShape.points);
                   lineBase = dm.md.allocateIx(tShape.ixCount, sizeof(tShape.ix[0]), tShape.ix);
-                  tShape.free();
+
+                  //tShape.free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
                   tShape.vCount = 0;
 
                   // TODO: Calculate combined transform
@@ -344,4 +350,187 @@ public:
          }
       }
    }
+
+   int pick(const Boxf region, int maxResults, PickResult * results)
+   {
+      // TODO: Proper full box test, not middle point
+      if(containsPoint((region.left + region.right)/2, (region.top + region.bottom)/2))
+      {
+         results[0] = { this, element = graphic };
+         return 1;
+      }
+      return 0;
+   }
+
+   // Checks if the point is within the GraphicalElement
+   // Currently only good for overlaid elements
+   // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
+   private static bool containsPoint(float x, float y)
+   {
+      double transformedX = x - transform.position.x - ge.transform.position.x;
+      double transformedY = y - transform.position.y - ge.transform.position.y;
+      if (!(rdrFlags.overlay || rdrFlags.overlayText))
+         return false;
+
+      switch (geType)
+      {
+         case shape:
+            return shapeContainsPoint((float)transformedX, (float)transformedY);
+
+         case image:
+         {
+            return imageContainsPoint((float)transformedX, (float)transformedY);
+         }
+         case text:
+         {
+            return false; //Can't click text without some glyph size calculations
+         }
+      }
+      return false;
+   }
+
+   private bool imageContainsPoint(float x, float y)
+   {
+      // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
+      // Something isn't working quite right here, imgW and imgH both show up in debug watch as 0 when they clearly have a value so this might be related?
+      Image img = (Image)ge;
+      float w = imgW * ge.scaling2D.x;
+      float h = imgH * ge.scaling2D.y;
+      x += w * img.hotSpot.x;
+      y += h * img.hotSpot.y;
+      return (x >= 0 && y >= 0 && x < w && y < h);
+   }
+
+   private bool shapeContainsPoint(float x, float y)
+   {
+      // Shape shp = (Shape)ge;
+      Pointf checkedPoint { x, y };
+
+      // Temporary catch-all solution: loop through all triangles of tesselated shape and check the point in each one.
+      int i;
+      bool result = false;
+      Pointf * points = tShape.points;
+
+      uint16 * ix = tShape.ix;
+      uint16 * ixFill = tShape.ixFill;
+
+      // TOCHECK: It seems like I need these temp variables or the value is not read correctly for the loop??
+      uint fillCount =  tShape.fillCount;
+      uint ixCount = tShape.ixCount;
+
+      // Checking ixFill, the indices that make up the fill of the shape
+      if(tShape.fillCount)
+      {
+         for(i = 0; i < (int)fillCount - 2; i++)
+         {
+            result = pointInsideTriangle(checkedPoint, points[ixFill[i]], points[ixFill[i+1]], points[ixFill[i+2]]);
+            if(result)
+               return result;
+         }
+      }
+
+      // Checking ix, the indices that make up the outline of the shape
+      for(i = 0; i < (int)ixCount - 2; i++)
+      {
+         result = pointInsideTriangle(checkedPoint, points[ix[i]], points[ix[i+1]], points[ix[i+2]]);
+         if(result)
+            return result;
+      }
+
+      return false;
+
+      // Specialized checking for certain shape types.  Currently unused, using general check above instead.
+/*
+      switch (shp.shpType)
+      {
+         case rectangle:
+         {
+            return ((RoundedRectangle)shp).box.IsPointInside({x, y});
+         }
+         case ellipse:
+         {
+            Ellipse ell = (Ellipse)shp;
+            int dx = x - ell.center.x;
+            int dy = y - ell.center.y;
+            float r = sqrt(dx*dx+dy*dy);
+            return (r < ell.radius); //TODO: Account for k in ellipse
+            break;
+         }
+         case arc:
+         {
+            Arc arc = (Arc)shp;
+            if (arc.arcType == open)
+               return false; //Has no area so can't click
+
+            int dx = x - arc.center.x;
+            int dy = y - arc.center.y;
+            float r = sqrt(dx*dx+dy*dy);
+            if (r > arc.radius || r < arc.innerRadius)
+               return false; // Outside the arc regardless of angle
+
+            //Check angle here
+            return true;
+
+         }
+         case path:
+         {
+            Path p = (Path)shp;
+            InsideReturn isInside = pointInside(*(Array<Vector3Df> *)&p.nodes, {x, y}, 0);
+            return isInside == inside;
+         }
+      }
+*/
+   }
 }
+
+private:
+static enum InsideReturn { outside, inside, onTheEdge };
+
+static inline double ::fromLine(const Pointf p, const Pointf a, const Pointf b)
+{
+   return ((double)b.x - a.x) * ((double)p.y - a.y) - ((double)p.x - a.x) * ((double)b.y - a.y);
+}
+
+// For detecting if a point is in a shape using the tesselated shape.
+#define signedArea(p1, p2, p3) fromLine(p3, p1, p2)
+
+static bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
+{
+   int s1 = Sgn(signedArea(p, v1, v2));
+   int s2 = Sgn(signedArea(p, v2, v3));
+   int s3 = Sgn(signedArea(p, v3, v1));
+
+   return s1 == s2 && s2 == s3;
+}
+
+#if 0
+static InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
+{
+   Pointf * p = nodes.array;
+   int count = nodes.count, winding = 0, i;
+   for(i = 0; i < count; i++, p++)
+   {
+      Pointf * np = i == count - 1 ? nodes.array : p + 1;
+      if(p->y <= point.y)
+      {
+         if(np->y > point.y)
+         {
+            double d = fromLine(point, p, np);
+            if(d > e)
+               winding++;
+            else if(d > -e)
+               return onTheEdge;
+         }
+      }
+      else if(np->y <= point.y)
+      {
+         double d = fromLine(point, p, np);
+         if(d < -e)
+            winding--;
+         else if(d < e)
+            return onTheEdge;
+      }
+   }
+   return winding != 0 ? inside : outside;
+}
+#endif

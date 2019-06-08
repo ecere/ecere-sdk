@@ -236,20 +236,6 @@ class ButterburTest : Window
    Image imageGE { image = { "../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
    GraphicalPresentation imagePresentation {/*gSurface*/ scene, graphic = imageGE };
 
-   Arc partialSectorArc2
-   {
-      center = {650, 450},
-      radius = 150,
-      innerRadius = 100,
-      startAngle = 95,
-      deltaAngle = 300,
-      arcType = sector,
-
-      stroke = { purple, opacity = 0.8, width = 4, join = round };
-      fill = { lime, opacity = 0.4 };
-   };
-   GraphicalPresentation sectorArcPresentation2 {scene, graphic = partialSectorArc2};
-
    // TODO: Anchored presentations at 3D cartesian coordinates...
 
    ///// ANCHORED WITH BILLBOARDS (bbShapes / bbTextAndImages passes) ////////////////
@@ -262,6 +248,31 @@ class ButterburTest : Window
       display.antiAlias = true;
       setupGL(display);
       gSurface.render(clientSize.w, clientSize.h, 0, 0);
+   }
+
+   bool OnLeftButtonDown(int x, int y, Modifiers mods)
+   {
+      Array<PickResult> results = gSurface.pickWithin(Boxf { x, y, x, y });
+      PickResult result;
+
+      PrintLn("===\n");
+      if(gSurface.pickAt({ x, y }, 4, result))
+      {
+         PrintLn("Picked a ", result.presentation._class.name);
+         if(eClass_IsDerived(result.presentation._class, class(GraphicalPresentation)))
+            PrintLn("   (Graphic is a ", result.element._class.name, ")");
+      }
+      if(results)
+      {
+         PrintLn("Picked a total of ", results.count, " things:");
+         for(r : results)
+         {
+            PrintLn("   - a ", r.presentation._class.name);
+            if(eClass_IsDerived(r.presentation._class, class(GraphicalPresentation)))
+               PrintLn("      (Graphic is a ", r.element._class.name, ")");
+         }
+      }
+      return true;
    }
 }
 
