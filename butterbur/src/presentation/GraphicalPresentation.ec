@@ -312,7 +312,7 @@ public:
                {
                   cTransform[0] -= ge.transform.scaling.x * img.hotSpot.x * imgW;
                   cTransform[1] -= ge.transform.scaling.y * img.hotSpot.y * imgH;
-                  im.addImageCommand(image, imgW * ge.transform.scaling.x, imgH * ge.transform.scaling.y, img.opacity, white, cTransform);
+                  im.addImageCommand(image, imgW * ge.transform.scaling.x, imgH * ge.transform.scaling.y, img.opacity, img.tint, cTransform);
                }
                break;
             }
