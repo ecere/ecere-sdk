@@ -359,7 +359,7 @@ public class Path3D : GraphicalElement
 
    type = path3D;
 public:
-   property Container<Vector3Df> nodes
+   property Array<Vector3Df> nodes
    {
       set { nodes.copySrc = value; }
       get { return nodes; }
@@ -510,6 +510,8 @@ public class Image : GraphicalElement
    type = image;
 public:
    ImageResource image;
+
+   // (hotSpot.x * width, hotSpot.y * height) is the pixel which will be shown at the graphic's (0, 0) position
    Pointf hotSpot;
    Color tint;
 

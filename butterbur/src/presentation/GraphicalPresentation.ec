@@ -358,7 +358,7 @@ public:
    {
       int transformedX = x - this.transform.position.x - ge.transform.position.x;
       int transformedY = y - this.transform.position.y - ge.transform.position.y;
-      if (!rdrFlags.overlay)
+      if (!(rdrFlags.overlay || rdrFlags.overlayText))
          return false;
 
       switch (geType)
@@ -372,8 +372,7 @@ public:
          }
          case text:
          {
-            return false; //Can't click text
-
+            return false; //Can't click text without some glyph size calculations
          }
       }
    }
@@ -381,25 +380,50 @@ public:
    private bool imageContainsPoint(int x, int y)
    {
       // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
-      return (x < imgW && y < imgH);
+      // Something isn't working quite right here, imgW and imgH both show up in debug watch as 0 when they clearly have a value so this might be related?
+      return (x >= 0 && y >= 0 && x < (imgW * ge.scaling2D.x) && y < (imgH * ge.scaling2D.y));
    }
 
    private bool shapeContainsPoint(int x, int y)
    {
       Shape shp = (Shape)ge;
+      Pointf checkedPoint {(float)x, (float)y};
 
       // Temporary catch-all solution: loop through all triangles of tesselated shape and check the point in each one.
       int i;
-      uint temp = tShape.vCount;
       bool result = false;
-      for (i = 0; i + 2 < tShape.vCount; i++)
+      Pointf * points = tShape.points;
+
+      uint16 * ix = tShape.ix;
+      uint16 * ixFill = tShape.ixFill;
+
+      // TOCHECK: It seems like I need these temp variables or the value is not read correctly for the loop??
+      uint fillCount =  tShape.fillCount;
+      uint ixCount = tShape.ixCount;
+
+      // Checking ixFill, the indices that make up the fill of the shape
+      if(tShape.fillCount)
       {
-         result = pointInsideTriangle( {(float)x, (float)y} , tShape.points[i], tShape.points[i+1], tShape.points[i+2]);
+         for (i = 0; i < fillCount -2; i++)
+         {
+            result = pointInsideTriangle(checkedPoint, points[ixFill[i]], points[ixFill[i+1]], points[ixFill[i+2]]);
+            if (result)
+               return result;
+         }
+      }
+
+      // Checking ix, the indices that make up the outline of the shape
+      for (i = 0; i < ixCount - 2; i++)
+      {
+         result = pointInsideTriangle(checkedPoint, points[ix[i]], points[ix[i+1]], points[ix[i+2]]);
          if (result)
             return result;
       }
 
+      return false;
+
       // Specialized checking for certain shape types.  Currently unused, using general check above instead.
+/*
       switch (shp.shpType)
       {
          case rectangle:
@@ -434,10 +458,11 @@ public:
          case path:
          {
             Path p = (Path)shp;
-            InsideReturn isInside = pointInside((Array<Pointf>)p.nodes, {x, y}, 0);
+            InsideReturn isInside = pointInside(p.nodes, {x, y}, 0);
             return isInside == inside;
          }
       }
+*/
    }
 }
 
