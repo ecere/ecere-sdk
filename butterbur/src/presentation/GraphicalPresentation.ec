@@ -59,7 +59,12 @@ public:
          switch(geType)
          {
             // TODO: buffers and stuff...
-            case shape: tShape.free(); break;
+            case shape:
+            {
+               tShape.free();
+               vertexBase = -1;
+               break;
+            }
          }
 
          ge = value;
@@ -148,7 +153,8 @@ public:
 
                   vertexBase = dm.md.allocateVbo(tShape.vCount, sizeof(tShape.points[0]), tShape.points);
                   lineBase = dm.md.allocateIx(tShape.ixCount, sizeof(tShape.ix[0]), tShape.ix);
-                  tShape.free();
+
+                  //tShape.free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
                   tShape.vCount = 0;
 
                   // TODO: Calculate combined transform
@@ -344,4 +350,146 @@ public:
          }
       }
    }
+
+   // Checks if the point is within the GraphicalElement
+   // Currently only good for overlaid elements
+   // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
+   bool containsPoint(int x, int y)
+   {
+      int transformedX = x - this.transform.position.x - ge.transform.position.x;
+      int transformedY = y - this.transform.position.y - ge.transform.position.y;
+      if (!rdrFlags.overlay)
+         return false;
+
+      switch (geType)
+      {
+         case shape:
+            return shapeContainsPoint(transformedX, transformedY);
+
+         case image:
+         {
+            return imageContainsPoint(transformedX, transformedY);
+         }
+         case text:
+         {
+            return false; //Can't click text
+
+         }
+      }
+   }
+
+   private bool imageContainsPoint(int x, int y)
+   {
+      // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
+      return (x < imgW && y < imgH);
+   }
+
+   private bool shapeContainsPoint(int x, int y)
+   {
+      Shape shp = (Shape)ge;
+
+      // Temporary catch-all solution: loop through all triangles of tesselated shape and check the point in each one.
+      int i;
+      uint temp = tShape.vCount;
+      bool result = false;
+      for (i = 0; i + 2 < tShape.vCount; i++)
+      {
+         result = pointInsideTriangle( {(float)x, (float)y} , tShape.points[i], tShape.points[i+1], tShape.points[i+2]);
+         if (result)
+            return result;
+      }
+
+      // Specialized checking for certain shape types.  Currently unused, using general check above instead.
+      switch (shp.shpType)
+      {
+         case rectangle:
+         {
+            return ((RoundedRectangle)shp).box.IsPointInside({x, y});
+         }
+         case ellipse:
+         {
+            Ellipse ell = (Ellipse)shp;
+            int dx = x - ell.center.x;
+            int dy = y - ell.center.y;
+            float r = sqrt(dx*dx+dy*dy);
+            return (r < ell.radius); //TODO: Account for k in ellipse
+            break;
+         }
+         case arc:
+         {
+            Arc arc = (Arc)shp;
+            if (arc.arcType == open)
+               return false; //Has no area so can't click
+
+            int dx = x - arc.center.x;
+            int dy = y - arc.center.y;
+            float r = sqrt(dx*dx+dy*dy);
+            if (r > arc.radius || r < arc.innerRadius)
+               return false; // Outside the arc regardless of angle
+
+            //Check angle here
+            return true;
+
+         }
+         case path:
+         {
+            Path p = (Path)shp;
+            InsideReturn isInside = pointInside((Array<Pointf>)p.nodes, {x, y}, 0);
+            return isInside == inside;
+         }
+      }
+   }
+}
+
+public enum InsideReturn { outside, inside, onTheEdge };
+
+private static inline double ::fromLine(const Pointf p, const Pointf a, const Pointf b)
+{
+   return ((double)b.x - a.x) * ((double)p.y - a.y) - ((double)p.x - a.x) * ((double)b.y - a.y);
+}
+
+InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
+{
+   Pointf * p = nodes.array;
+   int count = nodes.count, winding = 0, i;
+   for(i = 0; i < count; i++, p++)
+   {
+      Pointf * np = i == count - 1 ? nodes.array : p + 1;
+      if(p->y <= point.y)
+      {
+         if(np->y > point.y)
+         {
+            double d = fromLine(point, p, np);
+            if(d > e)
+               winding++;
+            else if(d > -e)
+               return onTheEdge;
+         }
+      }
+      else if(np->y <= point.y)
+      {
+         double d = fromLine(point, p, np);
+         if(d < -e)
+            winding--;
+         else if(d < e)
+            return onTheEdge;
+      }
+   }
+   return winding != 0 ? inside : outside;
+}
+
+
+// For detecting if a point is in a shape using the tesselated shape.
+private static inline float signedArea(Pointf p1, Pointf p2, Pointf p3)
+{
+    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+}
+
+bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
+{
+    int s1 = Sgn(signedArea(p, v1, v2));
+    int s2 = Sgn(signedArea(p, v2, v3));
+    int s3 = Sgn(signedArea(p, v3, v1));
+
+    return s1 == s2 && s2 == s3;
 }
