@@ -180,6 +180,41 @@ private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator eval
    return instance;
 }
 
+private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSEvaluator evaluator, ExpFlags * flg)
+{
+   if(expInst)
+   {
+      for(i : expInst.instance.members)
+      {
+         CMSSInstInitMember member = (CMSSInstInitMember)i;
+         for(m : member.members)
+         {
+            CMSSMemberInit mInit = m;
+            if(mInit.initializer._class == class(CMSSInitExp))
+            {
+               CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+               CMSSExpression exp = initExp.exp;
+               Class destType = exp.destType;
+               if(destType)
+               {
+                  FieldValue val { };
+                  ExpFlags flag = exp.compute(val, evaluator, runtime);
+                  BitMember member = (BitMember)mInit.dataMember;
+
+                  *bits |= (val.i << member.pos) & member.mask;
+
+                  *flg |= flag;
+               }
+               else
+               {
+                  // PrintLn("null destType ?");
+               }
+            }
+         }
+      }
+   }
+}
+
 private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
    if(expInst)

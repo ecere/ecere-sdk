@@ -13,7 +13,7 @@ public class CMSSNode : Container
 {
 public:
    virtual void print(File out, int indent, CMSSOutputOptions o);
-   virtual void * /*thisclass FIXME */ copy();
+   virtual void * /*thisclass FIXME */ copy() { return null; }
 
    ~CMSSNode()
    {

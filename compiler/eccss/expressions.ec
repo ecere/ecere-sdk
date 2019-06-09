@@ -81,7 +81,7 @@ private:
                         }
 
 #define OPERATOR_TABLE_REAL(type) \
-    { type##Add, type##Sub, type##Mul, type##Div, null, null, \
+    { type##Add, type##Sub, type##Mul, type##Div, type##DivInt, type##Mod, \
                           type##Neg, \
                           type##Not, \
                           type##Equ, type##Nqu, \
@@ -177,6 +177,18 @@ CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
       delete e;
       return ne;
    }
+   else if(e._class == class(CMSSExpInstance))
+   {
+      Class c = e.destType;   // NOTE: At this point, expType should be set but is currently null?
+      if(c && c.type == bitClass)
+      {
+         CMSSExpression ne = CMSSExpConstant { constant = val };
+         ne.destType = e.destType;
+         ne.expType = e.expType;
+         delete e;
+         return ne;
+      }
+   }
    return e;
 }
 
@@ -245,6 +257,14 @@ public:
    CMSSExpList ::parse(CMSSLexer lexer)
    {
       return (CMSSExpList)CMSSList::parse(class(CMSSExpList), lexer, CMSSExpression::parse, ',');
+   }
+
+   CMSSExpList copy()
+   {
+      CMSSExpList e { };
+      for(n : list)
+         e.list.Add(n.copy());
+      return e;
    }
 }
 
@@ -600,6 +620,11 @@ public:
       out.Print(")");
    }
 
+   CMSSExpBrackets copy()
+   {
+      return CMSSExpBrackets { list = list.copy(); };
+   }
+
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
    {
       ExpFlags flags;
@@ -913,7 +938,6 @@ public:
    CMSSInstantiation instance;
    StylesMask stylesMask;
 
-
    CMSSExpInstance ::parse(CMSSSpecsList specs, CMSSLexer lexer)
    {
       return { instance = CMSSInstantiation::parse(specs, lexer) };
@@ -945,10 +969,16 @@ public:
             for(m : member.members)
                flags |= m.precompute(c, stylesMask, &memberID, evaluator);
          }
+         if(flags.resolved && c && c.type == bitClass)
+         {
+            value.type = { integer };
+            value.i = 0;
+            setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags);
+         }
       }
       else if(computeType == runtime)
       {
-         value.i = (int64)(intptr)createGenericInstance(this, evaluator, &flags);;
+         value.i = (int64)(intptr)createGenericInstance(this, evaluator, &flags);
          if(!flags)
             flags.resolved = true;
       }
@@ -1103,10 +1133,8 @@ public:
 
    CMSSTokenType assignType;
    Class destType;
-   StylesMask stylesMask; // What is being set by this member
-
-   //CMSSStyleMask stylesMask; // What is being set by this member
-   //DataMember * dataMember; //this is useful for setting exparray instance member values using offset
+   StylesMask stylesMask;
+   DataMember dataMember;
    uint offset;
 
    CMSSMemberInit ::parse(CMSSLexer lexer)
@@ -1223,6 +1251,7 @@ public:
       {
          eClass_FindDataMemberAndOffset(dataMember._class, dataMember.name, &offset, dataMember._class.module, null, null);
          offset = computeMemberOffset(dataMember, offset);
+         this.dataMember = dataMember;
 
          stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr) : 0;
          if(initializer._class == class(CMSSInitExp))
@@ -1245,6 +1274,7 @@ public:
       }
       return flags;
    }
+
    uint computeMemberOffset(DataMember dataMember, uint offset)
    {
       if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
@@ -1555,13 +1585,13 @@ OPERATOR_ALL(UNARY_LOGICAL, !, Not) //OPERATOR_ALL
 OPERATOR_NUMERIC(BINARY_LOGICAL, ==, Equ)
 OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
-bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
    return true;
 }
 
-bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
    return true;
@@ -1578,14 +1608,15 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, >=, GrtEqu)
 OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 
 // text conditions
-bool textStrCnt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrCnt(FieldValue result, FieldValue val1, FieldValue val2)
 {
 
    result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
    result.type = { type = integer };
    return true;
 }
-bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
@@ -1593,28 +1624,31 @@ bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-bool textStrEnd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrEnd(FieldValue result, FieldValue val1, FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotCnt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotCnt(FieldValue result, FieldValue val1, FieldValue val2)
 {
 
    result.i = !SearchString(val1.s, 0, val2.s, false, false);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotSrt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotSrt(FieldValue result, FieldValue val1, FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -1622,46 +1656,53 @@ bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-bool textAdd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textAdd(FieldValue result, FieldValue val1, FieldValue val2)
 {
    result.s = PrintString(val1.s, val2.s);
    result.type = { type = text };
    return true;
 }
 
-bool textGrt(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrt(FieldValue val, FieldValue op1, FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textSma(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSma(FieldValue val, FieldValue op1, FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textGrtEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrtEqu(FieldValue val, FieldValue op1, FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textSmaEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSmaEqu(FieldValue val, FieldValue op1, FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) <= 0;
    val.type = { type = integer };
    return true;
 }
 
+#include <float.h>
 
+static bool realDivInt(FieldValue val, FieldValue op1, FieldValue op2)
+{
+   val.r = (int)(op1.r / op2.r + FLT_EPSILON);
+   val.type = { type = real };
+   return true;
+}
 
-//Add, Sub, Mul, Div, Mod,     , Neg,     Inc, Dec,    Asign, AddAsign, SubAsign, MulAsign, DivAsign, ModAsign,     BitAnd, BitOr, BitXor, LShift, RShift, BitNot,     AndAsign, OrAsign, XorAsign, LShiftAsign, RShiftAsign,     Not,     Equ, Nqu,     And, Or,     Grt, Sma, GrtEqu, SmaEqu
-//name, type
-
-//OPERATOR_TABLE_ALL(int, Int)
-//OPERATOR_TABLE_INT(float, Float)
-//OPERATOR_TABLE_ALL(char, Char)
+static bool realMod(FieldValue val, FieldValue op1, FieldValue op2)
+{
+   val.r = fmod(op1.r, op2.r);
+   val.type = { type = real };
+   return true;
+}
