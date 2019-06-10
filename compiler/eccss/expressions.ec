@@ -884,11 +884,11 @@ public:
       ExpFlags flags { };
       FieldValue val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType);
-      if(expFlg.resolved)
+      if(expFlg.resolved && evaluator != null && exp.expType)
       {
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
          // This is not right, the type of the member is different...: expType = exp.expType;
-         if(prop && evaluator != null)
+         if(prop)
             evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
       }
       return flags;
