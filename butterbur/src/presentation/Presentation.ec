@@ -137,6 +137,7 @@ public:
          {
             o.calculate(topPres, mgr);
             o.needUpdate = false;
+            o.visibilityUpdate = false;
          }
          rdrFlags |= o.rdrFlags;
       }
