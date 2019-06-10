@@ -157,6 +157,14 @@ Map<GraphicalStyleMask, const String> stringFromMaskMap
    { image, "image" }
 ] };
 
+struct GraphicalStyleEvaluator : ECCSSEvaluator
+{
+   void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value)
+   {
+      object.applyStyle(mSet, value);
+   }
+};
+
 public class GraphicalStyle : struct
 {
 public:
@@ -179,7 +187,9 @@ public:
       GraphicalStyleMask m = 0xffffffffffffffff;
       ExpFlags flg = 0;
       if(styleSheet)
-         m = symbolizer.symbolizeBlocks(styleSheet.list, m, evaluator, &flg);
+      {
+         m = (GraphicalStyleMask)styleSheet.list.apply(symbolizer, m, evaluator, &flg);
+      }
       if(m) symbolizer.applyDefaults(m);
       symbolizer.flags = flg;
       return symbolizer;
@@ -193,154 +203,33 @@ public:
       if(mask.visibility) visibility = true;
    }
 
-   private static GraphicalStyleMask symbolizeBlocks(StylingRuleBlockList list,
-      GraphicalStyleMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
+   private void applyStyle(GraphicalStyleKind mSet, const FieldValue value)
    {
-      Iterator<StylingRuleBlock> it { list };
-      while(it.Prev())
+      switch(mSet)
       {
-         StylingRuleBlock block = it.data;
-         GraphicalStyleMask bm = (GraphicalStyleMask)block.mask & m;
-         if(bm)
-            m = symbolizeBlock(block, m, evaluator, flg);
-      }
-      return m;
-   }
-
-   // TOCHECK: Both mask and flags must be returned?
-   private static GraphicalStyleMask symbolizeBlock(StylingRuleBlock block, GraphicalStyleMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
-   {
-      ExpFlags flags = 0;
-      bool apply = true;
-
-      if(block.selectors)
-      {
-         // TODO: Per-record flags for selectors?
-         for(s : block.selectors)
-         {
-            FieldValue value { };
-            CMSSExpression e = s.exp;
-            ExpFlags sFlags = e.compute(value, evaluator, runtime);
-            flags |= sFlags;
-
-            if(!sFlags.resolved || !value.i)
-               apply = false;
-            //callAgain = flags.callAgain;
-         }
-         *flg |= flags;
-      }
-
-      if(apply)
-      {
-         if(block.nestedRules) m = symbolizeBlocks(block.nestedRules, m, evaluator, flg);
-         if(m)
-         {
-            Iterator<CMSSMemberInitList> itStyle { block.styles };
-            while(itStyle.Prev())
-            {
-               Iterator<CMSSMemberInit> itMember { itStyle.data };
-               while(itMember.Prev())
-               {
-                  CMSSMemberInit member = itMember.data;
-                  CMSSInitExp initExp = member.initializer && member.initializer._class == class(CMSSInitExp) ? (CMSSInitExp)member.initializer : null;
-                  CMSSExpression e = initExp.exp;
-                  GraphicalStyleMask sm = (GraphicalStyleMask)member.stylesMask;
-                  if(sm & m)
-                  {
-                     setGraphicalStyleMember(block, sm, m, e, evaluator, flg);
-                     m &= ~sm;
-                  }
-               }
-            }
-         }
-      }
-      return m;
-   }
-
-   private void setGraphicalStyleMember(StylingRuleBlock block, GraphicalStyleKind mSet, GraphicalStyleMask mask, CMSSExpression e,
-      ECCSSEvaluator evaluator, ExpFlags * flg)
-   {
-      CMSSExpInstance inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
-      CMSSExpArray arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
-      if(inst)
-         setMemberInstance(block, mSet, inst, evaluator, flg);
-      else if(arr)
-         setMemberArray(block, mSet, arr, evaluator, flg);
-      else
-      {
-         FieldValue value { };
-         ExpFlags mFlg = e.compute(value, evaluator, runtime);
-
-         switch(mSet)
-         {
-            //pattern needs special code
-            //case fillPattern: if(!fill.pattern) fill.pattern = { }; break;
-            case fillColor: fill.color = (Color)value.i; break;
-            case fillStippleStyle: fill.stipple = (StippleType)value.i; break;
-            case fillHatchStyle: fill.hatch = (HatchType)value.i; break;
-            case fillGradient: fill.gradient = value.b; break;
-            case strokePattern: stroke.pattern = { }; break;
-            case strokeOpacity: stroke.opacity = (float)value.r; break;
-            case strokeColor: stroke.color = (Color)value.i; break;
-            case strokeWidth: stroke.width = (float)value.r; break;
-            case strokeCasingWidth:  stroke.casing.width = (float)value.r; break;
-            case strokeCasingColor:  stroke.casing.color = (Color)value.i; break;
-            case strokeJoin: stroke.join = (LineJoin)value.i; break;
-            case strokeCap: stroke.cap = (LineCap)value.i; break;
-            case strokeDashPattern: stroke.dashes = value.b; break;
-            //case alignmentHorzAlign: alignment.horzAlign = (HAlignment)value.i; break;
-            //case alignmentVertAlign: alignment.vertAlign = (VAlignment)value.i; break;
-            // error for these:duplicate case value ; error: previously used here
-            /*
-            { "transform", transform },
-            { "transform3D", transform3D },
-            */
-            case opacity: opacity = (float)value.r; break;
-            default:
-               if(evaluator != null)
-                  evaluator.evaluatorClass.setMember(this, mSet, value);
-         }
-         *flg |= mFlg;
-      }
-   }
-
-
-   private void setMemberInstance(StylingRuleBlock block, GraphicalStyleKind mask, CMSSExpInstance inst,
-      ECCSSEvaluator evaluator, ExpFlags * flg)
-   {
-      if(inst)
-      {
-         for(i : inst.instance.members)
-         {
-            CMSSInstInitMember member = (CMSSInstInitMember)i;
-            for(m : member.members)
-            {
-               CMSSMemberInit minit = m;
-               if(minit.initializer._class == class(CMSSInitExp))
-               {
-                  CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
-                  GraphicalStyleMask sm = (GraphicalStyleMask)minit.stylesMask;
-                  if(sm & mask)
-                  {
-                     setGraphicalStyleMember(block, sm, mask, initExp.exp, evaluator, flg);
-                     mask &= ~sm;
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   private void setMemberArray(StylingRuleBlock block, GraphicalStyleKind mask, CMSSExpArray arr,
-      ECCSSEvaluator evaluator, ExpFlags * flg)
-   {
-      if(arr && evaluator != null)
-      {
-         // TODO: Do this in a more generic manner
-         Array<Instance> array = evaluator.evaluatorClass.accessSubArray(this, mask);
-         if(array)
-            for(e : arr.elements; e._class == class(CMSSExpInstance))
-               array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
+         //pattern needs special code
+         //case fillPattern: if(!fill.pattern) fill.pattern = { }; break;
+         case fillColor: fill.color = (Color)value.i; break;
+         case fillStippleStyle: fill.stipple = (StippleType)value.i; break;
+         case fillHatchStyle: fill.hatch = (HatchType)value.i; break;
+         case fillGradient: fill.gradient = value.b; break;
+         case strokePattern: stroke.pattern = { }; break;
+         case strokeOpacity: stroke.opacity = (float)value.r; break;
+         case strokeColor: stroke.color = (Color)value.i; break;
+         case strokeWidth: stroke.width = (float)value.r; break;
+         case strokeCasingWidth:  stroke.casing.width = (float)value.r; break;
+         case strokeCasingColor:  stroke.casing.color = (Color)value.i; break;
+         case strokeJoin: stroke.join = (LineJoin)value.i; break;
+         case strokeCap: stroke.cap = (LineCap)value.i; break;
+         case strokeDashPattern: stroke.dashes = value.b; break;
+         //case alignmentHorzAlign: alignment.horzAlign = (HAlignment)value.i; break;
+         //case alignmentVertAlign: alignment.vertAlign = (VAlignment)value.i; break;
+         // error for these:duplicate case value ; error: previously used here
+         /*
+         { "transform", transform },
+         { "transform3D", transform3D },
+         */
+         case opacity: opacity = (float)value.r; break;
       }
    }
 }

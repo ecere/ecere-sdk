@@ -11,11 +11,11 @@ public struct ECCSSEvaluator
    virtual Class resolve(const CMSSIdentifier identifier, int * fieldID, ExpFlags * flags);
    virtual void compute(int fieldID, const CMSSIdentifier identifier, FieldValue value, ExpFlags * flags);
    virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
+   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value);
 
-   // NOTE: These are quite likely to change...
+   // NOTE: These are quite likely to get ridden of with more generic code...
    virtual String ::stringFromMask(StylesMask mask);
    virtual StylesMask ::maskFromString(const String s);
-   virtual void ::setMember(void * obj, StylesMask mSet, FieldValue c);
    virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask);
 };
 
@@ -169,6 +169,19 @@ public:
    void printSep(File out)
    {
    }
+
+   StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
+   {
+      Iterator<StylingRuleBlock> it { list };
+      while(it.Prev())
+      {
+         StylingRuleBlock block = it.data;
+         StylesMask bm = block.mask & m;
+         if(bm)
+            m = block.apply(object, m, evaluator, flg);
+      }
+      return m;
+   }
 }
 
 private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator evaluator, ExpFlags * flg)
@@ -224,10 +237,10 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
          CMSSInstInitMember member = (CMSSInstInitMember)i;
          for(m : member.members)
          {
-            CMSSMemberInit minit = m;
-            if(minit.initializer._class == class(CMSSInitExp))
+            CMSSMemberInit mInit = m;
+            if(mInit.initializer._class == class(CMSSInitExp))
             {
-               CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
+               CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
                CMSSExpression exp = initExp.exp;
                Class destType = exp.destType;
                if(destType)
@@ -239,16 +252,16 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   ExpFlags flag = exp.compute(val, evaluator, runtime); //-1
 
                   if(destType == class(int) || destType == class(bool) || destType == class(Color))
-                     *(int *)((byte *)object + minit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
+                     *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
                   else if(destType == class(int64))
-                     *(int64 *)((byte *)object + minit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
+                     *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
                   else if(destType == class(double))
-                     *(double *)((byte *)object + minit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
+                     *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
                   else if(destType == class(float))
-                     *(float *)((byte *)object + minit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
+                     *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
                   else if(destType == class(String))
                   {
-                     *(String *)((byte *)object + minit.offset) =
+                     *(String *)((byte *)object + mInit.offset) =
                         (val.type.type == text)    ? CopyString(val.s)  :
                         (val.type.type == real)    ? PrintString(val.r) :
                         (val.type.type == integer) ? PrintString(val.i) : null;
@@ -256,19 +269,19 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance)) //destType is inappropriate here
                   {
                      //CMSSExpInstance i = (CMSSExpInstance)exp;
-                     *(Instance *)((byte *)object + minit.offset) = (Instance)val.i;
-                     //*(Instance *)((byte *)object + minit.offset) = createGenericInstance(i, cache, recordID, scale, time, flg);
+                     *(Instance *)((byte *)object + mInit.offset) = (Instance)val.i;
+                     //*(Instance *)((byte *)object + mInit.offset) = createGenericInstance(i, cache, recordID, scale, time, flg);
 
                      //if we're freeing these Instances later, is it then the case that
                      //we give CMSSExpInstance this instData member and free it in destructor
                   }
                   else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                   {
-                     memcpy((byte *)object + minit.offset, (void *)(uintptr)val.i, destType.structSize);
+                     memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
                   }
                   else if(destType.type == enumClass)    //assuming default of 32 bit
                   {
-                     *(int *)((byte *)object + minit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
+                     *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
                   }
                   else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                   {
@@ -466,5 +479,117 @@ public:
       delete id;
       delete styles;
       delete nestedRules;
+   }
+
+   // TOCHECK: Both mask and flags must be returned?
+   private static StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
+   {
+      ExpFlags flags = 0;
+      bool apply = true;
+
+      if(selectors)
+      {
+         // TODO: Per-record flags for selectors?
+         for(s : selectors)
+         {
+            FieldValue value { };
+            CMSSExpression e = s.exp;
+            ExpFlags sFlags = e.compute(value, evaluator, runtime);
+            flags |= sFlags;
+
+            if(!sFlags.resolved || !value.i)
+               apply = false;
+            //callAgain = flags.callAgain;
+         }
+         *flg |= flags;
+      }
+
+      if(apply)
+      {
+         if(nestedRules) m = nestedRules.apply(object, m, evaluator, flg);
+         if(m)
+         {
+            Iterator<CMSSMemberInitList> itStyle { styles };
+            while(itStyle.Prev())
+            {
+               Iterator<CMSSMemberInit> itMember { itStyle.data };
+               while(itMember.Prev())
+               {
+                  CMSSMemberInit member = itMember.data;
+                  CMSSInitExp initExp = member.initializer && member.initializer._class == class(CMSSInitExp) ? (CMSSInitExp)member.initializer : null;
+                  CMSSExpression e = initExp.exp;
+                  StylesMask sm = member.stylesMask;
+                  if(sm & m)
+                  {
+                     applyStyle(object, sm, evaluator, e, flg);
+                     m &= ~sm;
+                  }
+               }
+            }
+         }
+      }
+      return m;
+   }
+
+   private static void ::applyStyle(void * object, StylesMask mSet, ECCSSEvaluator evaluator, CMSSExpression e, ExpFlags * flg)
+   {
+      CMSSExpInstance inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
+      CMSSExpArray arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
+      if(inst)
+         applyInstanceStyle(object, mSet, inst, evaluator, flg);
+      else if(arr)
+      {
+         if(evaluator != null)
+         {
+            // TODO: Do this in a more generic manner
+            Array<Instance> array = evaluator.evaluatorClass.accessSubArray(object, mSet);
+            if(array)
+               for(e : arr.elements; e._class == class(CMSSExpInstance))
+                  array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
+         }
+      }
+      else
+      {
+         FieldValue value { };
+         ExpFlags mFlg = e.compute(value, evaluator, runtime);
+         Class destType = e.destType;
+         if(mFlg.resolved && destType && e.expType != destType)
+         {
+            if(destType == class(float) || destType == class(double))
+               convertFieldValue(value, real, value);
+            else if(destType == class(String))
+               convertFieldValue(value, text, value);
+            else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
+               convertFieldValue(value, integer, value);
+         }
+         evaluator.evaluatorClass.applyStyle(object, mSet, value);
+         *flg |= mFlg;
+      }
+   }
+
+   private static void ::applyInstanceStyle(void * object, StylesMask mask, CMSSExpInstance inst,
+      ECCSSEvaluator evaluator, ExpFlags * flg)
+   {
+      if(inst)
+      {
+         for(i : inst.instance.members)
+         {
+            CMSSInstInitMember member = (CMSSInstInitMember)i;
+            for(m : member.members)
+            {
+               CMSSMemberInit mInit = m;
+               if(mInit.initializer._class == class(CMSSInitExp))
+               {
+                  CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+                  StylesMask sm = mInit.stylesMask;
+                  if(sm & mask)
+                  {
+                     applyStyle(object, sm, evaluator, initExp.exp, flg);
+                     mask &= ~sm;
+                  }
+               }
+            }
+         }
+      }
    }
 };
