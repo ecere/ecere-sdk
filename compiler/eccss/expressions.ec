@@ -169,6 +169,18 @@ void * copyList(List list, CMSSNode copy(CMSSNode))
 
 CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
 {
+   // Handling some conversions here...
+   Class destType = e.destType;
+   if(destType && e.expType != destType)
+   {
+      if(destType == class(float) || destType == class(double))
+         convertFieldValue(val, real, val);
+      else if(destType == class(String))
+         convertFieldValue(val, text, val);
+      else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
+         convertFieldValue(val, integer, val);
+   }
+
    if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
       CMSSExpression ne = (val.type.type == text) ? CMSSExpString { string = CopyString(val.s) } : CMSSExpConstant { constant = val };
@@ -554,23 +566,31 @@ public:
 
          if(flags1.resolved && flags2.resolved)
          {
-            switch(op)
+            if(val2.type != val1.type)
+               convertFieldValue(val2, val1.type, val2);
+
+            if(val1.type == val2.type)
             {
-               case multiply:             tbl->Mul   (value, val1, val2); break;
-               case divide:   if(val1.i)  tbl->Div   (value, val1, val2); break;
-               case minus:                tbl->Sub   (value, val1, val2); break;
-               case plus:                 tbl->Add   (value, val1, val2); break;
-               case modulo:               tbl->Mod   (value, val1, val2); break;
-               case equal:                tbl->Equ   (value, val1, val2); break;
-               case notEqual:             tbl->Nqu   (value, val1, val2); break;
-               case and:                  tbl->And   (value, val1, val2); break;
-               case or:                   tbl->Or    (value, val1, val2); break;
-               case greater:              tbl->Grt   (value, val1, val2); break;
-               case smaller:              tbl->Sma   (value, val1, val2); break;
-               case greaterEqual:         tbl->GrtEqu(value, val1, val2); break;
-               case smallerEqual:         tbl->SmaEqu(value, val1, val2); break;
+               switch(op)
+               {
+                  case multiply:             tbl->Mul   (value, val1, val2); break;
+                  case divide:   if(val1.i)  tbl->Div   (value, val1, val2); break;
+                  case minus:                tbl->Sub   (value, val1, val2); break;
+                  case plus:                 tbl->Add   (value, val1, val2); break;
+                  case modulo:               tbl->Mod   (value, val1, val2); break;
+                  case equal:                tbl->Equ   (value, val1, val2); break;
+                  case notEqual:             tbl->Nqu   (value, val1, val2); break;
+                  case and:                  tbl->And   (value, val1, val2); break;
+                  case or:                   tbl->Or    (value, val1, val2); break;
+                  case greater:              tbl->Grt   (value, val1, val2); break;
+                  case smaller:              tbl->Sma   (value, val1, val2); break;
+                  case greaterEqual:         tbl->GrtEqu(value, val1, val2); break;
+                  case smallerEqual:         tbl->SmaEqu(value, val1, val2); break;
+               }
+               flags.resolved = value.type.type != nil;
             }
-            flags.resolved = value.type.type != nil;
+            else
+               flags.resolved = false;
          }
          else
             flags.resolved = false;
@@ -1469,15 +1489,15 @@ struct OpTable
 {
 public:
    // binary arithmetic
-   bool (* Add)(FieldValue, FieldValue, FieldValue);
-   bool (* Sub)(FieldValue, FieldValue, FieldValue);
-   bool (* Mul)(FieldValue, FieldValue, FieldValue);
-   bool (* Div)(FieldValue, FieldValue, FieldValue);
-   bool (* DivInt)(FieldValue, FieldValue, FieldValue);
-   bool (* Mod)(FieldValue, FieldValue, FieldValue);
+   bool (* Add)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Sub)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Mul)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Div)(FieldValue, const FieldValue, const FieldValue);
+   bool (* DivInt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Mod)(FieldValue, const FieldValue, const FieldValue);
 
    // unary arithmetic
-   bool (* Neg)(FieldValue, FieldValue);
+   bool (* Neg)(FieldValue, const FieldValue);
 
    // unary arithmetic increment and decrement
    //bool (* Inc)(FieldValue, FieldValue);
@@ -1507,29 +1527,29 @@ public:
    bool (* RShiftAsign)(FieldValue, FieldValue, FieldValue);*/
 
    // unary logical negation
-   bool (* Not)(FieldValue, FieldValue);
+   bool (* Not)(FieldValue, const FieldValue);
 
    // binary logical equality
-   bool (* Equ)(FieldValue, FieldValue, FieldValue);
-   bool (* Nqu)(FieldValue, FieldValue, FieldValue);
+   bool (* Equ)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Nqu)(FieldValue, const FieldValue, const FieldValue);
 
    // binary logical
-   bool (* And)(FieldValue, FieldValue, FieldValue);
-   bool (* Or)(FieldValue, FieldValue, FieldValue);
+   bool (* And)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Or)(FieldValue, const FieldValue, const FieldValue);
 
    // binary logical relational
-   bool (* Grt)(FieldValue, FieldValue, FieldValue);
-   bool (* Sma)(FieldValue, FieldValue, FieldValue);
-   bool (* GrtEqu)(FieldValue, FieldValue, FieldValue);
-   bool (* SmaEqu)(FieldValue, FieldValue, FieldValue);
+   bool (* Grt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Sma)(FieldValue, const FieldValue, const FieldValue);
+   bool (* GrtEqu)(FieldValue, const FieldValue, const FieldValue);
+   bool (* SmaEqu)(FieldValue, const FieldValue, const FieldValue);
 
    // text specific
-   bool (* StrCnt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrSrt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrEnd)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotCnt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotSrt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotEnd)(FieldValue, FieldValue, FieldValue);
+   bool (* StrCnt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrSrt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrEnd)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotCnt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotSrt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotEnd)(FieldValue, const FieldValue, const FieldValue);
 };
 
 
@@ -1608,7 +1628,7 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, >=, GrtEqu)
 OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 
 // text conditions
-static bool textStrCnt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
    result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
@@ -1616,7 +1636,7 @@ static bool textStrCnt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
@@ -1624,7 +1644,7 @@ static bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textStrEnd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -1632,7 +1652,7 @@ static bool textStrEnd(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textStrNotCnt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
    result.i = !SearchString(val1.s, 0, val2.s, false, false);
@@ -1640,7 +1660,7 @@ static bool textStrNotCnt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textStrNotSrt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
@@ -1648,7 +1668,7 @@ static bool textStrNotSrt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -1656,35 +1676,35 @@ static bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-static bool textAdd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    result.s = PrintString(val1.s, val2.s);
    result.type = { type = text };
    return true;
 }
 
-static bool textGrt(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textSma(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textGrtEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textSmaEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) <= 0;
    val.type = { type = integer };
@@ -1693,16 +1713,61 @@ static bool textSmaEqu(FieldValue val, FieldValue op1, FieldValue op2)
 
 #include <float.h>
 
-static bool realDivInt(FieldValue val, FieldValue op1, FieldValue op2)
+static bool realDivInt(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.r = (int)(op1.r / op2.r + FLT_EPSILON);
    val.type = { type = real };
    return true;
 }
 
-static bool realMod(FieldValue val, FieldValue op1, FieldValue op2)
+static bool realMod(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.r = fmod(op1.r, op2.r);
    val.type = { type = real };
    return true;
+}
+
+public void convertFieldValue(const FieldValue src, FieldType type, FieldValue dest)
+{
+   if(src.type.type == text)
+   {
+      if(type == real)
+      {
+         dest.r = strtod(src.s, null);
+         dest.type = { real };
+      }
+      else if(type == integer)
+      {
+         dest.i = strtoll(src.s, null, 0);
+         dest.type = { integer };
+      }
+   }
+   else if(src.type.type == integer)
+   {
+      if(type == real)
+      {
+         dest.r = (double)src.i;
+         dest.type = { real };
+      }
+      else if(type == text)
+      {
+         dest.s = PrintString(src.s);
+         dest.type = { text };
+      }
+   }
+   else if(src.type.type == real)
+   {
+      if(type == integer)
+      {
+         dest.i = (int64)src.r;
+         dest.type = { integer };
+      }
+      else if(type == text)
+      {
+         dest.s = PrintString(src.r);
+         dest.type = { text, mustFree = true };
+      }
+   }
+   else
+      dest = { type = { nil } };
 }
