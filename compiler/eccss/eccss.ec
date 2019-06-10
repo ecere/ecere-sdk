@@ -15,7 +15,7 @@ public struct ECCSSEvaluator
    // NOTE: These are quite likely to change...
    virtual String ::stringFromMask(StylesMask mask);
    virtual StylesMask ::maskFromString(const String s);
-   virtual void ::setMember(void * obj, StylesMask mSet, CMSSExpConstant c);
+   virtual void ::setMember(void * obj, StylesMask mSet, FieldValue c);
    virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask);
 };
 
@@ -246,8 +246,13 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      *(double *)((byte *)object + minit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
                   else if(destType == class(float))
                      *(float *)((byte *)object + minit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
-                  else if(destType == class(String) && val.type.type == text)
-                     *(String *)((byte *)object + minit.offset) = CopyString(val.s);
+                  else if(destType == class(String))
+                  {
+                     *(String *)((byte *)object + minit.offset) =
+                        (val.type.type == text)    ? CopyString(val.s)  :
+                        (val.type.type == real)    ? PrintString(val.r) :
+                        (val.type.type == integer) ? PrintString(val.i) : null;
+                  }
                   else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance)) //destType is inappropriate here
                   {
                      //CMSSExpInstance i = (CMSSExpInstance)exp;
@@ -255,7 +260,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      //*(Instance *)((byte *)object + minit.offset) = createGenericInstance(i, cache, recordID, scale, time, flg);
 
                      //if we're freeing these Instances later, is it then the case that
-                     //we give CMSSExpInstant this instData member and free it in destructor
+                     //we give CMSSExpInstance this instData member and free it in destructor
                   }
                   else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                   {
@@ -269,8 +274,10 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   {
                      /*ConsoleFile con { };
                      exp.print(con, 0,0);
-                     PrintLn("Unexpected!");
                      */
+#ifdef _DEBUG
+                     PrintLn("Unexpected!");
+#endif
                   }
                   *flg |= flag;
                }

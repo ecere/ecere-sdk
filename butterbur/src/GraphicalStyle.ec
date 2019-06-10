@@ -268,8 +268,6 @@ public:
          setMemberArray(block, mSet, arr, evaluator, flg);
       else
       {
-         CMSSExpConstant c = e._class == class(CMSSExpConstant) ? (CMSSExpConstant)e : null;
-         // CMSSExpString s = e._class == class(CMSSExpString) ? (CMSSExpString)e : null;
          FieldValue value { };
          ExpFlags mFlg = e.compute(value, evaluator, runtime);
 
@@ -277,30 +275,30 @@ public:
          {
             //pattern needs special code
             //case fillPattern: if(!fill.pattern) fill.pattern = { }; break;
-            case fillColor: fill.color = (Color)c.constant.i; break;
-            case fillStippleStyle: fill.stipple = (StippleType)c.constant.i; break;
-            case fillHatchStyle: fill.hatch = (HatchType)c.constant.i; break;
-            case fillGradient: fill.gradient = c.constant.b; break;
+            case fillColor: fill.color = (Color)value.i; break;
+            case fillStippleStyle: fill.stipple = (StippleType)value.i; break;
+            case fillHatchStyle: fill.hatch = (HatchType)value.i; break;
+            case fillGradient: fill.gradient = value.b; break;
             case strokePattern: stroke.pattern = { }; break;
-            case strokeOpacity:  stroke.opacity = (float)c.constant.r; break;
+            case strokeOpacity: stroke.opacity = (float)value.r; break;
             case strokeColor: stroke.color = (Color)value.i; break;
-            case strokeWidth:  stroke.width = (float)c.constant.r; break;
-            case strokeCasingWidth:  stroke.casing.width = (float)c.constant.r; break;
-            case strokeCasingColor:  stroke.casing.color = (Color)c.constant.i; break;
-            case strokeJoin: stroke.join = (LineJoin)c.constant.i; break;
-            case strokeCap: stroke.cap = (LineCap)c.constant.i; break;
-            case strokeDashPattern: stroke.dashes = c.constant.b; break;
-            //case alignmentHorzAlign: alignment.horzAlign = (HAlignment)c.constant.i; break;
-            //case alignmentVertAlign: alignment.vertAlign = (VAlignment)c.constant.i; break;
+            case strokeWidth: stroke.width = (float)value.r; break;
+            case strokeCasingWidth:  stroke.casing.width = (float)value.r; break;
+            case strokeCasingColor:  stroke.casing.color = (Color)value.i; break;
+            case strokeJoin: stroke.join = (LineJoin)value.i; break;
+            case strokeCap: stroke.cap = (LineCap)value.i; break;
+            case strokeDashPattern: stroke.dashes = value.b; break;
+            //case alignmentHorzAlign: alignment.horzAlign = (HAlignment)value.i; break;
+            //case alignmentVertAlign: alignment.vertAlign = (VAlignment)value.i; break;
             // error for these:duplicate case value ; error: previously used here
             /*
             { "transform", transform },
             { "transform3D", transform3D },
             */
-            case opacity: opacity = (float)c.constant.r; break;
+            case opacity: opacity = (float)value.r; break;
             default:
                if(evaluator != null)
-                  evaluator.evaluatorClass.setMember(this, mSet, c);
+                  evaluator.evaluatorClass.setMember(this, mSet, value);
          }
          *flg |= mFlg;
       }
