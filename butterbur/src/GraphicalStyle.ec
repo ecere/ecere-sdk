@@ -10,45 +10,47 @@ public class GraphicalStyleMask : StylesMask
 public:
    bool fillPattern        :1: 0;
    bool fillColor          :1: 1;
-   bool fillStippleStyle   :1: 2;
-   bool fillHatchStyle     :1: 3;
-   bool fillGradient       :1: 4;
-   bool strokePattern      :1: 5;
-   bool strokeOpacity      :1: 6;
-   bool strokeWidth        :1: 7;
-   bool strokeColor        :1: 8;
-   bool strokeCenterWidth  :1: 9;
-   bool strokeCenterColor  :1:10;
-   bool strokeCasingWidth  :1:11;
-   bool strokeCasingColor  :1:12;
-   bool strokeJoin         :1:13;
-   bool strokeCap          :1:14;
-   bool strokeDashPattern  :1:15;
-   bool text               :1:16;
-   bool font               :1:17;
-   bool face               :1:18;
-   bool size               :1:19;
-   bool width              :1:20;
-   bool bold               :1:21;
-   bool italic             :1:22;
-   bool outline            :1:23;
-   bool casing             :1:24;
-   bool color              :1:25;
-   bool image              :1:26;
-   bool alignmentHorzAlign :1:27;
-   bool alignmentVertAlign :1:28;
-   bool zOrder             :1:29;
-   bool visibility         :1:30;
-   bool transform          :1:31;
-   bool opacity            :1:32;
-   bool transform3D        :1:33;
+   bool fillOpacity        :1: 2;
+   bool fillStippleStyle   :1: 3;
+   bool fillHatchStyle     :1: 4;
+   bool fillGradient       :1: 5;
+   bool strokePattern      :1: 6;
+   bool strokeOpacity      :1: 7;
+   bool strokeWidth        :1: 8;
+   bool strokeColor        :1: 9;
+   bool strokeCenterWidth  :1:10;
+   bool strokeCenterColor  :1:11;
+   bool strokeCasingWidth  :1:12;
+   bool strokeCasingColor  :1:13;
+   bool strokeJoin         :1:14;
+   bool strokeCap          :1:15;
+   bool strokeDashPattern  :1:16;
+   bool text               :1:17;
+   bool font               :1:18;
+   bool face               :1:19;
+   bool size               :1:20;
+   bool width              :1:21;
+   bool bold               :1:22;
+   bool italic             :1:23;
+   bool outline            :1:24;
+   bool casing             :1:25;
+   bool color              :1:26;
+   bool image              :1:27;
+   bool alignmentHorzAlign :1:28;
+   bool alignmentVertAlign :1:29;
+   bool zOrder             :1:30;
+   bool visibility         :1:31;
+   bool transform          :1:32;
+   bool opacity            :1:33;
+   bool transform3D        :1:34;
 };
 
 public enum GraphicalStyleKind : GraphicalStyleMask
 {
-   fill = GraphicalStyleMask { fillPattern = true, fillColor = true, fillStippleStyle = true, fillHatchStyle = true, fillGradient = true },
+   fill = GraphicalStyleMask { fillPattern = true, fillColor = true, fillOpacity = true, fillStippleStyle = true, fillHatchStyle = true, fillGradient = true },
    fillPattern = GraphicalStyleMask { fillPattern = true },
    fillColor = GraphicalStyleMask { fillColor = true },
+   fillOpacity = GraphicalStyleMask { fillOpacity = true },
    fillStippleStyle = GraphicalStyleMask { fillStippleStyle = true },
    fillHatchStyle = GraphicalStyleMask { fillHatchStyle = true },
    fillGradient = GraphicalStyleMask { fillGradient = true },
@@ -93,6 +95,7 @@ Map<String, GraphicalStyleMask> styleIdentifierMap
    { "fill", fill },
    { "fill.pattern", fillPattern },
    { "fill.color", fillColor },
+   { "fill.opacity", fillOpacity },
    { "fill.stipple", fillStippleStyle },
    { "fill.hatch", fillHatchStyle },
    { "fill.gradient", fillGradient },
@@ -124,6 +127,7 @@ Map<GraphicalStyleMask, const String> stringFromMaskMap
    { fill, "fill" },
    { fillPattern, "fill.pattern" },
    { fillColor, "fill.color" },
+   { fillOpacity, "fill.opacity" },
    { fillStippleStyle, "fill.stippleStyle" },
    { fillHatchStyle, "fill.hatchStyle" },
    { fillGradient, "fill.gradient" },
@@ -210,6 +214,7 @@ public:
          //pattern needs special code
          //case fillPattern: if(!fill.pattern) fill.pattern = { }; break;
          case fillColor: fill.color = (Color)value.i; break;
+         case fillOpacity: fill.opacity = (float)value.r; break;
          case fillStippleStyle: fill.stipple = (StippleType)value.i; break;
          case fillHatchStyle: fill.hatch = (HatchType)value.i; break;
          case fillGradient: fill.gradient = value.b; break;
