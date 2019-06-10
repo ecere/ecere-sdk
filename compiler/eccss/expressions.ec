@@ -549,43 +549,99 @@ public:
       ExpFlags flags { };
       if(exp1 && exp2)
       {
-         FieldValue val1, val2;
+         FieldValue val1 { };
+         FieldValue val2 { };
          ExpFlags flags1, flags2;
          FieldType type;
          OpTable * tbl;
-         val1 = { }; val2 = { };
+
+         // TODO: Review this (inheritance of parent expression dest type?)
          exp1.destType = destType;
 
          flags1 = exp1.compute(val1, evaluator, computeType);
          flags2 = exp2.compute(val2, evaluator, computeType);
 
-         type = (val1.type.type == real || val2.type.type == real) ? real : (val1.type.type == integer || val2.type.type == integer) ? integer : text;
+         if(op >= stringStartsWith && op <= stringNotContains)
+            type = text;
+         else
+            type = (val1.type.type == real || val2.type.type == real) ? real :
+                   (val1.type.type == integer || val2.type.type == integer) ? integer : text;
          tbl = &opTables[type];
 
          flags = flags1 | flags2;
 
-         if(flags1.resolved && flags2.resolved)
+         if(val1.type.type != type)
+            convertFieldValue(val1, type, val1);
+
+         if(op == in)
          {
-            if(val2.type.type != val1.type.type)
-               convertFieldValue(val2, val1.type, val2);
+            CMSSExpList l = (CMSSExpList)exp2;
+            if(l && l._class == class(CMSSExpBrackets))
+            {
+               l = ((CMSSExpBrackets)l).list;
+            }
+            if(l && l._class == class(CMSSExpList))
+            {
+               FieldValue v { };
+               for(e : l.list)
+               {
+                  CMSSExpression ne = e;
+                  FieldValue v2 { };
+                  ExpFlags f2 = ne.compute(v2, evaluator, computeType);
+                  if(flags1.resolved)
+                  {
+                     if(f2.resolved)
+                     {
+                        if(v2.type.type != type)
+                           convertFieldValue(v2, type, v2);
+                        if(v2.type.type == type)
+                        {
+                           tbl->Equ(v, val1, v2);
+                           if(v.i)
+                           {
+                              value = v;
+                              break;
+                           }
+                        }
+                     }
+                  }
+                  else
+                     flags |= f2;
+               }
+               flags.resolved = v.type.type != nil && v.i;
+            }
+            else
+               flags.resolved = false;
+         }
+         else if(flags1.resolved && flags2.resolved)
+         {
+            if(val2.type.type != type)
+               convertFieldValue(val2, type, val2);
 
             if(val1.type.type == val2.type.type)
             {
                switch(op)
                {
-                  case multiply:             tbl->Mul   (value, val1, val2); break;
-                  case divide:   if(val1.i)  tbl->Div   (value, val1, val2); break;
-                  case minus:                tbl->Sub   (value, val1, val2); break;
-                  case plus:                 tbl->Add   (value, val1, val2); break;
-                  case modulo:               tbl->Mod   (value, val1, val2); break;
-                  case equal:                tbl->Equ   (value, val1, val2); break;
-                  case notEqual:             tbl->Nqu   (value, val1, val2); break;
-                  case and:                  tbl->And   (value, val1, val2); break;
-                  case or:                   tbl->Or    (value, val1, val2); break;
-                  case greater:              tbl->Grt   (value, val1, val2); break;
-                  case smaller:              tbl->Sma   (value, val1, val2); break;
-                  case greaterEqual:         tbl->GrtEqu(value, val1, val2); break;
-                  case smallerEqual:         tbl->SmaEqu(value, val1, val2); break;
+                  case multiply:             tbl->Mul       (value, val1, val2); break;
+                  case divide:   if(val1.i)  tbl->Div       (value, val1, val2); break;
+                  case minus:                tbl->Sub       (value, val1, val2); break;
+                  case plus:                 tbl->Add       (value, val1, val2); break;
+                  case modulo:               tbl->Mod       (value, val1, val2); break;
+                  case equal:                tbl->Equ       (value, val1, val2); break;
+                  case notEqual:             tbl->Nqu       (value, val1, val2); break;
+                  case and:                  tbl->And       (value, val1, val2); break;
+                  case or:                   tbl->Or        (value, val1, val2); break;
+                  case greater:              tbl->Grt       (value, val1, val2); break;
+                  case smaller:              tbl->Sma       (value, val1, val2); break;
+                  case greaterEqual:         tbl->GrtEqu    (value, val1, val2); break;
+                  case smallerEqual:         tbl->SmaEqu    (value, val1, val2); break;
+                  case intDivide:            tbl->DivInt    (value, val1, val2); break;
+                  case stringStartsWith:     tbl->StrSrt    (value, val1, val2); break;
+                  case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); break;
+                  case stringEndsWith:       tbl->StrEnd    (value, val1, val2); break;
+                  case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
+                  case stringContains:       tbl->StrCnt    (value, val1, val2); break;
+                  case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
                }
                flags.resolved = value.type.type != nil;
             }
@@ -603,7 +659,7 @@ public:
                exp2 = simplifyResolved(val2, exp2);
          }
       }
-      else if(exp2) //will this be exp2?
+      else if(exp2)
       {
          FieldValue val2 { };
          ExpFlags flags2 = exp2.compute(val2, evaluator, computeType);
