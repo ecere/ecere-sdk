@@ -566,10 +566,10 @@ public:
 
          if(flags1.resolved && flags2.resolved)
          {
-            if(val2.type != val1.type)
+            if(val2.type.type != val1.type.type)
                convertFieldValue(val2, val1.type, val2);
 
-            if(val1.type == val2.type)
+            if(val1.type.type == val2.type.type)
             {
                switch(op)
                {
