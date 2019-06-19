@@ -570,6 +570,14 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
    }
    else
    {
+      int versions[13][2] =
+      {
+         { 4, 6 },
+         { 4, 5 }, { 4, 4 }, { 4, 3 }, { 4, 2 }, { 4, 1 }, { 4, 0 },
+                             { 3, 3 }, { 3, 2 }, { 3, 1 }, { 3, 0 },
+                                                 { 2, 1 }, { 2, 0 }
+      };
+#if 0
       int context_attribs[] =
       {
          GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
@@ -589,7 +597,55 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
          ctxErrorOccurred = false;
          ctx = glXCreateContextAttribsARB( display, config, 0, True, context_attribs );
       }
+#endif // 0
+      bool tryingCompat = false;// compatible;
+      int v = 0;
+      while(!ctx)
+      {
+         for(v = 0; !ctx && v < sizeof(versions) / sizeof(versions[0]); v++)
+         {
+            int v0 = versions[v][0], v1 = versions[v][1];
+            if(!tryingCompat || v0 >= 3)
+            {
+               //bool coreNotion = v0 > 3 || (v0 == 3 && v1 >= 3);
+               /*int attribs[] =
+               {
+                  WGL_CONTEXT_MAJOR_VERSION_ARB, v0, WGL_CONTEXT_MINOR_VERSION_ARB, v1,
+         #ifdef _DEBUG
+                  WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
+         #endif
+                  coreNotion ? WGL_CONTEXT_PROFILE_MASK_ARB : 0, coreNotion ? (tryingCompat ? WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : WGL_CONTEXT_CORE_PROFILE_BIT_ARB) : 0,
+                  0,0
+               };*/
+               int context_attribs[] =
+               {
+                  GLX_CONTEXT_MAJOR_VERSION_ARB, v0,
+                  GLX_CONTEXT_MINOR_VERSION_ARB, v1,
+                  GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+                  None
+               };
+               ctx = glXCreateContextAttribsARB( display, config, oglSystem ? oglSystem.glContext : 0, True, context_attribs );
+               if(ctx)
+               {
+                  //if(contextVersion) *contextVersion = v0;
+                  //if(isCompatible)   *isCompatible = tryingCompat || !coreNotion;
+#ifdef _DEBUG
+                  PrintLn("got context for ", v0, ".", v1);
+#endif
+               }
+            }
+         }
+         if(tryingCompat)
+            tryingCompat = false;
+         else
+            break;
+      }
+
    }
+#ifdef _DEBUG
+   if(!ctx)
+      PrintLn("no context!");
+#endif
    XSync( display, False );
    XSetErrorHandler( (void *)oldHandler );
    return ctx;
@@ -1052,6 +1108,9 @@ class OpenGLDisplayDriver : DisplayDriver
             GLX_DOUBLEBUFFER,
             None
          };
+#ifdef DIAGNOSTICS
+      PrintLn("glXChooseVisual()");
+#endif
          oglSystem.visualInfo = glXChooseVisual( xGlobalDisplay,  DefaultScreen( xGlobalDisplay ), attrList );
          attr.background_pixel = 0;
          attr.border_pixel = 0;
@@ -1064,12 +1123,25 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       if(oglSystem.visualInfo)
       {
+#ifdef DIAGNOSTICS
+         PrintLn("got visual info!");
+         PrintLn("GLX_CreateContext()");
+#endif
          oglSystem.glContext = GLX_CreateContext(null, xGlobalDisplay, null, oglSystem.visualInfo);
          oglSystem.compat = false; // TODO: Have GLX_CreateContext set that up
          if(oglSystem.glContext)
          {
+#ifdef DIAGNOSTICS
+            PrintLn("got context!");
+#endif
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
             glXMakeCurrent(xGlobalDisplay, None, null);
+#if 0
+            // oglSystem.version = ogl_GetMajorVersion();
+#ifdef _DEBUG
+            PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
+#endif
+#endif // 0
             result = true;
          }
       }

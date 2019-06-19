@@ -5100,6 +5100,9 @@ private:
                result = true;
             else
             {
+#ifdef _DEBUG
+               PrintLn("failed to create display!");
+#endif
                delete display;
             }
          }
