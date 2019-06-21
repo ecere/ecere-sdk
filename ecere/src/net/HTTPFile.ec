@@ -79,7 +79,7 @@ public:
       curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       res = curl_easy_perform(curl_handle);
       if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+         fprintf(stderr, "curl_easy_perform() failed (%s): %s\n", curl_easy_strerror(res), name);
       else
       {
          curl_easy_getinfo(curl_handle, CURLINFO_RESPONSE_CODE, &httpCode);
