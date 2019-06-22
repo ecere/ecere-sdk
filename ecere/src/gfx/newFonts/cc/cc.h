@@ -10,6 +10,7 @@
 
 #include <sys/time.h>
 #include <stdarg.h>
+#include <math.h>
 
 
 #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
