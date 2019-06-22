@@ -9,6 +9,7 @@
 #ifndef CCSTR_H
 #define CCSTR_H
 
+#include "cc.h"
 
 ////
 
