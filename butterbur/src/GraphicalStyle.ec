@@ -2,6 +2,8 @@
  Styling of GraphicalElements from eC Cascading Style Sheets
 ******************************************************************************/
 public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "EDA" // For FieldValue
+
 import "eccss"
 import "GraphicalElement"
 

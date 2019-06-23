@@ -1,5 +1,5 @@
 public import IMPORT_STATIC "ecere"
-public import IMPORT_STATIC "EDA"
+public import IMPORT_STATIC "EDA" // For FieldValue
 
 public import "lexing"
 public import "astNode"
