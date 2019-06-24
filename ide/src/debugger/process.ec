@@ -352,6 +352,7 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
             }
          }
       }
+      f.Wait();
       delete f;
    }
    return pid;
