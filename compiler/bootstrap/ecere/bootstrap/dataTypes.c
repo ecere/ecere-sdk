@@ -1347,7 +1347,19 @@ break;
 return 1;
 }
 else
+{
+switch(_class->typeSize)
+{
+case 1:
+return __ecereNameSpace__ecere__com__Byte_OnGetDataFromString(_class, data, string);
+case 2:
+return __ecereNameSpace__ecere__com__Int16_OnGetDataFromString(_class, data, string);
+case 4:
+return __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(_class, data, string);
+case 8:
 return __ecereNameSpace__ecere__com__Int64_OnGetDataFromString(_class, data, string);
+}
+}
 return 0;
 }
 
