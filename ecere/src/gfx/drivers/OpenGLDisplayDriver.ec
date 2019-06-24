@@ -2511,6 +2511,17 @@ class OpenGLDisplayDriver : DisplayDriver
    void Stretch(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       OGLSurface oglSurface = surface.driverData;
+      bool flipX = w < 0, flipY = h < 0;
+      float invW = 1.0f / bitmap.width, invH = 1.0f / bitmap.height;
+      float sx0 = (sx + (flipX ? sw :  0)) * invW;
+      float sx1 = (sx + (flipX ?  0 : sw)) * invW;
+      float sy0 = (sy + (flipY ? sh :  0)) * invH;
+      float sy1 = (sy + (flipY ?  0 : sh)) * invH;
+
+      if(flipX) w = -w;
+      if(flipY) h = -h;
+      dx += surface.offset.x;
+      dy += surface.offset.y;
 
       //glTranslate(-0.375, -0.375, 0.0);
 
@@ -2521,34 +2532,17 @@ class OpenGLDisplayDriver : DisplayDriver
 
       GLBegin(GLIMTKMode::quads);
 
-      if(h < 0)
-      {
-         GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+      GLTexCoord2f(sx0, sy0);
+      GLVertex2i(dx, dy);
 
-         GLTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+      GLTexCoord2f(sx1, sy0);
+      GLVertex2i(dx + w, dy);
 
-         GLTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
+      GLTexCoord2f(sx1, sy1);
+      GLVertex2i(dx + w, dy + h);
 
-         GLTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
-      }
-      else
-      {
-         GLTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-
-         GLTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-
-         GLTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
-
-         GLTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
-      }
+      GLTexCoord2f(sx0, sy1);
+      GLVertex2i(dx, dy + h);
 
       GLEnd();
 
