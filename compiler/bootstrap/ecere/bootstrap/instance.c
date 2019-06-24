@@ -1585,7 +1585,7 @@ static void * __ecereNameSpace__ecere__com___calloc(int n, unsigned int size)
 {
 void * pointer;
 
-pointer = (n * size) ? __ecereNameSpace__ecere__com___mycalloc(1, n * size + 2 * 0) : (((void *)0));
+pointer = n && size ? __ecereNameSpace__ecere__com___mycalloc(1, n * size + 2 * 0) : (((void *)0));
 return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
@@ -5139,7 +5139,7 @@ _class->typeSize = _class->structSize = _class->memberOffset + size;
 }
 else if(type == 2 || type == 4 || type == 3)
 {
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass = __ecereNameSpace__ecere__com__System_FindClass(_class->module, dataTypeString, 1);
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass = dataTypeString ? __ecereNameSpace__ecere__com__System_FindClass(_class->module, dataTypeString, 1) : (((void *)0));
 
 if(dataTypeClass)
 _class->typeSize = dataTypeClass->typeSize;

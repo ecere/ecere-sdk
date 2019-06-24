@@ -1306,9 +1306,9 @@ static void * _mymalloc(unsigned int size)
 
 static void * _mycalloc(int n, unsigned int size)
 {
-   void * pointer = _mymalloc(n*size);
+   void * pointer = _mymalloc(n * size);
    if(pointer)
-      memset(pointer, 0, n*size);
+      memset(pointer, 0, n * size);
    return pointer;
 }
 
@@ -1546,9 +1546,9 @@ static void * _calloc(int n, unsigned int size)
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
 
 #if defined(msize)
-   return size ? calloc(n, size) : null;
+   return n && size ? calloc(n, size) : null;
 #else
-   byte * p = size ? calloc(n, size + sizeof(size_t)) : null;
+   byte * p = n && size ? calloc(n, size + sizeof(size_t)) : null;
    if(p) *(size_t *)p = size;
    return p ? p + sizeof(size_t) : null;
 #endif
@@ -1560,7 +1560,7 @@ static void * _calloc(int n, unsigned int size)
    memMutex.Wait();
 #endif
 
-   pointer = (n*size) ? calloc(1, n*size + 2 * REDZONE) : null;
+   pointer = n && size ? calloc(1, n * size + 2 * REDZONE) : null;
 #ifdef MEMINFO
    if(pointer)
    {
@@ -1592,7 +1592,7 @@ static void * _calloc(int n, unsigned int size)
          MemInfo block;
 
          stack.recurse = true;
-         block = MemInfo { size = (unsigned int)n*size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
+         block = MemInfo { size = (unsigned int)n * size, key = (uintptr)((byte *)pointer + REDZONE), _class = allocateClass, internal = allocateInternal, id = blockID++ };
          memcpy(block.allocLoc, stack.frames + stack.pos - Min(stack.pos, MAX_MEMORY_LOC), Min(stack.pos, MAX_MEMORY_LOC) * sizeof(char *));
          memBlocks.Add(block);
          stack.recurse = false;
@@ -1608,7 +1608,7 @@ static void * _calloc(int n, unsigned int size)
    if(pointer)
    {
       memset(pointer, 0xAB, REDZONE);
-      memset((byte *)pointer + REDZONE + (unsigned int)n*size, 0xAB, REDZONE);
+      memset((byte *)pointer + REDZONE + (unsigned int)n * size, 0xAB, REDZONE);
    }
 #endif
    return pointer ? ((byte*)pointer + REDZONE) : null;
