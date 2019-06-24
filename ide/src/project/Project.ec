@@ -2191,6 +2191,7 @@ private:
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
          {
             ProcessPipeOutputRaw(f);
+            f.Wait();
             delete f;
             //result = true;
          }
@@ -2271,6 +2272,7 @@ private:
                result = ProcessPipeOutputRaw(f);
             else
                result = ProcessBuildPipeOutput(f, objDirExp, buildType, onlyNodes, compiler, config, bitDepth);
+            f.Wait();
             delete f;
             if(error)
                ide.outputView.buildBox.Logf("%s\n", command);
@@ -2324,6 +2326,7 @@ private:
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ProcessPipeOutputRaw(f);
+            f.Wait();
             delete f;
             //result = true;
          }
@@ -2355,6 +2358,7 @@ private:
             ide.outputView.buildBox.Logf($"%s%s deleted\n",
                   cleanType == realClean ? $"Intermediate objects directory" : $"Target",
                   cleanType == clean ? $" and object files" : "");
+            f.Wait();
             delete f;
          }
       }
@@ -3787,6 +3791,7 @@ private:
             }
             if(!result) break;
          }
+         dep.Wait();
          delete dep;
 
          // If we failed to generate dependencies...
@@ -4812,6 +4817,7 @@ static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String co
                }
             }
          }
+         f.Wait();
          delete f;
       }
    }

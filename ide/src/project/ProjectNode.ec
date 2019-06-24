@@ -1709,6 +1709,7 @@ private:
                   }
                   if(!result) break;
                }
+               dep.Wait();
                delete dep;
 
                // If we failed to generate dependencies...
@@ -1904,6 +1905,7 @@ private:
                   }
                   if(!result) break;
                }
+               dep.Wait();
                delete dep;
 
                // If we failed to generate dependencies...
@@ -2066,6 +2068,7 @@ private:
                      }
                      if(!result) break;
                   }
+                  dep.Wait();
                   delete dep;
 
                   // If we failed to generate dependencies...
