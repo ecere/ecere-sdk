@@ -34,6 +34,9 @@ public class GraphicalPresentation : Presentation
       uint vCount;
 
       // For Multi
+
+      // For Model
+      Object model;
 //   };
 
    vertexBase = -1, fillBase = -1, lineBase = -1;
@@ -129,7 +132,7 @@ public:
             {
                case shape: rdrFlags = p.anchored ? { bbShapes = true }: { overlay = true }; break;
                case text: case image: rdrFlags = p.anchored ? { bbTextAndImages = true } : { overlayText = true }; break;
-               case path3D: rdrFlags = { perspective = true }; break;
+               case model: case path3D: rdrFlags = { perspective = true }; break;
             }
          }
 
@@ -188,6 +191,30 @@ public:
                      delete glBmp;
                   }
                   delete bmp;
+               }
+               break;
+            }
+            case model:
+            {
+               Model mdl = (Model)ge;
+               MDManager dm = mgr.perspective3DDM;
+               if(!model)
+               {
+                  Object object { };
+
+                  if(object.LoadEx(mdl.model.path, null, displaySystem, null))
+                  {
+                     Material mat { };
+                     // mat.flags.partlyTransparent = true;
+                     mat.diffuse = slateGray;
+                     mat.specular = slateGray;
+                     mat.opacity = 0.75;
+                     mat.shader = butterburShader;
+                     object.mesh.ApplyMaterial(mat);
+                     model = object;
+                  }
+                  else
+                     delete object;
                }
                break;
             }
@@ -334,6 +361,14 @@ public:
                ColorAlpha color { (byte)(p3d.opacity * stroke.opacity * 255), stroke.color };
 
                pm.addCommand(color, vCount, vertexBase, cTransform);
+               break;
+            }
+            case model:
+            {
+               Model p3d = (Model)ge;
+               Perspective3DManager pm = (Perspective3DManager)dm;
+
+               pm.addModelCommand(model, cTransform);
                break;
             }
             case multi:
