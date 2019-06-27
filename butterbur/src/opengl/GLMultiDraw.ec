@@ -43,11 +43,16 @@ class TempOGLDisplay : struct
 
 Size resetDisplaySize;
 Size displaySize;
+DisplaySystem displaySystem;
+Display glDisplay;
 
 public void setupGL(Display display)
 {
    GLCapabilities caps = display.glCapabilities;
    void * data = display.driverData;
+
+   glDisplay = display;
+   displaySystem = display.displaySystem;
 
    displaySize = { display.width, display.height };
    resetDisplaySize = displaySize;
