@@ -210,6 +210,8 @@ public class GraphicalSurface : MultiPresentation
 #endif
 
       butterburShader.texturing(true);
+      glEnable(GL_CULL_FACE);
+      glEnable(GL_DEPTH_TEST);
 
       // Perspective 3D
       presManager.perspective3DDM.prepareDraw(this);
