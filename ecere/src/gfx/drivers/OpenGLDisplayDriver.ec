@@ -4255,7 +4255,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
-         if(!glCaps_vertexBuffer && display.display3D.mesh)
+         if(!glCaps_vertexBuffer && display.display3D && display.display3D.mesh)
             glUnlockArraysEXT();
 #endif
       if(mesh)

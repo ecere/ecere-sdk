@@ -1,6 +1,6 @@
 public import IMPORT_STATIC "ecere"
 
-enum GEType { none, shape, text, image, path3D, multi };
+enum GEType { none, shape, text, image, path3D, multi, model };
 
 public enum GraphicalUnit { pixels, meters, feet, percent, points, em, screenInches, screenCM, screenMM };
 
@@ -522,4 +522,11 @@ public:
       set { hotSpot = value; }
       get { value = hotSpot; }
    }
+}
+
+public class Model : GraphicalElement
+{
+   type = model;
+public:
+   ImageResource model;
 }

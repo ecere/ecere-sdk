@@ -235,6 +235,72 @@ class Perspective3DManager : MDManager
 
       butterburShader.transform3D = false;
    }
+
+   private void renderMesh(Mesh mesh)
+   {
+      if(mesh)
+      {
+         if(mesh.groups.first)
+         {
+            PrimitiveGroup group;
+
+            if(glCaps_vao) glBindVertexArray(defaultVAO);
+            glDisplay.SelectMesh(mesh);
+
+            for(group = mesh.groups.first; group; group = group.next)
+            {
+               Material material = group.material ? group.material : null;
+               if(!material) material = GetDefaultMaterial();
+
+               butterburShader.textureArray(false);
+               butterburShader.texturing(false);
+               butterburShader.multiDraw(false);
+
+               glDisplay.ApplyMaterial(material, mesh);
+               glDisplay.DrawPrimitives((PrimitiveSingle *)&group.type, mesh);
+            }
+
+            if(glCaps_vao) glBindVertexArray(0);
+         }
+      }
+   }
+
+   static void addModel(Object model, Matrix v)
+   {
+      if(model)
+      {
+         Object o;
+
+         if(model.flags.mesh && model.mesh)
+         {
+            Matrix matrix, * m = model.matrixPtr;
+            matrix.Multiply3x4(v, m);
+            glmsLoadMatrixd(matrix.array);
+            renderMesh(model.mesh);
+         }
+         for(o = model.firstChild; o; o = o.next)
+            addModel(o, v);
+      }
+   }
+
+   private void addModelCommand(Object model, float * transform)
+   {
+      Matrix v
+      { {
+         transform[0], transform[ 1], transform[ 2], 0,
+         transform[3], transform[ 4], transform[ 5], 0,
+         transform[6], transform[ 7], transform[ 8], 0,
+         transform[9], transform[10], transform[11], 1
+      } };
+      Matrix m, viewMatrix;
+
+      // TODO: View matrix in base GraphicalSurface?
+      glmsGetDoublev(modelViewMatrix, viewMatrix.array);
+
+      m.Multiply3x4(v, viewMatrix);
+      addModel(model, m);
+      butterburShader.setSimpleMaterial(white, false);
+   }
 }
 
 public class PresentationManager
