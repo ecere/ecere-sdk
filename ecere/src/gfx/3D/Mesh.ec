@@ -145,6 +145,13 @@ private:
    Plane plane;
 };
 
+public struct MeshPart
+{
+   uint64 id;
+   uint start;
+   uint count;
+};
+
 public class Mesh : struct
 {
 public:
@@ -157,6 +164,9 @@ public:
    property ColorRGB * lightVectors { get { return lightVectors; } set { lightVectors = value; } };
    property OldList groups { get { value = groups; } };
    property MeshFeatures flags { get { return flags; } set { flags = value; } };
+
+   // For intra-model attribution; in groups order, assuming triangles
+   property Array<MeshPart> parts { get { return parts; } set { parts = value; } };
 
    void Free(MeshFeatures what)
    {
@@ -201,6 +211,7 @@ public:
             if(driver)
                driver.FreeMesh(displaySystem, this);
          }
+         delete parts;
       }
    }
 
@@ -1036,6 +1047,7 @@ private:
    void * data;
    GLMB mab, meab;
    uint baseVertex;
+   Array<MeshPart> parts;
 };
 
 void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
