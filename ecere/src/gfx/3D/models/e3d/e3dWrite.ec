@@ -413,11 +413,12 @@ static void writeFaceMaterials(File f, Mesh mesh)
    f.Write(faceMaterials.array, sizeof(FacesMaterial), faceMaterials.count);
 }
 
-/*
-static void writeParts(File f, Object object)
+static void writeParts(File f, Mesh mesh)
 {
+   Array<MeshPart> parts = mesh.parts;
+   f.Write(parts.array, sizeof(MeshPart), parts.count);
 }
-*/
+
 static void writeMesh(File f, Mesh mesh)
 {
    if(mesh)
@@ -430,7 +431,8 @@ static void writeMesh(File f, Mesh mesh)
       else
          writeE3DBlock(f, triFaces16,     mesh, writeTriFaces16);
       writeE3DBlock(f, facesMaterials, mesh, writeFaceMaterials);
-      // writeE3DBlock(f, parts,          mesh, writeParts);
+      if(mesh.parts)
+         writeE3DBlock(f, parts,          mesh, writeParts);
    }
 }
 
