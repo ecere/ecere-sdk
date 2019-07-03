@@ -1946,21 +1946,26 @@ public bool WriteONString(File f, String s, bool eCON, int indent)
                f.Puts("\\\\");
                b = 0;
             }
-            else if(eCON && ch == '\t')
+            else if(ch == '\t')
             {
                buffer[b] = 0;
                f.Puts(buffer);
                f.Puts("\\t");
                b = 0;
             }
-            else if(eCON && ch == '\n')
+            else if(ch == '\n')
             {
                int i;
                buffer[b] = 0;
                f.Puts(buffer);
-               f.Puts("\\n\"\n");
-               for(i = 0; i<indent; i++) f.Puts("   ");
-               f.Puts("   \"");
+               if(eCON)
+               {
+                  f.Puts("\\n\"\n");
+                  for(i = 0; i<indent; i++) f.Puts("   ");
+                  f.Puts("   \"");
+               }
+               else
+                  f.Puts("\\n");
                b = 0;
             }
             else if(eCON && c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<')
