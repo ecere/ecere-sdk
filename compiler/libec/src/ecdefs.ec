@@ -1781,6 +1781,7 @@ public int GetHostBits()
       {
          if(f.GetLine(host, sizeof(host)))
             hostType = host;
+         f.Wait();
          delete f;
       }
    }

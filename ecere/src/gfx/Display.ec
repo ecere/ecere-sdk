@@ -792,9 +792,9 @@ public:
    // --- Drawing ---
    void ApplyMaterial(Material material, Mesh mesh)
    {
-      if(material != display3D.material)
+      if(!display3D || material != display3D.material)
       {
-         display3D.material = material;
+         if(display3D) display3D.material = material;
          displaySystem.driver.ApplyMaterial(this, material, mesh);
       }
    }

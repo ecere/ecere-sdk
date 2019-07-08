@@ -14,13 +14,18 @@ public class Presentation
 
    // TODO: Review whether we should use LinkElement here to have link in place
 
+   bool visible;
    bool needUpdate;
+   bool visibilityUpdate;
    needUpdate = true;
+   visible = true;
+   visibilityUpdate = true;
 
    //int commandsCount; //Number of draw commands this takes to draw
 
    virtual void calculate(Presentation topPres, PresentationManager mgr);
    virtual void prepareDraw(RenderPassFlags flags, DrawingManager dm, const void * data);
+   virtual int pick(const Boxf region, int maxResults, PickResult * results) { return 0; }
 
    public property MultiPresentation parent
    {
@@ -28,15 +33,22 @@ public class Presentation
       {
          if(parent != value)
          {
+            visibilityUpdate = true;
             incref this;
             if(parent)
             {
+               Presentation p = parent;
+               while(p && *&p.visible)
+                  p.visibilityUpdate = true, p = *&p.parent;
                if(parent.subElements.TakeOut(this))
                   _refCount--;
             }
             parent = value;
             if(value)
             {
+               Presentation p = parent;
+               while(p && *&p.visible)
+                  p.visibilityUpdate = true, p = *&p.parent;
                value.subElements.Add(this);
                incref this;
             }
@@ -61,7 +73,33 @@ public class Presentation
       }
       get { return needUpdate; }
    }
+
+   public property bool visible
+   {
+      set
+      {
+         Presentation p = parent;
+
+         visible = value;
+         needUpdate = true;
+         visibilityUpdate = true;
+         while(p && *&p.visible)
+            p.visibilityUpdate = true, p = *&p.parent;
+      }
+      get { return visible; }
+   }
 }
+
+public struct Boxf
+{
+   float left, top, right, bottom;
+};
+
+public struct PickResult
+{
+   Presentation presentation;
+   union { GraphicalElement element; uint64 id; };
+};
 
 public class MultiPresentation : Presentation
 {
@@ -99,6 +137,7 @@ public:
          {
             o.calculate(topPres, mgr);
             o.needUpdate = false;
+            o.visibilityUpdate = false;
          }
          rdrFlags |= o.rdrFlags;
       }
@@ -113,5 +152,36 @@ public:
          if(p.rdrFlags & flags)
             p.prepareDraw(flags, dm, data);
       }
+   }
+
+   int pick(const Boxf region, int maxResults, PickResult * results)
+   {
+      int numResults = 0;
+      Iterator<Presentation> it { subElements };
+      while(it.Prev() && numResults < maxResults)
+      {
+         Presentation p = it.data;
+         numResults += p.pick(region, maxResults, results + numResults);
+      }
+      return numResults;
+   }
+
+   bool pickAt(const Pointf pos, float threshold, PickResult result)
+   {
+      float w = Max(0.5f, threshold), h = Max(0.5f, threshold);
+      Boxf region { pos.x - w, pos.y - h, pos.x + w, pos.y + h };
+      if(pick(region, 1, result) != 0)
+         return true;
+      result = { };
+      return false;
+   }
+
+   Array<PickResult> pickWithin(const Boxf region)
+   {
+      Array<PickResult> results { minAllocSize = 1024 };
+      results.count = pick(region, results.minAllocSize, results.array);
+      results.minAllocSize = 0;
+      if(!results.count) delete results;
+      return results;
    }
 }

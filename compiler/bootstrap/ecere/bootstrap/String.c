@@ -1602,7 +1602,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__ZString->allocType = 2;
 }
 if(__ecerePointer___ecereNameSpace__ecere__sys__ZString->allocType == 2)
 {
-int newSize = newLen ? newLen + 1 : 0;
+int newSize = newLen ? newLen + 1 : 1;
 
 if(newSize != __ecerePointer___ecereNameSpace__ecere__sys__ZString->size)
 {

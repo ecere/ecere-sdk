@@ -1,5 +1,5 @@
 public import IMPORT_STATIC "ecere"
-public import IMPORT_STATIC "EDA"
+public import IMPORT_STATIC "EDA" // For FieldValue
 
 public import "lexing"
 public import "astNode"
@@ -81,7 +81,7 @@ private:
                         }
 
 #define OPERATOR_TABLE_REAL(type) \
-    { type##Add, type##Sub, type##Mul, type##Div, null, null, \
+    { type##Add, type##Sub, type##Mul, type##Div, type##DivInt, type##Mod, \
                           type##Neg, \
                           type##Not, \
                           type##Equ, type##Nqu, \
@@ -169,6 +169,18 @@ void * copyList(List list, CMSSNode copy(CMSSNode))
 
 CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
 {
+   // Handling some conversions here...
+   Class destType = e.destType;
+   if(destType && e.expType != destType)
+   {
+      if(destType == class(float) || destType == class(double))
+         convertFieldValue(val, real, val);
+      else if(destType == class(String))
+         convertFieldValue(val, text, val);
+      else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
+         convertFieldValue(val, integer, val);
+   }
+
    if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
       CMSSExpression ne = (val.type.type == text) ? CMSSExpString { string = CopyString(val.s) } : CMSSExpConstant { constant = val };
@@ -176,6 +188,18 @@ CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
       ne.expType = e.expType;
       delete e;
       return ne;
+   }
+   else if(e._class == class(CMSSExpInstance))
+   {
+      Class c = e.destType;   // NOTE: At this point, expType should be set but is currently null?
+      if(c && c.type == bitClass)
+      {
+         CMSSExpression ne = CMSSExpConstant { constant = val };
+         ne.destType = e.destType;
+         ne.expType = e.expType;
+         delete e;
+         return ne;
+      }
    }
    return e;
 }
@@ -245,6 +269,14 @@ public:
    CMSSExpList ::parse(CMSSLexer lexer)
    {
       return (CMSSExpList)CMSSList::parse(class(CMSSExpList), lexer, CMSSExpression::parse, ',');
+   }
+
+   CMSSExpList copy()
+   {
+      CMSSExpList e { };
+      for(n : list)
+         e.list.Add(n.copy());
+      return e;
    }
 }
 
@@ -517,40 +549,104 @@ public:
       ExpFlags flags { };
       if(exp1 && exp2)
       {
-         FieldValue val1, val2;
+         FieldValue val1 { };
+         FieldValue val2 { };
          ExpFlags flags1, flags2;
          FieldType type;
          OpTable * tbl;
-         val1 = { }; val2 = { };
+
+         // TODO: Review this (inheritance of parent expression dest type?)
          exp1.destType = destType;
 
          flags1 = exp1.compute(val1, evaluator, computeType);
          flags2 = exp2.compute(val2, evaluator, computeType);
 
-         type = (val1.type.type == real || val2.type.type == real) ? real : (val1.type.type == integer || val2.type.type == integer) ? integer : text;
+         if(op >= stringStartsWith && op <= stringNotContains)
+            type = text;
+         else
+            type = (val1.type.type == real || val2.type.type == real) ? real :
+                   (val1.type.type == integer || val2.type.type == integer) ? integer : text;
          tbl = &opTables[type];
 
          flags = flags1 | flags2;
 
-         if(flags1.resolved && flags2.resolved)
+         if(val1.type.type != type)
+            convertFieldValue(val1, type, val1);
+
+         if(op == in)
          {
-            switch(op)
+            CMSSExpList l = (CMSSExpList)exp2;
+            if(l && l._class == class(CMSSExpBrackets))
             {
-               case multiply:             tbl->Mul   (value, val1, val2); break;
-               case divide:   if(val1.i)  tbl->Div   (value, val1, val2); break;
-               case minus:                tbl->Sub   (value, val1, val2); break;
-               case plus:                 tbl->Add   (value, val1, val2); break;
-               case modulo:               tbl->Mod   (value, val1, val2); break;
-               case equal:                tbl->Equ   (value, val1, val2); break;
-               case notEqual:             tbl->Nqu   (value, val1, val2); break;
-               case and:                  tbl->And   (value, val1, val2); break;
-               case or:                   tbl->Or    (value, val1, val2); break;
-               case greater:              tbl->Grt   (value, val1, val2); break;
-               case smaller:              tbl->Sma   (value, val1, val2); break;
-               case greaterEqual:         tbl->GrtEqu(value, val1, val2); break;
-               case smallerEqual:         tbl->SmaEqu(value, val1, val2); break;
+               l = ((CMSSExpBrackets)l).list;
             }
-            flags.resolved = value.type.type != nil;
+            if(l && l._class == class(CMSSExpList))
+            {
+               FieldValue v { };
+               for(e : l.list)
+               {
+                  CMSSExpression ne = e;
+                  FieldValue v2 { };
+                  ExpFlags f2 = ne.compute(v2, evaluator, computeType);
+                  if(flags1.resolved)
+                  {
+                     if(f2.resolved)
+                     {
+                        if(v2.type.type != type)
+                           convertFieldValue(v2, type, v2);
+                        if(v2.type.type == type)
+                        {
+                           tbl->Equ(v, val1, v2);
+                           if(v.i)
+                           {
+                              value = v;
+                              break;
+                           }
+                        }
+                     }
+                  }
+                  else
+                     flags |= f2;
+               }
+               flags.resolved = v.type.type != nil && v.i;
+            }
+            else
+               flags.resolved = false;
+         }
+         else if(flags1.resolved && flags2.resolved)
+         {
+            if(val2.type.type != type)
+               convertFieldValue(val2, type, val2);
+
+            if(val1.type.type == val2.type.type)
+            {
+               switch(op)
+               {
+                  case multiply:             tbl->Mul       (value, val1, val2); break;
+                  case divide:   if(val1.i)  tbl->Div       (value, val1, val2); break;
+                  case minus:                tbl->Sub       (value, val1, val2); break;
+                  case plus:                 tbl->Add       (value, val1, val2); break;
+                  case modulo:               tbl->Mod       (value, val1, val2); break;
+                  case equal:                tbl->Equ       (value, val1, val2); break;
+                  case notEqual:             tbl->Nqu       (value, val1, val2); break;
+                  case and:                  tbl->And       (value, val1, val2); break;
+                  case or:                   tbl->Or        (value, val1, val2); break;
+                  case greater:              tbl->Grt       (value, val1, val2); break;
+                  case smaller:              tbl->Sma       (value, val1, val2); break;
+                  case greaterEqual:         tbl->GrtEqu    (value, val1, val2); break;
+                  case smallerEqual:         tbl->SmaEqu    (value, val1, val2); break;
+                  case intDivide:            tbl->DivInt    (value, val1, val2); break;
+                  case stringStartsWith:     tbl->StrSrt    (value, val1, val2); break;
+                  case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); break;
+                  case stringEndsWith:       tbl->StrEnd    (value, val1, val2); break;
+                  case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
+                  case stringContains:       tbl->StrCnt    (value, val1, val2); break;
+                  case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
+               }
+               flags.resolved = value.type.type != nil;
+            }
+            else
+               flags.resolved = false;
          }
          else
             flags.resolved = false;
@@ -563,7 +659,7 @@ public:
                exp2 = simplifyResolved(val2, exp2);
          }
       }
-      else if(exp2) //will this be exp2?
+      else if(exp2)
       {
          FieldValue val2 { };
          ExpFlags flags2 = exp2.compute(val2, evaluator, computeType);
@@ -598,6 +694,11 @@ public:
       out.Print("(");
       if(list) list.print(out, indent, o);
       out.Print(")");
+   }
+
+   CMSSExpBrackets copy()
+   {
+      return CMSSExpBrackets { list = list.copy(); };
    }
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
@@ -783,11 +884,11 @@ public:
       ExpFlags flags { };
       FieldValue val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType);
-      if(expFlg.resolved)
+      if(expFlg.resolved && evaluator != null && exp.expType)
       {
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
          // This is not right, the type of the member is different...: expType = exp.expType;
-         if(prop && evaluator != null)
+         if(prop)
             evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
       }
       return flags;
@@ -913,7 +1014,6 @@ public:
    CMSSInstantiation instance;
    StylesMask stylesMask;
 
-
    CMSSExpInstance ::parse(CMSSSpecsList specs, CMSSLexer lexer)
    {
       return { instance = CMSSInstantiation::parse(specs, lexer) };
@@ -945,10 +1045,16 @@ public:
             for(m : member.members)
                flags |= m.precompute(c, stylesMask, &memberID, evaluator);
          }
+         if(flags.resolved && c && c.type == bitClass)
+         {
+            value.type = { integer };
+            value.i = 0;
+            setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags);
+         }
       }
       else if(computeType == runtime)
       {
-         value.i = (int64)(intptr)createGenericInstance(this, evaluator, &flags);;
+         value.i = (int64)(intptr)createGenericInstance(this, evaluator, &flags);
          if(!flags)
             flags.resolved = true;
       }
@@ -1103,10 +1209,8 @@ public:
 
    CMSSTokenType assignType;
    Class destType;
-   StylesMask stylesMask; // What is being set by this member
-
-   //CMSSStyleMask stylesMask; // What is being set by this member
-   //DataMember * dataMember; //this is useful for setting exparray instance member values using offset
+   StylesMask stylesMask;
+   DataMember dataMember;
    uint offset;
 
    CMSSMemberInit ::parse(CMSSLexer lexer)
@@ -1223,6 +1327,7 @@ public:
       {
          eClass_FindDataMemberAndOffset(dataMember._class, dataMember.name, &offset, dataMember._class.module, null, null);
          offset = computeMemberOffset(dataMember, offset);
+         this.dataMember = dataMember;
 
          stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr) : 0;
          if(initializer._class == class(CMSSInitExp))
@@ -1245,6 +1350,7 @@ public:
       }
       return flags;
    }
+
    uint computeMemberOffset(DataMember dataMember, uint offset)
    {
       if(dataMember._class.type == normalClass || dataMember._class.type == noHeadClass)
@@ -1439,15 +1545,15 @@ struct OpTable
 {
 public:
    // binary arithmetic
-   bool (* Add)(FieldValue, FieldValue, FieldValue);
-   bool (* Sub)(FieldValue, FieldValue, FieldValue);
-   bool (* Mul)(FieldValue, FieldValue, FieldValue);
-   bool (* Div)(FieldValue, FieldValue, FieldValue);
-   bool (* DivInt)(FieldValue, FieldValue, FieldValue);
-   bool (* Mod)(FieldValue, FieldValue, FieldValue);
+   bool (* Add)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Sub)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Mul)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Div)(FieldValue, const FieldValue, const FieldValue);
+   bool (* DivInt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Mod)(FieldValue, const FieldValue, const FieldValue);
 
    // unary arithmetic
-   bool (* Neg)(FieldValue, FieldValue);
+   bool (* Neg)(FieldValue, const FieldValue);
 
    // unary arithmetic increment and decrement
    //bool (* Inc)(FieldValue, FieldValue);
@@ -1477,29 +1583,29 @@ public:
    bool (* RShiftAsign)(FieldValue, FieldValue, FieldValue);*/
 
    // unary logical negation
-   bool (* Not)(FieldValue, FieldValue);
+   bool (* Not)(FieldValue, const FieldValue);
 
    // binary logical equality
-   bool (* Equ)(FieldValue, FieldValue, FieldValue);
-   bool (* Nqu)(FieldValue, FieldValue, FieldValue);
+   bool (* Equ)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Nqu)(FieldValue, const FieldValue, const FieldValue);
 
    // binary logical
-   bool (* And)(FieldValue, FieldValue, FieldValue);
-   bool (* Or)(FieldValue, FieldValue, FieldValue);
+   bool (* And)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Or)(FieldValue, const FieldValue, const FieldValue);
 
    // binary logical relational
-   bool (* Grt)(FieldValue, FieldValue, FieldValue);
-   bool (* Sma)(FieldValue, FieldValue, FieldValue);
-   bool (* GrtEqu)(FieldValue, FieldValue, FieldValue);
-   bool (* SmaEqu)(FieldValue, FieldValue, FieldValue);
+   bool (* Grt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Sma)(FieldValue, const FieldValue, const FieldValue);
+   bool (* GrtEqu)(FieldValue, const FieldValue, const FieldValue);
+   bool (* SmaEqu)(FieldValue, const FieldValue, const FieldValue);
 
    // text specific
-   bool (* StrCnt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrSrt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrEnd)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotCnt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotSrt)(FieldValue, FieldValue, FieldValue);
-   bool (* StrNotEnd)(FieldValue, FieldValue, FieldValue);
+   bool (* StrCnt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrSrt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrEnd)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotCnt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotSrt)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrNotEnd)(FieldValue, const FieldValue, const FieldValue);
 };
 
 
@@ -1555,13 +1661,13 @@ OPERATOR_ALL(UNARY_LOGICAL, !, Not) //OPERATOR_ALL
 OPERATOR_NUMERIC(BINARY_LOGICAL, ==, Equ)
 OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
-bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
    return true;
 }
 
-bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
    return true;
@@ -1578,14 +1684,15 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, >=, GrtEqu)
 OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 
 // text conditions
-bool textStrCnt(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
    result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
    result.type = { type = integer };
    return true;
 }
-bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
@@ -1593,28 +1700,31 @@ bool textStrSrt(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-bool textStrEnd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotCnt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
    result.i = !SearchString(val1.s, 0, val2.s, false, false);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotSrt(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
    result.type = { type = integer };
    return true;
 }
-bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
+
+static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -1622,46 +1732,98 @@ bool textStrNotEnd(FieldValue result, FieldValue val1, FieldValue val2)
    return true;
 }
 
-bool textAdd(FieldValue result, FieldValue val1, FieldValue val2)
+static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    result.s = PrintString(val1.s, val2.s);
    result.type = { type = text };
    return true;
 }
 
-bool textGrt(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textSma(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textGrtEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
-bool textSmaEqu(FieldValue val, FieldValue op1, FieldValue op2)
+static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = strcmp(op1.s, op2.s) <= 0;
    val.type = { type = integer };
    return true;
 }
 
+#include <float.h>
 
+static bool realDivInt(FieldValue val, const FieldValue op1, const FieldValue op2)
+{
+   val.r = (int)(op1.r / op2.r + FLT_EPSILON);
+   val.type = { type = real };
+   return true;
+}
 
-//Add, Sub, Mul, Div, Mod,     , Neg,     Inc, Dec,    Asign, AddAsign, SubAsign, MulAsign, DivAsign, ModAsign,     BitAnd, BitOr, BitXor, LShift, RShift, BitNot,     AndAsign, OrAsign, XorAsign, LShiftAsign, RShiftAsign,     Not,     Equ, Nqu,     And, Or,     Grt, Sma, GrtEqu, SmaEqu
-//name, type
+static bool realMod(FieldValue val, const FieldValue op1, const FieldValue op2)
+{
+   val.r = fmod(op1.r, op2.r);
+   val.type = { type = real };
+   return true;
+}
 
-//OPERATOR_TABLE_ALL(int, Int)
-//OPERATOR_TABLE_INT(float, Float)
-//OPERATOR_TABLE_ALL(char, Char)
+public void convertFieldValue(const FieldValue src, FieldType type, FieldValue dest)
+{
+   if(src.type.type == text)
+   {
+      if(type == real)
+      {
+         dest.r = strtod(src.s, null);
+         dest.type = { real };
+      }
+      else if(type == integer)
+      {
+         dest.i = strtoll(src.s, null, 0);
+         dest.type = { integer };
+      }
+   }
+   else if(src.type.type == integer)
+   {
+      if(type == real)
+      {
+         dest.r = (double)src.i;
+         dest.type = { real };
+      }
+      else if(type == text)
+      {
+         dest.s = PrintString(src.s);
+         dest.type = { text };
+      }
+   }
+   else if(src.type.type == real)
+   {
+      if(type == integer)
+      {
+         dest.i = (int64)src.r;
+         dest.type = { integer };
+      }
+      else if(type == text)
+      {
+         dest.s = PrintString(src.r);
+         dest.type = { text, mustFree = true };
+      }
+   }
+   else
+      dest = { type = { nil } };
+}

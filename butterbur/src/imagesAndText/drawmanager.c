@@ -866,7 +866,13 @@ printf( " Flush %d images\n", (int)dm->imagebuffercount );
 #endif
         /* Flush font manager texture updates */
         if( dm->flushcallback )
+        {
           dm->flushcallback( dm->flushcallbackcontext );
+
+          // FIXME: The font manager might mess up our texture with atlas updates
+          glBindTexture( GL_TEXTURE_2D, bindtexture->gltex );
+        }
+
         /* Render buffered images */
         dmFlushRenderDrawBuffer( dm, drawbuffer, program, vertexcount );
         drawbuffer = &dm->drawbuffer[dm->drawbufferindex];
