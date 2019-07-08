@@ -34,6 +34,9 @@ public class GraphicalPresentation : Presentation
       uint vCount;
 
       // For Multi
+
+      // For Model
+      Object model;
 //   };
 
    vertexBase = -1, fillBase = -1, lineBase = -1;
@@ -129,7 +132,7 @@ public:
             {
                case shape: rdrFlags = p.anchored ? { bbShapes = true }: { overlay = true }; break;
                case text: case image: rdrFlags = p.anchored ? { bbTextAndImages = true } : { overlayText = true }; break;
-               case path3D: rdrFlags = { perspective = true }; break;
+               case model: case path3D: rdrFlags = { perspective = true }; break;
             }
          }
 
@@ -188,6 +191,30 @@ public:
                      delete glBmp;
                   }
                   delete bmp;
+               }
+               break;
+            }
+            case model:
+            {
+               Model mdl = (Model)ge;
+               MDManager dm = mgr.perspective3DDM;
+               if(!model)
+               {
+                  Object object { };
+
+                  if(object.LoadEx(mdl.model.path, null, displaySystem, null))
+                  {
+                     Material mat { };
+                     // mat.flags.partlyTransparent = true;
+                     mat.diffuse = slateGray;
+                     mat.specular = slateGray;
+                     mat.opacity = 0.75;
+                     mat.shader = butterburShader;
+                     object.mesh.ApplyMaterial(mat);
+                     model = object;
+                  }
+                  else
+                     delete object;
                }
                break;
             }
@@ -312,7 +339,7 @@ public:
                {
                   cTransform[0] -= ge.transform.scaling.x * img.hotSpot.x * imgW;
                   cTransform[1] -= ge.transform.scaling.y * img.hotSpot.y * imgH;
-                  im.addImageCommand(image, imgW * ge.transform.scaling.x, imgH * ge.transform.scaling.y, img.opacity, white, cTransform);
+                  im.addImageCommand(image, imgW * ge.transform.scaling.x, imgH * ge.transform.scaling.y, img.opacity, img.tint, cTransform);
                }
                break;
             }
@@ -336,6 +363,14 @@ public:
                pm.addCommand(color, vCount, vertexBase, cTransform);
                break;
             }
+            case model:
+            {
+               Model p3d = (Model)ge;
+               Perspective3DManager pm = (Perspective3DManager)dm;
+
+               pm.addModelCommand(model, cTransform);
+               break;
+            }
             case multi:
             {
                /*
@@ -351,43 +386,60 @@ public:
       }
    }
 
+   int pick(const Boxf region, int maxResults, PickResult * results)
+   {
+      // TODO: Proper full box test, not middle point
+      if(containsPoint((region.left + region.right)/2, (region.top + region.bottom)/2))
+      {
+         results[0] = { this, element = graphic };
+         return 1;
+      }
+      return 0;
+   }
+
    // Checks if the point is within the GraphicalElement
    // Currently only good for overlaid elements
    // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
-   bool containsPoint(int x, int y)
+   private static bool containsPoint(float x, float y)
    {
-      int transformedX = x - this.transform.position.x - ge.transform.position.x;
-      int transformedY = y - this.transform.position.y - ge.transform.position.y;
+      double transformedX = x - transform.position.x - ge.transform.position.x;
+      double transformedY = y - transform.position.y - ge.transform.position.y;
       if (!(rdrFlags.overlay || rdrFlags.overlayText))
          return false;
 
       switch (geType)
       {
          case shape:
-            return shapeContainsPoint(transformedX, transformedY);
+            return shapeContainsPoint((float)transformedX, (float)transformedY);
 
          case image:
          {
-            return imageContainsPoint(transformedX, transformedY);
+            return imageContainsPoint((float)transformedX, (float)transformedY);
          }
          case text:
          {
             return false; //Can't click text without some glyph size calculations
          }
       }
+      return false;
    }
 
-   private bool imageContainsPoint(int x, int y)
+   private bool imageContainsPoint(float x, float y)
    {
       // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
       // Something isn't working quite right here, imgW and imgH both show up in debug watch as 0 when they clearly have a value so this might be related?
-      return (x >= 0 && y >= 0 && x < (imgW * ge.scaling2D.x) && y < (imgH * ge.scaling2D.y));
+      Image img = (Image)ge;
+      float w = imgW * ge.scaling2D.x;
+      float h = imgH * ge.scaling2D.y;
+      x += w * img.hotSpot.x;
+      y += h * img.hotSpot.y;
+      return (x >= 0 && y >= 0 && x < w && y < h);
    }
 
-   private bool shapeContainsPoint(int x, int y)
+   private bool shapeContainsPoint(float x, float y)
    {
-      Shape shp = (Shape)ge;
-      Pointf checkedPoint {(float)x, (float)y};
+      // Shape shp = (Shape)ge;
+      Pointf checkedPoint { x, y };
 
       // Temporary catch-all solution: loop through all triangles of tesselated shape and check the point in each one.
       int i;
@@ -404,19 +456,19 @@ public:
       // Checking ixFill, the indices that make up the fill of the shape
       if(tShape.fillCount)
       {
-         for (i = 0; i < fillCount -2; i++)
+         for(i = 0; i < (int)fillCount - 2; i++)
          {
             result = pointInsideTriangle(checkedPoint, points[ixFill[i]], points[ixFill[i+1]], points[ixFill[i+2]]);
-            if (result)
+            if(result)
                return result;
          }
       }
 
       // Checking ix, the indices that make up the outline of the shape
-      for (i = 0; i < ixCount - 2; i++)
+      for(i = 0; i < (int)ixCount - 2; i++)
       {
          result = pointInsideTriangle(checkedPoint, points[ix[i]], points[ix[i+1]], points[ix[i+2]]);
-         if (result)
+         if(result)
             return result;
       }
 
@@ -458,7 +510,7 @@ public:
          case path:
          {
             Path p = (Path)shp;
-            InsideReturn isInside = pointInside(p.nodes, {x, y}, 0);
+            InsideReturn isInside = pointInside(*(Array<Vector3Df> *)&p.nodes, {x, y}, 0);
             return isInside == inside;
          }
       }
@@ -466,14 +518,28 @@ public:
    }
 }
 
-public enum InsideReturn { outside, inside, onTheEdge };
+private:
+static enum InsideReturn { outside, inside, onTheEdge };
 
-private static inline double ::fromLine(const Pointf p, const Pointf a, const Pointf b)
+static inline double ::fromLine(const Pointf p, const Pointf a, const Pointf b)
 {
    return ((double)b.x - a.x) * ((double)p.y - a.y) - ((double)p.x - a.x) * ((double)b.y - a.y);
 }
 
-InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
+// For detecting if a point is in a shape using the tesselated shape.
+#define signedArea(p1, p2, p3) fromLine(p3, p1, p2)
+
+static bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
+{
+   int s1 = Sgn(signedArea(p, v1, v2));
+   int s2 = Sgn(signedArea(p, v2, v3));
+   int s3 = Sgn(signedArea(p, v3, v1));
+
+   return s1 == s2 && s2 == s3;
+}
+
+#if 0
+static InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
 {
    Pointf * p = nodes.array;
    int count = nodes.count, winding = 0, i;
@@ -502,19 +568,4 @@ InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
    }
    return winding != 0 ? inside : outside;
 }
-
-
-// For detecting if a point is in a shape using the tesselated shape.
-private static inline float signedArea(Pointf p1, Pointf p2, Pointf p3)
-{
-    return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-}
-
-bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
-{
-    int s1 = Sgn(signedArea(p, v1, v2));
-    int s2 = Sgn(signedArea(p, v2, v3));
-    int s3 = Sgn(signedArea(p, v3, v1));
-
-    return s1 == s2 && s2 == s3;
-}
+#endif

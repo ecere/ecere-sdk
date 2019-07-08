@@ -252,7 +252,37 @@ public enum KeyCode : Key
    menu2             = f3,
    menu3             = f4,
    menu4             = f5,
-   select            = enter
+   select            = enter,
+
+
+   bassBoost         = 0x214,
+   bassDown          = 0x215,
+   bassUp            = 0x216,
+   browserBackward   = 0x217,
+   browserFavorites  = 0x218,
+   browserForward    = 0x219,
+   browserHome       = 0x21A,
+   browserRefresh    = 0x21B,
+   browserSearch     = 0x21C,
+   browserStop       = 0x21D,
+   //delete            = 0x0,
+   //flip3D            = 0x0,
+   launchApp1        = 0x21E,
+   launchApp2        = 0x21F,
+   launchMail        = 0x220,
+   launchMediaSelect = 0x221,
+   //mediaNextTrack    = 0x0,
+   //mediaPlayPause    = 0x0,
+   //mediaPreviousTrack = 0x0,
+   //mediaStop         = 0x0,
+   micVolumeDown     = 0x222,
+   micMute           = 0x223,
+   micVolumeUp       = 0x224,
+   trebleDown        = 0x225,
+   trebleUp          = 0x226
+   //volumeDown        = 0x0,
+   //volumeMute        = 0x0,
+   //volumeUp          = 0x0
 };
 
 public class Modifiers

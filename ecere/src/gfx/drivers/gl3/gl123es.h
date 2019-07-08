@@ -1,3 +1,12 @@
+#if defined(__WIN32__)
+   #define GetObject
+   #define MessageBox _MessageBox
+   #define Sleep _Sleep
+   #define Polygon _Polygon
+
+   #define WIN32_LEAN_AND_MEAN
+#endif
+
 #if defined(__EMSCRIPTEN__) || defined(__ANDROID__) // Moving Android to GLES 2
    #if !defined(_GLES2)
       #define _GLES2
@@ -48,9 +57,15 @@
 #undef class
 */
 #else
-   #define Polygon _Polygon
    #include <gl_compat_4_4.h>
+#endif
+
+
+#if defined(__WIN32__)
    #undef Polygon
+   #undef MessageBox
+   #undef Sleep
+   #undef GetObject
 #endif
 
 #ifdef _GLES

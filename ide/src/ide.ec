@@ -380,6 +380,10 @@ class IDEToolbar : ToolBar
       }
    };
 
+   Window spacer65 { this, size = { 4 } };
+
+   Button forceSingleJob { this, text = $"Force Single Job Compiling", isCheckbox = true; };
+
    Window spacer7 { this, size = { 4 } };
 
    void IDEToolbar()
@@ -526,7 +530,8 @@ class IDEWorkSpace : Window
             eb.selectionText = cs.selectionText;
             eb.background = cs.codeEditorBG;
             eb.foreground = cs.codeEditorFG;
-            ((SyntaxHighlighting)eb.syntaxHighlighting).syntaxColorScheme = cs.syntaxColors;
+            if((SyntaxHighlighting)eb.syntaxHighlighting)
+               ((SyntaxHighlighting)eb.syntaxHighlighting).syntaxColorScheme = cs.syntaxColors;
          }
 
       if(projectView)
@@ -3524,11 +3529,16 @@ class IDEWorkSpace : Window
 
       for(item : compiler.libraryDirs)
       {
+         char path[MAX_LOCATION];
          if(!libPathExists[item])  // fstrcmp should be used
          {
-            String s = CopyString(item);
-            newLibPaths.Add(s);
-            libPathExists[s] = true;
+            DirExpression pathExp { };
+            pathExp.Evaluate(item, projectView.project, compiler, config, bitDepth);
+            path[0] = '\0';
+            PathCatSlash(path, pathExp.dir);
+            newLibPaths.Add(CopyString(path));
+            libPathExists[path] = true;
+            delete pathExp;
          }
       }
 

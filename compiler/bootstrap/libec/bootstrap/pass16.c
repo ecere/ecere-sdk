@@ -1743,7 +1743,7 @@ struct MemberInit * member = (((void *)0));
 
 for(member = (*members->__anon1.dataMembers).first; member; member = member->next)
 {
-if(member->identifiers)
+if(member->identifiers && (*member->identifiers).first)
 {
 struct __ecereNameSpace__ecere__com__DataMember * _subMemberStack[256];
 int _subMemberStackPos = 0;
