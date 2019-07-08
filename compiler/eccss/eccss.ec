@@ -50,20 +50,42 @@ public:
       delete f;
    }
 
-   CMSSStyleSheet ::load(const String fileName)
+   CMSSStyleSheet ::loadFile(File f)
    {
       StylingRuleBlockList list = null;
-      File f = fileName ? FileOpen(fileName, read) : null;
       if(f)
       {
          CMSSLexer lexer { };
          lexer.initFile(f);
          list = StylingRuleBlockList::parse(lexer);
          delete lexer;
+      }
+      return list ? CMSSStyleSheet { list = list } : null;
+   }
+
+   CMSSStyleSheet ::load(const String fileName)
+   {
+      CMSSStyleSheet result = null;
+      File f = fileName ? FileOpen(fileName, read) : null;
+      if(f)
+      {
+         result = loadFile(f);
          delete f;
       }
+      return result;
+   }
 
-      return list ? CMSSStyleSheet { list = list } : null;
+   CMSSStyleSheet ::loadString(const String s)
+   {
+      CMSSStyleSheet result = null;
+      if(s)
+      {
+         TempFile tmp { buffer = (byte *)s, size = strlen(s) };
+         result = loadFile(tmp);
+         tmp.StealBuffer();
+         delete tmp;
+      }
+      return result;
    }
 }
 
