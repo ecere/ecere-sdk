@@ -1935,7 +1935,7 @@ float fmPathDrawCharacter( fmManager *fm, fmPathDraw *pathdraw, float x, float y
   if( glyph )
   {
     subpixel = 0;
-    if( pathdraw->prevcodepoint >= 0 )
+    if( pathdraw->prevcodepoint >= 0 && font->kernhashtable)
       subpixel = fmtt_getGlyphKernAdvance( font, pathdraw->prevcodepoint, unicode, state->size, state->kerningfactor );
     fmDrawTextGlyphFloat( fm, font, glyph, x, y, vectorx, vectory, (float)subpixel * (1.0/64.0), pathdraw->middlealign );
     subpixel += glyph->advance;
@@ -1967,7 +1967,7 @@ float fmPathDrawPredictAdvance( fmManager *fm, fmPathDraw *pathdraw, int unicode
   if( glyph )
   {
     subpixel = 0;
-    if( pathdraw->prevcodepoint >= 0 )
+    if( pathdraw->prevcodepoint >= 0 && font->kernhashtable)
       subpixel = fmtt_getGlyphKernAdvance( font, pathdraw->prevcodepoint, unicode, state->size, state->kerningfactor );
     subpixel += glyph->advance;
   }
