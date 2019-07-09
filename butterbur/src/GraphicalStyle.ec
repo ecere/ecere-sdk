@@ -183,6 +183,9 @@ public:
    float opacity;
    Transform transform;
 
+   visibility = true;
+   opacity = 1.0;
+
    // Internal...
    ExpFlags flags;
 
