@@ -91,6 +91,8 @@ int mmHashDirectDeleteEntry2( void *hashtable, const mmHashAccess *access, void 
 void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift );
 void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, uint32_t hashbits, uint32_t pageshift, void ** movedEntryPtr);
 
+void mmHashListAll( void *hashtable, int (*list)( void *opaque, void *entry ), void *opaque );
+
 void * mmHashGetNext( void *hashtable, void * entry, const mmHashAccess *access);
 void * mmHashGetPrev( void *hashtable, void * entry, const mmHashAccess *access);
 

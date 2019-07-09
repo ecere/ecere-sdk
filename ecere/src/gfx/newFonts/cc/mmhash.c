@@ -1980,6 +1980,27 @@ void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, 
 }
 
 
+
+/* Must be called while NO other thread will ever access the table for writing */
+void mmHashListAll( void *hashtable, int (*list)( void *opaque, void *entry ), void *opaque )
+{
+  uint32_t hashkey;
+  size_t entrysize;
+  void *entry;
+  mmHashTable *table;
+  table = hashtable;
+  entrysize = table->entrysize;
+  entry = MM_HASH_ENTRYLIST( table );
+  for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
+  {
+    if( !list( opaque, entry ) )
+      break;
+    entry = ADDRESS( entry, entrysize );
+  }
+  return;
+}
+
+
 ////
 
 
