@@ -305,6 +305,7 @@ class Perspective3DManager : MDManager
 
 public class PresentationManager
 {
+   DrawingManager texturesDM { renderFlags = { textures = true } };
    ShapesManager shapeOverlayDM { renderFlags = { overlay = true } };
    ShapesManager shapeBillboardDM { renderFlags = { bbShapes = true } };
    Perspective3DManager perspective3DDM { renderFlags = { perspective = true } };
@@ -321,6 +322,7 @@ public class PresentationManager
          shapeBillboardDM.originOffset = value;
          tiOverlayDM.originOffset = value;
          tiBillboardDM.originOffset = value;
+         texturesDM.originOffset = value;
       }
    }
 
@@ -332,6 +334,7 @@ public class PresentationManager
          shapeBillboardDM.targetFBO = value;
          tiOverlayDM.targetFBO = value;
          tiBillboardDM.targetFBO = value;
+         texturesDM.targetFBO = value;
       }
    }
 
@@ -345,6 +348,7 @@ public class PresentationManager
          perspective3DDM.topPresentation = topPresentation;
          tiOverlayDM.topPresentation = topPresentation;
          tiBillboardDM.topPresentation = topPresentation;
+         texturesDM.topPresentation = topPresentation;
 
          tiOverlayDM.fontManager = fontManager;
          tiOverlayDM.drawManager = drawManager;
@@ -356,6 +360,7 @@ public class PresentationManager
          perspective3DDM.init();
          tiOverlayDM.init();
          tiBillboardDM.init();
+         texturesDM.init();
 
          initialized = true;
       }
