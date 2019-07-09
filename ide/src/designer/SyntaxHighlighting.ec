@@ -1206,7 +1206,7 @@ class XMLSHL : SyntaxHighlighting
    }
 }
 
-static const char * econExtensions[] = { "econ", "json", "geoecon", "geojson", "topojson", "epj", null };
+static const char * econExtensions[] = { "econ", "json", "geoecon", "geojson", "topojson", "epj", "cmss", null };
 class ECONSHL : SyntaxHighlighting
 {
    class_property(extensions) = econExtensions;

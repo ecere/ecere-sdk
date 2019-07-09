@@ -481,8 +481,9 @@ public:
 public class Text : GraphicalElement
 {
    type = text;
+
 public:
-   String text;
+   String text;   // FIXME: Both member and property are currently public, ECCSS otherwise currently does not set text properly
    GEFont font;
    Alignment2D alignment;
 
