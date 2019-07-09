@@ -12,6 +12,7 @@
 #include <stdarg.h>
 #include <math.h>
 
+#include "cpuconfig.h"
 
 #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
  #define CC_LINUX (1)
@@ -42,12 +43,46 @@
  #define ADDRESSDIFF(a,b) (((char *)a)-((char *)b))
 #endif
 
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
  #define CC_NOINLINE __attribute__((noinline))
  #define CC_ALWAYSINLINE __attribute__((always_inline))
+ #define CC_LIKELY(x) __builtin_expect(!!(x), 1)
+ #define CC_UNLIKELY(x) __builtin_expect(!!(x), 0)
+ #define CC_UNUSED __attribute__((unused))
+ #define CC_DEPRECATED __attribute__((deprecated))
+ #define CC_DEPRECATED_MSG(x) __attribute__((deprecated(x)))
+ #define MM_UNREACHABLE __builtin_unreachable()
+#elif defined(_MSC_VER)
+ #define CC_NOINLINE __declspec(noinline)
+ #define CC_ALWAYSINLINE __forceinline
+ #define CC_LIKELY(x) (x)
+ #define CC_UNLIKELY(x) (x)
+ #define CC_UNUSED
+ #define CC_DEPRECATED _declspec(deprecated)
+ #define CC_DEPRECATED_MSG(x) _declspec(deprecated(x))
+ #define MM_UNREACHABLE _assume(0)
+ #ifndef inline
+  #define inline __inline
+ #endif
+ #ifndef restrict
+  #define restrict __restrict
+ #endif
+ #ifndef ssize_t
+  #if CC_ARCH_AMD64
+   #define ssize_t int64_t
+  #else
+   #define ssize_t int32_t
+  #endif
+ #endif
 #else
  #define CC_NOINLINE
  #define CC_ALWAYSINLINE
+ #define CC_LIKELY(x) (x)
+ #define CC_UNLIKELY(x) (x)
+ #define CC_UNUSED
+ #define CC_DEPRECATED
+ #define CC_DEPRECATED_MSG(x)
+ #define MM_UNREACHABLE
 #endif
 
 #if CC_UNIX
@@ -1731,6 +1766,19 @@ static inline CC_ALWAYSINLINE int64_t ccDoubleToInt64Sat( double f )
     return (int64_t)f;
 }
 
+
+
+static inline CC_ALWAYSINLINE float ccFastNextAfterPositivef( float f )
+{
+  ccuintf i;
+  i = ccFloatToUint( f );
+  i++;
+  f = ccUintToFloat( i );
+  return f;
+}
+
+
+////
 
 ////
 
