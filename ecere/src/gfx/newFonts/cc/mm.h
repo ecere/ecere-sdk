@@ -12,6 +12,8 @@
 #ifndef MM_H
 #define MM_H
 
+#include "cpuconfig.h"
+
 #include <stdio.h>
 
 #define OFFSET(s, m) ((unsigned int)(uintptr_t) (&((s *) 0)->m))
@@ -84,7 +86,7 @@ extern "C" {
 #endif
 
 
-#if defined(__GNUC__) || defined(__INTEL_COMPILER)
+#if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
  #define MM_CACHE_ALIGN __attribute__((aligned(CPUCONF_CACHE_LINE_SIZE)))
  #define MM_RESTRICT __restrict
  #define MM_NOINLINE __attribute__((noinline))
@@ -93,17 +95,36 @@ extern "C" {
  #define MM_ALIGN16 __attribute__((aligned(16)))
  #define MM_ALIGN32 __attribute__((aligned(32)))
  #define MM_ALIGN64 __attribute__((aligned(64)))
- #define MM_ALIGN16_SAFE (1)
+ #define MM_ALIGNED8(p) __builtin_assume_aligned(p,8)
+ #define MM_ALIGNED16(p) __builtin_assume_aligned(p,16)
+ #define MM_ALIGNED32(p) __builtin_assume_aligned(p,32)
+ #define MM_ALIGNED64(p) __builtin_assume_aligned(p,64)
 #elif defined(_MSC_VER)
- #define MM_CACHE_ALIGN
- #define MM_RESTRICT
- #define MM_NOINLINE
- #define MM_ALWAYSINLINE
+ #define MM_CACHE_ALIGN __declspec(align(64))
+ #define MM_RESTRICT __restrict
+ #define MM_NOINLINE __declspec(noinline)
+ #define MM_ALWAYSINLINE __forceinline
  #define MM_ALIGN8 __declspec(align(8))
  #define MM_ALIGN16 __declspec(align(16))
  #define MM_ALIGN32 __declspec(align(32))
  #define MM_ALIGN64 __declspec(align(64))
- #define MM_ALIGN16_SAFE (1)
+ #define MM_ALIGNED8(p) (p)
+ #define MM_ALIGNED16(p) (p)
+ #define MM_ALIGNED32(p) (p)
+ #define MM_ALIGNED64(p) (p)
+ #ifndef inline
+  #define inline __inline
+ #endif
+ #ifndef restrict
+  #define restrict __restrict
+ #endif
+ #ifndef ssize_t
+  #if MM_ARCH_AMD64
+   #define ssize_t int64_t
+  #else
+   #define ssize_t int32_t
+  #endif
+ #endif
 #else
  #define MM_CACHE_ALIGN
  #define MM_RESTRICT
@@ -113,9 +134,11 @@ extern "C" {
  #define MM_ALIGN16
  #define MM_ALIGN32
  #define MM_ALIGN64
- #define MM_ALIGN16_SAFE (0)
+ #define MM_ALIGNED8(p) (p)
+ #define MM_ALIGNED16(p) (p)
+ #define MM_ALIGNED32(p) (p)
+ #define MM_ALIGNED64(p) (p)
 #endif
-
 
 #define MM_ERROR()  {printf("MM Error at %s:%d\n",file,line);exit(1)}
 

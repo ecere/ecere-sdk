@@ -9,8 +9,7 @@
  * Atomic memory operations.
  */
 
-
-
+#include "mm.h"
 
 #if ( defined(CPUCONF_ARCH_IA32) || defined(CPUCONF_ARCH_AMD64) ) && defined(__GNUC__) && !defined(MM_ATOMIC_SUPPORT)
 
