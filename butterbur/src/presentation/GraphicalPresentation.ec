@@ -208,7 +208,7 @@ public:
                      // mat.flags.partlyTransparent = true;
                      mat.diffuse = slateGray;
                      mat.specular = slateGray;
-                     mat.opacity = 0.75;
+                     mat.opacity = 1.0;// 0.75;
                      mat.shader = butterburShader;
                      object.mesh.ApplyMaterial(mat);
                      model = object;
