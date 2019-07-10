@@ -402,10 +402,20 @@ public:
    // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
    private static bool containsPoint(float x, float y)
    {
-      double transformedX = x - transform.position.x - ge.transform.position.x;
-      double transformedY = y - transform.position.y - ge.transform.position.y;
-      if (!(rdrFlags.overlay || rdrFlags.overlayText))
-         return false;
+      double transformedX = 0;
+      double transformedY = 0;
+      if (rdrFlags & {overlay = true, overlayText = true})
+      {
+         transformedX = x - transform.position.x - ge.transform.position.x;
+         transformedY = y - transform.position.y - ge.transform.position.y;
+      }
+
+      // Transform should have already been done by the GeoPresentation
+      if(rdrFlags & { bbShapes = true, bbTextAndImages = true })
+      {
+         transformedX = x;
+         transformedY = y;
+      }
 
       switch (geType)
       {
