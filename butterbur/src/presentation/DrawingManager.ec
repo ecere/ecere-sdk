@@ -300,6 +300,10 @@ class Perspective3DManager : MDManager
       m.Multiply3x4(v, viewMatrix);
       addModel(model, m);
       butterburShader.setSimpleMaterial(white, false);
+      // Reset Perspective3DManager shader states
+      butterburShader.textureArray(true);
+      butterburShader.texturing(true);
+      butterburShader.multiDraw(true);
    }
 }
 
