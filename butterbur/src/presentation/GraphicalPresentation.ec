@@ -402,24 +402,19 @@ public:
    // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
    private static bool containsPoint(float x, float y)
    {
-      double transformedX = x - transform.position.x - ge.transform.position.x;
-      double transformedY = y - transform.position.y - ge.transform.position.y;
-      if (!(rdrFlags.overlay || rdrFlags.overlayText))
+      float tx, ty;
+
+      if(!(rdrFlags & { overlay = true, overlayText = true, bbShapes = true, bbTextAndImages = true }))
          return false;
+
+      tx = x - (float)(transform.position.x + ge.transform.position.x);
+      ty = y - (float)(transform.position.y + ge.transform.position.y);
 
       switch (geType)
       {
-         case shape:
-            return shapeContainsPoint((float)transformedX, (float)transformedY);
-
-         case image:
-         {
-            return imageContainsPoint((float)transformedX, (float)transformedY);
-         }
-         case text:
-         {
-            return false; //Can't click text without some glyph size calculations
-         }
+         case shape: return shapeContainsPoint(tx, ty);
+         case image: return imageContainsPoint(tx, ty);
+         case text:  return false; //Can't click text without some glyph size calculations
       }
       return false;
    }
