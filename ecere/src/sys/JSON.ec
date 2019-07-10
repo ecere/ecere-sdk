@@ -1596,12 +1596,12 @@ private:
       //else if(type == class(int64) || !strcmp(type.dataTypeString, "int64"))
       else if(!strcmp(type.dataTypeString, "int64"))
       {
-         value.i64 = strtol(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
+         value.i64 = strtoll(buffer, null, eCON ? 0 : 10);
          result = success;
       }
       else if(type == class(uint64) || !strcmp(type.dataTypeString, "uint64"))
       {
-         value.ui64 = strtoul(buffer, null, eCON ? 0 : 10);  // TOFIX: 64 bit support
+         value.ui64 = strtoull(buffer, null, eCON ? 0 : 10);
          result = success;
       }
       else if(type == class(uint) || !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
