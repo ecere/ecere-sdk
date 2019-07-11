@@ -652,41 +652,7 @@ static void fmFreeFont( fmFont *font )
   return;
 }
 
-fmFont *fmAddFont( fmManager *fm, const char *path, int glyphpaddingwidth )
-{
-  fmFont *font;
-  FILE *fp = 0;
-  int datasize = 0;
-  unsigned char *data = 0;
-  unsigned int count;
-
-  /* Read in the font data */
-  fp = fopen( path, "rb" );
-  if( !( fp ) )
-    goto error;
-  fseek( fp, 0, SEEK_END );
-  datasize = (int)ftell( fp );
-  fseek( fp, 0, SEEK_SET );
-  data = (unsigned char *)malloc( datasize );
-  if( !( data ) )
-    goto error;
-  count = fread( data, 1, datasize, fp );
-  if(!count)
-    goto error;
-  fclose( fp );
-  fp = 0;
-  font = fmAddFontData( fm, data, datasize, glyphpaddingwidth );
-  if( !( font ) )
-    free( data );
-  return font;
-
-  error:
-  if( data )
-    free( data );
-  if( fp )
-    fclose( fp );
-  return 0;
-}
+fmFont *fmAddFont( fmManager *fm, const char *path, int glyphpaddingwidth );
 
 fmFont *fmAddFontData( fmManager *fm, unsigned char *data, int datasize, int glyphpaddingwidth )
 {
