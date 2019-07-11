@@ -197,8 +197,21 @@ public:
             case model:
             {
                Model mdl = (Model)ge;
-               MDManager dm = mgr.perspective3DDM;
-               if(!model)
+               // MDManager dm = mgr.perspective3DDM;
+               if(model)
+               {
+                  if(model.mesh)
+                  {
+                     PrimitiveGroup g = model.mesh.groups.first;
+                     if(g)
+                     {
+                        Material m = g.material;
+                        if(m.opacity != ge.opacity)
+                           m.opacity = ge.opacity;
+                     }
+                  }
+               }
+               else
                {
                   Object object { };
 
@@ -208,7 +221,7 @@ public:
                      // mat.flags.partlyTransparent = true;
                      mat.diffuse = slateGray;
                      mat.specular = slateGray;
-                     mat.opacity = 1.0;// 0.75;
+                     mat.opacity = ge.opacity; //1.0;// 0.75;
                      mat.shader = butterburShader;
                      object.mesh.ApplyMaterial(mat);
                      model = object;
@@ -368,7 +381,8 @@ public:
                Model p3d = (Model)ge;
                Perspective3DManager pm = (Perspective3DManager)dm;
 
-               pm.addModelCommand(model, cTransform);
+               if(p3d.opacity)
+                  pm.addModelCommand(model, cTransform);
                break;
             }
             case multi:
