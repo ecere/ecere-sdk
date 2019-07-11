@@ -34,7 +34,10 @@
 
 #else
 #if defined(_GLES3)
+   //#define GL_GLEXT_PROTOTYPES
+
    #include <GLES3/gl3.h>
+   // #include <GLES3/gl32.h>
 #else
    #include <GLES2/gl2.h>
 #endif
