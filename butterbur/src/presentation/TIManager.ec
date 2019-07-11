@@ -5,6 +5,45 @@ public import IMPORT_STATIC "ecere"
 import "GraphicalElement"
 import "DrawingManager"
 
+#include "fontmanager.h"
+
+#include <stdlib.h>
+
+fmFont *fmAddFont( fmManager *fm, const char *path, int glyphpaddingwidth )
+{
+  fmFont *font;
+  File fp = 0;
+  int datasize = 0;
+  unsigned char *data = 0;
+  unsigned int count;
+
+  /* Read in the font data */
+  fp = FileOpen( path, read );
+  if( !( fp ) )
+    goto error;
+  // fp.Seek( 0, end );
+  datasize = (int)fp.GetSize(); //Tell( );
+  fp.Seek( 0, start );
+  data = (unsigned char *)malloc( datasize );
+  if( !( data ) )
+    goto error;
+  count = fp.Read( data, 1, datasize );
+  if(!count)
+    goto error;
+  delete fp;
+  font = fmAddFontData( fm, data, datasize, glyphpaddingwidth );
+  if( !( font ) )
+    free( data );
+  return font;
+
+  error:
+  if( data )
+    free( data );
+  if( fp )
+    delete fp;
+  return 0;
+}
+
 public class TIManager : DrawingManager
 {
    int width, height;
@@ -29,8 +68,8 @@ public class TIManager : DrawingManager
 
    void addTextCommand(const String text, GEFont font, float opacity, Alignment2D alignment, float * transform)
    {
-      LWFMFont fmFont = fontManager.getFont(font);
-      if(fmFont)
+      LWFMFont lwfmFont = fontManager.getFont(font);
+      if(lwfmFont)
       {
          ColorAlpha color { (byte)(opacity * (font ? font.opacity : 1.0f) * 255), font ? font.color : black };
          ColorAlpha outlineColor { (byte)(opacity * (font ? font.outline.opacity : 1.0f) * 255), font ? font.outline.color : white };
@@ -38,7 +77,7 @@ public class TIManager : DrawingManager
          LWFMHorizontalAlignment hAlign = (LWFMHorizontalAlignment)alignment.horzAlign;
          LWFMVerticalAlignment vAlign = alignment.vertAlign == top ? top : alignment.vertAlign == middle ? middle : bottom ;
 
-         fontManager.setState(fmFont, (font ? font.size : 12) * 96 / 72, { hAlign, vAlign }, 0, paddingWidth);
+         fontManager.setState(lwfmFont, (font ? font.size : 12) * 96 / 72, { hAlign, vAlign }, 0, paddingWidth);
          fontManager.setColor(color);
          fontManager.setOutlineColor(outlineColor);
 
