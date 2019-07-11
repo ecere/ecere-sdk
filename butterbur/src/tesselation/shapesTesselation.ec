@@ -31,6 +31,7 @@ struct TesselatedShape
       delete ixFill;
       delete ix;
       delete points;
+      vCount = 0, fillCount = 0, ixCount = 0;
    }
 
    void tesselate(Shape shp)
@@ -58,7 +59,7 @@ struct TesselatedShape
             Array<Pointf> array = *(Array<Pointf> *)&path.nodes;
             nodes = array.array;
             count = array.count;
-            closed = path.closed;
+            closed = path.closed && count >= 3;
             needTesselation = closed && path.needTesselation;
             break;
          }
