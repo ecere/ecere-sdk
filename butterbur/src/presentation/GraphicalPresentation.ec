@@ -410,7 +410,7 @@ public:
       tx = x - (float)(transform.position.x + ge.transform.position.x);
       ty = y - (float)(transform.position.y + ge.transform.position.y);
 
-      switch (geType)
+      switch(geType)
       {
          case shape: return shapeContainsPoint(tx, ty);
          case image: return imageContainsPoint(tx, ty);
@@ -529,8 +529,7 @@ static bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
    int s1 = Sgn(signedArea(p, v1, v2));
    int s2 = Sgn(signedArea(p, v2, v3));
    int s3 = Sgn(signedArea(p, v3, v1));
-
-   return s1 == s2 && s2 == s3;
+   return s1 && s1 == s2 && s2 == s3;
 }
 
 #if 0
