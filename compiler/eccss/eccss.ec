@@ -24,6 +24,38 @@ public class CMSSStyleSheet
 public:
    StylingRuleBlockList list;
 
+   // Returns first rule block intersecting mask and containing name
+   StylingRuleBlock findRule(StylesMask mask, const String name)
+   {
+      if(this && list)
+      {
+         for(b : list)
+         {
+            StylingRuleBlock block = b.findRule(mask, name);
+            if(block)
+               return block;
+         }
+      }
+      return null;
+   }
+
+   bool changeStyle(const String id, StylesMask mask, FieldValue value)
+   {
+      bool result = false;
+      StylingRuleBlock block = findRule(mask, id);
+      if(block)
+      {
+         CMSSMemberInit mInit = block.styles.findStyle(mask);
+         if(mInit)
+         {
+            delete mInit.initializer;
+            mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            result = true;
+         }
+      }
+      return result;
+   }
+
    private CMSSStyleSheet bind(ECCSSEvaluator evaluator, Class stylesClass, const String name)
    {
       CMSSStyleSheet result = null;
@@ -114,6 +146,20 @@ public:
             break;
       }
       return list;
+   }
+
+   CMSSMemberInit findStyle(StylesMask mask)
+   {
+      // unbound sheet currently doesn't have mask set...
+      // if(mask & this.mask)
+      {
+         for(e : this)
+         {
+            CMSSMemberInit mInit = e.findStyle(mask);
+            if(mInit) return mInit;
+         }
+      }
+      return null;
    }
 }
 
@@ -366,6 +412,48 @@ public:
          if(lexer.peekToken().type == '}')
             lexer.readToken();
          return block;
+      }
+      return null;
+   }
+
+   // Returns first rule block intersecting mask and containing name
+   StylingRuleBlock findRule(StylesMask mask, const String name)
+   {
+      if(id && id.string && name && strcmpi(id.string, name))
+         return null;
+
+      // unbound sheet currently doesn't have mask set...
+      // if(!(this.mask & mask)) return null;
+
+      if(styles && styles.GetCount())
+      {
+         //return this;
+         for(s : styles)
+         {
+            for(m : s)
+            {
+               CMSSMemberInit mInit = m;
+               if(mInit.identifiers)
+               {
+                  for(i : mInit.identifiers)
+                  {
+                     // FIXME: hardcoded...
+                     if(i.string && !strcmpi(i.string, "opacity"))
+                        return this;
+                  }
+               }
+            }
+         }
+      }
+
+      if(nestedRules)
+      {
+         for(b : nestedRules)
+         {
+            StylingRuleBlock block = b.findRule(mask, name);
+            if(block)
+               return b;
+         }
       }
       return null;
    }
