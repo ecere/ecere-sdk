@@ -15,10 +15,12 @@ public class Presentation
    // TODO: Review whether we should use LinkElement here to have link in place
 
    bool visible;
+   bool pickable;
    bool needUpdate;
    bool visibilityUpdate;
    needUpdate = true;
    visible = true;
+   pickable = true;
    visibilityUpdate = true;
 
    //int commandsCount; //Number of draw commands this takes to draw
@@ -88,6 +90,8 @@ public class Presentation
       }
       get { return visible; }
    }
+
+   public property bool pickable { set { pickable = value; } get { return pickable; } }
 }
 
 public struct Boxf
@@ -149,7 +153,7 @@ public:
       for(o : subElements)
       {
          Presentation p = o;
-         if(p.rdrFlags & flags)
+         if(p.visible && (p.rdrFlags & flags))
             p.prepareDraw(flags, dm, data);
       }
    }
@@ -161,7 +165,8 @@ public:
       while(it.Prev() && numResults < maxResults)
       {
          Presentation p = it.data;
-         numResults += p.pick(region, maxResults, results + numResults);
+         if(p.pickable && p.visible)
+            numResults += p.pick(region, maxResults, results + numResults);
       }
       return numResults;
    }
