@@ -272,6 +272,8 @@ class LWFontManager
 
 #if defined(__LUMIN__)
             sprintf(tmp, "data/%s", baseName);
+#elif defined(__ANDROID__)
+            sprintf(tmp, ":fonts/%s", baseName);
 #else
             strcpy(tmp, baseName);
 #endif
