@@ -819,7 +819,11 @@ static void dmFlushDrawImages( dmContext *dm )
   dm->drawbufferindex = ( dm->drawbufferindex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
   glBindBuffer( GL_ARRAY_BUFFER, drawbuffer->vbo );
 #if ENABLE_GL_MAPBUF
+   #ifdef _GLES3
+  vbovertex = glMapBufferRange( GL_ARRAY_BUFFER, 0, sizeof(dmDrawVertex)* drawbuffer->vertexalloc, GL_MAP_WRITE_BIT);
+   #else
   vbovertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+   #endif
 #else
   vbovertex = vboStorage = malloc(sizeof(dmDrawVertex)* drawbuffer->vertexalloc);
 #endif
@@ -879,7 +883,11 @@ printf( " Flush %d images\n", (int)dm->imagebuffercount );
         dm->drawbufferindex = ( dm->drawbufferindex + 1 ) % DM_CONTEXT_DRAW_BUFFER_COUNT;
         glBindBuffer( GL_ARRAY_BUFFER, drawbuffer->vbo );
 #if ENABLE_GL_MAPBUF
+   #if _GLES3
+        vbovertex = glMapBufferRange( GL_ARRAY_BUFFER, 0, sizeof(dmDrawVertex)* drawbuffer->vertexalloc, GL_MAP_WRITE_BIT);
+   #else
         vbovertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+   #endif
 #else
         vbovertex = vboStorage = malloc(sizeof(dmDrawVertex)* drawbuffer->vertexalloc);
 #endif

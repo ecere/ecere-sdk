@@ -245,7 +245,11 @@ public class DrawManager
          glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 #if ENABLE_GL_MAPBUF
+   #ifdef _GLES3
+         vboVertex = glMapBufferRange( GL_ARRAY_BUFFER, 0, drawBuffer->vertexAlloc * sizeof(DMDrawVertex), GL_MAP_WRITE_BIT);
+   #else
          vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+   #endif
 #else
          vboVertex = vboStorage = new DMDrawVertex[drawBuffer->vertexAlloc];
 #endif
@@ -296,7 +300,11 @@ public class DrawManager
                   drawBufferIndex %= DRAW_BUFFER_COUNT;
                   glBindBuffer( GL_ARRAY_BUFFER, drawBuffer->vbo.buffer );
 #if ENABLE_GL_MAPBUF
+   #ifdef _GLES3
+                  vboVertex = glMapBufferRange( GL_ARRAY_BUFFER, 0, drawBuffer->vertexAlloc * sizeof(DMDrawVertex), GL_MAP_WRITE_BIT );
+   #else
                   vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+   #endif
 #else
                   vboVertex = vboStorage;
 #endif
@@ -384,7 +392,6 @@ public:
    bool init()
    {
       int drawBufferIndex;
-      uint vertexSize = sizeof(DMDrawVertex);
 
       imageBufferCount = 0;
       imageBufferSize = 4096;
@@ -397,8 +404,8 @@ public:
          drawBuffer->glType = GL_FLOAT;
          drawBuffer->vertexCount = 0;
          drawBuffer->vertexAlloc = DRAW_BUFFER_VERTEX_ALLOC;
-         drawBuffer->vbo.allocate(drawBuffer->vertexAlloc * vertexSize, null, dynamicDraw);
-         drawBuffer->vertexBuffer = new byte[drawBuffer->vertexAlloc * vertexSize];
+         drawBuffer->vbo.allocate(drawBuffer->vertexAlloc * sizeof(DMDrawVertex), null, dynamicDraw);
+         drawBuffer->vertexBuffer = new byte[drawBuffer->vertexAlloc * sizeof(DMDrawVertex)];
       }
 
       updateCount = 0;
