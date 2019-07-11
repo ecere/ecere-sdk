@@ -1402,6 +1402,30 @@ public:
          lexer.readToken();
       return list;
    }
+
+   CMSSMemberInit findStyle(StylesMask mask)
+   {
+      // unbound sheet currently doesn't have mask set...
+      //if(mask & stylesMask)
+      {
+         for(e : this)
+         {
+            CMSSMemberInit mInit = e;
+            // if(mInit.stylesMask & mask)
+            //   return mInit;
+            if(mInit.identifiers)
+            {
+               for(i : mInit.identifiers)
+               {
+                  // FIXME: hardcoded...
+                  if(i.string && !strcmpi(i.string, "opacity"))
+                     return mInit;
+               }
+            }
+         }
+      }
+      return null;
+   }
 }
 
 public class CMSSInitializer : CMSSNode
