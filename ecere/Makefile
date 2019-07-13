@@ -98,6 +98,7 @@ _ECSOURCES1 = \
 	src/gfx/bitmaps/PCXFormat.ec \
 	src/gfx/bitmaps/PNGFormat.ec \
 	src/gfx/bitmaps/RGBFormat.ec \
+	src/gfx/bitmaps/ETC2Format.ec \
 	src/gfx/drivers/gl3/glab.ec \
 	src/gfx/drivers/gl3/immediate.ec \
 	src/gfx/drivers/gl3/matrixStack.ec \
@@ -791,6 +792,9 @@ $(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
 $(OBJ)RGBFormat.sym: src/gfx/bitmaps/RGBFormat.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.sym
 
+$(OBJ)ETC2Format.sym: src/gfx/bitmaps/ETC2Format.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/ETC2Format.ec -o $(OBJ)ETC2Format.sym
+
 $(OBJ)glab.sym: src/gfx/drivers/gl3/glab.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.sym
 
@@ -1247,6 +1251,9 @@ $(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
 
 $(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/RGBFormat.ec -o $(OBJ)RGBFormat.c -symbols $(OBJ)
+
+$(OBJ)ETC2Format.c: src/gfx/bitmaps/ETC2Format.ec $(OBJ)ETC2Format.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/bitmaps/ETC2Format.ec -o $(OBJ)ETC2Format.c -symbols $(OBJ)
 
 $(OBJ)glab.c: src/gfx/drivers/gl3/glab.ec $(OBJ)glab.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.c -symbols $(OBJ)
@@ -1713,6 +1720,9 @@ $(OBJ)PNGFormat.o: $(OBJ)PNGFormat.c
 
 $(OBJ)RGBFormat.o: $(OBJ)RGBFormat.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)RGBFormat.c -o $(OBJ)RGBFormat.o
+
+$(OBJ)ETC2Format.o: $(OBJ)ETC2Format.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)ETC2Format.c -o $(OBJ)ETC2Format.o
 
 $(OBJ)harfbuzz-freetype.o: src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/unicode/harfbuzz-freetype.c -o $(OBJ)harfbuzz-freetype.o
