@@ -4,13 +4,14 @@ enum GEType { none, shape, text, image, path3D, multi, model };
 
 public enum GraphicalUnit { pixels, meters, feet, percent, points, em, screenInches, screenCM, screenMM };
 
-public enum VAlignment { top, middle, bottom };
-public enum HAlignment { left, center, right };
+public enum VAlignment { unset, top, middle, bottom, baseLine };
+public enum HAlignment { unset, left, center, right };
 
-public struct Alignment2D
+public class Alignment2D : uint32
 {
-   HAlignment horzAlign;
-   VAlignment vertAlign;
+public:
+   HAlignment horzAlign:3;
+   VAlignment vertAlign:3;
 };
 
 public class GEFont : struct   // NOTE: This will likely be renamed to simply Font in next-gen Ecere Graphics

@@ -1,0 +1,198 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "butterbur",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3",
+         "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc",
+         "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText",
+         "$(ECERE_SDK_SRC)/deps/freetype-2.3.12/include",
+         "$(ECERE_SDK_SRC)/deps/libtess"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "butterbur",
+      "Libraries" : [
+         "ecere",
+         "freetype"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m",
+               "GL"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "opengl32"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "deps",
+         "Files" : [
+            {
+               "Folder" : "libtess",
+               "Files" : [
+                  "$(ECERE_SDK_SRC)/deps/libtess/dict.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/dict.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/dictList.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/geom.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/geom.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/gluos.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/memalloc.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/mesh.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/normal.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/normal.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/priorityq.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/priorityq.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/priorityqSort.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/render.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/render.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/sweep.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/sweep.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/tess.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/tess.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/tessmono.c",
+                  "$(ECERE_SDK_SRC)/deps/libtess/tessmono.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/glutess.h",
+                  "$(ECERE_SDK_SRC)/deps/libtess/mesh.c"
+               ]
+            },
+            "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/gl_compat_4_4.h",
+            "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/gl_compat_4_4.c"
+         ]
+      },
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "imagesAndText",
+               "Files" : [
+                  {
+                     "Folder" : "../ecere/src/gfx/newFonts/cc/cc",
+                     "Files" : [
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmhash.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmthread.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/ccstr.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/ccstr.c",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmbitmap.c",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mm.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmatomic.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmhash.c",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mm.c",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/cpuconfig.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmbitmap.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/cchybridsort.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmhashinline.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/cc.c",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/mmhashinternal.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/ccmergesort.h",
+                        "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/cc.h"
+                     ]
+                  },
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/drawmanager.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/drawmanager.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/atlasbuilder.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/img.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/fontrenderer.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/atlasbuilder.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/texturemanager.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/imgdistmap.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/fontmanager.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/texturemanager.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/fontmanager.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/imgdistmap.h",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/fontrenderer.c",
+                  "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText/img.c"
+               ]
+            },
+            {
+               "Folder" : "opengl",
+               "Files" : [
+                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/ButterburShader.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/GLMultiDraw.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/VersionedShader.ec"
+               ]
+            },
+            {
+               "Folder" : "tesselation",
+               "Files" : [
+                  "$(ECERE_SDK_SRC)/butterbur/src/tesselation/shapesTesselation.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/tesselation/tesselation.ec"
+               ]
+            },
+            {
+               "Folder" : "presentation",
+               "Files" : [
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/Presentation.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/TIManager.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/DrawingManager.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/AnchoredPresentation.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalPresentation.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalSurface.ec"
+               ]
+            },
+            "$(ECERE_SDK_SRC)/butterbur/src/GraphicalElement.ec",
+            "$(ECERE_SDK_SRC)/butterbur/src/GraphicalStyle.ec"
+         ]
+      },
+      {
+         "Folder" : "../compiler/eccss/eccss",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/compiler/eccss/astNode.ec",
+            "$(ECERE_SDK_SRC)/compiler/eccss/lexing.ec",
+            "$(ECERE_SDK_SRC)/compiler/eccss/expressions.ec",
+            "$(ECERE_SDK_SRC)/compiler/eccss/eccss.ec"
+         ]
+      },
+      "butterbur.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
+      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+   ]
+}
