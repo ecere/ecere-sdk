@@ -15,7 +15,7 @@ public struct ECCSSEvaluator
 
    // NOTE: These are quite likely to get ridden of with more generic code...
    virtual String ::stringFromMask(StylesMask mask);
-   virtual StylesMask ::maskFromString(const String s);
+   virtual StylesMask ::maskFromString(const String s, Class c);
    virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask);
 };
 
@@ -533,7 +533,7 @@ public:
                   block.nestedRules.mask |= nb.mask;
                }
             }
-            mask |= block.nestedRules.mask;
+            if(block.nestedRules) mask |= block.nestedRules.mask;
          }
          block.mask = mask;
          result = block;
