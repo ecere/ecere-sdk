@@ -1051,6 +1051,7 @@ public:
             value.i = 0;
             setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags);
          }
+         expType = c;
       }
       else if(computeType == runtime)
       {
@@ -1209,6 +1210,7 @@ public:
 
    CMSSTokenType assignType;
    Class destType;
+   Class expType; //test
    StylesMask stylesMask;
    DataMember dataMember;
    uint offset;
@@ -1329,7 +1331,9 @@ public:
          offset = computeMemberOffset(dataMember, offset);
          this.dataMember = dataMember;
 
-         stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr) : 0;
+         //PrintLn(dataMember.name);
+         //PrintLn(dataMember._class.name);
+         stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr, dataMember._class) : 0;
          if(initializer._class == class(CMSSInitExp))
          {
             CMSSInitExp initExp = (CMSSInitExp)initializer;
@@ -1340,14 +1344,16 @@ public:
                e.destType = destType;
                if(e._class == class(CMSSExpInstance))
                   ((CMSSExpInstance)e).stylesMask = stylesMask;
-               //else if(e._class == class(CMSSExpArray))
-                  //((CMSSExpArray)e).stylesMask = stylesMask;
+               else if(e._class == class(CMSSExpArray))
+                  ((CMSSExpArray)e).stylesMask = stylesMask;
+
                flags = e.compute(val, evaluator, preprocessing);
                if(flags.resolved)
                   initExp.exp = simplifyResolved(val, e);
             }
          }
       }
+      expType = c;//test
       return flags;
    }
 
