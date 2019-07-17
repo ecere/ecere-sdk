@@ -129,9 +129,9 @@ public:
 
    ~SQLiteDB()
    {
+#ifndef ECERE_STATIC
       // TOFIX: Doing this here now
       delete lastRegex;
-#ifndef ECERE_STATIC
       regfree(&regex);
 #endif
 
