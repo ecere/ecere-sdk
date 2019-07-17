@@ -111,6 +111,8 @@
             "TargetFileName" : "EDASQLiteStatic",
             "CompilerOptions" : [
                "-mmmx",
+               "-msse",
+               "-msse2",
                "-msse3",
                "-msse4"
             ],

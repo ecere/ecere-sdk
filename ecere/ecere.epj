@@ -214,7 +214,7 @@
       {
          "Name" : "Static",
          "Options" : {
-            "Optimization" : "Size",
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "ECERE_NOSSL"
@@ -227,7 +227,8 @@
                "z",
                "freetype"
             ],
-            "Compress" : true
+            "Compress" : true,
+            "FastMath" : true
          }
       },
       {
@@ -2265,6 +2266,12 @@
                      "Configurations" : [
                         {
                            "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Vanilla",
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }

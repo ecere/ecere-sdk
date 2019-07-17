@@ -10,10 +10,12 @@ public import "EDA"
 
 #define __restrict
 
+#ifndef ECERE_STATIC
 #include <regex.h>
 
 static regex_t regex;
 static String lastRegex;
+#endif
 
 static void sqlite_regexp(sqlite3_context * context, int argc, sqlite3_value ** values)
 {
@@ -125,9 +127,9 @@ public:
 
    ~SQLiteDB()
    {
+#ifndef ECERE_STATIC
       // TOFIX: Doing this here now
       delete lastRegex;
-#ifndef ECERE_STATIC
       regfree(&regex);
 #endif
 
