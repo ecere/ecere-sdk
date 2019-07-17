@@ -1916,7 +1916,7 @@ static bool WriteColorAlpha(File f, Class type, DataValue value, int indent, boo
    return true;
 }
 
-public bool WriteONString(File f, String s, bool eCON, int indent)
+public bool WriteONString(File f, const String s, bool eCON, int indent)
 {
    if(!s)
       f.Puts("null");
@@ -1927,7 +1927,7 @@ public bool WriteONString(File f, String s, bool eCON, int indent)
          int c = 0;
          int b = 0;
          char buffer[1024];
-         char * string = s;
+         const char * string = s;
          char ch;
          while(true)
          {
