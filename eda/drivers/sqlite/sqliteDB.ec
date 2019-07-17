@@ -84,7 +84,10 @@ public:
    {
       SQLiteDB result = null;
       sqlite3 * db;
-      SQLiteResult r = (SQLiteResult)sqlite3_open_v2(path, &db, readOnly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_READWRITE | (create ? SQLITE_OPEN_CREATE : 0)), null);
+      bool isArchive = path[0] == '<' || path[0] == ':';
+      SQLiteResult r = (SQLiteResult)sqlite3_open_v2(path, &db,
+         readOnly || isArchive ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_READWRITE | (create ? SQLITE_OPEN_CREATE : 0)),
+         isArchive ? "ecere" : null);
       if(r == ok)
       {
          result = eInstance_New(_class ? _class : class(SQLiteDB));
@@ -244,4 +247,152 @@ public:
          default:      value = { { nil } };                                   break;
       }
    }
+}
+
+// Virtual File System to access SQLite databases inside Ecere archives
+static int ecereClose(sqlite3_file *pFile)
+{
+   File f = *(File *)(pFile+1);
+   delete f;
+   return SQLITE_OK;
+}
+
+static int ecereRead(sqlite3_file *pFile, void *zBuf, int iAmt, sqlite_int64 iOfst)
+{
+   int result = SQLITE_IOERR_READ;
+   File f = *(File *)(pFile+1);
+   if(f.Seek(iOfst, start))
+   {
+      int nRead = f.Read(zBuf, 1, iAmt);
+      if(nRead == iAmt)
+         result = SQLITE_OK;
+      else if(nRead >= 0)
+      {
+         if(nRead < iAmt)
+            memset((char*)zBuf + nRead, 0, iAmt - nRead);
+         result = SQLITE_IOERR_SHORT_READ;
+      }
+   }
+   return result;
+}
+
+static int ecereWrite(sqlite3_file *pFile, const void *zBuf, int iAmt, sqlite_int64 iOfst) { return SQLITE_IOERR_WRITE; }
+static int ecereTruncate(sqlite3_file *pFile, sqlite_int64 size) { return SQLITE_IOERR_TRUNCATE; }
+static int ecereSync(sqlite3_file *pFile, int flags) { return SQLITE_OK; }
+static int ecereFileSize(sqlite3_file *pFile, sqlite_int64 *pSize)
+{
+   File f = *(File *)(pFile+1);
+   *pSize = f.GetSize();
+   return SQLITE_OK;
+}
+
+static int ecereLock(sqlite3_file *pFile, int eLock) { return SQLITE_OK; }
+static int ecereUnlock(sqlite3_file *pFile, int eLock) { return SQLITE_OK; }
+static int ecereCheckReservedLock(sqlite3_file *pFile, int *pResOut) { *pResOut = 0; return SQLITE_OK; }
+static int ecereFileControl(sqlite3_file *pFile, int op, void *pArg) { return SQLITE_NOTFOUND; }
+static int ecereSectorSize(sqlite3_file *pFile) { return 0; }
+static int ecereDeviceCharacteristics(sqlite3_file *pFile) { return 0; }
+
+static int ecereOpen(sqlite3_vfs *pVfs, const char *zName, sqlite3_file *pFile, int flags, int *pOutFlags)
+{
+   int result = SQLITE_IOERR;
+   static const sqlite3_io_methods ecereIO =
+   {
+      1,
+      ecereClose,
+      ecereRead,
+      ecereWrite,
+      ecereTruncate,
+      ecereSync,
+      ecereFileSize,
+      ecereLock,
+      ecereUnlock,
+      ecereCheckReservedLock,
+      ecereFileControl,
+      ecereSectorSize,
+      ecereDeviceCharacteristics
+   };
+   if(zName)
+   {
+      File * fp = (File *)(pFile+1);
+      *fp = FileOpen(zName, read);
+      if(*fp)
+      {
+         result = SQLITE_OK;
+         if( pOutFlags )
+            *pOutFlags = SQLITE_OPEN_EXCLUSIVE | SQLITE_OPEN_READONLY;
+         pFile->pMethods = &ecereIO;
+      }
+      else
+         result = SQLITE_CANTOPEN;
+   }
+   return result;
+}
+
+static int ecereDelete(sqlite3_vfs *pVfs, const char *zPath, int dirSync)
+{
+  return SQLITE_IOERR_DELETE;
+}
+
+static int ecereAccess(sqlite3_vfs *pVfs, const char *zPath, int flags, int *pResOut)
+{
+  *pResOut = FileExists(zPath) ? 1 : 0;
+  return SQLITE_OK;
+}
+
+static int ecereFullPathname(sqlite3_vfs *pVfs, const char *zPath, int nPathOut, char *zPathOut)
+{
+  char zDir[MAX_FILENAME];
+  zDir[0] = 0;
+  PathCat(zDir, zPath);
+  strncpy(zPathOut, zDir, nPathOut-1);
+  zPathOut[nPathOut-1] = 0;
+  return SQLITE_OK;
+}
+
+static void *ecereDlOpen(sqlite3_vfs *pVfs, const char *zPath) { return 0; }
+static void ecereDlError(sqlite3_vfs *pVfs, int nByte, char *zErrMsg)
+{
+  sqlite3_snprintf(nByte, zErrMsg, "Loadable extensions are not supported");
+  zErrMsg[nByte-1] = '\0';
+}
+static void (*ecereDlSym(sqlite3_vfs *pVfs, void *pH, const char *z))(void) { return 0; }
+static void ecereDlClose(sqlite3_vfs *pVfs, void *pHandle) { }
+static int ecereRandomness(sqlite3_vfs *pVfs, int nByte, char *zByte) { return SQLITE_OK; }
+
+static int ecereSleep(sqlite3_vfs *pVfs, int nMicro)
+{
+   Sleep(nMicro / 1000000.0);
+   return nMicro;
+}
+
+static int ecereCurrentTime(sqlite3_vfs *pVfs, double *pTime)
+{
+  *pTime = GetTime();
+  return SQLITE_OK;
+}
+
+__on_register_module()
+{
+   static sqlite3_vfs ecereVFS =
+   {
+      1,
+      sizeof(sqlite3_file) + sizeof(File),
+      MAX_FILENAME-1,
+      0,
+      "ecere",
+      0,
+      ecereOpen,
+      ecereDelete,
+      ecereAccess,
+      ecereFullPathname,
+      ecereDlOpen,
+      ecereDlError,
+      ecereDlSym,
+      ecereDlClose,
+      ecereRandomness,
+      ecereSleep,
+      ecereCurrentTime
+   };
+   sqlite3_vfs_register(&ecereVFS, 0);
 }
