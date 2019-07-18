@@ -299,6 +299,9 @@ class Perspective3DManager : MDManager
 
       m.Multiply3x4(v, viewMatrix);
       addModel(model, m);
+
+      // Reset Perspective3DManager view matrix!!
+      glmsLoadMatrixd(viewMatrix.array);
       // Reset Perspective3DManager shader states
       butterburShader.setSimpleMaterial(white, false);
       butterburShader.textureArray(true);
