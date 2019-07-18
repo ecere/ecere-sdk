@@ -315,8 +315,10 @@ private:
          {
             result = GetMap(type, (Map *)&array);
          }
-         else
+         else if(!type || eClass_IsDerived(type, class(Container)))
             result = GetArray(type ? type : class(Array), &array);
+         else
+            result = typeMismatch;
 
          if(array) type = array._class;
 
