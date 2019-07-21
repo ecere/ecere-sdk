@@ -342,12 +342,13 @@ public:
    property Module module { get { return itn.module; } set { itn.module = value; }  }
    property bool ecereCOM { get { return itn.ecereCOM; } set { itn.ecereCOM = value; }  }
    IterNamespace itn { };
+   BlackWhiteList list;
    Class cl;
    property Class { get { return cl; } }
    void reset() { cl = null; _it = null; }
    Class next(ClassFilter filter)
    {
-      while(_next() && !filter.match(((Class)_it.data).type));
+      while(_next() && !filter.match(((Class)_it.data).type) && list.match(((Class)_it.data).name));
       cl = _it ? _it.data : null;
       return cl;
    }

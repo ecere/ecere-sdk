@@ -1,4 +1,4 @@
-.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen bindingsgen bindingsgenc bindingsgenpy bindings bindingsc bindingspy ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
+.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 
 _CF_DIR =
 
@@ -180,8 +180,14 @@ else
  XOBJSODIR := $(XOBJBINDIR)
 endif
 
-all: prepbinaries ide epj2make bgen documentor eda codeguard ecereaudio
+all: prepbinaries bgen
+ifndef ECERE_PYTHON_PACKAGE
+all: epj2make ide documentor
+endif
+all: eda codeguard ecereaudio
 	@$(call echo,The Ecere SDK is fully built.)
+
+include Makefile.bindings
 
 outputdirs:
 	$(call mkdir,$(OBJDIR))
@@ -310,24 +316,6 @@ bgen: prepbinaries
 	@$(call echo,Building bgen...)
 	+cd bgen && $(_MAKE)
 
-bindingsgen: $(BINARIES)
-	+cd bindings && $(_MAKE) gen
-
-bindingsgenc: $(BINARIES)
-	+cd bindings && $(_MAKE) genc
-
-bindingsgenpy: $(BINARIES)
-	+cd bindings && $(_MAKE) genpy
-
-bindings: $(BINARIES)
-	+cd bindings && $(_MAKE)
-
-bindingsc: $(BINARIES)
-	+cd bindings && $(_MAKE) c
-
-bindingspy: $(BINARIES)
-	+cd bindings && $(_MAKE) py
-
 ecereaudio: prepbinaries
 ifneq ($(ECERE_AUDIO),n)
 	@$(call echo,Building EcereAudio...)
@@ -440,7 +428,6 @@ cleantarget:
 	+cd epj2make && $(_MAKE) cleantarget
 	+cd compiler/libec2 && $(_MAKE) cleantarget
 	+cd bgen && $(_MAKE) cleantarget
-	+cd bindings && $(_MAKE) cleantarget
 	+cd ide && $(_MAKE) cleantarget
 	+cd installer && $(_MAKE) cleantarget
 ifneq ($(ECERE_AUDIO),n)
@@ -462,7 +449,7 @@ installer:
 	@$(call echo,The Ecere SDK Windows Installer is fully built.)
 endif
 
-clean: emptyoutput
+clean: emptyoutput bindingsclean
 ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) clean
 endif
@@ -472,7 +459,6 @@ endif
 	+cd epj2make && $(_MAKE) clean
 	+cd compiler/libec2 && $(_MAKE) clean
 	+cd bgen && $(_MAKE) clean
-	+cd bindings && $(_MAKE) clean
 	+cd ide && $(_MAKE) clean
 	+cd documentor && $(_MAKE) clean
 ifneq ($(ECERE_AUDIO),n)
@@ -484,7 +470,7 @@ endif
 	+cd eda && $(_MAKE) clean
 	@$(call echo,Done.)
 
-realclean:
+realclean: bindingsrealclean
 ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) realclean
 endif
@@ -494,7 +480,6 @@ endif
 	+cd epj2make && $(_MAKE) realclean
 	+cd compiler/libec2 && $(_MAKE) realclean
 	+cd bgen && $(_MAKE) realclean
-	+cd bindings && $(_MAKE) realclean
 	+cd ide && $(_MAKE) realclean
 	+cd documentor && $(_MAKE) realclean
 ifneq ($(ECERE_AUDIO),n)
@@ -507,20 +492,22 @@ endif
 	$(call rmr,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
-wipeclean:
+wipeclean: bindingswipeclean
 	$(call rmr,obj/)
 	+cd deps && $(_MAKE) wipeclean
 	+cd ecere && $(_MAKE) wipeclean
 	+cd compiler && $(_MAKE) wipeclean
 	+cd ear && $(_MAKE) wipeclean
 	+cd epj2make && $(_MAKE) wipeclean
+	+cd compiler/libec2 && $(_MAKE) wipeclean
+	+cd bgen && $(_MAKE) wipeclean
 	+cd ide && $(_MAKE) wipeclean
 	+cd documentor && $(_MAKE) wipeclean
 	+cd audio && $(_MAKE) wipeclean
 	+cd eda && $(_MAKE) wipeclean
 	@$(call echo,Done.)
 
-distclean:
+distclean: bindingsdistclean
 	$(_MAKE) -f Cleanfile distclean distclean_all_subdirs
 	@$(call echo,Done.)
 
@@ -540,6 +527,7 @@ BINARIES = \
 	compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) \
 	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E) \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
+	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
 
 ifdef EDASQLite
@@ -547,13 +535,12 @@ BINARIES += \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
 endif
 
+ifndef ECERE_PYTHON_PACKAGE
 BINARIES += \
 	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E) \
-	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
 	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E) \
-	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E) \
-	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV) \
-	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
+	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E)
+endif
 
 ifneq ($(ECERE_AUDIO),n)
 BINARIES += audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV)
@@ -653,14 +640,16 @@ endif
 endif
 endif
 
-	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
 	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJBINDIR))
-	$(call cp,epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E),$(OBJBINDIR))
 	$(call cp,bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E),$(OBJBINDIR))
+ifndef ECERE_PYTHON_PACKAGE
+	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
+	$(call cp,epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E),$(OBJBINDIR))
 	$(call cp,documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E),$(OBJBINDIR))
+endif
 ifdef CodeGuard
 	$(call cp,codeGuard/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/CodeGuard$(E),$(OBJBINDIR))
 endif

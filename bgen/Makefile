@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean
+.PHONY: all objdir cleantarget clean realclean wipeclean distclean
 
 # CORE VARIABLES
 
@@ -53,6 +53,7 @@ _ECSOURCES = \
 	src/c/cHeader.ec \
 	src/c/cCode.ec \
 	src/cpp/genCPP.ec \
+	src/cpp/cppHardcoded.ec \
 	src/cs/genCSharp.ec \
 	src/java/genJava.ec \
 	src/py/genPython.ec \
@@ -104,6 +105,7 @@ RESOURCES = \
 	src/c/c_header_ec_macros.src \
 	src/c/c_header_ec_hardcoded.src \
 	src/c/c_header_ec_hardcoded_after.src \
+	src/c/c_make.src \
 	src/py/cffi_hardcode_ec_begin.src \
 	src/py/cffi_hardcode_ec_end.src \
 	src/py/py_functions_ec_begin.src \
@@ -112,7 +114,10 @@ RESOURCES = \
 	src/py/py_hardcode_array.src \
 	src/py/py_hardcode_container.src \
 	src/py/py_hardcode_guiapplication.src \
-	src/py/py_hardcode_module.src
+	src/py/py_hardcode_module.src \
+	src/cpp/cpp_header_open.src \
+	src/cpp/cpp_header_close.src \
+	src/cpp/cpp_header_ec_macros.src
 
 ifdef USE_RESOURCES_EAR
 RESOURCES_EAR = $(OBJ)resources.ear
@@ -159,8 +164,9 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 ifdef USE_RESOURCES_EAR
 $(RESOURCES_EAR): $(RESOURCES) | objdir
-	$(EAR) aw$(EARFLAGS) $(RESOURCES_EAR) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src "src/c"
+	$(EAR) aw$(EARFLAGS) $(RESOURCES_EAR) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src src/c/c_make.src "src/c"
 	$(EAR) aw$(EARFLAGS) $(RESOURCES_EAR) src/py/cffi_hardcode_ec_begin.src src/py/cffi_hardcode_ec_end.src src/py/py_functions_ec_begin.src src/py/py_functions_ec_end.src src/py/py_hardcode_application.src src/py/py_hardcode_array.src src/py/py_hardcode_container.src src/py/py_hardcode_guiapplication.src src/py/py_hardcode_module.src "src/py"
+	$(EAR) aw$(EARFLAGS) $(RESOURCES_EAR) src/cpp/cpp_header_open.src src/cpp/cpp_header_close.src src/cpp/cpp_header_ec_macros.src "src/cpp"
 endif
 
 $(SYMBOLS): | objdir
@@ -172,8 +178,9 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 ifndef USE_RESOURCES_EAR
-	$(EAR) aw$(EARFLAGS) $(TARGET) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src "src/c"
+	$(EAR) aw$(EARFLAGS) $(TARGET) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src src/c/c_make.src "src/c"
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/py/cffi_hardcode_ec_begin.src src/py/cffi_hardcode_ec_end.src src/py/py_functions_ec_begin.src src/py/py_functions_ec_end.src src/py/py_hardcode_application.src src/py/py_hardcode_array.src src/py/py_hardcode_container.src src/py/py_hardcode_guiapplication.src src/py/py_hardcode_module.src "src/py"
+	$(EAR) aw$(EARFLAGS) $(TARGET) src/cpp/cpp_header_open.src src/cpp/cpp_header_close.src src/cpp/cpp_header_ec_macros.src "src/cpp"
 endif
 else
 ifdef WINDOWS_HOST
@@ -216,6 +223,9 @@ $(OBJ)cCode.sym: src/c/cCode.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)genCPP.sym: src/cpp/genCPP.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
+$(OBJ)cppHardcoded.sym: src/cpp/cppHardcoded.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)genCSharp.sym: src/cs/genCSharp.ec
@@ -286,6 +296,9 @@ $(OBJ)cCode.c: src/c/cCode.ec $(OBJ)cCode.sym | $(SYMBOLS)
 $(OBJ)genCPP.c: src/cpp/genCPP.ec $(OBJ)genCPP.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)cppHardcoded.c: src/cpp/cppHardcoded.ec $(OBJ)cppHardcoded.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)genCSharp.c: src/cs/genCSharp.ec $(OBJ)genCSharp.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -352,6 +365,9 @@ $(OBJ)cCode$(O): $(OBJ)cCode.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)genCPP$(O): $(OBJ)genCPP.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
+$(OBJ)cppHardcoded$(O): $(OBJ)cppHardcoded.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)genCSharp$(O): $(OBJ)genCSharp.c
@@ -427,6 +443,9 @@ endif
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
+
+wipeclean:
+	$(call rmr,obj/)
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

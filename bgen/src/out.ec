@@ -106,7 +106,7 @@ void sectionComment_ftr(DynamicString out)
    out.concatx(" ", slashes(32, 0));
 }
 
-void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile, Map<String, String> vars, bool noComments)
+bool sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
 {
    File f = FileOpen(pathToFile, read);
    if(f)
@@ -132,6 +132,7 @@ void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
          }
          if(line[0] && vars)
          {
+            bool skipNewLine = false;
             char * end, * search, * open, * close;
             end = search = line;
             while(*end && (open = strstr(search, "#(")) && (close = strstr(open + 2, ")#")) && (search = open + 2))
@@ -147,25 +148,31 @@ void sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
                      out.print(part);
                      out.print(val);
                      end = search = close + 2;
+                     skipNewLine = open == line && end[0] == '\0' && strchr(val, '\n');
                   }
                   else
                      *close = ')';
                }
             }
-            out.println(end);
+            if(!skipNewLine)
+               out.println(end);
          }
          else if(line[0] || !comment)
             out.println(line);
       }
       delete f;
+      return true;
    }
+   else if(!quiet)
+      Print("warning: sourceFileProcessToDynamicString was unable to open ", pathToFile);
+   return false;
 }
 
 // there should be at least a partial common interface between a file and a string class
 // the sourceFileProcessToFile function is a essentially duplicate of sourceFileProcessToDynamicString function
-void sourceFileProcessToFile(File out, const char * pathToFile, Map<String, String> vars, bool noComments)
+bool sourceFileProcessToFile(File out, File in, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
 {
-   File f = FileOpen(pathToFile, read);
+   File f = in ? in : FileOpen(pathToFile, read);
    if(f)
    {
       char line[4096];
@@ -189,6 +196,7 @@ void sourceFileProcessToFile(File out, const char * pathToFile, Map<String, Stri
          }
          if(line[0] && vars)
          {
+            bool skipNewLine = false;
             char * end, * search, * open, * close;
             end = search = line;
             while(*end && (open = strstr(search, "#(")) && (close = strstr(open + 2, ")#")) && (search = open + 2))
@@ -204,16 +212,22 @@ void sourceFileProcessToFile(File out, const char * pathToFile, Map<String, Stri
                      out.Print(part);
                      out.Print(val);
                      end = search = close + 2;
+                     skipNewLine = open == line && end[0] == '\0' && strchr(val, '\n');
                   }
                   else
                      *close = ')';
                }
             }
-            out.PrintLn(end);
+            if(!skipNewLine)
+               out.PrintLn(end);
          }
          else if(line[0] || !comment)
             out.PrintLn(line);
       }
       delete f;
+      return true;
    }
+   else if(!quiet)
+      Print("warning: sourceFileProcessToFile was unable to open ", pathToFile);
+   return false;
 }

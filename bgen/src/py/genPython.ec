@@ -162,7 +162,7 @@ class PythonGen : CGen
                         }
 
                         {
-                           IterAllClass itacl { itn.module = g_.mod };
+                           IterAllClass itacl { itn.module = g_.mod, list = g_.options.classList };
                            while(itacl.next(all))
                            {
                               BProperty p; IterConversion itcn { itacl.cl };
@@ -268,15 +268,9 @@ class PythonGen : CGen
       if(out)
       {
          if(lib.ecere)
-         {
-            String path = new char[MAX_LOCATION];
-            StripLastDirectory(pyFilePath, path);
-            PathCatSlash(path, "pyeC.py");
-            generatePY(out, this, path);
-            delete path;
-         }
+            generatePY(out, this);
          else
-            generatePY(out, this, null);
+            generatePY(out, this);
          delete out;
       }
       out = FileOpen(buildFilePath, write);
@@ -400,8 +394,8 @@ class PythonGen : CGen
       delete buildFileName; buildFileName = CopyString(name);
       delete buildFilePath; buildFilePath = CopyString(path);
       path[len] = 0;
-      strcpy(name, "py");
-      strcat(name, lib.bindingName);
+      //strcpy(name, "py"); strcat
+      strcpy(name, lib.bindingName);
       ChangeExtension(name, "py", name);
       PathCatSlash(path, name);
       if(tmp) strcat(path, ".tmp");
@@ -671,51 +665,29 @@ void processPyClass(PythonGen g, BClass c)
       if(c.isInstance)
          conmsg("check"); // pyHardcodeInstance(out.ds);
       else if(c.isArray)
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_array.src", null, false);
+         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_array.src", null, false, false);
       else if(c.isApplication)
       {
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_application.src", null, false);
-         /*{
-            IterNamespace itn { module = g.mod, ecereCOM = true };
-            while(itn.next())
-            {
-               BClass c; IterClass itc { itn.ns, list = g.options.classList };
-               while((c = itc.next(all)))
-               {
-                  if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
-                        !c.isModule && !c.isApplication && !c.cl.templateClass)
-                     out.ds.printxln("      self.registerClass(", c.name, ", True)");
-               }
-            }
-            itn.cleanup();
-         }*/
+         Map<String, String> sourceProcessorVars { };
+         DynamicString s { };
+         genRegisterClassCalls(s, g, filterClassEcereComExlusions, "      ", "self");
+         sourceProcessorVars["REGISTER_CLASS"] = (String)s.array;
+         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_application.src", sourceProcessorVars, false, false);
+         delete sourceProcessorVars;
+         delete s;
       }
       else if(c.isGuiApplication)
       {
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_guiapplication.src", null, false);
+         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_guiapplication.src", null, false, false);
          conassert(g.lib.ecere == true, "?");
-         // register all normal classes
-         {
-            IterNamespace itn { module = g.mod };
-            while(itn.next())
-            {
-               BClass c; IterClass itc { itn.ns, list = g.options.classList };
-               while((c = itc.next(all)))
-               {
-                  if(c.cl.type == normalClass && !c.isCharPtr && !c.isInstance &&
-                        !c.isModule && !c.isApplication && !c.cl.templateClass) // !c.isWindow
-                     out.ds.printxln("      self.registerClass(", c.name, ", True)");
-               }
-            }
-            itn.cleanup();
-         }
+         genRegisterClassCalls(out.ds, g, filterClassAll, "      ", "self");
          out.ds.println("");
          out.ds.println("      lib.Instance_evolve(rApp, GuiApplication.pyClass_GuiApplication)");
          out.ds.println("      self.impl = rApp[0]");
          out.ds.println("      ffi.cast(\"void **\", ffi.cast(\"char *\", self.impl) + self.impl._class.offset)[0] = self.handle");
       }
       else if(c.isContainer)
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_container.src", null, false);
+         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_container.src", null, false, false);
       else if(c.isWindow && g.lib.ecereCOM)
          ;
       else if(c.cl.type == structClass || c.cl.type == noHeadClass || c.cl.type == bitClass ||
@@ -1070,7 +1042,7 @@ void processPyClass(PythonGen g, BClass c)
                   }
    //#if 0
                   {
-                     IterAllClass itacl { itn.module = g.mod/*module = g.mod*/ };
+                     IterAllClass itacl { itn.module = g.mod, list = g.options.classList };
                      while(itacl.next(all))
                      {
                         BProperty p; IterConversion itcn { itacl.cl };
@@ -1142,7 +1114,7 @@ void processPyClass(PythonGen g, BClass c)
                      }
                      if(name)
                      {
-                        IterAllClass itacl { itn.module = g.mod/*module = g.mod*/ };
+                        IterAllClass itacl { itn.module = g.mod, list = g.options.classList };
                         while(itacl.next(all))
                         {
                            BProperty p; IterConversion itcn { itacl.cl };
@@ -1509,7 +1481,7 @@ void processPyClass(PythonGen g, BClass c)
       if(c.cl.type == normalClass)
       {
          if(c.isModule)
-            sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_module.src", null, false);
+            sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_module.src", null, false, false);
       }
 
       // members and properties
@@ -2898,10 +2870,10 @@ static const char * getTypeZeroValuePy(PythonGen g, Type t, BVariant v)
    return "None"; //return "Error";
 }
 
-static void generatePY(File out, PythonGen g, String path)
+static void generatePY(File out, PythonGen g)
 {
    for(libDep : g.libDeps)
-      out.PrintLn("from py", libDep.bindingName, " import *");
+      out.PrintLn("from ", libDep.bindingName, " import *");
    out.PrintLn("from _py", g.lib.bindingName, " import *");
    if(g.lib.ecereCOM)
    {
@@ -2912,18 +2884,19 @@ static void generatePY(File out, PythonGen g, String path)
       out.PrintLn("app = None");
    }
    if(g.lib.ecereCOM)
-      sourceFileProcessToFile(out, ":src/py/py_functions_ec_begin.src", null, false);
+      sourceFileProcessToFile(out, null, ":src/py/py_functions_ec_begin.src", null, false, false);
 
    //pyNamespaces(out, g);
    //pySortedNamespaces(out, g);
 
-   thatThing(out, g);
+   genPyOutputNodes(out, g);
+   genPyOutputModuleSetupFunc(out, g);
 
    if(g.lib.ecereCOM)
-      sourceFileProcessToFile(out, ":src/py/py_functions_ec_end.src", null, false);
+      sourceFileProcessToFile(out, null, ":src/py/py_functions_ec_end.src", null, false, false);
 }
 
-static void thatThing(File out, PythonGen g)
+static void genPyOutputNodes(File out, PythonGen g)
 {
    AVLTree<UIntPtr> nodes { };
    for(nn : g.bmod.orderedNamespaces)
@@ -2956,36 +2929,45 @@ static void thatThing(File out, PythonGen g)
       }
    }
    delete nodes;
+}
+
+static void genPyOutputModuleSetupFunc(File out, PythonGen g)
+{
+   const String moduleName = g.lib.moduleName;
+   if(!g.lib.ecere && !g.lib.ecereCOM)
    {
-      const String moduleName = g.lib.moduleName;
-      if(!g.lib.ecere && !g.lib.ecereCOM)
+      out.PrintLn("");
+      out.PrintLn("def py", moduleName, "_setup(app):");
+      out.PrintLn("   app.appGlobals.append(globals())");
+      out.PrintLn("   if lib.", moduleName, "_init(app.impl) == ffi.NULL: raise Exception(\"Failed to load library\")");
       {
-         out.PrintLn("");
-         out.PrintLn("def py", moduleName, "_setup(app):");
-         out.PrintLn("   app.appGlobals.append(globals())");
-         out.PrintLn("   if lib.", moduleName, "_init(app.impl) == ffi.NULL: raise Exception(\"Failed to load library\")");
-         // register all normal classes
-         {
-            IterNamespace itn { module = g.mod };
-            while(itn.next())
-            {
-               BClass c; IterClass itc { itn.ns, list = g.options.classList };
-               while((c = itc.next(all)))
-               {
-                  if(c.cl.type == normalClass && !c.cl.templateClass)
-                     out.PrintLn("   app.registerClass(", c.name, ", True)");
-               }
-            }
-            itn.cleanup();
-         }
+         DynamicString s { };
+         genRegisterClassCalls(s, g, filterClassAll, "   ", "app");
+         out.Puts(s.array);
+         delete s;
       }
    }
+}
+
+bool filterClassAll(BClass c) { return true; }
+bool filterClassEcereComExlusions(BClass c) { return !c.isCharPtr && !c.isWindow; }
+void genRegisterClassCalls(DynamicString s, PythonGen g, bool(*filterClass)(BClass c), const String indent, const String symbol)
+{
+   BClass c; IterAllClass itacl { itn.module = g.mod, list = g.options.classList };
+   while((c = itacl.next(all)))
+   {
+      if(c.cl.type == normalClass && !c.cl.templateClass && filterClass(c))
+         s.printxln(indent, symbol, ".registerClass(", c.name, ", True)");
+   }
+   itacl.cleanup();
 }
 
 static void generateBUILD(File out, PythonGen g)
 {
    bool hasEC = false;
+   const String moduleName = !strcmp(g.lib.moduleName, "ecereCOM") ? "ecere" : g.lib.moduleName;
    char cpath[MAX_FILENAME] = "";
+   Library libDep = null;
    if(g.options.cpath)
    {
       const String dir = g.options.dir ? g.options.dir : "";
@@ -3004,12 +2986,31 @@ static void generateBUILD(File out, PythonGen g)
       }
    }
 
+   out.PrintLn("import sys");
    out.PrintLn("import os");
+   out.PrintLn("import platform");
+   out.PrintLn("from distutils.util import get_platform;");
+   //out.PrintLn("import posixpath");
+   out.PrintLn("from os import path");
+
+   out.PrintLn("print(' -- before ", g.lib.bindingName, " extension build -- ')");
+   out.PrintLn("pver = platform.python_version()");
+   out.PrintLn("print('arg zero: ', sys.argv[0])");
+   out.PrintLn("print('count: ', len(sys.argv))");
+   out.PrintLn("print('args: ', str(sys.argv))");
+   //out.PrintLn("sv = v[0:v.rfind('.')]");
+   //out.PrintLn("p = get_platform()");
+   //out.PrintLn("fp = p + '-' + sv");
+   //ddd 'build\\lib.' + fp
+   out.PrintLn("if sys.argv[0] == 'setup.py':");
+   out.PrintLn("   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])");
+   out.PrintLn("else:");
+   out.PrintLn("   blddir = ''");
    if(g.libDeps.count == 0)
       out.PrintLn("from cffi import FFI");
    else
    {
-      Library libDep = g.libDeps.lastIterator.data;
+      libDep = g.libDeps.lastIterator.data;
       for(ld : g.libDeps)
       {
          if(!ld.ecereCOM && !ld.ecere && !ld.eda)
@@ -3018,6 +3019,56 @@ static void generateBUILD(File out, PythonGen g)
             break;
          }
       }
+   }
+   out.PrintLn("");
+   out.PrintLn("dnf = path.dirname(__file__)");
+   out.PrintLn("dir = path.abspath(path.dirname(__file__))");
+   out.PrintLn("owd = os.getcwd()");
+
+
+#if 0
+   out.PrintLn("rel2 = '' if os.path.isfile(os.path.join(owd, 'build_", g.lib.bindingName, ".py')) == True else 'bindings/py'");
+   //out.PrintLn("rel = '' if dir == owd else 'bindings/py'");
+   out.PrintLn("rel = ''");
+   out.PrintLn("if os.name == 'nt':");
+   //out.PrintLn("   libdir = '../../obj/win32/bin'");
+   out.PrintLn("   libdir = '..\\\\..\\\\obj\\\\win32\\\\bin'");
+   out.PrintLn("else:");
+   out.PrintLn("   libdir = '../../obj/linux/lib'");
+#endif // 0
+
+   out.PrintLn("rel = '' if os.path.isfile(os.path.join(owd, 'build_", g.lib.bindingName, ".py')) == True else path.join('bindings', 'py')");
+   out.PrintLn("sysdir = 'win32' if sys.platform == 'win32' else 'linux'");
+   out.PrintLn("syslibdir = 'bin' if sys.platform == 'win32' else 'lib'");
+   out.PrintLn("if rel == '':");
+   out.PrintLn("   libdir = path.join('..', '..', 'obj', sysdir, syslibdir)");
+   out.PrintLn("else:");
+   out.PrintLn("   libdir = path.join('obj', sysdir, syslibdir)");
+   //out.PrintLn("print('info -- owd:', owd, ' rel:', rel, ' libdir:', libdir)");
+
+   out.PrintLn("if os.path.isfile(path.join(rel, 'cffi-", g.lib.bindingName, ".h')) != True:");
+   out.PrintLn("   print('problem! -- owd:', owd, ' rel:', rel)");
+
+
+   out.PrintLn("");
+   out.PrintLn("if dnf != '':");
+   //out.PrintLn("   sys.path.insert(0, dir)");
+   out.PrintLn("   os.chdir(dir)");
+   //out.PrintLn("   ");
+   out.PrintLn("");
+#if 0
+   out.PrintLn("print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')");
+   out.PrintLn("print('__file__:', __file__)");
+   out.PrintLn("print('dnf:', dnf)");
+   out.PrintLn("print('dir:', dir)");
+   out.PrintLn("print('owd:', owd)");
+   out.PrintLn("print('rel:', rel)");
+   out.PrintLn("");
+#endif // 0
+
+   if(g.libDeps.count != 0)
+   {
+      out.PrintLn("sys.path.append(dir)");
       out.Print("from build_", libDep.bindingName, " import FFI");
       if(!hasEC)
          out.Print(", ffi_eC");
@@ -3025,27 +3076,61 @@ static void generateBUILD(File out, PythonGen g)
          out.Print(", ffi_", libDep.bindingName);
       out.PrintLn("");
       out.PrintLn("from distutils.sysconfig import get_config_var");
+      out.PrintLn("");
+      out.PrintLn("ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUFFIX')");
+      out.PrintLn("");
    }
-   out.PrintLn("");
+   /*if(g.libDeps.count == 0)
+   {
+      out.PrintLn("dnf = path.dirname(__file__)");
+      out.PrintLn("dir = path.abspath(path.dirname(__file__))");
+      out.PrintLn("owd = os.getcwd()");
+      out.PrintLn("rel = '' if dir == owd else 'bindings'");
+      out.PrintLn("");
+   }*/
    out.PrintLn("ffi_", g.lib.bindingName, " = FFI()");
+
+#if 0
+   out.PrintLn("sys.stdout.write('rel:')");
+   out.PrintLn("sys.stdout.write(rel)");
+   out.PrintLn("sys.stdout.write(' -- ')");
+   out.PrintLn("sys.stdout.write('__file__:')");
+   out.PrintLn("sys.stdout.write(__file__)");
+   out.PrintLn("sys.stdout.write(' -- ')");
+   out.PrintLn("sys.stdout.write('path.dirname(__file__):')");
+   out.PrintLn("sys.stdout.write(dnf)");
+   out.PrintLn("sys.stdout.write(' -- ')");
+   out.PrintLn("sys.stdout.write('path.abspath(path.dirname(__file__)):')");
+   out.PrintLn("sys.stdout.write(dir)");
+   out.PrintLn("sys.stdout.write(' -- ')");
+   out.PrintLn("sys.stdout.write('os.getcwd():')");
+   out.PrintLn("sys.stdout.write(owd)");
+   out.PrintLn("print()");
+   //out.PrintLn("t1 = path.join(rel, '../c', 'eC.c')");
+   //out.PrintLn("print(\"path.join(rel, '../c', 'eC.c') is \", t1)");
+#endif // 0
    for(libDep : g.libDeps)
       out.PrintLn("ffi_", g.lib.bindingName, ".include(ffi_", libDep.bindingName, ")");
-   out.PrintLn("ffi_", g.lib.bindingName, ".cdef(open('cffi-", g.lib.bindingName, ".h').read())");
-   out.PrintLn("ffi_", g.lib.bindingName, ".set_source(\"_py", g.lib.bindingName, "\","); // Ecere
+   out.PrintLn("ffi_", g.lib.bindingName, ".cdef(open(path.join(owd, rel, 'cffi-", g.lib.bindingName, ".h')).read())");
+   //out.PrintLn("print('os.getcwd(): ', os.getcwd())");
+   out.PrintLn("ffi_", g.lib.bindingName, ".set_source('_py", g.lib.bindingName, "',"); // Ecere
    out.PrintLn("               '#include \"", g.lib.bindingName, ".h\"',");
-   //out.PrintLn("               sources=[\"../c/", g.lib.bindingName, ".c\", \"../c/ecere.c\"],"); // todo
+   //out.PrintLn("               sources=['../c/", g.lib.bindingName, ".c', '../c/ecere.c'],"); // todo
    /*if(g.lib.ecere)
-      out.PrintLn("               sources=[\"../c/eC.c\", \"../c/", g.lib.bindingName, ".c\"],"); // todo
+      out.PrintLn("               sources=['../c/eC.c', '../c/", g.lib.bindingName, ".c'],"); // todo
    else*/
-      out.PrintLn("               sources=[\"../c/", g.lib.bindingName, ".c\"],"); // todo
+      //out.PrintLn("               sources=[path.join(owd, rel, '", cpath, "', '", g.lib.bindingName, ".c')],"); // todo
+      //out.PrintLn("               sources=[path.join(owd, rel, '", g.lib.bindingName, ".c')],"); // todo
    out.PrintLn("               define_macros=[('BINDINGS_SHARED', None), ('", g.lib.defineName, "_EXPORT', None)],");
-   out.PrintLn("               extra_compile_args=[\"-O2\"],");
-   out.PrintLn("               include_dirs=[\"", cpath, "\"],"); // todo
-   /*out.Print("                 libraries=[\"", g.lib.moduleName, "\"");
+   out.PrintLn("               extra_compile_args=['-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],");
+   //out.PrintLn("               include_dirs=[path.join(owd, rel, '", cpath, "')],"); // todo
+   //out.PrintLn("               include_dirs=[path.join(owd, rel), path.join(owd, 'bindings/py')],"); // todo
+   out.PrintLn("               include_dirs=[path.join(owd, rel)],"); // todo
+   /*out.Print("                 libraries=['", g.lib.moduleName, "'", "'", g.lib.moduleName, "_c'");
    for(libDep : g.libDeps)
-      out.Print(", \"_py", libDep.bindingName, "\" + get_config_var('EXT_SUFFIX')");
+      out.Print(", '_py", libDep.bindingName, "' + ext");
    //out.PrintLn("],");*/
-   out.PrintLn("               libraries=[\"ecere\"],");
+   out.PrintLn("               libraries=['", moduleName, "', '", moduleName, "_c'],");
    if(g.libDeps.count)
    {
       bool first = true;
@@ -3056,20 +3141,30 @@ static void generateBUILD(File out, PythonGen g)
       {
          if(libDep.ecereCOM) ecereCOM = true;
          if(libDep.ecere) ecere = true;
-         out.Print(!first ? ", " : "", "\"_py", libDep.bindingName, "\" + get_config_var('EXT_SUFFIX')");
+         out.Print(!first ? ", " : "", "path.join(owd, blddir, '_py", libDep.bindingName, "' + ext)");
          first = false;
       }
       if(ecere && !ecereCOM)
-         out.Print(!first ? ", " : "", "\"_pyeC\" + get_config_var('EXT_SUFFIX')");
-      out.PrintLn(", \"-O2\"],");
+         out.Print(!first ? ", " : "", "path.join(owd, blddir, '_pyeC' + ext)");
+      out.PrintLn(", '-DMS_WIN64', '-O2'],");
    }
 
-   out.PrintLn("               library_dirs=[\"../../obj/win32/bin\",\"C:/Program Files/Ecere SDK/bin\""/*, g.libDeps.count ? ", \".\"" : ""*/, "])"); // todo
+   //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin'),'C:/Program Files/Ecere SDK/bin'"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
+   //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin')"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
+   out.PrintLn("               library_dirs=[path.join(owd, libdir)"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
    out.PrintLn("");
-   out.PrintLn("if __name__ == \"__main__\":");
-   out.PrintLn("    V = os.getenv('V')");
-   out.PrintLn("    v = True if V == \"1\" or V == \"y\" else False");
-   out.PrintLn("    ffi_", g.lib.bindingName, ".compile(verbose=v)");
+   out.PrintLn("if __name__ == '__main__':");
+   out.PrintLn("   V = os.getenv('V')");
+   out.PrintLn("   v = True if V == '1' or V == 'y' else False");
+   //out.PrintLn("   owd = os.getcwd()");
+   //out.PrintLn("   os.chdir(dir)");
+   out.PrintLn("   ffi_", g.lib.bindingName, ".compile(verbose=v)");
+   //out.PrintLn("   os.chdir(owd)");
+
+   out.PrintLn("");
+   out.PrintLn("if dnf != '':");
+   //out.PrintLn("   sys.path.insert(0, dir)");
+   out.PrintLn("   os.chdir(owd)");
 }
 
 static void generateEPJ(File out, PythonGen g)
@@ -3129,7 +3224,7 @@ static void generateEPJ(File out, PythonGen g)
    out.PrintLn("      },");
    out.PrintLn("      \"build_", g.lib.bindingName, ".py\",");
    out.PrintLn("      \"cffi-", g.lib.bindingName, ".h\",");
-   out.PrintLn("      \"py", g.lib.bindingName, ".py\",");
+   out.PrintLn("      \"", g.lib.bindingName, ".py\",");
    out.PrintLn("   ]");
    out.PrintLn("}");
 }
