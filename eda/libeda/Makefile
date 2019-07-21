@@ -152,6 +152,8 @@ else
 endif
 	$(call cp,$(TARGET),../../$(SODESTDIR))
 ifdef LINUX_TARGET
+	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO).0
+	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO)
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
 endif
