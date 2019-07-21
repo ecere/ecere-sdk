@@ -1,0 +1,217 @@
+// Syntactic Sugar (NOT GENERATED)
+#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))
+#define _INSTANCE(x, c) INSTANCEL((x) ? (x) : 0, c)
+
+#define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })
+
+#undef   newi
+#define  newi(c) Instance_newEx(c, true)
+
+#define _REGISTER_CLASS(n, ns, bs, a) \
+   (Class *)eC_registerClass(ClassType_normalClass, ns, bs, sizeof(Instance *), 0, \
+      (C(bool) (*)(void *)) n::constructor, (void(*)(void *)) n::destructor, (a).impl, AccessMode_privateAccess, AccessMode_publicAccess)
+
+// For defining _class and registereing together (single translation unit)
+#define REGISTER_CLASS_DEF(n, b, a)    TCPPClass<n> n::_class(_REGISTER_CLASS(n,     #n, b::_class.impl->name, a));
+
+// For defining _class and registering separately (multiple translation units)
+#define CLASS_DEF(n)                   TCPPClass<n> n::_class;
+#define REGISTER_CLASS(n, b, a)        n::_class.setup(_REGISTER_CLASS(n,       #n, b::_class.impl->name, a));
+
+// For C++ classes proxying eC classes:
+#define REGISTER_CPP_CLASS(n, a)       n::_class.setup(_REGISTER_CLASS(n, "CPP" #n, #n, a));
+
+#define EVOLVE_APP(ac, a) \
+   Instance_evolve(&(a).impl, ac::_class.impl); \
+   _INSTANCE((a).impl, (a).impl->_class) = &(a); \
+   __thisModule = (a).impl; \
+   (a).vTbl = _class.vTbl;
+
+#define REGISTER_APP_CLASS(ac, b, a) \
+   REGISTER_CLASS(ac, b, a); \
+   EVOLVE_APP(ac, a)
+
+#define _CONSTRUCT(c, b) \
+   INSTANCE_VIRTUAL_METHODS(c) \
+   static TCPPClass<c> _class; \
+   static C(bool) constructor(C(Instance) i, C(bool) alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new c(i, _class) != null : true; } \
+   static void destructor(C(Instance) i) { c * inst = (c *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(c & self))_class.destructor)(*inst); delete inst; } \
+   explicit inline c(C(Instance) _impl, CPPClass & cl = _class) : b(_impl, cl)
+
+#define CONSTRUCT(c, b) \
+   c() : c((C(Instance))Instance_newEx(_class.impl, false), _class) { } \
+   _CONSTRUCT(c, b)
+
+#define DESTRUCT(c) \
+   ((TCPPClass<c> &)_class).destructor
+
+#define REGISTER() \
+   static void class_registration(CPPClass & _class)
+
+#define APP_CONSTRUCT(c, b) \
+   inline c() : c(eC_init_CALL(1)) { } \
+   _CONSTRUCT(c, b)
+
+#if !defined(__WIN32__) || defined(__CONSOLE_APP__)
+   #define APP_SET_ARGS(a) eC_setArgs(a.impl, argc, argv);
+#else
+   #define APP_SET_ARGS(a)
+#endif
+
+#define MAIN_DEFINITION \
+   extern "C" MAIN_DECLARATION \
+   { \
+      APP_SET_ARGS(app); \
+      app.main(); \
+      unloadTranslatedStrings(MODULE_NAME); \
+      return app.exitCode; \
+   }
+
+#define SELF(c, n)  c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))
+
+#define _ARG ,
+
+// VIRTUAL_METHOD(
+//    n: method name,
+//    c: class name,
+//    b: base? class name,
+//    r: return type,
+//    p0: ?,
+//    ep: ?,
+//    p: parameters (list of spec and ident pairs seperated by _ARG),
+//    d: ?
+// )
+#// //c: class object, mc: method class, m: method name, i: instance object, r: return type, p: parameters, a: arguments)
+
+#define VIRTUAL_METHOD(n, c, b, r, p0, ep, p, d) \
+   struct c ## _ ## n ## _Functor \
+   { \
+      int _[0]; \
+      typedef r (* FunctionType)(p0 p); \
+      inline FunctionType operator= (FunctionType func) \
+      { \
+         SELF(c, n); \
+         if(self->vTbl == c::_class.vTbl) \
+         { \
+            uint size = c :: _class.impl->vTblSize; \
+            self->vTbl = (void (**)())newt(FunctionType, size); \
+            memcpy(self->vTbl, c::_class.vTbl, sizeof(FunctionType) * size); \
+         } \
+         ((FunctionType *)self->vTbl)[M_VTBLID(b, n)] = func; \
+         return func; \
+      } \
+      inline r operator()(ep p) \
+      { \
+         SELF(c, n); \
+         d; \
+      } \
+   } n; \
+   inline static void register_ ## n(CPPClass & cl, c ## _ ## n ## _Functor::FunctionType func) \
+   { \
+      ((c ## _ ## n ## _Functor::FunctionType *)cl.vTbl)[M_VTBLID(b, n)] = func; \
+   }
+
+#define _REGISTER_METHOD(cp1, cp2, ns, n, bc, c, r, p, ocl, oi, code, ea, rv) \
+   addMethod(_class.impl, ns, (void *) +[]p \
+   { \
+      Class * cl = (ocl) ? (Class *)(ocl)->_class : null; \
+      cp1 \
+      c * i = (oi) ? (c *)_INSTANCE(oi, cl) : null; \
+      int vid = M_VTBLID(bc, n); \
+      bc ## _ ## n ## _Functor::FunctionType fn; \
+      if(i && i->vTbl && i->vTbl[vid]) \
+      { \
+         fn = (bc ## _ ## n ## _Functor::FunctionType) i->vTbl[vid]; \
+         code; \
+      } \
+      cp2 \
+      else \
+      { \
+         auto method = ((r (*) p)(class_ ## c->_vTbl)[M_VTBLID(bc, n)]); \
+         if(method) return method ea; \
+         return rv; \
+      } \
+   })
+
+#define REGISTER_METHOD(ns, n, bc, c, r, p, ocl, oi, code, ea, rv) \
+   _REGISTER_METHOD(,, ns, n, bc, c, r, p, ocl, oi, code, ea, rv)
+
+#define REGISTER_TYPED_METHOD(ns, n, bc, c, r, p, ocl, oi, code, ea, rv) \
+   _REGISTER_METHOD(\
+      CPPClass * cppcl = _class ? (CPPClass *)_class->bindingsClass : null;, \
+      else if(cppcl && cppcl->vTbl && cppcl->vTbl[vid]) \
+      { \
+         fn = (bc ## _ ## n ## _Functor::FunctionType) cppcl->vTbl[vid]; \
+         code; \
+      }, \
+      ns, n, bc, c, r, p, ocl, oi, code, ea, rv)
+
+#define property(n, sg) struct n ## Prop { n ## Prop() { }; int _[0]; sg } n;
+
+#define _set(t, n, c, d) \
+   inline t operator= (t v) \
+   { \
+      SELF(c, n); \
+      d; \
+      return v; \
+   } \
+
+#define set(t, n, c, d) \
+   _set(t, n, c, d) \
+   inline n ## Prop & operator= (n ## Prop & prop) \
+   { \
+      SELF(c, n); \
+      t v = prop; \
+      d; \
+      return prop; \
+   }
+
+#define get(t, n, c, d) inline operator t () const { SELF(c, n); d; }
+
+extern "C" C(Module) ecere_init(C(Module) fromModule);
+
+class Class : public C(Class) { };
+
+class CPPClass
+{
+public:
+   typedef void (* Function)(void);
+   Class * impl;
+   Function * vTbl;
+   inline CPPClass() { };
+   inline CPPClass(const CPPClass & c) = delete;
+   inline CPPClass(const CPPClass && c)
+   {
+      impl = c.impl;
+      vTbl = c.vTbl;
+   }
+};
+
+template <class T>
+class TCPPClass : public CPPClass
+{
+public:
+   TCPPClass() { }
+   TCPPClass(Class * _impl)
+   {
+      setup(_impl);
+   }
+   void (*destructor)(T &);
+   void setup(Class * _impl)
+   {
+      impl = _impl;
+      if(impl)
+      {
+         _impl->bindingsClass = this;
+         if(vTbl) eC_delete(vTbl);
+         vTbl = newt(Function, impl->vTblSize);
+         memset(vTbl, 0, sizeof(Function) * impl->vTblSize);
+         T::class_registration(*this);
+      }
+   }
+   ~TCPPClass()
+   {
+      if(impl)
+         eC_delete(vTbl);
+   }
+};

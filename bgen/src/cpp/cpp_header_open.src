@@ -1,0 +1,3 @@
+
+#if !defined(__#(LIB_DEF_NAME)#_HPP__)
+#define __#(LIB_DEF_NAME)#_HPP__

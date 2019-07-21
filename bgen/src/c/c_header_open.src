@@ -1,10 +1,10 @@
-#if !defined(__#(LIB_DEF_NAME)#_H__)
-#define __#(LIB_DEF_NAME)#_H__
+#(C_PREPRO_LIMITTER)##if !defined(__#(LIB_DEF_NAME)#_H__)
+#(C_PREPRO_LIMITTER)##define __#(LIB_DEF_NAME)#_H__
 
-#define CPP11 (defined(__cplusplus) && __cplusplus >= 201103L)
+#(C_PREPRO_LIMITTER)##define CPP11 (defined(__cplusplus) && __cplusplus >= 201103L)
 
-#ifdef __cplusplus
+#(C_PREPRO_LIMITTER)##ifdef __cplusplus
 
 extern "C" {
 
-#endif
+#(C_PREPRO_LIMITTER)##endif

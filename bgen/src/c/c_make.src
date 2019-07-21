@@ -6,8 +6,10 @@ endif
 
 # CORE VARIABLES
 
-MODULE := EDA_c
-VERSION :=
+BINDMOD := #(MODULE_NAME)#
+BINDNAME := #(BINDING_NAME)#
+MODULE := $(BINDMOD)_c
+VERSION := 0.44
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -35,38 +37,38 @@ CONSOLE = -mwindows
 
 # INCLUDES
 
-_CF_DIR = ../../../
+_CF_DIR = ../../
 
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OBJ = obj/$(BINDMOD).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
 ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA_c$(SO).0.44
-SONAME = -Wl,-soname,$(LP)ecere_c$(SO).0
+TARGET = $(OBJ)$(LP)$(MODULE)$(SO).0.44
+SONAME = -Wl,-soname,$(LP)$(MODULE)$(SO).0
 else
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA_c$(SO)
+TARGET = $(OBJ)$(LP)$(MODULE)$(SO)
 SONAME =
 endif
 
-_OBJECTS = \
-	$(OBJ)EDA$(O)
+#(DEP_FILE_LISTS)#_OBJECTS = $(_DEP_OBJECTS) \
+	$(OBJ)$(BINDNAME)$(O)
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = \
-	../EDA.c
+SOURCES = $(_DEP_SOURCES) \
+	$(BINDNAME).c
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-	$(call _L,ecere)
+#(DEP_LIBS)#	$(call _L,$(BINDMOD))
 endif
 
 PRJ_CFLAGS += \
@@ -74,14 +76,13 @@ PRJ_CFLAGS += \
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L../../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
 
-all: objdir $(TARGET)
-	$(call cp,$(TARGET),../../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
+all: objdir $(TARGET);
 
 objdir:
 	$(call mkdir,$(OBJ))
@@ -92,7 +93,11 @@ $(TARGET): $(SOURCES) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(_OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
 else
+ifdef WINDOWS_HOST
+	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
+else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 endif
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
@@ -102,10 +107,19 @@ ifdef LINUX_HOST
 endif
 endif
 endif
+	$(call cp,$(TARGET),$(_CF_DIR)$(HOST_SODESTDIR))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+endif
+endif
+endif
 
 # OBJECT RULES
 
-$(OBJ)EDA$(O): ../EDA.c
+#(DEP_RULES)#$(OBJ)$(BINDNAME)$(O): $(BINDNAME).c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 cleantarget:

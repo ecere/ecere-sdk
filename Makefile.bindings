@@ -1,0 +1,195 @@
+
+renameEcereCOM = $(subst ecereCOM,eC,$(1))
+
+ifndef BGEN_LIBS
+BGEN_LIBS := ecereCOM ecere EDA
+endif
+BGEN_ARGS := -fren Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
+BGEN_QUIET := $(if $(SILENT_IS_ON),-quiet,)
+
+# note: this is needed because we chdir without the use of a makefile specifying a different _CF_DIR
+#       and cannot call bgen with the usual relative path specified by $(BGEN)
+#          i.e.: 	+cd bindings/c && $(BGEN) $(BGEN_ARGS) $(BGEN_QUIET) -c $(BGEN_LIBS)
+#ROOT_ABSPATH = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+#BGEN := $(call sys_path,$(ROOT_ABSPATH)$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
+
+ifdef WINDOWS_HOST
+PYTHON := python
+else
+PYTHON := python3
+endif
+PY_VER := 3
+
+BG_LANG_c := C
+BG_LANG_py := Python $(PY_VER)
+
+bg_bld_file_c = bindings/c/$(1).Makefile
+bg_bld_file_py = bindings/py/build_$(1).py
+
+bg_bld_cmd_c = $(_MAKE) -f $(1).Makefile $(3)
+bg_bld_cmd_py = $(PYTHON) build_$(1).py
+
+bg_bind_____echo = $(call bg_bind_echo_,$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS))),$(2))
+bg_bind_echo_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),@$(call echo,Building $(BG_LANG_$(2)) bindings for $(1)...),),)
+
+bg_bind_cd_build = $(call bg_bind_cd_build_,$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS))),$(2),$(3))
+bg_bind_cd_build_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),+cd bindings/$(2) && $(call bg_bld_cmd_$(2),$(1),$(3)),$(call echo,Error: $(call bg_bld_file_$(2),$(1)) not found!)),)
+# todo: make this an actual error?
+
+# All
+
+.PHONY: bgentalk
+bgenpolite: $(BINARIES)
+	@$(call echo,  have a great day!)
+	@$(call echo,         -bgen)
+
+.PHONY: bindings
+bindings: $(BINARIES) bindingsgenc bindingsbuildc bindingsgenpy bindingsbuildpy bgentalk;
+
+.PHONY: bindingsgen
+bindingsgen: $(BINARIES) bindingsgenc bindingsgenpy bgentalk;
+
+.PHONY: bindingsbuild
+bindingsbuild: $(BINARIES) bindingsbuildc bindingsbuildpy bgentalk;
+
+.PHONY: bindingsclean
+bindingsclean: bindingscleanc bindingscleanpy;
+
+.PHONY: bindingscleantarget
+bindingscleantarget: bindingscleantargetc bindingscleantargetpy;
+
+.PHONY: bindingsrealclean
+bindingsrealclean: bindingsrealcleanc bindingsrealcleanpy;
+
+.PHONY: bindingswipeclean
+bindingswipeclean: bindingswipecleanc bindingswipecleanpy;
+
+.PHONY: bindingsdistclean
+bindingsdistclean:
+	$(call rmr,bindings/)
+
+# C
+
+.PHONY: bindingsc
+bindingsc: $(BINARIES) bindingsgenc bindingsbuildc
+
+.PHONY: bindingsgenc
+bindingsgenc: $(BINARIES)
+	@$(call echo,Generating C bindings...)
+	$(call mkdir,bindings)
+	$(call mkdir,bindings/c)
+	$(BGEN) -dir bindings/c $(BGEN_ARGS) $(BGEN_QUIET) -c $(BGEN_LIBS)
+
+.PHONY: bindingsbuildc
+bindingsbuildc: $(BINARIES)
+	$(call bg_bind_____echo,1,c)
+	$(call bg_bind_cd_build,1,c,all)
+	$(call bg_bind_____echo,2,c)
+	$(call bg_bind_cd_build,2,c,all)
+	$(call bg_bind_____echo,3,c)
+	$(call bg_bind_cd_build,3,c,all)
+	$(call bg_bind_____echo,4,c)
+	$(call bg_bind_cd_build,4,c,all)
+	$(call bg_bind_____echo,5,c)
+	$(call bg_bind_cd_build,5,c,all)
+	$(call bg_bind_____echo,6,c)
+	$(call bg_bind_cd_build,6,c,all)
+	$(call bg_bind_____echo,7,c)
+	$(call bg_bind_cd_build,7,c,all)
+	$(call bg_bind_____echo,8,c)
+	$(call bg_bind_cd_build,8,c,all)
+	$(call bg_bind_____echo,9,c)
+	$(call bg_bind_cd_build,9,c,all)
+
+.PHONY: bindingscleanc
+bindingscleanc:
+# todo: missing bgen output cleaning
+#_BGEN_OUTS = $(call renameEcereCOM,$(BGEN_LIBS))
+#_BGEN_OUTPUT := $(addsuffix .h,$(_BGEN_OUTS)) $(addsuffix .c,$(_BGEN_OUTS))
+	$(call bg_bind_cd_build,1,c,clean)
+	$(call bg_bind_cd_build,2,c,clean)
+	$(call bg_bind_cd_build,3,c,clean)
+	$(call bg_bind_cd_build,4,c,clean)
+	$(call bg_bind_cd_build,5,c,clean)
+	$(call bg_bind_cd_build,6,c,clean)
+	$(call bg_bind_cd_build,7,c,clean)
+	$(call bg_bind_cd_build,8,c,clean)
+	$(call bg_bind_cd_build,9,c,clean)
+
+.PHONY: bindingscleantargetc
+bindingscleantargetc:
+	$(call bg_bind_cd_build,1,c,cleantarget)
+	$(call bg_bind_cd_build,2,c,cleantarget)
+	$(call bg_bind_cd_build,3,c,cleantarget)
+	$(call bg_bind_cd_build,4,c,cleantarget)
+	$(call bg_bind_cd_build,5,c,cleantarget)
+	$(call bg_bind_cd_build,6,c,cleantarget)
+	$(call bg_bind_cd_build,7,c,cleantarget)
+	$(call bg_bind_cd_build,8,c,cleantarget)
+	$(call bg_bind_cd_build,9,c,cleantarget)
+
+.PHONY: bindingsrealcleanc
+bindingsrealcleanc:
+	$(call rmr,bindings/c/obj)
+
+.PHONY: bindingswipecleanc
+bindingswipecleanc:
+	$(call rmr,bindings/c)
+
+# Python
+
+.PHONY: bindingspy
+bindingspy: $(BINARIES) bindingsgenpy bindingsbuildpy;
+
+.PHONY: bindingsgenpy
+bindingsgenpy: $(BINARIES)
+	@$(call echo,Generating Python bindings...)
+	$(call mkdir,bindings)
+	$(call mkdir,bindings/py)
+	$(BGEN) -dir bindings/py $(BGEN_ARGS) $(BGEN_QUIET) -c -header-only -py $(BGEN_LIBS)
+
+.PHONY: bindingsbuildpy
+bindingsbuildpy: $(BINARIES)
+ifdef PY_NA
+	$(error Using $(PYTHON) failed. Please set PYTHON to point to a valid python program name or location)
+else
+	$(call bg_bind_____echo,1,py)
+	$(call bg_bind_cd_build,1,py)
+	$(call bg_bind_____echo,2,py)
+	$(call bg_bind_cd_build,2,py)
+	$(call bg_bind_____echo,3,py)
+	$(call bg_bind_cd_build,3,py)
+	$(call bg_bind_____echo,4,py)
+	$(call bg_bind_cd_build,4,py)
+	$(call bg_bind_____echo,5,py)
+	$(call bg_bind_cd_build,5,py)
+	$(call bg_bind_____echo,6,py)
+	$(call bg_bind_cd_build,6,py)
+	$(call bg_bind_____echo,7,py)
+	$(call bg_bind_cd_build,7,py)
+	$(call bg_bind_____echo,8,py)
+	$(call bg_bind_cd_build,8,py)
+	$(call bg_bind_____echo,9,py)
+	$(call bg_bind_cd_build,9,py)
+endif
+
+.PHONY: bindingscleanpy
+bindingscleanpy:
+# todo: missing bgen output cleaning
+#_BGEN_OUTS = $(call renameEcereCOM,$(BGEN_LIBS))
+#_BGEN_OUTPUT := $(addsuffix .py,$(addprefix build_,$(_BGEN_OUTS))) $(addsuffix .h,$(addprefix cffi-,$(_BGEN_OUTS))) $(addsuffix .py,$(addprefix py,$(_BGEN_OUTS)))
+	@$(call echo,todo: bindingscleanpy)
+
+.PHONY: bindingscleantargetpy
+bindingscleantargetpy:
+	@$(call echo,todo: bindingscleantargetpy)
+
+.PHONY: bindingsrealcleanpy
+bindingsrealcleanpy:
+	$(call rmr,bindings/py/obj)
+	$(call rmr,bindings/py/__pycache__)
+	@$(call echo,todo: bindingsrealcleanpy -- _py*.c _py*.pyd)
+
+.PHONY: bindingswipecleanpy
+bindingswipecleanpy:
+	$(call rmr,bindings/py)
