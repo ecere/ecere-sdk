@@ -1,0 +1,27 @@
+exclude .appveyor.yml
+exclude .gitattributes
+exclude .gitignore
+exclude .mailmap
+exclude .travis.yml
+recursive-exclude autoLayout *
+recursive-exclude butterbur *
+recursive-exclude compiler Makefile.bootstrap
+#recursive-exclude doc *
+recursive-exclude ecere Makefile.bootstrap
+recursive-exclude EcereSDK *
+#recursive-exclude epj2make *
+#recursive-exclude ide *
+#recursive-exclude documentor *
+recursive-exclude installer *
+recursive-exclude obj *
+recursive-exclude samples *
+recursive-exclude share *
+#include bindings/py/build_eC.py
+#include bindings/py/build_ecere.py
+#include bindings/py/build_EDA.py
+#include bindings/py/cffi-eC.h
+#include bindings/py/cffi-ecere.h
+#include bindings/py/cffi-EDA.h
+#include bindings/py/eC.h
+#include bindings/py/ecere.h
+#include bindings/py/EDA.h

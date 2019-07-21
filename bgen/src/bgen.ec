@@ -47,6 +47,7 @@ enum ArgSym : ArgumentSymbol
    writeBatchFile,
    directory,
    pathC,
+   headerOnly,
    optionsFile,
    enumPrefix,
    funcRename,
@@ -340,10 +341,10 @@ public class BGen : ConsoleApplication // <ArgSym>
       addArgumentSymbol(ArgSym::examples,       "examples",             super,   0);
       addArgumentSymbol(ArgSym::C,              "c",                    strict,  0);
       addArgumentSymbol(ArgSym::C,              "c89",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,              "c90",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,              "c95",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,              "c99",                  strict,  0);
-      //addArgumentSymbol(ArgSym::C,              "c11",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,            "c90",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,            "c95",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,            "c99",                  strict,  0);
+      //addArgumentSymbol(ArgSym::C,            "c11",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "c++",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "cxx",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "cpp",                  strict,  0);
@@ -367,6 +368,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       addArgumentSymbol(ArgSym::directory,      "output",               super,   0);
       addArgumentSymbol(ArgSym::directory,      "directory",            super,   0);
       addArgumentSymbol(ArgSym::pathC,          "path-c",               super,   0);
+      addArgumentSymbol(ArgSym::headerOnly,     "header-only",          super,   0);
       addArgumentSymbol(ArgSym::optionsFile,    "options-file",         super,   0);
       addArgumentSymbol(ArgSym::optionsFile,    "list-file",            super,   0);
       //printAllSymbolMatches(0);
@@ -386,6 +388,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       setArgumentSpec(ArgSym::writeBatchFile, { option, once });
       setArgumentSpec(ArgSym::directory,      { option, once });
       setArgumentSpec(ArgSym::pathC,          { option, once });
+      setArgumentSpec(ArgSym::headerOnly,     { option, once });
       setArgumentSpec(ArgSym::optionsFile,    { option, once });
    }
 
@@ -524,6 +527,9 @@ public class BGen : ConsoleApplication // <ArgSym>
                      }
                      else
                         error = noLibSpecifiedInRunBeforeClear;
+                     break;
+                  case headerOnly:
+                     opts.optScope.headerOnly = true;
                      break;
                   case enumPrefix:
                   case funcRename:
@@ -967,6 +973,7 @@ public class BGen : ConsoleApplication // <ArgSym>
 
    BGen()
    {
+      cppTypeNameCall = false;
 #ifdef _DEBUG
       dbglog_open(true);
 #endif
@@ -980,6 +987,28 @@ public class BGen : ConsoleApplication // <ArgSym>
 #endif
    }
 }
+
+bool cppTypeNameCall;
+#if 0
+{
+   Type t = ti.type;
+   if(cppTypeNameCall && g_.lang == CPlusPlus && g_.lib.ecereCOM && t.kind == classType && t._class)
+   {
+      if(/*!t._class.registered && */tmpcppececeremess.Find(strptrNoNamespace(t._class.string)))
+         conmsg("break");
+   }
+}
+#endif // 0
+
+AVLTree<const String> tmpcppececeremess // hack
+{ [
+   "Window",
+   "IOChannel",
+   "Surface",
+   "Alignment",
+   "DataDisplayFlags",
+   "DataBox"
+] };
 
 define app = ((BGen)__thisModule);
 CGen g_; // todo

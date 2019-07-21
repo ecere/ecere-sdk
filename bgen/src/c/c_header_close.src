@@ -1,9 +1,9 @@
 
 
-#ifdef __cplusplus
+#(C_PREPRO_LIMITTER)##ifdef __cplusplus
 
 };
 
-#endif
+#(C_PREPRO_LIMITTER)##endif
 
-#endif // !defined(__#(LIB_DEF_NAME)#_H__)
+#(C_PREPRO_LIMITTER)##endif // !defined(__#(LIB_DEF_NAME)#_H__)

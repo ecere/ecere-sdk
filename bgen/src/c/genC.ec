@@ -1,4 +1,5 @@
 #include "debug.eh"
+#include "bgen.eh"
 
 import "bgen"
 
@@ -21,6 +22,48 @@ define _enumClass = "ClassType_enumClass";
 define _noHeadClass = "ClassType_noHeadClass";
 define _unionClass = "ClassType_unionClass";
 define _systemClass = "ClassType_systemClass";
+
+void runPreprocessor(const String src, const String tmp, Gen g)
+{
+   String cppCommand = CopyString("gcc");
+   String cppOptions = PrintString(" -I ", g.dir);
+   DualPipe cppOutput;
+   char command[MAX_F_STRING*3];
+   snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", src);
+   command[sizeof(command)-1] = 0;
+   PrintLn("preprocessing command:");
+   PrintLn(command);
+   if((cppOutput = DualPipeOpen({ output = true }, command)))
+   {
+      int exitCode;
+      File o;
+      TempFile fileInput { };
+      for(;!cppOutput.Eof();)
+      {
+         char junk[4096*16];
+         int64 count = cppOutput.Read(junk, 1, 4096*16);
+         fileInput.Write(junk, 1, count);
+      }
+      exitCode = cppOutput.GetExitCode();
+      delete cppOutput;
+      fileInput.Seek(0, start);
+      if(!exitCode)
+      {
+         if(FileExists(tmp))
+            DeleteFile(tmp);
+         o = FileOpen(tmp, write);
+         if(o)
+         {
+            sourceFileProcessToFile(o, fileInput, null, g.sourceProcessorVars, false, false);
+            delete o;
+         }
+      }
+      else
+         PrintLn("error: preprocessing command failed!");
+   }
+   delete cppCommand;
+   delete cppOptions;
+}
 
 char * Gen::allocMacroSymbolNameC(const bool noMacro, const MacroType type, const TypeInfo ti, const char * name, const char * name2, int ptr)
 {
@@ -49,16 +92,16 @@ char * Gen::allocMacroSymbolNameExpandedC(const bool noMacro, const MacroType ty
    {
       case C:
          if(noMacro)    return                    CopyString(name);
-                        return PrintString(           "ec_", name);
+                        return PrintString(         cPrefix, name);
       case CM:          return PrintString("class_members_", name);
       case CO:          return PrintString(        "class_", name);
-      case SUBCLASS:    return PrintString("ec_Class *");
-      case THISCLASS:   return PrintString(           "ec_", name, ptr ? " *" : "");
+      case SUBCLASS:    return PrintString(cPrefix, "Class *");
+      case THISCLASS:   return PrintString(         cPrefix, name, ptr ? " *" : "");
       case T:           return getTemplateClassSymbol(       name, true);
       case TP:          return PrintString(       "tparam_", name, "_", name2);
       case METHOD:      return PrintString(       "method_", name, "_", name2);
       case PROPERTY:    return PrintString(     "property_", name, "_", name2);
-      case FUNCTION:    return PrintString(     "function_", name, "_", name2);
+      case FUNCTION:    return PrintString(     "function_", name);
       case M_VTBLID:    return PrintString(                  name, "_", name2, "_vTblID");
    }
    return CopyString(name);
@@ -70,6 +113,8 @@ class CGen : Gen
    char * cFilePath;
    char * hFileName;
    char * hFilePath;
+   char * makefileName;
+   char * makefilePath;
 
    AST astH;
    AST astC;
@@ -110,6 +155,7 @@ class CGen : Gen
 
    lang = C;
    allocMacroSymbolName = allocMacroSymbolNameC;
+   //allocMacroSymbolName = allocMacroSymbolNameExpandedC;
 
    void process()
    {
@@ -127,6 +173,37 @@ class CGen : Gen
    void generate()
    {
       File o;
+      if(preprocess && lib.ecereCOM)
+      {
+         char * name = new char[MAX_LOCATION];
+         char * path = new char[MAX_LOCATION];
+         char * tmp = new char[MAX_LOCATION];
+         strcpy(name, lib.bindingName);
+         strcat(name, "-bind");
+         ChangeExtension(name, "h", name);
+         strcpy(path, dir);
+         PathCatSlash(path, name);
+         strcat(name, ".tmp");
+         strcpy(tmp, dir);
+         PathCatSlash(tmp, name);
+         if(FileExists(tmp))
+            DeleteFile(tmp);
+         o = FileOpen(tmp, write);
+         if(o)
+         {
+            DynamicString ds { };
+            sourceFileProcessToDynamicString(ds, ":src/c/c_header_ec_macros.src", null, false, false);
+            o.Puts(ds.array);
+            delete ds;
+            delete o;
+         }
+         if(FileExists(path))
+            DeleteFile(path);
+         MoveFile(tmp, path);
+         delete name;
+         delete path;
+         delete tmp;
+      }
       o = FileOpen(hFilePath, write);
       if(o)
       {
@@ -134,27 +211,92 @@ class CGen : Gen
          astH.print(o, { });
          delete o;
       }
-      o = FileOpen(cFilePath, write);
-      if(o)
+      if(!options.headerOnly)
       {
-         cCode(astC, this);
-         astC.print(o, { });
-         delete o;
+         o = FileOpen(cFilePath, write);
+         if(o)
+         {
+            cCode(astC, this);
+            astC.print(o, { });
+            delete o;
+         }
+         o = FileOpen(makefilePath, write);
+         if(o)
+         {
+            // hardcoded -- todo -- see if we can generate from dependencies :P
+            sourceProcessorVars["DEP_FILE_LISTS"] = !lib.ecere ? CopyString("") : CopyString(
+               "_DEP_OBJECTS = \\\n"
+               "	$(OBJ)eC$(O)\n"
+               "\n"
+               "_DEP_SOURCES = \\\n"
+               "	eC.c\n"
+               "\n"
+            );
+            sourceProcessorVars["DEP_RULES"] = !lib.ecere ? CopyString("") : CopyString(
+               "$(OBJ)eC$(O): eC.c\n"
+               "	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
+               "\n"
+            );
+            // hardcoded -- todo -- this can be generated from dependencies -- do it!
+            sourceProcessorVars["DEP_LIBS"] = (lib.ecere || lib.ecereCOM) ? CopyString("") : CopyString(
+               "	$(call _L,ecere) \\\n"
+            );
+            sourceFileProcessToFile(o, null, ":src/c/c_make.src", sourceProcessorVars, false, false);
+            delete o;
+         }
       }
+      if(preprocess)
       {
          char * cFileNameTmp = cFilePath;
          char * hFileNameTmp = hFilePath;
+         char * cFileNamePrepTmp;
+         char * hFileNamePrepTmp;
          cFilePath = null;
          hFilePath = null;
-         prepPaths(false);
+         prepPaths(true, "-prep");
+         cFileNamePrepTmp = cFilePath;
+         hFileNamePrepTmp = hFilePath;
+         cFilePath = null;
+         hFilePath = null;
+         runPreprocessor(hFileNameTmp, hFileNamePrepTmp, this);
+         runPreprocessor(cFileNameTmp, cFileNamePrepTmp, this);
+         prepPaths(false, "-prep");
          if(FileExists(cFilePath))
             DeleteFile(cFilePath);
          if(FileExists(hFilePath))
             DeleteFile(hFilePath);
-         MoveFile(cFileNameTmp, cFilePath);
+         MoveFile(cFileNamePrepTmp, cFilePath);
+         MoveFile(hFileNamePrepTmp, hFilePath);
+         delete cFileNamePrepTmp;
+         delete hFileNamePrepTmp;
+         delete cFilePath;
+         delete hFilePath;
+         cFilePath = cFileNameTmp;
+         hFilePath = hFileNameTmp;
+      }
+      {
+         char * cFileNameTmp = cFilePath;
+         char * hFileNameTmp = hFilePath;
+         char * makefileNameTmp = makefilePath;
+         cFilePath = null;
+         hFilePath = null;
+         makefilePath = null;
+         prepPaths(false, null);
+         if(FileExists(hFilePath))
+            DeleteFile(hFilePath);
          MoveFile(hFileNameTmp, hFilePath);
+         if(!options.headerOnly)
+         {
+            if(FileExists(cFilePath))
+               DeleteFile(cFilePath);
+            MoveFile(cFileNameTmp, cFilePath);
+            if(FileExists(makefilePath))
+               DeleteFile(makefilePath);
+            MoveFile(makefileNameTmp, makefilePath);
+         }
          delete cFileNameTmp;
          delete hFileNameTmp;
+         delete makefileNameTmp;
       }
    }
 
@@ -163,14 +305,16 @@ class CGen : Gen
       bool result = false;
       if(Gen::init() && readyDir())
       {
-         prepPaths(true);
+         prepPaths(true, null);
 
          if(FileExists(cFilePath))
             DeleteFile(cFilePath);
          if(FileExists(hFilePath))
             DeleteFile(hFilePath);
+         if(FileExists(makefilePath))
+            DeleteFile(makefilePath);
 
-         if(!FileExists(cFilePath) && !FileExists(hFilePath))
+         if(!FileExists(cFilePath) && !FileExists(hFilePath) && !FileExists(makefilePath))
          {
             reset();
 
@@ -188,12 +332,16 @@ class CGen : Gen
    {
       if(!quiet)
       {
-         PrintLn(lib.verbose > 1 ? "    " : "", cFileName);
          PrintLn(lib.verbose > 1 ? "    " : "", hFileName);
+         if(!options.headerOnly)
+         {
+            PrintLn(lib.verbose > 1 ? "    " : "", cFileName);
+            PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
+         }
       }
    }
 
-   void prepPaths(bool tmp)
+   void prepPaths(bool tmp, const char * suffix)
    {
       int len;
       char * name = new char[MAX_LOCATION];
@@ -201,17 +349,24 @@ class CGen : Gen
       strcpy(path, dir);
       len = strlen(path);
       strcpy(name, lib.bindingName);
+      if(suffix) strcat(name, suffix);
       ChangeExtension(name, "c", name);
       PathCatSlash(path, name);
       if(tmp) strcat(path, ".tmp");
       delete cFileName; cFileName = CopyString(name);
       delete cFilePath; cFilePath = CopyString(path);
-      ChangeExtension(name, "h", name);
       path[len] = 0;
+      ChangeExtension(name, "h", name);
       PathCatSlash(path, name);
       if(tmp) strcat(path, ".tmp");
       delete hFileName; hFileName = CopyString(name);
       delete hFilePath; hFilePath = CopyString(path);
+      path[len] = 0;
+      ChangeExtension(name, "Makefile", name);
+      PathCatSlash(path, name);
+      if(tmp) strcat(path, ".tmp");
+      delete makefileName; makefileName = CopyString(name);
+      delete makefilePath; makefilePath = CopyString(path);
       delete name;
       delete path;
    }
@@ -231,6 +386,8 @@ class CGen : Gen
       delete cFilePath;
       delete hFileName;
       delete hFilePath;
+      delete makefileName;
+      delete makefilePath;
 
       allNamespaces.Free();
       allVariants.Free();
@@ -809,11 +966,11 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
    {
 
    if(forInstance)
-      z.printx("#define Instance_", m.mname, "(");
+      z.printx(g_.preproLimiter, "#define Instance_", m.mname, "(");
    else
    {
       //prev = thisClassName || assumeTypedObject;
-      z.printx("#define ", m.s, "(");
+      z.printx(g_.preproLimiter, "#define ", m.s, "(");
    }
    // macro params
       {
@@ -855,7 +1012,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
 
    z.printx(")");
    {
-      z.printx(" \\\n   VMETHOD(");
+      z.printx(g_.linejoinLimiter, "\n   VMETHOD(");
       if(c.is_class/* && !forInstance*/)
       {
          if(forInstance)
@@ -871,7 +1028,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
             z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", __i, ");
       }
       zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, TYPE_INFO_FROM(ti)*/ }, { anonymous = true }, vTop);
-      z.printx(", \\\n      ");
+      z.printx(",", g_.linejoinLimiter, "\n      ");
       // function call parameters (for casting)
       {
          Type param;
@@ -912,23 +1069,25 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
             FreeType(t);
          }
       }
-      if(md.dataType.params.count && (md.dataType.staticMethod ||
+      if(!(cl && !md.dataType.staticMethod) && md.dataType.params.count == 0 && md.dataType.staticMethod)
+      {
+         Type t { kind = voidType };
+         astTypeName(null, { type = t }, { }, vTop, params);
+         delete t;
+      }
+      else if(md.dataType.params.count && (md.dataType.staticMethod ||
          !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
       {
          if(prevParam) z.printx(" _ARG ");
          ap = 0;
          for(param = md.dataType.params.first; param; param = param.next)
          {
-            char * apname = null;
-            if(!param.name)
-               apname = PrintString("ap", ++ap);
-            astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
-            delete apname;
+            astTypeName(null, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
          }
       }
          ec2PrintToDynamicString(z, params, false);
       }
-      z.printx(", \\\n      ");
+      z.printx(",", g_.linejoinLimiter, "\n      ");
       // function call arguments
       {
          Type param;
@@ -1040,8 +1199,8 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(!pt.Get && !pt.Set)
             {
                const char * dataType = tokenTypeString(cl.dataType);
-               z.printxln("#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))");
-               z.printxln("#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))");
+               z.printxln(g_.preproLimiter, "#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))");
+               z.printxln(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))");
                if(haveContent) *haveContent = true;
             }
          }
@@ -1059,7 +1218,7 @@ void genPropertyConversion(DynamicString z, BClass c, BProperty p, DataValueType
    {
       double m = 1, b = 0;
       bool forSet = fn == p.pt.Set;
-      z.printx("#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", c.name, "(x)  ");
+      z.printx(g_.preproLimiter, "#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", c.name, "(x)  ");
       if(checkLinearMapping(type, fn, &m, &b))
       {
          const char * castString = forSet ? tokenTypeString(c.cl.dataType) : p.cConvUse.symbolName;
@@ -1170,8 +1329,17 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                ti.type = t2.returnType;
                s = astTypeSpec(ti, &ptr3, &t3, null, { }, vTop);
                decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr2, declIdent) }, parameters = list };
-               for(param = t2.params.first; param; param = param.next)
-                  astTypeName(param.name, { type = param }, { }, vTop, list);
+               if(t2.params.count == 0)
+               {
+                  Type voidT { kind = voidType };
+                  astTypeName(null, { type = voidT }, { }, vTop, list);
+                  delete voidT;
+               }
+               else
+               {
+                  for(param = t2.params.first; param; param = param.next)
+                     astTypeName(param.name, { type = param }, { }, vTop, list);
+               }
             }
          }
          else if(ti.dm.dataType.bitFieldCount)
@@ -1497,7 +1665,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          {
             if(isBaseClass)
             {
-               char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
+               char * symbolName = opt.asis ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
                quals.Add(SpecName { name = symbolName });
                if(vTopOutputType)
                   vTop.processDependency(vTopOutputType, otypedef, _class);
@@ -1512,7 +1680,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            char * symbolName = g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
+            char * symbolName = opt.asis ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
             quals.Add(SpecName { name = symbolName });
             if(vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))
                vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
@@ -1521,13 +1689,15 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       }
       case thisClassType:
       {
-         char * symbolName = g_.allocMacroSymbolName(false, THISCLASS, { cl = ti.cl }, ti.cl.name, null, ti.cl.type == noHeadClass ? 1 : 0);
+         char * symbolName = opt.asis ? CopyString(name) :
+               g_.allocMacroSymbolName(false, THISCLASS, { cl = ti.cl }, ti.cl.name, null, ti.cl.type == noHeadClass ? 1 : 0);
          quals.Add(SpecName { name = symbolName });
          break;
       }
       case subClassType:
       {
-         char * symbolName = g_.allocMacroSymbolName(false, SUBCLASS, { cl = _class }, name, null, 0);
+         char * symbolName = opt.asis ? CopyString(name) :
+               g_.allocMacroSymbolName(false, SUBCLASS, { cl = _class }, name, null, 0);
          quals.Add(SpecName { name = symbolName });
          break;
       }
@@ -1646,7 +1816,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
       ASTDeclarator decl = opt.anonymous ? null : astDeclIdentifier(safeIdent);
       delete safeIdent;
       if(!opt.notype)
-         quals = astTypeSpec(ti, &ptr, &t, null, { param = opt.param }, vTop);
+         quals = astTypeSpec(ti, &ptr, &t, null, { param = opt.param, asis = opt.asis }, vTop);
       else
          // trying this instead of //astTypeSpec(ti, &ptr, &t, null, { param = opt.param }, vTop);
          t = unwrapPointerType(ti.type, &ptr);
@@ -1656,7 +1826,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          if(quals) conmsg("check");
          decl = astDeclArray(decl, null, false, &ti.type);
          conassertctx(ti.type == t.arrayType, "?");
-         quals = astTypeSpec(ti, &ptr, &t, null, { }, vTop);
+         quals = astTypeSpec(ti, &ptr, &t, null, { asis = opt.asis }, vTop);
       }
       else if(t.kind == functionType)
       {
@@ -1666,7 +1836,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          //if(ptr) conmsg("check");
          if(quals) conmsg("check");
          ti.type = t.returnType;
-         quals = astTypeSpec(ti, &ptr2, &t2, null, { }, vTop);
+         quals = astTypeSpec(ti, &ptr2, &t2, null, { asis = opt.asis }, vTop);
          decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
          ptr = 0;
          for(param = t.params.first; param; param = param.next)
@@ -1778,10 +1948,19 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
             astTypeName("__this", { type = t, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
             FreeType(t);
          }
-         if(!(ti.md && ti.cl && !ti.md.dataType.staticMethod) ||
-            !(ti.md.dataType.params.count == 1 && (param = ti.md.dataType.params.first) && !param.name && param.kind == voidType))
-         for(param = t.params.first; param; param = param.next)
-            astTypeName(param.name, { type = param, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
+         if(ti.md && !(ti.cl && !ti.md.dataType.staticMethod) && ti.md.dataType.params.count == 0)
+         {
+            Type voidT { kind = voidType };
+            astTypeName(null, { type = voidT }, { }, vTop, params);
+            delete voidT;
+         }
+         else
+         {
+            if(!(ti.md && ti.cl && !ti.md.dataType.staticMethod) ||
+               !(ti.md.dataType.params.count == 1 && (param = ti.md.dataType.params.first) && !param.name && param.kind == voidType))
+            for(param = t.params.first; param; param = param.next)
+               astTypeName(param.name, { type = param, TYPE_INFO_FROM(ti) }, opt2, vTop, params);
+         }
       }
    }
    else conmsg("check");
@@ -1892,9 +2071,9 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
    for(s = val; *s; s++) if(*s == '\n') *s = ' ';
 
    if(!python)
-      z.printxln("#define ", d.name, " (", val, ")");
+      z.printxln(g_.preproLimiter, "#define ", d.name, " (", val, ")");
    else if(simple)
-      z.printxln("#define ", d.name, " ", simple ? val : "...");
+      z.printxln(g_.preproLimiter, "#define ", d.name, " ", simple ? val : "...");
    else
    {
       if(!strcmp(d.name, "fstrcmp")) // hack // tweaked "inBGen" libec will not give proper e.expType
@@ -1972,7 +2151,7 @@ ASTRawString astEnum(Class cl, BClass c)
       ec2PrintToDynamicString(z, node, true);
       if(!python)
       {
-         z.println("#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)");
+         z.printxln(g_.preproLimiter, "#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)");
          z.print("enum boolean {");
       }
    }
@@ -1986,9 +2165,9 @@ ASTRawString astEnum(Class cl, BClass c)
          const char * dataType = tokenTypeString(cl.dataType);
          if(!python)
          {
-            z.println("#if CPP11");
+            z.printxln(g_.preproLimiter, "#if CPP11");
             z.printxln("enum C(", cl.name, ") : ", dataType, noValues ? ";" : "");
-            z.println("#else");
+            z.printxln(g_.preproLimiter, "#else");
          }
          {
             ASTNode node = astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/);
@@ -1999,7 +2178,7 @@ ASTRawString astEnum(Class cl, BClass c)
          else if(!noValues)
             z.printxln("enum");
          if(!python)
-            z.println("#endif");
+            z.printxln(g_.preproLimiter, "#endif");
          if(!noValues)
             z.print("{");
       }
@@ -2030,14 +2209,14 @@ ASTRawString astEnum(Class cl, BClass c)
    {
       if(!python)
       {
-         z.println("#endif");
-         z.println("#define eC_true   ((C(bool))1)");
-         z.println("#define eC_false  ((C(bool))0)");
+         z.printxln(g_.preproLimiter, "#endif");
+         z.printxln(g_.preproLimiter, "#define eC_true   ((C(bool))1)");
+         z.printxln(g_.preproLimiter, "#define eC_false  ((C(bool))0)");
       }
       else
       {
-         z.println("#define false 0");
-         z.println("#define true 1");
+         z.printxln(g_.preproLimiter, "#define false 0");
+         z.printxln(g_.preproLimiter, "#define true 1");
       }
    }
    raw.string = CopyString(z.array);
@@ -2072,14 +2251,14 @@ ASTRawString astBitTool(Class cl, BClass c)
          n[strlen(n)-1] = 0;
          x = PrintHexUInt64(bm.mask);
          if(!(x && x[0])) conmsg("check");
-         z.printxln("#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
+         z.printxln(g_.preproLimiter, "#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
                dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos);
-         z.printxln("#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
+         z.printxln(g_.preproLimiter, "#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
          if(!python)
          {
-            z.printxln("#define ", n, "(x)", spaces(48, strlen(n) + 3),
+            z.printxln(g_.preproLimiter, "#define ", n, "(x)", spaces(48, strlen(n) + 3),
                   " ((((", c.symbolName, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
-            z.printxln("#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
+            z.printxln(g_.preproLimiter, "#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
                   " (x) = ((", c.symbolName, ")(x) & ~((", c.symbolName, ")", n_,
                   "MASK)) | (((", c.symbolName, ")(", bm.name, ")) << ", n_, "SHIFT)");
          }
@@ -2093,7 +2272,7 @@ ASTRawString astBitTool(Class cl, BClass c)
    if(bitMembers)
    {
       int i, charCount = strlen(c.upper) + 2;
-      z.printx("#define ", c.upper, "(");
+      z.printx(g_.preproLimiter, "#define ", c.upper, "(");
       for(i = 0; i < bitMembers.count; i++)
       {
          char * name = bitMembers[i];

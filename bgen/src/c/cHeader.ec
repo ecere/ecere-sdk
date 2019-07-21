@@ -10,11 +10,14 @@ void cHeader(AST out, CGen g)
       cInHeaderProcessSourceFile(out, g, null, ":src/c/c_header_open.src");
       cInHeaderIncludes(out, g);
       cInHeaderModuleName(out, g);
+      if(g.preprocess)
+         cInHeaderMacrosInclude(out, g);
 
       if(g.lib.ecereCOM)
       {
          cInHeaderEcereComRuntimeFunctions(out, g);
-         cInHeaderProcessSourceFile(out, g, "binding macros", ":src/c/c_header_ec_macros.src");
+         if(!g.preprocess)
+            cInHeaderProcessSourceFile(out, g, "binding macros", ":src/c/c_header_ec_macros.src");
       }
       else if(g.lib.ecere)
          cInHeaderEcereRuntimeMacros(out, g);
@@ -108,7 +111,7 @@ static void cInHeaderProcessSourceFile(AST out, Gen g, const char * comment, con
    ASTRawString raw { }; DynamicString z { };
    if(comment && !python)
       bigCommentSection(z, comment);
-   sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars, python);
+   sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars, python, false);
    z.size--;
    if(z[z.count-1] == '\n');
       z[z.count-1] = 0;
@@ -134,15 +137,15 @@ static void cInHeaderIncludes(AST out, Gen g)
    bigCommentSection(z, "includes");
    if(g.lib.ecereCOM)
    {
-      z.printxln("#include <stdio.h>");
-      z.printxln("#include <stdint.h>");
-      z.printxln("#include <stdarg.h>");
-      z.printxln("#include <string.h>");
+      z.printxln(g.preproLimiter, "#include <stdio.h>");
+      z.printxln(g.preproLimiter, "#include <stdint.h>");
+      z.printxln(g.preproLimiter, "#include <stdarg.h>");
+      z.printxln(g.preproLimiter, "#include <string.h>");
    }
    else
    {
       for(libDep : g.libDeps)
-         z.printxln("#include \"", libDep.bindingName, ".h\"");
+         z.printxln(g.preproLimiter, "#include \"", libDep.bindingName, ".h\"");
    }
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
@@ -154,34 +157,43 @@ static void cInHeaderModuleName(AST out, CGen g)
    z.printxln("");
    if(!g.lib.ecere && !g.lib.ecereCOM)
    {
-      z.printxln("#if !defined(", g.lib.defineName, "_MODULE_NAME)");
-      z.printxln("#define ", g.lib.defineName, "_MODULE_NAME \"", g.lib.ecereCOM ? "ecere" : g.lib.loadModuleName, "\"");
-      z.printxln("#endif");
+      z.printxln(g.preproLimiter, "#if !defined(", g.lib.defineName, "_MODULE_NAME)");
+      z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_MODULE_NAME \"", g.lib.ecereCOM ? "ecere" : g.lib.loadModuleName, "\"");
+      z.printxln(g.preproLimiter, "#endif");
    }
    if(g.lib.ecereCOM)
    {
       z.printxln("");
-      z.printxln("#if !defined(BINDINGS_SHARED)");
-      z.printxln("#define LIB_EXPORT");
-      z.printxln("#define LIB_IMPORT");
-      z.printxln("#elif defined(__WIN32__)");
-      z.printxln("#define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility(\"default\")))");
-      z.printxln("#define LIB_IMPORT __attribute__((dllimport))");
-      z.printxln("#else");
-      z.printxln("#define LIB_EXPORT __attribute__ ((visibility(\"default\")))");
-      z.printxln("#define LIB_IMPORT");
-      z.printxln("#endif");
+      z.printxln(g.preproLimiter, "#if !defined(BINDINGS_SHARED)");
+      z.printxln(g.preproLimiter, "#define LIB_EXPORT");
+      z.printxln(g.preproLimiter, "#define LIB_IMPORT");
+      z.printxln(g.preproLimiter, "#elif defined(__WIN32__)");
+      z.printxln(g.preproLimiter, "#define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility(\"default\")))");
+      z.printxln(g.preproLimiter, "#define LIB_IMPORT __attribute__((dllimport))");
+      z.printxln(g.preproLimiter, "#else");
+      z.printxln(g.preproLimiter, "#define LIB_EXPORT __attribute__ ((visibility(\"default\")))");
+      z.printxln(g.preproLimiter, "#define LIB_IMPORT");
+      z.printxln(g.preproLimiter, "#endif");
    }
    z.printxln("");
-   z.printxln("#undef THIS_LIB_IMPORT");
-   z.printxln("#ifdef ", g.lib.defineName, "_EXPORT");
-   z.printxln("#define THIS_LIB_IMPORT LIB_EXPORT");
-   z.printxln("#elif defined(BINDINGS_SHARED)");
-   z.printxln("#define THIS_LIB_IMPORT LIB_IMPORT");
-   z.printxln("#else");
-   z.printxln("#define THIS_LIB_IMPORT");
-   z.printxln("#endif");
+   z.printxln(g.preproLimiter, "#undef THIS_LIB_IMPORT");
+   z.printxln(g.preproLimiter, "#ifdef ", g.lib.defineName, "_EXPORT");
+   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_EXPORT");
+   z.printxln(g.preproLimiter, "#elif defined(BINDINGS_SHARED)");
+   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_IMPORT");
+   z.printxln(g.preproLimiter, "#else");
+   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT");
+   z.printxln(g.preproLimiter, "#endif");
 
+   z.printxln("");
+   raw.string = CopyString(z.array); delete z;
+   out.Add(raw);
+}
+
+static void cInHeaderMacrosInclude(AST out, Gen g)
+{
+   ASTRawString raw { }; DynamicString z { };
+   z.printxln("#include \"eC-bind.h\"");
    z.printxln("");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
@@ -250,17 +262,17 @@ char * getFunctionNameThing(BFunction f)
 static void cInHeaderEcereRuntimeMacros(AST out, Gen g)
 {
    ASTRawString raw { }; DynamicString z { };
-   z.printxln("#define ", g.lib.defineName, "_APP_INTRO(c) \\");
-   z.printxln("      APP_INTRO(true) \\");
-   z.printxln("      ", g.lib.moduleName, "_init(app); \\");
-   z.printxln("      loadTranslatedStrings(null, MODULE_NAME); \\");
+   z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_APP_INTRO(c)", g.linejoinLimiter);
+   z.printxln("      APP_INTRO(true)", g.linejoinLimiter);
+   z.printxln("      ", g.lib.moduleName, "_init(app);", g.linejoinLimiter);
+   z.printxln("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter);
    z.printxln("      Instance_evolve(&app, class_ ## c);");
    z.printxln("");
-   z.printxln("#define ", g.lib.defineName, "_APP_OUTRO \\");
-   z.printxln("      unloadTranslatedStrings(MODULE_NAME); \\");
+   z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_APP_OUTRO", g.linejoinLimiter);
+   z.printxln("      unloadTranslatedStrings(MODULE_NAME);", g.linejoinLimiter);
    z.printxln("      APP_OUTRO");
    z.printxln("");
-   z.printxln("#define GUIAPP_INTRO ", g.lib.defineName, "_APP_INTRO(GuiApplication)");
+   z.printxln(g.preproLimiter, "#define GUIAPP_INTRO ", g.lib.defineName, "_APP_INTRO(GuiApplication)");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }
@@ -268,14 +280,14 @@ static void cInHeaderEcereRuntimeMacros(AST out, Gen g)
 static void cInHeaderEDARuntimeMacros(AST out, Gen g)
 {
    ASTRawString raw { }; DynamicString z { };
-   z.printxln("#define EDA_APP_INTRO(c) \\");
-   z.printxln("      APP_INTRO(true) \\");
-   z.printxln("      ecere_init(app); \\");
-   z.printxln("      EDA_init(app); \\");
-   z.printxln("      loadTranslatedStrings(null, MODULE_NAME); \\");
+   z.printxln(g.preproLimiter, "#define EDA_APP_INTRO(c)", g.linejoinLimiter);
+   z.printxln("      APP_INTRO(true)", g.linejoinLimiter);
+   z.printxln("      ecere_init(app);", g.linejoinLimiter);
+   z.printxln("      EDA_init(app);", g.linejoinLimiter);
+   z.printxln("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter);
    z.printxln("      Instance_evolve(&app, class_ ## c);");
    z.printxln("");
-   z.printxln("#define EDA_GUIAPP_INTRO EDA_APP_INTRO(GuiApplication)");
+   z.printxln(g.preproLimiter, "#define EDA_GUIAPP_INTRO EDA_APP_INTRO(GuiApplication)");
    raw.string = CopyString(z.array); delete z;
    out.Add(raw);
 }

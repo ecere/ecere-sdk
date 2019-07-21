@@ -44,6 +44,18 @@
             ],
             "FastMath" : false
          }
+      },
+      {
+         "Name" : "GenLocDebug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG",
+               "ENABLE_GEN_LOC"
+            ],
+            "FastMath" : false
+         }
       }
    ],
    "Files" : [
@@ -73,9 +85,10 @@
                ]
             },
             {
-               "Folder" : "todo-cpp",
+               "Folder" : "cpp",
                "Files" : [
-                  "src/cpp/genCPP.ec"
+                  "genCPP.ec",
+                  "cppHardcoded.ec"
                ]
             },
             {
@@ -108,7 +121,8 @@
             "debug.ec",
             "debug.eh",
             "debug.c",
-            "extras.ec"
+            "extras.ec",
+            "bgen.eh"
          ]
       }
    ],
@@ -124,7 +138,8 @@
                   "c_header_close.src",
                   "c_header_ec_macros.src",
                   "c_header_ec_hardcoded.src",
-                  "c_header_ec_hardcoded_after.src"
+                  "c_header_ec_hardcoded_after.src",
+                  "c_make.src"
                ]
             },
             {
@@ -139,6 +154,14 @@
                   "py_hardcode_container.src",
                   "py_hardcode_guiapplication.src",
                   "py_hardcode_module.src"
+               ]
+            },
+            {
+               "Folder" : "cpp",
+               "Files" : [
+                  "cpp_header_open.src",
+                  "cpp_header_close.src",
+                  "cpp_header_ec_macros.src"
                ]
             }
          ]

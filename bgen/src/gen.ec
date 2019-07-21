@@ -1,8 +1,14 @@
 #include "debug.eh"
+#include "bgen.eh"
 
 import "ecere" // must keep this or compilation outside this file will fail
 
 import "bgen"
+
+const char * indents(int count)
+{
+   return spaces(count * g_.options.indentSize, 0);
+}
 
 #define storeMapGetInstantiate(BType, ECType, array, _map, init) \
    BType result = null; \
@@ -90,21 +96,31 @@ public:
    Map<String, String> sourceProcessorVars { };
    BModule bmod { gen = (CGen)this };
    List<Library> libDeps { };
+   String cPrefix;
    bool quiet;
+   bool preprocess;
+   const String preproLimiter;
+   const String linejoinLimiter;
 private:
+   //preprocess = true;
+   cPrefix = CopyString("");
    virtual bool init()
    {
       //PrintLn(lang, ":");
       sym.init(this);
+      preproLimiter = preprocess ? "##" : "" ;
+      linejoinLimiter = preprocess ? " \\" : " \\" ;
 
       //resetDeclerationsMaps
       typedefs.RemoveAll();
       structs.RemoveAll();
 
       // prepareVars
-      sourceProcessorVars.RemoveAll();
+      sourceProcessorVars.Free();
+      sourceProcessorVars["MODULE_NAME"] = CopyString(lib.moduleName);
       sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
       sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
+      sourceProcessorVars["C_PREPRO_LIMITTER"] = CopyString(preprocess ? "//##" : "");
 
       return true;
    }
@@ -210,6 +226,7 @@ private:
       delete lib;
       delete dir;
       delete options;
+      delete cPrefix;
    }
 }
 
@@ -223,21 +240,26 @@ class SymbolNameCollection
    char * _property;
    char * _define;
    char * globalFunction;
+   char * alignment;
+   char * dataDisplayFlags;
 
    char * cm_instance;
 
    void init(Gen g)
    {
-      instance        = g.allocMacroSymbolName(false, C, { }, "Instance"       , null, 0);
-      module          = g.allocMacroSymbolName(false, C, { }, "Module"         , null, 0);
-      application     = g.allocMacroSymbolName(false, C, { }, "Application"    , null, 0);
-      __class         = g.allocMacroSymbolName(false, C, { }, "Class"          , null, 0);
-      method          = g.allocMacroSymbolName(false, C, { }, "Method"         , null, 0);
-      _property       = g.allocMacroSymbolName(false, C, { }, "Property"       , null, 0);
-      _define         = g.allocMacroSymbolName(false, C, { }, "Define"         , null, 0);
-      globalFunction  = g.allocMacroSymbolName(false, C, { }, "GlobalFunction" , null, 0);
+      instance         = g.allocMacroSymbolName(false, C, { }, "Instance"         , null, 0);
+      module           = g.allocMacroSymbolName(false, C, { }, "Module"           , null, 0);
+      application      = g.allocMacroSymbolName(false, C, { }, "Application"      , null, 0);
+      __class          = g.allocMacroSymbolName(false, C, { }, "Class"            , null, 0);
+      method           = g.allocMacroSymbolName(false, C, { }, "Method"           , null, 0);
+      _property        = g.allocMacroSymbolName(false, C, { }, "Property"         , null, 0);
+      _define          = g.allocMacroSymbolName(false, C, { }, "Define"           , null, 0);
+      globalFunction   = g.allocMacroSymbolName(false, C, { }, "GlobalFunction"   , null, 0);
 
-      cm_instance     = g.allocMacroSymbolName(false, CM, { }, "Instance"      , null, 0);
+      alignment        = g.allocMacroSymbolName(false, C, { }, "Alignment"        , null, 0);
+      dataDisplayFlags = g.allocMacroSymbolName(false, C, { }, "DataDisplayFlags" , null, 0);
+
+      cm_instance      = g.allocMacroSymbolName(false, CM, { }, "Instance"        , null, 0);
    }
 
    ~SymbolNameCollection()
@@ -250,6 +272,8 @@ class SymbolNameCollection
       delete _property;
       delete _define;
       delete globalFunction;
+      delete alignment;
+      delete dataDisplayFlags;
 
       delete cm_instance;
    }
@@ -279,6 +303,7 @@ public:
    bool quiet;
    ActionFlag blackList;
    bool bypassMacros;
+   bool headerOnly;
    property const String dir
    {
       get { return dir; }
@@ -319,6 +344,8 @@ private:
    BlackWhiteList functionList;
    BlackWhiteList classList;
    ListsBlackBits black;
+   uint indentSize; // todo: add command line switch
+   indentSize = 3; // temp
 
    property bool isEmpty
    {
@@ -336,6 +363,7 @@ private:
       if(opt.bypassMacros) bypassMacros = true;
       if(opt.dir && *opt.dir) dir = CopyString(opt.dir);
       if(opt.cpath && *opt.cpath) cpath = CopyString(opt.cpath);
+      if(opt.headerOnly) headerOnly = true;
       if(opt.defineList && opt.defineList.count)
       {
          delete defineList;
@@ -402,6 +430,7 @@ public:
    char * name;
    char * moduleName;
    char * bindingName;
+   char * packageName;
    char * defineName;
    char * loadModuleName;
    bool ecereCOM;
@@ -896,6 +925,7 @@ class OptBits
    bool anonymous:1;
    bool notype:1;
    bool param:1;
+   bool asis:1;
 };
 
 struct TypeInfo
@@ -1433,7 +1463,9 @@ class BClass : struct
    bool is_class;// bool is_Class;
    bool is_struct;
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
-   bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor, isWindow;
+   bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor;
+   bool isSurface, isIOChannel, isWindow, isDataBox;
+
    bool hasPublicMembers;
    bool noMacro, noSpecMacro, nativeSpec;
    bool cleanDataType;
@@ -1462,7 +1494,7 @@ class BClass : struct
          skip = true;
       cname = getClassTypeName(cl);
       coSymbol = g_.allocMacroSymbolName(false, CO, { }, cname, null, 0);
-      upper = CopyAllCapsString(cl.type == bitClass ? name : "");
+      upper = CopyAllCapsString(name/*cl.type == bitClass ? name : ""*/);
 
       isFromCurrentModule = classIsFromModule(cl, gen.mod, ec1ComponentsApp);
 
@@ -1482,7 +1514,10 @@ class BClass : struct
       isContainer       = cl.type == normalClass   && !strcmp(name, "Container");
       isArray           = cl.type == normalClass   && !strcmp(name, "Array");
       isAnchor          = cl.type == structClass   && !strcmp(name, "Anchor");
+      isSurface         = cl.type == normalClass   && !strcmp(name, "Surface");
+      isIOChannel       = cl.type == normalClass   && !strcmp(name, "IOChannel");
       isWindow          = cl.type == normalClass   && !strcmp(name, "Window");
+      isDataBox         = cl.type == normalClass   && !strcmp(name, "DataBox");
 
       if(is_class)
          clAlt = eSystem_FindClass(g_.mod, "Class");
@@ -1592,17 +1627,18 @@ class BClass : struct
    void OnFree() { free(); };
 };
 
-static inline const char * strptrNoNamespace(const char * str)
-{
-   const char * t, * s = str;
-   while((t = strstr(s, "::"))) s = t + 2;
-   //const char * s = (s = RSearchString(str, "::", strlen(str), false, false), s ? s + 2 : str);
-   return s;
-}
-
 const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
 {
    Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(symbol));
+   if(!cl && g_.lib.ecereCOM && g_.lang == CPlusPlus)
+   {
+      if(!strcmp(symbol, "Surface") || !strcmp(symbol, "DataBox"))
+         return g_.sym.instance;
+      else if(!strcmp(symbol, "Alignment"))
+         return g_.sym.alignment;
+      else if(!strcmp(symbol, "DataDisplayFlags"))
+         return g_.sym.dataDisplayFlags;
+   }
    if(cl)
    {
       Class cl2 = reduce ? reduceUnitClass(cl) : cl;

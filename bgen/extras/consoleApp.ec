@@ -145,16 +145,16 @@ public:
                      if(scope != library)
                      {
                         err = outOfScope;
-                        PrintLn($"Error: argument ", sym, " (", arg, ") is out of scope. 'library <name>' must be specified first"); // todo: fix i18n
+                        PrintLn($"Error: argument ", sym, " (", arg, ") is out of scope. 'library <name>' must be specified first");
                      }
                      break;*/
                   case ArgumentSymbol::ambiguous:
                      err = ambiguous;
-                     PrintLn($"Error: argument ", sym, " (", arg, ") is ambiguous."); // todo: fix i18n
+                     PrintLn($"Error: argument ", sym, " (", arg, ") is ambiguous.");
                      break;
                   case 0:
                      err = unknown;
-                     PrintLn($"Error: argument ", sym, " (", arg, ") is unknown."); // todo: fix i18n
+                     PrintLn($"Error: argument ", sym, " (", arg, ") is unknown.");
                      break;
                   //default: conmsg("check"); break;
                }
@@ -177,7 +177,7 @@ public:
             //if(c + 1 == argc && (sym == library || sym == directory || sym == string || sym == map || sym == tell))
             {
                if(!error) error = missing;
-               PrintLn($"Error: argument for ", sym, " (", arg, ") is missing."); // todo: fix i18n
+               PrintLn($"Error: argument for ", sym, " (", arg, ") is missing.");
                /*if(sym == library)
                   ;
                else if(sym == directory)
@@ -303,6 +303,7 @@ public:
          {
             PrintLn(i.data, " <- ", i.key);
          }
+         PrintLn("count: ", switches.count);
       }
    }
 
