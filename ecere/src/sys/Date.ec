@@ -110,9 +110,16 @@ public struct Date
    {
       if(stringOutput)
       {
+         const String quotes = onType && (*onType == json || *onType == econ) ? "\"" : null;
          if(day && year)
-            sprintf(stringOutput, "%s, %s %2d, %d",
-               longDaysNames[dayOfTheWeek], longMonthsNames[month], day, year);
+            sprintf(stringOutput, "%s%s, %s %2d, %d%s",
+               quotes ? quotes : "", longDaysNames[dayOfTheWeek], longMonthsNames[month], day, year, quotes ? quotes : "");
+         else if(quotes)
+         {
+            stringOutput[0] = quotes[0];
+            stringOutput[1] = quotes[0];
+            stringOutput[2] = 0;
+         }
          else
             stringOutput[0] = 0;
       }
