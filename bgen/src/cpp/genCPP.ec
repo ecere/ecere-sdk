@@ -96,6 +96,7 @@ class CPPGen : CGen
             bmod.root_nspace = (NameSpacePtr)ns.ns;
          }
          prepareClasses(n);
+         bmod.orderedNamespaces.Add(n);
       }
       ns.cleanup();
    }
@@ -933,11 +934,12 @@ static void outputContents(CPPGen g, File out)
    for(nn : g.bmod.orderedNamespaces)
    {
       BNamespace n = nn;
-      /*for(vv : n.contents)
+      for(vv : n.contents)
       {
-         BOutput o = (BOutput)optr;
-         out.Puts(o.ds.array);
-      }*/
+         BOutput o = vv;
+         if(o._class == class(BOutput) && o.ds)
+            out.Puts(o.ds.array);
+      }
 //      /*
       if(n.orderedBackwardsOutputs.count)
       {
@@ -1011,6 +1013,7 @@ static void cppHeaderEnd(CPPGen g, File f)
    f.PrintLn("#endif // !defined(__", g.lib.defineName, "_HPP__)");
 }
 
+// NOTE: 'bypass' is a mode for bgen to itself expand the macros
 enum MacroMode { use, bypass, def };
 enum MacroOptAll { use, bypass = 0xFFFFFFFF };
 class MacroOptBits
@@ -1249,7 +1252,7 @@ static void cppMacroIntConstructClass(
          o.printx(genloc__, indents(ind), "#define _CONSTRUCT(c, b)", lc, ln);
       case bypass:
             o.printx(genloc__, indents(ind + 1), "INSTANCE_VIRTUAL_METHODS(", c, ")", lc, ln);
-            cppMacroClassVirtualMethods(g, o, bypass, ind + 1, "INSTANCE", c, g.cInstance, g.cclass, 0);
+            //cppMacroClassVirtualMethods(g, o, use /*bypass*/, ind + 1, "INSTANCE", c, g.cInstance, g.cclass, 0);
             o.printx(genloc__, indents(ind + 1), "static TCPPClass<", c, "> _class;", lc, ln);
             o.printx(genloc__, indents(ind + 1), "static C(bool) constructor(", g_.sym.instance, " i, C(bool) alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new ", c, "(i, _class) != null : true; }", lc, ln);
             o.printx(genloc__, indents(ind + 1), "static void destructor(", g_.sym.instance, " i) { ", c, " * inst = (", c, " *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(", c, " & self))_class.destructor)(*inst); delete inst; }", lc, ln);
@@ -1290,7 +1293,7 @@ static void cppMacroConstructClass(
       case bypass:
             o.printx(genloc__, indents(ind + 1), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
             //o.printx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
-            cppMacroIntConstructClass(g, o, mode, ind, c, b, 0);
+            cppMacroIntConstructClass(g, o, use /*mode*/, ind + 1, c, b, 0);
          break;
       case use:
          o.printx(genloc__, indents(ind), "CONSTRUCT(",

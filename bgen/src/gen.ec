@@ -531,7 +531,7 @@ enum BVariantKind
    }
 };
 
-class BVariant : struct
+class BVariant //: struct
 {
 public:
    BVariantKind kind;
