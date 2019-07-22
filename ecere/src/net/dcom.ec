@@ -74,6 +74,7 @@ static class CallMethodPacket : DCOMPacket
    int objectID;
    int methodID;
    int callID;
+   bool hasReturnValue;
    unsigned int argsSize;
    byte args[1];
 };
@@ -200,7 +201,7 @@ public:
 
          incref this;
 
-         while(true)
+         while(true && hasReturnValue)
          {
             if(!serverSocket || !serverSocket.connected || !serverSocket.thread)
                break;
@@ -223,6 +224,8 @@ public:
             returnBuffer.WriteData(ack.buffer.buffer, ack.buffer.count);
             delete ack;
          }
+         else if(!hasReturnValue)
+            result = true;
 
          lockCount = guiApp.UnlockEx();
          mutex.Release();
@@ -362,7 +365,7 @@ class DCOMClientThread : Thread
          if(callMethod.objectID < numObjects /*&& callMethod.methodID < numMethods*/)
          {
             DCOMServerObject object = objects[callMethod.objectID];
-            bool hasReturnValue = true;
+            bool hasReturnValue = callMethod.hasReturnValue; //true;
             MethodReturnedPacket packet;
             unsigned int size;
             SerialBuffer buffer { };
@@ -373,6 +376,7 @@ class DCOMClientThread : Thread
 
             if(!hasReturnValue)
             {
+               /*
                size = (uint)(uintptr)&((MethodReturnedPacket)0).args;
                packet = (MethodReturnedPacket)new0 byte[size];
                packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
@@ -381,6 +385,7 @@ class DCOMClientThread : Thread
                packet.methodID = callMethod.methodID;
                packet.argsSize = 0;
                SendPacket(packet);
+               */
             }
 
             incref object;
@@ -749,7 +754,7 @@ public:
       answered = true; //2;
    }
 
-   dllexport bool CallMethod(unsigned int methodID)
+   dllexport bool CallMethod(unsigned int methodID, bool hasReturnValue)
    {
       bool result = false;
       if(this && connected)
@@ -760,6 +765,7 @@ public:
          CallMethodPacket packet = (CallMethodPacket)new0 byte[size];
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CallMethod);
          packet.size = size;
+         packet.hasReturnValue = hasReturnValue;
          packet.objectID = htoled(objectID);
          packet.methodID = htoled(methodID);
          packet.callID = callID;
@@ -768,7 +774,7 @@ public:
          SendPacket(packet);
          delete packet;
 
-         while(true)
+         while(hasReturnValue && true)
          {
             int lockCount;
             if(!thread || !connected)
@@ -789,10 +795,11 @@ public:
             guiApp.LockEx(lockCount);
          }
 
-         if(ack)
+         //if(ack)
          {
             __ecereBuffer.Free();
-            __ecereBuffer.WriteData(ack.buffer.buffer, ack.buffer.count);
+            if(ack)
+               __ecereBuffer.WriteData(ack.buffer.buffer, ack.buffer.count);
             delete ack;
             result = true;
          }

@@ -1076,6 +1076,7 @@ static void BindDCOMClient()
 
                if(method.dataType)
                {
+                  bool hasReturnValue = false;
                   if(method.dataType.returnType.kind != voidType)
                   {
                      TypeName resultType;
@@ -1084,6 +1085,8 @@ static void BindDCOMClient()
                      char type[1024] = "";
                      char className[1024];
                      Symbol classSym;
+
+                     hasReturnValue = true;
 
                      if(method.dataType.returnType.kind == classType)
                         classSym = method.dataType.returnType._class; // VERIFY THIS FindClass(method.dataType.returnType._class.string);
@@ -1147,8 +1150,18 @@ static void BindDCOMClient()
                         eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule),
                      "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod");
 
-                  f.Printf("      if(DCOMClientObject::CallMethod(%d))\n", id++);
+                  for(param = method.dataType.params.first; param; param = param.next)
+                  {
+                     if(param.kind == classType && ((param._class && param._class.registered && param._class.registered.type == structClass) || !strcmp(param._class.string, "String")) && !param.constant)
+                     {
+                        hasReturnValue = true;
+                        break;
+                     }
+                  }
+
+                  f.Printf("      if(DCOMClientObject::CallMethod(%d, %s))\n", id++, hasReturnValue ? "true" : "false");
                   f.Printf("      {\n");
+
                   for(param = method.dataType.params.first; param; param = param.next)
                   {
                      if(param.kind == classType && ((param._class && param._class.registered && param._class.registered.type == structClass) || !strcmp(param._class.string, "String")) && !param.constant)
