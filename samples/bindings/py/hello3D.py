@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pyecere import *
+from ecere import *
 
 app = GuiApplication(appGlobals=globals())
 
