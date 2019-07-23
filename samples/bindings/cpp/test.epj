@@ -1,0 +1,63 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "test",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/bindings/c",
+         "$(ECERE_SDK_SRC)/bindings/cpp"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "test",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "c",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+         ]
+      },
+      {
+         "Folder" : "cpp",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp"
+         ]
+      },
+      "helloApp.cpp"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
