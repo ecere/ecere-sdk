@@ -1766,7 +1766,8 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
       int i;
       bool isFirst = true;
       Iterator it { array };
-      Class arrayType = type.templateArgs[0].dataTypeClass;
+      Class arrayType = type.templateArgs[0].dataTypeClass ? type.templateArgs[0].dataTypeClass :
+         eClass_IsDerived(type, class(Container)) && eClass_IsDerived(array._class, type) ? array._class.templateArgs[0].dataTypeClass : null;
       const String tName = arrayType ? (arrayType.templateClass ? arrayType.templateClass.name : arrayType.name) : "";
       bool spacing = compactArrays.Find(tName) == null;
       f.Puts(spacing ? "[\n" : "[ ");
