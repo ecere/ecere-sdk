@@ -500,7 +500,7 @@ public:
       {
          StylingRuleBlock block { selectors = newSelectors };
          StylesMask mask = 0;
-
+         if(id) block.id = { string = CopyString(id.string) };
          if(styles)
          {
             StylesList newStyles { };
