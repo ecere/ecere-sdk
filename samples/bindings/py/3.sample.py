@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""2.sample.py pyecere sample"""
-from pyecere import *
+"""2.sample.py ecere sample"""
+from ecere import *
 # driver = "OpenGL"
 app = GuiApplication(appGlobals=globals())
 printLn("Testing Variadic Functions!\n", 1, " + ", 2, " = ", 1+2)

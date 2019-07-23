@@ -39,18 +39,18 @@ bg_bind_cd_build_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),+cd
 # All
 
 .PHONY: bgentalk
-bgenpolite: $(BINARIES)
+bgenpolite: bindingsbuild
 	@$(call echo,  have a great day!)
 	@$(call echo,         -bgen)
 
 .PHONY: bindings
-bindings: $(BINARIES) bindingsgenc bindingsbuildc bindingsgenpy bindingsbuildpy bgentalk;
+bindings: bgenpolite;
 
 .PHONY: bindingsgen
-bindingsgen: $(BINARIES) bindingsgenc bindingsgenpy bgentalk;
+bindingsgen: bindingsgenpy;
 
 .PHONY: bindingsbuild
-bindingsbuild: $(BINARIES) bindingsbuildc bindingsbuildpy bgentalk;
+bindingsbuild: bindingsbuildpy;
 
 .PHONY: bindingsclean
 bindingsclean: bindingscleanc bindingscleanpy;
@@ -71,7 +71,7 @@ bindingsdistclean:
 # C
 
 .PHONY: bindingsc
-bindingsc: $(BINARIES) bindingsgenc bindingsbuildc
+bindingsc: bindingsbuildc
 
 .PHONY: bindingsgenc
 bindingsgenc: $(BINARIES)
@@ -81,7 +81,7 @@ bindingsgenc: $(BINARIES)
 	$(BGEN) -dir bindings/c $(BGEN_ARGS) $(BGEN_QUIET) -c $(BGEN_LIBS)
 
 .PHONY: bindingsbuildc
-bindingsbuildc: $(BINARIES)
+bindingsbuildc: bindingsgenc
 	$(call bg_bind_____echo,1,c)
 	$(call bg_bind_cd_build,1,c,all)
 	$(call bg_bind_____echo,2,c)
@@ -139,7 +139,7 @@ bindingswipecleanc:
 # Python
 
 .PHONY: bindingspy
-bindingspy: $(BINARIES) bindingsgenpy bindingsbuildpy;
+bindingspy: bindingsbuildpy;
 
 .PHONY: bindingsgenpy
 bindingsgenpy: $(BINARIES)
@@ -149,7 +149,7 @@ bindingsgenpy: $(BINARIES)
 	$(BGEN) -dir bindings/py $(BGEN_ARGS) $(BGEN_QUIET) -c -header-only -py $(BGEN_LIBS)
 
 .PHONY: bindingsbuildpy
-bindingsbuildpy: $(BINARIES)
+bindingsbuildpy: bindingsbuildc bindingsgenpy
 ifdef PY_NA
 	$(error Using $(PYTHON) failed. Please set PYTHON to point to a valid python program name or location)
 else
