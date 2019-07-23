@@ -1338,7 +1338,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                else
                {
                   for(param = t2.params.first; param; param = param.next)
-                     astTypeName(param.name, { type = param }, { }, vTop, list);
+                     astTypeName(param.name, { type = param }, { param = true }, vTop, list);
                }
             }
          }
