@@ -1269,6 +1269,7 @@ public:
       ExpFlags flags = 0;
       String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask) : null;
       DataMember dataMember = null;
+      Class inheritClass = c;
       if(identifiers && identifiers.first)
       {
          for(i : identifiers)
@@ -1276,13 +1277,14 @@ public:
             String s = identifierStr ? PrintString(identifierStr, ".", i.string) : CopyString(i.string);
             delete identifierStr;
             identifierStr = s;
-            dataMember = eClass_FindDataMember(c, i.string, c.module, null, null);
+            dataMember = eClass_FindDataMember(inheritClass, i.string, inheritClass.module, null, null);
             if(dataMember)
             {
                if(!dataMember.dataTypeClass)
                   dataMember.dataTypeClass = destType = eSystem_FindClass(dataMember._class.module, dataMember.dataTypeString);
                else
                   destType = dataMember.dataTypeClass;
+               inheritClass = dataMember.dataTypeClass;
             }
          }
       }
@@ -1353,7 +1355,7 @@ public:
             }
          }
       }
-      expType = c;//test
+      expType = inheritClass;//test
       return flags;
    }
 
