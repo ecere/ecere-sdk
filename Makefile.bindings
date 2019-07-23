@@ -39,12 +39,12 @@ bg_bind_cd_build_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),+cd
 # All
 
 .PHONY: bgentalk
-bgenpolite: bindingsbuild
+bgentalk: bindingsbuild
 	@$(call echo,  have a great day!)
 	@$(call echo,         -bgen)
 
 .PHONY: bindings
-bindings: bgenpolite;
+bindings: bgentalk;
 
 .PHONY: bindingsgen
 bindingsgen: bindingsgenpy;
