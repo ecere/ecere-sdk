@@ -50,7 +50,17 @@
          "Files" : [
             "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
             "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
-            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+            {
+               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+               "Configurations" : [
+                  {
+                     "Name" : "Debug",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
             "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp"
          ]
       },
