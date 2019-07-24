@@ -1585,6 +1585,7 @@ static void cppMacroClassVirtualMethods(
                   char * s1 = null;
                   char * s2 = null;
                   char * s3 = null;
+                  const char * mncpp = strcmp(mn, "delete") ? mn : "_delete";
                   if(!strcmp(mn, "onEdit"))
                      conmsg("step");
                   if(cParamRT && !strcmp(cParamRT.name, "IteratorPointer"))
@@ -1613,6 +1614,7 @@ static void cppMacroClassVirtualMethods(
                   {
                      cppMacroVirtualMethod(g, o, submode, 1,
                            mn,
+                           mncpp,
                            "c",
                            cn,
                            (s1 = /*opt1 ? PrintString("C(", cParamRT.name, ")") : */cppTypeName(ti, false /*true*/)),
@@ -1626,6 +1628,7 @@ static void cppMacroClassVirtualMethods(
                   {
                      cppMacroVirtualMethod(g, o, submode, 1,
                            mn,
+                           mncpp,
                            "c",
                            cn,
                            (s1 = opt1 ? CopyString("Instance &" /*cParamRT.name*/) : cppTypeName(ti, true)),
@@ -1720,6 +1723,7 @@ static void cppMacroClassVirtualMethods(
       void * unused) {     // unused
    cppMacroVirtualMethod(g, o, def, ind,
          "n",
+         "ncpp",
          "c",
          "b",
          "r",
@@ -1747,6 +1751,7 @@ static void cppMacroVirtualMethod(
       MacroMode mode,
       uint ind,            // indents
       const char * n,      // name (method)
+      const char * ncpp,      // name (method)
       const char * c,      // class
       const char * b,      // base class
       const char * r,      // return type
@@ -1761,7 +1766,7 @@ static void cppMacroVirtualMethod(
    switch(mode)
    {
       case def:
-         o.printx(genloc__, indents(ind), "#define VIRTUAL_METHOD(n, c, b, r, p0, ep, p, d)", lc, ln);
+         o.printx(genloc__, indents(ind), "#define VIRTUAL_METHOD(n, ncpp, c, b, r, p0, ep, p, d)", lc, ln);
       case bypass:
             o.printx(genloc__, indents(ind + 1), "struct ", c, sc, "_", sc, n, sc, "_Functor", lc, ln);
             o.printx(genloc__, indents(ind + 1), "{", lc, ln);
@@ -1769,7 +1774,7 @@ static void cppMacroVirtualMethod(
                o.printx(genloc__, indents(ind + 2), "typedef r (* FunctionType)(", p0, " ", p, ");", lc, ln);
                o.printx(genloc__, indents(ind + 2), "inline FunctionType operator= (FunctionType func)", lc, ln);
                o.printx(genloc__, indents(ind + 2), "{", lc, ln);
-                  o.printx(genloc__, indents(ind + 3), "SELF(", c, ", ", n, ");", lc, ln);
+                  o.printx(genloc__, indents(ind + 3), "SELF(", c, ", ", ncpp, ");", lc, ln);
                   o.printx(genloc__, indents(ind + 3), "if(self->vTbl == c::_class.vTbl)", lc, ln);
                   o.printx(genloc__, indents(ind + 3), "{", lc, ln);
                      o.printx(genloc__, indents(ind + 4), "uint size = ", c, " :: _class.impl->vTblSize;", lc, ln);
@@ -1781,17 +1786,17 @@ static void cppMacroVirtualMethod(
                o.printx(genloc__, indents(ind + 2), "}", lc, ln);
                o.printx(genloc__, indents(ind + 2), "inline r operator()(", ep, " ", p, ")", lc, ln);
                o.printx(genloc__, indents(ind + 2), "{", lc, ln);
-                  o.printx(genloc__, indents(ind + 3), "SELF(", c, ", ", n, ");", lc, ln);
+                  o.printx(genloc__, indents(ind + 3), "SELF(", c, ", ", ncpp, ");", lc, ln);
                   o.printx(genloc__, indents(ind + 3), "", d, ";", lc, ln);
                o.printx(genloc__, indents(ind + 2), "}", lc, ln);
-            o.printx(genloc__, indents(ind + 1), "} ", n, ";", lc, ln);
+            o.printx(genloc__, indents(ind + 1), "} ", ncpp, ";", lc, ln);
             o.printx(genloc__, indents(ind + 1), "inline static void register_", sc, n, "(CPPClass & cl, ", c, sc, "_", sc, n, sc, "_Functor::FunctionType func)", lc, ln);
             o.printx(genloc__, indents(ind + 1), "{", lc, ln);
                o.printx(genloc__, indents(ind + 2), "((", c, sc, "_", sc, n, sc, "_Functor::FunctionType *)cl.vTbl)[M_VTBLID(", b, ", ", n, ")] = func;", lc, ln);
             o.printx(genloc__, indents(ind + 1), "}", ln);
          break;
       case use:
-         o.printx(genloc__, indents(ind), "VIRTUAL_METHOD(", n, ", ", c, ", ", b, ",", lc, ln);
+         o.printx(genloc__, indents(ind), "VIRTUAL_METHOD(", n, ", ", ncpp, ",", c, ", ", b, ",", lc, ln);
             o.printx(genloc__, indents(ind + 1), r, ", ", p0, ", ", ep, ", ", p, ",", lc, ln);
             o.printx(genloc__, indents(ind + 1), d, ")");
          break;
