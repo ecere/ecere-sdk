@@ -192,7 +192,7 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("   }");
    f.PrintLn("");
 
-   f.PrintLn("#define SELF(c, n)  c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))");
+   f.PrintLn("#define SELF(c, n)  __attribute__((unused)) c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))");
    f.PrintLn("");
 
    // f.PrintLn("#define _ARG ,");

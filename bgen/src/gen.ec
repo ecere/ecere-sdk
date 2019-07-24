@@ -539,7 +539,9 @@ public:
    property BDefine
    {
       set { mapGetCreateVariant(vdefine, v.d); }
-      get { if(kind == vdefine) return d; conassertctx(0, "?"); return null; }
+      get { if(kind == vdefine) return d;
+         conassertctx(0, "?");
+         return null; }
    }
    property BFunction
    {
