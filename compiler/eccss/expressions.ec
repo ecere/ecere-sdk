@@ -1268,8 +1268,9 @@ public:
    {
       ExpFlags flags = 0;
       String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask) : null;
-      DataMember dataMember = null;
+      //DataMember dataMember = null;
       Class inheritClass = c;
+      dataMember = null;
       if(identifiers && identifiers.first)
       {
          for(i : identifiers)
