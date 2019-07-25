@@ -743,7 +743,10 @@ static void processCppClass(CPPGen g, BClass c)
       o.ds.printx(";", ln);
    }
 }
-                                // FIXME: What is this 'asis' parameter????
+
+// TOCHECK: asis being false indicates to add the C() prefixing macro to refer to the C bindings type
+//          Currently, as only normal classes are generated, and not class:struct classes,
+//          the class:struct classes should have the C() types
 char * cppTypeName(TypeInfo ti, bool asis)
 {
    char * result;
@@ -942,7 +945,7 @@ char * cppParams(TypeInfo ti, CPPParamsOutputMode mode, bool comma, const char *
                      }
                      case _argParamList:
                      {
-                        bool asis = ct == normalClass || ct == noHeadClass;
+                        bool asis = ct == normalClass;// || ct == noHeadClass;
 
                         if(hack)
                         {
@@ -957,7 +960,7 @@ char * cppParams(TypeInfo ti, CPPParamsOutputMode mode, bool comma, const char *
                            z.printx("c &");
                         else
                         {
-                           cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, asis = false /*asis*/ }, ti.cl);
+                           cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, asis = asis }, ti.cl);
                         }
 
                         //if(!name[0])
@@ -1717,7 +1720,16 @@ static void cppMacroClassVirtualMethods(
                      ; //PrintLn("");
 
                   s3z.copy("");
-                  if(noRet);
+                  if(noRet)
+                  {
+                     if(c.isInstance) s3z.concatx("Instance"); // Instance_* prefix for base instance methods
+                     s3z.concatx(tn, "(");
+                     if(c.isInstance || c.cl.type != normalClass)
+                         s3z.concatx("_class.impl, ");
+                     s3z.concatx("self ? self->impl : (", sn, ")null");
+                     s3z.concatx((args = cppParams(argsInfo, passing, false, 0)));
+                     s3z.concatx(");", lc, ln);
+                  }
                   else if(ctRT == normalClass || ctRT == noHeadClass)
                   {
                      s3z.concatx(cParamRT.symbolName);
