@@ -510,9 +510,13 @@ static void WriteMain(const char * fileName)
                //if(strcmp(module.name, "ecereCOM") && strcmp(module.name, "ecere") )
                {
                   if(module.importType == staticImport)
-                     f.Printf("   eModule_LoadStatic(module, \"%s\", %s, __ecereDll_Load_%s, __ecereDll_Unload_%s);\n", module.name, (module.importAccess == privateAccess) ? "privateAccess" : "publicAccess", module.name,module.name);
+                     f.Printf("   if(!eModule_LoadStatic(module, \"%s\", %s, __ecereDll_Load_%s, __ecereDll_Unload_%s))\n", module.name, (module.importAccess == privateAccess) ? "privateAccess" : "publicAccess", module.name,module.name);
                   else
-                     f.Printf("   eModule_Load(module, \"%s\", %s);\n", module.name, (module.importAccess == privateAccess) ? "privateAccess" : "publicAccess");
+                     f.Printf("   if(!eModule_Load(module, \"%s\", %s))\n", module.name, (module.importAccess == privateAccess) ? "privateAccess" : "publicAccess");
+                  f.Printf("      printf(\"Error loading eC module \\\"%%s\\\" (%s)\\nThings might go very wrong.\\n%s\", \"%s\");\n",
+                     module.importType == staticImport ? "statically linked" : "shared library -- .so/.dll/.dylib",
+                     module.importType == staticImport ? "" : "Check installed libraries or PATH (Windows) / (DY)LD_LIBRARY_PATH (Unix / Apple) environment variable.\\n",
+                     module.name);
                }
             }
          }
