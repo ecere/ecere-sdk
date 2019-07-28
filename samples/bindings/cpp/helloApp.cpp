@@ -14,10 +14,12 @@ public:
    REGISTER()
    {
       Application::class_registration(_class);
-      register_main(_class, [](Application & app)
-      {
-         printLn(class_String, "C++: Hello, eC", null);
-      });
+      register_main(_class,
+         [](Application & app)
+         {
+            printLn(class_String, "C++: Hello, eC", null);
+         }
+      );
       EVOLVE_APP(MyApp, app);
    }
 };

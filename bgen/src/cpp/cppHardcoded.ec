@@ -5,6 +5,8 @@ void cppHardcodedModule(BOutput o)
    o.ds.printx("   // hardcoded content start", ln,
                "   static TCPPClass<Module> _class;", ln,
                "   inline explicit Module(C(Instance) _impl, CPPClass & c = _class) : Instance(_impl, c) { }", ln,
+               "   MODULE_VIRTUAL_METHODS(Module)", ln,
+               "   REGISTER() { Module_class_registration(Module); }", ln,
                "   // end of hardcoded content", ln);
 }
 
@@ -76,9 +78,20 @@ void cppHardcodedInstance(BOutput o)
                "   // end of hardcoded content", ln);
 }
 
-void cppTmpDefineVirtualMethod      (CPPGen g, File f) { DynamicString b { }; cppDefineMacroVirtualMethod      (g, b, 0, 0); f.Puts(b.array); delete b; }
+void cppTmpDefineVirtualMethod      (CPPGen g, File f)
+{
+   DynamicString b { };
+   cppMacroVirtualMethod(g, b, def, 0, "n", "ncpp", "c", "b", "r", "p0", "ep", "p", "d", 0);
+   f.Puts(b.array); delete b;
+}
 void cppTmpDefineIntRegisterMethod  (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntRegisterMethod  (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineRegisterMethod     (CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterMethod     (g, b, 0, 0); f.Puts(b.array); delete b; }
+void cppTmpDefineRegisterMethod     (CPPGen g, File f)
+{
+   DynamicString b { };
+   cppMacroRegisterMethod(g, b, def, 0, "ns", "n", "bc", "c", "r", "p", "ocl", "oi", "code", "ea", "rv", 0);
+   f.Puts(b.array);
+   delete b;
+}
 void cppTmpDefineRegisterTypedMethod(CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterTypedMethod(g, b, 0, 0); f.Puts(b.array); delete b; }
 void cppTmpDefineProperty           (CPPGen g, File f) { DynamicString b { }; cppDefineMacroProperty           (g, b, 0, 0); f.Puts(b.array); delete b; }
 void cppTmpDefineIntPropSet         (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntPropSet         (g, b, 0, 0); f.Puts(b.array); delete b; }
