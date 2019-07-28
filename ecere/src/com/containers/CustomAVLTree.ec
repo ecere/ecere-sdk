@@ -157,6 +157,8 @@ private:
 
    public thisclass Find(Class Tclass, const T key)
    {
+      return FindEx(Tclass, key, null, null);
+      /*
       byte * a;
       bool reference = false;
       uint offset = 0;
@@ -185,6 +187,7 @@ private:
             break;
       }
       return this;
+      */
    }
 
    thisclass FindEx(Class Tclass, const T key, AVLNode */*thisclass **/ addTo, AddSide * addSide)
