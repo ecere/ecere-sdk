@@ -1774,10 +1774,12 @@ class Debugger
                         {
                            bool moduleLoadLine;
                            TrimLSpaces(line, line);
-                           moduleLoadLine = !strncmp(line, "eModule_Load", strlen("eModule_Load"));
+                           moduleLoadLine =
+                              !strncmp(line, "eModule_Load", strlen("eModule_Load")) ||
+                              !strncmp(line, "if(!eModule_Load", strlen("if(!eModule_Load"));
                            if(!moduleLoadBlock && moduleLoadLine)
                               moduleLoadBlock = true;
-                           else if(moduleLoadBlock && !moduleLoadLine && strlen(line) > 0)
+                           else if(moduleLoadBlock && !moduleLoadLine && strlen(line) > 0 && strncmp(line, "printf", strlen("printf")))
                               break;
                         }
                      }
