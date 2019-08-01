@@ -122,14 +122,19 @@ class ProcessingStage
       return result;
    }
 
-   bool migrateTask(ProcessingTask task, ProcessingAction action)
+   bool performSpecificTask(ProcessingTask task)
    {
       bool result = false;
 
       mutex.Wait();
       if(task && !task.status.active)
       {
+         ProcessingAction action;
+
          tasks.Remove(task);
+         mutex.Release();
+         action = processing.onPerformTask(task);
+         mutex.Wait();
          task.status.threadID = 0;
          task.status.active = false;
 
@@ -485,17 +490,11 @@ public:
    }
 
    // Migrate tasks to another stage
-   bool migrateTask(ProcessingTask task, ProcessingAction action)
+   bool performSpecificTask(int stage, ProcessingTask task)
    {
       bool result = false;
-      if(!task.status.active && task.status.stage != action)
-      {
-         if(task.status.stage > ProcessingAction::awaitProcessing)
-         {
-            int s = task.status.stage-1;
-            result = stages[s].migrateTask(task, action);
-         }
-      }
+      if(!task.status.active && task.status.stage == stage)
+         result = stages[stage-1].performSpecificTask(task);
       return result;
    }
 
