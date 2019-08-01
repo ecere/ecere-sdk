@@ -122,6 +122,43 @@ class ProcessingStage
       return result;
    }
 
+   bool migrateTask(ProcessingTask task, ProcessingAction action)
+   {
+      bool result = false;
+
+      mutex.Wait();
+      if(task && !task.status.active)
+      {
+         tasks.Remove(task);
+         task.status.threadID = 0;
+         task.status.active = false;
+
+         switch(action)
+         {
+            case awaitProcessing:
+               task.status.ready = true;
+               readyTasks.Add(task);
+               break;
+            case clear:
+               mutex.Release();
+               processing.onTaskCleared(task);
+               mutex.Wait();
+               // TO REVIEW: This was leaking?
+               // if(task.status.waitedOn)
+                  delete task;
+               break;
+            default:
+               mutex.Release();
+               processing.addTask(task, action, task.priority);
+               mutex.Wait();
+               break;
+         }
+         result = true;
+      }
+      mutex.Release();
+      return result;
+   }
+
    bool processTasks(int maxTasks)
    {
       bool result = true;
@@ -443,6 +480,21 @@ public:
                break;
          }
          if(stage) break;
+      }
+      return result;
+   }
+
+   // Migrate tasks to another stage
+   bool migrateTask(ProcessingTask task, ProcessingAction action)
+   {
+      bool result = false;
+      if(!task.status.active && task.status.stage != action)
+      {
+         if(task.status.stage > ProcessingAction::awaitProcessing)
+         {
+            int s = task.status.stage-1;
+            result = stages[s].migrateTask(task, action);
+         }
       }
       return result;
    }
