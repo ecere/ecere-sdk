@@ -142,7 +142,10 @@ class CPPGen : CGen
          if(g_.lib.ecereCOM && skipClasses.Find({ g_.lib.bindingName, c.name }))
             skip = true;
          if(!skip && !c.cl.templateClass && c.cl.type == normalClass)   // TODO: Only doing normal classes for now...
+         {
+
             processCppClass(this, c);
+         }
       }
    }
 
@@ -342,6 +345,7 @@ Map<consttstr, const String> methodParamNameSwap { [
    //{ { "onCompare", "object" }, "o2" },
   // { { "onCopy", "newData" }, "src" },
    { { "delete", "i" }, "it" },
+   { { "releaseSurface", "this" }, "self" },
    { { null, null }, null }
 ] };
 
@@ -484,13 +488,31 @@ static void processCppClass(CPPGen g, BClass c)
                   ZString sg { allocType = heap };
 
                   sg.copy("");
-                  if(pt.Set)
-                     sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
-                  if(pt.Get)
-                     sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+
+
+                  if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
+                  {
+
+                     if(pt.Set)
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     else
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                     if(pt.Get)
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     else
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                  }
+                  else
+                  {
+                     if(pt.Set && pt.Get)
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     else if(pt.Set && !pt.Get)
+                        sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     if(pt.Get)
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
 
                   // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
-
                   cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
 
                   delete tn;
@@ -1502,6 +1524,11 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                          s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
+                     if(!itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
+                     {
+                        s3z.concatx(", ");
+                        s3z.concatx("self ? self->impl : (", sn, ")null");
+                     }
                      s3z.concatx((args = cppParams(c, argsInfo, passing, false, 0)));
                      s3z.concatx(");");
                   }
@@ -1533,6 +1560,11 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                         s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
+                     if(!itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
+                     {
+                        s3z.concatx(", ");
+                        s3z.concatx("self ? self->impl : (", sn, ")null");
+                     }
                      s3z.concatx((args = cppParams(c, argsInfo, passing, false, 0)));
                      s3z.concatx(")");
                   }

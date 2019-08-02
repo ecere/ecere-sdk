@@ -56,7 +56,7 @@
                   {
                      "Name" : "Debug",
                      "Options" : {
-                        "ExcludeFromBuild" : true
+                        "ExcludeFromBuild" : false
                      }
                   }
                ]
