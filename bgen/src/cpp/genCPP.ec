@@ -408,10 +408,10 @@ static void processCppClass(CPPGen g, BClass c)
       if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
       {
          if(g.macroBits.registerClassDef == use)
-            cppDefineMacroClassRegistration(g, o.ds, 0, c, cBase, 0);
+            cppDefineMacroClassRegistration(g, o.ds, 0, c, cBase, v, 0);
 
          if(g.macroBits.virtualMethod == use)
-            cppMacroClassVirtualMethods(g, o.ds, def, 0, un, "c", c, cBase, 0);
+            cppMacroClassVirtualMethods(g, o.ds, def, 0, un, "c", c, cBase, v, 0);
       }
 
       o.ds.printx(ln, genloc__, "class ", cn);
@@ -656,7 +656,7 @@ ClassType cppGetClassInfoFromType(Type type, Class * clRegRet, BClass * cParamRe
 }
 
 enum CPPParamsOutputMode { regMethodParamList, regMethodArgsPassing, _argParamList, passing };
-char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, bool comma, const char ** first)
+char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClass, bool comma, const char ** first)
 {
    char * result;
    DynamicString z { };
@@ -742,8 +742,13 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, bool comma, co
                         else
                         {
                            cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, asis = asis }, ti.cl);
-                           if(param.kind == classType && ct == normalClass)
-                              z.printx(" &");
+                           if(param.kind == classType)
+                           {
+                              if(ct == normalClass)
+                                 z.printx(" &");
+                              else if(ct  == structClass)
+                                 z.printx(" *");
+                           }
                         }
 
                         //if(!name[0])
@@ -758,6 +763,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, bool comma, co
                            conmsg("nohack?");
                            ct = cppGetClassInfoFromType(param, &clReg, &cParam, &hack);
                         }*/
+                        if(cParam)
+                           vClass.processDependency(otypedef, otypedef, cParam.cl);
                         if(hack)
                            //z.printx("&", name, " ? ((Instance *)&", name, ")->impl : (", cParam.symbolName, ")null");
                            z.printx(name, ".impl");
@@ -1243,10 +1250,12 @@ static void cppMacroClassRegister(
       uint ind,            // indents
       BClass c,
       BClass cBase,
+      BVariant vClass,
       void * unused) {     // unused
    cppMacroClassRegistration(g, o, def, ind,
          c,
          cBase,
+         vClass,
          0); }
 
 static void cppMacroClassRegistration(
@@ -1256,6 +1265,7 @@ static void cppMacroClassRegistration(
       uint ind,            // indents
       BClass c,
       BClass cBase,
+      BVariant vClass,
       void * unused)
 {
    const char * lc = mode == def ? " \\" : "";     // line continuation
@@ -1345,7 +1355,7 @@ static void cppMacroClassRegistration(
                   default:           conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
                }
                argsInfo = { type = m.md.dataType, m = m, md = m.md, cl = c.cl, c = c };
-               o.printx((params = cppParams(c, argsInfo, regMethodParamList, comma, &first)));
+               o.printx((params = cppParams(c, argsInfo, regMethodParamList, vClass, comma, &first)));
                delete params;
             }
             else conmsg(t.kind, " is not handled here. todo?");
@@ -1379,7 +1389,7 @@ static void cppMacroClassRegistration(
             }
 
             o.printx("fn(*i");
-            o.printx((args = cppParams(c, argsInfo, regMethodArgsPassing, false, 0)));
+            o.printx((args = cppParams(c, argsInfo, regMethodArgsPassing, vClass, false, 0)));
             o.printx(")");
 
             if(!noRet)
@@ -1466,6 +1476,7 @@ static void cppMacroClassVirtualMethods(
       const char * c_,      // class
       BClass c,
       BClass cBase,
+      BVariant vClass,
       void * unused)
 {
    const char * lc = mode == def ? " \\" : "";     // line continuation
@@ -1529,7 +1540,7 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, false, 0)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, false, 0)));
                      s3z.concatx(");");
                   }
                   else if(ctRT == normalClass || ctRT == noHeadClass)
@@ -1543,7 +1554,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                          s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, false, 0)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, false, 0)));
                      s3z.concatx(");", lc, ln);
 
                      s3z.concatx(genloc__, indents(ind + 4), "return ");
@@ -1565,7 +1576,7 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, false, 0)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, false, 0)));
                      s3z.concatx(")");
                   }
                   s3 = s3z._string;
@@ -1581,7 +1592,7 @@ static void cppMacroClassVirtualMethods(
                            (s1 = /*opt1 ? PrintString("C(", cParamRT.name, ")") : */cppTypeName(ti, false /*true*/)),
                            (s2 = PrintString("c &", hasArgs ? " _ARG" : "")),
                            "",
-                           (params = cppParams(c, argsInfo, _argParamList, false, 0)),
+                           (params = cppParams(c, argsInfo, _argParamList, vClass, false, 0)),
                            s3,
                            0);
                   }
@@ -1595,7 +1606,7 @@ static void cppMacroClassVirtualMethods(
                            (s1 = opt1 ? CopyString("Instance &" /*cParamRT.name*/) : cppTypeName(ti, true)),
                            (s2 = PrintString("c &", hasArgs ? " _ARG" : "")),
                            "",
-                           (params = cppParams(c, argsInfo, _argParamList, false, 0)),
+                           (params = cppParams(c, argsInfo, _argParamList, vClass, false, 0)),
                            s3,
                            0);
                   }
