@@ -1535,7 +1535,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                          s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
-                     if(!itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
+                     if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
@@ -1571,7 +1571,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                         s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
-                     if(!itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
+                     if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
