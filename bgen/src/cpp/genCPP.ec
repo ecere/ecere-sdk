@@ -345,7 +345,7 @@ Map<consttstr, const String> methodParamNameSwap { [
    //{ { "onCompare", "object" }, "o2" },
   // { { "onCopy", "newData" }, "src" },
    { { "delete", "i" }, "it" },
-   { { "releaseSurface", "this" }, "self" },
+   { { "releaseSurface", "this" }, null },
    { { null, null }, null }
 ] };
 
@@ -716,7 +716,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      case regMethodArgsPassing:
                      {
                         bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
-                        if(ct == normalClass || /*ct == noHeadClass || */(param.kind == classType && param.classObjectType == anyObject))
+                        if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                            //"*(", cn, " *)INSTANCEL(", first, ", ", first, "->_class)"
                            z.printx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
                         else
@@ -768,7 +768,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         if(hack)
                            //z.printx("&", name, " ? ((Instance *)&", name, ")->impl : (", cParam.symbolName, ")null");
                            z.printx(name, ".impl");
-                        else if(ct == normalClass || (param.kind == classType && param.classObjectType == anyObject))
+                        else if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                            //z.printx("&", name, " ? ", name, ".impl : (", ti.c.symbolName, ")null");
                            //z.printx("&", name, " ? ", name, ".impl : (", cParam.symbolName, ")null");
                            z.printx(name, ".impl");
@@ -1427,13 +1427,21 @@ static void cppMacroClassRegistration(
                   default:           conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
                }
                if(!(t.params.count == 1 && ((Type)t.params.first).kind == voidType))
+               {
+                  char * apname = null;
+                  uint ap = 0;
                   for(param = t.params.first; param; param = param.next)
                   {
                      MapIterator<consttstr, const String> i { map = methodParamNameSwap };
                      const char * name = i.Index({ mn, param.name }, false) ? i.data : param.name;
+                     if(!name)
+                        apname = PrintString("ap", ++ap), name = apname; 
                      o.printx(comma, name);
                      if(!comma[0]) comma = ", ";
                   }
+                  delete apname;
+               }
+
             }
             else conmsg(t.kind, " is not handled here. todo?");
             o.printx("), ");
