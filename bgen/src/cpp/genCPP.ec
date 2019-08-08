@@ -701,13 +701,21 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            typeString = CopyString(g_.sym.instance);
                         else if(param.kind == classType && param._class && param._class.registered && param._class.registered.templateClass)
                            typeString = PrintString("C(", c.name, ")");
+                        else if(cParam && param.kind == classType && cParam.isString)
+                        {
+                           bool asis = ct == normalClass;
+                           cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, asis = asis }, ti.cl);
+                        }
                         else
                            typeString = printType(param, false, false, true);
 
                         if(first && !*first) *first = name;
-                        z.printx(strptrNoNamespace(typeString));
-                        if(param.kind == classType && ct == noHeadClass)
+                        if(typeString)
+                           z.printx(strptrNoNamespace(typeString));
+                        if(param.kind == classType && ( ct == noHeadClass || ct == structClass))
                            z.printx(" *");
+                        else if(param.kind == classType && ct == normalClass && cParam && cParam.isString)
+                           z.printx(" &");
                         z.printx(" ", name);
                         delete typeString;
                         if(!sep[0]) sep = ", ";
@@ -716,6 +724,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      case regMethodArgsPassing:
                      {
                         bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
+
                         if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                            //"*(", cn, " *)INSTANCEL(", first, ", ", first, "->_class)"
                            z.printx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
@@ -1435,7 +1444,7 @@ static void cppMacroClassRegistration(
                      MapIterator<consttstr, const String> i { map = methodParamNameSwap };
                      const char * name = i.Index({ mn, param.name }, false) ? i.data : param.name;
                      if(!name)
-                        apname = PrintString("ap", ++ap), name = apname; 
+                        apname = PrintString("ap", ++ap), name = apname;
                      o.printx(comma, name);
                      if(!comma[0]) comma = ", ";
                   }
