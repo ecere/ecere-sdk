@@ -1267,7 +1267,7 @@ public:
    private ExpFlags precompute(Class c, StylesMask targetStylesMask, int * memberID, ECCSSEvaluator evaluator)
    {
       ExpFlags flags = 0;
-      String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask) : null;
+      String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask, c) : null;
       //DataMember dataMember = null;
       Class inheritClass = c;
       dataMember = null;

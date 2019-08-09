@@ -14,9 +14,9 @@ public:
    // Generic styles
    bool visibility         :1: 0;
    bool opacity            :1: 1;
-   bool transform          :1: 2;
-   bool transform3D        :1: 3;
-   bool zOrder             :1: 4;
+   bool scaling          :1: 2;
+   //bool transform3D        :1: 3;
+   bool zOrder             :1: 3;
 };
 
 public class ShapeStyleMask : GraphicalStyleMask
@@ -76,9 +76,9 @@ public enum GraphicalStyleKind : GraphicalStyleMask
 {
    zOrder = GraphicalStyleMask { zOrder = true },
    visibility = GraphicalStyleMask { visibility = true },
-   transform = GraphicalStyleMask { transform = true },
-   opacity = GraphicalStyleMask { opacity = true },
-   transform3D = GraphicalStyleMask { transform3D = true }
+   scaling = GraphicalStyleMask { scaling = true },
+   opacity = GraphicalStyleMask { opacity = true }
+   //transform3D = GraphicalStyleMask { transform3D = true }
 };
 
 public enum ShapeStyleKind : GraphicalStyleKind
@@ -144,8 +144,8 @@ public enum ImageStyleKind : GraphicalStyleKind
 Map<String, GraphicalStyleKind> styleIdentifierMap
 { [
    { "opacity", opacity },
-   { "transform", transform },
-   { "transform3D", transform3D }
+   { "scaling", scaling }
+   //{ "transform3D", transform3D }
 ] };
 
 Map<String, ShapeStyleKind> shapeStyleIdentifierMap
@@ -183,12 +183,14 @@ Map<String, TextStyleKind> textStyleIdentifierMap
    { "font.size", fontSize },
    { "font.bold", fontBold },
    { "font.italic", fontItalic },
-   { "font.color", fontColor },
+   { "font.color", fontColor }, //TODO review: belongs to font or text?
+   { "color", fontColor },
    { "font.opacity", fontOpacity },
    { "font.outline", fontOutline },
    { "font.outline.size", fontOutlineSize },
    { "font.outline.color", fontOutlineColor },
    { "font.outline.opacity", fontOutlineOpacity },
+   { "font.alignment", alignment }, // TODO review
    { "alignment", alignment },
    { "alignment.horzAlign", alignmentHorzAlign },
    { "alignment.vertAlign", alignmentVertAlign }
@@ -205,8 +207,8 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
 Map<GraphicalStyleKind, const String> stringFromMaskMap
 { [
    { opacity, "opacity" },
-   { transform, "transform" },
-   { transform3D, "transform3D" }
+   { scaling, "scaling" }
+   //{ transform3D, "transform3D" }
 ] };
 
 
@@ -316,6 +318,7 @@ public:
             break;
          }
          case zOrder: zOrder = (int)value.i; break;
+         case scaling: transform.scaling = { value.i, value.i, 1 }; break;
       }
    }
 }
