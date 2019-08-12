@@ -4675,9 +4675,43 @@ class Frame : struct
    char * from;
    property char * from { set { delete from; if(value) from = CopyUnescapedUnixPath(value); } }
    char * file;
-   property char * file { set { delete file; if(value) file = CopyUnescapedUnixPath(value); } }
+   property char * file
+   {
+      set
+      {
+         delete file;
+         if(value)
+         {
+            const char * rightFile;
+            file = CopyUnescapedUnixPath(value);
+            rightFile = ide.workspace.getRightPath(file);
+            if(rightFile)
+            {
+               delete file;
+               file = CopyString(rightFile);
+            }
+         }
+      }
+   }
    char * absoluteFile;
-   property char * absoluteFile { set { delete absoluteFile; if(value) absoluteFile = CopyUnescapedUnixPath(value); } }
+   property char * absoluteFile
+   {
+      set
+      {
+         delete absoluteFile;
+         if(value)
+         {
+            const char * rightFile;
+            absoluteFile = CopyUnescapedUnixPath(value);
+            rightFile = ide.workspace.getRightPath(absoluteFile);
+            if(rightFile)
+            {
+               delete absoluteFile;
+               absoluteFile = CopyString(rightFile);
+            }
+         }
+      }
+   }
    int line;
 
    void Free()

@@ -9,6 +9,10 @@ import "ecere"
 
 import "Project"
 
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
+import "FileSystemIterator"
+#endif
+
 static define app = ((GuiApplication)__thisModule);
 #endif
 
@@ -447,6 +451,10 @@ private:
    // This is only set for Top Nodes
    Project project;
 
+   char * absolutePath; // absolute path for any type of node pointing to a file or folder
+   char * realPath; // real (symlinks resolved) absolute path if different from absolutePath
+   AVLTree<FilePath> paths { };
+
    void OpenRulesPlatformExclusionIfs(File f, int * ifCount, Array<Platform> platforms)
    {
       if(!platforms.Find(unknown))  // unknown is "Common"
@@ -819,6 +827,50 @@ private:
             f.FixupNode(parentPath);
          }
       }
+   }
+
+   void resolvePaths()
+   {
+      char path[MAX_LOCATION];
+      GetFullFilePath(path, true, true);
+      if(path[0] && !paths.Find(path))
+         paths.Add((absolutePath = CopyString(path)));
+#if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
+      if(absolutePath)
+      {
+         getRealPath(absolutePath, path);
+         if(path[0] && !paths.Find(path))
+            paths.Add((realPath = CopyString(path)));
+      }
+#endif
+
+      if(files)
+      {
+         for(f : files)
+         {
+            f.resolvePaths();
+         }
+      }
+   }
+
+   const char * getRightPath(const char * filePath)
+   {
+      const char * rightPath = null;
+      if(paths.Find(filePath))
+         rightPath = absolutePath ? absolutePath : filePath;
+
+      if(!rightPath && files)
+      {
+         for(f : files)
+         {
+            rightPath = f.getRightPath(filePath);
+            if(rightPath) break;
+         }
+      }
+
+      if(rightPath && (rightPath == filePath || !fstrcmp(filePath, rightPath)))
+         rightPath = null;
+      return rightPath;
    }
 
    const char * OnGetString(char * tempString, void * fieldData, ObjectNotationType * onType)

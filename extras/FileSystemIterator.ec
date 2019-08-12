@@ -9,6 +9,19 @@ public import "ecere"
 #endif
 #endif
 
+// todo: move this in the appropriate extras file
+#ifdef __linux__
+#include <stdlib.h>
+#endif
+void getRealPath(const String path, String output)
+{
+#ifdef __WIN32__
+   strcpy(output, path); // todo: a windows implementation should be possible for windows 10 which has symlinks
+#else
+   realpath(path, output);
+#endif
+}
+
 public class NormalFileSystemIterator : FileSystemIterator
 {
 public:

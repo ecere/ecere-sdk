@@ -352,6 +352,19 @@ public:
       }
    }
 
+   const char * getRightPath(const char * filePath)
+   {
+      const char * rightPath = null;
+      for(p : projects)
+      {
+         rightPath = p.topNode.getRightPath(filePath);
+         if(rightPath) break;
+         rightPath = p.resNode.getRightPath(filePath);
+         if(rightPath) break;
+      }
+      return rightPath;
+   }
+
    char * CopyAbsolutePathFromRelative(const char * relative)
    {
       char name[MAX_LOCATION];

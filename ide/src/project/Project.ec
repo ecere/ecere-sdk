@@ -1357,6 +1357,12 @@ private:
       sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
    }
 
+   void resolvePaths()
+   {
+      topNode.resolvePaths();
+      resNode.resolvePaths();
+   }
+
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
    ProjectNode GetObjectFileNode(const char * filePath, const char * objectFileExt)
    {
@@ -4724,6 +4730,8 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
             if(!project.configurations) project.configurations = { };
 
             project.resNode.FixupNode(insidePath);
+
+            project.resolvePaths();
          }
          delete parser;
       }
