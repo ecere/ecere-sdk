@@ -2419,16 +2419,48 @@ class IDEWorkSpace : Window
       return false;
    }
 
+   Window getOpenedFile(const char * filePath)
+   {
+      Window document = null;
+      for(document = firstChild; document; document = document.next)
+      {
+         const char * fileName = document.fileName;
+         if(document.isDocument && fileName && !fstrcmp(fileName, filePath) && document.created)
+            break;
+      }
+      return document;
+   }
+
    Window OpenFile(const char * origFilePath, bool dontMaximize, bool visible, const char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
    {
       char extension[MAX_EXTENSION] = "";
       Window document = null;
       bool isProject = false;
       bool needFileModified = true;
-      char winFilePath[MAX_LOCATION];
-      const char * filePath = strstr(origFilePath, "http://") == origFilePath ? strcpy(winFilePath, origFilePath) : GetSystemPathBuffer(winFilePath, origFilePath);
       Window currentDoc = activeClient;
       bool maximizeDoc = !dontMaximize && ((currentDoc && currentDoc.state == maximized) || (!currentDoc && !projectView));
+      bool isUrl = strstr(origFilePath, "http://") == origFilePath;
+      char slashPath[MAX_LOCATION];
+      char filePathBuffer[MAX_LOCATION];
+      char rightPathBuffer[MAX_LOCATION];
+      const char * filePath;
+      const char * rightPath = null;
+
+      if(isUrl)
+         strcpy(filePathBuffer, origFilePath);
+      else
+      {
+         if(workspace)
+         {
+            GetSlashPathBuffer(slashPath, origFilePath);
+            rightPath = workspace.getRightPath(slashPath);
+            if(rightPath)
+               rightPath = GetSystemPathBuffer(rightPathBuffer, rightPath);
+         }
+         GetSystemPathBuffer(filePathBuffer, origFilePath);
+      }
+      filePath = rightPath ? rightPathBuffer : filePathBuffer;
+
       if(!type)
       {
          GetExtension(filePath, extension);
@@ -2439,16 +2471,15 @@ class IDEWorkSpace : Window
 
       if(strcmp(extension, ProjectExtension))
       {
-         for(document = firstChild; document; document = document.next)
+         document = getOpenedFile(filePath);
+         if(!document && rightPath)
+            document = getOpenedFile(filePathBuffer);
+         if(document)
          {
-            const char * fileName = document.fileName;
-            if(document.isDocument && fileName && !fstrcmp(fileName, filePath) && document.created)
-            {
-               document.visible = true;
-               if(visible)
-                  document.Activate();
-               return document;
-            }
+            document.visible = true;
+            if(visible)
+               document.Activate();
+            return document;
          }
       }
 
