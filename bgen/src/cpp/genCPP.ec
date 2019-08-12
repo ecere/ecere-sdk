@@ -1335,9 +1335,18 @@ static void cppMacroClassRegistration(
                o.printx("TP(", c.name, ", ", returnType.templateParameter.identifier.string, ")");
             else if(ctRT == normalClass || ctRT == noHeadClass)
             {
-               o.printx(cParamRT.symbolName);
+      /*       o.printx(cParamRT.symbolName);
                if(ctRT == noHeadClass)
-                  o.printx(" *");
+                  o.printx(" *");   */
+               if(ctRT == normalClass)
+               {
+                  if(!strcmp(cParamRT.name, "Instance"))
+                     o.printx(cParamRT.symbolName);
+                  else
+                     o.printx(cParamRT.symbolName);
+               }
+               else if(ctRT == noHeadClass)
+                  o.printx(cParamRT.symbolName, " *");
             }
             else
                o.printx(strptrNoNamespace(typeString));
@@ -1390,15 +1399,27 @@ static void cppMacroClassRegistration(
             {
                if(returnType.kind == templateType)
                   o.printx("TP(", c.name, ", ", returnType.templateParameter.identifier.string, ")");
-               else if(ctRT == normalClass || ctRT == noHeadClass)
+               else if((ctRT == normalClass || ctRT == noHeadClass))
                {
-                  if(ctRT == normalClass)
+            /*    if(ctRT == normalClass)
                      o.printx(cParamRT.name, " *");
                   else if(ctRT == noHeadClass)
-                     o.printx(cParamRT.symbolName, " *");
+                     o.printx(cParamRT.symbolName, " *");   */
+
+                  if(ctRT == normalClass)
+                  {
+                     if(!strcmp(cParamRT.name, "Instance"))   // Exception
+                        o.printx(cParamRT.name, " *");
+                     else
+                        o.printx(cParamRT.symbolName);
+                  }
+                  else if(ctRT == noHeadClass)
+                     o.printx(cParamRT.symbolName, " *");   
                }
                else
                   o.printx(strptrNoNamespace(typeString));
+
+
 
                 o.printx(" ret = ");
 
@@ -1452,11 +1473,11 @@ static void cppMacroClassRegistration(
                      MapIterator<consttstr, const String> i { map = methodParamNameSwap };
                      const char * name = i.Index({ mn, param.name }, false) ? i.data : param.name;
                      if(!name)
-                        apname = PrintString("ap", ++ap), name = apname;
-                     o.printx(comma, name);
+                        apname = PrintString("ap", ++ap);
+                     o.printx(comma, name ? name : apname);
+                     if(!name) delete apname;
                      if(!comma[0]) comma = ", ";
                   }
-                  delete apname;
                }
 
             }
