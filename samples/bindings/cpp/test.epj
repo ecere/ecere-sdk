@@ -40,16 +40,31 @@
          "Folder" : "c",
          "Files" : [
             "$(ECERE_SDK_SRC)/bindings/c/eC.c",
-            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+            {
+               "FileName" : "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            },
             "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+            {
+               "FileName" : "$(ECERE_SDK_SRC)/bindings/c/ecere.h",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       {
          "Folder" : "cpp",
          "Files" : [
             "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
-            "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
+            {
+               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            },
             {
                "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
                "Configurations" : [
@@ -61,7 +76,12 @@
                   }
                ]
             },
-            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp"
+            {
+               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
          ]
       },
       "helloApp.cpp"
