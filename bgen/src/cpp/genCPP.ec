@@ -548,17 +548,25 @@ static void processCppClass(CPPGen g, BClass c)
 
                      sg.copy("");
                      // TODO: Don't output set if const ?
-                     sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
-                     sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                     if(dm.dataType.kind == arrayType)
+                     {
+                        tn = PrintString("float*");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                     }
+                     else
+                     {
+                        sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                     }
 
                      // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
-
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
                      delete sg;
                      delete tn;
                   }
                }
+
             }
          }
 
