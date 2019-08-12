@@ -93,6 +93,7 @@ class ShowProcessWindowsThread : Thread
 extern void * IS_XGetDisplay();
 static Atom xa_NET_WM_PID, xa_activeWindow;
 
+#if 0
 static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window window)
 {
    int c;
@@ -108,6 +109,7 @@ static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window window)
          Sleep(1.0 / 18.2);
    }
 }
+#endif // 0
 
 static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, int processId)
 {
