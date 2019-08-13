@@ -414,7 +414,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                MeshFeatures features = 0;
                MeshFeatures allocedFeatures;
                int nVertices = mesh.nVertices;
-               bool qVerts = false;
+               // bool qVerts = false;
                uint vSize = 0;
                uint vOffset = 0, nOffset = 0, t1Offset = 0, t2Offset = 0, tnOffset = 0, cOffset = 0;
                bool signBitan = false;
@@ -430,7 +430,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   }
                   switch(type)
                   {
-                     case attrQVertices: qVerts = true; features.vertices = true; vOffset = offset; break;
+                     case attrQVertices: /*qVerts = true; */features.vertices = true; vOffset = offset; break;
                      case attrVertices: features.vertices = true; vOffset = offset; break;
                      case attrTexCoords: features.texCoords1 = true; t1Offset = offset; break;
                      case attrTexCoords2: features.texCoords2 = true; t2Offset = offset; break;
