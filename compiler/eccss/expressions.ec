@@ -367,9 +367,15 @@ public:
 
       if(isdigit(token.text[0]))
       {
+         int multiplier = 1;
+         int len = strlen(token.text);
+
+         if(token.text[len-1] == 'K') multiplier = 1000;
+         else if(token.text[len-1] == 'M') multiplier = 1000000;
+
          if(strchr(token.text, '.'))
-            return { constant = { r = strtod(token.text, null), type.type = real }  };
-         else return { constant = { i = strtol(token.text, null, 0), type.type = integer}  };
+            return { constant = { r = strtod(token.text, null) * multiplier, type.type = real }  };
+         else return { constant = { i = strtol(token.text, null, 0) * multiplier, type.type = integer}  };
       }
       return null;
    }
