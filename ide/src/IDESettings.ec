@@ -246,7 +246,7 @@ import "OldIDESettings"
 #undef GetObject
 #endif
 
-define MaxRecent = 9;
+define MaxRecent = 32;
 
 enum DirTypes { includes, libraries, executables };
 
@@ -1517,6 +1517,36 @@ class RecentPaths : Array<String>
                ChangeCh(this[c], from, to);
          }
       }
+   }
+
+   void updateRecentMenu(Window master, bool(recentNotifySelect)(Window this, MenuItem selection, Modifiers mods), Menu recentMenu)
+   {
+      int c = 0;
+      char * itemPath = new char[MAX_LOCATION];
+      char * itemName = new char[MAX_LOCATION+4];
+      recentMenu.Clear();
+      for(recent : this)
+      {
+         if(c == 9)
+            recentMenu.AddDynamic(MenuDivider { }, master, true);
+         strncpy(itemPath, recent, MAX_LOCATION);
+         itemPath[MAX_LOCATION-1] = '\0';
+         MakeSystemPath(itemPath);
+         if(c < 9)
+            snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath);
+         else
+            snprintf(itemName, MAX_LOCATION+4, "%s", itemPath);
+         itemName[MAX_LOCATION+4-1] = '\0';
+         {
+            MenuItem item { copyText = true, text = itemName, id = c, NotifySelect = recentNotifySelect };
+            if(c < 9)
+               item.hotKey = (Key)k1 + c;
+            recentMenu.AddDynamic(item, master, true);
+         }
+         c++;
+      }
+      delete itemPath;
+      delete itemName;
    }
 }
 
