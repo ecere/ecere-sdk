@@ -1426,17 +1426,43 @@ public:
          for(e : this)
          {
             CMSSMemberInit mInit = e;
-            // if(mInit.stylesMask & mask)
-            //   return mInit;
-            if(mInit.identifiers)
+            Class c = mInit.dataMember ? mInit.dataMember._class : null;
+            StylesMask sm = mInit.stylesMask;
+            if(mInit.stylesMask & mask)
+               return mInit;
+            /*if(mInit.identifiers)
             {
+               String id = null;
                for(i : mInit.identifiers)
                {
                   // FIXME: hardcoded...
                   if(i.string && !strcmpi(i.string, "opacity"))
                      return mInit;
+
+                  String s = id ? PrintString(id, ".", i.string) : CopyString(i.string);
+                  delete id;
+                  id = s;
                }
-            }
+
+               //if(stringFromMask(sm, c) || maskFromString(id, c)) return mInit;
+               if(c == class(ShapeStyle) || c == class(Fill) || c == class(Stroke))
+                  if(sm & mask)
+                     return mInit;
+               else if(c == class(TextStyle) || c == class(GEFont) || c == class(Outline))
+                  if(sm & mask)
+                     return mInit;
+
+               else if(c == class(ImageStyle) || c == class(Image))
+                  if(sm & mask)
+                     return mInit;
+
+               else if(c == class(GraphicalStyle) || c == class(GeoSymbolizer))
+                  if(sm & mask)
+                     return mInit;
+               else if(c == class(CMSSLabel) || c == class(Marker))
+                  if(sm & mask)
+                     return mInit;
+            }*/
          }
       }
       return null;
