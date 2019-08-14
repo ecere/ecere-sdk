@@ -141,11 +141,12 @@ class CPPGen : CGen
          bool skip = c.isBool || c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class || c.isString || c.cl.type == systemClass;
          if(g_.lib.ecereCOM && skipClasses.Find({ g_.lib.bindingName, c.name }))
             skip = true;
-         if(!skip && !c.cl.templateClass && c.cl.type == normalClass)   // TODO: Only doing normal classes for now...
+         if(!skip && !c.cl.templateClass && c.cl.type == normalClass)   // TODO: Only doing normal classes for now... || c.cl.type == noHeadClass
          {
 
             processCppClass(this, c);
          }
+         // else { typedef C(Modifiers) Modifiers; }
       }
    }
 
@@ -374,8 +375,12 @@ static void processCppClass(CPPGen g, BClass c)
       const char * bn = cBase ? cBase.name : "";
       const char * un = c.upper;
       bool hasBase = cBase && cBase.cl.type != systemClass;
-      //bool first;
-      //TypeInfo ti;
+
+      bool isBaseString = false;
+      if(!strcmp(cBase.name, "String"))
+         isBaseString = true;
+      else if(cBase.clBase && !strcmp(cBase.clBase.name, "String"))
+         isBaseString = true;
 
       c.outTypedef = o;
       n.contents.Add(v);
@@ -418,7 +423,13 @@ static void processCppClass(CPPGen g, BClass c)
       if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
       {
          if(cBase && cBase.cl.type != systemClass)
-            o.ds.printx(" : public ", bn);
+         {
+            if(isBaseString)
+               o.ds.printx(" : public ", "Instance");
+            else
+               o.ds.printx(" : public ", bn);
+
+         }
          o.ds.printx(ln, genloc__, "{", ln, genloc__, "public:", ln);
          if(c.isInstance)
             cppHardcodedInstance(o);
@@ -430,7 +441,10 @@ static void processCppClass(CPPGen g, BClass c)
             DataMember dm; IterDataMember dat { c };
 
             MacroMode mode = use;
-            cppMacroConstructClass(g, o.ds, mode, 1, cn, bn, 0);
+            if(isBaseString)
+               cppMacroConstructClass(g, o.ds, mode, 1, cn, "Instance", 0);
+            else
+               cppMacroConstructClass(g, o.ds, mode, 1, cn, bn, 0);
             if(mode != bypass)
             {
                if(!strcmp(cn, "Application"))
@@ -548,10 +562,16 @@ static void processCppClass(CPPGen g, BClass c)
 
                      sg.copy("");
                      // TODO: Don't output set if const ?
+
                      if(dm.dataType.kind == arrayType)
                      {
-                        tn = PrintString("float*");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                        Type t = dm.dataType;
+                        char arrayDataType[1024];
+                        arrayDataType[0] = 0;
+                        while(t.kind == arrayType && t.type) t = t.type;
+                        PrintType(t, arrayDataType, true, false);
+                        tn = PrintString(arrayDataType, "*");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
                      else
                      {
@@ -1414,7 +1434,7 @@ static void cppMacroClassRegistration(
                         o.printx(cParamRT.symbolName);
                   }
                   else if(ctRT == noHeadClass)
-                     o.printx(cParamRT.symbolName, " *");   
+                     o.printx(cParamRT.symbolName, " *");
                }
                else
                   o.printx(strptrNoNamespace(typeString));
@@ -1606,8 +1626,10 @@ static void cppMacroClassVirtualMethods(
                      s3z.concatx(genloc__, indents(ind + 4), "return ");
                      if(ctRT == noHeadClass)
                         s3z.concatx("ret", cParamRT.name, ";");
-                     else
+                     else if(!strcmp(cParamRT.name, "Instance"))
                         s3z.concatx("*(", cParamRT.name, " *)_INSTANCE(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
+                     else
+                        s3z.concatx("*(", cParamRT.symbolName, " *)_INSTANCE(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
                   }
                   else
                   {
