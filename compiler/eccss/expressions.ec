@@ -1467,6 +1467,23 @@ public:
       }
       return null;
    }
+
+   void removeStyle(StylesMask mask)
+   {
+      Iterator<CMSSMemberInitList> it { this };
+      while(it.Next())
+      {
+         CMSSMemberInit mInit = it.data;
+         //CMSSMemberInit mInit = e;
+         Class c = mInit.dataMember ? mInit.dataMember._class : null;
+         StylesMask sm = mInit.stylesMask;
+         if(mInit.stylesMask & mask)
+         {
+            it.Remove();
+            delete mInit;
+         }
+      }
+   }
 }
 
 public class CMSSInitializer : CMSSNode
