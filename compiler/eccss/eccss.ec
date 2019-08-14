@@ -55,6 +55,14 @@ public:
       }
       return result;
    }
+   void removeStyle(const String id, StylesMask mask)
+   {
+      StylingRuleBlock block = findRule(mask, id);
+      if(block)
+      {
+         block.styles.removeStyle(mask);
+      }
+   }
 
    private CMSSStyleSheet bind(ECCSSEvaluator evaluator, Class stylesClass, const String name)
    {
@@ -160,6 +168,14 @@ public:
          }
       }
       return null;
+   }
+
+   void removeStyle(StylesMask mask)
+   {
+      for(e : this)
+      {
+         e.removeStyle(mask);
+      }
    }
 }
 
@@ -435,7 +451,7 @@ public:
                CMSSMemberInit mInit = m;
                //Class c = mInit.dataMember ? mInit.dataMember._class : null;
                StylesMask sm = mInit.stylesMask;
-               if(sm & mask) return mInit;
+               if(sm & mask) return this;
 
                /*if(mInit.identifiers)
                {
