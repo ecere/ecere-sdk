@@ -433,15 +433,25 @@ public:
             for(m : s)
             {
                CMSSMemberInit mInit = m;
-               if(mInit.identifiers)
+               //Class c = mInit.dataMember ? mInit.dataMember._class : null;
+               StylesMask sm = mInit.stylesMask;
+               if(sm & mask) return mInit;
+
+               /*if(mInit.identifiers)
                {
+                  String id = null;
                   for(i : mInit.identifiers)
                   {
                      // FIXME: hardcoded...
                      if(i.string && !strcmpi(i.string, "opacity"))
                         return this;
+
+                     String s = id ? PrintString(id, ".", i.string) : CopyString(i.string);
+                     delete id;
+                     id = s;
                   }
-               }
+                  //if(stringFromMask(sm, c) || maskFromString(id, c)) return this;
+               }*/
             }
          }
       }
