@@ -1,7 +1,7 @@
 #ifdef ECERE_STATIC
 public import static "ecere"
 #else
-public import "ecere"
+public import IMPORT_STATIC "ecere"
 #endif
 
 public class GuiConfigData
