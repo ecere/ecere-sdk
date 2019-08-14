@@ -92,7 +92,7 @@ public:
          list = StylingRuleBlockList::parse(lexer);
          delete lexer;
       }
-      return list ? CMSSStyleSheet { list = list } : null;
+      return CMSSStyleSheet { list = list ? list : { } };
    }
 
    CMSSStyleSheet ::load(const String fileName)
