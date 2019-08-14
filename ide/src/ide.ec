@@ -3724,40 +3724,14 @@ class IDEWorkSpace : Window
 
    void updateRecentFilesMenu()
    {
-      int c = 0;
-      char * itemPath = new char[MAX_LOCATION];
-      char * itemName = new char[MAX_LOCATION+4];
       Workspace ws = workspace;
       RecentPaths recentFiles = ws ? ws.recentFiles : ideConfig.recentFiles;
-      recentFilesMenu.Clear();
-      for(recent : recentFiles)
-      {
-         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
-         MakeSystemPath(itemPath);
-         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemName[MAX_LOCATION+4-1] = '\0';
-         recentFilesMenu.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentFile }, ide, true);
-         c++;
-      }
-      delete itemPath;
-      delete itemName;
+      recentFiles.updateRecentMenu(ide, ide.FileRecentFile, recentFilesMenu);
    }
 
    void updateRecentProjectsMenu()
    {
-      int c = 0;
-      char * itemPath = new char[MAX_LOCATION];
-      char * itemName = new char[MAX_LOCATION+4];
-      recentProjectsMenu.Clear();
-      for(recent : ideConfig.recentWorkspaces)
-      {
-         strncpy(itemPath, recent, MAX_LOCATION); itemPath[MAX_LOCATION-1] = '\0';
-         MakeSystemPath(itemPath);
-         snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath); itemName[MAX_LOCATION+4-1] = '\0';
-         recentProjectsMenu.AddDynamic(MenuItem { copyText = true, text = itemName, (Key)k1 + c, id = c, NotifySelect = ide.FileRecentProject }, ide, true);
-         c++;
-      }
-      delete itemPath;
-      delete itemName;
+      ideConfig.recentWorkspaces.updateRecentMenu(ide, ide.FileRecentProject, recentProjectsMenu);
    }
 
    ~IDEWorkSpace()
