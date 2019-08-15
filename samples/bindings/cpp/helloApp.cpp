@@ -1,6 +1,7 @@
 #define MODULE_NAME  "MyApp"
 
 #include "eC.hpp"
+#include "ecere.hpp"
 
 // Demonstrates overriding Application class, evolving instance from REGISTER()
 

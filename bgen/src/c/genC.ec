@@ -972,6 +972,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       //prev = thisClassName || assumeTypedObject;
       z.printx(g_.preproLimiter, "#define ", m.s, "(");
    }
+
    // macro params
       {
          Type param;
@@ -1568,8 +1569,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       if(!ptr) // tocheck
          ptr = 1;
    }
-
-   if(indirection) *indirection = ptr;
+      
    if(resume) *resume = t;
 
    if(t.kind == arrayType || t.kind == functionType)
@@ -1598,9 +1598,12 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
             delete name;
             name = CopyString("any_object");
             nativeSpec = true;
+            if(ptr)
+               ptr--;
          }
       }
    }
+   if(indirection) *indirection = ptr;
 
    switch(t.kind)
    {
@@ -1754,7 +1757,7 @@ void zTypeName(DynamicString z, const char * ident, TypeInfo ti, OptBits opt, BV
    TypeNameList list { };
    astTypeName(ident, ti, opt, vTop, list);
    ec2PrintToDynamicString(z, list, false);
-   delete list;
+   delete list;   
 }
 
 void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, TypeNameList list)
