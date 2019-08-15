@@ -347,6 +347,7 @@ Map<consttstr, const String> methodParamNameSwap { [
   // { { "onCopy", "newData" }, "src" },
    { { "delete", "i" }, "it" },
    { { "releaseSurface", "this" }, null },
+   { { "process", "c" }, null },
    { { null, null }, null }
 ] };
 
@@ -532,10 +533,46 @@ static void processCppClass(CPPGen g, BClass c)
                   delete tn;
                   delete sg;
                }
+               else if(pt.dataType.kind == classType)
+               {
+                  TypeInfo ti { type = pt.dataType };
+                  String tn = cppTypeName(ti, false);
+                  ZString sg { allocType = heap };
+
+                  sg.copy("");
+
+
+                  if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
+                  {
+
+                     if(pt.Set)
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     else
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                     if(pt.Get)
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     else
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                  }
+                  else
+                  {
+                     if(pt.Set && pt.Get)
+                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     else if(pt.Set && !pt.Get)
+                        sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     if(pt.Get)
+                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
+
+                  // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+                  cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
+
+                  delete tn;
+                  delete sg;
+               }
             }
 
             // TODO: Non-virtual methods
-
             // TODO: How to handle data members in C++? Define C++ 'properties' (accessors) for them using property() macro as well?
             while((dm = dat.next(all)))
             {
@@ -555,6 +592,37 @@ static void processCppClass(CPPGen g, BClass c)
 
                   // TODO: Fix types for classes...
                   if(dm.dataType.kind != classType && dm.dataType.kind != templateType && dm.dataType.kind != pointerType)
+                  {
+                     TypeInfo ti { type = dm.dataType };
+                     String tn = cppTypeName(ti, false);
+                     ZString sg { allocType = heap };
+
+                     sg.copy("");
+                     // TODO: Don't output set if const ?
+
+                     if(dm.dataType.kind == arrayType)
+                     {
+                        Type t = dm.dataType;
+                        char arrayDataType[1024];
+                        arrayDataType[0] = 0;
+                        while(t.kind == arrayType && t.type) t = t.type;
+                        PrintType(t, arrayDataType, true, false);
+                        tn = PrintString(arrayDataType, "*");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                     }
+                     else
+                     {
+                        sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                     }
+
+                     // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+                     cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
+
+                     delete sg;
+                     delete tn;
+                  }
+                  else if(dm.dataType.kind == classType)
                   {
                      TypeInfo ti { type = dm.dataType };
                      String tn = cppTypeName(ti, false);
@@ -754,8 +822,13 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
 
                         if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
+                        {
                            //"*(", cn, " *)INSTANCEL(", first, ", ", first, "->_class)"
-                           z.printx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
+                           if(param.classObjectType == anyObject)
+                              z.printx("*(", c.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
+                           else
+                              z.printx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
+                        }
                         else
                            z.printx(name);
                         if(!sep[0]) sep = ", ";
