@@ -657,7 +657,7 @@ public:
                   StylesMask sm = member.stylesMask;
                   if(sm & m)
                   {
-                     applyStyle(object, sm, evaluator, e, flg);
+                     applyStyle(object, sm & m, evaluator, e, flg);
                      m &= ~sm;
                   }
                }
@@ -720,7 +720,7 @@ public:
                   StylesMask sm = mInit.stylesMask;
                   if(sm & mask)
                   {
-                     applyStyle(object, sm, evaluator, initExp.exp, flg);
+                     applyStyle(object, sm & mask, evaluator, initExp.exp, flg);
                      mask &= ~sm;
                   }
                }

@@ -506,7 +506,12 @@ public:
             value.type.type = nil;
       }
       else if(evaluator != null)
-         evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, value, &flags);
+      {
+         if(fieldID != -1)
+            evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, value, &flags);
+         else if(expType)
+            flags.resolved = true; // for viz.
+      }
       else
          value.type.type = nil;
       return flags;
