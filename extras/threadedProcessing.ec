@@ -412,7 +412,7 @@ public:
 
    void addTask(ProcessingTask task, int stage, int priority)
    {
-      if(stage > 0)
+      if(stage > 0 && stages.count) // TODO: Should not come here if already destroyed
       {
          if(stage-1 >= stages.count)
             setup(stage, 0);
