@@ -143,9 +143,10 @@ public enum ImageStyleKind : GraphicalStyleKind
 
 Map<String, GraphicalStyleKind> styleIdentifierMap
 { [
+   { "visibility", visibility },
    { "opacity", opacity },
-   { "scaling", scaling }
-   //{ "transform3D", transform3D }
+   { "scaling", scaling },
+   { "zOrder", zOrder }
 ] };
 
 Map<String, ShapeStyleKind> shapeStyleIdentifierMap
