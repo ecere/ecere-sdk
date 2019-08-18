@@ -10,7 +10,7 @@ import "ecdefs"
 extern OldList * ast;
 extern int returnCode;
 extern Expression parsedExpression;
-extern bool yydebug;
+extern int /*bool*/ yydebug;
 public void SetYydebug(bool b) { yydebug = b; }
 extern bool echoOn;
 

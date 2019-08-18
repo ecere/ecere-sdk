@@ -870,6 +870,15 @@ static void OutputDeclarator(Declarator decl, File f)
 static void OutputEnumerator(Enumerator enumerator, File f)
 {
    OutputIdentifier(enumerator.id, f);
+   if(enumerator.attribs)
+   {
+      Attrib a;
+      for(a = enumerator.attribs->first; a; a = a.next)
+      {
+         f.Puts(" ");
+         OutputAttrib(a, f);
+      }
+   }
    if(enumerator.exp)
    {
       f.Puts(" = ");
@@ -915,6 +924,12 @@ static void OutputExtDecl(ExtDecl extDecl, File f)
       f.Puts(extDecl.s);
    else if(extDecl.type == extDeclAttrib)
       OutputAttrib(extDecl.attr, f);
+   else if(extDecl.type == extDeclMultiAttrib && extDecl.multiAttr)
+   {
+      Attrib a;
+      for(a = extDecl.multiAttr->first; a; a = a.next)
+         OutputAttrib(a, f);
+   }
 }
 
 static void OutputSpecifier(Specifier spec, File f, bool typeName)
