@@ -981,7 +981,7 @@ public:
 
    Workspace()
    {
-      ide.outputView.buildBox.Clear();
+      ide.outputView.buildClear();
       ide.outputView.debugBox.Clear();
       ide.callStackView.Clear();
       ide.watchesView.Clear();

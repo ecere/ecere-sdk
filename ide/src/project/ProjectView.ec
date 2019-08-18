@@ -610,7 +610,7 @@ class ProjectView : Window
       //if(ide.findInFilesDialog && ide.findInFilesDialog.created && ide.findInFilesDialog.mode != directory)
       //   ide.findInFilesDialog.SearchStop();
 
-      ide.outputView.buildBox.Clear();
+      ide.outputView.buildClear();
       ide.outputView.debugBox.Clear();
       //ide.outputView.findBox.Clear();
       ide.callStackView.Clear();
@@ -1884,6 +1884,7 @@ class ProjectView : Window
                if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath, objectFileExt))
                {
                   codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                  ide.RepositionWindows(false);
                }
 
                if(!codeEditor)
