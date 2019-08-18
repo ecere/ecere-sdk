@@ -120,7 +120,7 @@ default:
              new_specifiers renew_specifiers asm_field_list
              property_watch_list watch_property_list
              dbindex_item_list dbfield_definition_list
-             template_arguments_list template_parameters_list attribs_list
+             template_arguments_list template_parameters_list attribs_list multi_attrib
 
 %type <asmField> asm_field
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier class_specifier class_specifier_error
@@ -275,6 +275,7 @@ default:
 %destructor { FreeExtDecl($$); } ext_decl
 %destructor { FreeAttribute($$); } attribute
 %destructor { FreeList($$, FreeAttribute); }  attribs_list
+%destructor { FreeList($$, FreeAttrib); }  multi_attrib
 
 %start thefile
 
@@ -2086,9 +2087,12 @@ external_storage_class_specifier:
 	;
 
 enumerator:
-	  identifier                           { $$ = MkEnumerator($1, null); }
-	| identifier '=' constant_expression   { $$ = MkEnumerator($1, $3); }
-   | identifier '=' constant_expression_error   { $$ = MkEnumerator($1, $3); }
+	  identifier                           { $$ = MkEnumerator($1, null, null); }
+	| identifier '=' constant_expression   { $$ = MkEnumerator($1, $3, null); }
+   | identifier '=' constant_expression_error   { $$ = MkEnumerator($1, $3, null); }
+	| identifier multi_attrib                          { $$ = MkEnumerator($1, null, $2); }
+	| identifier multi_attrib '=' constant_expression   { $$ = MkEnumerator($1, $4, $2); }
+   | identifier multi_attrib '=' constant_expression_error   { $$ = MkEnumerator($1, $4, $2); }
 	;
 
 enumerator_list:
@@ -2102,34 +2106,34 @@ enum_specifier:
    ;
 
 enum_specifier_nocompound:
-     enum_specifier identifier                            { $$ = MkEnum($2, null); POP_DEFAULT_ACCESS }
-   | enum_specifier strict_type                           { $$ = MkEnum(MkIdentifier($2.name), null); POP_DEFAULT_ACCESS }
+     enum_specifier identifier                            { $$ = MkEnum($2, null); POP_DEFAULT_ACCESS; }
+   | enum_specifier strict_type                           { $$ = MkEnum(MkIdentifier($2.name), null); POP_DEFAULT_ACCESS; }
    ;
 
 enum_specifier_compound:
 	  enum_specifier_compound_error '}' { $$.loc = @$; POP_DEFAULT_ACCESS $$ = $1; }
-	| enum_specifier identifier '{' '}'    { $$ = MkEnum($2, null); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier strict_type '{' '}'          { $$ = MkEnum(MkIdentifier($2.name), null); FreeSpecifier($2); $$.loc = @$; POP_DEFAULT_ACCESS }
+	| enum_specifier identifier '{' '}'    { $$ = MkEnum($2, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier strict_type '{' '}'          { $$ = MkEnum(MkIdentifier($2.name), null); FreeSpecifier($2); $$.loc = @$; POP_DEFAULT_ACCESS; }
 	;
 
 enum_specifier_compound_error:
-	  enum_specifier '{' enumerator_list       { $$ = MkEnum(null, $3); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier '{' error                 { $$ = MkEnum(null, null); $$.loc = @$; POP_DEFAULT_ACCESS }
+	  enum_specifier '{' enumerator_list       { $$ = MkEnum(null, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier '{' error                 { $$ = MkEnum(null, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
 
-	| enum_specifier identifier '{' enumerator_list          { $$ = MkEnum($2, $4); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier identifier '{' enumerator_list error    { $$ = MkEnum($2, $4);  $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier identifier '{' error    { $$ = MkEnum($2, null);  $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier identifier '{' enumerator_list ';' struct_declaration_list     { $$ = MkEnum($2, $4); $$.loc = @$; $$.definitions = $6;  POP_DEFAULT_ACCESS }
-   | enum_specifier identifier '{' enumerator_list ';' struct_declaration_list_error     { $$ = MkEnum($2, $4); $$.loc = @$; $$.definitions = $6;  POP_DEFAULT_ACCESS }
+	| enum_specifier identifier '{' enumerator_list          { $$ = MkEnum($2, $4); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier identifier '{' enumerator_list error    { $$ = MkEnum($2, $4);  $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier identifier '{' error    { $$ = MkEnum($2, null);  $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier identifier '{' enumerator_list ';' struct_declaration_list     { $$ = MkEnum($2, $4); $$.loc = @$; $$.definitions = $6;  POP_DEFAULT_ACCESS; }
+   | enum_specifier identifier '{' enumerator_list ';' struct_declaration_list_error     { $$ = MkEnum($2, $4); $$.loc = @$; $$.definitions = $6;  POP_DEFAULT_ACCESS; }
 
-   | enum_specifier strict_type '{' enumerator_list           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS }
-   | enum_specifier strict_type '{' enumerator_list error          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS }
-   | enum_specifier strict_type '{' error                          { $$ = MkEnum(MkIdentifier($2.name), null); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS }
-	| enum_specifier strict_type '{' enumerator_list ';' struct_declaration_list           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; $$.definitions = $6; FreeSpecifier($2); POP_DEFAULT_ACCESS }
-	| enum_specifier strict_type '{' enumerator_list ';' struct_declaration_list_error           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; $$.definitions = $6; FreeSpecifier($2); POP_DEFAULT_ACCESS }
+   | enum_specifier strict_type '{' enumerator_list           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
+   | enum_specifier strict_type '{' enumerator_list error          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
+   | enum_specifier strict_type '{' error                          { $$ = MkEnum(MkIdentifier($2.name), null); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
+	| enum_specifier strict_type '{' enumerator_list ';' struct_declaration_list           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; $$.definitions = $6; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
+	| enum_specifier strict_type '{' enumerator_list ';' struct_declaration_list_error           { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; $$.definitions = $6; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
 
-   | enum_specifier identifier '{' enumerator_list ';'      { $$ = MkEnum($2, $4); $$.loc = @$; POP_DEFAULT_ACCESS }
-	| enum_specifier strict_type '{' enumerator_list ';'            { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS }
+   | enum_specifier identifier '{' enumerator_list ';'      { $$ = MkEnum($2, $4); $$.loc = @$; POP_DEFAULT_ACCESS; }
+	| enum_specifier strict_type '{' enumerator_list ';'            { $$ = MkEnum(MkIdentifier($2.name), $4); $$.loc = @$; FreeSpecifier($2); POP_DEFAULT_ACCESS; }
 	;
 
 enum_decl:
@@ -2139,34 +2143,34 @@ enum_decl:
 
 enum_class:
      enum_class_error '}'  { $$ = $1; $$.loc = @$; }
-   | enum_decl ':' inheritance_specifiers '{' '}' { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' '}'    { $$ = MkEnum($1, null); POP_DEFAULT_ACCESS }
+   | enum_decl ':' inheritance_specifiers '{' '}' { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' '}'    { $$ = MkEnum($1, null); POP_DEFAULT_ACCESS; }
    ;
 
 enum_class_error:
-     enum_decl ':' inheritance_specifiers '{' enumerator_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list error          { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' error          { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list_error           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';' struct_declaration_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $8; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';' struct_declaration_list_error           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $8; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' error ';' struct_declaration_list           { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' error ';' struct_declaration_list_error           { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS }
+     enum_decl ':' inheritance_specifiers '{' enumerator_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list error          { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' error          { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';' struct_declaration_list_error           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';' struct_declaration_list           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $8; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';' struct_declaration_list_error           { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.definitions = $8; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' error ';' struct_declaration_list           { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' error ';' struct_declaration_list_error           { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.definitions = $7; $$.loc = @$; POP_DEFAULT_ACCESS; }
 
-	| enum_specifier '{' enumerator_list       { $$ = MkEnum(null, $3); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_specifier '{' error                 { $$ = MkEnum(null, null); $$.loc = @$; POP_DEFAULT_ACCESS }
+	| enum_specifier '{' enumerator_list       { $$ = MkEnum(null, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier '{' error                 { $$ = MkEnum(null, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
 
-	| enum_decl '{' enumerator_list          { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' enumerator_list error    { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' error    { $$ = MkEnum($1, null); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' enumerator_list ';' struct_declaration_list     { $$ = MkEnum($1, $3); $$.definitions = $5; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' enumerator_list ';' struct_declaration_list_error     { $$ = MkEnum($1, $3); $$.definitions = $5; $$.loc = @$; POP_DEFAULT_ACCESS }
+	| enum_decl '{' enumerator_list          { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' enumerator_list error    { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' error    { $$ = MkEnum($1, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' enumerator_list ';' struct_declaration_list     { $$ = MkEnum($1, $3); $$.definitions = $5; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' enumerator_list ';' struct_declaration_list_error     { $$ = MkEnum($1, $3); $$.definitions = $5; $$.loc = @$; POP_DEFAULT_ACCESS; }
 
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';'            { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';'            { $$ = MkEnum($1, $5); $$.baseSpecs = $3;  $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl ':' inheritance_specifiers '{' error ';'            { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS }
-   | enum_decl '{' enumerator_list ';'      { $$ = MkEnum($1, $3);  $$.loc = @$; POP_DEFAULT_ACCESS }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list ';'            { $$ = MkEnum($1, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' enumerator_list error ';'            { $$ = MkEnum($1, $5); $$.baseSpecs = $3;  $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl ':' inheritance_specifiers '{' error ';'            { $$ = MkEnum($1, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_decl '{' enumerator_list ';'      { $$ = MkEnum($1, $3);  $$.loc = @$; POP_DEFAULT_ACCESS; }
    ;
 
 class_specifier:
@@ -2317,8 +2321,8 @@ struct_entry:
 struct_or_union_specifier_compound:
      struct_or_union_specifier_compound_error '}' { $$ = $1; $$.loc = @$; }
    | struct_entry '{' '}'                 { $$ = $1; $$.loc = @$; POP_DEFAULT_ACCESS PopContext(curContext); }
-   | struct_or_union '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.loc = @$; POP_DEFAULT_ACCESS }
-   | struct_or_union ext_decl '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; $$.loc = @$; POP_DEFAULT_ACCESS }
+   | struct_or_union '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | struct_or_union ext_decl '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; $$.loc = @$; POP_DEFAULT_ACCESS; }
 	;
 
 struct_or_union_specifier_compound_error:
@@ -2326,13 +2330,13 @@ struct_or_union_specifier_compound_error:
    | struct_entry '{' struct_declaration_list_error   { $$ = $1; AddStructDefinitions($1, $3);  POP_DEFAULT_ACCESS PopContext(curContext); }
    | struct_entry '{' error   { $$ = $1; POP_DEFAULT_ACCESS PopContext(curContext); }
 
-	| struct_or_union '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS }
-   | struct_or_union '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS }
-   | struct_or_union '{' error              { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS }
+	| struct_or_union '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS; }
+   | struct_or_union '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS; }
+   | struct_or_union '{' error              { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS; }
 
-	| struct_or_union ext_decl '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
-   | struct_or_union ext_decl '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
-   | struct_or_union ext_decl '{' error              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS }
+	| struct_or_union ext_decl '{' struct_declaration_list               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS; }
+   | struct_or_union ext_decl '{' struct_declaration_list_error               { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS; }
+   | struct_or_union ext_decl '{' error              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; POP_DEFAULT_ACCESS; }
 	;
 
 struct_or_union_specifier_nocompound:
@@ -2370,7 +2374,7 @@ struct_class:
    | struct_head '{' '}'
       { $$ = $1; POP_DEFAULT_ACCESS PopContext(curContext); }
    | struct_decl '{' '}'   { $$ = $1; POP_DEFAULT_ACCESS PopContext(curContext); }
-   | struct_or_union '{' '}' { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS }
+   | struct_or_union '{' '}' { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS; }
    ;
 
 struct_class_error:
@@ -2402,7 +2406,7 @@ struct_class_error:
         }
         else
            $$.definitions = $3;
-        POP_DEFAULT_ACCESS
+        POP_DEFAULT_ACCESS;
      }
 	| struct_decl '{' struct_declaration_list_error
      {
@@ -2416,17 +2420,17 @@ struct_class_error:
         }
         else
            $$.definitions = $3;
-        POP_DEFAULT_ACCESS
+        POP_DEFAULT_ACCESS;
      }
    | struct_decl '{' error
       { $$ = $1; POP_DEFAULT_ACCESS PopContext(curContext); }
 
 	| struct_or_union '{' struct_declaration_list
-      { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS  }
+      { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS;  }
    | struct_or_union '{' struct_declaration_list_error
-      { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS }
+      { $$ = MkStructOrUnion($1, null, $3); POP_DEFAULT_ACCESS; }
    | struct_or_union '{' error
-      { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS }
+      { $$ = MkStructOrUnion($1, null, null); POP_DEFAULT_ACCESS; }
    ;
 
 struct_or_union:
@@ -2536,7 +2540,7 @@ _inheritance_specifiers:
 
 inheritance_specifiers:
      _inheritance_specifiers
-   | struct_or_union    { $$ = MkListOne(MkStructOrUnion($1, null, null)); POP_DEFAULT_ACCESS }
+   | struct_or_union    { $$ = MkListOne(MkStructOrUnion($1, null, null)); POP_DEFAULT_ACCESS; }
    ;
 
 property_specifiers:
@@ -2546,8 +2550,8 @@ property_specifiers:
    | property_specifiers type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
    | property_specifiers strict_type_specifier            { $$ = $1; ListAdd($1, $2); }
-   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1)}
-   | property_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
+   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
+   | property_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
    | identifier '<' template_arguments_list '>'
       {
          _DeclClass($1._class, $1.string);
@@ -2575,8 +2579,8 @@ renew_specifiers:
 	| renew_specifiers struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
 	| renew_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
-   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1)}
-   | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
+   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
+   | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
    | identifier '<' template_arguments_list '>'
       {
          _DeclClass($1._class, $1.string);
@@ -2604,8 +2608,8 @@ new_specifiers:
 	| new_specifiers struct_or_union_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
 	| new_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
-   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1)}
-   | new_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
+   | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
+   | new_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
    | identifier '<' template_arguments_list '>'
       {
          _DeclClass($1._class, $1.string);
@@ -2868,6 +2872,7 @@ ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
    | EXT_STORAGE  { $$ = MkExtDeclString(CopyString(yytext)); }
    | attrib { $$ = MkExtDeclAttrib($1); }
+   | multi_attrib { $$ = MkExtDeclMultiAttrib($1); }
    | ASM '(' string_literal ')'
       {
          char temp[1024];
@@ -2909,6 +2914,11 @@ attrib:
      _attrib '(' '(' attribs_list ')' ')' { $$ = MkAttrib($<i>1, $4); $$.loc = @$; }
    | _attrib '(' '('              ')' ')'  { $$ = MkAttrib($<i>1, null); $$.loc = @$; }
    ;
+
+multi_attrib:
+     attrib                { $$ = MkListOne($1); }
+   | multi_attrib attrib   { ListAdd($1, $2); $$ = $1; }
+
 
 direct_abstract_declarator:
 	  '(' abstract_declarator ')'               { $$ = MkDeclaratorBrackets($2); }

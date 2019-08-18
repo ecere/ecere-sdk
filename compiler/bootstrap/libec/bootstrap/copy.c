@@ -134,30 +134,6 @@ struct CodePosition start;
 struct CodePosition end;
 } ecere_gcc_struct;
 
-struct Attrib
-{
-struct Location loc;
-int type;
-struct __ecereNameSpace__ecere__sys__OldList *  attribs;
-} ecere_gcc_struct;
-
-struct ExtDecl
-{
-struct Location loc;
-int type;
-union
-{
-char * s;
-struct Attrib * attr;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
-
-extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
-
-extern struct ExtDecl * MkExtDeclString(char * s);
-
 struct __ecereNameSpace__ecere__com__Class;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -226,6 +202,39 @@ char *  string;
 struct Identifier * badID;
 } ecere_gcc_struct;
 
+extern struct Specifier * MkSpecifier(int specifier);
+
+extern struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * list);
+
+extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
+
+extern struct Specifier * MkSpecifierSubClass(struct Specifier * _class);
+
+struct Attrib;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+struct __ecereNameSpace__ecere__sys__OldList *  multiAttr;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
+
+struct Attrib
+{
+struct Attrib * prev;
+struct Attrib * next;
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
+} ecere_gcc_struct;
+
 struct Specifier
 {
 struct Specifier * prev;
@@ -259,15 +268,13 @@ struct TemplateParameter * templateParameter;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
-extern struct Specifier * MkSpecifier(int specifier);
-
-extern struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * list);
-
-extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
-
-extern struct Specifier * MkSpecifierSubClass(struct Specifier * _class);
-
 extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
+
+extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
+
+extern struct ExtDecl * MkExtDeclString(char * s);
+
+extern struct ExtDecl * MkExtDeclMultiAttrib(struct __ecereNameSpace__ecere__sys__OldList *  attribs);
 
 struct Declarator;
 
@@ -505,20 +512,6 @@ int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uint
 void (*  FreeKey)(void *  key);
 } ecere_gcc_struct;
 
-struct Attrib *  CopyAttrib(struct Attrib *  attrib);
-
-struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl)
-{
-if(extDecl)
-{
-if(extDecl->type == 1)
-return MkExtDeclAttrib(CopyAttrib(extDecl->__anon1.attr));
-else if(extDecl->type == 0)
-return MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString(extDecl->__anon1.s));
-}
-return (((void *)0));
-}
-
 struct __ecereNameSpace__ecere__com__DataMember;
 
 struct __ecereNameSpace__ecere__com__Property;
@@ -637,7 +630,7 @@ extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList
 
 struct Enumerator;
 
-extern struct Enumerator * MkEnumerator(struct Identifier * id, struct Expression * exp);
+extern struct Enumerator * MkEnumerator(struct Identifier * id, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
 
 struct Enumerator
 {
@@ -646,6 +639,7 @@ struct Enumerator * next;
 struct Location loc;
 struct Identifier * id;
 struct Expression * exp;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
 } ecere_gcc_struct;
 
 struct Attribute;
@@ -718,6 +712,22 @@ for(spec = (*ptr->qualifiers).first; spec; spec = spec->next)
 ListAdd(list, CopySpecifier(spec));
 }
 return MkPointer(list, CopyPointer(ptr->pointer));
+}
+return (((void *)0));
+}
+
+struct Attrib *  CopyAttrib(struct Attrib *  attrib);
+
+struct ExtDecl * CopyExtDecl(struct ExtDecl * extDecl)
+{
+if(extDecl)
+{
+if(extDecl->type == 1)
+return MkExtDeclAttrib(CopyAttrib(extDecl->__anon1.attr));
+else if(extDecl->type == 0)
+return MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString(extDecl->__anon1.s));
+else if(extDecl->type == 2)
+return MkExtDeclMultiAttrib(CopyList(extDecl->__anon1.multiAttr, (void *)(CopyAttrib)));
 }
 return (((void *)0));
 }
@@ -1241,7 +1251,7 @@ return copy;
 
 static struct Enumerator * CopyEnumerator(struct Enumerator * enumerator)
 {
-return MkEnumerator(CopyIdentifier(enumerator->id), CopyExpression(enumerator->exp));
+return MkEnumerator(CopyIdentifier(enumerator->id), CopyExpression(enumerator->exp), CopyList(enumerator->attribs, (void *)(CopyAttrib)));
 }
 
 struct Attribute * CopyAttribute(struct Attribute * attrib)

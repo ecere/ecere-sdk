@@ -533,6 +533,7 @@ public:
 public class Attrib : struct
 {
 public:
+   Attrib prev, next;
    Location loc;
    int type;
    OldList * attribs;
@@ -547,12 +548,13 @@ public:
    {
       String s;
       Attrib attr;
+      OldList * multiAttr;
    };
 }
 
 public enum ExtDeclType
 {
-   extDeclString, extDeclAttrib
+   extDeclString, extDeclAttrib, extDeclMultiAttrib
 };
 
 public class Expression : struct
@@ -716,6 +718,7 @@ public:
    Location loc;
    Identifier id;
    Expression exp;
+   OldList * attribs;
 };
 
 class Pointer : struct

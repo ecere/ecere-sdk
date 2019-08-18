@@ -99,7 +99,7 @@ default:
              type_qualifier_list property_specifiers
              renew_specifiers
              default_property_list
-             template_arguments_list attribs_list
+             template_arguments_list attribs_list multi_attrib
 
 
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier strict_type_specifier
@@ -222,6 +222,7 @@ default:
 %destructor { FreeExtDecl($$); } ext_decl
 %destructor { FreeAttribute($$); } attribute
 %destructor { FreeList($$, FreeAttribute); }  attribs_list
+%destructor { FreeList($$, FreeAttrib); }  multi_attrib
 
 %start type_unit
 
@@ -719,7 +720,7 @@ renew_specifiers:
    | enum_specifier_compound              { $$ = MkList(); ListAdd($$, $1); }
 	| renew_specifiers enum_specifier_compound          { $$ = $1; ListAdd($1, $2); }
    | identifier                        { $$ = MkList(); ListAdd($$, MkSpecifierName($1.string)); FreeIdentifier($1); }
-   | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
+   | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
    | identifier '<' template_arguments_list '>'
       {
          _DeclClass($1._class, $1.string);
@@ -759,6 +760,7 @@ ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
    | EXT_STORAGE { $$ = MkExtDeclString(CopyString(yytext)); }
    | attrib { $$ = MkExtDeclAttrib($1); }
+   | multi_attrib { $$ = MkExtDeclMultiAttrib($1); }
    ;
 
 _attrib:
@@ -767,6 +769,9 @@ _attrib:
  | __ATTRIB    { $<i>$ = __ATTRIB; }
  ;
 
+multi_attrib:
+     attrib                { $$ = MkListOne($1); }
+   | multi_attrib attrib   { $$ = $1; ListAdd($1, $2); }
 
 attribute_word:
      IDENTIFIER   { $$  = CopyString(yytext); }
@@ -1082,11 +1087,12 @@ enumerator_list:
 
 enumerator:
 	  identifier
-      { $$ = MkEnumerator($1, null); }
+      { $$ = MkEnumerator($1, null, null); }
 	| identifier '=' constant_expression
-      { $$ = MkEnumerator($1, $3); }
+      { $$ = MkEnumerator($1, $3, null); }
+	| identifier multi_attrib                          { $$ = MkEnumerator($1, null, $2); }
+	| identifier multi_attrib '=' constant_expression   { $$ = MkEnumerator($1, $4, $2); }
 	;
-
 
 direct_abstract_declarator:
 	  '(' abstract_declarator ')'
