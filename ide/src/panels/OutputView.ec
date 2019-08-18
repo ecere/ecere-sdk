@@ -9,6 +9,44 @@ enum OutputViewTab { build, debug, find
 #endif
 };
 
+enum CompilerMessageType
+{
+   nil, any, error, other, warning, note, inFunction, unusedFunc, unusedVar, varSetButNotUsed;
+
+   bool match(CompilerMessageType b)
+   {
+      CompilerMessageType a = this;
+      if(b != nil && (b == any ||
+            (b == other && (a == note || a == inFunction || a == unusedFunc || a == unusedVar || a == varSetButNotUsed)) ||
+            b == a))
+         return true;
+      return false;
+   }
+
+   CompilerMessageType ::fromKeyCode(KeyCode code)
+   {
+      switch(code)
+      {
+         case a:  return any;
+         case e:  return error;
+         case o:  return other;
+         case w:  return warning;
+         case n:  return note;
+         case i:  return inFunction;
+         case f:  return unusedFunc;
+         case v:  return unusedVar;
+         case s:  return varSetButNotUsed;
+      }
+      return nil;
+   }
+};
+
+struct BuildOutputLineMark
+{
+   CompilerMessageType type;
+   int lineNumber;
+};
+
 class OutputView : Window
 {
    visible = false;
@@ -81,6 +119,12 @@ class OutputView : Window
    };
 #endif
 
+   Button autoGo
+   {
+      this, inactive = true, text = $"Automatic Go To Line", isCheckbox = true, hotKey = ctrlSpace, checked = true;
+      anchor = { top = 4, right = 4 };
+   };
+
    void SelectTab(OutputViewTab tab)
    {
       Button activeBtn = null;
@@ -94,6 +138,7 @@ class OutputView : Window
       else if(tab == gdb)
          activeBtn = gdbBtn, activeBox = gdbBox;
 #endif
+      autoGo.visible = tab == build;
       if(activeBtn && activeBox)
       {
          activeBtn.checked = true;
@@ -142,9 +187,68 @@ class OutputView : Window
             OnGotoError(editBox.line.text, key.ctrl && key.shift);
             return false;
          }
+         else if(marks.count)
+         {
+            CompilerMessageType t = CompilerMessageType::fromKeyCode(key.code);
+            if(t)
+            {
+               bool reverse = key.shift;
+               int count = marks.count;
+               int increment = reverse ? -1 : 1;
+               int bound = reverse ? -1 : count;
+               int firstPos = reverse ? count - 1 : 0;
+               int lastPos = reverse ? 0 : count - 1;
+               int lineNumber = buildBox.lineNumber + 1;
+               int nextPos = -1;
+               int endPos;
+               int pos;
+               for(pos = firstPos; pos != bound; pos += increment)
+               {
+                  int num = marks[pos].lineNumber;
+                  if((reverse && num < lineNumber) || (!reverse && num > lineNumber))
+                  {
+                     nextPos = pos;
+                     break;
+                  }
+               }
+               if(nextPos == -1)
+                  nextPos = firstPos;
+               endPos = nextPos == firstPos ? lastPos : nextPos == lastPos ? firstPos : nextPos - increment;
+               while(1)
+               {
+                  if(nextPos == bound)
+                     nextPos = firstPos;
+                  if(marks[nextPos].type.match(t))
+                     break;
+                  if(nextPos == endPos)
+                  {
+                     nextPos = -1;
+                     break;
+                  }
+                  nextPos += increment;
+               }
+               if(nextPos != -1)
+               {
+                  buildBox.GoToLineNum(marks[nextPos].lineNumber - 1);
+                  if(autoGo.checked)
+                  {
+                     OnGotoError(editBox.line.text, false);
+                     Activate();
+                  }
+               }
+            }
+         }
          return true;
       }
    };
+
+   void buildClear()
+   {
+      buildBox.Clear();
+      marks.RemoveAll();
+   }
+
+   Array<BuildOutputLineMark> marks { };
 
    LogBox debugBox
    {
@@ -260,7 +364,7 @@ class OutputView : Window
    {
       Show();
       if(tab == build)
-         buildBox.Clear();
+         buildClear();
       else if(tab == debug)
          debugBox.Clear();
       else if(tab == find)
