@@ -1531,7 +1531,14 @@ private:
       int linePos = 0;
       bool compiling = false, linking = false, precompiling = false;
       int compilingEC = 0;
-      int numErrors = 0, numWarnings = 0;
+      int numErrors = 0;
+      int numWarnings = 0;
+      int numWarnNote = 0;
+      int numWarnInFunc = 0;
+      int numWarnUnusedVar = 0;
+      int numWarnUnusedFunc = 0;
+      int numWarnSetButNotUsed = 0;
+      // todo: int counts[CompilerMessageType::enumSize];
       bool loggedALine = false;
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
@@ -1628,12 +1635,14 @@ private:
                            ide.outputView.buildBox.Logf($"   %s: No such file or directory\n", module);
                            // ide.outputView.buildBox.Logf("error: %s\n   No such file or directory\n", module);
                            numErrors++;
+                           ide.outputView.marks.Add({ error, ide.outputView.buildBox.numLines });
                         }
                      }
                      //else
                      //{
                         //ide.outputView.buildBox.Logf("error: %s\n", line);
                         //numErrors++;
+                        //ide.outputView.marks.Add({ error, ide.outputView.buildBox.numLines })
                      //}
                   }
                   else if(strstr(test, "mkdir ") == test);
@@ -1699,11 +1708,47 @@ private:
                      }
                      else
                      {
-                        ide.outputView.buildBox.Logf("%s\n", line);
-                        if(strstr(line, "warning:") || strstr(line, "note:"))
-                           numWarnings++;
+                        if(strstr(line, "warning:"))
+                        {
+                           char * sub;
+                           if(strstr(line, " defined but not used") || strstr(line, "[-Wunused-function]"))
+                           {
+                              numWarnUnusedFunc++;
+                              ide.outputView.marks.Add({ unusedFunc, ide.outputView.buildBox.numLines });
+                           }
+                           if(strstr(line, ": unused variable ") || strstr(line, "[-Wunused-variable]"))
+                           {
+                              numWarnUnusedVar++;
+                              ide.outputView.marks.Add({ unusedVar, ide.outputView.buildBox.numLines });
+                           }
+                           else if(((sub = strstr(line, ": variable ")) && strstr(sub, " set but not used")) ||
+                                 strstr(line, "[-Wunused-but-set-variable]"))
+                           {
+                              numWarnSetButNotUsed++;
+                              ide.outputView.marks.Add({ varSetButNotUsed, ide.outputView.buildBox.numLines });
+                           }
+                           else
+                           {
+                              numWarnings++;
+                              ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
+                           }
+                        }
+                        else if(strstr(line, "In function "))
+                        {
+                           numWarnInFunc++;
+                           ide.outputView.marks.Add({ inFunction, ide.outputView.buildBox.numLines });
+                        }
+                        else if(strstr(line, "note:"))
+                        {
+                           numWarnNote++;
+                           ide.outputView.marks.Add({ note, ide.outputView.buildBox.numLines });
+                        }
                         else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from") && !strstr(line, stringFrom))
+                        {
                            numErrors++;
+                           ide.outputView.marks.Add({ error, ide.outputView.buildBox.numLines });
+                        }
+                        ide.outputView.buildBox.Logf("%s\n", line);
                      }
 
                      if(compilingEC) compilingEC--;
@@ -1804,6 +1849,7 @@ private:
                               else
                               {
                                  numErrors++;
+                                 ide.outputView.marks.Add({ CompilerMessageType::error, ide.outputView.buildBox.numLines });
                                  message = $"Linker Error: ";
                               }
                            }
@@ -1815,11 +1861,13 @@ private:
                               {
                                  message = $"Linker ";
                                  numWarnings++;
+                                 ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
                               }
                               else if(strstr(line, "error:"))
                               {
                                  message = $"Linker Error: ";
                                  numErrors++;
+                                 ide.outputView.marks.Add({ CompilerMessageType::error, ide.outputView.buildBox.numLines });
                               }
                            }
                            else
@@ -1830,7 +1878,10 @@ private:
                            }
                            error = strstr(line, "error:");
                            if(!message && error && error > colon)
+                           {
                               numErrors++;
+                              ide.outputView.marks.Add({ CompilerMessageType::error, ide.outputView.buildBox.numLines });
+                           }
                            else
                            {
                               // Silence warnings for compiled eC
@@ -1858,12 +1909,12 @@ private:
                               }
                               else //if(compilingEC == 1 || (objDir && objDir == moduleName))
                               {
-                                 bool skip = false;
-
                                  // Filter out these warnings caused by eC generated C code:
 
                                  // Declaration ordering bugs -- Awaiting topo sort implementation
+
                                  /*
+                                 bool skip = false;
                                       if(strstr(line, "declared inside parameter list")) skip = true;
                                  else if(strstr(line, "its scope is only this definition")) skip = true;
                                  else if(strstr(line, "from incompatible pointer type")) skip = true;
@@ -1893,9 +1944,49 @@ private:
                                  else if(strstr(line, "In function '") || strstr(line, "In function ‘") ) skip = true;
                                  else if(strstr(line, "At top level")) skip = true;
                                  else if(strstr(line, "(near initialization for '") || strstr(line, "(near initialization for ‘")) skip = true;
-                                 */
                                  if(skip) continue;
-                                 numWarnings++;
+                                 */
+
+                                 if(strstr(line, "warning:"))
+                                 {
+                                    char * sub;
+                                    if(strstr(line, " defined but not used") || strstr(line, "[-Wunused-function]"))
+                                    {
+                                       numWarnUnusedFunc++;
+                                       ide.outputView.marks.Add({ unusedFunc, ide.outputView.buildBox.numLines });
+                                    }
+                                    else if(strstr(line, ": unused variable ") || strstr(line, "[-Wunused-variable]"))
+                                    {
+                                       numWarnUnusedVar++;
+                                       ide.outputView.marks.Add({ unusedVar, ide.outputView.buildBox.numLines });
+                                    }
+                                    else if(((sub = strstr(line, ": variable ")) && strstr(sub, " set but not used")) ||
+                                          strstr(line, "[-Wunused-but-set-variable]"))
+                                    {
+                                       numWarnSetButNotUsed++;
+                                       ide.outputView.marks.Add({ varSetButNotUsed, ide.outputView.buildBox.numLines });
+                                    }
+                                    else
+                                    {
+                                       numWarnings++;
+                                       ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
+                                    }
+                                 }
+                                 else if(strstr(line, "In function "))
+                                 {
+                                    numWarnInFunc++;
+                                    ide.outputView.marks.Add({ inFunction, ide.outputView.buildBox.numLines });
+                                 }
+                                 else if(strstr(line, "note:"))
+                                 {
+                                    numWarnNote++;
+                                    ide.outputView.marks.Add({ note, ide.outputView.buildBox.numLines });
+                                 }
+                                 else
+                                 {
+                                    numWarnings++;
+                                    ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
+                                 }
                               }
                               /*else if(strstr(line, "warning:"))
                               {
@@ -2025,6 +2116,7 @@ private:
          }
          else if(buildType != install)
          {
+            int numOthers = numWarnNote + numWarnInFunc + numWarnUnusedFunc + numWarnUnusedVar + numWarnSetButNotUsed;
             if(!onlyNodes)
             {
                char targetFileName[MAX_LOCATION];
@@ -2033,14 +2125,38 @@ private:
                ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, lastBuildConfigName);
             }
             if(numErrors)
-               ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
+               ide.outputView.buildBox.Logf("%d %s", numErrors, (numErrors > 1) ? $"errors" : $"error");
             else
-               ide.outputView.buildBox.Logf($"no error, ");
-
+               ide.outputView.buildBox.Logf("%s", $"no error");
             if(numWarnings)
-               ide.outputView.buildBox.Logf("%d %s\n", numWarnings, (numWarnings > 1) ? $"warnings" : $"warning");
+               ide.outputView.buildBox.Logf(", %d %s", numWarnings, (numWarnings > 1) ? $"warnings" : $"warning");
             else
-               ide.outputView.buildBox.Logf($"no warning\n");
+               ide.outputView.buildBox.Logf(", %s", $"no warning");
+            if(numOthers)
+               ide.outputView.buildBox.Logf(", %d %s", numOthers, (numOthers > 1) ? $"other warnings" : $"other warning");
+            ide.outputView.buildBox.Logf("\n");
+
+            if(numOthers)
+            {
+               bool comma = false;
+               ide.outputView.buildBox.Logf("\n");
+               if(numWarnNote)
+                  ide.outputView.buildBox.Logf("%d %s", numWarnNote, (numWarnNote > 1) ? $"notes" : $"note"), comma = true;
+               if(numWarnInFunc)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnInFunc, (numWarnInFunc > 1) ? $"in functions" : $"in function"), comma = true;
+               if(numWarnUnusedFunc)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnUnusedFunc, (numWarnUnusedFunc > 1) ? $"unused functions" : $"unused function"), comma = true;
+               if(numWarnUnusedVar)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnUnusedVar, (numWarnUnusedVar > 1) ? $"unused variables" : $"unused variable"), comma = true;
+               if(numWarnSetButNotUsed)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnSetButNotUsed, (numWarnSetButNotUsed > 1) ? $"variables set but not used" : $"variable set but not used"), comma = true;
+               ide.outputView.buildBox.Logf("\n");
+            }
+            if(numErrors || numWarnings || numOthers)
+            {
+               ide.outputView.buildBox.Logf("\n");
+               ide.outputView.buildBox.Logf("navigation: (a)ny, (e)rror, (w)arning, (o)ther warning, unused (f)unction, unused (v)ariable, variable (s)et but not used. combine with shift for reverse order.\n");
+            }
          }
       }
 
