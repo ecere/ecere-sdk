@@ -118,6 +118,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
+extern int printf(const char * , ...);
+
 extern void __ecereNameSpace__ecere__LoadTranslatedStrings(const char * moduleName, const char *  name);
 
 extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name);
@@ -463,8 +465,10 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * _propert
 if(setThingsUp)
 __thisModule = __ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)1, _argc, (void *)_argv);
 __currentModule = module = __thisModule;
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, (void *)(__ecereDll_Load_ec), (void *)(__ecereDll_Unload_ec));
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
+if(!__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, (void *)(__ecereDll_Load_ec), (void *)(__ecereDll_Unload_ec)))
+printf("Error loading eC module \"%s\" (statically linked)\nThings might go very wrong.\n", "ec");
+if(!__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere)))
+printf("Error loading eC module \"%s\" (statically linked)\nThings might go very wrong.\n", "ecere");
 __ecereRegisterModule_ecs(module);
 __ecereClass_char__PTR_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "char *");
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");

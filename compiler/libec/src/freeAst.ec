@@ -259,6 +259,8 @@ void FreeEnumerator(Enumerator enumerator)
 {
    if(enumerator.id)
       FreeIdentifier(enumerator.id);
+   if(enumerator.attribs)
+      FreeList(enumerator.attribs, FreeAttrib);
    if(enumerator.exp)
       FreeExpression(enumerator.exp);
 
@@ -617,6 +619,8 @@ void FreeExtDecl(ExtDecl extDecl)
       FreeAttrib(extDecl.attr);
    else if(extDecl.type == extDeclString)
       delete extDecl.s;
+   else if(extDecl.type == extDeclMultiAttrib && extDecl.multiAttr)
+      FreeList(extDecl.multiAttr, FreeAttrib);
    delete extDecl;
 }
 

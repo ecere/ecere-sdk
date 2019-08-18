@@ -561,6 +561,10 @@ ExtDecl MkExtDeclAttrib(Attrib attr)
    return { type = extDeclAttrib, attr = attr };
 }
 
+ExtDecl MkExtDeclMultiAttrib(OldList * attribs)
+{
+   return { type = extDeclMultiAttrib, multiAttr = attribs };
+}
 
 public Declarator MkDeclaratorIdentifier(Identifier id)
 {
@@ -607,9 +611,9 @@ Declarator MkDeclaratorPointer(Pointer pointer, Declarator declarator)
    return { type = pointerDeclarator, declarator = declarator, pointer.pointer = pointer };
 }
 
-Enumerator MkEnumerator(Identifier id, Expression exp)
+Enumerator MkEnumerator(Identifier id, Expression exp, OldList * attribs)
 {
-   return { id = id, exp = exp };
+   return { id = id, exp = exp, attribs = attribs };
 }
 
 Pointer MkPointer(OldList qualifiers, Pointer pointer)

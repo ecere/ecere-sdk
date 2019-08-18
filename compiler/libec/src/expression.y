@@ -4,6 +4,7 @@ import "ecdefs"
 
 #define YYSIZE_T size_t
 #define YYLTYPE Location
+
 #include "grammar.h"
 
 #ifndef YYLLOC_DEFAULT
@@ -93,7 +94,7 @@ default:
              specifier_qualifier_list
              type_qualifier_list property_specifiers
              renew_specifiers
-             default_property_list attribs_list
+             default_property_list attribs_list multi_attrib
 
 
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier strict_type_specifier
@@ -207,6 +208,7 @@ default:
 %destructor { FreeExtDecl($$); } ext_decl
 %destructor { FreeAttribute($$); } attribute
 %destructor { FreeList($$, FreeAttribute); }  attribs_list
+%destructor { FreeList($$, FreeAttrib); }  multi_attrib
 
 %start expression_unit
 
@@ -522,6 +524,7 @@ storage_class_specifier:
 ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
    | attrib { $$ = MkExtDeclAttrib($1); }
+   | multi_attrib { $$ = MkExtDeclMultiAttrib($1); }
    ;
 
 _attrib:
@@ -554,6 +557,10 @@ attrib:
      _attrib '(' '(' attribs_list ')' ')' { $$ = MkAttrib($<i>1, $4); $$.loc = @$; }
    | _attrib '(' '('              ')' ')'  { $$ = MkAttrib($<i>1, null); $$.loc = @$; }
    ;
+
+multi_attrib:
+     attrib                { $$ = MkListOne($1); }
+   | multi_attrib attrib   { ListAdd($1, $2); $$ = $1; }
 
 type_qualifier:
 	  CONST        { $$ = MkSpecifier(CONST); }
@@ -786,9 +793,11 @@ enumerator_list:
 
 enumerator:
 	  identifier
-      { $$ = MkEnumerator($1, null); }
+      { $$ = MkEnumerator($1, null, null); }
 	| identifier '=' constant_expression
-      { $$ = MkEnumerator($1, $3); }
+      { $$ = MkEnumerator($1, $3, null); }
+	| identifier multi_attrib                          { $$ = MkEnumerator($1, null, $2); }
+	| identifier multi_attrib '=' constant_expression   { $$ = MkEnumerator($1, $4, $2); }
 	;
 
 

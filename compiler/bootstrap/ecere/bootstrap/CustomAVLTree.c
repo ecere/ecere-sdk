@@ -588,6 +588,13 @@ short pointerAlignment;
 
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 
+struct __ecereNameSpace__ecere__com__AVLNode *  __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindEx(struct __ecereNameSpace__ecere__com__AVLNode *  this, struct __ecereNameSpace__ecere__com__Class *  Tclass, const uint64 key, struct __ecereNameSpace__ecere__com__AVLNode * *  addTo, int *  addSide);
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key)
+{
+return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindEx(this, Tclass, key, (((void *)0)), (((void *)0)));
+}
+
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument
@@ -734,37 +741,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AVLNode;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key)
-{
-unsigned char * a;
-unsigned int reference = 0;
-unsigned int offset = 0;
-int t = Tclass->type;
-int (* onCompare)(void *, void *, void *) = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
-
-reference = (t == 1000 && !Tclass->byValueSystemClass) || t == 2 || t == 4 || t == 3;
-offset = __ENDIAN_PAD(Tclass->typeSize);
-a = reference ? ((unsigned char *)&key) + offset : (unsigned char *)(uintptr_t)key;
-if(t == 1)
-{
-reference = 1;
-offset = __ENDIAN_PAD(sizeof(void *));
-}
-while(this)
-{
-unsigned char * b = reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key);
-int result = onCompare(Tclass, a, b);
-
-if(result < 0)
-this = this->left;
-else if(result > 0)
-this = this->right;
-else
-break;
-}
-return this;
-}
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 

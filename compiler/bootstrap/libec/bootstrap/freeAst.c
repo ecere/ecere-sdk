@@ -160,24 +160,6 @@ FreeFunction(item);
 }
 }
 
-struct Attrib
-{
-struct Location loc;
-int type;
-struct __ecereNameSpace__ecere__sys__OldList *  attribs;
-} ecere_gcc_struct;
-
-struct ExtDecl
-{
-struct Location loc;
-int type;
-union
-{
-char * s;
-struct Attrib * attr;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
 struct Context;
 
 extern struct Context * curContext;
@@ -396,6 +378,29 @@ struct __ecereNameSpace__ecere__sys__OldList *  qualifiers;
 struct Pointer * pointer;
 } ecere_gcc_struct;
 
+struct Attrib;
+
+struct Attrib
+{
+struct Attrib * prev;
+struct Attrib * next;
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
+} ecere_gcc_struct;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+struct __ecereNameSpace__ecere__sys__OldList *  multiAttr;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
 struct PropertyWatch;
 
 struct MemberInit;
@@ -520,8 +525,6 @@ FreeSymbol(symbol);
 }
 }
 
-struct Specifier;
-
 struct Identifier;
 
 struct Enumerator
@@ -531,54 +534,7 @@ struct Enumerator * next;
 struct Location loc;
 struct Identifier * id;
 struct Expression * exp;
-} ecere_gcc_struct;
-
-struct Identifier
-{
-struct Identifier * prev;
-struct Identifier * next;
-struct Location loc;
-struct Symbol * classSym;
-struct Specifier * _class;
-char *  string;
-struct Identifier * badID;
-} ecere_gcc_struct;
-
-struct Declarator
-{
-struct Declarator * prev;
-struct Declarator * next;
-struct Location loc;
-int type;
-struct Symbol * symbol;
-struct Declarator * declarator;
-union
-{
-struct Identifier * identifier;
-struct
-{
-struct Expression * exp;
-struct Expression * posExp;
-struct Attrib * attrib;
-} ecere_gcc_struct structDecl;
-struct
-{
-struct Expression * exp;
-struct Specifier * enumClass;
-} ecere_gcc_struct array;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * parameters;
-} ecere_gcc_struct function;
-struct
-{
-struct Pointer * pointer;
-} ecere_gcc_struct pointer;
-struct
-{
-struct ExtDecl * extended;
-} ecere_gcc_struct extended;
-} ecere_gcc_struct __anon1;
+struct __ecereNameSpace__ecere__sys__OldList *  attribs;
 } ecere_gcc_struct;
 
 struct AsmField
@@ -612,6 +568,25 @@ struct DBIndexItem * prev;
 struct DBIndexItem * next;
 struct Identifier * id;
 int order;
+} ecere_gcc_struct;
+
+struct Instantiation;
+
+struct ClassDefinition;
+
+struct Context
+{
+struct Context * parent;
+struct __ecereNameSpace__ecere__sys__BinaryTree types;
+struct __ecereNameSpace__ecere__sys__BinaryTree classes;
+struct __ecereNameSpace__ecere__sys__BinaryTree symbols;
+struct __ecereNameSpace__ecere__sys__BinaryTree structSymbols;
+int nextID;
+int simpleID;
+struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
+struct ClassDefinition * classDef;
+unsigned int templateTypesOnly;
+unsigned int hasNameSpace;
 } ecere_gcc_struct;
 
 struct TypeName;
@@ -1121,62 +1096,6 @@ void __ecereUnregisterModule_freeAst(struct __ecereNameSpace__ecere__com__Instan
 
 }
 
-void FreeAttrib(struct Attrib * attr)
-{
-if(attr->attribs)
-FreeList(attr->attribs, (void *)(FreeAttribute));
-((attr ? __extension__ ({
-void * __ecerePtrToDelete = (attr);
-
-__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), attr = 0);
-}
-
-void FreeExtDecl(struct ExtDecl * extDecl)
-{
-if(extDecl->type == 1 && extDecl->__anon1.attr)
-FreeAttrib(extDecl->__anon1.attr);
-else if(extDecl->type == 0)
-(__ecereNameSpace__ecere__com__eSystem_Delete(extDecl->__anon1.s), extDecl->__anon1.s = 0);
-((extDecl ? __extension__ ({
-void * __ecerePtrToDelete = (extDecl);
-
-__ecereClass_ExtDecl->Destructor ? __ecereClass_ExtDecl->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), extDecl = 0);
-}
-
-struct ClassDefinition;
-
-struct Context
-{
-struct Context * parent;
-struct __ecereNameSpace__ecere__sys__BinaryTree types;
-struct __ecereNameSpace__ecere__sys__BinaryTree classes;
-struct __ecereNameSpace__ecere__sys__BinaryTree symbols;
-struct __ecereNameSpace__ecere__sys__BinaryTree structSymbols;
-int nextID;
-int simpleID;
-struct __ecereNameSpace__ecere__sys__BinaryTree templateTypes;
-struct ClassDefinition * classDef;
-unsigned int templateTypesOnly;
-unsigned int hasNameSpace;
-} ecere_gcc_struct;
-
-struct ClassDefinition
-{
-struct ClassDefinition * prev;
-struct ClassDefinition * next;
-struct Location loc;
-struct Specifier * _class;
-struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
-struct __ecereNameSpace__ecere__sys__OldList *  definitions;
-struct Symbol * symbol;
-struct Location blockStart;
-struct Location nameLoc;
-int declMode;
-unsigned int deleteWatchable;
-} ecere_gcc_struct;
-
 void FreeContext(struct Context * context)
 {
 struct Symbol * symbol;
@@ -1213,7 +1132,61 @@ context->simpleID = 0;
 context->parent = (((void *)0));
 }
 
-struct Instantiation;
+void FreeAttrib(struct Attrib * attr)
+{
+if(attr->attribs)
+FreeList(attr->attribs, (void *)(FreeAttribute));
+((attr ? __extension__ ({
+void * __ecerePtrToDelete = (attr);
+
+__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), attr = 0);
+}
+
+void FreeExtDecl(struct ExtDecl * extDecl)
+{
+if(extDecl->type == 1 && extDecl->__anon1.attr)
+FreeAttrib(extDecl->__anon1.attr);
+else if(extDecl->type == 0)
+(__ecereNameSpace__ecere__com__eSystem_Delete(extDecl->__anon1.s), extDecl->__anon1.s = 0);
+else if(extDecl->type == 2 && extDecl->__anon1.multiAttr)
+FreeList(extDecl->__anon1.multiAttr, (void *)(FreeAttrib));
+((extDecl ? __extension__ ({
+void * __ecerePtrToDelete = (extDecl);
+
+__ecereClass_ExtDecl->Destructor ? __ecereClass_ExtDecl->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), extDecl = 0);
+}
+
+struct TemplateArgument;
+
+struct TemplateArgument
+{
+struct TemplateArgument * prev;
+struct TemplateArgument * next;
+struct Location loc;
+struct Identifier * name;
+int type;
+union
+{
+struct Expression * expression;
+struct Identifier * identifier;
+struct TemplateDatatype * templateDatatype;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+struct Specifier;
+
+struct Identifier
+{
+struct Identifier * prev;
+struct Identifier * next;
+struct Location loc;
+struct Symbol * classSym;
+struct Specifier * _class;
+char *  string;
+struct Identifier * badID;
+} ecere_gcc_struct;
 
 struct Expression
 {
@@ -1340,6 +1313,43 @@ unsigned int parentOpDestType;
 unsigned int needTemplateCast;
 } ecere_gcc_struct;
 
+struct Declarator
+{
+struct Declarator * prev;
+struct Declarator * next;
+struct Location loc;
+int type;
+struct Symbol * symbol;
+struct Declarator * declarator;
+union
+{
+struct Identifier * identifier;
+struct
+{
+struct Expression * exp;
+struct Expression * posExp;
+struct Attrib * attrib;
+} ecere_gcc_struct structDecl;
+struct
+{
+struct Expression * exp;
+struct Specifier * enumClass;
+} ecere_gcc_struct array;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * parameters;
+} ecere_gcc_struct function;
+struct
+{
+struct Pointer * pointer;
+} ecere_gcc_struct pointer;
+struct
+{
+struct ExtDecl * extended;
+} ecere_gcc_struct extended;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
 struct Instantiation
 {
 struct Instantiation * prev;
@@ -1357,21 +1367,175 @@ struct Location insideLoc;
 unsigned int built;
 } ecere_gcc_struct;
 
-struct TemplateArgument;
-
-struct TemplateArgument
+struct ClassDefinition
 {
-struct TemplateArgument * prev;
-struct TemplateArgument * next;
+struct ClassDefinition * prev;
+struct ClassDefinition * next;
 struct Location loc;
-struct Identifier * name;
+struct Specifier * _class;
+struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
+struct __ecereNameSpace__ecere__sys__OldList *  definitions;
+struct Symbol * symbol;
+struct Location blockStart;
+struct Location nameLoc;
+int declMode;
+unsigned int deleteWatchable;
+} ecere_gcc_struct;
+
+struct PropertyDef;
+
+struct PropertyDef
+{
+struct PropertyDef * prev;
+struct PropertyDef * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
+struct Declarator * declarator;
+struct Identifier * id;
+struct Statement * getStmt;
+struct Statement * setStmt;
+struct Statement * issetStmt;
+struct Symbol * symbol;
+struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+struct Declaration;
+
+struct Statement
+{
+struct Statement * prev;
+struct Statement * next;
+struct Location loc;
 int type;
 union
 {
-struct Expression * expression;
-struct Identifier * identifier;
-struct TemplateDatatype * templateDatatype;
+struct __ecereNameSpace__ecere__sys__OldList *  expressions;
+struct
+{
+struct Identifier * id;
+struct Statement * stmt;
+} ecere_gcc_struct labeled;
+struct
+{
+struct Expression * exp;
+struct Statement * stmt;
+} ecere_gcc_struct caseStmt;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * declarations;
+struct __ecereNameSpace__ecere__sys__OldList * statements;
+struct Context * context;
+unsigned int isSwitch;
+} ecere_gcc_struct compound;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct Statement * stmt;
+struct Statement * elseStmt;
+} ecere_gcc_struct ifStmt;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct Statement * stmt;
+} ecere_gcc_struct switchStmt;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct Statement * stmt;
+} ecere_gcc_struct whileStmt;
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct Statement * stmt;
+} ecere_gcc_struct doWhile;
+struct
+{
+struct Statement * init;
+struct Statement * check;
+struct __ecereNameSpace__ecere__sys__OldList * increment;
+struct Statement * stmt;
+} ecere_gcc_struct forStmt;
+struct
+{
+struct Identifier * id;
+} ecere_gcc_struct gotoStmt;
+struct
+{
+struct Specifier * spec;
+char * statements;
+struct __ecereNameSpace__ecere__sys__OldList * inputFields;
+struct __ecereNameSpace__ecere__sys__OldList * outputFields;
+struct __ecereNameSpace__ecere__sys__OldList * clobberedFields;
+} ecere_gcc_struct asmStmt;
+struct
+{
+struct Expression * watcher;
+struct Expression * object;
+struct __ecereNameSpace__ecere__sys__OldList * watches;
+} ecere_gcc_struct _watch;
+struct
+{
+struct Identifier * id;
+struct __ecereNameSpace__ecere__sys__OldList * exp;
+struct __ecereNameSpace__ecere__sys__OldList * filter;
+struct Statement * stmt;
+} ecere_gcc_struct forEachStmt;
+struct Declaration * decl;
 } ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+struct Declaration
+{
+struct Declaration * prev;
+struct Declaration * next;
+struct Location loc;
+int type;
+union
+{
+struct
+{
+struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
+struct __ecereNameSpace__ecere__sys__OldList *  declarators;
+} ecere_gcc_struct __anon1;
+struct Instantiation * inst;
+struct
+{
+struct Identifier * id;
+struct Expression * exp;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+struct Specifier * extStorage;
+struct Symbol * symbol;
+int declMode;
+} ecere_gcc_struct;
+
+struct External
+{
+struct External * prev;
+struct External * next;
+struct Location loc;
+int type;
+struct Symbol * symbol;
+union
+{
+struct FunctionDefinition * function;
+struct ClassDefinition * _class;
+struct Declaration * declaration;
+char *  importString;
+struct Identifier * id;
+struct DBTableDef * table;
+} ecere_gcc_struct __anon1;
+int importType;
+struct External * fwdDecl;
+struct __ecereNameSpace__ecere__com__Instance * outgoing;
+struct __ecereNameSpace__ecere__com__Instance * incoming;
+int nonBreakableIncoming;
 } ecere_gcc_struct;
 
 struct TemplateParameter;
@@ -1599,265 +1763,9 @@ classProp->dataType = (((void *)0));
 }
 }
 
-struct Declaration;
-
-struct Statement
-{
-struct Statement * prev;
-struct Statement * next;
-struct Location loc;
-int type;
-union
-{
-struct __ecereNameSpace__ecere__sys__OldList *  expressions;
-struct
-{
-struct Identifier * id;
-struct Statement * stmt;
-} ecere_gcc_struct labeled;
-struct
-{
-struct Expression * exp;
-struct Statement * stmt;
-} ecere_gcc_struct caseStmt;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * declarations;
-struct __ecereNameSpace__ecere__sys__OldList * statements;
-struct Context * context;
-unsigned int isSwitch;
-} ecere_gcc_struct compound;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct Statement * stmt;
-struct Statement * elseStmt;
-} ecere_gcc_struct ifStmt;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct Statement * stmt;
-} ecere_gcc_struct switchStmt;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct Statement * stmt;
-} ecere_gcc_struct whileStmt;
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct Statement * stmt;
-} ecere_gcc_struct doWhile;
-struct
-{
-struct Statement * init;
-struct Statement * check;
-struct __ecereNameSpace__ecere__sys__OldList * increment;
-struct Statement * stmt;
-} ecere_gcc_struct forStmt;
-struct
-{
-struct Identifier * id;
-} ecere_gcc_struct gotoStmt;
-struct
-{
-struct Specifier * spec;
-char * statements;
-struct __ecereNameSpace__ecere__sys__OldList * inputFields;
-struct __ecereNameSpace__ecere__sys__OldList * outputFields;
-struct __ecereNameSpace__ecere__sys__OldList * clobberedFields;
-} ecere_gcc_struct asmStmt;
-struct
-{
-struct Expression * watcher;
-struct Expression * object;
-struct __ecereNameSpace__ecere__sys__OldList * watches;
-} ecere_gcc_struct _watch;
-struct
-{
-struct Identifier * id;
-struct __ecereNameSpace__ecere__sys__OldList * exp;
-struct __ecereNameSpace__ecere__sys__OldList * filter;
-struct Statement * stmt;
-} ecere_gcc_struct forEachStmt;
-struct Declaration * decl;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-struct Declaration
-{
-struct Declaration * prev;
-struct Declaration * next;
-struct Location loc;
-int type;
-union
-{
-struct
-{
-struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
-struct __ecereNameSpace__ecere__sys__OldList *  declarators;
-} ecere_gcc_struct __anon1;
-struct Instantiation * inst;
-struct
-{
-struct Identifier * id;
-struct Expression * exp;
-} ecere_gcc_struct __anon2;
-} ecere_gcc_struct __anon1;
-struct Specifier * extStorage;
-struct Symbol * symbol;
-int declMode;
-} ecere_gcc_struct;
-
-struct External
-{
-struct External * prev;
-struct External * next;
-struct Location loc;
-int type;
-struct Symbol * symbol;
-union
-{
-struct FunctionDefinition * function;
-struct ClassDefinition * _class;
-struct Declaration * declaration;
-char *  importString;
-struct Identifier * id;
-struct DBTableDef * table;
-} ecere_gcc_struct __anon1;
-int importType;
-struct External * fwdDecl;
-struct __ecereNameSpace__ecere__com__Instance * outgoing;
-struct __ecereNameSpace__ecere__com__Instance * incoming;
-int nonBreakableIncoming;
-} ecere_gcc_struct;
-
-struct PropertyDef;
-
-struct PropertyDef
-{
-struct PropertyDef * prev;
-struct PropertyDef * next;
-struct Location loc;
-struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
-struct Declarator * declarator;
-struct Identifier * id;
-struct Statement * getStmt;
-struct Statement * setStmt;
-struct Statement * issetStmt;
-struct Symbol * symbol;
-struct Expression * category;
-struct
-{
-unsigned int conversion : 1;
-unsigned int isWatchable : 1;
-unsigned int isDBProp : 1;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
 void FreeDeclarator(struct Declarator *  decl);
 
-void FreeIdentifier(struct Identifier *  id);
-
-void FreeEnumerator(struct Enumerator * enumerator)
-{
-if(enumerator->id)
-FreeIdentifier(enumerator->id);
-if(enumerator->exp)
-FreeExpression(enumerator->exp);
-((enumerator ? __extension__ ({
-void * __ecerePtrToDelete = (enumerator);
-
-__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), enumerator = 0);
-}
-
-void FreeAsmField(struct AsmField * field)
-{
-if(field->expression)
-FreeExpression(field->expression);
-if(field->symbolic)
-FreeIdentifier(field->symbolic);
-(__ecereNameSpace__ecere__com__eSystem_Delete(field->command), field->command = 0);
-((field ? __extension__ ({
-void * __ecerePtrToDelete = (field);
-
-__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), field = 0);
-}
-
-void FreeInitializer(struct Initializer * initializer)
-{
-switch(initializer->type)
-{
-case 1:
-FreeList(initializer->__anon1.list, (void *)(FreeInitializer));
-break;
-case 0:
-if(initializer->__anon1.exp)
-FreeExpression(initializer->__anon1.exp);
-break;
-}
-if(initializer->id)
-FreeIdentifier(initializer->id);
-((initializer ? __extension__ ({
-void * __ecerePtrToDelete = (initializer);
-
-__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), initializer = 0);
-}
-
-void FreeDBIndexItem(struct DBIndexItem * item)
-{
-if(item->id)
-FreeIdentifier(item->id);
-((item ? __extension__ ({
-void * __ecerePtrToDelete = (item);
-
-__ecereClass_DBIndexItem->Destructor ? __ecereClass_DBIndexItem->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), item = 0);
-}
-
-void FreeInitDeclarator(struct InitDeclarator * decl)
-{
-if(decl->declarator)
-FreeDeclarator(decl->declarator);
-if(decl->initializer)
-FreeInitializer(decl->initializer);
-((decl ? __extension__ ({
-void * __ecerePtrToDelete = (decl);
-
-__ecereClass_InitDeclarator->Destructor ? __ecereClass_InitDeclarator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), decl = 0);
-}
-
-void FreeMemberInit(struct MemberInit * init)
-{
-if(init->initializer)
-FreeInitializer(init->initializer);
-if(init->identifiers)
-FreeList(init->identifiers, (void *)(FreeIdentifier));
-((init ? __extension__ ({
-void * __ecerePtrToDelete = (init);
-
-__ecereClass_MemberInit->Destructor ? __ecereClass_MemberInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), init = 0);
-}
-
-void FreeSpecifierContents(struct Specifier *  spec);
-
-void FreeSpecifier(struct Specifier * spec)
-{
-if(spec)
-{
-FreeSpecifierContents(spec);
-((spec ? __extension__ ({
-void * __ecerePtrToDelete = (spec);
-
-__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), spec = 0);
-}
-}
+void FreeSpecifier(struct Specifier *  spec);
 
 void FreeTemplateDataType(struct TemplateDatatype * type)
 {
@@ -1940,28 +1848,65 @@ __ecereClass_TemplateArgument->Destructor ? __ecereClass_TemplateArgument->Destr
 }) : 0), arg = 0);
 }
 
-void FreeDBTableEntry(struct DBTableEntry * entry)
+void FreeEnumerator(struct Enumerator * enumerator)
 {
-if(entry->id)
-FreeIdentifier(entry->id);
-switch(entry->type)
+if(enumerator->id)
+FreeIdentifier(enumerator->id);
+if(enumerator->attribs)
+FreeList(enumerator->attribs, (void *)(FreeAttrib));
+if(enumerator->exp)
+FreeExpression(enumerator->exp);
+((enumerator ? __extension__ ({
+void * __ecerePtrToDelete = (enumerator);
+
+__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), enumerator = 0);
+}
+
+void FreeAsmField(struct AsmField * field)
 {
-case 0:
-if(entry->__anon1.__anon1.dataType)
-FreeTypeName(entry->__anon1.__anon1.dataType);
-if(entry->__anon1.__anon1.name)
-(__ecereNameSpace__ecere__com__eSystem_Delete(entry->__anon1.__anon1.name), entry->__anon1.__anon1.name = 0);
-break;
+if(field->expression)
+FreeExpression(field->expression);
+if(field->symbolic)
+FreeIdentifier(field->symbolic);
+(__ecereNameSpace__ecere__com__eSystem_Delete(field->command), field->command = 0);
+((field ? __extension__ ({
+void * __ecerePtrToDelete = (field);
+
+__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), field = 0);
+}
+
+void FreeInitializer(struct Initializer * initializer)
+{
+switch(initializer->type)
+{
 case 1:
-if(entry->__anon1.items)
-FreeList(entry->__anon1.items, (void *)(FreeDBIndexItem));
+FreeList(initializer->__anon1.list, (void *)(FreeInitializer));
+break;
+case 0:
+if(initializer->__anon1.exp)
+FreeExpression(initializer->__anon1.exp);
 break;
 }
-((entry ? __extension__ ({
-void * __ecerePtrToDelete = (entry);
+if(initializer->id)
+FreeIdentifier(initializer->id);
+((initializer ? __extension__ ({
+void * __ecerePtrToDelete = (initializer);
 
-__ecereClass_DBTableEntry->Destructor ? __ecereClass_DBTableEntry->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), entry = 0);
+__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), initializer = 0);
+}
+
+void FreeDBIndexItem(struct DBIndexItem * item)
+{
+if(item->id)
+FreeIdentifier(item->id);
+((item ? __extension__ ({
+void * __ecerePtrToDelete = (item);
+
+__ecereClass_DBIndexItem->Destructor ? __ecereClass_DBIndexItem->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), item = 0);
 }
 
 void FreeDeclarator(struct Declarator * decl)
@@ -2031,17 +1976,54 @@ __ecereClass_TemplateParameter->Destructor ? __ecereClass_TemplateParameter->Des
 }) : 0), param = 0);
 }
 
-void FreeDBTable(struct DBTableDef * table)
+void FreeInitDeclarator(struct InitDeclarator * decl)
 {
-if(table->definitions)
-FreeList(table->definitions, (void *)(FreeDBTableEntry));
-if(table->name)
-(__ecereNameSpace__ecere__com__eSystem_Delete(table->name), table->name = 0);
-((table ? __extension__ ({
-void * __ecerePtrToDelete = (table);
+if(decl->declarator)
+FreeDeclarator(decl->declarator);
+if(decl->initializer)
+FreeInitializer(decl->initializer);
+((decl ? __extension__ ({
+void * __ecerePtrToDelete = (decl);
 
-__ecereClass_DBTableDef->Destructor ? __ecereClass_DBTableDef->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), table = 0);
+__ecereClass_InitDeclarator->Destructor ? __ecereClass_InitDeclarator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), decl = 0);
+}
+
+void FreeMemberInit(struct MemberInit * init)
+{
+if(init->initializer)
+FreeInitializer(init->initializer);
+if(init->identifiers)
+FreeList(init->identifiers, (void *)(FreeIdentifier));
+((init ? __extension__ ({
+void * __ecerePtrToDelete = (init);
+
+__ecereClass_MemberInit->Destructor ? __ecereClass_MemberInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), init = 0);
+}
+
+void FreeDBTableEntry(struct DBTableEntry * entry)
+{
+if(entry->id)
+FreeIdentifier(entry->id);
+switch(entry->type)
+{
+case 0:
+if(entry->__anon1.__anon1.dataType)
+FreeTypeName(entry->__anon1.__anon1.dataType);
+if(entry->__anon1.__anon1.name)
+(__ecereNameSpace__ecere__com__eSystem_Delete(entry->__anon1.__anon1.name), entry->__anon1.__anon1.name = 0);
+break;
+case 1:
+if(entry->__anon1.items)
+FreeList(entry->__anon1.items, (void *)(FreeDBIndexItem));
+break;
+}
+((entry ? __extension__ ({
+void * __ecerePtrToDelete = (entry);
+
+__ecereClass_DBTableEntry->Destructor ? __ecereClass_DBTableEntry->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), entry = 0);
 }
 
 void FreeSymbol(struct Symbol * symbol)
@@ -2244,6 +2226,19 @@ break;
 }
 }
 
+void FreeDBTable(struct DBTableDef * table)
+{
+if(table->definitions)
+FreeList(table->definitions, (void *)(FreeDBTableEntry));
+if(table->name)
+(__ecereNameSpace__ecere__com__eSystem_Delete(table->name), table->name = 0);
+((table ? __extension__ ({
+void * __ecerePtrToDelete = (table);
+
+__ecereClass_DBTableDef->Destructor ? __ecereClass_DBTableDef->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), table = 0);
+}
+
 void FreeTypeData(struct __ecereNameSpace__ecere__com__Instance * privateModule)
 {
 struct __ecereNameSpace__ecere__com__Instance * m;
@@ -2253,6 +2248,21 @@ for(m = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct 
 FreeModuleData(m);
 }
 FreeModuleData(privateModule);
+}
+
+void FreeSpecifierContents(struct Specifier *  spec);
+
+void FreeSpecifier(struct Specifier * spec)
+{
+if(spec)
+{
+FreeSpecifierContents(spec);
+((spec ? __extension__ ({
+void * __ecerePtrToDelete = (spec);
+
+__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), spec = 0);
+}
 }
 
 struct ClassDef;
@@ -2323,22 +2333,7 @@ __ecereClass_PropertyDef->Destructor ? __ecereClass_PropertyDef->Destructor((voi
 }) : 0), def = 0);
 }
 
-void FreeClassFunction(struct ClassFunction *  func);
-
-void FreeMembersInit(struct MembersInit * init)
-{
-if(init->type == 0 && init->__anon1.dataMembers)
-FreeList(init->__anon1.dataMembers, (void *)(FreeMemberInit));
-if(init->type == 1 && init->__anon1.function)
-{
-FreeClassFunction(init->__anon1.function);
-}
-((init ? __extension__ ({
-void * __ecerePtrToDelete = (init);
-
-__ecereClass_MembersInit->Destructor ? __ecereClass_MembersInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), init = 0);
-}
+void FreeMembersInit(struct MembersInit *  init);
 
 void FreeInstance(struct Instantiation * inst)
 {
@@ -2806,6 +2801,21 @@ void * __ecerePtrToDelete = (func);
 
 __ecereClass_ClassFunction->Destructor ? __ecereClass_ClassFunction->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), func = 0);
+}
+
+void FreeMembersInit(struct MembersInit * init)
+{
+if(init->type == 0 && init->__anon1.dataMembers)
+FreeList(init->__anon1.dataMembers, (void *)(FreeMemberInit));
+if(init->type == 1 && init->__anon1.function)
+{
+FreeClassFunction(init->__anon1.function);
+}
+((init ? __extension__ ({
+void * __ecerePtrToDelete = (init);
+
+__ecereClass_MembersInit->Destructor ? __ecereClass_MembersInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), init = 0);
 }
 
 void FreeClassDef(struct ClassDef * def)

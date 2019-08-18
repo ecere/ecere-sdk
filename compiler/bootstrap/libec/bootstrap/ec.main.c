@@ -156,6 +156,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
+extern int printf(const char * , ...);
+
 extern void __ecereNameSpace__ecere__LoadTranslatedStrings(const char * moduleName, const char *  name);
 
 extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name);
@@ -539,7 +541,8 @@ if(!__currentModule)
 {
 __currentModule = module;
 }
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 1, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
+if(!__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 1, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere)))
+printf("Error loading eC module \"%s\" (statically linked)\nThings might go very wrong.\n", "ecere");
 __ecereRegisterModule_ast(module);
 __ecereRegisterModule_copy(module);
 __ecereRegisterModule_dbpass(module);
@@ -688,6 +691,7 @@ __ecereClass___ecereNameSpace__ecere__sys__BTNode = __ecereNameSpace__ecere__com
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_next = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__sys__BTNode, "next", module);
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::BinaryTree");
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "first", module);
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::DualPipe");
 __ecereClass___ecereNameSpace__ecere__sys__File = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Eof", module);
 if(method)

@@ -107,6 +107,8 @@ int ferror(FILE * stream);
 
 int fileno(FILE * stream);
 
+extern int yydebug;
+
 enum yytokentype
 {
 IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375
@@ -121,6 +123,8 @@ int last_column;
 } ecere_gcc_struct YYLTYPE;
 
 extern YYLTYPE _yylloc;
+
+int yyparse(void);
 
 unsigned int inCompiler = 0;
 
@@ -420,13 +424,6 @@ int y;
 int x;
 } ecere_gcc_struct;
 
-struct Attrib
-{
-struct Location loc;
-int type;
-struct __ecereNameSpace__ecere__sys__OldList * attribs;
-} ecere_gcc_struct;
-
 unsigned int __ecereMethod_Location_Inside(struct Location * this, int line, int charPos)
 {
 return (this->start.line < line || (this->start.line == line && this->start.charPos <= charPos)) && (this->end.line > line || (this->end.line == line && this->end.charPos >= charPos));
@@ -494,17 +491,6 @@ this->charPos += end->x - start->x;
 }
 }
 }
-
-struct ExtDecl
-{
-struct Location loc;
-int type;
-union
-{
-char * s;
-struct Attrib * attr;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
 
 void Compiler_Warning(const char * format, ...)
 {
@@ -718,6 +704,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 
+void __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait();
+
 void SetFileInput(struct __ecereNameSpace__ecere__com__Instance * file)
 {
 fileInput = file;
@@ -737,6 +725,7 @@ if(f)
 {
 if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, host, sizeof (host)))
 hostType = host;
+__ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait(f);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
 }
@@ -886,38 +875,6 @@ extern struct Type * ProcessTemplateParameterType(struct TemplateParameter * par
 
 struct Symbol;
 
-struct Specifier
-{
-struct Specifier * prev, * next;
-struct Location loc;
-int type;
-union
-{
-int specifier;
-struct
-{
-struct ExtDecl * extDecl;
-char * name;
-struct Symbol * symbol;
-struct __ecereNameSpace__ecere__sys__OldList * templateArgs;
-struct Specifier * nsSpec;
-} ecere_gcc_struct __anon1;
-struct
-{
-struct Identifier * id;
-struct __ecereNameSpace__ecere__sys__OldList * list;
-struct __ecereNameSpace__ecere__sys__OldList * baseSpecs;
-struct __ecereNameSpace__ecere__sys__OldList * definitions;
-unsigned int addNameSpace;
-struct Context * ctx;
-struct ExtDecl * extDeclStruct;
-} ecere_gcc_struct __anon2;
-struct Expression * expression;
-struct Specifier * _class;
-struct TemplateParameter * templateParameter;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
 struct DBTableDef
 {
 char * name;
@@ -959,6 +916,60 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "syntax error\
 }
 return 0;
 }
+
+struct Attrib;
+
+struct Attrib
+{
+struct Attrib * prev, * next;
+struct Location loc;
+int type;
+struct __ecereNameSpace__ecere__sys__OldList * attribs;
+} ecere_gcc_struct;
+
+struct ExtDecl
+{
+struct Location loc;
+int type;
+union
+{
+char * s;
+struct Attrib * attr;
+struct __ecereNameSpace__ecere__sys__OldList * multiAttr;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
+
+struct Specifier
+{
+struct Specifier * prev, * next;
+struct Location loc;
+int type;
+union
+{
+int specifier;
+struct
+{
+struct ExtDecl * extDecl;
+char * name;
+struct Symbol * symbol;
+struct __ecereNameSpace__ecere__sys__OldList * templateArgs;
+struct Specifier * nsSpec;
+} ecere_gcc_struct __anon1;
+struct
+{
+struct Identifier * id;
+struct __ecereNameSpace__ecere__sys__OldList * list;
+struct __ecereNameSpace__ecere__sys__OldList * baseSpecs;
+struct __ecereNameSpace__ecere__sys__OldList * definitions;
+unsigned int addNameSpace;
+struct Context * ctx;
+struct ExtDecl * extDeclStruct;
+} ecere_gcc_struct __anon2;
+struct Expression * expression;
+struct Specifier * _class;
+struct TemplateParameter * templateParameter;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct Pointer;
 
@@ -1337,6 +1348,7 @@ struct Enumerator * prev, * next;
 struct Location loc;
 struct Identifier * id;
 struct Expression * exp;
+struct __ecereNameSpace__ecere__sys__OldList * attribs;
 } ecere_gcc_struct;
 
 struct AsmField;
@@ -2833,6 +2845,8 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", s
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attrib", 0, sizeof(struct Attrib), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Attrib = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Attrib", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Attrib", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", sizeof(struct Location), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys::OldList *", sizeof(void *), 0xF000F000, 1);
@@ -2846,6 +2860,7 @@ struct __ecereNameSpace__ecere__com__DataMember * dataMember0 = __ecereNameSpace
 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "s", "String", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "attr", "Attrib", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "multiAttr", "ecere::sys::OldList *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExtDeclType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
@@ -2853,6 +2868,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(str
 __ecereClass_ExtDeclType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclString", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclAttrib", 1);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclMultiAttrib", 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Expression", 0, sizeof(struct Expression), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Expression = class;
@@ -2927,6 +2943,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Enumerator", 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", sizeof(struct Location), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "id", "Identifier", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys::OldList *", sizeof(void *), 0xF000F000, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Pointer", 0, sizeof(struct Pointer), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Pointer = class;

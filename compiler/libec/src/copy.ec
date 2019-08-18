@@ -263,7 +263,7 @@ static Statement CopyStatement(Statement stmt)
 
 static Enumerator CopyEnumerator(Enumerator enumerator)
 {
-   return MkEnumerator(CopyIdentifier(enumerator.id), CopyExpression(enumerator.exp));
+   return MkEnumerator(CopyIdentifier(enumerator.id), CopyExpression(enumerator.exp), CopyList(enumerator.attribs, CopyAttrib));
 }
 
 ClassDef CopyClassDef(ClassDef def)
@@ -367,6 +367,8 @@ ExtDecl CopyExtDecl(ExtDecl extDecl)
          return MkExtDeclAttrib(CopyAttrib(extDecl.attr));
       else if(extDecl.type == extDeclString)
          return MkExtDeclString(CopyString(extDecl.s));
+      else if(extDecl.type == extDeclMultiAttrib)
+         return MkExtDeclMultiAttrib(CopyList(extDecl.multiAttr, CopyAttrib));
    }
    return null;
 }

@@ -118,9 +118,9 @@ default:
 "while"              { return(WHILE); }
 
 "property"           { return(PROPERTY); }
-"set"                { return(SETPROP); }    // TODO: Don't make this a keyword...
-"get"                { return(GETPROP); }    // TODO: Don't make this a keyword...
-"isset"              { return(ISPROPSET); }    // TODO: Don't make this a keyword...
+"set"                { return(SETPROP); }    /* TODO: Don't make this a keyword... */
+"get"                { return(GETPROP); }    /* TODO: Don't make this a keyword... */
+"isset"              { return(ISPROPSET); }    /* TODO: Don't make this a keyword... */
 "class"              { return(CLASS); }
 "thisclass"          { return(THISCLASS); }
 "virtual"            { return(VIRTUAL); }
@@ -143,6 +143,8 @@ default:
 "_Complex"           { return(_COMPLEX); }
 "_Imaginary"         { return(_IMAGINARY); }
 "restrict"           { return(EXT_DECL); }
+"_Nullable"          { return(EXT_DECL); }
+"_Nonnull"           { return(EXT_DECL); }
 
  /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 
@@ -218,7 +220,7 @@ default:
 "dbindex"                  { return(DBINDEX); }
 "database_open"            { return(DATABASE_OPEN); }
 
-("::"?(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }
+("::"?(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     /* {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); } */
 
 0[xX]{H}+{IS}?          { return(CONSTANT); }
 
@@ -232,7 +234,7 @@ L?'(\\.|[^\\'])+'       { return(CONSTANT); }
 
 {D}+{E}{FS}?            { return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?  { return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?  { return(CONSTANT); }
+{D}+"."{D}*({E})?{FS}?+"."{D}*({E})?{FS}?  { return(CONSTANT); }  /* For triple OS X versions inside attributes... TODO: Add syntax errors elsewhere */
 
 \"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 L\"(\\.|[^\\"])*\"     { return(WIDE_STRING_LITERAL); }
@@ -646,7 +648,7 @@ LexerBackup pushLexer()
    backup.include_stack_ptr = include_stack_ptr;
    backup.defaultDeclMode = defaultDeclMode;
    backup.declMode = declMode;
-   backup.buffer = yy_current_buffer;
+   backup.buffer = YY_CURRENT_BUFFER;
 
    backup.yy_n_chars = yy_n_chars;
    backup.yytext_ptr = yytext_ptr;
@@ -659,7 +661,7 @@ LexerBackup pushLexer()
 
    yy_init = 1;
 
-   yy_current_buffer = 0;
+   YY_CURRENT_BUFFER = 0;
 
    yylloc.start.charPos = yylloc.end.charPos = 1;
    yylloc.start.line = yylloc.end.line = 1;
@@ -697,7 +699,7 @@ void popLexer(LexerBackup backup)
    declMode = structDeclMode = backup.declMode;
 
    // yy_switch_to_buffer(backup.buffer);
-   yy_current_buffer = backup.buffer;
+   YY_CURRENT_BUFFER = backup.buffer;
    yy_n_chars = backup.yy_n_chars;
    yytext_ptr = backup.yytext_ptr;
    yy_c_buf_p = backup.yy_c_buf_p;

@@ -1416,6 +1416,8 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s\n", method->dataT
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   {\n");
 if(method->dataType)
 {
+unsigned int hasReturnValue = 0;
+
 if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 struct TypeName * resultType;
@@ -1425,6 +1427,7 @@ char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
+hasReturnValue = 1;
 if(method->dataType->__anon1.__anon2.returnType->kind == 8)
 classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
@@ -1476,7 +1479,15 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereBuffer.Serialize(%s);\n", param->name);
 }
 DeclareMethod((((void *)0)), __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule), "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(DCOMClientObject::CallMethod(%d))\n", id++);
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
+{
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
+{
+hasReturnValue = 1;
+break;
+}
+}
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(DCOMClientObject::CallMethod(%d, %s))\n", id++, hasReturnValue ? "true" : "false");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      {\n");
 for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
@@ -2384,9 +2395,10 @@ if(module->name)
 {
 {
 if(module->importType == 1)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   eModule_LoadStatic(module, \"%s\", %s, __ecereDll_Load_%s, __ecereDll_Unload_%s);\n", module->name, (module->importAccess == 2) ? "privateAccess" : "publicAccess", module->name, module->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   if(!eModule_LoadStatic(module, \"%s\", %s, __ecereDll_Load_%s, __ecereDll_Unload_%s))\n", module->name, (module->importAccess == 2) ? "privateAccess" : "publicAccess", module->name, module->name);
 else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   eModule_Load(module, \"%s\", %s);\n", module->name, (module->importAccess == 2) ? "privateAccess" : "publicAccess");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   if(!eModule_Load(module, \"%s\", %s))\n", module->name, (module->importAccess == 2) ? "privateAccess" : "publicAccess");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      printf(\"Error loading eC module \\\"%%s\\\" (%s)\\nThings might go very wrong.\\n%s\", \"%s\");\n", module->importType == 1 ? "statically linked" : "shared library -- .so/.dll/.dylib", module->importType == 1 ? "" : "Check installed libraries or PATH (Windows) / (DY)LD_LIBRARY_PATH (Unix / Apple) environment variable.\\n", module->name);
 }
 }
 }
