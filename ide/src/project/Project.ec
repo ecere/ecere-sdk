@@ -2135,6 +2135,11 @@ private:
       CatMakeFileName(makeFile, config);
       PathCatSlash(makeFilePath, makeFile);
 
+#ifdef __APPLE__
+      const char dyldPath[2048];
+      GetEnvironment("DYLD_LIBRARY_PATH", dyldPath, sizeof(dyldPath));
+#endif
+
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
       if(buildType == install)
          makeTargets.concat(" install");
@@ -2154,8 +2159,13 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
+#ifdef __APPLE__
+               sprintf(command, "%s CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
+                     compiler.makeCommand, cfDir, dyldPath,
+#else
                sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
+#endif
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
@@ -2213,7 +2223,11 @@ private:
          GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
+#ifdef __APPLE__
+         sprintf(command, "%s%s %sCF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+#else
          sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+#endif
 #if defined(__WIN32__)
                "",
 #else
@@ -2222,6 +2236,9 @@ private:
                compiler.makeCommand,
                mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
                cfDir,
+#ifdef __APPLE__
+               dyldPath,
+#endif
                crossCompiling ? " TARGET_PLATFORM=" : "",
                targetPlatform,
                bitDepth ? " ARCH=" : "",
@@ -2412,6 +2429,24 @@ private:
       }
       else if(shellOpen)
          ShellOpen(target);
+#ifdef __APPLE__
+      else if(true)
+      {
+         char * prefixedTarget = new char[2080 + strlen(target) + 8];
+         char dyldPath[2048];
+
+         SetPath(false, compiler, config, bitDepth); //true
+
+         GetEnvironment("DYLD_LIBRARY_PATH", dyldPath, sizeof(dyldPath));
+         strcpy(prefixedTarget, "DYLD_LIBRARY_PATH=\"");
+         strcat(prefixedTarget, dyldPath);
+         strcat(prefixedTarget, "\" ");
+         strcat(prefixedTarget, target);
+         PrintLn("Executing: ", prefixedTarget);
+         Execute(prefixedTarget);
+         delete prefixedTarget;
+      }
+#endif
       else
          Execute(target);
 
@@ -2593,6 +2628,22 @@ private:
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_CXX_FLAGS),$(space)$(GCC_CXX_FLAGS),)\n", compiler.cxxCommand);
+            // TODO: Improve on all this...
+#ifdef __APPLE__
+            if(eC)
+            {
+               f.Printf("ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECP_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
+               f.Printf("ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECC_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
+               f.Printf("ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECS_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+            }
+            else
+            {
+               f.Printf("ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) %s\n", compiler.ecpCommand);
+               f.Printf("ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+               f.Printf("ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+            }
+            f.Printf("EAR := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) %s\n", compiler.earCommand);
+#else
             if(eC)
             {
                f.Printf("ECP := $(if $(ECP_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
@@ -2606,7 +2657,7 @@ private:
                f.Printf("ECS := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
             }
             f.Printf("EAR := %s\n", compiler.earCommand);
-
+#endif
             f.Puts("AS := $(GCC_PREFIX)as\n");
             f.Printf("LD := ");
             if(compiler.ldCommand && compiler.ldCommand[0])

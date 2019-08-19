@@ -1,3 +1,5 @@
+#undef __BLOCKS__
+
 namespace com;
 
 import "Container"
