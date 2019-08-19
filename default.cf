@@ -36,11 +36,6 @@ export AS      = $(GCC_PREFIX)as
 export LD      = $(GCC_PREFIX)ld
 export AR      = $(GCC_PREFIX)ar
 export STRIP   = $(GCC_PREFIX)strip
-export ECP := $(call sys_path,$(EC_BINS)ecp$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECC := $(call sys_path,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECS := $(call sys_path,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
-export EAR := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
-export BGEN := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
 ifdef WINDOWS_TARGET
 WINDRES := $(GCC_PREFIX)windres
  ifdef ARCH
@@ -79,7 +74,21 @@ endif
 
 ifndef WINDOWS_HOST
 export LD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
-export DYLD_LIBRARY_PATH = $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
+export DYLD_LIBRARY_PATH := $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
+endif
+
+ifdef OSX_TARGET
+export ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecp$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
+export EAR := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
+export BGEN := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
+else
+export ECP := $(call sys_path,$(EC_BINS)ecp$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECC := $(call sys_path,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECS := $(call sys_path,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
+export EAR := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
+export BGEN := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
 endif
 
 # HARD CODED PLATFORM-SPECIFIC OPTIONS
@@ -93,7 +102,7 @@ LDFLAGS += -L/usr/local/lib
 endif
 
 ifdef OSX_TARGET
-CFLAGS += -I$(SYSROOT)/usr/include/ffi -I$(SYSROOT)/usr/local/opt/openssl/include
+CFLAGS += -I$(SYSROOT)/usr/include/ffi -I$(SYSROOT)/usr/local/opt/openssl/include -I/usr/local/opt/openssl/include
 else
 # OFLAGS += -L/usr/lib/$(TARGET_ARCH)/ec
 endif

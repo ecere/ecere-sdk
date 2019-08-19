@@ -1,3 +1,5 @@
+#undef __BlOCKS__
+
 default:
 #define uint _uint
 #define String String_
@@ -314,7 +316,7 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
 #else
    // This is the current OS X implementation
    uint pid = 0;
-   File f = DualPipeOpen({ output = true }, "ps -ajx");
+   DualPipe f = DualPipeOpen({ output = true }, "ps -ajx");
    if(f)
    {
       bool firstLine = true;

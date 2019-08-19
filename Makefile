@@ -4,7 +4,8 @@ endif
 
 .PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 
-_CF_DIR =
+ROOT_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+_CF_DIR = $(ROOT_ABSPATH)
 
 include crossplatform.mk
 include default.cf
@@ -1111,3 +1112,5 @@ troubleshoot:
 	@$(call echo,OPENSSL_INCLUDE_DIR=$(OPENSSL_INCLUDE_DIR))
 	@$(call echo,OPENSSL_LIB_DIR=$(OPENSSL_LIB_DIR))
 	@$(call echo,OPENSSL_BIN_DIR=$(OPENSSL_BIN_DIR))
+	@$(call echo,ROOT_ABSPATH=$(ROOT_ABSPATH))
+	@$(call echo,DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH))
