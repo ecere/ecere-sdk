@@ -526,7 +526,9 @@ static void processCppClass(CPPGen g, BClass c)
                      if(pt.Get)
                         sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                   }
-
+                  if(!strcmp(tn, "C(Anchor) *"))
+                     PrintLn("");
+                  cppTypeName(ti, false);
                   // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
                   cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
 
@@ -540,7 +542,9 @@ static void processCppClass(CPPGen g, BClass c)
                   ZString sg { allocType = heap };
 
                   sg.copy("");
-
+                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                  if(ct == structClass)
+                     tn = PrintString(tn, " *");
 
                   if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
                   {
@@ -563,7 +567,9 @@ static void processCppClass(CPPGen g, BClass c)
                      if(pt.Get)
                         sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                   }
-
+                  if(!strcmp(tn, "C(Anchor) *"))
+                     PrintLn("");
+                  cppTypeName(ti, false);
                   // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
                   cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
 
@@ -615,7 +621,9 @@ static void processCppClass(CPPGen g, BClass c)
                         sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
                         sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
-
+                  if(!strcmp(tn, "C(Anchor) *"))
+                     PrintLn("");
+                  cppTypeName(ti, false);
                      // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
@@ -644,9 +652,11 @@ static void processCppClass(CPPGen g, BClass c)
                      else
                      {
                         sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
                      }
-
+                  if(!strcmp(tn, "C(Anchor) *"))
+                     PrintLn("");
+                  cppTypeName(ti, false);
                      // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
@@ -678,7 +688,8 @@ char * cppTypeName(TypeInfo ti, bool asis)
    {
       ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
       if(ct == normalClass) // || ct == noHeadClass)
-         z.print(" &");
+      { }   //z.print(" &");
+      PrintLn("");
    }
    result = CopyString(z.array);
    delete z;
