@@ -1,3 +1,4 @@
+#undef __BLOCKS__
 #include <stdio.h>
 
 import "List"

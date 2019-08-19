@@ -544,7 +544,7 @@ static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible
 }
 #endif
 
-#if defined(__unix__) && !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
 #define GLX_CONTEXT_MAJOR_VERSION_ARB       0x2091
 #define GLX_CONTEXT_MINOR_VERSION_ARB       0x2092
 typedef GLXContext (*glXCreateContextAttribsARBProc)(void *, GLXFBConfig, GLXContext, Bool, const int*);
