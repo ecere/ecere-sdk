@@ -85,7 +85,7 @@ public:
       }
    }
 
-   private CMSSStyleSheet bind(ECCSSEvaluator evaluator, Class stylesClass, const String name)
+   CMSSStyleSheet bind(ECCSSEvaluator evaluator, Class stylesClass, const String name)
    {
       CMSSStyleSheet result = null;
       if(this && list)
@@ -102,7 +102,7 @@ public:
       }
       return result;
    }
-   private bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
+   bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
    {
       bool result = false;
       if(this && list)
