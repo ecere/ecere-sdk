@@ -488,6 +488,8 @@ static void processCppClass(CPPGen g, BClass c)
             while((pt = prop.next(publicOnly)))
             {
                // TOCHECK: How should this be handled?
+               if(!strcmp(pt.name, "borderStyle"))
+                  PrintLn("");
                if(!pt.dataType)
                {
                   Context context = SetupTemplatesContext(c); // TOCHECK: Should we do this only once while we process the whole class?
@@ -499,8 +501,14 @@ static void processCppClass(CPPGen g, BClass c)
                if(pt.dataType.kind != classType && pt.dataType.kind != templateType)
                {
                   TypeInfo ti { type = pt.dataType };
-                  String tn = cppTypeName(ti, false);
+                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                  String tn;
                   ZString sg { allocType = heap };
+
+                  if(ct == structClass)
+                     tn = cppTypeName(ti, false);
+                  else
+                     tn = cppTypeName(ti, true);
 
                   sg.copy("");
 
@@ -538,34 +546,62 @@ static void processCppClass(CPPGen g, BClass c)
                else if(pt.dataType.kind == classType)
                {
                   TypeInfo ti { type = pt.dataType };
-                  String tn = cppTypeName(ti, false);
+                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                  String tn;
                   ZString sg { allocType = heap };
 
-                  sg.copy("");
-                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
                   if(ct == structClass)
-                     tn = PrintString(tn, " *");
+                     tn = cppTypeName(ti, false);
+                  else
+                     tn = cppTypeName(ti, true); 
+
+                  sg.copy("");
 
                   if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
                   {
 
                      if(pt.Set)
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     {
+                        if(ct == structClass)
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     }
                      else
                         sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
                      if(pt.Get)
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     {
+                        if(ct == structClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     }
                      else
                         sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
                   }
                   else
                   {
                      if(pt.Set && pt.Get)
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     {
+                        if(ct == structClass)
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     }
                      else if(pt.Set && !pt.Get)
-                        sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     {
+                        if(ct == structClass)
+                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else
+                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                     }
                      if(pt.Get)
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     {
+                        if(ct == structClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     }
                   }
                   if(!strcmp(tn, "C(Anchor) *"))
                      PrintLn("");
@@ -600,8 +636,14 @@ static void processCppClass(CPPGen g, BClass c)
                   if(dm.dataType.kind != classType && dm.dataType.kind != templateType && dm.dataType.kind != pointerType)
                   {
                      TypeInfo ti { type = dm.dataType };
-                     String tn = cppTypeName(ti, false);
+                     ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                     String tn;
                      ZString sg { allocType = heap };
+
+                     if(ct == structClass)
+                        tn = cppTypeName(ti, false);
+                     else
+                        tn = cppTypeName(ti, true);
 
                      sg.copy("");
                      // TODO: Don't output set if const ?
@@ -633,9 +675,14 @@ static void processCppClass(CPPGen g, BClass c)
                   else if(dm.dataType.kind == classType)
                   {
                      TypeInfo ti { type = dm.dataType };
-                     String tn = cppTypeName(ti, false);
+                     ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                     String tn;
                      ZString sg { allocType = heap };
 
+                     if(ct == structClass)
+                        tn = cppTypeName(ti, false);
+                     else
+                        tn = cppTypeName(ti, true);
                      sg.copy("");
                      // TODO: Don't output set if const ?
 
