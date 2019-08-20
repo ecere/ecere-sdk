@@ -262,7 +262,7 @@ Map<ImageStyleKind, const String> imageStringFromMaskMap
 ] };
 
 
-struct GraphicalStyleEvaluator : ECCSSEvaluator
+public struct GraphicalStyleEvaluator : ECCSSEvaluator
 {
    void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value)
    {
