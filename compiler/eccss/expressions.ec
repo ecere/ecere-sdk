@@ -1489,10 +1489,9 @@ public:
          }
       }
    }
-   bool addStyle(StylesMask mask, FieldValue value, Class c)
+   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
-      //ECCSSEvaluator evaluator { evaluatorClass = class(ECCSSEvaluator) };
       CMSSInstInitMember instInitMember { };
       CMSSExpInstance inst { instance = { members = { } } };
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
@@ -1500,7 +1499,7 @@ public:
       CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
       CMSSMemberInit mInitTop { assignType = equal, initializer = initExpTop };
 
-      String identifierStr = mask ? ECCSSEvaluator::stringFromMask(mask, c) : null; // evaluator.evaluatorClass.
+      String identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null; //
 
       char * pch;
       int loc, n;
@@ -1509,7 +1508,7 @@ public:
       {
          pch = strchr(identifierStr,'.');
          loc = pch ? pch-identifierStr+1 : 0, n = 0;
-         char pref[loc];
+         char pref[loc-1];
       //char * top = strtok(identifierStr, ".");
          memcpy(pref, identifierStr, sizeof pref);
          prefix = CopyString(pref);
