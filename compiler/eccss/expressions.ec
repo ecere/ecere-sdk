@@ -1475,7 +1475,7 @@ public:
 
    void removeStyle(StylesMask mask)
    {
-      Iterator<CMSSMemberInitList> it { this };
+      Iterator<CMSSMemberInit> it { this };
       while(it.Next())
       {
          CMSSMemberInit mInit = it.data;
@@ -1488,6 +1488,39 @@ public:
             delete mInit;
          }
       }
+   }
+   bool addStyle(StylesMask mask, FieldValue value, Class c)
+   {
+      bool result = false;
+      ECCSSEvaluator evaluator { evaluatorClass = class(ECCSSEvaluator) };
+      CMSSInstInitMember instInitMember { };
+      CMSSExpInstance inst { instance = { members = { } } };
+      CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
+      CMSSInitExp initExpTop { exp = inst };
+      CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
+      CMSSMemberInit mInitTop { assignType = equal, initializer = initExpTop };
+      String identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null; // split?
+
+      char * pch = strchr(identifierStr,'.');
+      int loc = pch ? pch-identifierStr+1 : 0, n = 0;
+      //char * top = strtok(identifierStr, ".");
+      char prefix[loc];
+      memcpy(prefix, identifierStr, sizeof prefix);
+
+      if(identifierStr)
+      {
+         mInitSub.identifiers = { }; mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(identifierStr) });
+      }
+      instInitMember.members = { [ mInitSub ] };
+      inst.instance.members.Add(instInitMember);
+
+      if(prefix)
+      {
+         mInitTop.identifiers = { };
+         mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
+      }
+      this.Add(mInitTop);
+      return result;
    }
 }
 
