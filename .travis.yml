@@ -11,13 +11,16 @@ compiler:
 os:
   - linux
   - osx
+  - windows
 
 matrix:
   exclude:
     - os: osx
       compiler: gcc
+    - os: windows
+      compiler: clang
   allow_failures:
-    - os: osx
+    - os: windows
 
 addons:
   apt:
