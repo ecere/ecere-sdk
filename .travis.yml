@@ -49,4 +49,4 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link openssl --force ; fi
 
 script:
-  - make -j1 V=1 ENABLE_SSL=y
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then mingw32-make -j1 V=1 ENABLE_SSL=y; else make -j1 V=1 ENABLE_SSL=y; fi
