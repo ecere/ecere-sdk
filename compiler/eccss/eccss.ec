@@ -8,15 +8,15 @@ public struct ECCSSEvaluator
 {
    subclass(ECCSSEvaluator) evaluatorClass;        // This is effectively adding a virtual function table...
 
-   virtual Class resolve(const CMSSIdentifier identifier, int * fieldID, ExpFlags * flags);
+   virtual Class resolve(const CMSSIdentifier identifier, int * fieldID, ExpFlags * flags) { return null; }
    virtual void compute(int fieldID, const CMSSIdentifier identifier, FieldValue value, ExpFlags * flags);
    virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
-   virtual String ::stringFromMask(StylesMask mask, Class c);
-   virtual StylesMask ::maskFromString(const String s, Class c);
-   virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask);
+   virtual String ::stringFromMask(StylesMask mask, Class c) { return null; }
+   virtual StylesMask ::maskFromString(const String s, Class c) { return 0; }
+   virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask) { return null; }
 };
 
 public class CMSSStyleSheet
@@ -39,6 +39,7 @@ public:
       return null;
    }
 
+   //NOTE this ignores selectors!
    bool changeStyle(const String id, StylesMask mask, FieldValue value)
    {
       bool result = false;
@@ -62,17 +63,19 @@ public:
       }
       return result;
    }
-   bool addStyle(const String id, StylesMask mask, FieldValue value, Class c)
+   //NOTE this ignores selectors!
+   bool addStyle(const String id, StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
       StylingRuleBlock block = findRule(mask, id);
       if(block)
       {
          if(!block.styles) block.styles = { };
-         result = block.styles.addStyle(mask, value, c);
+         result = block.styles.addStyle(mask, value, c, evaluator);
       }
       return result;
    }
+   //NOTE this ignores selectors!
    void removeStyle(const String id, StylesMask mask)
    {
       StylingRuleBlock block = findRule(mask, id);
@@ -95,6 +98,19 @@ public:
                if(!result) result = { list = { } };
                result.list.Add(block);
             }
+         }
+      }
+      return result;
+   }
+   private bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      bool result = false;
+      if(this && list)
+      {
+         for(b : list)
+         {
+            result = b.resolve(evaluator, stylesClass);
+            if(!result) break;
          }
       }
       return result;
@@ -196,12 +212,12 @@ public:
       }
    }
 
-   bool addStyle(StylesMask mask, FieldValue value, Class c)
+   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
       CMSSMemberInitList mList { };
       this.Add(mList);
-      result = mList.addStyle(mask, value, c);
+      result = mList.addStyle(mask, value, c, evaluator);
       return result;
    }
 }
@@ -535,7 +551,7 @@ public:
             if(flags.resolved)
             {
                e = simplifyResolved(value, e);
-               delete e;
+               delete e; // NOTE: viz.sd operations were being deleted when resolved
                if(!value.i)
                {
                   keep = false;
@@ -594,6 +610,82 @@ public:
          result = block;
       }
       return result;
+   }
+   private bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      bool result = false;
+      if(selectors)
+      {
+         // TODO: Per-record flags for selectors?
+         for(s : selectors)
+         {
+            FieldValue value { };
+            CMSSExpression e = s.exp;
+            ExpFlags flags = e.compute(value, evaluator, preprocessing);
+            if(flags.resolved)
+            {
+               e = simplifyResolved(value, e);
+               //delete e; // NOTE: viz.sd operations were being deleted when resolved
+            }
+         }
+      }
+
+      if(styles)
+      {
+         for(s : styles)
+         {
+            CMSSMemberInitList style = s;
+            for(m : style)
+            {
+               CMSSMemberInit member = m;
+               // passing stylesClass here just passes irrelevant GeoSymbolizer class, but the others are not yet bound
+               member.precompute(stylesClass, 0, null, evaluator);  // TODO: Consider these flags
+            }
+         }
+      }
+
+      if(nestedRules)
+      {
+         for(b : nestedRules)
+         {
+            b.resolve(evaluator, stylesClass);
+         }
+      }
+      result = true;
+
+      return result;
+   }
+   bool changeStyle(StylesMask mask, FieldValue value)
+   {
+      bool result = false;
+      if(this)
+      {
+         CMSSMemberInit mInit = styles ? styles.findStyle(mask) : null;
+         if(mInit)
+         {
+            delete mInit.initializer;
+            mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            result = true;
+         }
+      }
+      return result;
+   }
+   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
+   {
+      bool result = false;
+      if(this)
+      {
+         if(!styles) styles = { };
+         result = styles.addStyle(mask, value, c, evaluator);
+      }
+      return result;
+   }
+   void removeStyle(StylesMask mask)
+   {
+      if(this)
+      {
+         styles.removeStyle(mask);
+      }
    }
 
    void print(File out, int indent, CMSSOutputOptions o)
