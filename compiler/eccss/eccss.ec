@@ -45,13 +45,31 @@ public:
       StylingRuleBlock block = findRule(mask, id);
       if(block)
       {
-         CMSSMemberInit mInit = block.styles.findStyle(mask);
+         CMSSMemberInit mInit = block.styles ? block.styles.findStyle(mask) : null;
          if(mInit)
          {
             delete mInit.initializer;
             mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
             result = true;
          }
+         // NOTE check outside instead. The issue is the likely need to pass a class, and this complicates matters
+         /*else
+         {
+            ECCSSEvaluator evaluator { };//ECCSSEEvaluator { };
+            block.styles = { };
+            //block.styles.addStyle(mask, value, evaluator);
+         }*/
+      }
+      return result;
+   }
+   bool addStyle(const String id, StylesMask mask, FieldValue value, Class c)
+   {
+      bool result = false;
+      StylingRuleBlock block = findRule(mask, id);
+      if(block)
+      {
+         if(!block.styles) block.styles = { };
+         result = block.styles.addStyle(mask, value, c);
       }
       return result;
    }
@@ -176,6 +194,15 @@ public:
       {
          e.removeStyle(mask);
       }
+   }
+
+   bool addStyle(StylesMask mask, FieldValue value, Class c)
+   {
+      bool result = false;
+      CMSSMemberInitList mList { };
+      this.Add(mList);
+      result = mList.addStyle(mask, value, c);
+      return result;
    }
 }
 
@@ -481,6 +508,8 @@ public:
                return b;
          }
       }
+      // NOTE this is the rule created from getstylingruleex with unset style
+      if(!styles && id && id.string && name && !strcmpi(id.string, name)) return this;
       return null;
    }
 
