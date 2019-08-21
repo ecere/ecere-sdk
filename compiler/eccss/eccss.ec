@@ -611,6 +611,7 @@ public:
       }
       return result;
    }
+
    private bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
    {
       bool result = false;
@@ -655,6 +656,7 @@ public:
 
       return result;
    }
+
    bool changeStyle(StylesMask mask, FieldValue value)
    {
       bool result = false;
@@ -670,6 +672,7 @@ public:
       }
       return result;
    }
+
    bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
@@ -680,6 +683,7 @@ public:
       }
       return result;
    }
+
    void removeStyle(StylesMask mask)
    {
       if(this)
