@@ -312,7 +312,7 @@ struct GLMultiDraw
    GLMB indexGLMB;
    GLMB vertexGLMB;
    GLAB idsAB;
-   GLB commandsB;
+   GLCAB commandsB;
    uint vao;
    uint commandsCount;
    GLIMTKMode drawMode;
@@ -502,7 +502,7 @@ struct GLMultiDraw
       }
 #else
       {
-         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, commandsB.buffer);
+         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, commandsB.buffer);
 
    #ifdef _DEBUG
          checkGLErrors();
@@ -511,14 +511,18 @@ struct GLMultiDraw
          glMultiDrawElementsIndirect(
             drawMode,
             type,
+#ifdef CLIENT_MEM_COMMANDS
+            commands,
+#else
             0,
+#endif
             commandsCount, 0);
 
    #ifdef _DEBUG
          checkGLErrors();
    #endif
 
-         glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
       }
 #endif
       if(glCaps_vao) glBindVertexArray(0);

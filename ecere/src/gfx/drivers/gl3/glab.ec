@@ -17,8 +17,12 @@ public void GLABBindBuffer(int target, uint buffer)
          glabCurArrayBuffer = buffer;
       else if(target == GL_ELEMENT_ARRAY_BUFFER)
          glabCurElementBuffer = buffer;
+      else if(target == GL_DRAW_INDIRECT_BUFFER)
+         glabCurDrawIndirectBuffer = buffer;
    }
 }
+
+uint glabCurDrawIndirectBuffer;
 
 public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector };
 
@@ -311,7 +315,7 @@ public:
 #define GLSTATS
 #endif
 
-public enum GLBType { elements, attributes };
+public enum GLBType { elements, attributes, commands };
 
 public struct GLB
 {
@@ -350,15 +354,17 @@ public struct GLB
       {
          if(glCaps_vertexBuffer)
          {
+            int glBufferType = type == commands ? GL_DRAW_INDIRECT_BUFFER : type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+
             if(!buffer)
                glGenBuffers(1, &buffer);
 
-            GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
+            GLABBindBuffer(glBufferType, buffer);
 #ifdef GLSTATS
             GLStats::allocBuffer(buffer, size);
 #endif
             if(size)
-               glBufferData(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, size, data, bufferUsages[usage]);
+               glBufferData(glBufferType, size, data, bufferUsages[usage]);
          }
          else
             buffer = 1;
@@ -371,8 +377,9 @@ public struct GLB
    {
       if(this != null && glCaps_vertexBuffer)
       {
-         GLABBindBuffer(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, buffer);
-         glBufferSubData(type == attributes ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER, offset, size, data);
+         int glBufferType = type == commands ? GL_DRAW_INDIRECT_BUFFER : type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+         GLABBindBuffer(glBufferType, buffer);
+         glBufferSubData(glBufferType, offset, size, data);
       }
    }
 
@@ -399,6 +406,8 @@ public struct GLB
                if(buffer == glabCurArrayBuffer)
                   GLABBindBuffer(GL_ARRAY_BUFFER, 0);
                else if(buffer == glabCurElementBuffer)
+                  GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+               else if(buffer == glabCurDrawIndirectBuffer)
                   GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
          }
@@ -492,6 +501,19 @@ public struct GLAB : GLB
 uint glabCurElementBuffer;
 
 public define noEAB = GLEAB { 0 };
+
+public struct GLCAB : GLB
+{
+   bool allocate(uint size, const void * data, GLBufferUsage usage)
+   {
+      return _allocate(commands, size, data, usage);
+   }
+
+   void upload(uint offset, uint size, const void * data)
+   {
+      _upload(commands, offset, size, data);
+   }
+};
 
 public struct GLEAB : GLB
 {
