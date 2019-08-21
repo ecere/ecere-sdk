@@ -1494,7 +1494,7 @@ public:
    {
       bool result = false;
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
-      CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
+      CMSSMemberInit mInitSub { stylesMask = mask, initializer = initExp, assignType = equal };
       CMSSExpInstance inst = null; //{ instance = { members = { } } }
       CMSSInitExp initExpTop = null;//{ exp = inst };
       CMSSMemberInit mInitTop = null;//{ initializer = initExpTop, assignType = equal }
@@ -1541,7 +1541,7 @@ public:
             inst = { instance = { members = { } } };
             inst.instance.members.Add(instInitMember);
             initExpTop = { exp = inst };
-            mInitTop = { initializer = initExpTop, assignType = equal };
+            mInitTop = { expType = c, initializer = initExpTop, assignType = equal };
             if(prefix)
             {
                mInitTop.identifiers = { };
