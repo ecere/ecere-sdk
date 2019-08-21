@@ -1495,7 +1495,10 @@ public:
       bool result = false;
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
       CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
-      CMSSMemberInit mInitTop { initializer = initExp, assignType = equal };
+      CMSSExpInstance inst = null; //{ instance = { members = { } } }
+      CMSSInitExp initExpTop = null;//{ exp = inst };
+      CMSSMemberInit mInitTop = null;//{ initializer = initExpTop, assignType = equal }
+      CMSSInstInitMember instInitMember { members = { [ mInitSub ] } };
 
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
 
@@ -1519,13 +1522,36 @@ public:
          mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(identifierStr) });
       }
 
-      if(prefix)
+      // NOTE no instance necessary for GraphicalStyle
+      if(c && c.name && !strcmp(c.name, "GraphicalStyle")) this.Add(mInitSub);
+      else // NOTE we want to search for existing instance here
       {
-         mInitTop.identifiers = { };
-         mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
-         delete prefix;
+         if(this[0] && prefix)
+         {
+            for(m : this)
+            {
+               CMSSMemberInit mm = m;
+               if(mm.identifiers && !strcmp(mm.identifiers[0].string, prefix))
+               {  mInitTop = mm; inst = (CMSSExpInstance)((CMSSInitExp)mInitTop).exp; break; }
+            }
+            inst.instance.members.Add(instInitMember);
+         }
+         if(!mInitTop)
+         {
+            inst = { instance = { members = { } } };
+            inst.instance.members.Add(instInitMember);
+            initExpTop = { exp = inst };
+            mInitTop = { initializer = initExpTop, assignType = equal };
+            if(prefix)
+            {
+               mInitTop.identifiers = { };
+               mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
+               delete prefix;
+            }
+         }
+
+         this.Add(mInitTop);
       }
-      this.Add(mInitSub);
       return result;
    }
 }
