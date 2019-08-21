@@ -641,6 +641,7 @@ public:
                CMSSMemberInit member = m;
                // passing stylesClass here just passes irrelevant GeoSymbolizer class, but the others are not yet bound
                member.precompute(stylesClass, 0, null, evaluator);  // TODO: Consider these flags
+               styles.mask |= member.stylesMask;
             }
          }
       }
@@ -650,7 +651,9 @@ public:
          for(b : nestedRules)
          {
             b.resolve(evaluator, stylesClass);
+            nestedRules.mask |= b.mask;
          }
+         mask |= nestedRules.mask;
       }
       result = true;
 
