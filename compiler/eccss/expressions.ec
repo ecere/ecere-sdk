@@ -1493,14 +1493,11 @@ public:
    bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
-      CMSSInstInitMember instInitMember { };
-      CMSSExpInstance inst { instance = { members = { } } };
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
-      CMSSInitExp initExpTop { exp = inst };
       CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
-      CMSSMemberInit mInitTop { assignType = equal, initializer = initExpTop };
+      CMSSMemberInit mInitTop { initializer = initExp, assignType = equal };
 
-      char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null; //
+      char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
 
       String prefix = null;
       if(identifierStr && identifierStr[0])
@@ -1518,10 +1515,9 @@ public:
 
       if(identifierStr)
       {
-         mInitSub.identifiers = { }; mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(identifierStr) });
+         mInitSub.identifiers = { };
+         mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(identifierStr) });
       }
-      instInitMember.members = { [ mInitSub ] };
-      inst.instance.members.Add(instInitMember);
 
       if(prefix)
       {
@@ -1529,7 +1525,7 @@ public:
          mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
          delete prefix;
       }
-      this.Add(mInitTop);
+      this.Add(mInitSub);
       return result;
    }
 }
