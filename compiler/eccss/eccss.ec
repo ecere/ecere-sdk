@@ -665,8 +665,11 @@ public:
          CMSSMemberInit mInit = styles ? styles.findStyle(mask) : null;
          if(mInit)
          {
-            delete mInit.initializer;
-            mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            // delete mInit.initializer;
+            // mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+            CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
+            constant.constant = value;
             result = true;
          }
       }
