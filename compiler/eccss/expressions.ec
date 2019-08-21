@@ -1503,6 +1503,7 @@ public:
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
 
       String prefix = null;
+      String suffix = null;
       if(identifierStr && identifierStr[0])
       {
          int size;
@@ -1512,14 +1513,15 @@ public:
          {
             prefix = new char[size];
             strncpy(prefix, identifierStr, size - 1);
+            suffix = CopyString(identifierStr+size);
             prefix[size - 1] = '\0';
          }
       }
 
-      if(identifierStr)
+      if(suffix || identifierStr)
       {
          mInitSub.identifiers = { };
-         mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(identifierStr) });
+         mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) });
       }
 
       // NOTE no instance necessary for GraphicalStyle
