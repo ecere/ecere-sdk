@@ -9,6 +9,8 @@ import "ButterburShader"
 
 private:
 
+// #define CLIENT_MEM_COMMANDS  // Defined as a work-around for Intel driver that does not seem to support indirect commands buffers?
+
 GLCapabilities glCaps;
 bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
 bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
@@ -357,7 +359,9 @@ struct GLMultiDraw
       commands = renew0 commands GLDrawCommand[size];
       commandsAlloced = size;
       idsAB.allocate(size * sizeof(uint), null, streamDraw);
+#ifndef CLIENT_MEM_COMMANDS
       commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
+#endif
    }
 
    void free()
@@ -427,7 +431,9 @@ struct GLMultiDraw
    void prepare(int vertNCoords, int verticesStride)
    {
       idsAB.upload(0, commandsCount * sizeof(uint), drawIDs);
+#ifndef CLIENT_MEM_COMMANDS
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
+#endif
 
       if(glCaps_vao) glBindVertexArray(vao);
       // Draw IDs
@@ -502,7 +508,11 @@ struct GLMultiDraw
       }
 #else
       {
+#ifdef CLIENT_MEM_COMMANDS
+         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+#else
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, commandsB.buffer);
+#endif
 
    #ifdef _DEBUG
          checkGLErrors();
