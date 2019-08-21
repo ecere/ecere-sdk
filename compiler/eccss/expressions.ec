@@ -1489,6 +1489,7 @@ public:
          }
       }
    }
+
    bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
@@ -1499,19 +1500,20 @@ public:
       CMSSMemberInit mInitSub { initializer = initExp, assignType = equal };
       CMSSMemberInit mInitTop { assignType = equal, initializer = initExpTop };
 
-      String identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null; //
+      char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null; //
 
-      char * pch;
-      int loc, n;
       String prefix = null;
-      if(identifierStr)
+      if(identifierStr && identifierStr[0])
       {
-         pch = strchr(identifierStr,'.');
-         loc = pch ? pch-identifierStr+1 : 0, n = 0;
-         char pref[loc-1];
-      //char * top = strtok(identifierStr, ".");
-         memcpy(pref, identifierStr, sizeof pref);
-         prefix = CopyString(pref);
+         int size;
+         char * pch = strchr(identifierStr, '.');
+         size = pch ? pch - identifierStr + 1 : 0;
+         if(size)
+         {
+            prefix = new char[size];
+            strncpy(prefix, identifierStr, size - 1);
+            prefix[size - 1] = '\0';
+         }
       }
 
       if(identifierStr)
@@ -1525,6 +1527,7 @@ public:
       {
          mInitTop.identifiers = { };
          mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
+         delete prefix;
       }
       this.Add(mInitTop);
       return result;
