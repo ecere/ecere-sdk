@@ -422,7 +422,7 @@ ifdef WINDOWS_TARGET
  ifdef OPENSSL_DIR
   OPENSSL_INCLUDE_DIR = $(if $(wildcard $(OPENSSL_DIR)/include),$(OPENSSL_DIR)/include,$(OPENSSL_DIR))
   OPENSSL_LIB_DIR = $(if $(wildcard $(OPENSSL_DIR)/lib),$(OPENSSL_DIR)/lib,$(OPENSSL_DIR))
-  OPENSSL_BIN_DIR = $(if $(wildcard $(OPENSSL_DIR)/lib),$(OPENSSL_DIR)/lib,$(OPENSSL_DIR))
+  OPENSSL_BIN_DIR = $(if $(wildcard $(OPENSSL_DIR)/bin),$(OPENSSL_DIR)/bin,$(OPENSSL_DIR))
  else
   ifdef OPENSSL_CONF
    _OPENSSL_CONF = $(call hidspace,$(call slash_path,$(OPENSSL_CONF)))
