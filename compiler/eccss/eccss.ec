@@ -646,6 +646,7 @@ public:
                styles.mask |= member.stylesMask;
             }
          }
+         this.mask |= styles.mask;
       }
 
       if(nestedRules)
