@@ -506,10 +506,13 @@ static void processCppClass(CPPGen g, BClass c)
                   ZString sg { allocType = heap };
 
                   if(ct == normalClass)
+                  {
                      tn = cppTypeName(ti, true);
+                     //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
+                  }
                   else
                      tn = cppTypeName(ti, false);
-                  
+
                   sg.copy("");
 
 
@@ -550,10 +553,9 @@ static void processCppClass(CPPGen g, BClass c)
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                   }
-                  if(!strcmp(tn, "List"))
-                     PrintLn("");
-                  cppTypeName(ti, false);
-                  // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+               if(!strcmp(tn, "List"))
+                  PrintLn("");
+               //cppTypeName(ti, false);
                   cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
 
                   delete tn;
@@ -567,10 +569,12 @@ static void processCppClass(CPPGen g, BClass c)
                   ZString sg { allocType = heap };
 
                   if(ct == normalClass)
+                  {
                      tn = cppTypeName(ti, true);
+                     //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
+                  }
                   else
                      tn = cppTypeName(ti, false);
-                  //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
                   sg.copy("");
 
                   if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
@@ -636,10 +640,9 @@ static void processCppClass(CPPGen g, BClass c)
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                   }
-                  if(!strcmp(tn, "File"))
-                     PrintLn("");
-                  cppTypeName(ti, false);
-                  // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+               if(!strcmp(tn, "File"))
+                  PrintLn("");
+               //cppTypeName(ti, false);
                   cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
 
                   delete tn;
@@ -677,7 +680,7 @@ static void processCppClass(CPPGen g, BClass c)
                         tn = cppTypeName(ti, true);
                      else
                         tn = cppTypeName(ti, false);
-                     
+
                      sg.copy("");
                      // TODO: Don't output set if const ?
 
@@ -698,8 +701,7 @@ static void processCppClass(CPPGen g, BClass c)
                      }
                   if(!strcmp(tn, "List"))
                      PrintLn("");
-                  cppTypeName(ti, false);
-                     // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+                  //cppTypeName(ti, false);
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
                      delete sg;
@@ -713,11 +715,13 @@ static void processCppClass(CPPGen g, BClass c)
                      ZString sg { allocType = heap };
 
                      if(ct == normalClass)
+                     {
                         tn = cppTypeName(ti, true);
+                        v.processDependency(otypedef, otypedef, dm.dataType._class.registered);
+                     }
                      else
                         tn = cppTypeName(ti, false);
                      sg.copy("");
-                     v.processDependency(otypedef, otypedef, dm.dataType._class.registered);
                      // TODO: Don't output set if const ?
 
                      if(dm.dataType.kind == arrayType)
@@ -746,9 +750,8 @@ static void processCppClass(CPPGen g, BClass c)
 
                      }
                   if(!strcmp(tn, "List"))
-                     PrintLn("");
-                  cppTypeName(ti, false);
-                     //v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+                        PrintLn("");
+                  //cppTypeName(ti, false);
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
                      delete sg;
