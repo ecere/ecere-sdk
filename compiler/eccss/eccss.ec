@@ -72,6 +72,7 @@ public:
       {
          if(!block.styles) block.styles = { };
          result = block.styles.addStyle(mask, value, c, evaluator);
+         if(result) block.mask |= mask;
       }
       return result;
    }
@@ -218,6 +219,7 @@ public:
       CMSSMemberInitList mList { };
       this.Add(mList);
       result = mList.addStyle(mask, value, c, evaluator);
+      if(result) this.mask |= mask;
       return result;
    }
 }
@@ -665,14 +667,26 @@ public:
       bool result = false;
       if(this)
       {
-         CMSSMemberInit mInit = styles ? styles.findStyle(mask) : null;
+         CMSSMemberInit mInit = styles ? styles.findStyle(mask) : null; // this doesn't get lowest-level member
          if(mInit)
          {
-            // delete mInit.initializer;
-            // mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
             CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
-            CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
-            constant.constant = value;
+            if(initExp.exp._class == class(CMSSExpInstance))
+            {
+               CMSSExpInstance inst = initExp.exp;
+               CMSSMemberInit mInitSub = ((CMSSMemberInitList)inst.instance).findStyle(mask); // this does
+               if(mInitSub)
+               {
+                  CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
+                  CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
+                  constant.constant = value;
+               }
+            }
+            else if(initExp.exp._class == class(CMSSExpConstant))
+            {
+               CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
+               constant.constant = value;
+            }
             result = true;
          }
       }
@@ -685,7 +699,10 @@ public:
       if(this)
       {
          if(!styles) styles = { };
+         /*CMSSMemberInit init = null;
+         if(styles[0]) init = styles.findInstance(mask, c));*/
          result = styles.addStyle(mask, value, c, evaluator);
+         if(result) this.mask |= mask;
       }
       return result;
    }
