@@ -2117,46 +2117,42 @@ private:
          else if(buildType != install)
          {
             int numOthers = numWarnNote + numWarnInFunc + numWarnUnusedFunc + numWarnUnusedVar + numWarnSetButNotUsed;
+            int numAllWarn = numWarnings + numOthers;
+            if(!onlyNodes || numErrors || numAllWarn)
+               ide.outputView.buildBox.Logf("\n");
             if(!onlyNodes)
             {
                char targetFileName[MAX_LOCATION];
                targetFileName[0] = '\0';
                CatTargetFileName(targetFileName, compiler, config);
-               ide.outputView.buildBox.Logf("\n%s (%s) - ", targetFileName, lastBuildConfigName);
+               ide.outputView.buildBox.Logf("%s (%s) - ", targetFileName, lastBuildConfigName);
             }
             if(numErrors)
-               ide.outputView.buildBox.Logf("%d %s", numErrors, (numErrors > 1) ? $"errors" : $"error");
+               ide.outputView.buildBox.Logf("%d %s", numErrors, (numErrors > 1) ? $"[e]rrors" : $"[e]rror");
             else
                ide.outputView.buildBox.Logf("%s", $"no error");
-            if(numWarnings)
-               ide.outputView.buildBox.Logf(", %d %s", numWarnings, (numWarnings > 1) ? $"warnings" : $"warning");
+            if(numAllWarn)
+               ide.outputView.buildBox.Logf(", %d %s", numAllWarn, (numAllWarn > 1) ? $"warnings" : $"warning");
             else
                ide.outputView.buildBox.Logf(", %s", $"no warning");
-            if(numOthers)
-               ide.outputView.buildBox.Logf(", %d %s", numOthers, (numOthers > 1) ? $"other warnings" : $"other warning");
-            ide.outputView.buildBox.Logf("\n");
 
             if(numOthers)
             {
-               bool comma = false;
-               ide.outputView.buildBox.Logf("\n");
-               if(numWarnNote)
-                  ide.outputView.buildBox.Logf("%d %s", numWarnNote, (numWarnNote > 1) ? $"notes" : $"note"), comma = true;
-               if(numWarnInFunc)
-                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnInFunc, (numWarnInFunc > 1) ? $"in functions" : $"in function"), comma = true;
-               if(numWarnUnusedFunc)
-                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnUnusedFunc, (numWarnUnusedFunc > 1) ? $"unused functions" : $"unused function"), comma = true;
-               if(numWarnUnusedVar)
-                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnUnusedVar, (numWarnUnusedVar > 1) ? $"unused variables" : $"unused variable"), comma = true;
+               ide.outputView.buildBox.Logf(" (%d %s", numWarnings, (numWarnings > 1) ? $"important [w]arnings" : $"important [w]arning");
                if(numWarnSetButNotUsed)
-                  ide.outputView.buildBox.Logf("%s%d %s", comma ? ", " : "", numWarnSetButNotUsed, (numWarnSetButNotUsed > 1) ? $"variables set but not used" : $"variable set but not used"), comma = true;
-               ide.outputView.buildBox.Logf("\n");
+                  ide.outputView.buildBox.Logf(", %d %s", numWarnSetButNotUsed, (numWarnSetButNotUsed > 1) ? $"variables [s]et but not used" : $"variable [s]et but not used");
+               if(numWarnUnusedFunc)
+                  ide.outputView.buildBox.Logf(", %d %s", numWarnUnusedFunc, (numWarnUnusedFunc > 1) ? $"unused [f]unctions" : $"unused [f]unction");
+               if(numWarnUnusedVar)
+                  ide.outputView.buildBox.Logf(", %d %s", numWarnUnusedVar, (numWarnUnusedVar > 1) ? $"unused [v]ariables" : $"unused [v]ariable");
+               if(numWarnInFunc)
+                  ide.outputView.buildBox.Logf(", %d %s", numWarnInFunc, (numWarnInFunc > 1) ? $"\"in functions\"" : $"\"in function\"");
+               if(numWarnNote)
+                  ide.outputView.buildBox.Logf(", %d %s", numWarnNote, (numWarnNote > 1) ? $"notes" : $"note");
+               ide.outputView.buildBox.Logf(", %d %s", numOthers, (numOthers > 1) ? $"[o]ther warnings" : $"[o]ther warning");
+               ide.outputView.buildBox.Logf(")");
             }
-            if(numErrors || numWarnings || numOthers)
-            {
-               ide.outputView.buildBox.Logf("\n");
-               ide.outputView.buildBox.Logf("navigation: (a)ny, (e)rror, (w)arning, (o)ther warning, unused (f)unction, unused (v)ariable, variable (s)et but not used. combine with shift for reverse order.\n");
-            }
+            ide.outputView.buildBox.Logf("\n");
          }
       }
 
