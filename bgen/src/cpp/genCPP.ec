@@ -505,11 +505,11 @@ static void processCppClass(CPPGen g, BClass c)
                   String tn;
                   ZString sg { allocType = heap };
 
-                  if(ct == structClass)
-                     tn = cppTypeName(ti, false);
-                  else
+                  if(ct == normalClass)
                      tn = cppTypeName(ti, true);
-
+                  else
+                     tn = cppTypeName(ti, false);
+                  
                   sg.copy("");
 
 
@@ -521,9 +521,20 @@ static void processCppClass(CPPGen g, BClass c)
                      else
                         sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
                      if(pt.Get)
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     {
+                        if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     }
                      else
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                     {
+                        if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                     }
+
                   }
                   else
                   {
@@ -532,9 +543,14 @@ static void processCppClass(CPPGen g, BClass c)
                      else if(pt.Set && !pt.Get)
                         sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      if(pt.Get)
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     {
+                        if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                     }
                   }
-                  if(!strcmp(tn, "C(Anchor) *"))
+                  if(!strcmp(tn, "List"))
                      PrintLn("");
                   cppTypeName(ti, false);
                   // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
@@ -550,11 +566,11 @@ static void processCppClass(CPPGen g, BClass c)
                   String tn;
                   ZString sg { allocType = heap };
 
-                  if(ct == structClass)
-                     tn = cppTypeName(ti, false);
+                  if(ct == normalClass)
+                     tn = cppTypeName(ti, true);
                   else
-                     tn = cppTypeName(ti, true); 
-
+                     tn = cppTypeName(ti, false);
+                  //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
                   sg.copy("");
 
                   if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
@@ -564,6 +580,8 @@ static void processCppClass(CPPGen g, BClass c)
                      {
                         if(ct == structClass)
                            sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else if(ct == normalClass)
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
                            sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      }
@@ -573,11 +591,18 @@ static void processCppClass(CPPGen g, BClass c)
                      {
                         if(ct == structClass)
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                        else if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                      else
-                        sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                     {
+                        if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                        else
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                     }
                   }
                   else
                   {
@@ -585,25 +610,33 @@ static void processCppClass(CPPGen g, BClass c)
                      {
                         if(ct == structClass)
                            sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else if(ct == normalClass)
+                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
                            sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+
                      }
                      else if(pt.Set && !pt.Get)
                      {
                         if(ct == structClass)
                            sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                        else if(ct == normalClass)
+                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
                            sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+
                      }
                      if(pt.Get)
                      {
                         if(ct == structClass)
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                        else if(ct == normalClass)
+                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
                            sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                   }
-                  if(!strcmp(tn, "C(Anchor) *"))
+                  if(!strcmp(tn, "File"))
                      PrintLn("");
                   cppTypeName(ti, false);
                   // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
@@ -640,11 +673,11 @@ static void processCppClass(CPPGen g, BClass c)
                      String tn;
                      ZString sg { allocType = heap };
 
-                     if(ct == structClass)
-                        tn = cppTypeName(ti, false);
-                     else
+                     if(ct == normalClass)
                         tn = cppTypeName(ti, true);
-
+                     else
+                        tn = cppTypeName(ti, false);
+                     
                      sg.copy("");
                      // TODO: Don't output set if const ?
 
@@ -663,7 +696,7 @@ static void processCppClass(CPPGen g, BClass c)
                         sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
                         sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
-                  if(!strcmp(tn, "C(Anchor) *"))
+                  if(!strcmp(tn, "List"))
                      PrintLn("");
                   cppTypeName(ti, false);
                      // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
@@ -679,11 +712,12 @@ static void processCppClass(CPPGen g, BClass c)
                      String tn;
                      ZString sg { allocType = heap };
 
-                     if(ct == structClass)
-                        tn = cppTypeName(ti, false);
-                     else
+                     if(ct == normalClass)
                         tn = cppTypeName(ti, true);
+                     else
+                        tn = cppTypeName(ti, false);
                      sg.copy("");
+                     v.processDependency(otypedef, otypedef, dm.dataType._class.registered);
                      // TODO: Don't output set if const ?
 
                      if(dm.dataType.kind == arrayType)
@@ -698,13 +732,23 @@ static void processCppClass(CPPGen g, BClass c)
                      }
                      else
                      {
-                        sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
+                        if(ct == normalClass)
+                        {
+                           sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v.impl;)");
+                           sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", ", tn, " value(IPTR(self->impl, ", cn, ")->", dm.name, ", ", cn, "::_class); ", "return value; ", ")");
+                        }
+                        else
+                        {
+                           sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                           sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
+                        }
+
+
                      }
-                  if(!strcmp(tn, "C(Anchor) *"))
+                  if(!strcmp(tn, "List"))
                      PrintLn("");
                   cppTypeName(ti, false);
-                     // v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+                     //v.processDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
                      cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
 
                      delete sg;
