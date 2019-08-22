@@ -191,35 +191,35 @@ public:
       return list;
    }
 
-   CMSSMemberInit findStyle(StylesMask mask)
+   CMSSMemberInit findStyle(StylesMask msk)
    {
       // unbound sheet currently doesn't have mask set...
       // if(mask & this.mask)
       {
          for(e : this)
          {
-            CMSSMemberInit mInit = e.findStyle(mask);
+            CMSSMemberInit mInit = e.findStyle(msk);
             if(mInit) return mInit;
          }
       }
       return null;
    }
 
-   void removeStyle(StylesMask mask)
+   void removeStyle(StylesMask msk)
    {
       for(e : this)
       {
-         e.removeStyle(mask);
+         e.removeStyle(msk);
       }
    }
 
-   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool addStyle(StylesMask msk, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
       CMSSMemberInitList mList { };
       this.Add(mList);
       result = mList.addStyle(mask, value, c, evaluator);
-      if(result) this.mask |= mask;
+      if(result) this.mask |= msk;
       return result;
    }
 }
@@ -662,19 +662,19 @@ public:
       return result;
    }
 
-   bool changeStyle(StylesMask mask, FieldValue value)
+   bool changeStyle(StylesMask msk, FieldValue value)
    {
       bool result = false;
       if(this)
       {
-         CMSSMemberInit mInit = styles ? styles.findStyle(mask) : null; // this doesn't get lowest-level member
+         CMSSMemberInit mInit = styles ? styles.findStyle(msk) : null; // this doesn't get lowest-level member
          if(mInit)
          {
             CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
             if(initExp.exp._class == class(CMSSExpInstance))
             {
                CMSSExpInstance inst = initExp.exp;
-               CMSSMemberInit mInitSub = ((CMSSMemberInitList)inst.instance).findStyle(mask); // this does
+               CMSSMemberInit mInitSub = ((CMSSMemberInitList)inst.instance).findStyle(msk); // this does
                if(mInitSub)
                {
                   CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
@@ -693,7 +693,7 @@ public:
       return result;
    }
 
-   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool addStyle(StylesMask msk, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
       if(this)
@@ -701,17 +701,17 @@ public:
          if(!styles) styles = { };
          /*CMSSMemberInit init = null;
          if(styles[0]) init = styles.findInstance(mask, c));*/
-         result = styles.addStyle(mask, value, c, evaluator);
-         if(result) this.mask |= mask;
+         result = styles.addStyle(msk, value, c, evaluator);
+         if(result) this.mask |= msk;
       }
       return result;
    }
 
-   void removeStyle(StylesMask mask)
+   void removeStyle(StylesMask msk)
    {
       if(this)
       {
-         styles.removeStyle(mask);
+         styles.removeStyle(msk);
       }
    }
 
