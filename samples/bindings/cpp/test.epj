@@ -76,15 +76,10 @@
                   }
                ]
             },
-            {
-               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp",
-               "Options" : {
-                  "ExcludeFromBuild" : true
-               }
-            }
+            "../../../bindings/cpp/ecere.hpp"
          ]
       },
-      "helloApp.cpp"
+      "sample1.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [
