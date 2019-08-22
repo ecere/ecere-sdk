@@ -218,7 +218,7 @@ public:
       bool result = false;
       CMSSMemberInitList mList { };
       this.Add(mList);
-      result = mList.addStyle(mask, value, c, evaluator);
+      result = mList.addStyle(msk, value, c, evaluator);
       if(result) this.mask |= msk;
       return result;
    }
