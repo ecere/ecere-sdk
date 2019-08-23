@@ -376,6 +376,7 @@ static void processCppClass(CPPGen g, BClass c)
       const char * bn = cBase ? cBase.name : "";
       const char * un = c.upper;
       bool hasBase = cBase && cBase.cl.type != systemClass;
+      bool ptDmPrinted = false;
 
       bool isBaseString = false;
       if(!strcmp(cBase.name, "String"))
@@ -386,7 +387,7 @@ static void processCppClass(CPPGen g, BClass c)
       c.outTypedef = o;
       n.contents.Add(v);
       if(hasBase)
-         v.processDependency(otypedef, otypedef, cBase.cl);
+         v.processDependency(otypedef, otypedef, cBase.cl);       
 
       /*switch(c.cl.type)
       {
@@ -520,43 +521,43 @@ static void processCppClass(CPPGen g, BClass c)
                   {
 
                      if(pt.Set)
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                        sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      else
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                        sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
                      if(pt.Get)
                      {
                         if(ct == normalClass)
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                      else
                      {
                         if(ct == normalClass)
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
                      }
 
                   }
                   else
                   {
                      if(pt.Set && pt.Get)
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                        sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      else if(pt.Set && !pt.Get)
-                        sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                        sg.concatx(" _setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      if(pt.Get)
                      {
                         if(ct == normalClass)
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                   }
-                  if(!strcmp(tn, "List"))
+                  if(!strcmp(pt.name, "stringValue"))
                      PrintLn("");
                   //cppTypeName(ti, false);
-                  cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
+                  cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null, true);
 
                   delete tn;
                   delete sg;
@@ -583,29 +584,29 @@ static void processCppClass(CPPGen g, BClass c)
                      if(pt.Set)
                      {
                         if(ct == structClass)
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
                         else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
                      }
                      else
-                        sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                        sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
                      if(pt.Get)
                      {
                         if(ct == structClass)
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
                         else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                      else
                      {
                         if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
                      }
                   }
                   else
@@ -613,37 +614,37 @@ static void processCppClass(CPPGen g, BClass c)
                      if(pt.Set && pt.Get)
                      {
                         if(ct == structClass)
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
                         else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
-                           sg.concatx(" set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                           sg.concatx(" setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
 
                      }
                      else if(pt.Set && !pt.Get)
                      {
                         if(ct == structClass)
-                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                           sg.concatx(" _setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
                         else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                           sg.concatx(" _setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
                         else
-                           sg.concatx(" _set(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                           sg.concatx(" _setProto(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
 
                      }
                      if(pt.Get)
                      {
                         if(ct == structClass)
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
                         else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
                         else
-                           sg.concatx(" get(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                           sg.concatx(" getProto(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
                      }
                   }
-                  if(!strcmp(tn, "File"))
+                  if(!strcmp(pt.name, "stringValue"))
                      PrintLn("");
                   //cppTypeName(ti, false);
-                  cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null);
+                  cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null, true);
 
                   delete tn;
                   delete sg;
@@ -692,17 +693,17 @@ static void processCppClass(CPPGen g, BClass c)
                         while(t.kind == arrayType && t.type) t = t.type;
                         PrintType(t, arrayDataType, true, false);
                         tn = PrintString(arrayDataType, "*");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                        sg.concatx(" getProto(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
                      else
                      {
-                        sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                        sg.concatx(" setProto(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                        sg.concatx(" getProto(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
-                  if(!strcmp(tn, "constString"))
+                  if(!strcmp(dm.name, "stringValue"))
                      PrintLn("");
                   //cppTypeName(ti, false);
-                     cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
+                     cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null, true);
 
                      delete sg;
                      delete tn;
@@ -732,27 +733,27 @@ static void processCppClass(CPPGen g, BClass c)
                         while(t.kind == arrayType && t.type) t = t.type;
                         PrintType(t, arrayDataType, true, false);
                         tn = PrintString(arrayDataType, "*");
-                        sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                        sg.concatx(" getProto(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
                      }
                      else
                      {
-                        if(ct == normalClass)
+                        if(ct == normalClass && strcmp(tn, "String") && strcmp(tn, "constString"))
                         {
-                           sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v.impl;)");
-                           sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", ", tn, " value(IPTR(self->impl, ", cn, ")->", dm.name, ", ", cn, "::_class); ", "return value; ", ")");
+                           sg.concatx(" setProto(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v.impl;)");
+                           sg.concatx(" getProto(", tn, ", ", dm.name, ", ", cn, ", ", tn, " value(IPTR(self->impl, ", cn, ")->", dm.name, ", ", cn, "::_class); ", "return value; ", ")");
                         }
                         else
                         {
-                           sg.concatx(" set(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
-                           sg.concatx(" get(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
+                           sg.concatx(" setProto(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                           sg.concatx(" getProto(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
                         }
 
 
                      }
-                     if(!strcmp(tn, "List"))
+                     if(!strcmp(dm.name, "stringValue"))
                            PrintLn("");
                      //cppTypeName(ti, false);
-                     cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null);
+                     cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null, true);
 
                      delete sg;
                      delete tn;
@@ -760,11 +761,294 @@ static void processCppClass(CPPGen g, BClass c)
                }
 
             }
+            ptDmPrinted = true;
          }
-
          o.ds.printx(genloc__, "}");
       }
       o.ds.printx(";", ln);
+      // property implementations
+      if(ptDmPrinted)
+      {
+         Property pt; IterProperty prop { c };
+         DataMember dm; IterDataMember dat { c };
+
+         while((pt = prop.next(publicOnly)))
+         {
+            // TOCHECK: How should this be handled?
+            if(!strcmp(pt.name, "borderStyle"))
+               PrintLn("");
+            if(!pt.dataType)
+            {
+               Context context = SetupTemplatesContext(c); // TOCHECK: Should we do this only once while we process the whole class?
+               pt.dataType = ProcessTypeString(pt.dataTypeString, false);
+               FinishTemplatesContext(context);
+            }
+
+            // TODO: Fix types for classes...
+            if(pt.dataType.kind != classType && pt.dataType.kind != templateType)
+            {
+               TypeInfo ti { type = pt.dataType };
+               ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+               String tn;
+               ZString sg { allocType = heap };
+
+               if(ct == normalClass)
+               {
+                  tn = cppTypeName(ti, true);
+                  //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
+               }
+               else
+                  tn = cppTypeName(ti, false);
+
+               sg.copy("");
+
+
+               if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
+               {
+
+                  if(pt.Set)
+                     sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                  else
+                     sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                  if(pt.Get)
+                  {
+                     if(ct == normalClass)
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
+                  else
+                  {
+                     if(ct == normalClass)
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                  }
+
+               }
+               else
+               {
+                  if(pt.Set && pt.Get)
+                     sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                  else if(pt.Set && !pt.Get)
+                     sg.concatx(" _setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                  if(pt.Get)
+                  {
+                     if(ct == normalClass)
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
+               }
+               if(!strcmp(pt.name, "stringValue"))
+                  PrintLn("");
+               //cppTypeName(ti, false);
+               cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null, false);
+
+               delete tn;
+               delete sg;
+            }
+            else if(pt.dataType.kind == classType)
+            {
+               TypeInfo ti { type = pt.dataType };
+               ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+               String tn;
+               ZString sg { allocType = heap };
+
+               if(ct == normalClass)
+               {
+                  tn = cppTypeName(ti, true);
+                  //v.processDependency(otypedef, otypedef, pt.dataType._class.registered);
+               }
+               else
+                  tn = cppTypeName(ti, false);
+               sg.copy("");
+
+               if(eClass_FindDataMember(c.cl, pt.name, c.cl.module, null, null) || strstr(pt.name, "__ecerePrivateData"))
+               {
+
+                  if(pt.Set)
+                  {
+                     if(ct == structClass)
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                     else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                     else
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+                  }
+                  else
+                     sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", pt.name, " = v;)");
+                  if(pt.Get)
+                  {
+                     if(ct == structClass)
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                     else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
+                  else
+                  {
+                     if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", "self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", pt.name, ", ", cn, "::_class); ", "return value; ", " : 0;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", pt.name, " : 0;)");
+                  }
+               }
+               else
+               {
+                  if(pt.Set && pt.Get)
+                  {
+                     if(ct == structClass)
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                     else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                     else
+                        sg.concatx(" setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+
+                  }
+                  else if(pt.Set && !pt.Get)
+                  {
+                     if(ct == structClass)
+                        sg.concatx(" _setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, &v);)");
+                     else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" _setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v.impl);)");
+                     else
+                        sg.concatx(" _setImpl(", tn, ", ", pt.name, ", ", cn, ", ", cn, "_set_", pt.name, "(self->impl, v);)");
+
+                  }
+                  if(pt.Get)
+                  {
+                     if(ct == structClass)
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value; ", cn, "_get_", pt.name, "(self->impl", ", &value","); ","return value; ", ")");
+                     else if(ct == normalClass && strcmp(tn, "constString") && strcmp(tn, "String"))
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", ", tn, " value(", cn, "_get_", pt.name, "(self->impl), ", cn, "::_class); ", "return value;)");
+                     else
+                        sg.concatx(" getImpl(", tn, ", ", pt.name, ", ", cn, ", return ", cn, "_get_", pt.name, "(self->impl);)");
+                  }
+               }
+               if(!strcmp(pt.name, "stringValue"))
+                  PrintLn("");
+               //cppTypeName(ti, false);
+               cppMacroProperty(g, o.ds, use, 1, pt.name, sg._string, null, false);
+
+               delete tn;
+               delete sg;
+            }
+         }
+
+         // TODO: Non-virtual methods
+         // TODO: How to handle data members in C++? Define C++ 'properties' (accessors) for them using property() macro as well?
+         while((dm = dat.next(all)))
+         {
+            BitMember bm = (BitMember)dm;
+            if(!dm.dataType)
+            {
+               Context context = SetupTemplatesContext(c);
+               dm.dataType = ProcessTypeString(dm.dataTypeString, false);
+               FinishTemplatesContext(context);
+            }
+            if(bm.type == normalMember) // todo, recurse struct/union? members for bitfields inside structs i.e.: PolygonRing
+            {
+               if(eClass_FindProperty(c.cl, dm.name, c.cl.module) || strstr(dm.name, "__ecerePrivateData"))
+                  continue;    // Skip members which already have properties of the same name...
+
+               // TOCHECK: How should this be handled?
+
+               // TODO: Fix types for classes...
+               if(dm.dataType.kind != classType && dm.dataType.kind != templateType && dm.dataType.kind != pointerType)
+               {
+                  TypeInfo ti { type = dm.dataType };
+                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                  String tn;
+                  ZString sg { allocType = heap };
+
+                  if(ct == normalClass)
+                     tn = cppTypeName(ti, true);
+                  else
+                     tn = cppTypeName(ti, false);
+
+                  sg.copy("");
+                  // TODO: Don't output set if const ?
+
+                  if(dm.dataType.kind == arrayType)
+                  {
+                     Type t = dm.dataType;
+                     char arrayDataType[1024];
+                     arrayDataType[0] = 0;
+                     while(t.kind == arrayType && t.type) t = t.type;
+                     PrintType(t, arrayDataType, true, false);
+                     tn = PrintString(arrayDataType, "*");
+                     sg.concatx(" getImpl(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                  }
+                  else
+                  {
+                     sg.concatx(" setImpl(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                     sg.concatx(" getImpl(", tn, ", ", dm.name, ", ", cn, ", return self ? IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                  }
+               if(!strcmp(dm.name, "stringValue"))
+                  PrintLn("");
+               //cppTypeName(ti, false);
+                  cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null, false);
+
+                  delete sg;
+                  delete tn;
+               }
+               else if(dm.dataType.kind == classType)
+               {
+                  TypeInfo ti { type = dm.dataType };
+                  ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
+                  String tn;
+                  ZString sg { allocType = heap };
+
+                  if(ct == normalClass)
+                  {
+                     tn = cppTypeName(ti, true);
+                     v.processDependency(otypedef, otypedef, dm.dataType._class.registered);
+                  }
+                  else
+                     tn = cppTypeName(ti, false);
+                  sg.copy("");
+                  // TODO: Don't output set if const ?
+
+                  if(dm.dataType.kind == arrayType)
+                  {
+                     Type t = dm.dataType;
+                     char arrayDataType[1024];
+                     arrayDataType[0] = 0;
+                     while(t.kind == arrayType && t.type) t = t.type;
+                     PrintType(t, arrayDataType, true, false);
+                     tn = PrintString(arrayDataType, "*");
+                     sg.concatx(" getImpl(", tn, ", ", dm.name, ", ", cn, ", return self ? ", "(", tn, ")", "IPTR(self->impl, ", cn, ")->", dm.name, " : 0;)");
+                  }
+                  else
+                  {
+                     if(ct == normalClass && strcmp(tn, "String") && strcmp(tn, "constString"))
+                     {
+                        sg.concatx(" setImpl(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v.impl;)");
+                        sg.concatx(" getImpl(", tn, ", ", dm.name, ", ", cn, ", ", tn, " value(IPTR(self->impl, ", cn, ")->", dm.name, ", ", cn, "::_class); ", "return value; ", ")");
+                     }
+                     else
+                     {
+                        sg.concatx(" setImpl(", tn, ", ", dm.name, ", ", cn, ", ", "IPTR(self->impl, ", cn, ")->", dm.name, " = v;)");
+                        sg.concatx(" getImpl(", tn, ", ", dm.name, ", ", cn, ", return IPTR(self->impl, ", cn, ")->", dm.name, ";)");
+                     }
+
+
+                  }
+                  if(!strcmp(dm.name, "stringValue"))
+                        PrintLn("");
+                  //cppTypeName(ti, false);
+                  cppMacroProperty(g, o.ds, use, 1, dm.name, sg._string, null, false);
+
+                  delete sg;
+                  delete tn;
+               }
+            }
+
+         }
+
+      }
    }
 }
 
@@ -2183,11 +2467,13 @@ static void cppMacroRegisterTypedMethod(
       CPPGen g,            // generator
       DynamicString o,     // output
       uint ind,            // indents
-      void * unused) {     // unused
+      void * unused,
+      bool protoOrImpl) {     // unused  // true for Prototype, false for implementation
    cppMacroProperty(g, o, def, ind,
          "n",
          "sg",
-         0); }
+         0,
+         protoOrImpl); }
 
 static void cppMacroProperty(
       CPPGen g,            // generator
@@ -2196,19 +2482,30 @@ static void cppMacroProperty(
       uint ind,            // indents
       const char * n,      // name of property
       const char * sg,     // set/get(/isset)
-      void * unused)
+      void * unused,
+      bool protoOrImpl)
 {
    const char * sc = mode == bypass ? "" : " ## "; // symbol concatenation
    switch(mode)
    {
       case def:
-         o.printx(genloc__, indents(ind), "#define property(n, sg) ");
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "#define propertyProto(n, sg) ");
+         else
+            o.printx(genloc__, indents(ind), "#define propertyImpl(sg) ");
       case bypass:
-         o.printx("struct ", n, sc, "Prop { ", n, sc, "Prop() { }; int _[0]; ", sg, " } ", n, ";", ln);
+         if(protoOrImpl == true)
+            o.printx("struct ", n, sc, "Prop { ", n, sc, "Prop() { }; int _[0]; ", sg, " } ", n, ";", ln);
+         else
+            o.printx(sg, ln);
          break;
       case use:
-         o.printx(genloc__, indents(ind), "property(",
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "propertyProto(",
                n,    ", ",
+               sg,   ");", ln);
+         else
+            o.printx(genloc__, indents(ind), "propertyImpl(",
                sg,   ");", ln);
          break;
    }
@@ -2218,13 +2515,15 @@ static void cppMacroProperty(
       CPPGen g,            // generator
       DynamicString o,     // output
       uint ind,            // indents
-      void * unused) {     // unused
+      void * unused,
+      bool protoOrImpl) {     // unused
    cppMacroIntPropSet(g, o, def, ind,
          "t",
          "n",
          "c",
          "d",
-         0); }
+         0,
+         protoOrImpl); }
 
 static void cppMacroIntPropSet(
       CPPGen g,            // generator
@@ -2235,27 +2534,43 @@ static void cppMacroIntPropSet(
       const char * n,      // n?
       const char * c,      // c?
       const char * d,      // d?
-      void * unused)
+      void * unused,
+      bool protoOrImpl)
 {
    const char * lc = mode == def ? " \\" : "";     // line continuation
    switch(mode)
    {
       case def:
-         o.printx(genloc__, indents(ind), "#define _set(t, n, c, d)", lc, ln);
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "#define _setProto(t, n, c, d)", lc, ln);
+         else
+            o.printx(genloc__, indents(ind), "#define _setImpl(t, n, c, d)", lc, ln);
       case bypass:
-            o.printx(genloc__, indents(ind + 1), "inline ", t, " operator= (", t, " v)", lc, ln);
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind + 1), t, " operator= (", t, " v);", lc, ln);
+         else
+         {
+            o.printx(genloc__, indents(ind + 1), t, " ", c, "::", n, " ## ", "Prop::", "operator= (", t, " v)", lc, ln);
             o.printx(genloc__, indents(ind + 1), "{", lc, ln);
                o.printx(genloc__, indents(ind + 2), "SELF(", c, ", ", n, ");", lc, ln);
                o.printx(genloc__, indents(ind + 2), d, ";", lc, ln);
                o.printx(genloc__, indents(ind + 2), "return v;", lc, ln);
             o.printx(genloc__, indents(ind + 1), "}", lc, ln);
+         }
          break;
       case use:
-         o.printx(genloc__, indents(ind), "_set(",
-               t,    ", ",
-               n,    ", ",
-               c,    ", ",
-               d,    ")");
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "_setProto(",
+                  t,    ", ",
+                  n,    ", ",
+                  c,    ", ",
+                  d,    ")");
+         else
+            o.printx(genloc__, indents(ind), "_setImpl(",
+                  t,    ", ",
+                  n,    ", ",
+                  c,    ", ",
+                  d,    ")");
          break;
    }
 }
@@ -2264,13 +2579,15 @@ static void cppMacroIntPropSet(
       CPPGen g,            // generator
       DynamicString o,     // output
       uint ind,            // indents
-      void * unused) {     // unused
+      void * unused,
+      bool protoOrImpl) {     // unused
    cppMacroPropSet(g, o, def, ind,
          "t",
          "n",
          "c",
          "d",
-         0); }
+         0,
+         protoOrImpl); }
 
 static void cppMacroPropSet(
       CPPGen g,            // generator
@@ -2281,40 +2598,60 @@ static void cppMacroPropSet(
       const char * n,      // n?
       const char * c,      // c?
       const char * d,      // d?
-      void * unused)
+      void * unused,
+      bool protoOrImpl)
 {
    const char * lc = mode == def ? " \\" : "";     // line continuation
    MacroMode /*submode = mode == bypass ? bypass : use;*/submode = mode == def ? use : g.macroBits.intPropSet;
    switch(mode)
    {
       case def:
-         o.printx(genloc__, indents(ind), "#define set(t, n, c, d)", lc, ln);
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "#define setProto(t, n, c, d)", lc, ln);
+         else
+            o.printx(genloc__, indents(ind), "#define setImpl(t, n, c, d)", lc, ln);
       case bypass:
       {
          const char * lc = submode == bypass ? "" : " \\";  // line continuation
          const char * sc = submode == bypass ? "" : " ## "; // symbol concatenation
          cppMacroIntPropSet(g, o, submode, ind + 1,
-               t,
-               n,
-               c,
-               d,
-               0);
-         o.printx(lc, ln);
-            o.printx(genloc__, indents(ind + 1), "inline ", n, sc, "Prop & operator= (", n, sc, "Prop & prop)", lc, ln);
-            o.printx(genloc__, indents(ind + 1), "{", lc, ln);
-               o.printx(genloc__, indents(ind + 2), "SELF(", c, ", ", n, ");", lc, ln);
-               o.printx(genloc__, indents(ind + 2), t, " v = prop;", lc, ln);
-               o.printx(genloc__, indents(ind + 2), d, ";", lc, ln);
-               o.printx(genloc__, indents(ind + 2), "return prop;", lc, ln);
-            o.printx(genloc__, indents(ind + 1), "}", ln);
+            t,
+            n,
+            c,
+            d,
+            0,
+            protoOrImpl);
+         if(protoOrImpl == true)
+         {
+            o.printx(lc, ln);
+            o.printx(genloc__, indents(ind + 1), n, sc, "Prop & operator= (", n, sc, "Prop & prop);", ln);
+         }
+         else
+         {
+            o.printx(lc, ln);
+               o.printx(genloc__, indents(ind + 1), c, "::", n, sc, "Prop & ", c, "::", n, sc, "Prop::operator= (", c, "::", n, sc, "Prop & prop)", lc, ln);
+               o.printx(genloc__, indents(ind + 1), "{", lc, ln);
+                  o.printx(genloc__, indents(ind + 2), "SELF(", c, ", ", n, ");", lc, ln);
+                  o.printx(genloc__, indents(ind + 2), t, " v = prop;", lc, ln);
+                  o.printx(genloc__, indents(ind + 2), d, ";", lc, ln);
+                  o.printx(genloc__, indents(ind + 2), "return prop;", lc, ln);
+               o.printx(genloc__, indents(ind + 1), "}", ln);
+         }
          break;
       }
       case use:
-         o.printx(genloc__, indents(ind), "set(",
-               t,    ", ",
-               n,    ", ",
-               c,    ", ",
-               d,    ")");
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "setProto(",
+                  t,    ", ",
+                  n,    ", ",
+                  c,    ", ",
+                  d,    ")");
+         else
+            o.printx(genloc__, indents(ind), "setImpl(",
+                  t,    ", ",
+                  n,    ", ",
+                  c,    ", ",
+                  d,    ")");
          break;
    }
 }
@@ -2323,13 +2660,16 @@ static void cppMacroPropSet(
       CPPGen g,            // generator
       DynamicString o,     // output
       uint ind,            // indents
-      void * unused) {     // unused
+      void * unused,
+      bool protoOrImpl) {     // unused
    cppMacroPropGet(g, o, def, ind,
          "t",
          "n",
          "c",
          "d",
-         0); }
+         0,
+         protoOrImpl); }
+
 
 static void cppMacroPropGet(
       CPPGen g,            // generator
@@ -2340,17 +2680,31 @@ static void cppMacroPropGet(
       const char * n,      // n?
       const char * c,      // c?
       const char * d,      // d?
-      void * unused)
+      void * unused,
+      bool protoOrImpl)
 {
    switch(mode)
    {
       case def:
-         o.printx(genloc__, indents(ind), "#define get(t, n, c, d) ");
+         if(protoOrImpl == true)
+            o.printx(genloc__, indents(ind), "#define getProto(t, n, c, d) ");
+         else
+            o.printx(genloc__, indents(ind), "#define getImpl(t, n, c, d) ");
       case bypass:
-         o.printx("inline operator ", t, " () const { SELF(", c, ", ", n, "); ", d, "; }", ln);
+         if(protoOrImpl)
+            o.printx("operator ", t, " () const;", ln);
+         else
+            o.printx(c, "::", n, " ## ", "Prop::operator ", t, " () const { SELF(", c, ", ", n, "); ", d, "; }", ln);
          break;
       case use:
-         o.printx(genloc__, indents(ind), "get(",
+         if(protoOrImpl)
+            o.printx(genloc__, indents(ind), "getProto(",
+               t,    ", ",
+               n,    ", ",
+               c,    ", ",
+               d,    ")");
+         else
+            o.printx(genloc__, indents(ind), "getImpl(",
                t,    ", ",
                n,    ", ",
                c,    ", ",
