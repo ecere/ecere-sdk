@@ -11,13 +11,13 @@ enum OutputViewTab { build, debug, find
 
 enum CompilerMessageType
 {
-   nil, any, error, other, warning, note, inFunction, unusedFunc, unusedVar, varSetButNotUsed;
+   nil, any, error, other, warning, note, location, unusedFunc, unusedVar, varSetButNotUsed;
 
    bool match(CompilerMessageType b)
    {
       CompilerMessageType a = this;
       if(b != nil && (b == any ||
-            (b == other && (a == note || a == inFunction || a == unusedFunc || a == unusedVar || a == varSetButNotUsed)) ||
+            (b == other && (a == unusedFunc || a == unusedVar || a == varSetButNotUsed)) ||
             b == a))
          return true;
       return false;
@@ -32,7 +32,7 @@ enum CompilerMessageType
          case o:  return other;
          case w:  return warning;
          case n:  return note;
-         case i:  return inFunction;
+         case l:  return location;
          case f:  return unusedFunc;
          case v:  return unusedVar;
          case s:  return varSetButNotUsed;
@@ -180,14 +180,12 @@ class OutputView : Window
          return false;
       }
 
-      bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
+      bool OnKeyHit(Key key, unichar ch)
       {
-         if(key.code == enter || key.code == keyPadEnter)
-         {
-            OnGotoError(editBox.line.text, key.ctrl && key.shift);
-            return false;
-         }
-         else if(marks.count)
+         LogBox buildBox = this;
+         OutputView outputView = (OutputView)buildBox.parent;
+         Array<BuildOutputLineMark> marks = outputView.marks;
+         if(marks.count)
          {
             CompilerMessageType t = CompilerMessageType::fromKeyCode(key.code);
             if(t)
@@ -213,7 +211,11 @@ class OutputView : Window
                }
                if(nextPos == -1)
                   nextPos = firstPos;
-               endPos = nextPos == firstPos ? lastPos : nextPos == lastPos ? firstPos : nextPos - increment;
+               endPos = nextPos - increment;
+               if(endPos == -1)
+                  endPos = lastPos;
+               else if(endPos == bound)
+                  endPos = firstPos;
                while(1)
                {
                   if(nextPos == bound)
@@ -227,16 +229,29 @@ class OutputView : Window
                   }
                   nextPos += increment;
                }
+               if(nextPos == -1 && marks.count && marks[marks.count - 1].type == nil)
+                  nextPos = marks.count - 1;
                if(nextPos != -1)
                {
                   buildBox.GoToLineNum(marks[nextPos].lineNumber - 1);
-                  if(autoGo.checked)
+                  if(outputView.autoGo.checked)
                   {
-                     OnGotoError(editBox.line.text, false);
+                     outputView.OnGotoError(this.line.text, false);
                      Activate();
                   }
                }
+               return true;
             }
+         }
+         return EditBox::OnKeyHit(key, ch);
+      }
+
+      bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
+      {
+         if(key.code == enter || key.code == keyPadEnter)
+         {
+            OnGotoError(editBox.line.text, key.ctrl && key.shift);
+            return false;
          }
          return true;
       }
