@@ -93,10 +93,10 @@ void cppTmpDefineRegisterMethod     (CPPGen g, File f)
    delete b;
 }
 void cppTmpDefineRegisterTypedMethod(CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterTypedMethod(g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineProperty           (CPPGen g, File f) { DynamicString b { }; cppDefineMacroProperty           (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineIntPropSet         (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntPropSet         (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefinePropSet            (CPPGen g, File f) { DynamicString b { }; cppDefineMacroPropSet            (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefinePropGet            (CPPGen g, File f) { DynamicString b { }; cppDefineMacroPropGet            (g, b, 0, 0); f.Puts(b.array); delete b; }
+void cppTmpDefineProperty           (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroProperty           (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
+void cppTmpDefineIntPropSet         (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroIntPropSet         (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
+void cppTmpDefinePropSet            (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroPropSet            (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
+void cppTmpDefinePropGet            (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroPropGet            (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
 void cppTmpDefineIntRegisterClass   (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntRegisterClass   (g, b, 0, 0); f.Puts(b.array); delete b; }
 void cppTmpDefineRegisterClassDef   (CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterClassDef   (g, b, 0, 0); f.Puts(b.array); delete b; }
 void cppTmpDefineClassDef           (CPPGen g, File f) { DynamicString b { }; cppDefineMacroClassDef           (g, b, 0, 0); f.Puts(b.array); delete b; }
@@ -284,7 +284,9 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("");
 
    // f.PrintLn("#define property(n, sg) struct n ## Prop { n ## Prop() { }; int _[0]; sg } n;");
-   cppTmpDefineProperty(g, f);
+   cppTmpDefineProperty(g, f, true);
+   f.PrintLn("");
+   cppTmpDefineProperty(g, f, false);
    f.PrintLn("");
 
    // f.PrintLn("#define _set(t, n, c, d) \\");
@@ -294,7 +296,9 @@ void cppHardcodedCore(CPPGen g, File f)
    // f.PrintLn("      d; \\");
    // f.PrintLn("      return v; \\");
    // f.PrintLn("   } \\");
-   cppTmpDefineIntPropSet(g, f);
+   cppTmpDefineIntPropSet(g, f, true);
+   f.PrintLn("");
+   cppTmpDefineIntPropSet(g, f, false);
    f.PrintLn("");
 
    // f.PrintLn("#define set(t, n, c, d) \\");
@@ -306,12 +310,18 @@ void cppHardcodedCore(CPPGen g, File f)
    // f.PrintLn("      d; \\");
    // f.PrintLn("      return prop; \\");
    // f.PrintLn("   }");
-   cppTmpDefinePropSet(g, f);
+   cppTmpDefinePropSet(g, f, true);
+   f.PrintLn("");
+   cppTmpDefinePropSet(g, f, false);
    f.PrintLn("");
 
+
    // f.PrintLn("#define get(t, n, c, d) inline operator t () const { SELF(c, n); d; }");
-   cppTmpDefinePropGet(g, f);
+   cppTmpDefinePropGet(g, f, true);
    f.PrintLn("");
+   cppTmpDefinePropGet(g, f, false);
+   f.PrintLn("");
+
 
    f.PrintLn("extern \"C\" ", g_.sym.module, " ecere_init(", g_.sym.module, " fromModule);");
    f.PrintLn("");
