@@ -1534,9 +1534,9 @@ public:
             {
                CMSSMemberInit mm = m;
                if(mm.identifiers && !strcmp(mm.identifiers[0].string, prefix))
-               {  mInitTop = mm; inst = (CMSSExpInstance)((CMSSInitExp)mInitTop).exp; break; }
+               {  mInitTop = mm; inst = (CMSSExpInstance)((CMSSInitExp)mInitTop).exp; inst.instance.members.Add(instInitMember); break; }
             }
-            inst.instance.members.Add(instInitMember);
+
          }
          if(!mInitTop)
          {
