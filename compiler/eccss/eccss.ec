@@ -675,12 +675,18 @@ public:
             if(initExp.exp._class == class(CMSSExpInstance))
             {
                CMSSExpInstance inst = initExp.exp;
-               CMSSMemberInit mInitSub = ((CMSSMemberInitList)inst.instance).findStyle(msk); // this does
-               if(mInitSub)
+               CMSSInstInitList instInitList = inst.instance.members;
+               for(i : instInitList)
                {
-                  CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
-                  CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
-                  constant.constant = value;
+                  CMSSInstInitMember member = (CMSSInstInitMember)i;
+                  CMSSMemberInit mInitSub = member.members.findStyle(msk); // this does
+                  if(mInitSub)
+                  {
+                     CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
+                     CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
+                     constant.constant = value;
+                     break;
+                  }
                }
             }
             else if(initExp.exp._class == class(CMSSExpConstant))
