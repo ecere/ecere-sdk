@@ -40,7 +40,7 @@ public:
    }
 
    //NOTE this ignores selectors!
-   bool changeStyle(const String id, StylesMask mask, FieldValue value)
+   bool changeStyle(const String id, StylesMask mask, const FieldValue value)
    {
       bool result = false;
       StylingRuleBlock block = findRule(mask, id);
@@ -64,6 +64,7 @@ public:
       return result;
    }
    //NOTE this ignores selectors!
+   /*
    bool addStyle(const String id, StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
@@ -75,7 +76,8 @@ public:
          if(result) block.mask |= mask;
       }
       return result;
-   }
+   }*/
+
    //NOTE this ignores selectors!
    void removeStyle(const String id, StylesMask mask)
    {
@@ -213,13 +215,39 @@ public:
       }
    }
 
-   bool addStyle(StylesMask msk, FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
-      CMSSMemberInitList mList { };
-      this.Add(mList);
-      result = mList.addStyle(msk, value, c, evaluator);
-      if(result) this.mask |= msk;
+      if(this)
+      {
+         CMSSMemberInit mInit = findStyle(msk); // this doesn't get lowest-level member
+         if(mInit)
+         {
+            CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+
+            if(initExp.exp._class == class(CMSSExpInstance))
+            {
+               CMSSExpInstance inst = (CMSSExpInstance)initExp.exp;
+               CMSSInstantiation instance = inst.instance;
+               CMSSInstInitList instInitList = instance.members;
+               result = instInitList.changeStyle(msk, value, c, evaluator);
+               if(result) mask |= msk;
+            }
+            else if(initExp.exp._class == class(CMSSExpConstant))
+            {
+               CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
+               constant.constant = value;
+               result = true;
+            }
+         }
+         else
+         {
+            CMSSMemberInitList mList { };
+            Add(mList);
+            result = mList.addStyle(msk, value, c, true, evaluator);
+            if(result) mask |= msk;
+         }
+      }
       return result;
    }
 }
@@ -663,55 +691,10 @@ public:
       return result;
    }
 
-   bool changeStyle(StylesMask msk, FieldValue value)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
-      bool result = false;
-      if(this)
-      {
-         CMSSMemberInit mInit = styles ? styles.findStyle(msk) : null; // this doesn't get lowest-level member
-         if(mInit)
-         {
-            CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
-            if(initExp.exp._class == class(CMSSExpInstance))
-            {
-               CMSSExpInstance inst = initExp.exp;
-               CMSSInstInitList instInitList = inst.instance.members;
-               for(i : instInitList)
-               {
-                  CMSSInstInitMember member = (CMSSInstInitMember)i;
-                  CMSSMemberInit mInitSub = member.members.findStyle(msk); // this does
-                  if(mInitSub)
-                  {
-                     CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
-                     CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
-                     constant.constant = value;
-                     break;
-                  }
-               }
-            }
-            else if(initExp.exp._class == class(CMSSExpConstant))
-            {
-               CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
-               constant.constant = value;
-            }
-            result = true;
-         }
-      }
-      return result;
-   }
-
-   bool addStyle(StylesMask msk, FieldValue value, Class c, ECCSSEvaluator evaluator)
-   {
-      bool result = false;
-      if(this)
-      {
-         if(!styles) styles = { };
-         /*CMSSMemberInit init = null;
-         if(styles[0]) init = styles.findInstance(mask, c));*/
-         result = styles.addStyle(msk, value, c, evaluator);
-         if(result) this.mask |= msk;
-      }
-      return result;
+      if(!styles) styles = { };
+      return styles.changeStyle(msk, value, c, evaluator);
    }
 
    void removeStyle(StylesMask msk)

@@ -1129,6 +1129,41 @@ public:
    {
       CMSSList::print(out, indent, o);
    }
+
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
+   {
+      bool result = false;
+
+      for(i : this)
+      {
+         CMSSInstInitMember member = (CMSSInstInitMember)i;
+         CMSSMemberInitList members = member.members;
+         CMSSMemberInit mInitSub = members.findStyle(msk); // this does
+         if(mInitSub)
+         {
+            CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
+            CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
+            constant.constant = value;
+
+            result = true;
+         }
+      }
+
+      if(!result)
+      {
+         CMSSInstInitMember member = (CMSSInstInitMember)this[0];
+         CMSSMemberInitList mList;
+         if(member)
+            mList = member.members;
+         else
+         {
+            mList = { };
+            Add(CMSSInstInitMember { members = mList });
+         }
+         result = mList.addStyle(msk, value, c, false, evaluator);
+      }
+      return result;
+   }
 }
 
 public class CMSSInstantiation : CMSSNode
@@ -1431,9 +1466,9 @@ public:
          for(e : this)
          {
             CMSSMemberInit mInit = e;
-            Class c = mInit.dataMember ? mInit.dataMember._class : null;
+            //Class c = mInit.dataMember ? mInit.dataMember._class : null;
             StylesMask sm = mInit.stylesMask;
-            if(mInit.stylesMask & mask)
+            if(sm & mask)
                return mInit;
             /*if(mInit.identifiers)
             {
@@ -1480,9 +1515,9 @@ public:
       {
          CMSSMemberInit mInit = it.data;
          //CMSSMemberInit mInit = e;
-         Class c = mInit.dataMember ? mInit.dataMember._class : null;
+         //Class c = mInit.dataMember ? mInit.dataMember._class : null;
          StylesMask sm = mInit.stylesMask;
-         if(mInit.stylesMask & mask)
+         if(sm & mask)
          {
             it.Remove();
             delete mInit;
@@ -1490,20 +1525,14 @@ public:
       }
    }
 
-   bool addStyle(StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator)
    {
       bool result = false;
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
       CMSSMemberInit mInitSub { stylesMask = mask, initializer = initExp, assignType = equal };
-      CMSSExpInstance inst = null; //{ instance = { members = { } } }
-      CMSSInitExp initExpTop = null;//{ exp = inst };
-      CMSSMemberInit mInitTop = null;//{ initializer = initExpTop, assignType = equal }
-      CMSSInstInitMember instInitMember { members = { [ mInitSub ] } };
-
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
-
-      String prefix = null;
-      String suffix = null;
+      String prefix = null, suffix = null;
+      uint64 topMask;
       if(identifierStr && identifierStr[0])
       {
          int size;
@@ -1517,43 +1546,48 @@ public:
             prefix[size - 1] = '\0';
          }
       }
+      topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
 
       if(suffix || identifierStr)
-      {
-         mInitSub.identifiers = { };
-         mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) });
-      }
+         mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) } ] };
 
-      // NOTE no instance necessary for GraphicalStyle
-      if(c && c.name && !strcmp(c.name, "GraphicalStyle")) this.Add(mInitSub);
-      else // NOTE we want to search for existing instance here
+      if(!isTopLevel || !topMask)
+         Add(mInitSub);
+      else
       {
-         if(this[0] && prefix)
+         CMSSInstInitMember instInitMember { members = { [ mInitSub ] } };
+         bool found = false;
+         if(prefix)
          {
             for(m : this)
             {
                CMSSMemberInit mm = m;
-               if(mm.identifiers && !strcmp(mm.identifiers[0].string, prefix))
-               {  mInitTop = mm; inst = (CMSSExpInstance)((CMSSInitExp)mInitTop).exp; inst.instance.members.Add(instInitMember); break; }
+               if(mm.stylesMask & mask)
+               {
+                  CMSSExpression e = ((CMSSInitExp)mm.initializer).exp;
+                  if(e._class == class(CMSSExpInstance))
+                  {
+                     CMSSExpInstance instExp = (CMSSExpInstance)e;
+                     instExp.instance.members.Add(instInitMember);
+                     found = true;
+                  }
+                  break;
+               }
             }
-
          }
-         if(!mInitTop)
+         if(!found)
          {
-            inst = { instance = { members = { } } };
-            inst.instance.members.Add(instInitMember);
-            initExpTop = { exp = inst };
-            mInitTop = { expType = c, initializer = initExpTop, assignType = equal };
+            CMSSInstantiation instance { members = { [ instInitMember ] } };
+            CMSSExpInstance inst { instance = instance }; //, expType = c, destType = c };
+            CMSSInitExp initExpTop { exp = inst };
+            CMSSMemberInit mInitTop { /*expType = c, destType = c, */initializer = initExpTop, assignType = equal, stylesMask = topMask };
             if(prefix)
-            {
-               mInitTop.identifiers = { };
-               mInitTop.identifiers.Add(CMSSIdentifier { string = CopyString(prefix) } );
-               delete prefix;
-            }
+               mInitTop.identifiers = { [ CMSSIdentifier { string = CopyString(prefix) } ] };
+            Add(mInitTop);
          }
-
-         this.Add(mInitTop);
       }
+      delete prefix;
+      delete suffix;
       return result;
    }
 }
