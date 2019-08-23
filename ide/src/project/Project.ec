@@ -1534,7 +1534,7 @@ private:
       int numErrors = 0;
       int numWarnings = 0;
       int numWarnNote = 0;
-      int numWarnInFunc = 0;
+      int numWarnLocation = 0;
       int numWarnUnusedVar = 0;
       int numWarnUnusedFunc = 0;
       int numWarnSetButNotUsed = 0;
@@ -1733,17 +1733,18 @@ private:
                               ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
                            }
                         }
-                        else if(strstr(line, "In function "))
+                        else if(strstr(line, "At top level:") || strstr(line, "In function ") ||
+                              strstr(line, "In file included from"))
                         {
-                           numWarnInFunc++;
-                           ide.outputView.marks.Add({ inFunction, ide.outputView.buildBox.numLines });
+                           numWarnLocation++;
+                           ide.outputView.marks.Add({ location, ide.outputView.buildBox.numLines });
                         }
                         else if(strstr(line, "note:"))
                         {
                            numWarnNote++;
                            ide.outputView.marks.Add({ note, ide.outputView.buildBox.numLines });
                         }
-                        else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from") && !strstr(line, stringFrom))
+                        else if(!gotCC && !strstr(line, stringFrom))
                         {
                            numErrors++;
                            ide.outputView.marks.Add({ error, ide.outputView.buildBox.numLines });
@@ -1972,10 +1973,11 @@ private:
                                        ide.outputView.marks.Add({ warning, ide.outputView.buildBox.numLines });
                                     }
                                  }
-                                 else if(strstr(line, "In function "))
+                                 else if(strstr(line, "At top level:") || strstr(line, "In function ") ||
+                                       strstr(line, "In file included from"))
                                  {
-                                    numWarnInFunc++;
-                                    ide.outputView.marks.Add({ inFunction, ide.outputView.buildBox.numLines });
+                                    numWarnLocation++;
+                                    ide.outputView.marks.Add({ location, ide.outputView.buildBox.numLines });
                                  }
                                  else if(strstr(line, "note:"))
                                  {
@@ -2116,10 +2118,12 @@ private:
          }
          else if(buildType != install)
          {
-            int numOthers = numWarnNote + numWarnInFunc + numWarnUnusedFunc + numWarnUnusedVar + numWarnSetButNotUsed;
+            int numOthers = numWarnUnusedFunc + numWarnUnusedVar + numWarnSetButNotUsed;
+            int numMore = numWarnNote + numWarnLocation + numOthers;
             int numAllWarn = numWarnings + numOthers;
             if(!onlyNodes || numErrors || numAllWarn)
                ide.outputView.buildBox.Logf("\n");
+            ide.outputView.marks.Add({ nil, ide.outputView.buildBox.numLines });
             if(!onlyNodes)
             {
                char targetFileName[MAX_LOCATION];
@@ -2136,20 +2140,23 @@ private:
             else
                ide.outputView.buildBox.Logf(", %s", $"no warning");
 
-            if(numOthers)
+            if(numMore)
             {
-               ide.outputView.buildBox.Logf(" (%d %s", numWarnings, (numWarnings > 1) ? $"important [w]arnings" : $"important [w]arning");
+               const char * comma = "";
+               ide.outputView.buildBox.Logf(" (");
+               if(numWarnings)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnings, (numWarnings > 1) ? $"important [w]arnings" : $"important [w]arning"), comma = ", ";
                if(numWarnSetButNotUsed)
-                  ide.outputView.buildBox.Logf(", %d %s", numWarnSetButNotUsed, (numWarnSetButNotUsed > 1) ? $"variables [s]et but not used" : $"variable [s]et but not used");
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnSetButNotUsed, (numWarnSetButNotUsed > 1) ? $"variables [s]et but not used" : $"variable [s]et but not used"), comma = ", ";
                if(numWarnUnusedFunc)
-                  ide.outputView.buildBox.Logf(", %d %s", numWarnUnusedFunc, (numWarnUnusedFunc > 1) ? $"unused [f]unctions" : $"unused [f]unction");
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnUnusedFunc, (numWarnUnusedFunc > 1) ? $"unused [f]unctions" : $"unused [f]unction"), comma = ", ";
                if(numWarnUnusedVar)
-                  ide.outputView.buildBox.Logf(", %d %s", numWarnUnusedVar, (numWarnUnusedVar > 1) ? $"unused [v]ariables" : $"unused [v]ariable");
-               if(numWarnInFunc)
-                  ide.outputView.buildBox.Logf(", %d %s", numWarnInFunc, (numWarnInFunc > 1) ? $"\"in functions\"" : $"\"in function\"");
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnUnusedVar, (numWarnUnusedVar > 1) ? $"unused [v]ariables" : $"unused [v]ariable"), comma = ", ";
+               if(numWarnLocation)
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnLocation, (numWarnLocation > 1) ? $"locations" : $"location"), comma = ", ";
                if(numWarnNote)
-                  ide.outputView.buildBox.Logf(", %d %s", numWarnNote, (numWarnNote > 1) ? $"notes" : $"note");
-               ide.outputView.buildBox.Logf(", %d %s", numOthers, (numOthers > 1) ? $"[o]ther warnings" : $"[o]ther warning");
+                  ide.outputView.buildBox.Logf("%s%d %s", comma, numWarnNote, (numWarnNote > 1) ? $"notes" : $"note"), comma = ", ";
+               ide.outputView.buildBox.Logf("%s%d %s", comma, numOthers, (numOthers > 1) ? $"[o]ther warnings" : $"[o]ther warning");
                ide.outputView.buildBox.Logf(")");
             }
             ide.outputView.buildBox.Logf("\n");
