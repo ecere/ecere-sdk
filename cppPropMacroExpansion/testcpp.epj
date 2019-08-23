@@ -32,10 +32,7 @@
       }
    ],
    "Files" : [
-      "../TEST.cpp"
+      "TEST.cpp"
    ],
-   "ResourcesPath" : "",
-   "Resources" : [
-
-   ]
+   "ResourcesPath" : ""
 }
