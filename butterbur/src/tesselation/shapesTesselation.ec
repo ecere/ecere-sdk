@@ -206,7 +206,8 @@ struct TesselatedShape
             ixCount = closed ? (tc * rCount*2 + closed*2) :
                (2*(2*capCount) + ((tc > 2) ? (tc-2) * (2*rCount) : 0));
             ix = new uint16[ixCount];
-            ixFill = new uint16[estFillCount];
+            if(closed)
+               ixFill = new uint16[estFillCount];
             fillCount = 0;
 
             for(i = 0; i < tc + (tc == 1); i++)
@@ -368,16 +369,19 @@ struct TesselatedShape
                         angle += Pi/2;
                         c = cosf(angle) * r, s = sinf(angle) * r;
                         points[startIX+1] = { p.x - c, p.y - s };
-                        estFillCount += rCount-1;
-                        ixFill = renew ixFill uint16[estFillCount];
+                        if(closed)
+                        {
+                           estFillCount += rCount-1;
+                           ixFill = renew ixFill uint16[estFillCount];
 
-                        ixFill[fillCount] = (uint16)(startIX+1);
-                        for(t = 0; t < rCount-1; t++)
-                           ixFill[fillCount+t+1] = (uint16)(startIX+1+t);
+                           ixFill[fillCount] = (uint16)(startIX+1);
+                           for(t = 0; t < rCount-1; t++)
+                              ixFill[fillCount+t+1] = (uint16)(startIX+1+t);
 
-                        fillCount += rCount;
+                           fillCount += rCount;
+                        }
                      }
-                     else
+                     else if(closed)
                         ixFill[fillCount++] = startIX;
                   }
                   for(n = 0; n < (isCap ? capCount : rCount); n++)
