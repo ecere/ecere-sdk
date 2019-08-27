@@ -234,11 +234,16 @@ struct TesselatedShape
                   float at1 = atan2f(ldy, ldx);
                   float at2 = atan2f(rdy, rdx);
                   float c, s;
-                  float diffAngle = at2 - at1;
-                  bool simpleMean = true;
                   int n;
+                  float diffAngle;
+                  bool simpleMean = true;
 
-                  if(!closed && (i == 0 || end /*|| i == tc-1*/)) isCap = true;
+                  if(at2 < at1) at2 += 2*Pi;
+
+                  if(!closed && (i == 0 || end))
+                     isCap = true;
+
+                  diffAngle = at2 - at1;
 
                   if(Abs(diffAngle) >= (float)Pi - 0.00001)
                   {
@@ -280,7 +285,6 @@ struct TesselatedShape
                            int t, add = 0;
                            float angle = (i == 0 && !end) ? at1 : at2, a, da;
 
-                           //if(end) angle += (float)Pi;
                            if(i || end)
                            {
                               a = angle - (float)Pi/2 + (float)Pi;
@@ -291,16 +295,9 @@ struct TesselatedShape
 
                            da = (float)Pi / (capCount-1);
 
-                           if(!end)
-                           {
-                              for(t = 0; t < capCount; t++, a += da)
-                                 points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
-                           }
-                           else
-                           {
-                              for(t = 0; t < capCount; t++, a -= da)
-                                 points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
-                           }
+                           for(t = 0; t < capCount; t++, a -= da)
+                              points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+
                            if(!i && !end)
                            {
                               a = angle + (float)Pi/2 + (float)Pi;
