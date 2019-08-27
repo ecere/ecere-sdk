@@ -76,7 +76,7 @@ class ButterburTest : Window
 
    MultiPresentation scene { gSurface };
    // GraphicalPresentation overlay {scene, graphic = mge };
-#if 0
+#if 1
    Path capTest1
    {
        //nodes = [ { 50, 250 }, { 100, 250 }, { 150, 200 } ];
@@ -90,7 +90,7 @@ class ButterburTest : Window
    GraphicalPresentation pCapTest1 { scene, graphic = capTest1 };
 #endif
 
-#if 0
+#if 1
    Path capTest0
    {
       nodes = [ { 50, 220 }, { 100, 220 }, { 150, 170 } ];
@@ -118,7 +118,7 @@ class ButterburTest : Window
 */
 #endif
 
-#if 0
+#if 1
    Path capTest4
    {
       nodes = [ { 350, 200 }, { 300, 250 }, { 250, 250 } ];
@@ -135,7 +135,7 @@ class ButterburTest : Window
 
    // MGE Tests
    // MultiGraphicalElement mge { scene };
-#if 0
+#if 1
    RoundedRectangle backdrop
    {
       box = {0, 0, 800, 600},
