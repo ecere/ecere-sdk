@@ -214,7 +214,10 @@ struct TesselatedShape
             {
                bool end = false;
                uint ni;
-               if(i == tc) { i = 0; end = true; }
+
+               if(i == tc + (tc == 1) - 1)
+                  end = true;
+               if(i == tc) i = 0;
 
                #define DOFLIP(x) (flip ? ((tc-1)-(x)) : (x))
 
@@ -235,7 +238,7 @@ struct TesselatedShape
                   bool simpleMean = true;
                   int n;
 
-                  if(!closed && (i == 0 || i == tc-1)) isCap = true;
+                  if(!closed && (i == 0 || end /*|| i == tc-1*/)) isCap = true;
 
                   if(Abs(diffAngle) >= (float)Pi - 0.00001)
                   {
@@ -277,7 +280,7 @@ struct TesselatedShape
                            int t, add = 0;
                            float angle = (i == 0 && !end) ? at1 : at2, a, da;
 
-                           if(end) angle += (float)Pi;
+                           //if(end) angle += (float)Pi;
                            if(i || end)
                            {
                               a = angle - (float)Pi/2 + (float)Pi;
@@ -288,9 +291,16 @@ struct TesselatedShape
 
                            da = (float)Pi / (capCount-1);
 
-                           for(t = 0; t < capCount; t++, a -= da)
-                              points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
-
+                           if(!end)
+                           {
+                              for(t = 0; t < capCount; t++, a += da)
+                                 points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                           }
+                           else
+                           {
+                              for(t = 0; t < capCount; t++, a -= da)
+                                 points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                           }
                            if(!i && !end)
                            {
                               a = angle + (float)Pi/2 + (float)Pi;

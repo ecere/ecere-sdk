@@ -21,8 +21,51 @@ class ButterburTest : Window
    MultiPresentation scene { gSurface };
    // GraphicalPresentation overlay {scene, graphic = mge };
 
+   Path capTest0
+   {
+      nodes = [ { 50, 220 }, { 100, 220 }, { 150, 170 } ];
+      stroke = { blue, width = 20, cap = flat, join = round };
+   };
+   GraphicalPresentation pCapTest0 { scene, graphic = capTest0 };
+
+   Path capTest1
+   {
+      nodes = [ { 50, 250 }, { 100, 250 }, { 150, 200 } ];
+      stroke = { blue, width = 20, cap = round, join = round };
+   };
+   GraphicalPresentation pCapTest1 { scene, graphic = capTest1 };
+
+   Path capTest2
+   {
+      nodes = [ { 50, 280 }, { 100, 280 }, { 150, 230 } ];
+      stroke = { blue, width = 20, cap = square, join = round };
+   };
+   GraphicalPresentation pCapTest2 { scene, graphic = capTest2 };
+
+   Path capTest3
+   {
+      nodes = [ { 350, 170 }, { 300, 220 }, { 250, 220 } ];
+      stroke = { blue, width = 20, cap = flat, join = round };
+   };
+   GraphicalPresentation pCapTest3 { scene, graphic = capTest3 };
+
+   Path capTest4
+   {
+      nodes = [ { 350, 200 }, { 300, 250 }, { 250, 250 } ];
+      stroke = { blue, width = 20, cap = round, join = round };
+   };
+   GraphicalPresentation pCapTest4 { scene, graphic = capTest4 };
+
+   Path capTest5
+   {
+      nodes = [ { 350, 230 }, { 300, 280 }, { 250, 280 } ];
+      stroke = { blue, width = 20, cap = square, join = round };
+   };
+   GraphicalPresentation pCapTest5 { scene, graphic = capTest5 };
+
    // MGE Tests
    // MultiGraphicalElement mge { scene };
+#if 1
    RoundedRectangle backdrop
    {
       box = {0, 0, 800, 600},
@@ -65,8 +108,9 @@ class ButterburTest : Window
          { 240, 220 }
       ];
       //closed = true;
-      stroke = { blue, opacity = 0.5, width = 20, cap = capType, join = bevel /*miter joinType */ };
-      fill = { lime, opacity = 0.4 };
+      //stroke = { blue, opacity = 0.5, width = 20, cap = capType, join = bevel /*miter joinType */ };
+      stroke = { blue, width = 20, cap = capType, join = joinType };
+      //fill = { lime, opacity = 0.4 };
    };
    GraphicalPresentation trianglePresentation {/*gSurface*/ scene, graphic = triangle };
 
@@ -235,6 +279,7 @@ class ButterburTest : Window
    GraphicalPresentation textPresentation2 {/*gSurface*/ scene, graphic = textGE2 };
    Image imageGE { image = { "../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
    GraphicalPresentation imagePresentation {/*gSurface*/ scene, graphic = imageGE };
+#endif
 
    // TODO: Anchored presentations at 3D cartesian coordinates...
 
