@@ -264,9 +264,9 @@ Map<ImageStyleKind, const String> imageStringFromMaskMap
 
 public struct GraphicalStyleEvaluator : ECCSSEvaluator
 {
-   void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value)
+   void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value, int unit)
    {
-      object.applyStyle(mSet, value);
+      object.applyStyle(mSet, value, unit);
    }
 };
 public class GraphicalStyle : struct
@@ -304,7 +304,7 @@ public:
       if(mask.visibility) visibility = true;
    }
 
-   private void applyStyle(GraphicalStyleKind mSet, const FieldValue value)
+   private void applyStyle(GraphicalStyleKind mSet, const FieldValue value, int unit)
    {
       switch(mSet)
       {
@@ -344,7 +344,7 @@ public:
       GraphicalStyle::applyDefaults(mask);
    }
 
-   private void applyStyle(ShapeStyleKind mSet, const FieldValue value)
+   private void applyStyle(ShapeStyleKind mSet, const FieldValue value, int unit)
    {
       switch(mSet)
       {
@@ -358,13 +358,17 @@ public:
          case strokePattern: stroke.pattern = { }; break;
          case strokeOpacity: stroke.opacity = (float)value.r; break;
          case strokeColor: stroke.color = (Color)value.i; break;
-         case strokeWidth: stroke.width = (float)value.r; break;
-         case strokeCasingWidth:  stroke.casing.width = (float)value.r; break;
+         case strokeWidth: stroke.width = (float)value.r; stroke.widthUnit = (GraphicalUnit)unit; break;
+         case strokeCasingWidth:  stroke.casing.width = (float)value.r; stroke.casing.widthUnit = (GraphicalUnit)unit; break;
          case strokeCasingColor:  stroke.casing.color = (Color)value.i; break;
+         case strokeCasingOpacity:stroke.casing.opacity = (float)value.r; break;
+         case strokeCenterWidth:  stroke.center.width = (float)value.r; stroke.center.widthUnit = (GraphicalUnit)unit; break;
+         case strokeCenterColor:  stroke.center.color = (Color)value.i; break;
+         case strokeCenterOpacity:stroke.center.opacity = (float)value.r; break;
          case strokeJoin: stroke.join = (LineJoin)value.i; break;
          case strokeCap: stroke.cap = (LineCap)value.i; break;
          case strokeDashPattern: stroke.dashes = value.b; break;
-         default: GraphicalStyle::applyStyle(mSet, value);
+         default: GraphicalStyle::applyStyle(mSet, value, unit);
       }
    }
 }
@@ -390,7 +394,7 @@ public:
       GraphicalStyle::applyDefaults(mask);
    }
 
-   private void applyStyle(TextStyleKind mSet, const FieldValue value)
+   private void applyStyle(TextStyleKind mSet, const FieldValue value, int unit)
    {
       switch(mSet)
       {
@@ -406,7 +410,7 @@ public:
          case fontOutlineOpacity: font.outline.opacity = (float)value.r; break;
          case alignmentHorzAlign: alignment.horzAlign = (HAlignment)value.i; break;
          case alignmentVertAlign: alignment.vertAlign = (VAlignment)value.i; break;
-         default: GraphicalStyle::applyStyle(mSet, value);
+         default: GraphicalStyle::applyStyle(mSet, value, unit);
       }
    }
 }
@@ -429,14 +433,14 @@ public:
    {
       GraphicalStyle::applyDefaults(mask);
    }
-   private void applyStyle(ImageStyleKind mSet, const FieldValue value)
+   private void applyStyle(ImageStyleKind mSet, const FieldValue value, int unit)
    {
       switch(mSet)
       {
          case imagePath: image.path = CopyString(value.s); break;
          case tint: tint = (Color)value.i; break;
          //case hotSpot: hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
-         default: GraphicalStyle::applyStyle(mSet, value);
+         default: GraphicalStyle::applyStyle(mSet, value, unit);
       }
    }
 }
