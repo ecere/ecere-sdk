@@ -130,6 +130,8 @@ class ShapesManager : MDManager
 {
    vertNCoords = 2;
    primMode = triangleStrip;
+   //primMode = lineStrip; // For testing tesselation
+
    minAlloc = 16;
    texLevels = 1, texW = 1, texH = 1;
 
