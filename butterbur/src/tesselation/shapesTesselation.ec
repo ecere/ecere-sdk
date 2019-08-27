@@ -36,6 +36,11 @@ struct TesselatedShape
 
    void tesselate(Shape shp)
    {
+      return tesselateEx(shp, 1, 1);
+   }
+
+   void tesselateEx(Shape shp, float fx, float fy)
+   {
       Array<Pointf> tmpNodes = null;
       Pointf * nodes = null;
       bool closed = false, noJoin = false, needTesselation = false;
@@ -276,6 +281,7 @@ struct TesselatedShape
                   if(isCap)
                   {
                      float r = lineWidth/2;
+                     float rx = r * fx, ry = r * fy;
 
                      // Caps
                      switch(cap)
@@ -288,7 +294,7 @@ struct TesselatedShape
                            if(i || end)
                            {
                               a = angle - (float)Pi/2 + (float)Pi;
-                              points[startIX] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                              points[startIX] = { p.x + cosf(a) * rx, p.y + sinf(a) * ry };
                               add = 1;
                            }
                            a = angle + (i ? (float)-Pi/2 : (float)Pi/2);
@@ -296,12 +302,12 @@ struct TesselatedShape
                            da = (float)Pi / (capCount-1);
 
                            for(t = 0; t < capCount; t++, a -= da)
-                              points[startIX + add + t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                              points[startIX + add + t] = { p.x + cosf(a) * rx, p.y + sinf(a) * ry };
 
                            if(!i && !end)
                            {
                               a = angle + (float)Pi/2 + (float)Pi;
-                              points[startIX + 1 + capCount-1] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                              points[startIX + 1 + capCount-1] = { p.x + cosf(a) * rx, p.y + sinf(a) * ry };
                            }
                            break;
                         }
@@ -310,7 +316,7 @@ struct TesselatedShape
                            float angle = (i == 0 && !end) ? at1 : at2;
                            float a = angle - (float)Pi/2;
 
-                           c = cosf(a) * r, s = sinf(a) * r;
+                           c = cosf(a) * rx, s = sinf(a) * ry;
                            points[startIX  ] = { p.x - c, p.y - s };
                            points[startIX+1] = { p.x + c, p.y + s };
                            break;
@@ -321,11 +327,11 @@ struct TesselatedShape
                            float a = (i || end) ? (angle - (float)Pi/4) + (float)Pi : (angle + (float)Pi/4);
 
                            r *= sqrtf(2);
-                           c = cosf(a) * r, s = sinf(a) * r;
+                           c = cosf(a) * rx, s = sinf(a) * ry;
                            points[startIX] = { p.x + c, p.y + s };
 
                            a = (i || end) ? (angle + (float)Pi/4) + (float)Pi : (angle - (float)Pi/4);
-                           c = cosf(a) * r, s = sinf(a) * r;
+                           c = cosf(a) * rx, s = sinf(a) * ry;
                            points[startIX+1] = { p.x + c, p.y + s };
                            break;
                         }
@@ -334,6 +340,7 @@ struct TesselatedShape
                   else
                   {
                      float r = lineWidth / cosf(diffAngle/2) / 2;
+                     float rx = r * fx, ry = r * fy;
                      bool diffSigns = Sgn(at1) != Sgn(at2);
                      float angle;
 
@@ -348,7 +355,7 @@ struct TesselatedShape
 
                      angle += (float)Pi/2;
 
-                     c = cosf(angle) * r, s = sinf(angle) * r;
+                     c = cosf(angle) * rx, s = sinf(angle) * ry;
 
                      points[startIX] = { p.x - c, p.y - s };
 
@@ -360,9 +367,10 @@ struct TesselatedShape
 
                         p = nodes[ni];
                         r = lineWidth / 2;
+                        rx = r * fx, ry = r * fy;
 
                         for(t = 0; t < rCount; t++, a += da)
-                           points[startIX+1+t] = { p.x + cosf(a) * r, p.y + sinf(a) * r };
+                           points[startIX+1+t] = { p.x + cosf(a) * rx, p.y + sinf(a) * ry};
                      }
                      else
                         points[startIX+1] = { p.x + c, p.y + s };
@@ -372,9 +380,11 @@ struct TesselatedShape
                         int t;
 
                         r = lineWidth * 1.1f / 2;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
+                        rx = r * fx, ry = r * fy;
+
                         p = nodes[ni];
                         angle += Pi/2;
-                        c = cosf(angle) * r, s = sinf(angle) * r;
+                        c = cosf(angle) * rx, s = sinf(angle) * ry;
                         points[startIX+1] = { p.x - c, p.y - s };
                         if(closed)
                         {
