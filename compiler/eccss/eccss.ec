@@ -11,7 +11,7 @@ public struct ECCSSEvaluator
    virtual Class resolve(const CMSSIdentifier identifier, int * fieldID, ExpFlags * flags) { return null; }
    virtual void compute(int fieldID, const CMSSIdentifier identifier, FieldValue value, ExpFlags * flags);
    virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
-   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value);
+   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
    virtual String ::stringFromMask(StylesMask mask, Class c) { return null; }
@@ -809,9 +809,38 @@ public:
    {
       CMSSExpInstance inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
       CMSSExpArray arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
+      int unit = 0;
       if(inst)
-         applyInstanceStyle(object, mSet, inst, evaluator, flg);
-      else if(arr)
+      {
+         CMSSSpecName spec = (CMSSSpecName)inst.instance._class;
+         String n = spec ? spec.name : null;
+         if(n && !strcmpi(n, "Meters"))     // TODO: make this generic
+         {
+            unit = 1; // meters
+            e = null;
+            for(i : inst.instance.members)
+            {
+               CMSSInstInitMember member = (CMSSInstInitMember)i;
+               for(m : member.members)
+               {
+                  CMSSMemberInit mInit = m;
+                  if(mInit.initializer._class == class(CMSSInitExp))
+                  {
+                     CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+                     e = initExp.exp;
+                     if(!e.destType) e.destType = class(double);
+                     break;
+                  }
+               }
+               if(e) break;
+            }
+            inst = null;
+         }
+         else
+            applyInstanceStyle(object, mSet, inst, evaluator, flg);
+      }
+
+      if(arr)
       {
          if(evaluator != null)
          {
@@ -822,12 +851,13 @@ public:
                   array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
          }
       }
-      else
+      else if(e && !inst)
       {
          FieldValue value { };
          ExpFlags mFlg = e.compute(value, evaluator, runtime);
          Class destType = e.destType;
-         if(mFlg.resolved && destType && e.expType != destType)
+         Class expType = e.expType;
+         if(mFlg.resolved && destType && expType != destType)
          {
             if(destType == class(float) || destType == class(double))
                convertFieldValue(value, real, value);
@@ -836,7 +866,7 @@ public:
             else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
                convertFieldValue(value, integer, value);
          }
-         evaluator.evaluatorClass.applyStyle(object, mSet, value);
+         evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
          *flg |= mFlg;
       }
    }
