@@ -16,24 +16,87 @@ class ButterburTest : Window
    hasClose = true;
    clientSize = { 800, 600 };
 
+   ButterburTest()
+   {
+      int i;
+
+      Array<Pointf> points { [ { 350, 200 }, { 400, 250 }, { 300, 250 } ] };
+      float px = 250, py = 150;
+
+      for(i = 0; i < 8; i++)
+      {
+         Array<Pointf> tPoints { size = points.count };
+         int j;
+         Degrees a = i * 45;
+         for(j = 0; j < tPoints.count; j++)
+         {
+            tPoints[j] =
+            {
+               (float)((points[j].x - px) * cos(a) + (points[j].y - py) * sin(a) + px + 50),
+               (float)((points[j].y - py) * cos(a) - (points[j].x - px) * sin(a) + py + 50)
+            };
+         }
+         GraphicalPresentation
+         {
+            scene, graphic = Path
+            {
+               nodes = tPoints;
+               stroke = { blue, width = 20, cap = round, join = round };
+            };
+         };
+      }
+
+      points = { [ { 300, 250 }, { 400, 250 }, { 350, 200 } ] };
+
+      for(i = 0; i < 8; i++)
+      {
+         Array<Pointf> tPoints { size = points.count };
+         int j;
+         Degrees a = i * 45;
+         for(j = 0; j < tPoints.count; j++)
+         {
+            tPoints[j] =
+            {
+               (float)((points[j].x - px) * cos(a) + (points[j].y - py) * sin(a) + px + 150),
+               (float)((points[j].y - py) * cos(a) - (points[j].x - px) * sin(a) + py + 150)
+            };
+         }
+         GraphicalPresentation
+         {
+            scene, graphic = Path
+            {
+               nodes = tPoints;
+               stroke = { green, width = 20, cap = round, join = round };
+            };
+         };
+      }
+   }
+
    GraphicalSurface gSurface { };
 
    MultiPresentation scene { gSurface };
    // GraphicalPresentation overlay {scene, graphic = mge };
+#if 0
+   Path capTest1
+   {
+       //nodes = [ { 50, 250 }, { 100, 250 }, { 150, 200 } ];
+      //nodes = [ { 50, 250 }, { 51, 250 } ]; //, { 150, 200 } ];
+      nodes = [ { 50, 250 }, { 60, 350 }];
 
+      //nodes = [ { 60, 350 }, { 50, 250 } ];
+
+      stroke = { blue, width = 20, cap = round, join = round };
+   };
+   GraphicalPresentation pCapTest1 { scene, graphic = capTest1 };
+#endif
+
+#if 0
    Path capTest0
    {
       nodes = [ { 50, 220 }, { 100, 220 }, { 150, 170 } ];
       stroke = { blue, width = 20, cap = flat, join = round };
    };
    GraphicalPresentation pCapTest0 { scene, graphic = capTest0 };
-
-   Path capTest1
-   {
-      nodes = [ { 50, 250 }, { 100, 250 }, { 150, 200 } ];
-      stroke = { blue, width = 20, cap = round, join = round };
-   };
-   GraphicalPresentation pCapTest1 { scene, graphic = capTest1 };
 
    Path capTest2
    {
@@ -42,30 +105,37 @@ class ButterburTest : Window
    };
    GraphicalPresentation pCapTest2 { scene, graphic = capTest2 };
 
+#endif
+
+#if 1
+/*
    Path capTest3
    {
       nodes = [ { 350, 170 }, { 300, 220 }, { 250, 220 } ];
       stroke = { blue, width = 20, cap = flat, join = round };
    };
    GraphicalPresentation pCapTest3 { scene, graphic = capTest3 };
+*/
+#endif
 
+#if 0
    Path capTest4
    {
       nodes = [ { 350, 200 }, { 300, 250 }, { 250, 250 } ];
       stroke = { blue, width = 20, cap = round, join = round };
    };
    GraphicalPresentation pCapTest4 { scene, graphic = capTest4 };
-
    Path capTest5
    {
       nodes = [ { 350, 230 }, { 300, 280 }, { 250, 280 } ];
       stroke = { blue, width = 20, cap = square, join = round };
    };
    GraphicalPresentation pCapTest5 { scene, graphic = capTest5 };
+#endif
 
    // MGE Tests
    // MultiGraphicalElement mge { scene };
-#if 1
+#if 0
    RoundedRectangle backdrop
    {
       box = {0, 0, 800, 600},
