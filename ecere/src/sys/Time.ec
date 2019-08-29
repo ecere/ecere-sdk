@@ -258,7 +258,7 @@ public class Seconds : Time { public property Time {} };
 #if !defined(__WIN32__)
 static time_t MakeTimeT(SecSince1970 t)
 {
-   struct tm tm;
+   struct tm tm = { 0 };
    time_t result;
    DateTime dt = t;
    tm.tm_year = dt.year - 1900;
@@ -275,7 +275,7 @@ static time_t MakeTimeT(SecSince1970 t)
 
 static time_t MakeTimeTfromDT(DateTime dt)
 {
-   struct tm tm;
+   struct tm tm = { 0 };
    time_t result;
    tm.tm_year = dt.year - 1900;
    tm.tm_mon = dt.month;
@@ -359,7 +359,7 @@ public:
 
          return global;
       #else
-         struct tm tm;
+         struct tm tm = { 0 };
          DateTime global;
          time_t t = MakeTimeT(this);
          // gmtime_r((time_t *)&this, &tm);
@@ -408,7 +408,7 @@ public:
          return local;
 #else
          DateTime local;
-         struct tm tm;
+         struct tm tm = { 0 };
          time_t t = MakeTimeT(this);
          //localtime_r((time_t *)&this, &tm);
          localtime_r(&t, &tm);
@@ -481,7 +481,7 @@ public struct DateTime
          dayOfTheWeek = date.dayOfTheWeek;
       }
    #else
-      struct tm tm;
+      struct tm tm = { 0 };
       time_t currentTime = time(null);
       localtime_r(&currentTime, &tm);
 
@@ -532,7 +532,7 @@ public struct DateTime
          value.minute = systemTime.wMinute;
          value.second = systemTime.wSecond;
       #else
-         struct tm tm;
+         struct tm tm = { 0 };
          //time_t t = (time_t)(SecSince1970)this;
          time_t t = MakeTimeTfromDT(this);
          gmtime_r(&t, &tm);
@@ -575,7 +575,7 @@ public struct DateTime
 
          value.FixDayOfYear();
       #else
-         struct tm tm;
+         struct tm tm = { 0 };
          // time_t t = (time_t)(SecSince1970)this;
          time_t t = MakeTimeTfromDT(this);
          localtime_r(&t, &tm);
