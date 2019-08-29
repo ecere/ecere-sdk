@@ -463,6 +463,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
 
 public class StylingRuleBlock : CMSSNode
 {
+   class_no_expansion;
 public:
    StylingRuleBlockList nestedRules;
    SelectorList selectors;
