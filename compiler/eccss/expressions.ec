@@ -1591,6 +1591,17 @@ public:
       delete suffix;
       return result;
    }
+   CMSSMemberInitList copy()
+   {
+      CMSSMemberInitList c = null;
+      if(this)
+      {
+         c = eInstance_New(_class);
+         for(n : this)
+            c.Add(n.copy());
+      }
+      return c;
+   }
 }
 
 public class CMSSInitializer : CMSSNode

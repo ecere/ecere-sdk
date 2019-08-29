@@ -273,6 +273,16 @@ public:
       exp.print(out, indent, o);
       out.Print("]");
    }
+   StylingRuleSelector copy()
+   {
+      StylingRuleSelector s = null;
+      if(this)
+      {
+         s = eInstance_New(_class);
+         s.exp = exp.copy();
+      }
+      return s;
+   }
 }
 
 public class SelectorList : CMSSList<StylingRuleSelector>
@@ -754,6 +764,36 @@ public:
       delete id;
       delete styles;
       delete nestedRules;
+   }
+   StylingRuleBlock copy()
+   {
+      StylingRuleBlock b = null;
+
+      if(this)
+      {
+         b = eInstance_New(_class);
+         b.mask = mask;
+         b.id = (id && id.string) ? { string = CopyString(id.string) } : null;
+         if(nestedRules)
+         {
+            b.nestedRules = { };
+            for(n : nestedRules)
+               b.nestedRules.Add(n.copy());
+         }
+         if(selectors)
+         {
+            b.selectors = { };
+            for(n : selectors)
+               b.selectors.Add(n.copy());
+         }
+         if(styles)
+         {
+            b.styles = { };
+            for(n : styles)
+               b.styles.Add(n.copy());
+         }
+      }
+      return b;
    }
 
    // TOCHECK: Both mask and flags must be returned?
