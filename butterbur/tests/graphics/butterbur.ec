@@ -20,6 +20,7 @@ class ButterburTest : Window
    {
       int i;
 
+      //return true;
       Array<Pointf> points { [ { 350, 200 }, { 400, 250 }, { 300, 250 } ] };
       float px = 250, py = 150;
 
@@ -46,7 +47,7 @@ class ButterburTest : Window
          };
       }
 
-      points = { [ { 300, 250 }, { 400, 250 }, { 350, 200 } ] };
+      points = { [ { 400, 250 }, { 500, 240 }, { 300, 245 }, { 350, 200 } ] };
 
       for(i = 0; i < 8; i++)
       {
@@ -69,14 +70,94 @@ class ButterburTest : Window
                stroke = { green, width = 20, cap = round, join = round };
             };
          };
+         GraphicalPresentation
+         {
+            scene, graphic = Path
+            {
+               nodes = tPoints;
+               stroke = { red, width = 2, cap = round, join = round };
+            };
+         };
       }
    }
 
    GraphicalSurface gSurface { };
-
    MultiPresentation scene { gSurface };
+   #define sx ( 1 / 128.0) //256.0f )
+   #define sy ( 1 / 128.0) /// 256.0f )
+   /*#define sx ( 1 / 64.0 )
+   #define sy ( 1 / 64.0  )
+   */
+   #define sWidth 20 //(25378.6113 / 256.0f)
+
+   #define tx  356
+   #define ty  256
+/*
+
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         //nodes = [ { 21230 * sy + ty, -32767 * sx + tx }, { 21230 * sy + ty, -6726 * sx + tx }, { 21070 * sy + ty, 27258 * sx + tx }, { 21045 * sy + ty, 32767 * sx + tx } ];
+
+         nodes = [ { 21230 * sy + ty, -32767 * sx + tx }, { 21230 * sy + ty, -6726 * sx + tx }, { 21070 * sy + ty, 27258 * sx + tx }, { 21045 * sy + ty, 32767 * sx + tx } ];
+
+         //nodes = [ { 21230 * sy + ty, -6726 * sx + tx }, { 21070 * sy + ty, 27258 * sx + tx }, { 21045 * sy + ty, 32767 * sx + tx } ];
+         //nodes = [ { 21230 * sy + ty, -32767 * sx + tx }, { 21230 * sy + ty, -6726 * sx + tx }, { 21070 * sy + ty, 27258 * sx + tx } ];
+         // nodes = [ { 21230 * sy + ty, -6726 * sx + tx }, { 21070 * sy + ty, 27258 * sx + tx } ];
+         //nodes = [ { 21230 * sy + ty, -32767 * sx + tx }, { 21230 * sy + ty, -6726 * sx + tx } ];
+         //nodes = [ { 21070 * sy + ty, 27258 * sx + tx }, { 21045 * sy + ty, 32767 * sx + tx } ];
+         stroke = { red, width = sWidth, cap = round, join = round };
+      };
+   };
+
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         nodes = [ { 21230 * sy + ty, -32767 * sx + tx }, { 21230 * sy + ty, 32767 * sx + tx } ];
+         stroke = { blue, width = sWidth, cap = round, join = round };
+      };
+   };
+
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         nodes = [ { 21045 * sy + ty, -32767 * sx + tx }, { 20743 * sy + ty, 32767 * sx + tx } ];
+         stroke = { green, width = sWidth, cap = round, join = round };
+      };
+   };
+   */
+
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         nodes = [ { -32767 * sx + tx, 21230 * sy + ty }, { -6726 * sx + tx, 21230 * sy + ty }, { 27258 * sx + tx, 21070 * sy + ty }, { 32767 * sx + tx, 21045 * sy + ty } ];
+         stroke = { red, width = 20, cap = round, join = round };
+      };
+   };
+   /*
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         nodes = [ { -32767 * sx + tx, 21230 * sy + ty }, { 32767 * sx + tx, 21230 * sy + ty } ];
+         stroke = { blue, width = 10, cap = round, join = round };
+      };
+   };
+   GraphicalPresentation
+   {
+      scene, graphic = Path
+      {
+         nodes = [ { -32767 * sx + tx, 21045 * sy + ty }, { 32767 * sx + tx, 20743 * sy + ty } ];
+         stroke = { green, width = 5, cap = round, join = round };
+      };
+   };
+  */
    // GraphicalPresentation overlay {scene, graphic = mge };
-#if 1
+#if 0
    Path capTest1
    {
        //nodes = [ { 50, 250 }, { 100, 250 }, { 150, 200 } ];
@@ -90,14 +171,13 @@ class ButterburTest : Window
    GraphicalPresentation pCapTest1 { scene, graphic = capTest1 };
 #endif
 
-#if 1
+#if 0
    Path capTest0
    {
       nodes = [ { 50, 220 }, { 100, 220 }, { 150, 170 } ];
       stroke = { blue, width = 20, cap = flat, join = round };
    };
    GraphicalPresentation pCapTest0 { scene, graphic = capTest0 };
-
    Path capTest2
    {
       nodes = [ { 50, 280 }, { 100, 280 }, { 150, 230 } ];
@@ -107,18 +187,16 @@ class ButterburTest : Window
 
 #endif
 
-#if 1
-/*
+#if 0
    Path capTest3
    {
       nodes = [ { 350, 170 }, { 300, 220 }, { 250, 220 } ];
       stroke = { blue, width = 20, cap = flat, join = round };
    };
    GraphicalPresentation pCapTest3 { scene, graphic = capTest3 };
-*/
 #endif
 
-#if 1
+#if 0
    Path capTest4
    {
       nodes = [ { 350, 200 }, { 300, 250 }, { 250, 250 } ];
@@ -135,7 +213,7 @@ class ButterburTest : Window
 
    // MGE Tests
    // MultiGraphicalElement mge { scene };
-#if 1
+#if 0
    RoundedRectangle backdrop
    {
       box = {0, 0, 800, 600},

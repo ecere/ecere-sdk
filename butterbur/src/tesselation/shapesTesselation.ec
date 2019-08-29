@@ -340,9 +340,13 @@ struct TesselatedShape
                   else
                   {
                      float r = lineWidth / cosf(diffAngle/2) / 2;
-                     float rx = r * fx, ry = r * fy;
                      bool diffSigns = Sgn(at1) != Sgn(at2);
                      float angle;
+                     float rx, ry;
+
+                     if(join == round && r > lineWidth)
+                        r = lineWidth;
+                     rx = r * fx, ry = r * fy;
 
                      if(simpleMean)
                         angle = (at1 + at2) / 2;
@@ -379,11 +383,14 @@ struct TesselatedShape
                      {
                         int t;
 
-                        r = lineWidth * 1.1f / 2;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
+                        r = lineWidth * 1/*.1f*/ / 2;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
                         rx = r * fx, ry = r * fy;
 
                         p = nodes[ni];
-                        angle += Pi/2;
+                        if(diffAngle < Pi/2)
+                           angle += Pi;
+                        else
+                           angle += Pi/2;
                         c = cosf(angle) * rx, s = sinf(angle) * ry;
                         points[startIX+1] = { p.x - c, p.y - s };
                         if(closed)
