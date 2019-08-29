@@ -14,8 +14,11 @@ public:
    // Generic styles
    bool visibility         :1: 0;
    bool opacity            :1: 1;
-   bool scaling          :1: 2;
-   //bool transform3D        :1: 3;
+// todo: alocate bits when these 2 features are supported
+   bool brightness         :1: 2;
+   bool saturation         :1: 2;
+   bool scaling            :1: 2;
+// bool transform3D        :1: 3;
    bool zOrder             :1: 3;
 };
 
@@ -77,7 +80,9 @@ public enum GraphicalStyleKind : GraphicalStyleMask
    zOrder = GraphicalStyleMask { zOrder = true },
    visibility = GraphicalStyleMask { visibility = true },
    scaling = GraphicalStyleMask { scaling = true },
-   opacity = GraphicalStyleMask { opacity = true }
+   opacity = GraphicalStyleMask { opacity = true },
+   brightness = GraphicalStyleMask { brightness = true },
+   saturation = GraphicalStyleMask { saturation = true },
    //transform3D = GraphicalStyleMask { transform3D = true }
 };
 
@@ -146,6 +151,9 @@ Map<String, GraphicalStyleKind> styleIdentifierMap
    { "visibility", visibility },
    { "opacity", opacity },
    { "scaling", scaling },
+   { "brightness", brightness },
+   { "saturation", saturation },
+// { "transform3D", transform3D },
    { "zOrder", zOrder }
 ] };
 
@@ -275,6 +283,8 @@ public:
    int zOrder;
    bool visibility;
    float opacity;
+   float brightness;
+   float saturation;
    Transform transform;
 
    visibility = true;
