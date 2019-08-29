@@ -1250,6 +1250,7 @@ public:
 
 public class CMSSMemberInit : CMSSNode
 {
+   class_no_expansion;
 public:
    List<CMSSIdentifier> identifiers;
    CMSSInitializer initializer;
@@ -1594,6 +1595,7 @@ public:
 
 public class CMSSInitializer : CMSSNode
 {
+   class_no_expansion;
 public:
    CMSSInitializer ::parse(CMSSLexer lexer)
    {
@@ -1669,6 +1671,7 @@ public:
 
 public class CMSSSpecifier : CMSSNode
 {
+   class_no_expansion;
 public:
 };
 

@@ -11,6 +11,15 @@ void printIndent(int indent, File out)
 
 public class CMSSNode : Container
 {
+   // We don't want to compare contents of these nodes
+   class_no_expansion;
+   int OnCompare(CMSSNode b)
+   {
+      if(this < b) return -1;
+      if(this > b) return  1;
+      return 0;
+   }
+
 public:
    virtual void print(File out, int indent, CMSSOutputOptions o);
    virtual void * /*thisclass FIXME */ copy() { return null; }
