@@ -182,13 +182,14 @@ class OutputView : Window
 
       bool OnKeyHit(Key key, unichar ch)
       {
-         LogBox buildBox = this;
-         OutputView outputView = (OutputView)buildBox.parent;
-         Array<BuildOutputLineMark> marks = outputView.marks;
-         if(marks.count)
+         CompilerMessageType t = key.modifiers & { alt = true, ctrl = true } ? 0 :
+               CompilerMessageType::fromKeyCode(key.code);
+         if(t)
          {
-            CompilerMessageType t = CompilerMessageType::fromKeyCode(key.code);
-            if(t)
+            LogBox buildBox = this;
+            OutputView outputView = (OutputView)buildBox.parent;
+            Array<BuildOutputLineMark> marks = outputView.marks;
+            if(marks.count)
             {
                bool reverse = key.shift;
                int count = marks.count;
