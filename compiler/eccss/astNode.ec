@@ -23,6 +23,16 @@ public class CMSSNode : Container
 public:
    virtual void print(File out, int indent, CMSSOutputOptions o);
    virtual void * /*thisclass FIXME */ copy() { return null; }
+   String toString()
+   {
+      TempFile f { };
+      String s;
+      print(f, 0, 0);
+      f.Putc(0);
+      s = (String)f.StealBuffer();
+      delete f;
+      return s;
+   }
 
    ~CMSSNode()
    {
