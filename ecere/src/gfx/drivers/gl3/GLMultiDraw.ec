@@ -29,6 +29,9 @@ private:
 
 // Set glCapabilities.gpuCommands = false as a work-around for Intel driver that does not seem to support
 // indirect commands buffers, and/or glCapabilities.mdei = false
+// hmm... 'Set glCapabilities.gpuCommands = false' where?
+// effectivaly disabling this commit?
+// #define CLIENT_MEM_COMMANDS  // Defined as a work-around for Intel driver that does not seem to support indirect commands buffers?
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
