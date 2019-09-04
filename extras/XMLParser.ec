@@ -90,14 +90,14 @@ class XMLParser
       return false;
    }
 
-   bool Parse(const char * inputString, int count)
+   bool Parse(const char * inputString, int64 count)
    {
       int insideTag = 0;
       char tag[MAX_TAG_LEN];
       int tagLen = 0;
       bool commented = false;
       byte lastCh = ' ';
-      int stringPos;
+      int64 stringPos;
       char * characterData = this.characterData;
       int charLen = 0;
       int oldDepth = xmlDepth;
