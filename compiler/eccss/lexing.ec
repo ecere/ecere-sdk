@@ -95,6 +95,17 @@ public enum CMSSTokenType
          out.Print(tokenStrings[this]);
       }
    }
+
+   public String toString()
+   {
+      TempFile f { };
+      String s;
+      print(f, 0, 0);
+      f.Putc(0);
+      s = (String)f.StealBuffer();
+      delete f;
+      return s;
+   }
 };
 
 static const String tokenStrings[CMSSTokenType];
