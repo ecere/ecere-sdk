@@ -215,6 +215,24 @@ public:
       }
    }
 
+   CMSSExpression getStyle(StylesMask mask)
+   {
+      CMSSExpression result = null;
+      CMSSMemberInit mInit = findStyle(mask);
+      if(mInit)
+         result = mInit.initializer ? ((CMSSInitExp)mInit.initializer).exp : null;
+      return result;
+   }
+
+   void setStyle(StylesMask mask, CMSSExpression exp)
+   {
+      CMSSMemberInit mInit = findStyle(mask);
+      if(!mInit)
+         ; // TODO: Create one
+      delete mInit.initializer;
+      mInit.initializer = CMSSInitExp { exp = exp };
+   }
+
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       bool result = false;
@@ -700,6 +718,17 @@ public:
       result = true;
 
       return result;
+   }
+
+   CMSSExpression getStyle(StylesMask mask)
+   {
+      return styles ? styles.getStyle(mask) : null;
+   }
+
+   void setStyle(StylesMask mask, CMSSExpression exp)
+   {
+      if(!styles) styles = { };
+      return styles.setStyle(mask, exp);
    }
 
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
