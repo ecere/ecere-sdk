@@ -1,6 +1,6 @@
 public import IMPORT_STATIC "ecere"
 
-enum GEType { none, shape, text, image, path3D, multi, model };
+public enum GEType { none, shape, text, image, path3D, multi, model };
 
 public enum GraphicalUnit { pixels, meters, feet, percent, points, em, screenInches, screenCM, screenMM };
 
@@ -166,9 +166,11 @@ public:
       set { opacity = value; }
       get { return opacity; }
    };
+
+   property GEType type { get { return type; } }
 }
 
-enum ShapeType { dot, path, rectangle, ellipse, arc };
+public enum ShapeType { dot, path, rectangle, ellipse, arc };
 
 public class Shape : GraphicalElement
 {
@@ -191,6 +193,8 @@ public:
       set { delete fill; fill = value; }
       get { return fill; }
    };
+
+   property ShapeType shpType { get { return shpType; } }
 }
 
 public class RoundedRectangle : Shape
@@ -387,7 +391,7 @@ public:
       {
          elements.copySrc = value;
       }
-      get { return elements; }
+      get { return this ? elements : null; }
    }
 
    // NOTE: Duplicating the GraphicalElement properties here in an ugly way so that 'elements' is the default member...
