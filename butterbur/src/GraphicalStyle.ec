@@ -20,6 +20,19 @@ public:
    bool scaling            :1: 2;
 // bool transform3D        :1: 3;
    bool zOrder             :1: 3;
+
+   void print(File out)
+   {
+      out.Print("{");
+      if(visibility)             out.Print(" visibility");
+      if(opacity)                out.Print(" opacity");
+   // if(brightness)             out.Print(" brightness");
+   // if(saturation)             out.Print(" saturation");
+      if(scaling)                out.Print(" scaling");
+   // if(transform3D)            out.Print(" transform3D");
+      if(zOrder)                 out.Print(" zOrder");
+      out.Print(" }");
+   }
 };
 
 public class ShapeStyleMask : GraphicalStyleMask
@@ -45,6 +58,31 @@ public:
    bool strokeJoin         :1:21;
    bool strokeCap          :1:22;
    bool strokeDashPattern  :1:23;
+
+   void print(File out)
+   {
+      out.Print("{");
+      if(fillPattern)            out.Print(" fillPattern");
+      if(fillColor)              out.Print(" fillColor");
+      if(fillOpacity)            out.Print(" fillOpacity");
+      if(fillStippleStyle)       out.Print(" fillStippleStyle");
+      if(fillHatchStyle)         out.Print(" fillHatchStyle");
+      if(fillGradient)           out.Print(" fillGradient");
+      if(strokePattern)          out.Print(" strokePattern");
+      if(strokeOpacity)          out.Print(" strokeOpacity");
+      if(strokeWidth)            out.Print(" strokeWidth");
+      if(strokeColor)            out.Print(" strokeColor");
+      if(strokeCenterWidth)      out.Print(" strokeCenterWidth");
+      if(strokeCenterColor)      out.Print(" strokeCenterColor");
+      if(strokeCenterOpacity)    out.Print(" strokeCenterOpacity");
+      if(strokeCasingWidth)      out.Print(" strokeCasingWidth");
+      if(strokeCasingColor)      out.Print(" strokeCasingColor");
+      if(strokeCasingOpacity)    out.Print(" strokeCasingOpacity");
+      if(strokeJoin)             out.Print(" strokeJoin");
+      if(strokeCap)              out.Print(" strokeCap");
+      if(strokeDashPattern)      out.Print(" strokeDashPattern");
+      out.Print(" }");
+   }
 };
 
 
@@ -64,6 +102,24 @@ public:
    bool fontOutlineOpacity :1:14;
    bool alignmentHorzAlign :1:15;
    bool alignmentVertAlign :1:16;
+
+   void print(File out)
+   {
+      out.Print("{");
+      if(text)                   out.Print(" text");
+      if(fontFace)               out.Print(" fontFace");
+      if(fontSize)               out.Print(" fontSize");
+      if(fontBold)               out.Print(" fontBold");
+      if(fontItalic)             out.Print(" fontItalic");
+      if(fontColor)              out.Print(" fontColor");
+      if(fontOpacity)            out.Print(" fontOpacity");
+      if(fontOutlineSize)        out.Print(" fontOutlineSize");
+      if(fontOutlineColor)       out.Print(" fontOutlineColor");
+      if(fontOutlineOpacity)     out.Print(" fontOutlineOpacity");
+      if(alignmentHorzAlign)     out.Print(" alignmentHorzAlign");
+      if(alignmentVertAlign)     out.Print(" alignmentVertAlign");
+      out.Print(" }");
+   }
 };
 
 public class ImageStyleMask : GraphicalStyleMask
@@ -73,6 +129,15 @@ public:
    bool imagePath          :1:5;
    bool tint               :1:6;
    bool hotSpot            :1:7;
+
+   void print(File out)
+   {
+      out.Print("{");
+      if(imagePath)              out.Print(" imagePath");
+      if(tint)                   out.Print(" tint");
+      if(hotSpot)                out.Print(" hotSpot");
+      out.Print(" }");
+   }
 };
 
 public enum GraphicalStyleKind : GraphicalStyleMask
