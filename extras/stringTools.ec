@@ -1,5 +1,9 @@
-#if defined(ECERE_STATIC) && !defined(IMPORT_STATIC)
+#ifndef IMPORT_STATIC
+#ifdef ECERE_STATIC
 #define IMPORT_STATIC static
+#else
+#define IMPORT_STATIC
+#endif
 #endif
 public import IMPORT_STATIC "ecere"
 
