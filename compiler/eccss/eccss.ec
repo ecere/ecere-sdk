@@ -788,6 +788,13 @@ public:
       out.Print("}", ln);
    }
 
+   void debugPrintRule(File out, const String name)
+   {
+      out.Print("   ", name, " @", this ? "" : "0x0", (uintptr)this, ": ");
+      if(this) print(out, 32, { dbgOneLiner = true });
+      out.PrintLn("");
+   }
+
    ~StylingRuleBlock()
    {
       delete selectors;
