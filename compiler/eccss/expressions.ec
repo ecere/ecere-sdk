@@ -361,8 +361,9 @@ public:
 
    CMSSExpConstant ::parse(CMSSLexer lexer)
    {
+      CMSSExpConstant result = null;
       CMSSToken token = lexer.readToken();
-      //check token, if starts with quote or contains comma... parse to know type, integer string etc,... set i s or r
+      // check token, if starts with quote or contains comma... parse to know type, integer string etc,... set i s or r
       // no text here, use cmssexpstring
 
       if(isdigit(token.text[0]))
@@ -373,11 +374,25 @@ public:
          if(token.text[len-1] == 'K') multiplier = 1000;
          else if(token.text[len-1] == 'M') multiplier = 1000000;
 
-         if(strchr(token.text, '.'))
-            return { constant = { r = strtod(token.text, null) * multiplier, type.type = real }  };
-         else return { constant = { i = strtol(token.text, null, 0) * multiplier, type.type = integer}  };
+         if(strchr(token.text, '.') ||
+            ((token.text[0] != '0' || token.text[1] != 'x') && (strchr(token.text, 'E') || strchr(token.text, 'e'))))
+         {
+            result = { constant = { r = strtod(token.text, null) * multiplier, type.type = real } };
+            if(strchr(token.text, 'E') || strchr(token.text, 'e'))
+               result.constant.type.format = exponential;
+         }
+         else
+         {
+            result = { constant = { i = strtoll(token.text, null, 0) * multiplier, type.type = integer} };
+            if(strstr(token.text, "0x"))
+               result.constant.type.format = hex;
+            else if(strstr(token.text, "b"))
+               result.constant.type.format = binary;
+            else if(token.text[0] == '0' && isdigit(token.text[1]))
+               result.constant.type.format = octal;
+         }
       }
-      return null;
+      return result;
    }
 
    CMSSExpConstant copy()

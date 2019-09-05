@@ -13,11 +13,19 @@ public enum FieldType   // Note: these match SQLiteType
    nil     = 5
 };
 
+// TOCHECK: Move this into FieldTypeEx ?
+public enum FieldValueFormat
+{
+   decimal, hex, octal, binary, exponential
+};
+
 public class FieldTypeEx : FieldType
 {
 public:
    FieldType type:3;
    bool mustFree:1;
+   FieldValueFormat format:3;
+   bool isUnsigned:1;
 };
 
 public struct FieldValue
@@ -71,8 +79,23 @@ public struct FieldValue
       char temp[128];
       switch(type.type)
       {
-         case integer: sprintf(temp, FORMAT64D, i); return CopyString(temp);
-         case real:    return CopyString(r.OnGetString(temp, null, null));
+         case integer:
+            switch(type.format)
+            {
+               // case binary: sprintf(temp, "%b", i); break;  // TODO: proper binary support
+               case octal:  sprintf(temp, "%o", (uint)i); break;
+               case hex:    sprintf(temp, FORMAT64HEX, i); break;
+               default:     sprintf(temp, type.isUnsigned ? FORMAT64U : FORMAT64D, i); break;
+            }
+            return CopyString(temp);
+         case real:
+            if(type.format == exponential)
+            {
+               sprintf(temp, "%e", r);
+               return CopyString(temp);
+            }
+            else
+               return CopyString(r.OnGetString(temp, null, null));
          case text:    return s;
       }
       return null;
@@ -111,13 +134,29 @@ public struct FieldValue
    {
       switch(type.type)
       {
-         case integer: sprintf(stringOutput, FORMAT64D, i); return stringOutput;
+         case integer:
+            switch(type.format)
+            {
+               // case binary: sprintf(stringOutput, "%b", i); break;  // TODO: proper binary support
+               case octal:  sprintf(stringOutput, "%o", (uint)i); break;
+               case hex:    sprintf(stringOutput, FORMAT64HEX, i); break;
+               default:     sprintf(stringOutput, type.isUnsigned ? FORMAT64U : FORMAT64D, i); break;
+            }
+            return stringOutput;
          case real:
          {
-            String s = (String)r.OnGetString(stringOutput, null, null);
-            if(!strchr(s, '.') && !strchr(s, 'E'))
-               strcat(s, ".0");
-            return s;
+            if(type.format == exponential)
+            {
+               sprintf(stringOutput, "%e", r);
+               return stringOutput;
+            }
+            else
+            {
+               String s = (String)r.OnGetString(stringOutput, null, null);
+               if(!strchr(s, '.') && !strchr(s, 'E') && !strchr(s, 'e'))
+                  strcat(s, ".0");
+               return s;
+            }
          }
          case text:
          {
