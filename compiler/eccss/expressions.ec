@@ -1,6 +1,7 @@
 public import IMPORT_STATIC "ecere"
 public import IMPORT_STATIC "EDA" // For FieldValue
 
+public import "stringTools"
 public import "lexing"
 public import "astNode"
 public import "eccss"
@@ -426,7 +427,9 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      out.Print('\'', string, '\'');
+      String buf = copyEscapeString(string);
+      out.Print('\'', buf, '\'');
+      delete buf;
    }
 
    CMSSExpString ::parse(CMSSLexer lexer)
