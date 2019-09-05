@@ -1,8 +1,7 @@
-#ifdef ECERE_STATIC
-public import static "ecere"
-#else
-public import "ecere"
+#if defined(ECERE_STATIC) && !defined(IMPORT_STATIC)
+#define IMPORT_STATIC static
 #endif
+public import IMPORT_STATIC "ecere"
 
 public enum Trim { no, left = 1, right = 2, ends = 3, middle = 4, all = 7 };
 
@@ -97,4 +96,40 @@ char * CopyAllCapsString(const char * string)
       *o++ = (ch < 128) ? (char)toupper(ch) : ch; // TODO: UNICODE TO UPPER -- REFER EditBox.ec
    *o = 0;
    return output;
+}
+
+// String Escape Copy
+static void strescpy(char * output, char * string)
+{
+   char * s = string;
+   char * d = output;
+   while(*s)
+   {
+      switch(*s)
+      {
+      // case '\n': *d = '\\'; d++; *d = 'n' ; break;
+      // case '\t': *d = '\\'; d++; *d = 't' ; break;
+      // case '\a': *d = '\\'; d++; *d = 'a' ; break;
+      // case '\b': *d = '\\'; d++; *d = 'b' ; break;
+      // case '\f': *d = '\\'; d++; *d = 'f' ; break;
+      // case '\r': *d = '\\'; d++; *d = 'r' ; break;
+      // case '\v': *d = '\\'; d++; *d = 'v' ; break;
+         case '\'': *d = '\\'; d++; *d = '\''; break;
+      // case '\"': *d = '\\'; d++; *d = '\"'; break;
+         default: *d = *s;
+      }
+      s++;
+      d++;
+   }
+   *d = '\0';
+}
+
+String copyEscapeString(String string)
+{
+   String result = null;
+   String buffer = new char[strlen(string) * 2 + 1];
+   strescpy(buffer, string);
+   result = CopyString(buffer);
+   delete buffer;
+   return result;
 }
