@@ -96,11 +96,11 @@ public enum CMSSTokenType
       }
    }
 
-   public String toString()
+   public String toString(CMSSOutputOptions o)
    {
       TempFile f { };
       String s;
-      print(f, 0, 0);
+      print(f, 0, o);
       f.Putc(0);
       s = (String)f.StealBuffer();
       delete f;
