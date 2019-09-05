@@ -747,8 +747,9 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      out.PrintLn("");
-      printIndent(indent, out);
+      const char * ln = o.dbgOneLiner ? " " : "\n";
+      out.Print(ln);
+      if(!o.dbgOneLiner) printIndent(indent, out);
       if(id)
       {
          out.Print("#");
@@ -760,10 +761,10 @@ public:
 
       if(id || selectors)
       {
-         out.PrintLn("");
-         printIndent(indent, out);
+         out.Print(ln);
+         if(!o.dbgOneLiner) printIndent(indent, out);
       }
-      out.PrintLn("{");
+      out.Print("{", ln);
       indent++;
 
       if(styles)
@@ -773,18 +774,18 @@ public:
          {
             CMSSMemberInitList list = it.data;
 
-            printIndent(indent, out);
+            if(!o.dbgOneLiner) printIndent(indent, out);
             list.print(out, indent, o);
-            out.PrintLn(";");
+            out.Print(";", ln);
          }
       }
       if(nestedRules)
          nestedRules.print(out, indent, o);
 
       indent--;
-      printIndent(indent, out);
+      if(!o.dbgOneLiner) printIndent(indent, out);
 
-      out.PrintLn("}");
+      out.Print("}", ln);
    }
 
    ~StylingRuleBlock()
