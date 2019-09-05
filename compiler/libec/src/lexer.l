@@ -234,7 +234,8 @@ L?'(\\.|[^\\'])+'       { return(CONSTANT); }
 
 {D}+{E}{FS}?            { return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?  { return(CONSTANT); }
-{D}+"."{D}*({E})?{FS}?+"."{D}*({E})?{FS}?  { return(CONSTANT); }  /* For triple OS X versions inside attributes... TODO: Add syntax errors elsewhere */
+{D}+"."{D}*({E})?{FS}?  { return(CONSTANT); }
+{D}+"."{D}+"."{D}*      { return(CONSTANT); }  /* For triple OS X versions inside attributes... TODO: Add syntax errors elsewhere */
 
 \"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 L\"(\\.|[^\\"])*\"     { return(WIDE_STRING_LITERAL); }
