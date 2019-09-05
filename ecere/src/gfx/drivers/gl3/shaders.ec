@@ -5,6 +5,8 @@ import "String"
 
 #include "gl123es.h"
 
+// #define GL_SHADER_DEBUGGING
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 #define printf(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
@@ -179,10 +181,10 @@ public:
          if(!fragmentShaderSource && fragmentShaderFile)
             loadShader(fragmentShaderFile, &fragmentShaderSource, &fsLen);
 
-#ifdef _DEBUG
+#ifdef GL_SHADER_DEBUGGING
          PrintLn("Compiling ", _class.name, " shader for state 0x", state, " (", (DefaultShaderBits)state, ")");
-         printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
-         printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
+      // printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
+      // printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
 #endif
 
          {
@@ -216,7 +218,7 @@ public:
             glGetShaderiv(vShader, GL_COMPILE_STATUS, &vStatus);
             glGetShaderInfoLog(vShader, sizeof(compileLog), null, compileLog);
 
-#ifndef _DEBUG
+#ifndef GL_SHADER_DEBUGGING
             if(compileLog[0])
 #endif
             {
@@ -228,7 +230,7 @@ public:
             glCompileShader(fShader);
             glGetShaderiv(vShader, GL_COMPILE_STATUS, &fStatus);
             glGetShaderInfoLog(fShader, sizeof(compileLog), null, compileLog);
-#ifndef _DEBUG
+#ifndef GL_SHADER_DEBUGGING
             if(compileLog[0])
 #endif
             {
@@ -251,7 +253,7 @@ public:
                glLinkProgram(program);
                glGetProgramInfoLog(program, sizeof(compileLog), null, compileLog);
 
-   #ifndef _DEBUG
+   #ifndef GL_SHADER_DEBUGGING
                if(compileLog[0])
    #endif
                {
@@ -264,7 +266,7 @@ public:
 
                glValidateProgram(program);
 
-   #ifndef _DEBUG
+   #ifndef GL_SHADER_DEBUGGING
                if(compileLog[0])
    #endif
                {
@@ -293,7 +295,7 @@ public:
             else
                PrintLn("Failure to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
          }
-   #if defined(_DEBUG) && defined(__WIN32__)
+   #if defined(GL_SHADER_DEBUGGING) && defined(__WIN32__)
          if(!shader)
             system("pause");
    #endif
