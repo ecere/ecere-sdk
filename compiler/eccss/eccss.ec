@@ -170,8 +170,8 @@ public class StylesMask : uint64 { bool bitMember:1:63; } // Just to force this 
 
 public class StylesList : CMSSList<CMSSMemberInitList>
 {
-   StylesMask mask;
 public:
+   StylesMask mask;
    StylesList ::parse(CMSSLexer lexer)
    {
       StylesList list = null;
