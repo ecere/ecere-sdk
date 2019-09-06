@@ -1180,11 +1180,14 @@ public:
          }
          result = mList.addStyle(msk, value, c, false, evaluator);
       }
+      /*
+      // StylingRuleBlock doesn't derive from CMSSInstInitList ???
       if(result && eClass_IsDerived(this._class, class(StylingRuleBlock)))
       {
          StylingRuleBlock o = (StylingRuleBlock)this;
          o.mask &= msk;
       }
+      */
       return result;
    }
 }
