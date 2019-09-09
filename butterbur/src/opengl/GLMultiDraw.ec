@@ -163,6 +163,8 @@ struct GLArrayTexture
 {
    uint texture;
    uint width, height, numLayers;
+   uint numLevels;
+   bool maxLevel;
    private FreeSpots spots;
 
    void free()
@@ -175,6 +177,16 @@ struct GLArrayTexture
 
    void init(int levels, int w, int h, int count)
    {
+      _init(levels, w, h, count, false);
+   }
+
+   void initMaxLevel(int levels, int w, int h, int count)
+   {
+      _init(levels, w, h, count, true);
+   }
+
+   void _init(int levels, int w, int h, int count, bool setMaxLevel)
+   {
       int target = GL_TEXTURE_2D_ARRAY;
       /*if(texture)
       {
@@ -185,10 +197,15 @@ struct GLArrayTexture
       if(!texture)
          glGenTextures(1, &texture);
 
+      maxLevel = setMaxLevel;
+      numLevels = levels;
       width = w;
       height = h;
       numLayers = count;
       glBindTexture(target, texture);
+
+      if(setMaxLevel)
+         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, levels-1);
 
 #ifdef _DEBUG
       checkGLErrors();
@@ -202,8 +219,14 @@ struct GLArrayTexture
 #ifdef _DEBUG
       checkGLErrors();
 #endif
-      glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(target, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   //#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+      //if(glVersion >= 2)
+         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
+   //#endif
+
+      glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+      glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
       glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
       glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
 
@@ -213,7 +236,7 @@ struct GLArrayTexture
    void resize(uint numLayers, uint targetFBO)
    {
       GLArrayTexture tmp { };
-      tmp.init(1, width, height, numLayers);
+      tmp.init(numLevels, width, height, numLayers);
       tmp.copy(this, targetFBO);
       glBindTexture(GL_TEXTURE_2D_ARRAY, 0); // TOCHECK:
 #ifdef _DEBUG
@@ -233,15 +256,23 @@ struct GLArrayTexture
       // 4.3+
 #if !defined(__ANDROID__) || defined(__LUMIN__)
       int level = 0;
+      int w = width, h = height;
       glBindTexture(target, src.texture);
-      glCopyImageSubData(src.texture,
-         target, level, 0, 0, 0,
-         texture, target, level, 0, 0, 0,
-         width, height, src.numLayers);
+      for(level = 0; level < numLevels; level++)
+      {
+         glCopyImageSubData(src.texture,
+            target, level, 0, 0, 0,
+            texture, target, level, 0, 0, 0,
+            w, h, src.numLayers);
+         w >>= 1;
+         h >>= 1;
+      }
       glBindTexture(target, 0);
 #else
       // FALLBACK for 3.0->4.2:
       int i;
+
+      // TODO: Fix for multiple levels...
 
       if(!tempTexFBO)
          glGenFramebuffers(1, &tempTexFBO);
