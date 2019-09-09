@@ -732,13 +732,14 @@ public:
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
    {
-      ExpFlags flags;
-      //shouldn't this loop?
-      if(list && list.lastIterator.data)
+      ExpFlags flags = 0;
+      if(list)
       {
-         flags = list.lastIterator.data.compute(value, evaluator, computeType);
+         Iterator<CMSSExpression> last { container = list, pointer = list.GetLast() };
+         CMSSExpression lastExp = last.data;
+         if(lastExp)
+            flags = lastExp.compute(value, evaluator, computeType);
       }
-      else flags = { };
       return flags;
    }
 
