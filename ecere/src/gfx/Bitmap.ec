@@ -1029,6 +1029,9 @@ public:
       {
          convBitmap.picture = bitmap.picture;
          bitmap.picture = null;
+         if(!convBitmap.picture)
+            // TOCHECK: Why is this happening?
+            convBitmap.picture = new0 byte[convBitmap.sizeBytes];
       }
 
       convBitmap.palette = bitmap.palette;
