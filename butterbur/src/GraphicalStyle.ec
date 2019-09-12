@@ -281,7 +281,8 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
 Map<GraphicalStyleKind, const String> stringFromMaskMap
 { [
    { opacity, "opacity" },
-   { scaling, "scaling" }
+   { scaling, "scaling" },
+   { visibility, "visibility" }
    //{ transform3D, "transform3D" }
 ] };
 
