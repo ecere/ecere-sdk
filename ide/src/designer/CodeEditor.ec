@@ -6156,7 +6156,7 @@ class CodeEditor : Window
          listedEnums = ListEnumsModule(this.privateModule, destType);
       }
 
-      if(destType && destType.kind == classType && destType._class.registered && destType._class.registered.type == enumClass)
+      if(destType && destType.kind == classType && destType._class && destType._class.registered && destType._class.registered.type == enumClass)
       {
          ListEnumValues(destType._class.registered);
 
