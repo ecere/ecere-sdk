@@ -90,6 +90,7 @@ public enum SetBool : uint
    }*/
 };
 
+static Mutex mutexTemplateInstanceFix { };
 
 public class ECONParser : JSONParser
 {
@@ -549,7 +550,9 @@ private:
       {
          bool isAVLTree = eClass_IsDerived(type, class(AVLTree));
 
+         mutexTemplateInstanceFix.Wait();
          *array = eInstance_New(type);
+         mutexTemplateInstanceFix.Release();
          result = success;
          while(result)
          {
@@ -559,9 +562,7 @@ private:
             JSONResult itemResult;
 
             if(eClass_IsDerived(type, class(Container)))
-            {
                arrayType = type.templateArgs[0].dataTypeClass;
-            }
 
             if(arrayType && arrayType.type == structClass)
                value.p = new0 byte[arrayType.structSize];
@@ -571,9 +572,11 @@ private:
             {
                char className[1024];
                sprintf(className, "%s<%s>", type.name, rType.name);
-               type = eSystem_FindClass(type.module.application, className);
                delete *array;
+               mutexTemplateInstanceFix.Wait();
+               type = eSystem_FindClass(type.module.application, className);
                *array = eInstance_New(type);
+               mutexTemplateInstanceFix.Release();
                arrayType = rType;
             }
             if(itemResult == success)
@@ -680,7 +683,9 @@ private:
          if(keyType && !strcmp(keyType.dataTypeString, "char *"))
             keyProp = eClass_FindProperty(mapNodeType, "key", mapNodeType.module);
 
+         mutexTemplateInstanceFix.Wait();
          *map = eInstance_New(type);
+         mutexTemplateInstanceFix.Release();
          result = success;
 
          while(result)
@@ -742,7 +747,9 @@ private:
       {
          Class mapNodeType = type.templateArgs[0].dataTypeClass;
          Class valueType = mapNodeType.templateArgs[2].dataTypeClass;
+         mutexTemplateInstanceFix.Wait();
          *map = eInstance_New(type);
+         mutexTemplateInstanceFix.Release();
          result = success;
 
          while(result)
@@ -1067,7 +1074,11 @@ private:
 
          result = success;
          if(objectType && (objectType.type == noHeadClass || objectType.type == normalClass))
+         {
+            mutexTemplateInstanceFix.Wait();
             *object = eInstance_New(objectType);
+            mutexTemplateInstanceFix.Release();
+         }
 
          while(result)
          {
@@ -1630,9 +1641,12 @@ private:
                refProp = true;
             else
             {
-               Class c = eSystem_FindClass(type.module, prop.name);
+               Class c;
+               mutexTemplateInstanceFix.Wait();
+               c = eSystem_FindClass(type.module, prop.name);
                if(!c)
                   c = eSystem_FindClass(type.module.application, prop.name);
+               mutexTemplateInstanceFix.Release();
                if(c)
                {
                   Property p;
@@ -2437,11 +2451,14 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 
 static Class superFindClass(const String name, Module alternativeModule)
 {
-   Class _class = eSystem_FindClass(__thisModule, name);
+   Class _class;
+   mutexTemplateInstanceFix.Wait();
+   _class = eSystem_FindClass(__thisModule, name);
    if(!_class && alternativeModule)
       _class = eSystem_FindClass(alternativeModule, name);
    if(!_class)
       _class = eSystem_FindClass(__thisModule.application, name);
+   mutexTemplateInstanceFix.Release();
    return _class;
 }
 
