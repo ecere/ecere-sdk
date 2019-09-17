@@ -407,8 +407,8 @@ public:
       value = constant;
       switch(value.type.type)
       {
-         case real: expType = class(double);break;
-         case integer: expType = class(int64);break;
+         case real: expType = class(double); break;
+         case integer: expType = class(int64); break;
       }
       return ExpFlags { resolved = true };
    }
@@ -511,7 +511,7 @@ public:
                value.i = color;
             }
             else
-                onGetDataFromString(destType, &value.i, identifier.string);
+               onGetDataFromString(destType, &value.i, identifier.string);
 
             //if(destType != class(Color)) value.i = strtol(identifier.string, null, 0);
             expType = destType;
@@ -1365,7 +1365,7 @@ public:
       }
       else if(memberID)
       {
-         //want the member from label's inhereted MGE here
+         //want the member from label's inherited MGE here
          Class baseClass;
          Array<Class> bases { };
          int mid = 0;
