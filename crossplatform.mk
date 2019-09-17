@@ -102,6 +102,13 @@ ifneq ($(TARGET_PLATFORM),$(HOST_PLATFORM))
    CROSS_TARGET := defined
 endif
 
+# CROSS_TARGET_WIN_BOOTSTRAP
+ifdef WINDOWS_TARGET
+ifndef CROSS_TARGET
+   CROSS_TARGET_WIN_BOOTSTRAP := defined
+endif
+endif
+
 # TARGET_TYPE
 ifeq ($(TARGET_TYPE),staticlib)
    STATIC_LIBRARY_TARGET := defined
@@ -111,6 +118,14 @@ ifeq ($(TARGET_TYPE),sharedlib)
 else
 ifeq ($(TARGET_TYPE),executable)
    EXECUTABLE_TARGET := defined
+endif
+endif
+endif
+
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	SO_LIB_LINKS := defined
 endif
 endif
 endif
@@ -314,7 +329,10 @@ HOST_LP := $(if $(WINDOWS_HOST),$(if $(STATIC_LIBRARY_TARGET),lib,),lib)
 .SUFFIXES: .c .ec .sym .imp .bowl $(O) $(A)
 
 # TARGET VERSION
+VERSION_MAJOR := $(basename $(VERSION))
+VERSION_MINOR := $(subst .,,$(suffix $(VERSION)))
 VER := $(if $(LINUX_TARGET),$(if $(LINUX_HOST),$(if $(VERSION),.$(VERSION),),),)
+VER_MAJ := $(if $(LINUX_TARGET),$(if $(LINUX_HOST),$(if $(VERSION_MAJOR),.$(VERSION_MAJOR),),),)
 
 # SUPER TOOLS
 ifdef CCACHE
@@ -475,6 +493,10 @@ ifdef WINDOWS_TARGET
    OPENSSL_BIN_DIR = .
   endif
  endif
+endif
+
+ifeq ($(MAKECMDGOALS),nores)
+NO_RES := defined
 endif
 
 _example_space = $(space)$(space)$(space)

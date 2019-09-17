@@ -61,6 +61,10 @@ class epj2makeApp : GuiApplication
       bool noWarnings = false;
       const char * overrideObjDir = null;
       const char * includemkPath = null;
+      const char * includecfPath = null;
+      const char * cfDir = null;
+
+      MakefileGenerationOptions opt { };
 
       /*
       for(c = 0; c < this.argc; c++)
@@ -172,6 +176,34 @@ class epj2makeApp : GuiApplication
                else
                   valid = false;
             }
+            else if(!strcmpi(arg+1, "includecf"))
+            {
+               if(++c < argc)
+                  includecfPath = argv[c];
+               else
+                  valid = false;
+            }
+            else if(!strcmpi(arg+1, "cfdir"))
+            {
+               if(++c < argc)
+                  cfDir = argv[c];
+               else
+                  valid = false;
+            }
+            else if(!strcmpi(arg+1, "genoptfile"))
+            {
+               if(++c < argc)
+               {
+                  if(!loadFromFileECON(argv[c], class(MakefileGenerationOptions), &opt))
+                  {
+                     bool exists = FileExists(argv[c]).isFile;
+                     printf($"Error: Generation options file (%s) %s%s", argv[c], exists ? "does not exist" : "could not be loaded", ".\n");
+                     valid = false; // abort = true;
+                  }
+               }
+               else
+                  valid = false;
+            }
             else if(arg[1] == 'w' && !arg[2])
             {
                noWarnings = true;
@@ -269,6 +301,9 @@ class epj2makeApp : GuiApplication
          printf("%s", $"         [-noresources]\n");
          printf("%s", $"         [-d <intermediate objects directory>]\n");
          printf("%s", $"         [-includemk <crossplatform.mk path>]\n");
+         printf("%s", $"         [-includecf <compiler.cf path>]\n");
+         printf("%s", $"         [-cfdir <path to configuration directory>]\n");
+         printf("%s", $"         [-genoptfile <path to makefile generation options econ file>]\n");
       }
       else
       {
@@ -386,7 +421,7 @@ class epj2makeApp : GuiApplication
                   {
                      project.GenerateCompilerCf(defaultCompiler, project.topNode.ContainsFilesWithExtension("ec", project.config));
                      project.GenerateCrossPlatformMk(null);
-                     if(project.GenerateMakefile(makePath, noResources, includemkPath, project.config))
+                     if(project.GenerateMakefile(makePath, noResources, includemkPath, includecfPath, cfDir, project.config, opt))
                      {
                         if(makePath)
                            printf("%s\n", makePath);
@@ -429,4 +464,18 @@ class epj2makeApp : GuiApplication
       getch();
 #endif
    }
+}
+
+public bool loadFromFileECON(const String path, Class objectType, void * object)
+{
+   File f = FileOpen(path, read);
+   if(f)
+   {
+      ECONParser parser { f = f };
+      JSONResult jsonResult;
+      jsonResult = parser.GetObject(objectType, object);
+      delete f;
+      return jsonResult == success;
+   }
+   return false;
 }

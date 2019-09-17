@@ -391,7 +391,7 @@ static bool IsLinkerOption(String s)
 
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
-enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources };
+enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources, eC_noPrint };
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
@@ -597,7 +597,7 @@ enum StringOutputMethod { asIs, escape, escapePath};
 
 enum ToolchainFlag { any, _D, _I, _isystem, _Wl, _L/*, _Wl-rpath*/ };
 const String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", /*"-Wl,--library-path="*/"-L"/*, "-Wl,-rpath "*/ };
-void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMethod lineMethod)
+void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMethod lineMethod, MakefileGenerationOptions opt)
 {
    if(list.count)
    {
@@ -605,20 +605,26 @@ void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMetho
          f.Puts(" \\\n\t");
       for(item : list)
       {
+         int len = strlen(item);
+         bool isVar = item[0] == '$' && item[1] == '(' && item[len - 1] == ')';
+         char * tmp = new char[len * 2 + 1];
+         bool pathType = flag != _D && flag != _Wl && flag != any;
+         EscapeForMake(tmp, item, false, true, !pathType);
          if(lineMethod == lineEach)
             f.Puts(" \\\n\t");
-         f.Printf(" %s", flagNames[flag]);
+         f.Printf(" ");
+         if(isVar && pathType)
+            f.Printf("$(if %s,", tmp);
+         f.Printf("%s", flagNames[flag]);
          if(flag == _D)
             f.Printf("%s", item);
-         else if(flag != _Wl && flag != any)
-         {
-            char * tmp = new char[strlen(item)*2+1];
-            EscapeForMake(tmp, item, false, true, false);
-            f.Printf("$(call quote_path,%s)", tmp);
-            delete tmp;
-         }
+         else if(pathType)
+            f.Printf("%s%s%s", flag != _L || opt.NQF ? "" : "$(call quote_path,", tmp, flag != _L || opt.NQF ? "" : ")");
          else
-            EscapeForMakeToFile(f, item, false, true, true);
+            f.Printf("%s", tmp);
+         if(isVar && pathType)
+            f.Printf(",)");
+         delete tmp;
       }
    }
 }
@@ -2284,10 +2290,10 @@ private:
             if(!FileExists(objDirExp.dir).isDirectory)
             {
 #ifdef __APPLE__
-               sprintf(command, "%s CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
+               sprintf(command, "%s V=1 CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir, dyldPath,
 #else
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
+               sprintf(command, "%s V=1 CF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
 #endif
                      crossCompiling ? " TARGET_PLATFORM=" : "",
@@ -2349,9 +2355,9 @@ private:
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
 #ifdef __APPLE__
-         sprintf(command, "%s%s %sCF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #else
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\"%s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #endif
 #if defined(__WIN32__)
                "",
@@ -2488,7 +2494,7 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s V=1 CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
@@ -2848,21 +2854,21 @@ private:
             if(compiler.includeDirs && compiler.includeDirs.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputFlags(f, gccCompiler ? _isystem : _I, compiler.includeDirs, lineEach);
+               OutputFlags(f, gccCompiler ? _isystem : _I, compiler.includeDirs, lineEach, 0);
                f.Puts("\n");
             }
             if(compiler.prepDirectives && compiler.prepDirectives.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputFlags(f, _D, compiler.prepDirectives, inPlace);
+               OutputFlags(f, _D, compiler.prepDirectives, inPlace, 0);
                f.Puts("\n");
             }
             if(compiler.libraryDirs && compiler.libraryDirs.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputFlags(f, _L, compiler.libraryDirs, lineEach);
+               OutputFlags(f, _L, compiler.libraryDirs, lineEach, 0);
                // We would need a bool option to know whether we want to add to rpath as well...
-               // OutputFlags(f, _Wl-rpath, compiler.libraryDirs, lineEach);
+               // OutputFlags(f, _Wl-rpath, compiler.libraryDirs, lineEach, opt);
                f.Puts("\n");
             }
             if(compiler.excludeLibs && compiler.excludeLibs.count)
@@ -2877,31 +2883,31 @@ private:
             if(compiler.eCcompilerFlags && compiler.eCcompilerFlags.count)
             {
                f.Puts("\nECFLAGS +=");
-               OutputFlags(f, any, compiler.eCcompilerFlags, inPlace);
+               OutputFlags(f, any, compiler.eCcompilerFlags, inPlace, 0);
                f.Puts("\n");
             }
             if(compiler.compilerFlags && compiler.compilerFlags.count)
             {
                f.Puts("\nCFLAGS +=");
-               OutputFlags(f, any, compiler.compilerFlags, inPlace);
+               OutputFlags(f, any, compiler.compilerFlags, inPlace, 0);
                f.Puts("\n");
             }
             if(compiler.cxxFlags && compiler.cxxFlags.count)
             {
                f.Puts("\nCXXFLAGS +=");
-               OutputFlags(f, any, compiler.cxxFlags, inPlace);
+               OutputFlags(f, any, compiler.cxxFlags, inPlace, 0);
                f.Puts("\n");
             }
             if(compiler.prepDirectives && compiler.prepDirectives.count)
             {
                f.Puts("\nCXXFLAGS +=");
-               OutputFlags(f, _D, compiler.prepDirectives, inPlace);
+               OutputFlags(f, _D, compiler.prepDirectives, inPlace, 0);
                f.Puts("\n");
             }
             if(compiler.linkerFlags && compiler.linkerFlags.count)
             {
                f.Puts("\nLDFLAGS +=");
-               OutputFlags(f, _Wl, compiler.linkerFlags, inPlace);
+               OutputFlags(f, _Wl, compiler.linkerFlags, inPlace, 0);
                f.Puts("\n");
             }
             f.Puts("\n");
@@ -2922,7 +2928,9 @@ private:
       return result;
    }
 
-   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config)
+   bool GenerateMakefile(const char * altMakefilePath, bool noResources,
+         const char * includemkPath, const char * includecfPath, const char * configDir,
+         ProjectConfig config, MakefileGenerationOptions opt)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
@@ -2960,11 +2968,13 @@ private:
          int lenObjDirExpNoSpaces, lenTargetDirExpNoSpaces;
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
-         int numCObjects = 0;
+         int numCObjects = topNode.GenMakefilePrintNode(f, this, eC_noPrint, null/*namesInfo*/, null/*listItems*/, config, null, null, opt);
          int numObjects = 0;
          int numRCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
+         bool containsCPLMK = false;
          bool relObjDir, sameOrRelObjTargetDirs;
+         bool sameObjAndTargetDirs;
          const String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
@@ -3002,18 +3012,31 @@ private:
          relObjDir = lenObjDirExpNoSpaces == 0 ||
                (objDirExpNoSpaces[0] == '.' && (lenObjDirExpNoSpaces == 1 || objDirExpNoSpaces[1] == '.'));
          lenTargetDirExpNoSpaces = strlen(targetDirExpNoSpaces);
-         sameOrRelObjTargetDirs = lenTargetDirExpNoSpaces == 0 ||
-               (targetDirExpNoSpaces[0] == '.' && (lenTargetDirExpNoSpaces == 1 || targetDirExpNoSpaces[1] == '.')) ||
-               !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
+         sameObjAndTargetDirs = lenObjDirExpNoSpaces && lenTargetDirExpNoSpaces && !fstrcmp(objDirExpNoSpaces, targetDirExpNoSpaces);
+         sameOrRelObjTargetDirs = sameObjAndTargetDirs || lenTargetDirExpNoSpaces == 0 ||
+               (targetDirExpNoSpaces[0] == '.' && (lenTargetDirExpNoSpaces == 1 || targetDirExpNoSpaces[1] == '.'));
 
-         f.Printf(".PHONY: all objdir%s cleantarget clean realclean distclean\n\n", sameOrRelObjTargetDirs ? "" : " targetdir");
+         if(!opt.noSilent)
+         {
+            f.Printf("ifneq ($(V),1)\n");
+            f.Printf(".SILENT:\n");
+            f.Printf("endif\n\n");
+         }
+
+         if(opt.noPhonyTargetsOnePerLine)
+         {
+            f.Printf(".PHONY: all objdir%s cleantarget clean realclean wipeclean distclean", sameOrRelObjTargetDirs ? "" : " targetdir");
+            if(!opt.noNoResTarget)
+               f.Printf(" nores");
+            f.Printf("\n\n");
+         }
 
          f.Puts("# CORE VARIABLES\n\n");
 
          f.Printf("MODULE := %s\n", fixedModuleName);
-         f.Printf("VERSION := %s\n", property::moduleVersion);
+         f.Printf("VERSION :=%s%s\n", property::moduleVersion[0] ? " " : "", property::moduleVersion);
          f.Printf("CONFIG := %s\n", fixedConfigName);
-         topNode.GenMakefilePrintNode(f, this, noPrint, null, null, config, &containsCXX);
+         topNode.GenMakefilePrintNode(f, this, noPrint, null, null, config, &containsCXX, null, opt);
          if(containsCXX)
             f.Puts("CONTAINS_CXX := defined\n");
          f.Puts("ifndef COMPILER\n" "COMPILER := default\n" "endif\n");
@@ -3053,7 +3076,8 @@ private:
 
          f.Puts("# FLAGS\n\n");
 
-         f.Puts("ECFLAGS =\n");
+         if(numCObjects)
+            f.Puts("ECFLAGS =\n");
 
          f.Puts("ifndef DEBIAN_PACKAGE\n");
          {
@@ -3082,9 +3106,9 @@ private:
 
          f.Puts("# INCLUDES\n\n");
 
-         if(compilerConfigsDir && compilerConfigsDir[0])
+         if((configDir && configDir[0]) || (compilerConfigsDir && compilerConfigsDir[0]))
          {
-            strcpy(cfDir, compilerConfigsDir);
+            strcpy(cfDir, configDir && configDir[0] ? configDir : compilerConfigsDir);
             if(cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
                strcat(cfDir, "/");
          }
@@ -3097,18 +3121,32 @@ private:
          }
 
          f.Printf("_CF_DIR = %s\n", cfDir);
+         if(opt.useBootstrap)
+            f.Print("USE_BOOTSTRAP := defined\n");
          f.Puts("\n");
 
-         f.Printf("include %s\n", includemkPath ? includemkPath : "$(_CF_DIR)crossplatform.mk");
-         f.Puts("include $(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf\n");
+         if(!opt.noMakeLibraryVar)
+         {
+            f.Printf("ifndef _CPLMK\n");
+            f.Printf("_CPLMK := crossplatform.mk\n");
+            f.Printf("endif\n");
+         }
+
+         f.Printf("include %s%s\n", includemkPath ? includemkPath : "$(_CF_DIR)", includemkPath ? "" : opt.noMakeLibraryVar ? "crossplatform.mk" : "$(_CPLMK)");
+         f.Printf("include %s\n", includecfPath ? includecfPath : "$(_CF_DIR)$(TARGET_PLATFORM)-$(COMPILER).cf");
          f.Puts("\n");
 
          f.Puts("# POST-INCLUDES VARIABLES\n\n");
 
-         f.Printf("OBJ = %s%s\n", objDirExpNoSpaces, objDirExpNoSpaces[0] ? "/" : "");
+         // f.Printf("_OBJ =%s%s\n", objDirExpNoSpaces[0] ? " " : "", objDirExpNoSpaces);
+         // f.Printf("OBJ =%s%s%s\n", objDirExpNoSpaces[0] ? " " : "", objDirExpNoSpaces[0] ? "$(_OBJ)" : "", objDirExpNoSpaces[0] ? "/" : "");
+         if(objDirExpNoSpaces[0])
+            f.Printf("OBJ = %s/\n", objDirExpNoSpaces);
+         else
+            f.Printf("OBJ =\n");
          f.Puts("\n");
 
-         f.Printf("RES = %s%s\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
+         f.Printf("RES =%s%s%s\n", resDirNoSpaces[0] ? " " : "", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
          f.Puts("\n");
 
          // test = GetTargetTypeIsSetByPlatform(config);
@@ -3138,8 +3176,16 @@ private:
                f.Puts("else\n");
             }
             GetMakefileTargetFileName(targetType, target, config);
-            strcpy(temp, targetDir);
-            PathCatSlash(temp, target);
+            if(sameObjAndTargetDirs)
+            {
+               strcpy(temp, "$(OBJ)");
+               strcat(temp, target);
+            }
+            else
+            {
+               strcpy(temp, targetDir);
+               PathCatSlash(temp, target);
+            }
             ReplaceSpaces(target, temp);
             f.Printf("TARGET = %s\n", target);
 
@@ -3164,7 +3210,8 @@ private:
             int c;
             const char * map[5][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "ECOBJECTS", "O" }, { "BOWLS", "B" } };
 
-            numCObjects = topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null);
+            if(topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null, null, opt) != numCObjects)
+               PrintLn("Problem: numCObjects might be wrong!!");
             if(numCObjects)
             {
                eCsourcesParts = OutputFileList(f, "_ECSOURCES", listItems, varStringLenDiffs, null);
@@ -3188,11 +3235,13 @@ private:
                      f.Puts("\n");
                      for(n = 1; n <= eCsourcesParts; n++)
                         f.Printf("_%s%d = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES%d))))\n", map[c][0], n, map[c][1], n);
+                     f.Puts("\n");
                   }
                   else if(eCsourcesParts == 1)
                      f.Printf("_%s = $(addprefix $(OBJ),$(patsubst %%.ec,%%$(%s),$(notdir $(_ECSOURCES))))\n", map[c][0], map[c][1]);
-                  f.Puts("\n");
                }
+               if(eCsourcesParts == 1)
+                  f.Puts("\n");
 
                for(c = 0; c < 5; c++)
                {
@@ -3205,15 +3254,17 @@ private:
                      f.Puts("\n");
                      for(n = 1; n <= eCsourcesParts; n++)
                         f.Printf("%s%d = $(call shwspace,$(_%s%d))\n", map[c][0], n, map[c][0], n);
+                     f.Puts("\n");
                   }
                   else if(eCsourcesParts == 1)
                      f.Printf("%s = $(call shwspace,$(_%s))\n", map[c][0], map[c][0]);
-                  f.Puts("\n");
                }
+               if(eCsourcesParts == 1)
+                  f.Puts("\n");
             }
          }
 
-         numRCObjects = topNode.GenMakefilePrintNode(f, this, rcSources, namesInfo, listItems, config, null);
+         numRCObjects = topNode.GenMakefilePrintNode(f, this, rcSources, namesInfo, listItems, config, null, null, opt);
          if(numRCObjects)
          {
             f.Puts("ifdef WINDOWS_TARGET\n\n");
@@ -3247,16 +3298,16 @@ private:
             f.Puts("endif\n\n");
          }
 
-         numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, null);
+         numObjects = topNode.GenMakefilePrintNode(f, this, objects, namesInfo, listItems, config, null, null, opt);
          if(numObjects)
             objectsParts = OutputFileList(f, "_OBJECTS", listItems, varStringLenDiffs, null);
-         f.Printf("OBJECTS =%s%s%s%s\n",
+         f.Printf("OBJECTS =%s%s%s%s%s\n",
                numObjects ? " $(_OBJECTS)" : "", numCObjects ? " $(ECOBJECTS)" : "",
-               numCObjects ? " $(OBJ)$(MODULE).main$(O)" : "",
+               numCObjects ? " $(OBJ)$(MODULE).main" : "", numCObjects ? !opt.noVarForObjectExt ? "$(O)" : ".o" : "",
                numRCObjects ? " $(RCOBJECTS)" : "");
          f.Puts("\n");
 
-         topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
+         topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null, null, opt);
          {
             const char * prefix;
             if(numCObjects && numRCObjects)
@@ -3269,15 +3320,18 @@ private:
          }
 
          if(!noResources)
-            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
+            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null, &containsCPLMK, opt);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
-         f.Puts("ifdef USE_RESOURCES_EAR\n");
-         f.Puts("RESOURCES_EAR = $(OBJ)resources.ear\n");
-         f.Puts("else\n");
-         f.Puts("RESOURCES_EAR = $(RESOURCES)\n");
-         f.Puts("endif\n");
-         f.Puts("\n");
+         if(!opt.noResourcesEAR)
+         {
+            f.Puts("ifdef USE_RESOURCES_EAR\n");
+            f.Puts("RESOURCES_EAR = $(OBJ)resources.ear\n");
+            f.Puts("else\n");
+            f.Puts("RESOURCES_EAR = $(RESOURCES)\n");
+            f.Puts("endif\n");
+            f.Puts("\n");
+         }
 
          f.Puts("LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)\n");
          f.Puts("\n");
@@ -3297,11 +3351,14 @@ private:
 
          topNode.GenMakeCollectAssignNodeFlags(config, numCObjects != 0,
                cflagsVariations, nodeCFlagsMapping,
-               ecflagsVariations, nodeECFlagsMapping, null);
+               ecflagsVariations, nodeECFlagsMapping, null, opt);
 
          GenMakePrintCustomFlags(f, "PRJ_CFLAGS", false, cflagsVariations);
-         f.Puts("ECFLAGS += -module $(MODULE)\n");
-         GenMakePrintCustomFlags(f, "ECFLAGS", true, ecflagsVariations);
+         if(numCObjects)
+         {
+            f.Puts("ECFLAGS += -module $(MODULE)\n");
+            GenMakePrintCustomFlags(f, "ECFLAGS", true, ecflagsVariations);
+         }
 
          if(platforms || (config && config.platforms))
          {
@@ -3400,9 +3457,9 @@ private:
                      {
                         f.Puts("OFLAGS +=");
                         if(configPlatformOptions && configPlatformOptions.options.libraryDirs)
-                           OutputFlags(f, _L, configPlatformOptions.options.libraryDirs, lineEach);
+                           OutputFlags(f, _L, configPlatformOptions.options.libraryDirs, lineEach, opt);
                         if(projectPlatformOptions && projectPlatformOptions.options.libraryDirs)
-                           OutputFlags(f, _L, projectPlatformOptions.options.libraryDirs, lineEach);
+                           OutputFlags(f, _L, projectPlatformOptions.options.libraryDirs, lineEach, opt);
                         f.Puts("\n");
                      }
 
@@ -3515,9 +3572,9 @@ private:
             f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
             f.Puts("OFLAGS +=");
             if(config && config.options && config.options.libraryDirs)
-               OutputFlags(f, _L, config.options.libraryDirs, lineEach);
+               OutputFlags(f, _L, config.options.libraryDirs, lineEach, opt);
             if(options && options.libraryDirs)
-               OutputFlags(f, _L, options.libraryDirs, lineEach);
+               OutputFlags(f, _L, options.libraryDirs, lineEach, opt);
             f.Puts("\n");
             f.Puts("endif\n");
             f.Puts("\n");
@@ -3526,13 +3583,15 @@ private:
          f.Puts("# TARGETS\n");
          f.Puts("\n");
 
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: all\n");
          f.Printf("all: objdir%s $(TARGET)\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          f.Puts("\n");
 
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: objdir\n");
          f.Puts("objdir:\n");
          if(!relObjDir)
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))\n");
-         if(numCObjects)
+         if(!opt.noEcereSdkSrcMessage && numCObjects)
          {
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)\n");
             f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))\n");
@@ -3588,6 +3647,7 @@ private:
 
          if(!sameOrRelObjTargetDirs)
          {
+            if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: targetdir\n");
             f.Puts("targetdir:\n");
                f.Printf("\t$(if $(wildcard %s),,$(call mkdir,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
             f.Puts("\n");
@@ -3595,27 +3655,53 @@ private:
 
          if(numCObjects)
          {
+            String prereq;
+            String target;
+            const String prereqOpt;
+            const String targetOpt;
+
             // Main Module (Linking) for ECERE C modules
-            f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
-            f.Printf("\t@$(call rm,$(OBJ)symbols.lst)\n");
-            f.Printf("\t@$(call touch,$(OBJ)symbols.lst)\n");
-            OutputFileListActions(f, "SYMBOLS", eCsourcesParts, "$(OBJ)symbols.lst");
-            OutputFileListActions(f, "IMPORTS", eCsourcesParts, "$(OBJ)symbols.lst");
+
+            target = CopyString("$(OBJ)$(MODULE).main.ec");
+            targetOpt = opt.noSpecialVarTargetName ? target : "$@";
+
+            f.Printf("%s: $(SYMBOLS) $(COBJECTS)\n", target);
+            if(!opt.noAddToListFile)
+            {
+               f.Printf("\t@$(call rm,$(OBJ)symbols.lst)\n");
+               f.Printf("\t@$(call touch,$(OBJ)symbols.lst)\n");
+               OutputFileListActions(f, "SYMBOLS", eCsourcesParts, "$(OBJ)symbols.lst");
+               OutputFileListActions(f, "IMPORTS", eCsourcesParts, "$(OBJ)symbols.lst");
+            }
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols %s -o $(call quote_path,$@)\n",
-               GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
+            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) %s -symbols %s -o %s%s%s\n",
+                  GetConsole(config) ? " -console" : "", !opt.noAddToListFile ? "@$(OBJ)symbols.lst" : "$(SYMBOLS) $(IMPORTS)", objDirExpNoSpaces,
+                  opt.NQT ? "" : "$(call quote_path,", targetOpt, opt.NQT ? "" : ")");
             f.Puts("\n");
-            // Main Module (Linking) for ECERE C modules
-            f.Puts("$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec\n");
-            f.Puts("\t$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS)"
-                  " -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n");
-            f.Puts("\t$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
-                  " -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)\n");
+
+            prereq = target;
+            prereqOpt = opt.noSpecialVarPrereqName ? prereq : "$<";
+            target = CopyString("$(OBJ)$(MODULE).main.c");
+            targetOpt = opt.noSpecialVarTargetName ? target : "$@";
+
+            f.Printf("%s: %s\n", target, prereq);
+            f.Printf("\t$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS)"
+                  " -c %s%s%s -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)\n",
+                        opt.NQP ? "" : "$(call quote_path,", prereqOpt, opt.NQP ? "" : ")");
+            f.Printf("\t$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY)"
+                  " -c %s%s%s -o %s%s%s -symbols $(OBJ)\n",
+                        opt.NQP ? "" : "$(call quote_path,", prereqOpt, opt.NQP ? "" : ")",
+                        opt.NQT ? "" : "$(call quote_path,", targetOpt, opt.NQT ? "" : ")");
             f.Puts("\n");
+
+            delete prereq;
+            delete target;
          }
 
-         if(resNode.files && resNode.files.count && !noResources)
+         if(!opt.noResourcesEAR && resNode.files && resNode.files.count && !noResources)
          {
+            // f.Puts("ifndef NO_RES\n");
+            // f.Puts("endif\n");
             f.Puts("ifdef USE_RESOURCES_EAR\n");
             f.Puts("$(RESOURCES_EAR): $(RESOURCES) | objdir\n");
                resNode.GenMakefileAddResources(f, resNode.path, config, "RESOURCES_EAR");
@@ -3625,6 +3711,13 @@ private:
 
          // *** Target ***
 
+         if(!opt.noNoResTarget)
+         {
+            if(!opt.noPhonyTargetsOnePerLine)
+               f.Puts(".PHONY: nores\n");
+            f.Puts("nores: $(TARGET)\n\n");
+         }
+
          // This would not rebuild the target on updated objects
          // f.Printf("$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
 
@@ -3633,68 +3726,90 @@ private:
          f.Puts("$(OBJECTS): | objdir\n");
 
          // This alone was breaking the tarball, object directory does not get created first (order-only rules happen last it seems!)
-         f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
-               rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
+         if(!opt.noNoResTarget)
+            f.Printf("$(TARGET): $(SOURCES)%s $(if $(NO_RES),,$(RESOURCES%s)) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
+                  rcSourcesParts ? " $(RCSOURCES)" : "", opt.noResourcesEAR ? "" : "_EAR", sameOrRelObjTargetDirs ? "" : " targetdir");
+         else
+            f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES%s) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
+                  rcSourcesParts ? " $(RCSOURCES)" : "", opt.noResourcesEAR ? "" : "_EAR", sameOrRelObjTargetDirs ? "" : " targetdir");
 
-         f.Printf("\t@$(call rm,$(OBJ)objects.lst)\n");
-         f.Printf("\t@$(call touch,$(OBJ)objects.lst)\n");
-         OutputFileListActions(f, "_OBJECTS", objectsParts, "$(OBJ)objects.lst");
-         if(rcSourcesParts)
+
+         if(!opt.noAddToListFile)
          {
-            f.Puts("ifdef WINDOWS_TARGET\n");
-            OutputFileListActions(f, "RCOBJECTS", rcSourcesParts, "$(OBJ)objects.lst");
-            f.Puts("endif\n");
-         }
-         if(numCObjects)
-         {
-            f.Printf("\t$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)\n");
-            OutputFileListActions(f, "ECOBJECTS", eCsourcesParts, "$(OBJ)objects.lst");
-         }
-
-         f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
-
-         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", containsCXX ? "CXX" : "CC");
-         if(!GetDebug(config))
-         {
-            f.Puts("ifndef NOSTRIP\n");
-            f.Puts("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
-            f.Puts("endif\n");
-
-            if(GetCompress(config))
+            f.Printf("\t@$(call rm,$(OBJ)objects.lst)\n");
+            f.Printf("\t@$(call touch,$(OBJ)objects.lst)\n");
+            OutputFileListActions(f, "_OBJECTS", objectsParts, "$(OBJ)objects.lst");
+            if(rcSourcesParts)
             {
-               f.Printf("ifndef %s\n", PlatformToMakefileTargetVariable(win32));
-               f.Puts("ifdef EXECUTABLE_TARGET\n");
-                  f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
-               f.Puts("endif\n");
-               f.Puts("else\n");
-               //f.Puts("ifneq ($(TARGET_ARCH),x86_64)\n");
-                  f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
-               //f.Puts("endif\n");
+               f.Puts("ifdef WINDOWS_TARGET\n");
+               OutputFileListActions(f, "RCOBJECTS", rcSourcesParts, "$(OBJ)objects.lst");
                f.Puts("endif\n");
             }
+            if(numCObjects)
+            {
+               f.Printf("\t$(call addtolistfile,$(OBJ)$(MODULE).main%s,$(OBJ)objects.lst)\n", !opt.noVarForObjectExt ? "$(O)" : ".o");
+               OutputFileListActions(f, "ECOBJECTS", eCsourcesParts, "$(OBJ)objects.lst");
+            }
          }
-         if(resNode.files && resNode.files.count && !noResources)
+
+         if(!opt.noOptionalStaticLibrarySupport)
+            f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
+
+         // note: target type is possible to change based on platform or other so this logic would need to be in the makefile
+         if(targetType == executable || !opt.noOptionalStaticLibrarySupport)
          {
-            f.Puts("ifndef USE_RESOURCES_EAR\n");
-            resNode.GenMakefileAddResources(f, resNode.path, config, "TARGET");
-            f.Puts("endif\n");
+            if(!opt.noAddToListFile)
+               f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", containsCXX ? "CXX" : "CC"); // issue with CC -> LD
+            else                                                                                  // note soname expects cc passes -Wl,ddd
+               f.Printf("\t$(%s) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", containsCXX ? "CXX" : "CC"); // issue with CC -> LD
+            if(!GetDebug(config))
+            {
+               f.Puts("ifndef NOSTRIP\n");
+               f.Puts("\t$(STRIP) $(STRIPOPT) $(TARGET)\n");
+               f.Puts("endif\n");
+
+               if(GetCompress(config))
+               {
+                  f.Printf("ifndef DISABLE_BINARY_COMPRESSION\n");
+                  f.Printf("ifndef %s\n", PlatformToMakefileTargetVariable(win32));
+                  f.Puts("ifdef EXECUTABLE_TARGET\n");
+                     f.Puts("\t@-$(call sys_path,$(UPX) $(UPXFLAGS) $(TARGET)) || $(call echo,upx not installed; not compressing.)\n");
+                  f.Puts("endif\n");
+                  f.Puts("else\n");
+                  //f.Puts("ifneq ($(TARGET_ARCH),x86_64)\n");
+                     f.Puts("\t@-$(call sys_path,$(UPX) $(UPXFLAGS) $(TARGET)) || $(call echo,upx not installed; not compressing.)\n");
+                  //f.Puts("endif\n");
+                  f.Puts("endif\n");
+                  f.Puts("endif\n");
+               }
+            }
+            if(resNode.files && resNode.files.count && !noResources)
+            {
+               if(!opt.noNoResTarget) f.Puts("ifndef NO_RES\n");
+               if(!opt.noResourcesEAR) f.Puts("ifndef USE_RESOURCES_EAR\n");
+               resNode.GenMakefileAddResources(f, resNode.path, config, "TARGET");
+               if(!opt.noResourcesEAR) f.Puts("endif\n");
+               if(!opt.noNoResTarget) f.Puts("endif\n");
+            }
          }
-         f.Puts("else\n");
-         f.Puts("ifdef WINDOWS_HOST\n");
-         f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)\n");
-         f.Puts("else\n");
-         f.Puts("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
-         f.Puts("endif\n");
-         f.Puts("endif\n");
-         f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
-         f.Puts("ifdef LINUX_TARGET\n");
-         f.Puts("ifdef LINUX_HOST\n");
-         // TODO?: support symlinks for longer version numbers
-         f.Puts("\t$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)\n");
-         f.Puts("\t$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)\n");
-         f.Puts("endif\n");
-         f.Puts("endif\n");
-         f.Puts("endif\n");
+         if(!opt.noOptionalStaticLibrarySupport)
+            f.Puts("else\n");
+         if(targetType == staticLibrary || !opt.noOptionalStaticLibrarySupport)
+         {
+            if(!opt.noAddToListFile)
+            {
+               // todo: fix this windows only object list use everywhere or drop it?
+               f.Puts("ifdef WINDOWS_HOST\n");
+               f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)\n");
+               f.Puts("else\n");
+            }
+            f.Puts("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
+            if(!opt.noAddToListFile)
+               f.Puts("endif\n");
+         }
+         if(!opt.noOptionalStaticLibrarySupport)
+            f.Puts("endif\n");
+         // if(config.options.targetType == executable)
 
          //f.Puts("# POST-BUILD COMMANDS\n");
          if(options && options.postbuildCommands)
@@ -3743,6 +3858,12 @@ private:
                   f.Puts("endif\n");
             }
          }
+         if(!opt.noSharedObjectLinks) // todo?: make this order change optional?
+         {
+            // TODO?: support symlinks for longer version numbers
+            f.Puts("\t$(if $(SO_LIB_LINKS),$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)\n");
+            f.Puts("\t$(if $(SO_LIB_LINKS),$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)\n");
+         }
          f.Puts("\n");
 
          test = false;
@@ -3761,8 +3882,8 @@ private:
                }
             }
          }
-         if(test || (options && options.installCommands) ||
-               (config && config.options && config.options.installCommands))
+         if(!opt.noInstallTarget && (test || (options && options.installCommands) ||
+               (config && config.options && config.options.installCommands)))
          {
             f.Puts("install:\n");
             if(options && options.installCommands)
@@ -3816,41 +3937,45 @@ private:
          f.Puts("# SYMBOL RULES\n");
          f.Puts("\n");
 
-         topNode.GenMakefilePrintSymbolRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping);
+         topNode.GenMakefilePrintSymbolRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping, opt);
 
          f.Puts("# C OBJECT RULES\n");
          f.Puts("\n");
 
-         topNode.GenMakefilePrintCObjectRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping);
+         topNode.GenMakefilePrintCObjectRules(f, this, config, nodeCFlagsMapping, nodeECFlagsMapping, opt);
 
          f.Puts("# OBJECT RULES\n");
          f.Puts("\n");
          // todo call this still but only generate rules whith specific options
          // see we-have-file-specific-options in ProjectNode.ec
-         topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, nodeCFlagsMapping, nodeECFlagsMapping);
+         topNode.GenMakefilePrintObjectRules(f, this, namesInfo, config, nodeCFlagsMapping, nodeECFlagsMapping, opt);
 
          if(numCObjects)
-            GenMakefilePrintMainObjectRule(f, config);
+            GenMakefilePrintMainObjectRule(f, config, opt);
 
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: cleantarget\n");
          f.Printf("cleantarget:%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
          if(numCObjects)
          {
-            f.Printf("\t$(call rm,%s)\n", "$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
-            f.Printf("\t$(call rm,$(OBJ)symbols.lst)\n");
+            f.Printf("\t$(call rm,%s%s%s)\n", "$(OBJ)$(MODULE).main", !opt.noVarForObjectExt ? "$(O)" : ".o", " $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
+            if(!opt.noAddToListFile)
+               f.Printf("\t$(call rm,$(OBJ)symbols.lst)\n");
+            // tocheck: would it be a good idea to remove symbols in cleantarget?
+            // else
+            //   f.Printf("\t$(call rm,$(SYMBOLS))\n");
          }
-         f.Printf("\t$(call rm,$(OBJ)objects.lst)\n");
+         if(!opt.noAddToListFile)
+            f.Printf("\t$(call rm,$(OBJ)objects.lst)\n");
          f.Puts("\t$(call rm,$(TARGET))\n");
-         f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
-         f.Puts("ifdef LINUX_TARGET\n");
-         f.Puts("ifdef LINUX_HOST\n");
-         // TODO?: support symlinks for longer version numbers
-         f.Puts("\t$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))\n");
-         f.Puts("\t$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))\n");
-         f.Puts("endif\n");
-         f.Puts("endif\n");
-         f.Puts("endif\n");
+         if(!opt.noSharedObjectLinks)
+         {
+            // TODO?: support symlinks for longer version numbers
+            f.Puts("\t$(if $(SO_LIB_LINKS),$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)\n");
+            f.Puts("\t$(if $(SO_LIB_LINKS),$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)\n");
+         }
          f.Puts("\n");
 
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: clean\n");
          f.Puts("clean: cleantarget\n");
          OutputCleanActions(f, "OBJECTS", objectsParts);
          if(rcSourcesParts)
@@ -3867,28 +3992,43 @@ private:
             OutputCleanActions(f, "IMPORTS", eCsourcesParts);
             OutputCleanActions(f, "SYMBOLS", eCsourcesParts);
          }
-         if(resNode.files && resNode.files.count && !noResources)
+         if(!opt.noResourcesEAR && resNode.files && resNode.files.count && !noResources)
          {
             f.Puts("ifdef USE_RESOURCES_EAR\n");
             f.Printf("\t$(call rm,$(RESOURCES_EAR))\n");
             f.Puts("endif\n");
          }
-         f.Puts("\n");
 
+         f.Puts("\n");
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: realclean\n");
          f.Puts("realclean: cleantarget\n");
          f.Puts("\t$(call rmr,$(OBJ))\n");
          if(!sameOrRelObjTargetDirs)
             f.Printf("\t$(call rmdir,%s)\n", targetDirExpNoSpaces);
-         f.Puts("\n");
 
-         f.Puts("distclean: cleantarget\n");
-         if(!sameOrRelObjTargetDirs)
-            f.Printf("\t$(call rmdir,%s)\n", targetDirExpNoSpaces);
-         if(!relObjDir)
-            f.Puts("\t$(call rmr,obj/)\n");
-         f.Puts("\t$(call rmr,.configs/)\n");
-         f.Puts("\t$(call rm,*.ews)\n");
-         f.Puts("\t$(call rm,*.Makefile)\n");
+         f.Puts("\n");
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: wipeclean\n");
+         f.Puts("wipeclean:\n");
+         f.Puts("\t$(call rmr,obj/)\n");
+
+         f.Puts("\n");
+         if(!opt.noPhonyTargetsOnePerLine) f.Puts(".PHONY: distclean\n");
+         f.Puts("distclean:\n");
+         f.Puts("\t$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs\n");
+
+         if(!opt.noMakefileListSourceResEmptyRecipes)
+         {
+            f.Puts("\n");
+            f.Puts("$(MAKEFILE_LIST): ;\n");
+            f.Puts("$(SOURCES): ;\n");
+            if(containsCPLMK)
+            {
+               f.Puts("# filtering out crossplatform.mk which already has an empty recipe via $(MAKEFILE_LIST)\n");
+               f.Puts("$(filter-out $(_CF_DIR)crossplatform.mk,$(RESOURCES)): ;\n");
+            }
+            else
+               f.Puts("$(RESOURCES): ;\n");
+         }
 
          delete f;
 
@@ -3915,7 +4055,7 @@ private:
       return result;
    }
 
-   void GenMakefilePrintMainObjectRule(File f, ProjectConfig config)
+   void GenMakefilePrintMainObjectRule(File f, ProjectConfig config, MakefileGenerationOptions opt)
    {
       char extension[MAX_EXTENSION] = "c";
       //char modulePath[MAX_LOCATION];
@@ -3925,11 +4065,21 @@ private:
       char objDirNoSpaces[MAX_LOCATION];
       const String objDirExp = GetObjDirExpression(config);
 
+      String prereq;
+      String target;
+      const String prereqOpt;
+      const String targetOpt;
+
       ReplaceSpaces(objDirNoSpaces, objDirExp);
       ReplaceSpaces(fixedModuleName, moduleName);
 
       //sprintf(fixedModuleName, "%s.main", fixedPrjName);
       //strcat(fixedModuleName, ".main");
+
+      prereq = PrintString("$(OBJ)$(MODULE).main.", extension);
+      prereqOpt = opt.noSpecialVarPrereqName ? prereq : "$<";
+      target = PrintString("$(OBJ)$(MODULE).main", !opt.noVarForObjectExt ? "$(O)" : ".o");
+      targetOpt = opt.noSpecialVarTargetName ? target : "$@";
 
 #if 0       // TODO: Fix nospaces stuff
       // *** Dependency command ***
@@ -4001,13 +4151,17 @@ private:
          if(!result)
          {
 #endif
-            f.Puts("$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c\n");
-            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.%s -o $(call quote_path,$@)\n", extension);
+            f.Printf("%s: %s\n", target, prereq);
+            f.Printf("\t$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c %s%s%s -o %s%s%s\n",
+                  opt.NQP ? "" : "$(call quote_path,", prereqOpt, opt.NQP ? "" : ")",
+                  opt.NQT ? "" : "$(call quote_path,", targetOpt, opt.NQT ? "" : ")");
             f.Puts("\n");
 #if 0
          }
       }
 #endif
+      delete prereq;
+      delete target;
    }
 
    void GenMakePrintCustomFlags(File f, const String variableName, bool printNonCustom, Map<String, int> cflagsVariations)
@@ -4059,6 +4213,39 @@ private:
          }
       }
    }
+}
+
+class MakefileGenerationOptions : uint32
+{
+public:
+   bool noSilent:1;
+   bool noMakeLibraryVar:1;
+   bool noAddToListFile:1;
+   bool noOptionalStaticLibrarySupport:1;
+   bool noEcereSdkSrcMessage:1;
+   bool noResourcesEAR:1;
+   bool noPhonyTargetsOnePerLine:1;
+   bool noSpecialVarPrereqName:1;
+   bool noSpecialVarTargetName:1;
+   bool noQuotePrereq:1;
+   bool noQuoteTarget:1;
+   bool noMakefileListSourceResEmptyRecipes:1;
+   bool noRepositoryVersion:1;
+   bool noSharedObjectLinks:1;
+   bool noVarForObjectExt:1;
+   bool noInstallTarget:1;
+
+// new features
+// todo: move to epj2make options?
+   bool useBootstrap:1;
+   bool addNoResTarget:1;
+
+   bool noNoResTarget:1;
+   bool noQuoteFlags:1;
+
+   private property bool NQP { get { return noQuotePrereq; } }
+   private property bool NQT { get { return noQuoteTarget; } }
+   private property bool NQF { get { return noQuoteFlags; } }
 }
 
 static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
