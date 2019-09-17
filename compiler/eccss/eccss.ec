@@ -297,6 +297,7 @@ public:
       if(this)
       {
          s = eInstance_New(_class);
+         incref s;
          s.exp = exp.copy();
       }
       return s;
@@ -813,6 +814,7 @@ public:
       if(this)
       {
          b = eInstance_New(_class);
+         incref b;
          b.mask = mask;
          b.id = (id && id.string) ? { string = CopyString(id.string) } : null;
          if(nestedRules)
