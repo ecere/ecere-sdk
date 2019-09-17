@@ -436,9 +436,11 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      printf("here");*/
                   ExpFlags flag = exp.compute(val, evaluator, runtime); //-1
 
-                  if(destType == class(int) || destType == class(bool) || destType == class(Color))
+                  if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
+                     ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
                      *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
-                  else if(destType == class(int64))
+                  else if(destType == class(int64) ||
+                     ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
                      *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
                   else if(destType == class(double))
                      *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
@@ -464,10 +466,12 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   {
                      memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
                   }
+                  /*
                   else if(destType.type == enumClass)    //assuming default of 32 bit
                   {
                      *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
                   }
+                  */
                   else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                   {
                      /*ConsoleFile con { };
