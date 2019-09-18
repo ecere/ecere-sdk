@@ -51,6 +51,8 @@ public:
          {
             delete mInit.initializer;
             mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            block.styles.mask |= mask;
+            block.mask |= mask;
             result = true;
          }
          // NOTE check outside instead. The issue is the likely need to pass a class, and this complicates matters
@@ -255,6 +257,7 @@ public:
             {
                CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
                constant.constant = value;
+               if(result) mask |= msk;
                result = true;
             }
          }
@@ -739,7 +742,12 @@ public:
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
       if(!styles) styles = { };
-      return styles.changeStyle(msk, value, c, evaluator);
+      if(styles.changeStyle(msk, value, c, evaluator))
+      {
+         mask |= msk;
+         return true;
+      }
+      return false;
    }
 
    void removeStyle(StylesMask msk)
@@ -864,7 +872,8 @@ public:
 
       if(apply)
       {
-         if(nestedRules) m = nestedRules.apply(object, m, evaluator, flg);
+         if(nestedRules)
+            m = nestedRules.apply(object, m, evaluator, flg);
          if(m)
          {
             Iterator<CMSSMemberInitList> itStyle { styles };
