@@ -286,7 +286,7 @@ void ReplaceSpaces(char * output, const char * source)
 }
 
 
-enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings };
+enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings, compilers };
 
 enum PathRelationship { unrelated, identical, siblings, subPath, parentPath, insuficientInput, pathEmpty, toEmpty, pathNull, toNull, bothEmpty, bothNull };
 PathRelationship eString_PathRelated(const char * path, const char * to, char * pathDiff)
