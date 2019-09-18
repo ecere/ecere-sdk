@@ -16,18 +16,18 @@ public:
    bool opacity            :1: 1;
 // todo: alocate bits when these 2 features are supported
    bool brightness         :1: 2;
-   bool saturation         :1: 2;
-   bool scaling            :1: 2;
-// bool transform3D        :1: 3;
-   bool zOrder             :1: 3;
+   bool saturation         :1: 3;
+   bool scaling            :1: 4;
+// bool transform3D        :1: 4;   // TOCHECK: Will transformation use multiple bits?
+   bool zOrder             :1: 5;
 
    void print(File out)
    {
       out.Print("{");
       if(visibility)             out.Print(" visibility");
       if(opacity)                out.Print(" opacity");
-   // if(brightness)             out.Print(" brightness");
-   // if(saturation)             out.Print(" saturation");
+      if(brightness)             out.Print(" brightness");
+      if(saturation)             out.Print(" saturation");
       if(scaling)                out.Print(" scaling");
    // if(transform3D)            out.Print(" transform3D");
       if(zOrder)                 out.Print(" zOrder");
@@ -39,25 +39,25 @@ public class ShapeStyleMask : GraphicalStyleMask
 {
 public:
    // Shapes Styles
-   bool fillPattern        :1: 5;
-   bool fillColor          :1: 6;
-   bool fillOpacity        :1: 7;
-   bool fillStippleStyle   :1: 8;
-   bool fillHatchStyle     :1: 9;
-   bool fillGradient       :1:10;
-   bool strokePattern      :1:11;
-   bool strokeOpacity      :1:12;
-   bool strokeWidth        :1:13;
-   bool strokeColor        :1:14;
-   bool strokeCenterWidth  :1:15;
-   bool strokeCenterColor  :1:16;
-   bool strokeCenterOpacity:1:17;
-   bool strokeCasingWidth  :1:18;
-   bool strokeCasingColor  :1:19;
-   bool strokeCasingOpacity:1:20;
-   bool strokeJoin         :1:21;
-   bool strokeCap          :1:22;
-   bool strokeDashPattern  :1:23;
+   bool fillPattern        :1:16;
+   bool fillColor          :1:17;
+   bool fillOpacity        :1:18;
+   bool fillStippleStyle   :1:19;
+   bool fillHatchStyle     :1:20;
+   bool fillGradient       :1:21;
+   bool strokePattern      :1:22;
+   bool strokeOpacity      :1:23;
+   bool strokeWidth        :1:24;
+   bool strokeColor        :1:25;
+   bool strokeCenterWidth  :1:26;
+   bool strokeCenterColor  :1:27;
+   bool strokeCenterOpacity:1:28;
+   bool strokeCasingWidth  :1:29;
+   bool strokeCasingColor  :1:30;
+   bool strokeCasingOpacity:1:31;
+   bool strokeJoin         :1:32;
+   bool strokeCap          :1:33;
+   bool strokeDashPattern  :1:34;
 
    void print(File out)
    {
@@ -90,18 +90,18 @@ public class TextStyleMask : GraphicalStyleMask
 {
 public:
    // Text Styles
-   bool text               :1:5;
-   bool fontFace           :1:6;
-   bool fontSize           :1:7;
-   bool fontBold           :1:8;
-   bool fontItalic         :1:9;
-   bool fontColor          :1:10;
-   bool fontOpacity        :1:11;
-   bool fontOutlineSize    :1:12;
-   bool fontOutlineColor   :1:13;
-   bool fontOutlineOpacity :1:14;
-   bool alignmentHorzAlign :1:15;
-   bool alignmentVertAlign :1:16;
+   bool text               :1:16;
+   bool fontFace           :1:17;
+   bool fontSize           :1:18;
+   bool fontBold           :1:19;
+   bool fontItalic         :1:20;
+   bool fontColor          :1:21;
+   bool fontOpacity        :1:22;
+   bool fontOutlineSize    :1:23;
+   bool fontOutlineColor   :1:24;
+   bool fontOutlineOpacity :1:25;
+   bool alignmentHorzAlign :1:26;
+   bool alignmentVertAlign :1:27;
 
    void print(File out)
    {
@@ -126,9 +126,9 @@ public class ImageStyleMask : GraphicalStyleMask
 {
 public:
    // Image Styles
-   bool imagePath          :1:5;
-   bool tint               :1:6;
-   bool hotSpot            :1:7;
+   bool imagePath          :1:16;
+   bool tint               :1:17;
+   bool hotSpot            :1:18;
 
    void print(File out)
    {
@@ -280,10 +280,13 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
 
 Map<GraphicalStyleKind, const String> stringFromMaskMap
 { [
-   { opacity, "opacity" },
-   { scaling, "scaling" },
-   { visibility, "visibility" }
-   //{ transform3D, "transform3D" }
+   { opacity,     "opacity" },
+   { scaling,     "scaling" },
+   { visibility,  "visibility" },
+   { brightness,  "brightness" },
+   { saturation,  "saturation" },
+   { zOrder,      "zOrder" }
+   // { transform3D, "transform3D" }
 ] };
 
 
