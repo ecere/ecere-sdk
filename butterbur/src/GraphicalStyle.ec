@@ -355,6 +355,10 @@ public:
 
    visibility = true;
    opacity = 1.0;
+   brightness = 1.0;
+   saturation = 1.0;
+   transform.scaling = { 1, 1, 1 };
+   transform.orientation = { 1, 0, 0, 0 };
 
    // Internal...
    ExpFlags flags;
