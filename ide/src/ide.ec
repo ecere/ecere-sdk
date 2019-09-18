@@ -215,6 +215,8 @@ GlobalSettingsDialog globalSettingsDialog
          case projectOptions:
             break;
          case compilerSettings:
+            break;
+         case compilers:
          {
             ide.UpdateCompilerConfigs(true);
             break;
