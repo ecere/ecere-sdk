@@ -1614,6 +1614,8 @@ public:
             Add(mInitTop);
          }
       }
+      result = true;
+
       delete prefix;
       delete suffix;
       return result;
