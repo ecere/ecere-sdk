@@ -68,6 +68,7 @@ class GlobalSettingsDialog : Window
          {
             bool editorSettingsChanged = false;
             bool compilerSettingsChanged = false;
+            bool compilersChanged = false;
             bool projectOptionsChanged = false;
             AVLTree<String> cfgsToWrite = null;
             if(editorTab.modifiedDocument)
@@ -106,7 +107,10 @@ class GlobalSettingsDialog : Window
             if(compilersTab.modifiedDocument)
             {
                if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
+               {
                   ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
+                  compilerSettingsChanged = true;
+               }
                if(compilersTab.compilerConfigs.OnCompare(ideConfig.compilers))
                {
                   cfgsToWrite = compilersTab.compilerConfigs.getWriteRequiredList(ideConfig.compilers);
@@ -115,7 +119,7 @@ class GlobalSettingsDialog : Window
                   {
                      ideConfig.compilers.Add(compiler.Copy());
                   }
-                  compilerSettingsChanged = true;
+                  compilersChanged = true;
                }
             }
 
@@ -142,20 +146,23 @@ class GlobalSettingsDialog : Window
                }
             }
 
-            if(editorSettingsChanged || projectOptionsChanged)
+            if(editorSettingsChanged || compilerSettingsChanged || projectOptionsChanged)
                settingsContainer.Save();
 
+            if(editorSettingsChanged)
+               OnGlobalSettingChange(GlobalSettingsChange::editorSettings);
             if(compilerSettingsChanged)
+               OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
+            if(projectOptionsChanged)
+               OnGlobalSettingChange(GlobalSettingsChange::projectOptions);
+
+            if(compilersChanged)
             {
                ideConfig.compilers.write(settingsContainer, cfgsToWrite);
-               OnGlobalSettingChange(GlobalSettingsChange::compilerSettings);
+               OnGlobalSettingChange(GlobalSettingsChange::compilers);
                cfgsToWrite.Free();
                delete cfgsToWrite;
             }
-            if(editorSettingsChanged)
-               OnGlobalSettingChange(GlobalSettingsChange::editorSettings);
-            if(projectOptionsChanged)
-               OnGlobalSettingChange(GlobalSettingsChange::projectOptions);
 
             editorTab.modifiedDocument = false;
             compilersTab.modifiedDocument = false;
