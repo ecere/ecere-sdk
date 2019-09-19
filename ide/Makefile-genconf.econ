@@ -1,0 +1,21 @@
+// MakefileGenerationOptions
+{
+// noSilent = true,
+   noMakeLibraryVar = true,
+   noAddToListFile = true,
+// noOptionalStaticLibrarySupport = true,
+   noEcereSdkSrcMessage = true,
+   noResourcesEAR = true,
+   noPhonyTargetsOnePerLine = true,
+   noSpecialVarPrereqName = true,
+   noSpecialVarTargetName = true,
+   noQuotePrereq = true,
+   noQuoteTarget = true,
+   noQuoteFlags = true,
+// noMakefileListSourceResEmptyRecipes = true,
+// noRepositoryVersion = true,
+   noSharedObjectLinks = true,
+   noVarForObjectExt = true,
+   noInstallTarget = true,
+   noNoResTarget = true,
+}
