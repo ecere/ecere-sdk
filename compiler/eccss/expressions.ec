@@ -1149,7 +1149,7 @@ public:
       CMSSList::print(out, indent, o);
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
    {
       bool result = false;
 
@@ -1179,7 +1179,7 @@ public:
             mList = { };
             Add(CMSSInstInitMember { members = mList });
          }
-         result = mList.addStyle(msk, value, c, false, evaluator);
+         result = mList.addStyle(msk, value, c, false, evaluator, isNested);
       }
       /*
       // StylingRuleBlock doesn't derive from CMSSInstInitList ???
@@ -1597,7 +1597,7 @@ public:
       }
    }
 
-   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator)
+   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator, bool isNested)
    {
       bool result = false;
       CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
@@ -1605,25 +1605,28 @@ public:
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
       String prefix = null, suffix = null;
       uint64 topMask;
-      if(identifierStr && identifierStr[0])
+      if(isNested)
       {
-         int size;
-         char * pch = strchr(identifierStr, '.');
-         size = pch ? pch - identifierStr + 1 : 0;
-         if(size)
+         if(identifierStr && identifierStr[0])
          {
-            prefix = new char[size];
-            strncpy(prefix, identifierStr, size - 1);
-            suffix = CopyString(identifierStr+size);
-            prefix[size - 1] = '\0';
+            int size;
+            char * pch = strchr(identifierStr, '.');
+            size = pch ? pch - identifierStr + 1 : 0;
+            if(size)
+            {
+               prefix = new char[size];
+               strncpy(prefix, identifierStr, size - 1);
+               suffix = CopyString(identifierStr+size);
+               prefix[size - 1] = '\0';
+            }
          }
+         topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
       }
-      topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
 
       if(suffix || identifierStr)
          mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) } ] };
 
-      if(!isTopLevel || !topMask)
+      if(!isTopLevel || !topMask || isNested)
          Add(mInitSub);
       else
       {
