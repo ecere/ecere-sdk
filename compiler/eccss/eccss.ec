@@ -40,7 +40,7 @@ public:
    }
 
    //NOTE this ignores selectors!
-   bool changeStyle(const String id, StylesMask mask, const FieldValue value)
+   bool changeStyle(const String id, StylesMask mask, const FieldValue value, bool isNested)
    {
       bool result = false;
       StylingRuleBlock block = findRule(mask, id);
@@ -246,7 +246,7 @@ public:
       mInit.initializer = CMSSInitExp { exp = exp };
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
    {
       bool result = false;
       if(this)
@@ -263,7 +263,7 @@ public:
                CMSSInstInitList instInitList = instance.members;
                if(!instInitList)
                   instance.members = instInitList = { };
-               result = instInitList.changeStyle(msk, value, c, evaluator);
+               result = instInitList.changeStyle(msk, value, c, evaluator, isNested);
                if(result) mask |= msk;
             }
             else if(initExp.exp._class == class(CMSSExpConstant))
@@ -278,7 +278,7 @@ public:
          {
             CMSSMemberInitList mList { };
             Add(mList);
-            result = mList.addStyle(msk, value, c, true, evaluator);
+            result = mList.addStyle(msk, value, c, true, evaluator, isNested);
             if(result) mask |= msk;
          }
       }
@@ -752,12 +752,12 @@ public:
       return styles.setStyle(mask, exp);
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
    {
       if(msk)
       {
          if(!styles) styles = { };
-         if(styles.changeStyle(msk, value, c, evaluator))
+         if(styles.changeStyle(msk, value, c, evaluator, isNested))
          {
             mask |= msk;
             return true;
