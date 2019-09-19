@@ -261,6 +261,8 @@ public:
                CMSSExpInstance inst = (CMSSExpInstance)initExp.exp;
                CMSSInstantiation instance = inst.instance;
                CMSSInstInitList instInitList = instance.members;
+               if(!instInitList)
+                  instance.members = instInitList = { };
                result = instInitList.changeStyle(msk, value, c, evaluator);
                if(result) mask |= msk;
             }
