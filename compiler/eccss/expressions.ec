@@ -1558,7 +1558,7 @@ public:
                if(e._class == class(CMSSExpInstance))
                {
                   CMSSExpInstance inst = (CMSSExpInstance)e;
-                  if(inst.stylesMask & mask)
+                  // FIXME: stylesMask is not always set after a changeStyle() ?  if(inst.stylesMask & mask)
                   {
                      CMSSInstInitList initList = inst.instance ? inst.instance.members : null;
                      if(initList)
