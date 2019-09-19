@@ -752,11 +752,14 @@ public:
 
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator)
    {
-      if(!styles) styles = { };
-      if(styles.changeStyle(msk, value, c, evaluator))
+      if(msk)
       {
-         mask |= msk;
-         return true;
+         if(!styles) styles = { };
+         if(styles.changeStyle(msk, value, c, evaluator))
+         {
+            mask |= msk;
+            return true;
+         }
       }
       return false;
    }
