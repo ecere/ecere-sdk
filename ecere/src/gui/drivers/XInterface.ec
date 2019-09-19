@@ -3382,12 +3382,12 @@ class XInterface : Interface
          if(!fullScreenMode)
          {
             for(rootWindow = rootWindow.children.first;
-               rootWindow && !rootWindow.windowHandle;
+               rootWindow && (!rootWindow.windowHandle || !rootWindow.visible || rootWindow.interim);
                rootWindow = rootWindow.next);
          }
          if(clipBoardData)
             delete clipBoardData;
-         else if(rootWindow)
+         if(rootWindow)
             XSetSelectionOwner(xGlobalDisplay, atoms[clipboard],
                (X11Window) rootWindow.windowHandle, CurrentTime);
          clipBoardData = clipBoard.text;
@@ -3417,7 +3417,7 @@ class XInterface : Interface
          if(!fullScreenMode)
          {
             for(rootWindow = rootWindow.children.first;
-               rootWindow && !rootWindow.windowHandle;
+               rootWindow && (!rootWindow.windowHandle || !rootWindow.visible || rootWindow.interim);
                rootWindow = rootWindow.next);
          }
          if(rootWindow)
