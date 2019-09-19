@@ -1539,17 +1539,17 @@ public:
    void removeStyle(StylesMask mask)
    {
       Iterator<CMSSMemberInit> it { this };
-      while(it.Next())
+      it.Next();
+      while(it.pointer)
       {
-         CMSSMemberInit mInit = it.data;
-         //CMSSMemberInit mInit = e;
-         //Class c = mInit.dataMember ? mInit.dataMember._class : null;
-         StylesMask sm = mInit.stylesMask;
-         if(sm & mask)
+         IteratorPointer next = it.container.GetNext(it.pointer);
+         CMSSMemberInit memberInit = it.data;
+         if(memberInit.stylesMask & mask)
          {
             it.Remove();
-            delete mInit;
+            delete memberInit;
          }
+         it.pointer = next;
       }
    }
 
