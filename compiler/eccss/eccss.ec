@@ -211,10 +211,21 @@ public:
 
    void removeStyle(StylesMask msk)
    {
-      for(e : this)
+      Iterator<CMSSMemberInitList> it { this };
+      it.Next();
+      while(it.pointer)
       {
-         e.removeStyle(msk);
+         IteratorPointer next = it.container.GetNext(it.pointer);
+         CMSSMemberInitList memberInitList = it.data;
+         memberInitList.removeStyle(msk);
+         if(memberInitList.GetCount() == 0)
+         {
+            it.Remove();
+            delete memberInitList;
+         }
+         it.pointer = next;
       }
+      mask &= ~msk; // todo: make sure this is ok or write a mask recalculation function?
    }
 
    CMSSExpression getStyle(StylesMask mask)
