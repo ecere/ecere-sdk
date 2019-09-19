@@ -1546,8 +1546,33 @@ public:
          CMSSMemberInit memberInit = it.data;
          if(memberInit.stylesMask & mask)
          {
-            it.Remove();
-            delete memberInit;
+            if((memberInit.stylesMask & mask) == memberInit.stylesMask)
+            {
+               it.Remove();
+               delete memberInit;
+            }
+            else
+            {
+               CMSSInitExp initializer = (CMSSInitExp)memberInit.initializer;
+               CMSSExpression e = initializer.exp;
+               if(e._class == class(CMSSExpInstance))
+               {
+                  CMSSExpInstance inst = (CMSSExpInstance)e;
+                  if(inst.stylesMask & mask)
+                  {
+                     CMSSInstInitList initList = inst.instance ? inst.instance.members : null;
+                     if(initList)
+                     {
+                        for(l : initList)
+                        {
+                           CMSSInstInitMember init = (CMSSInstInitMember)l;
+                           CMSSMemberInitList initList = init ? init.members : null;
+                           if(initList) initList.removeStyle(mask);
+                        }
+                     }
+                  }
+               }
+            }
          }
          it.pointer = next;
       }
