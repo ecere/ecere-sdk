@@ -35,13 +35,20 @@ public class Presentation
       {
          if(parent != value)
          {
+            bool isVisible = visible;
             visibilityUpdate = true;
             incref this;
             if(parent)
             {
                Presentation p = parent;
+               MultiPresentation topPres = p;
+
+               while(topPres.parent) topPres = topPres.parent;
                while(p && *&p.visible)
                   p.visibilityUpdate = true, p = *&p.parent;
+               visible = false;
+               calculate(topPres, null);
+               visible = isVisible;
                if(parent.subElements.TakeOut(this))
                   _refCount--;
             }
