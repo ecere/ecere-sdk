@@ -96,11 +96,13 @@ class ProcessingStage
                   break;
                case clear:
                   mutex.Release();
-                  processing.onTaskCleared(task);
+                  if(!task.status.cancel || !task.status.waitedOn)
+                  {
+                     processing.onTaskCleared(task);
+                     delete task;
+                  }
                   mutex.Wait();
                   // TO REVIEW: This was leaking?
-                  // if(task.status.waitedOn)
-                     delete task;
                   break;
                default:
                   mutex.Release();
@@ -146,11 +148,13 @@ class ProcessingStage
                break;
             case clear:
                mutex.Release();
-               processing.onTaskCleared(task);
-               mutex.Wait();
-               // TO REVIEW: This was leaking?
-               // if(task.status.waitedOn)
+               // TO REVIEW: // if(task.status.waitedOn) This was leaking? -- turned this around completely?
+               if(!task.status.cancel || !task.status.waitedOn)
+               {
+                  processing.onTaskCleared(task);
                   delete task;
+               }
+               mutex.Wait();
                break;
             default:
                mutex.Release();
@@ -195,8 +199,11 @@ class ProcessingStage
             {
                case awaitProcessing:   // error to mark for processing again...
                case clear:
-                  processing.onTaskCleared(task);
-                  delete task;
+                  if(!task.status.cancel || !task.status.waitedOn)
+                  {
+                     processing.onTaskCleared(task);
+                     delete task;
+                  }
                   break;
                default:
                   mutex.Release();
@@ -275,12 +282,14 @@ class ProcessingStage
       task.status.cancel = true;
       if(wait)
       {
+         int lc = mutex.lockCount, i;
+
          task.status.waitedOn = true;
          while(wait && task.status.active)
          {
-            mutex.Release();
+            for(i = 0; i < lc; i++) mutex.Release();
             Sleep(0.01);
-            mutex.Wait();
+            for(i = 0; i < lc; i++) mutex.Wait();
          }
 
          if(!task.status.active)
@@ -289,9 +298,9 @@ class ProcessingStage
                readyTasks.Remove(task);
             else
                tasks.Remove(task);
-            mutex.Release();
+            for(i = 0; i < lc; i++) mutex.Release();
             processing.onTaskCleared(task);
-            mutex.Wait();
+            for(i = 0; i < lc; i++) mutex.Wait();
             delete task;
          }
       }
@@ -426,7 +435,7 @@ public:
       if(task)
       {
          bool done = false;
-         while(!done && task.status.active)
+         while(!done && !task.status.cancel)
          {
             int s = task.status.stage;
             ProcessingStage stage = stages[s-1];
