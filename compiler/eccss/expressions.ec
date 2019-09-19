@@ -1563,15 +1563,34 @@ public:
                      CMSSInstInitList initList = inst.instance ? inst.instance.members : null;
                      if(initList)
                      {
-                        for(l : initList)
+                        Iterator<CMSSInstanceInit> itl { initList };
+                        itl.Next();
+                        while(itl.pointer)
                         {
-                           CMSSInstInitMember init = (CMSSInstInitMember)l;
-                           CMSSMemberInitList initList = init ? init.members : null;
-                           if(initList) initList.removeStyle(mask);
+                           IteratorPointer nextL = itl.container.GetNext(itl.pointer);
+                           CMSSInstInitMember init = (CMSSInstInitMember)itl.data;
+                           CMSSMemberInitList mInitList = init ? init.members : null;
+                           if(mInitList)
+                           {
+                              mInitList.removeStyle(mask);
+                              if(!mInitList.list.first)
+                              {
+                                 delete init.members;
+                                 itl.Remove();
+                              }
+                           }
+                           itl.pointer = nextL;
+                        }
+                        if(!initList.list.first)
+                        {
+                           it.Remove();
+                           delete memberInit;
                         }
                      }
                   }
                }
+               if(memberInit)
+                  memberInit.stylesMask &= ~(memberInit.stylesMask & mask);
             }
          }
          it.pointer = next;
