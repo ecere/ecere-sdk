@@ -1332,8 +1332,8 @@ public:
    {
       CMSSMemberInit memberInit
       {
-         assignType = assignType, initializer = initializer.copy(), identifiers = copyList(identifiers,
-            (void *)CMSSIdentifier::copy)
+         assignType = assignType, initializer = initializer.copy(), stylesMask = stylesMask,
+         identifiers = copyList(identifiers, (void *)CMSSIdentifier::copy)
       };
       return memberInit;
    }
@@ -1605,7 +1605,7 @@ public:
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
       String prefix = null, suffix = null;
       uint64 topMask;
-      if(isNested)
+      if(!isNested)
       {
          if(identifierStr && identifierStr[0])
          {
@@ -1620,8 +1620,8 @@ public:
                prefix[size - 1] = '\0';
             }
          }
-         topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
       }
+      topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
 
       if(suffix || identifierStr)
          mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) } ] };
@@ -1643,6 +1643,8 @@ public:
                   if(e._class == class(CMSSExpInstance))
                   {
                      CMSSExpInstance instExp = (CMSSExpInstance)e;
+                     mm.stylesMask |= mask;
+                     instExp.stylesMask |= mask;
                      instExp.instance.members.Add(instInitMember);
                      found = true;
                   }
@@ -1656,6 +1658,7 @@ public:
             CMSSExpInstance inst { instance = instance }; //, expType = c, destType = c };
             CMSSInitExp initExpTop { exp = inst };
             CMSSMemberInit mInitTop { /*expType = c, destType = c, */initializer = initExpTop, assignType = equal, stylesMask = topMask };
+            mInitTop.stylesMask |= mask;
             if(prefix)
                mInitTop.identifiers = { [ CMSSIdentifier { string = CopyString(prefix) } ] };
             Add(mInitTop);
