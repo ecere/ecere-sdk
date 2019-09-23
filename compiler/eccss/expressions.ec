@@ -1333,7 +1333,8 @@ public:
       CMSSMemberInit memberInit
       {
          assignType = assignType, initializer = initializer.copy(), stylesMask = stylesMask,
-         identifiers = copyList(identifiers, (void *)CMSSIdentifier::copy)
+         identifiers = copyList(identifiers, (void *)CMSSIdentifier::copy),
+         destType = destType, expType = expType, dataMember = dataMember
       };
       return memberInit;
    }
@@ -1477,7 +1478,6 @@ public class CMSSMemberInitList : CMSSList<CMSSMemberInit>
 {
 public:
    //StyleMaskCMSS styleMask;
-   Class destType;
    CMSSMemberInitList ::parse(CMSSLexer lexer)
    {
       CMSSMemberInitList list = (CMSSMemberInitList)CMSSList::parse(class(CMSSMemberInitList), lexer, CMSSMemberInit::parse, ',');
