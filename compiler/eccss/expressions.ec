@@ -168,6 +168,32 @@ void * copyList(List list, CMSSNode copy(CMSSNode))
    return result;
 }
 
+Array<String> splitIdentifier(const String s)
+{
+   Array<String> values { };
+   int i, start = 0;
+   if(!strchr(s, '.'))
+      values.Add(CopyString(s));
+   else
+   {
+      for(i = 0; ; i++)
+      {
+         char ch = s[i];
+         if(!ch || ch == '.')
+         {
+            int len = i - start;
+            String temp = new char[len+1];
+            memcpy(temp, s + start, len);
+            temp[len] = 0;
+            values.Add(temp);
+            start = i + 1;
+            if(!ch) break;
+         }
+      }
+   }
+   return values;
+}
+
 CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
 {
    // Handling some conversions here...
@@ -1605,6 +1631,11 @@ public:
       char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
       String prefix = null, suffix = null;
       uint64 topMask;
+      Array<String> split = null;
+      Class inheritClass = c;
+
+      if(identifierStr && identifierStr[0]) split = splitIdentifier(identifierStr);
+
       if(!isNested)
       {
          if(identifierStr && identifierStr[0])
@@ -1623,8 +1654,35 @@ public:
       }
       topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
 
-      if(suffix || identifierStr)
-         mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix ? suffix : identifierStr) } ] };
+      if(suffix)
+      {
+         mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix) } ] };
+         mInitSub.dataMember = eClass_FindDataMember(inheritClass, suffix, inheritClass.module, null, null);
+      }
+      else if(identifierStr && split)
+      {
+         mInitSub.identifiers = { };
+         mInitSub.assignType = equal;
+         for(s : split)
+         {
+            // doing this here avoids unnecessary resolve() call when exporting after creating new styles
+            mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(s) });
+            mInitSub.dataMember = eClass_FindDataMember(inheritClass, s, inheritClass.module, null, null);
+            if(mInitSub.dataMember)
+            {
+               if(!mInitSub.dataMember.dataTypeClass)
+                  mInitSub.dataMember.dataTypeClass = mInitSub.destType = eSystem_FindClass(mInitSub.dataMember._class.module, mInitSub.dataMember.dataTypeString);
+               else
+                  mInitSub.destType = mInitSub.dataMember.dataTypeClass;
+               inheritClass = mInitSub.dataMember.dataTypeClass;
+            }
+         }
+      }
+      if(split)
+      {
+         split.Free();
+         delete split;
+      }
 
       if(!isTopLevel || !topMask || isNested)
          Add(mInitSub);
