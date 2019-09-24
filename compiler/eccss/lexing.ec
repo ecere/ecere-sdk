@@ -174,6 +174,7 @@ public class CMSSOutputOptions : uint
 public:
    bool reserved:1;
    bool dbgOneLiner:1;
+   bool skipEmptyBlocks:1;
 }
 
 public struct CMSSCodePosition

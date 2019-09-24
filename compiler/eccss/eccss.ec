@@ -125,7 +125,7 @@ public:
    {
       File f = FileOpen(path, write);
       if(list)
-         list.print(f, 0, 0);
+         list.print(f, 0, { skipEmptyBlocks = true });
       delete f;
    }
 
@@ -777,6 +777,12 @@ public:
    void print(File out, int indent, CMSSOutputOptions o)
    {
       const char * ln = o.dbgOneLiner ? " " : "\n";
+
+      if(o.skipEmptyBlocks &&
+         (!styles || !styles.list.first) &&
+         (!nestedRules || !nestedRules.list.count))
+         return;
+
       out.Print(ln);
       if(!o.dbgOneLiner) printIndent(indent, out);
       if(id)
