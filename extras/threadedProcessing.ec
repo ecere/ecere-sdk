@@ -36,6 +36,7 @@ public:
 
 class ProcessingTask : ListItem
 {
+   class_no_expansion;
    ProcessingTaskStatus status;
    int priority;
 }
@@ -72,19 +73,29 @@ class ProcessingStage
       if(task)
       {
          ProcessingAction action;
-         thread.activeTask = task;
-         task.status.active = true;
-         tasks.Remove(task);
-         task.status.threadID = thread.number;
 
-         mutex.Release();
-         action = processing.onPerformTask(task);
-         mutex.Wait();
+         if(thread.terminate || task.status.cancel)
+         {
+            action = clear;
+            tasks.Remove(task);
+         }
+         else
+         {
+            thread.activeTask = task;
+            task.status.active = true;
+            tasks.Remove(task);
+            task.status.threadID = thread.number;
 
-         task.status.threadID = 0;
-         task.status.active = false;
-         thread.activeTask = null;
-         if(thread.terminate || task.status.cancel) action = clear;
+            mutex.Release();
+            action = processing.onPerformTask(task);
+            mutex.Wait();
+
+            task.status.threadID = 0;
+            task.status.active = false;
+            thread.activeTask = null;
+            if(thread.terminate || task.status.cancel)
+               action = clear;
+         }
 
          if(!thread.canceled)
          {
@@ -96,7 +107,7 @@ class ProcessingStage
                   break;
                case clear:
                   mutex.Release();
-                  if(!task.status.cancel || !task.status.waitedOn)
+                  if(!(task.status.cancel && task.status.waitedOn))
                   {
                      processing.onTaskCleared(task);
                      delete task;
@@ -124,7 +135,7 @@ class ProcessingStage
       return result;
    }
 
-   bool performSpecificTask(ProcessingTask task)
+   bool performSpecificTask(ProcessingTask task, ProcessingThread thread)
    {
       bool result = false;
 
@@ -133,12 +144,30 @@ class ProcessingStage
       {
          ProcessingAction action;
 
-         tasks.Remove(task);
-         mutex.Release();
-         action = processing.onPerformTask(task);
-         mutex.Wait();
-         task.status.threadID = 0;
-         task.status.active = false;
+         if(task.status.cancel)
+         {
+            action = clear;
+            tasks.Remove(task);
+         }
+         else
+         {
+            tasks.Remove(task);
+            if(thread)
+            {
+               thread.activeTask = task;
+               task.status.threadID = thread.number;
+            }
+            mutex.Release();
+
+            action = processing.onPerformTask(task);
+            mutex.Wait();
+            if(thread)
+               thread.activeTask = null;
+            task.status.threadID = 0;
+            task.status.active = false;
+            if(task.status.cancel)
+               action = clear;
+         }
 
          switch(action)
          {
@@ -283,6 +312,7 @@ class ProcessingStage
       if(wait)
       {
          int lc = mutex.lockCount, i;
+         bool wasActive = task.status.active;
 
          task.status.waitedOn = true;
          while(wait && task.status.active)
@@ -297,7 +327,21 @@ class ProcessingStage
             if(task.status.ready)
                readyTasks.Remove(task);
             else
-               tasks.Remove(task);
+            {
+               ProcessingTask t = task;
+               if(wasActive)
+               {
+                  for(t = tasks.first; t; t = t.next)
+                  {
+                     if(t == task)
+                        break;
+                  }
+               }
+               if(t)
+                  tasks.Remove(task);
+               else
+                  ; //PrintLn("NOTE: cancelTask() -- task not found");
+            }
             for(i = 0; i < lc; i++) mutex.Release();
             processing.onTaskCleared(task);
             for(i = 0; i < lc; i++) mutex.Wait();
@@ -411,7 +455,15 @@ public:
 
    void terminate()
    {
-      stages.Free();
+      int s;
+      for(s = 0; s < stages.count; s++)
+      {
+         ProcessingStage stage = stages[s];
+         if(stage)
+            stage.terminate();
+         stages[s] = null;
+         delete stage;
+      }
    }
 
    ~ThreadedProcessing()
@@ -499,11 +551,11 @@ public:
    }
 
    // Migrate tasks to another stage
-   bool performSpecificTask(int stage, ProcessingTask task)
+   bool performSpecificTask(int stage, ProcessingTask task, ProcessingThread thread)
    {
       bool result = false;
       if(!task.status.active && task.status.stage == stage)
-         result = stages[stage-1].performSpecificTask(task);
+         result = stages[stage-1].performSpecificTask(task, thread);
       return result;
    }
 
