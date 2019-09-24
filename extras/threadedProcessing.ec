@@ -524,7 +524,8 @@ public:
       // Process all tasks marked as 'ready' for a given stage
       for(s = stage ? stage - 1 : 0; stages && s < stages.count; s++)
       {
-         result |= stages[s].processTasks(maxTasks);
+         if(stages[s])
+            result |= stages[s].processTasks(maxTasks);
          if(stage) break;
       }
       return result;
