@@ -166,7 +166,9 @@ public:
                int sendsize=65536;
                int recvsize=65536;
 
+               network.mutex.Wait();
                value.sockets.Add(this);
+               network.mutex.Release();
                incref this;
 
                setsockopt(s, SOL_SOCKET, SO_SNDBUF, (char *)&sendsize, (int)sizeof(sendsize));
