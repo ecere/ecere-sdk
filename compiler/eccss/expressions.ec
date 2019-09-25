@@ -943,6 +943,10 @@ public:
       if(expFlg.resolved && evaluator != null && exp.expType)
       {
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
+         if(!prop)
+         {
+            prop = (DataMember)eClass_FindProperty(exp.expType, member.string, exp.expType.module);
+         }
          // This is not right, the type of the member is different...: expType = exp.expType;
          if(prop)
             evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
@@ -1380,6 +1384,10 @@ public:
             delete identifierStr;
             identifierStr = s;
             dataMember = eClass_FindDataMember(inheritClass, i.string, inheritClass.module, null, null);
+            if(!dataMember)
+            {
+               dataMember = (DataMember)eClass_FindProperty(inheritClass, i.string, inheritClass.module);
+            }
             if(dataMember)
             {
                if(!dataMember.dataTypeClass)
@@ -1431,8 +1439,11 @@ public:
       }
       if(dataMember)
       {
-         eClass_FindDataMemberAndOffset(dataMember._class, dataMember.name, &offset, dataMember._class.module, null, null);
-         offset = computeMemberOffset(dataMember, offset);
+         if(!dataMember.isProperty)
+         {
+            eClass_FindDataMemberAndOffset(dataMember._class, dataMember.name, &offset, dataMember._class.module, null, null);
+            offset = computeMemberOffset(dataMember, offset);
+         }
          this.dataMember = dataMember;
 
          //PrintLn(dataMember.name);
@@ -1658,6 +1669,10 @@ public:
       {
          mInitSub.identifiers = { [ CMSSIdentifier { string = CopyString(suffix) } ] };
          mInitSub.dataMember = eClass_FindDataMember(inheritClass, suffix, inheritClass.module, null, null);
+         if(!mInitSub.dataMember)
+         {
+            mInitSub.dataMember = (DataMember)(DataMember)eClass_FindProperty(inheritClass, suffix, inheritClass.module);
+         }
       }
       else if(identifierStr && split)
       {
@@ -1668,6 +1683,10 @@ public:
             // doing this here avoids unnecessary resolve() call when exporting after creating new styles
             mInitSub.identifiers.Add(CMSSIdentifier { string = CopyString(s) });
             mInitSub.dataMember = eClass_FindDataMember(inheritClass, s, inheritClass.module, null, null);
+            if(!mInitSub.dataMember)
+            {
+               mInitSub.dataMember = (DataMember)eClass_FindProperty(inheritClass, s, inheritClass.module);
+            }
             if(mInitSub.dataMember)
             {
                if(!mInitSub.dataMember.dataTypeClass)
