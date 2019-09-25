@@ -2405,6 +2405,7 @@ class Debugger
          serialSemaphore.Wait();
          app.Lock();
 
+         GdbCommand(0, false, "handle SIGPIPE nostop");
          GdbCommand(0, false, "-gdb-set verbose off");
          //GdbCommand(0, false, "-gdb-set exec-done-display on");
          GdbCommand(0, false, "-gdb-set step-mode off");
