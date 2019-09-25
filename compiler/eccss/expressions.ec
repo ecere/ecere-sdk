@@ -1073,6 +1073,7 @@ public class CMSSExpInstance : CMSSExpression
 public:
    CMSSInstantiation instance;
    StylesMask stylesMask;
+   void * instData;
 
    CMSSExpInstance ::parse(CMSSSpecsList specs, CMSSLexer lexer)
    {
@@ -1115,7 +1116,24 @@ public:
       }
       else if(computeType == runtime)
       {
-         value.i = (int64)(intptr)createGenericInstance(this, evaluator, &flags);
+         if(instData)
+         {
+            if(expType && expType.type != structClass)
+            {
+               if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
+                  eInstance_Delete(instData);
+            }
+            else
+               delete instData;
+         }
+
+         // TODO: Avoid constantly re-creating if constant?
+         instData = createGenericInstance(this, evaluator, &flags);
+         if(expType && expType.type == normalClass)
+         {
+            ((Instance)instData)._refCount++;
+         }
+         value.i = (int64)(intptr)instData;
          if(!flags)
             flags.resolved = true;
       }
@@ -1125,7 +1143,17 @@ public:
    ~CMSSExpInstance()
    {
       delete instance;
-      //delete Instance here
+
+      if(instData)
+      {
+         if(expType && expType.type != structClass)
+         {
+            if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
+               eInstance_Delete(instData);
+         }
+         else
+            delete instData;
+      }
    }
 }
 
