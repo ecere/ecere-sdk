@@ -292,10 +292,13 @@ public:
    CMSSExpression exp;
    StylingRuleSelector ::parse(CMSSLexer lexer)
    {
-      StylingRuleSelector selector { };
+      StylingRuleSelector selector = null;
+      CMSSExpression e;
       if(lexer.peekToken().type == '[')
          lexer.readToken();
-      selector.exp = CMSSExpression::parse(lexer);
+      e = CMSSExpression::parse(lexer);
+      if(e)
+         selector = { exp = e };
       if(lexer.peekToken().type == ']')
          lexer.readToken();
       return selector;
