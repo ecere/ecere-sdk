@@ -450,56 +450,104 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                Class destType = exp.destType;
                if(destType)
                {
-                  // Class c = exp._class;
                   FieldValue val { };
-                  /*if(destType && !strcmp(destType.name, "GEFont"))
-                     printf("here");*/
-                  ExpFlags flag = exp.compute(val, evaluator, runtime); //-1
+                  ExpFlags flag = exp.compute(val, evaluator, runtime);
 
-                  if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
-                     ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
-                     *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
-                  else if(destType == class(int64) ||
-                     ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
-                     *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
-                  else if(destType == class(double))
-                     *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
-                  else if(destType == class(float))
-                     *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
-                  else if(destType == class(String))
+                  if(mInit.dataMember && mInit.dataMember.isProperty)
                   {
-                     *(String *)((byte *)object + mInit.offset) =
-                        (val.type.type == text)    ? CopyString(val.s)  :
-                        (val.type.type == real)    ? PrintString(val.r) :
-                        (val.type.type == integer) ? PrintString(val.i) : null;
-                  }
-                  else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance)) //destType is inappropriate here
-                  {
-                     //CMSSExpInstance i = (CMSSExpInstance)exp;
-                     *(Instance *)((byte *)object + mInit.offset) = (Instance)val.i;
-                     //*(Instance *)((byte *)object + mInit.offset) = createGenericInstance(i, cache, recordID, scale, time, flg);
+                     Property prop = (Property)mInit;
 
-                     //if we're freeing these Instances later, is it then the case that
-                     //we give CMSSExpInstance this instData member and free it in destructor
+                     if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
+                        ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
+                     {
+                        void (* setInt)(void * o, int v) = (void *)prop.Set;
+                        setInt(object, val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0);
+                     }
+                     else if(destType == class(int64) ||
+                        ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
+                     {
+                        void (* setInt64)(void * o, int64 v) = (void *)prop.Set;
+                        setInt64(object, val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0);
+                     }
+                     else if(destType == class(double))
+                     {
+                        void (* setDouble)(void * o, double v) = (void *)prop.Set;
+                        setDouble(object, val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0);
+                     }
+                     else if(destType == class(float))
+                     {
+                        void (* setFloat)(void * o, float v) = (void *)prop.Set;
+                        setFloat(object, val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0);
+                     }
+                     else if(destType == class(String))
+                     {
+                        void (* setString)(void * o, String v) = (void *)prop.Set;
+                        setString(object,
+                           (val.type.type == text)    ? CopyString(val.s)  :
+                           (val.type.type == real)    ? PrintString(val.r) :
+                           (val.type.type == integer) ? PrintString(val.i) : null);
+                     }
+                     else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance))
+                     {
+                        void (* setInstance)(void * o, void * v) = (void *)prop.Set;
+                        setInstance(object,  (Instance)(uintptr)val.i);
+
+                        //if we're freeing these Instances later, is it then the case that
+                        //we give CMSSExpInstance this instData member and free it in destructor
+                     }
+                     else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
+                     {
+                        void (* setInstance)(void * o, void * v) = (void *)prop.Set;
+                        setInstance(object,  (void *)(uintptr)val.i);
+                     }
+                     else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
+                     {
+                        /*ConsoleFile con { };
+                        exp.print(con, 0,0);
+                        */
+   #ifdef _DEBUG
+                        PrintLn("Unexpected!");
+   #endif
+                     }
                   }
-                  else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
+                  else
                   {
-                     memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
-                  }
-                  /*
-                  else if(destType.type == enumClass)    //assuming default of 32 bit
-                  {
-                     *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
-                  }
-                  */
-                  else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
-                  {
-                     /*ConsoleFile con { };
-                     exp.print(con, 0,0);
-                     */
-#ifdef _DEBUG
-                     PrintLn("Unexpected!");
-#endif
+                     if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
+                        ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
+                        *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
+                     else if(destType == class(int64) ||
+                        ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
+                        *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
+                     else if(destType == class(double))
+                        *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
+                     else if(destType == class(float))
+                        *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
+                     else if(destType == class(String))
+                     {
+                        *(String *)((byte *)object + mInit.offset) =
+                           (val.type.type == text)    ? CopyString(val.s)  :
+                           (val.type.type == real)    ? PrintString(val.r) :
+                           (val.type.type == integer) ? PrintString(val.i) : null;
+                     }
+                     else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance))
+                     {
+                        // TOFIX: We should probably be deleting existance value here?
+
+                        *(Instance *)((byte *)object + mInit.offset) = (Instance)(uintptr)val.i;
+                     }
+                     else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
+                     {
+                        memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
+                     }
+                     else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
+                     {
+                        /*ConsoleFile con { };
+                        exp.print(con, 0,0);
+                        */
+   #ifdef _DEBUG
+                        PrintLn("Unexpected!");
+   #endif
+                     }
                   }
                   *flg |= flag;
                }
@@ -928,6 +976,7 @@ public:
       CMSSExpInstance inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
       CMSSExpArray arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
       int unit = 0;
+
       if(inst)
       {
          CMSSSpecName spec = (CMSSSpecName)inst.instance._class;
