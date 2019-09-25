@@ -350,7 +350,7 @@ static CMSSExpression parsePrimaryExpression(CMSSLexer lexer)
 static CMSSExpression parsePostfixExpression(CMSSLexer lexer)
 {
    CMSSExpression exp = parsePrimaryExpression(lexer);
-   while(true)
+   while(exp) //true)
    {
       if(lexer.peekToken().type == '[')
          exp = CMSSExpIndex::parse(exp, lexer);
