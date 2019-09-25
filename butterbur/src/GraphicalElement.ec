@@ -477,7 +477,10 @@ public:
       {
          IteratorPointer ptr = elements.GetNext(it.pointer);
          GraphicalElement p = it.data;
-         p.parent = null;
+         // NOTE: From CMSS parent was not being set when adding children...
+         //       We probably want to skip the 'parent' property and just delete them as we're clearing the whole list
+         // p.parent = null;
+         delete p;
          it.pointer = ptr;
       }
    }

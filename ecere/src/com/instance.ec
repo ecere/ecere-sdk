@@ -4949,7 +4949,7 @@ public dllexport void eInstance_Delete(Instance instance)
                watchers->Delete(watcher);
             }
          }
-
+         // FIXME: Fix this comment highlighting!!!
          /*// Loop through properties to delete all watchers? Might slow down destruction...
          {
             Property _property;
