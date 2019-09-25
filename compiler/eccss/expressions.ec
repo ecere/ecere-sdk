@@ -1436,6 +1436,7 @@ public:
                break; //?
             }
          }
+         delete bases;
       }
       if(dataMember)
       {
