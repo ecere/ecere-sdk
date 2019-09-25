@@ -52,7 +52,6 @@ public enum CMSSTokenType
    greaterEqual,     // >=
 
    // Text Comparison
-   stringIsExactly,
    stringContains,
    stringStartsWith,
    stringEndsWith,
@@ -122,7 +121,13 @@ static Map<String, CMSSTokenType> stringTokens
    { "or", or },
    { "+=", addAssign },
    { "in", in },
-   { "div", intDivide }
+   { "div", intDivide },
+   { "~",  stringContains },     // NOTE: These 3 are currently not using the character ASCII code (not in core eC syntax)
+   { "^",  stringStartsWith },
+   { "$",  stringEndsWith },
+   { "!~", stringNotContains },
+   { "!^", stringNotStartsW },
+   { "!$", stringNotEndsW }
 ] };
 
 static CMSSTokenType matchToken(const String text)
