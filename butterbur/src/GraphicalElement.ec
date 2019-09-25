@@ -490,8 +490,8 @@ public class Text : GraphicalElement
 {
    type = text;
 
-public:
    String text;   // FIXME: Both member and property are currently public, ECCSS otherwise currently does not set text properly
+public:
    GEFont font;
    Alignment2D alignment;
 
@@ -499,6 +499,12 @@ public:
    {
       set { delete text; text = CopyString(value); }
       get { return text; }
+   }
+
+   ~Text()
+   {
+      delete text;
+      delete font;
    }
 }
 
