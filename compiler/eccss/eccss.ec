@@ -455,7 +455,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
 
                   if(mInit.dataMember && mInit.dataMember.isProperty)
                   {
-                     Property prop = (Property)mInit;
+                     Property prop = (Property)mInit.dataMember;
 
                      if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
