@@ -112,6 +112,30 @@ class LWFMTextAlignment : uint16
 public:
    LWFMHorizontalAlignment horzAlignment:2;
    LWFMVerticalAlignment vertAlignment:4;
+
+   property Alignment2D
+   {
+      set
+      {
+         HAlignment h = value.horzAlign;
+         VAlignment v = value.vertAlign;
+         return
+         {
+            horzAlignment = (h == unset ? left : (LWFMHorizontalAlignment)(h-1)),
+            vertAlignment = (v == unset ? top  : v == baseLine ? baseline : (LWFMVerticalAlignment)v)
+         };
+      }
+      get
+      {
+         LWFMHorizontalAlignment h = horzAlignment;
+         LWFMVerticalAlignment   v = vertAlignment;
+         return
+         {
+            horzAlign = (HAlignment)(h + 1),
+            vertAlign = v == baseline ? baseLine : (VAlignment)v
+         };
+      }
+   }
 };
 
 class LWFMFont : struct
