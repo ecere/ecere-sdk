@@ -41,7 +41,7 @@ public class Presentation
             if(parent)
             {
                Presentation p = parent;
-               MultiPresentation topPres = p;
+               MultiPresentation topPres = (MultiPresentation)p;
 
                while(topPres.parent) topPres = topPres.parent;
                while(p && *&p.visible)
