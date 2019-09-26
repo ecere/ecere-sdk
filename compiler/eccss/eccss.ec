@@ -359,6 +359,8 @@ public:
 
 public class StylingRuleBlockList : CMSSList<StylingRuleBlock>
 {
+   // TODO: Optimization Maps per re-used attributes of values -> relevant nested rules
+
 public:
    StylingRuleBlockList ::parse(CMSSLexer lexer)
    {
@@ -377,13 +379,15 @@ public:
 
    StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
    {
-      Iterator<StylingRuleBlock> it { list };
-      while(it.Prev())
+      Link it = list.last;
+      //Iterator<StylingRuleBlock> it { list };
+      while(m && it) //it.Prev())
       {
-         StylingRuleBlock block = it.data;
+         StylingRuleBlock block = (StylingRuleBlock)(uint64)it.data;
          StylesMask bm = block.mask & m;
          if(bm)
             m = block.apply(object, m, evaluator, flg);
+         it = it.prev;
       }
       return m;
    }
@@ -928,11 +932,13 @@ public:
 
       if(selectors)
       {
+         Link s;
          // TODO: Per-record flags for selectors?
-         for(s : selectors)
+         for(s = selectors.list.first; s; s = s.next)
          {
+            StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
             FieldValue value { };
-            CMSSExpression e = s.exp;
+            CMSSExpression e = sel.exp;
             ExpFlags sFlags = e.compute(value, evaluator, runtime);
             flags |= sFlags;
 
@@ -949,13 +955,16 @@ public:
             m = nestedRules.apply(object, m, evaluator, flg);
          if(m)
          {
-            Iterator<CMSSMemberInitList> itStyle { styles };
-            while(itStyle.Prev())
+            //Iterator<CMSSMemberInitList> itStyle { styles };
+            Link itStyle = styles.list.last;
+            while(itStyle) //.Prev())
             {
-               Iterator<CMSSMemberInit> itMember { itStyle.data };
-               while(itMember.Prev())
+               CMSSMemberInitList initList = (CMSSMemberInitList)(uintptr)itStyle.data;
+               //Iterator<CMSSMemberInit> itMember { itStyle.data };
+               Link itMember = initList.list.last;
+               while(itMember) //.Prev())
                {
-                  CMSSMemberInit member = itMember.data;
+                  CMSSMemberInit member = (CMSSMemberInit)(uintptr)itMember.data;
                   CMSSInitExp initExp = member.initializer && member.initializer._class == class(CMSSInitExp) ? (CMSSInitExp)member.initializer : null;
                   CMSSExpression e = initExp.exp;
                   StylesMask sm = member.stylesMask;
@@ -964,7 +973,9 @@ public:
                      applyStyle(object, sm & m, evaluator, e, flg);
                      m &= ~sm;
                   }
+                  itMember = itMember.prev;
                }
+               itStyle = itStyle.prev;
             }
          }
       }
