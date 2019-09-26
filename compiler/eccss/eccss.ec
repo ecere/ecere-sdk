@@ -956,7 +956,7 @@ public:
          if(m)
          {
             //Iterator<CMSSMemberInitList> itStyle { styles };
-            Link itStyle = styles.list.last;
+            Link itStyle = styles ? styles.list.last : null;
             while(itStyle) //.Prev())
             {
                CMSSMemberInitList initList = (CMSSMemberInitList)(uintptr)itStyle.data;
