@@ -27,6 +27,7 @@ public:
    size = 12;
    opacity = 1;
    outline.opacity = 1;
+   outline.color = white;
    color = black;
 }
 
@@ -530,6 +531,7 @@ public:
    Pointf hotSpot;
    Color tint;
 
+   hotSpot = { 0.5, 0.5 };
    tint = white;
 
    property Pointf hotSpot
