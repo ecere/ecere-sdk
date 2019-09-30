@@ -1219,10 +1219,22 @@ public:
          if(mInitSub)
          {
             CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
-            CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
-            constant.constant = value;
-
-            result = true;
+            if(initExpSub.exp._class == class(CMSSExpConstant))
+            {
+               CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
+               constant.constant = value;
+               result = true;
+            }
+            // there can be another instance here! e.g. casing
+            else if(initExpSub.exp._class == class(CMSSExpInstance))
+            {
+               CMSSExpInstance inst = (CMSSExpInstance)initExpSub.exp;
+               CMSSInstantiation instance = inst.instance;
+               CMSSInstInitList instInitList = instance.members;
+               if(!instInitList)
+                  instance.members = instInitList = { };
+               result = instInitList.changeStyle(msk, value, c, evaluator, isNested);
+            }
          }
       }
 
