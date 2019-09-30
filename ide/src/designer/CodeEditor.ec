@@ -3190,7 +3190,7 @@ class CodeEditor : Window
                                                 // Maintain a list in FunctionDefinition of who is attached to it
                                                 for(def = _class.definitions->first; def; def = def.next)
                                                 {
-                                                   if(def.type == functionClassDef)
+                                                   if(def.type == functionClassDef && def.function.declarator)
                                                    {
                                                       ClassFunction function = def.function;
                                                       if(!strcmp(function.declarator.symbol.string, propDef.initializer.exp.identifier.string))
@@ -3481,11 +3481,11 @@ class CodeEditor : Window
                                                                      // Maintain a list in FunctionDefinition of who is attached to it
                                                                      for(def = _class.definitions->first; def; def = def.next)
                                                                      {
-                                                                        if(def.type == functionClassDef)
+                                                                        if(def.type == functionClassDef && def.function.declarator)
                                                                         {
                                                                            ClassFunction function = def.function;
                                                                            Identifier id = (member.initializer.exp.type == memberExp) ? member.initializer.exp.member.member : member.initializer.exp.identifier;
-                                                                           if(function.declarator && !strcmp(function.declarator.symbol.string, id.string))
+                                                                           if(!strcmp(function.declarator.symbol.string, id.string))
                                                                            {
                                                                               function.attached.Add(OldLink { data = method });
                                                                               // Reference this particular instance?
@@ -4108,7 +4108,7 @@ class CodeEditor : Window
                                  member.initializer.exp.type == memberExp /*ExpIdentifier*/)
                               {
                                  if(((this.methodAction == actionDetachMethod || this.methodAction == actionReattachMethod) && this.method == method && this.selected == object) ||
-                                    (this.methodAction == actionDeleteMethod && !strcmp(function.declarator.symbol.string, member.initializer.exp.identifier.string)))
+                                    (this.methodAction == actionDeleteMethod && function.declarator && !strcmp(function.declarator.symbol.string, member.initializer.exp.identifier.string)))
                                  {
                                     f.Seek(member.loc.start.pos - position, current);
                                     f.DeleteBytes(member.loc.end.pos - member.loc.start.pos);
@@ -4694,7 +4694,7 @@ class CodeEditor : Window
                                  if(method && method.type == virtualMethod && propDef.initializer && propDef.initializer.type == expInitializer && propDef.initializer.exp && propDef.initializer.exp.type == identifierExp)
                                  {
                                     if(((methodAction == actionDetachMethod || methodAction == actionReattachMethod) && method == this.method && selected == classObject) ||
-                                       (methodAction == actionDeleteMethod && !strcmp(function.declarator.symbol.string, propDef.initializer.exp.identifier.string)))
+                                       (methodAction == actionDeleteMethod && function.declarator && !strcmp(function.declarator.symbol.string, propDef.initializer.exp.identifier.string)))
                                     {
                                        f.Seek(propDef.loc.start.pos - position, current);
                                        f.DeleteBytes(propDef.loc.end.pos - propDef.loc.start.pos);
@@ -5072,7 +5072,7 @@ class CodeEditor : Window
                                  {
                                     for(def = classDef.definitions->first; def; def = def.next)
                                     {
-                                       if(def.type == functionClassDef)
+                                       if(def.type == functionClassDef && def.function.declarator)
                                        {
                                           if(!strcmp(def.function.declarator.symbol.string, propDef.initializer.exp.identifier.string))
                                           {
@@ -5128,9 +5128,9 @@ class CodeEditor : Window
                                        {
                                           for(def = classDef.definitions->first; def; def = def.next)
                                           {
-                                             if(def.type == functionClassDef)
+                                             if(def.type == functionClassDef && def.function.declarator)
                                              {
-                                                if(def.function.declarator && !strcmp(def.function.declarator.symbol.string, member.initializer.exp.identifier.string))
+                                                if(!strcmp(def.function.declarator.symbol.string, member.initializer.exp.identifier.string))
                                                 {
                                                    function = def.function;
                                                    break;
