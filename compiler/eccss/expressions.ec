@@ -8,7 +8,8 @@ public import "eccss"
 
 default:
 extern int __ecereVMethodID_class_OnGetDataFromString;
-static __attribute__((unused)) void dummy() { int a; a.OnGetDataFromString(null); }
+extern int __ecereVMethodID_class_OnGetString;
+static __attribute__((unused)) void dummy() { int a; a.OnGetDataFromString(null); a.OnGetString(0,0,0); }
 private:
 
 #define BINARY(o, name, m, t)                                        \
@@ -383,7 +384,16 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      out.Print(constant);
+      if(expType)
+      {
+         const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = expType._vTbl[__ecereVMethodID_class_OnGetString];
+         char tempString[1024];
+         ObjectNotationType on = econ;
+         const String s = onGetString(expType, &constant.i, tempString, null, &on);
+         if(s) out.Print(s);
+         else out.Print(constant);
+      }
+      else out.Print(constant);
    }
 
    CMSSExpConstant ::parse(CMSSLexer lexer)
