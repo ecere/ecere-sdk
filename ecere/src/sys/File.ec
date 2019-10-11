@@ -600,9 +600,10 @@ public:
    {
       va_list args;
       char buffer[4096];
+      int len;
       va_start(args, object);
-      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
-      Puts(buffer);
+      len = PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      WriteData(buffer, len);
       Putc('\n');
       va_end(args);
    }
@@ -611,9 +612,10 @@ public:
    {
       va_list args;
       char buffer[4096];
+      int len;
       va_start(args, object);
-      PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
-      Puts(buffer);
+      len = PrintStdArgsToBuffer(buffer, sizeof(buffer), object, args);
+      WriteData(buffer, len);
       va_end(args);
    }
 
