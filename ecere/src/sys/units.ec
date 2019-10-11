@@ -115,6 +115,13 @@ public class Radians : Angle
 
 public class Degrees : Angle
 {
+   const char * OnGetString(char * tempString, void * reserved, ObjectNotationType * onType)
+   {
+      // Optimization
+      // double d = this; // FIXME, also directly calling OnGetString()...
+      double d = *(Degrees *)&this;
+      return d.OnGetString(tempString, reserved, onType);
+   }
    public property Radians
    {
       //get { return (Angle)this * Pi / 180; }
