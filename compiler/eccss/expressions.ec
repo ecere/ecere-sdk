@@ -1426,7 +1426,7 @@ public:
       //DataMember dataMember = null;
       Class inheritClass = c;
       dataMember = null;
-      if(identifiers && identifiers.first)
+      if(inheritClass && identifiers && identifiers.first)
       {
          for(i : identifiers)
          {
