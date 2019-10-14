@@ -1116,6 +1116,71 @@ private:
       }
    }
 
+   bool GetAlwaysBuild(ProjectConfig prjConfig)
+   {
+      bool result;
+      // note: unknown platform is for common
+      Map<Platform, SetBool> alwaysBuildInfo { };
+      CollectAlwaysBuildInfo(alwaysBuildInfo, prjConfig);
+      if(alwaysBuildInfo.count == 0)
+         result = false;
+      else if(alwaysBuildInfo.count == 1)
+         result = alwaysBuildInfo.root.minimum.value == true;
+      else
+      {
+         SetBool check = alwaysBuildInfo.root.minimum.value;
+         MapNode<Platform, SetBool> mn;
+         for(mn = alwaysBuildInfo.root.minimum; mn; mn = mn.next)
+         {
+            if(check != mn.value)
+               break;
+         }
+         if(!mn) // all are same
+            result = check == true;
+         else
+            result = false;
+      }
+      delete alwaysBuildInfo;
+      return result;
+   }
+
+   void CollectAlwaysBuildInfo(Map<Platform, SetBool> output, ProjectConfig prjConfig)
+   {
+      // note: unknown platform is for common
+      Platform platform;
+      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
+      ProjectOptions options = property::options;
+      Array<PlatformOptions> platforms = property::platforms;
+
+      if(parent)
+         parent.CollectAlwaysBuildInfo(output, prjConfig);
+      else
+         output[unknown] = unset;
+
+      if(options && options.alwaysBuild)
+         output[unknown] = options.alwaysBuild;
+
+      if(config && config.options && config.options.alwaysBuild)
+         output[unknown] = config.options.alwaysBuild;
+
+      if(platforms)
+      {
+         for(p : platforms)
+         {
+            if(p.options.alwaysBuild && (platform = p.name))
+               output[platform] = p.options.alwaysBuild;
+         }
+      }
+      if(config && config.platforms)
+      {
+         for(p : config.platforms)
+         {
+            if(p.options.alwaysBuild && (platform = p.name))
+               output[platform] = p.options.alwaysBuild;
+         }
+      }
+   }
+
    void EnsureVisible()
    {
       if(parent)
@@ -1653,6 +1718,17 @@ private:
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
                count++;
+            }
+         }
+         else if(printType == allAlwaysBuild)
+         {
+            if(GetAlwaysBuild(prjConfig))
+            {
+               char modulePath[MAX_LOCATION];
+               EscapeForMake(modulePath, path, true, true, false);
+               EscapeForMake(moduleName, name, true, true, false);
+               sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
+               items.Add(CopyString(s));
             }
          }
          else if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||

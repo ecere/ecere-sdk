@@ -391,7 +391,7 @@ static bool IsLinkerOption(String s)
 
 static byte epjSignature[] = { 'E', 'P', 'J', 0x04, 0x01, 0x12, 0x03, 0x12 };
 
-enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources, eC_noPrint };
+enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sources, resources, eCsources, rcSources, eC_noPrint, allAlwaysBuild };
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
@@ -744,6 +744,11 @@ define localConsole = config && config.options && config.options.console ?
 define localCompress = config && config.options && config.options.compress ?
             config.options.compress : options && options.compress ?
             options.compress : SetBool::unset;
+/*
+define localAlwaysBuild = config && config.options && config.options.alwaysBuild ?
+            config.options.alwaysBuild : options && options.alwaysBuild ?
+            options.alwaysBuild : SetBool::unset;
+*/
 
 define platformTargetType =
          configPOs && configPOs.options && configPOs.options.targetType && configPOs.options.targetType != localTargetType ?
@@ -1184,6 +1189,13 @@ private:
       return compress == true;
    }
    //SetBool excludeFromBuild;
+   /*
+   bool GetAlwaysBuild(ProjectConfig config)
+   {
+      SetBool alwaysBuild = localAlwaysBuild;
+      return alwaysBuild == true;
+   }
+   */
 
    bool GetConfigIsInActiveDebugSession(ProjectConfig config)
    {
@@ -3652,6 +3664,18 @@ private:
                f.Printf("\t$(if $(wildcard %s),,$(call mkdir,%s))\n", targetDirExpNoSpaces, targetDirExpNoSpaces);
             f.Puts("\n");
          }
+
+         // always build phony targets
+         topNode.GenMakefilePrintNode(f, this, allAlwaysBuild, null, listItems, config, null, null, opt);
+         for(i : listItems)
+         {
+            String s = (String)i;
+            f.Printf(".PHONY: %s\n", s);
+         }
+         if(listItems.count)
+            f.Printf("\n");
+         listItems.Free();
+         listItems.count = 0;
 
          if(numCObjects)
          {

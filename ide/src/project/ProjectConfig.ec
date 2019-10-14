@@ -344,6 +344,7 @@ public:
 
    // todo; move those to compiler/linker sections
    SetBool excludeFromBuild;
+   SetBool alwaysBuild;
    BuildBitDepth buildBitDepth;
    SetBool fastMath;
 
@@ -431,6 +432,7 @@ public:
          console = console,
          compress = compress,
          excludeFromBuild = excludeFromBuild,
+         alwaysBuild = alwaysBuild,
          fastMath = fastMath,
          preprocessorDefinitions = CopyArrayString(preprocessorDefinitions),
          includeDirs = CopyArrayString(includeDirs),
@@ -516,6 +518,7 @@ private:
             console == unset &&
             compress == unset &&
             excludeFromBuild == unset &&
+            alwaysBuild == unset &&
             fastMath == unset &&
             (!prebuildCommands || !prebuildCommands.count) &&
             (!postbuildCommands || !postbuildCommands.count) &&

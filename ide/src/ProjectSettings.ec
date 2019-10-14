@@ -1693,6 +1693,7 @@ class BuildTab : Tab
             compilerTab.labelObjDir.visible = !newNodeRes;
             compilerTab.objDir.visible = !newNodeRes;
             compilerTab.excludeFromBuild.visible = !newNodeRes;
+            compilerTab.alwaysBuild.visible = !newNodeRes;
             compilerTab.labelPreprocessorDefs.visible = !newNodeRes;
             compilerTab.preprocessorDefs.visible = !newNodeRes;
             compilerTab.labelDefaultNameSpace.visible = !newNodeRes;
@@ -1717,6 +1718,7 @@ class BuildTab : Tab
             compilerTab.labelObjDir.visible = true;
 
             compilerTab.excludeFromBuild.visible = false;
+            compilerTab.alwaysBuild.visible = false;
          }
          else
          {
@@ -1724,6 +1726,7 @@ class BuildTab : Tab
             compilerTab.labelObjDir.visible = false;
 
             compilerTab.excludeFromBuild.visible = (node != project.resNode);
+            compilerTab.alwaysBuild.visible = (node != project.resNode);
          }
 
          // Load Settings Into Dialog
@@ -2025,6 +2028,12 @@ class CompilerTab : Tab
    {
       rightPane, this, position = { 8, 28 },
       text = $"Exclude from Build", visible = false, option = OPTION(excludeFromBuild);
+   };
+
+   BoolOptionBox alwaysBuild
+   {
+      rightPane, this, position = { 8, 28 }, anchor = { top = 28, right = 8 },//anchor.right = 8,
+      text = $"Always Build", visible = false, option = OPTION(alwaysBuild);
    };
 
    Label labelPreprocessorDefs { rightPane, this, position = { 8, 50 }, labeledWindow = preprocessorDefs };
