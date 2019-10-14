@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "ec2",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "SharedLibrary",
@@ -25,8 +26,19 @@
          "Name" : "Release",
          "Options" : {
             "Debug" : false,
+            "NoLineNumbers" : true,
             "Optimization" : "Speed",
-            "FastMath" : true
+            "LibraryDirs" : [
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin",
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib"
+            ],
+            "FastMath" : true,
+            "PostbuildCommands" : [
+               "$(call cp,$(TARGET),../../$(SODESTDIR))",
+               "$(if $(CROSS_TARGET_WIN_BOOTSTRAP),$(call cp,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/),)",
+               "$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)",
+               "$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)"
+            ]
          }
       },
       {

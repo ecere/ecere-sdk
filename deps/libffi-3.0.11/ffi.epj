@@ -36,6 +36,7 @@
       {
          "Folder" : "src",
          "Files" : [
+            "src/x86/ffi.c",
             {
                "Folder" : "x86",
                "Files" : [
@@ -53,7 +54,6 @@
             "types.c",
             "closures.c",
             "i686-pc-mingw32/include/ffi.h",
-            "src/x86/ffi.c",
             "src/x86/ffitarget.h"
          ]
       }

@@ -12,7 +12,8 @@
       "IncludeDirs" : [
          "include",
          "lib",
-         "../zlib-1.2.8"
+         "../zlib-1.2.8",
+         "$(OPENSSL_INCLUDE_DIR)"
       ],
       "TargetType" : "StaticLibrary",
       "TargetFileName" : "curl"

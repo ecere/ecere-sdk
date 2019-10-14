@@ -8,7 +8,6 @@
          "FT_OPTION_AUTOFIT2"
       ],
       "IncludeDirs" : [
-         "../zlib-1.2.8",
          "include",
          "include/freetype",
          "include/freetype/internal"
@@ -31,7 +30,7 @@
          "Name" : "Release",
          "Options" : {
             "Warnings" : "None",
-            "Optimization" : "Speed",
+            "Optimization" : "None",
             "FastMath" : true
          }
       }

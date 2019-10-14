@@ -52,12 +52,14 @@
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "LibraryDirs" : [
-               "../../obj/$(PLATFORM)$(ARCH_SUFFIX)/bin",
-               "../../obj/$(PLATFORM)$(ARCH_SUFFIX)/lib"
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin",
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib"
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cp,$(TARGET),../../$(SODESTDIR))"
+               "$(call cp,$(TARGET),../../$(SODESTDIR))",
+               "$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)",
+               "$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)"
             ],
             "InstallCommands" : [
                "$(call cp,$(TARGET),\"$(DESTLIBDIR)/ec/\")",

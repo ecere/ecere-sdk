@@ -51,7 +51,14 @@
          "Options" : {
             "Debug" : false,
             "Optimization" : "Speed",
-            "FastMath" : true
+            "LibraryDirs" : [
+               "../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin",
+               "../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib"
+            ],
+            "FastMath" : true,
+            "PostbuildCommands" : [
+               "$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)"
+            ]
          }
       }
    ],

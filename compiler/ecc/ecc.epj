@@ -32,12 +32,12 @@
                "ecere"
             ],
             "LibraryDirs" : [
-               "../../obj/$(PLATFORM)/bin",
-               "../../obj/$(PLATFORM)/lib"
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin",
+               "../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib"
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cp,$(TARGET),../../obj/$(PLATFORM)/bin/)"
+               "$(call cp,$(TARGET),../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)"
             ],
             "InstallCommands" : [
                "$(if $(WINDOWS_HOST),$(call cp,$(TARGET),\"$(BINDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(BINDIR)/$(MODULE)$(E))"

@@ -6,7 +6,7 @@
       "TargetType" : "Executable",
       "TargetFileName" : "extract",
       "LibraryDirs" : [
-         "../../ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)",
+         "../../ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
          "../../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ]
    },
@@ -99,7 +99,10 @@
                "z"
             ],
             "Compress" : true,
-            "FastMath" : false
+            "FastMath" : false,
+            "PostbuildCommands" : [
+               "$(if $(DEBIAN_PACKAGE),touch -r extract.ec $(OBJ)extract.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main.c $(OBJECTS) $(SYMBOLS) $(TARGET))"
+            ]
          },
          "Platforms" : [
             {

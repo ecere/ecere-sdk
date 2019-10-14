@@ -50,7 +50,9 @@
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cp,$(TARGET),../$(SODESTDIR))"
+               "$(call cp,$(TARGET),../$(SODESTDIR))",
+               "$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)",
+               "$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)"
             ],
             "InstallCommands" : [
                "$(call cp,$(TARGET),\"$(DESTLIBDIR)/\")",

@@ -66,7 +66,7 @@
       {
          "Name" : "Release",
          "Options" : {
-            "Warnings" : "All",
+            "Warnings" : "Normal",
             "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
@@ -74,12 +74,14 @@
                "SQLITE_ENABLE_RTREE=1"
             ],
             "LibraryDirs" : [
-               "../../../obj/$(PLATFORM)/bin",
-               "../../../obj/$(PLATFORM)/lib"
+               "../../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin",
+               "../../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib"
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cp,$(TARGET),../../../$(SODESTDIR))"
+               "$(call cp,$(TARGET),../../../$(SODESTDIR))",
+               "$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)",
+               "$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)"
             ],
             "InstallCommands" : [
                "$(call cp,$(TARGET),\"$(DESTLIBDIR)/ec/\")",
