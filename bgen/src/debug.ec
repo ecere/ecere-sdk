@@ -17,7 +17,6 @@ void dbglog_close()
    if(dbglog != console)
       delete dbglog;
 }
-#endif // defined(_DEBUG)
 
 static char * getTimeString(const char * prefix, const char * suffix)
 {
@@ -28,6 +27,7 @@ static char * getTimeString(const char * prefix, const char * suffix)
    sprintf(time, "%s%04d%02d%02d-%02d%02d%02d%s", prefix, now.year, now.month+1, now.day, now.hour, now.minute, now.second, suffix);
    return time;
 }
+#endif // defined(_DEBUG)
 
 void __locfprintx__(const char * loc, File f, typed_object object, ...)
 {
