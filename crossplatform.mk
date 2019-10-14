@@ -3,6 +3,8 @@ $(info Using config.mk configuration file.)
 include config.mk
 endif
 
+CROSSPLATFORM_MK := defined
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
@@ -312,7 +314,7 @@ endif
 ifeq ($(D),1)
    DEBUG_IS_ON := defined
 endif
-addtolistfile = $(if $(1),@$(call echo,$(1)) >> $(2),)
+addtolistfile = $(if $(1),@$(call echo,$(1))>> $(2),)
 ifdef WIN_SHELL_COMMANDS
    cd = @cd
    nullerror = 2>NUL
@@ -437,3 +439,5 @@ ifdef WINDOWS_TARGET
   endif
  endif
 endif
+
+var-print-%: ; @$(call echo,$(if $($*),$* = $($*),$* is not defined))
