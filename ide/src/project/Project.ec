@@ -71,7 +71,7 @@ void ParseArrayValue(Array<String> array, char * equal)
 
 void ProjectNode::LegacyBinaryLoadNode(File f)
 {
-   int len, count, c;
+   int len = 0, count, c;
    int fileNameLen;
 
    f.Read(&len, sizeof(len), 1);
@@ -2947,7 +2947,7 @@ private:
       if(f)
       {
          bool test;
-         int ifCount;
+         int ifCount = 0;
          Platform platform;
          char targetDir[MAX_LOCATION];
          char objDirExpNoSpaces[MAX_LOCATION];

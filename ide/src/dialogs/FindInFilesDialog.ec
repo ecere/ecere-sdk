@@ -658,7 +658,7 @@ private:
 
    unsigned int Main()
    {
-      int frame;
+      int frame = 0;
       int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0, dirsMatchedCount = 0;
       //double lastTime = GetTime();
       FindInFilesMode mode = this.mode;
