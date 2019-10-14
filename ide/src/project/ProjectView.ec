@@ -2242,7 +2242,7 @@ class ProjectView : Window
          {
             for(c = 0; c < 100; c++)
             {
-               char string[16];
+               char string[32];
                sprintf(string, c ? "New Folder (%d)" : "New Folder", c);
                if((folderNode = parentNode.Add(prj, string, after, folder, folder, true)))
                   break;
