@@ -2216,7 +2216,7 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
       }
       else if(type == text)
       {
-         dest.s = PrintString(src.s);
+         dest.s = PrintString(src.i);
          dest.type = { text };
       }
    }
