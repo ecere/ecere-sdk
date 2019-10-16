@@ -121,12 +121,23 @@ public:
       return result;
    }
 
-   void write(const String path)
+   bool write(const String path)
    {
+      bool result = false;
       File f = FileOpen(path, write);
+      if(f)
+      {
+         result = writeFile(f);
+         delete f;
+      }
+      return result;
+   }
+
+   bool writeFile(File f)
+   {
       if(list)
          list.print(f, 0, { skipEmptyBlocks = true });
-      delete f;
+      return true;
    }
 
    CMSSStyleSheet ::loadFile(File f)
