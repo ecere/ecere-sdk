@@ -2025,6 +2025,21 @@ class ProjectView : Window
       projectNode.Delete();
    }
 
+   void updateModified()
+   {
+      Project modPrj = null;
+      for(p : ide.workspace.projects)
+      {
+         if(p.topNode.modified)
+         {
+            modPrj = p;
+            break;
+         }
+      }
+      if(!modPrj)
+         modifiedDocument = false;
+   }
+
    bool ProjectSave(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
@@ -2035,18 +2050,8 @@ class ProjectView : Window
          prj.StopMonitoring();
          if(prj.Save(prj.filePath))
          {
-            Project modPrj = null;
             prj.topNode.modified = false;
-            for(p : ide.workspace.projects)
-            {
-               if(p.topNode.modified)
-               {
-                  modPrj = p;
-                  break;
-               }
-            }
-            if(!modPrj)
-               modifiedDocument = false;
+            updateModified();
             Update(null);
          }
          prj.StartMonitoring();
