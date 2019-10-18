@@ -933,6 +933,8 @@ private:
                   CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(projectView.workspace.activeCompiler);
                   projectView.AddNode(topNode, null);
                   topNode.row.Move(prev);
+                  projectView.updateModified();
+                  projectView.Update(null);
 
                   projectView.ShowOutputBuildLog(true);
                   projectView.DisplayCompiler(compiler, false);
