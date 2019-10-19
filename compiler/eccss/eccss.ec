@@ -458,7 +458,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
          for(m : member.members)
          {
             CMSSMemberInit mInit = m;
-            if(mInit.initializer._class == class(CMSSInitExp))
+            if(mInit.initializer && mInit.initializer._class == class(CMSSInitExp))
             {
                CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
                CMSSExpression exp = initExp.exp;
