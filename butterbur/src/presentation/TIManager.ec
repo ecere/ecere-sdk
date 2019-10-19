@@ -307,7 +307,7 @@ class LWFontManager
 
       #define DEFAULT_FACE "DejaVu Sans"
 
-      if(!font) font = { DEFAULT_FACE, 12 }, freeFont = true;
+      if(!font) font = { DEFAULT_FACE, 12 /*, outline.size = 2*/ }, freeFont = true;
       key = { font.face ? font.face : DEFAULT_FACE, font.size, { bold = font.bold, underline = font.underline, italic = font.italic }, font.outline.size };
 
       result = loadedFonts[key];
@@ -343,8 +343,17 @@ class LWFontManager
             fileName = tmp;
          }
          result = addFont(fileName, paddingWidth);
-         if(result && font.outline.size)
-            result.setOutline(intensityFactor, alphaFactor, font.outline.size);
+         if(result)
+         {
+            if(!font.outline.size)
+            {
+               // TODO: Review implication of not having an outline set...
+               intensityFactor = 0;
+               alphaFactor = 0;
+            }
+            //if(font.outline.size)
+               result.setOutline(intensityFactor, alphaFactor, font.outline.size);
+         }
          if(result)
          {
             // incref result; // TODO: Should this be a regular class for memory management?
