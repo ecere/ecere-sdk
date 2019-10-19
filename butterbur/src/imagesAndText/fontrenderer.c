@@ -210,7 +210,7 @@ static int frFontRegisterImage( void *rendererhandle, int offsetx, int offsety, 
   state->imagecount++;
 
   image = &state->imagelist[ imageindex ];
-#if 1
+#if DM_ENABLE_EXT_COLOR //1
   dmDefineImage( image, state->texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR, state->statelayer );
 #elif 1
   dmDefineImage( image, state->texture, offsetx, offsety, width, height, 1, DM_PROGRAM_ALPHABLEND_INTENSITY, state->statelayer );
