@@ -1500,7 +1500,7 @@ public:
          //PrintLn(dataMember.name);
          //PrintLn(dataMember._class.name);
          stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr, dataMember._class) : 0;
-         if(initializer._class == class(CMSSInitExp))
+         if(initializer && initializer._class == class(CMSSInitExp))
          {
             CMSSInitExp initExp = (CMSSInitExp)initializer;
             CMSSExpression e = initExp.exp;
