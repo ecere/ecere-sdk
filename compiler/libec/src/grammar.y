@@ -135,7 +135,7 @@ default:
                    direct_declarator_function_type_ok declarator_nofunction_type_ok direct_declarator_nofunction_type_ok declarator_function_type_ok direct_declarator_function_error_type_ok
                    direct_declarator_function_start_type_ok direct_declarator_type_ok declarator_type_ok declarator_function_error_type_ok
 %type <pointer> pointer
-%type <initializer> initializer initializer_error initializer_condition initializer_condition_error
+%type <initializer> initializer initializer_error initializer_condition initializer_condition_error initializer_noexp
 %type <initDeclarator> init_declarator init_declarator_error
 %type <typeName> type_name guess_type_name parameter_declaration parameter_declaration_error
 %type <stmt> statement labeled_statement labeled_statement_error compound_statement compound_statement_error expression_statement
@@ -1578,6 +1578,7 @@ unary_operator:
 
 cast_expression:
        unary_expression
+   | '(' type_name ')' initializer_noexp  { $$ = MkExpExtensionInitializer($2, $4); $$.loc = @$; }
 	| '(' type_name ')' cast_expression    { $$ = MkExpCast($2, $4); $$.loc = @$; }
 	;
 
@@ -3033,6 +3034,24 @@ declarator_nofunction_type_ok:
 initializer:
 	  assignment_expression          { $$ = MkInitializerAssignment($1); $$.loc = @$; }
 	| '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
+	| '{' initializer_list ',' '}'
+      {
+         Compiler_Warning($"extra comma\n");
+         $$ = MkInitializerList($2);
+         $$.loc = @$;
+
+         {
+            Expression exp = MkExpDummy();
+            Initializer init = MkInitializerAssignment(exp);
+            init.loc = @3;
+            exp.loc = @3;
+            ListAdd($2, init);
+         }
+      }
+	;
+
+initializer_noexp:
+	  '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
 	| '{' initializer_list ',' '}'
       {
          Compiler_Warning($"extra comma\n");
