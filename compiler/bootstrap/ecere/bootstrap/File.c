@@ -456,6 +456,8 @@ void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereN
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
+int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
+
 unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(this, eC_stdin());
@@ -1282,18 +1284,19 @@ void __ecereMethod___ecereNameSpace__ecere__sys__File_PrintLn(struct __ecereName
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 va_list args;
 char buffer[4096];
+int len;
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
+len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer) : (unsigned int)1;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer, len) : (size_t)1;
 }));
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char ch);
@@ -1313,18 +1316,19 @@ void __ecereMethod___ecereNameSpace__ecere__sys__File_Print(struct __ecereNameSp
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 va_list args;
 char buffer[4096];
+int len;
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
+len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 (__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+size_t (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes);
 
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+__internal_VirtualMethod = ((size_t (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, size_t numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer) : (unsigned int)1;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer, len) : (size_t)1;
 }));
 __builtin_va_end(args);
 }
