@@ -163,7 +163,8 @@ extern int yydebug;
      RESTRICT = 372,
      THREAD = 373,
      WIDE_STRING_LITERAL = 374,
-     BUILTIN_OFFSETOF = 375
+     BUILTIN_OFFSETOF = 375,
+     PRAGMA = 376
    };
 #endif
 
@@ -217,7 +218,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 221 "grammar.h"
+#line 222 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

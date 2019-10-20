@@ -1124,7 +1124,7 @@ class TopoEdge : struct
    bool breakable;
 };
 
-public enum ExternalType { functionExternal, declarationExternal, classExternal, importExternal, nameSpaceExternal, dbtableExternal };
+public enum ExternalType { functionExternal, declarationExternal, classExternal, importExternal, nameSpaceExternal, dbtableExternal, pragmaExternal };
 
 public class External : struct
 {
@@ -1141,6 +1141,7 @@ public:
       char * importString;
       Identifier id;
       DBTableDef table;
+      char * pragma;
    };
    ImportType importType;
 

@@ -68,7 +68,7 @@ default:
    expression_yylloc.start = expression_yylloc.end;
 %}
 
-"#"                  { preprocessor(); }
+"#"                  { int r = preprocessor(); if(r) return r; }
 "/*"                 { comment(); }
 "//"                 { commentCPP(); }
 
@@ -510,7 +510,20 @@ int preprocessor()
 
    TrimLSpaces(line, line);
    for(c = 0; line[c] && line[c] != ' '; c++);
-   if(!strncmp(line, "include", c))
+
+   if(!strncmp(line, "pragma", c))
+   {
+      /*
+      External pragma;
+      if(!ast)
+         ast = MkList();
+      pragma = MkExternalPragma(line);
+      ListAdd(ast, pragma);
+      */
+      strcpy(yytext, line);
+      return PRAGMA;
+   }
+   else if(!strncmp(line, "include", c))
    {
       char includeFile[MAX_LOCATION] = "";
 

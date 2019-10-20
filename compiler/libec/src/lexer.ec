@@ -1576,7 +1576,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 71 "lexer.l"
-{ preprocessor(); }
+{ int r = preprocessor(); if(r) return r; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -3630,7 +3630,20 @@ int preprocessor()
 
    TrimLSpaces(line, line);
    for(c = 0; line[c] && line[c] != ' '; c++);
-   if(!strncmp(line, "include", c))
+
+   if(!strncmp(line, "pragma", c))
+   {
+      /*
+      External pragma;
+      if(!ast)
+         ast = MkList();
+      pragma = MkExternalPragma(line);
+      ListAdd(ast, pragma);
+      */
+      strcpy(yytext, line);
+      return PRAGMA;
+   }
+   else if(!strncmp(line, "include", c))
    {
       char includeFile[MAX_LOCATION] = "";
 

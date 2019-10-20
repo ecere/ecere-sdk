@@ -1581,27 +1581,7 @@ public void OutputTree(OldList ast, File f)
    outputLine = NUM_ECC_ADDED_LINES;
 
    for(external = ast.first; external; external = external.next)
-   {
-      switch(external.type)
-      {
-         case functionExternal:
-            OutputFunction(external.function, f);
-            f.Puts("\n");
-            outputLine ++;
-            break;
-         case declarationExternal:
-            if(external.declaration)
-               OutputDeclaration(external.declaration, f);
-            f.Puts("\n");
-            outputLine ++;
-            break;
-         case classExternal:
-            OutputClass(external._class, f);
-            f.Puts("\n");
-            outputLine ++;
-            break;
-      }
-   }
+      OutputExternal(external, f);
 }
 
 public void OutputExternal(External external, File f)
@@ -1621,6 +1601,12 @@ public void OutputExternal(External external, File f)
          break;
       case classExternal:
          OutputClass(external._class, f);
+         f.Puts("\n");
+         outputLine ++;
+         break;
+      case pragmaExternal:
+         f.Puts("#");
+         f.Puts(external.pragma);
          f.Puts("\n");
          outputLine ++;
          break;
