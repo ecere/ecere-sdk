@@ -198,6 +198,7 @@ default:
 %token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
 %token WIDE_STRING_LITERAL
 %token BUILTIN_OFFSETOF
+%token PRAGMA
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -3612,6 +3613,7 @@ external_declaration:
    | NAMESPACE strict_type { $$ = MkExternalNameSpace(MkIdentifier($2.name)); FreeSpecifier($2); $$.loc = @$; }
    | dbtable_definition { $$ = MkExternalDBTable($1); $$.loc = @$;  $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | declaration_mode  dbtable_definition { $$ = MkExternalDBTable($2); $$.loc = @$;  $2.declMode = ($1 != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+   | PRAGMA { $$ = MkExternalPragma(yytext); $$.loc = @$; }
    ;
 
 external_declaration_error:

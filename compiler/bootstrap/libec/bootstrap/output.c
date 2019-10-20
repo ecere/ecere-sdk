@@ -53,7 +53,7 @@ extern int yydebug;
 
 enum yytokentype
 {
-IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375, PRAGMA = 376
 };
 
 int yyparse(void);
@@ -1703,6 +1703,7 @@ struct Declaration * declaration;
 char *  importString;
 struct Identifier * id;
 struct DBTableDef * table;
+char *  pragma;
 } ecere_gcc_struct __anon1;
 int importType;
 struct External * fwdDecl;
@@ -2518,6 +2519,30 @@ __internal_VirtualMethod ? __internal_VirtualMethod(f, " ") : (unsigned int)1;
 }));
 OutputInitializer(decl->initializer, f);
 }
+}
+
+void OutputExternal(struct External *  external, struct __ecereNameSpace__ecere__com__Instance *  f);
+
+void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ecereNameSpace__ecere__com__Instance * f)
+{
+struct External * external;
+
+outputLine = 50;
+for(external = ast->first; external; external = external->next)
+OutputExternal(external, f);
+}
+
+void __ecereRegisterModule_output(struct __ecereNameSpace__ecere__com__Instance * module)
+{
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
+
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMemoryGuard", "void SetMemoryGuard(bool b)", SetMemoryGuard, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetMemoryGuard", "bool GetMemoryGuard(void)", GetMemoryGuard, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f, bool typeName)", OutputTypeName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExpression", "void OutputExpression(Expression exp, ecere::sys::File f)", OutputExpression, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTree", "void OutputTree(ecere::sys::OldList ast, ecere::sys::File f)", OutputTree, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExternal", "void OutputExternal(External external, ecere::sys::File f)", OutputExternal, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("StringFromSpecDecl", "char * StringFromSpecDecl(ecere::sys::OldList specs, Declarator decl)", StringFromSpecDecl, module, 1);
 }
 
 static void OutputFunction(struct FunctionDefinition *  func, struct __ecereNameSpace__ecere__com__Instance *  f);
@@ -4326,62 +4351,6 @@ outputLine += 2;
 }
 }
 
-void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ecereNameSpace__ecere__com__Instance * f)
-{
-struct External * external;
-
-outputLine = 50;
-for(external = ast->first; external; external = external->next)
-{
-switch(external->type)
-{
-case 0:
-OutputFunction(external->__anon1.function, f);
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "\n") : (unsigned int)1;
-}));
-outputLine++;
-break;
-case 1:
-if(external->__anon1.declaration)
-OutputDeclaration(external->__anon1.declaration, f);
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "\n") : (unsigned int)1;
-}));
-outputLine++;
-break;
-case 2:
-OutputClass(external->__anon1._class, f);
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "\n") : (unsigned int)1;
-}));
-outputLine++;
-break;
-}
-}
-}
-
 void OutputExternal(struct External * external, struct __ecereNameSpace__ecere__com__Instance * f)
 {
 switch(external->type)
@@ -4417,6 +4386,39 @@ outputLine++;
 break;
 case 2:
 OutputClass(external->__anon1._class, f);
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, "\n") : (unsigned int)1;
+}));
+outputLine++;
+break;
+case 6:
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, "#") : (unsigned int)1;
+}));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, external->__anon1.pragma) : (unsigned int)1;
+}));
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
 
@@ -5392,19 +5394,6 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
 __internal_VirtualMethod ? __internal_VirtualMethod(f, ";") : (unsigned int)1;
 }));
-}
-
-void __ecereRegisterModule_output(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
-
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMemoryGuard", "void SetMemoryGuard(bool b)", SetMemoryGuard, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetMemoryGuard", "bool GetMemoryGuard(void)", GetMemoryGuard, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f, bool typeName)", OutputTypeName, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExpression", "void OutputExpression(Expression exp, ecere::sys::File f)", OutputExpression, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTree", "void OutputTree(ecere::sys::OldList ast, ecere::sys::File f)", OutputTree, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExternal", "void OutputExternal(External external, ecere::sys::File f)", OutputExternal, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("StringFromSpecDecl", "char * StringFromSpecDecl(ecere::sys::OldList specs, Declarator decl)", StringFromSpecDecl, module, 1);
 }
 
 static void OutputMembersInit(struct MembersInit * init, struct __ecereNameSpace__ecere__com__Instance * f)

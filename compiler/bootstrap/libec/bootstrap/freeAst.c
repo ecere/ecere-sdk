@@ -1530,6 +1530,7 @@ struct Declaration * declaration;
 char *  importString;
 struct Identifier * id;
 struct DBTableDef * table;
+char *  pragma;
 } ecere_gcc_struct __anon1;
 int importType;
 struct External * fwdDecl;
@@ -3076,6 +3077,9 @@ break;
 case 5:
 if(external->__anon1.table)
 FreeDBTable(external->__anon1.table);
+break;
+case 6:
+(__ecereNameSpace__ecere__com__eSystem_Delete(external->__anon1.pragma), external->__anon1.pragma = 0);
 break;
 }
 ((external ? __extension__ ({
