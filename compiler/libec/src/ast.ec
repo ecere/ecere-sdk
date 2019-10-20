@@ -1280,6 +1280,12 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
    }
 }
 
+External MkExternalPragma(const String s)
+{
+   External external { type = pragmaExternal, pragma = CopyString(s) };
+   return external;
+}
+
 External MkExternalFunction(FunctionDefinition function)
 {
    External external { type = functionExternal, function = function, symbol = function.declarator.symbol };

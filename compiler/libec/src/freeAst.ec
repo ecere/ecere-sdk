@@ -1189,6 +1189,9 @@ void FreeExternal(External external)
          if(external.table)
             FreeDBTable(external.table);
          break;
+      case pragmaExternal:
+         delete external.pragma;
+         break;
    }
    delete external;
 }
