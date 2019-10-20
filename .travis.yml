@@ -47,8 +47,19 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install openssl ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link openssl --force ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install --pre openssl; fi
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco upgrade --pre openssl; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install openssl; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco upgrade openssl; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="C:\Program Files\OpenSSL-Win64\bin;":$PATH; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then wget http://ecere.com/tmp/missingDLLs.7z; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then "C:/Program Files/7-zip/7z" x missingDLLs.7z ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp opengl32.dll C:/windows/system32/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp glu32.dll C:/windows/system32/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp ddraw.dll C:/windows/system32/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp dsound.dll C:/windows/system32/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp gnurx-0.dll C:/windows/system32/ ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp gnurx-0.dll "C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/x86_64-w64-mingw32/lib/" ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then wget http://www.ecere.com/wordpress/wp-content/uploads/2008/03/regex.h; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp regex.h "C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/" ; fi
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then mingw32-make OPENSSL_CONF="C:\Program Files\OpenSSL-Win64\bin\openssl.cfg" -j1 V=1 ENABLE_SSL=y; else make -j1 V=1 ENABLE_SSL=y; fi
