@@ -1853,6 +1853,8 @@ void processPyClass(PythonGen g, BClass c)
                   const char * type = !strcmp(p.name, "double") ? "float" : p.name;
                   out.z.concatx(ln, sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)", ln);
                }
+               else if(!strcmp(p.name, "char"))
+                  ; // todo: implement
                else if(!strcmp(p.name, "char_ptr"))
                {
                   if(!strcmp(c.name, "String"))
@@ -1860,7 +1862,8 @@ void processPyClass(PythonGen g, BClass c)
                   else
                      out.z.concatx(ln, sk, "   def __str__(self): return ffi.string(lib.", p.fpnGet, "(self.impl)).decode('u8') if self.impl != ffi.NULL else str()", ln);
                }
-               else conmsg("check");
+               else
+                  conmsg("check");
             }
             else if(p.cConv)
             {
@@ -2680,6 +2683,7 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
             case doubleType: case intPtrType:
             case classType:
             case pointerType:
+            case structType:
                out.z.concatx(comma, name);
                break;
             case functionType:
