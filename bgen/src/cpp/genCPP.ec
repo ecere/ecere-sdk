@@ -490,7 +490,7 @@ static void processCppClass(CPPGen g, BClass c)
             {
                // TOCHECK: How should this be handled?
                if(!strcmp(pt.name, "borderStyle"))
-                  PrintLn("");
+                  Print("");
                if(!pt.dataType)
                {
                   Context context = SetupTemplatesContext(c); // TOCHECK: Should we do this only once while we process the whole class?
@@ -751,7 +751,7 @@ static void processCppClass(CPPGen g, BClass c)
 
                      }
                      if(!strcmp(dm.name, "stringValue"))
-                           PrintLn("");
+                           Print("");
                      //cppTypeName(ti, false);
                      cppMacroProperty(g, o.z, use, 1, dm.name, sg._string, null, true);
 
@@ -776,7 +776,7 @@ static void processCppClass(CPPGen g, BClass c)
          {
             // TOCHECK: How should this be handled?
             if(!strcmp(pt.name, "borderStyle"))
-               PrintLn("");
+               Print("");
             if(!pt.dataType)
             {
                Context context = SetupTemplatesContext(c); // TOCHECK: Should we do this only once while we process the whole class?
@@ -1037,7 +1037,7 @@ static void processCppClass(CPPGen g, BClass c)
 
                   }
                   if(!strcmp(dm.name, "stringValue"))
-                        PrintLn("");
+                        Print("");
                   //cppTypeName(ti, false);
                   cppMacroProperty(g, o.z, use, 1, dm.name, sg._string, null, false);
 
@@ -1067,7 +1067,7 @@ char * cppTypeName(TypeInfo ti, bool asis)
       ClassType ct = cppGetClassInfoFromType(ti.type, null, null, null);
       if(ct == normalClass) // || ct == noHeadClass)
       { }   //z.concat(" &");
-      PrintLn("");
+      // PrintLn("");
    }
    result = CopyString(z._string);
    delete z;

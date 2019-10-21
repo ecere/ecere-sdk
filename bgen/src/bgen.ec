@@ -449,6 +449,9 @@ public class BGen : ConsoleApplication // <ArgSym>
       }
       onTask(task);
       //ad.printAllSpecs();
+#ifdef _DEBUG
+      system("pause");
+#endif // def _DEBUG
    }
 
    void failOutput()

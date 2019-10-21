@@ -66,6 +66,7 @@ class ParamFilter
          /*case typedObjectType:
          case anyObjectType:
          case classPointerType: */
+            break;
          default:
             conmsg("check");
       }
