@@ -26,9 +26,11 @@ BG_LANG_py := Python $(PY_VER)
 get_binding_name = $(basename $(notdir $(1)))
 
 bg_bld_file_c = bindings/c/$(call get_binding_name,$(1)).Makefile
+bg_bld_file_cpp = bindings/cpp/$(call get_binding_name,$(1)).Makefile
 bg_bld_file_py = bindings/py/build_$(call get_binding_name,$(1)).py
 
 bg_bld_cmd_c = $(_MAKE) -f $(call get_binding_name,$(1)).Makefile $(3)
+bg_bld_cmd_cpp = $(_MAKE) -f $(call get_binding_name,$(1)).Makefile $(3)
 bg_bld_cmd_py = $(PYTHON) build_$(call get_binding_name,$(1)).py
 
 bg_bind_____echo = $(call bg_bind_echo_,$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS))),$(2))
@@ -137,6 +139,72 @@ bindingsrealcleanc:
 .PHONY: bindingswipecleanc
 bindingswipecleanc:
 	$(call rmr,bindings/c)
+
+# C++
+
+.PHONY: bindingscpp
+bindingscpp: bindingsbuildcpp
+
+.PHONY: bindingsgencpp
+bindingsgencpp: $(BINARIES)
+	@$(call echo,Generating C++ bindings...)
+	$(call mkdir,bindings)
+	$(call mkdir,bindings/cpp)
+	$(BGEN) -dir bindings/cpp $(BGEN_ARGS) $(BGEN_QUIET) -cpp $(BGEN_LIBS)
+
+.PHONY: bindingsbuildcpp
+bindingsbuildcpp: bindingsgencpp
+	$(call bg_bind_____echo,1,cpp)
+	$(call bg_bind_cd_build,1,cpp,all)
+	$(call bg_bind_____echo,2,cpp)
+	$(call bg_bind_cd_build,2,cpp,all)
+	$(call bg_bind_____echo,3,cpp)
+	$(call bg_bind_cd_build,3,cpp,all)
+	$(call bg_bind_____echo,4,cpp)
+	$(call bg_bind_cd_build,4,cpp,all)
+	$(call bg_bind_____echo,5,cpp)
+	$(call bg_bind_cd_build,5,cpp,all)
+	$(call bg_bind_____echo,6,cpp)
+	$(call bg_bind_cd_build,6,cpp,all)
+	$(call bg_bind_____echo,7,cpp)
+	$(call bg_bind_cd_build,7,cpp,all)
+	$(call bg_bind_____echo,8,cpp)
+	$(call bg_bind_cd_build,8,cpp,all)
+	$(call bg_bind_____echo,9,cpp)
+	$(call bg_bind_cd_build,9,cpp,all)
+
+.PHONY: bindingscleancpp
+bindingscleancpp:
+# todo: missing bgen output cleaning
+	$(call bg_bind_cd_build,1,cpp,clean)
+	$(call bg_bind_cd_build,2,cpp,clean)
+	$(call bg_bind_cd_build,3,cpp,clean)
+	$(call bg_bind_cd_build,4,cpp,clean)
+	$(call bg_bind_cd_build,5,cpp,clean)
+	$(call bg_bind_cd_build,6,cpp,clean)
+	$(call bg_bind_cd_build,7,cpp,clean)
+	$(call bg_bind_cd_build,8,cpp,clean)
+	$(call bg_bind_cd_build,9,cpp,clean)
+
+.PHONY: bindingscleantargetcpp
+bindingscleantargetcpp:
+	$(call bg_bind_cd_build,1,cpp,cleantarget)
+	$(call bg_bind_cd_build,2,cpp,cleantarget)
+	$(call bg_bind_cd_build,3,cpp,cleantarget)
+	$(call bg_bind_cd_build,4,cpp,cleantarget)
+	$(call bg_bind_cd_build,5,cpp,cleantarget)
+	$(call bg_bind_cd_build,6,cpp,cleantarget)
+	$(call bg_bind_cd_build,7,cpp,cleantarget)
+	$(call bg_bind_cd_build,8,cpp,cleantarget)
+	$(call bg_bind_cd_build,9,cpp,cleantarget)
+
+.PHONY: bindingsrealcleancpp
+bindingsrealcleancpp:
+	$(call rmr,bindings/cpp/obj)
+
+.PHONY: bindingswipecleancpp
+bindingswipecleancpp:
+	$(call rmr,bindings/cpp)
 
 # Python
 
