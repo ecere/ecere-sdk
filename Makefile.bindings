@@ -23,11 +23,13 @@ PY_VER := 3
 BG_LANG_c := C
 BG_LANG_py := Python $(PY_VER)
 
-bg_bld_file_c = bindings/c/$(1).Makefile
-bg_bld_file_py = bindings/py/build_$(1).py
+get_binding_name = $(basename $(notdir $(1)))
 
-bg_bld_cmd_c = $(_MAKE) -f $(1).Makefile $(3)
-bg_bld_cmd_py = $(PYTHON) build_$(1).py
+bg_bld_file_c = bindings/c/$(call get_binding_name,$(1)).Makefile
+bg_bld_file_py = bindings/py/build_$(call get_binding_name,$(1)).py
+
+bg_bld_cmd_c = $(_MAKE) -f $(call get_binding_name,$(1)).Makefile $(3)
+bg_bld_cmd_py = $(PYTHON) build_$(call get_binding_name,$(1)).py
 
 bg_bind_____echo = $(call bg_bind_echo_,$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS))),$(2))
 bg_bind_echo_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),@$(call echo,Building $(BG_LANG_$(2)) bindings for $(1)...),),)
