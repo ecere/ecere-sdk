@@ -641,7 +641,10 @@ class CGen : Gen
                ; // toreport: mantis: bug: compiler bug: ProjectionDefinition is private and yet it is used in the public getCartesian
                  //            the compiler need to warn or throw an error or something
                  //            this fits in the 'accessibility bugs in the compiler'
-            else conmsg("check");
+            else if(!strcmp(type._class.string, "rpGraph"))
+               ; // where is this one from?
+            else
+               conmsg("check");
          }
       }
       else conmsg("check");

@@ -1278,7 +1278,7 @@ class BNamespace : struct
                   if(b.indirectlyDependsOn((BOutputPtr)a))
                   {
                      //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
-                     conmsg("check");
+                     // conmsg("check");
                   }
                   //else
                   {
