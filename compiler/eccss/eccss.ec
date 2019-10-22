@@ -627,36 +627,16 @@ public:
       if(id && id.string && name && strcmpi(id.string, name))
          return null;
 
-      // unbound sheet currently doesn't have mask set...
-      // if(!(this.mask & mask)) return null;
-
       if(styles && styles.GetCount())
       {
-         //return this;
          for(s : styles)
          {
             for(m : s)
             {
                CMSSMemberInit mInit = m;
-               //Class c = mInit.dataMember ? mInit.dataMember._class : null;
                StylesMask sm = mInit.stylesMask;
-               if(sm & mask) return this;
-
-               /*if(mInit.identifiers)
-               {
-                  String id = null;
-                  for(i : mInit.identifiers)
-                  {
-                     // FIXME: hardcoded...
-                     if(i.string && !strcmpi(i.string, "opacity"))
-                        return this;
-
-                     String s = id ? PrintString(id, ".", i.string) : CopyString(i.string);
-                     delete id;
-                     id = s;
-                  }
-                  //if(stringFromMask(sm, c) || maskFromString(id, c)) return this;
-               }*/
+               if(sm & mask)
+                  return this;
             }
          }
       }
@@ -670,8 +650,6 @@ public:
                return b;
          }
       }
-      // NOTE this is the rule created from getstylingruleex with unset style
-      if(!styles && id && id.string && name && !strcmpi(id.string, name)) return this;
       return null;
    }
 
