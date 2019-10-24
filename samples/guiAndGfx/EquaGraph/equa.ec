@@ -218,6 +218,19 @@ class EquaGraph : Window
 
    foreground = white;
 
+   Timer splashTimer
+   {
+      this, started = true, delay = 2.5;
+
+      bool DelayExpired()
+      {
+         disabled = false;
+         splashScreen = false;
+         Update(null);
+         return true;
+      }
+   };
+
    EquaGraph()
    {
       int c;
@@ -521,6 +534,7 @@ class EquaGraph : Window
       {
          disabled = false;
          splashScreen = false;
+         splashTimer.Stop();
          Update(null);
       }
       return true;
