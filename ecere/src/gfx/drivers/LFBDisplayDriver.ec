@@ -2089,18 +2089,21 @@ public class LFBDisplayDriver : DisplayDriver
 #if !defined(ECERE_NOTRUETYPE)
          x <<= 6;
 
-         if(surface.font.outlineSize)
+         if(surface.font)
          {
-            ColorAlpha backForeground = surface.foreground;
-            int fx = x;
-            lfbSurface.writingOutline = true;
-            surface.foreground = surface.outlineColor;
-            lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &fx, y, prevGlyph, rPrevGlyph, null);
-            lfbSurface.writingOutline = false;
-            surface.foreground = backForeground;
-         }
+            if(surface.font.outlineSize)
+            {
+               ColorAlpha backForeground = surface.foreground;
+               int fx = x;
+               lfbSurface.writingOutline = true;
+               surface.foreground = surface.outlineColor;
+               lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &fx, y, prevGlyph, rPrevGlyph, null);
+               lfbSurface.writingOutline = false;
+               surface.foreground = backForeground;
+            }
 
-         lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, null);
+            lfbSurface.font.ProcessString(surface.displaySystem, (const byte *)text, len, true, surface, display, &x, y, prevGlyph, rPrevGlyph, null);
+         }
 #endif
          lfbSurface.writingText = false;
       }
