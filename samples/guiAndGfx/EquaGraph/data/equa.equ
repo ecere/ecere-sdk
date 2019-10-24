@@ -1,0 +1,270 @@
+Equations in txt: 50
+Graphic color: B: 0  G: 207  C: 255
+
+Models: 23
+
+Name: "Straight Line"
+Form: "Ax + By + C = 0"
+Solutions: 1
+Method: "a=#\a*A\a+C\a/-B\a:a;"
+Parameters: 3
+A range: L: -10, H: 10, S: 0.01, D: -1, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 3
+Text: "Slope : ", Method: "a=-A\a/B\a:a;"
+Text: "x intercept : ", Method: "a=-C\a/A\a:a;"
+Text: "y intercept : ", Method: "a=-C\a/B\a:a;"
+
+Name: "Slope-Intercept Form"
+Form: "y = A * x + B"
+Solutions: 1
+Method: "a=#\a*A\a+B\a:a;"
+Parameters: 2
+A range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 1
+Text: "x intercept : ", Method: "a=-B\a/A\a:a;"
+
+Name: "Intercept Form"
+Form: "(x / A) + (y / B) = 1"
+Solutions: 1
+Method: "a=#\a/A\b=1\b-a\b*B\a:b;"
+Parameters: 2
+A range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 1
+Text: "Slope : ", Method: "a=-B\a/A\a:a;"
+
+Name: "Two-Point Form"
+Form: "(y - A) / (x - B) = (C - A) / (D - B)"
+Solutions: 1
+Method: "a=C\a-A\b=D\b-B\a/b\b=#\b-B\a*b\a+A\a:a;"
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 3
+Text: "Slope : ",       Method: "a=C\a-A\b=D\b-B\a/b\a:a;"
+Text: "x intercept : ", Method: "a=C\a-A\b=D\b-B\a/b\c=a\a*B\b=A\b-a\b/-c\a:b;"
+Text: "y intercept : ", Method: "a=C\a-A\b=D\b-B\a/b\a*B\b=A\b-a\a:b;"
+
+Name: "Quadratic Equation"
+Form: "Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0"
+Solutions: 2
+Method: "a=C\b=#\b*B\b+E\c=#\c*c\c*A\d=#\d*D\c+d\c+F\d=b\d*d\e=a\e*c\e*4\d-e\d__sqrt\a*2\e=-b\e+d\e/a\a:e\e=-b\e-d\e/a\b:e;"
+Parameters: 6
+A range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+E range: L: -10, H: 10, S: 0.01, D: 6, E: ""
+F range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Circle"
+Form: "(x - A)^2 + (y - B)^2 = C^2"
+Solutions: 2
+Method: "a=#\a-A\a*a\b=C\b*b\b-a\b__sqrt\a=b\a+B\a:a\a=-b\a+B\b:a;
+Parameters: 3
+A range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Ellipse"
+Form: "(x - A)^2 / B + (y - C)^2 / D = 1"
+Solutions: 2
+Method: "a=#\a-A\a*a\a/B\a/B\b=1\b-a\b*D\b*D\b__sqrt\a=C\a+b\a:a\a=C\a-b\b:a;
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 2, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Parabola"
+Form: "(x - A)^2 = 4*B(y - C)"
+Solutions: 1
+Method: "a=#\a-A\a*a\a/B\a/4\a+C\a:a;"
+Parameters: 3
+A range: L: -10, H: 10, S: 0.01, D: 0,   E: ""
+B range: L: -20, H: 20, S: 0.01, D: 1,   E: ""
+C range: L: -10, H: 10, S: 0.01, D: 0,   E: ""
+x range: L: -20, H: 20, S: 0.01, D: 0,   E: ""
+Additionals: 0
+
+Name: "Hyperbola"
+Form: "(x - A)^2 / B - (y - C)^2 / D = 1"
+Solutions: 2
+Method: "a=#\a-A\a*a\a/B\a/B\b=1\b+a\b*D\b*D\b__sqrt\a=C\a+b\a:a\a=C\a-b\b:a;
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+B range: L: -10, H: 10, S: 0.01, D: 2, E: ""
+C range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Exponential Curve"
+Form: "y = A * B ^ (x - C) + D"
+Solutions: 1
+Method: "a=#\a-C\b=B\b_a_pow\b*A\b+D\a:b;"
+Parameters: 4
+A range: L: -4,  H: 4,  S: 0.01, D: 1, E: ""
+B range: L: 0,   H: 10, S: 0.01, D: 2, E: "0\1"
+C range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 0
+
+Name: "Logarithmic Curve"
+Form: "y = A * log B C(x - D) + E"
+Solutions: 1
+Method: "a=#\a-D\a*C\a_B_log\a*A\a+E\a:a;"
+Parameters: 5
+A range: L: -10, H: 10, S: 0.01, D: 1, E: ""
+B range: L: 0,   H: 10, S: 0.01, D: 2, E: "0\1"
+C range: L: -1,  H: 1,  S: 2,    D: 1, E: "ñ"
+D range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+E range: L: -10, H: 10, S: 0.01, D: 0, E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0, E: ""
+Additionals: 0
+
+Name: "Sine"
+Form: "y = A * sin ( ( x - B ) * C ) + D"
+Solutions: 1
+Method: "a=#\a-B\a*C\a__sin\a*A\a+D\a:a;"
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 2,  E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+C range: L: -10, H: 10, S: 0.01, D: .5, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Cosine"
+Form: "y = A * cos ( ( x - B ) * C ) + D"
+Solutions: 1
+Method: "a=#\a-B\a*C\a__cos\a*A\a+D\a:a;"
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 2,  E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+C range: L: -10, H: 10, S: 0.01, D: .5, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Tangent"
+Form: "y = A * tan ( ( x - B ) * C ) + D"
+Solutions: 1
+Method: "a=#\a-B\a*C\a__tan\a*A\a+D\a:a;"
+Parameters: 4
+A range: L: -10, H: 10, S: 0.01, D: 2,  E: ""
+B range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+C range: L: -10, H: 10, S: 0.01, D: .5, E: ""
+D range: L: -10, H: 10, S: 0.01, D: 0,  E: ""
+x range: L: -15, H: 15, S: 0.01, D: 0,  E: ""
+Additionals: 0
+
+Name: "Projection (Hi vs Ho)"
+Form: "y / B = x / A"
+Solutions: 1
+Method: "a=#\a/A\a*B\a:a;"
+Parameters: 2
+A range: L: -50, H: 50, S: 0.5, D: 2,  E: ""
+A range: L: -50, H: 50, S: 0.5, D: 2,  E: ""
+x range: L: -50, H: 50, S: 0.5, D: 0,  E: ""
+Additionals: 1
+Text: "G = ", Method: "a=B\a/A\a:a;"
+
+Name: "Shadow (Hshadow vs Hobject)"
+Form: "y = A + B(x - A) /  C"
+Solutions: 1
+Method: "a=#\a-A\a*B\a/C\a+A\a:a;"
+Parameters: 3
+A range: L: -50, H: 50, S: 0.5, D: 0,  E: ""
+B range: L: -50, H: 50, S: 0.5, D: 2,  E: ""
+C range: L: -50, H: 50, S: 0.5, D: 2,  E: ""
+x range: L: -50, H: 50, S: 0.5, D: 0,  E: ""
+Additionals: 1
+Text: "Hpen = ", Method: "a=B\a-C\a*A\a/C\a:a;"
+
+Name: "Descartes Parabolic Mirrors (q vs p)"
+Form: "1/x + 1/y = 1/A"
+Solutions: 1
+Method: "a=1\a/A\b=1\b/#\a-b\b=1\b/a\a:b;"
+Parameters: 1
+A range: L: -250, H: 250, S: 0.01, D: 2,  E: ""
+x range: L: -50, H: 50, S: 0.01, D: 0,  E: ""
+Additionals: 2
+Text: "r = ", Method: "a=A\a*2\a:a;"
+Text: "G = ", Method: "a=1\a/A\b=1\b/#\a-b\b=1\b/a\b/-#\a:b;"
+
+Name: "Descartes Parabolic Mirrors (q vs G)"
+Form: "(-x + 1) / y = 1/A"
+Solutions: 1
+Method: "a=-#\a+1\a*A\a:a;"
+Parameters: 1
+A range: L: -250, H: 250, S: 0.01, D: 2,  E: ""
+x range: L: -50, H: 50, S: 0.01, D: 0,  E: ""
+Additionals: 2
+Text: "r = ", Method: "a=A\a*2\a:a;"
+Text: "p = ", Method: "a=-#\a+1\a*A\b=-a\b/#\a:b;"
+
+Name: "Newton Parabolic Mirrors (li vs lo)"
+Form: "xy = A^2"
+Solutions: 1
+Method: "a=A\a*a\a/#\a:a;"
+Parameters: 1
+A range: L: -50, H: 50, S: 0.01, D: 2,  E: ""
+x range: L: -50, H: 50, S: 0.01, D: 0,  E: ""
+Additionals: 2
+Text: "r = ", Method: "a=A\a*2\a:a;"
+Text: "G = ", Method: "a=A\a/#\a:a;"
+
+Name: "Refraction (Ar vs Ai)"
+Form: "A sin x = B sin y"
+Solutions: 1
+Method: "a=#\a*3.1416\a/180\a__sin\a*A\a/B\a__asin\a*180\a/3.1416\a:a;"
+Parameters: 2
+A range: L: -5, H: 5,  S: 0.01, D: 1,  E: ""
+B range: L: -5, H: 5,  S: 0.01, D: 1,  E: ""
+x range: L: 0,  H: 90, S: 0.01, D: 45, E: ""
+Additionals: 1
+Text: "n1->2 = ", Method: "a=B\a/A\a:a;"
+
+Name: "Pressure (p vs n)"
+Form: "y * A = x * 8.31 * B"
+Solutions: 1
+Method: "a=#\a*8.31\a*B\a/A\a:a;"
+Parameters: 2
+A range: L: 0,  H: 100,   S: 0.1,  D: 1,      E: ""
+B range: L: 0,  H: 1000,  S: 0.5,  D: 273.15, E: ""
+x range: L: 0,  H: 100,   S: 0.01, D: 1,      E: ""
+Additionals: 0
+
+Name: "Devoir 1, #2 a)"
+Form: "y = (x+3)/(x-4)"
+Solutions: 1
+Method: "a=#\a+3\b=#\b-4\a/b\a:a;"
+Parameters: 0
+x range: L: -100,  H: 100,   S: 0.01, D: 1,      E: ""
+Additionals: 0
+
+Name: "Devoir 1, #2 b)"
+Form: "y = 2x / (x^2 - 16)"
+Solutions: 1
+Method: "a=#\a*2\b=#\b*b\b-16\a/b\a:a;"
+Parameters: 0
+x range: L: -100,  H: 100,   S: 0.01, D: 1,      E: ""
+Additionals: 0
+
