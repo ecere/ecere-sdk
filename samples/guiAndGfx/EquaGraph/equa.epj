@@ -1,0 +1,53 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "equa",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "equa",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "fileUtils.ec",
+      "equa.ec",
+      "equation.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "data/equa.pcx",
+      "data/equa.equ"
+   ]
+}
