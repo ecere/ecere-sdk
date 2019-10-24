@@ -792,7 +792,7 @@ public class Button : CommonControl
       switch(key)
       {
          case left: case up:
-            if(parent.CycleChildren(false, false, false, !(buttonStyle.bevelOver && buttonStyle.radio)))
+            if(parent.CycleChildren(false, parent._class == class(ScrollBar), false, !(buttonStyle.bevelOver && buttonStyle.radio)))
             {
                if(buttonStyle.bevelOver && buttonStyle.radio)
                {
@@ -807,7 +807,7 @@ public class Button : CommonControl
             }
             break;
          case right: case down:
-            if(parent.CycleChildren(true, false, false, !(buttonStyle.bevelOver && buttonStyle.radio)))
+            if(parent.CycleChildren(true, parent._class == class(ScrollBar), false, !(buttonStyle.bevelOver && buttonStyle.radio)))
             {
                if(buttonStyle.bevelOver && buttonStyle.radio)
                {
