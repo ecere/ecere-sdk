@@ -496,6 +496,18 @@ class EquaGraph : Window
                surface.WriteTextf(100,clientSize.h - 80 + c*20, "y = %0.2f",y);
                if(pointer)
                   surface.Blit(pointer, XTS(x)-8, YTS(y)-8, 0,0, pointer.width, pointer.height);
+               else
+               {
+                  int x1 = XTS(x), y1 = YTS(y);
+
+                  surface.foreground = lime;
+                  surface.VLine(y1 - 8, y1 - 2, x1);
+                  surface.VLine(y1 + 2, y1 + 8, x1);
+                  surface.HLine(x1 - 8, x1 - 2, y1);
+                  surface.HLine(x1 + 2, x1 + 8, y1);
+                  surface.PutPixel(x1, y1);
+                  surface.foreground = white;
+               }
             }
             else
                surface.WriteTextf(100,clientSize.h - 80 + c*20, "y = undefined");
