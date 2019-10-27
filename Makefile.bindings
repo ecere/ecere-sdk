@@ -1,3 +1,11 @@
+ifneq ($(V),1)
+.SILENT:
+endif
+
+ifndef CROSSPLATFORM_MK
+include crossplatform.mk
+include default.cf
+endif
 
 renameEcereCOM = $(subst ecereCOM,eC,$(1))
 
