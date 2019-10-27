@@ -192,6 +192,14 @@ c_bindings_install:
 	ln -sf $(LP)eC_c$(SOV) $(DESTLIBDIR)/$(LP)eC_c$(SO).0
 	ln -sf $(LP)EDA_c$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA_c$(SO).0
 
+.PHONY: bindingstestc
+bindingstestc:	bindingsbuildc
+	@$(call echo,Testing C bindings...)
+#	$(call mkdir,tests)
+#	$(call mkdir,tests/bindings)
+#	$(call mkdir,tests/bindings/c)
+#	$(call mkdir,tests/bindings/c/01)
+
 .PHONY: c_bindings_clean
 .NOTPARALLEL: c_bindings_clean
 c_bindings_clean:
