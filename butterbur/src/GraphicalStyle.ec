@@ -273,6 +273,7 @@ Map<String, TextStyleKind> textStyleIdentifierMap
 Map<String, ImageStyleKind> imageStyleIdentifierMap
 { [
    { "image", image },
+   { "image.path", imagePath },
    { "hotSpot", hotSpot },
    { "tint", tint }
 ] };
@@ -334,6 +335,7 @@ Map<TextStyleKind, const String> textStringFromMaskMap
 Map<ImageStyleKind, const String> imageStringFromMaskMap
 { [
    { image, "image" },
+   { imagePath, "image.path" },
    { hotSpot, "hotSpot"},
    { tint, "tint" }
 ] };
