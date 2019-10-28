@@ -126,14 +126,24 @@ public class ImageStyleMask : GraphicalStyleMask
 {
 public:
    // Image Styles
-   bool imagePath          :1:16;
-   bool tint               :1:17;
-   bool hotSpot            :1:18;
+   bool imageId            :1:16;
+   bool imagePath          :1:17;
+   bool imageUrl           :1:18;
+   bool imageExt           :1:19;
+   bool imageType          :1:20;
+   bool imageSprite        :1:21;
+   bool tint               :1:22;
+   bool hotSpot            :1:23;
 
    void print(File out)
    {
       out.Print("{");
+      if(imageId)                out.Print(" imageId");
       if(imagePath)              out.Print(" imagePath");
+      if(imageUrl)               out.Print(" imageUrl");
+      if(imageExt)               out.Print(" imageExt");
+      if(imageType)              out.Print(" imageType");
+      if(imageSprite)            out.Print(" imageSprite");
       if(tint)                   out.Print(" tint");
       if(hotSpot)                out.Print(" hotSpot");
       out.Print(" }");
@@ -203,8 +213,13 @@ public enum TextStyleKind : GraphicalStyleKind
 
 public enum ImageStyleKind : GraphicalStyleKind
 {
-   image = ImageStyleMask { imagePath = true },
+   image = ImageStyleMask { imageId = true, imagePath = true, imageUrl = true, imageExt = true, imageType = true, imageSprite = true },
+   imageId = ImageStyleMask { imageId = true },
    imagePath = ImageStyleMask { imagePath = true },
+   imageUrl = ImageStyleMask { imageUrl = true },
+   imageExt = ImageStyleMask { imageExt = true },
+   imageType = ImageStyleMask { imageType = true },
+   imageSprite = ImageStyleMask { imageSprite = true },
    tint = ImageStyleMask { tint = true },
    hotSpot = ImageStyleMask { hotSpot = true }
 };
@@ -274,6 +289,11 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
 { [
    { "image", image },
    { "image.path", imagePath },
+   { "image.id", imageId},
+   { "image.url", imageUrl},
+   { "image.ext", imagePath},
+   { "image.type", imageType},
+   { "image.sprite", imageSprite},
    { "hotSpot", hotSpot },
    { "tint", tint }
 ] };
@@ -335,7 +355,12 @@ Map<TextStyleKind, const String> textStringFromMaskMap
 Map<ImageStyleKind, const String> imageStringFromMaskMap
 { [
    { image, "image" },
+   { imageId, "image.id" },
    { imagePath, "image.path" },
+   { imageUrl, "image.url" },
+   { imageExt, "image.ext" },
+   { imageType, "image.type" },
+   { imageSprite, "image.sprite" },
    { hotSpot, "hotSpot"},
    { tint, "tint" }
 ] };
@@ -522,7 +547,12 @@ public:
    {
       switch(mSet)
       {
-         case imagePath: image.path = CopyString(value.s); break;
+         case imageId:     image.id = CopyString(value.s); break;
+         case imagePath:   image.path = CopyString(value.s); break;
+         case imageUrl:    image.url = CopyString(value.s); break;
+         case imageExt:    image.ext = CopyString(value.s); break;
+         case imageType:   image.type = CopyString(value.s); break;
+         case imageSprite: image.sprite = CopyString(value.s); break;
          case tint: tint = (Color)value.i; break;
          //case hotSpot: hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
          default: GraphicalStyle::applyStyle(mSet, value, unit);
