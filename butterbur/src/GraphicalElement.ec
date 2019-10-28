@@ -511,7 +511,12 @@ public:
 
 public struct ImageResource
 {
+   const String id;
    const String path;
+   const String url;
+   const String ext;
+   const String type;
+   const String sprite;
 /*
    property const String path
    {
