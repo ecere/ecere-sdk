@@ -511,8 +511,8 @@ public:
 
 public struct ImageResource
 {
-   const String id;
    const String path;
+   const String id;
    const String url;
    const String ext;
    const String type;
