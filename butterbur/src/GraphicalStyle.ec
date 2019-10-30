@@ -126,8 +126,8 @@ public class ImageStyleMask : GraphicalStyleMask
 {
 public:
    // Image Styles
-   bool imageId            :1:16;
-   bool imagePath          :1:17;
+   bool imagePath          :1:16;
+   bool imageId            :1:17;
    bool imageUrl           :1:18;
    bool imageExt           :1:19;
    bool imageType          :1:20;
@@ -213,7 +213,7 @@ public enum TextStyleKind : GraphicalStyleKind
 
 public enum ImageStyleKind : GraphicalStyleKind
 {
-   image = ImageStyleMask { imageId = true, imagePath = true, imageUrl = true, imageExt = true, imageType = true, imageSprite = true },
+   image = ImageStyleMask { imagePath = true, imageId = true, imageUrl = true, imageExt = true, imageType = true, imageSprite = true },
    imageId = ImageStyleMask { imageId = true },
    imagePath = ImageStyleMask { imagePath = true },
    imageUrl = ImageStyleMask { imageUrl = true },
