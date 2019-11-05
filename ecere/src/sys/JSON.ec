@@ -115,8 +115,12 @@ private:
    int charPos, col, line;
    int maxPos;
    bool debug;
+   bool warnings;
+
+   warnings = true;
 
    public property bool debug { set { debug = value; } get { return debug; } }
+   public property bool warnings { set { warnings = value; } get { return warnings; } }
 
    bool ReadChar(char * ch)
    {
@@ -209,14 +213,40 @@ private:
       JSONResult result = syntaxError;
       bool (* onGetDataFromString)(void *, void *, const char *) = type ? (void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString] : null;
       JSONParserState backState;
+      bool customValuefication = false;
+      bool specialValuefication = false;
 
       BackUpState(backState);
       SkipEmpty();
 
-      if(ch == '\"' || (ch != '{' && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString]))
+      // TODO: Offer more flexible mechanism to customize JSON representation...
+      if(ch != '{' && type && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+      {
+         if(type.type == structClass)
+         {
+            customValuefication = true;
+            specialValuefication =
+               strstr(type.name, "FieldValue") ||
+               strstr(type.name, "GeoJSONValue") ||
+               strstr(type.name, "MBGLFilterValue");
+         }
+         else if(type.type == normalClass)
+         {
+            if(strstr(type.name, "WFS3SpatialExtent") ||
+               strstr(type.name, "WFS3MultiBoundingBox") ||
+               strstr(type.name, "WFS3TemporalExtent") ||
+               strstr(type.name, "WFS3MultiInterval"))
+            {
+               customValuefication = true;
+               specialValuefication = true;
+            }
+         }
+      }
+
+      if(ch == '\"' || customValuefication)
       {
          String string;
-         if((ch != '\"' || (type && (strstr(type.name, "FieldValue") || strstr(type.name, "GeoJSONValue") || strstr(type.name, "MBGLFilterValue")))) && type && type.type == structClass && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+         if(ch != '\"' || specialValuefication)
          {
             bool escaped = false, quoted = ch == '\"', done = false;
             int size = 32, len = 0;
@@ -297,6 +327,14 @@ private:
             else if(type && (type.type == structClass))
             {
                if(onGetDataFromString(type, value.p, string))
+                  result = success;
+               else
+                  result = typeMismatch;
+               delete string;
+            }
+            else if(type && (type.type == normalClass))
+            {
+               if(onGetDataFromString(type, &value.p, string))
                   result = success;
                else
                   result = typeMismatch;
@@ -534,7 +572,7 @@ private:
       }
       else if(ch == '}' || ch == ']')
          result = noItem;
-      if(result == typeMismatch)
+      if(result == typeMismatch && warnings)
          PrintLn("Warning: Value type mismatch (", line, ":", col, ")");
       if(rType)
          *rType = type;
@@ -640,7 +678,7 @@ private:
             {
                if(itemResult == typeMismatch)
                {
-                  if(arrayType)
+                  if(arrayType && warnings)
                      PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name, " (", line, ":", col, ")");
                }
                else if(itemResult == noItem)
@@ -707,7 +745,7 @@ private:
             {
                if(itemResult == typeMismatch)
                {
-                  if(mapNodeType)
+                  if(mapNodeType && warnings)
                      PrintLn("Warning: Incompatible value for array value, expected ", (String)mapNodeType.name, " (", line, ":", col, ")");
                }
                else if(itemResult == noItem)
@@ -793,7 +831,8 @@ private:
                            break;
                         case systemClass:
                         default:
-                           Print("Warning: Unhandled class type for JSON map ", (String)valueType.name, " (", line, ":", col, ")");
+                           if(warnings)
+                              PrintLn("Warning: Unhandled class type for JSON map ", (String)valueType.name, " (", line, ":", col, ")");
                            break;
                      }
                   }
@@ -801,7 +840,7 @@ private:
                   {
                      if(itemResult == typeMismatch)
                      {
-                        if(mapNodeType)
+                        if(mapNodeType && warnings)
                            PrintLn("Warning: Incompatible value for JSON map value, expected ", (String)valueType.name, " (", line, ":", col, ")");
                      }
                      else if(itemResult == noItem)
@@ -1147,9 +1186,9 @@ private:
                   }
                   else
                   {
-                     if(ch == '=' || ch == ':')
+                     if((ch == '=' || ch == ':') && warnings)
                         PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
-                     else
+                     else if(warnings)
                         PrintLn("Warning: default member assignment: no more members (", line, ":", col, ")");
                   }
                }
@@ -1205,7 +1244,8 @@ private:
                            else if(c == 1)
                            {
                               string[0] = (char)tolower(string[0]);
-                              PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                              if(warnings)
+                                 PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                            }
                         }
                      }
@@ -1215,7 +1255,8 @@ private:
 #ifdef _DEBUG
                if(objectType && !member && !prop)
                {
-                  PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                  if(warnings)
+                     PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                }
 #endif
 
@@ -1271,7 +1312,10 @@ private:
                         if(prop || member)
                         {
                            if(!type)
-                              PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
+                           {
+                              if(warnings)
+                                 PrintLn("warning: Unresolved data type ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
+                           }
                            else if(itemResult == success)
                            {
                               BitMember bitMember = objectType.type == bitClass ? (BitMember) member : null;
@@ -1483,7 +1527,7 @@ private:
                                  }
                               }
                            }
-                           else
+                           else if(warnings)
                            {
                               PrintLn("Warning: Incompatible value for ", member ? (String)member.name : (String)prop.name,
                                  ", expected ", member ? (String)member.dataTypeString : (String)prop.dataTypeString, " (", line, ":", col, ")");
