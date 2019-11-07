@@ -397,7 +397,7 @@ public:
          StylingRuleBlock block = (StylingRuleBlock)(uint64)it.data;
          StylesMask bm = block.mask & m;
          if(bm)
-            m = block.apply(object, m, evaluator, flg);
+            m = block.apply(object, m, evaluator, flg, false);
          it = it.prev;
       }
       return m;
@@ -914,12 +914,12 @@ public:
    }
 
    // TOCHECK: Both mask and flags must be returned?
-   private static StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg)
+   private /*static*/ StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, bool ignoreSelectors)
    {
       ExpFlags flags = 0;
       bool apply = true;
 
-      if(selectors)
+      if(selectors && !ignoreSelectors)
       {
          Link s;
          // TODO: Per-record flags for selectors?
