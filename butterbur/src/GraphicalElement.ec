@@ -68,23 +68,17 @@ public class Fill : struct
 {
    void OnCopy(Fill src)
    {
-      Fill fill;
-
-      fill = this;
-
-      if(fill)
+      Fill fill
       {
-         Array<GraphicalElement> pattern;
-         Array<ColorKey> gradient;
+         opacity = src.opacity;
+         color = src.color;
+         stipple = src.stipple;
+         hatch = src.hatch;
 
-         fill.opacity = src.opacity;
-         fill.color = src.color;
-         fill.stipple = src.stipple;
-         fill.hatch = src.hatch;
-
-         pattern = { src.pattern };     fill.pattern = pattern;
-         gradient = { src.gradient };   fill.gradient = gradient;
-      }
+         pattern = { src.pattern };
+         gradient = { src.gradient };
+      };
+      this = fill;
    }
 public:
    Color color;
@@ -102,27 +96,21 @@ public class Stroke : struct
 {
    void OnCopy(Stroke src)
    {
-      Stroke stroke;
-
-      stroke = this;
-
-      if(stroke)
+      Stroke stroke
       {
-         Array<GraphicalElement> pattern;
-         Array<int> dashes;
+         widthUnit = src.widthUnit;
+         color = src.color;
+         opacity = src.opacity;
+         width = src.width;
+         center = src.center;
+         casing = src.casing;
+         join = src.join;
+         cap = src.cap;
 
-         stroke.widthUnit = src.widthUnit;
-         stroke.color = src.color;
-         stroke.opacity = src.opacity;
-         stroke.width = src.width;
-         stroke.center = src.center;
-         stroke.casing = src.casing;
-         stroke.join = src.join;
-         stroke.cap = src.cap;
-
-         pattern = { src.pattern };    stroke.pattern = pattern;
-         dashes = { src.dashes };      stroke.dashes = dashes;
-      }
+         pattern = { src.pattern };
+         dashes = { src.dashes };
+      };
+      this = stroke;
    }
 public:
    Color color;
@@ -274,8 +262,8 @@ public class Shape : GraphicalElement
 
       if(shape)
       {
-         Fill fill;
-         Stroke stroke;
+         Fill fill = null;
+         Stroke stroke = null;
 
          shape.shpType = src.shpType;
 
