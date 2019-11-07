@@ -16,6 +16,27 @@ public:
 
 public class GEFont : struct   // NOTE: This will likely be renamed to simply Font in next-gen Ecere Graphics
 {
+   void OnCopy(GEFont src)
+   {
+      GEFont font;
+
+      //Text::OnCopy(src);
+
+      font = this;
+
+      if(font)
+      {
+         String face;
+         if(src.face) { face = CopyString(src.face); font.face = face; }
+         font.outline = src.outline;
+         font.bold = src.bold;
+         font.color = src.color;
+         font.italic = src.italic;
+         font.opacity = src.opacity;
+         font.size = src.size;
+         font.underline = src.underline;
+      }
+   }
 public:
    const String face;
    float size;
@@ -45,6 +66,26 @@ public enum HatchType { forward, backward, xCross, cross };
 
 public class Fill : struct
 {
+   void OnCopy(Fill src)
+   {
+      Fill fill;
+
+      fill = this;
+
+      if(fill)
+      {
+         Array<GraphicalElement> pattern;
+         Array<ColorKey> gradient;
+
+         fill.opacity = src.opacity;
+         fill.color = src.color;
+         fill.stipple = src.stipple;
+         fill.hatch = src.hatch;
+
+         pattern = { src.pattern };     fill.pattern = pattern;
+         gradient = { src.gradient };   fill.gradient = gradient;
+      }
+   }
 public:
    Color color;
    Array<GraphicalElement> pattern;
@@ -59,6 +100,30 @@ public:
 
 public class Stroke : struct
 {
+   void OnCopy(Stroke src)
+   {
+      Stroke stroke;
+
+      stroke = this;
+
+      if(stroke)
+      {
+         Array<GraphicalElement> pattern;
+         Array<int> dashes;
+
+         stroke.widthUnit = src.widthUnit;
+         stroke.color = src.color;
+         stroke.opacity = src.opacity;
+         stroke.width = src.width;
+         stroke.center = src.center;
+         stroke.casing = src.casing;
+         stroke.join = src.join;
+         stroke.cap = src.cap;
+
+         pattern = { src.pattern };    stroke.pattern = pattern;
+         dashes = { src.dashes };      stroke.dashes = dashes;
+      }
+   }
 public:
    Color color;
    Array<GraphicalElement> pattern;
@@ -95,6 +160,23 @@ public class GraphicalElement
    opacity = 1.0f;
 
    MultiGraphicalElement parent;
+
+   void OnCopy(GraphicalElement src)
+   {
+      GraphicalElement element = src ? eInstance_New(src._class) : null;
+      if(element)
+      {
+         element.transform = src.transform;
+         element.opacity = src.opacity;
+         element.type = src.type;
+         element.unit = src.unit;
+         element.parent = null; // NOTE: parent cannot be set here
+
+         this = element;
+      }
+      else
+         this = null;
+   }
 
 public:
    public property MultiGraphicalElement parent
@@ -181,6 +263,26 @@ public class Shape : GraphicalElement
    Stroke stroke { };
 
    type = shape;
+
+   void OnCopy(Shape src)
+   {
+      Shape shape;
+
+      GraphicalElement::OnCopy(src);
+
+      shape = this;
+
+      if(shape)
+      {
+         Fill fill;
+         Stroke stroke;
+
+         shape.shpType = src.shpType;
+
+         fill.OnCopy(src.fill);     shape.fill = fill;
+         stroke.OnCopy(src.stroke); shape.stroke = stroke;
+      }
+   }
 
 public:
    property Stroke stroke
@@ -492,6 +594,26 @@ public class Text : GraphicalElement
    type = text;
 
    String text;   // FIXME: Both member and property are currently public, ECCSS otherwise currently does not set text properly
+   void OnCopy(Text src)
+   {
+      Text tt;
+
+      GraphicalElement::OnCopy(src);
+
+      tt = this;
+
+      if(tt)
+      {
+         String text;
+         GEFont font;
+
+         tt.type = src.type;
+         tt.unit = src.unit;
+
+         if(src.text) { text = CopyString(src.text); tt.text = text; }
+         font.OnCopy(src.font);     tt.font = font;
+      }
+   }
 public:
    GEFont font;
    Alignment2D alignment;
@@ -517,6 +639,16 @@ public struct ImageResource
    const String ext;
    const String type;
    const String sprite;
+   void OnCopy(ImageResource src)
+   {
+         //String path, id, url, ext, type, sprite;
+      if(src.path) path = CopyString(src.path);
+      if(src.id) id = CopyString(src.id);
+      if(src.url) url = CopyString(src.url);
+      if(src.ext) ext = CopyString(src.ext);
+      if(src.type) type = CopyString(src.type);
+      if(src.sprite) sprite = CopyString(src.sprite);
+   }
 /*
    property const String path
    {
@@ -529,6 +661,24 @@ public struct ImageResource
 public class Image : GraphicalElement
 {
    type = image;
+   void OnCopy(Image src)
+   {
+      Image i;
+
+      GraphicalElement::OnCopy(src);
+
+      i = this;
+
+      if(i)
+      {
+         ImageResource imageResource;
+         i.type = src.type;
+         i.unit = src.unit;
+         i.tint = src.tint;
+         i.hotSpot = src.hotSpot;
+         imageResource.OnCopy(src.image);     i.image = imageResource;
+      }
+   }
 public:
    ImageResource image;
 
