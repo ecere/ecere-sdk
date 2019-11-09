@@ -370,8 +370,23 @@ static CMSSExpression parseUnaryExpression(CMSSLexer lexer)
    lexer.peekToken();
    if(lexer.nextToken.type.isUnaryOperator)
    {
+      CMSSTokenType tokenType;
+      CMSSExpression exp2;
+
       lexer.readToken();
-      return CMSSExpOperation { op = lexer.token.type, exp2 = parseUnaryExpression(lexer) };
+      tokenType = lexer.token.type;
+      exp2 = parseUnaryExpression(lexer);
+      if(tokenType == minus && exp2 && exp2._class == class(CMSSExpConstant))
+      {
+         CMSSExpConstant c = (CMSSExpConstant)exp2;
+         if(c.constant.type.type == integer)
+            c.constant.i *= -1;
+         else
+            c.constant.r *= -1;
+         return c;
+      }
+      else
+         return CMSSExpOperation { op = tokenType, exp2 = exp2 };
    }
    else
       return parsePostfixExpression(lexer);
