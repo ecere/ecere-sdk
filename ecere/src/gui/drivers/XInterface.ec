@@ -3054,6 +3054,7 @@ class XInterface : Interface
          window.nativeDecorations = false;
       if(!window.parent || !window.parent.display)
       {
+         bool justMadeVisible = false;
          XWindowData windowData = window.windowData;
          //Logf("Set root window state %d %s\n", state, window.name);
          if(visible)
@@ -3065,6 +3066,7 @@ class XInterface : Interface
                  XA_CARDINAL,32,PropModeReplace, (byte *)&t, 1);
                XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
                windowData.currentlyVisible = true;
+               justMadeVisible = true;
                WaitForViewableWindow(window);
                if(window.creationActivation == activate && guiApp.desktop.active && state != minimized)
                   ActivateRootWindow(window);
@@ -3141,7 +3143,7 @@ class XInterface : Interface
                if(atomsSupported[_net_wm_state])
                {
                   // Maximize / Restore the window
-                  if(curState != state)
+                  if(justMadeVisible || curState != state)
                      SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add : remove,
                         atoms[_net_wm_state_maximized_vert], atoms[_net_wm_state_maximized_horz]);
 
