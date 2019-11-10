@@ -151,7 +151,7 @@ class LWFMFont : struct
    {
      int x, y;
      byte *src, *dst, *dstrow;
-     float intensityfactor, alphafactor, range, alpha, intensity, rangeinv, rangebase;
+     float intensityfactor, alphafactor, range, rangeinv;
      float *distancemap, *dmap;
 
      distancemap = new float[width * height];
@@ -162,7 +162,8 @@ class LWFMFont : struct
      alphafactor = font.outlineAlphaFactor; //2.0f;
      intensityfactor = font.outlineIntensityFactor; // 0.2f;
      range = (float)font.outlineRadius;
-     rangeinv = 1.0f / range;
+     if(range)
+       rangeinv = 1.0f / range;
 
      dmap = distancemap;
      dst = &image[0];
@@ -171,13 +172,17 @@ class LWFMFont : struct
        dstrow = dst;
        for( x = 0 ; x < width ; x++ )
        {
-         rangebase = ( range - dmap[ x ] ) * rangeinv;
-         alpha = alphafactor * rangebase;
-         intensity = fmaxf( (float)dstrow[0] * (1.0f/255.0f), intensityfactor * rangebase );
-         /* Alpha channel */
-         dstrow[0] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, alpha * 255.0f ) ) );
-         /* Intensity channel */
-         dstrow[1] = (unsigned char)roundf( fmaxf( 0.0f, fminf( 255.0f, intensity * 255.0f ) ) );
+         if(range)
+         {
+            float rangebase = ( range - dmap[ x ] ) * rangeinv;
+            float alpha = alphafactor * rangebase * 255.0f;
+            float intensity = fmaxf( dstrow[0], intensityfactor * rangebase );
+            dstrow[0] = (byte)roundf( Max( 0.0f, Min( 255.0f, Max(alpha, intensity) ) ) );  // Alpha channel
+            dstrow[1] = (byte)roundf( Max( 0.0f, Min( 255.0f, intensity  ) ) );             // Intensity channel
+         }
+         else
+            dstrow[1] = dstrow[0];
+
          dstrow += bytesperpixel;
        }
        dst += bytesperline;
