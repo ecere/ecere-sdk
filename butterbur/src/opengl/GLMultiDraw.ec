@@ -205,7 +205,7 @@ struct GLArrayTexture
       glBindTexture(target, texture);
 
       if(setMaxLevel)
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, levels-1);
+         glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels-1);
 
 #ifdef _DEBUG
       checkGLErrors();
@@ -221,7 +221,7 @@ struct GLArrayTexture
 #endif
    //#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
       //if(glVersion >= 2)
-         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
+         glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
    //#endif
 
       glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
