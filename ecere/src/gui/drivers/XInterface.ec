@@ -1360,6 +1360,8 @@ static void X11UpdateState(Window window, bool * unmaximized)
          {
             if(window.state != maximized)
             {
+               // NOTE: State is being forced to maximized here, without calling state property, ignoring OnStateChange return value
+               window.OnStateChange(maximized, 0);
                *&window.state = maximized;
                if(!window.nativeDecorations)
                   window.CreateSystemChildren();
@@ -1369,6 +1371,8 @@ static void X11UpdateState(Window window, bool * unmaximized)
          {
             if(window.state != minimized)
             {
+               // NOTE: State is being forced to minimized here, without calling state property, ignoring OnStateChange return value
+               window.OnStateChange(minimized, 0);
                *&window.state = minimized;
                if(!window.nativeDecorations)
                   window.CreateSystemChildren();
@@ -1378,6 +1382,8 @@ static void X11UpdateState(Window window, bool * unmaximized)
          {
             if(unmaximized && window.state == maximized)
                *unmaximized = true;
+            // NOTE: State is being forced to normal here, without calling state property, ignoring OnStateChange return value
+            window.OnStateChange(normal, 0);
             *&window.state = normal;
             if(!window.nativeDecorations)
                window.CreateSystemChildren();
