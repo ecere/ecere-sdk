@@ -232,7 +232,7 @@ CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
    return e;
 }
 
-CMSSExpression parseCMSSExpression(const String string)
+public CMSSExpression parseCMSSExpression(const String string)
 {
    CMSSExpression e = null;
    if(string)
