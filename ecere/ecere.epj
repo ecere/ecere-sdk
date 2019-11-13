@@ -305,7 +305,8 @@
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "ECERE_NO3D",
-               "ECERE_NOSSL"
+               "ECERE_NOSSL",
+               "ECERE_NOCURL"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereWSMS",
@@ -2246,7 +2247,23 @@
                               "mmthread.h",
                               "ccstr.c",
                               "ccstr.h",
-                              "mmhash.c",
+                              {
+                                 "FileName" : "mmhash.c",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "WSMS",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Vanilla",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
                               "mmhash.h",
                               "mmhashinline.h",
                               "mmhashinternal.h"
