@@ -450,6 +450,8 @@ public:
    CMSSExpConstant copy()
    {
       CMSSExpConstant e { constant = constant };
+      if(e.constant.type.type == text && e.constant.type.mustFree)
+         e.constant.s = CopyString(e.constant.s);
       return e;
    }
 
