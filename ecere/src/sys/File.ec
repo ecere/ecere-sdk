@@ -978,7 +978,7 @@ public File FileOpen(const char * fileName, FileOpenMode mode)
       {
          result = EARFileSystem::Open(archiveName, archiveFile, mode);
       }
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NONET) /*&& !defined(__ANDROID__)*/ // Curl version not supported yet
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NONET) && !defined(ECERE_NOCURL) /*&& !defined(__ANDROID__)*/ // Curl version not supported yet
       else if(strstr(fileName, "http://") == fileName || strstr(fileName, "https://"))
       {
          HTTPFile r = FileOpenURL(fileName);
