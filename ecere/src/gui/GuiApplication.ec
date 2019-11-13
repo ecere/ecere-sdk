@@ -1613,7 +1613,7 @@ private void emscripten_main_loop_callback()
 }
 #endif
 
-#if !defined(ECERE_VANILLA)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 import "Quaternion"
 
 Euler compass;
