@@ -881,6 +881,7 @@ public:
       delete styles;
       delete nestedRules;
    }
+
    StylingRuleBlock copy()
    {
       StylingRuleBlock b = null;
@@ -893,7 +894,7 @@ public:
          b.id = (id && id.string) ? { string = CopyString(id.string) } : null;
          if(nestedRules)
          {
-            b.nestedRules = { };
+            b.nestedRules = { mask = nestedRules.mask };
             for(n : nestedRules)
                b.nestedRules.Add(n.copy());
          }
@@ -905,7 +906,7 @@ public:
          }
          if(styles)
          {
-            b.styles = { };
+            b.styles = { mask = styles.mask };
             for(n : styles)
                b.styles.Add(n.copy());
          }
