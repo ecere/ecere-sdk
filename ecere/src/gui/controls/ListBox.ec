@@ -1823,7 +1823,12 @@ public:
          {
             incref fields;
             for(f : fields)
-               f.field.sortOrder = f.order ? f.order : 1;
+            {
+               if(f.order)
+                  f.field.sortOrder = f.order;
+               else
+                  f.order = f.field.sortOrder; // TOCHECK: Or should we force 1 (ascending) here?
+            }
          }
          rows.Sort(DataRow::Compare, fields);
 
