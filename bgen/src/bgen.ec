@@ -112,7 +112,7 @@ class RunLangLib : struct
 public:
    int run;
    Language lang;
-   String lib;
+   const String lib;
 private:
    int OnCompare(RunLangLib o)
    {
@@ -500,7 +500,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                      opts.libScope.blackList = force;
                      break;
                   case bypassMacros:
-                     opts.optScope.bypassMacros = true;
+                     opts.optScope.expandMacros = true;
                      break;
                   case about:
                   case help:
@@ -780,12 +780,16 @@ public class BGen : ConsoleApplication // <ArgSym>
             for(g : lngs)
             {
                Language lang = g;
-               for(lib : libs)
+               for(l : libs)
                {
+                  const String lib = l;
                   RunLangLib key { rn, lang, lib };
+                  Library library = createLibrary(lib);
                   GenOptions liblangOpts = run.getLibLangOptions(lang, lib, false);
+                  GenOptions libfileOpts = library.loadOptionsFile();
                   GenOptions opts { };
-                  matrix.appliedOptions.Add({ key, opts });
+                  if(libfileOpts)
+                     opts.merge(libfileOpts);
                   for(optsr : gblRunOpts)
                   {
                      BGenRunOptions optsrun = optsr;
@@ -804,7 +808,8 @@ public class BGen : ConsoleApplication // <ArgSym>
                      if(libOpts) opts.merge(libOpts);
                   }
                   if(liblangOpts) opts.merge(liblangOpts);
-                  addGen(lang, lib, opts);
+                  matrix.appliedOptions.Add({ key, opts });
+                  addGen(lang, library, opts);
                }
             }
          }
@@ -813,7 +818,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       delete libs;
    }
 
-   Gen addGen(Language lang, const String lib, GenOptions opts)
+   Gen addGen(Language lang, Library lib, GenOptions opts)
    {
       Gen gen = null;
       python = false; // todo
@@ -828,7 +833,7 @@ public class BGen : ConsoleApplication // <ArgSym>
                            gen = PythonGen { }; break;
          default: conmsg("unreachable"); break;
       }
-      gen.lib = createLibrary(lib);
+      gen.lib = lib;
       gen.options = opts;
       gen.dir = opts.copyDirPath();
       gens.Add(gen);
@@ -998,13 +1003,17 @@ bool cppTypeNameCall;
 }
 #endif // 0
 
-AVLTree<const String> tmpcppececeremess // hack
+AVLTree<const String> tmpcppececeremesstypedef // hack
+{ [
+   "Alignment",
+   "DataDisplayFlags"
+] };
+
+AVLTree<const String> tmpcppececeremessclass // hack
 { [
    "Window",
    "IOChannel",
    "Surface",
-   "Alignment",
-   "DataDisplayFlags",
    "DataBox"
 ] };
 
