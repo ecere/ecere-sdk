@@ -102,10 +102,12 @@ public:
    const String preproLimiter;
    const String linejoinLimiter;
 private:
+   MacroMode expansionOrUse;
    //preprocess = true;
    cPrefix = CopyString("");
    virtual bool init()
    {
+      expansionOrUse = options.expandMacros ? expansion : use;
       //PrintLn(lang, ":");
       sym.init(this);
       preproLimiter = preprocess ? "##" : "" ;
@@ -117,6 +119,7 @@ private:
 
       // prepareVars
       sourceProcessorVars.Free();
+      sourceProcessorVars["MODULE_LOCATION"] = CopyString(lib.loadModuleLocation);
       sourceProcessorVars["MODULE_NAME"] = CopyString(lib.moduleName);
       sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
       sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
@@ -181,7 +184,7 @@ private:
    bool moduleInit()
    {
       //Platform os = __runtimePlatform;
-      if(ec1init(lib.loadModuleName)) // todo, use supplied path here
+      if(ec1init(lib.loadModulePath ? lib.loadModulePath : lib.loadModuleName))
       {
          mod = bmod.mod = ec1HomeModule;
          conassertctx(mod != null, "?");
@@ -302,7 +305,7 @@ class GenOptions : struct
 public:
    bool quiet;
    ActionFlag blackList;
-   bool bypassMacros;
+   bool expandMacros;
    bool headerOnly;
    property const String dir
    {
@@ -360,7 +363,7 @@ private:
    {
       if(opt.quiet) quiet = true;
       if(opt.blackList) blackList = opt.blackList;
-      if(opt.bypassMacros) bypassMacros = true;
+      if(opt.expandMacros) expandMacros = true;
       if(opt.dir && *opt.dir) dir = CopyString(opt.dir);
       if(opt.cpath && *opt.cpath) cpath = CopyString(opt.cpath);
       if(opt.headerOnly) headerOnly = true;
@@ -433,6 +436,8 @@ public:
    char * packageName;
    char * defineName;
    char * loadModuleName;
+   char * loadModulePath;
+   char * loadModuleLocation;
    bool ecereCOM;
    bool ecere;
    bool eda;
@@ -446,9 +451,13 @@ public:
       if(name && !moduleName)
       {
          char str[MAX_LOCATION] = "";
+         char loc[MAX_LOCATION] = "";
          GetLastDirectory(name, str);
+         StripLastDirectory(name, loc);
          StripExtension(str);
          loadModuleName = CopyString(str);
+         loadModulePath = loc[0] ? CopyString(name) : null;
+         loadModuleLocation = CopyString(loc[0] ? loc : "obj");
          if(strstr(loadModuleName, "gnosis2-") == loadModuleName)
             moduleName = CopyString("gnosis2");
          else
@@ -469,7 +478,11 @@ public:
       String s;
       s = PrintString(moduleName, ".bgen.econ");
       if(FileExists(s).isFile)
+      {
          options = GenOptions::loadFromFile(s);
+         if(options)
+            PrintLn("loaded options file ", s, " for module ", loadModulePath ? loadModulePath : loadModuleName);
+      }
       delete s;
       return options;
    }
@@ -481,6 +494,8 @@ public:
       delete bindingName;
       delete defineName;
       delete loadModuleName;
+      delete loadModulePath;
+      delete loadModuleLocation;
    }
 }
 
@@ -933,6 +948,7 @@ class OptBits
 struct TypeInfo
 {
                   Type type;
+                  const String typeString;
                   DataMember dm;
    BFunction f;   GlobalFunction fn;
    BProperty p;   Property pt;
@@ -1149,6 +1165,8 @@ class BNamespace : struct
    List<BOutputPtr> orderedOutputs { }; //List<BClass> orderedOutputs { };
    List<BVariant> contents { };
    Map<BNamespacePtr, AVLTree<BOutputPtr>> dependencies { }; // namespace dependencies with user ouput count
+
+   List<BVariant> implementationsContents { }; // for cpp
 
    property NameSpacePtr
    {
@@ -1453,6 +1471,8 @@ class BClass : struct
    Array<BOutput> outProperties { };
    Array<BOutput> outConversions { };
    BOutput pyout;
+
+   BOutput outImplementation; // for cpp
 
    property Class
    {
