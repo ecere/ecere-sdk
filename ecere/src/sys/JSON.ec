@@ -1461,7 +1461,7 @@ private:
                                  else if(!strcmp(type.dataTypeString, "char *"))
                                  {
                                     ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
-                                    if(!isKey)
+                                    if(!isKey && !forMap)   // TOCHECK: Map String values were being deleted here...
                                        delete value.p;
                                  }
                                  else if(type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass)
