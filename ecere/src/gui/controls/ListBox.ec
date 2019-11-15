@@ -1816,12 +1816,15 @@ public:
          int headerSize = ((style.header) ? rowHeight : 0);
          int height = clientSize.h + 1 - headerSize;
 
-         delete sortFields;
-
-         sortFields = fields;
+         if(fields != sortFields)
+         {
+            delete sortFields;
+            sortFields = fields;
+            if(fields)
+               incref fields;
+         }
          if(fields)
          {
-            incref fields;
             for(f : fields)
             {
                if(f.order)
@@ -1863,7 +1866,6 @@ public:
       Iterator<DataFieldSort> it { sortFields };
       if(sortFields)
       {
-         incref sortFields;
          while(it.Next())
             if(it.data.field == field)
                break;
@@ -1880,7 +1882,7 @@ public:
       }
       else
       {
-         if(!sortFields) sortFields = { };
+         if(!sortFields) { sortFields = { }; incref sortFields; }
          sortFields.Add({ field, order ? order : 1 });
       }
       if(field)
