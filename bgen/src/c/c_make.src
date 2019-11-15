@@ -1,7 +1,7 @@
-.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
+BINDMODLOC := #(MODULE_LOCATION)#
 BINDMOD := #(MODULE_NAME)#
 BINDNAME := #(BINDING_NAME)#
 MODULE := $(BINDMOD)_c
@@ -87,13 +87,16 @@ PRJ_CFLAGS += \
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+    -L$(BINDMODLOC)
 endif
 
 # TARGETS
 
+.PHONY: all
 all: objdir $(TARGET);
 
+.PHONY: objdir
 objdir:
 	$(call mkdir,$(OBJ))
 
@@ -132,6 +135,7 @@ endif
 #(DEP_RULES)#$(OBJ)$(BINDNAME)$(O): $(BINDNAME).c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
+.PHONY: cleantarget
 cleantarget:
 	$(call rm,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
@@ -143,12 +147,19 @@ endif
 endif
 endif
 
+.PHONY: clean
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
 
+.PHONY: realclean
 realclean: cleantarget
 	$(call rmr,$(OBJ))
 
+.PHONY: wipeclean
+wipeclean:
+	$(call rmr,obj/)
+
+.PHONY: distclean
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 

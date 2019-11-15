@@ -671,7 +671,7 @@ class CGen : Gen
          else if(v.kind == vtemplaton)
          {
             o = v.t.outTypedef = bmod.getTypedefOutput((UIntPtr)v.t, &init);
-            conassertctx(init, "(bgen?) getTypedefOutput did not init?");
+            conassertctx(init, "(bgen?) getTypedefOutput did not init? -- templaton: ", v.t.cname);
             o.kind = vtemplaton, o.t = v.t, o.type = otypedef;
          }
          if(!clReduce && cl.type != enumClass)
@@ -1713,7 +1713,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
             TemplateParameter tp = t.templateParameter;
             Class cl = null;
             ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, ti.cl, &cl);
-            if(tp.type == type && tp.identifier && tp.identifier.string)
+            if(cl && tp.type == type && tp.identifier && tp.identifier.string)
             {
                BTemplaton t = g_.bmod.addTempleton(ctp, cl.templateClass ? cl.templateClass : cl);
                quals.Add(SpecName { name = CopyString(t.cname) });
