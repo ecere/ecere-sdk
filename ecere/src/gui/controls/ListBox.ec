@@ -4257,14 +4257,14 @@ private:
                }
                looped = true;
             }
-            typingTimer.Stop();
-            if(typingTimeOut && !keyHit)
-               typingTimer.Start();
-            if(!result || !typingTimeOut || keyHit)
-               typedString[len-1] = '\0';
          }
          if(!checkNextField || result) break;
       }
+      typingTimer.Stop();
+      if(typingTimeOut && !keyHit)
+         typingTimer.Start();
+      if(!result || !typingTimeOut || keyHit)
+         typedString[len-1] = '\0';
       return result;
    }
 
