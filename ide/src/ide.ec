@@ -181,6 +181,11 @@ static Array<FileType> projectTypes
    { $"Project / Workspace File", ProjectExtension }
 ] };
 
+static Array<FileType> projectSaveTypes
+{ [
+   { $"Project File", ProjectExtension }
+] };
+
 static Array<FileFilter> findInFilesFileFilters
 { [
    { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" },
@@ -218,15 +223,32 @@ FileDialog ideFileDialog
 };
 
 define openProjectFileDialogTitle = $"Open Project";
+define saveProjectAsFileDialogTitle = $"Save Project As";
 define addProjectFileDialogTitle = $"Open Additional Project";
-FileDialog ideProjectFileDialog
+ProjectFileDialog ideProjectFileDialog { };
+
+class ProjectFileDialog : FileDialog
 {
    type = open;
-   types = projectTypes.array;
-   sizeTypes = projectTypes.count * sizeof(FileType);
    filters = projectFilters.array;
    sizeFilters = projectFilters.count * sizeof(FileFilter);
-};
+
+   bool saveAsMode;
+
+   property bool saveAs
+   {
+      set
+      {
+         if(value != saveAsMode)
+         {
+            saveAsMode = value;
+            types = value ? projectSaveTypes.array : projectTypes.array;
+            sizeTypes = (value ? projectSaveTypes.count : projectTypes.count) * sizeof(FileType);
+         }
+      }
+      get { return saveAsMode; }
+   }
+}
 
 GlobalSettingsDialog globalSettingsDialog
 {
@@ -1051,6 +1073,7 @@ class IDEWorkSpace : Window
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
             ideProjectFileDialog.text = openProjectFileDialogTitle;
+            ideProjectFileDialog.saveAs = false;
             ideProjectFileDialog.filter = 2; // default to Project and Workspace Files
             if(ideProjectFileDialog.Modal() == ok)
             {
@@ -1058,6 +1081,22 @@ class IDEWorkSpace : Window
                //ChangeProjectFileDialogDirectory(ideProjectFileDialog.currentDirectory);
             }
             return true;
+         }
+      };
+      MenuItem projectSaveItem
+      {
+         projectMenu, $"Save", v, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            return projectView.ProjectSave(selection, mods);
+         }
+      };
+      MenuItem projectSaveAsItem
+      {
+         projectMenu, $"Save As...", disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            return projectView.ProjectSaveAs(selection, mods);
          }
       };
       MenuItem projectQuickItem
@@ -1081,6 +1120,7 @@ class IDEWorkSpace : Window
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
             ideProjectFileDialog.text = addProjectFileDialogTitle;
+            ideProjectFileDialog.saveAs = false;
             ideProjectFileDialog.filter = 0; // default to Project Files
             for(;;)
             {
@@ -2246,6 +2286,9 @@ class IDEWorkSpace : Window
    {
       bool unavailable = !project;
 
+      projectSaveItem.disabled            = unavailable;
+      projectSaveAsItem.disabled          = unavailable;
+
       projectAddItem.disabled             = unavailable;
       projectImportAddItem.disabled       = unavailable;
       toolBar.buttonAddProject.disabled   = unavailable;
@@ -2310,7 +2353,13 @@ class IDEWorkSpace : Window
 
    void AdjustFileMenus()
    {
-      bool unavailable = project != null || !hasOpenedCodeEditors; // are they supported source code (ec, c, cpp, etc) ?
+      bool unavailable;
+
+      unavailable = project == null || !projectView.modifiedDocument;
+
+      projectSaveItem.disabled            = unavailable;
+
+      unavailable = project != null || !hasOpenedCodeEditors; // are they supported source code (ec, c, cpp, etc) ?
 
       projectQuickItem.disabled           = unavailable;
    }
@@ -2695,6 +2744,7 @@ class IDEWorkSpace : Window
                         if(MessageBox { type = yesNo, master = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
                            ideProjectFileDialog.text = openProjectFileDialogTitle;
+                           ideProjectFileDialog.saveAs = false;
                            ideProjectFileDialog.filter = 2; // default to Project and Workspace Files
                            if(ideProjectFileDialog.Modal() == cancel)
                               return null;

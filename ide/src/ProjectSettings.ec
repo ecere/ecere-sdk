@@ -235,6 +235,7 @@ class ProjectSettings : Window
             project.MarkChanges(buildTab.backupNode);
             ide.projectView.modifiedDocument = true;
             ide.projectView.Update(null);
+            ide.AdjustFileMenus();
          }
          if(prjTabControl.curTab == workspaceTab && workspaceTab.modifiedDocument)
          {
@@ -1923,6 +1924,7 @@ class BuildTab : Tab
             ide.projectView.modifiedDocument = true;
             ide.UpdateToolBarActiveConfigs(false);
             ide.projectView.Update(null);
+            ide.AdjustFileMenus();
          }
          modifiedDocument = false;
       }

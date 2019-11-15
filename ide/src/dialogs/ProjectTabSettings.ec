@@ -67,6 +67,7 @@ class ProjectTab : Tab
          project.ModifiedAllConfigs(true, false, true, false);
          ide.projectView.modifiedDocument = true;
          ide.projectView.Update(null);
+         ide.AdjustFileMenus();
       }
    }
 

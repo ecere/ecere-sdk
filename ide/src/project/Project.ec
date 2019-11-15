@@ -1476,6 +1476,7 @@ private:
       {
          ide.projectView.modifiedDocument = true;
          ide.workspace.modified = true;
+         ide.AdjustFileMenus();
       }
    }
 

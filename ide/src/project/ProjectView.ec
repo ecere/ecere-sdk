@@ -301,6 +301,7 @@ class ProjectView : Window
             if(node.type == NodeTypes::project || node.type == resources || node.type == file || node.type == folder)
             {
                bool na = buildInProgress; // N/A - buildMenuUnavailable
+               bool mp = node.project == ide.projectView.project; // mp is short for mainProject
                Menu pop { };
 
                if(node.type == NodeTypes::project)
@@ -337,7 +338,7 @@ class ProjectView : Window
                   MenuDivider { pop };
                   if(node != ((Project)workspace.projects.first).topNode)
                   {
-                     MenuItem { pop, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = na;
+                     MenuItem { pop, $"Remove project from workspace", r, NotifySelect = ProjectRemove }.disabled = na || mp;
                      MenuDivider { pop };
                   }
                   MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
@@ -345,6 +346,7 @@ class ProjectView : Window
                   MenuItem { pop, $"Browse Folder(s)", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { pop };
                   MenuItem { pop, $"Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
+                  MenuItem { pop, $"Save As...", a, Key { s, ctrl = true }, NotifySelect = ProjectSaveAs };
                   MenuDivider { pop };
                   MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
@@ -656,6 +658,7 @@ class ProjectView : Window
       }
       modifiedDocument = false;
       Update(null);
+      ide.AdjustFileMenus();
       return true;
    }
 
@@ -2147,6 +2150,7 @@ class ProjectView : Window
       }
       if(!modPrj)
          modifiedDocument = false;
+      ide.AdjustFileMenus();
    }
 
    bool ProjectSave(MenuItem selection, Modifiers mods)
@@ -2164,6 +2168,31 @@ class ProjectView : Window
             Update(null);
          }
          prj.StartMonitoring();
+      }
+      return true;
+   }
+
+   bool ProjectSaveAs(MenuItem selection, Modifiers mods)
+   {
+      DataRow row = fileList.currentRow;
+      ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
+      Project prj = node ? node.project : project;
+      if(prj)
+      {
+         if(ideSettings.ideProjectFileDialogLocation)
+            ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
+         ideProjectFileDialog.text = saveProjectAsFileDialogTitle;
+         ideProjectFileDialog.saveAs = true;
+         ideProjectFileDialog.filter = 0; // default to Project Files
+         ideProjectFileDialog.filePath = prj.filePath;
+         if(ideProjectFileDialog.Modal() == ok)
+         {
+            // open code from ide.ec
+            /*
+            OpenFile(ideProjectFileDialog.filePath, false, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
+            //ChangeProjectFileDialogDirectory(ideProjectFileDialog.currentDirectory);
+            */
+         }
       }
       return true;
    }
@@ -2651,6 +2680,7 @@ class ProjectView : Window
                DeleteNode(node);
                modifiedDocument = true;
                prj.topNode.modified = true;
+               ide.AdjustFileMenus();
             }
          }
          else if(node.type == project && node != project.topNode && !buildInProgress)
