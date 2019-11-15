@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c"
+         "$(ECERE_SDK_BINDINGS)/c"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "console",
@@ -13,7 +13,8 @@
          "ecereCOM_c"
       ],
       "LibraryDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c/ecereCOM/obj/release.win32"
+         "$(ECERE_SDK_BINDINGS)/c/ecereCOM/obj/ecereCOM.release.win32",
+         "$(ECERE_SDK_SRC)/obj/win32/bin"
       ],
       "Console" : true
    },
@@ -34,7 +35,7 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.h"
+            "$(ECERE_SDK_BINDINGS)/c/eC.h"
          ]
       },
       "console.c"
