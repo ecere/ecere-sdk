@@ -1826,6 +1826,7 @@ class IDEWorkSpace : Window
    {
       master = this,
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
+      filter = 2; // default to C/C++/eC Files
    };
 
    bool noParsing;
