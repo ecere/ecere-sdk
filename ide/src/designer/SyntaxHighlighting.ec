@@ -92,6 +92,9 @@ public class SyntaxHighlighting : EditSyntaxHL
 
    bool cppSingle, cMultiLine, cPrep, hashTagComments, cNumbers, singleQuotes;
 
+   bool allowHashInKeyword;
+   bool allowDashInKeyword;
+
    void InitDraw()
    {
       currentState = viewLineState;
@@ -374,9 +377,13 @@ public class SyntaxHighlighting : EditSyntaxHL
       {
          unichar ch = buffer[c];
          unichar bf = (wordLen == 1) ? buffer[c-1] : 0;
+         bool chHash = ch == '#' && allowHashInKeyword;
+         bool bfHash = bf == '#' && allowHashInKeyword;
+         bool chDash = ch == '-' && allowDashInKeyword;
+         bool bfDash = bf == '-' && allowDashInKeyword;
          if(CharMatchCategories(ch, separators) || ch == '\t' ||
-            (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && ch != '#' ) ||
-            (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && bf != '#' && bf != '\t'))
+            (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && !chHash && !chDash) ||
+            (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && !bfHash && !bfDash && bf != '\t'))
             break;
          wordLen++;
       }
@@ -530,7 +537,7 @@ class MakeSHL : SyntaxHighlighting
       "for", "in", "do", "done",
       // built-in functions
       "subst", "patsubst", "strip", "findstring", "filter", "filter-out", "sort",
-      "word", "wordlist", "words", "firstword", "lastword", "dir", "suffix", "basename",
+      "word", "wordlist", "words", "firstword", "lastword", "dir", "notdir", "suffix", "basename",
       "addsuffix", "addprefix", "join", "wildcard", "realpath", "abspath", "if", "or", "and",
       "foreach", "file", "call", "value", "eval", "origin", "flavor", "error", "warning", "info", "shell",
       // special variables
@@ -542,6 +549,7 @@ class MakeSHL : SyntaxHighlighting
    ];
 
    hashTagComments = true;
+   allowDashInKeyword = true;
 }
 
 static const char * cExtensions[] = { "c", "h", null };
@@ -563,7 +571,8 @@ class CSHL : SyntaxHighlighting
       "size_t", "ssize_t",
 
       // Preprocessor
-      "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line", "#cpu"
+      "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line", "#cpu",
+      "#error", "#warning"
    ];
    kwPrep =
    [
@@ -577,6 +586,7 @@ class CSHL : SyntaxHighlighting
    cNumbers = true;
    cPrep = true;
    singleQuotes = true;
+   allowHashInKeyword = true;
 }
 
 static const char * cxxExtensions[] = { "cxx", "hxx", "cpp", "hpp", "cc", "hh", null };
@@ -1340,17 +1350,15 @@ static subclass(SyntaxHighlighting) FindHL(Class c, const char * ext)
 
 SyntaxHighlighting SHLFromFileName(const String fileName)
 {
-   subclass(SyntaxHighlighting) hlClass;
+   subclass(SyntaxHighlighting) hlClass = null;
    char name[MAX_FILENAME];
+   char ext[MAX_EXTENSION];
    GetLastDirectory(fileName, name);
-   if(strstr(name, "Makefile") == name)
-      hlClass = class(MakeSHL);
-   else
-   {
-      char ext[MAX_EXTENSION];
-      GetExtension(name, ext);
+   GetExtension(name, ext);
+   if(ext[0])
       hlClass = FindHL(class(SyntaxHighlighting), ext);
-   }
+   if(!hlClass && strstr(name, "Makefile") == name)
+      hlClass = class(MakeSHL);
    if(!hlClass)
       hlClass = class(ConfigSHL);
    return eInstance_New(hlClass);
