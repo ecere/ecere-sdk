@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c"
+         "$(ECERE_SDK_BINDINGS)/c"
       ],
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "module",
@@ -13,7 +13,7 @@
          "ecere_c"
       ],
       "LibraryDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c/ecere/obj/release.win32"
+         "$(ECERE_SDK_BINDINGS)/c/ecere/obj/release.win32"
       ]
    },
    "Configurations" : [
@@ -33,8 +33,8 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+            "$(ECERE_SDK_BINDINGS)/c/eC.h",
+            "$(ECERE_SDK_BINDINGS)/c/ecere.h"
          ]
       },
       "module.c"
