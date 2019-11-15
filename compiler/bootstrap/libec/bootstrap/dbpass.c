@@ -1446,7 +1446,7 @@ struct Specifier * spec = entry->__anon1.__anon1.dataType->qualifiers ? (struct 
 sprintf(fieldID, "__ecereDBField_%s_%s", tableName, entry->id->string);
 if(idClassDefs)
 {
-if(!nameField[0] && spec->type == 1 && (!strcmp(spec->__anon1.__anon1.name, "String") || !strcmp(spec->__anon1.__anon1.name, "eda::CIString")))
+if(!nameField[0] && spec->type == 1 && (!strcmp(spec->__anon1.__anon1.name, "String") || !strcmp(spec->__anon1.__anon1.name, "ecere::com::CIString")))
 {
 strcpy(nameField, entry->id->string);
 }
