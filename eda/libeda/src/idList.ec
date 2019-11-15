@@ -219,6 +219,7 @@ public class Id : uint64
                   }
                   else
                   {
+                     strcpy(tempString, "(error)");
                      PrintLn("Id::OnGetString -- data type"/*, this._class.name, */" has no class_data(nameField)");
                   }
                }
