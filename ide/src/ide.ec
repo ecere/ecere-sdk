@@ -141,11 +141,11 @@ static Array<FileFilter> fileFilters
    { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php, *.y, *.l)",
       "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
    { $"Swift Source Files (*.swift)", "swift" },
-   { $"Text files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
-   { $"Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
+   { $"Text Files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
+   { $"Web Files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
    { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
    { $"3D Studio Model Files (*.3ds)", "3ds" },
-   { $"All files", null }
+   { $"All Files", null }
 ] };
 
 static Array<FileType> fileTypes
@@ -168,12 +168,29 @@ static Array<FileType> projectTypes
 
 static Array<FileFilter> findInFilesFileFilters
 { [
+   { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" },
    { $"eC Files (*.ec, *.eh)", "ec, eh" },
    { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
    { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
    { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
-   { $"Text files (*.txt)", "txt" },
-   { $"All files", null }
+   { $"Objective-C Source Files (*.m, *.mm)", "m, mm" },
+   { $"GLSL Source Files (*.glsl, *.vert, *.frag)", "glsl, vert, frag" },
+   { $"Python Source Files (*.py)", "py" },
+   { $"Java Source Files (*.java)", "java" },
+   { $"C# Source Files (*.cs)", "cs" },
+   { $"Rust Source Files (*.rs)", "rs" },
+   { $"Go Source Files (*.go)", "go" },
+   { $"Ruby Source Files (*.rb)", "rb" },
+   { $"JavaScript Source Files (*.js)", "js" },
+   { $"PHP Source Files (*.php)", "php" },
+   { $"Bison & Flex Source Files (*.y, *.l)", "y, l" },
+   { $"Source Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx, *.m, *.mm, *.frag, *.glsl, *.vert, *.py, *.java, *.cs, *.go, *.rs, *.swift, *.js, *.php, *.y, *.l)",
+      "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx, py, java, cs, js, go, rs, swift, php, m, mm, frag, glsl, vert, y, l" },
+   { $"Swift Source Files (*.swift)", "swift" },
+   { $"Web Files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
+   { $"Text Files (*.txt)", "txt" },
+   { $"More Text Files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
+   { $"All Files", null }
 ] };
 
 FileDialog ideFileDialog
@@ -1807,7 +1824,7 @@ class IDEWorkSpace : Window
    {
       master = this,
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
-      filter = 1;
+      filter = 2; // default to C/C++/eC Files
    };
 
    bool noParsing;
