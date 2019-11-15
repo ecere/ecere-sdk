@@ -395,6 +395,7 @@ enum GenMakefilePrintTypes { noPrint, objects, cObjects, symbols, imports, sourc
 
 define WorkspaceExtension = "ews";
 define ProjectExtension = "epj";
+define projectEconExtension = "ecnp";
 
 define stringInFileIncludedFrom = "In file included from ";
 define stringFrom =               "                 from ";
@@ -1223,7 +1224,7 @@ private:
    }
 
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
-   bool Save(const char * fileName)
+   bool Save(const char * fileName, bool json)
    {
       File f;
       f = FileOpen(fileName, write);
@@ -1236,7 +1237,10 @@ private:
          files.Remove(resNode);
          version = 0.2f;
 
-         WriteJSONObject(f, class(Project), this, 0);
+         if(json)
+            WriteJSONObject(f, class(Project), this, 0);
+         else
+            WriteECONObject(f, class(Project), this, 0);
 
          files.Add(resNode);
 

@@ -651,7 +651,7 @@ class ProjectView : Window
          if(prj.topNode.modified)
          {
             prj.StopMonitoring();
-            if(prj.Save(prj.filePath))
+            if(prj.Save(prj.filePath, true))
                prj.topNode.modified = false;
             prj.StartMonitoring();
          }
@@ -2161,7 +2161,7 @@ class ProjectView : Window
       if(prj)
       {
          prj.StopMonitoring();
-         if(prj.Save(prj.filePath))
+         if(prj.Save(prj.filePath, true))
          {
             prj.topNode.modified = false;
             updateModified();

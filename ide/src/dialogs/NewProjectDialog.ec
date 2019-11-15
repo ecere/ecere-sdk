@@ -180,7 +180,7 @@ class NewProjectDialog : Window
       ide.findInFilesDialog.mode = FindInFilesMode::project;
       ide.findInFilesDialog.currentDirectory = prj.topNode.path;
 
-      if(!prj.Save(prj.filePath))
+      if(!prj.Save(prj.filePath, true))
       {
          MessageBox { type = ok, master = this, text = prj.filePath, contents = $"Error writing project file" }.Modal();
          delete prj;
@@ -220,7 +220,7 @@ class NewProjectDialog : Window
 
          codeEditor.EnsureUpToDate();
 
-         prj.Save(prj.filePath);
+         prj.Save(prj.filePath, true);
 
          projectWindow.modifiedDocument = false;
          prj.topNode.modified = false;
@@ -523,7 +523,7 @@ class QuickProjectDialog : Window
 
          project.resNode = project.topNode.Add(project, "Resources", null, resources, archiveFile, false);
 
-         if(!project.Save(filePath))
+         if(!project.Save(filePath, true))
          {
             MessageBox { type = ok, master = this, text = filePath, contents = $"Error writing project file" }.Modal();
             delete project;
@@ -576,7 +576,7 @@ class QuickProjectDialog : Window
 
          if(project.topNode.modified)
          {
-            project.Save(filePath);
+            project.Save(filePath, true);
             projectWindow.modifiedDocument = false;
             project.topNode.modified = false;
          }
@@ -603,7 +603,7 @@ class QuickProjectDialog : Window
 
             // TODO: how to save that new file?
 
-            project.Save(filePath);
+            project.Save(filePath, true);
             projectWindow.modifiedDocument = false;
             project.topNode.modified = false;
          }

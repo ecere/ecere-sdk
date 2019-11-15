@@ -171,9 +171,9 @@ static Array<FileType> fileTypes
 
 static Array<FileFilter> projectFilters
 { [
-   { $"Project Files (*.epj)", ProjectExtension },
+   { $"Project Files (*.epj+)", "epj, ecnp" },
    { $"Workspace Files (*.ews)", WorkspaceExtension },
-   { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" }
+   { $"Project and Workspace Files (*.epj+, *.ews)", "epj, ecnp, ews" }
 ] };
 
 static Array<FileType> projectTypes
@@ -183,7 +183,8 @@ static Array<FileType> projectTypes
 
 static Array<FileType> projectSaveTypes
 { [
-   { $"Project File", ProjectExtension }
+   { $"Project File", ProjectExtension },
+   { $"Project File (econ format)", projectEconExtension }
 ] };
 
 static Array<FileFilter> findInFilesFileFilters
