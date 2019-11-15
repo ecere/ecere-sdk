@@ -4,7 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c"
+         "$(ECERE_SDK_BINDINGS)/c"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "button",
@@ -30,10 +30,10 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
-            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+            "$(ECERE_SDK_BINDINGS)/c/eC.c",
+            "$(ECERE_SDK_BINDINGS)/c/eC.h",
+            "$(ECERE_SDK_BINDINGS)/c/ecere.c",
+            "$(ECERE_SDK_BINDINGS)/c/ecere.h"
          ]
       },
       "button.c"

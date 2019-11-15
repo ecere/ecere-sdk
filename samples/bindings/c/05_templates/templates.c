@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
    CO(Array, ColorAlpha) = eC_findClass(module, "Array<ColorAlpha>");
    a = newi(Array, ColorAlpha);
    Container_add(a, ColorAlpha_from_Color(DefinedColor_red));
+   Container_add(a, ColorAlpha_from_Color(DefinedColor_blue));
    //Container_add(a, COLORALPHA(255, red));
    printLn(a->_class, a, null);
 
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
    printLn(CO(double), &d, null);
 
    // CO(Foo) = registerClass(module, Foo, Instance);
-   CO(Foo) = registerClass(module, Foo, Map<String, int>);
+   CO(Foo) = registerClass(module, Foo, Map<String, int>); // why is this not in double quote?
    Class_addTemplateParameter(CO(Foo), "A", TemplateParameterType_type, null, null);
    Class_doneAddingTemplateParameters(CO(Foo));
    addMethod(CO(Foo), "add", Foo_add);
@@ -111,5 +112,8 @@ int main(int argc, char *argv[])
    CO(Foo, String) = eC_findClass(module, "Foo<String>");
    foo = newi(Foo, String);
    Foo_add(foo, TAp("Hello, Templates in C!"));
+   Foo_add(foo, TAp("Hello Again!"));
+
+   printLn(foo->_class, foo, null); // todo, need a OnGetString for this to work?
    return 0;
 }
