@@ -246,7 +246,9 @@ import "OldIDESettings"
 #undef GetObject
 #endif
 
-define MaxRecent = 32;
+define MaxRecent = 128;
+define NumKeyRecent = 9;
+define MaxMoreRecent = 16;
 
 enum DirTypes { includes, libraries, executables };
 
@@ -1522,29 +1524,72 @@ class RecentPaths : Array<String>
    void updateRecentMenu(Window master, bool(recentNotifySelect)(Window this, MenuItem selection, Modifiers mods), Menu recentMenu)
    {
       int c = 0;
+      int addedExistCount = 0;
+      int addedMissingCount = 0;
+      int existMoreCount = 0;
+      int missingMoreCount = 0;
       char * itemPath = new char[MAX_LOCATION];
-      char * itemName = new char[MAX_LOCATION+4];
+      char * itemName = new char[MAX_LOCATION + 4];
+      Menu missingMenu = null;
+      Menu addToExist = recentMenu;
+      Menu addToMissing = null;
       recentMenu.Clear();
       for(recent : this)
       {
-         if(c == 9)
-            recentMenu.AddDynamic(MenuDivider { }, master, true);
+         bool key = false;
+         bool exists = false;
          strncpy(itemPath, recent, MAX_LOCATION);
-         itemPath[MAX_LOCATION-1] = '\0';
+         itemPath[MAX_LOCATION - 1] = '\0';
          MakeSystemPath(itemPath);
-         if(c < 9)
-            snprintf(itemName, MAX_LOCATION+4, "%d %s", 1 + c, itemPath);
+         exists = FileExists(itemPath).isFile;
+         key = exists && addedExistCount < NumKeyRecent;
+         if(key)
+            snprintf(itemName, MAX_LOCATION + 4, "%d %s", 1 + addedExistCount, itemPath);
          else
-            snprintf(itemName, MAX_LOCATION+4, "%s", itemPath);
-         itemName[MAX_LOCATION+4-1] = '\0';
+            snprintf(itemName, MAX_LOCATION + 4, "%s", itemPath);
+         itemName[MAX_LOCATION + 4 - 1] = '\0';
          {
             MenuItem item { copyText = true, text = itemName, id = c, NotifySelect = recentNotifySelect };
-            if(c < 9)
-               item.hotKey = (Key)k1 + c;
-            recentMenu.AddDynamic(item, master, true);
+            if(key)
+               item.hotKey = (Key)k1 + addedExistCount;
+            if(exists)
+            {
+               if(addedExistCount == NumKeyRecent)
+                  addToExist.AddDynamic(MenuDivider { }, master, true);
+               else if(addedExistCount - NumKeyRecent - MaxMoreRecent >= existMoreCount && this.count - 2 > c)
+               {
+                  addToExist.AddDynamic(MenuDivider { }, master, true);
+                  {
+                     Menu moreMenu { addToExist, $"More", m };
+                     addToExist = moreMenu;
+                  }
+                  existMoreCount += MaxMoreRecent;
+               }
+               addToExist.AddDynamic(item, master, true);
+               addedExistCount++;
+            }
+            else
+            {
+               if(!missingMenu)
+                  addToMissing = missingMenu = { null, $"Missing", n };
+               if(addedMissingCount - MaxMoreRecent >= missingMoreCount)
+               {
+                  addToMissing.AddDynamic(MenuDivider { }, master, true);
+                  {
+                     Menu moreMenu { addToMissing, $"More", m };
+                     addToMissing = moreMenu;
+                  }
+                  missingMoreCount += MaxMoreRecent;
+               }
+               addToMissing.AddDynamic(item, master, true);
+               addedMissingCount++;
+            }
          }
          c++;
       }
+      if(missingMenu && addedExistCount)
+         recentMenu.AddDynamic(MenuDivider { }, master, true);
+      missingMenu.parent = recentMenu;
       delete itemPath;
       delete itemName;
    }
