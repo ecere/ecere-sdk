@@ -219,10 +219,10 @@ struct GLArrayTexture
 #ifdef _DEBUG
       checkGLErrors();
 #endif
-   //#ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
-      //if(glVersion >= 2)
+   #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
+      if(glVersion >= 2)
          glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
-   //#endif
+   #endif
 
       glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
       glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
