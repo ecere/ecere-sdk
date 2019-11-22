@@ -399,12 +399,21 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      if(expType)
+      Class type = destType ? destType : expType;  // NOTE: Color expType get converted to integer during compute()...
+      if(constant.type.format == hex && (type == class(int64) || type == class(int)))
+         type = null;
+      else if(type == class(double) || type == class(float))
+         type = null;
+      // TODO: Review for 32 bit and big-endian..
+      else if(type && expType && (expType != class(int64) && expType != class(uint64)) && strcmp(type.dataTypeString, expType.dataTypeString))
+         type = null;
+
+      if(type)
       {
-         const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = expType._vTbl[__ecereVMethodID_class_OnGetString];
+         const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = type._vTbl[__ecereVMethodID_class_OnGetString];
          char tempString[1024];
          ObjectNotationType on = econ;
-         const String s = onGetString(expType, &constant.i, tempString, null, &on);
+         const String s = onGetString(type, &constant.i, tempString, null, &on);
          if(s) out.Print(s);
          else out.Print(constant);
       }
