@@ -1109,7 +1109,7 @@ public:
 
    CMSSExpInstance copy()
    {
-      CMSSExpInstance e { instance = instance.copy() };
+      CMSSExpInstance e { instance = instance ? instance.copy() : null };
       return e;
    }
 
@@ -1124,14 +1124,17 @@ public:
 
       if(computeType == preprocessing)
       {
-         CMSSSpecName specName = (CMSSSpecName)instance._class;
+         CMSSSpecName specName = instance ? (CMSSSpecName)instance._class : null;
          Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
          int memberID = 0;
-         for(inst : instance.members)
+         if(instance)
          {
-            CMSSInstInitMember member = (CMSSInstInitMember)inst;
-            for(m : member.members)
-               flags |= m.precompute(c, stylesMask, &memberID, evaluator);
+            for(inst : instance.members)
+            {
+               CMSSInstInitMember member = (CMSSInstInitMember)inst;
+               for(m : member.members)
+                  flags |= m.precompute(c, stylesMask, &memberID, evaluator);
+            }
          }
          if(flags.resolved && c && c.type == bitClass)
          {
