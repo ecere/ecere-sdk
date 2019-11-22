@@ -412,7 +412,7 @@ public:
 
 private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
-   CMSSSpecName specName = (CMSSSpecName)inst.instance._class;
+   CMSSSpecName specName = inst.instance ? (CMSSSpecName)inst.instance._class : null;
    Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : inst.destType;
    Instance instance = eInstance_New(c);
    setGenericInstanceMembers(instance, inst, evaluator, flg);
@@ -456,7 +456,7 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
 
 private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
-   if(expInst)
+   if(expInst && expInst.instance)
    {
       for(i : expInst.instance.members)
       {
