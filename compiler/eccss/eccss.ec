@@ -177,6 +177,12 @@ public:
       }
       return result;
    }
+
+   CMSSStyleSheet copy()
+   {
+      CMSSStyleSheet sheet { list = list.copy() };
+      return sheet;
+   }
 }
 
 public class StylesMask : uint64 { bool bitMember:1:63; } // Just to force this to be a bit class...
