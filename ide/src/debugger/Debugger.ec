@@ -710,6 +710,7 @@ class Debugger
       ideProcessId = Process_GetCurrentProcessId();
 
       sysBPs.Add((intBpEntry = Breakpoint { type = internalEntry, enabled = false, level = -1 }));
+      sysBPs.Add((intBpMain = Breakpoint { type = internalMain, function = "__main", enabled = true, level = -1 }));
       sysBPs.Add((intBpMain = Breakpoint { type = internalMain, function = "main", enabled = true, level = -1 }));
 #if defined(__WIN32__)
       sysBPs.Add((intBpWinMain = Breakpoint { type = internalWinMain, function = "WinMain", enabled = true, level = -1 }));
