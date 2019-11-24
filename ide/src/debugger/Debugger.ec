@@ -12,8 +12,8 @@ import "debugFindCtx"
 import "debugTools"
 import "dpl.ec"
 
-#ifdef _DEBUG
 #define GDB_DEBUG_CONSOLE
+#ifdef _DEBUG
 #define _DPL_ON
 #endif
 
