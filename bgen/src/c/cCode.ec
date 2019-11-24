@@ -459,6 +459,9 @@ static void cInCodeInitStart(AST out, CGen g)
       z.concatx("LIB_EXPORT ", g_.sym.application, " ", g.lib.bindingName,
             "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])", ln);
       z.concatx("{", ln);
+      z.concatx("#ifdef _DEBUG", ln);
+      z.concatx("   printf(\"%s_init\\n\", \"", g.lib.bindingName, "\");", ln);
+      z.concatx("#endif", ln, ln);
       z.concatx("   if(!fromModule)", ln);
       z.concatx("   {", ln);
       z.concatx("      fromModule = eC_initApp(guiApp, argc, argv);", ln);
@@ -480,6 +483,10 @@ static void cInCodeInitStart(AST out, CGen g)
          z.concatx("   ", g_.sym.module, " module = fromModule;", ln);
       else
          z.concatx("   ", g_.sym.module, " module = Module_load(fromModule, ", g_.lib.defineName, "_MODULE_NAME, ", _publicAccess, ");", ln);
+      z.concatx(ln);
+      z.concatx("#ifdef _DEBUG", ln);
+      z.concatx("   printf(\"%s_init\\n\", \"", g.lib.bindingName, "\");", ln);
+      z.concatx("#endif", ln, ln);
       z.concatx("   if(module)", ln);
       z.concatx("   {", ln);
    }
