@@ -138,7 +138,7 @@
 // VMETHOD(c: class object, mc: method class, m: method name, i: instance object, r: return type, p: parameters, a: arguments)
 //    Used to define a virtual method invoker, e.g.:
 //    #define Container_add(__i, value) VMETHOD(Container, add, __i, C(IteratorPointer), C(Container) _ARG TP(Container, T), __i _ARG value)
-#define VMETHOD(c, mc, m, i, r, p, a)   ({ r (* method)(p) = (r (*)(p))((i) ? (i)->_vTbl : c->_vTbl)[M_VTBLID(mc, m)]; method ? method(a) : (r)0; })
+#define VMETHOD(c, mc, m, i, r, p, a)   ({ r (* method)(p) = (r (*)(p))(((i) && (i)->_vTbl) ? (i)->_vTbl : c->_vTbl)[M_VTBLID(mc, m)]; method ? method(a) : (r)0; })
 
 // Macros for translated strings
 #define $(x)      (constString)getTranslatedString(MODULE_NAME, x, null)
