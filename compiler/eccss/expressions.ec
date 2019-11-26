@@ -532,7 +532,7 @@ public:
 
    CMSSExpIdentifier copy()
    {
-      CMSSExpIdentifier e { identifier = identifier.copy() };
+      CMSSExpIdentifier e { identifier = identifier.copy(), fieldID = fieldID }; // TOCHECK: Should we copy fieldID here ?
       return e;
    }
 
@@ -587,10 +587,7 @@ public:
       }
       else if(evaluator != null)
       {
-         if(fieldID != -1)
-            evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, value, &flags);
-         else if(expType)
-            flags.resolved = true; // for viz.
+         evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, value, &flags);
       }
       else
          value.type.type = nil;
