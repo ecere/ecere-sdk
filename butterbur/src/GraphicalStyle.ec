@@ -272,8 +272,7 @@ Map<String, TextStyleKind> textStyleIdentifierMap
    { "font.size", fontSize },
    { "font.bold", fontBold },
    { "font.italic", fontItalic },
-   { "font.color", fontColor }, //TODO review: belongs to font or text?
-   { "color", fontColor },
+   { "font.color", fontColor },
    { "font.opacity", fontOpacity },
    { "font.outline", fontOutline },
    { "font.outline.size", fontOutlineSize },
