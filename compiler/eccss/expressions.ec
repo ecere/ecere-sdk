@@ -414,7 +414,13 @@ public:
          char tempString[1024];
          ObjectNotationType on = econ;
          const String s = onGetString(type, &constant.i, tempString, null, &on);
-         if(s) out.Print(s);
+         if(s) // && on == none)  // This (&& on == none) will force hex output for colors instead of expanded r, g, b
+         {
+            // TODO: Really need to clarify these rules here about adding brackets...
+            if(on != none) out.Print("{ ");
+            out.Print(s);
+            if(on != none) out.Print(" }");
+         }
          else out.Print(constant);
       }
       else out.Print(constant);
@@ -458,7 +464,7 @@ public:
 
    CMSSExpConstant copy()
    {
-      CMSSExpConstant e { constant = constant };
+      CMSSExpConstant e { constant = constant, expType = expType, destType = destType };
       if(e.constant.type.type == text && e.constant.type.mustFree)
          e.constant.s = CopyString(e.constant.s);
       return e;
@@ -514,7 +520,7 @@ public:
 
    CMSSExpString copy()
    {
-      CMSSExpString e { string = CopyString(string) };
+      CMSSExpString e { string = CopyString(string), expType = expType, destType = destType };
       return e;
    }
 
@@ -532,7 +538,12 @@ public:
 
    CMSSExpIdentifier copy()
    {
-      CMSSExpIdentifier e { identifier = identifier.copy(), fieldID = fieldID }; // TOCHECK: Should we copy fieldID here ?
+      CMSSExpIdentifier e
+      {
+         identifier = identifier.copy(),
+         fieldID = fieldID, // TOCHECK: Should we copy fieldID here ?
+         expType = expType, destType = destType
+      };
       return e;
    }
 
@@ -613,7 +624,13 @@ public:
 
    CMSSExpOperation copy()
    {
-      CMSSExpOperation e { op = op, exp1 = exp1 ? exp1.copy() : null, exp2 = exp2 ? exp2.copy() : null };
+      CMSSExpOperation e
+      {
+         op = op,
+         exp1 = exp1 ? exp1.copy() : null,
+         exp2 = exp2 ? exp2.copy() : null,
+         expType = expType, destType = destType
+      };
       return e;
    }
 
@@ -786,7 +803,7 @@ public:
 
    CMSSExpBrackets copy()
    {
-      return CMSSExpBrackets { list = list.copy(); };
+      return CMSSExpBrackets { list = list.copy(), expType = expType, destType = destType };
    }
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
@@ -821,7 +838,8 @@ public:
       {
          condition = condition ? condition.copy() : null,
          expList = expList ? expList.copy() : null,
-         elseExp = elseExp ? elseExp.copy() : null
+         elseExp = elseExp ? elseExp.copy() : null,
+         expType = expType, destType = destType
       };
       return e;
    }
@@ -908,7 +926,7 @@ public:
 
    CMSSExpIndex copy()
    {
-      CMSSExpIndex e { exp = exp.copy(), index = index.copy() };
+      CMSSExpIndex e { exp = exp.copy(), index = index.copy(), expType = expType, destType = destType };
       return e;
    }
 
@@ -959,7 +977,7 @@ public:
 
    CMSSExpMember copy()
    {
-      CMSSExpMember e { exp = exp.copy(), member = member.copy() };
+      CMSSExpMember e { exp = exp.copy(), member = member.copy(), expType = expType, destType = destType };
       return e;
    }
 
@@ -1010,7 +1028,7 @@ public:
 
    CMSSExpCall copy()
    {
-      CMSSExpCall e { exp = exp.copy(), arguments = arguments.copy() };
+      CMSSExpCall e { exp = exp.copy(), arguments = arguments.copy(), expType = expType, destType = destType };
       return e;
    }
 
@@ -1046,7 +1064,7 @@ public:
 
    CMSSExpArray copy()
    {
-      CMSSExpArray e { elements = elements.copy() };
+      CMSSExpArray e { elements = elements.copy(), expType = expType, destType = destType };
       return e;
    }
 
@@ -1115,7 +1133,7 @@ public:
 
    CMSSExpInstance copy()
    {
-      CMSSExpInstance e { instance = instance ? instance.copy() : null };
+      CMSSExpInstance e { instance = instance ? instance.copy() : null, expType = expType, destType = destType };
       return e;
    }
 
@@ -1711,18 +1729,16 @@ public:
       }
    }
 
-   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator, bool isNested)
+   bool addStyleExp(StylesMask mask, CMSSExpression expression, Class c, bool isTopLevel, subclass(ECCSSEvaluator) evaluatorClass, bool isNested)
    {
       bool result = false;
-      CMSSInitExp initExp { exp = CMSSExpConstant { constant = value } };
+      CMSSInitExp initExp { exp = expression };
       CMSSMemberInit mInitSub { stylesMask = mask, initializer = initExp, assignType = equal };
-      char * identifierStr = mask ? evaluator.evaluatorClass.stringFromMask(mask, c) : null;
+      const char * identifierStr = mask ? evaluatorClass.stringFromMask(mask, c) : null;
       String prefix = null, suffix = null;
       uint64 topMask;
-      Array<String> split = null;
+      Array<String> split = (identifierStr && identifierStr[0]) ? splitIdentifier(identifierStr) : null;
       Class inheritClass = c;
-
-      if(identifierStr && identifierStr[0]) split = splitIdentifier(identifierStr);
 
       if(!isNested)
       {
@@ -1740,7 +1756,7 @@ public:
             }
          }
       }
-      topMask = prefix ? evaluator.evaluatorClass.maskFromString(prefix, c) : 0;
+      topMask = prefix ? evaluatorClass.maskFromString(prefix, c) : 0;
 
       if(suffix)
       {
@@ -1748,7 +1764,7 @@ public:
          mInitSub.dataMember = eClass_FindDataMember(inheritClass, suffix, inheritClass.module, null, null);
          if(!mInitSub.dataMember)
          {
-            mInitSub.dataMember = (DataMember)(DataMember)eClass_FindProperty(inheritClass, suffix, inheritClass.module);
+            mInitSub.dataMember = (DataMember)eClass_FindProperty(inheritClass, suffix, inheritClass.module);
          }
       }
       else if(identifierStr && split)
@@ -1809,9 +1825,9 @@ public:
          if(!found)
          {
             CMSSInstantiation instance { members = { [ instInitMember ] } };
-            CMSSExpInstance inst { instance = instance }; //, expType = c, destType = c };
+            CMSSExpInstance inst { instance = instance };
             CMSSInitExp initExpTop { exp = inst };
-            CMSSMemberInit mInitTop { /*expType = c, destType = c, */initializer = initExpTop, assignType = equal, stylesMask = topMask };
+            CMSSMemberInit mInitTop { initializer = initExpTop, assignType = equal, stylesMask = topMask };
             mInitTop.stylesMask |= mask;
             if(prefix)
                mInitTop.identifiers = { [ CMSSIdentifier { string = CopyString(prefix) } ] };
@@ -1824,6 +1840,12 @@ public:
       delete suffix;
       return result;
    }
+
+   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator, bool isNested)
+   {
+      return addStyleExp(mask, CMSSExpConstant { constant = value }, c, isTopLevel, evaluator.evaluatorClass, isNested);
+   }
+
    CMSSMemberInitList copy()
    {
       CMSSMemberInitList c = null;
