@@ -417,9 +417,10 @@ public:
          if(s) // && on == none)  // This (&& on == none) will force hex output for colors instead of expanded r, g, b
          {
             // TODO: Really need to clarify these rules here about adding brackets...
-            if(on != none) out.Print("{ ");
+            bool addCurlies = on != none && type.type != systemClass && type.type != enumClass;
+            if(addCurlies) out.Print("{ ");
             out.Print(s);
-            if(on != none) out.Print(" }");
+            if(addCurlies) out.Print(" }");
          }
          else out.Print(constant);
       }
