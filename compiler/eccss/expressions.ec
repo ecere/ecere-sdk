@@ -2122,12 +2122,14 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
+   val.type = { type = integer };
    return true;
 }
 
 static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
+   val.type = { type = integer };
    return true;
 }
 
