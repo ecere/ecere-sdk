@@ -117,8 +117,8 @@ public:
    Array<GraphicalElement> pattern;
    float opacity;
    float width;
-   StrokeStyling center { };
-   StrokeStyling casing { };
+   StrokeStyling center { opacity = 1.0 };
+   StrokeStyling casing { opacity = 1.0 };
    LineJoin join;
    LineCap cap;
    Array<int> dashes;
