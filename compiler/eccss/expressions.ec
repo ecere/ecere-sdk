@@ -124,6 +124,18 @@ static CMSSTokenType opPrec[][8] =
 
 static define numPrec = sizeof(opPrec) / sizeof(opPrec[0]);
 
+public bool isLowerEqualPrecedence(CMSSTokenType opA, CMSSTokenType opB)
+{
+   int i;
+   int pa = -1, pb = -1;
+   for(i = 0; i < numPrec; i++)
+   {
+      if(isPrecedence(opA, i)) pa = i;
+      if(isPrecedence(opB, i)) pb = i;
+   }
+   return pa <= pb || (opA == or && opB == and); // Bracket mixed OR and AND even if AND has higher precedence...
+}
+
 static bool isPrecedence(CMSSTokenType this, int l)
 {
    if(this)
