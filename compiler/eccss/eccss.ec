@@ -756,6 +756,7 @@ public:
             if(flags.resolved)
             {
                e = simplifyResolved(value, e);
+               s.exp = e;
                //delete e; // NOTE: viz.sd operations were being deleted when resolved
             }
          }
