@@ -5,6 +5,7 @@ namespace com;
 #endif
 
 import "instance"
+import "Container"
 
 default extern Platform runtimePlatform;
 
@@ -1139,7 +1140,9 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                // We don't want KeyCode to use its base class OnGetDataFromString
                if(memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class._vTbl[__ecereVMethodID_class_OnGetDataFromString])
                {
-                  if(!OnGetDataFromString(memberType, (void **)&value, memberString))
+                  if(_class.templateClass == class(Container) && memberType == _class && !strcmp(thisMember.name, "copySrc"))
+                     result = false;
+                  else if(!OnGetDataFromString(memberType, (void **)&value, memberString))
                      result = false;
                }
                else if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
