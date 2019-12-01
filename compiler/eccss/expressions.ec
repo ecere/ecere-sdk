@@ -1196,7 +1196,7 @@ public:
 
          // TODO: Avoid constantly re-creating if constant?
          instData = createGenericInstance(this, evaluator, &flags);
-         if(expType && expType.type == normalClass)
+         if(expType && instData && expType.type == normalClass)
          {
             ((Instance)instData)._refCount++;
          }
