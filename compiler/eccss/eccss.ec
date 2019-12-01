@@ -414,8 +414,9 @@ private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator eval
 {
    CMSSSpecName specName = inst.instance ? (CMSSSpecName)inst.instance._class : null;
    Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : inst.destType;
-   Instance instance = eInstance_New(c);
-   setGenericInstanceMembers(instance, inst, evaluator, flg);
+   Instance instance = c && c.structSize ? eInstance_New(c) : null;
+   if(instance)
+      setGenericInstanceMembers(instance, inst, evaluator, flg);
    return instance;
 }
 
