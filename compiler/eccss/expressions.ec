@@ -688,7 +688,7 @@ public:
 
          flags = flags1 | flags2;
 
-         if(val1.type.type != type)
+         if(flags1.resolved && val1.type.type != type)
             convertFieldValue(val1, type, val1);
 
          if(op == in)
@@ -2294,6 +2294,19 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
       {
          dest.s = PrintString(src.r);
          dest.type = { text, mustFree = true };
+      }
+   }
+   else if(src.type.type == nil)
+   {
+      if(type == integer)
+      {
+         dest.i = 0;
+         dest.type = { integer };
+      }
+      else if(type == text)
+      {
+         dest.s = null;
+         dest.type = { text };
       }
    }
    else
