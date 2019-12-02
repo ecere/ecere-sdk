@@ -700,11 +700,11 @@ public:
             }
             if(l && l._class == class(CMSSExpList))
             {
-               FieldValue v { };
+               FieldValue v { type = { type = nil } };
                for(e : l.list)
                {
                   CMSSExpression ne = e;
-                  FieldValue v2 { };
+                  FieldValue v2 { type = { type = nil } };
                   ExpFlags f2 = ne.compute(v2, evaluator, computeType);
                   if(flags1.resolved)
                   {
@@ -716,17 +716,15 @@ public:
                         {
                            tbl->Equ(v, val1, v2);
                            if(v.i)
-                           {
-                              value = v;
                               break;
-                           }
                         }
                      }
                   }
                   else
                      flags |= f2;
                }
-               flags.resolved = v.type.type != nil && v.i;
+               value = v;
+               flags.resolved = v.type.type != nil;
             }
             else
                flags.resolved = false;
