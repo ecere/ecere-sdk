@@ -1779,7 +1779,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       {
          Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
          Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
-         if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue")))
+         if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue") || strstr(mapDataClass.name, "MapboxGLSourceData")))
             jsonDicMap = true;
       }
 
@@ -2194,7 +2194,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          {
             mapKeyClass = objectType.templateArgs[0].dataTypeClass;
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
-            if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue")))
+            if(!eCON && (!strcmp(mapKeyClass.name, "UMSFormatType") || strstr(mapDataClass.name, "UMSFieldValue") || strstr(mapDataClass.name, "MapboxGLSourceData")))
                jsonDicMap = true;
          }
 
