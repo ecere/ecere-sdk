@@ -40,7 +40,7 @@ public:
    }
 
    //NOTE this ignores selectors!
-   bool changeStyle(const String id, StylesMask mask, const FieldValue value, bool isNested)
+   bool changeStyle(const String id, StylesMask mask, const FieldValue value, bool isNested, Class unitClass)
    {
       bool result = false;
       StylingRuleBlock block = findRule(mask, id);
@@ -263,7 +263,7 @@ public:
       mInit.initializer = CMSSInitExp { exp = exp };
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
       bool result = false;
       if(this)
@@ -271,22 +271,76 @@ public:
          CMSSMemberInit mInit = findStyle(msk); // this doesn't get lowest-level member
          if(mInit)
          {
-            CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
+            CMSSInitExp initExp = mInit.initializer ? (CMSSInitExp)mInit.initializer : null;
 
-            if(initExp.exp._class == class(CMSSExpInstance))
+            if(initExp && initExp.exp._class == class(CMSSExpInstance))
             {
                CMSSExpInstance inst = (CMSSExpInstance)initExp.exp;
                CMSSInstantiation instance = inst.instance;
                CMSSInstInitList instInitList = instance.members;
-               if(!instInitList)
-                  instance.members = instInitList = { };
-               result = instInitList.changeStyle(msk, value, c, evaluator, isNested);
+               CMSSSpecName specName = (CMSSSpecName)instance._class;
+               if(unitClass && !strcmp(specName.name, unitClass.name))
+               {
+                  CMSSInstInitMember instInitMember = (CMSSInstInitMember)instInitList[0];
+                  CMSSMemberInit minit = (CMSSMemberInit)instInitMember.members[0];
+                  CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
+                  if(value.type.type == nil)
+                  {
+                     CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
+                     initExp.exp = id;
+                  }
+                  else if(value.type.type == text)
+                  {
+                     CMSSExpString str { string = CopyString(value.s) };
+                     initExp.exp = str;
+                  }
+                  else
+                  {
+                     CMSSExpConstant c = initExp.exp._class == class(CMSSExpConstant) ? (CMSSExpConstant)initExp.exp : null;
+                     if(c) c.constant = value;
+                  }
+               }
+               else
+               {
+                  if(!instInitList)
+                     instance.members = instInitList = { };
+                  result = instInitList.changeStyle(msk, value, c, evaluator, isNested, unitClass);
+               }
+
                if(result) mask |= msk;
             }
-            else if(initExp.exp._class == class(CMSSExpConstant))
+            else if(initExp && initExp.exp._class == class(CMSSExpConstant))
             {
-               CMSSExpConstant constant = (CMSSExpConstant)initExp.exp;
-               constant.constant = value;
+               CMSSExpression e = initExp.exp;
+               if(value.type.type == nil)
+               {
+                  CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
+                  e = id;
+               }
+               else if(value.type.type == text)
+               {
+                  CMSSExpString str { string = CopyString(value.s) };
+                  e = str;
+               }
+               else
+               {
+                  CMSSExpConstant constant = (CMSSExpConstant)e;
+                  constant.constant = value;
+                  if(unitClass)
+                  {
+                     String unitClassName = CopyString(unitClass.name), suffix = null;
+                     CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
+                     CMSSInstInitMember instInitMember { members = { [ minit ] } };
+                     CMSSInstantiation instantiation
+                     {
+                        _class = CMSSSpecName { name = CopyString(unitClassName) }, // e.g. "Meters"
+                        members = { [ instInitMember ] }
+                     };
+                     e = CMSSExpInstance { instance = instantiation };
+                  }
+               }
+               initExp.exp = e;
+
                if(result) mask |= msk;
                result = true;
             }
@@ -295,7 +349,7 @@ public:
          {
             CMSSMemberInitList mList { };
             Add(mList);
-            result = mList.addStyle(msk, value, c, true, evaluator, isNested);
+            result = mList.addStyle(msk, value, c, true, evaluator, isNested, unitClass);
             if(result) mask |= msk;
          }
       }
@@ -657,6 +711,7 @@ public:
                return b;
          }
       }
+
       return null;
    }
 
@@ -804,12 +859,12 @@ public:
       return styles.setStyle(mask, exp);
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
       if(msk)
       {
          if(!styles) styles = { };
-         if(styles.changeStyle(msk, value, c, evaluator, isNested))
+         if(styles.changeStyle(msk, value, c, evaluator, isNested, unitClass))
          {
             mask |= msk;
             return true;
