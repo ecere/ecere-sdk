@@ -1205,6 +1205,174 @@ public:
       return flags;
    }
 
+   // TODO: This doesn't set mask etc.
+   void setExpInstanceMember(CMSSExpression expression, const String idsString)
+   {
+      bool createSubInstance = true;    // TODO: Make this a parameter ?
+
+      #ifdef _DEBUG
+         if(!expression)
+            PrintLn("WARNING: Null expression passed to setExpInstanceMember()");
+      #endif
+
+      if(idsString && idsString[0] && this)
+      {
+         char * dot = strchr(idsString, '.');
+         String member = null;
+         bool setSubInstance = false;
+         Class c = this.expType;
+         if(dot)
+         {
+            int len = (int)(dot - idsString);
+            CMSSExpression e;
+
+            member = new char[len+1];
+
+            memcpy(member, idsString, len);
+            member[len] = 0;
+
+            e = this.getExpInstanceMemberStrings([ member ]);
+            if(!e && createSubInstance)
+            {
+               e = CMSSExpInstance { };
+               if(c)
+               {
+                  DataMember dataMember = eClass_FindDataMember(c, member, c.module, null, null);
+                  if(!dataMember)
+                  {
+                     dataMember = (DataMember)eClass_FindProperty(c, member, c.module);
+                  }
+                  if(!dataMember.dataTypeClass)
+                     dataMember.dataTypeClass =
+                        eSystem_FindClass(dataMember._class.module, dataMember.dataTypeString);
+                  if(dataMember)
+                     e.expType = dataMember.dataTypeClass;
+               }
+
+               ((CMSSExpInstance)e).setExpInstanceMember(expression, dot+1);
+               expression = e;
+               idsString = member;
+            }
+            else if(e && e._class == class(CMSSExpInstance))
+            {
+               ((CMSSExpInstance)e).setExpInstanceMember(expression, dot+1);
+               setSubInstance = true;
+            }
+         }
+
+         if(!setSubInstance)
+         {
+            CMSSInitExp initExp { exp = expression };
+            CMSSMemberInit mInit
+            {
+               initializer = initExp,
+               // identifiers = { }, // FIXME: #1220
+               assignType = equal
+            };
+            CMSSInstInitMember instInitMember { members = { [ mInit ] } };
+
+            mInit.identifiers = { };
+
+            if(!this.instance) this.instance = { };
+            if(!this.instance.members) this.instance.members = { };
+            this.instance.members.Add(instInitMember);
+
+            if(dot)
+            {
+               Array<String> split = dot ? splitIdentifier(idsString) : { [ CopyString(idsString) ] };
+               DataMember dataMember = null;
+               for(s : split)
+               {
+                  mInit.identifiers.Add(CMSSIdentifier { string = s });
+                  if(c)
+                  {
+                     dataMember = eClass_FindDataMember(c, s, c.module, null, null);
+                     if(!dataMember)
+                     {
+                        dataMember = (DataMember)eClass_FindProperty(c, s, c.module);
+                     }
+                     if(dataMember)
+                     {
+                        if(!dataMember.dataTypeClass)
+                           dataMember.dataTypeClass = c =
+                              eSystem_FindClass(dataMember._class.module, dataMember.dataTypeString);
+                        else
+                           c = dataMember.dataTypeClass;
+                     }
+                     else
+                        c = null;
+                  }
+               }
+               mInit.dataMember = dataMember;
+               expression.destType = mInit.destType = c;
+               delete split;
+            }
+            else
+            {
+               if(c)
+               {
+                  mInit.dataMember = eClass_FindDataMember(c, idsString, c.module, null, null);
+                  if(!mInit.dataMember)
+                  {
+                     mInit.dataMember = (DataMember)eClass_FindProperty(c, idsString, c.module);
+                  }
+                  if(mInit.dataMember)
+                  {
+                     if(!mInit.dataMember.dataTypeClass)
+                        mInit.dataMember.dataTypeClass =
+                           eSystem_FindClass(mInit.dataMember._class.module, mInit.dataMember.dataTypeString);
+                     mInit.destType = mInit.dataMember.dataTypeClass;
+                  }
+                  expression.destType = mInit.destType;
+               }
+               mInit.identifiers.Add(CMSSIdentifier { string = CopyString(idsString) });
+            }
+         }
+         delete member;
+      }
+   }
+   public CMSSExpression getExpInstanceMemberStrings(Container<const String> ids)
+   {
+      CMSSExpression result = null;
+      if(this && this._class == class(CMSSExpInstance))
+      {
+         CMSSExpInstance ei = (CMSSExpInstance)this;
+         if(ei.instance && ei.instance.members)
+         {
+            for(m : ei.instance.members)
+            {
+               CMSSInstInitMember i = (CMSSInstInitMember)m;
+               if(i)
+               {
+                  for(mi : i.members)
+                  {
+                     CMSSMemberInit init = mi;
+                     if(init && init.initializer)
+                     {
+                        CMSSExpression e = ((CMSSInitExp)init.initializer).exp;
+                        bool same = true;
+                        int j;
+                        Iterator<CMSSIdentifier> it { init.identifiers };
+
+                        for(j = 0; j < ids.GetCount(); j++)
+                        {
+                           if(!it.Next() || strcmp(it.data.string, ids[j]))
+                           {
+                              same = false;
+                              break;
+                           }
+                        }
+                        if(same)
+                           result = e;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return result;
+   }
+
    ~CMSSExpInstance()
    {
       delete instance;
@@ -1272,7 +1440,7 @@ public:
       CMSSList::print(out, indent, o);
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
       bool result = false;
 
@@ -1286,8 +1454,36 @@ public:
             CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
             if(initExpSub.exp._class == class(CMSSExpConstant))
             {
-               CMSSExpConstant constant = (CMSSExpConstant)initExpSub.exp;
-               constant.constant = value;
+               CMSSExpression e = initExpSub.exp;
+               if(value.type.type == nil)
+               {
+                  CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
+                  e = id;
+               }
+               else if(value.type.type == text)
+               {
+                  CMSSExpString str { string = CopyString(value.s) };
+                  e = str;
+               }
+               else
+               {
+                  CMSSExpConstant constant = (CMSSExpConstant)e;
+                  constant.constant = value;
+                  if(unitClass)
+                  {
+                     String unitClassName = CopyString(unitClass.name);
+                     CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
+                     CMSSInstInitMember instInitMember { members = { [ minit ] } };
+                     CMSSInstantiation instantiation
+                     {
+                        _class = CMSSSpecName { name = CopyString(unitClassName) }, // e.g. "Meters"
+                        members = { [ instInitMember ] }
+                     };
+                     e = CMSSExpInstance { instance = instantiation };
+                  }
+               }
+               initExpSub.exp = e;
+
                result = true;
             }
             // there can be another instance here! e.g. casing
@@ -1296,9 +1492,34 @@ public:
                CMSSExpInstance inst = (CMSSExpInstance)initExpSub.exp;
                CMSSInstantiation instance = inst.instance;
                CMSSInstInitList instInitList = instance.members;
-               if(!instInitList)
-                  instance.members = instInitList = { };
-               result = instInitList.changeStyle(msk, value, c, evaluator, isNested);
+               CMSSSpecName specName = (CMSSSpecName)instance._class;
+               if(unitClass && !strcmp(specName.name, unitClass.name))
+               {
+                  CMSSInstInitMember instInitMember = (CMSSInstInitMember)instInitList[0];
+                  CMSSMemberInit minit = (CMSSMemberInit)instInitMember.members[0];
+                  CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
+                  if(value.type.type == nil)
+                  {
+                     CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
+                     initExp.exp = id;
+                  }
+                  else if(value.type.type == text)
+                  {
+                     CMSSExpString str { string = CopyString(value.s) };
+                     initExp.exp = str;
+                  }
+                  else
+                  {
+                     CMSSExpConstant c = initExp.exp._class == class(CMSSExpConstant) ? (CMSSExpConstant)initExp.exp : null;
+                     if(c) c.constant = value;
+                  }
+               }
+               else
+               {
+                  if(!instInitList)
+                     instance.members = instInitList = { };
+                  result = instInitList.changeStyle(msk, value, c, evaluator, isNested, unitClass);
+               }
             }
          }
       }
@@ -1314,7 +1535,7 @@ public:
             mList = { };
             Add(CMSSInstInitMember { members = mList });
          }
-         result = mList.addStyle(msk, value, c, false, evaluator, isNested);
+         result = mList.addStyle(msk, value, c, false, evaluator, isNested, unitClass);
       }
       /*
       // StylingRuleBlock doesn't derive from CMSSInstInitList ???
@@ -1845,6 +2066,7 @@ public:
             Add(mInitTop);
          }
       }
+
       result = true;
 
       delete prefix;
@@ -1852,9 +2074,25 @@ public:
       return result;
    }
 
-   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator, bool isNested)
+   bool addStyle(StylesMask mask, const FieldValue value, Class c, bool isTopLevel, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
-      return addStyleExp(mask, CMSSExpConstant { constant = value }, c, isTopLevel, evaluator.evaluatorClass, isNested);
+      CMSSExpression e =
+         value.type.type == nil ? CMSSExpIdentifier { identifier = { string = CopyString("null") } } :
+         value.type.type == text ? CMSSExpString { string = CopyString(value.s) } :
+         CMSSExpConstant { constant = value };
+      if(unitClass && e._class == class(CMSSExpConstant))
+      {
+         String s = CopyString(unitClass.name);
+         CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
+         CMSSInstInitMember instInitMember { members = { [ minit ] } };
+         CMSSInstantiation instantiation
+         {
+            _class = CMSSSpecName { name = CopyString(s) }, // e.g. "Meters"
+            members = { [ instInitMember ] }
+         };
+         e = CMSSExpInstance { instance = instantiation };
+      }
+      return addStyleExp(mask, e, c, isTopLevel, evaluator.evaluatorClass, isNested);
    }
 
    CMSSMemberInitList copy()
