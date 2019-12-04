@@ -514,7 +514,8 @@ public:
 
    void prioritizeTask(ProcessingTask task, int priority)
    {
-      stages[task.status.stage-1].prioritizeTask(task, priority);
+      if(task.status.stage)
+         stages[task.status.stage-1].prioritizeTask(task, priority);
    }
 
    bool processTasks(int stage, int maxTasks)
