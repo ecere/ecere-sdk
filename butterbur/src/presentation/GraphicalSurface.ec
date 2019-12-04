@@ -2,12 +2,14 @@ public import IMPORT_STATIC "ecere"
 
 #include "gl123es.h"
 
+private: // FIXME: eC bug here... global access mode should still be private?
+         // On other Linux system without this here, Presentation has [Private] import mode
+         // and does not find MultiPresentation::calculate()
+
 import "Presentation"
 
 #undef near
 #undef far
-
-private: // FIXME: eC bug here... global access mode should still be private?
 
 // We will want to use a single FontManager...
 LWFontManager fm; // For labels.  Needs to be outside class so it can be be placed in the draw manager flush.
