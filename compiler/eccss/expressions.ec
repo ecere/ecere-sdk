@@ -1206,9 +1206,9 @@ public:
       return flags;
    }
 
-   void setMemberValue(const String idsString, const FieldValue value, Class unitClass)
+   void setMemberValue(const String idsString, const FieldValue value, Class c)
    {
-      setMember(idsString, expressionFromValue(value, unitClass));
+      setMember(idsString, expressionFromValue(value, c));
    }
 
    // TODO: This doesn't set mask etc.
@@ -2608,15 +2608,15 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
       dest = { type = { nil } };
 }
 
-public CMSSExpression expressionFromValue(const FieldValue value, Class unitClass)
+public CMSSExpression expressionFromValue(const FieldValue value, Class c)
 {
    CMSSExpression e =
       value.type.type == nil ? CMSSExpIdentifier { identifier = { string = CopyString("null") } } :
       value.type.type == text ? CMSSExpString { string = CopyString(value.s) } :
-      CMSSExpConstant { constant = value };
-   if(unitClass && e._class == class(CMSSExpConstant))
+      CMSSExpConstant { destType = c, constant = value };
+   if(c && c.type == unitClass && c.base && c.base.type == unitClass && e._class == class(CMSSExpConstant))
    {
-      String s = CopyString(unitClass.name);
+      String s = CopyString(c.name);
       CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
       CMSSInstInitMember instInitMember { members = { [ minit ] } };
       CMSSInstantiation instantiation
