@@ -1199,6 +1199,7 @@ public:
             ((Instance)instData)._refCount++;
          }
          value.i = (int64)(intptr)instData;
+         value.type = { type = blob };
          if(!flags)
             flags.resolved = true;
       }
