@@ -18,32 +18,42 @@ public class GEFont : struct   // NOTE: This will likely be renamed to simply Fo
 {
    void OnCopy(GEFont src)
    {
-      GEFont font;
-
-      //Text::OnCopy(src);
-
-      font = this;
-
-      if(font)
+      GEFont font
       {
-         String face;
-         if(src.face) { face = CopyString(src.face); font.face = face; }
-         font.outline = src.outline;
-         font.bold = src.bold;
-         font.color = src.color;
-         font.italic = src.italic;
-         font.opacity = src.opacity;
-         font.size = src.size;
-         font.underline = src.underline;
-      }
+         face = CopyString(src.face);
+         outline = src.outline;
+         bold = src.bold;
+         color = src.color;
+         italic = src.italic;
+         opacity = src.opacity;
+         size = src.size;
+         underline = src.underline;
+      };
+      this = font;
    }
-public:
-   const String face;
+   String face;
    float size;
    bool bold, italic, underline;
    Color color;
    Outline outline { };
    float opacity;
+
+   ~GEFont()
+   {
+      delete face;
+   }
+
+public:
+   // const String face;
+   // FIXME: Offset problems if set directly as data members by eccss
+   property String face { set { delete face; face = CopyString(value); } get { return face; } }
+   property float size { set { size = value; } get { return size; } }
+   property bool bold { set { bold = value; } get { return bold; } }
+   property bool italic { set { italic = value; } get { return italic; } }
+   property bool underline { set { underline = value; } get { return underline; } }
+   property Color color { set { color = value; } get { return color; } }
+   property Outline outline { set { outline = value; } get { value = outline; } }
+   property float opacity { set { opacity = value; } get { return opacity; } }
 
    size = 12;
    opacity = 1;
@@ -592,19 +602,33 @@ public class Text : GraphicalElement
 
       if(tt)
       {
-         String text;
-         GEFont font;
+         GEFont font = null;
 
          tt.type = src.type;
          tt.unit = src.unit;
-
-         if(src.text) { text = CopyString(src.text); tt.text = text; }
-         font.OnCopy(src.font);     tt.font = font;
+         tt.text = CopyString(src.text);
+         font.OnCopy(src.font);
+         tt.font = font;
       }
    }
-public:
+
+   // FIXME: Offset issues?
    GEFont font;
    Alignment2D alignment;
+
+public:
+
+   property GEFont font
+   {
+      set { font.OnCopy(value); }
+      get { return font; }
+   }
+
+   property Alignment2D alignment
+   {
+      set { alignment = value; }
+      get { return alignment; }
+   }
 
    property const String text
    {
