@@ -1514,114 +1514,6 @@ public:
    {
       CMSSList::print(out, indent, o);
    }
-
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
-   {
-      bool result = false;
-
-      for(i : this)
-      {
-         CMSSInstInitMember member = (CMSSInstInitMember)i;
-         CMSSMemberInitList members = member.members;
-         CMSSMemberInit mInitSub = members.findStyle(msk); // this does
-         if(mInitSub)
-         {
-            CMSSInitExp initExpSub = (CMSSInitExp)mInitSub.initializer;
-            if(initExpSub.exp._class == class(CMSSExpConstant))
-            {
-               CMSSExpression e = initExpSub.exp;
-               if(value.type.type == nil)
-               {
-                  CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
-                  e = id;
-               }
-               else if(value.type.type == text)
-               {
-                  CMSSExpString str { string = CopyString(value.s) };
-                  e = str;
-               }
-               else
-               {
-                  CMSSExpConstant constant = (CMSSExpConstant)e;
-                  constant.constant = value;
-                  if(unitClass)
-                  {
-                     String unitClassName = CopyString(unitClass.name);
-                     CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
-                     CMSSInstInitMember instInitMember { members = { [ minit ] } };
-                     CMSSInstantiation instantiation
-                     {
-                        _class = CMSSSpecName { name = CopyString(unitClassName) }, // e.g. "Meters"
-                        members = { [ instInitMember ] }
-                     };
-                     e = CMSSExpInstance { instance = instantiation };
-                  }
-               }
-               initExpSub.exp = e;
-
-               result = true;
-            }
-            // there can be another instance here! e.g. casing
-            else if(initExpSub.exp._class == class(CMSSExpInstance))
-            {
-               CMSSExpInstance inst = (CMSSExpInstance)initExpSub.exp;
-               CMSSInstantiation instance = inst.instance;
-               CMSSInstInitList instInitList = instance.members;
-               CMSSSpecName specName = (CMSSSpecName)instance._class;
-               if(unitClass && !strcmp(specName.name, unitClass.name))
-               {
-                  CMSSInstInitMember instInitMember = (CMSSInstInitMember)instInitList[0];
-                  CMSSMemberInit minit = (CMSSMemberInit)instInitMember.members[0];
-                  CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
-                  if(value.type.type == nil)
-                  {
-                     CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
-                     initExp.exp = id;
-                  }
-                  else if(value.type.type == text)
-                  {
-                     CMSSExpString str { string = CopyString(value.s) };
-                     initExp.exp = str;
-                  }
-                  else
-                  {
-                     CMSSExpConstant c = initExp.exp._class == class(CMSSExpConstant) ? (CMSSExpConstant)initExp.exp : null;
-                     if(c) c.constant = value;
-                  }
-               }
-               else
-               {
-                  if(!instInitList)
-                     instance.members = instInitList = { };
-                  result = instInitList.changeStyle(msk, value, c, evaluator, isNested, unitClass);
-               }
-            }
-         }
-      }
-
-      if(!result)
-      {
-         CMSSInstInitMember member = (CMSSInstInitMember)this[0];
-         CMSSMemberInitList mList;
-         if(member)
-            mList = member.members;
-         else
-         {
-            mList = { };
-            Add(CMSSInstInitMember { members = mList });
-         }
-         result = mList.addStyle(msk, value, c, false, evaluator, isNested, unitClass);
-      }
-      /*
-      // StylingRuleBlock doesn't derive from CMSSInstInitList ???
-      if(result && eClass_IsDerived(this._class, class(StylingRuleBlock)))
-      {
-         StylingRuleBlock o = (StylingRuleBlock)this;
-         o.mask &= msk;
-      }
-      */
-      return result;
-   }
 }
 
 public class CMSSInstantiation : CMSSNode
@@ -2624,7 +2516,8 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
          _class = CMSSSpecName { name = CopyString(s) }, // e.g. "Meters"
          members = { [ instInitMember ] }
       };
-      e = CMSSExpInstance { instance = instantiation };
+      e.destType = null;
+      e = CMSSExpInstance { destType = c, instance = instantiation };
    }
    return e;
 }
