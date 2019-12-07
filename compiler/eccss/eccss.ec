@@ -212,6 +212,41 @@ public:
       return list;
    }
 
+   CMSSExpression getStyle2(StylesMask msk, Class * uc)
+   {
+      CMSSExpression result = getStyle(msk);
+      while(result && result._class == class(CMSSExpInstance))
+      {
+         CMSSExpInstance ei = (CMSSExpInstance)result;
+         if(uc && ei.instance && ei.instance._class)
+         {
+            CMSSSpecName sn = (CMSSSpecName)ei.instance._class;
+            Class c = sn ? eSystem_FindClass(__thisModule, sn.name) : null;
+            if(c && c.type == unitClass && c.base.type == unitClass)
+            {
+               *uc = c;
+               msk = 0;
+            }
+         }
+         if(ei.instance && ei.instance.members)
+         {
+            result = null;
+            for(i : ei.instance.members)
+            {
+               CMSSInstInitMember member = (CMSSInstInitMember)i;
+               CMSSMemberInitList members = member.members;
+               CMSSMemberInit mInit = members ? members.findStyle(msk) : null;
+               if(mInit)
+               {
+                  result = mInit.initializer ? ((CMSSInitExp)mInit.initializer).exp : null;
+                  break;
+               }
+            }
+         }
+      }
+      return result;
+   }
+
    CMSSMemberInit findStyle(StylesMask msk)
    {
       // unbound sheet currently doesn't have mask set...
