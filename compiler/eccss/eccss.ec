@@ -314,7 +314,7 @@ public:
                CMSSInstantiation instance = inst.instance;
                CMSSInstInitList instInitList = instance.members;
                CMSSSpecName specName = (CMSSSpecName)instance._class;
-               if(unitClass && !strcmp(specName.name, unitClass.name))
+               if(unitClass && specName && !strcmp(specName.name, unitClass.name))
                {
                   CMSSInstInitMember instInitMember = (CMSSInstInitMember)instInitList[0];
                   CMSSMemberInit minit = (CMSSMemberInit)instInitMember.members[0];
