@@ -298,95 +298,67 @@ public:
       mInit.initializer = CMSSInitExp { exp = exp };
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
    {
       bool result = false;
+      bool isTopLevel = true;
+
       if(this)
       {
-         CMSSMemberInit mInit = findStyle(msk); // this doesn't get lowest-level member
-         if(mInit)
+         CMSSMemberInit mInit = findStyle(msk);
+         CMSSInitExp initExp = null;
+         CMSSMemberInitList list = null;
+         while(mInit && !initExp)
          {
-            CMSSInitExp initExp = mInit.initializer ? (CMSSInitExp)mInit.initializer : null;
-
+            initExp = mInit.initializer ? (CMSSInitExp)mInit.initializer : null;
             if(initExp && initExp.exp._class == class(CMSSExpInstance))
             {
                CMSSExpInstance inst = (CMSSExpInstance)initExp.exp;
                CMSSInstantiation instance = inst.instance;
                CMSSInstInitList instInitList = instance.members;
                CMSSSpecName specName = (CMSSSpecName)instance._class;
-               if(unitClass && specName && !strcmp(specName.name, unitClass.name))
+               Class cuc = specName && specName.name ? eSystem_FindClass(__thisModule, specName.name) : null;
+               bool isUnitClass = cuc && cuc.type == unitClass && cuc.base.type == unitClass;
+
+               if(!isUnitClass)
                {
-                  CMSSInstInitMember instInitMember = (CMSSInstInitMember)instInitList[0];
-                  CMSSMemberInit minit = (CMSSMemberInit)instInitMember.members[0];
-                  CMSSInitExp initExp = (CMSSInitExp)minit.initializer;
-                  if(value.type.type == nil)
-                  {
-                     CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
-                     initExp.exp = id;
-                  }
-                  else if(value.type.type == text)
-                  {
-                     CMSSExpString str { string = CopyString(value.s) };
-                     initExp.exp = str;
-                  }
-                  else
-                  {
-                     CMSSExpConstant c = initExp.exp._class == class(CMSSExpConstant) ? (CMSSExpConstant)initExp.exp : null;
-                     if(c) c.constant = value;
-                  }
-               }
-               else
-               {
+                  // Dealing with sub-instance (and not just a unit value)...
+                  initExp = null;
+                  isTopLevel = false;
+                  isNested = false;    // Force 'isNested' to false if we're aleady modifying the parent instance
+                                       // because addStyle() currently does not support handling this for sub-instances
                   if(!instInitList)
                      instance.members = instInitList = { };
-                  result = instInitList.changeStyle(msk, value, c, evaluator, isNested, unitClass);
-               }
 
-               if(result) mask |= msk;
-            }
-            else if(initExp && initExp.exp._class == class(CMSSExpConstant))
-            {
-               CMSSExpression e = initExp.exp;
-               if(value.type.type == nil)
-               {
-                  CMSSExpIdentifier id { identifier = { string = CopyString("null") } };
-                  e = id;
-               }
-               else if(value.type.type == text)
-               {
-                  CMSSExpString str { string = CopyString(value.s) };
-                  e = str;
-               }
-               else
-               {
-                  CMSSExpConstant constant = (CMSSExpConstant)e;
-                  constant.constant = value;
-                  if(unitClass)
+                  if(instInitList)
                   {
-                     String unitClassName = CopyString(unitClass.name);
-                     CMSSMemberInit minit { initializer = CMSSInitExp { exp = e } };
-                     CMSSInstInitMember instInitMember { members = { [ minit ] } };
-                     CMSSInstantiation instantiation
+                     for(i : instInitList)
                      {
-                        _class = CMSSSpecName { name = CopyString(unitClassName) }, // e.g. "Meters"
-                        members = { [ instInitMember ] }
-                     };
-                     e = CMSSExpInstance { instance = instantiation };
+                        CMSSInstInitMember member = (CMSSInstInitMember)i;
+                        CMSSMemberInitList members = member.members;
+                        list = members;
+                        mInit = members ? members.findStyle(msk) : null;
+                        if(mInit)
+                           break;
+                     }
                   }
                }
-               initExp.exp = e;
-
-               if(result) mask |= msk;
-               result = true;
             }
          }
-         else
+
+         if(initExp)
          {
-            CMSSMemberInitList mList { };
-            Add(mList);
-            result = mList.addStyle(msk, value, c, true, evaluator, isNested, unitClass);
-            if(result) mask |= msk;
+            delete initExp.exp;
+            initExp.exp = expressionFromValue(value, uc);
+            result = true;
          }
+         else if(!mInit)
+         {
+            if(!list)
+               Add(list = { });
+            result = list.addStyle(msk, value, c, isTopLevel, evaluator, isNested, uc);
+         }
+         if(result) mask |= msk;
       }
       return result;
    }
@@ -922,7 +894,7 @@ public:
       if(!styles) styles = { };
       return styles.setStyle(mask, exp);
    }
-
+   // NOTE: isNested means this is a nested rule, and we want to set top.sub = as opposed to top = { sub = }
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
       if(msk)
