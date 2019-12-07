@@ -1248,7 +1248,7 @@ public:
                   {
                      dataMember = (DataMember)eClass_FindProperty(c, member, c.module);
                   }
-                  if(!dataMember.dataTypeClass)
+                  if(dataMember && !dataMember.dataTypeClass)
                      dataMember.dataTypeClass =
                         eSystem_FindClass(dataMember._class.module, dataMember.dataTypeString);
                   if(dataMember)
@@ -1935,7 +1935,7 @@ public:
             CMSSMemberInit mInit = e;
             //Class c = mInit.dataMember ? mInit.dataMember._class : null;
             StylesMask sm = mInit.stylesMask;
-            if(sm & mask)
+            if(!mask || (sm & mask))   // NOTE: Useful to pass a 0 mask to look for unit class value
                return mInit;
             /*if(mInit.identifiers)
             {
