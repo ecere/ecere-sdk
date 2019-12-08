@@ -228,9 +228,11 @@ public:
                msk = 0;
             }
          }
+         else
+            result = null;
+
          if(ei.instance && ei.instance.members)
          {
-            result = null;
             for(i : ei.instance.members)
             {
                CMSSInstInitMember member = (CMSSInstInitMember)i;
