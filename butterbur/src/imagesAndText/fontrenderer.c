@@ -206,8 +206,15 @@ static int frFontRegisterImage( void *rendererhandle, int offsetx, int offsety, 
     dmFlushImages( state->context );
     state->imagealloc <<= 1;
     state->imagelist = realloc( state->imagelist, state->imagealloc * sizeof(dmImage) );
+    memset((char *)state->imagelist + state->imagecount * sizeof(dmImage), 0,
+      (state->imagealloc - state->imagecount) * sizeof(dmImage));
   }
   state->imagecount++;
+
+  if(!state->texture)
+  {
+     printf("Null texture?\n");
+  }
 
   image = &state->imagelist[ imageindex ];
 #if DM_ENABLE_EXT_COLOR //1

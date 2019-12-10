@@ -874,7 +874,10 @@ printf( " Flush %d images\n", (int)dm->imagebuffercount );
           dm->flushcallback( dm->flushcallbackcontext );
 
           // FIXME: The font manager might mess up our texture with atlas updates
-          glBindTexture( GL_TEXTURE_2D, bindtexture->gltex );
+          if(bindtexture)
+            glBindTexture( GL_TEXTURE_2D, bindtexture->gltex );
+          else
+            printf("drawmanager: null texture!\n");
         }
 
         /* Render buffered images */
@@ -915,10 +918,15 @@ printf( "  Switch blending %d\n", ( stateblend != 0 ) );
       if( texture != bindtexture )
       {
         bindtexture = texture;
-        glBindTexture( GL_TEXTURE_2D, bindtexture->gltex );
+        if(!bindtexture)
+           printf("drawmanager: null texture!\n");
+        else
+        {
+           glBindTexture( GL_TEXTURE_2D, bindtexture->gltex );
 #if DM_RENDER_IMAGE_DEBUG
 printf( "  Switch to texture 0x%x\n", (int)texture->ordermask );
 #endif
+        }
       }
       bindimage = image;
     }
