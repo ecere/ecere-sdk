@@ -702,7 +702,7 @@ public:
    BOutputType type2; // todo: use only type but make sure no side effects
 private:
    Array<ASTNode> output { };
-   DynamicString ds;
+   ZString z;
    AVLTree<BOutputPtr> outputDependencies { };
 
    ~BOutput()

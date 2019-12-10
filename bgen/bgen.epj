@@ -62,12 +62,6 @@
       {
          "Folder" : "extras",
          "Files" : [
-            {
-               "Folder" : "types",
-               "Files" : [
-                  "../extras/types/DynamicString.ec"
-               ]
-            },
             "consoleApp.ec",
             "../extras/ecom.ec",
             "../extras/stringTools.ec"
