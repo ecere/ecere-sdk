@@ -1152,6 +1152,16 @@ void dmReady( dmContext *dm, int viewportwidth, int viewportheight )
 
 ////
 
+static void resizeImageBuffer(dmContext *dm)
+{
+  dm->imagebuffersize <<= 1;
+  dm->imagebuffer = realloc( dm->imagebuffer, dm->imagebuffersize * sizeof(dmImageBuffer) );
+  dm->imagebuffertmp = realloc( dm->imagebuffertmp, dm->imagebuffersize * sizeof(dmImageBuffer) );
+  // FIXME: Something is using this uninitialized memory...
+  memset((char *)dm->imagebuffer + dm->imagebuffercount * sizeof(dmImageBuffer), 0,
+    (dm->imagebuffersize - dm->imagebuffercount) * sizeof(dmImageBuffer));
+}
+
 void dmDrawImage( dmContext *dm, dmImage *image, int offsetx, int offsety, int sizex, int sizey, uint32_t color )
 {
   dmImageBuffer *imagebuffer;
@@ -1160,11 +1170,7 @@ void dmDrawImage( dmContext *dm, dmImage *image, int offsetx, int offsety, int s
     return;
 
   if( dm->imagebuffercount >= dm->imagebuffersize )
-  {
-    dm->imagebuffersize <<= 1;
-    dm->imagebuffer = realloc( dm->imagebuffer, dm->imagebuffersize * sizeof(dmImageBuffer) );
-    dm->imagebuffertmp = realloc( dm->imagebuffertmp, dm->imagebuffersize * sizeof(dmImageBuffer) );
-  }
+     resizeImageBuffer(dm);
 
   imagebuffer = &dm->imagebuffer[ dm->imagebuffercount ];
   imagebuffer->image = image;
@@ -1195,11 +1201,7 @@ void dmDrawImageExtColor( dmContext *dm, dmImage *image, int offsetx, int offset
     return;
 
   if( dm->imagebuffercount >= dm->imagebuffersize )
-  {
-    dm->imagebuffersize <<= 1;
-    dm->imagebuffer = realloc( dm->imagebuffer, dm->imagebuffersize * sizeof(dmImageBuffer) );
-    dm->imagebuffertmp = realloc( dm->imagebuffertmp, dm->imagebuffersize * sizeof(dmImageBuffer) );
-  }
+    resizeImageBuffer(dm);
 
   imagebuffer = &dm->imagebuffer[ dm->imagebuffercount ];
   imagebuffer->image = image;
@@ -1238,11 +1240,7 @@ void dmDrawImageFloat( dmContext *dm, dmImage *image, float offsetx, float offse
   {
      dmImageBuffer *imagebuffer;
      if( dm->imagebuffercount >= dm->imagebuffersize )
-     {
-       dm->imagebuffersize <<= 1;
-       dm->imagebuffer = realloc( dm->imagebuffer, dm->imagebuffersize * sizeof(dmImageBuffer) );
-       dm->imagebuffertmp = realloc( dm->imagebuffertmp, dm->imagebuffersize * sizeof(dmImageBuffer) );
-     }
+       resizeImageBuffer(dm);
 
      imagebuffer = &dm->imagebuffer[ dm->imagebuffercount ];
      imagebuffer->image = image;
@@ -1279,11 +1277,7 @@ void dmDrawImageFloatExtColor( dmContext *dm, dmImage *image, float offsetx, flo
   {
      dmImageBuffer *imagebuffer;
      if( dm->imagebuffercount >= dm->imagebuffersize )
-     {
-       dm->imagebuffersize <<= 1;
-       dm->imagebuffer = realloc( dm->imagebuffer, dm->imagebuffersize * sizeof(dmImageBuffer) );
-       dm->imagebuffertmp = realloc( dm->imagebuffertmp, dm->imagebuffersize * sizeof(dmImageBuffer) );
-     }
+       resizeImageBuffer(dm);
 
      imagebuffer = &dm->imagebuffer[ dm->imagebuffercount ];
      imagebuffer->image = image;
