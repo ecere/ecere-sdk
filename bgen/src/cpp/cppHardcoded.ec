@@ -2,7 +2,7 @@ import "genCPP"
 
 void cppHardcodedModule(BOutput o)
 {
-   o.ds.printx("   // hardcoded content start", ln,
+   o.z.concatx("   // hardcoded content start", ln,
                "   static TCPPClass<Module> _class;", ln,
                "   inline explicit Module(C(Instance) _impl, CPPClass & c = _class) : Instance(_impl, c) { }", ln,
                "   MODULE_VIRTUAL_METHODS(Module)", ln,
@@ -12,7 +12,7 @@ void cppHardcodedModule(BOutput o)
 
 void cppHardcodedInstance(BOutput o)
 {
-   o.ds.printx("   // hardcoded content start", ln,
+   o.z.concatx("   // hardcoded content start", ln,
                "   static TCPPClass<Instance> _class;", ln,
                "   C(Instance) impl;", ln,
                "   void (**vTbl)(void);", ln,
@@ -22,7 +22,7 @@ void cppHardcodedInstance(BOutput o)
                "   void operator delete   (void * ptr) { eC_delete(ptr); }", ln,
                "   void operator delete [](void * ptr) { eC_delete(ptr); }", ln,
                "", ln);
-   o.ds.printx("   static C(bool) constructor(C(Instance) i, C(bool) alloc)", ln,
+   o.z.concatx("   static C(bool) constructor(C(Instance) i, C(bool) alloc)", ln,
                "   {", ln,
                "      if(alloc &&!_INSTANCE(i, _class.impl))", ln,
                "         return new Instance(i, _class) != null;", ln,
@@ -33,7 +33,7 @@ void cppHardcodedInstance(BOutput o)
                "", ln,
                "   INSTANCE_VIRTUAL_METHODS(Instance);", ln,
                "", ln);
-   o.ds.printx("   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
+   o.z.concatx("   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
                "   {", ln,
                "      Class * c = cl.impl;", ln,
                "      impl = _impl;", ln,
@@ -50,7 +50,7 @@ void cppHardcodedInstance(BOutput o)
                "      impl = null;", ln,
                "      vTbl = null;", ln,
                "   }", ln);
-   o.ds.printx("   inline ~Instance()", ln,
+   o.z.concatx("   inline ~Instance()", ln,
                "   {", ln,
                "      if(impl && impl->_class)", ln,
                "      {", ln,
@@ -69,7 +69,7 @@ void cppHardcodedInstance(BOutput o)
                "         Instance_decRef(impl);", ln,
                "      }", ln,
                "   }", ln);
-   o.ds.printx("   inline Instance(const Instance & i) = delete;", ln,
+   o.z.concatx("   inline Instance(const Instance & i) = delete;", ln,
                "   inline Instance(const Instance && i)", ln,
                "   {", ln,
                "      impl = i.impl;", ln,
@@ -80,32 +80,33 @@ void cppHardcodedInstance(BOutput o)
 
 void cppTmpDefineVirtualMethod      (CPPGen g, File f)
 {
-   DynamicString b { };
-   cppMacroVirtualMethod(g, b, def, 0, "n", "ncpp", "c", "b", "r", "p0", "ep", "p", "d", 0);
-   f.Puts(b.array); delete b;
+   ZString z { allocType = heap };
+   cppMacroVirtualMethod(g, z, def, 0, "n", "ncpp", "c", "b", "r", "p0", "ep", "p", "d", 0);
+   f.Puts(z._string);
+   delete z;
 }
-void cppTmpDefineIntRegisterMethod  (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntRegisterMethod  (g, b, 0, 0); f.Puts(b.array); delete b; }
+void cppTmpDefineIntRegisterMethod  (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntRegisterMethod  (g, z, 0, 0); f.Puts(z._string); delete z; }
 void cppTmpDefineRegisterMethod     (CPPGen g, File f)
 {
-   DynamicString b { };
-   cppMacroRegisterMethod(g, b, def, 0, "ns", "n", "bc", "c", "r", "p", "ocl", "oi", "code", "ea", "rv", 0);
-   f.Puts(b.array);
-   delete b;
+   ZString z { allocType = heap };
+   cppMacroRegisterMethod(g, z, def, 0, "ns", "n", "bc", "c", "r", "p", "ocl", "oi", "code", "ea", "rv", 0);
+   f.Puts(z._string);
+   delete z;
 }
-void cppTmpDefineRegisterTypedMethod(CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterTypedMethod(g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineProperty           (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroProperty           (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
-void cppTmpDefineIntPropSet         (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroIntPropSet         (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
-void cppTmpDefinePropSet            (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroPropSet            (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
-void cppTmpDefinePropGet            (CPPGen g, File f, bool protoOrImpl) { DynamicString b { }; cppDefineMacroPropGet            (g, b, 0, 0, protoOrImpl); f.Puts(b.array); delete b; }
-void cppTmpDefineIntRegisterClass   (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntRegisterClass   (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineRegisterClassDef   (CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterClassDef   (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineClassDef           (CPPGen g, File f) { DynamicString b { }; cppDefineMacroClassDef           (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineRegisterClass      (CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterClass      (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineRegisterClassCPP   (CPPGen g, File f) { DynamicString b { }; cppDefineMacroRegisterClassCPP   (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineIntConstructClass  (CPPGen g, File f) { DynamicString b { }; cppDefineMacroIntConstructClass  (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineConstructClass     (CPPGen g, File f) { DynamicString b { }; cppDefineMacroConstructClass     (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineDestructClass      (CPPGen g, File f) { DynamicString b { }; cppDefineMacroDestructClass      (g, b, 0, 0); f.Puts(b.array); delete b; }
-void cppTmpDefineClassRegistration  (CPPGen g, File f) { DynamicString b { }; cppDefineMacroClassRegister  (g, b, 0, 0); f.Puts(b.array); delete b; }
+void cppTmpDefineRegisterTypedMethod(CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterTypedMethod(g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineProperty           (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroProperty           (g, z, 0, 0, protoOrImpl); f.Puts(z._string); delete z; }
+void cppTmpDefineIntPropSet         (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroIntPropSet         (g, z, 0, 0, protoOrImpl); f.Puts(z._string); delete z; }
+void cppTmpDefinePropSet            (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroPropSet            (g, z, 0, 0, protoOrImpl); f.Puts(z._string); delete z; }
+void cppTmpDefinePropGet            (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroPropGet            (g, z, 0, 0, protoOrImpl); f.Puts(z._string); delete z; }
+void cppTmpDefineIntRegisterClass   (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntRegisterClass   (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineRegisterClassDef   (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClassDef   (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineClassDef           (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassDef           (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineRegisterClass      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClass      (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineRegisterClassCPP   (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClassCPP   (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineIntConstructClass  (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntConstructClass  (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineConstructClass     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroConstructClass     (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineDestructClass      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroDestructClass      (g, z, 0, 0); f.Puts(z._string); delete z; }
+void cppTmpDefineClassRegistration  (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassRegister  (g, z, 0, 0); f.Puts(z._string); delete z; }
 
 void cppHardcodedCore(CPPGen g, File f)
 {

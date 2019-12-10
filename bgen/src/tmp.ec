@@ -5,7 +5,6 @@ import "ec"
 
 import "debug"
 
-import "DynamicString"
 import "miscTypes"
 
 import "str"
@@ -550,20 +549,20 @@ char * getClassTypeName(Class c)
                //name = PrintString("C(", cl.templateClass.name, ")");
             else if(tArgs)
             {
-               DynamicString s { };
-               s.concatx("T(", cl.templateClass.name);
+               ZString z { allocType = heap };
+               z.concatx("T(", cl.templateClass.name);
                for(n = baseParam; n < tCount; n++)
                {
                   ClassTemplateArgument * tArg = &tArgs[n];
                   if(!tArg->dataTypeString) conmsgs("check");
                   if(!strcmp(tArg->dataTypeString, "thisclass"))
-                     s.concatx(", thisclass(", cl.name, cl.type == noHeadClass ? " *" : "", ")");
+                     z.concatx(", thisclass(", cl.name, cl.type == noHeadClass ? " *" : "", ")");
                   else
-                     s.concatx(", ", tArg->dataTypeString);
+                     z.concatx(", ", tArg->dataTypeString);
                }
-               s.concat(")");
-               name = CopyString(s.array);
-               delete s;
+               z.concat(")");
+               name = CopyString(z._string);
+               delete z;
             }
             else conmsgs("check");
    }

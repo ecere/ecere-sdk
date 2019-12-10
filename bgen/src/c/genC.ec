@@ -191,10 +191,10 @@ class CGen : Gen
          o = FileOpen(tmp, write);
          if(o)
          {
-            DynamicString ds { };
-            sourceFileProcessToDynamicString(ds, ":src/c/c_header_ec_macros.src", null, false, false);
-            o.Puts(ds.array);
-            delete ds;
+            ZString z { allocType = heap };
+            sourceFileProcessToZedString(z, ":src/c/c_header_ec_macros.src", null, false, false);
+            o.Puts(z._string);
+            delete z;
             delete o;
          }
          if(FileExists(path))
@@ -405,16 +405,16 @@ class CGen : Gen
       BNamespace n = (NameSpacePtr)null;
       while(ns.next())
       {
-         DynamicString z { };
+         ZString z { allocType = heap };
          n = (NameSpacePtr)ns.ns;
          if(!python)
          {
-            z.println("");
-            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
-            sectionComment_hdr(z, _ns); sectionComment_msg(z, ns.fullName); sectionComment_ftr(z); z.println("");;
-            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.println("");;
-            z.println("");
-            n.output.Add(ASTRawString { string = CopyString(z.array) });
+            z.concatx(ln);
+            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.concatx(ln);;
+            sectionComment_hdr(z, _ns); sectionComment_msg(z, ns.fullName); sectionComment_ftr(z); z.concatx(ln);;
+            sectionComment_hdr(z, _ns); sectionComment_msg_line(z);         sectionComment_ftr(z); z.concatx(ln);;
+            z.concatx(ln);
+            n.output.Add(ASTRawString { string = CopyString(z._string) });
          }
          bmod.orderedNamespaces.Add(n);
          delete z;
@@ -677,8 +677,8 @@ class CGen : Gen
             {
                o.output.Add(astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/));
                {
-                  DynamicString z { };
-                  ec2PrintToDynamicString(z, o.output.lastIterator.data, false);
+                  ZString z { allocType = heap };
+                  ec2PrintToZedString(z, o.output.lastIterator.data, false);
                   delete z;
                }
             }
@@ -859,7 +859,7 @@ AVLTree<String> enumValueNames { }; // through dependencies as well
 enum MethodGenFlag { all, vTblID, virtualMethodCaller, virtualMethodImport, nonVirtualMethodImport };
 enum EnumGenFlag { normal, prototype };
 
-void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assumeTypedObject, bool forInstance, BVariant vTop)
+void cgenPrintVirtualMethodDefs(ZString z, BClass c, BMethod m, bool assumeTypedObject, bool forInstance, BVariant vTop)
 {
    uint ap;
    //const char * thisClassName = null;
@@ -873,12 +873,12 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
    // todo: make into an inline function if possible and drop the #define method callers
    // usage comment...
    if(!python)
-      z.print("// ");
+      z.concat("// ");
    zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, TYPE_INFO_FROM(ti)*/ }, { anonymous = true }, vTop);
    if(forInstance)
-      z.printx(" Instance_", m.mname, "(");
+      z.concatx(" Instance_", m.mname, "(");
    else
-      z.printx(" ", m.s, "(");
+      z.concatx(" ", m.s, "(");
    {
       Type param;
       TypeNameList params { };
@@ -897,26 +897,26 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
                   FreeType(tt);
                   prevParam = true;
                }
-               if(prevParam) z.printx(", ");
-               z.printx(forInstance ? g_.sym.instance : "any_object", " __i");
+               if(prevParam) z.concatx(", ");
+               z.concatx(forInstance ? g_.sym.instance : "any_object", " __i");
                prevParam = true;
             }
             else// if(!md.dataType.staticMethod)
             {
                Type t = ProcessTypeString(cl.name, false);
-               if(prevParam) z.printx(", ");
+               if(prevParam) z.concatx(", ");
                //astTypeName("__i", { type = t, md = md, cl = cl }, { param = true }, vTop, params);
                zTypeName(z, "__i", { type = t, md = md, cl = cl }, { param = true }, vTop);
                FreeType(t);
                // This 2 different ways to mix stuff up... params & z!!
-               //ec2PrintToDynamicString(z, params, false);
+               //ec2PrintToZedString(z, params, false);
                prevParam = true;
                //params.Free();
             }
 
             if(!md.dataType.staticMethod && !c.is_class)
             {
-               if(prevParam) z.printx(", ");
+               if(prevParam) z.concatx(", ");
                zTypeName(z, "__t", { type = t, md = md, cl = cl }, { param = true }, vTop);
                prevParam = true;
             }
@@ -934,12 +934,12 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
          else
          {
             Type t = ProcessTypeString(cl.name, false);
-            if(prevParam) z.printx(", ");
+            if(prevParam) z.concatx(", ");
             //astTypeName("__i", { type = t, md = md, cl = cl }, { param = true }, vTop, params);
             zTypeName(z, "__i", { type = t, md = md, cl = cl }, { param = true }, vTop);
             FreeType(t);
             // This 2 different ways to mix stuff up... params & z!!
-            //ec2PrintToDynamicString(z, params, false);
+            //ec2PrintToZedString(z, params, false);
             prevParam = true;
             //params.Free();
          }
@@ -947,7 +947,7 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       if(md.dataType.params.count && (md.dataType.staticMethod ||
          !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
       {
-         if(prevParam) z.printx(", ");
+         if(prevParam) z.concatx(", ");
          ap = 0;
          for(param = md.dataType.params.first; param; param = param.next)
          {
@@ -958,19 +958,19 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
             delete apname;
          }
       }
-      ec2PrintToDynamicString(z, params, false);
+      ec2PrintToZedString(z, params, false);
    }
-   z.printxln(");");
+   z.concatx(");", ln);
 
    if(!python)
    {
 
    if(forInstance)
-      z.printx(g_.preproLimiter, "#define Instance_", m.mname, "(");
+      z.concatx(g_.preproLimiter, "#define Instance_", m.mname, "(");
    else
    {
       //prev = thisClassName || assumeTypedObject;
-      z.printx(g_.preproLimiter, "#define ", m.s, "(");
+      z.concatx(g_.preproLimiter, "#define ", m.s, "(");
    }
 
    // macro params
@@ -1008,28 +1008,28 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
                delete apname;
             }
          }
-         ec2PrintToDynamicString(z, params, false);
+         ec2PrintToZedString(z, params, false);
       }
 
-   z.printx(")");
+   z.concatx(")");
    {
-      z.printx(g_.linejoinLimiter, "\n   VMETHOD(");
+      z.concatx(g_.linejoinLimiter, "\n   VMETHOD(");
       if(c.is_class/* && !forInstance*/)
       {
          if(forInstance)
-            z.printx("__c, class, ", m.mname, ", __i, ");
+            z.concatx("__c, class, ", m.mname, ", __i, ");
          else
-            z.printx("__c, class, ", m.mname, ", (", g_.sym.instance, ")null, ");
+            z.concatx("__c, class, ", m.mname, ", (", g_.sym.instance, ")null, ");
       }
       else
       {
          if(cl.type == noHeadClass)
-            z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", (", g_.sym.instance, ")null, ");
+            z.concatx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", (", g_.sym.instance, ")null, ");
          else
-            z.printx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", __i, ");
+            z.concatx(c.coSymbol, ", ", c.cname, ", ", m.mname, ", __i, ");
       }
       zTypeName(z, null, { type = md.dataType.returnType, md = md, cl = cl/*, TYPE_INFO_FROM(ti)*/ }, { anonymous = true }, vTop);
-      z.printx(",", g_.linejoinLimiter, "\n      ");
+      z.concatx(",", g_.linejoinLimiter, "\n      ");
       // function call parameters (for casting)
       {
          Type param;
@@ -1049,14 +1049,14 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
                   FreeType(t);
                   prevParam = true;
                }
-               if(prevParam) z.printx(" _ARG ");
-               z.printx(forInstance ? g_.sym.instance : "any_object"/*, " __i"*/);
+               if(prevParam) z.concatx(" _ARG ");
+               z.concatx(forInstance ? g_.sym.instance : "any_object"/*, " __i"*/);
                prevParam = true;
             }
 
             if(!md.dataType.staticMethod && !c.is_class)
             {
-               if(prevParam) z.printx(" _ARG ");
+               if(prevParam) z.concatx(" _ARG ");
                zTypeName(z, "__t", { type = t, md = md, cl = cl }, { anonymous = true, param = true }, vTop);
                prevParam = true;
             }
@@ -1079,16 +1079,16 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
       else if(md.dataType.params.count && (md.dataType.staticMethod ||
          !(md.dataType.params.count == 1 && (param = md.dataType.params.first) && !param.name && param.kind == voidType)))
       {
-         if(prevParam) z.printx(" _ARG ");
+         if(prevParam) z.concatx(" _ARG ");
          ap = 0;
          for(param = md.dataType.params.first; param; param = param.next)
          {
             astTypeName(null, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
          }
       }
-         ec2PrintToDynamicString(z, params, false);
+         ec2PrintToZedString(z, params, false);
       }
-      z.printx(",", g_.linejoinLimiter, "\n      ");
+      z.concatx(",", g_.linejoinLimiter, "\n      ");
       // function call arguments
       {
          Type param;
@@ -1123,11 +1123,11 @@ void cgenPrintVirtualMethodDefs(DynamicString z, BClass c, BMethod m, bool assum
             delete apname;
          }
          }
-         ec2PrintToDynamicString(z, params, false);
+         ec2PrintToZedString(z, params, false);
       }
-      z.printx(")");
+      z.concatx(")");
    }
-   z.printxln("");
+   z.concatx(ln);
    } // !python
    //delete classTypeName;
    delete thisTypeName;
@@ -1140,7 +1140,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
    if(!cl.templateClass)
    {
       ASTRawString raw { };
-      DynamicString z { };
+      ZString z { allocType = heap };
       //BProperty p { };
       BProperty p = pt;
       //p.init(pt, cl, mode);
@@ -1150,40 +1150,40 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
       {
          if(mode == assign)
          {
-            if(!*first) z.printxln("");
+            if(!*first) z.concatx(ln);
             else *first = false;
-            z.printxln(indent, "   ", p.p, " = Class_findProperty(", p.c.coSymbol, ", \"", p.pt.name, "\", ", findin, ");");
-            if(p.any)      z.printxln(indent, "   if(", p.p, ")");
-            if(p.more)     z.printxln(indent, "   {");
-            if(pt.Set)     z.printxln(indent, "      ", p.fpnSet, " = (void *)", p.p, "->Set;");
-            if(pt.Get)     z.printxln(indent, "      ", p.fpnGet, " = (void *)", p.p, "->Get;");
-            if(pt.IsSet)   z.printxln(indent, "      ", p.fpnIst, " = (void *)", p.p, "->IsSet;");
-            if(p.more)     z.printxln(indent, "   }");
+            z.concatx(indent, "   ", p.p, " = Class_findProperty(", p.c.coSymbol, ", \"", p.pt.name, "\", ", findin, ");", ln);
+            if(p.any)      z.concatx(indent, "   if(", p.p, ")", ln);
+            if(p.more)     z.concatx(indent, "   {", ln);
+            if(pt.Set)     z.concatx(indent, "      ", p.fpnSet, " = (void *)", p.p, "->Set;", ln);
+            if(pt.Get)     z.concatx(indent, "      ", p.fpnGet, " = (void *)", p.p, "->Get;", ln);
+            if(pt.IsSet)   z.concatx(indent, "      ", p.fpnIst, " = (void *)", p.p, "->IsSet;", ln);
+            if(p.more)     z.concatx(indent, "   }", ln);
          }
          else
          {
             bool imp = mode == _import;
             char * port = PrintString(imp ? "extern " : "", !python ? imp ? "THIS_LIB_IMPORT " : "LIB_EXPORT " : "");
-            z.printxln(port, g_.sym._property, " * ", p.p, ";");
+            z.concatx(port, g_.sym._property, " * ", p.p, ";", ln);
             if(pt.Set)
             {
                if(pt.conversion && /*cl.type != normalClass && */cl.type != structClass && cl.type != noHeadClass)
-                  z.printxln(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");");
+                  z.concatx(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");", ln);
                else
-                  z.printxln(port, "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);");
+                  z.concatx(port, "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);", ln);
             }
             if(pt.Get)
             {
                if(*p.v)
-                  z.printxln(port, "void (* ", p.fpnGet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);");
+                  z.concatx(port, "void (* ", p.fpnGet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);", ln);
                else
-                  z.printxln(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
+                  z.concatx(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName, p.r, " ", p.otherParamName, ");", ln);
             }
 
             if(pt.IsSet)
-               z.printxln(port, "bool (* ", p.fpnIst, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ");");
+               z.concatx(port, "bool (* ", p.fpnIst, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ");", ln);
             delete port;
-            //z.printxln("");
+            //z.concatx(ln);
          }
          if(haveContent) *haveContent = true;
       }
@@ -1200,52 +1200,52 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(!pt.Get && !pt.Set)
             {
                const char * dataType = tokenTypeString(cl.dataType);
-               z.printxln(g_.preproLimiter, "#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))");
-               z.printxln(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))");
+               z.concatx(g_.preproLimiter, "#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))", ln);
+               z.concatx(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))", ln);
                if(haveContent) *haveContent = true;
             }
          }
       }
-      raw.string = CopyString(z.array);
+      raw.string = CopyString(z._string);
       delete z;
       return raw;
    }
    return null;
 }
 
-void genPropertyConversion(DynamicString z, BClass c, BProperty p, DataValueType type, void * fn)
+void genPropertyConversion(ZString z, BClass c, BProperty p, DataValueType type, void * fn)
 {
    if(fn)
    {
       double m = 1, b = 0;
       bool forSet = fn == p.pt.Set;
-      z.printx(g_.preproLimiter, "#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", c.name, "(x)  ");
+      z.concatx(g_.preproLimiter, "#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", c.name, "(x)  ");
       if(checkLinearMapping(type, fn, &m, &b))
       {
          const char * castString = forSet ? tokenTypeString(c.cl.dataType) : p.cConvUse.symbolName;
-         z.printx("((", castString, ")((x)");
+         z.concatx("((", castString, ")((x)");
          if(m != 1)
          {
             if(type == doubleType || type == floatType)
-               z.printx(" * ", m);
+               z.concatx(" * ", m);
             else if(m > 1 || m == 0)
-               z.printx(" * ", (int)(m + 0.5));
+               z.concatx(" * ", (int)(m + 0.5));
             else
-               z.printx(" / ", (int)(1.0/m + 0.5));
-            if(type == floatType) z.printx("f");
+               z.concatx(" / ", (int)(1.0/m + 0.5));
+            if(type == floatType) z.concatx("f");
          }
          if(b)
          {
             if(type == doubleType || type == floatType)
-               z.printx(" + ", b);
+               z.concatx(" + ", b);
             else
-               z.printx(" + ", (int)(b + 0.5));
-            if(type == floatType) z.printx("f");
+               z.concatx(" + ", (int)(b + 0.5));
+            if(type == floatType) z.concatx("f");
          }
-         z.printxln("))");
+         z.concatx("))", ln);
       }
       else
-         z.printxln(forSet ? p.fpnSet : p.fpnGet, "(x)");
+         z.concatx(forSet ? p.fpnSet : p.fpnGet, "(x)", ln);
    }
 }
 
@@ -1569,7 +1569,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       if(!ptr) // tocheck
          ptr = 1;
    }
-      
+
    if(resume) *resume = t;
 
    if(t.kind == arrayType || t.kind == functionType)
@@ -1742,22 +1742,22 @@ DeclIdentifier astDeclIdentifier(const char * ident)
 char * strTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop)
 {
    char * str;
-   DynamicString z { };
+   ZString z { allocType = heap };
    TypeNameList list { };
    astTypeName(ident, ti, opt, vTop, list);
-   ec2PrintToDynamicString(z, list, false);
-   str = CopyString(z.array);
+   ec2PrintToZedString(z, list, false);
+   str = CopyString(z._string);
    delete list;
    delete z;
    return str;
 }
 
-void zTypeName(DynamicString z, const char * ident, TypeInfo ti, OptBits opt, BVariant vTop)
+void zTypeName(ZString z, const char * ident, TypeInfo ti, OptBits opt, BVariant vTop)
 {
    TypeNameList list { };
    astTypeName(ident, ti, opt, vTop, list);
-   ec2PrintToDynamicString(z, list, false);
-   delete list;   
+   ec2PrintToZedString(z, list, false);
+   delete list;
 }
 
 void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, TypeNameList list)
@@ -1974,13 +1974,13 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
 ASTRawString astNullDefine()
 {
    ASTRawString raw { };
-   DynamicString z { };
-   z.printxln("#if defined(__cplusplus)");
-   z.printxln("#define null 0");
-   z.printxln("#else");
-   z.printxln("#define null ((void *)0)");
-   z.printxln("#endif");
-   raw.string = CopyString(z.array);
+   ZString z { allocType = heap };
+   z.concatx("#if defined(__cplusplus)", ln);
+   z.concatx("#define null 0", ln);
+   z.concatx("#else", ln);
+   z.concatx("#define null ((void *)0)", ln);
+   z.concatx("#endif", ln);
+   raw.string = CopyString(z._string);
    delete z;
    return raw;
 }
@@ -2007,7 +2007,7 @@ char * getReducedTypesExpressionString(char * str)
    char * result;
    char * s;
    char * start = str;
-   DynamicString z { };
+   ZString z { allocType = heap };
    for(s = str; *s; s++)
    {
       if(*s == 'C' && *(s + 1) == '(')
@@ -2017,7 +2017,7 @@ char * getReducedTypesExpressionString(char * str)
          if(*t == ')')
          {
             *s = *t = 0;
-            z.print(start);
+            z.concat(start);
             start = t + 1;
             {
                Class cl = eSystem_FindClass(app.gen.mod, s + 2);
@@ -2025,17 +2025,17 @@ char * getReducedTypesExpressionString(char * str)
                {
                   Class clReduced = reduceUnitClass(cl);
                   BClass cReduced = clReduced;
-                  z.print(cReduced.symbolName);
+                  z.concat(cReduced.symbolName);
                }
                else
-                  z.print(s + 2);
+                  z.concat(s + 2);
             }
             s = t;
          }
       }
    }
-   z.print(start);
-   result = CopyString(z.array);
+   z.concat(start);
+   result = CopyString(z._string);
    delete z;
    return result;
 }
@@ -2050,7 +2050,7 @@ bool isOkForPyCFFI(TypeKind kind)
 ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v)
 {
    ASTRawString raw { };
-   DynamicString z { };
+   ZString z { allocType = heap };
    char * s;
    char * val;
    bool simple;
@@ -2075,16 +2075,16 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
    for(s = val; *s; s++) if(*s == '\n') *s = ' ';
 
    if(!python)
-      z.printxln(g_.preproLimiter, "#define ", d.name, " (", val, ")");
+      z.concatx(g_.preproLimiter, "#define ", d.name, " (", val, ")", ln);
    else if(simple)
-      z.printxln(g_.preproLimiter, "#define ", d.name, " ", simple ? val : "...");
+      z.concatx(g_.preproLimiter, "#define ", d.name, " ", simple ? val : "...", ln);
    else
    {
       if(!strcmp(d.name, "fstrcmp")) // hack // tweaked "inBGen" libec will not give proper e.expType
-         z.printxln("int ", d.name, "(const char *, const char *);");
+         z.concatx("int ", d.name, "(const char *, const char *);", ln);
       else if(!strcmp(d.name, "strnicmp"))
       {
-         z.printxln("int strnicmp(const char *, const char *, uintsize n);");
+         z.concatx("int strnicmp(const char *, const char *, uintsize n);", ln);
          {
             Class clDep = eSystem_FindClass(g_.mod, "uintsize");
             conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"uintsize\") is returning null?");
@@ -2093,10 +2093,10 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          }
       }
       else if(!strcmp(d.name, "strcmpi"))
-         z.printxln("int strcmpi(const char *, const char *);");
+         z.concatx("int strcmpi(const char *, const char *);", ln);
       else if(!strcmp(d.name, "strnicmp"))
       {
-         z.printxln("int strnicmp(const char *, const char *, uintsize n);");
+         z.concatx("int strnicmp(const char *, const char *, uintsize n);", ln);
          {
             Class clDep = eSystem_FindClass(g_.mod, "uintsize");
             conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_mod, \"uintsize\") is returning null?");
@@ -2121,11 +2121,11 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
             char * s, *d;
             for(s = d = &type[0]; *s; s++) if(*s != ':') *d++ = *s;
             if(d != s) *d = 0;
-            z.printxln(type, ";");
+            z.concatx(type, ";", ln);
          }
          else*/
          {
-            z.printxln("static ", e.expType.constant ? "" : "const ", type, " ", d.name, ";");
+            z.concatx("static ", e.expType.constant ? "" : "const ", type, " ", d.name, ";", ln);
             conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"", depType, "\") is returning null?");
             if(clDep)
                v.processDependency(oother, otypedef, clDep);
@@ -2137,7 +2137,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
       }
    }
    delete val;
-   raw.string = CopyString(z.array);
+   raw.string = CopyString(z._string);
    delete z;
    return raw;
 }
@@ -2145,46 +2145,46 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
 ASTRawString astEnum(Class cl, BClass c)
 {
    ASTRawString raw { };
-   DynamicString z { };
+   ZString z { allocType = heap };
    EnumClassData enumeration = (EnumClassData)cl.data;
    bool noValues = enumeration.values.count == 0;
    NamedLink item;
    if(c.isBool)
    {
       ASTNode node = astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/);
-      ec2PrintToDynamicString(z, node, true);
+      ec2PrintToZedString(z, node, true);
       if(!python)
       {
-         z.printxln(g_.preproLimiter, "#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)");
-         z.print("enum boolean {");
+         z.concatx(g_.preproLimiter, "#if !defined(__bool_true_false_are_defined) && !defined(__cplusplus)", ln);
+         z.concat("enum boolean {");
       }
    }
    else
    {
       bool enumMacroWay = false;//true; // todo add option to program args
       if(enumMacroWay)
-         z.printx("ENUM(", cl.name, ", uint32)", " {"); // todo, get the type right
+         z.concatx("ENUM(", cl.name, ", uint32)", " {"); // todo, get the type right
       else
       {
          const char * dataType = tokenTypeString(cl.dataType);
          if(!python)
          {
-            z.printxln(g_.preproLimiter, "#if CPP11");
-            z.printxln("enum C(", cl.name, ") : ", dataType, noValues ? ";" : "");
-            z.printxln(g_.preproLimiter, "#else");
+            z.concatx(g_.preproLimiter, "#if CPP11", ln);
+            z.concatx("enum C(", cl.name, ") : ", dataType, noValues ? ";" : "", ln);
+            z.concatx(g_.preproLimiter, "#else", ln);
          }
          {
             ASTNode node = astDeclInit(c.cname, emptyTypedef, null, null, { c = c }, null, null/*, ast*/);
-            ec2PrintToDynamicString(z, node, true);
+            ec2PrintToZedString(z, node, true);
          }
          if(!python)
-            z.printxln("enum C(", cl.name, ")", noValues ? ";" : "");
+            z.concatx("enum C(", cl.name, ")", noValues ? ";" : "", ln);
          else if(!noValues)
-            z.printxln("enum");
+            z.concatx("enum", ln);
          if(!python)
-            z.printxln(g_.preproLimiter, "#endif");
+            z.concatx(g_.preproLimiter, "#endif", ln);
          if(!noValues)
-            z.print("{");
+            z.concat("{");
       }
    }
    if(!python || !c.isBool)
@@ -2200,30 +2200,30 @@ ASTRawString astEnum(Class cl, BClass c)
          if(!b[0])
             strcpy(b, "0x0");
          if(c.isBool)
-            z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", item.name, " = ", b);
+            z.concatx(item == enumeration.values.first ? "\n" : ",\n", "   ", item.name, " = ", b);
          else
-            z.printx(item == enumeration.values.first ? "\n" : ",\n", "   ", cl.name, "_", item.name, " = ", b);
+            z.concatx(item == enumeration.values.first ? "\n" : ",\n", "   ", cl.name, "_", item.name, " = ", b);
       }
       if(!noValues)
-         z.println("\n};");
+         z.concatx(ln, "};", ln);
       else if(!python)
-         z.println("\n");
+         z.concatx(ln, ln);
    }
    if(c.isBool)
    {
       if(!python)
       {
-         z.printxln(g_.preproLimiter, "#endif");
-         z.printxln(g_.preproLimiter, "#define eC_true   ((C(bool))1)");
-         z.printxln(g_.preproLimiter, "#define eC_false  ((C(bool))0)");
+         z.concatx(g_.preproLimiter, "#endif", ln);
+         z.concatx(g_.preproLimiter, "#define eC_true   ((C(bool))1)", ln);
+         z.concatx(g_.preproLimiter, "#define eC_false  ((C(bool))0)", ln);
       }
       else
       {
-         z.printxln(g_.preproLimiter, "#define false 0");
-         z.printxln(g_.preproLimiter, "#define true 1");
+         z.concatx(g_.preproLimiter, "#define false 0", ln);
+         z.concatx(g_.preproLimiter, "#define true 1", ln);
       }
    }
-   raw.string = CopyString(z.array);
+   raw.string = CopyString(z._string);
    delete z;
    return raw;
 }
@@ -2231,7 +2231,7 @@ ASTRawString astEnum(Class cl, BClass c)
 ASTRawString astBitTool(Class cl, BClass c)
 {
    ASTRawString raw { };
-   DynamicString z { };
+   ZString z { allocType = heap };
    Array<String> bitMembers = null;
    bool haveContent = false;
    DataMember dm; IterDataMember dat { cl };
@@ -2255,16 +2255,16 @@ ASTRawString astBitTool(Class cl, BClass c)
          n[strlen(n)-1] = 0;
          x = PrintHexUInt64(bm.mask);
          if(!(x && x[0])) conmsg("check");
-         z.printxln(g_.preproLimiter, "#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
-               dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos);
-         z.printxln(g_.preproLimiter, "#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x);
+         z.concatx(g_.preproLimiter, "#define ", n_, "SHIFT", spaces(48, strlen(n_) + 5), " ",
+               dm.dataType.bitFieldCount ? dm.dataType.offset : bm.pos, ln);
+         z.concatx(g_.preproLimiter, "#define ", n_, "MASK", spaces(48, strlen(n_) + 4), " ", x, ln);
          if(!python)
          {
-            z.printxln(g_.preproLimiter, "#define ", n, "(x)", spaces(48, strlen(n) + 3),
-                  " ((((", c.symbolName, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)");
-            z.printxln(g_.preproLimiter, "#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
+            z.concatx(g_.preproLimiter, "#define ", n, "(x)", spaces(48, strlen(n) + 3),
+                  " ((((", c.symbolName, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)", ln);
+            z.concatx(g_.preproLimiter, "#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
                   " (x) = ((", c.symbolName, ")(x) & ~((", c.symbolName, ")", n_,
-                  "MASK)) | (((", c.symbolName, ")(", bm.name, ")) << ", n_, "SHIFT)");
+                  "MASK)) | (((", c.symbolName, ")(", bm.name, ")) << ", n_, "SHIFT)", ln);
          }
          haveContent = true;
          delete x;
@@ -2276,29 +2276,29 @@ ASTRawString astBitTool(Class cl, BClass c)
    if(bitMembers)
    {
       int i, charCount = strlen(c.upper) + 2;
-      z.printx(g_.preproLimiter, "#define ", c.upper, "(");
+      z.concatx(g_.preproLimiter, "#define ", c.upper, "(");
       for(i = 0; i < bitMembers.count; i++)
       {
          char * name = bitMembers[i];
          charCount += strlen(name) + i ? 2 : 0;
-         if(i) z.printx(", ");
-         z.printx(name);
+         if(i) z.concatx(", ");
+         z.concatx(name);
       }
-      z.printx(")", spaces(48, charCount));
+      z.concatx(")", spaces(48, charCount));
       for(i = 0; i < bitMembers.count; i++)
-         z.printx("(");
+         z.concatx("(");
       for(i = 0; i < bitMembers.count; i++)
       {
          char * name = bitMembers[i];
-         if(i) z.printx(" | ");
-         z.printx("((", c.symbolName, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
+         if(i) z.concatx(" | ");
+         z.concatx("((", c.symbolName, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
       }
-      z.printxln("");
+      z.concatx(ln);
       bitMembers.Free();
       delete bitMembers;
    }
-   if(haveContent) z.printxln("");
-   raw.string = CopyString(z.array);
+   if(haveContent) z.concatx(ln);
+   raw.string = CopyString(z._string);
    delete z;
    return raw;
 }
@@ -2307,20 +2307,20 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
       bool instanceClass, bool * haveContent, BVariant vTop)
 {
    ASTRawString raw { };
-   DynamicString z { };
+   ZString z { allocType = heap };
    BMethod m = md;
    m.init(md, c);
    if(md.type == virtualMethod)
    {
       *haveContent = true;
       if(!methodFlag || methodFlag == vTblID)
-         z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", "int ", m.v, ";");
+         z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", "int ", m.v, ";", ln);
       if(!methodFlag || methodFlag == virtualMethodCaller)
          cgenPrintVirtualMethodDefs(z, c, m, c.is_class/*assumeTypedObject*/, instanceClass, vTop);
       if(!methodFlag || methodFlag == virtualMethodImport)
       {
          if(!c.is_class || !instanceClass)
-            z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.method, " * ", m.m, ";");
+            z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.method, " * ", m.m, ";", ln);
       }
    }
    else if(md.type == normalMethod)
@@ -2334,14 +2334,14 @@ ASTRawString astMethod(CGen g, Method md, Class cl, BClass c, MethodGenFlag meth
                PrintLn(m.n, " ", md.dataType.kind, " ", md.dataTypeString);
             {
             ASTNode node = astFunction(m.n, { type = md.dataType, md = md, cl = cl }, { _extern = true, pointer = true }, vTop);
-            ec2PrintToDynamicString(z, node, true);
+            ec2PrintToZedString(z, node, true);
             *haveContent = true;
             }
          }
       }
    }
    else conmsg("check");
-   raw.string = CopyString(z.array);
+   raw.string = CopyString(z._string);
    delete z;
    return raw;
 }

@@ -9,7 +9,6 @@ import "ecom"
 import "stringTools"
 import "extras"
 
-import "DynamicString"
 import "miscTypes"
 
 import "econe"
@@ -25,10 +24,6 @@ import "genCSharp"
 import "genJava"
 import "genPython"
 
-const char ln = '\n';
-const char * sln = "\n";
-
-// ConsoleFile console { }; // already defined in debug.ec
 //define app = (ConsoleApplication)__thisModule.application;
 
 enum ArgSym : ArgumentSymbol

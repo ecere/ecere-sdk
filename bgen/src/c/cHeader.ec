@@ -108,100 +108,100 @@ static void cInHeaderTypes(AST out, CGen g)
 
 static void cInHeaderProcessSourceFile(AST out, Gen g, const char * comment, const char * pathToFile)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    if(comment && !python)
       bigCommentSection(z, comment);
-   sourceFileProcessToDynamicString(z, pathToFile, g.sourceProcessorVars, python, false);
-   z.size--;
-   if(z[z.count-1] == '\n');
-      z[z.count-1] = 0;
-   raw.string = CopyString(z.array); delete z;
+   sourceFileProcessToZedString(z, pathToFile, g.sourceProcessorVars, python, false);
+   // z.len--;
+   if(z._string[z.len-1] == '\n');
+      z._string[z.len-1] = 0;
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderFileComment(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    if(g.lib.ecereCOM)
       bigCommentLibrary(z, "Core eC Library");
    else
       bigCommentLibrary(z, (s = PrintString(g.lib.moduleName, " Module"))), delete s;
-   raw.string = CopyString(z.array); delete z;
+   raw.string = CopyString(z._string); delete z;
    s = g.lib.ecereCOM ? CopyString("//// Core eC Library") : PrintString("//// ", g.lib.moduleName, " Module");
    out.Add(raw);
 }
 
 static void cInHeaderIncludes(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    bigCommentSection(z, "includes");
    if(g.lib.ecereCOM)
    {
-      z.printxln(g.preproLimiter, "#include <stdio.h>");
-      z.printxln(g.preproLimiter, "#include <stdint.h>");
-      z.printxln(g.preproLimiter, "#include <stdarg.h>");
-      z.printxln(g.preproLimiter, "#include <string.h>");
+      z.concatx(g.preproLimiter, "#include <stdio.h>", ln);
+      z.concatx(g.preproLimiter, "#include <stdint.h>", ln);
+      z.concatx(g.preproLimiter, "#include <stdarg.h>", ln);
+      z.concatx(g.preproLimiter, "#include <string.h>", ln);
    }
    else
    {
       for(libDep : g.libDeps)
-         z.printxln(g.preproLimiter, "#include \"", libDep.bindingName, ".h\"");
+         z.concatx(g.preproLimiter, "#include \"", libDep.bindingName, ".h\"", ln);
    }
-   raw.string = CopyString(z.array); delete z;
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderModuleName(AST out, CGen g)
 {
-   ASTRawString raw { }; DynamicString z { };
-   z.printxln("");
+   ASTRawString raw { }; ZString z { allocType = heap };
+   z.concatx(ln);
    if(!g.lib.ecere && !g.lib.ecereCOM)
    {
-      z.printxln(g.preproLimiter, "#if !defined(", g.lib.defineName, "_MODULE_NAME)");
-      z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_MODULE_NAME \"", g.lib.ecereCOM ? "ecere" : g.lib.loadModuleName, "\"");
-      z.printxln(g.preproLimiter, "#endif");
+      z.concatx(g.preproLimiter, "#if !defined(", g.lib.defineName, "_MODULE_NAME)", ln);
+      z.concatx(g.preproLimiter, "#define ", g.lib.defineName, "_MODULE_NAME \"", g.lib.ecereCOM ? "ecere" : g.lib.loadModuleName, "\"", ln);
+      z.concatx(g.preproLimiter, "#endif", ln);
    }
    if(g.lib.ecereCOM)
    {
-      z.printxln("");
-      z.printxln(g.preproLimiter, "#if !defined(BINDINGS_SHARED)");
-      z.printxln(g.preproLimiter, "#define LIB_EXPORT");
-      z.printxln(g.preproLimiter, "#define LIB_IMPORT");
-      z.printxln(g.preproLimiter, "#elif defined(__WIN32__)");
-      z.printxln(g.preproLimiter, "#define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility(\"default\")))");
-      z.printxln(g.preproLimiter, "#define LIB_IMPORT __attribute__((dllimport))");
-      z.printxln(g.preproLimiter, "#else");
-      z.printxln(g.preproLimiter, "#define LIB_EXPORT __attribute__ ((visibility(\"default\")))");
-      z.printxln(g.preproLimiter, "#define LIB_IMPORT");
-      z.printxln(g.preproLimiter, "#endif");
+      z.concatx(ln);
+      z.concatx(g.preproLimiter, "#if !defined(BINDINGS_SHARED)", ln);
+      z.concatx(g.preproLimiter, "#define LIB_EXPORT", ln);
+      z.concatx(g.preproLimiter, "#define LIB_IMPORT", ln);
+      z.concatx(g.preproLimiter, "#elif defined(__WIN32__)", ln);
+      z.concatx(g.preproLimiter, "#define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility(\"default\")))", ln);
+      z.concatx(g.preproLimiter, "#define LIB_IMPORT __attribute__((dllimport))", ln);
+      z.concatx(g.preproLimiter, "#else", ln);
+      z.concatx(g.preproLimiter, "#define LIB_EXPORT __attribute__ ((visibility(\"default\")))", ln);
+      z.concatx(g.preproLimiter, "#define LIB_IMPORT", ln);
+      z.concatx(g.preproLimiter, "#endif", ln);
    }
-   z.printxln("");
-   z.printxln(g.preproLimiter, "#undef THIS_LIB_IMPORT");
-   z.printxln(g.preproLimiter, "#ifdef ", g.lib.defineName, "_EXPORT");
-   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_EXPORT");
-   z.printxln(g.preproLimiter, "#elif defined(BINDINGS_SHARED)");
-   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_IMPORT");
-   z.printxln(g.preproLimiter, "#else");
-   z.printxln(g.preproLimiter, "#define THIS_LIB_IMPORT");
-   z.printxln(g.preproLimiter, "#endif");
+   z.concatx(ln);
+   z.concatx(g.preproLimiter, "#undef THIS_LIB_IMPORT", ln);
+   z.concatx(g.preproLimiter, "#ifdef ", g.lib.defineName, "_EXPORT", ln);
+   z.concatx(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_EXPORT", ln);
+   z.concatx(g.preproLimiter, "#elif defined(BINDINGS_SHARED)", ln);
+   z.concatx(g.preproLimiter, "#define THIS_LIB_IMPORT LIB_IMPORT", ln);
+   z.concatx(g.preproLimiter, "#else", ln);
+   z.concatx(g.preproLimiter, "#define THIS_LIB_IMPORT", ln);
+   z.concatx(g.preproLimiter, "#endif", ln);
 
-   z.printxln("");
-   raw.string = CopyString(z.array); delete z;
+   z.concatx(ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderMacrosInclude(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
-   z.printxln("#include \"eC-bind.h\"");
-   z.printxln("");
-   raw.string = CopyString(z.array); delete z;
+   ASTRawString raw { }; ZString z { allocType = heap };
+   z.concatx("#include \"eC-bind.h\"", ln);
+   z.concatx(ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderEcereComRuntimeFunctions(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    IterNamespace ns { module = g.mod };
    bigCommentSection(z, "functions");
    while(ns.next())
@@ -213,17 +213,17 @@ static void cInHeaderEcereComRuntimeFunctions(AST out, Gen g)
          if(f.isDllExport/* && !skipFunctionTree.Find(fname)*/)
          {
             if(f.easy)
-               z.printxln("#define ", f.easy, spaces(cw, strlen(f.easy)), " ", f.gname);
+               z.concatx("#define ", f.easy, spaces(cw, strlen(f.easy)), " ", f.gname, ln);
             else
             {
                char * s = getFunctionNameThing(f);
-               z.printxln("#define ", s, spaces(cw, strlen(s)), " ", f.gname);
+               z.concatx("#define ", s, spaces(cw, strlen(s)), " ", f.gname, ln);
             }
          }
       }
    }
    ns.cleanup();
-   raw.string = CopyString(z.array); delete z;
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
@@ -261,51 +261,51 @@ char * getFunctionNameThing(BFunction f)
 
 static void cInHeaderEcereRuntimeMacros(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
-   z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_APP_INTRO(c)", g.linejoinLimiter);
-   z.printxln("      APP_INTRO(true)", g.linejoinLimiter);
-   z.printxln("      ", g.lib.moduleName, "_init(app);", g.linejoinLimiter);
-   z.printxln("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter);
-   z.printxln("      Instance_evolve(&app, class_ ## c);");
-   z.printxln("");
-   z.printxln(g.preproLimiter, "#define ", g.lib.defineName, "_APP_OUTRO", g.linejoinLimiter);
-   z.printxln("      unloadTranslatedStrings(MODULE_NAME);", g.linejoinLimiter);
-   z.printxln("      APP_OUTRO");
-   z.printxln("");
-   z.printxln(g.preproLimiter, "#define GUIAPP_INTRO ", g.lib.defineName, "_APP_INTRO(GuiApplication)");
-   raw.string = CopyString(z.array); delete z;
+   ASTRawString raw { }; ZString z { allocType = heap };
+   z.concatx(g.preproLimiter, "#define ", g.lib.defineName, "_APP_INTRO(c)", g.linejoinLimiter, ln);
+   z.concatx("      APP_INTRO(true)", g.linejoinLimiter, ln);
+   z.concatx("      ", g.lib.moduleName, "_init(app);", g.linejoinLimiter, ln);
+   z.concatx("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter, ln);
+   z.concatx("      Instance_evolve(&app, class_ ## c);", ln);
+   z.concatx(ln);
+   z.concatx(g.preproLimiter, "#define ", g.lib.defineName, "_APP_OUTRO", g.linejoinLimiter, ln);
+   z.concatx("      unloadTranslatedStrings(MODULE_NAME);", g.linejoinLimiter, ln);
+   z.concatx("      APP_OUTRO", ln);
+   z.concatx(ln);
+   z.concatx(g.preproLimiter, "#define GUIAPP_INTRO ", g.lib.defineName, "_APP_INTRO(GuiApplication)", ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderEDARuntimeMacros(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
-   z.printxln(g.preproLimiter, "#define EDA_APP_INTRO(c)", g.linejoinLimiter);
-   z.printxln("      APP_INTRO(true)", g.linejoinLimiter);
-   z.printxln("      ecere_init(app);", g.linejoinLimiter);
-   z.printxln("      EDA_init(app);", g.linejoinLimiter);
-   z.printxln("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter);
-   z.printxln("      Instance_evolve(&app, class_ ## c);");
-   z.printxln("");
-   z.printxln(g.preproLimiter, "#define EDA_GUIAPP_INTRO EDA_APP_INTRO(GuiApplication)");
-   raw.string = CopyString(z.array); delete z;
+   ASTRawString raw { }; ZString z { allocType = heap };
+   z.concatx(g.preproLimiter, "#define EDA_APP_INTRO(c)", g.linejoinLimiter, ln);
+   z.concatx("      APP_INTRO(true)", g.linejoinLimiter, ln);
+   z.concatx("      ecere_init(app);", g.linejoinLimiter, ln);
+   z.concatx("      EDA_init(app);", g.linejoinLimiter, ln);
+   z.concatx("      loadTranslatedStrings(null, MODULE_NAME);", g.linejoinLimiter, ln);
+   z.concatx("      Instance_evolve(&app, class_ ## c);", ln);
+   z.concatx(ln);
+   z.concatx(g.preproLimiter, "#define EDA_GUIAPP_INTRO EDA_APP_INTRO(GuiApplication)", ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderLibraryInitPrototype(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    if(g.lib.ecereCOM)
-      z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);");
+      z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);", ln);
    else
-      z.printxln("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);");
-   raw.string = CopyString(z.array); delete z;
+      z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);", ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderDynamicLinkFunctionImports(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
+   ASTRawString raw { }; ZString z { allocType = heap };
    bool prefixed = false;
    IterNamespace ns { module = g.mod };
    while(ns.next())
@@ -316,28 +316,28 @@ static void cInHeaderDynamicLinkFunctionImports(AST out, Gen g)
          BFunction f = fn;
          if(!prefixed && f.isDllExport)
          {
-            z.printxln("");
+            z.concatx(ln);
             bigCommentSection(z, "dll function imports");
-            z.printxln("");
+            z.concatx(ln);
             prefixed = true;
          }
          if(f.isDllExport)
          {
             const char * fname = !python ? f.gname : f.easy ? f.easy : getFunctionNameThing(f);
             ASTNode node = astFunction(fname, { type = fn.dataType, fn = fn }, { _extern = true, _dllimport = true }, null);
-            ec2PrintToDynamicString(z, node, true);
+            ec2PrintToZedString(z, node, true);
          }
       }
    }
    ns.cleanup();
-   raw.string = CopyString(z.array); delete z;
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }
 
 static void cInHeaderThisModule(AST out, Gen g)
 {
-   ASTRawString raw { }; DynamicString z { };
-   z.printxln("extern ", g_.sym.module, " __thisModule;");
-   raw.string = CopyString(z.array); delete z;
+   ASTRawString raw { }; ZString z { allocType = heap };
+   z.concatx("extern ", g_.sym.module, " __thisModule;", ln);
+   raw.string = CopyString(z._string); delete z;
    out.Add(raw);
 }

@@ -59,7 +59,6 @@ RES =
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E)
 
 _ECSOURCES = \
-	../extras/types/DynamicString.ec \
 	extras/consoleApp.ec \
 	../extras/ecom.ec \
 	../extras/stringTools.ec \
@@ -215,9 +214,6 @@ endif
 
 # SYMBOL RULES
 
-$(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
-
 $(OBJ)consoleApp.sym: extras/consoleApp.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
@@ -286,9 +282,6 @@ $(OBJ)extras.sym: src/extras.ec
 
 # C OBJECT RULES
 
-$(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
-
 $(OBJ)consoleApp.c: extras/consoleApp.ec $(OBJ)consoleApp.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -356,9 +349,6 @@ $(OBJ)extras.c: src/extras.ec $(OBJ)extras.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
 # OBJECT RULES
-
-$(OBJ)DynamicString$(O): $(OBJ)DynamicString.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)consoleApp$(O): $(OBJ)consoleApp.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
