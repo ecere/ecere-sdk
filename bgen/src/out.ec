@@ -2,7 +2,6 @@
 
 import "ecere"
 
-import "DynamicString"
 import "miscTypes"
 
 import "str"
@@ -16,48 +15,48 @@ const char * _ns = "namespace";
 const char * _cl = "class";
 // slash chars
 #define sc slashes
-void bigCommentLibrary(DynamicString out, const char * s)//, const char * tag)
+void bigCommentLibrary(ZString out, const char * s)//, const char * tag)
 {
    int len = strlen(s);
-   //out.printxln("");
-   out.printxln(sc(80, 0),                                          " ", sc(24, 0));
-   out.printxln(sc(80, 0),                                          " ", sc(24, 0));
-   out.printxln(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0));
-   out.printxln(sc(4, 0), "    ", s, spaces(72, len + 4), sc(4, 0), " ", sc(24, 0));
-   out.printxln(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0));
-   out.printxln(sc(80, 0),                                          " ", sc(24, 0));
-   out.printxln(sc(80, 0),                                          " ", sc(24, 0));
-   out.printxln("");
+   //out.concatx(ln);
+   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(sc(4, 0), "    ", s, spaces(72, len + 4), sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(ln);
 /*
    int len = strlen(s);
    int gapB = 38 - (int)(len / 2);
    int gapA = 76 - len - gapB;
-   out.printxln("/-*");
-   out.printxln("");
-   out.printxln(sharps(2, 0), sharps(76, 0),                       sharps(2, 0));
-   out.printxln(sharps(2, 0), spaces(gapA, 0), s, spaces(gapB, 0), sharps(2, 0));
-   out.printxln(sharps(2, 0), sharps(76, 0),                       sharps(2, 0));
-   out.printxln("");
-   out.printxln("*-/");
+   out.concatx("/-*", ln);
+   out.concatx(ln);
+   out.concatx(sharps(2, 0), sharps(76, 0),                       sharps(2, 0), ln);
+   out.concatx(sharps(2, 0), spaces(gapA, 0), s, spaces(gapB, 0), sharps(2, 0), ln);
+   out.concatx(sharps(2, 0), sharps(76, 0),                       sharps(2, 0), ln);
+   out.concatx(ln);
+   out.concatx("*-/", ln);
 
-   out.printxln("");
-   out.printxln("");
-   out.printxln("");
+   out.concatx(ln);
+   out.concatx(ln);
+   out.concatx(ln);
 
-   out.printxln(slashes(2, 0), slashes(48, 0),                                "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0));
-   out.printxln(slashes(2, 0), "    ", s, "    ", slashes(48, strlen(s) + 8), "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0));
-   out.printxln(slashes(2, 0), slashes(48, 0),                                "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0));
+   out.concatx(slashes(2, 0), slashes(48, 0),                                "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0), ln);
+   out.concatx(slashes(2, 0), "    ", s, "    ", slashes(48, strlen(s) + 8), "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0), ln);
+   out.concatx(slashes(2, 0), slashes(48, 0),                                "  ", slashes(26, strlen(_lib)), " ", _lib, " ", slashes(2, 0), ln);
 */
 }
 //const char * _ns = "namespace";
-void bigCommentSection(DynamicString out, const char * s)//, const char * tag)
+void bigCommentSection(ZString out, const char * s)//, const char * tag)
 {
    int len = strlen(s);
-   out.printxln("");
-   out.printxln(sc(70, len), " ", s, " ", sc(8, 0), " ", sc(16, 0));
-   out.printxln(sc(80, 0),                          " ", sc(16, 0));
-   out.printxln(sc(80, 0),                          " ", sc(16, 0));
-   out.printxln("");
+   out.concatx(ln);
+   out.concatx(sc(70, len), " ", s, " ", sc(8, 0), " ", sc(16, 0), ln);
+   out.concatx(sc(80, 0),                          " ", sc(16, 0), ln);
+   out.concatx(sc(80, 0),                          " ", sc(16, 0), ln);
+   out.concatx(ln);
 }
 // bindings section comment
 void section_comment_hdr(File out, const char * s)
@@ -83,12 +82,12 @@ void section_comment_ftr(File out)
    out.Print(" ", slashes(32, 0));
 }
 
-void sectionComment_hdr(DynamicString out, const char * s)
+void sectionComment_hdr(ZString out, const char * s)
 {
    out.concatx(slashes(2, 0), " ", s, " ", slashes(24, strlen(s)));
 }
 
-void sectionComment_msg(DynamicString out, const char * s)
+void sectionComment_msg(ZString out, const char * s)
 {
    char * t = CopyString(s);
    ChangeCh(t, ':', '|');
@@ -96,17 +95,17 @@ void sectionComment_msg(DynamicString out, const char * s)
    delete t;
 }
 
-void sectionComment_msg_line(DynamicString out)
+void sectionComment_msg_line(ZString out)
 {
    out.concatx(" ", slashes(4 + 64, 0));
 }
 
-void sectionComment_ftr(DynamicString out)
+void sectionComment_ftr(ZString out)
 {
    out.concatx(" ", slashes(32, 0));
 }
 
-bool sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
+bool sourceFileProcessToZedString(ZString out, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
 {
    File f = FileOpen(pathToFile, read);
    if(f)
@@ -145,8 +144,8 @@ bool sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
                   {
                      char * part = end;
                      *open = 0;
-                     out.print(part);
-                     out.print(val);
+                     out.concat(part);
+                     out.concat(val);
                      end = search = close + 2;
                      skipNewLine = open == line && end[0] == '\0' && strchr(val, '\n');
                   }
@@ -155,21 +154,21 @@ bool sourceFileProcessToDynamicString(DynamicString out, const char * pathToFile
                }
             }
             if(!skipNewLine)
-               out.println(end);
+               out.concatx(end, ln);
          }
          else if(line[0] || !comment)
-            out.println(line);
+            out.concatx(line, ln);
       }
       delete f;
       return true;
    }
    else if(!quiet)
-      Print("warning: sourceFileProcessToDynamicString was unable to open ", pathToFile);
+      Print("warning: sourceFileProcessToZedString was unable to open ", pathToFile);
    return false;
 }
 
 // there should be at least a partial common interface between a file and a string class
-// the sourceFileProcessToFile function is a essentially duplicate of sourceFileProcessToDynamicString function
+// the sourceFileProcessToFile function is a essentially duplicate of sourceFileProcessToZedString function
 bool sourceFileProcessToFile(File out, File in, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
 {
    File f = in ? in : FileOpen(pathToFile, read);

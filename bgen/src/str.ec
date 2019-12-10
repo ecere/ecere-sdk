@@ -2,6 +2,9 @@
 
 char * s;
 
+const char ln = '\n';
+const char * sln = "\n";
+
 static const char * _spaces = \
       "                                                                " \
       "                                                                " \

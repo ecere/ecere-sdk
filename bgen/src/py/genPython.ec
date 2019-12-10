@@ -135,7 +135,7 @@ class PythonGen : CGen
             {
                BDefine d = df;
                BVariant v = d;
-               BOutput out { vdefine, d = d, ds = { } };
+               BOutput out { vdefine, d = d, z = { allocType = heap } };
                d.nspace.addContent(v);
                d.out = out;
 
@@ -190,8 +190,8 @@ class PythonGen : CGen
                      *s = 'T', s += 4;
                   while((s = strstr(s ? s : val, "false")))
                      *s = 'F', s += 5;
-                  out.ds.println("");
-                  out.ds.printxln(d.name, " = ", val);
+                  out.z.concatx(ln);
+                  out.z.concatx(d.name, " = ", val, ln);
                   for(e : visited)
                   {
                      Class cl = (Class)e;
@@ -221,7 +221,7 @@ class PythonGen : CGen
             if(!f.skip && !f.isDllExport)
             {
                BVariant v = f;
-               BOutput out { vfunction, f = f, ds = { } };
+               BOutput out { vfunction, f = f, z = { allocType = heap } };
                char * name = pyGetNoConflictSymbolName(f.oname);
                f.nspace.addContent(v);
                f.out = out;
@@ -586,7 +586,7 @@ void processPyClass(PythonGen g, BClass c)
    {
       BVariant v = c;
       BNamespace n = c.nspace;
-      BOutput out { vclass, c = c, ds = { } };
+      BOutput out { vclass, c = c, z = { allocType = heap } };
       BClass cBase = c.cl.base ? c.cl.base.templateClass ? c.cl.base.templateClass : c.cl.base : null;
       bool hasBase = cBase && cBase.cl.type != systemClass;
       bool hasContent = classHasContent(g, c);
@@ -637,57 +637,57 @@ void processPyClass(PythonGen g, BClass c)
 
       if(c.isModule)
       {
-         out.ds.printx("def regclass(c):", ln,
+         out.z.concatx("def regclass(c):", ln,
                        "   app.registerClass(c)", ln,
                        "   return c", ln);
       }
 
-      out.ds.println("");
-      out.ds.printx(sk, "class ", c.symbolName);
+      out.z.concatx(ln);
+      out.z.concatx(sk, "class ", c.symbolName);
 
       //if(cBase && cBase.cl.type != bitClass)
       if((c.cl.type == unitClass || c.cl.type == bitClass) && cBase.cl.type == systemClass)
-         out.ds.print("(pyBaseClass)");
+         out.z.concat("(pyBaseClass)");
       else if(hasBase && (!c.nativeSpec || cBase.cl.type == unitClass) && !c.isBool)
       {
-         out.ds.printx("(", cBase.symbolName, ")"); // c.baseSymbolName
+         out.z.concatx("(", cBase.symbolName, ")"); // c.baseSymbolName
          v.processDependency(otypedef, otypedef, cBase.cl);
       }
       else if(c.cl.type == structClass && cBase && cBase.is_struct)
-         out.ds.printx("(Struct)"); // ("(", g.lib.bindingName, "_struct)")
+         out.z.concatx("(Struct)"); // ("(", g.lib.bindingName, "_struct)")
 
-      out.ds.print(":");
+      out.z.concat(":");
       if(!skip && !hasContent)
-         out.ds.print("pass");
-      if(skip) out.ds.print(" # tofix");
-      out.ds.println("");
+         out.z.concat("pass");
+      if(skip) out.z.concat(" # tofix");
+      out.z.concatx(ln);
 
       if(c.isInstance)
-         conmsg("check"); // pyHardcodeInstance(out.ds);
+         conmsg("check"); // pyHardcodeInstance(out.z);
       else if(c.isArray)
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_array.src", null, false, false);
+         sourceFileProcessToZedString(out.z, ":src/py/py_hardcode_array.src", null, false, false);
       else if(c.isApplication)
       {
          Map<String, String> sourceProcessorVars { };
-         DynamicString s { };
-         genRegisterClassCalls(s, g, filterClassEcereComExlusions, "      ", "self");
-         sourceProcessorVars["REGISTER_CLASS"] = (String)s.array;
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_application.src", sourceProcessorVars, false, false);
+         ZString z { allocType = heap };
+         genRegisterClassCalls(z, g, filterClassEcereComExlusions, "      ", "self");
+         sourceProcessorVars["REGISTER_CLASS"] = z._string;
+         sourceFileProcessToZedString(out.z, ":src/py/py_hardcode_application.src", sourceProcessorVars, false, false);
          delete sourceProcessorVars;
-         delete s;
+         delete z;
       }
       else if(c.isGuiApplication)
       {
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_guiapplication.src", null, false, false);
+         sourceFileProcessToZedString(out.z, ":src/py/py_hardcode_guiapplication.src", null, false, false);
          conassert(g.lib.ecere == true, "?");
-         genRegisterClassCalls(out.ds, g, filterClassAll, "      ", "self");
-         out.ds.println("");
-         out.ds.println("      lib.Instance_evolve(rApp, GuiApplication.pyClass_GuiApplication)");
-         out.ds.println("      self.impl = rApp[0]");
-         out.ds.println("      ffi.cast(\"void **\", ffi.cast(\"char *\", self.impl) + self.impl._class.offset)[0] = self.handle");
+         genRegisterClassCalls(out.z, g, filterClassAll, "      ", "self");
+         out.z.concatx(ln);
+         out.z.concatx("      lib.Instance_evolve(rApp, GuiApplication.pyClass_GuiApplication)", ln);
+         out.z.concatx("      self.impl = rApp[0]", ln);
+         out.z.concatx("      ffi.cast(\"void **\", ffi.cast(\"char *\", self.impl) + self.impl._class.offset)[0] = self.handle", ln);
       }
       else if(c.isContainer)
-         sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_container.src", null, false, false);
+         sourceFileProcessToZedString(out.z, ":src/py/py_hardcode_container.src", null, false, false);
       else if(c.isWindow && g.lib.ecereCOM)
          ;
       else if(c.cl.type == structClass || c.cl.type == noHeadClass || c.cl.type == bitClass ||
@@ -779,9 +779,9 @@ void processPyClass(PythonGen g, BClass c)
 
             if(hasNew)
             {
-               out.ds.printx(sk, "   def __new__(cls"); //, from_String = None
+               out.z.concatx(sk, "   def __new__(cls"); //, from_String = None
                initArguments(g, c, v, out, sk, lineage, lin, filter, hasUnion, 15, &memberLen, &otherCount);
-               out.ds.printx(sk, "      if isinstance(", firstInitializerName, ", str):", ln,
+               out.z.concatx(sk, "      if isinstance(", firstInitializerName, ", str):", ln,
                              sk, "         impl = lib.", pFromString.fpnSet, "(", firstInitializerName, ".encode('u8'))", ln,
                              sk, "         if impl == ffi.NULL: return None", ln,
                              sk, "      o = Instance.__new__(cls)", ln,
@@ -800,8 +800,8 @@ void processPyClass(PythonGen g, BClass c)
                   char * name;
                   bool added = false;
                   if(c.cl.inheritanceAccess == privateAccess)
-                     out.ds.printx(sk, "   private_inheritance = 1", ln);
-                  out.ds.printx(sk, "   class_members = [");
+                     out.z.concatx(sk, "   private_inheritance = 1", ln);
+                  out.z.concatx(sk, "   class_members = [");
                   // 'array', 'conut', 'minAllocSize', 'size'
                   {
                      IterMemberOrPropertyPriority itmpp { cl = c.cl };
@@ -809,7 +809,7 @@ void processPyClass(PythonGen g, BClass c)
                      {
                         if(itmpp.dm && itmpp.dm.type != normalMember) continue;
                         name = pyGetNoConflictSymbolName(itmpp.mp.name);
-                        out.ds.printx(added ? "" : sln, sk, "                      '", name, "',", ln);
+                        out.z.concatx(added ? "" : sln, sk, "                      '", name, "',", ln);
                         delete name;
                         added = true;
                      }
@@ -822,7 +822,7 @@ void processPyClass(PythonGen g, BClass c)
                         char * mname;
                         m.init(itm.md, c);
                         mname = pyGetNoConflictSymbolName(m.mname);
-                        out.ds.printx(added ? "" : sln, sk, "                      '", mname, "',", ln);
+                        out.z.concatx(added ? "" : sln, sk, "                      '", mname, "',", ln);
                         delete mname;
                         added = true;
                      }
@@ -833,28 +833,28 @@ void processPyClass(PythonGen g, BClass c)
                      {
                         if(!((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))) continue;
                         name = pyGetNoConflictSymbolName(itmpp.mp.name);
-                        out.ds.printx(added ? "" : sln, sk, "                      '", name, "',", ln);
+                        out.z.concatx(added ? "" : sln, sk, "                      '", name, "',", ln);
                         delete name;
                         added = true;
                      }
                   }*/
-                  out.ds.printx(sk, added ? "                   " : "", "]", ln);
-                  out.ds.printx(ln);
-                  out.ds.printx(sk, "   def init_args(self, args, kwArgs): init_args(", c.name, ", self, args, kwArgs)", ln);
-                  out.ds.printx(sk, "   def __init__(self, *args, **kwArgs):", ln);
+                  out.z.concatx(sk, added ? "                   " : "", "]", ln);
+                  out.z.concatx(ln);
+                  out.z.concatx(sk, "   def init_args(self, args, kwArgs): init_args(", c.name, ", self, args, kwArgs)", ln);
+                  out.z.concatx(sk, "   def __init__(self, *args, **kwArgs):", ln);
                   if(hasNew)
-                     out.ds.printx(sk, "      if hasattr(self, 'impl'): return", ln);
+                     out.z.concatx(sk, "      if hasattr(self, 'impl'): return", ln);
                   if(c.cl.base.templateClass)
                   {
                      const char * tp = strchr(c.cl.base.name, '<');
                      char * tp2 = getNoNamespaceString(tp, null, false);
-                     out.ds.printx(sk, "      kwArgs['templateParams'] = \"", tp2, "\"", ln);
+                     out.z.concatx(sk, "      kwArgs['templateParams'] = \"", tp2, "\"", ln);
                      delete tp2;
                   }
-                  out.ds.printx(sk, "      self.init_args(list(args), kwArgs)", ln);
+                  out.z.concatx(sk, "      self.init_args(list(args), kwArgs)", ln);
                }
                else
-                  out.ds.printx(sk, "   def __init__(self");
+                  out.z.concatx(sk, "   def __init__(self");
             }
 // ------------------------------------------------------------------------------------------------------------------- //
 //      arguments for __init__ function                                                                                //
@@ -865,50 +865,50 @@ void processPyClass(PythonGen g, BClass c)
 //      content of __init__ function: some initialization of self                                                      //
 // ------------------------------------------------------------------------------------------------------------------- //
             if(hasNew && !tmpClassTriesNewInitArgs)
-               out.ds.printx(sk, "      if hasattr(self, 'impl'): return", ln);
+               out.z.concatx(sk, "      if hasattr(self, 'impl'): return", ln);
             if(c.cl.type == noHeadClass)
             {
                // FIX #05 (8.)
-               out.ds.printx(sk, "      if impl is not None:", ln,
+               out.z.concatx(sk, "      if impl is not None:", ln,
                              sk, "         self.impl = impl", ln);
                if(c.isClass)
-               out.ds.printx(sk, "      elif isinstance(", "prev", ", pyType):", ln,
+               out.z.concatx(sk, "      elif isinstance(", "prev", ", pyType):", ln,
                              sk, "         self.impl = getattr(app.lib, 'class_' + ", "prev", ".__name__)", ln);
-               out.ds.printx(sk, "      else:", ln,
+               out.z.concatx(sk, "      else:", ln,
                              sk, "         self.impl = ffi.cast(\"", c.name, " *\", lib.Instance_new(lib.class_", c.name, "))", ln);
             }
             else if(c.cl.type == structClass)
             {
-               out.ds.printx(sk, "      if impl is not None:", ln,
+               out.z.concatx(sk, "      if impl is not None:", ln,
                              sk, "         self.impl = ffi.new(\"", c.name, " *\", impl)", ln,
                              sk, "      else:", ln);
             }
             else if(c.cl.type == bitClass)
             {
                DataMember dm; IterDataMember itd { c.cl };
-               out.ds.printx(sk, "      if impl is not None:", ln,
+               out.z.concatx(sk, "      if impl is not None:", ln,
                              sk, "         self.impl = impl", ln);
                while((dm = itd.next(publicOnly)))
                {
                   char * name = pyGetNoConflictSymbolName(dm.name);
-                  out.ds.printx(sk, "      elif isinstance(", name, ", ", c.name, "):", ln,
+                  out.z.concatx(sk, "      elif isinstance(", name, ", ", c.name, "):", ln,
                                 sk, "         self.impl = ", name, ".impl", ln);
                   delete name;
                   break;
                } // itd.reset();
-               out.ds.printx(sk, "      else:", ln);
+               out.z.concatx(sk, "      else:", ln);
             }
             else if(c.cl.type == unitClass)
             {
                if(c.cl.base.type == systemClass)
                {
-                  //out.ds.printxln(sk, "      if impl is not None: self.impl = impl");
-                  out.ds.printxln(sk, "      self.impl = impl");
-                  //out.ds.printxln(sk, "      else: self.impl = value");
+                  //out.z.concatx(sk, "      if impl is not None: self.impl = impl", ln);
+                  out.z.concatx(sk, "      self.impl = impl", ln);
+                  //out.z.concatx(sk, "      else: self.impl = value", ln);
                }
                else if(c.cl.base.type == unitClass)
                {
-                  out.ds.printx(sk, "      if impl is not None: self.impl = impl", ln,
+                  out.z.concatx(sk, "      if impl is not None: self.impl = impl", ln,
                                 sk, "      elif isinstance(value, ", c.cl.base.name, "): self.impl = value.impl", ln,
                                 sk, "      else: self.", hasOneToOneBaseConv ? "impl" : "value", " = value", ln);
                }
@@ -918,24 +918,24 @@ void processPyClass(PythonGen g, BClass c)
             {
                if(!(c.isApplication || c.isGuiApplication || c.isContainer || (c.isWindow && g.lib.ecereCOM)))
                {
-                  //out.ds.printxln(sk, "");
+                  //out.z.concatx(sk, "", ln);
                   if(!cBase.isCharPtr)
                   {
                      if(!tmpClassTriesNewInitArgs)
                      {
-                        out.ds.printx(sk, "      ", cBase.name, ".__init__(self");
+                        out.z.concatx(sk, "      ", cBase.name, ".__init__(self");
                         if(c.cl.templateParams.count) // todo or base's or base's base's, etc
-                           out.ds.print(", templateParams");
-                        out.ds.print(", impl = impl");
-                        out.ds.println(")");
+                           out.z.concat(", templateParams");
+                        out.z.concat(", impl = impl");
+                        out.z.concatx(")", ln);
                      }
                   }
                   if(userDataProp)
-                     out.ds.printxln(sk, "      if self.impl != ffi.NULL: lib.", userDataProp.fpnSet, "(self.impl, self.impl)");
-                  //out.ds.printxln(sk, "");
+                     out.z.concatx(sk, "      if self.impl != ffi.NULL: lib.", userDataProp.fpnSet, "(self.impl, self.impl)", ln);
+                  //out.z.concatx(sk, "", ln);
                   if(c.isString)
                   {
-                     out.ds.printx(sk, "      if impl is not None: self.impl = impl", ln,
+                     out.z.concatx(sk, "      if impl is not None: self.impl = impl", ln,
                                    sk, "      else: self.impl = ffi.NULL", ln);/*,
                                    sk, "   # hardcoded __str__", ln,
                                    sk, "   def __str__(self):", ln,
@@ -947,7 +947,7 @@ void processPyClass(PythonGen g, BClass c)
                      while(itmpp.next(publicOnly))
                      {
                         if((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))
-                           out.ds.printxln(sk, "      if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.name, " = ", itmpp.name);
+                           out.z.concatx(sk, "      if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.name, " = ", itmpp.name, ln);
                      }
                   }
                   if(!tmpClassTriesNewInitArgs)
@@ -963,7 +963,7 @@ void processPyClass(PythonGen g, BClass c)
                            char * mname;
                            m.init(itm.md, cc);
                            mname = pyGetNoConflictSymbolName(m.mname);
-                           out.ds.printxln("      if ", mname, " is not ", "None", ": ", spaces(memberLen, strlen(mname)), "self.", mname, " = ", mname);
+                           out.z.concatx("      if ", mname, " is not ", "None", ": ", spaces(memberLen, strlen(mname)), "self.", mname, " = ", mname, ln);
                            delete mname;
                         }
                      }
@@ -988,14 +988,14 @@ void processPyClass(PythonGen g, BClass c)
                   if(first)
                   {
                      const char * zeroVal = getTypeZeroValuePy(g, itmpp.type, v);
-                     out.ds.printx(sk, "         if isinstance(", itmpp.name, ", tuple):", ln,
+                     out.z.concatx(sk, "         if isinstance(", itmpp.name, ", tuple):", ln,
                                    sk, "            __tuple = ", itmpp.name, ln,
                                    sk, "            ", itmpp.name, " = ", zeroVal, ln);
                      first = false;
                      elif = true;
                   }
-                  out.ds.printxln(sk, "            if len(__tuple) > ", i, ": ", itmpp.name,
-                        tmpNoSp ? "" : spaces(memberLen, strlen(itmpp.name)), " = __tuple[", i, "]"); i++;
+                  out.z.concatx(sk, "            if len(__tuple) > ", i, ": ", itmpp.name,
+                        tmpNoSp ? "" : spaces(memberLen, strlen(itmpp.name)), " = __tuple[", i, "]", ln); i++;
                }
             }
 // ------------------------------------------------------------------------------------------------------------------- //
@@ -1016,27 +1016,27 @@ void processPyClass(PythonGen g, BClass c)
                      ClassType ct = p.cConv ? p.cConv.cl.type : systemClass;
                      bool impl = p.cConv && (ct == bitClass || ct == unitClass || ct == structClass);
                      bool zero = false;
-                     out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", p.name, "):");
-                     out.ds.printxln(sk, "            self.impl = lib.", p.fpnSet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
-                     out.ds.printxln(sk, "            return");
+                     out.z.concatx(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", p.name, "):", ln);
+                     out.z.concatx(sk, "            self.impl = lib.", p.fpnSet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")", ln);
+                     out.z.concatx(sk, "            return", ln);
                      elif = true;
-                     /*out.ds.printxln(sk, "            val = lib.", p.fpnSet, "(", name, ")");
+                     /*out.z.concatx(sk, "            val = lib.", p.fpnSet, "(", name, ")", ln);
                      {
                         DataMember dm; IterDataMember itd { c.cl };
                         while((dm = itd.next(publicOnly)))
                         {
                            char * name = pyGetNoConflictSymbolName(dm.name);
                            if(typeIsNative(dm.dataType) || typeIsClassNative(dm.dataType))
-                              out.ds.printxln(sk, "            ", name, " = val.", name);
+                              out.z.concatx(sk, "            ", name, " = val.", name, ln);
                            else
                            {
                               const char * typeName = dm.dataType.kind == classType && dm.dataType._class.registered ? dm.dataType._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(dm.dataType, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
-                              out.ds.printxln(sk, "            ", name, " = ", typeName, "(impl = val.", name, ")");
+                              out.z.concatx(sk, "            ", name, " = ", typeName, "(impl = val.", name, ")", ln);
                            }
                            delete name;
                         }
-                     //out.ds.printxln(sk, "            val = lib.", p.fpnSet);
-                     //out.ds.printxln(sk, "            val = lib.", p.fpnSet);
+                     //out.z.concatx(sk, "            val = lib.", p.fpnSet, ln);
+                     //out.z.concatx(sk, "            val = lib.", p.fpnSet, ln);
                      }*/
                      v.processDependency(otypedef, otypedef, p.cConv.cl);
                   }
@@ -1054,10 +1054,10 @@ void processPyClass(PythonGen g, BClass c)
                            {
                               bool impl = classRequiresImpl(itacl.cl);
                               bool zero = false;
-                              //out.ds.printxln(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name);
-                              out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):");
-                              out.ds.printxln(sk, "            self.impl = lib.", p.fpnGet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")");
-                              out.ds.printxln(sk, "            return");
+                              //out.z.concatx(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name, ln);
+                              out.z.concatx(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):", ln);
+                              out.z.concatx(sk, "            self.impl = lib.", p.fpnGet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")", ln);
+                              out.z.concatx(sk, "            return", ln);
                               //v.processDependency(otypedef, otypedef, itacl.cl);
                            }
                         }
@@ -1089,11 +1089,11 @@ void processPyClass(PythonGen g, BClass c)
                         if(((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set)) &&
                               !(p.cConv && p.cConv.cl.templateClass))
                         {
-                           out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", itmpp.name, ", ", type, "):");
+                           out.z.concatx(sk, "         ", elif ? "el" : "", "if isinstance(", itmpp.name, ", ", type, "):", ln);
                            if(c.cl.type == structClass)
                            {
                               bool impl = p.cConv && (p.cConv.cl.type == unitClass || p.cConv.cl.type == structClass); // nownow
-                              out.ds.printx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
+                              out.z.concatx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln,
                                             sk, "            lib.", p.fpnSet, "(self.impl", ", ", itmpp.name, impl ? ".impl" : "", ")", ln,
                                             sk, "            return", ln);
                            }
@@ -1125,11 +1125,11 @@ void processPyClass(PythonGen g, BClass c)
                                  ;//PrintLn("    ", "what's going on with native type conversion ", itacl.cl.name, " <-> ", p.name);
                               else if(p.cConv.cl == c.cl)
                               {
-                                 //out.ds.printxln(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name);
-                                 out.ds.printxln(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):");
-                                 out.ds.printxln(sk, "            self.impl = ffi.new(\"", c.name, " *\")");
-                                 out.ds.printxln(sk, "            lib.", p.fpnGet, "(", name, forStruct ? ".impl" : "", ", self.impl)");
-                                 out.ds.printxln(sk, "            return"); // todo: do away with this return and others too maybe by adding an else at the end
+                                 //out.z.concatx(sk, "         # aconvhere ", c.name, " <-> ", itacl.cl.name, ln);
+                                 out.z.concatx(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):", ln);
+                                 out.z.concatx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln);
+                                 out.z.concatx(sk, "            lib.", p.fpnGet, "(", name, forStruct ? ".impl" : "", ", self.impl)", ln);
+                                 out.z.concatx(sk, "            return", ln); // todo: do away with this return and others too maybe by adding an else at the end
                                  //v.processDependency(otypedef, otypedef, itacl.cl);
                               }
                            }
@@ -1169,20 +1169,20 @@ void processPyClass(PythonGen g, BClass c)
                      //      (itmpp.type._class.registered.type == normalClass || itmpp.type._class.registered.type == noHeadClass);
                      for(clBaseUnit = itmpp.type._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
                      if(c.cl.type == structClass)
-                        out.ds.printxln(sk, "         ", "if ", itmpp.name, " is not None:");
+                        out.z.concatx(sk, "         ", "if ", itmpp.name, " is not None:", ln);
                      //if(inst)
-                        out.ds.printxln(sk, "         ", more ? "   " : "", "if not isinstance(", itmpp.name, ", ", clBaseUnit.name, "):",
-                              " ", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
+                        out.z.concatx(sk, "         ", more ? "   " : "", "if not isinstance(", itmpp.name, ", ", clBaseUnit.name, "):",
+                              " ", itmpp.name, " = ", typeName, "(", itmpp.name, ")", ln);
                      //else
-                     //   out.ds.printxln(sk, "         ", "if ", itmpp.name, " is not None and not isinstance(", itmpp.name, ", ", clBaseUnit.name, "):");
-                     //out.ds.printxln(sk, "            ", inst ? "   " : "", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
+                     //   out.z.concatx(sk, "         ", "if ", itmpp.name, " is not None and not isinstance(", itmpp.name, ", ", clBaseUnit.name, "):", ln);
+                     //out.z.concatx(sk, "            ", inst ? "   " : "", itmpp.name, " = ", typeName, "(", itmpp.name, ")", ln);
                      if(c.cl.type == structClass && !hasUnion)
                      {
                         bool forStruct = itmpp.type.kind == classType && itmpp.type._class.registered && itmpp.type._class.registered.type == structClass;
                         if(!hasUnion) // FIX #06 (16.)
-                           out.ds.printxln(sk, "            ", itmpp.name, " = ", itmpp.name, ".impl", forStruct ? "[0]" : ""); // FIX #04 (14.)
+                           out.z.concatx(sk, "            ", itmpp.name, " = ", itmpp.name, ".impl", forStruct ? "[0]" : "", ln); // FIX #04 (14.)
                         //if(inst)
-                        //   out.ds.printx(sk, "         else:", ln, sk, "               ", itmpp.name, " = ffi.NULL", ln);
+                        //   out.z.concatx(sk, "         else:", ln, sk, "               ", itmpp.name, " = ffi.NULL", ln);
                         if(itmpp.type.kind == classType)
                         {
                            if(itmpp.type._class.registered)
@@ -1192,20 +1192,20 @@ void processPyClass(PythonGen g, BClass c)
                               {
                                  case normalClass:
                                  case noHeadClass:
-                                    out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ffi.NULL", ln);
+                                    out.z.concatx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ffi.NULL", ln);
                                     break;
                                  //case structClass:
-                                    //out.ds.printx("# ", "         else:", ln, sk, "            ", itmpp.name,
+                                    //out.z.concatx("# ", "         else:", ln, sk, "            ", itmpp.name,
                                     //      " = ffi.new(\"", itmpp.type._class.registered.name, " *\")",
                                     //      " # init struct class struct member", ln);
                                  //   break;
                                  case structClass:
                                  case bitClass:
                                  case unitClass:
-                                    //out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = 0", ln);
-                                    out.ds.printx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ", name, "()", ln);
+                                    //out.z.concatx(sk, "         else:", ln, sk, "            ", itmpp.name, " = 0", ln);
+                                    out.z.concatx(sk, "         else:", ln, sk, "            ", itmpp.name, " = ", name, "()", ln);
                                     if(!hasUnion && forStruct)
-                                       out.ds.printx(sk, "            ", itmpp.name, " = ", itmpp.name, ".impl", forStruct ? "[0]" : "", ln);
+                                       out.z.concatx(sk, "            ", itmpp.name, " = ", itmpp.name, ".impl", forStruct ? "[0]" : "", ln);
                                     break;
                                  //case :
                                  default:
@@ -1227,7 +1227,7 @@ void processPyClass(PythonGen g, BClass c)
             if(c.cl.type == bitClass)
             {
                DataMember dm; IterDataMember itd { c.cl };
-               out.ds.printxln(sk, "         self.impl = ("); // self.value
+               out.z.concatx(sk, "         self.impl = (", ln); // self.value
                first = true;
                while((dm = itd.next(publicOnly)))
                {
@@ -1236,24 +1236,24 @@ void processPyClass(PythonGen g, BClass c)
                   if(!(strlen(zeroVal) == lenx + 2 && !strncmp(zeroVal, c.name, lenx)))
                   {
                      char * name = pyGetNoConflictSymbolName(dm.name);
-                     if(!first) out.ds.println(" |");
+                     if(!first) out.z.concatx(" |", ln);
                      if(dm.dataType.kind == classType && dm.dataType._class && dm.dataType._class.registered && dm.dataType._class.registered.type == bitClass)
-                        out.ds.printx(sk, "            (", name, ".impl", spaces(memberLen, strlen(name) + 5),
+                        out.z.concatx(sk, "            (", name, ".impl", spaces(memberLen, strlen(name) + 5),
                               " << lib.", c.upper, "_", name, "_SHIFT)", spaces(memberLen, strlen(name)));
                      else
-                        out.ds.printx(sk, "            (", name, spaces(memberLen, strlen(name)),
+                        out.z.concatx(sk, "            (", name, spaces(memberLen, strlen(name)),
                               " << lib.", c.upper, "_", name, "_SHIFT)", spaces(memberLen, strlen(name)));
                      if(first) first = false;
                      delete name;
                   }
                }
-               out.ds.println(" )");
+               out.z.concatx(" )", ln);
             }
             else if(c.cl.type == structClass) // c.cl.type != noHeadClass
             {
                if(hasUnion) // FIX #06 (16.)
                {
-                  out.ds.printx(sk, "         __members = { }", ln);
+                  out.z.concatx(sk, "         __members = { }", ln);
                   {
                      IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true };
                      while(itmpp.next(publicOnly))
@@ -1266,16 +1266,16 @@ void processPyClass(PythonGen g, BClass c)
                                  (cType && cType.isString) || (itmpp.type.kind == pointerType &&
                                  (typeIsNative(itmpp.type.type) || itmpp.type.type.kind == voidType)));
                            bool zero = cType && cType.cl.type == structClass;
-                           out.ds.printx(sk, "         if ", name, " is not None:", spaces(memberLen, strlen(name)),
+                           out.z.concatx(sk, "         if ", name, " is not None:", spaces(memberLen, strlen(name)),
                                  " __members['", name, "']", spaces(memberLen, strlen(name)), " = ", name,
                                  impl ? ".impl" : "", zero ? "[0]" : "", ln);
                         }
                      }
                   }
                }
-               out.ds.printx(sk, "         self.impl = ffi.new(\"", c.name, " *\"");
+               out.z.concatx(sk, "         self.impl = ffi.new(\"", c.name, " *\"");
                if(hasUnion) // FIX #06 (16.)
-                  out.ds.printx(", __members");
+                  out.z.concatx(", __members");
                else
                //if(!c.isAnchor)
                {
@@ -1284,7 +1284,7 @@ void processPyClass(PythonGen g, BClass c)
                   const char * xln, * comma = "";
                   const char * xsk, * xsp;
                   IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage, typing = true, unionFirstsOnly = true };
-                  out.ds.printx(", {");
+                  out.z.concatx(", {");
                   while(itmpp.next(publicOnly))
                      if(itmpp.dm && itmpp.dm.type == normalMember)
                         count++;// += itmpp.name ? strlen(itmpp.name) : 0;
@@ -1300,23 +1300,23 @@ void processPyClass(PythonGen g, BClass c)
                         /*if(!(typeIsNative(itmpp.type) || typeIsClassNative(itmpp.type) ||
                            typeIsSomething(itmpp.type) || typeIsUnitClass(itmpp.type))) // FIX #04
                            impl = true;*/
-                        //out.ds.printx(comma, "'", itmpp.mp.name, "' : ", itmpp.name);
-                        out.ds.printx(comma, xln, xsk, xsp, count > limit ? "   " : "", "'", itmpp.mp.name, "' : ", itmpp.name);
+                        //out.z.concatx(comma, "'", itmpp.mp.name, "' : ", itmpp.name);
+                        out.z.concatx(comma, xln, xsk, xsp, count > limit ? "   " : "", "'", itmpp.mp.name, "' : ", itmpp.name);
                         xln = count > limit ? "\n" : "";
                         comma = ",";
                      }
                   }
-                  out.ds.printx(xln, xsk, xsp, "}");
+                  out.z.concatx(xln, xsk, xsp, "}");
                }
-               out.ds.printxln(")");
+               out.z.concatx(")", ln);
                //if(c.cl.type == structClass)
                /*{
                   IterClassHierarchyMemberOrPropertyPlus itmpp { lineage = lineage };
                   while(itmpp.next(publicOnly))
                   {
                      if(itmpp.pt && itmpp.pt.Set)
-                        //out.ds.printxln(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/-*, itmpp.mp.isProperty ? "" : "impl."*-/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/-*, impl ? ".impl" : ""*-/);
+                        //out.z.concatx(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")", ln);
+                        out.z.concatx(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/-*, itmpp.mp.isProperty ? "" : "impl."*-/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/-*, impl ? ".impl" : ""*-/, ln);
                   }
                }*/
                // FIX #04
@@ -1328,8 +1328,8 @@ void processPyClass(PythonGen g, BClass c)
                      // FIX #04
                      //if((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))
                      if((itmpp.dm && itmpp.dm.type == normalMember && c.cl.type != structClass) || (itmpp.pt && itmpp.pt.Set))
-                        //out.ds.printxln(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")");
-                        out.ds.printxln(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/*, itmpp.mp.isProperty ? "" : "impl."*/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/*, impl ? ".impl" : ""*/);
+                        //out.z.concatx(sk, "         if not isinstance(", name, ", ", clBaseUnit.name, "): ", name, " = ", typeName, "(", name, ")", ln);
+                        out.z.concatx(sk, "         if ", itmpp.name, " is not None: ", spaces(memberLen, strlen(itmpp.name)), "self."/*, itmpp.mp.isProperty ? "" : "impl."*/, itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name/*, impl ? ".impl" : ""*/, ln);
                   }
                }
             }
@@ -1351,7 +1351,7 @@ void processPyClass(PythonGen g, BClass c)
                      if(c.cl.type == structClass && !(typeIsNative(itmpp.type) ||
                            typeIsClassNative(itmpp.type) || typeIsSomething(itmpp.type)))
                         impl = true;
-                     //out.ds.printx(comma, "'", itmpp.name, "' : ", itmpp.name, impl ? ".impl" : "");
+                     //out.z.concatx(comma, "'", itmpp.name, "' : ", itmpp.name, impl ? ".impl" : "");
                      //if(c.cl.type == structClass)
                      {
                         // FIX #05 (11.)
@@ -1363,10 +1363,10 @@ void processPyClass(PythonGen g, BClass c)
                            Class clBaseUnit;
                            const char * typeName = itmpp.type.kind == classType && itmpp.type._class.registered ? itmpp.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itmpp.type, itmpp.pt.dataTypeString, 0, false, g.lib.ecereCOM, null);
                            for(clBaseUnit = itmpp.type._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-                           out.ds.printxln(sk, indent, "if not isinstance(", itmpp.name, ", ", clBaseUnit.name, "): ", itmpp.name, " = ", typeName, "(", itmpp.name, ")");
+                           out.z.concatx(sk, indent, "if not isinstance(", itmpp.name, ", ", clBaseUnit.name, "): ", itmpp.name, " = ", typeName, "(", itmpp.name, ")", ln);
                         }
                      }
-                     out.ds.printxln(sk, indent, "if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.mp.isProperty ? "" : "impl.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name, impl ? ".impl" : "");
+                     out.z.concatx(sk, indent, "if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.mp.isProperty ? "" : "impl.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), itmpp.mp.isProperty ? "     " : "", " = ", itmpp.name, impl ? ".impl" : "", ln);
                   }
                }
             }
@@ -1378,7 +1378,7 @@ void processPyClass(PythonGen g, BClass c)
                   if((itmpp.dm && itmpp.dm.type == normalMember) || (itmpp.pt && itmpp.pt.Set))
                   {
                      // FIX #03 && #05 (8.)
-                     out.ds.printxln(sk, "         if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), " = ", itmpp.name);
+                     out.z.concatx(sk, "         if ", itmpp.name, " is not ", "None", ": ", spaces(memberLen, strlen(itmpp.name)), "self.", itmpp.name, spaces(memberLen, strlen(itmpp.name)), " = ", itmpp.name, ln);
                   }
                }
             }
@@ -1400,21 +1400,21 @@ void processPyClass(PythonGen g, BClass c)
                {
                   bool conflict = false;
                   char * name = pyGetNoConflictSymbolName(val.name);
-                  out.ds.printx(sk, "   ");
-                  out.ds.printx(name, spaces(memberLen, strlen(name) + (conflict ? 1 : 0)));
+                  out.z.concatx(sk, "   ");
+                  out.z.concatx(name, spaces(memberLen, strlen(name) + (conflict ? 1 : 0)));
                   if(hasBase)
                   {
                      if(cBase.cl.type == enumClass)
-                        out.ds.printxln(" = ", cBase.name, "(lib.", c.name, "_", val.name, ")");
+                        out.z.concatx(" = ", cBase.name, "(lib.", c.name, "_", val.name, ")", ln);
                      else
-                        out.ds.printxln(" = ", cBase.name, "(impl = lib.", c.name, "_", val.name, ")");
+                        out.z.concatx(" = ", cBase.name, "(impl = lib.", c.name, "_", val.name, ")", ln);
                   }
                   else
                   {
                      if(c.isBool)
-                        out.ds.printxln(" = lib.", val.name);
+                        out.z.concatx(" = lib.", val.name, ln);
                      else
-                        out.ds.printxln(" = lib.", c.name, "_", val.name);
+                        out.z.concatx(" = lib.", c.name, "_", val.name, ln);
                   }
                   delete name;
                }
@@ -1429,7 +1429,7 @@ void processPyClass(PythonGen g, BClass c)
                {
                   char * name = pyGetNoConflictSymbolName(dm.name);
                   // (self.value)
-                  out.ds.printx(
+                  out.z.concatx(
                         sk, "", ln,
                         sk, "   @property", ln,
                         sk, "   def ", name, "(self): return ((((self.impl)) & lib.", c.upper, "_", name, "_MASK) >> lib.", c.upper, "_", name, "_SHIFT)", ln,
@@ -1443,7 +1443,7 @@ void processPyClass(PythonGen g, BClass c)
                BProperty p; IterConversion itc { c.cl };
                if(hasOneToOneBaseConv) // if conversion property to base without get / set
                {
-                  out.ds.printx(
+                  out.z.concatx(
                         sk, "   @property", ln,
                         sk, "   def value(self): return self.impl", ln,
                         sk, "   @value.setter", ln,
@@ -1459,7 +1459,7 @@ void processPyClass(PythonGen g, BClass c)
                      char * mS = PrintString(m);
                      bool lG = checkLinearMapping(type, p.pt.Get, &m, &b);
                      char * mG = PrintString(m);
-                     out.ds.printx("", ln,
+                     out.z.concatx("", ln,
                            sk, "   # conv ", c.baseSymbolName, " <-> ", p.cConv.symbolName, ln,
                            sk, "   @property", ln,
                            sk, "   def value(self): return ", lS ? "self.impl * " : "lib.", lS ? mS : p.fpnSet, lS ? "" : "(self.impl)", ln,
@@ -1481,7 +1481,7 @@ void processPyClass(PythonGen g, BClass c)
       if(c.cl.type == normalClass)
       {
          if(c.isModule)
-            sourceFileProcessToDynamicString(out.ds, ":src/py/py_hardcode_module.src", null, false, false);
+            sourceFileProcessToZedString(out.z, ":src/py/py_hardcode_module.src", null, false, false);
       }
 
       // members and properties
@@ -1514,48 +1514,48 @@ void processPyClass(PythonGen g, BClass c)
                char * typeName = getSimpleDataTypeName(itmpptype, itmpp.dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
                bool wrap = cType && !cType.isBool && cType.cl.type != systemClass;
                bool retyped = false; // aka no impl, no wrap, use of wrap to be reviewed
-               out.ds.printxln(sk, "");
-               out.ds.printxln(sk, "   @property");
-               out.ds.printx(sk, "   def ", itmppname, "(self):");
+               out.z.concatx(sk, "", ln);
+               out.z.concatx(sk, "   @property", ln);
+               out.z.concatx(sk, "   def ", itmppname, "(self):");
                if(c.cl.type == structClass || c.cl.type == noHeadClass) // FIX #05 (7.)
                {
                /*if(cType && !cType.isBool && cType.cl.type != systemClass)
                {
-                  out.ds.printx("value = ", typeName, "(); ");
+                  out.z.concatx("value = ", typeName, "(); ");
                   //v.processDependency(otypedef, otypedef, cType.cl);
                }
-               out.ds.printxln("lib.", "_get_", itmpp.name, "(", selfimpl, ", value.impl)");*/
+               out.z.concatx("lib.", "_get_", itmpp.name, "(", selfimpl, ", value.impl)", ln);*/
                   if(itmpptype.kind == classType && itmpptype._class.registered &&
                         (itmpptype._class.registered.type == unitClass ||
                         itmpptype._class.registered.type == bitClass || // FIX #06 (11. unclear part about properties)
                         itmpptype._class.registered.type == structClass))
-                     out.ds.printxln(" return ", typeName, "(impl = self.impl.", itmppname, ")");
+                     out.z.concatx(" return ", typeName, "(impl = self.impl.", itmppname, ")", ln);
                   // FIX #05 (10.)
                   else if(itmpptype.kind == classType && itmpptype._class.registered &&
                         itmpptype._class.registered.type == normalClass)
                   {
                      if(cType.isString)
-                        out.ds.printxln(" return String(self.impl.", itmppname, ")");
+                        out.z.concatx(" return String(self.impl.", itmppname, ")", ln);
                      else
-                        out.ds.printxln(" return pyOrNewObject(", typeName, ", self.impl.", itmppname, ")");
+                        out.z.concatx(" return pyOrNewObject(", typeName, ", self.impl.", itmppname, ")", ln);
                   }
                   else
-                     out.ds.printxln(" return self.impl.", itmppname);
+                     out.z.concatx(" return self.impl.", itmppname, ln);
                }
                else if(cType && cType.cl.type == normalClass && c.cl.type == normalClass)
-                  out.ds.printxln(" return pyOrNewObject(", typeName, ", IPTR(lib, ffi, self, ", c.name, ").", itmppname, ")");
+                  out.z.concatx(" return pyOrNewObject(", typeName, ", IPTR(lib, ffi, self, ", c.name, ").", itmppname, ")", ln);
                else
-                  out.ds.printxln(" return ", wrap ? typeName : "", wrap ? "(impl = " : "", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, wrap ? ")" : "");
+                  out.z.concatx(" return ", wrap ? typeName : "", wrap ? "(impl = " : "", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, wrap ? ")" : "", ln);
 
-               out.ds.printxln(sk, "   @", itmppname, ".setter");
-               out.ds.printx(sk, "   def ", itmppname, "(self, value):");
+               out.z.concatx(sk, "   @", itmppname, ".setter", ln);
+               out.z.concatx(sk, "   def ", itmppname, "(self, value):");
 
                if(typeIsStr(itmpptype))
                {
                   retyped = true;
-                  out.ds.println("");
-                  out.ds.printxln(sk, "      if isinstance(value, str): value = ffi.new(\"char[]\", value.encode('u8'))");
-                  out.ds.printxln(sk, "      elif value is None: value = ffi.NULL");
+                  out.z.concatx(ln);
+                  out.z.concatx(sk, "      if isinstance(value, str): value = ffi.new(\"char[]\", value.encode('u8'))", ln);
+                  out.z.concatx(sk, "      elif value is None: value = ffi.NULL", ln);
                   oneliner = false;
                }
                //else if(itmpptype.kind == classType && itmpptype._class.registered && itmpptype._class.registered.type == unitClass)
@@ -1567,25 +1567,25 @@ void processPyClass(PythonGen g, BClass c)
                {
                   Class clBaseUnit;
                   for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-                  out.ds.println("");
-                  out.ds.printxln(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)");
-                  //out.ds.printxln(sk, "      self.impl.", itmppname, " = value");
+                  out.z.concatx(ln);
+                  out.z.concatx(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)", ln);
+                  //out.z.concatx(sk, "      self.impl.", itmppname, " = value", ln);
                   oneliner = false;
                }
                /*if(!isTypePythonNative(itmpptype) && itmpptype.kind == classType && !cType.isBool && !cType.isString)
                {
-                  if(oneliner) out.ds.printxln("");
-                  out.ds.printxln("      if not isinstance(value, ", typeName, "): value = ", typeName, "(value)");
+                  if(oneliner) out.z.concatx(ln);
+                  out.z.concatx("      if not isinstance(value, ", typeName, "): value = ", typeName, "(value)", ln);
                   oneliner = false;
                }*/
                if(c.cl.type == structClass || c.cl.type == noHeadClass) // FIX #05 (7.)
                {
                   bool impl = cType && classRequiresImpl(cType.cl) && !typeIsStr(itmpptype);
                   bool zero = impl && cType.cl.type == structClass;
-                  out.ds.printxln(oneliner ? " " : "      ", "self.impl.", itmppname, " = value", impl ? ".impl" : "", zero ? "[0]" : "");
+                  out.z.concatx(oneliner ? " " : "      ", "self.impl.", itmppname, " = value", impl ? ".impl" : "", zero ? "[0]" : "", ln);
                }
                else
-                  out.ds.printxln(oneliner ? " " : "      ", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, " = value", wrap && !retyped ? ".impl" : ""); // value.value
+                  out.z.concatx(oneliner ? " " : "      ", "IPTR(lib, ffi, self, ", c.name, ").", itmppname, " = value", wrap && !retyped ? ".impl" : "", ln); // value.value
             }
             // properties
             else if(itmpp.pt/* && itmpp.c == c */&& !c.isContainer) // FIX #02 // else if(itmpp.pt && !c.isContainer)
@@ -1596,15 +1596,15 @@ void processPyClass(PythonGen g, BClass c)
                   //BClass cType = p.pt.dataType.kind == classType ? g.getClassFromType(p.pt.dataType, true) : null;
                   char * typeName = getSimpleDataTypeName(p.pt.dataType, p.pt.dataTypeString, 0, false, g.lib.ecereCOM, null);
                   const char * sk = (skip || p.pt.dataType.kind == thisClassType) ? "# " : "";
-                  out.ds.println("");
+                  out.z.concatx(ln);
                   if(userDataProp && !strcmp(p.fpnGet, userDataProp.fpnGet))
-                     out.ds.printxln(sk, "   ", userDataProp.name, " = None");
+                     out.z.concatx(sk, "   ", userDataProp.name, " = None", ln);
                   else
                   {
-                     out.ds.printxln(sk, "   @property");
-                     out.ds.printx(sk, "   def ", itmppname, "(self): ");
+                     out.z.concatx(sk, "   @property", ln);
+                     out.z.concatx(sk, "   def ", itmppname, "(self): ");
                      if(!p.pt.Get)
-                        out.ds.printxln(sk, "return None");
+                        out.z.concatx(sk, "return None", ln);
                      else
                      {
                         switch(p.pt.dataType.kind)
@@ -1616,74 +1616,74 @@ void processPyClass(PythonGen g, BClass c)
                            case intSizeType:
                            case floatType:
                            case doubleType:
-                              //out.ds.printx("value");
-                              out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
+                              //out.z.concatx("value");
+                              out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               break;
                            case pointerType:
                               if(p.pt.dataType.type.kind == charType && p.pt.dataType.type.isSigned)
                               {
-                                 out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, "); ");
-                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
+                                 out.z.concatx("value = lib.", p.fpnGet, "(", selfimpl, "); ");
+                                 out.z.concatx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
                               }
                               //else if(p_pt_dataType_type_kind_isPythonNative)
                               /*else if(isTypePythonNative(p.pt.dataType.type) || p.pt.dataType.type.kind == voidType)
-                                 out.ds.printx("lib.", p.fpnGet, "(self); ");*/
+                                 out.z.concatx("lib.", p.fpnGet, "(self); ");*/
                               else
-                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
+                                 out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               break;
                            case classType:
                            {
                               BClass cType = p.pt.dataType._class.registered;
                               if(cType.isBool)
-                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
+                                 out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               else if(cType.isString || cType.isCharPtr)
                               {
-                                 out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, ") if self is not None and self.impl != ffi.NULL else ffi.NULL; ");
-                                 out.ds.printx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
+                                 out.z.concatx("value = lib.", p.fpnGet, "(", selfimpl, ") if self is not None and self.impl != ffi.NULL else ffi.NULL; ");
+                                 out.z.concatx("return None if value == ffi.NULL else ffi.string(value).decode('u8')");
                               }
                               else if(cType.cl.type == unitClass)
                               {
-                                 out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
+                                 out.z.concatx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
                               }
                               else if(cType.nativeSpec)
-                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
+                                 out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               else if(cType.cl.type == normalClass)
                               { // here todo handle Container<GeoPoint> for PolygonContour::points and others
-                                 /*out.ds.println("");
-                                 out.ds.printxln(sk, "      value = lib.", p.fpnGet, "(", selfimpl, ")");
-                                 out.ds.printxln(sk, "      if value != ffi.NULL: return ", typeName, "(impl = value)");
-                                 out.ds.printx(sk, "      else: return None");*/
-                                 out.ds.printx("return pyOrNewObject(", typeName, ", lib.", p.fpnGet, "(", selfimpl, "))");
+                                 /*out.z.concatx(ln);
+                                 out.z.concatx(sk, "      value = lib.", p.fpnGet, "(", selfimpl, ")", ln);
+                                 out.z.concatx(sk, "      if value != ffi.NULL: return ", typeName, "(impl = value)", ln);
+                                 out.z.concatx(sk, "      else: return None");*/
+                                 out.z.concatx("return pyOrNewObject(", typeName, ", lib.", p.fpnGet, "(", selfimpl, "))");
                               }
                               else if(cType.cl.type == structClass)
                               {
-                                 out.ds.printx("value = ", typeName, "();");
-                                 out.ds.printx(" lib.", p.fpnGet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl));");
-                                 out.ds.print(" return value");
+                                 out.z.concatx("value = ", typeName, "();");
+                                 out.z.concatx(" lib.", p.fpnGet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl));");
+                                 out.z.concat(" return value");
                               }
                               // FIX #05 (15.)
                               else if(cType.cl.type == bitClass || cType.cl.type == noHeadClass)
-                                 out.ds.printx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
+                                 out.z.concatx("return ", typeName, "(impl = lib.", p.fpnGet, "(", selfimpl, "))");
                               else if(cType.cl.type == enumClass)
                               {
                                  //bool impl = cType.cl.base.type != systemClass;
-                                 //out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value", impl ? ".impl" : "", ")");
-                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ")");
+                                 //out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ", value", impl ? ".impl" : "", ")");
+                                 out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ")");
                               }
                               else
                               //{
-                              //   out.ds.printx("value = ", typeName, "(); ");
-                                 out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
+                              //   out.z.concatx("value = ", typeName, "(); ");
+                                 out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
                               //}
                               break;
                            }
                            case templateType:
-                              out.ds.printx("value = lib.", p.fpnGet, "(", selfimpl, ");");
-                              out.ds.printx(" return pyOrNewObject(Instance, lib.oTAInstance(value))");
+                              out.z.concatx("value = lib.", p.fpnGet, "(", selfimpl, ");");
+                              out.z.concatx(" return pyOrNewObject(Instance, lib.oTAInstance(value))");
                               break;
                            case subClassType:
-                              out.ds.printx("value = Class(); ");
-                              out.ds.printx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
+                              out.z.concatx("value = Class(); ");
+                              out.z.concatx("return lib.", p.fpnGet, "(", selfimpl, ", value.impl)");
                               break;
                            case thisClassType:
                               // todo tofix
@@ -1691,15 +1691,15 @@ void processPyClass(PythonGen g, BClass c)
                            default:
                               conmsg("check");
                         }
-                        out.ds.println("");
+                        out.z.concatx(ln);
                      }
 
                      if(p.pt.Set)
                      {
                         BClass cType = itmpptype.kind == classType ? itmpptype._class.registered : null;
                         //List<Class> lineage = cType ? getClassLineage(cType.cl) : null;
-                        out.ds.printxln(sk, "   @", itmppname, ".setter");
-                        out.ds.printxln(sk, "   def ", itmppname, "(self, value):");
+                        out.z.concatx(sk, "   @", itmppname, ".setter", ln);
+                        out.z.concatx(sk, "   def ", itmppname, "(self, value):", ln);
 #if 0
                         if(/*c.cl.type == structClass && */!(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
                               typeIsSomething(itmpptype) || typeHasTemplateClass(itmpptype)) &&
@@ -1719,9 +1719,9 @@ void processPyClass(PythonGen g, BClass c)
                         {
                            Class clBaseUnit;
                            for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-                           //out.ds.println("");
-                           out.ds.printxln(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)");
-                           //out.ds.printxln(sk, "      self.impl.", itmppname, " = value");
+                           //out.z.concatx(ln);
+                           out.z.concatx(sk, "      if not isinstance(value, ", clBaseUnit.name, "): value = ", typeName, "(value)", ln);
+                           //out.z.concatx(sk, "      self.impl.", itmppname, " = value", ln);
                            //oneliner = false;
                         }
                         /*if((!mp.isProperty || pt.Set) && !(typeIsNative(itmpptype) || typeIsClassNative(itmpptype) ||
@@ -1732,27 +1732,27 @@ void processPyClass(PythonGen g, BClass c)
                            //const char * typeName = dm.dataType.kind == classType && dm.dataType._class.registered ? dm.dataType._class.registered.itmppname : "FixTypeNameIssue"; //getSimpleDataTypeName(dm.dataType, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
                            Class clBaseUnit;
                            for(clBaseUnit = itmpptype._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-                           out.ds.println("");
-                           out.ds.printxln(sk, "         if not isinstance(", itmppname, ", ", clBaseUnit.itmppname, "): ", itmppname, " = ", typeName, "(", itmppname, ")");
-                           out.ds.print("        ");
+                           out.z.concatx(ln);
+                           out.z.concatx(sk, "         if not isinstance(", itmppname, ", ", clBaseUnit.itmppname, "): ", itmppname, " = ", typeName, "(", itmppname, ")", ln);
+                           out.z.concat("        ");
                         }*/
                         if((itmpptype.kind == classType && itmpptype._class.registered &&
                               itmpptype._class.registered.type == unitClass) ||
                               (!isTypePythonNative(itmpptype) && itmpptype.kind == classType && !cType.isBool && !cType.isString))
-                           ; //out.ds.println("");
+                           ; //out.z.concatx(ln);
                         else
-                           out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", ");
+                           out.z.concatx("      lib.", p.fpnSet, "(", selfimpl, ", ");
                         /*if(isTypePythonNative(itmpptype) || (itmpptype.kind == pointerType &&
                               (isTypePythonNative(itmpptype.type) || itmpptype.type.kind == voidType)))
-                           out.ds.printx("self, ");
+                           out.z.concatx("self, ");
                         else
-                           out.ds.printx("self.impl, ");*/
+                           out.z.concatx("self.impl, ");*/
                         //if(!strcmp(c.itmppname, "Window") && !strcmp(p.itmppname, "hasMaximize"))
                         //if(isTypePythonNative(itmpptype)) // tofix right now (since units aren't derived from int / double / float)
-                        //   out.ds.printx("value");         // it would be wrong to say that a unitclass is native and .impl is reqired
+                        //   out.z.concatx("value");         // it would be wrong to say that a unitclass is native and .impl is reqired
                         if(!(itmpptype.kind == classType && itmpptype._class.registered &&
                               itmpptype._class.registered.type == unitClass) && isTypePythonNative(itmpptype))
-                           out.ds.printx("value");
+                           out.z.concatx("value");
                         else
                         {
                            switch(itmpptype.kind)
@@ -1761,24 +1761,24 @@ void processPyClass(PythonGen g, BClass c)
                                  break;
                               case pointerType:
                                  if(itmpptype.type.kind == charType && itmpptype.type.isSigned)
-                                    out.ds.printx("value.encode('u8')");
+                                    out.z.concatx("value.encode('u8')");
                                  else if(isTypePythonNative(itmpptype.type) || itmpptype.type.kind == voidType)
-                                    out.ds.printx("value");
+                                    out.z.concatx("value");
                                  else
-                                    out.ds.printx("value.impl");
+                                    out.z.concatx("value.impl");
                                  break;
                               case classType:
                               {
                                  if(cType.isBool)
-                                    out.ds.printx("value");
+                                    out.z.concatx("value");
                                  else if(cType.isString)
-                                    out.ds.printx("value.impl.encode('u8')");
+                                    out.z.concatx("value.impl.encode('u8')");
                                  else if(cType.cl.type == structClass/* || cType.cl.type == noHeadClass*/)
-                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl)");
+                                    out.z.concatx("      lib.", p.fpnSet, "(", selfimpl, ", ffi.cast(\"", typeName, " *\", value.impl)");
                                  else if(cType.cl.type == enumClass)
                                  {
                                     bool impl = cType.cl.base.type != systemClass;
-                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", value", impl ? ".impl" : "", "");
+                                    out.z.concatx("      lib.", p.fpnSet, "(", selfimpl, ", value", impl ? ".impl" : "", "");
                                  }
                                  else
                                  {
@@ -1787,8 +1787,8 @@ void processPyClass(PythonGen g, BClass c)
                                     //const char * comma = "";
                                     //DataMember dm; IterDataMember itd { cType.cl };
                                     //DataMember dm; IterClassHierarchyMemberOrProperty itmp { lineage = lineage };
-                                    //out.ds.printxln("      if not isinstance(value, ", typeName, "): value = ", typeName, "(value)");
-                                    //out.ds.printx("      if isinstance(value, tuple): value = ", typeName, "(");
+                                    //out.z.concatx("      if not isinstance(value, ", typeName, "): value = ", typeName, "(value)", ln);
+                                    //out.z.concatx("      if isinstance(value, tuple): value = ", typeName, "(");
                                     //while((dm = itd.next(publicOnly)))
                                     /*while((dm = (DataMember)itmp.next(publicOnly)))
                                     {
@@ -1796,39 +1796,39 @@ void processPyClass(PythonGen g, BClass c)
                                        {
                                           typeDataMember(dm, itmp.cl);
                                           conassert(dm.type == normalMember && dm.itmppname, "?");
-                                          out.ds.printx(comma, dm.itmppname, "=value[", i++, "] if len(value) >= ", i, " else 0");
+                                          out.z.concatx(comma, dm.itmppname, "=value[", i++, "] if len(value) >= ", i, " else 0");
                                           comma = ", ";
                                        }
                                     }
-                                    out.ds.printxln(")");*/
-                                    //out.ds.printxln("      else: value = ", typeName, "()");
+                                    out.z.concatx(")", ln);*/
+                                    //out.z.concatx("      else: value = ", typeName, "()", ln);
                                     if(clType.templateClass && !strcmp(clType.templateClass.name, "Container"))
                                     {
                                        const char * tp = strchr(clType.name, '<');
                                        char * tp2 = getNoNamespaceString(tp, null, false);
-                                       out.ds.printx("      if not isinstance(value, Container):", ln);
-                                       out.ds.printx("         value = Array(\"", tp2, "\", value)", ln); //<GeoPoint>
+                                       out.z.concatx("      if not isinstance(value, Container):", ln);
+                                       out.z.concatx("         value = Array(\"", tp2, "\", value)", ln); //<GeoPoint>
                                        delete tp2;
                                     }
-                                    out.ds.printx("      lib.", p.fpnSet, "(", selfimpl, ", value.impl");
+                                    out.z.concatx("      lib.", p.fpnSet, "(", selfimpl, ", value.impl");
                                  }
                                  /*else
-                                    out.ds.printx("value.impl");*/
+                                    out.z.concatx("value.impl");*/
                                  break;
                               }
                               case templateType:
-                                 out.ds.printx("TA(value)");
+                                 out.z.concatx("TA(value)");
                                  break;
                               default:
                                  conmsg("check");
                            }
                         }
-                        out.ds.println(")"); // value.value
+                        out.z.concatx(")", ln); // value.value
                      }
                      if(p.pt.IsSet)
                      {
-                        out.ds.printxln(sk, "   # @", itmppname, ".isset # tofix: how do we get isset?");
-                        out.ds.printxln(sk, "   # def ", itmppname, "(self): lib.", p.fpnIst, "(", selfimpl, ")");
+                        out.z.concatx(sk, "   # @", itmppname, ".isset # tofix: how do we get isset?", ln);
+                        out.z.concatx(sk, "   # def ", itmppname, "(self): lib.", p.fpnIst, "(", selfimpl, ")", ln);
                      }
                   }
                }
@@ -1851,14 +1851,14 @@ void processPyClass(PythonGen g, BClass c)
                if(!strcmp(p.name, "int") || !strcmp(p.name, "double") || !strcmp(p.name, "float"))
                {
                   const char * type = !strcmp(p.name, "double") ? "float" : p.name;
-                  out.ds.printxln(ln, sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)");
+                  out.z.concatx(ln, sk, "   def __", type, "__(self): return lib.", p.fpnGet, "(self.impl)", ln);
                }
                else if(!strcmp(p.name, "char_ptr"))
                {
                   if(!strcmp(c.name, "String"))
-                     out.ds.printx(ln, sk, "   def __str__(self): return ffi.string(self.impl).decode('u8') if self.impl != ffi.NULL else str()", ln);
+                     out.z.concatx(ln, sk, "   def __str__(self): return ffi.string(self.impl).decode('u8') if self.impl != ffi.NULL else str()", ln);
                   else
-                     out.ds.printx(ln, sk, "   def __str__(self): return ffi.string(lib.", p.fpnGet, "(self.impl)).decode('u8') if self.impl != ffi.NULL else str()", ln);
+                     out.z.concatx(ln, sk, "   def __str__(self): return ffi.string(lib.", p.fpnGet, "(self.impl)).decode('u8') if self.impl != ffi.NULL else str()", ln);
                }
                else conmsg("check");
             }
@@ -1868,23 +1868,23 @@ void processPyClass(PythonGen g, BClass c)
                switch(p.cConv.cl.type)
                {
                   case normalClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return pyOrNewObject(", p.cConv.cl.name, ", lib.", p.fpnGet, "(self.impl))", ln);
+                     out.z.concatx(ln, sk, "   # def ", p.fpnGet, "(self): return pyOrNewObject(", p.cConv.cl.name, ", lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case noHeadClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
+                     out.z.concatx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case structClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return", ln);
+                     out.z.concatx(ln, sk, "   # def ", p.fpnGet, "(self): value = ", p.cConv.cl.name, "(); lib.", p.fpnGet, "(self.impl, ffi.cast(\"", p.cConv.cl.name, " *\", value.impl)); return", ln);
                      break;
                   case bitClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
+                     out.z.concatx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(impl = lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   case unitClass:
-                     out.ds.printx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(lib.", p.fpnGet, "(self.impl))", ln);
+                     out.z.concatx(ln, sk, "   # def ", p.fpnGet, "(self): return ", p.cConv.cl.name, "(lib.", p.fpnGet, "(self.impl))", ln);
                      break;
                   default: conmsg("check");
                }
-               out.ds.printx(ln,
+               out.z.concatx(ln,
                              sk, "   # here is an unhandled conversion: ",
                                    c.name, "::", p.name, " (", c.cl.type, " 2 ", p.cConv.cl.type, ")", ln,
                              //sk, "   @property", ln,
@@ -1920,61 +1920,61 @@ void processPyClass(PythonGen g, BClass c)
                {
                   /*int ap = 0;
                   Type param;
-                  out.ds.printx(sk, "   def ", mname, "(self");
+                  out.z.concatx(sk, "   def ", mname, "(self");
                   IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                   while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
-                     out.ds.printx(", ", itr.name);
-                  out.ds.println("):");
-                  out.ds.printx(sk, "      lib.", m.s, "(self.impl");
+                     out.z.concatx(", ", itr.name);
+                  out.z.concatx("):", ln);
+                  out.z.concatx(sk, "      lib.", m.s, "(self.impl");
                   IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                   while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
                   {
                      if(param.templateParameter)
-                        out.ds.printx(", TA(", itr.name, ")");
+                        out.z.concatx(", TA(", itr.name, ")");
                      else
-                        out.ds.printx(", ", itr.name);
+                        out.z.concatx(", ", itr.name);
                   }
-                  out.ds.println(")");*/
+                  out.z.concatx(")", ln);*/
 //#if 0 // temporary
-                  out.ds.println("");
-                  out.ds.printx(sk, "   def fn_unset_", m.s, "(self"); // , m, b, x, y, mods
-                     //out.ds.printx(", __", t);
+                  out.z.concatx(ln);
+                  out.z.concatx(sk, "   def fn_unset_", m.s, "(self"); // , m, b, x, y, mods
+                     //out.z.concatx(", __", t);
                   comma = ", ";
                   if(!m.md.dataType.staticMethod && thisClass)
-                     out.ds.printx(comma, "_", name);
+                     out.z.concatx(comma, "_", name);
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.pm.kind == ellipsisType)
-                           out.ds.printx(comma, "*args");
+                           out.z.concatx(comma, "*args");
                         else
-                           out.ds.printx(comma, itr.name);
+                           out.z.concatx(comma, itr.name);
                         if(!comma[0]) comma = ", ";
                      }
                   }
-                  out.ds.println("):");
+                  out.z.concatx("):", ln);
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                      while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                      {
                         if(itr.isReturnValue)
-                           out.ds.printxln("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
+                           out.z.concatx("      if ", itr.name, " is None: ", itr.name, " = ffi.NULL", ln);
                      }
                   }
-                  out.ds.printx(sk, "      return ");
+                  out.z.concatx(sk, "      return ");
                   if(typeReturnTypeRequiresPyObj(m.md.dataType))
                   {
                      Type rt = m.md.dataType.returnType;
                      Class clRT = rt.kind == classType ? rt._class.registered : null;
                      Class cl = clRT.templateClass ? clRT.templateClass : clRT;
-                     out.ds.printx("pyOrNewObject(", cl.name, ", ");
+                     out.z.concatx("pyOrNewObject(", cl.name, ", ");
                   }
-                  out.ds.printx("lib.", m.s, "(self.impl"); // m.impl, b.impl, x, y, mods
-                     //out.ds.printx(", __", t);
+                  out.z.concatx("lib.", m.s, "(self.impl"); // m.impl, b.impl, x, y, mods
+                     //out.z.concatx(", __", t);
                   if(!m.md.dataType.staticMethod && thisClass)
-                     out.ds.printx(", _", name, c && c.cl.type == normalClass ? ".impl" : "");
+                     out.z.concatx(", _", name, c && c.cl.type == normalClass ? ".impl" : "");
                   if(!paramsIsOnlyVoid(&m.md.dataType.params))
                   {
                      IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
@@ -1983,16 +1983,16 @@ void processPyClass(PythonGen g, BClass c)
                         bool ptr = itr.isNullable;
                         //BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
                         if(itr.pm.kind == ellipsisType)
-                           out.ds.printx(", *ellipsisArgs(args)");
+                           out.z.concatx(", *ellipsisArgs(args)");
                         else
-                           out.ds.printx(", ", ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+                           out.z.concatx(", ", ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
                      }
                   }
                   if(typeReturnTypeRequiresPyObj(m.md.dataType))
-                     out.ds.print(")");
-                  out.ds.printxln(")");
-                  out.ds.println("");
-                  out.ds.printx(sk, "   @property", ln,
+                     out.z.concat(")");
+                  out.z.concatx(")", ln);
+                  out.z.concatx(ln);
+                  out.z.concatx(sk, "   @property", ln,
                                 sk, "   def ", mname, "(self):", ln,
                                 sk, "      if hasattr(self, 'fn_", m.s, "'): return self.fn_", m.s, ln,
                                 sk, "      else: return self.fn_unset_", m.s, ln,
@@ -2016,8 +2016,8 @@ void processPyClass(PythonGen g, BClass c)
       }
       if(c.cl.type == unitClass)
       {
-         out.ds.printxln("");
-         out.ds.printxln(sk, c.symbolName, ".buc = ", cBase.cl.type == unitClass ? cBase.symbolName : c.symbolName);
+         out.z.concatx(ln);
+         out.z.concatx(sk, c.symbolName, ".buc = ", cBase.cl.type == unitClass ? cBase.symbolName : c.symbolName, ln);
       }
       // end of class
       delete selfimpl;
@@ -2032,13 +2032,13 @@ char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char 
    int otherCount = *_otherCount;
    char * firstArg = null;
    if(c.cl.type == normalClass && c.cl.templateParams.count) // todo? or base's or base's base's, etc?
-      out.ds.print(", templateParams = None");
+      out.z.concat(", templateParams = None");
    if(c.cl.type == unitClass)
    {
       if(c.cl.base.type == systemClass)
-         out.ds.print(", impl = 0");
+         out.z.concat(", impl = 0");
       else if(c.cl.base.type == unitClass)
-         out.ds.print(", value = 0, impl = None");
+         out.z.concat(", value = 0, impl = None");
       else conmsg("check");
    }
    else if(c.cl.type != enumClass)
@@ -2053,7 +2053,7 @@ char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char 
             const char * zeroVal = getTypeZeroValuePy(g, itmpp.type, v);
             if(!(strlen(zeroVal) == lenx + 2 && !strncmp(zeroVal, c.name, lenx)))
             {
-               out.ds.printx(", ", itmpp.name, " = ", zeroVal);
+               out.z.concatx(", ", itmpp.name, " = ", zeroVal);
                if((len = strlen(itmpp.name)) > memberLen) memberLen = len;
                if(itmpp.type.kind == classType && itmpp.type._class &&
                      itmpp.type._class.registered && itmpp.type._class.registered.type == bitClass)
@@ -2099,24 +2099,24 @@ char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char 
    }
    if(otherCount && c.cl.type == normalClass)
    {
-      //out.ds.println(",");
-      //out.ds.print("                impl = None");
+      //out.z.concatx(",", ln);
+      //out.z.concat("                impl = None");
 
-      out.ds.print(",");
-      if(lineEachIndent) out.ds.printx(ln, spaces(lineEachIndent, 0));
-      out.ds.printx(lineEachIndent ? "" : " ", "impl = None");
+      out.z.concat(",");
+      if(lineEachIndent) out.z.concatx(ln, spaces(lineEachIndent, 0));
+      out.z.concatx(lineEachIndent ? "" : " ", "impl = None");
 
-      //out.ds.printx(",", " ", "impl = None");
+      //out.z.concatx(",", " ", "impl = None");
    }
    // FIX #05 (8.)
    else if(c.cl.type == structClass || c.cl.type == bitClass || c.cl.type == noHeadClass || c.cl.type == normalClass)
    {
-      out.ds.print(",");
-      if(lineEachIndent) out.ds.printx(ln, spaces(lineEachIndent, 0));
-      out.ds.printx(lineEachIndent ? "" : " ", "impl = None");
+      out.z.concat(",");
+      if(lineEachIndent) out.z.concatx(ln, spaces(lineEachIndent, 0));
+      out.z.concatx(lineEachIndent ? "" : " ", "impl = None");
    }
    if(c.cl.type != enumClass)
-      out.ds.println("):");
+      out.z.concatx("):", ln);
    *_memberLen = memberLen;
    *_otherCount = otherCount;
    return firstArg;
@@ -2151,12 +2151,12 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                cPrintType(m.md.dataType.returnType, false, false, true, true); // todo: add a * in some cases?
             const char * ret = m.md.dataType.returnType.kind == voidType ? "" : "return ";
             const char * comma = ", ";
-            out.ds.printx(ln, sk, "@ffi.callback(\"", returnType, "(");
+            out.z.concatx(ln, sk, "@ffi.callback(\"", returnType, "(");
             delete returnType;
             t[2] = (char)tolower(typeName[0]);
             //t[1] = 0;
             //if(!m.md.dataType.staticMethod && thisClass)
-               out.ds.printx(typeName), prevParam = true;
+               out.z.concatx(typeName), prevParam = true;
             if(!thisClass || !strcmp(c.cl.name, m.md.dataType.thisClass.string))
                iname = CopyAllNonCapsString(c.cl.name);
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
@@ -2176,19 +2176,19 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      if(tp.type == type && tp.identifier && tp.identifier.string)
                      {
                         char * type = g.allocMacroSymbolName(false, TP, { c = c }, c.name, ctp.name, 0);
-                        out.ds.printx(prevParam ? ", " : "", type);
+                        out.z.concatx(prevParam ? ", " : "", type);
                         prevParam = true;
                         delete type;
                      }
                      else conmsg("check");
                   }
                   else if(itr.pm.kind == ellipsisType)
-                     out.ds.printx(", *args");
+                     out.z.concatx(", *args");
                   else
                   {
                      char * type = printType(itr.pm, false, false, true);
                      //if(strcmp(type, modern)) conmsg("check");
-                     out.ds.printx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
+                     out.z.concatx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
                      prevParam = true;
                      delete type;
                   }
@@ -2209,7 +2209,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      if(tp.type == type && tp.identifier && tp.identifier.string)
                      {
                         char * type = g.allocMacroSymbolName(false, TP, { c = c }, c.name, ctp.name, 0);
-                        out.ds.printx(prevParam ? ", " : "", type);
+                        out.z.concatx(prevParam ? ", " : "", type);
                         prevParam = true;
                         delete type;
                      }
@@ -2241,7 +2241,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                      //   delete modern, modern = CopyString("uint32_t");
                      if(strcmp(type, modern))
                         conmsg("check");
-                     out.ds.printx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
+                     out.z.concatx(prevParam ? ", " : "", modern, isStruct ? " *" : "");
                      prevParam = true;
                      delete type;
                      //delete simple;
@@ -2249,31 +2249,31 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                   delete modern;
                }*/
             }
-            out.ds.println(")\")");
-            out.ds.printx(sk, "def cb_", m.s, "(");
+            out.z.concatx(")\")", ln);
+            out.z.concatx(sk, "def cb_", m.s, "(");
             prevParam = false;
             //if(!m.md.dataType.staticMethod && thisClass)
-               out.ds.print(t), prevParam = true;
+               out.z.concat(t), prevParam = true;
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
             {
                IterParamPlus itr { &m.md.dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
                while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
                {
                   if(itr.pm.kind == ellipsisType)
-                     out.ds.printx(prevParam ? ", " : "", "*args");
+                     out.z.concatx(prevParam ? ", " : "", "*args");
                   else
-                     out.ds.printx(prevParam ? ", " : "", itr.name);
+                     out.z.concatx(prevParam ? ", " : "", itr.name);
                   prevParam = true;
                }
             }
-            out.ds.println("):");
+            out.z.concatx("):", ln);
             if(!iname)
                iname = CopyAllNonCapsString(c.cl.name);
             if(thisClass)
             {
                char * userDataName = userDataProp ? PrintString(".", userDataProp.name) : CopyString("");
-               out.ds.printxln("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", anyObject ? t : iname, ")");
-               out.ds.printx("   ", ret, iname, ".fn_", m.s, "(",
+               out.z.concatx("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", anyObject ? t : iname, ")", ln);
+               out.z.concatx("   ", ret, iname, ".fn_", m.s, "(",
                      anyObject ? "" : "pyOrNewObject(", anyObject ? "" : c.cl.name, anyObject ? "" : ", ", anyObject ? iname : t,
                      anyObject ? userDataName : "", anyObject ? "" : ")");
                delete userDataName;
@@ -2281,13 +2281,13 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
             else if(thisTemplate)
             {
                Type param = m.md.dataType.params.first;
-               out.ds.printxln("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", param.name, ")");
-               out.ds.printx("   ", ret, iname, ".fn_", m.s, "(pyObject(lib.oTAInstance(", t, "))");
+               out.z.concatx("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", param.name, ")", ln);
+               out.z.concatx("   ", ret, iname, ".fn_", m.s, "(pyObject(lib.oTAInstance(", t, "))");
             }
             else
             {
-               out.ds.printxln("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", t, ")");
-               out.ds.printx("   ", ret, iname, ".fn_", m.s, "(", iname);
+               out.z.concatx("   ", iname, " = pyOrNewObject(", c.cl.name, ", ", t, ")", ln);
+               out.z.concatx("   ", ret, iname, ".fn_", m.s, "(", iname);
             }
             if(!paramsIsOnlyVoid(&m.md.dataType.params))
             {
@@ -2298,17 +2298,17 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                   char * _type = printType(itr.pm, false, false, false);
                   char * type = getNoNamespaceString(_type, null, false);
                   if(thisTemplate && itr.pm == m.md.dataType.params.first)
-                     out.ds.printx(", ", iname);
+                     out.z.concatx(", ", iname);
                   else if(itr.pm.kind == ellipsisType)
-                     out.ds.printx(comma, "*ellipsisArgs(args)");
+                     out.z.concatx(comma, "*ellipsisArgs(args)");
                   else
                      printArgPassing(out, comma, itr.name, type, itr.pm, true, first, false, true);
                   delete type;
                   delete _type;
                }
             }
-            out.ds.println(")");
-            //out.ds.println("");
+            out.z.concatx(")", ln);
+            //out.z.concatx(ln);
             FreeType(thisType);
             //FreeType(type);
             delete t;
@@ -2345,13 +2345,13 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
       }
    }
    if(convertTypedArgs)
-      out.ds.printx(sln, sk, spaces(ind, 0), "def ", name,
+      out.z.concatx(sln, sk, spaces(ind, 0), "def ", name,
             "(", self ? "self, " : "", "*args): lib.", libname,
             "(", self ? "self.impl, " : "", "*convertTypedArgs(args))", ln);
 #if 0
    else if(f)
    {
-      out.ds.printx(sk, "def ", name, "(");
+      out.z.concatx(sk, "def ", name, "(");
       if(!paramsIsOnlyVoid(&t.params))
       {
          const char * comma = "";
@@ -2359,16 +2359,16 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
          while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
          {
             if(itr.pm.kind == ellipsisType)
-               out.ds.printx(comma, "*args");
+               out.z.concatx(comma, "*args");
             else
-               out.ds.printx(comma, itr.name);
+               out.z.concatx(comma, itr.name);
             comma = ", ";
          }
       }
-      out.ds.printx("): ");
+      out.z.concatx("): ");
       if(dataType.returnType.kind != voidType) // todo, type conversion to py
-         out.ds.printx("return ");
-      out.ds.printx("lib.", libname, "(");
+         out.z.concatx("return ");
+      out.z.concatx("lib.", libname, "(");
       if(!paramsIsOnlyVoid(&t.params))
       {
          const char * comma = "";
@@ -2378,12 +2378,12 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             if(itr.pm.kind != ellipsisType)
             {
                bool ptr = itr.isNullable;
-               out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
+               out.z.concatx(comma, ptr ? "ffi.NULL if " : "", ptr ? itr.name : "", ptr ? " is None else " : "", itr.name, ptr ? ".impl" : "");
                comma = ", ";
             }
          }
       }
-      out.ds.printxln(")");
+      out.z.concatx(")", ln);
    }
 #endif // 0
    else
@@ -2393,7 +2393,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
       Class clRT = rt.kind == classType ? rt._class.registered : null;
       BClass cRT = clRT;
 
-      out.ds.printx(sln, sk, spaces(ind, 0), "def ", name, "(", self ? "self" : "");
+      out.z.concatx(sln, sk, spaces(ind, 0), "def ", name, "(", self ? "self" : "");
       if(!paramsIsOnlyVoid(&dataType.params))
       {
          bool defNone = true;
@@ -2415,18 +2415,18 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
          {
             if(itr.isReturnValue) continue;
             // FIX #05
-            //out.ds.printx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
+            //out.z.concatx(", ", itr.name, itr.last && itr.isNullable ? " = None" : "");
             if(itr.pm == pm)
                defNone = true;
             if(itr.pm.kind == ellipsisType)
-               out.ds.printx(comma, "*args");
+               out.z.concatx(comma, "*args");
             else
-               out.ds.printx(comma, itr.name, defNone ? " = None" : "");
+               out.z.concatx(comma, itr.name, defNone ? " = None" : "");
             if(!comma[0]) comma = ", ";
          }
          comma = self ? ", " : "";
       }
-      out.ds.printxln("):");
+      out.z.concatx("):", ln);
       ind += 3;
       /*if(!paramsIsOnlyVoid(&dataType.params))
       {
@@ -2434,7 +2434,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
          while(itr.next(paramFilter/-*tofix: { all = true, ellipsisOn = false }*-/))
          {
             if(itr.isReturnValue || !(itr.last && itr.isNullable)) continue;
-            out.ds.printxln(sk, spaces(ind, 0), "if ", itr.name, " is None: ", itr.name, " = ffi.NULL");
+            out.z.concatx(sk, spaces(ind, 0), "if ", itr.name, " is None: ", itr.name, " = ffi.NULL", ln);
          }
       }*/
       //if region is None: region = ffi.NULL
@@ -2448,27 +2448,27 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             if(itr.pm.kind == ellipsisType) continue;
             //if(itr.pm.kind == classType && itr.pm._class.registered && !strcmp(itr.pm._class.registered.name, "class"))
             if(itr.isReturnTypedObject)
-               out.ds.printxln(sk, spaces(ind, 0), "_", pn, " = pyAddrTypedObject(", pn, ")");
+               out.z.concatx(sk, spaces(ind, 0), "_", pn, " = pyAddrTypedObject(", pn, ")", ln);
             else if(itr.isReturnValue)
             {
                char * _type = printType(itr.pm, false, false, true);
                char * type = getNoNamespaceString(_type, null, false);
                if(itr.isNoHead)
-                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))"); //int *
+                  out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))", ln); //int *
                else
-                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.new(\"", type, itr.isStruct ? " *" : "", "\")"); //int *
+                  out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.new(\"", type, itr.isStruct ? " *" : "", "\")", ln); //int *
                delete _type;
                delete type;
             }
             else if(itr.pm.kind == pointerType && itr.pm.type.kind == voidType)
             {
-               out.ds.printxln(sk, spaces(ind, 0), "if hasattr(", pn, ", 'impl'): ", pn, " = ", pn, ".impl");
-               out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ffi.NULL");
+               out.z.concatx(sk, spaces(ind, 0), "if hasattr(", pn, ", 'impl'): ", pn, " = ", pn, ".impl", ln);
+               out.z.concatx(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ffi.NULL", ln);
             }
             else if(itr.isTypeStr)
             {
-               out.ds.printxln(sk, spaces(ind, 0), "if isinstance(", pn, ", str): ", pn, " = ffi.new(\"char[]\", ", pn, ".encode('u8'))");
-               out.ds.printxln(sk, spaces(ind, 0), "elif ", pn, " is None: ", pn, " = ffi.NULL");
+               out.z.concatx(sk, spaces(ind, 0), "if isinstance(", pn, ", str): ", pn, " = ffi.new(\"char[]\", ", pn, ".encode('u8'))", ln);
+               out.z.concatx(sk, spaces(ind, 0), "elif ", pn, " is None: ", pn, " = ffi.NULL", ln);
             }
             else if(!(typeIsNative(itr.pm) || typeIsClassNative(itr.pm) ||
                   typeIsSomething(itr.pm) || typeHasTemplateClass(itr.pm) || itr.pm.kind == intPtrType))// &&
@@ -2477,72 +2477,72 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
                const char * typeName = itr.pm.kind == classType && itr.pm._class.registered ? itr.pm._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, itr.pm.dataTypeString, 0, false, g.lib.ecereCOM, null);
                Class clBaseUnit;
                for(clBaseUnit = itr.pm._class.registered; clBaseUnit && clBaseUnit.base.type == unitClass; clBaseUnit = clBaseUnit.base);
-               out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is not None and not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")");
+               out.z.concatx(sk, spaces(ind, 0), "if ", pn, " is not None and not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")", ln);
                if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
-                  //out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ffi.cast(\"", typeName, " *\", ", pn, ".impl)");
-                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl");
+                  //out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ffi.cast(\"", typeName, " *\", ", pn, ".impl)", ln);
+                  out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl", ln);
                else if(itr.pm.kind == classType && itr.pm._class.registered &&
                         (itr.pm._class.registered.type == normalClass || itr.pm._class.registered.type == noHeadClass))
                {
-                  out.ds.printxln(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl");
+                  out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.NULL if ", pn, " is None else ", pn, ".impl", ln);
                }
                else
                {
-                  out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL");
+                  out.z.concatx(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL", ln);
                   /*if(itr.pm.kind == classType && itr.pm._class.registered &&
                         (itr.pm._class.registered.type == normalClass || itr.pm._class.registered.type == noHeadClass))
-                     out.ds.printxln(sk, spaces(ind, 0), "else:", ln, sk, spaces(ind+3, 0), pn, " = ", pn, ".impl");*/
+                     out.z.concatx(sk, spaces(ind, 0), "else:", ln, sk, spaces(ind+3, 0), pn, " = ", pn, ".impl", ln);*/
                }
-               //out.ds.printxln(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL");
-               //out.ds.printx(sk, spaces(ind, 0), "elif not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")");
+               //out.z.concatx(sk, spaces(ind, 0), "if ", pn, " is None: ", pn, " = ", "ffi.NULL", ln);
+               //out.z.concatx(sk, spaces(ind, 0), "elif not isinstance(", pn, ", ", clBaseUnit.name, "): ", pn, " = ", typeName, "(", pn, ")");
                //if(itr.pm.kind == classType && itr.pm._class.registered && itr.pm._class.registered.type == structClass)
-               //   out.ds.printxln("; ", pn, " = ffi.cast(\"", typeName, " *\", ", pn, ".impl)");
+               //   out.z.concatx("; ", pn, " = ffi.cast(\"", typeName, " *\", ", pn, ".impl)", ln);
                //else
-               //   out.ds.println("");
+               //   out.z.concatx(ln);
             }
          }
       }
 
-      out.ds.printx(sk, spaces(ind, 0));
+      out.z.concatx(sk, spaces(ind, 0));
       if(ret)
       {
          if(multireturn > 0)
-            out.ds.printx("r = ");
+            out.z.concatx("r = ");
          else
-            out.ds.printx("return ");
+            out.z.concatx("return ");
       }
       if(typeReturnTypeRequiresPyObj(dataType))
       {
          // FIX #04
          Class cl = clRT.templateClass ? clRT.templateClass : clRT;
-         out.ds.printx("pyOrNewObject(", cl.name, ", lib.", libname, "(", self ? selfimpl : "");
+         out.z.concatx("pyOrNewObject(", cl.name, ", lib.", libname, "(", self ? selfimpl : "");
          // todo or use pyornewobject
-         //out.ds.printx(sk, spaces(ind, 0), "impl = lib.", libname, "(", self ? selfimpl : "");
+         //out.z.concatx(sk, spaces(ind, 0), "impl = lib.", libname, "(", self ? selfimpl : "");
       }
       /*else if(c && c.cl.type == structClass)
       {
-         out.ds.printx(sk, spaces(ind, 0), "lib.", libname, "(");
+         out.z.concatx(sk, spaces(ind, 0), "lib.", libname, "(");
          if(self)
-            out.ds.printx("ffi.cast(\"", c.name, c.cl.type == structClass ? " *" : "", "\", self.impl)");
+            out.z.concatx("ffi.cast(\"", c.name, c.cl.type == structClass ? " *" : "", "\", self.impl)");
       }*/
       else
       {
          // FIX #05
          if(clRT && ((clRT.type == unitClass && !cRT.isUnichar) || clRT.type == bitClass || clRT.type == structClass))
-            out.ds.printx(cRT.name, "(impl = ");
+            out.z.concatx(cRT.name, "(impl = ");
          else if(clRT && clRT.type == normalClass)
          {
             if(cRT.isString)
-               out.ds.printx("String(");
+               out.z.concatx("String(");
             else
-               out.ds.printx("pyOrNewObject(", cRT.name, ", ");
+               out.z.concatx("pyOrNewObject(", cRT.name, ", ");
          }
-         //out.ds.printx(sk, spaces(ind, 0), ret ? "return " : "", "lib.", libname, "(", self ? "self.impl" : "");
-         out.ds.printx("lib.", libname, "(");
+         //out.z.concatx(sk, spaces(ind, 0), ret ? "return " : "", "lib.", libname, "(", self ? "self.impl" : "");
+         out.z.concatx("lib.", libname, "(");
          if(self && c && c.cl.type == structClass)
-            out.ds.printx("ffi.cast(\"", c.name, " *", "\", self.impl)"); // todo: move this case (structClass) to selfimpl initialization
+            out.z.concatx("ffi.cast(\"", c.name, " *", "\", self.impl)"); // todo: move this case (structClass) to selfimpl initialization
          else if(self)
-            out.ds.printx(selfimpl);
+            out.z.concatx(selfimpl);
       }
       if(!paramsIsOnlyVoid(&dataType.params))
       {
@@ -2552,33 +2552,33 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             char * _type = printType(itr.pm, false, false, true);
             char * type = getNoNamespaceString(_type, null, false);
             if(itr.pm.kind == ellipsisType)
-               out.ds.printx(comma, "*ellipsisArgs(args)");
+               out.z.concatx(comma, "*ellipsisArgs(args)");
             else
                printArgPassing(out, comma, itr.name, type, itr.pm, false, false, true, false);
             if(!comma[0]) comma = ", ";
             delete type;
             delete _type;
             /*BClass c = itr.pm.kind == classType ? g.getClassFromType(itr.pm, true) : null;
-            out.ds.printx(", ", itr.name, c && c.cl.type == normalClass ? ".impl" : "");*/
+            out.z.concatx(", ", itr.name, c && c.cl.type == normalClass ? ".impl" : "");*/
          }
       }
-      out.ds.print(")");
+      out.z.concat(")");
       if(typeReturnTypeRequiresPyObj(dataType))
       {
          if(clRT.templateClass)
          {
             const char * tp = strchr(clRT.name, '<');
             char * tp2 = getNoNamespaceString(tp, null, false);
-            out.ds.printx(", \"", tp2, "\")");
+            out.z.concatx(", \"", tp2, "\")");
             delete tp2;
          }
          else
-            out.ds.print(")");
+            out.z.concat(")");
       }
       else if((clRT &&
             ((clRT.type == unitClass && !cRT.isUnichar) || clRT.type == bitClass || clRT.type == structClass || clRT.type == normalClass)))
-         out.ds.print(")");
-      out.ds.printx(ln);
+         out.z.concat(")");
+      out.z.concatx(ln);
       if(multireturn > 0)
       {
          Type tPrev { };
@@ -2590,24 +2590,24 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             //      non-hack / detection: void ** parameter preceded by a Class parameter
             if(itr.isVoidPtrReturn)
             {
-               out.ds.printx(sk, spaces(ind, 0), "if ", itr.name, "[0] == ffi.NULL: _", itr.name, " = None", ln);
+               out.z.concatx(sk, spaces(ind, 0), "if ", itr.name, "[0] == ffi.NULL: _", itr.name, " = None", ln);
                if(cPrev && cPrev.isClass)
                {
                   // todo: support more class types?
-                  out.ds.printx(sk, spaces(ind  , 0), "else:", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "else:", ln);
                   ind += 3;
-                  out.ds.printx(sk, spaces(ind  , 0), "if ", tPrev.name, ".type == ClassType.normalClass:", ln);
-                  out.ds.printx(sk, spaces(ind+3, 0), "i = ffi.cast(\"Instance\", ", itr.name, "[0])", ln);
-                  out.ds.printx(sk, spaces(ind+3, 0), "n = ffi.string(i._class.name).decode('u8')", ln);
-                  out.ds.printx(sk, spaces(ind  , 0), "else:", ln);
-                  out.ds.printx(sk, spaces(ind+3, 0), "n = ffi.string(", tPrev.name, ".name).decode('u8')", ln);
-                  out.ds.printx(sk, spaces(ind  , 0), "t = pyTypeByName(n)", ln);
-                  out.ds.printx(sk, spaces(ind  , 0), "ct = n + \" * \" if ", tPrev.name, ".type == ClassType.noHeadClass else n", ln);
-                  out.ds.printx(sk, spaces(ind  , 0), "_", itr.name, " = t(impl = pyFFI().cast(ct, ", itr.name, "[0]))", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "if ", tPrev.name, ".type == ClassType.normalClass:", ln);
+                  out.z.concatx(sk, spaces(ind+3, 0), "i = ffi.cast(\"Instance\", ", itr.name, "[0])", ln);
+                  out.z.concatx(sk, spaces(ind+3, 0), "n = ffi.string(i._class.name).decode('u8')", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "else:", ln);
+                  out.z.concatx(sk, spaces(ind+3, 0), "n = ffi.string(", tPrev.name, ".name).decode('u8')", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "t = pyTypeByName(n)", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "ct = n + \" * \" if ", tPrev.name, ".type == ClassType.noHeadClass else n", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "_", itr.name, " = t(impl = pyFFI().cast(ct, ", itr.name, "[0]))", ln);
                   ind -= 3;
                }
                else
-                  out.ds.printx(sk, spaces(ind  , 0), "else: _", itr.name, " = ", itr.name, "[0]", ln);
+                  out.z.concatx(sk, spaces(ind  , 0), "else: _", itr.name, " = ", itr.name, "[0]", ln);
             }
             cPrev = itr.pm.kind == classType ? itr.pm._class.registered : null;
             tPrev = itr.pm;
@@ -2617,38 +2617,38 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
       {
          const char * comma = "";
          IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-         out.ds.printx(sk, spaces(ind, 0), "return ", ret ? "r, " : "");
+         out.z.concatx(sk, spaces(ind, 0), "return ", ret ? "r, " : "");
          while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
          {
             if(itr.isReturnValue)
             {
                if(itr.isVoidPtrReturn)
-                  out.ds.printx(comma, "_", itr.name);
+                  out.z.concatx(comma, "_", itr.name);
                else if(itr.pm.kind == pointerType && itr.typeIsReturnable && itr.typeIsNative)
-                  out.ds.printx(comma, itr.name, "[0]");
+                  out.z.concatx(comma, itr.name, "[0]");
                else
                {
                   const char * typeName = itr.pm.type.kind == classType && itr.pm.type._class.registered ? itr.pm.type._class.registered.name : "FixTypeNameIssue"; //getSimpleDataTypeName(itr.pm, dm.dataTypeString, 0, false, g.lib.ecereCOM, null);
-                  out.ds.printx(comma, typeName, "(impl = ", itr.name, "[0]", ")");
+                  out.z.concatx(comma, typeName, "(impl = ", itr.name, "[0]", ")");
                }
                if(!*comma) comma = ", ";
             }
          }
-         out.ds.println("");
+         out.z.concatx(ln);
       }
       else if(returnTypedObject)
       {
          IterParamPlus itr { &dataType.params, anon = true, getName = pyGetNoConflictSymbolName };
-         out.ds.printx(sk, spaces(ind, 0), "return pyRetAddrTypedObject(");
+         out.z.concatx(sk, spaces(ind, 0), "return pyRetAddrTypedObject(");
          while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
          {
             if(itr.isReturnTypedObject)
             {
-               out.ds.printx(itr.name, ", _", itr.name, "[1]");
+               out.z.concatx(itr.name, ", _", itr.name, "[1]");
                break;
             }
          }
-         out.ds.println(")");
+         out.z.concatx(")", ln);
       }
    }
 }
@@ -2663,7 +2663,7 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
       case charType: case shortType: case intType:
       case int64Type: case int128Type: case longType: case floatType:
       case doubleType: case intPtrType:
-         out.ds.printx(comma, name);
+         out.z.concatx(comma, name);
          break;
       case pointerType:
       {
@@ -2671,16 +2671,16 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
          {
             case charType:
                if(param.type.isSigned)
-                  out.ds.printx(comma, name, encode ? ".encode('u8')" : "");
+                  out.z.concatx(comma, name, encode ? ".encode('u8')" : "");
                else
-                  out.ds.printx(comma, name);
+                  out.z.concatx(comma, name);
                break;
             case voidType: case shortType: case intType:
             case int64Type: case int128Type: case longType: case floatType:
             case doubleType: case intPtrType:
             case classType:
             case pointerType:
-               out.ds.printx(comma, name);
+               out.z.concatx(comma, name);
                break;
             case functionType:
                break;
@@ -2693,65 +2693,65 @@ static void printArgPassing(BOutput out, const char * comma, const char * name, 
       {
          BClass c = param._class.registered;
          if(c && c.is_class && param.classObjectType == typedObject && param.byReference)
-            out.ds.printx(comma, "*_", name);
+            out.z.concatx(comma, "*_", name);
          else if(c && c.is_class && param.classObjectType == typedObject && !param.byReference)
-            out.ds.printx(comma, "*pyTypedObject(", name, ")");
+            out.z.concatx(comma, "*pyTypedObject(", name, ")");
          else if(c && c.cl.type == unitClass && !c.isUnichar)
-            out.ds.printx(comma, name, ".impl");
+            out.z.concatx(comma, name, ".impl");
          else if(c && (c.nativeSpec || c.isBool))
-            out.ds.printx(comma, name);
+            out.z.concatx(comma, name);
          else if(c && c.cl.templateClass)
          {
             char * str = strchr(type, '<');
             if(callback)
-               out.ds.printx(comma, c.cl.templateClass.name, "(\"", str, "\", impl = ", name, ")");
+               out.z.concatx(comma, c.cl.templateClass.name, "(\"", str, "\", impl = ", name, ")");
             else // todo tofix likely not right // only 3 instances of this :P
-               out.ds.printx(comma, c.cl.templateClass.name, c && c.cl.type == normalClass ? ".impl" : "");
+               out.z.concatx(comma, c.cl.templateClass.name, c && c.cl.type == normalClass ? ".impl" : "");
          }
          else
          {
             if(plain)
-               out.ds.printx(comma, name);
+               out.z.concatx(comma, name);
             else if(callback)
             {
                if(!c)
                   c = eSystem_FindClass(__thisModule.application, param._class.string);   // Cheat for ec module depending on ecere module
                if(c.cl.type == normalClass)
-                  out.ds.printx(comma, "pyOrNewObject(", type, ", ", name, ")");
+                  out.z.concatx(comma, "pyOrNewObject(", type, ", ", name, ")");
                else
-                  out.ds.printx(comma, type, "(impl = ", name, ")");
+                  out.z.concatx(comma, type, "(impl = ", name, ")");
             }
             else if(cast && param.kind == classType && param._class.registered &&
                   (param._class.registered.type == noHeadClass || param._class.registered.type == structClass))
             {
                if(param._class.registered.type == noHeadClass)
-                  out.ds.printx(comma, "ffi.cast(\"struct ", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
+                  out.z.concatx(comma, "ffi.cast(\"struct ", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
                else
-                  out.ds.printx(comma, "ffi.cast(\"", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
+                  out.z.concatx(comma, "ffi.cast(\"", c.name, " *\", ", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/, ")");
             }
             else
             {
                //bool ptr = true;
                //if(c.cl.type == structClass)
-               //   out.ds.printx(comma, "ffi.cast(\"", c.name, " *", "\", ", name, ".impl)");
+               //   out.z.concatx(comma, "ffi.cast(\"", c.name, " *", "\", ", name, ".impl)");
                //else
-               //   out.ds.printx(comma, ptr ? "ffi.NULL if " : "", ptr ? name : "", ptr ? " is None else " : "", name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
-               //out.ds.printx(comma, prefix ? "__i_" : "", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
-               out.ds.printx(comma, name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               //   out.z.concatx(comma, ptr ? "ffi.NULL if " : "", ptr ? name : "", ptr ? " is None else " : "", name, ptr ? ".impl" : ""/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               //out.z.concatx(comma, prefix ? "__i_" : "", name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
+               out.z.concatx(comma, name/*, c && c.cl.type == normalClass ? ".impl" : ""*/);
             }
          }
          break;
       }
       case templateType:
-         out.ds.printx(comma, "TA(", name, ")");
+         out.z.concatx(comma, "TA(", name, ")");
          break;
       default:
          if(!strcmp(type, "const String") || !strcmp(type, "String") || !strcmp(type, "const char *") || !strcmp(type, "char *"))
-            out.ds.printx(comma, name, ".encode('u8')");
+            out.z.concatx(comma, name, ".encode('u8')");
          else if(param.kind == classType && param._class && param._class.registered/* && param._class.registered.type == normalClass*/)
-            out.ds.printx(comma, type, "(impl = ", name, ")");
+            out.z.concatx(comma, type, "(impl = ", name, ")");
          else
-            out.ds.printx(comma, name);
+            out.z.concatx(comma, name);
    }
 }
 
@@ -2810,9 +2810,9 @@ static void printClassInitArgument(BOutput out, PythonGen g, const char * name, 
 {
    int l;
    const char * zeroVal = type ? getTypeZeroValuePy(g, type, v) : "None";
-   out.ds.print(",");
-   if(lineEachIndent) out.ds.printx(ln, spaces(lineEachIndent, 0));
-   out.ds.printx(lineEachIndent ? "" : " ", name, " = ", zeroVal);
+   out.z.concat(",");
+   if(lineEachIndent) out.z.concatx(ln, spaces(lineEachIndent, 0));
+   out.z.concatx(lineEachIndent ? "" : " ", name, " = ", zeroVal);
    if((l = strlen(name)/* + strlen(zeroVal)*/) > *len) *len = l;
 }
 
@@ -2911,7 +2911,7 @@ static void genPyOutputNodes(File out, PythonGen g)
          for(optr : n.orderedBackwardsOutputs)
          {
             BOutput o = (BOutput)optr;
-            out.Puts(o.ds.array);
+            out.Puts(o.z._string);
          }
          /*if(!python)
             g.astAdd(ASTRawString { string = CopyString("// end -- moved backwards outputs") }, true);*/
@@ -2923,7 +2923,7 @@ static void genPyOutputNodes(File out, PythonGen g)
          if(o.kind == vmanual || o.kind == vdefine || o.kind == vfunction ||
                o.kind == vclass || o.kind == vtemplaton || o.kind == vmethod || o.kind == vproperty)
          {
-            out.Puts(o.ds.array);
+            out.Puts(o.z._string);
          }
          else conmsg("check");
       }
@@ -2941,23 +2941,23 @@ static void genPyOutputModuleSetupFunc(File out, PythonGen g)
       out.PrintLn("   app.appGlobals.append(globals())");
       out.PrintLn("   if lib.", moduleName, "_init(app.impl) == ffi.NULL: raise Exception(\"Failed to load library\")");
       {
-         DynamicString s { };
-         genRegisterClassCalls(s, g, filterClassAll, "   ", "app");
-         out.Puts(s.array);
-         delete s;
+         ZString z { allocType = heap };
+         genRegisterClassCalls(z, g, filterClassAll, "   ", "app");
+         out.Puts(z._string);
+         delete z;
       }
    }
 }
 
 bool filterClassAll(BClass c) { return true; }
 bool filterClassEcereComExlusions(BClass c) { return !c.isCharPtr && !c.isWindow; }
-void genRegisterClassCalls(DynamicString s, PythonGen g, bool(*filterClass)(BClass c), const String indent, const String symbol)
+void genRegisterClassCalls(ZString z, PythonGen g, bool(*filterClass)(BClass c), const String indent, const String symbol)
 {
    BClass c; IterAllClass itacl { itn.module = g.mod, list = g.options.classList };
    while((c = itacl.next(all)))
    {
       if(c.cl.type == normalClass && !c.cl.templateClass && filterClass(c))
-         s.printxln(indent, symbol, ".registerClass(", c.name, ", True)");
+         z.concatx(indent, symbol, ".registerClass(", c.name, ", True)", ln);
    }
    itacl.cleanup();
 }

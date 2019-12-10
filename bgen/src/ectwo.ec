@@ -1,8 +1,6 @@
 import "ecere"
 import "ec2"
 
-import "DynamicString"
-
 class ARGPrintTypeNameList : TypeNameList
 {
    void printSep(File out)
@@ -11,7 +9,7 @@ class ARGPrintTypeNameList : TypeNameList
    }
 };
 
-void ec2PrintToDynamicString(DynamicString o, ASTNode node, bool ln)
+void ec2PrintToZedString(ZString o, ASTNode node, bool addln)
 {
    TempFile f { };
    char buf[1024*1024];
@@ -36,8 +34,8 @@ void ec2PrintToDynamicString(DynamicString o, ASTNode node, bool ln)
          len++;
       }
    }
-   if(ln && len > 0 && buf[len-1] != '\n')
-      o.println(buf);
+   if(addln && len > 0 && buf[len-1] != '\n')
+      o.concatx(buf, '\n');
    else
       o.concat(buf);
    delete f;
@@ -72,9 +70,9 @@ void astInspection(ASTNode node, File console)
    node.print(console, { astType = true });
 }
 
-void astPrint(ASTNode node, File console, bool ln)
+void astPrint(ASTNode node, File console, bool addln)
 {
-   if(ln) PrintLn("astPrint:");
+   if(addln) PrintLn("astPrint:");
    node.print(console, { });
-   if(ln) PrintLn("");
+   if(addln) PrintLn("");
 }
