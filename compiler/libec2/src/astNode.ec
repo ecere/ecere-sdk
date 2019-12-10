@@ -92,7 +92,8 @@ public:
 
    void print(File out, OutputOptions o)
    {
-      out.Puts(string);
+      if(string)
+         out.Puts(string);
    }
 
    ~ASTRawString()
