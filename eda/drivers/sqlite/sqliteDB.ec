@@ -129,6 +129,7 @@ public:
    bool begin() { inBegin = true; return exec("BEGIN;") == done; }
    bool commit() { inBegin = false; return exec("COMMIT;") == done; }
    property const String lockingMode { set { execf("PRAGMA locking_mode=%s; BEGIN IMMEDIATE; COMMIT;", value); } }
+   int64 lastInsertRowID() { return sqlite3_last_insert_rowid(db); }
 
    ~SQLiteDB()
    {
