@@ -477,6 +477,9 @@ private:
       }
       else
       {
+         if(destination._class == class(CSVReport))
+            detail.creationActivation = activate; // Work around to maintain proper order in exported reports
+
          detail.anchor = Anchor { left = 0, top = pageTop, right = 0 };
          pageTop += detailSize;
 
@@ -956,6 +959,8 @@ public:
    bool isLast;
    int level;
 
+   //  NOTE: Not activating messed up order for CSV export mode, but will be turned off in AddDetailToPage().
+   //        Does it speed things up in preview / print?
    creationActivation = doNothing;
    noConsequential = true;
 
