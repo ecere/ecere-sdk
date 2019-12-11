@@ -699,11 +699,14 @@ class CGen : Gen
             o.output.Add(astEnum(cl, c));
          }
          if(c.declStruct) conmsg("check");
-         if(c.hasPublicMembers || (cl.type == structClass && !cl.templateClass))
+         if(c.hasPublicMembers/*hasOrBaseHasPublicMembers*/ ||
+               ((cl.type == structClass/* || cl.type == noHeadClass*/) && !cl.templateClass))
          {
             SpecClass sc;
             ClassDefList defs;
             char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, { c = c }, c.cname, null, 0);
+            if(!strcmp(c.name, "Cube"))
+               Print("");
             if(cl.type == enumClass) conmsg("check");
             if(cl.type == systemClass) conmsg("check");
             if(cl.type == unitClass) conmsg("check");

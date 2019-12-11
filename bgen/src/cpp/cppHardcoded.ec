@@ -33,6 +33,60 @@ void cppHardcodedInstancePart1(BOutput o)
                "", ln);
 }
 
+/*
+class Nohead
+{
+public:
+   void * impl;
+
+   // void * operator new   (uintsize count) { return eC_new(count); }
+   // void * operator new [](uintsize count) { return eC_new(count); }
+   // void operator delete   (void * ptr) { eC_delete(ptr); }
+   // void operator delete [](void * ptr) { eC_delete(ptr); }
+
+   inline explicit Nohead(void * _impl)
+   {
+      impl = _impl;
+   }
+   inline Nohead()
+   {
+      impl = null;
+   }
+
+};
+*/
+
+/*
+ecere.h:
+typedef struct C(Cube) C(Cube);
+extern THIS_LIB_IMPORT C(bool) (* Cube_create)(C(Cube) * __this, C(DisplaySystem) displaySystem);
+
+extern THIS_LIB_IMPORT C(Property) * PROPERTY(Cube, size);
+extern THIS_LIB_IMPORT void (* Cube_set_size)(C(Cube) * c, const C(Vector3Df) * value);
+
+ecere.c:
+LIB_EXPORT C(bool) (* Cube_create)(C(Cube) * __this, C(DisplaySystem) displaySystem);
+LIB_EXPORT C(Property) * PROPERTY(Cube, size);
+LIB_EXPORT void (* Cube_set_size)(C(Cube) * c, const C(Vector3Df) * value);
+*/
+
+/*
+class Cube : Nohead
+{
+public:
+// C(Cube) * impl;
+
+   inline Cube()
+   {
+      impl = newt(C(Cube), 1);
+   }
+
+// Cube_create
+// Cube_set_size
+};
+*/
+
+
 void cppHardcodedInstancePart2(BOutput o)
 {
    o.z.concatx("   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
@@ -123,10 +177,18 @@ void cppHardcodedCore(CPPGen g, File f)
    ZString z { allocType = heap };
 
    f.PrintLn("// Syntactic Sugar (NOT GENERATED)");
+   f.PrintLn("// INSTANCEL: what?");
+   f.PrintLn("//            x: pointer to eC instance");
+   f.PrintLn("//            c: eC 'Class' object representing the C++ class");
    f.PrintLn("#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))");
    f.PrintLn("#define _INSTANCE(x, c) INSTANCEL((x) ? (x) : 0, c)", ln);
 
+   f.PrintLn("// INSTANCE: returns a C++ instance out for supplied eC instance");
+   f.PrintLn("//           x: pointer to eC instance");
+   f.PrintLn("//           c: what is c");
    f.PrintLn("#define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })", ln);
+
+   f.PrintLn("#define POBJ(c, o, eo) c eo ## to(eo); c & o = eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : eo ## to", ln);
 
    f.PrintLn("#undef   newi");
    f.PrintLn("#define  newi(c) Instance_newEx(c, true)", ln);

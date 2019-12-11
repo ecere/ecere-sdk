@@ -433,15 +433,15 @@ Map<const String, const String> methodTypedObjectThisNameSwap { [
 ] };
 
 AVLTree<const String> tryMethodsClass { [
-   "Surface",
-   "Window",
+//   "Surface",
+//   "Window",
    null
 ] };
 
 // todo: fix all the issues that affect these methods...
 AVLTree<consttstr> tryMethods { [
-   { "Surface", "clear" },
-   { "Window", "modal" },
+//   { "Surface", "clear" },
+//   { "Window", "modal" },
 /*
    { "FountResource", "faceName" },
    { "FountResource", "size" },
@@ -476,6 +476,163 @@ AVLTree<consttstr> tryMembers { [
    { "Window", "position" },
    { "Window", "size" },
 */
+   { null, null }
+] };
+
+AVLTree<const String> brokenMethodsClass { [
+   "Bitmap",
+   "Display",
+   "DisplaySystem",
+   null
+] };
+
+AVLTree<consttstr> brokenMethods { [
+   { "Timer", "DelayExpired" },
+   { "FileMonitor", "OnDirNotify" },
+   { "FileMonitor", "OnFileNotify" },
+   { "IOChannel", "get" },
+   { "IOChannel", "put" },
+   { "IOChannel", "serialize" },
+   { "IOChannel", "unserialize" },
+   { "ZString", "concat" },
+   { "ZString", "concatn" },
+   { "ZString", "concatf" },
+   { "ZString", "concatx" },
+   { "ZString", "copy" },
+// { "Bitmap", "allocateDD" },
+// { "Bitmap", "convert" },
+// { "Bitmap", "copy" },
+// { "Bitmap", "copy2" },
+// { "Bitmap", "grab" },
+// { "Bitmap", "load" },
+// { "Bitmap", "loadFromFile" },
+// { "Bitmap", "loadGrayed" },
+// { "Bitmap", "loadMipMaps" },
+// { "Bitmap", "loadMonochrome" },
+   { "Surface", "centerTextf" },
+   { "Surface", "writeTextDotsf" },
+   { "Surface", "writeTextf" },
+   { "Surface", "blit" },
+   { "Surface", "filter" },
+   { "Surface", "filterHTile" },
+   { "Surface", "filterVTile" },
+   { "Surface", "hTile" },
+   { "Surface", "stretch" },
+   { "Surface", "tile" },
+   { "Surface", "vTile" },
+   { "CubeMap", "load" },
+   { "DrawList", "render" },
+   { "FontManager", "setFontImageProcessing" },
+   { "FontManager", "create" },
+   { "FontManager", "getFont" },
+   { "DefaultShader", "setCamera" },
+   { "DefaultShader", "setLight" },
+   { "DefaultShader", "shader" },
+   { "GLStats", "allocBuffer" },
+   { "GLStats", "allocTexture" },
+   { "GLStats", "freeBuffers" },
+   { "GLStats", "freeTextures" },
+   { "GLStats", "print" },
+   { "GLStats", "printBuf" },
+   { "Window", "setCaption" },
+   { "Window", "setText" },
+   { "Window", "addResource" },
+   { "Window", "buttonCloseDialog" },
+   { "Window", "freeMouseRange" },
+   { "Window", "grab" },
+   { "Window", "menuFileClose" },
+   { "Window", "menuFileExit" },
+   { "Window", "menuFileSave" },
+   { "Window", "menuFileSaveAll" },
+   { "Window", "menuFileSaveAs" },
+   { "Window", "menuWindowArrangeIcons" },
+   { "Window", "menuWindowCascade" },
+   { "Window", "menuWindowClose" },
+   { "Window", "menuWindowCloseAll" },
+   { "Window", "menuWindowMaximize" },
+   { "Window", "menuWindowMinimize" },
+   { "Window", "menuWindowMove" },
+   { "Window", "menuWindowNext" },
+   { "Window", "menuWindowPrevious" },
+   { "Window", "menuWindowRestore" },
+   { "Window", "menuWindowSelectWindow" },
+   { "Window", "menuWindowSize" },
+   { "Window", "menuWindowStayOnTop" },
+   { "Window", "menuWindowTileHorz" },
+   { "Window", "menuWindowTileVert" },
+   { "Window", "menuWindowWindows" },
+   { "Window", "multiTouchMessage" },
+   { "Window", "removeResource" },
+   { "Window", "restoreCaret" },
+   { "Window", "update" },
+   { "Window", "writeCaption" },
+   { "Cursor", "load" },
+   { "Interface", "getExtendedKey" },
+   { "Interface", "translateKey" },
+   { "Interface", "writeKeyedText" },
+   { "Interface", "writeKeyedTextDisabled" },
+   { "DataField", "move" },
+   { "DataRow", "addRowAfter" },
+   { "DataRow", "getData" },
+   { "DataRow", "move" },
+   { "DataRow", "setData" },
+   { "DataRow", "unsetData" },
+   { "DataRow", "addStringf" },
+   { "DataRow", "edit" },
+   { "DropBox", "addField" },
+   { "DropBox", "addRowAfter" },
+   { "DropBox", "deleteRow" },
+   { "DropBox", "getData" },
+   { "DropBox", "selectRow" },
+   { "DropBox", "setData" },
+   { "DropBox", "sort" },
+   { "EditBox", "delete" },
+   { "EditBox", "printf" },
+   { "EditBox", "setContents" },
+   { "EditBox", "load" },
+   { "EditBox", "save" },
+   { "File", "print" },
+   { "File", "printLn" },
+   { "File", "Print" },
+   { "File", "PrintLn" },
+   { "File", "printf" },
+   { "ListBox", "addStringf" },
+   { "ListBox", "deleteRow" },
+   { "ListBox", "findSubStringAfter" },
+   { "ListBox", "getData" },
+   { "ListBox", "multiSort" },
+   { "ListBox", "removeField" },
+   { "ListBox", "selectRow" },
+   { "ListBox", "setData" },
+   { "ListBox", "sort" },
+   { "ListBox", "sortAlsoBy" },
+   { "ListBox", "addField" },
+   { "ListBox", "addRowAfter" },
+   { "Stacker", "getNextStackedItem" },
+   { "Stacker", "makeControlVisible" },
+   { "Menu", "findItem" },
+   { "Menu", "addDynamic" },
+   { "Menu", "addItem" },
+   { "Menu", "addSubMenu" },
+   { "Menu", "clean" },
+   { "Menu", "merge" },
+   { "Menu", "removeItem" },
+   { "SelectorBar", "addButton" },
+   { "SelectorBar", "removeButton" },
+   { "SelectorBar", "select" },
+   { "StatusBar", "addField" },
+   { "StatusBar", "removeField" },
+   { "StatusField", "setTextf" },
+   { "TabControl", "addTab" },
+   { "TabControl", "removeTab" },
+   { "DropBox", "addStringf" },
+   { "Socket", "sendString" },
+   { "Socket", "sendf" },
+   // property vs lowercase method clash
+   { "Surface", "lineStipple" },
+   { "Surface", "textOpacity" },
+   { "Surface", "drawingChar" },
+   { "Window", "scroll" },
    { null, null }
 ] };
 
@@ -943,6 +1100,8 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
       char * args = null;
       TypeInfo argsInfo;
 
+      if(brokenMethodsClass.Find(cn)) continue;
+      if(brokenMethods.Find({ cn, mn })) continue;
       if(tryMethodsClass.count > 1 && !tryMethodsClass.Find(cn)) continue;
       if(tryMethods.count > 1 && !tryMethods.Find({ cn, mn })) continue;
 
@@ -1000,7 +1159,7 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
          // {
          //    bool comma = false;
             argsInfo = { type = m.md.dataType, m = m, md = m.md, cl = c.cl, c = c };
-            o.z.concatx((params = cppParams(c, argsInfo, regMethodParamList, v, null, false, comma, &first)));
+            o.z.concatx((params = cppParams(c, argsInfo, regMethodParamList, v, null, false, comma, &first, null)));
          // }
       }
       o.z.concatx(")", prototype ? ";" : "");
@@ -1035,7 +1194,7 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
             default:           conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
          }
 
-         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing, v, null, false, comma, 0)));
+         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing, v, null, false, comma, null, null)));
          o.z.concatx(");", ln);
          o.z.concatx(indents(ind), "}", ln);
       }
@@ -1635,13 +1794,15 @@ ClassType cppGetClassInfoFromType(Type type, bool hackTemplates, Class * clRegRe
    return ct;
 }
 
-enum CPPParamsOutputMode { regMethodParamList, regMethodArgsPassing, _argParamList, _argSpecialThisParamList, passing };
-char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClass, const char * cn, bool addthisarg, bool comma, const char ** first)
+enum CPPParamsOutputMode { regMethodParamList, regMethodArgsPassing, regMethodArgsPoorObjectPassing, _argParamList, _argSpecialThisParamList, passing };
+char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClass, const char * cn,
+      bool addthisarg, bool comma, const char ** first, const char ** nameParamOfClassType)
 {
    char * result;
    ZString z { allocType = heap };
    Type t = ti.type;
-   if(t.params.count == 1 && ((Type)t.params.first).kind == voidType && !addthisarg)
+   bool noParams = t.params.count == 0 || (t.params.count == 1 && ((Type)t.params.first).kind == voidType);
+   if(noParams && !addthisarg)
    {
       /*if(mode == _argParamList)
          z.concat("void");*/
@@ -1684,7 +1845,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
       }
 
             // todo: handle typed object
-            if(((mode == regMethodParamList || mode == regMethodArgsPassing) && comma == true) || mode == passing) sep = ", ";
+            if(((mode == regMethodParamList || mode == regMethodArgsPassing || mode == regMethodArgsPoorObjectPassing) && comma == true) || mode == passing) sep = ", ";
             ap = 0;
             for(param = firstParam ? firstParam : t.params.first; param; param = nextParam)
             {
@@ -1727,6 +1888,9 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            typeString = printType(param, false, false, true);
 
                         if(first && !firstParam && !*first) *first = name;
+                        if(nameParamOfClassType && !firstParam && !*nameParamOfClassType &&
+                              clReg && !strcmp(clReg.name, ti.cl.name))
+                           *nameParamOfClassType = name;
                         if(typeString)
                            z.concatx(strptrNoNamespace(typeString));
                         if((param.kind == classType && ( ct == noHeadClass || ct == structClass)) ||
@@ -1739,18 +1903,28 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         if(!sep[0]) sep = ", ";
                         break;
                      }
-                     case regMethodArgsPassing:
+                     case regMethodArgsPoorObjectPassing:
                      {
-                        bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
-
                         if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                         {
-                           //"*(", cn, " *)INSTANCEL(", first, ", ", first, "->_class)"
+                           if(param.classObjectType == anyObject)
+                              z.concatx("POBJ(", c.name, ", ", name, "_l, ", name, "); ");
+                           else
+                              z.concatx("POBJ(", cParam.name, ", ", name, "_l, ", name, "); ");
+                        }
+                        break;
+                     }
+                     case regMethodArgsPassing:
+                     {
+                        // bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
+                        if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
+                        /*{
                            if(param.classObjectType == anyObject)
                               z.concatx("*(", c.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
                            else
                               z.concatx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
-                        }
+                        }*/
+                           z.concatx(name, "_l");
                         else
                            z.concatx(name);
                         if(!sep[0]) sep = ", ";
@@ -1786,10 +1960,9 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
 
                         //if(!name[0])
                         //   conmsg("noname");
-                        if(mode == _argSpecialThisParamList)
+                        z.concatx(" ", name);//, " ? ", name);
+                        if(mode == _argSpecialThisParamList && !noParams)
                            z.concat(" _ARG");
-                        else
-                           z.concatx(" ", name);//, " ? ", name);
                         break;
                      }
                      case passing:
@@ -2489,6 +2662,8 @@ static void cppMacroClassRegistration(
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c.isInstance ? cBase : c);
+            if(brokenMethods.Find({ c.name, itm.md.name })) continue;
+
             {
                Type param;
                Type t = m.md.dataType;
@@ -2499,6 +2674,8 @@ static void cppMacroClassRegistration(
                bool destVsSrc = false; //!strcmp(mn, "onCopy") ? true : false;
                const char * first = null;
                const char * nthis = null;
+               const char * oname = null;
+               const char * nameParamOfClassType = null;
                Type returnType = t.returnType;
                char * typeString = returnType.kind == classType && returnType.classObjectType == anyObject ? CopyString(g_.sym.instance) : printType(t.returnType, false, false, true);
                Class clRegRT;
@@ -2609,7 +2786,9 @@ static void cppMacroClassRegistration(
                      // Print("");
                   // if(!strcmp(cn, "Skin") && !strcmp(on, "CaptionFont"))
                   //    PrintLn(p);
-                  params = cppParams(c, argsInfo, regMethodParamList, vClass, cn, true, comma, &first);
+                  params = cppParams(c, argsInfo, regMethodParamList, vClass, cn, true, comma, &first, &nameParamOfClassType);
+                  if(nameParamOfClassType && t.classObjectType == none && t.thisClass && t.thisClass.registered)
+                     oname = nameParamOfClassType;
                   p.concatx(params);
                   // PrintLn(p);
                   // if(p._string && !strcmp(p._string, ", ")) p._string[0] = '\0'; // todo: fix this
@@ -2623,9 +2802,9 @@ static void cppMacroClassRegistration(
                   ocl.concatx("(C(Instance))null");
                else
                {
-                  ocl.concatx(destVsSrc ? first : nthis);
+                  ocl.concatx(destVsSrc ? first : oname ? oname : nthis);
                   if(byRefTypedThis)
-                     ocl.concatx(" ? *", destVsSrc ? first : nthis, " : null");
+                     ocl.concatx(" ? *", destVsSrc ? first : oname ? oname : nthis, " : null");
                }
 
                // oi
@@ -2634,13 +2813,20 @@ static void cppMacroClassRegistration(
                   oi.concatx("(C(Instance))null");
                else
                {
-                  oi.concatx(nthis);
+                  oi.concatx(oname ? oname : nthis);
                   if(byRefTypedThis)
                      oi.concatx(" ? *", nthis, " : null");
                }
 
                // code
                code.copy("");
+               {
+                  bool comma = false;
+                  bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
+                  char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing, vClass, cn, !ptrI, comma, null, null);
+                  code.concat(args);
+                  delete args;
+               }
                if(!noRet)
                {
                   if(returnType.kind == templateType)
@@ -2680,8 +2866,9 @@ static void cppMacroClassRegistration(
                   }
                   // if(c.isInstance && !strcmp(on, "OnFree"))
                   // if(c.isInstance && !strcmp(on, "OnCompare"))
-                  //    Print("");
-                  code.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing, vClass, cn, !ptrI, comma, null)));
+                  if(!strcmp(c.name, "Surface") && !strcmp(on, "OnRedraw"))
+                     Print("");
+                  code.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing, vClass, cn, !ptrI, comma, null, null)));
                   code.concatx(")");
                }
                if(!noRet)
@@ -2760,8 +2947,11 @@ static void cppMacroClassRegistration(
                      rv.concatx("1");
                }
 
+               // if(g.options.expandMacros)
+               //    Print("");
+
                if(t.classObjectType == typedObject)
-                  cppMacroRegisterTypedMethod(g, o, mode == definition ? encapsulation : configuration, ind + 1,
+                  cppMacroRegisterTypedMethod(g, o, mode == definition ? encapsulation : /*configuration*/mode, ind + 1,
                         on,   // ns
                         mn,   // n
                         cn,   // bc
@@ -2775,7 +2965,7 @@ static void cppMacroClassRegistration(
                         rv,
                         0);
                else
-                  cppMacroRegisterMethod(g, o, mode == definition ? encapsulation : configuration, ind + 1,
+                  cppMacroRegisterMethod(g, o, mode == definition ? encapsulation : /*configuration*/mode, ind + 1,
                         on,   // ns
                         mn,   // n
                         cn,   // bc
@@ -2871,6 +3061,7 @@ static void cppMacroClassVirtualMethods(
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c.isInstance ? cBase : c);
+            if(brokenMethods.Find({ c.name, itm.md.name })) continue;
             // if(!itm.md.dataType.thisClass.type && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
             //    itm.md.dataType.thisClass.type = ProcessTypeString(itm.md.dataType.thisClass.string, false);
             {
@@ -2896,14 +3087,15 @@ static void cppMacroClassVirtualMethods(
                {
                   bool opt1 = ctRT == normalClass || ctRT == noHeadClass;
                   bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
+                  BClass cThis = t.thisClass && strcmp(t.thisClass.string, "class") ? t.thisClass.registered : null;
                   char * s1 = null;
                   char * s2 = null;
                   char * s3 = null;
                   const char * s4;
                   ZString s3z { allocType = heap };
                   const char * mncpp = strcmp(mn, "delete") ? mn : "_delete";
-                  if(cParamRT && !strcmp(cParamRT.name, "IteratorPointer"))
-                     ; //PrintLn("");
+                  // if(cParamRT && !strcmp(cParamRT.name, "IteratorPointer"))
+                  //    ; //PrintLn("");
 
                   s3z.copy("");
                   if(noRet)
@@ -2918,7 +3110,7 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, null)));
                      s3z.concatx(");");
                   }
                   else if(ctRT == normalClass || ctRT == noHeadClass)
@@ -2932,7 +3124,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                          s3z.concatx("_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, null)));
                      s3z.concatx(");", lc, ln);
 
                      s3z.concatx(genloc__, indents(ind + 2), "return ");
@@ -2954,9 +3146,9 @@ static void cppMacroClassVirtualMethods(
                      if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
                         s3z.concatx(", ");
-                        s3z.concatx("self ? self->impl : (", sn, ")null");
+                        s3z.concatx("o.impl"/*" : (", cThis ? cThis.name : sn, ")null"*/);
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null)));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, null)));
                      s3z.concatx(");");
                   }
                   s4 = s3z._string;
@@ -2975,15 +3167,19 @@ static void cppMacroClassVirtualMethods(
                      s2 = PrintString(cReg.is_class ? "Instance" : clReg.name, " & o", hasArgs ? " _ARG" : "");
                   }
                   else*/
-                     s2 = PrintString(cn, " &"/*, " o"*/, hasArgs ? " _ARG" : "");
+                     s2 = PrintString(cThis ? cThis.name : cn, " &"/*, " o"*/, hasArgs ? " _ARG" : "");
+
+                  // if(!strcmp(cn, "DataBox") && !strcmp(mn, "notifyModified"))
+                  //    Print("");
 
                   if(ptrI)
                      s3 = CopyString("");
                   else
-                     s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, null);
+                     s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, null, null);
 
                   cppMacroVirtualMethod(g, o, submode, prototype, ind + g.options.expandMacros && !prototype ? 0 : 1,
-                        mn, mncpp, cn, bn, s1, s2, s3, (params = cppParams(c, argsInfo, _argParamList, vClass, cn, !ptrI, false, null)), s4, 0);
+                        mn, mncpp, cn, bn, s1, s2, s3,
+                        (params = cppParams(c, argsInfo, _argParamList, vClass, cn, false, false, null, null)), s4, 0);
                   content = true;
                   delete s1;
                   delete s2;

@@ -1480,6 +1480,25 @@ class BClass : struct
       get { return cl; }
    }
 
+   property bool hasOrBaseHasPublicMembers
+   {
+      get
+      {
+         BClass base = this;
+         if(base.isString) return false;
+         while(base)
+         {
+            if(base.hasPublicMembers) return true;
+            base = base.cl.base && base.cl.base.type == systemClass ? null : base.cl.base;
+            if(base && (base.isString || base.isInstance || base.cl.templateClass))
+               break;
+            if(base)
+               Print("");
+         }
+         return false;
+      }
+   }
+
    bool first; bool skip; bool skipTypeDef;
    bool isFromCurrentModule;
    bool is_class;// bool is_Class;
