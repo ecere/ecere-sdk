@@ -36,10 +36,10 @@ struct TesselatedShape
 
    void tesselate(Shape shp)
    {
-      return tesselateEx(shp, 1, 1);
+      return tesselateEx(shp, 1, 1, 0);
    }
 
-   void tesselateEx(Shape shp, float fx, float fy)
+   void tesselateEx(Shape shp, float fx, float fy, float sss)
    {
       Array<Pointf> tmpNodes = null;
       Pointf * nodes = null;
@@ -281,7 +281,7 @@ struct TesselatedShape
                   if(isCap)
                   {
                      float r = lineWidth/2;
-                     float rx = r * fx, ry = r * fy;
+                     float rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
                      // Caps
                      switch(cap)
@@ -346,7 +346,7 @@ struct TesselatedShape
 
                      if(join == round && r > lineWidth)
                         r = lineWidth;
-                     rx = r * fx, ry = r * fy;
+                     rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
                      if(simpleMean)
                         angle = (at1 + at2) / 2;
@@ -371,7 +371,7 @@ struct TesselatedShape
 
                         p = nodes[ni];
                         r = lineWidth / 2;
-                        rx = r * fx, ry = r * fy;
+                        rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
                         for(t = 0; t < rCount; t++, a += da)
                            points[startIX+1+t] = { p.x + cosf(a) * rx, p.y + sinf(a) * ry};
@@ -384,7 +384,7 @@ struct TesselatedShape
                         int t;
 
                         r = lineWidth * 1/*.1f*/ / 2;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
-                        rx = r * fx, ry = r * fy;
+                        rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
                         p = nodes[ni];
                         if(diffAngle < Pi/2)
