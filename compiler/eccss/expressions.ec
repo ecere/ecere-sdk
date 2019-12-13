@@ -426,7 +426,7 @@ public:
          char tempString[1024];
          ObjectNotationType on = econ;
          const String s = onGetString(type, &constant.i, tempString, null, &on);
-         if(s) // && on == none)  // This (&& on == none) will force hex output for colors instead of expanded r, g, b
+         if(s && (constant.type.format != hex || on == none))  // This (&& on == none) will force hex output for colors instead of expanded r, g, b
          {
             // TODO: Really need to clarify these rules here about adding brackets...
             bool addCurlies = on != none && type.type != systemClass && type.type != enumClass;
@@ -434,7 +434,16 @@ public:
             out.Print(s);
             if(addCurlies) out.Print(" }");
          }
-         else out.Print(constant);
+         else if(constant.type.format == hex)
+         {
+            char number[64];
+            sprintf(number,
+               (__runtimePlatform == win32) ? "0x%06I64X" : "0x%06llX",
+               constant.i);
+            out.Print(number);
+         }
+         else
+            out.Print(constant);
       }
       else out.Print(constant);
    }
@@ -1236,7 +1245,18 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      if(instance) instance.print(out, indent, o);
+      if(instance)
+      {
+         Class type = expType ? expType : destType;
+         if(type)
+         {
+            if(type.type == structClass &&
+               (type == class(Color) || type == class(Pointd) ||
+                !strcmp(type.name, "ValueColor") || !strcmp(type.name, "ValueOpacity")))
+               o.skipImpliedID = true;
+         }
+         instance.print(out, indent, o);
+      }
    }
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
@@ -1323,7 +1343,7 @@ public:
                   {
                      IteratorPointer after = null;
 
-                     if(im.removeByIDs(idsString, &after) && !placed)
+                     if(im.removeByIDs(idsString, mask, &after) && !placed)
                      {
                         CMSSMemberInit mInit;
                         CMSSMemberInitList::setSubMember(null, createSubInstance, expType, idsString, mask, expression, &mInit);
@@ -1795,7 +1815,23 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
+      print2(out, indent, o, null);
+   }
+
+   void print2(File out, int indent, CMSSOutputOptions o, DataMember lastMember)
+   {
+      bool outputIdentifiers = false;
       if(identifiers)
+      {
+         outputIdentifiers = true;
+         if(identifiers.count == 1 && o.skipImpliedID && dataMember)
+         {
+            if((!lastMember && dataMember.id == 0) || (lastMember && dataMember.id == lastMember.id + 1))
+               outputIdentifiers = false;
+         }
+      }
+
+      if(outputIdentifiers)
       {
          Iterator<CMSSIdentifier> it { identifiers };
          while(it.Next())
@@ -1830,6 +1866,20 @@ public:
       if(lexer.peekToken().type == ';')
          lexer.readToken();
       return list;
+   }
+
+   void print(File out, int indent, CMSSOutputOptions o)
+   {
+      Iterator<CMSSMemberInit> it { list };
+      DataMember lastMember = null;
+      while(it.Next())
+      {
+         CMSSMemberInit init = it.data;
+         init.print2(out, indent, o, lastMember);
+         lastMember = init.dataMember;
+         if(list.GetNext(it.pointer))
+            printSep(out);
+      }
    }
 
    CMSSExpression getMemberByIDs(Container<const String> ids)
@@ -1883,6 +1933,12 @@ public:
             member[len] = 0;
 
             e = this ? getMemberByIDs([ member ]) : null;
+            if(!e && mask && this)
+            {
+               // To recognize default initializers...
+               CMSSMemberInit mInit = findStyle(mask);
+               if(mInit) e = mInit.initializer;
+            }
             if(!e && createSubInstance)
             {
                e = CMSSExpInstance { };
@@ -1981,7 +2037,7 @@ public:
       return setSubInstance;
    }
 
-   bool removeByIDs(const String idsString, IteratorPointer * after)
+   bool removeByIDs(const String idsString, StylesMask mask, IteratorPointer * after)
    {
       bool result = false;
       char * dot = idsString ? strchr(idsString, '.') : null;
@@ -2011,7 +2067,12 @@ public:
             }
          }
          else if((oldMInit.identifiers && !split.count) || (!oldMInit.identifiers && split.count))
-            same = false;
+         {
+            if(!oldMInit.identifiers && split.count == 1 && mask && oldMInit.stylesMask == mask)
+               ;
+            else
+               same = false;
+         }
 
          if(same)
          {
@@ -2037,7 +2098,7 @@ public:
          // Delete old values
          bool placed = false;
          IteratorPointer after;
-         if(removeByIDs(idsString, &after))
+         if(removeByIDs(idsString, mask, &after))
          {
             Insert(after, mInit);
             placed = true;
