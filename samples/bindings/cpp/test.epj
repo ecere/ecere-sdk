@@ -4,8 +4,8 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "$(ECERE_SDK_SRC)/bindings/c",
-         "$(ECERE_SDK_SRC)/bindings/cpp"
+         "$(ECERE_SDK_BINDINGS_C)",
+         "$(ECERE_SDK_BINDINGS_CPP)"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "test",
@@ -37,18 +37,18 @@
    ],
    "Files" : [
       {
-         "Folder" : "c",
+         "Folder" : "$(ECERE_SDK_BINDINGS)/c",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+            "$(ECERE_SDK_BINDINGS_C)/eC.c",
             {
-               "FileName" : "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+               "FileName" : "$(ECERE_SDK_BINDINGS_C)/eC.h",
                "Options" : {
                   "ExcludeFromBuild" : true
                }
             },
-            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+            "$(ECERE_SDK_BINDINGS_C)/ecere.c",
             {
-               "FileName" : "$(ECERE_SDK_SRC)/bindings/c/ecere.h",
+               "FileName" : "$(ECERE_SDK_BINDINGS_C)/ecere.h",
                "Options" : {
                   "ExcludeFromBuild" : true
                }
@@ -56,17 +56,17 @@
          ]
       },
       {
-         "Folder" : "cpp",
+         "Folder" : "$(ECERE_SDK_BINDINGS)/cpp",
          "Files" : [
-            "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
+            "$(ECERE_SDK_BINDINGS_CPP)/eC.cpp",
             {
-               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
+               "FileName" : "$(ECERE_SDK_BINDINGS_CPP)/eC.hpp",
                "Options" : {
                   "ExcludeFromBuild" : true
                }
             },
             {
-               "FileName" : "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+               "FileName" : "$(ECERE_SDK_BINDINGS_CPP)/ecere.cpp",
                "Configurations" : [
                   {
                      "Name" : "Debug",
@@ -76,10 +76,10 @@
                   }
                ]
             },
-            "../../../bindings/cpp/ecere.hpp"
+            "$(ECERE_SDK_BINDINGS_CPP)/ecere.hpp"
          ]
       },
-      "sample1.cpp"
+      "form.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [

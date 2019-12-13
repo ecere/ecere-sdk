@@ -1,0 +1,90 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "consoleAppTest",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "ECERECOM_ONLY"
+      ],
+      "IncludeDirs" : [
+         "$(ECERE_SDK_BINDINGS_C)",
+         "$(ECERE_SDK_BINDINGS_CPP)"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "consoleAppTest",
+      "Libraries" : [
+         "ecereCOM",
+         "stdc++"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "bindings",
+         "Files" : [
+            {
+               "Folder" : "$(ECERE_SDK_BINDINGS)/c",
+               "Files" : [
+                  {
+                     "Folder" : "$(ECERE_SDK_BINDINGS_C)/eC",
+                     "Files" : [
+                        "eC.c",
+                        "eC.h"
+                     ]
+                  },
+                  {
+                     "Folder" : "$(ECERE_SDK_BINDINGS_C)/ecere",
+                     "Files" : [
+                        "ecere.c",
+                        "ecere.h"
+                     ],
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "$(ECERE_SDK_BINDINGS)/cpp",
+               "Files" : [
+                  {
+                     "Folder" : "$(ECERE_SDK_BINDINGS_CPP)/eC",
+                     "Files" : [
+                        "eC.cpp",
+                        "eC.hpp"
+                     ]
+                  },
+                  {
+                     "Folder" : "$(ECERE_SDK_BINDINGS_CPP)/ecere",
+                     "Files" : [
+                        "ecere.cpp",
+                        "ecere.hpp"
+                     ],
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            }
+         ]
+      },
+      "consoleAppRegisterEvolved.cpp"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
