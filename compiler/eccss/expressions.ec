@@ -1507,18 +1507,20 @@ public:
       return mInit ? mInit.initializer : null;
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
+   void setMemberValue(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc)
    {
-      bool result = false;
+      setMember(c, idsString, mask, createSubInstance, expressionFromValue(value, uc));
+   }
 
+   void setMember(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression)
+   {
       if(this)
       {
-         const String idString = msk ? evaluator.evaluatorClass.stringFromMask(msk, c) : null;
          CMSSMemberInitList list = null;
          if(msk)
          {
             Iterator<CMSSMemberInitList> it { this };
-            StylesMask topMask = msk;
+            /*StylesMask topMask = msk;
             char * pch = strchr(idString, '.');
             if(pch)
             {
@@ -1531,12 +1533,12 @@ public:
                   topMask = evaluator.evaluatorClass.maskFromString(prefix, c);
                   delete prefix;
                }
-            }
+            }*/
 
             while(it.Prev())
             {
                CMSSMemberInitList members = it.data;
-               CMSSMemberInit mInit = members.findStyle(topMask);
+               CMSSMemberInit mInit = members.findStyle(msk);
                if(mInit)
                {
                   list = members;
@@ -1547,11 +1549,17 @@ public:
          if(!list)
             Add((list = { }));
 
-         list.setMember(c, idString, msk, !isNested, expressionFromValue(value, uc));
+         list.setMember(c, idString, msk, createSubInstance, expression);
 
          mask |= msk;
       }
-      return result;
+   }
+
+   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
+   {
+      const String idString = msk ? evaluator.evaluatorClass.stringFromMask(msk, c) : null;
+      setMemberValue(c, idString, msk, !isNested, value, uc);
+      return true;
    }
 }
 
