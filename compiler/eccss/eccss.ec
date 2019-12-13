@@ -50,7 +50,7 @@ public:
          if(mInit)
          {
             delete mInit.initializer;
-            mInit.initializer = CMSSInitExp { exp = CMSSExpConstant { constant = value } };
+            mInit.initializer = CMSSExpConstant { constant = value };
             block.styles.mask |= mask;
             block.mask |= mask;
             result = true;
@@ -187,10 +187,10 @@ public:
 
 public class StylesMask : uint64 { bool bitMember:1:63; } // Just to force this to be a bit class...
 
-public class StylesList : CMSSList<CMSSMemberInitList>
+// This is a semi-colon-separated list
+public class StylesList : CMSSInstInitList
 {
 public:
-   StylesMask mask;
    StylesList ::parse(CMSSLexer lexer)
    {
       StylesList list = null;
@@ -210,159 +210,6 @@ public:
             break;
       }
       return list;
-   }
-
-   CMSSExpression getStyle2(StylesMask msk, Class * uc)
-   {
-      CMSSExpression result = getStyle(msk);
-      while(result && result._class == class(CMSSExpInstance))
-      {
-         CMSSExpInstance ei = (CMSSExpInstance)result;
-         if(uc && ei.instance && ei.instance._class)
-         {
-            CMSSSpecName sn = (CMSSSpecName)ei.instance._class;
-            Class c = sn ? eSystem_FindClass(__thisModule, sn.name) : null;
-            if(c && c.type == unitClass && c.base.type == unitClass)
-            {
-               *uc = c;
-               msk = 0;
-            }
-         }
-         else
-            result = null;
-
-         if(ei.instance && ei.instance.members)
-         {
-            for(i : ei.instance.members)
-            {
-               CMSSInstInitMember member = (CMSSInstInitMember)i;
-               CMSSMemberInitList members = member.members;
-               CMSSMemberInit mInit = members ? members.findStyle(msk) : null;
-               if(mInit)
-               {
-                  result = mInit.initializer ? ((CMSSInitExp)mInit.initializer).exp : null;
-                  break;
-               }
-            }
-         }
-      }
-      return result;
-   }
-
-   CMSSMemberInit findStyle(StylesMask msk)
-   {
-      // unbound sheet currently doesn't have mask set...
-      // if(mask & this.mask)
-      {
-         for(e : this)
-         {
-            CMSSMemberInit mInit = e.findStyle(msk);
-            if(mInit) return mInit;
-         }
-      }
-      return null;
-   }
-
-   void removeStyle(StylesMask msk)
-   {
-      Iterator<CMSSMemberInitList> it { this };
-      it.Next();
-      while(it.pointer)
-      {
-         IteratorPointer next = it.container.GetNext(it.pointer);
-         CMSSMemberInitList memberInitList = it.data;
-         memberInitList.removeStyle(msk);
-         if(memberInitList.GetCount() == 0)
-         {
-            it.Remove();
-            delete memberInitList;
-         }
-         it.pointer = next;
-      }
-      mask &= ~msk; // todo: make sure this is ok or write a mask recalculation function?
-   }
-
-   CMSSExpression getStyle(StylesMask mask)
-   {
-      CMSSExpression result = null;
-      CMSSMemberInit mInit = findStyle(mask);
-      if(mInit)
-         result = mInit.initializer ? ((CMSSInitExp)mInit.initializer).exp : null;
-      return result;
-   }
-
-   void setStyle(StylesMask mask, CMSSExpression exp)
-   {
-      CMSSMemberInit mInit = findStyle(mask);
-      if(!mInit)
-         ; // TODO: Create one
-      delete mInit.initializer;
-      mInit.initializer = CMSSInitExp { exp = exp };
-   }
-
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
-   {
-      bool result = false;
-      bool isTopLevel = true;
-
-      if(this)
-      {
-         CMSSMemberInit mInit = findStyle(msk);
-         CMSSInitExp initExp = null;
-         CMSSMemberInitList list = null;
-         while(mInit && !initExp)
-         {
-            initExp = mInit.initializer ? (CMSSInitExp)mInit.initializer : null;
-            if(initExp && initExp.exp._class == class(CMSSExpInstance))
-            {
-               CMSSExpInstance inst = (CMSSExpInstance)initExp.exp;
-               CMSSInstantiation instance = inst.instance;
-               CMSSInstInitList instInitList = instance.members;
-               CMSSSpecName specName = (CMSSSpecName)instance._class;
-               Class cuc = specName && specName.name ? eSystem_FindClass(__thisModule, specName.name) : null;
-               bool isUnitClass = cuc && cuc.type == unitClass && cuc.base.type == unitClass;
-
-               if(!isUnitClass)
-               {
-                  // Dealing with sub-instance (and not just a unit value)...
-                  initExp = null;
-                  isTopLevel = false;
-                  isNested = false;    // Force 'isNested' to false if we're aleady modifying the parent instance
-                                       // because addStyle() currently does not support handling this for sub-instances
-                  if(!instInitList)
-                     instance.members = instInitList = { };
-
-                  if(instInitList)
-                  {
-                     for(i : instInitList)
-                     {
-                        CMSSInstInitMember member = (CMSSInstInitMember)i;
-                        CMSSMemberInitList members = member.members;
-                        list = members;
-                        mInit = members ? members.findStyle(msk) : null;
-                        if(mInit)
-                           break;
-                     }
-                  }
-               }
-            }
-         }
-
-         if(initExp)
-         {
-            delete initExp.exp;
-            initExp.exp = expressionFromValue(value, uc);
-            result = true;
-         }
-         else if(!mInit)
-         {
-            if(!list)
-               Add(list = { });
-            result = list.addStyle(msk, value, c, isTopLevel, evaluator, isNested, uc);
-         }
-         if(result) mask |= msk;
-      }
-      return result;
    }
 }
 
@@ -489,14 +336,13 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
    {
       for(i : expInst.instance.members)
       {
-         CMSSInstInitMember member = (CMSSInstInitMember)i;
-         for(m : member.members)
+         CMSSMemberInitList members = i;
+         for(m : members)
          {
             CMSSMemberInit mInit = m;
-            if(mInit.initializer._class == class(CMSSInitExp))
+            if(mInit.initializer)
             {
-               CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
-               CMSSExpression exp = initExp.exp;
+               CMSSExpression exp = mInit.initializer;
                Class destType = exp.destType;
                if(destType)
                {
@@ -524,14 +370,13 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
    {
       for(i : expInst.instance.members)
       {
-         CMSSInstInitMember member = (CMSSInstInitMember)i;
-         for(m : member.members)
+         CMSSMemberInitList members = i;
+         for(m : members)
          {
             CMSSMemberInit mInit = m;
-            if(mInit.initializer && mInit.initializer._class == class(CMSSInitExp))
+            if(mInit.initializer)
             {
-               CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
-               CMSSExpression exp = initExp.exp;
+               CMSSExpression exp = mInit.initializer;
                Class destType = exp.destType;
                if(destType)
                {
@@ -891,11 +736,6 @@ public:
       return styles ? styles.getStyle(mask) : null;
    }
 
-   void setStyle(StylesMask mask, CMSSExpression exp)
-   {
-      if(!styles) styles = { };
-      return styles.setStyle(mask, exp);
-   }
    // NOTE: isNested means this is a nested rule, and we want to set top.sub = as opposed to top = { sub = }
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
@@ -1055,9 +895,8 @@ public:
                Link itMember = initList.list.last;
                while(itMember) //.Prev())
                {
-                  CMSSMemberInit member = (CMSSMemberInit)(uintptr)itMember.data;
-                  CMSSInitExp initExp = member.initializer && member.initializer._class == class(CMSSInitExp) ? (CMSSInitExp)member.initializer : null;
-                  CMSSExpression e = initExp.exp;
+                  CMSSMemberInit member = (CMSSMemberInit)itMember.data;
+                  CMSSExpression e = member.initializer;
                   StylesMask sm = member.stylesMask;
                   if(sm & m)
                   {
@@ -1075,8 +914,8 @@ public:
 
    private static void ::applyStyle(void * object, StylesMask mSet, ECCSSEvaluator evaluator, CMSSExpression e, ExpFlags * flg)
    {
-      CMSSExpInstance inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
-      CMSSExpArray arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
+      CMSSExpInstance inst = e && e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
+      CMSSExpArray arr = e && e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
       int unit = 0;
 
       if(inst)
@@ -1089,14 +928,13 @@ public:
             e = null;
             for(i : inst.instance.members)
             {
-               CMSSInstInitMember member = (CMSSInstInitMember)i;
-               for(m : member.members)
+               CMSSMemberInitList members = i;
+               for(m : members)
                {
                   CMSSMemberInit mInit = m;
-                  if(mInit.initializer._class == class(CMSSInitExp))
+                  if(mInit.initializer)
                   {
-                     CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
-                     e = initExp.exp;
+                     e = mInit.initializer;
                      if(!e.destType) e.destType = class(double);
                      break;
                   }
@@ -1147,17 +985,16 @@ public:
       {
          for(i : inst.instance.members)
          {
-            CMSSInstInitMember member = (CMSSInstInitMember)i;
-            for(m : member.members)
+            CMSSMemberInitList members = i;
+            for(m : members)
             {
                CMSSMemberInit mInit = m;
-               if(mInit.initializer._class == class(CMSSInitExp))
+               if(mInit.initializer)
                {
-                  CMSSInitExp initExp = (CMSSInitExp)mInit.initializer;
                   StylesMask sm = mInit.stylesMask;
                   if(sm & mask)
                   {
-                     applyStyle(object, sm & mask, evaluator, initExp.exp, flg);
+                     applyStyle(object, sm & mask, evaluator, mInit.initializer, flg);
                      mask &= ~sm;
                   }
                }
