@@ -1109,6 +1109,13 @@ public:
 
       if(type && computeType == runtime)
       {
+         if(type.templateClass == class(Container))
+         {
+            char name[1024];
+            strcpy(name, "Array");
+            strcat(name, type.name + 9);
+            type = eSystem_FindClass(__thisModule.application, name);
+         }
          array = eInstance_New(type);
          array.size = elements.GetCount();
 
@@ -1817,7 +1824,7 @@ public:
             for(j = 0; j < ids.GetCount(); j++)
             {
                const String id = ids[j], s = it.Next() ? it.data.string : null;
-               if(!s && strcmp(s, id))
+               if(!s || strcmp(s, id))
                {
                   same = false;
                   break;
