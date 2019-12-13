@@ -43,7 +43,16 @@ public:
    REGISTER()
    {
       //Instance::class_registration(_class);
-      register_onDisplay(_class, [](Foo & _self, Surface & s, int x , int y , int w, void * fd, Alignment a, DataDisplayFlags f) { printf("Meh\n"); });
+      // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
+      // Foo::Foo_onDisplay_Functor::FunctionType {aka void (*)(
+      // Foo&, Instance&, int, int, int, void*, eC_Alignment, unsigned int
+      // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
+      // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
+      register_onDisplay(_class,
+            [](Foo & _self, Instance & s, int x , int y , int w, void * fd, Alignment a, DataDisplayFlags f)
+            {
+               printf("Meh\n");
+            });
    }
 };
 REGISTER_CLASS_DEF(Foo, Instance, app);
@@ -70,7 +79,7 @@ public:
       button.position = { 200, 200 };
       button.caption = $("Yay!!");
       // button.onRedraw = [](Window & w, Surface s){ };
-      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods)
+      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods) -> C(bool)
       {
          double i = 3.14159265;
          char tmp[256];
@@ -138,7 +147,7 @@ public:
       Window::class_registration(_class);
       register_onRedraw(_class, [](Window & w, Surface & surface)
       {
-         surface.writeTextf(100, 100, $("Class Method!"));
+         surface.writeText/*f*/(100, 100, $("Class Method!!"), 14);
          //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
       });
    }
@@ -163,7 +172,7 @@ public:
 
       onRedraw = [](Window & w, Surface & surface)
       {
-         surface.writeTextf(100, 100, $("Instance Method!"));
+         surface.writeText/*f*/(100, 100, $("Instance Method!"), 16);
          //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
       };
    }
