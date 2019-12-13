@@ -14,12 +14,12 @@ public:
    // Generic styles
    bool visibility         :1: 0;
    bool opacity            :1: 1;
-// todo: alocate bits when these 2 features are supported
    bool brightness         :1: 2;
    bool saturation         :1: 3;
    bool scaling            :1: 4;
-// bool transform3D        :1: 4;   // TOCHECK: Will transformation use multiple bits?
-   bool zOrder             :1: 5;
+   bool position           :1: 5;   // Transformation will use 3 bits for now...
+   bool rotation           :1: 6;
+   bool zOrder             :1: 7;
 
    void print(File out)
    {
@@ -29,7 +29,8 @@ public:
       if(brightness)             out.Print(" brightness");
       if(saturation)             out.Print(" saturation");
       if(scaling)                out.Print(" scaling");
-   // if(transform3D)            out.Print(" transform3D");
+      if(position)               out.Print(" position");
+      if(rotation)               out.Print(" rotation");
       if(zOrder)                 out.Print(" zOrder");
       out.Print(" }");
    }
@@ -155,10 +156,12 @@ public enum GraphicalStyleKind : GraphicalStyleMask
    zOrder = GraphicalStyleMask { zOrder = true },
    visibility = GraphicalStyleMask { visibility = true },
    scaling = GraphicalStyleMask { scaling = true },
+   position = GraphicalStyleMask { position = true },
+   rotation = GraphicalStyleMask { rotation = true },
    opacity = GraphicalStyleMask { opacity = true },
    brightness = GraphicalStyleMask { brightness = true },
    saturation = GraphicalStyleMask { saturation = true },
-   //transform3D = GraphicalStyleMask { transform3D = true }
+   transform = GraphicalStyleMask { scaling = true, position = true, rotation = true }
 };
 
 public enum ShapeStyleKind : GraphicalStyleKind
@@ -230,10 +233,12 @@ Map<String, GraphicalStyleKind> styleIdentifierMap
 { [
    { "visibility", visibility },
    { "opacity", opacity },
-   { "scaling", scaling },
    { "brightness", brightness },
    { "saturation", saturation },
-// { "transform3D", transform3D },
+   { "scaling", scaling },
+   { "position", position },
+   { "rotation", rotation },
+   { "transform", transform },
    { "zOrder", zOrder }
 ] };
 
@@ -301,12 +306,14 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
 Map<GraphicalStyleKind, const String> stringFromMaskMap
 { [
    { opacity,     "opacity" },
-   { scaling,     "scaling" },
    { visibility,  "visibility" },
    { brightness,  "brightness" },
    { saturation,  "saturation" },
-   { zOrder,      "zOrder" }
-   // { transform3D, "transform3D" }
+   { zOrder,      "zOrder" },
+   { scaling,     "scaling" },
+   { position,    "position" },
+   { rotation,    "rotation" },
+   { transform,   "transform" }
 ] };
 
 
@@ -432,7 +439,8 @@ public:
             break;
          }
          case zOrder: zOrder = (int)value.i; break;
-         case scaling: transform.scaling = { value.i, value.i, 1 }; break;
+         case scaling: transform.scaling = { (float)value.r, (float)value.r, 1 }; break;
+         case rotation: { Quaternion q; q.Roll(value.r); transform.orientation = q; break; }
       }
    }
 }
@@ -514,8 +522,8 @@ public:
          case text: text = CopyString(value.s); break;
          case fontFace: font.face = CopyString(value.s); break;
          case fontSize: font.size = (float)value.r; break;
-         case fontBold: font.bold = (bool)value.i; break; //check if string?
-         case fontItalic: font.italic = (bool)value.i; break; //check if string?
+         case fontBold: font.bold = (bool)value.i; break;
+         case fontItalic: font.italic = (bool)value.i; break;
          case fontColor: font.color = (Color)value.i; break;
          case fontOpacity: font.opacity = (float)value.r; break;
          case fontOutlineSize: font.outline.size = (float)value.r; break;
@@ -557,7 +565,8 @@ public:
          case imageType:   image.type = CopyString(value.s); break;
          case imageSprite: image.sprite = CopyString(value.s); break;
          case tint: tint = (Color)value.i; break;
-         //case hotSpot: hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
+         // FIXME:
+         //case hotSpot: image.hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
          default: GraphicalStyle::applyStyle(mSet, value, unit);
       }
    }
