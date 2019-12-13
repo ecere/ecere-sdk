@@ -1092,9 +1092,34 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      out.Print("[ ");
-      if(elements) elements.print(out, indent, o);
-      out.Print(" ]");
+      Class type = expType ? expType : destType;
+      ClassTemplateArgument * a = type ? &type.templateArgs[0] : null;
+      Class et = a ? a->dataTypeClass : null;
+      int count = elements ? elements.GetCount() : 0;
+
+      if(!count || !et || (et.type != structClass && et.type != normalClass))
+      {
+         out.Print("[ ");
+         if(elements) elements.print(out, indent, o);
+         out.Print(" ]");
+      }
+      else
+      {
+         int i = 0;
+
+         out.PrintLn("[");
+         indent++;
+         for(e : elements)
+         {
+            printIndent(indent, out);
+            e.print(out, indent, o);
+            if(++i < count) out.Print(",");
+            out.PrintLn("");
+         }
+         indent--;
+         printIndent(indent, out);
+         out.Print("]");
+      }
    }
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
