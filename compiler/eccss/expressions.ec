@@ -2503,7 +2503,10 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
                if(fType.type == integer)
                {
                   Iterator<int64> iti { (Container<int64>)container, it.pointer };
-                  v.i = (int64)iti.GetData();   // FIXME: eC bug causes a warning without these casts?
+                  if(type.typeSize == 4)
+                     v.i = (int)iti.GetData();   // FIXME: eC bug causes a warning without these casts?
+                  else
+                     v.i = (int64)iti.GetData();   // FIXME: eC bug causes a warning without these casts?
                }
                else if(fType.type == real)
                {
@@ -2561,7 +2564,10 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
 
                      if(v.type.type == integer)
                      {
-                        v.i = *(int64 *)((byte *)value.b + m.offset);
+                        if(type.typeSize == 4)
+                           v.i = *(int *)((byte *)value.b + m.offset);
+                        else
+                           v.i = *(int64 *)((byte *)value.b + m.offset);
                      }
                      else if(v.type.type == real)
                      {
