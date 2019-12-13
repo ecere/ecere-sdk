@@ -1141,7 +1141,7 @@ public:
       // TOCHECK: any issue to set resolved to true if all elements are resolved?
       delete array;
 
-      if(type && computeType == runtime)
+      if(type && computeType == runtime && elements)
       {
          if(type.templateClass == class(Container))
          {
