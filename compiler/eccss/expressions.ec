@@ -1893,16 +1893,21 @@ public:
          {
             CMSSExpression e = init.initializer;
             bool same = true;
-            int j;
-            Iterator<CMSSIdentifier> it { init.identifiers };
-
-            for(j = 0; j < ids.GetCount(); j++)
+            if(ids.GetCount() != (init.identifiers ? init.identifiers.count : 0))
+               same = false;
+            else
             {
-               const String id = ids[j], s = it.Next() ? it.data.string : null;
-               if(!s || strcmp(s, id))
+               int j;
+               Iterator<CMSSIdentifier> it { init.identifiers };
+
+               for(j = 0; j < ids.GetCount(); j++)
                {
-                  same = false;
-                  break;
+                  const String id = ids[j], s = it.Next() ? it.data.string : null;
+                  if(!s || strcmp(s, id))
+                  {
+                     same = false;
+                     break;
+                  }
                }
             }
             if(same)
@@ -1936,8 +1941,28 @@ public:
             if(!e && mask && this)
             {
                // To recognize default initializers...
-               CMSSMemberInit mInit = findStyle(mask);
+               CMSSMemberInit mInit = findTopStyle(mask, member);
                if(mInit) e = mInit.initializer;
+
+               if(!e)
+               {
+                  // If we don't have the parent instance set, look for the exact style directly set
+                  mInit = findExactStyle(mask);
+                  if(mInit)
+                  {
+                     // We simply replace the expression
+                     delete mInit.initializer;
+                     mInit.initializer = expression;
+                     setSubInstance = true;
+                  }
+
+                  if(!e)
+                  {
+                     // Direct style isn't set, look for any intermediate style
+                     mInit = findStyle(mask);
+                     if(mInit) e = mInit.initializer;
+                  }
+               }
             }
             if(!e && createSubInstance)
             {
@@ -2053,16 +2078,21 @@ public:
 
          if(oldMInit.identifiers && split.count)
          {
-            Iterator<String> itId { split };
-            itId.Next();
-            for(i : oldMInit.identifiers)
+            if(oldMInit.identifiers.count != split.count)
+               same = false;
+            else
             {
-               CMSSIdentifier oldID = i;
-               String newID = itId.data;
-               if(!newID || !oldID.string || strcmp(newID, oldID.string))
+               Iterator<String> itId { split };
+               itId.Next();
+               for(i : oldMInit.identifiers)
                {
-                  same = false;
-                  break;
+                  CMSSIdentifier oldID = i;
+                  String newID = itId.data;
+                  if(!newID || !oldID.string || strcmp(newID, oldID.string))
+                  {
+                     same = false;
+                     break;
+                  }
                }
             }
          }
@@ -2119,6 +2149,39 @@ public:
             CMSSMemberInit mInit = e;
             StylesMask sm = mInit.stylesMask;
             if(!mask || (sm & mask))   // NOTE: Useful to pass a 0 mask to look for unit class value
+               return mInit;
+         }
+      }
+      return null;
+   }
+
+   CMSSMemberInit findTopStyle(StylesMask mask, const String topID)
+   {
+      //if(mask & stylesMask)
+      {
+         for(e : this)
+         {
+            CMSSMemberInit mInit = e;
+            StylesMask sm = mInit.stylesMask;
+            if(sm & mask)   // NOTE: Useful to pass a 0 mask to look for unit class value
+            {
+               if(mInit && mInit.dataMember && !strcmp(mInit.dataMember.name, topID))
+                  return mInit;
+            }
+         }
+      }
+      return null;
+   }
+
+   CMSSMemberInit findExactStyle(StylesMask mask)
+   {
+      //if(mask & stylesMask)
+      {
+         for(e : this)
+         {
+            CMSSMemberInit mInit = e;
+            StylesMask sm = mInit.stylesMask;
+            if(sm == mask)
                return mInit;
          }
       }
