@@ -236,8 +236,10 @@ Map<String, GraphicalStyleKind> styleIdentifierMap
    { "brightness", brightness },
    { "saturation", saturation },
    { "scaling", scaling },
-   { "position", position },
-   { "rotation", rotation },
+   { "position2D", position },
+   { "position2D.x", position },
+   { "position2D.y", position },
+   { "orientation2D", rotation },
    { "transform", transform },
    { "zOrder", zOrder }
 ] };
@@ -247,6 +249,9 @@ Map<String, ShapeStyleKind> shapeStyleIdentifierMap
    { "fill", fill },
    { "fill.pattern", fillPattern },
    { "fill.color", fillColor },
+   { "fill.color.r", fillColor },
+   { "fill.color.g", fillColor },
+   { "fill.color.b", fillColor },
    { "fill.opacity", fillOpacity },
    { "fill.stipple", fillStippleStyle },
    { "fill.hatch", fillHatchStyle },
@@ -258,14 +263,23 @@ Map<String, ShapeStyleKind> shapeStyleIdentifierMap
    { "stroke.dashPattern", strokeDashPattern },
    { "stroke.opacity", strokeOpacity },
    { "stroke.color", strokeColor },
+   { "stroke.color.r", strokeColor },
+   { "stroke.color.g", strokeColor },
+   { "stroke.color.b", strokeColor },
    { "stroke.width", strokeWidth },
    { "stroke.casing", strokeCasing },
    { "stroke.casing.width", strokeCasingWidth },
    { "stroke.casing.color", strokeCasingColor },
+   { "stroke.casing.color.r", strokeCasingColor },
+   { "stroke.casing.color.g", strokeCasingColor },
+   { "stroke.casing.color.b", strokeCasingColor },
    { "stroke.casing.opacity", strokeCasingOpacity },
    { "stroke.center", strokeCenter },
    { "stroke.center.width", strokeCenterWidth },
    { "stroke.center.color", strokeCenterColor },
+   { "stroke.center.color.r", strokeCenterColor },
+   { "stroke.center.color.g", strokeCenterColor },
+   { "stroke.center.color.b", strokeCenterColor },
    { "stroke.center.opacity", strokeCenterOpacity }
 ] };
 
@@ -278,12 +292,17 @@ Map<String, TextStyleKind> textStyleIdentifierMap
    { "font.bold", fontBold },
    { "font.italic", fontItalic },
    { "font.color", fontColor },
+   { "font.color.r", fontColor },
+   { "font.color.g", fontColor },
+   { "font.color.b", fontColor },
    { "font.opacity", fontOpacity },
    { "font.outline", fontOutline },
    { "font.outline.size", fontOutlineSize },
    { "font.outline.color", fontOutlineColor },
+   { "font.outline.color.r", fontOutlineColor },
+   { "font.outline.color.g", fontOutlineColor },
+   { "font.outline.color.b", fontOutlineColor },
    { "font.outline.opacity", fontOutlineOpacity },
-   { "font.alignment", alignment }, // TODO review
    { "alignment", alignment },
    { "alignment.horzAlign", alignmentHorzAlign },
    { "alignment.vertAlign", alignmentVertAlign }
@@ -299,7 +318,12 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
    { "image.type", imageType},
    { "image.sprite", imageSprite},
    { "hotSpot", hotSpot },
-   { "tint", tint }
+   { "hotSpot.x", hotSpot },
+   { "hotSpot.y", hotSpot },
+   { "tint", tint },
+   { "tint.r", tint },
+   { "tint.g", tint },
+   { "tint.b", tint }
 ] };
 
 
@@ -311,8 +335,8 @@ Map<GraphicalStyleKind, const String> stringFromMaskMap
    { saturation,  "saturation" },
    { zOrder,      "zOrder" },
    { scaling,     "scaling" },
-   { position,    "position" },
-   { rotation,    "rotation" },
+   { position,    "position2D" },
+   { rotation,    "orientation2D" },
    { transform,   "transform" }
 ] };
 

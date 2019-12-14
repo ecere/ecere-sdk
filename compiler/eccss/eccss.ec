@@ -326,11 +326,11 @@ private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator eval
    Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : inst.destType;
    Instance instance = c && c.structSize ? eInstance_New(c) : null;
    if(instance)
-      setGenericInstanceMembers(instance, inst, evaluator, flg);
+      setGenericInstanceMembers(instance, inst, evaluator, flg, c);
    return instance;
 }
 
-private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSEvaluator evaluator, ExpFlags * flg)
+private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSEvaluator evaluator, ExpFlags * flg, Class stylesClass)
 {
    if(expInst)
    {
@@ -347,7 +347,7 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
                if(destType)
                {
                   FieldValue val { };
-                  ExpFlags flag = exp.compute(val, evaluator, runtime);
+                  ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
                   BitMember member = (BitMember)mInit.dataMember;
 
                   *bits |= (val.i << member.pos) & member.mask;
@@ -364,7 +364,7 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
    }
 }
 
-private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst, ECCSSEvaluator evaluator, ExpFlags * flg)
+private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst, ECCSSEvaluator evaluator, ExpFlags * flg, Class stylesClass)
 {
    if(expInst && expInst.instance)
    {
@@ -381,7 +381,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                if(destType)
                {
                   FieldValue val { };
-                  ExpFlags flag = exp.compute(val, evaluator, runtime);
+                  ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
 
                   if(mInit.dataMember && mInit.dataMember.isProperty)
                   {
@@ -616,7 +616,7 @@ public:
          {
             FieldValue value { };
             CMSSExpression e = s.exp.copy();
-            ExpFlags flags = e.compute(value, evaluator, preprocessing);
+            ExpFlags flags = e.compute(value, evaluator, preprocessing, stylesClass);
             if(flags.resolved)
             {
                e = simplifyResolved(value, e);
@@ -651,7 +651,7 @@ public:
                for(m : style)
                {
                   CMSSMemberInit member = m.copy();
-                  /*ExpFlags flags = */member.precompute(stylesClass, 0, null, evaluator);  // TODO: Consider these flags
+                  /*ExpFlags flags = */member.precompute(stylesClass, stylesClass, 0, null, evaluator);  // TODO: Consider these flags
                   newStyle.Add(member);
                   newStyles.mask |= member.stylesMask;
                }
@@ -691,7 +691,7 @@ public:
          {
             FieldValue value { };
             CMSSExpression e = s.exp;
-            ExpFlags flags = e.compute(value, evaluator, preprocessing);
+            ExpFlags flags = e.compute(value, evaluator, preprocessing, stylesClass);
             if(flags.resolved)
             {
                e = simplifyResolved(value, e);
@@ -710,7 +710,7 @@ public:
             {
                CMSSMemberInit member = m;
                // passing stylesClass here just passes irrelevant GeoSymbolizer class, but the others are not yet bound
-               member.precompute(stylesClass, 0, null, evaluator);  // TODO: Consider these flags
+               member.precompute(stylesClass, stylesClass, 0, null, evaluator);  // TODO: Consider these flags
                styles.mask |= member.stylesMask;
             }
          }
@@ -870,7 +870,7 @@ public:
             StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
             FieldValue value { };
             CMSSExpression e = sel.exp;
-            ExpFlags sFlags = e.compute(value, evaluator, runtime);
+            ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
 
             if(!sFlags.resolved || !value.i)
@@ -961,7 +961,7 @@ public:
       else if(e && !inst)
       {
          FieldValue value { };
-         ExpFlags mFlg = e.compute(value, evaluator, runtime);
+         ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
          Class destType = e.destType;
          Class expType = e.expType;
          if(mFlg.resolved && destType && expType != destType)

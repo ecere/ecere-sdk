@@ -181,6 +181,7 @@ public:
    bool dbgOneLiner:1;
    bool skipEmptyBlocks:1;
    bool skipImpliedID:1;
+   bool multiLineInstance:1;
 }
 
 public struct CMSSCodePosition

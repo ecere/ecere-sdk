@@ -295,7 +295,7 @@ public:
    Class expType;
 
    //virtual float compute();
-   public virtual ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType);
+   public virtual ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass);
 
    CMSSExpression ::parse(CMSSLexer lexer)
    {
@@ -492,7 +492,7 @@ public:
       return e;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       value = constant;
       switch(value.type.type)
@@ -533,7 +533,7 @@ public:
       s[len] = 0;
       return { string = s };
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       value.s = string;
       value.type.type = text;
@@ -579,7 +579,7 @@ public:
       return { identifier = CMSSIdentifier::parse(lexer) };
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       //Class c = destType ? destType : class(FieldValue); //filler
       //bool *(* onGetDataFromString)(Class, void *, const char *) = destType._vTbl[__ecereVMethodID_class_OnGetDataFromString];
@@ -671,7 +671,7 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType) //float
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass) //float
    {
       ExpFlags flags { };
       if(exp1 && exp2)
@@ -685,8 +685,8 @@ public:
          // TODO: Review this (inheritance of parent expression dest type?)
          exp1.destType = destType;
 
-         flags1 = exp1.compute(val1, evaluator, computeType);
-         flags2 = exp2.compute(val2, evaluator, computeType);
+         flags1 = exp1.compute(val1, evaluator, computeType, stylesClass);
+         flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
 
          if(op >= stringStartsWith && op <= stringNotContains)
             type = text;
@@ -714,7 +714,7 @@ public:
                {
                   CMSSExpression ne = e;
                   FieldValue v2 { type = { type = nil } };
-                  ExpFlags f2 = ne.compute(v2, evaluator, computeType);
+                  ExpFlags f2 = ne.compute(v2, evaluator, computeType, stylesClass);
                   if(flags1.resolved)
                   {
                      if(f2.resolved)
@@ -787,7 +787,7 @@ public:
       else if(exp2)
       {
          FieldValue val2 { };
-         ExpFlags flags2 = exp2.compute(val2, evaluator, computeType);
+         ExpFlags flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
          OpTable * tbl = &opTables[val2.type.type];
          flags = flags2;
          if(flags2.resolved)
@@ -826,7 +826,7 @@ public:
       return CMSSExpBrackets { list = list.copy(), expType = expType, destType = destType };
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0;
       if(list)
@@ -834,7 +834,7 @@ public:
          Iterator<CMSSExpression> last { container = list, pointer = list.GetLast() };
          CMSSExpression lastExp = last.data;
          if(lastExp)
-            flags = lastExp.compute(value, evaluator, computeType);
+            flags = lastExp.compute(value, evaluator, computeType, stylesClass);
       }
       return flags;
    }
@@ -890,21 +890,21 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0;
       FieldValue condValue { };
-      ExpFlags flagsCond = condition.compute(condValue, evaluator, computeType);
+      ExpFlags flagsCond = condition.compute(condValue, evaluator, computeType, stylesClass);
       if(flagsCond.resolved)
       {
          if(condValue.i)
          {
             CMSSExpression last = expList.lastIterator.data;   // CMSS Only currently supports a single expression...
             if(last)
-               flags = last.compute(value, evaluator, computeType);
+               flags = last.compute(value, evaluator, computeType, stylesClass);
          }
          else
-            flags = elseExp.compute(value, evaluator, computeType);
+            flags = elseExp.compute(value, evaluator, computeType, stylesClass);
          if(!flags.resolved)
             condition = simplifyResolved(condValue, condition);
           // TOOD: Support for replacing condition expression entirely eventually?
@@ -914,8 +914,8 @@ public:
          CMSSExpression last = expList.lastIterator.data;   // CMSS Only currently supports a single expression...
          FieldValue val1 { };
          FieldValue val2 { };
-         ExpFlags flags1 = last ? last.compute(val1, evaluator, computeType) : 0;
-         ExpFlags flags2 = elseExp ? elseExp.compute(val2, evaluator, computeType) : 0;
+         ExpFlags flags1 = last ? last.compute(val1, evaluator, computeType, stylesClass) : 0;
+         ExpFlags flags2 = elseExp ? elseExp.compute(val2, evaluator, computeType, stylesClass) : 0;
 
          flags = (flagsCond | flags1 | flags2) & ~ ExpFlags { resolved = true };
          if(flags1.resolved)
@@ -967,7 +967,7 @@ public:
          lexer.readToken();
       return exp;
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       //value = exp.compute;
@@ -1006,11 +1006,11 @@ public:
       lexer.readToken();
       return { exp = e, member = CMSSIdentifier::parse(lexer) };
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       FieldValue val { };
-      ExpFlags expFlg = exp.compute(val, evaluator, computeType);
+      ExpFlags expFlg = exp.compute(val, evaluator, computeType, stylesClass);
       if(expFlg.resolved && evaluator != null && exp.expType)
       {
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
@@ -1062,7 +1062,7 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       //how to map exp to functions?
@@ -1080,7 +1080,6 @@ public class CMSSExpArray : CMSSExpression
 {
 public:
    CMSSList<CMSSExpression> elements;
-   StylesMask stylesMask;
    Array array;
 
    CMSSExpArray copy()
@@ -1131,7 +1130,7 @@ public:
       }
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       bool resolved = true;
@@ -1158,16 +1157,16 @@ public:
 
       for(e : elements)
       {
+         CMSSExpression exp = e;
          FieldValue v { };
          ExpFlags flg;
          if(type)
          {
             ClassTemplateArgument a = type.templateArgs[0];
 
-            e.destType = a.dataTypeClass;
-            //.if(e._class == class(CMSSExpInstance))
-               //((CMSSExpInstance)e).stylesMask = stylesMask;
-            flg = e.compute(v, evaluator, computeType);
+            exp.destType = a.dataTypeClass;
+
+            flg = e.compute(v, evaluator, computeType, null);
 
             if(computeType == runtime && flg.resolved && array)
             {
@@ -1229,7 +1228,7 @@ public class CMSSExpInstance : CMSSExpression
 {
 public:
    CMSSInstantiation instance;
-   StylesMask stylesMask;
+   StylesMask targetMask;
    void * instData;
 
    CMSSExpInstance ::parse(CMSSSpecName spec, CMSSLexer lexer)
@@ -1239,7 +1238,11 @@ public:
 
    CMSSExpInstance copy()
    {
-      CMSSExpInstance e { instance = instance ? instance.copy() : null, expType = expType, destType = destType };
+      CMSSExpInstance e
+      {
+         instance = instance ? instance.copy() : null,
+         targetMask = targetMask, expType = expType, destType = destType
+      };
       return e;
    }
 
@@ -1255,11 +1258,13 @@ public:
                 !strcmp(type.name, "ValueColor") || !strcmp(type.name, "ValueOpacity")))
                o.skipImpliedID = true;
          }
+         if(!type || type.type == structClass)  // image.hotSpot currently doesn't get type set?
+            o.multiLineInstance = false;
          instance.print(out, indent, o);
       }
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType)
+   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0; //can an instance be resolved entirely to a constant? -- we resolve it to a 'blob' FieldValue
 
@@ -1268,20 +1273,22 @@ public:
          CMSSSpecName specName = instance ? (CMSSSpecName)instance._class : null;
          Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
          int memberID = 0;
+
+         if(!stylesClass) stylesClass = c;
          if(instance)
          {
             for(inst : instance.members)
             {
                CMSSMemberInitList member = inst;
                for(m : member)
-                  flags |= m.precompute(c, stylesMask, &memberID, evaluator);
+                  flags |= m.precompute(stylesClass, c, targetMask, &memberID, evaluator);
             }
          }
          if(flags.resolved && c && c.type == bitClass)
          {
             value.type = { integer };
             value.i = 0;
-            setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags);
+            setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags, stylesClass);
          }
          expType = c;
       }
@@ -1368,11 +1375,11 @@ public:
 
          if(!placed)
          {
-            CMSSMemberInitList initList { };
+            CMSSMemberInitList initList = strchr(idsString, '.') ? null : instance.members.lastIterator.data;
+            if(!initList)
+               instance.members.Add((initList = { }));
             initList.setMember(expType, idsString, mask, createSubInstance, expression);
             instance.members.mask |= mask;
-            stylesMask |= mask;
-            instance.members.Add(initList);
          }
       }
    }
@@ -1430,7 +1437,7 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      CMSSList::print(out, indent, o);
+      CMSSList::print(out, indent, o | { multiLineInstance = true });
    }
 
    CMSSExpression getStyle2(StylesMask msk, Class * uc)
@@ -1520,6 +1527,16 @@ public:
          if(msk)
          {
             Iterator<CMSSMemberInitList> it { this };
+            char * dot = idString ? strchr(idString, '.') : null;
+            String member = null;
+            if(dot)
+            {
+               int len = (int)(dot - idString);
+               member = new char[len+1];
+               memcpy(member, idString, len);
+               member[len] = 0;
+            }
+
             /*StylesMask topMask = msk;
             char * pch = strchr(idString, '.');
             if(pch)
@@ -1538,13 +1555,19 @@ public:
             while(it.Prev())
             {
                CMSSMemberInitList members = it.data;
-               CMSSMemberInit mInit = members.findStyle(msk);
-               if(mInit)
+               if(member && members.findTopStyle(mask, member))
+               {
+                  list = members;
+                  break;
+               }
+
+               if(members.findStyle(msk))
                {
                   list = members;
                   break;
                }
             }
+            delete member;
          }
          if(!list)
             Add((list = { }));
@@ -1558,7 +1581,10 @@ public:
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
    {
       const String idString = msk ? evaluator.evaluatorClass.stringFromMask(msk, c) : null;
-      setMemberValue(c, idString, msk, !isNested, value, uc);
+      CMSSExpression e = expressionFromValue(value, uc);
+      FieldValue v { };
+      setMember(c, idString, msk, !isNested, e);
+      e.compute(v, evaluator, preprocessing, c); // REVIEW: use of c for stylesClass here...
       return true;
    }
 }
@@ -1588,7 +1614,7 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      bool multiLine = false;
+      bool multiLine = o.multiLineInstance;
 
       if(_class) { _class.print(out, indent, o); if(!multiLine) out.Print(" "); }
       if(multiLine)
@@ -1652,7 +1678,6 @@ public:
 
    CMSSTokenType assignType;
    Class destType;
-   Class expType;
    StylesMask stylesMask;
    DataMember dataMember;
    uint offset;
@@ -1702,29 +1727,32 @@ public:
       {
          assignType = assignType, initializer = initializer.copy(), stylesMask = stylesMask,
          identifiers = copyList(identifiers, (void *)CMSSIdentifier::copy),
-         destType = destType, expType = expType, dataMember = dataMember
+         destType = destType, dataMember = dataMember
       };
       return memberInit;
    }
 
-   private ExpFlags precompute(Class c, StylesMask targetStylesMask, int * memberID, ECCSSEvaluator evaluator)
+   // targetStylesMask is topMask for the 'c' instance (e.g. stroke for stroke =)
+   private ExpFlags precompute(Class stylesClass, Class c, StylesMask targetStylesMask, int * memberID, ECCSSEvaluator evaluator)
    {
       ExpFlags flags = 0;
-      String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask, c) : null;
-      Class inheritClass = c;
+      // NOTE: We need a separate Class for the styling object within which a sub-instance would be
+      //       vs. the current instance level class (current c)
+      String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask, stylesClass) : null;
+      Class type = c;
 
       dataMember = null;
-      if(inheritClass && identifiers && identifiers.first)
+      if(type && identifiers && identifiers.first)
       {
          for(i : identifiers)
          {
             String s = identifierStr ? PrintString(identifierStr, ".", i.string) : CopyString(i.string);
             delete identifierStr;
             identifierStr = s;
-            dataMember = eClass_FindDataMember(inheritClass, i.string, inheritClass.module, null, null);
+            dataMember = eClass_FindDataMember(type, i.string, type.module, null, null);
             if(!dataMember)
             {
-               dataMember = (DataMember)eClass_FindProperty(inheritClass, i.string, inheritClass.module);
+               dataMember = (DataMember)eClass_FindProperty(type, i.string, type.module);
             }
             if(dataMember)
             {
@@ -1732,7 +1760,7 @@ public:
                   dataMember.dataTypeClass = destType = eSystem_FindClass(dataMember._class.module, dataMember.dataTypeString);
                else
                   destType = dataMember.dataTypeClass;
-               inheritClass = dataMember.dataTypeClass;
+               type = dataMember.dataTypeClass;
             }
          }
       }
@@ -1785,26 +1813,24 @@ public:
          }
          this.dataMember = dataMember;
 
-         stylesMask = identifierStr ? evaluator.evaluatorClass.maskFromString(identifierStr, dataMember._class) : 0;
+         stylesMask = identifierStr && stylesClass && stylesClass.type != structClass
+            ? evaluator.evaluatorClass.maskFromString(identifierStr, stylesClass) : 0;
          if(initializer)
          {
-            CMSSExpression e = initializer; //initExp.exp;
+            CMSSExpression e = initializer;
             if(e)
             {
                FieldValue val { };
                e.destType = destType;
                if(e._class == class(CMSSExpInstance))
-                  ((CMSSExpInstance)e).stylesMask = stylesMask;
-               else if(e._class == class(CMSSExpArray))
-                  ((CMSSExpArray)e).stylesMask = stylesMask;
+                  ((CMSSExpInstance)e).targetMask = stylesMask;
 
-               flags = e.compute(val, evaluator, preprocessing);
+               flags = e.compute(val, evaluator, preprocessing, stylesClass);
                if(flags.resolved)
                   initializer = simplifyResolved(val, e);
             }
          }
       }
-      expType = inheritClass;//test
       return flags;
    }
 
@@ -1850,7 +1876,15 @@ public:
          }
          out.Print(" ");
          assignType.print(out, indent, o);
-         out.Print(" ");
+         if(!initializer || initializer._class != class(CMSSExpInstance) || !o.multiLineInstance)
+            out.Print(" ");
+         else
+         {
+            CMSSExpInstance ei = (CMSSExpInstance)initializer;
+            Class type = ei.expType ? ei.expType : ei.destType;
+            if(!type || type.type == structClass)
+               out.Print(" "); // Not multiline
+         }
       }
       if(initializer)
          initializer.print(out, indent, o);
@@ -2141,7 +2175,6 @@ public:
             Insert(after, mInit);
             placed = true;
          }
-         // stylesMask |= mask;
 
          if(!placed)
             Add(mInit);
