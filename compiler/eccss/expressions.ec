@@ -1440,6 +1440,7 @@ public:
       CMSSList::print(out, indent, o | { multiLineInstance = true });
    }
 
+   // getStyle2() is same as getStyle() but splits up the unit value and unit (e.g. Meters) separately
    CMSSExpression getStyle2(StylesMask msk, Class * uc)
    {
       CMSSExpression result = getStyle(msk);
@@ -1461,10 +1462,12 @@ public:
 
          if(ei.instance && ei.instance.members)
          {
+            // NOTE: This piece and the while loop should no longer be required now with findDeepStyle()
+            // TODO: Should iterate from the last?
             for(i : ei.instance.members)
             {
                CMSSMemberInitList members = i;
-               CMSSMemberInit mInit = members ? members.findStyle(msk) : null;
+               CMSSMemberInit mInit = members ? members.findDeepStyle(msk) : null;
                if(mInit)
                {
                   result = mInit.initializer;
@@ -1480,9 +1483,26 @@ public:
    {
       // if(mask & this.mask)
       {
-         for(e : this)
+         Iterator<CMSSMemberInitList> it { this };
+         while(it.Prev())
          {
+            CMSSMemberInitList e = it.data;
             CMSSMemberInit mInit = e.findStyle(msk);
+            if(mInit) return mInit;
+         }
+      }
+      return null;
+   }
+
+   CMSSMemberInit findDeepStyle(StylesMask msk)
+   {
+      // if(mask & this.mask)
+      {
+         Iterator<CMSSMemberInitList> it { this };
+         while(it.Prev())
+         {
+            CMSSMemberInitList e = it.data;
+            CMSSMemberInit mInit = e.findDeepStyle(msk);
             if(mInit) return mInit;
          }
       }
@@ -1510,7 +1530,7 @@ public:
 
    CMSSExpression getStyle(StylesMask mask)
    {
-      CMSSMemberInit mInit = findStyle(mask);
+      CMSSMemberInit mInit = findDeepStyle(mask);
       return mInit ? mInit.initializer : null;
    }
 
@@ -2181,13 +2201,15 @@ public:
       }
    }
 
+   // Returns any member init overriding this mask -- it could be at a different level and thus not exactly what is being requested
    CMSSMemberInit findStyle(StylesMask mask)
    {
       //if(mask & stylesMask)
       {
-         for(e : this)
+         Iterator<CMSSMemberInit> it { this };
+         while(it.Prev())
          {
-            CMSSMemberInit mInit = e;
+            CMSSMemberInit mInit = it.data;
             StylesMask sm = mInit.stylesMask;
             if(!mask || (sm & mask))   // NOTE: Useful to pass a 0 mask to look for unit class value
                return mInit;
@@ -2196,13 +2218,15 @@ public:
       return null;
    }
 
+   // Returns the top style matching topID requested, using sub-value mask to avoid unneeded comparisons
    CMSSMemberInit findTopStyle(StylesMask mask, const String topID)
    {
       //if(mask & stylesMask)
       {
-         for(e : this)
+         Iterator<CMSSMemberInit> it { this };
+         while(it.Prev())
          {
-            CMSSMemberInit mInit = e;
+            CMSSMemberInit mInit = it.data;
             StylesMask sm = mInit.stylesMask;
             if(sm & mask)   // NOTE: Useful to pass a 0 mask to look for unit class value
             {
@@ -2214,16 +2238,46 @@ public:
       return null;
    }
 
+   // Returns an expression set to exactly the requested map, directly at this level
    CMSSMemberInit findExactStyle(StylesMask mask)
    {
       //if(mask & stylesMask)
       {
-         for(e : this)
+         Iterator<CMSSMemberInit> it { this };
+         while(it.Prev())
          {
-            CMSSMemberInit mInit = e;
+            CMSSMemberInit mInit = it.data;
             StylesMask sm = mInit.stylesMask;
             if(sm == mask)
                return mInit;
+         }
+      }
+      return null;
+   }
+
+   // Returns an expression exactly for requested mask, including from sub-instance, or null
+   CMSSMemberInit findDeepStyle(StylesMask mask)
+   {
+      //if(mask & stylesMask)
+      {
+         Iterator<CMSSMemberInit> it { this };
+         while(it.Prev())
+         {
+            CMSSMemberInit mInit = it.data;
+            StylesMask sm = mInit.stylesMask;
+            if(sm == mask)
+               return mInit;
+            else if(sm & mask)
+            {
+               if(mInit.initializer && mInit.initializer._class == class(CMSSExpInstance))
+               {
+                  CMSSExpInstance ei = (CMSSExpInstance)mInit.initializer;
+                  mInit = ei.instance && ei.instance.members ? ei.instance.members.findDeepStyle(mask) : null;
+               }
+               else
+                  mInit = null;
+               return mInit;
+            }
          }
       }
       return null;
