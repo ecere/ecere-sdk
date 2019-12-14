@@ -2015,6 +2015,7 @@ public:
                      // We simply replace the expression
                      delete mInit.initializer;
                      mInit.initializer = e = expression;
+                     if(expression && mInit.destType) expression.destType = mInit.destType;
                      setSubInstance = true;
                   }
 
@@ -2063,6 +2064,7 @@ public:
                assignType = equal,
                stylesMask = mask;
             };
+            if(expression && mInit.destType) expression.destType = mInit.destType;
 
             mInit.identifiers = { };
 
