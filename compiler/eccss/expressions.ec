@@ -1994,7 +1994,7 @@ public:
                   {
                      // We simply replace the expression
                      delete mInit.initializer;
-                     mInit.initializer = expression;
+                     mInit.initializer = e = expression;
                      setSubInstance = true;
                   }
 
@@ -2027,7 +2027,7 @@ public:
                expression = e;
                idsString = member;
             }
-            else if(e && e._class == class(CMSSExpInstance))
+            else if(e && e._class == class(CMSSExpInstance) && !setSubInstance)
             {
                ((CMSSExpInstance)e).setMember(dot+1, mask, createSubInstance, expression);
                setSubInstance = true;
