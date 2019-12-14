@@ -1,3 +1,4 @@
+import "ecere" // TODO: Check why this is newly needed?
 import "EcereAudio"
 
 // There are 12 half-tones in an octave, and the frequency doubles in an octave.
