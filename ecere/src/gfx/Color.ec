@@ -714,6 +714,7 @@ private class ColorValue : Color
          //master.OnKeyDown(Escape, 0);
 
          incref this;
+         dialog.master = master;
          if(dialog.Modal() == ok)
          {
             color = dialog.color;
