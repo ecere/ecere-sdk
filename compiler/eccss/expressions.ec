@@ -1258,7 +1258,7 @@ public:
                 !strcmp(type.name, "ValueColor") || !strcmp(type.name, "ValueOpacity")))
                o.skipImpliedID = true;
          }
-         if(!type || type.type == structClass)  // image.hotSpot currently doesn't get type set?
+         if(!type || type.type == structClass || type.type == unitClass || type.type == bitClass)  // image.hotSpot currently doesn't get type set?
             o.multiLineInstance = false;
          instance.print(out, indent, o);
       }
@@ -1882,7 +1882,7 @@ public:
          {
             CMSSExpInstance ei = (CMSSExpInstance)initializer;
             Class type = ei.expType ? ei.expType : ei.destType;
-            if(!type || type.type == structClass)
+            if(!type || type.type == structClass || type.type == unitClass || type.type == bitClass)
                out.Print(" "); // Not multiline
          }
       }
