@@ -283,39 +283,39 @@ private:
 
       // HSV
       H.Clear();
-      H.Printf("%d", (int)hsv.h);
+      H.Printf("%d", Max(0, Min(360, (int)(hsv.h + 0.5))));
       H.SetModified(false);
       S.Clear();
-      S.Printf("%d", (int)hsv.s);
+      S.Printf("%d", Max(0, Min(100, (int)(hsv.s + 0.5))));
       S.SetModified(false);
       V.Clear();
-      V.Printf("%d", (int)hsv.v);
+      V.Printf("%d", Max(0, Min(100, (int)(hsv.v + 0.5))));
       V.SetModified(false);
 
       // Lab
       L.Clear();
-      L.Printf("%d", (int)Lab.l);
+      L.Printf("%d", Max(0, Min(100, (int)(Lab.l + 0.5))));
       L.SetModified(false);
       a.Clear();
-      a.Printf("%d", (int)Lab.a);
+      a.Printf("%d", Max(-128, Min(127, (int)(Lab.a + 0.5))));
       a.SetModified(false);
       b.Clear();
-      b.Printf("%d", (int)Lab.b);
+      b.Printf("%d", Max(-128, Min(127, (int)(Lab.b + 0.5))));
       b.SetModified(false);
 
       // CMYK
       C.Clear();
-      C.Printf("%d", (int)cmyk.c);
+      C.Printf("%d", Max(0, Min(100, (int)(cmyk.c + 0.5))));
       C.SetModified(false);
       M.Clear();
-      M.Printf("%d", (int)cmyk.m);
+      M.Printf("%d", Max(0, Min(100, (int)(cmyk.m + 0.5))));
       M.SetModified(false);
       Y.Clear();
-      Y.Printf("%d", (int)cmyk.y);
+      Y.Printf("%d", Max(0, Min(100, (int)(cmyk.y + 0.5))));
       Y.SetModified(false);
       K.Clear();
-      K.Printf("%d", (int)cmyk.k);
-      H.SetModified(false);
+      K.Printf("%d", Max(0, Min(100, (int)(cmyk.k + 0.5))));
+      K.SetModified(false);
 
       // Hexadecimal
       hexa.Clear();
@@ -550,7 +550,7 @@ private:
 
    EditBox a
    {
-      this, position = { 442, 30 }, size = { 32, 20 };
+      this, position = { 442, 30 }, size = { 40, 20 };
 
       bool NotifyModified(EditBox control)
       {
@@ -569,7 +569,7 @@ private:
 
    EditBox b
    {
-      this, position = { 442, 50 }, size = { 32, 20 };
+      this, position = { 442, 50 }, size = { 40, 20 };
 
       bool NotifyModified(EditBox control)
       {
