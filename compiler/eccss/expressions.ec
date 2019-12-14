@@ -1151,6 +1151,7 @@ public:
          }
          array = eInstance_New(type);
          array.size = elements.GetCount();
+         array._refCount = 1;
 
          flags.resolved = true;
       }

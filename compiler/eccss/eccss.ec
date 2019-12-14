@@ -956,6 +956,14 @@ public:
             if(array)
                for(e : arr.elements; e._class == class(CMSSExpInstance))
                   array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
+            else
+            {
+               // New more generic approach for colomaps etc. with blob, which could eventually work for GEs as well?
+               FieldValue value { };
+               ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
+               evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
+               *flg |= mFlg;
+            }
          }
       }
       else if(e && !inst)
