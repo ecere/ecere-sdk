@@ -165,6 +165,7 @@ struct GLArrayTexture
    uint width, height, numLayers;
    uint numLevels;
    bool maxLevel;
+   int format;
    private FreeSpots spots;
 
    void free()
@@ -177,15 +178,20 @@ struct GLArrayTexture
 
    void init(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, false);
+      _init(levels, w, h, count, GL_RGBA8, false);
    }
 
    void initMaxLevel(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, true);
+      _init(levels, w, h, count, GL_RGBA8, true);
    }
 
-   void _init(int levels, int w, int h, int count, bool setMaxLevel)
+   void initUShort(int levels, int w, int h, int count)
+   {
+      _init(levels, w, h, count, GL_R16, false);
+   }
+
+   void _init(int levels, int w, int h, int count, int format, bool setMaxLevel)
    {
       int target = GL_TEXTURE_2D_ARRAY;
       /*if(texture)
@@ -197,6 +203,7 @@ struct GLArrayTexture
       if(!texture)
          glGenTextures(1, &texture);
 
+      this.format = format;
       maxLevel = setMaxLevel;
       numLevels = levels;
       width = w;
@@ -210,7 +217,7 @@ struct GLArrayTexture
 #ifdef _DEBUG
       checkGLErrors();
 #endif
-      glTexStorage3D(target, levels, GL_RGBA8, w, h, count);
+      glTexStorage3D(target, levels, format, w, h, count);
 
 #ifdef _DEBUG
       GLStats::allocTexture(texture, w, h * count, levels > 1);
@@ -236,7 +243,7 @@ struct GLArrayTexture
    void resize(uint numLayers, uint targetFBO)
    {
       GLArrayTexture tmp { };
-      tmp.init(numLevels, width, height, numLayers);
+      tmp._init(numLevels, width, height, numLayers, format, false);
       tmp.copy(this, targetFBO);
       glBindTexture(GL_TEXTURE_2D_ARRAY, 0); // TOCHECK:
 #ifdef _DEBUG
@@ -290,11 +297,21 @@ struct GLArrayTexture
 
    void setLayer(int level, int x, int y, int layer, byte * c, uint targetFBO)
    {
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGBA, GL_UNSIGNED_BYTE);
+   }
+
+   void setLayerUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
+   {
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RED, GL_UNSIGNED_SHORT);
+   }
+
+   void setLayerFormat(int level, int x, int y, int layer, byte * c, uint targetFBO, int format, int type)
+   {
       int target = GL_TEXTURE_2D_ARRAY;
       if(layer >= numLayers)
          resize(layer + Max(2, layer)/2, targetFBO);
       glBindTexture(target, texture);
-      glTexSubImage3D(target, level, x, y, layer, width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE, c);
+      glTexSubImage3D(target, level, x, y, layer, width, height, 1, format, type, c);
       glBindTexture(target, 0);
    }
 
