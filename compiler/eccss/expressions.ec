@@ -1324,10 +1324,20 @@ public:
 
    void setMemberValue(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c)
    {
-      setMember(idsString, mask, createSubInstance, expressionFromValue(value, c));
+      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), null, null);
+   }
+
+   void setMemberValue2(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c, ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), evaluator, stylesClass);
    }
 
    void setMember(const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression)
+   {
+      setMember2(idsString, mask, createSubInstance, expression, null, null);
+   }
+
+   void setMember2(const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
    {
       #ifdef _DEBUG
          if(!expression)
@@ -1348,7 +1358,7 @@ public:
                CMSSMemberInitList im = it.data;
                if(im)
                {
-                  if(!placed && im.setSubMember(createSubInstance, expType, idsString, mask, expression, null))
+                  if(!placed && im.setSubMember(createSubInstance, expType, idsString, mask, expression, null, evaluator, stylesClass))
                      placed = true;
                   else
                   {
@@ -1357,7 +1367,7 @@ public:
                      if(im.removeByIDs(idsString, mask, &after) && !placed)
                      {
                         CMSSMemberInit mInit;
-                        CMSSMemberInitList::setSubMember(null, createSubInstance, expType, idsString, mask, expression, &mInit);
+                        CMSSMemberInitList::setSubMember(null, createSubInstance, expType, idsString, mask, expression, &mInit, evaluator, stylesClass);
                         im.Insert(after, mInit);
                         placed = true;
                      }
@@ -1540,10 +1550,20 @@ public:
 
    void setMemberValue(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc)
    {
-      setMember(c, idsString, mask, createSubInstance, expressionFromValue(value, uc));
+      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), null, null);
+   }
+
+   void setMemberValue2(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc, ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), evaluator, stylesClass);
    }
 
    void setMember(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression)
+   {
+      setMember2(c, idString, msk, createSubInstance, expression, null, null);
+   }
+
+   void setMember2(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
    {
       if(this)
       {
@@ -1596,7 +1616,7 @@ public:
          if(!list)
             Add((list = { }));
 
-         list.setMember(c, idString, msk, createSubInstance, expression);
+         list.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass);
 
          mask |= msk;
       }
@@ -1607,7 +1627,8 @@ public:
       const String idString = msk ? evaluator.evaluatorClass.stringFromMask(msk, c) : null;
       CMSSExpression e = expressionFromValue(value, uc);
       FieldValue v { };
-      setMember(c, idString, msk, !isNested, e);
+
+      setMember2(c, idString, msk, !isNested, e, evaluator, c);
       e.compute(v, evaluator, preprocessing, c); // REVIEW: use of c for stylesClass here...
       return true;
    }
@@ -1992,7 +2013,7 @@ public:
    }
 
    private static bool setSubMember(bool createSubInstance, Class c, const String idsString, StylesMask mask, CMSSExpression expression,
-      CMSSMemberInit * mInitPtr)
+      CMSSMemberInit * mInitPtr, ECCSSEvaluator evaluator, Class stylesClass)
    {
       CMSSMemberInit mInit = null;
       bool setSubInstance = false;
@@ -2046,6 +2067,11 @@ public:
             if(!e && createSubInstance)
             {
                e = CMSSExpInstance { };
+               if(evaluator != null)
+               {
+                  // NOTE: If we have the evaluator here, we can set targetMask for ExpInstance, as we should...
+                  ((CMSSExpInstance)e).targetMask = evaluator.evaluatorClass.maskFromString(member, stylesClass);
+               }
                if(c)
                {
                   DataMember dataMember = eClass_FindDataMember(c, member, c.module, null, null);
@@ -2073,6 +2099,12 @@ public:
 
          if(!setSubInstance && mInitPtr)
          {
+            // NOTE: The mask being set here should be the full mask if expression is a CMSSExpInstance (but requires the targetMask to be set)
+            if(expression && expression._class == class(CMSSExpInstance))
+            {
+               mask |= ((CMSSExpInstance)expression).targetMask;
+            }
+
             mInit =
             {
                initializer = expression,
@@ -2201,9 +2233,14 @@ public:
 
    void setMember(Class c, const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression)
    {
+      setMember2(c, idsString, mask, createSubInstance, expression, null, null);
+   }
+
+   void setMember2(Class c, const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
+   {
       CMSSMemberInit mInit;
 
-      if(!setSubMember(createSubInstance, c, idsString, mask, expression, &mInit))
+      if(!setSubMember(createSubInstance, c, idsString, mask, expression, &mInit, evaluator, stylesClass))
       {
          // Delete old values
          bool placed = false;
@@ -2822,6 +2859,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
                      {
                         v.b = (void *)((byte *)value.b + m.offset);
                      }
+                     // WARNING: We don't have evaluator and stylesClass to properly set targetMask here yet...
                      ei.setMemberValue(m.name, mask, true, v, type);
                   }
                }
