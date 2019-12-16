@@ -1993,41 +1993,45 @@ public:
          if(dot)
          {
             int len = (int)(dot - idsString);
-            CMSSExpression e;
+            CMSSExpression e = null;
 
             member = new char[len+1];
 
             memcpy(member, idsString, len);
             member[len] = 0;
 
-            e = this ? getMemberByIDs([ member ]) : null;
-            if(!e && mask && this)
+            if(this)
             {
-               // To recognize default initializers...
-               CMSSMemberInit mInit = findTopStyle(mask, member);
-               if(mInit) e = mInit.initializer;
-
-               if(!e)
+               e = getMemberByIDs([ member ]); // TOCHECK: Is this still needed?
+               if(!e && mask)
                {
-                  // If we don't have the parent instance set, look for the exact style directly set
-                  mInit = findExactStyle(mask);
-                  if(mInit)
-                  {
-                     // We simply replace the expression
-                     delete mInit.initializer;
-                     mInit.initializer = e = expression;
-                     if(expression && mInit.destType) expression.destType = mInit.destType;
-                     setSubInstance = true;
-                  }
+                  // This will recognize default initializers...
+                  CMSSMemberInit mInit = findTopStyle(mask, member);
+                  if(mInit) e = mInit.initializer;
 
                   if(!e)
                   {
-                     // Direct style isn't set, look for any intermediate style
-                     mInit = findStyle(mask);
-                     if(mInit) e = mInit.initializer;
+                     // If we don't have the parent instance set, look for the exact style directly set
+                     mInit = findExactStyle(mask);
+                     if(mInit)
+                     {
+                        // We simply replace the expression
+                        delete mInit.initializer;
+                        mInit.initializer = e = expression;
+                        if(expression && mInit.destType) expression.destType = mInit.destType;
+                        setSubInstance = true;
+                     }
+
+                     if(!e)
+                     {
+                        // Direct style isn't set, look for any intermediate style
+                        mInit = findStyle(mask);
+                        if(mInit) e = mInit.initializer;
+                     }
                   }
                }
             }
+
             if(!e && createSubInstance)
             {
                e = CMSSExpInstance { };
@@ -2335,7 +2339,11 @@ public:
                   }
                }
                if(memberInit)
-                  memberInit.stylesMask &= ~(memberInit.stylesMask & mask);
+               {
+                  // If we are overriding a whole instance, the mask must still be set!!
+                  if(e._class != class(CMSSExpInstance))
+                     memberInit.stylesMask &= ~(memberInit.stylesMask & mask);
+               }
             }
          }
          it.pointer = next;
