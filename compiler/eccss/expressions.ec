@@ -1259,8 +1259,11 @@ public:
                 !strcmp(type.name, "ValueColor") || !strcmp(type.name, "ValueOpacity")))
                o.skipImpliedID = true;
          }
-         if(!type || type.type == structClass || type.type == unitClass || type.type == bitClass)  // image.hotSpot currently doesn't get type set?
+         if(!type || (type.type == structClass && strcmp(type.name, "HillShading")) ||
+            type.type == unitClass || type.type == bitClass || type.type == noHeadClass)  // image.hotSpot currently doesn't get type set?
             o.multiLineInstance = false;
+         else
+            o.multiLineInstance = true;
          instance.print(out, indent, o);
       }
    }
@@ -1438,7 +1441,7 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      CMSSList::print(out, indent, o | { multiLineInstance = true });
+      CMSSList::print(out, indent, o);
    }
 
    // getStyle2() is same as getStyle() but splits up the unit value and unit (e.g. Meters) separately
@@ -1671,7 +1674,7 @@ public:
             out.Print(" ");
          }
       }
-      else
+      else if(!multiLine)
          out.Print(" ");
       if(multiLine)
       {
@@ -1889,6 +1892,13 @@ public:
       if(outputIdentifiers)
       {
          Iterator<CMSSIdentifier> it { identifiers };
+         CMSSExpInstance ei = initializer && initializer._class == class(CMSSExpInstance) ? (CMSSExpInstance)initializer : null;
+         Class type = ei ? (ei.expType ? ei.expType : ei.destType) : null;
+         bool slType = !type || type.type == structClass || type.type == unitClass || type.type == bitClass || type.type == noHeadClass;
+
+         if(type && type.type == structClass && !strcmp(type.name, "HillShading")) // Make an exception until we switch to noHeadClass
+            slType = false;
+
          while(it.Next())
          {
             it.data.print(out, indent, o);
@@ -1897,15 +1907,8 @@ public:
          }
          out.Print(" ");
          assignType.print(out, indent, o);
-         if(!initializer || initializer._class != class(CMSSExpInstance) || !o.multiLineInstance)
-            out.Print(" ");
-         else
-         {
-            CMSSExpInstance ei = (CMSSExpInstance)initializer;
-            Class type = ei.expType ? ei.expType : ei.destType;
-            if(!type || type.type == structClass || type.type == unitClass || type.type == bitClass)
-               out.Print(" "); // Not multiline
-         }
+         if(slType)
+            out.Print(" "); // Not multiline
       }
       if(initializer)
          initializer.print(out, indent, o);
@@ -1941,7 +1944,15 @@ public:
          init.print2(out, indent, o, lastMember);
          lastMember = init.dataMember;
          if(list.GetNext(it.pointer))
-            printSep(out);
+         {
+            if(o.multiLineInstance)
+            {
+               out.PrintLn(",");
+               printIndent(indent, out);
+            }
+            else
+               printSep(out);
+         }
       }
    }
 
