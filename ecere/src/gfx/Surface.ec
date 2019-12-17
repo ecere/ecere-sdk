@@ -136,8 +136,10 @@ private:
    bool writeColor;
    ColorAlpha blitTint;
    ColorAlpha outlineColor;
+   Color blackTint;
 
    blitTint = white;
+   blackTint = black;
 
    blend = true;
    writeColor = true;
@@ -556,6 +558,12 @@ public:
          blitTint = value;
          driver.SetBlitTint(display, this, value);
       }
+      get { return blitTint; }
+   }
+
+   property Color blackTint
+   {
+      set { blackTint = value; }
       get { return blitTint; }
    }
 

@@ -379,6 +379,61 @@ const char *dmFragmentShaderAlphaIntensityExtColor =
 "}\n"
 ;
 
+const char *dmVertexShaderBichrome =
+#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+   "#version 100\n"
+#else
+   "#version 110\n"
+#endif
+#if defined(_GLES2)
+   "#define GLSL_FLOAT_PRECISION   1\n"
+   "precision highp float;\n"
+#else
+   "#define GLSL_FLOAT_PRECISION   0\n"
+#endif
+"uniform mat4 uniMatrix;\n"
+"attribute vec2 inVertex;\n"
+"attribute vec2 inTexcoord0;\n"
+"attribute vec4 inColor;\n"
+"attribute vec4 inExtColor;\n"
+"varying vec2 varTexcoord0;\n"
+"varying vec4 varColor;\n"
+"varying vec4 varExtColor;\n"
+"void main()\n"
+"{\n"
+" \n"
+"  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
+"  varColor = inColor;\n"
+"  varExtColor = inExtColor;\n"
+"  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
+"  return;\n"
+"}\n"
+;
+
+
+const char *dmFragmentShaderBichrome =
+#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+   "#version 100\n"
+#else
+   "#version 110\n"
+#endif
+#if defined(_GLES2)
+   "#define GLSL_FLOAT_PRECISION   1\n"
+   "precision highp float;\n"
+#else
+   "#define GLSL_FLOAT_PRECISION   0\n"
+#endif
+"uniform sampler2D texBase;\n"
+"varying vec2 varTexcoord0;\n"
+"varying vec4 varExtColor;\n"
+"varying vec4 varColor;\n"
+//"varying vec4 fragColor;\n"
+"void main()\n"
+"{\n"
+"  vec4 texel = texture2D( texBase, varTexcoord0 );\n"
+"  gl_FragColor = vec4(varColor.rgb * texel.rgb + varExtColor.rgb * (vec3(1.0,1.0,1.0)-texel.rgb), varColor.a * texel.a);\n"
+"}\n"
+;
 
 ////
 
@@ -1080,6 +1135,9 @@ int dmInit( dmContext *dm, int flags )
       return 0;
     program = &dm->shaderprograms[ DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR ];
     if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensityExtColor, dmFragmentShaderAlphaIntensityExtColor, 0 ) ) )
+      return 0;
+    program = &dm->shaderprograms[ DM_PROGRAM_BICHROME ];
+    if( !( dmCreateProgram( program, dmVertexShaderBichrome, dmFragmentShaderBichrome, 0 ) ) )
       return 0;
     //glUseProgram( 0 );
     vertexsize = sizeof(dmDrawVertex);

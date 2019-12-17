@@ -688,6 +688,7 @@ public class Image : GraphicalElement
          i.unit = src.unit;
          i.tint = src.tint;
          i.hotSpot = src.hotSpot;
+         i.blackTint = src.blackTint;
          imageResource.OnCopy(src.image);     i.image = imageResource;
       }
    }
@@ -697,9 +698,11 @@ public:
    // (hotSpot.x * width, hotSpot.y * height) is the pixel which will be shown at the graphic's (0, 0) position
    Pointf hotSpot;
    Color tint;
+   Color blackTint;
 
    hotSpot = { 0.5, 0.5 };
    tint = white;
+   blackTint = black;
 
    property Pointf hotSpot
    {

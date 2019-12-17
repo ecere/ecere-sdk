@@ -312,7 +312,7 @@ class LWFontManager
 
       #define DEFAULT_FACE "DejaVu Sans"
 
-      if(!font) font = { DEFAULT_FACE, 12 /*, outline.size = 2*/ }, freeFont = true;
+      if(!font) font = { (void *)DEFAULT_FACE, 12 /*, outline.size = 2*/ }, freeFont = true;
       key = { font.face ? font.face : DEFAULT_FACE, font.size, { bold = font.bold, underline = font.underline, italic = font.italic }, font.outline.size };
 
       result = loadedFonts[key];
@@ -446,7 +446,7 @@ class LWDrawManager
       texture->heightinv = 1.0f/height;
       texture->gltex = glTex;
 
-      dmDefineImage(image, texture, 0, 0, texture->width, texture->height, 1, DM_PROGRAM_NORMAL, 0 );
+      dmDefineImage(image, texture, 0, 0, texture->width, texture->height, 1, DM_PROGRAM_BICHROME /*DM_PROGRAM_NORMAL*/, 0 );
       return image;
    }
 
@@ -455,6 +455,7 @@ class LWDrawManager
    #define DM_PROGRAM_ALPHABLEND (1)
    #define DM_PROGRAM_ALPHABLEND_INTENSITY (2)
    #define DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR (3)
+   #define DM_PROGRAM_BICHROME (3)
    */
    void * ::defineImage(uint glTex, int offsetX, int offsetY, int width, int height, int blendFlag, int programIndex, int layerIndex )
    {

@@ -135,6 +135,7 @@ public:
    bool imageSprite        :1:21;
    bool tint               :1:22;
    bool hotSpot            :1:23;
+   bool blackTint          :1:24;
 
    void print(File out)
    {
@@ -147,6 +148,7 @@ public:
       if(imageSprite)            out.Print(" imageSprite");
       if(tint)                   out.Print(" tint");
       if(hotSpot)                out.Print(" hotSpot");
+      if(blackTint)              out.Print(" blackTint");
       out.Print(" }");
    }
 };
@@ -224,7 +226,8 @@ public enum ImageStyleKind : GraphicalStyleKind
    imageType = ImageStyleMask { imageType = true },
    imageSprite = ImageStyleMask { imageSprite = true },
    tint = ImageStyleMask { tint = true },
-   hotSpot = ImageStyleMask { hotSpot = true }
+   hotSpot = ImageStyleMask { hotSpot = true },
+   blackTint = ImageStyleMask { blackTint = true },
 };
 
 // TODO: Replace these by class reflection
@@ -323,7 +326,11 @@ Map<String, ImageStyleKind> imageStyleIdentifierMap
    { "tint", tint },
    { "tint.r", tint },
    { "tint.g", tint },
-   { "tint.b", tint }
+   { "tint.b", tint },
+   { "blackTint", blackTint },
+   { "blackTint.r", blackTint },
+   { "blackTint.g", blackTint },
+   { "blackTint.b", blackTint }
 ] };
 
 
@@ -396,7 +403,8 @@ Map<ImageStyleKind, const String> imageStringFromMaskMap
    { imageType, "image.type" },
    { imageSprite, "image.sprite" },
    { hotSpot, "hotSpot"},
-   { tint, "tint" }
+   { tint, "tint" },
+   { blackTint, "blackTint" }
 ] };
 
 
@@ -566,6 +574,7 @@ public:
    // Properties..
    ImageResource image { };
    Color tint;
+   Color blackTint;
    Pointf hotSpot { };
 
    //return sym for visualization classes
@@ -589,6 +598,7 @@ public:
          case imageType:   image.type = CopyString(value.s); break;
          case imageSprite: image.sprite = CopyString(value.s); break;
          case tint: tint = (Color)value.i; break;
+         case blackTint: blackTint = (Color)value.i; break;
          // FIXME:
          //case hotSpot: image.hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
          default: GraphicalStyle::applyStyle(mSet, value, unit);
