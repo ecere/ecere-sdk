@@ -131,9 +131,12 @@ static void strescpy(char * output, char * string)
 String copyEscapeString(String string)
 {
    String result = null;
-   String buffer = new char[strlen(string) * 2 + 1];
-   strescpy(buffer, string);
-   result = CopyString(buffer);
-   delete buffer;
+   if(string)
+   {
+      String buffer = new char[strlen(string) * 2 + 1];
+      strescpy(buffer, string);
+      result = CopyString(buffer);
+      delete buffer;
+   }
    return result;
 }
