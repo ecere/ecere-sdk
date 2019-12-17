@@ -56,6 +56,7 @@ void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, 
   mmHashTable *table;
   mmHashPage *page;
   void (*clearentry)( void *entry ) = access->clearentry;
+  void (*clearentries)( void *entry, unsigned int ) = access->clearentries;
 
   table = hashtable;
   table->status = MM_HASH_STATUS_NORMAL;
@@ -83,7 +84,9 @@ void mmHashInit( void *hashtable, const mmHashAccess *access, size_t entrysize, 
 
   /* Clear the table */
   entry = MM_HASH_ENTRYLIST( table );
-  if(clearentry)
+  if(clearentries)
+     clearentries(entry, table->hashsize);
+  else if(clearentry)
   {
      for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
      {

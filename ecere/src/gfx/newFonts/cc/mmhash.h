@@ -38,6 +38,8 @@ typedef struct
   int (*entrycmp)( const void *entry, const void *entryref );
   /* Return MM_HASH_ENTRYLIST* to stop or continue the search */
   int (*entrylist)( void *opaque, const void *entry, const void *entryref );
+  /* Clear many entries at once */
+  void (*clearentries)( void *entries, unsigned int count );
 } mmHashAccess;
 
 
