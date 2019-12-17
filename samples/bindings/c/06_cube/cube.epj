@@ -1,0 +1,45 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "gui",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/bindings/c"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "gui",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "bindings",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+         ]
+      },
+      "cube.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
