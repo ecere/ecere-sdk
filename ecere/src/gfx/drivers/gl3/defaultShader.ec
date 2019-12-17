@@ -36,6 +36,7 @@ public:
    bool constantColor:1;
    bool normalsInvScale2:1;
    bool externalTexture:1;
+   bool blackTint:1;
 };
 
 public class CompiledDefaultShader : CompiledShader
@@ -74,6 +75,7 @@ public:
    int uMatReflectivity;
    int uCubeMapMatrix;
    int uAlphaFuncValue;
+   int uBlackTint;
 
    bool initialSetup; initialSetup = true;
 
@@ -138,6 +140,8 @@ public:
          uTextureMatrix    = glGetUniformLocation(program, "texture_matrix");
       if(state.texturing || state.cubeMap)
          uDiffuseTex    = glGetUniformLocation(program, "diffuseTex");
+      if(state.blackTint)
+         uBlackTint = glGetUniformLocation(program, "blackTint");
       if(state.normalsMapping)
          uBumpTex       = glGetUniformLocation(program, "bumpTex");
       if(state.specularMapping)
@@ -208,6 +212,7 @@ public:
    float fogColor[3];
 
    float color[4];
+   Color blackTint;
 
    DefaultShaderBits backLightState; backLightState = DefaultShaderBits { separateSpecular = true };
 
@@ -290,6 +295,7 @@ public:
       defs.concatf("\n#define DEBUGGING %d\n",              state.debugging          ? 1 : 0);
       defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
       defs.concatf("\n#define TEXTURE_EXTERNAL %d",         state.externalTexture    ? 1 : 0);
+      defs.concatf("\n#define BLACKTINT %d",                state.blackTint          ? 1 : 0);
 
       for(i = 0; i < 8; i++)
       {
@@ -410,6 +416,11 @@ public:
       else
       {
          glUniform4fv(shader.uMatDiffuse, 1, color);
+      }
+      if(state.blackTint)
+      {
+         float blackTint[3] = { this.blackTint.r / 255.0f, this.blackTint.g / 255.0f, this.blackTint.b / 255.0f };
+         glUniform3fv(shader.uBlackTint, 1, blackTint);
       }
 
       if(state.environmentMapping)
@@ -669,6 +680,19 @@ public:
       {
          ((DefaultShaderBits)state).perVertexColor = perVertexColor;
          modifiedUniforms.material = true;
+      }
+   }
+
+   property Color blackTint
+   {
+      set
+      {
+         if(blackTint != value);
+         {
+            ((DefaultShaderBits)state).blackTint = value != 0;
+            blackTint = value;
+            modifiedUniforms.material = true;
+         }
       }
    }
 

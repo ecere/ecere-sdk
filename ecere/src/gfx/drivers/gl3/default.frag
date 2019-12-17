@@ -75,6 +75,10 @@ precision highp float;
 
 #if TEXTURE_ON || NORMALS_MAPPING || SPECULAR_MAPPING || REFLECTION_MAP || CUBEMAP_ON
 
+   #if BLACKTINT
+      uniform vec3 blackTint;
+   #endif
+
    #if SPECULAR_MAPPING
       uniform sampler2D specularTex;
    #endif
@@ -341,7 +345,12 @@ void main(void)
       discard;
 #endif
 
+#if BLACKTINT
+   c = vec4(c.rgb * texel.rgb + blackTint.rgb * (vec3(1.0,1.0,1.0)-texel.rgb), c.a * texel.a);
+#else
    c *= texel;
+#endif
+
 #elif CUBEMAP_ON
    vec4 texel;
    texel = textureCube(diffuseTex, texCoord);

@@ -2538,6 +2538,8 @@ class OpenGLDisplayDriver : DisplayDriver
          // glTranslatef(-0.375f, -0.375f, 0.0f);
          GLSetupTexturing(true);
          GLColor4fv(oglSurface.bitmapMult);
+         if(glCaps_shaders && surface.blackTint)
+            defaultShader.blackTint = *&surface.blackTint;
          glBindTexture(GL_TEXTURE_2D, tex);
          GLBegin(GLIMTKMode::quads);
       }
@@ -2612,6 +2614,8 @@ class OpenGLDisplayDriver : DisplayDriver
       glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
 
       GLColor4fv(oglSurface.bitmapMult);
+      if(glCaps_shaders)
+         defaultShader.blackTint = *&surface.blackTint;
 
       GLBegin(GLIMTKMode::quads);
 
