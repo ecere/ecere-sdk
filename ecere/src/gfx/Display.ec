@@ -215,7 +215,7 @@ public:
    virtual void ::PopMatrix(Display, bool);
    virtual void ::SetTransform(Display, Matrix, bool, bool);
 #endif
-   virtual void ::SetBlitTint(Display, Surface, ColorAlpha);
+   virtual void ::SetBlitTint(Display, Surface, ColorAlpha);   // REVIEW: Is it really necessary to have a method here, we have a Surface member
 };
 
 public enum Alignment { left, right, center };
