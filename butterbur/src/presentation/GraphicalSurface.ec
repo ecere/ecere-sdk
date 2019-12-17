@@ -66,7 +66,7 @@ public class GraphicalSurface : MultiPresentation
 
    public double nearClip, farClip;
 
-   // TODO: How to handle association of Camera to GraphicalSurfaec?
+   // TODO: How to handle association of Camera to GraphicalSurface?
    public property Camera camera
    {
       set
