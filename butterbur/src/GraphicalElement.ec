@@ -620,7 +620,7 @@ public:
 
    property GEFont font
    {
-      set { font.OnCopy(value); }
+      set { if(value) font.OnCopy(value); else font = null; }
       get { return font; }
    }
 
