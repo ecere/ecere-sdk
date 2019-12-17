@@ -681,10 +681,18 @@ public struct DateTime
       if(!hour) hour = 12;
 
       if(!year && !day && !month && !this.hour && !minute && !second)
-         stringOutput[0] = 0;
+      {
+         if(onType && (*onType == json || *onType == econ))
+            strcpy(stringOutput, "null");
+         else
+            stringOutput[0] = 0;
+      }
       else
-         sprintf(stringOutput, "%s %s %2d %2d:%02d:%02d %s %04d",
-            shortDaysNames[dayOfTheWeek], shortMonthsNames[month], day, hour, minute, second, ampm[pm], year);
+      {
+         const String quotes = (onType && (*onType == json || *onType == econ)) ? "\"" : "";
+         sprintf(stringOutput, "%s%s %s %2d %2d:%02d:%02d %s %04d%s",
+            quotes, shortDaysNames[dayOfTheWeek], shortMonthsNames[month], day, hour, minute, second, ampm[pm], year, quotes);
+      }
 
       return stringOutput;
    }
