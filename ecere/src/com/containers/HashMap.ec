@@ -28,6 +28,17 @@ static void hashClearEntry(HashMapEntry entry)
    entry.value = 0;
 }
 
+static void hashClearEntries(HashMapEntry * entries, uint numEntries)
+{
+   int i;
+   for(i = 0; i < numEntries; i++)
+   {
+      entries->key = NULL_KEY;
+      entries->value = 0;
+      entries++;
+   }
+}
+
 static int hashEntryValid(const HashMapEntry entry)
 {
    return entry.key != NULL_KEY;
@@ -57,7 +68,9 @@ static const mmHashAccess hashAccess =
    hashClearEntry,
    hashEntryValid,
    hashEntryKey,
-   hashEntryCmp
+   hashEntryCmp,
+   null, // entrylist
+   hashClearEntries
 };
 
 public struct HashMapIterator<class KT, class VT> : Iterator<VT, IT = KT>
