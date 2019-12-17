@@ -421,7 +421,10 @@ struct GLMultiDraw
       delete drawIDs;
       delete commands;
       if(vao && glCaps_vao)
+      {
          glDeleteVertexArrays(1, &vao);
+         vao = 0;
+      }
       commandsAlloced = 0;
    }
 
