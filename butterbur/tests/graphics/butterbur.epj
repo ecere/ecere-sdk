@@ -188,11 +188,22 @@
             "$(ECERE_SDK_SRC)/compiler/eccss/eccss.ec"
          ]
       },
+      {
+         "Folder" : "extras",
+         "Files" : [
+            "../../../extras/stringTools.ec"
+         ]
+      },
       "butterbur.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
-      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+      {
+         "Folder" : "shaders",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+         ]
+      }
    ]
 }

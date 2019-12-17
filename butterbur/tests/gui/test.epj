@@ -166,11 +166,22 @@
             "$(ECERE_SDK_SRC)/butterbur/src/gui/autoLayout.ec"
          ]
       },
+      {
+         "Folder" : "extras",
+         "Files" : [
+            "../../../extras/stringTools.ec"
+         ]
+      },
       "test1.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
-      "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+      {
+         "Folder" : "shaders",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+         ]
+      }
    ]
 }
