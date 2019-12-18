@@ -150,10 +150,20 @@
 #define incref(x) (x)->_refCount++;
 
 #define newb(c) eC_new(c)
+#define newb0(c) eC_new0(c)
 #define newi(c...) ({ C(Instance) i = Instance_new(CO(c)); incref(i); i; })
 #define newcs(c...) ((c *)Instance_new(CO(c)))
 #define newc(t, c) (t *)eC_new(CO(t)->structSize * c)
 #define newt(t, c) (t *)eC_new(sizeof(t) * c)
+#define newc0(t, c) (t *)eC_new0(CO(t)->structSize * c)
+#define newt0(t, c) (t *)eC_new0(sizeof(t) * c)
+
+#define renewb(p, c) eC_renew(p, c)
+#define renewb0(p, c) eC_renew0(p, c)
+#define renewc(t, p, c) (t *)eC_renew(p, CO(t)->structSize * c)
+#define renewt(t, p, c) (t *)eC_renew(p, sizeof(t) * c)
+#define renewc0(t, p, c) (t *)eC_renew0(p, CO(t)->structSize * c)
+#define renewt0(t, p, c) (t *)eC_renew0(p, sizeof(t) * c)
 
 #define deletei(v) Instance_decRef(v), v = null
 #ifndef __cplusplus
