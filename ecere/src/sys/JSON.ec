@@ -1936,7 +1936,7 @@ static bool WriteNumber(File f, Class type, DataValue value, int indent, bool eC
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
       ((const char *(*)(void *, void *, char *, void *, ObjectNotationType *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &onType);
 
-   quote = forceQuotes || (!jsonBitClass && ((type.type == unitClass && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
+   quote = forceQuotes || (!jsonBitClass && ((type.type == unitClass && buffer[0] != '\"' && ((buffer[0] != '.' && buffer[0] != '-' && !isdigit(buffer[0])) || strchr(buffer, ' '))) ||
            (type.type == enumClass && !eCON)));
    if(quote) f.Puts("\"");
      // TODO: Review / Clarify / Document how needClass should work
