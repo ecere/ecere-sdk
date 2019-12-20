@@ -27,21 +27,21 @@ public:
                Pointf *pTexCoords = mesh.texCoords;
                int index;
                int lat, lon;
-               PrimitiveGroup group = mesh.AddPrimitiveGroup({triangles, false},  numLat * w * 6);
+               PrimitiveGroup group = mesh.AddPrimitiveGroup({triangles, false, indices32bit = true},  numLat * w * 6);
 
                index = 0;
                for(lat = 0; lat <= numLat; lat++)
                {
-                  Angle omega = 0.0001 + lat * (Pi - 0.0002) / (numLat) - Pi / 2;
+                  Angle omega = 0.000001 + lat * (Pi - 0.000002) / (numLat) - Pi / 2;
                   //Angle omega = lat * Pi / (numLat) - Pi / 2;
-                  float rounded = flattenedBody * numLat;
+                  double rounded = flattenedBody * numLat;
                   double r = flattenedBody ? (lat < rounded ? (rounded-lat) / rounded : lat > numLat - rounded ? (lat - (numLat - rounded)) / rounded : 0) : 1;
                   double cosOmega = cos(omega) * r + 1 * (1-r);
                   double sinOmega = sin(omega);
                   for(lon = 0; lon < w; lon++)
                   {
                      Angle theta = lon == w-1 ? 0 : lon * 2 * Pi / (w-1);
-                     double l = lon == w-1? lon - 0.0001 : lon;
+                     double l = lon == w-1? lon - 0.000001 : lon;
                      pVertices[index] =
                      {
                         (float) (sin(theta) * cosOmega);
@@ -74,7 +74,7 @@ public:
                }
 
                for(index = 0; index < group.nIndices; index++)
-                  group.indices[index] = 0;
+                  group.indices32[index] = 0;
 
                // Strips
                index = 0;
@@ -83,13 +83,13 @@ public:
                   for(lon = 0; lon < w; lon++)
                   {
                      int n = (lon + 1) % w;
-                     group.indices[index++] = (uint16)((lat-1) * w + lon);
-                     group.indices[index++] = (uint16)((lat-1) * w + n);
-                     group.indices[index++] = (uint16)((lat) * w + n);
+                     group.indices32[index++] = ((lat-1) * w + lon);
+                     group.indices32[index++] = ((lat-1) * w + n);
+                     group.indices32[index++] = ((lat) * w + n);
 
-                     group.indices[index++] = (uint16)((lat) * w + n);
-                     group.indices[index++] = (uint16)((lat) * w + lon);
-                     group.indices[index++] = (uint16)((lat-1) * w + lon);
+                     group.indices32[index++] = ((lat) * w + n);
+                     group.indices32[index++] = ((lat) * w + lon);
+                     group.indices32[index++] = ((lat-1) * w + lon);
                   }
 
                mesh.UnlockPrimitiveGroup(group);
