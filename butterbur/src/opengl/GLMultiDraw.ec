@@ -1,8 +1,11 @@
 public import IMPORT_STATIC "ecere"
 
 #include "gl123es.h"
+
 #if defined(__ANDROID__)
 #include <GLES3/gl32.h>
+
+#define GL_R16 GL_LUMINANCE
 #endif
 
 import "ButterburShader"
