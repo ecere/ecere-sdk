@@ -254,7 +254,7 @@ public:
    PixelFormat pixelFormat;
    byte * picture;
    uint stride;
-   uint size, sizeBytes;
+   uintsize size, sizeBytes;
    ColorAlpha * palette;
    bool allocatePalette;
 

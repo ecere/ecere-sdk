@@ -292,8 +292,8 @@ class PNGFormat : BitmapFormat
                {
                   if(!setjmp(png_jmpbuf(png_ptr)))
                   {
-                     uint y;
-                     uint bytesPerRow = bitmap.stride * (bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
+                     uint64 y;
+                     uint64 bytesPerRow = (uint64)bitmap.stride * (bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
                      int colorType = bitmap.pixelFormat == pixelFormatA16 ? PNG_COLOR_TYPE_GRAY : PNG_COLOR_TYPE_RGBA;
                      int bitsPerPixel = bitmap.pixelFormat == pixelFormatA16 ? 16 : 8;
 

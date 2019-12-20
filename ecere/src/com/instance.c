@@ -101,9 +101,9 @@ FILE *eC_stdout(void)
 FILE *eC_stderr(void) { return stderr; }
 
 void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
-void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
-void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size);
-void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size);
+void * __ecereNameSpace__ecere__com__eSystem_New0(size_t size);
+void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, size_t size);
+void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, size_t size);
 unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(const char * source, int * wordCount);
 unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(const char * source, uint16 * dest, int max);
 char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);

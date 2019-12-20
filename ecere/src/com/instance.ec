@@ -139,10 +139,10 @@ default const char * AndroidInterface_GetLibLocation(Module m);
 public define null = ((void *)0);
 
 dllexport Class eSystem_FindClass(Module module, const char * name);
-dllexport void * eSystem_Renew(void * memory, unsigned int size);
-dllexport void * eSystem_Renew0(void * memory, unsigned int size);
-dllexport void * eSystem_New(unsigned int size);
-dllexport void * eSystem_New0(unsigned int size);
+dllexport void * eSystem_Renew(void * memory, uintsize size);
+dllexport void * eSystem_Renew0(void * memory, uintsize size);
+dllexport void * eSystem_New(uintsize size);
+dllexport void * eSystem_New0(uintsize size);
 dllexport void eSystem_Delete(void * memory);
 dllexport void * eInstance_New(Class _class);
 
@@ -1188,7 +1188,7 @@ static uint NextFibonacci(uint number)
 }
 */
 
-static uint log1_5i(uint number)
+static uint log1_5i(uint64 number)
 {
    uint pos;
    uint64 current = sizeof(void *);
@@ -1204,7 +1204,7 @@ static uint log1_5i(uint number)
    return pos;
 }
 
-static uint pow1_5(uint number)
+static uint64 pow1_5(uint number)
 {
    uint pos;
    uint64 current = sizeof(void *);
@@ -1214,10 +1214,10 @@ static uint pow1_5(uint number)
       if(current == 1) current = 2;
       if(current & 7) current += 8 - (current & 7);
    }
-   return (uint)current;
+   return (uint64)current;
 }
 
-static uint pow1_5i(uint number)
+static uint64 pow1_5i(uint number)
 {
    uint pos;
    uint64 current = sizeof(void *);
@@ -1230,7 +1230,7 @@ static uint pow1_5i(uint number)
       if(current == 1) current = 2;
       if(current & 7) current += 8 - (current & 7);
    }
-   return (uint)current;
+   return (uint64)current;
 }
 #endif
 
@@ -1277,7 +1277,7 @@ static void InitMemory()
 #endif
 
 #if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
-static void * _mymalloc(unsigned int size)
+static void * _mymalloc(uint64 size)
 {
    MemBlock block = null;
    if(size)
@@ -1314,7 +1314,7 @@ static void * _mymalloc(unsigned int size)
    return block ? ((struct MemBlock *)block + 1) : null;
 }
 
-static void * _mycalloc(int n, unsigned int size)
+static void * _mycalloc(int n, uint64 size)
 {
    void * pointer = _mymalloc(n * size);
    if(pointer)
@@ -1353,7 +1353,7 @@ static void _myfree(void * pointer)
    }
 }
 
-static void * _myrealloc(void * pointer, unsigned int size)
+static void * _myrealloc(void * pointer, uint64 size)
 {
    MemBlock block = pointer ? ((MemBlock)((byte *)pointer - sizeof(class MemBlock))) : null;
    void * newPointer = null;
@@ -1401,7 +1401,7 @@ static void * _myrealloc(void * pointer, unsigned int size)
    return newPointer;
 }
 
-static void * _mycrealloc(void * pointer, unsigned int size)
+static void * _mycrealloc(void * pointer, uint64 size)
 {
    MemBlock block = pointer ? ((MemBlock)((byte *)pointer - sizeof(class MemBlock))) : null;
    void * newPointer = null;
@@ -1476,7 +1476,7 @@ static void * _mycrealloc(void * pointer, unsigned int size)
 #define calloc _mycalloc
 #endif
 
-static void * _malloc(unsigned int size)
+static void * _malloc(uintsize size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
 
@@ -1551,7 +1551,7 @@ static void * _malloc(unsigned int size)
 #endif
 }
 
-static void * _calloc(int n, unsigned int size)
+static void * _calloc(int n, uintsize size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
 
@@ -1625,7 +1625,7 @@ static void * _calloc(int n, unsigned int size)
 #endif
 }
 
-static void * _realloc(void * pointer, unsigned int size)
+static void * _realloc(void * pointer, uintsize size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
 
@@ -1743,7 +1743,7 @@ static void * _realloc(void * pointer, unsigned int size)
 #endif
 }
 
-static void * _crealloc(void * pointer, unsigned int size)
+static void * _crealloc(void * pointer, uintsize size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
    byte * p;
@@ -6245,17 +6245,17 @@ public dllexport GlobalFunction eSystem_FindFunction(Module module, const char *
    return null;
 }
 
-public dllexport void * eSystem_Renew(void * memory, unsigned int size)
+public dllexport void * eSystem_Renew(void * memory, uintsize size)
 {
    return _realloc(memory, size);
 }
 
-public dllexport void * eSystem_Renew0(void * memory, unsigned int size)
+public dllexport void * eSystem_Renew0(void * memory, uintsize size)
 {
    return _crealloc(memory, size);
 }
 
-public dllexport void * eSystem_New(unsigned int size)
+public dllexport void * eSystem_New(uintsize size)
 {
 /*#ifdef _DEBUG
    void * pointer = _malloc(size);
@@ -6266,7 +6266,7 @@ public dllexport void * eSystem_New(unsigned int size)
 //#endif
 }
 
-public dllexport void * eSystem_New0(unsigned int size)
+public dllexport void * eSystem_New0(uintsize size)
 {
    return _calloc(1,size);
 }

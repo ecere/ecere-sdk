@@ -2325,7 +2325,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          if(bitmap)
          {
-            uint row;
+            int64 row;
 
             glPixelStorei(GL_PACK_ALIGNMENT, 4);
 #if ENABLE_GL_LEGACY
@@ -2337,7 +2337,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
             // Need a flip...
             for(row = 0; row<h; row++)
-               CopyBytesBy4(((ColorAlpha *)bitmap.picture) + row * w, ((ColorAlpha *)flippingBuffer) + (h-row-1) * w, w);
+               // CopyBytesBy4(((ColorAlpha *)bitmap.picture) + row * w, ((ColorAlpha *)flippingBuffer) + (h-row-1) * w, w);
+               memcpy(((ColorAlpha *)bitmap.picture) + row * w, ((ColorAlpha *)flippingBuffer) + (int64)(h-row-1) * w, 4 * w);
             result = true;
          }
       }
