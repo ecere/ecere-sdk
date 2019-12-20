@@ -651,6 +651,22 @@ public struct ImageResource
    const String ext;
    const String type;
    const String sprite;
+
+   int OnCompare(ImageResource b)
+   {
+      int r;
+      if(this == b) return 0;
+      if(this != null && b == null) return 1;
+      if(this == null && b != null) return -1;
+      r = path.OnCompare(b.path); if(r) return r;
+      r = id.OnCompare(b.id); if(r) return r;
+      r = url.OnCompare(b.url); if(r) return r;
+      r = ext.OnCompare(b.ext); if(r) return r;
+      r = type.OnCompare(b.type); if(r) return r;
+      r = sprite.OnCompare(b.sprite); if(r) return r;
+      return 0;
+   }
+
    void OnCopy(ImageResource src)
    {
          //String path, id, url, ext, type, sprite;
