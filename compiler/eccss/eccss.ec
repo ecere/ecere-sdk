@@ -40,45 +40,20 @@ public:
    }
 
    //NOTE this ignores selectors!
-   bool changeStyle(const String id, StylesMask mask, const FieldValue value, bool isNested, Class unitClass)
+   bool changeStyle(const String layerID, StylesMask mask, const FieldValue value, Class stylesClass, ECCSSEvaluator evaluator,
+      bool isNested, Class unitClass)
    {
       bool result = false;
-      StylingRuleBlock block = findRule(mask, id);
-      if(block)
+      StylingRuleBlock block = findRule(mask, layerID);
+      if(!block)
       {
-         CMSSMemberInit mInit = block.styles ? block.styles.findStyle(mask) : null;
-         if(mInit)
-         {
-            delete mInit.initializer;
-            mInit.initializer = CMSSExpConstant { constant = value };
-            block.styles.mask |= mask;
-            block.mask |= mask;
-            result = true;
-         }
-         // NOTE check outside instead. The issue is the likely need to pass a class, and this complicates matters
-         /*else
-         {
-            ECCSSEvaluator evaluator { };//ECCSSEEvaluator { };
-            block.styles = { };
-            //block.styles.addStyle(mask, value, evaluator);
-         }*/
+         block = { id = { string = CopyString(layerID) } };
+         if(!list) list = { };
+         list.Add(block);
       }
+      block.changeStyle(mask, value, stylesClass, evaluator, false, unitClass);
       return result;
    }
-   //NOTE this ignores selectors!
-   /*
-   bool addStyle(const String id, StylesMask mask, FieldValue value, Class c, ECCSSEvaluator evaluator)
-   {
-      bool result = false;
-      StylingRuleBlock block = findRule(mask, id);
-      if(block)
-      {
-         if(!block.styles) block.styles = { };
-         result = block.styles.addStyle(mask, value, c, evaluator);
-         if(result) block.mask |= mask;
-      }
-      return result;
-   }*/
 
    //NOTE this ignores selectors!
    void removeStyle(const String id, StylesMask mask)
@@ -107,6 +82,7 @@ public:
       }
       return result;
    }
+
    bool resolve(ECCSSEvaluator evaluator, Class stylesClass)
    {
       bool result = false;
