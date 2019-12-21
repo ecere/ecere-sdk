@@ -458,9 +458,10 @@ private:
    {
       if(pulledWindow)
       {
-         int lx = absPosition.x - guiApp.desktop.absPosition.x;
-         int ly = absPosition.y - guiApp.desktop.absPosition.y;
-         int availHeight = pulledWindow.parent.clientSize.h;
+         Window pwParent = pulledWindow.parent;
+         int lx = absPosition.x - pwParent.absPosition.x;
+         int ly = absPosition.y - pwParent.absPosition.y;
+         int availHeight = pwParent.clientSize.h;
          int height = pulledWindow.clientSize.h;
 
          // If it won't fit below but fits above, place it above...
