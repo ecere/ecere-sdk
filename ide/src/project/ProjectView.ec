@@ -2197,6 +2197,9 @@ class ProjectView : Window
          Project prj = parentNode.project;
          int c;
          ProjectNode after = null;
+
+         if(!parentNode.files) parentNode.files = { };
+
          for(node : parentNode.files)
          {
             if(node.type != folder)
