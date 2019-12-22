@@ -7,6 +7,14 @@ private: // FIXME
 
 #include <math.h>
 
+#if defined(__GNOSIS3__)
+float ni_fastsinf(float x);
+float ni_fastcosf(float x);
+
+#define sinf(x) ni_fastsinf(x)
+#define cosf(x) ni_fastcosf(x)
+#endif
+
 private static inline double pointsArea(Pointf * points, int count)
 {
    double area = 0;
