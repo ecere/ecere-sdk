@@ -2340,6 +2340,9 @@ class ProjectView : Window
    {
       ProjectNode result = null;
       ProjectNode after = null;
+
+      if(!parentNode.files) parentNode.files = { };
+
       for(node : parentNode.files)
       {
          if(node.type != folder && node.type != file && node.type)
