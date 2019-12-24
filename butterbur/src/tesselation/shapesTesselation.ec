@@ -214,6 +214,10 @@ struct TesselatedShape
             uint estFillCount = tc;
             Pointf * points;
             float lineWidth = stroke.width;
+            Pointf * pp, * before, * after;
+            float oldx, oldy, oat1;
+            int inc = flip ? -1 : 1;
+            uint ni = flip ? tc-1 : 0;
 
             vCount = closed ? (tc * (rCount+1)) : (2*(capCount+1) + ((tc > 2) ? (tc-2) * (rCount+1) : 0));
             points = this.points = renew this.points Pointf[vCount];
@@ -225,35 +229,39 @@ struct TesselatedShape
                ixFill = new uint16[estFillCount];
             fillCount = 0;
 
+            pp = &nodes[ni];
+            if(flip)
+               before = nodes + (closed ?    0 : tc > 1 ? tc-2 : tc-1);
+            else
+               before = nodes + (closed ? tc-1 : tc > 1 ?    1 :    0);
+            after = pp + inc;
+
+            oldx = pp->x - before->x, oldy = pp->y - before->y;
+            oat1 = atan2f(oldy, oldx);
+
             for(i = 0; i < tc + (tc == 1); i++)
             {
                bool end = false;
-               uint ni;
+               Pointf p = *pp;
+               float ordx = after->x - p.x,  ordy = after->y - p.y;
+               float oat2 = atan2f(ordy, ordx);
 
                if(i == tc + (tc == 1) - 1)
                   end = true;
-               if(i == tc) i = 0;
-
-               #define DOFLIP(x) (flip ? ((tc-1)-(x)) : (x))
-
-               ni = DOFLIP(i);
+               if(i == tc)
+                  i = 0;
 
                {
-                  bool isCap = false;
-                  Pointf p = nodes[ni];
-                  Pointf before = i > 0 ? nodes[DOFLIP(i-1)] : (closed ? nodes[DOFLIP(tc-1)] : (tc > 1 ? nodes[DOFLIP(1)] : nodes[DOFLIP(0)]));
-                  Pointf after  = i < tc-1 ? nodes[DOFLIP(i+1)] : (closed ? nodes[DOFLIP(0)] : (tc > 1 ? nodes[DOFLIP(i-1)] : nodes[DOFLIP(0)]));
-                  float ldx = p.x - before.x, ldy = p.y - before.y;
-                  float rdx = after.x - p.x, rdy = after.y - p.y;
-                  bool thisFlip = false;
-                  float at1 = atan2f(ldy, ldx);
-                  float at2 = atan2f(rdy, rdx);
+                  bool thisFlip = false, isCap = false;
+                  float ldx = oldx, ldy = oldy;
+                  float rdx = ordx, rdy = ordy;
+                  float at1 = oat1, at2 = oat2;
                   float c, s;
-                  int n;
                   float diffAngle;
+                  int n;
                   bool simpleMean = true;
 
-                  if(at2 < at1) at2 += 2*Pi;
+                  if(at2 < at1) at2 += 2*(float)Pi;
 
                   if(!closed && (i == 0 || end))
                      isCap = true;
@@ -272,8 +280,9 @@ struct TesselatedShape
                   if(!partialSector && Sgn(diffAngle) > 0)
                   {
                      // Inside/outside changed (e.g. zig zag patterns)
-                     at1 = atan2f(-ldy, -ldx);
-                     at2 = atan2f(-rdy, -rdx);
+                     at1 = oat1 + (float)Pi; if(at1 > (float)Pi) at1 -= 2*(float)Pi;
+                     at2 = oat2 + (float)Pi; if(at2 > (float)Pi) at2 -= 2*(float)Pi;
+
                      diffAngle = at2 - at1;
                      simpleMean = true;
                      thisFlip = true;
@@ -379,7 +388,6 @@ struct TesselatedShape
                         float a = at2 + (float)Pi/2 - da * (rCount-1);
                         int t;
 
-                        p = nodes[ni];
                         r = lineWidth / 2;
                         rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
@@ -396,7 +404,6 @@ struct TesselatedShape
                         r = lineWidth * 1/*.1f*/ / 2;   // TODO: Handle this properly... 1.1 works around not adding an extra vertex
                         rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
 
-                        p = nodes[ni];
                         if(diffAngle < Pi/2)
                            angle += Pi;
                         else
@@ -435,6 +442,20 @@ struct TesselatedShape
 
                   if(end) break;
                }
+
+               before = pp;
+               ni += inc;
+               pp += inc;
+
+               if(i < tc - 2)
+                  after = pp + inc;
+               else if(flip)
+                  after = nodes + (closed ? tc-1 : tc > 1 ? tc-1-i : tc-1);
+               else
+                  after = nodes + (closed ?    0 : tc > 1 ?      i : 0);
+
+               oldx = ordx, oldy = ordy;
+               oat1 = oat2;
             }
             if(closed)
             {
