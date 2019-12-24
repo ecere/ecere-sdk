@@ -373,27 +373,39 @@ static int ecereCurrentTime(sqlite3_vfs *pVfs, double *pTime)
   return SQLITE_OK;
 }
 
+static sqlite3_vfs ecereVFS =
+{
+   1,
+   sizeof(sqlite3_file) + sizeof(File),
+   MAX_FILENAME-1,
+   0,
+   "ecere",
+   0,
+   ecereOpen,
+   ecereDelete,
+   ecereAccess,
+   ecereFullPathname,
+   ecereDlOpen,
+   ecereDlError,
+   ecereDlSym,
+   ecereDlClose,
+   ecereRandomness,
+   ecereSleep,
+   ecereCurrentTime
+};
+
 __on_register_module()
 {
-   static sqlite3_vfs ecereVFS =
-   {
-      1,
-      sizeof(sqlite3_file) + sizeof(File),
-      MAX_FILENAME-1,
-      0,
-      "ecere",
-      0,
-      ecereOpen,
-      ecereDelete,
-      ecereAccess,
-      ecereFullPathname,
-      ecereDlOpen,
-      ecereDlError,
-      ecereDlSym,
-      ecereDlClose,
-      ecereRandomness,
-      ecereSleep,
-      ecereCurrentTime
-   };
    sqlite3_vfs_register(&ecereVFS, 0);
 }
+
+static class SQLiteDBUnregisterModule
+{
+   ~SQLiteDBUnregisterModule()
+   {
+      sqlite3_vfs_unregister(&ecereVFS);
+   }
+}
+
+// FIXME: No __on_unregister_module() ?
+static SQLiteDBUnregisterModule unregisterModule { };
