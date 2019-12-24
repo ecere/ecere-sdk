@@ -33,60 +33,6 @@ void cppHardcodedInstancePart1(BOutput o)
                "", ln);
 }
 
-/*
-class Nohead
-{
-public:
-   void * impl;
-
-   // void * operator new   (uintsize count) { return eC_new(count); }
-   // void * operator new [](uintsize count) { return eC_new(count); }
-   // void operator delete   (void * ptr) { eC_delete(ptr); }
-   // void operator delete [](void * ptr) { eC_delete(ptr); }
-
-   inline explicit Nohead(void * _impl)
-   {
-      impl = _impl;
-   }
-   inline Nohead()
-   {
-      impl = null;
-   }
-
-};
-*/
-
-/*
-ecere.h:
-typedef struct C(Cube) C(Cube);
-extern THIS_LIB_IMPORT C(bool) (* Cube_create)(C(Cube) * __this, C(DisplaySystem) displaySystem);
-
-extern THIS_LIB_IMPORT C(Property) * PROPERTY(Cube, size);
-extern THIS_LIB_IMPORT void (* Cube_set_size)(C(Cube) * c, const C(Vector3Df) * value);
-
-ecere.c:
-LIB_EXPORT C(bool) (* Cube_create)(C(Cube) * __this, C(DisplaySystem) displaySystem);
-LIB_EXPORT C(Property) * PROPERTY(Cube, size);
-LIB_EXPORT void (* Cube_set_size)(C(Cube) * c, const C(Vector3Df) * value);
-*/
-
-/*
-class Cube : Nohead
-{
-public:
-// C(Cube) * impl;
-
-   inline Cube()
-   {
-      impl = newt(C(Cube), 1);
-   }
-
-// Cube_create
-// Cube_set_size
-};
-*/
-
-
 void cppHardcodedInstancePart2(BOutput o)
 {
    o.z.concatx("   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
@@ -299,6 +245,15 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("      if(impl)");
    f.PrintLn("         eC_delete(vTbl);");
    f.PrintLn("   }");
+   f.PrintLn("};", ln);
+
+   f.PrintLn("template <class T, C(Class) ** M>");
+   f.PrintLn("class NHInstance");
+   f.PrintLn("{");
+   f.PrintLn("public:");
+   f.PrintLn("   T * impl;");
+   f.PrintLn("   NHInstance() { impl = (T*)Instance_new(*M); }");
+   f.PrintLn("   NHInstance(T * _impl) { impl = impl; }");
    f.PrintLn("};");
 
    delete z;
