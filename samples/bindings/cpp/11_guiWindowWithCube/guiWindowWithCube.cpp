@@ -58,13 +58,13 @@ public:
 
       onRedraw = [](Window & window, Surface & surface)
       {
-         HelloCube & self = (HelloCube &)window;
-         Display & display = self.display;
+         // HelloCube & self = (HelloCube &)window;
+         // Display & display = self.display;
          surface.clear(ClearType_depthBuffer);
          // self.display.setLight(0, light);
          // self.display.setCamera(surface, camera);
          // self.display.drawObject(self.cube);
-         display.setCamera(surface, null);
+         // display.setCamera(surface, null);
       };
    }
 
