@@ -286,9 +286,12 @@ public:
          if(size > maxFree) maxFree = size;
          totalFree += size;
       }
-      PrintLn("Total Free: ", totalFree / 1048576.0, " mb");
-      PrintLn("Smallest free block: ", minFree / 1048576.0, " mb");
-      PrintLn("Largest free block: ", maxFree / 1048576.0, " mb");
+      if(minFree != MAXDWORD)
+      {
+         PrintLn("Total Free: ", totalFree / 1048576.0, " mb");
+         PrintLn("Smallest free block: ", minFree / 1048576.0, " mb");
+         PrintLn("Largest free block: ", maxFree / 1048576.0, " mb");
+      }
    }
 
    uint onExpand(GLBType type, uint extraNeeded)
