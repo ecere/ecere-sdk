@@ -10,9 +10,11 @@ private: // FIXME
 #if defined(__GNOSIS3__)
 float ni_fastsinf(float x);
 float ni_fastcosf(float x);
+float fastatan2f(float y, float x);
 
 #define sinf(x) ni_fastsinf(x)
 #define cosf(x) ni_fastcosf(x)
+#define atan2f(y, x) fastatan2f(y, x)
 #endif
 
 private static inline double pointsArea(Pointf * points, int count)
