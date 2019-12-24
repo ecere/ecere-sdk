@@ -103,7 +103,9 @@ static void CubeWindow_destructor(CubeWindow this)
 
 GUIAPP_INTRO
 {
+   // do all class registration first.
    class_CubeWindow = registerClass(app, CubeWindow, Window);
+   // application code start here.
    GuiApplication_set_driver(app, "OpenGL");
    CubeWindow hello = newi(CubeWindow);
 
