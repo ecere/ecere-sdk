@@ -43,9 +43,21 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
   int glformat;
 
   if( image->format.bytesperpixel == 1 )
+  {
     glformat = GL_RED;
+#if defined(_GLES3)
+    if(internalformat == -1)
+       internalformat = GL_R8; // TODO: GL_LUMINANCE and swizzle for ES2
+#endif
+  }
   else if( image->format.bytesperpixel == 2 )
+  {
     glformat = GL_RG;
+#if defined(_GLES3)
+    if(internalformat == -1)
+       internalformat = GL_RG8; // TODO: GL_LUMINANCE_ALPHA and swizzle for ES2;
+#endif
+  }
   else if( image->format.bytesperpixel == 3 )
     glformat = GL_RGB;
   else if( image->format.bytesperpixel == 4 )
