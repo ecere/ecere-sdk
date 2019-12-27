@@ -21,6 +21,10 @@ uniform uint layer;
    uniform float alphaFuncValue;
 #endif
 
+#if SQUISH_FACTOR
+   VARYING float varSquish;
+#endif
+
 #if LIGHTING_ON
    #if PER_VERTEX_COLOR
       VARYING vec4 diffuseColor;
@@ -351,7 +355,17 @@ void main(void)
       #if MULTI_DRAW
       uint layer = drawID;  // TODO: Specify per-draw layers using 1D texture or uniform array?
       #endif
+
+#if SQUISH_FACTOR
+      vec2 squish = vec2(1.5 * varSquish, 1.5);
+      vec2 dx = dFdx( fTexCoord.xy ) * squish;
+      vec2 dy = dFdy( fTexCoord.xy ) * squish;
+
+      texel = vec4(textureGrad(textureArray, vec3(fTexCoord.x, fTexCoord.y, layer), dx, dy ) );
+      // texel = vec4(squish.x, squish.y, 0.0, 1.0);
+#else
       texel = vec4(texture(textureArray, vec3(fTexCoord.x, fTexCoord.y, layer ) ) );
+#endif
 #else
       texel = texture2D(diffuseTex, texCoord);
 #endif

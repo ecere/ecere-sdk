@@ -15,6 +15,11 @@ uniform uint drawID1;
 ATTRIBUTE uint drawID1;
 #endif
 
+#if SQUISH_FACTOR
+ATTRIBUTE float squishFactor;
+VARYING float varSquish;
+#endif
+
 #if FULL_3D_TRANSFORM
 ATTRIBUTE vec3 transform0;
 ATTRIBUTE vec3 transform1;
@@ -137,6 +142,10 @@ void main(void)
 
 #if FOG_ON
    fogZ = pos.z * fogDensity;
+#endif
+
+#if SQUISH_FACTOR
+   varSquish = squishFactor;
 #endif
 
    //drawID = gl_DrawID;
