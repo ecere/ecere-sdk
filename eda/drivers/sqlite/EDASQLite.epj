@@ -121,6 +121,11 @@
       },
       {
          "Name" : "Android",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         },
          "Platforms" : [
             {
                "Name" : "linux",
