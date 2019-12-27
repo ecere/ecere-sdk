@@ -24,6 +24,7 @@ typedef unsigned int bool;
 
 static inline void OpenGLErrorCheck( char *file, int line )
 {
+#ifdef _DEBUG
   int error;
   error = glGetError();
   if( error != GL_NO_ERROR )
@@ -32,6 +33,7 @@ static inline void OpenGLErrorCheck( char *file, int line )
     // exit( 1 );
   }
   return;
+#endif
 }
 
 #define ERRORCHECK() OpenGLErrorCheck(__FILE__,__LINE__)
