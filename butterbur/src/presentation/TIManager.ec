@@ -341,6 +341,9 @@ class LWFontManager
 #if defined(__LUMIN__)
             sprintf(tmp, "data/%s", baseName);
 #elif defined(__ANDROID__)
+            //if(SearchString(font.face, 0, "Arial", false, false))
+               baseName = font.bold ? "Arial-Unicode-Bold.ttf" : "ARIALUNI.TTF";
+
             sprintf(tmp, ":fonts/%s", baseName);
 #else
             strcpy(tmp, baseName);

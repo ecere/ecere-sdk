@@ -96,7 +96,7 @@ public class GraphicalSurface : MultiPresentation
       if(!texturesFramebuffer)
          glGenFramebuffers(1, &texturesFramebuffer);
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       presManager.init(this, fontManager, drawManager, width, height);
@@ -106,7 +106,7 @@ public class GraphicalSurface : MultiPresentation
    void renderTextures()
    {
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       glDisable(GL_SCISSOR_TEST);
@@ -125,7 +125,7 @@ public class GraphicalSurface : MultiPresentation
       glEnable(GL_SCISSOR_TEST);
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
    }
 
@@ -139,7 +139,7 @@ public class GraphicalSurface : MultiPresentation
       Light light;
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       presManager.origin = { (float)origin.x * width, 0 }; //(float)origin.y * height };
@@ -208,7 +208,7 @@ public class GraphicalSurface : MultiPresentation
       glEnable(GL_DEPTH_TEST);
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       butterburShader.texturing(true);
@@ -233,7 +233,7 @@ public class GraphicalSurface : MultiPresentation
       butterburShader.setLight(null, 1, null);
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       // Billboards (Shapes)
@@ -253,7 +253,7 @@ public class GraphicalSurface : MultiPresentation
       presManager.tiOverlayDM.draw();
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__, __LINE__);
 #endif
 
       GLMatrixMode(MatrixMode::modelView);

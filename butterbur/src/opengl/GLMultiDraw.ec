@@ -24,11 +24,11 @@ int glMinorVersion;
 uint defaultVAO;
 
 #ifdef _DEBUG
-void checkGLErrors()
+void checkGLErrors( const char *file, int line )
 {
    int e, nCount = 0;
    while((e = glGetError()) && nCount++ < 10)
-      PrintLn("GL error ", e, "!");
+      PrintLn("GL error ", e, "! (at ", file, ":", line, ")");
 }
 #endif
 
@@ -218,7 +218,7 @@ struct GLArrayTexture
          glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels-1);
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__,__LINE__);
 #endif
       glTexStorage3D(target, levels, format, w, h, count);
 
@@ -227,7 +227,7 @@ struct GLArrayTexture
 #endif
 
 #ifdef _DEBUG
-      checkGLErrors();
+      checkGLErrors(__FILE__,__LINE__);
 #endif
    #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
       if(glVersion >= 2)
@@ -246,7 +246,7 @@ struct GLArrayTexture
    void resize(uint numLayers, uint targetFBO)
    {
       GLArrayTexture tmp { };
-      tmp._init(numLevels, width, height, numLayers, format, false);
+      tmp._init(numLevels, width, height, numLayers, format, maxLevel);
       tmp.copy(this, targetFBO);
       glBindTexture(GL_TEXTURE_2D_ARRAY, 0); // TOCHECK:
 #ifdef _DEBUG
@@ -557,7 +557,7 @@ struct GLMultiDraw
 #endif
          }
    #ifdef _DEBUG
-         checkGLErrors();
+         checkGLErrors(__FILE__,__LINE__);
    #endif
       }
 #else
@@ -569,7 +569,7 @@ struct GLMultiDraw
 #endif
 
    #ifdef _DEBUG
-         checkGLErrors();
+         checkGLErrors(__FILE__,__LINE__);
    #endif
 
          glMultiDrawElementsIndirect(
@@ -583,7 +583,7 @@ struct GLMultiDraw
             commandsCount, 0);
 
    #ifdef _DEBUG
-         checkGLErrors();
+         checkGLErrors(__FILE__,__LINE__);
    #endif
 
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
