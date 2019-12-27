@@ -996,7 +996,7 @@ class OpenGLDisplayDriver : DisplayDriver
                         oglSystem.version = ogl_GetMajorVersion();
 
 #ifdef _DEBUG
-                        PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
+                        PrintLn("We've got OpenGL Version: ", (char*)glGetString(GL_VERSION), "\n");
 #endif
                      }
                   }
@@ -1069,6 +1069,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glabCurArrayBuffer = 0;
          glabCurElementBuffer = 0;
+
+
+         PrintLn("We've got OpenGL Version: ", (char*)glGetString(GL_VERSION), "\n");
+         PrintLn("We've got OpenGL Renderer: ", (char*)glGetString(GL_RENDERER), "\n");
 
          result = true;
       #elif defined(__EMSCRIPTEN__)
