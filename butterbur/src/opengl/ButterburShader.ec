@@ -6,13 +6,14 @@ import "VersionedShader"
 
 private: // FIXME:  eC bug
 
-define drawIDAttribute = 7;
-define posOffsetAttribute = 8;
+define squishFactorAttribute = 7;
+define drawIDAttribute = 8;
+define posOffsetAttribute = 9;
 
-define transform0Attribute =  8;
-define transform1Attribute =  9;
-define transform2Attribute = 10;
-define transform3Attribute = 11;
+define transform0Attribute = 10;
+define transform1Attribute = 11;
+define transform2Attribute = 12;
+define transform3Attribute = 13;
 
 public class ButterburShaderBits : uint64
 {
@@ -44,6 +45,7 @@ public:
    bool textureArray:1;
    bool multiDraw:1;
    bool transform3D:1;
+   bool squishFactor:1;
 };
 
 public class CompiledButterburShader : CompiledShader
@@ -257,6 +259,8 @@ public:
          glBindAttribLocation(program, GLBufferContents::tangent1,  "tangent1");
          glBindAttribLocation(program, GLBufferContents::tangent2,  "tangent2");
       }
+      if(state.squishFactor)
+         glBindAttribLocation(program, squishFactorAttribute,  "squishFactor");
       //#if !defined(__ANDROID__)
       glBindAttribLocation(program, drawIDAttribute, "drawID1");
       //#endif
@@ -319,6 +323,7 @@ public:
       defs.concatf("\n#define DEBUGGING %d\n",              state.debugging          ? 1 : 0);
       defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
       defs.concatf("\n#define FULL_3D_TRANSFORM %d",        state.transform3D        ? 1 : 0);
+      defs.concatf("\n#define SQUISH_FACTOR %d",            state.squishFactor       ? 1 : 0);
 
       for(i = 0; i < 8; i++)
       {
@@ -328,7 +333,7 @@ public:
          defs.concatf("\n#define LIGHT%d_SPOT %d",       i, mode >= posSpot                      ? 1 : 0);
          defs.concatf("\n#define LIGHT%d_ATT %d\n",      i, mode == posAtt || mode == posSpotAtt ? 1 : 0);
       }
-      defs.concatf("\n\n#line 0\n");
+      defs.concatf("\n\n#line 1\n");
 
 #ifdef _DEBUG
       //puts((String)defs._string);
@@ -641,6 +646,11 @@ public:
          modifiedUniforms.material = true;
          this.state = state & ~rmBits;
       }
+   }
+
+   property bool squishFactor
+   {
+      set { ((ButterburShaderBits)state).squishFactor = value; }
    }
 
    void textureArray(bool on)
