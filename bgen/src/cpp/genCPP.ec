@@ -1903,8 +1903,10 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      {
                         //const char * name = iMetParNamSwp.Index({ ti.m.mname, param.name }, false) ? iMetParNamSwp.data : param.name;
                         //const char * typeString = param.kind == classType && param.classObjectType == anyObject ? g.sym.instance : tokenTypeString(param);
-                        bool cpp = mode == regMethodCppParamList;
+                        // bool cpp = mode == regMethodCppParamList;
                         char * typeString = null;
+                        // if(cpp && cParam && !strcmp(cParam.name, "Bitmap"))
+                        //    Print("");
                         if(param.kind == templateType)
                            typeString = PrintString("TP(", c.name, ", ", param.templateParameter.identifier.string, ")");
                         else if(param.kind == classType && param.classObjectType == anyObject)
@@ -1912,9 +1914,9 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         else if(param.kind == classType && param._class && param._class.registered && param._class.registered.templateClass)
                         {
                            // todo -- c.name is wrong, tofix
-                           if(cpp && ct == normalClass)
-                              typeString = PrintString(c.name, " &");
-                           else
+                           /*if(cpp)
+                              typeString = CopyString(c.name);
+                           else*/
                               typeString = PrintString("C(", c.name, ")");
                         }
                         else if(cParam && param.kind == classType && cParam.isString)
@@ -1923,7 +1925,11 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, asis = asis }, ti.cl);
                         }
                         else
+                        {
+                           // if(cpp) normalClassMacroOverride = true;
                            typeString = printType(param, false, false, true);
+                           // if(cpp) normalClassMacroOverride = false;
+                        }
 
                         if(first && !firstParam && !*first) *first = name;
                         if(nameParamOfClassType && !firstParam && !*nameParamOfClassType &&
@@ -1931,10 +1937,10 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            *nameParamOfClassType = name;
                         if(typeString)
                            z.concatx(strptrNoNamespace(typeString));
-                        if((param.kind == classType && ( ct == noHeadClass || ct == structClass)) ||
+                        if((param.kind == classType && (ct == noHeadClass || ct == structClass)) ||
                            (firstParam && t.classObjectType == typedObject && t.byReference))
                            z.concatx(" *");
-                        else if(param.kind == classType && ct == normalClass && cParam && cParam.isString)
+                        else if(param.kind == classType && ct == normalClass && cParam && /*(cpp || */cParam.isString/*)*/)
                            z.concatx(" &");
                         z.concatx(" ", name);
                         delete typeString;
@@ -1943,6 +1949,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      }
                      case regMethodArgsPoorObjectPassing:
                      {
+                        // if(/*(ct == normalClass && !cParam.isString) || */(param.kind == classType && param.classObjectType == anyObject))
                         if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                         {
                            if(param.classObjectType == anyObject)
@@ -1955,6 +1962,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      case regMethodArgsPassing:
                      {
                         // bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
+                        // if(/*(ct == normalClass && !cParam.isString) || */(param.kind == classType && param.classObjectType == anyObject))
                         if((ct == normalClass && !cParam.isString) || (param.kind == classType && param.classObjectType == anyObject))
                         /*{
                            if(param.classObjectType == anyObject)
@@ -1972,6 +1980,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      case _argSpecialThisParamList:
                      {
                         bool asis = (ct == bitClass || ct == enumClass || ct == normalClass);
+                        // bool asis = (ct == bitClass || ct == enumClass/* || ct == normalClass*/);
 
                         if(hack)
                         {
@@ -2716,6 +2725,7 @@ static void cppMacroClassRegistration(
                const char * nameParamOfClassType = null;
                Type returnType = t.returnType;
                char * typeString = returnType.kind == classType && returnType.classObjectType == anyObject ? CopyString(g_.sym.instance) : printType(t.returnType, false, false, true);
+               // char * typeString = returnType.kind == classType && returnType.classObjectType == anyObject ? /*Copy*/PrintString(g_.sym.instance, "eeee") : printType(t.returnType, false, false, true);
                Class clRegRT;
                BClass cParamRT;
                bool hackRT;
@@ -2824,7 +2834,9 @@ static void cppMacroClassRegistration(
                      // Print("");
                   // if(!strcmp(cn, "Skin") && !strcmp(on, "CaptionFont"))
                   //    PrintLn(p);
+                  // normalClassMacroOverride = true;
                   params = cppParams(c, argsInfo, regMethodParamList, vClass, cn, true, comma, &first, &nameParamOfClassType);
+                  // normalClassMacroOverride = false;
                   if(nameParamOfClassType && t.classObjectType == none && t.thisClass && t.thisClass.registered)
                      oname = nameParamOfClassType;
                   p.concatx(params);
@@ -2832,7 +2844,7 @@ static void cppMacroClassRegistration(
                   // if(p._string && !strcmp(p._string, ", ")) p._string[0] = '\0'; // todo: fix this
                   delete params;
                }
-               else conmsg(t.kind, " is not harndled hee. todo?");
+               else conmsg(t.kind, " is not handled here. todo?");
 
                // ocl
                ocl.copy("");
