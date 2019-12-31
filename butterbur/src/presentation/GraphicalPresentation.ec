@@ -183,6 +183,7 @@ public:
                      glBindTexture(GL_TEXTURE_2D, tex);
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
                      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
                      glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, bmp.width, bmp.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBmp.picture);
                      imgW = bmp.width;
                      imgH = bmp.height;

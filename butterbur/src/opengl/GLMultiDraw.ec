@@ -314,6 +314,7 @@ struct GLArrayTexture
       if(layer >= numLayers)
          resize(layer + Max(2, layer)/2, targetFBO);
       glBindTexture(target, texture);
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glTexSubImage3D(target, level, x, y, layer, width, height, 1, format, type, c);
       glBindTexture(target, 0);
    }
