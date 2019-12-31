@@ -1668,13 +1668,14 @@ class BClass : struct
    void OnFree() { free(); };
 };
 
+bool normalClassMacroOverride;
 const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
 {
    Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(symbol));
    if(!cl && g_.lib.ecereCOM && g_.lang == CPlusPlus)
    {
       if(!strcmp(symbol, "Surface") || !strcmp(symbol, "DataBox"))
-         return g_.sym.instance;
+         return (!normalClassMacroOverride) ? g_.sym.instance : "Instance";
       else if(!strcmp(symbol, "Alignment"))
          return g_.sym.alignment;
       else if(!strcmp(symbol, "DataDisplayFlags"))
@@ -1684,7 +1685,7 @@ const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
    {
       Class cl2 = reduce ? reduceUnitClass(cl) : cl;
       BClass c = cl2;
-      return macro ? c.symbolName : c.name;
+      return macro && !(normalClassMacroOverride && cl2.type == normalClass) ? c.symbolName : c.name;
    }
    return symbol;
 }
