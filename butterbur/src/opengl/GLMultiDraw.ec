@@ -341,7 +341,9 @@ struct GLArrayTexture
          layer = spots.next();
       }
       if(spots.used > 1024)
-         PrintLn("WARNING: More than 1024 layers used in array texture!");
+         ; //PrintLn("WARNING: More than 1024 layers used in array texture!");
+      if(layer == -1)
+         PrintLn("ERROR: Failure to allocate texture layer!");
       return layer;
    }
 
