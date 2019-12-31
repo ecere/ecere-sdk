@@ -147,14 +147,10 @@ class CPPGen : CGen
          bool template = hasTemplateClass(c.cl);
          if(g_.lib.ecereCOM && skipClasses.Find({ g_.lib.bindingName, c.name }))
             skip = true;
-         // if(!strcmp(c.name, "HashMap"))
-         //    Print("");
-
-         if(!skip && !template && c.cl.type == normalClass)   // TODO: Only doing normal classes for now... || c.cl.type == noHeadClass
-         {
-
+         if(c.isClass || (c.cl.type == noHeadClass && hasOrBaseHasTemplateAnything(c.cl)))
+            skip = true;
+         if(!skip && !template && (c.cl.type == normalClass || c.cl.type == noHeadClass))
             processCppClass(this, c);
-         }
          // else { typedef C(Modifiers) Modifiers; }
       }
    }
@@ -870,7 +866,7 @@ static void processCppClass(CPPGen g, BClass c)
             }
          }
 
-         if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
+         if(c.cl.type == normalClass && !(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
             cppDefineMacroClassRegistration(g, o.z, 0, c, cBase, v, 0);
             // if(!g.options.expandMacros)
@@ -888,21 +884,23 @@ static void processCppClass(CPPGen g, BClass c)
             o.z.concatx(ln);
          }
 
-         // if(!strcmp(c.name, "Label"))
-         //    Print("");
-         o.z.concatx(ln, genloc__, "class ", cn);
+         if(c.cl.type == noHeadClass)
+            o.z.concatx(ln, genloc__, "template <class T, C(Class) ** M>");
+         o.z.concatx(ln, genloc__, "class ", c.cl.type == noHeadClass ? "T" : "", cn);
+
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
             MacroMode mode = g.expansionOrUse;
-            if(cBase && cBase.cl.type != systemClass)
+            if((cBase && cBase.cl.type != systemClass) || c.cl.type == noHeadClass)
             {
-               if(isBaseString)
-                  o.z.concatx(" : public ", "Instance");
-               else
-                  o.z.concatx(" : public ", bn);
-
+               bool nhbase = c.cl.type == noHeadClass && cBase && cBase.is_class; // todo
+               const char * baseClass = isBaseString ? "Instance" : nhbase ? "NHInstance" : bn;
+               o.z.concatx(" : public ", !nhbase && c.cl.type == noHeadClass ? "T" : "", baseClass);
+               if(c.cl.type == noHeadClass)
+                  o.z.concatx("<T, M>");
             }
-            o.z.concatx(ln, genloc__, "{", ln, genloc__, "public:", ln);
+            o.z.concatx(ln, genloc__, "{");
+            o.z.concatx(ln, genloc__, "public:", ln);
             if(c.isInstance)
             {
                cppHardcodedInstancePart1(o);
@@ -914,12 +912,9 @@ static void processCppClass(CPPGen g, BClass c)
             }
             else if(c.isModule)
                cppHardcodedModule(o);
-            else
+            else if(c.cl.type == normalClass)
             {
-               if(isBaseString)
-                  cppMacroConstructClass(g, o.z, mode, 1, cn, "Instance", 0);
-               else
-                  cppMacroConstructClass(g, o.z, mode, 1, cn, bn, 0);
+               cppMacroConstructClass(g, o.z, mode, 1, cn, isBaseString ? "Instance" : bn, 0);
                // if(mode != expansion)
                {
                   if(c.isApplication)
@@ -955,13 +950,13 @@ static void processCppClass(CPPGen g, BClass c)
                }
             }
 
-            if(c.cl.type == normalClass && !c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
+            if(!c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
             {
                o.z.concatx(ln);
                genMethodCallers(g, c, v, cn, false, o);
             }
 
-            if(!c.isInstance)
+            if(c.cl.type == normalClass && !c.isInstance)
             {
                // tclean remove next 2 lines
                // note: this is a hardcoded cppMacroClassVirtualMethods use
@@ -971,7 +966,7 @@ static void processCppClass(CPPGen g, BClass c)
                cppMacroClassVirtualMethods(g, o.z, configuration, true, 1, un, c.name, c, cBase, v, 0);
             }
 
-            if(!c.isInstance && !c.isModule)
+            if(c.cl.type == normalClass && !c.isInstance && !c.isModule)
             {
                //o.z.concatx(ln, genloc__, indents(0));
                //cppMacroClassRegister(g, o.z, mode, 1, 0);
@@ -1019,7 +1014,7 @@ static void processCppClass(CPPGen g, BClass c)
             // if(!strcmp(c.name, "FontResource"))
                genOrderedPublicMembersInitializers(g, c, v, cn, o);
 
-            if(!c.isInstance && !c.isModule)
+            if(c.cl.type == normalClass && !c.isInstance && !c.isModule)
             {
                processProperties(g, c, cn, true, o);
 
@@ -1030,9 +1025,12 @@ static void processCppClass(CPPGen g, BClass c)
             }
             o.z.concatx(genloc__, "}");
          }
-         o.z.concatx(";", ln);
+         o.z.concatx(";");
+         if(c.cl.type == noHeadClass)
+            o.z.concatx(ln, genloc__, "typedef T", cn, "<C(", cn, "), &CO(", cn, ")> ", cn, ";");
+         o.z.concatx(ln);
       }
-      else
+      else if(c.cl.type == normalClass)
       {
          c.outImplementation = o;
          n.implementationsContents.Add(v);
@@ -1082,6 +1080,7 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
    {
       // const char * on = m.name;
       const char * mn = m.mname;
+      const char * mncpp = strcmp(mn, "delete") ? mn : "_delete";
       // Type param;
       Type t = m.md.dataType;
       // bool byRefTypedThis = false;
@@ -1125,7 +1124,7 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
       o.z.concatx(" ");
       // if(!prototype)
       //    o.z.concatx(cn, "::");
-      o.z.concatx(mn, "(");
+      o.z.concatx(mncpp, "(");
       if(t.kind == functionType)
       {
          bool comma = false; //const char * comma = "";
@@ -1172,12 +1171,29 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
          if(returnAddress)
             Print("");
          o.z.concatx(indents(ind), "{", ln);
+         {
+                  bool comma = false;
+                  // bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
+                  char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing, /*vClass*/null, cn, /*!ptrI*/false, comma, null, null);
+                  int len = strlen(args);
+                  if(len > 1)
+                  {
+                     if(args[len - 1] == ' ')
+                        args[len - 1] = '\0';
+                     o.z.concat(indents(ind + 1));
+                     o.z.concat(args);
+                     o.z.concatx(ln);
+                  }
+                  delete args;
+         }
          o.z.concatx(indents(ind + 1),    noRet ? "" : "return ", cn, "_", mn, "(");
 
          switch(t.classObjectType)
          {
             case none:
-               o.z.concatx("impl");
+               if(c.cl.type == noHeadClass)
+                  o.z.concat("this->");
+               o.z.concat("impl");
                comma = true;
                break;
             //case classPointer: conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
@@ -1463,7 +1479,9 @@ static void commonMemberHandling(
                { [ PrintString("printf(\"calling ", cn, "_set_", mn, "(self ? self->impl : null, v.impl)", "\\n\");"),
                    PrintString(cn, "_set_", mn, "(self ? self->impl : null, v.impl);") ] };
          components.Add(component);
-
+      }
+      if(hasGet)
+      {
          component = { macroPropGet, mn, PrintString(tn, " &") };
          // get(Window &, parent, Window,
                // C(Instance) i = Window_get_parent(self ? self->impl : null);
@@ -1472,14 +1490,18 @@ static void commonMemberHandling(
                { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
                    PrintString("return *(", tn, " *)_INSTANCE(i, ", tn, "::_class.impl);") ] };
          components.Add(component);
-
+      }
+      if(hasSet && hasGet)
+      {
          component = { macroIntPropSet, mn, PrintString("const ", tn, " *") };
          // _set(const Window *, parent, Window, Window_set_parent(self ? self->impl : null, v ? v->impl : null))
          if(!prototype) component.code =
                { [ PrintString("printf(\"calling ", cn, "_set_", mn, "(self ? self->impl : null, v ? v->impl : null)", "\\n\");"),
                    PrintString(cn, "_set_", mn, "(self ? self->impl : null, v ? v->impl : null);") ] };
          components.Add(component);
-
+      }
+      if(hasGet)
+      {
          component = { macroPropGet, mn, PrintString(tn, " *") };
          // get(Window *, parent, Window,
                // C(Instance) i = Window_get_parent(self ? self->impl : null);
@@ -1640,6 +1662,14 @@ static bool hasOrBaseHasTemplateClass(Class cl)
 {
    for(; cl; cl = cl.base)
       if(cl.templateClass)
+         return true;
+   return false;
+}
+
+static bool hasOrBaseHasTemplateAnything(Class cl)
+{
+   for(; cl; cl = cl.base)
+      if(cl.templateClass || cl.templateArgs || cl.templateParams.first/* || cl.templatized*/)
          return true;
    return false;
 }
