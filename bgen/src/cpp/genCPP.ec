@@ -477,7 +477,7 @@ AVLTree<consttstr> tryMembers { [
 
 AVLTree<const String> brokenMethodsClass { [
    "Bitmap",
-   "Display",
+// "Display",
    "DisplaySystem",
    null
 ] };
@@ -1159,7 +1159,7 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
          // {
          //    bool comma = false;
             argsInfo = { type = m.md.dataType, m = m, md = m.md, cl = c.cl, c = c };
-            o.z.concatx((params = cppParams(c, argsInfo, regMethodParamList, v, null, false, comma, &first, null)));
+            o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList, v, null, false, comma, &first, null)));
          // }
       }
       o.z.concatx(")", prototype ? ";" : "");
@@ -1472,6 +1472,7 @@ static void commonMemberHandling(
 
    if(isProp && ct == normalClass && !isString)
    {
+      // if(hasSet && hasGet)
       if(hasSet && hasGet)
       {
          component = { macroPropSet, mn, PrintString("const ", tn, " &") };
@@ -1825,7 +1826,7 @@ ClassType cppGetClassInfoFromType(Type type, bool hackTemplates, Class * clRegRe
    return ct;
 }
 
-enum CPPParamsOutputMode { regMethodParamList, regMethodArgsPassing, regMethodArgsPoorObjectPassing, _argParamList, _argSpecialThisParamList, passing };
+enum CPPParamsOutputMode { regMethodParamList, regMethodCppParamList, regMethodArgsPassing, regMethodArgsPoorObjectPassing, _argParamList, _argSpecialThisParamList, passing };
 char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClass, const char * cn,
       bool addthisarg, bool comma, const char ** first, const char ** nameParamOfClassType)
 {
@@ -1850,7 +1851,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
       {
          // if(mode == regMethodParamList)
          {
-            if(t.classObjectType == typedObject && mode == regMethodParamList)
+            if(t.classObjectType == typedObject && (mode == regMethodParamList || mode == regMethodCppParamList))
             {
                z.concatx("Class * _class");
                if(!sep[0]) sep = ", ";
@@ -1876,7 +1877,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
       }
 
             // todo: handle typed object
-            if(((mode == regMethodParamList || mode == regMethodArgsPassing || mode == regMethodArgsPoorObjectPassing) && comma == true) || mode == passing) sep = ", ";
+            if(((mode == regMethodParamList || mode == regMethodCppParamList || mode == regMethodArgsPassing ||
+                  mode == regMethodArgsPoorObjectPassing) && comma == true) || mode == passing) sep = ", ";
             ap = 0;
             for(param = firstParam ? firstParam : t.params.first; param; param = nextParam)
             {
@@ -1897,9 +1899,11 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                   switch(mode)
                   {
                      case regMethodParamList:
+                     case regMethodCppParamList:
                      {
                         //const char * name = iMetParNamSwp.Index({ ti.m.mname, param.name }, false) ? iMetParNamSwp.data : param.name;
                         //const char * typeString = param.kind == classType && param.classObjectType == anyObject ? g.sym.instance : tokenTypeString(param);
+                        bool cpp = mode == regMethodCppParamList;
                         char * typeString = null;
                         if(param.kind == templateType)
                            typeString = PrintString("TP(", c.name, ", ", param.templateParameter.identifier.string, ")");
@@ -1908,7 +1912,10 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         else if(param.kind == classType && param._class && param._class.registered && param._class.registered.templateClass)
                         {
                            // todo -- c.name is wrong, tofix
-                           typeString = PrintString("C(", c.name, ")");
+                           if(cpp && ct == normalClass)
+                              typeString = PrintString(c.name, " &");
+                           else
+                              typeString = PrintString("C(", c.name, ")");
                         }
                         else if(cParam && param.kind == classType && cParam.isString)
                         {
