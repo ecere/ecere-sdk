@@ -1152,6 +1152,7 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                   if(_class.type == bitClass)
                   {
                      BitMember bitMember = (BitMember) thisMember;
+                     // TODO: Review for other type sizes?
                      if(_class.typeSize == 4)
                      {
                         *(uint *)data = (uint32)(((*(uint *)data & ~bitMember.mask)) | ((value.ui64<<bitMember.pos)&bitMember.mask));
@@ -1162,7 +1163,25 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                      }
                   }
                   else
-                     *(int *)memberData = value.i;
+                  {
+                     // TODO: Review for other type sizes?
+                     if(memberType.typeSize == 1)
+                     {
+                        *(char *)memberData = value.c;
+                     }
+                     else if(memberType.typeSize == 2)
+                     {
+                        *(short *)memberData = value.s;
+                     }
+                     else if(memberType.typeSize == 4)
+                     {
+                        *(int *)memberData = value.i;
+                     }
+                     else if(memberType.typeSize == 8)
+                     {
+                        *(int64 *)memberData = value.i64;
+                     }
+                  }
                }
                else if(thisMember.isProperty && ((Property)thisMember).Set)
                {
