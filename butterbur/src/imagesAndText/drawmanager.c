@@ -505,7 +505,7 @@ void dmDefineImage( dmImage *image, tmTexture *texture, int offsetx, int offsety
 
 
 /* FIXME: Radix sort, not hybrid sort! */
-
+/*
 static inline int dmSortImagesCmp( dmImageBuffer *draw0, dmImageBuffer *draw1 )
 {
   return ( ( draw0->orderindex < draw1->orderindex ) ? 0 : 1 );
@@ -518,7 +518,7 @@ static inline int dmSortImagesCmp( dmImageBuffer *draw0, dmImageBuffer *draw1 )
 #undef HSORT_MAIN
 #undef HSORT_CMP
 #undef HSORT_TYPE
-
+*/
 
 ////
 
@@ -600,7 +600,7 @@ static void dmFlushDrawImagesArchaic( dmContext *dm )
     return;
 
   /* Sort by image type and texture, minimize state changes */
-  dmSortImages( dm->imagebuffer, dm->imagebuffertmp, dm->imagebuffercount, (uint32_t)( (intptr_t)dm->imagebuffer >> 4 ) );
+  // dmSortImages( dm->imagebuffer, dm->imagebuffertmp, dm->imagebuffercount, (uint32_t)( (intptr_t)dm->imagebuffer >> 4 ) );
 
   /* Fill a drawbuffer, write vertex and texcoords */
   drawbuffer = &dm->drawbuffer[dm->drawbufferindex];
@@ -869,7 +869,7 @@ static void dmFlushDrawImages( dmContext *dm )
     return;
 
   /* Sort by image type and texture, minimize state changes */
-  dmSortImages( dm->imagebuffer, dm->imagebuffertmp, dm->imagebuffercount, (uint32_t)( (intptr_t)dm->imagebuffer >> 4 ) );
+  // dmSortImages( dm->imagebuffer, dm->imagebuffertmp, dm->imagebuffercount, (uint32_t)( (intptr_t)dm->imagebuffer >> 4 ) );
 
   /* Fill a drawbuffer, write vertex and texcoords */
   drawbuffer = &dm->drawbuffer[dm->drawbufferindex];
