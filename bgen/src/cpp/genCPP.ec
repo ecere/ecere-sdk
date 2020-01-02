@@ -921,9 +921,10 @@ static void processCppClass(CPPGen g, BClass c)
                   {
                      o.z.concatx(ln, genloc__, indents(1), "{", ln);
                      o.z.concatx(genloc__, indents(2), "eC_cpp_init(*this);", ln);
-                     o.z.concatx(genloc__, indents(2), "// todo: omit this if we're linking against eC rt only", ln);
+                     o.z.concatx(genloc__, indents(0), "#if !defined(ECERECOM_ONLY)", ln);
                      o.z.concatx(genloc__, indents(2), "ecere_init(impl);", ln);
                      o.z.concatx(genloc__, indents(2), "ecere_cpp_init(*this);", ln);
+                     o.z.concatx(genloc__, indents(0), "#endif", ln);
                      // if(c.isGuiApplication)
                      //   o.z.concatx(genloc__, indents(2), "ecere_cpp_init(*this);", ln);
                      o.z.concatx(genloc__, indents(2), "_INSTANCE(impl, impl->_class) = this;", ln);
