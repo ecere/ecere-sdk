@@ -2,8 +2,10 @@
 
 #include "ecere.hpp"
 
-Camera camera = { CameraType_fixed, C(Vector3D) { 0, 0, -300 }/*, C(Euler) { 0, 0, 0 }*/ };
+// Camera camera = { CameraType_fixed, C(Vector3D) { 0, 0, -300 }/*, C(Euler) { 0, 0, 0 }*/ };
 
+CPPClass nullClass;
+Camera nullCamera ( (C(Instance))null, nullClass );
 /*
 Camera camera
 {
@@ -21,11 +23,12 @@ Light light
    orientation = Euler { pitch = 10, yaw = 30 };
 };
 */
-C(Light) light { };
+C(Light) * light { };
 
 class HelloCube : public Window
 {
 public:
+   Camera camera;
    // C(Cube) * cube;
    Cube cube;
    // Object object;
@@ -40,7 +43,9 @@ public:
       hasMaximize = true;
       hasMinimize = true;
 
-      // camera.orientation = /*C(Euler) { 0, 0, 0 }*/;
+      camera.type = CameraType_fixed;
+      camera.position = C(Vector3D) { 0, 0, -300 };
+      camera.eulerOrientation = C(Euler) { 0, 0, 0 };
       camera.fov = 53;
 
       onLoadGraphics = [](Window & window) -> C(bool)
@@ -48,8 +53,23 @@ public:
          HelloCube & self = (HelloCube &)window;
          C(Transform) transform;
          // DisplaySystem & ds = self.displaySystem;
-         // self.cube.create(ds);
-         self.cube.create(self.displaySystem);
+         // C(Instance) cdsx = self.displaySystemX;
+         DisplaySystem dsx(self.displaySystemX, DisplaySystem::_class);
+         DisplaySystem & ds = dsx;
+         // printf("%p\n", self.displaySystem.impl);
+         // printf("1: %p\n", ds.impl);
+         // printf("2: %p\n", ds.impl->_class);
+         // printf("3: %s\n", ds.impl->_class->name);
+
+         // printf("%p\n", ds._class.impl);
+         // printf("%s\n", ds._class.impl->name);
+
+         // printf("cdsx: %p\n", cdsx);
+         printf("dsx.impl: %p\n", dsx.impl);
+
+         // self.cube.create(self.displaySystem);
+         self.cube.create(ds);
+         // do something for properties?
          Object_get_transform((C(Object)*)self.cube.impl, &transform);
          transform.scaling = (C(Vector3Df)){ 100, 100, 100 };
          // transform.orientation = { 100, 100, 100 };
@@ -59,18 +79,15 @@ public:
             Euler_to_Quaternion(&eul, &orientation);
             transform.orientation = orientation;
          }
-         // self.cube.transform.scaling = { 100, 100, 100 };
-         // self.cube.transform.orientation = Euler { 50, 30, 50 };
-         // self.object.updateTransform();
          self.cube.updateTransform();
          return true;
       };
 
       onResize = [](Window & window, int w, int h)
       {
-         // HelloCube & self = (HelloCube &)window;
-         camera.setup(w, h, null);
-         camera.update();
+         HelloCube & self = (HelloCube &)window;
+         self.camera.setup(w, h, null);
+         self.camera.update();
       };
 
       onRedraw = [](Window & window, Surface & surface)
@@ -78,10 +95,11 @@ public:
          HelloCube & self = (HelloCube &)window;
          Display & display = self.display;
          surface.clear(ClearType_depthBuffer);
-         // display.setLight(0, light);
-         // self.display.setCamera(surface, camera);
-         // self.display.drawObject(self.cube);
-         // display.setCamera(surface, null);
+         // note: can't do self.diaplay.setLight() or self.display.setCamera()
+         display.setLight(0, light);
+         display.setCamera(surface, self.camera);
+         display.drawObject(self.cube);
+         display.setCamera(surface, nullCamera);
       };
    }
 
