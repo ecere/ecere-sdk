@@ -23,7 +23,7 @@ Light light
    orientation = Euler { pitch = 10, yaw = 30 };
 };
 */
-C(Light) * light { };
+C(Light) light { };
 
 class HelloCube : public Window
 {
@@ -32,9 +32,12 @@ public:
    // C(Cube) * cube;
    Cube cube;
    // Object object;
+   // C(Light) * light;
 
    CONSTRUCT(HelloCube, Window)
    {
+      // C(Euler) lightEul = { Degrees(30), Degrees(10) };
+
       caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
       background = DefinedColor_black;
       borderStyle = BorderStyle_sizable;
@@ -46,30 +49,49 @@ public:
       camera.type = CameraType_fixed;
       camera.position = C(Vector3D) { 0, 0, -300 };
       camera.eulerOrientation = C(Euler) { 0, 0, 0 };
-      camera.fov = 53;
+      camera.fov = Degrees(53);
+
+      // light = (C(Light)){ };
+      // light.diffuse = DefinedColor_lightCoral;
+      // light.orientation = { Degrees(30), Degrees(10) };// Euler { pitch = 10, yaw = 30 };
+      /*light = newt0(Light, 1);
+      {
+         ColorRGB diffuse;
+         Color_to_ColorRGB(DefinedColor_lightCoral, &diffuse);
+         self->light->diffuse = diffuse;
+      }*/
+      {
+         C(Euler) eul = { Degrees(30), Degrees(10) };
+         Euler_to_Quaternion(&eul, &light.orientation);
+      }
+
+      Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
 
       onLoadGraphics = [](Window & window) -> C(bool)
       {
          HelloCube & self = (HelloCube &)window;
          C(Transform) transform;
-         // DisplaySystem & ds = self.displaySystem;
-         // C(Instance) cdsx = self.displaySystemX;
-         DisplaySystem dsx(self.displaySystemX, DisplaySystem::_class);
-         DisplaySystem & ds = dsx;
-         // printf("%p\n", self.displaySystem.impl);
-         // printf("1: %p\n", ds.impl);
-         // printf("2: %p\n", ds.impl->_class);
-         // printf("3: %s\n", ds.impl->_class->name);
+         DisplaySystem & ds = self.displaySystem;
+            // C(Instance) cdsx = self.displaySystemX;
+         // DisplaySystem dsx(self.displaySystemX, DisplaySystem::_class);
+         // DisplaySystem & ds = dsx;
+            // dsx.impl->refCount += 2;
+            // printf("%p\n", self.displaySystem.impl);
 
-         // printf("%p\n", ds._class.impl);
-         // printf("%s\n", ds._class.impl->name);
+         printf("1: %p\n", ds.impl);
+         printf("2: %p\n", ds.impl->_class);
+         printf("3: %s\n", ds.impl->_class->name);
 
-         // printf("cdsx: %p\n", cdsx);
-         printf("dsx.impl: %p\n", dsx.impl);
+         ds.impl->_refCount++;
+            // printf("%p\n", ds._class.impl);
+            // printf("%s\n", ds._class.impl->name);
 
-         // self.cube.create(self.displaySystem);
+            // printf("cdsx: %p\n", cdsx);
+         // printf("dsx.impl: %p\n", dsx.impl);
+
+            // self.cube.create(self.displaySystem);
          self.cube.create(ds);
-         // do something for properties?
+            // do something for properties?
          Object_get_transform((C(Object)*)self.cube.impl, &transform);
          transform.scaling = (C(Vector3Df)){ 100, 100, 100 };
          // transform.orientation = { 100, 100, 100 };
@@ -79,6 +101,7 @@ public:
             Euler_to_Quaternion(&eul, &orientation);
             transform.orientation = orientation;
          }
+         Object_set_transform((C(Object)*)self.cube.impl, &transform);
          self.cube.updateTransform();
          return true;
       };
@@ -93,13 +116,23 @@ public:
       onRedraw = [](Window & window, Surface & surface)
       {
          HelloCube & self = (HelloCube &)window;
-         Display & display = self.display;
+         Display & d = self.display;
+         // Display dx(surface.displayX, Display::_class);
+         // Display & d = dx;
+         d.impl->_refCount++;
          surface.clear(ClearType_depthBuffer);
          // note: can't do self.diaplay.setLight() or self.display.setCamera()
-         display.setLight(0, light);
-         display.setCamera(surface, self.camera);
-         display.drawObject(self.cube);
-         display.setCamera(surface, nullCamera);
+         d.setLight(0, &light);
+         d.setCamera(surface, self.camera);
+         printf("\n");
+         d.drawObject((Object&)self.cube);
+         /*{
+            Object & object = (Object&)self.cube;
+            C(Object) * o = object.impl;
+            C(bool) ret = Display_drawObject(d.impl, o);
+            printf("%d\n", ret);
+         }*/
+         d.setCamera(surface, nullCamera);
       };
    }
 
