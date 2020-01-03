@@ -1258,6 +1258,8 @@ public:
                (type == class(Color) || type == class(Pointd) ||
                 !strcmp(type.name, "ValueColor") || !strcmp(type.name, "ValueOpacity")))
                o.skipImpliedID = true;
+            else if(type.type == bitClass)
+               o.skipImpliedID = true;
          }
          if(!type || (type.type == structClass && strcmp(type.name, "HillShading")) ||
             type.type == unitClass || type.type == bitClass || type.type == noHeadClass)  // image.hotSpot currently doesn't get type set?
@@ -1392,7 +1394,7 @@ public:
             CMSSMemberInitList initList = strchr(idsString, '.') ? null : instance.members.lastIterator.data;
             if(!initList)
                instance.members.Add((initList = { }));
-            initList.setMember(expType, idsString, mask, createSubInstance, expression);
+            initList.setMember2(expType, idsString, mask, createSubInstance, expression, evaluator, stylesClass);
             instance.members.mask |= mask;
          }
       }
