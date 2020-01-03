@@ -37,7 +37,7 @@ void cppHardcodedInstancePart2(BOutput o)
 {
    o.z.concatx("   inline explicit Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
                "   {", ln,
-               "      Class * c = cl.impl;", ln,
+               "      XClass * c = cl.impl;", ln,
                "      impl = _impl;", ln,
                "      vTbl = cl.vTbl;", ln,
                "      if(impl)", ln,
@@ -183,6 +183,7 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("      return app.exitCode; \\");
    f.PrintLn("   }", ln);
 
+   f.PrintLn("// SELF: get C++ class instance pointer from within hackish member of the class", ln);
    f.PrintLn("#define SELF(c, n)  __attribute__((unused)) c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))", ln);
 
    cppTmpDefineVirtualMethod(g, f, true);
@@ -201,13 +202,13 @@ void cppHardcodedCore(CPPGen g, File f)
 
    f.PrintLn("extern \"C\" ", g_.sym.module, " ecere_init(", g_.sym.module, " fromModule);");
    f.PrintLn("");
-   f.PrintLn("class Class : public ", g_.sym.__class, " { };");
+   f.PrintLn("class XClass : public ", g_.sym.__class, " { };");
    f.PrintLn("");
    f.PrintLn("class CPPClass");
    f.PrintLn("{");
    f.PrintLn("public:");
    f.PrintLn("   typedef void (* Function)(void);");
-   f.PrintLn("   Class * impl;");
+   f.PrintLn("   XClass * impl;");
    f.PrintLn("   Function * vTbl;");
    f.PrintLn("   inline CPPClass() { };");
    f.PrintLn("   inline CPPClass(const CPPClass & c) = delete;");
@@ -223,12 +224,12 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("{");
    f.PrintLn("public:");
    f.PrintLn("   TCPPClass() { }");
-   f.PrintLn("   TCPPClass(Class * _impl)");
+   f.PrintLn("   TCPPClass(XClass * _impl)");
    f.PrintLn("   {");
    f.PrintLn("      setup(_impl);");
    f.PrintLn("   }");
    f.PrintLn("   void (*destructor)(T &);");
-   f.PrintLn("   void setup(Class * _impl)");
+   f.PrintLn("   void setup(XClass * _impl)");
    f.PrintLn("   {");
    f.PrintLn("      impl = _impl;");
    f.PrintLn("      if(impl)");
@@ -248,12 +249,12 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("};", ln);
 
    f.PrintLn("template <class T, C(Class) ** M>");
-   f.PrintLn("class NHInstance");
+   f.PrintLn("class TNHInstance");
    f.PrintLn("{");
    f.PrintLn("public:");
    f.PrintLn("   T * impl;");
-   f.PrintLn("   NHInstance() { impl = (T*)Instance_new(*M); }");
-   f.PrintLn("   NHInstance(T * _impl) { impl = impl; }");
+   f.PrintLn("   TNHInstance() { impl = (T*)Instance_new(*M); }");
+   f.PrintLn("   TNHInstance(T * _impl) { impl = impl; }");
    f.PrintLn("};");
 
    delete z;

@@ -1685,7 +1685,7 @@ const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
    {
       Class cl2 = reduce ? reduceUnitClass(cl) : cl;
       BClass c = cl2;
-      return macro && !(normalClassMacroOverride && cl2.type == normalClass) ? c.symbolName : c.name;
+      return macro && !normalClassMacroOverride ? c.symbolName : c.name;
    }
    return symbol;
 }
