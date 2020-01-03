@@ -127,14 +127,15 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("//            x: pointer to eC instance");
    f.PrintLn("//            c: eC 'Class' object representing the C++ class");
    f.PrintLn("#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))");
-   f.PrintLn("#define _INSTANCE(x, c) INSTANCEL((x) ? (x) : 0, c)", ln);
+   f.PrintLn("#define _INSTANCE(x, c) ((x) ? INSTANCEL(x, c) : (c *)0)", ln);
 
    f.PrintLn("// INSTANCE: returns a C++ instance out for supplied eC instance");
    f.PrintLn("//           x: pointer to eC instance");
    f.PrintLn("//           c: what is c");
    f.PrintLn("#define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })", ln);
 
-   f.PrintLn("#define POBJ(c, o, eo) c eo ## to(eo); c & o = eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : eo ## to", ln);
+   f.PrintLn("#define POBJ(c, ho, eo) \\");
+   f.PrintLn("      CPPInstanceHolder<c> ho(eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : *new c(eo));", ln);
 
    f.PrintLn("#undef   newi");
    f.PrintLn("#define  newi(c) Instance_newEx(c, true)", ln);
@@ -254,8 +255,46 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("public:");
    f.PrintLn("   T * impl;");
    f.PrintLn("   TNHInstance() { impl = (T*)Instance_new(*M); }");
-   f.PrintLn("   TNHInstance(T * _impl) { impl = impl; }");
-   f.PrintLn("};");
+   f.PrintLn("   TNHInstance(T * _impl) { impl = _impl; }");
+   f.PrintLn("};", ln);
+
+   f.PrintLn("template <class T>");
+   f.PrintLn("class CPPInstanceHolder");
+   f.PrintLn("{");
+   f.PrintLn("public:");
+   f.PrintLn("   T * object;");
+   f.PrintLn("   CPPInstanceHolder(T & o) : object(&o)");
+   f.PrintLn("   {");
+   f.PrintLn("      if(object->impl)");
+   f.PrintLn("         o.impl->_refCount++;");
+   f.PrintLn("   }");
+   f.PrintLn("");
+   f.PrintLn("   CPPInstanceHolder(const CPPInstanceHolder & h) : object(h.object)");
+   f.PrintLn("   {");
+   f.PrintLn("      if(object->impl)");
+   f.PrintLn("         object->impl->_refCount++;");
+   f.PrintLn("   }");
+   f.PrintLn("");
+   f.PrintLn("   CPPInstanceHolder & operator =(const CPPInstanceHolder & h)");
+   f.PrintLn("   {");
+   f.PrintLn("      if(object->impl)");
+   f.PrintLn("         Instance_delete(object->impl);");
+   f.PrintLn("");
+   f.PrintLn("      object = h.object;");
+   f.PrintLn("      if(object->impl)");
+   f.PrintLn("         object->impl->_refCount++;");
+   f.PrintLn("      return *this;");
+   f.PrintLn("   }");
+   f.PrintLn("");
+   f.PrintLn("   ~CPPInstanceHolder()");
+   f.PrintLn("   {");
+   f.PrintLn("      if(object->impl)");
+   f.PrintLn("         Instance_delete(object->impl);");
+   f.PrintLn("   }");
+   f.PrintLn("");
+   f.PrintLn("   T& operator*() const { return *object; }");
+   f.PrintLn("   T* operator->() const { return object; }");
+   f.PrintLn("};", ln);
 
    delete z;
 }

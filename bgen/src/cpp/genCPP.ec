@@ -965,8 +965,8 @@ static void processCppClass(CPPGen g, BClass c)
                }
             }
 
-            if(c.cl.type == noHeadClass && !nhbase)
-               o.z.concatx(genloc__, indents(1), "inline operator ", bn, "&() { return *this; }", ln);
+            // if(c.cl.type == noHeadClass && !nhbase)
+            //    o.z.concatx(genloc__, indents(1), "inline operator ", bn, "&() { return *this; }", ln);
 
             if(!c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
             {
@@ -1505,7 +1505,8 @@ static void commonMemberHandling(
                // return *(Window *)_INSTANCE(i, Window::_class.impl))
          if(!prototype) component.code =
                { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
-                   PrintString("return *(", tn, " *)_INSTANCE(i, ", tn, "::_class.impl);") ] };
+                   PrintString("POBJ(", tn, ", cppi, i);"),
+                   PrintString("return *cppi;") ] };
          components.Add(component);
       }
       if(hasSet && hasGet)
@@ -1517,7 +1518,7 @@ static void commonMemberHandling(
                    PrintString(cn, "_set_", mn, "(self ? self->impl : null, v ? v->impl : null);") ] };
          components.Add(component);
       }
-      if(hasGet)
+      /*if(hasGet)
       {
          component = { macroPropGet, mn, PrintString(tn, " *") };
          // get(Window *, parent, Window,
@@ -1533,7 +1534,7 @@ static void commonMemberHandling(
          if(!prototype) component.code =
                { [ PrintString("return ", tn, "(", cn, "_get_", mn, "(self ? self->impl : null));") ] };
          components.Add(component);
-      }
+      }*/
    }
    else
    {
@@ -2006,7 +2007,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            else
                               z.concatx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
                         }*/
-                           z.concatx(name, "_l");
+                           z.concatx("*", name, "_l");
                         else if(forMethodCallers && ((ct == normalClass && !cParam.isString) || ct == noHeadClass))
                         {
                            z.concatx(name, ".impl");
