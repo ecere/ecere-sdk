@@ -71,23 +71,55 @@ public:
       {
          HelloCube & self = (HelloCube &)window;
          C(Transform) transform;
-         DisplaySystem & ds = self.displaySystem;
-            // C(Instance) cdsx = self.displaySystemX;
-         // DisplaySystem dsx(self.displaySystemX, DisplaySystem::_class);
-         // DisplaySystem & ds = dsx;
-            // dsx.impl->refCount += 2;
-            // printf("%p\n", self.displaySystem.impl);
+         DisplaySystem * dsp = self.displaySystem;
+         DisplaySystem ds = self.displaySystem;
+         TIH<DisplaySystem> dsh = self.displaySystem;
+         DisplaySystem & dsr = *dsh;
+         // This should work too once generation is fixed: (directly accessing member from display property)
+         // DisplaySystem ds2 = self.display->displaySystem;
 
+         // This has some odd troubles with flag and pixelFormat, but works when we duplicate
+         // move constructors and assignment operators at every level of the hierarchy (CONSTRUCT() macro)
+         DisplaySystem ds2; ds2 = self.displaySystem;
+
+         // ds2 = ds; // This is not allowed as ds is not a temporary
+
+         // The regular object moved a new temporary C++ object, not the original one if it existed
+         printf("0: %p\n", &ds);
          printf("1: %p\n", ds.impl);
          printf("2: %p\n", ds.impl->_class);
          printf("3: %s\n", ds.impl->_class->name);
+         printf("\n");
 
-         ds.impl->_refCount++;
-            // printf("%p\n", ds._class.impl);
-            // printf("%s\n", ds._class.impl->name);
+         // The pointer will only be non-null if a C++ object already existed
+         if(dsp)
+         {
+            printf("0: %p\n", dsp);
+            printf("1: %p\n", dsp->impl);
+            printf("2: %p\n", dsp->impl->_class);
+            printf("3: %s\n", dsp->impl->_class->name);
+            printf("\n");
+         }
 
-            // printf("cdsx: %p\n", cdsx);
-         // printf("dsx.impl: %p\n", dsx.impl);
+         // The holder has the benefit of giving us either the original or a temporary
+         printf("0: %p\n", &*dsh);
+         printf("1: %p\n", dsh->impl);
+         printf("2: %p\n", dsh->impl->_class);
+         printf("3: %s\n", dsh->impl->_class->name);
+         printf("\n");
+
+         // We can use get a reference from a holder, but it's only valid as long the holder is within scope
+         printf("0: %p\n", &dsr);
+         printf("1: %p\n", dsr.impl);
+         printf("2: %p\n", dsr.impl->_class);
+         printf("3: %s\n", dsr.impl->_class->name);
+         printf("\n");
+
+         // We can directly access members from the property
+         printf("1: %p\n", self.displaySystem->impl);
+         printf("2: %p\n", self.displaySystem->impl->_class);
+         printf("3: %s\n", self.displaySystem->impl->_class->name);
+         printf("\n");
 
             // self.cube.create(self.displaySystem);
          self.cube.create(ds);
@@ -116,10 +148,10 @@ public:
       onRedraw = [](Window & window, Surface & surface)
       {
          HelloCube & self = (HelloCube &)window;
-         Display & d = self.display;
+         // TIH<Display> hd = self.display;
+         Display d = self.display; // *hd;
          // Display dx(surface.displayX, Display::_class);
          // Display & d = dx;
-         d.impl->_refCount++;
          surface.clear(ClearType_depthBuffer);
          // note: can't do self.diaplay.setLight() or self.display.setCamera()
          d.setLight(0, &light);
