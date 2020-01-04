@@ -42,6 +42,7 @@ static bool Window3D_Setup(Window window, bool positionChildren)
    if(window.parent == virtualDesktop)
    {
       window.display = Display { };
+      incref window.display;
       if(window.display)
       {
          int x,y,w,h;
