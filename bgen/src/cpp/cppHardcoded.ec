@@ -71,11 +71,22 @@ void cppHardcodedInstancePart2(BOutput o)
                "         Instance_decRef(impl);", ln,
                "      }", ln,
                "   }", ln);
-   o.z.concatx("   inline Instance(const Instance & i) = delete;", ln,
-               "   inline Instance(const Instance && i)", ln,
+   o.z.concatx("   Instance(const Instance & i) = delete;", ln,
+               "   Instance operator= (const Instance & i) = delete;", ln, ln,
+               "   inline Instance(Instance && i)", ln,
                "   {", ln,
                "      impl = i.impl;", ln,
                "      vTbl = i.vTbl;", ln,
+               "      i.impl = null;", ln,
+               "      i.vTbl = null;", ln,
+               "   }", ln, ln);
+   o.z.concatx("   inline Instance & operator= (Instance && i)", ln,
+               "   {", ln,
+               "      impl = i.impl;", ln,
+               "      vTbl = i.vTbl;", ln,
+               "      i.impl = null;", ln,
+               "      i.vTbl = null;", ln,
+               "      return *this;", ln,
                "   }", ln,
                "   // end of hardcoded content", ln);
 }
@@ -127,15 +138,17 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("//            x: pointer to eC instance");
    f.PrintLn("//            c: eC 'Class' object representing the C++ class");
    f.PrintLn("#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))");
-   f.PrintLn("#define _INSTANCE(x, c) ((x) ? INSTANCEL(x, c) : (c *)0)", ln);
+   f.PrintLn("#define _INSTANCE(x, c) INSTANCEL((x) ? (x) : 0, c)", ln); // TODO: this is wrong! use it less.
+   // proposed (doesn't work with _INSTANCE(impl, c) = this; from class Instance):
 
    f.PrintLn("// INSTANCE: returns a C++ instance out for supplied eC instance");
    f.PrintLn("//           x: pointer to eC instance");
    f.PrintLn("//           c: what is c");
    f.PrintLn("#define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })", ln);
 
+
    f.PrintLn("#define POBJ(c, ho, eo) \\");
-   f.PrintLn("      CPPInstanceHolder<c> ho(eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : *new c(eo));", ln);
+   f.PrintLn("      TIH<c> ho(eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : *new c(eo));", ln);
 
    f.PrintLn("#undef   newi");
    f.PrintLn("#define  newi(c) Instance_newEx(c, true)", ln);
@@ -259,37 +272,38 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("};", ln);
 
    f.PrintLn("template <class T>");
-   f.PrintLn("class CPPInstanceHolder");
+   f.PrintLn("class TIH");
    f.PrintLn("{");
    f.PrintLn("public:");
    f.PrintLn("   T * object;");
-   f.PrintLn("   CPPInstanceHolder(T & o) : object(&o)");
+   f.PrintLn("");
+   f.PrintLn("   TIH(T & o) : object(&o)");
    f.PrintLn("   {");
-   f.PrintLn("      if(object->impl)");
+   f.PrintLn("      if(o.impl)");
    f.PrintLn("         o.impl->_refCount++;");
    f.PrintLn("   }");
    f.PrintLn("");
-   f.PrintLn("   CPPInstanceHolder(const CPPInstanceHolder & h) : object(h.object)");
+   f.PrintLn("   TIH(const TIH & h) : object(h.object)");
    f.PrintLn("   {");
-   f.PrintLn("      if(object->impl)");
+   f.PrintLn("      if(object && object->impl)");
    f.PrintLn("         object->impl->_refCount++;");
    f.PrintLn("   }");
    f.PrintLn("");
-   f.PrintLn("   CPPInstanceHolder & operator =(const CPPInstanceHolder & h)");
+   f.PrintLn("   TIH & operator =(const TIH & h)");
    f.PrintLn("   {");
-   f.PrintLn("      if(object->impl)");
-   f.PrintLn("         Instance_delete(object->impl);");
+   f.PrintLn("      if(object && object->impl)");
+   f.PrintLn("         deletei(object->impl);");
    f.PrintLn("");
    f.PrintLn("      object = h.object;");
-   f.PrintLn("      if(object->impl)");
+   f.PrintLn("      if(object && object->impl)");
    f.PrintLn("         object->impl->_refCount++;");
    f.PrintLn("      return *this;");
    f.PrintLn("   }");
    f.PrintLn("");
-   f.PrintLn("   ~CPPInstanceHolder()");
+   f.PrintLn("   ~TIH()");
    f.PrintLn("   {");
-   f.PrintLn("      if(object->impl)");
-   f.PrintLn("         Instance_delete(object->impl);");
+   f.PrintLn("      if(object && object->impl)");
+   f.PrintLn("         deletei(object->impl);");
    f.PrintLn("   }");
    f.PrintLn("");
    f.PrintLn("   T& operator*() const { return *object; }");
