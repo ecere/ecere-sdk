@@ -5093,6 +5093,7 @@ private:
          if(!displaySystem)
          {
             displaySystem = DisplaySystem { glCapabilities = glCapabilities };
+            incref displaySystem;
             if(!displaySystem.Create(dDriver.name, guiApp.fullScreenMode ? windowHandle : windowHandle /*null*/, guiApp.fullScreenMode))
             {
                delete displaySystem;
@@ -5101,6 +5102,7 @@ private:
          if(displaySystem)
          {
             display = Display { alphaBlend = alphaBlend, useSharedMemory = useSharedMemory, glCapabilities = glCapabilities, windowDriverData = windowData };
+            incref display;
             if(display.Create(displaySystem, windowHandle))
                result = true;
             else
