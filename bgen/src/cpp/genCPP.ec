@@ -1388,10 +1388,13 @@ public:
    const String membername;
    String typename;
    String typenamePart2;
+   String returnType;
    Array<String> code;
    ~PropertyComponent()
    {
       delete typename;
+      delete typenamePart2;
+      delete returnType;
       if(code) code.Free();
       delete code;
    }
@@ -1499,7 +1502,7 @@ static void commonMemberHandling(
       }
       if(hasGet)
       {
-         component = { macroPropGet, mn, PrintString(tn, " &") };
+         component = { macroPropGet, mn, PrintString("TIH<", tn, ">") };
          // get(Window &, parent, Window,
                // C(Instance) i = Window_get_parent(self ? self->impl : null);
                // return *(Window *)_INSTANCE(i, Window::_class.impl))
@@ -1535,6 +1538,27 @@ static void commonMemberHandling(
                { [ PrintString("return ", tn, "(", cn, "_get_", mn, "(self ? self->impl : null));") ] };
          components.Add(component);
       }*/
+      if(hasGet)
+      {
+         component = { macroPropGet, mn, CopyString("->"), returnType = PrintString("TIH<", tn, ">") };
+         if(!prototype) component.code =
+               { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
+                   PrintString("POBJ(", tn, ", holder, i);"),
+                   PrintString("return holder;") ] };
+         components.Add(component);
+
+         component = { macroPropGet, mn, CopyString(tn) };
+         if(!prototype) component.code =
+               { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
+                   PrintString("return ", tn, "(i);") ] };
+         components.Add(component);
+
+         component = { macroPropGet, mn, PrintString(tn, "*") };
+         if(!prototype) component.code =
+               { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
+                   PrintString("return i && i->_class && i->_class->bindingsClass ? (", tn, " *)INSTANCEL(i, i->_class) : (", tn, " *)0;") ] };
+         components.Add(component);
+      }
    }
    else
    {
@@ -2631,9 +2655,28 @@ static void cppMacroConstructClass(
    switch(mode)
    {
       case definition:
+         o.concatx(genloc__, indents(ind), "// NOTE: For some reason not having the move constructors and assignment operator repeated in derived classes causes strange errors", ln);
+         o.concatx(genloc__, indents(ind), "//       e.g. with DisplaySystem::pixelFormat and DisplaySystem::flags properties", ln);
          o.concatx(genloc__, indents(ind), "#define CONSTRUCT(", c, ", ", b, ")", lc, ln);
          ind++;
       case expansion:
+            o.concatx(genloc__, indents(ind), "inline c(c && i)", lc, ln);
+            o.concatx(genloc__, indents(ind), "{", lc, ln);
+            o.concatx(genloc__, indents(ind), "   impl = i.impl;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   vTbl = i.vTbl;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   i.impl = null;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
+            o.concatx(genloc__, indents(ind), "}", lc, ln);
+            o.concatx(genloc__, indents(ind), lc, ln);
+            o.concatx(genloc__, indents(ind), "inline c & operator= (c && i)", lc, ln);
+            o.concatx(genloc__, indents(ind), "{", lc, ln);
+            o.concatx(genloc__, indents(ind), "   impl = i.impl;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   vTbl = i.vTbl;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   i.impl = null;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
+            o.concatx(genloc__, indents(ind), "   return *this;", lc, ln);
+            o.concatx(genloc__, indents(ind), "}", lc, ln);
+            o.concatx(genloc__, indents(ind), lc, ln);
             o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
             //o.concatx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
             cppMacroIntConstructClass(g, o, mode == definition ? encapsulation : configuration, ind, c, b, 0);
@@ -3735,7 +3778,7 @@ static void cppMacroProperty(
                      cppMacroPropSet(g, o, mode, component.code, ind, component.typename, component.typenamePart2, n, c, "", prototype, 0);
                      break;
                   case macroPropGet:
-                     cppMacroPropGet(g, o, mode, component.code, ind, component.typename, component.typenamePart2, n, c, "", prototype, 0);
+                     cppMacroPropGet(g, o, mode, component.code, ind, component.returnType, component.typename, component.typenamePart2, n, c, "", prototype, 0);
                      break;
                }
             }
@@ -3762,7 +3805,7 @@ static void cppMacroProperty(
                   cppMacroPropSet(g, o, use, component.code, ind + 1, component.typename, component.typenamePart2, n, c, "", prototype, 0);
                   break;
                case macroPropGet:
-                  cppMacroPropGet(g, o, use, component.code, ind + 1, component.typename, component.typenamePart2, n, c, "", prototype, 0);
+                  cppMacroPropGet(g, o, use, component.code, ind + 1, component.returnType, component.typename, component.typenamePart2, n, c, "", prototype, 0);
                   break;
             }
             // todo: handle printing whitespace (ln or space) between components
@@ -3973,6 +4016,7 @@ static void cppMacroPropSet(
       bool prototype,      // prototype (true) or implementation
       void * unused) {     // unused
    cppMacroPropGet(g, o, definition, null, ind,
+         "r",
          "t",
          "t2",
          "n",
@@ -3988,6 +4032,7 @@ static void cppMacroPropGet(
       MacroMode mode,
       Array<String> code,  // multiline replacement for d
       uint ind,            // indentation
+      const char * r,      // r: return type
       const char * t,      // t?
       const char * t2,     // t2?
       const char * n,      // n?
@@ -4005,9 +4050,10 @@ static void cppMacroPropGet(
    switch(mode)
    {
       case definition:
-         o.concatx(genloc__, indents(ind), "#define get", ps, "(", t, ", ", t2, ", ", n, ", ", c, prototype ? "" : ", ", prototype ? "" : d, ") ");
+         o.concatx(genloc__, indents(ind), "#define get", ps, "(", r, ", ", t, ", ", t2, ", ", n, ", ", c, prototype ? "" : ", ", prototype ? "" : d, ") ");
       case expansion:
          o.concatx(genloc__, indents(ind));
+         o.concatx(r ? r : "", r && *r ? " " : "");
          if(!prototype)
             o.concatx(c, "::", n, sc, "Prop::");
          o.concatx("operator ", t, " () const", pt, lc, ln);
@@ -4031,17 +4077,19 @@ static void cppMacroPropGet(
       case encapsulation:
          if(prototype)
             o.concatx(genloc__/*, indents(ind)*/, "get", ps, "(",
-               t,              ", ",
-               t2 ? t2 : "",   ", ",
-               n,              ", ",
-               c,              ")");
+               r ? r : "", r && *r ? " " : "",  ", ",
+               t,                               ", ",
+               t2 ? t2 : "",                    ", ",
+               n,                               ", ",
+               c,                               ")");
          else
          {
             o.concatx(genloc__/*, indents(ind)*/, "get", ps, "(",
-               t,              ", ",
-               t2 ? t2 : "",   ", ",
-               n,              ", ",
-               c,              ", ");
+               r ? r : "", r && *r ? " " : "",  ", ",
+               t,                               ", ",
+               t2 ? t2 : "",                    ", ",
+               n,                               ", ",
+               c,                               ", ");
             if(code)
                for(c : code)
                   o.concatx(genloc__/*, indents(ind)*/, c/*, lc, ln*/);
