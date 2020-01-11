@@ -955,6 +955,7 @@ struct TypeInfo
    BMethod m;     Method md;
    BClass c;      Class cl;
    BTemplaton t;
+   const String utilStr1;
 };
 
 struct NamespaceDependencyInfo
@@ -1166,6 +1167,7 @@ class BNamespace : struct
    List<BVariant> contents { };
    Map<BNamespacePtr, AVLTree<BOutputPtr>> dependencies { }; // namespace dependencies with user ouput count
 
+   List<BVariant> splitContents { }; // for cpp
    List<BVariant> implementationsContents { }; // for cpp
 
    property NameSpacePtr
@@ -1473,6 +1475,7 @@ class BClass : struct
    BOutput pyout;
 
    BOutput outImplementation; // for cpp
+   BOutput outSplit; // for cpp
 
    property Class
    {

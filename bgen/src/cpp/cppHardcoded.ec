@@ -1,5 +1,12 @@
 import "genCPP"
 
+define cpptemplatePrefix = "T";
+define cpptemplateArgClass = "TC";
+define cpptemplateArgClassObject = "TCO";
+define cpptemplateCPPClassDef = "template <class TC>";
+define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
+define cpptemplateNoHeadParams = "<TC, TCO>";
+
 void cppHardcodedModule(BOutput o)
 {
    o.z.concatx("   // hardcoded content start", ln,
@@ -24,11 +31,11 @@ void cppHardcodedInstancePart1(BOutput o)
                "", ln);
    o.z.concatx("   static C(bool) constructor(C(Instance) i, C(bool) alloc)", ln,
                "   {", ln,
-               "      if(alloc &&!_INSTANCE(i, _class.impl))", ln,
+               "      if(alloc && !INSTANCEL(i, _class.impl))", ln,
                "         return new Instance(i, _class) != null;", ln,
                "      return true;", ln,
                "   }", ln,
-               "   static void destructor(C(Instance) i) { Instance * inst = (Instance *)_INSTANCE(i, _class.impl); delete inst; }", ln,
+               "   static void destructor(C(Instance) i) { Instance * inst = (Instance *)INSTANCEL(i, _class.impl); delete inst; }", ln,
                "   static void class_registration(CPPClass & _class);", ln,
                "", ln);
 }
@@ -42,8 +49,8 @@ void cppHardcodedInstancePart2(BOutput o)
                "      vTbl = cl.vTbl;", ln,
                "      if(impl)", ln,
                "      {", ln,
-               "         if(c && !_INSTANCE(impl, c))", ln,
-               "            _INSTANCE(impl, c) = this;", ln,
+               "         if(c && !INSTANCEL(impl, c))", ln,
+               "            INSTANCEL(impl, c) = this;", ln,
                "         impl->_refCount++;", ln,
                "      }", ln,
                "   }", ln,
@@ -65,7 +72,7 @@ void cppHardcodedInstancePart2(BOutput o)
                "            {", ln,
                "               CPPClass * cl = (CPPClass *)impl->_class->bindingsClass;", ln,
                "               if(cl && vTbl != cl->vTbl)", ln,
-               "               eC_delete(vTbl);", ln,
+               "                  eC_delete(vTbl);", ln,
                "            }", ln,
                "         }", ln,
                "         Instance_decRef(impl);", ln,
@@ -133,22 +140,17 @@ void cppHardcodedCore(CPPGen g, File f)
 {
    ZString z { allocType = heap };
 
-   f.PrintLn("// Syntactic Sugar (NOT GENERATED)");
-   f.PrintLn("// INSTANCEL: what?");
+   f.PrintLn("// Syntactic Sugar (NOT GENERATED)", ln);
+   f.PrintLn("// INSTANCEL, INSTANCE: get the C++ instance out of supplied eC instance");
    f.PrintLn("//            x: pointer to eC instance");
    f.PrintLn("//            c: eC 'Class' object representing the C++ class");
-   f.PrintLn("#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))");
-   f.PrintLn("#define _INSTANCE(x, c) INSTANCEL((x) ? (x) : 0, c)", ln); // TODO: this is wrong! use it less.
-   // proposed (doesn't work with _INSTANCE(impl, c) = this; from class Instance):
+   f.PrintLn("#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))   // For when an l-value is needed");
+   f.PrintLn("#define INSTANCE(x, c)  ((x) ? INSTANCEL(x, c) : 0)               // Regular one that can return null", ln);
 
-   f.PrintLn("// INSTANCE: returns a C++ instance out for supplied eC instance");
-   f.PrintLn("//           x: pointer to eC instance");
-   f.PrintLn("//           c: what is c");
-   f.PrintLn("#define INSTANCE(x, c) ({c * _i = (c *)_INSTANCE(x, x->_class); _i ? *_i : c(x); })", ln);
-
+   f.PrintLn("#define BINDINGS_CLASS(eo) (eo && eo->_class && eo->_class->bindingsClass)", ln);
 
    f.PrintLn("#define POBJ(c, ho, eo) \\");
-   f.PrintLn("      TIH<c> ho(eo && eo->_class && eo->_class->bindingsClass ? *(c *)INSTANCEL(eo, eo->_class) : *new c(eo));", ln);
+   f.PrintLn("      TIH<c> ho(BINDINGS_CLASS(eo) ? *(c *)INSTANCE(eo, eo->_class) : *new c(eo));", ln);
 
    f.PrintLn("#undef   newi");
    f.PrintLn("#define  newi(c) Instance_newEx(c, true)", ln);
@@ -161,7 +163,7 @@ void cppHardcodedCore(CPPGen g, File f)
 
    f.PrintLn("#define EVOLVE_APP(ac, a) \\");
    f.PrintLn("   Instance_evolve(&(a).impl, ac::_class.impl); \\");
-   f.PrintLn("   _INSTANCE((a).impl, (a).impl->_class) = &(a); \\");
+   f.PrintLn("   INSTANCEL((a).impl, (a).impl->_class) = &(a); \\");
    f.PrintLn("   __thisModule = (a).impl; \\");
    f.PrintLn("   (a).vTbl = _class.vTbl;", ln);
 
@@ -197,14 +199,26 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("      return app.exitCode; \\");
    f.PrintLn("   }", ln);
 
-   f.PrintLn("// SELF: get C++ class instance pointer from within hackish member of the class", ln);
-   f.PrintLn("#define SELF(c, n)  __attribute__((unused)) c * self = ((c *)(((char *)this) + 0x10 - (char *)&((c *)0x10)->n))", ln);
+   f.PrintLn("// SELF: get C++ class instance pointer from within hackish member of the class");
+   f.PrintLn("#define CONTAINER_OF(ptr, type, member) ((type *)(((char *)ptr) + 0x10 - (char *)&((type *)0x10)->member))");
+   f.PrintLn("#define SELF(c, member)  __attribute__((unused)) c * self = CONTAINER_OF(this, c, member);");
+
+   f.PrintLn("#define getimpli(i)  ((Instance)i).impl", ln);
 
    cppTmpDefineVirtualMethod(g, f, true);
    cppTmpDefineVirtualMethod(g, f, false);
    cppTmpDefineIntRegisterMethod(g, f);
    cppTmpDefineRegisterMethod(g, f);
    cppTmpDefineRegisterTypedMethod(g, f);
+
+   f.PrintLn("template<typename T, typename U> struct is_same       { static const bool value = false; };");
+   f.PrintLn("template<typename T>             struct is_same<T, T> { static const bool value = true; };");
+   f.PrintLn("template<typename T, typename U> bool eqTypes()       { return is_same<T, U>::value; }");
+
+   f.PrintLn("#define REGVMETHOD(b, n, m, p, t, a) \\");
+   f.PrintLn("    if(!eqTypes<typeof(&m), typeof(&b::n)>()) \\");
+   f.PrintLn("       ((b::b ## _ ## n ## _Functor::FunctionType *)_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };");
+
    cppTmpDefineProperty(g, f, true);
    cppTmpDefineIntPropSet(g, f, true);
    cppTmpDefinePropSet(g, f, true);
@@ -233,7 +247,7 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("   }");
    f.PrintLn("};");
    f.PrintLn("");
-   f.PrintLn("template <class T>");
+   f.PrintLn(cpptemplateCPPClassDef);
    f.PrintLn("class TCPPClass : public CPPClass");
    f.PrintLn("{");
    f.PrintLn("public:");
@@ -242,17 +256,19 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("   {");
    f.PrintLn("      setup(_impl);");
    f.PrintLn("   }");
-   f.PrintLn("   void (*destructor)(T &);");
+   f.PrintLn("   void (*destructor)(TC &);");
    f.PrintLn("   void setup(XClass * _impl)");
    f.PrintLn("   {");
    f.PrintLn("      impl = _impl;");
    f.PrintLn("      if(impl)");
    f.PrintLn("      {");
    f.PrintLn("         _impl->bindingsClass = this;");
-   f.PrintLn("         if(vTbl) eC_delete(vTbl);");
+   f.PrintLn("         if(vTbl)");
+   f.PrintLn("            eC_delete(vTbl);");
    f.PrintLn("         vTbl = newt(Function, impl->vTblSize);");
    f.PrintLn("         memset(vTbl, 0, sizeof(Function) * impl->vTblSize);");
-   f.PrintLn("         T::class_registration(*this);");
+   f.PrintLn("         printf(\"setting up %s\\n\", impl->name);"); // todo: remove debug printing?
+   f.PrintLn("         TC::class_registration(*this);");
    f.PrintLn("      }");
    f.PrintLn("   }");
    f.PrintLn("   ~TCPPClass()");
@@ -262,22 +278,24 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("   }");
    f.PrintLn("};", ln);
 
-   f.PrintLn("template <class T, C(Class) ** M>");
+   f.PrintLn(cpptemplateNoHeadDef);
    f.PrintLn("class TNHInstance");
    f.PrintLn("{");
    f.PrintLn("public:");
-   f.PrintLn("   T * impl;");
-   f.PrintLn("   TNHInstance() { impl = (T*)Instance_new(*M); }");
-   f.PrintLn("   TNHInstance(T * _impl) { impl = _impl; }");
+   f.PrintLn("   TC * impl;");
+   f.PrintLn("   TNHInstance() { impl = (TC*)Instance_new(*TCO); }");
+   f.PrintLn("   TNHInstance(TC * _impl) { impl = _impl; }");
    f.PrintLn("};", ln);
 
-   f.PrintLn("template <class T>");
+   // TIH: Template Instance Holder
+   f.PrintLn(cpptemplateCPPClassDef);
    f.PrintLn("class TIH");
    f.PrintLn("{");
    f.PrintLn("public:");
-   f.PrintLn("   T * object;");
+   f.PrintLn("   TC * object;");
    f.PrintLn("");
-   f.PrintLn("   TIH(T & o) : object(&o)");
+   f.PrintLn("   TIH(C(Instance) eo) : TIH(*(BINDINGS_CLASS(eo) ? (TC *)INSTANCE(eo, eo->_class) : new TC(eo))) { }");
+   f.PrintLn("   TIH(TC & o) : object(&o)");
    f.PrintLn("   {");
    f.PrintLn("      if(o.impl)");
    f.PrintLn("         o.impl->_refCount++;");
@@ -289,7 +307,7 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("         object->impl->_refCount++;");
    f.PrintLn("   }");
    f.PrintLn("");
-   f.PrintLn("   TIH & operator =(const TIH & h)");
+   f.PrintLn("   TIH & operator= (const TIH & h)");
    f.PrintLn("   {");
    f.PrintLn("      if(object && object->impl)");
    f.PrintLn("         deletei(object->impl);");
@@ -306,8 +324,8 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("         deletei(object->impl);");
    f.PrintLn("   }");
    f.PrintLn("");
-   f.PrintLn("   T& operator*() const { return *object; }");
-   f.PrintLn("   T* operator->() const { return object; }");
+   f.PrintLn("   TC& operator*() const { return *object; }");
+   f.PrintLn("   TC* operator->() const { return object; }");
    f.PrintLn("};", ln);
 
    delete z;
