@@ -274,6 +274,9 @@ static void generateHPP(CPPGen g, File f)
    f.PrintLn("");
 
    outputContents(g, f);
+
+   outputSplitContents(g, f);
+
    cppHeaderEnd(g, f);
 }
 
@@ -327,13 +330,15 @@ void prototypeClasses(CPPGen g, File f)
          skip = true;
       if(!skip && !template)
       {
+         const char * cn = c.name;
          switch(c.cl.type)
          {
             case normalClass:
-               f.PrintLn("class ", c.name, ";");
+               f.PrintLn("class ", cn, ";");
                break;
             case noHeadClass:
-               f.PrintLn("template <class T, C(Class) ** M> class T", c.name, ";");
+               f.PrintLn(cpptemplateNoHeadDef, " class ", cpptemplatePrefix, cn, ";");
+               f.PrintLn("typedef ", cpptemplatePrefix, cn, "<C(", cn, "), &CO(", cn, ")> ", cn, ";");
                break;
          }
       }
@@ -420,7 +425,7 @@ static void generateCPP(CPPGen g, File f)
 
    f.PrintLn(ln);
 
-   outputImplementationsContents(g, f);
+   // outputImplementationsContents(g, f);
 }
 
 // TODO: Get rid of this non-sense...
@@ -439,15 +444,14 @@ Map<const String, const String> methodTypedObjectThisNameSwap { [
 ] };
 
 AVLTree<const String> tryMethodsClass { [
-//   "Surface",
-//   "Window",
+// "Surface",
+// "Window",
    null
 ] };
 
-// todo: fix all the issues that affect these methods...
 AVLTree<consttstr> tryMethods { [
-//   { "Surface", "clear" },
-//   { "Window", "modal" },
+// { "Surface", "clear" },
+// { "Window", "modal" },
 /*
    { "FountResource", "faceName" },
    { "FountResource", "size" },
@@ -465,7 +469,6 @@ AVLTree<consttstr> tryMethods { [
    { null, null }
 ] };
 
-// todo: fix all the issues that affect these properties...
 AVLTree<consttstr> tryMembers { [
 /*
    { "Application", "exitCode" },
@@ -486,9 +489,6 @@ AVLTree<consttstr> tryMembers { [
 ] };
 
 AVLTree<const String> brokenMethodsClass { [
-   "Bitmap",
-// "Display",
-   "DisplaySystem",
    null
 ] };
 
@@ -505,16 +505,6 @@ AVLTree<consttstr> brokenMethods { [
    { "ZString", "concatf" },
    { "ZString", "concatx" },
    { "ZString", "copy" },
-// { "Bitmap", "allocateDD" },
-// { "Bitmap", "convert" },
-// { "Bitmap", "copy" },
-// { "Bitmap", "copy2" },
-// { "Bitmap", "grab" },
-// { "Bitmap", "load" },
-// { "Bitmap", "loadFromFile" },
-// { "Bitmap", "loadGrayed" },
-// { "Bitmap", "loadMipMaps" },
-// { "Bitmap", "loadMonochrome" },
    { "Surface", "centerTextf" },
    { "Surface", "writeTextDotsf" },
    { "Surface", "writeTextf" },
@@ -664,160 +654,6 @@ AVLTree<consttstr> brokenMembers { [
    { "DefaultShader", "emissive" },
    { "DefaultShader", "fogColor" },
    { "DefaultShader", "color" },
-
-/*
-   { "Application", "allModules" },
-   { "Application", "systemNameSpace" },
-   { "DefaultShader", "normalsInvScale2" },
-   { "GLMB", "ab" },
-   { "CalendarControl", "dateValue" },
-   { "Surface", "offset" },
-   { "Surface", "box" },
-   { "Surface", "unclippedBox" },
-*/
-// removed 6 by casting default get return value to typename (tn)
-/*
-   { "ZString", "allocType" },
-   { "Bitmap", "pixelFormat" },
-   { "DisplaySystem", "pixelFormat" },
-   { "CalendarControl", "shownMonth" },
-   { "DataBox", "stringValue" },
-   { "DirectoriesBox", "baseBrowsePath" },
-*/
-// removed 52ish by nixing 'empty set' warnings with genSet = pt.Set != null
-// and dealing with isString from the dataType
-/*
-   { "HashMap", "count" },
-   { "Display", "flags" },
-   { "Display", "pixelFormat" },
-   { "Display", "systemWindow" },
-   { "Display", "glVersion" },
-   { "FontResource", "font" },
-   { "FontResource", "fmFont" },
-   { "Shader", "activeCompiledShader" },
-   { "GuiApplication", "semaphore" },
-   { "GuiApplication", "drivers" },
-   { "GuiApplication", "skins" },
-   { "GuiApplication", "currentSkin" },
-   { "GuiApplication", "numDrivers" },
-   { "GuiApplication", "numSkins" },
-   { "Window", "isEnabled" },
-   { "Window", "fontObject" },
-   { "Window", "active" },
-   { "Window", "created" },
-   { "Window", "destroyed" },
-   { "Window", "documentID" },
-   { "Window", "systemHandle" },
-   { "DataField", "index" },
-   { "DataField", "sortOrder" },
-   { "DataRow", "index" },
-   { "DropBox", "rowCount" },
-   { "EditBox", "numLines" },
-   { "EditBox", "lineNumber" },
-   { "EditBox", "column" },
-   { "EditBox", "charPos" },
-   { "EditBox", "firstLine" },
-   { "EditBox", "lastLine" },
-   { "EditBox", "line" },
-   { "EditBox", "overwrite" },
-   { "EditBox", "multiLineContents" },
-   { "ListBox", "numSelections" },
-   { "ListBox", "currentIndex" },
-   { "ListBox", "rowCount" },
-   { "PathBox", "slashPath" },
-   { "PathBox", "systemPath" },
-   { "PopupMenu", "focus" },
-   { "Tab", "isAdded" },
-   { "FileDialog", "numSelections" },
-   { "FileDialog", "multiFilePaths" },
-   { "HTTPFile", "contentType" },
-   { "HTTPFile", "contentDisposition" },
-   { "HTTPFile", "httpCode" },
-   { "Socket", "inetAddress" },
-   { "Socket", "inetPort" },
-   { "Socket", "connected" },
-   { "GlobalSettings", "isGlobalPath" },
-   { "Thread", "created" },
-*/
-// fixed 79ish by _set vs set for set only properties
-/*
-   { "Display", "fogDensity" },
-   { "Surface", "lineStipple" },
-   { "Surface", "drawingChar" },
-   { "GuiApplication", "timerResolution" },
-   { "DataField", "header" },
-   { "Menu", "text" },
-   { "MenuItem", "text" },
-   { "OldArray", "data" },
-   { "StatusField", "text" },
-   { "StatusField", "width" },
-   { "ToolButton", "menuItemPtr" },
-   { "MessageBox", "contents" },
-   { "Archive", "bufferSize" },
-   { "Archive", "bufferRead" },
-   { "FileMonitor", "userData" },
-   { "Map", "mapSrc" },
-   { "Shader", "vertexShaderFile" },
-   { "Shader", "fragmentShaderFile" },
-   { "Shader", "vertexShader" },
-   { "Shader", "fragmentShader" },
-   { "File", "buffered" },
-   { "FileMonitor", "fileChange" },
-   { "RepButton", "delay" },
-   { "RepButton", "delay0" },
-   { "DataField", "editable" },
-   { "Menu", "parent" },
-   { "Menu", "hotKey" },
-   { "Menu", "hasMargin" },
-   { "Menu", "copyText" },
-   { "MenuItem", "parent" },
-   { "MenuItem", "hotKey" },
-   { "MenuItem", "accelerator" },
-   { "MenuItem", "disabled" },
-   { "MenuItem", "checkable" },
-   { "MenuItem", "isRadio" },
-   { "MenuItem", "copyText" },
-   { "PathBox", "typeExpected" },
-   { "Picture", "tint" },
-   { "Picture", "bitmapImage" },
-   { "PopupMenu", "isMenuBar" },
-   { "ScrollBar", "windowOwned" },
-   { "StatusField", "statusBar" },
-   { "StatusField", "color" },
-   { "StatusField", "backColor" },
-   { "StatusField", "bold" },
-   { "FindDialog", "editBox" },
-   { "MessageBox", "type" },
-   { "ReplaceDialog", "editBox" },
-   { "BitmapResource", "window" },
-   { "Display", "fillMode" },
-   { "Display", "depthTest" },
-   { "Display", "depthWrite" },
-   { "Display", "fogColor" },
-   { "Display", "blend" },
-   { "Display", "ambient" },
-   { "Display", "alphaWrite" },
-   { "Display", "antiAlias" },
-   { "Display", "vSync" },
-   { "Display", "pickingPlanes" },
-   { "DrawManager", "renderingFlipped" },
-   { "FontRenderer", "drawManager" },
-   { "FontResource", "window" },
-   { "Surface", "clipping" },
-   { "Cursor", "systemCursor" },
-   { "Window", "saveDialog" },
-   { "Container", "copySrc" },
-   { "Camera", "cPosition" },
-   { "Container", "firstIterator" },
-   { "Container", "lastIterator" },
-   { "Camera", "cOrientation" },
-   { "Surface", "size" },
-   { "Window", "initSize" },
-   { "Window", "clientStart" },
-   { "Window", "absPosition" },
-   { "Window", "normalAnchor" },
-   { "Window", "normalSizeAnchor" },
-*/
    { null, null }
 ] };
 
@@ -826,17 +662,17 @@ static void processCppClass(CPPGen g, BClass c)
    bool skip = false;
    if(!skip)
    {
-      int l, nameLen = 0;
+      int l, maxLen = 0;
       //bool content = false;
       //const char * lc = " \\";
       const char * cn = c.name;
       BVariant v = c;
       BNamespace n = c.nspace;
-      BOutput o { vclass, c = c, z = { allocType = heap } };
       BClass cBase = c.cl.base.templateClass ? c.cl.base.templateClass : c.cl.base;
       const char * un = c.upper;
       if(!g.implementations)
       {
+         BOutput o { vclass, c = c, z = { allocType = heap } };
          // todo tofix tocheck tmp? skip to template class name for derrivation
          BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
          //const char * sn = c.symbolName;
@@ -866,21 +702,26 @@ static void processCppClass(CPPGen g, BClass c)
             case systemClass:
          }*/
 
-         while((m = itm.next(publicVirtual))) { m.init(itm.md, c.isInstance ? cBase : c); if((l = strlen(m.mname)) > nameLen) nameLen = l;}
+         while((m = itm.next(publicVirtual))) { m.init(itm.md, c.isInstance ? cBase : c); if((l = strlen(m.mname)) > maxLen) maxLen = l;}
 
          if(c.isInstance)
          {
+            // int maxLen = c.maxVirtualMethodNameLen + 1;
             o.z.concatx(ln);
             while((m = itm.next(publicVirtual)))
             {
                const char * cn = c.name, * bn = cBase.name, * mn = m.mname;
-               o.z.concatx("#define ", cn, "_", mn, "_vTblID", spaces(nameLen, strlen(mn)), " ", bn, "_", mn, "_vTblID", ln);
+               o.z.concatx("#define ", cn, "_", mn, "_vTblID", spaces(maxLen, strlen(mn)), " ", bn, "_", mn, "_vTblID", ln);
             }
          }
 
          if(c.cl.type == normalClass && !(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
+            // todo?: let's move this inside the REGISTER() aka class_registration method of the class being generated
             cppDefineMacroClassRegistration(g, o.z, 0, c, cBase, v, 0);
+
+            o.z.concatx(ln);
+            cppMacroRegVirtualMethods(g, o.z, definition, 0, c, cBase, v, 0);
             // if(!g.options.expandMacros)
             {
                cppDefineMacroClassVirtualMethods(g, o.z, true, 0, un, c, cBase, v, 0);
@@ -897,11 +738,8 @@ static void processCppClass(CPPGen g, BClass c)
          }
 
          if(c.cl.type == noHeadClass)
-         {
-            o.z.concatx(ln, genloc__, "typedef T", cn, "<C(", cn, "), &CO(", cn, ")> ", cn, ";");
-            o.z.concatx(ln, genloc__, "template <class T, C(Class) ** M>");
-         }
-         o.z.concatx(ln, genloc__, "class ", c.cl.type == noHeadClass ? "T" : "", cn);
+            o.z.concatx(ln, genloc__, cpptemplateNoHeadDef);
+         o.z.concatx(ln, genloc__, "class ", c.cl.type == noHeadClass ? cpptemplatePrefix : "", cn);
 
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
@@ -909,9 +747,9 @@ static void processCppClass(CPPGen g, BClass c)
             if((cBase && cBase.cl.type != systemClass) || c.cl.type == noHeadClass)
             {
                const char * baseClass = isBaseString ? "Instance" : nhbase ? nhbase : bn;
-               o.z.concatx(" : public ", c.cl.type == noHeadClass && !nhbase ? "T" : "", baseClass);
+               o.z.concatx(" : public ", c.cl.type == noHeadClass && !nhbase ? cpptemplatePrefix : "", baseClass);
                if(c.cl.type == noHeadClass)
-                  o.z.concatx("<T, M>");
+                  o.z.concatx("<TC, TCO>");
             }
             o.z.concatx(ln, genloc__, "{");
             o.z.concatx(ln, genloc__, "public:", ln);
@@ -941,7 +779,7 @@ static void processCppClass(CPPGen g, BClass c)
                      o.z.concatx(genloc__, indents(0), "#endif", ln);
                      // if(c.isGuiApplication)
                      //   o.z.concatx(genloc__, indents(2), "ecere_cpp_init(*this);", ln);
-                     o.z.concatx(genloc__, indents(2), "_INSTANCE(impl, impl->_class) = this;", ln);
+                     o.z.concatx(genloc__, indents(2), "INSTANCEL(impl, impl->_class) = this;", ln);
                      o.z.concatx(genloc__, indents(2), "vTbl = _class.vTbl;", ln);
                      o.z.concatx(genloc__, indents(2), "__thisModule = impl;", ln);
                      o.z.concatx(genloc__, indents(1), "}", ln);
@@ -965,13 +803,14 @@ static void processCppClass(CPPGen g, BClass c)
                }
             }
 
-            // if(c.cl.type == noHeadClass && !nhbase)
-            //    o.z.concatx(genloc__, indents(1), "inline operator ", bn, "&() { return *this; }", ln);
+            if(c.cl.type == noHeadClass && !nhbase)
+               o.z.concatx(genloc__, indents(1), "inline operator ", bn, "& () const { return *(", bn, " *)this; }", ln);
+
 
             if(!c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
             {
                o.z.concatx(ln);
-               genMethodCallers(g, c, v, cn, false, o);
+               genMethodCallers(g, c, v, cn, true, o);
             }
 
             if(c.cl.type == normalClass && !c.isInstance)
@@ -1046,26 +885,31 @@ static void processCppClass(CPPGen g, BClass c)
          o.z.concatx(";");
          o.z.concatx(ln);
       }
-      else if(c.cl.type == normalClass)
+      // todo?: structs
+      else if(c.cl.type == normalClass || c.cl.type == noHeadClass)
       {
-         c.outImplementation = o;
-         n.implementationsContents.Add(v);
-
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
-            /*if(c.cl.type == normalClass && !c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
-            {
-               o.z.concatx(ln);
-               genMethodCallers(g, c, v, cn, false, o);
-            }*/
+            // BOutput o { vclass, c = c, z = { allocType = heap } };
+            // c.outImplementation = o;
+            // n.implementationsContents.Add(v);
+            BOutput o { vclass, c = c, z = { allocType = heap } };
+            c.outSplit = o;
+            n.splitContents.Add(v);
 
             if(!c.isInstance) // todo: remove this if, keep the next line
                o.z.concatx(ln);
-            cppMacroClassVirtualMethods(g, o.z, configuration, false, 0, un, c.name, c, cBase, v, 0);
+            if(c.cl.type == normalClass)
+               cppMacroClassVirtualMethods(g, o.z, configuration, false, 0, un, c.name, c, cBase, v, 0);
 
-            // todo: non-virtual methods
+            if(!c.isInstance && !c.isModule && !hasOrBaseHasTemplateClass(c.cl))
+            {
+               o.z.concatx(ln);
+               genMethodCallers(g, c, v, cn, false, o);
+            }
 
-            if(!c.isInstance && !c.isModule)
+            // todo?: properties and data member for nohead classes
+            if(c.cl.type == normalClass && !c.isInstance && !c.isModule)
             {
                processProperties(g, c, cn, false, o);
 
@@ -1082,15 +926,14 @@ static void processCppClass(CPPGen g, BClass c)
 static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bool prototype, BOutput o)
 {
    // LIB_EXPORT void (* Surface_clear)(C(Surface) __this, C(ClearType) type);
-
-   // int ind = prototype ? 1 : 0;
-   int ind = 1;
-   int l, nameLen = 0;
+   bool noHead = c.cl.type == noHeadClass;
+   int l, maxLen = 0;
+   int ind = prototype ? 1 : 0;
    BMethod m; IterMethod itm { c.cl };
    while((m = itm.next(publicNormal)))
    {
       m.init(itm.md, c);
-      if((l = strlen(m.mname)) > nameLen) nameLen = l;
+      if((l = strlen(m.mname)) > maxLen) maxLen = l;
    }
    while((m = itm.next(publicNormal)))
    {
@@ -1120,7 +963,11 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
       if(tryMethodsClass.count > 1 && !tryMethodsClass.Find(cn)) continue;
       if(tryMethods.count > 1 && !tryMethods.Find({ cn, mn })) continue;
 
-      o.z.concatx(indents(ind), "inline ");
+
+      o.z.concat(indents(ind));
+      if(!prototype && noHead)
+         o.z.concatx(cpptemplateNoHeadDef, " ");
+      o.z.concat("inline ");
       if(returnType.kind == templateType)
          o.z.concatx("TP(", c.name, ", ", returnType.templateParameter.identifier.string, ")");
       else if((ctRT == normalClass || ctRT == noHeadClass))
@@ -1138,8 +985,8 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
       else
          o.z.concatx(strptrNoNamespace(typeString));
       o.z.concatx(" ");
-      // if(!prototype)
-      //    o.z.concatx(cn, "::");
+      if(!prototype)
+         o.z.concatx(noHead ? cpptemplatePrefix : "", cn, noHead ? cpptemplateNoHeadParams : "", "::");
       o.z.concatx(mncpp, "(");
       if(t.kind == functionType)
       {
@@ -1178,8 +1025,8 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
          // }
       }
       o.z.concatx(")", prototype ? ";" : "");
-      if(prototype)
-         o.z.concatx(indents(ind), "// ", cn, "_", mn);
+      // if(prototype)
+      //    o.z.concatx(indents(ind), "// ", cn, "_", mn);
       o.z.concatx(ln);
       if(!prototype)
       {
@@ -1490,11 +1337,9 @@ static void commonMemberHandling(
 
    if(isProp && ct == normalClass && !isString)
    {
-      // if(hasSet && hasGet)
       if(hasSet && hasGet)
       {
          component = { macroPropSet, mn, PrintString("const ", tn, " &") };
-         // set(const Window &, parent, Window, Window_set_parent(self ? self->impl : null, v.impl))
          if(!prototype) component.code =
                { [ PrintString("printf(\"calling ", cn, "_set_", mn, "(self ? self->impl : null, v.impl)", "\\n\");"),
                    PrintString(cn, "_set_", mn, "(self ? self->impl : null, v.impl);") ] };
@@ -1503,9 +1348,6 @@ static void commonMemberHandling(
       if(hasGet)
       {
          component = { macroPropGet, mn, PrintString("TIH<", tn, ">") };
-         // get(Window &, parent, Window,
-               // C(Instance) i = Window_get_parent(self ? self->impl : null);
-               // return *(Window *)_INSTANCE(i, Window::_class.impl))
          if(!prototype) component.code =
                { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
                    PrintString("POBJ(", tn, ", cppi, i);"),
@@ -1515,29 +1357,11 @@ static void commonMemberHandling(
       if(hasSet && hasGet)
       {
          component = { macroIntPropSet, mn, PrintString("const ", tn, " *") };
-         // _set(const Window *, parent, Window, Window_set_parent(self ? self->impl : null, v ? v->impl : null))
          if(!prototype) component.code =
                { [ PrintString("printf(\"calling ", cn, "_set_", mn, "(self ? self->impl : null, v ? v->impl : null)", "\\n\");"),
                    PrintString(cn, "_set_", mn, "(self ? self->impl : null, v ? v->impl : null);") ] };
          components.Add(component);
       }
-      /*if(hasGet)
-      {
-         component = { macroPropGet, mn, PrintString(tn, " *") };
-         // get(Window *, parent, Window,
-               // C(Instance) i = Window_get_parent(self ? self->impl : null);
-               // return i ? (Window *)_INSTANCE(i, Window::_class.impl) : null)
-         if(!prototype) component.code =
-               { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
-                   PrintString("return i ? (", tn, " *)_INSTANCE(i, ", tn, "::_class.impl) : null;") ] };
-         components.Add(component);
-
-         component = { macroPropGet, mn, CopyString(tn) };
-         // get(Window, parent, Window, return Window(Window_get_parent(self ? self->impl : null)));
-         if(!prototype) component.code =
-               { [ PrintString("return ", tn, "(", cn, "_get_", mn, "(self ? self->impl : null));") ] };
-         components.Add(component);
-      }*/
       if(hasGet)
       {
          component = { macroPropGet, mn, CopyString("->"), returnType = PrintString("TIH<", tn, ">") };
@@ -1556,7 +1380,7 @@ static void commonMemberHandling(
          component = { macroPropGet, mn, PrintString(tn, "*") };
          if(!prototype) component.code =
                { [ PrintString("C(Instance) i = ", cn, "_get_", mn, "(self ? self->impl : null);"),
-                   PrintString("return i && i->_class && i->_class->bindingsClass ? (", tn, " *)INSTANCEL(i, i->_class) : (", tn, " *)0;") ] };
+                   PrintString("return BINDINGS_CLASS(i) ? (", tn, " *)INSTANCEL(i, i->_class) : (", tn, " *)0;") ] };
          components.Add(component);
       }
    }
@@ -1878,6 +1702,7 @@ enum CPPParamsOutputMode
    _argSpecialThisParamList,
    passing
 };
+
 char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClass, const char * cn,
       bool addthisarg, bool comma, const char ** first, const char ** nameParamOfClassType)
 {
@@ -1942,8 +1767,9 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                   Class clReg = null;
                   BClass cParam = null;
                   bool hack;
+                  bool notSelf = !firstParam || param != firstParam;
                   ClassType ct = cppGetClassInfoFromType(param, true, &clReg, &cParam, &hack, null); // todo: get the isString?
-                  if(!name) apname = firstParam ? CopyString("o") : PrintString("ap", ++ap), name = apname;
+                  if(!name) apname = firstParam ? CopyString(ti.utilStr1 ? ti.utilStr1 : "o") : PrintString("ap", ++ap), name = apname;
                   if(!strcmp(name, "obsolete"))
                      ; //conmsg("step");
                   z.concatx(sep);
@@ -1957,8 +1783,11 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         //const char * typeString = param.kind == classType && param.classObjectType == anyObject ? g.sym.instance : tokenTypeString(param);
                         bool cpp = mode == regMethodCppParamList;
                         char * typeString = null;
-                        // if(cpp && cParam && !strcmp(cParam.name, "Bitmap"))
-                        //    Print("");
+
+                        if(notSelf && param.kind == classType && !(cParam && cParam.isString) &&
+                              (ct == normalClass || (cpp && ct == noHeadClass)) && cpp)
+                           z.concatx("const ");
+
                         if(param.kind == templateType)
                            typeString = PrintString("TP(", c.name, ", ", param.templateParameter.identifier.string, ")");
                         else if(param.kind == classType && param.classObjectType == anyObject)
@@ -2021,22 +1850,21 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                      case regMethodArgsPassing2:
                      {
                         bool forMethodCallers = mode == regMethodArgsPassing2;
-                        // bool useL = param.typedByReference || param.byReference; // TODO: Set to true if by reference?
                         // if(/*(ct == normalClass && !cParam.isString) || */(param.kind == classType && param.classObjectType == anyObject))
                         if((ct == normalClass && !forMethodCallers && !cParam.isString) ||
                               (param.kind == classType && param.classObjectType == anyObject))
                         /*{
                            if(param.classObjectType == anyObject)
-                              z.concatx("*(", c.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
+                              z.concatx("*(", c.name, " *)INSTANCEL(", name, ", ", name, "->_class)");
                            else
-                              z.concatx("*(", cParam.name, " *)", useL ? "INSTANCEL" : "_INSTANCE", "(", name, ", ", name, "->_class)");
+                              z.concatx("*(", cParam.name, " *)INSTANCEL(", name, ", ", name, "->_class)");
                         }*/
                            z.concatx("*", name, "_l");
                         else if(forMethodCallers && ((ct == normalClass && !cParam.isString) || ct == noHeadClass))
                         {
                            z.concatx(name, ".impl");
-                           if(cParam.cl != c.cl)
-                              vClass.processDependency(otypedef, otypedef, cParam.cl);
+                           // if(cParam.cl != c.cl)
+                           //   vClass.processDependency(otypedef, otypedef, cParam.cl);
                         }
                         else
                            z.concatx(name);
@@ -2179,10 +2007,41 @@ static void outputContents(CPPGen g, File out)
    }
 }
 
+static void outputSplitContents(CPPGen g, File f)
+{
+   ZString z { allocType = heap };
+   bigCommentLibrary(z, "split implementations");
+   f.Puts(z._string);
+   delete z;
+
+   for(nn : g.bmod.orderedNamespaces)
+   {
+      BNamespace n = nn;
+
+      ZString z { allocType = heap };
+      bigCommentSection(z, n.name && n.name[0] ? n.name : "no namespace name?");
+      f.Puts(z._string);
+      delete z;
+
+      for(vv : n.splitContents)
+      {
+         BVariant v = vv;
+         if(v.kind == vclass)
+         {
+            BClass c = v;
+            f.Puts(c.outSplit.z._string);
+         }
+         else
+            PrintLn("error: unexpected kind (", v.kind, ") of splitContents");
+      }
+   }
+}
+
+/*
 static void outputImplementationsContents(CPPGen g, File f)
 {
    ZString z { allocType = heap };
-   bigCommentLibrary(z, "properties implementations");
+   bigCommentLibrary(z, "moved to cpp implementations");
    f.Puts(z._string);
    delete z;
 
@@ -2208,6 +2067,7 @@ static void outputImplementationsContents(CPPGen g, File f)
       }
    }
 }
+*/
 
 static void cppHeaderStart(CPPGen g, File f)
 {
@@ -2261,7 +2121,6 @@ static void cppHeaderEnd(CPPGen g, File f)
 // hardcoded macros:
 //
 // INSTANCEL
-// _INSTANCE
 // INSTANCE
 // newi
 // EVOLVE_APP
@@ -2616,8 +2475,8 @@ static void cppMacroIntConstructClass(
             cppMacroClassVirtualMethods(g, o, mode == definition ? encapsulation : configuration, true, ind, "INSTANCE", c, g.cInstance, g.cclass, g.cInstance, 0);
             // todo: spread the lines here
             o.concatx(genloc__, indents(ind), "static TCPPClass<", c, "> _class;", lc, ln);
-            o.concatx(genloc__, indents(ind), "static C(bool) constructor(", g_.sym.instance, " i, C(bool) alloc) { return (alloc && !_INSTANCE(i, _class.impl)) ? new ", c, "(i, _class) != null : true; }", lc, ln);
-            o.concatx(genloc__, indents(ind), "static void destructor(", g_.sym.instance, " i) { ", c, " * inst = (", c, " *)_INSTANCE(i, _class.impl); if(_class.destructor) ((void (*)(", c, " & self))_class.destructor)(*inst); delete inst; }", lc, ln);
+            o.concatx(genloc__, indents(ind), "static C(bool) constructor(", g_.sym.instance, " i, C(bool) alloc) { return (alloc && !INSTANCEL(i, _class.impl)) ? new ", c, "(i, _class) != null : true; }", lc, ln);
+            o.concatx(genloc__, indents(ind), "static void destructor(", g_.sym.instance, " i) { ", c, " * inst = (", c, " *)INSTANCEL(i, _class.impl); if(_class.destructor) ((void (*)(", c, " & self))_class.destructor)(*inst); delete inst; }", lc, ln);
             o.concatx(genloc__, indents(ind), "explicit inline ", c, "(", g_.sym.instance, " _impl, CPPClass & cl = _class) : ", b, "(_impl, cl)"/*, lt*/);
             if(mode != expansion) o.concatx(ln);
          break;
@@ -2667,7 +2526,7 @@ static void cppMacroConstructClass(
             o.concatx(genloc__, indents(ind), "   i.impl = null;", lc, ln);
             o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
             o.concatx(genloc__, indents(ind), "}", lc, ln);
-            o.concatx(genloc__, indents(ind), lc, ln);
+            o.concatx(genloc__,               lc, ln);
             o.concatx(genloc__, indents(ind), "inline c & operator= (c && i)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             o.concatx(genloc__, indents(ind), "   impl = i.impl;", lc, ln);
@@ -2676,7 +2535,7 @@ static void cppMacroConstructClass(
             o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
             o.concatx(genloc__, indents(ind), "   return *this;", lc, ln);
             o.concatx(genloc__, indents(ind), "}", lc, ln);
-            o.concatx(genloc__, indents(ind), lc, ln);
+            o.concatx(genloc__,               lc, ln);
             o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
             //o.concatx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
             cppMacroIntConstructClass(g, o, mode == definition ? encapsulation : configuration, ind, c, b, 0);
@@ -3138,6 +2997,90 @@ static void cppMacroClassRegistration(
    }
 }
 
+static void cppMacroRegVirtualMethods(
+      CPPGen g,            // generator
+      ZString o,           // output
+      MacroMode mode,
+      uint ind,            // indentation
+      BClass c,
+      BClass cBase,
+      BVariant vClass,
+      void * unused)
+{
+   const char * lc = mode == definition ? " \\" : "";    // lc: line continuation
+   if(mode == configuration)
+      mode = g.macroModeBits.classRegistration ? expansion : use;
+   switch(mode)
+   {
+      case definition:
+      case expansion:
+      {
+         int len, maxNameLen = 0, maxDefLen = 0;
+         // int maxLen = c.maxVirtualMethodNameLen + 1;
+         const char * cn = c.name;
+         List<String> paramsDefs { };
+         BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
+         while((m = itm.next(publicVirtual)))
+         {
+            m.init(itm.md, c);
+            if(brokenMethods.Find({ c.name, itm.md.name }))
+               continue;
+            if((len = strlen(m.mname)) > maxNameLen)
+               maxNameLen = len;
+            {
+               Type t = m.md.dataType;
+               TypeInfo argsInfo { type = t, m = m, md = m.md, cl = c.cl, c = c, utilStr1 = "self" };
+               char * paramsDef = cppParams(c, argsInfo, regMethodCppParamList, vClass, cn, true, false, null, null);
+               paramsDefs.Add(paramsDef);
+               if((len = strlen(paramsDef)) > maxDefLen)
+                  maxDefLen = len;
+            }
+         }
+         while((m = itm.next(publicVirtual)))
+         {
+            m.init(itm.md, c.isInstance ? cBase : c);
+            if(brokenMethods.Find({ c.name, itm.md.name }))
+               continue;
+            {
+               const char * mn = m.mname;
+               char * paramsDef = paramsDefs.firstIterator.data;
+               Type t = m.md.dataType;
+               TypeInfo argsInfo { type = t, m = m, md = m.md, cl = c.cl, c = c };
+               char * paramsPassing = cppParams(c, argsInfo, regMethodArgsPassing, vClass, null, false, false, null, null);
+               int lenName = strlen(mn);
+               int lenDef = strlen(paramsDef);
+               // #define REG_$(classname)_$(methodname)(m,c)
+               //       REGVMETHOD($(classname), $(methodname), c::m,
+               //       (Window & self),                    c, ())
+               o.concatx("#define REG_", cn, "_", mn, "(m, c)", spaces(maxNameLen, lenName),
+                     "REGVMETHOD(", cn, ", ", mn, ", ", spaces(maxNameLen, lenName), "c::m, ",
+                     "(", paramsDef, "), ", spaces(maxDefLen, lenDef), "c, ",
+                     "(", paramsPassing, "))", ln);
+               paramsDefs.firstIterator.Remove();
+               delete paramsDef;
+               delete paramsPassing;
+            }
+         }
+         delete paramsDefs;
+
+         o.concatx(ln);
+         o.concatx("#define REG_", cn, "(c)", lc, ln,
+                     indents(2), cn, "::class_registration(_class);");
+
+         while((m = itm.next(publicVirtual)))
+         {
+            const char * mn = m.mname;
+            m.init(itm.md, c.isInstance ? cBase : c);
+            if(brokenMethods.Find({ c.name, itm.md.name }))
+               continue;
+            o.concatx(lc, ln, indents(2), "REG_", cn, "_", mn, "(", mn, ", c);");
+         }
+         o.concatx(ln);
+         break;
+      }
+   }
+}
+
 /*static */void cppDefineMacroClassVirtualMethods(
       CPPGen g,            // generator
       ZString o,           // output
@@ -3267,9 +3210,9 @@ static void cppMacroClassVirtualMethods(
                      if(ctRT == noHeadClass)
                         s3z.concatx("ret", cParamRT.name, ";");
                      else if(!strcmp(cParamRT.name, "Instance"))
-                        s3z.concatx("*(", cParamRT.name, " *)_INSTANCE(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
+                        s3z.concatx("*(", cParamRT.name, " *)INSTANCEL(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
                      else
-                        s3z.concatx("*(", cParamRT.symbolName, " *)_INSTANCE(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
+                        s3z.concatx("*(", cParamRT.symbolName, " *)INSTANCEL(ret", cParamRT.name, ", ret", cParamRT.name, "->_class);");
                   }
                   else
                   {
@@ -3386,7 +3329,7 @@ static void cppMacroClassVirtualMethods(
                o.concatx(genloc__, indents(ind), "int _[0];", lc, ln);
                o.concatx(genloc__, indents(ind), "typedef ", r, " (* FunctionType)(", p0, " ", p, ")", pt, lc, ln);
          }
-               o.concatx(genloc__, indents(ind)/*, "inline "*/);
+               o.concatx(genloc__, indents(ind), "inline ");
          if(!prototype)
             o.concatx(c, "::", c, sc, "_", sc, n, sc, "_Functor::");
                o.concatx("FunctionType ");
@@ -3412,7 +3355,7 @@ static void cppMacroClassVirtualMethods(
                ind--;
                o.concatx(genloc__, indents(ind), "}", lc, ln);
          }
-               o.concatx(genloc__, indents(ind)/*, "inline "*/, r, " ");
+               o.concatx(genloc__, indents(ind), "inline ", r, " ");
          if(!prototype)
             o.concatx(c, "::", c, sc, "_", sc, n, sc, "_Functor::");
                o.concatx("operator()(", ep, " ", p, ")", pt, lc, ln);
@@ -3423,25 +3366,27 @@ static void cppMacroClassVirtualMethods(
                   o.concatx(genloc__, indents(ind), "SELF(", c, ", ", ncpp, ");", lc, ln);
                   o.concatx(genloc__, indents(ind), "", d, lc, ln);
                ind--;
-               o.concatx(genloc__, indents(ind), "}", lc, ln);
+               o.concatx(genloc__, indents(ind), "}"/*, lc*/, ln);
          }
          if(prototype)
          {
             ind--;
-            o.concatx(genloc__, indents(ind), "} ", ncpp, ";", lc, ln);
+            o.concatx(genloc__, indents(ind), "} ", ncpp, ";"/*, lc*/, ln);
          }
-         // todo: here and elsewhere -- can we restore some inline and static to these newly split hpp/cpp prototype/implementation _functions_
-            o.concatx(genloc__, indents(ind)/*, "inline "*/, prototype ? "static " : "", "void ");
-         if(!prototype)
-            o.concatx(c, "::");
-            o.concatx("register_", sc, n, "(CPPClass & cl, ", c, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", " func)", prototype ? pt : lc, ln);
-         if(!prototype)
-         {
-            o.concatx(genloc__, indents(ind), "{", lc, ln);
-            ind++;
-               o.concatx(genloc__, indents(ind), "((", c, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", " *)cl.vTbl)[M_VTBLID(", b, ", ", n, ")] = func;", lc, ln);
-            ind--;
-            o.concatx(genloc__, indents(ind), "}", ln);
+         if(g.options.expandMacros) // temp: this is removed now replace by new REG_* macros and C++ crazy template stuff
+         { // todo: remove this whole block -- temp: just want to see in nomac
+            o.concatx(genloc__, indents(ind), "// ", "inline ", prototype ? "static " : "", "void ");
+            if(!prototype)
+               o.concatx(c, "::");
+            o.concatx("register_", sc, n, "(CPPClass & cl, ", c, "::", c, sc, "_", sc, n, sc,
+                  "_Functor::FunctionType", " func)"/*, prototype ? pt : lc*/, ln);
+            if(!prototype)
+            {
+               o.concatx(genloc__, indents(ind), "// ", "{"/*, lc*/, ln);
+                  o.concatx(genloc__, indents(ind), "// ", indents(1), "((", c, "::", c, sc, "_", sc, n, sc,
+                        "_Functor::FunctionType", " *)cl.vTbl)[M_VTBLID(", b, ", ", n, ")] = func;"/*, lc*/, ln);
+               o.concatx(genloc__, indents(ind), "// ", "}", ln);
+            }
          }
          break;
       case use:
@@ -3515,7 +3460,7 @@ static void cppMacroIntRegisterMethod(
             o.concatx(genloc__, indents(ind + 1), "{", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "XClass * cl = (", ocl, ") ? (XClass *)(", ocl, ")->_class : null;", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "", cp1[0] ? cp1 : "// 'cp1' is empty", lc, ln);
-               o.concatx(genloc__, indents(ind + 2), c, " * i = (", oi, ") ? (", c, " *)_INSTANCE(", oi, ", cl) : null;", lc, ln);
+               o.concatx(genloc__, indents(ind + 2), c, " * i = (", oi, ") ? (", c, " *)INSTANCEL(", oi, ", cl) : null;", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "int vid = M_VTBLID(", bc, ", ", n, ");", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "", bc, sc, "_", sc, n, sc, "_Functor::FunctionType fn;", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "if(i && i->vTbl && i->vTbl[vid])", lc, ln);
@@ -3861,10 +3806,10 @@ static void cppMacroIntPropSet(
          ind++;
       case expansion:
          if(prototype)
-            o.concatx(genloc__, indents(ind), t, sc, t2 ? t2 : "", " operator= (", t, " v", t2 ? t2 : "", ");", ln);
+            o.concatx(genloc__, indents(ind), "inline ", t, sc, t2 ? t2 : "", " operator= (", t, " v", t2 ? t2 : "", ");", ln);
          else
          {
-            o.concatx(genloc__, indents(ind), t, sc, t2 ? t2 : "", " ", c, "::", n, sc, "Prop::", "operator= (", t, " v", sc, t2 ? t2 : "", ")", lc, ln);
+            o.concatx(genloc__, indents(ind), "inline ", t, sc, t2 ? t2 : "", " ", c, "::", n, sc, "Prop::", "operator= (", t, " v", sc, t2 ? t2 : "", ")", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             ind++;
                o.concatx(genloc__, indents(ind), "SELF(", c, ", ", n, ");", lc, ln);
@@ -3961,7 +3906,7 @@ static void cppMacroPropSet(
             prototype,
             0);
          o.concatx(lc, ln);
-         o.concatx(genloc__, indents(ind), c, "::", n, sc, "Prop & ");
+         o.concatx(genloc__, indents(ind), "inline ", c, "::", n, sc, "Prop & ");
          if(!prototype)
             o.concatx(c, "::", n, sc, "Prop::");
          o.concatx("operator= (", c, "::", n, sc, "Prop & prop)", pt, lc, ln);
@@ -4053,7 +3998,7 @@ static void cppMacroPropGet(
          o.concatx(genloc__, indents(ind), "#define get", ps, "(", r, ", ", t, ", ", t2, ", ", n, ", ", c, prototype ? "" : ", ", prototype ? "" : d, ") ");
       case expansion:
          o.concatx(genloc__, indents(ind));
-         o.concatx(r ? r : "", r && *r ? " " : "");
+         o.concatx("inline ", r ? r : "", r && *r ? " " : "");
          if(!prototype)
             o.concatx(c, "::", n, sc, "Prop::");
          o.concatx("operator ", t, " () const", pt, lc, ln);
