@@ -2,6 +2,162 @@
 
 #include "ecere.hpp"
 
+// #define CUBE_VER_MESS
+#define CUBE_VER_3
+// #define CUBE_VER_7
+
+#if defined(CUBE_VER_3)
+#define MODULE_NAME  "HelloCube"
+
+#include "ecere.hpp"
+
+class HelloCube : public Window
+{
+public:
+   Cube cube;
+   C(Light) light { };
+   Camera camera;
+
+   HelloCube()
+   {
+      caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
+      background = DefinedColor_black;
+      borderStyle = BorderStyle_sizable;
+      size = { 640, 480 };
+      hasClose = true;
+      hasMaximize = true;
+      hasMinimize = true;
+      displayDriver = "OpenGL";
+
+      camera.position = { 0, 0, -300 };
+      camera.fov = Degrees(53);
+
+      C(Euler) eul = { Degrees(30), Degrees(10) };
+      Euler_to_Quaternion(&eul, &light.orientation);
+      Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
+
+      onLoadGraphics = [](Window & window) -> C(bool)
+      {
+         HelloCube & self = (HelloCube &)window;
+         DisplaySystem ds = self.displaySystem;
+
+         self.cube.create(ds);
+         C(Transform) transform;
+         transform.scaling = { 100, 100, 100 };
+         C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
+         Euler_to_Quaternion(&euler, &transform.orientation);
+         Object_set_transform((C(Object)*)self.cube.impl, &transform);
+         self.cube.updateTransform();
+         return true;
+      };
+
+      onResize = [](Window & window, int w, int h)
+      {
+         HelloCube & self = (HelloCube &)window;
+         self.camera.setup(w, h, null);
+         self.camera.update();
+      };
+
+      onRedraw = [](Window & window, Surface & surface)
+      {
+         HelloCube & self = (HelloCube &)window;
+         Display d = self.display;
+         surface.clear(ClearType_depthBuffer);
+         d.setLight(0, &self.light);
+         d.setCamera(surface, self.camera);
+         d.drawObject(self.cube);
+         d.setCamera(surface, Camera(null));
+      };
+   }
+};
+
+GuiApplication app;
+HelloCube helloCube;
+
+extern "C" int
+#if defined(__WIN32__) && !defined(__CONSOLE_APP__)
+   __stdcall WinMain(void * hInstance, void * hPrevInst, char * cmdLine, int show)
+#else
+   main(int argc, char * argv[])
+#endif
+{
+#if !defined(__WIN32__) || defined(__CONSOLE_APP__)
+   eC_setArgs(app.impl, argc, argv);
+#endif
+   app.main();
+   unloadTranslatedStrings(MODULE_NAME);
+   return app.exitCode;
+}
+#endif // defined(CUBE_VER_3)
+
+#if defined(CUBE_VER_7)
+class HelloCube : public Window
+{
+public:
+   Cube cube;
+   Light light;
+   Camera camera;
+
+   CONSTRUCT(HelloCube, Window)
+   {
+      REG_Window(HelloCube);
+
+      caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
+      background = DefinedColor_black;
+      borderStyle = BorderStyle_sizable;
+      size = { 640, 480 };
+      hasClose = true;
+      hasMaximize = true;
+      hasMinimize = true;
+      displayDriver = "OpenGL";
+
+      camera.position = { 0, 0, -300 };
+      camera.fov = 53;
+
+      light.orientation = Euler(30, 10);
+      light.diffuse = DefinedColor_lightCoral;
+   }
+
+   bool onLoadGraphics()
+   {
+      cube.create(displaySystem);
+      Transform transform;
+      transform.scaling = { 100, 100, 100 };
+      transform.orientation = Euler(50, 30, 50);
+      cube.transform = transform;
+      cube.updateTransform();
+      return true;
+   }
+
+   void onResize(int w, int h)
+   {
+      camera.setup(w, h, null);
+      camera.update();
+   }
+
+   void onRedraw(Surface & surface)
+   {
+      surface.clear(ClearType_depthBuffer);
+      display->setLight(0, light);
+      display->setCamera(surface, camera);
+      display->drawObject(cube);
+      display->setCamera(surface, Camera(null));
+   }
+};
+
+GuiApplication app;
+
+REGISTER_CLASS_DEF(HelloCube, Window, app);
+
+HelloCube cube;
+
+MAIN_DEFINITION;
+
+#endif // defined(CUBE_VER_7)
+
+
+#if defined(CUBE_VER_MESS)
+
 // Camera camera = { CameraType_fixed, C(Vector3D) { 0, 0, -300 }/*, C(Euler) { 0, 0, 0 }*/ };
 
 CPPClass nullClass;
@@ -171,7 +327,7 @@ public:
    REGISTER()
    {
       Window::class_registration(_class);
-      register_onRedraw(_class, [](Window & w, Surface & surface) { surface.writeText/*f*/(100, 100, $("Class Method!!"), 14); });
+      // register_onRedraw(_class, [](Window & w, Surface & surface) { surface.writeText/*f*/(100, 100, $("Class Method!!"), 14); });
    }
 };
 
@@ -199,3 +355,4 @@ REGISTER_CLASS_DEF(MyApplication, GuiApplication, app);
 REGISTER_CLASS_DEF(HelloCube, Window, app);
 
 MAIN_DEFINITION;
+#endif // defined(CUBE_VER_MESS)
