@@ -621,8 +621,9 @@ public:
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
    // *** 3D GRAPHICS ***
-   void SetCamera(Surface surface, Camera camera)
+   void SetCamera(Surface surface, const Camera camera)
    {
+      Camera cam = (void *)camera;
       if(!display3D)
       {
          display3D = Display3D { };
@@ -630,7 +631,7 @@ public:
       if(!display3D.selection)
          DrawTranslucency();
 
-      if(!camera)
+      if(!cam)
       {
          if(!display3D.selection)
             displaySystem.driver.SelectMesh(this, null);
@@ -640,19 +641,19 @@ public:
       }
       if(!display3D.selection)
       {
-         displaySystem.driver.SetCamera(this, surface, camera);
+         displaySystem.driver.SetCamera(this, surface, cam);
       }
 
-      this.display3D.camera = camera;
+      this.display3D.camera = cam;
 
-      if(camera)
+      if(cam)
       {
-         if(!camera.focalX)
-            camera.Setup(width, height, null);
+         if(!cam.focalX)
+            cam.Setup(width, height, null);
 
          // Always calling Update() here had broken interpolation in OrbitWithMouse!
-         if(!camera.cAngle.w && surface)
-            camera.Update();
+         if(!cam.cAngle.w && surface)
+            cam.Update();
 
          if(display3D.selection)
          {
@@ -663,15 +664,15 @@ public:
             Angle fovLeft, fovRight, fovTop, fovBottom;
             ClippingPlane c;
 
-            double l = camera.origin.x - (display3D.pickX - display3D.pickWidth/2.0f);
-            double r = camera.origin.x - (display3D.pickX + display3D.pickWidth/2.0f);
-            double t = (display3D.pickY - display3D.pickHeight/2.0f) - camera.origin.y;
-            double b = (display3D.pickY + display3D.pickHeight/2.0f) - camera.origin.y;
+            double l = cam.origin.x - (display3D.pickX - display3D.pickWidth/2.0f);
+            double r = cam.origin.x - (display3D.pickX + display3D.pickWidth/2.0f);
+            double t = (display3D.pickY - display3D.pickHeight/2.0f) - cam.origin.y;
+            double b = (display3D.pickY + display3D.pickHeight/2.0f) - cam.origin.y;
 
-            fovLeft   = atan(l / camera.focalX);
-            fovRight  = atan(r / camera.focalX);
-            fovTop    = atan(t / camera.focalY);
-            fovBottom = atan(b / camera.focalY);
+            fovLeft   = atan(l / cam.focalX);
+            fovRight  = atan(r / cam.focalX);
+            fovTop    = atan(t / cam.focalY);
+            fovBottom = atan(b / cam.focalY);
 
             // --- Left ---
             quat.Yaw(fovLeft - Pi/2);
@@ -695,16 +696,16 @@ public:
 
             // --- Near ---
             normal.x = 0; normal.y = 0; normal.z = 1;
-            point.z = camera.zMin;
+            point.z = cam.zMin;
             display3D.viewPickingPlanes[near].FromPointNormal(normal, point);
 
             // --- Far ---
             normal.x = 0; normal.y = 0; normal.z = -1;
-            point.z = camera.zMax;
+            point.z = cam.zMax;
             display3D.viewPickingPlanes[far].FromPointNormal(normal, point);
 
             for(c = 0; c<ClippingPlane::enumSize; c++)
-               display3D.worldPickingPlanes[c].MultMatrix(display3D.viewPickingPlanes[c], camera.inverseTranspose);
+               display3D.worldPickingPlanes[c].MultMatrix(display3D.viewPickingPlanes[c], cam.inverseTranspose);
 
             // Compute picking ray
             {
@@ -713,11 +714,11 @@ public:
                p.x = display3D.pickX;
                p.y = display3D.pickY;
                p.z = 0.0f;
-               camera.Unproject(p, display3D.rayView.delta);
+               cam.Unproject(p, display3D.rayView.delta);
 
                // Convert ray to world space
-               camera.Untransform(display3D.rayView.p0, display3D.rayWorld.p0);
-               camera.Untransform(display3D.rayView.delta, p);
+               cam.Untransform(display3D.rayView.p0, display3D.rayWorld.p0);
+               cam.Untransform(display3D.rayView.delta, p);
                display3D.rayWorld.delta.Subtract(p, display3D.rayWorld.p0);
             }
          }
