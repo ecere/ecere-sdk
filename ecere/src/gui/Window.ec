@@ -7577,7 +7577,7 @@ public:
 
       if(closing)
          return false;
-      if(terminateX > 1)
+      if(terminateX > 1 || destroyed)
          return true;
 
       closing = true;
