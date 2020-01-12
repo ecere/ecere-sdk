@@ -830,6 +830,8 @@ private:
                            ((bool (*)(Map, IteratorPointer, uint64))(void *)map->SetData)(*map, node, (uint64)(uintptr)value.p);
                            break;
                         case systemClass:
+                           ((bool (*)(Map, IteratorPointer, uint64))(void *)map->SetData)(*map, node, value.ui64);
+                           break;
                         default:
                            if(warnings)
                               PrintLn("Warning: Unhandled class type for JSON map ", (String)valueType.name, " (", line, ":", col, ")");
