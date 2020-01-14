@@ -126,9 +126,9 @@ void cppTmpDefineConstructClass     (CPPGen g, File f) { ZString z { allocType =
 void cppTmpDefineDestructClass      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroDestructClass      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineClassRegistration  (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassRegister      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineProperty           (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroProperty   (g, z, 0, protoOrImpl, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefineIntPropSet         (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroIntPropSet (g, z, 0, protoOrImpl, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefinePropSet            (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroPropSet    (g, z, 0, protoOrImpl, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefinePropGet            (CPPGen g, File f, bool protoOrImpl) { ZString z { allocType = heap }; cppDefineMacroPropGet    (g, z, 0, protoOrImpl, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefineIntPropSet         (CPPGen g, File f, bool protoOrImpl, bool template) { ZString z { allocType = heap }; cppDefineMacroIntPropSet (g, z, 0, protoOrImpl, template, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefinePropSet            (CPPGen g, File f, bool protoOrImpl, bool template) { ZString z { allocType = heap }; cppDefineMacroPropSet    (g, z, 0, protoOrImpl, template, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefinePropGet            (CPPGen g, File f, bool protoOrImpl, bool template) { ZString z { allocType = heap }; cppDefineMacroPropGet    (g, z, 0, protoOrImpl, template, 0); f.Puts(z._string); delete z; f.Print(ln); }
 
 void printZedStringToFile(File f, ZString z)
 {
@@ -148,9 +148,6 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn("#define INSTANCE(x, c)  ((x) ? INSTANCEL(x, c) : 0)               // Regular one that can return null", ln);
 
    f.PrintLn("#define BINDINGS_CLASS(eo) (eo && eo->_class && eo->_class->bindingsClass)", ln);
-
-   f.PrintLn("#define POBJ(c, ho, eo) \\");
-   f.PrintLn("      TIH<c> ho(BINDINGS_CLASS(eo) ? *(c *)INSTANCE(eo, eo->_class) : *new c(eo));", ln);
 
    f.PrintLn("#undef   newi");
    f.PrintLn("#define  newi(c) Instance_newEx(c, true)", ln);
@@ -213,20 +210,23 @@ void cppHardcodedCore(CPPGen g, File f)
 
    f.PrintLn("template<typename T, typename U> struct is_same       { static const bool value = false; };");
    f.PrintLn("template<typename T>             struct is_same<T, T> { static const bool value = true; };");
-   f.PrintLn("template<typename T, typename U> bool eqTypes()       { return is_same<T, U>::value; }");
+   f.PrintLn("template<typename T, typename U> bool eqTypes()       { return is_same<T, U>::value; }", ln);
 
    f.PrintLn("#define REGVMETHOD(b, n, m, p, t, a) \\");
-   f.PrintLn("    if(!eqTypes<typeof(&m), typeof(&b::n)>()) \\");
-   f.PrintLn("       ((b::b ## _ ## n ## _Functor::FunctionType *)_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };");
+   f.PrintLn("    if(!eqTypes<decltype(&m), decltype(&b::n)>()) \\");
+   f.PrintLn("       ((b::b ## _ ## n ## _Functor::FunctionType *)_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
 
    cppTmpDefineProperty(g, f, true);
-   cppTmpDefineIntPropSet(g, f, true);
-   cppTmpDefinePropSet(g, f, true);
-   cppTmpDefinePropGet(g, f, true);
+   cppTmpDefineIntPropSet(g, f, true, false);
+   cppTmpDefinePropSet(g, f, true, false);
+   cppTmpDefinePropGet(g, f, true, false);
    cppTmpDefineProperty(g, f, false);
-   cppTmpDefineIntPropSet(g, f, false);
-   cppTmpDefinePropSet(g, f, false);
-   cppTmpDefinePropGet(g, f, false);
+   cppTmpDefineIntPropSet(g, f, false, false);
+   cppTmpDefineIntPropSet(g, f, false, true);
+   cppTmpDefinePropSet(g, f, false, false);
+   cppTmpDefinePropSet(g, f, false, true);
+   cppTmpDefinePropGet(g, f, false, false);
+   cppTmpDefinePropGet(g, f, false, true);
 
    f.PrintLn("extern \"C\" ", g_.sym.module, " ecere_init(", g_.sym.module, " fromModule);");
    f.PrintLn("");

@@ -1,5 +1,6 @@
 #include "debug.eh"
 #include "bgen.eh"
+#include "econe.eh"
 
 import "bgen"
 
@@ -1549,6 +1550,23 @@ const char * tokenTypeString(Type from)
    return null;
 }
 
+static inline bool bareSymbolName(Class cl, OptBits opt)
+{
+   if(opt.cpp)
+   {
+      switch(cl.type)
+      {
+         case bitClass:
+         case enumClass:
+         case normalClass:
+         case noHeadClass:
+            return true;
+      }
+      return false;
+   }
+   return opt.bare;
+}
+
 SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList to, OptBits opt, BVariant vTop)
 {
    int ptr = 0;
@@ -1569,7 +1587,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
    }
 
    if(t.kind == classType && _class &&
-         (_class.type == noHeadClass || (_class.type == structClass && opt.param) ||
+         ((_class.type == noHeadClass && !opt.cpp) || (_class.type == structClass && opt.param) ||
          (isBaseClass && t.classObjectType != anyObject)))
    {
       if(!ptr) // tocheck
@@ -1674,7 +1692,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          {
             if(isBaseClass)
             {
-               char * symbolName = opt.asis ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
+               char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
                quals.Add(SpecName { name = symbolName });
                if(vTopOutputType)
                   vTop.processDependency(vTopOutputType, otypedef, _class);
@@ -1689,7 +1707,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            char * symbolName = opt.asis ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
+            char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
             quals.Add(SpecName { name = symbolName });
             if(vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))
                vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
@@ -1698,14 +1716,14 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       }
       case thisClassType:
       {
-         char * symbolName = opt.asis ? CopyString(name) :
+         char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) :
                g_.allocMacroSymbolName(false, THISCLASS, { cl = ti.cl }, ti.cl ? ti.cl.name : "Instance", null, ti.cl && ti.cl.type == noHeadClass ? 1 : 0);
          quals.Add(SpecName { name = symbolName });
          break;
       }
       case subClassType:
       {
-         char * symbolName = opt.asis ? CopyString(name) :
+         char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) :
                g_.allocMacroSymbolName(false, SUBCLASS, { cl = _class }, name, null, 0);
          quals.Add(SpecName { name = symbolName });
          break;
@@ -1825,7 +1843,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
       ASTDeclarator decl = opt.anonymous ? null : astDeclIdentifier(safeIdent);
       delete safeIdent;
       if(!opt.notype)
-         quals = astTypeSpec(ti, &ptr, &t, null, { param = opt.param, asis = opt.asis }, vTop);
+         quals = astTypeSpec(ti, &ptr, &t, null, { param = opt.param, bare = opt.bare, cpp = opt.cpp }, vTop);
       else
          // trying this instead of //astTypeSpec(ti, &ptr, &t, null, { param = opt.param }, vTop);
          t = unwrapPointerType(ti.type, &ptr);
@@ -1836,7 +1854,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          decl = astDeclArray(decl, null, false, &ti.type);
          // FIXME: This is not always true in C++ bindings generation?
          ; // conassertctx(ti.type == t.arrayType, "?");
-         quals = astTypeSpec(ti, &ptr, &t, null, { asis = opt.asis }, vTop);
+         quals = astTypeSpec(ti, &ptr, &t, null, { bare = opt.bare, cpp = opt.cpp }, vTop);
       }
       else if(t.kind == functionType)
       {
@@ -1846,7 +1864,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          //if(ptr) conmsg("check");
          if(quals) conmsg("check");
          ti.type = t.returnType;
-         quals = astTypeSpec(ti, &ptr2, &t2, null, { asis = opt.asis }, vTop);
+         quals = astTypeSpec(ti, &ptr2, &t2, null, { bare = opt.bare, cpp = opt.cpp }, vTop);
          decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
          ptr = 0;
          for(param = t.params.first; param; param = param.next)
