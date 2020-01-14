@@ -3,14 +3,89 @@
 #include "ecere.hpp"
 
 // #define CUBE_VER_MESS
-#define CUBE_VER_3
-// #define CUBE_VER_7
+// #define CUBE_VER_3 // works
+#define CUBE_VER_7
+// #define CUBE_VER_HYBRID
+
+#if defined(CUBE_VER_HYBRID)
+class HelloCube : public Window
+{
+public:
+   Cube cube;
+   C(Light) light { }; // Light light; // todo
+   Camera camera;
+
+   CONSTRUCT(HelloCube, Window)
+   {
+      REG_Window(HelloCube);
+
+      caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
+      background = DefinedColor_black;
+      borderStyle = BorderStyle_sizable;
+      size = { 640, 480 };
+      hasClose = true;
+      hasMaximize = true;
+      hasMinimize = true;
+      displayDriver = "OpenGL";
+
+      camera.position = { 0, 0, -300 };
+      camera.fov = Degrees(53);
+
+      // todo
+      C(Euler) eul = { Degrees(30), Degrees(10) };
+      Euler_to_Quaternion(&eul, &light.orientation);
+      Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
+      // light.orientation = Euler(30, 10);
+      // light.diffuse = DefinedColor_lightCoral;
+   }
+
+   bool onLoadGraphics()
+   {
+      cube.create(displaySystem);
+      // Transform transform;
+      // transform.scaling = { 100, 100, 100 };
+      // transform.orientation = Euler(50, 30, 50);
+      // cube.transform = transform;
+      // cube.updateTransform();
+
+      // HelloCube & self = (HelloCube &)window;
+      // DisplaySystem ds = self.displaySystem;
+      // self.cube.create(ds);
+      C(Transform) transform;
+      transform.scaling = { 100, 100, 100 };
+      C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
+      Euler_to_Quaternion(&euler, &transform.orientation);
+      Object_set_transform((C(Object)*)self.cube.impl, &transform);
+      // self.cube.updateTransform();
+      return true;
+   }
+
+   void onResize(int w, int h)
+   {
+      camera.setup(w, h, null);
+      camera.update();
+   }
+
+   void onRedraw(Surface & surface)
+   {
+      surface.clear(ClearType_depthBuffer);
+      display->setLight(0, light);
+      display->setCamera(surface, camera);
+      display->drawObject(cube);
+      display->setCamera(surface, Camera(null));
+   }
+};
+
+GuiApplication app;
+
+REGISTER_CLASS_DEF(HelloCube, Window, app);
+
+HelloCube cube;
+
+MAIN_DEFINITION;
+#endif // defined(CUBE_VER_HYBRID)
 
 #if defined(CUBE_VER_3)
-#define MODULE_NAME  "HelloCube"
-
-#include "ecere.hpp"
-
 class HelloCube : public Window
 {
 public:
@@ -91,17 +166,17 @@ extern "C" int
 #endif // defined(CUBE_VER_3)
 
 #if defined(CUBE_VER_7)
+CPPClass nullClass;
+Camera nullCamera ( (C(Instance))null, nullClass );
 class HelloCube : public Window
 {
 public:
    Cube cube;
-   Light light;
+   C(Light) light { }; // todo: Light light;
    Camera camera;
 
    CONSTRUCT(HelloCube, Window)
    {
-      REG_Window(HelloCube);
-
       caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
       background = DefinedColor_black;
       borderStyle = BorderStyle_sizable;
@@ -112,19 +187,36 @@ public:
       displayDriver = "OpenGL";
 
       camera.position = { 0, 0, -300 };
-      camera.fov = 53;
+      camera.fov = Degrees(53); // todo: 53;
 
-      light.orientation = Euler(30, 10);
-      light.diffuse = DefinedColor_lightCoral;
+      C(Euler) eul = { Degrees(30), Degrees(10) };
+      Euler_to_Quaternion(&eul, &light.orientation);
+      Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
+      // todo: light.orientation = Euler(30, 10);
+      // todo: light.diffuse = DefinedColor_lightCoral;
    }
 
-   bool onLoadGraphics()
+   C(bool) onLoadGraphics()
    {
-      cube.create(displaySystem);
+      DisplaySystem ds = displaySystem;
+      cube.create(ds); // todo: cube.create(displaySystem);
+      C(Transform) transform;
+      transform.scaling = { 100, 100, 100 };
+      C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
+      Euler_to_Quaternion(&euler, &transform.orientation);
+      // Object_set_transform((C(Object)*)cube.impl, &transform);
+      cube.transform = transform;
+      printLn(CO(Transform), &transform, null);
+      {
+         // C(Transform) * t1 = cube.transform;
+         // printLn(CO(Transform), &t1, null);
+      }
+      /* todo:
       Transform transform;
       transform.scaling = { 100, 100, 100 };
       transform.orientation = Euler(50, 30, 50);
       cube.transform = transform;
+      */
       cube.updateTransform();
       return true;
    }
@@ -138,11 +230,13 @@ public:
    void onRedraw(Surface & surface)
    {
       surface.clear(ClearType_depthBuffer);
-      display->setLight(0, light);
+      display->setLight(0, &light); // todo: display->setLight(0, light);
       display->setCamera(surface, camera);
       display->drawObject(cube);
-      display->setCamera(surface, Camera(null));
+      display->setCamera(surface, nullCamera); // todo: display->setCamera(surface, Camera(null));
    }
+
+   REGISTER() { REG_Window(HelloCube); }
 };
 
 GuiApplication app;
@@ -152,7 +246,6 @@ REGISTER_CLASS_DEF(HelloCube, Window, app);
 HelloCube cube;
 
 MAIN_DEFINITION;
-
 #endif // defined(CUBE_VER_7)
 
 
