@@ -1,5 +1,6 @@
 #include "debug.eh"
 #include "bgen.eh"
+#include "econe.eh"
 
 import "ecere" // must keep this or compilation outside this file will fail
 
@@ -934,15 +935,17 @@ public:
    }
 };
 
-class OptBits
+//class OptBits
+struct OptBits
 {
-   bool _extern:1;
-   bool _dllimport:1;
-   bool pointer:1;
-   bool anonymous:1;
-   bool notype:1;
-   bool param:1;
-   bool asis:1;
+   bool _extern;//:1;
+   bool _dllimport;//:1;
+   bool pointer;//:1;
+   bool anonymous;//:1;
+   bool notype;//:1;
+   bool param;//:1;
+   bool bare;//:1;       // use bare symbol names. i.e.: Window instead of C(Window)
+   bool cpp;//:1;
 };
 
 struct TypeInfo
@@ -955,7 +958,6 @@ struct TypeInfo
    BMethod m;     Method md;
    BClass c;      Class cl;
    BTemplaton t;
-   const String utilStr1;
 };
 
 struct NamespaceDependencyInfo
@@ -1895,6 +1897,10 @@ class BMethod : struct
       s = PrintString(c.is_class ? "" : c.cname, "_", mname);
       if(!md.dataType)
          ProcessMethodType(md);
+   }
+   bool hasTemplateAnything()
+   {
+      return impossibledebug_bmethod_hasTemplateAnything(this);
    }
    void free() { delete mname;/* delete name;*/ delete m; delete v; delete s; delete n; }
    void OnFree() { free(); };
