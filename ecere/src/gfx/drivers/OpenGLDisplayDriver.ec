@@ -3444,7 +3444,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
-         activeShader.setMaterial(material, *&mesh.flags);
+         shader.setMaterial(material, *&mesh.flags);
 #endif
 
 #if ENABLE_GL_FFP
