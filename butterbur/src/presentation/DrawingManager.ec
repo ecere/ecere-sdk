@@ -26,6 +26,7 @@ public class DrawingManager
    Presentation topPresentation;
    Pointf originOffset;
    uint targetFBO;
+   Vector3D cPosition;
 
    virtual void init();
    virtual void prepareDraw(Presentation presentation);
