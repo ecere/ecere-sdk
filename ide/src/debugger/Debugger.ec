@@ -1906,7 +1906,7 @@ class Debugger
                   {
                      count++;
                      first = n;
-                     break;
+                     //break;
                   }
                   /*else
                   {
@@ -1921,7 +1921,7 @@ class Debugger
                }
                if(first)
                {
-                  address = CopyString(first.addr);
+                  //address = CopyString(first.addr);
                   bpItem.addr = first.addr;
                   bpItem.func = first.func;
                   bpItem.file = first.file;
@@ -1945,7 +1945,7 @@ class Debugger
 
             if(address)
             {
-               UnsetBreakpoint(bp);
+               //UnsetBreakpoint(bp);
                bp.address = address;
                delete address;
                SetBreakpoint(bp, removePath);
