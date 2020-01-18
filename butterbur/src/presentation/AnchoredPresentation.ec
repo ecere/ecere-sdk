@@ -9,7 +9,7 @@ public class AnchoredPresentation : MultiPresentation
    void prepareDraw(RenderPassFlags flags, DrawingManager dm, const void * data)
    {
       GraphicalSurface surface = (GraphicalSurface)dm.topPresentation;
-      Vector3D cp = surface.camera.cPosition;
+      Vector3D cp = dm.cPosition;
 
       // For now, change the 2D projection to 3D with z = 0
       if(flags & { bbShapes = true, bbTextAndImages = true })
