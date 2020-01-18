@@ -212,7 +212,7 @@ public:
                      }
                   }
                }
-               else
+               else if(mdl)
                {
                   Object object { };
 
@@ -286,14 +286,14 @@ public:
                { o->w, o->x, -o->y, -o->z },
                t->scaling
             };
-            Transform * gt = &ge.transform;
-            Quaternion * go = &gt->orientation;
+            Transform * gt = ge ? &ge.transform : null;
+            Quaternion * go = gt ? &gt->orientation : null;
             Transform glt
             {
-               { gt->position.x, -gt->position.y, gt->position.z },
+               gt ? { gt->position.x, -gt->position.y, gt->position.z } : { },
                // In 3D, yaw must be negated to be positive counter-clockwise top-down (map style)
-               { go->w, go->x, -go->y, -go->z },
-               gt->scaling
+               go ? { go->w, go->x, -go->y, -go->z } : { },
+               gt ? gt->scaling : { 1,1,1 }
             };
             Matrix gTransform = glt;
             Matrix lTransform = lt;
@@ -379,10 +379,10 @@ public:
             }
             case model:
             {
-               Model p3d = (Model)ge;
+               Model mdl = (Model)ge;
                Perspective3DManager pm = (Perspective3DManager)dm;
 
-               if(p3d.opacity)
+               if(!mdl || mdl.opacity)
                   pm.addModelCommand(model, cTransform);
                break;
             }
