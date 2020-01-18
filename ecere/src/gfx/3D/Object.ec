@@ -948,7 +948,7 @@ public:
                   PrimitiveGroup group;
                   Mesh mesh = child.mesh;
                   int i;
-                  if(!mesh.displaySystem)
+                  if(!mesh.displaySystem && displaySystem)
                   {
                      mesh.driver = displaySystem.driver;
                      mesh.displaySystem = displaySystem;
@@ -1364,7 +1364,7 @@ public:
             delete objectMesh;
          }
 
-         if(lastLevel && mesh && !mesh.nPrimitives)
+         if(lastLevel && displaySystem && mesh && !mesh.nPrimitives)
          {
             delete *&mesh.vertices;
             delete *&mesh.texCoords;
