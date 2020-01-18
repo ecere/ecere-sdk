@@ -54,6 +54,12 @@ public:
       }
    }
 
+   property Object modelObject
+   {
+      set { model = value; }
+      get { return model; }
+   }
+
    property GraphicalElement graphic
    {
       set
@@ -207,7 +213,7 @@ public:
                      if(g)
                      {
                         Material m = g.material;
-                        if(m.opacity != ge.opacity)
+                        if(ge && m.opacity != ge.opacity)
                            m.opacity = ge.opacity;
                      }
                   }
