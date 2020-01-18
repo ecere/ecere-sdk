@@ -14,7 +14,7 @@ import "Object"   // TOFIX: If this is not here, Cube/Object gets registered as 
 public class Cube : Object
 {
 public:
-   bool Create(DisplaySystem displaySystem)
+   bool Create(const DisplaySystem displaySystem)
    {
       bool result = false;
       if(this)
