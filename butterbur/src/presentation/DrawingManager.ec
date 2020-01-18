@@ -280,7 +280,7 @@ class Perspective3DManager : MDManager
          if(model.flags.mesh && model.mesh)
          {
             Matrix matrix, * m = model.matrixPtr;
-            matrix.Multiply3x4(v, m);
+            matrix.Multiply3x4(m, v);
             glmsLoadMatrixd(matrix.array);
             renderMesh(model.mesh);
          }
