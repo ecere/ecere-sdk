@@ -255,8 +255,11 @@ class Perspective3DManager : MDManager
                Material material = group.material ? group.material : null;
                if(!material) material = GetDefaultMaterial();
 
+               if(!material.shader)
+                  material.shader = butterburShader;
+
                butterburShader.textureArray(false);
-               butterburShader.texturing(false);
+               butterburShader.texturing(material.baseMap ? true : false);
                butterburShader.multiDraw(false);
 
                glDisplay.ApplyMaterial(material, mesh);
