@@ -270,6 +270,7 @@ public class GLMB : FreeBlockMap
 {
 public:
    GLB ab;
+   bool keepSameBufferID; keepSameBufferID = true;
 
    void printStats()
    {
@@ -327,21 +328,41 @@ public struct GLB
 {
    uint buffer;
 
-   bool resize(GLBType type, uint oldSize, uint newSize, GLBufferUsage usage)
+   bool resize(GLBType type, uint oldSize, uint newSize, GLBufferUsage usage, bool keepSameBufferID)
    {
+      bool result = false;
+
       // TODO: Update buffers and defrag instead of doing 2 copy?
       if(!oldSize)
-         return _allocate(type, newSize, null, usage);
+         result = _allocate(type, newSize, null, usage);
+      else if(keepSameBufferID)
+      {
+         // 2 copies (!) needed to preserve buffer ID
+         GLB tmp { };
+         if(tmp._allocate(type, newSize, null, usage))
+         {
+            tmp.copy(this, 0, 0, oldSize);
+            if(_allocate(type, newSize, null, usage))
+            {
+               copy(tmp, 0, 0, oldSize);
+               result = true;
+            }
+            tmp.free();
+         }
+      }
       else
       {
          GLB tmp { };
-         tmp._allocate(type, newSize, null, usage);
-         tmp.copy(this, 0, 0, oldSize);
-         _allocate(type, newSize, null, usage);
-         copy(tmp, 0, 0, oldSize);
-         tmp.free();
+         if(tmp._allocate(type, newSize, null, usage))
+         {
+            tmp.copy(this, 0, 0, oldSize);
+            free();
+            buffer = tmp.buffer;
+
+            result = true;
+         }
       }
-      return true;
+      return result;
    }
 
    void copy(GLB src, uint srcStart, uint dstStart, uint size)

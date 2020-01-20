@@ -4299,6 +4299,11 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!collectingHits && oglMesh)
          {
             bool interleaved = oglMesh.interleaved;
+            if(mesh.mab && !mesh.mab.keepSameBufferID)
+            {
+               uint buffer = mesh.mab.ab.buffer;
+               oglMesh.vertices.buffer = buffer;
+            }
             oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT),
                interleaved ? 8*sizeof(float) : 0,
                oglMesh.vertices.buffer ? (void *)((baseVertexOffset*8)*sizeof(float)) : (void *)mesh.vertices);
@@ -4455,6 +4460,8 @@ class OpenGLDisplayDriver : DisplayDriver
          bool collectingHits = display3D && display3D.collectingHits;
          GLEAB eab = ((!collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
          uint nIndices = primitive.nIndices;
+         if(mesh.meab && !mesh.meab.keepSameBufferID)
+            eab.buffer = mesh.meab.ab.buffer;
 
          if(!glCaps_intAndDouble && !glCaps_vertexBuffer && indices32Bit)
          {
