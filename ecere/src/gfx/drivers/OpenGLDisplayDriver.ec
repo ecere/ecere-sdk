@@ -3900,7 +3900,14 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(mesh.mab && oglMesh)
       {
+         int baseVertex = mesh.baseVertex;
          oglMesh.vertices.buffer = 0;
+         if(baseVertex != -1)
+         {
+            uint vSize = 8 * sizeof(float);
+            mesh.mab.freeBlock(BlockEntry { baseVertex * vSize, (baseVertex + mesh.nVertices) * vSize-1 });
+            mesh.baseVertex = -1;
+         }
       }
 
       if(!mesh.flags.vertices)
@@ -4113,7 +4120,7 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                BlockEntry block = mab.allocate(attributes, nVertices * vSize);
                oglMesh.interleaved = true;
-               mesh.baseVertex = block.start / vSize;
+               mesh.baseVertex = block ? block.start / vSize : -1;
                oglMesh.vertices.buffer = mab.ab.buffer;
                oglMesh.needAlloc = false;
             }
@@ -4254,7 +4261,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mb != null)
             {
                BlockEntry block = mb.allocate(elements, size);
-               group.baseIndex = block.start / ixSize;
+               group.baseIndex = block ? block.start / ixSize : -1;
                oglIndices.buffer.buffer = mb.ab.buffer;
             }
             oglIndices.buffer.upload(group.baseIndex * ixSize, size, b);
