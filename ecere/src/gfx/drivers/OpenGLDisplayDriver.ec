@@ -191,11 +191,11 @@ private:
 
 // **********   Errors and Debugging   **********
 /*
-void CheckGLErrors()
+void CheckGLErrors(const String s, int l)
 {
    int e, nCount = 0;
    while((e = glGetError()) && nCount++ < 10)
-      printf("GL error %d!\n", e);
+      printf("GL error %d! (%s:%d)\n", e, s, l);
 }
 */
 #ifdef GL_DEBUGGING
