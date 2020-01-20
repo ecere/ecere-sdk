@@ -651,13 +651,24 @@ public:
 
    void Duplicate(Object model)
    {
+      Duplicate2(model, false);
+   }
+
+   void Duplicate2(Object model, bool takeOwnership)
+   {
       if(model)
       {
          Object modelChild;
 
          name = CopyString(model.name);
          flags = model.flags;
-         flags.ownMesh = false;
+         if(flags.ownMesh)
+         {
+            if(takeOwnership)
+               model.flags.ownMesh = false;
+            else
+               flags.ownMesh = false;
+         }
          flags.transform = false;
          mesh = model.mesh;
          /*
@@ -675,7 +686,7 @@ public:
             Object child { parent = this };
             child.localMatrix = modelChild.localMatrix;
             child.transform = modelChild.transform;
-            child.Duplicate(modelChild);
+            child.Duplicate2(modelChild, takeOwnership);
             children.AddName(child);
          }
       }
