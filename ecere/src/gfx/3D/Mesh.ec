@@ -184,14 +184,21 @@ public:
             for(;(group = groups.first);)
                FreePrimitiveGroup(group);
 
-            for(c = 0; c<nPrimitives; c++)
+            for(c = 0; c < nPrimitives; c++)
             {
                PrimitiveSingle * prim = &primitives[c];
                if(prim->data)
                {
                   if(meab)
                   {
+                     int baseIndex = prim->baseIndex;
                      ((OGLIndices)prim->data).buffer.buffer = 0;
+                     if(baseIndex != -1)
+                     {
+                        uint iSize = prim->type.indices32bit ? sizeof(uint) : sizeof(uint16);
+                        meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + prim->nIndices) * iSize-1 });
+                        prim->baseIndex = -1;
+                     }
                   }
                   driver.FreeIndices(displaySystem, primitives[c]);
                }
@@ -264,7 +271,14 @@ public:
          {
             if(meab)
             {
+               int baseIndex = group.baseIndex;
                ((OGLIndices)group.data).buffer.buffer = 0;
+               if(baseIndex != -1)
+               {
+                  uint iSize = group.type.indices32bit ? sizeof(uint) : sizeof(uint16);
+                  meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + group.nIndices) * iSize-1 });
+                  group.baseIndex = -1;
+               }
             }
             driver.FreeIndices(displaySystem, (PrimitiveSingle *)&group.type);
          }
