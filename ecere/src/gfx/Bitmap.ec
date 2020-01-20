@@ -907,10 +907,11 @@ public:
       if(this && driver)
       {
          driver.FreeBitmap(displaySystem, this);
+         picture = null;
          driverData = null;
          driver = class(LFBDisplayDriver);
       }
-      if(this && keepData)
+      if(this && (keepData || !driver))
          delete picture;
    }
 
@@ -1002,6 +1003,7 @@ public:
       Bitmap bitmap = this;
       Bitmap retValue = null;
       Bitmap convBitmap { mipMaps = false };
+      bool freeConvBitmap = true;
 
       convBitmap.width = bitmap.width;
       convBitmap.height = bitmap.height;
@@ -1146,11 +1148,14 @@ public:
                      retValue.height = h;
                      retValue.bitmaps = new0 Bitmap[numMipMaps];
                   }
+                  if(mipMap == convBitmap)
+                     freeConvBitmap = false;
                   retValue.bitmaps[retValue.numMipMaps++] = mipMap;
                }
                else
                {
                   retValue = convBitmap;
+                  freeConvBitmap = false;
                   retValue.pixelFormat = compress ? pixelFormatETC2RGBA8 : pixelFormatRGBAGL;
                }
             }
@@ -1185,7 +1190,7 @@ public:
          }
 #endif
       }
-      if(!retValue)
+      if(freeConvBitmap)
          delete convBitmap;
       return retValue;
    }
