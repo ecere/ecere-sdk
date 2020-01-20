@@ -438,30 +438,32 @@ struct GLMultiDraw
    {
       uint size = nVertices * vertexSize;
       BlockEntry block = vertexGLMB.allocate(attributes, size);
-      int baseVertex = block.start / vertexSize;
-      if(data)
+      int baseVertex = block ? block.start / vertexSize : -1;
+      if(data && baseVertex != -1)
          vertexGLMB.ab.upload(block.start, size, data);
       return baseVertex;
    }
 
-   void freeVbo(uint baseVertex, uint vertexSize, uint count)
+   void freeVbo(int baseVertex, uint vertexSize, uint count)
    {
-      vertexGLMB.freeBlock(BlockEntry { baseVertex * vertexSize, (baseVertex+count) * vertexSize-1 });
+      if(baseVertex != -1)
+         vertexGLMB.freeBlock(BlockEntry { baseVertex * vertexSize, (baseVertex+count) * vertexSize-1 });
    }
 
    int allocateIx(uint nIndices, uint indexSize, const void *data)
    {
       uint size = nIndices * indexSize;
       BlockEntry block = indexGLMB.allocate(elements, size);
-      int baseIndex = block.start / indexSize;
-      if(data)
+      int baseIndex = block ? block.start / indexSize : -1;
+      if(data && baseIndex != -1)
          indexGLMB.ab.upload(block.start, size, data);
       return baseIndex;
    }
 
-   void freeIx(uint baseIndex, uint indexSize, uint count)
+   void freeIx(int baseIndex, uint indexSize, uint count)
    {
-      indexGLMB.freeBlock(BlockEntry { baseIndex * indexSize, (baseIndex+count) * indexSize-1 });
+      if(baseIndex != -1)
+         indexGLMB.freeBlock(BlockEntry { baseIndex * indexSize, (baseIndex+count) * indexSize-1 });
    }
 
    void addDrawCommand(uint indexCount, uint instanceCount, uint firstIndex, uint baseVertex, uint baseInstance)
