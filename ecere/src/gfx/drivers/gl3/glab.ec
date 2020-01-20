@@ -296,13 +296,16 @@ public:
 
    uint onExpand(GLBType type, uint extraNeeded)
    {
-      uint newSize = totalSize + Max(extraNeeded, totalSize / 2);
-      if(ab.resize(type, totalSize, newSize, staticDraw))
+      uint oldSize = totalSize;
+      uint newSize = (uint)Min((uint64)MAXDWORD, (uint64)totalSize + Max((uint64)extraNeeded, (uint64)totalSize / 2));
+      if(newSize >= (uint64)oldSize + extraNeeded && ab.resize(type, totalSize, newSize, staticDraw, keepSameBufferID))
       {
          uint spaceAdded = newSize - totalSize;
          totalSize = newSize;
          return spaceAdded;
       }
+      else
+         PrintLn("WARNING: Failed to expand GLMB");
       return 0;
    }
 
