@@ -4321,7 +4321,7 @@ class OpenGLDisplayDriver : DisplayDriver
                GLDisableClientState(NORMALS);
 
 #if ENABLE_GL_SHADERS
-            if(glCaps_shaders)
+            if(glCaps_shaders && !oglMesh.interleaved)    // Currently not working for interleave...
             {
                // *** Tangents Stream ***
                if(mesh.tangents || mesh.flags.tangents)

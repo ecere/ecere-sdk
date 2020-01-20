@@ -399,12 +399,17 @@ public:
 
    void ComputeNormals(void)
    {
+      ComputeNormals2(true);
+   }
+
+   void ComputeNormals2(bool computeTangents)
+   {
       int c;
       int * numShared = new0 int[nVertices];
       double * weightSum = new0 double[nVertices];
       PrimitiveGroup group;
 
-      if(Allocate({ normals = true, tangents = texCoords != null }, nVertices, displaySystem))
+      if(Allocate({ normals = true, tangents = texCoords != null && computeTangents }, nVertices, displaySystem))
       {
 #ifdef NORMALS_MERGE_VERTICES
          Map<uint, uint> ixMap { };
