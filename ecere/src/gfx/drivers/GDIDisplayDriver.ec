@@ -34,6 +34,8 @@ class GDIDisplay : LFBDisplay
 
    ~GDIDisplay()
    {
+      bitmap.picture = null;
+
       if(memDC) DeleteDC(memDC);
       if(memBitmap) DeleteObject(memBitmap);
       if(palette) DeleteObject(palette);
