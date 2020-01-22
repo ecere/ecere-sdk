@@ -2612,6 +2612,19 @@ class ProjectView : Window
             OpenNode(node, noParsing);
             result = true;
          }
+         else if(node.type == folderOpener)
+         {
+            char folder[MAX_LOCATION];
+            const char * exename = "ecere-ide"; // todo: get from running process
+            String command;
+            Project prj = node.project;
+            strcpy(folder, prj.topNode.path);
+            if(node != prj.topNode)
+               PathCatSlash(folder, node.path);
+            command = PrintString(exename, " ", folder);
+            Execute(command);
+            delete command;
+         }
       }
       selection.Free(null);
       ide.RepositionWindows(false);

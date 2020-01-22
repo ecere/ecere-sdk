@@ -31,6 +31,19 @@ class NodeProperties : Window
       anchor = { left = 10, top = 130, right = 10 };
    };
 
+   Button opener
+   {
+      this, this, $"Folder Opener", altO, isCheckbox = true, anchor = { top = 10, right = 10 }, visible = false;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         node.type = button.checked ? folderOpener : folder;
+         node.icon = NodeIcons::SelectNodeIcon(node.type);
+         ide.projectView.Update(null);
+         return true;
+      }
+   };
+
    Label nameLabel { parent = this, position = { 10, 10 }, labeledWindow = name };
    EditBox name
    {
@@ -217,6 +230,13 @@ class NodeProperties : Window
    bool OnClose(bool parentClosing)
    {
       StopEditing();
+      return true;
+   }
+
+   bool OnPostCreate()
+   {
+      if(mode == newFolder)
+         opener.visible = true;
       return true;
    }
 

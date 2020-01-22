@@ -122,6 +122,7 @@ public:
    Workspace workspace;
 }
 
+enum AddedProjectType : bool { project = false, folderLauncher/*, dynamicFolder*/ };
 class AddedProjectInfo : struct
 {
    class_no_expansion;
@@ -146,10 +147,17 @@ public:
       }
       isset { return property::activeConfig != null; }
    }
+   property AddedProjectType type
+   {
+      set { type = value; }
+      get { return type; }
+      isset { return type; }
+   }
 private:
    char * path;
    char * activeConfig;
    Project project;
+   AddedProjectType type;
 
    void Free()
    {

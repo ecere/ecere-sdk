@@ -52,7 +52,7 @@ bool eString_PathInsideOfMore(const char * path, const char * of, char * pathRes
    }
 }
 
-enum NodeTypes { project, file, folder, resources, folderOpen };
+enum NodeTypes { project, file, folder, resources, folderOpen, folderOpener/* todo: rename to folder launcher */ };
 enum NodeIcons
 {
    genFile, ewsFile, epjFile, folder, openFolder, ecFile, ehFile,
@@ -147,6 +147,8 @@ enum NodeIcons
             return archiveFile;
          case folderOpen:
             return openFolder;
+         case folderOpener:
+            return openFolder; // todo: find or make better icon
       }
       return genFile;
    }

@@ -1167,6 +1167,20 @@ class IDEWorkSpace : Window
             return true;
          }
       };
+      MenuItem projectAddFolderItem
+      {
+         projectMenu, $"Add folder to workspace..."/*, f*/, accelerator = Key { d, true, true };
+         bitmap = { ":actions/projAdd.png" };
+         disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            // todo
+            // workspace.addFolder(prj, null);
+            // workspace.modified = true;
+            // workspace.Save();
+            return true;
+         }
+      };
       MenuItem projectCloseItem
       {
          projectMenu, $"Close", c, disabled = true;
@@ -2291,6 +2305,7 @@ class IDEWorkSpace : Window
       projectSaveAsItem.disabled          = unavailable;
 
       projectAddItem.disabled             = unavailable;
+      projectAddFolderItem.disabled       = unavailable;
       projectImportAddItem.disabled       = unavailable;
       toolBar.buttonAddProject.disabled   = unavailable;
 
@@ -2591,6 +2606,7 @@ class IDEWorkSpace : Window
       Window currentDoc = activeClient;
       bool maximizeDoc = !dontMaximize && ((currentDoc && currentDoc.state == maximized) || (!currentDoc && !projectView));
       bool isUrl = strstr(origFilePath, "http://") == origFilePath;
+      bool isDir = FileExists(origFilePath).isDirectory;
       char slashPath[MAX_LOCATION];
       char filePathBuffer[MAX_LOCATION];
       char rightPathBuffer[MAX_LOCATION];
@@ -2620,7 +2636,7 @@ class IDEWorkSpace : Window
       else
          strcpy(extension, type);
 
-      if(strcmp(extension, ProjectExtension))
+      if(strcmp(extension, ProjectExtension) && !isDir)
       {
          document = getOpenedFile(filePath);
          if(!document && rightPath)
