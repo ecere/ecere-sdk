@@ -1035,8 +1035,6 @@ bool impossibledebug_bmethod_hasTemplateAnything(BMethod m)
 {
    Type t = m.md.dataType;
    Type param;
-   // if(!strcmp(m.c.name, "Container") && !strcmp(m.mname, "add"))
-   //    Print("");
    for(param = t.params.first; param; param = param.next)
    {
       if(param.kind == templateType) return true;
