@@ -824,6 +824,17 @@ static void processCppClass(CPPGen g, BClass c)
             o.z.concat("class ");
          if(c.cl.type == noHeadClass)
             o.z.concat(cpptemplatePrefix);
+         // difficult logic of weather a macro exists to clash with C++ class name
+         // from genC.ec: c.cl.type == unitClass && p.cConv && p.cConv.cl.type == unitClass
+         // hardcoded list for now:
+         /*
+         if(c.cl.type == unitClass && (
+            !strcmp(c.name, "Centimeters") ||
+            !strcmp(c.name, "Degrees") ||
+            !strcmp(c.name, "Radians") ||
+            false))
+         o.z.concat("C");
+         */
          o.z.concatx(c.cl.type == unitClass ? "U" : "", cn);
 
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
