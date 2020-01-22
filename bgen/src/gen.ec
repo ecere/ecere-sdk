@@ -108,6 +108,7 @@ private:
    cPrefix = CopyString("");
    virtual bool init()
    {
+      genloc__on = options.genLocs;
       expansionOrUse = options.expandMacros ? expansion : use;
       //PrintLn(lang, ":");
       sym.init(this);
@@ -306,6 +307,7 @@ class GenOptions : struct
 public:
    bool quiet;
    ActionFlag blackList;
+   bool genLocs;
    bool expandMacros;
    bool headerOnly;
    property const String dir
@@ -364,6 +366,7 @@ private:
    {
       if(opt.quiet) quiet = true;
       if(opt.blackList) blackList = opt.blackList;
+      if(opt.genLocs) genLocs = true;
       if(opt.expandMacros) expandMacros = true;
       if(opt.dir && *opt.dir) dir = CopyString(opt.dir);
       if(opt.cpath && *opt.cpath) cpath = CopyString(opt.cpath);
