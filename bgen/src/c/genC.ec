@@ -1560,6 +1560,7 @@ static inline bool bareSymbolName(Class cl, OptBits opt)
          case enumClass:
          case normalClass:
          case noHeadClass:
+         case unitClass:
             return true;
       }
       return false;
@@ -1580,7 +1581,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
 
    if(t.kind == classType || t.kind == subClassType)
    {
-      _class = g_.getClassFromType(t, true);
+      _class = g_.getClassFromType(t, !opt.cpp);
       if(_class)
          c = _class;
       isBaseClass = /*!t._class || !t._class.string || */c && c.is_class/*_class && !strcmp(_class.name, "class")*/;
@@ -1707,7 +1708,13 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
+            char * symbolName;
+            if(opt.cpp && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt))
+               symbolName = PrintString("U", name);
+            else
+               symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
+            if(ti.type.constant)
+               quals.Add(SpecBase { specifier = _const });
             quals.Add(SpecName { name = symbolName });
             if(vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))
                vTop.processDependency(vTopOutputType, otypedef, _class ? _class : t._class.registered);
