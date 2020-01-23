@@ -1,6 +1,7 @@
 #include "debug.eh"
+#include "bgen.eh"
 
-import "ecere"
+import "bgen"
 
 import "miscTypes"
 
@@ -19,13 +20,13 @@ void bigCommentLibrary(ZString out, const char * s)//, const char * tag)
 {
    int len = strlen(s);
    //out.concatx(ln);
-   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
-   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
-   out.concatx(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
-   out.concatx(sc(4, 0), "    ", s, spaces(72, len + 4), sc(4, 0), " ", sc(24, 0), ln);
-   out.concatx(sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
-   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
-   out.concatx(sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(4, 0), "    ", s, spaces(72, len + 4), sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(4, 0), spaces(72, 0),                  sc(4, 0), " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                                          " ", sc(24, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                                          " ", sc(24, 0), ln);
    out.concatx(ln);
 /*
    int len = strlen(s);
@@ -53,56 +54,56 @@ void bigCommentSection(ZString out, const char * s)//, const char * tag)
 {
    int len = strlen(s);
    out.concatx(ln);
-   out.concatx(sc(70, len), " ", s, " ", sc(8, 0), " ", sc(16, 0), ln);
-   out.concatx(sc(80, 0),                          " ", sc(16, 0), ln);
-   out.concatx(sc(80, 0),                          " ", sc(16, 0), ln);
+   out.concatx(genspc__, sc(70, len), " ", s, " ", sc(8, 0), " ", sc(16, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                          " ", sc(16, 0), ln);
+   out.concatx(genspc__, sc(80, 0),                          " ", sc(16, 0), ln);
    out.concatx(ln);
 }
 // bindings section comment
 void section_comment_hdr(File out, const char * s)
 {
-   out.Print(slashes(2, 0), " ", s, " ", slashes(24, strlen(s)));
+   out.Print(genspc__, slashes(2, 0), " ", s, " ", slashes(24, strlen(s)));
 }
 
 void section_comment_msg(File out, const char * s)
 {
    char * t = CopyString(s);
    ChangeCh(t, ':', '|');
-   out.Print(" ", slashes(8, 0), "  ", t, "  ", slashes(60, 2 + strlen(t) + 2));
+   out.Print(genspc__, " ", slashes(8, 0), "  ", t, "  ", slashes(60, 2 + strlen(t) + 2));
    delete t;
 }
 
 void section_comment_msg_line(File out)
 {
-   out.Print(" ", slashes(4 + 64, 0));
+   out.Print(genspc__, " ", slashes(4 + 64, 0));
 }
 
 void section_comment_ftr(File out)
 {
-   out.Print(" ", slashes(32, 0));
+   out.Print(genspc__, " ", slashes(32, 0));
 }
 
 void sectionComment_hdr(ZString out, const char * s)
 {
-   out.concatx(slashes(2, 0), " ", s, " ", slashes(24, strlen(s)));
+   out.concatx(genspc__, slashes(2, 0), " ", s, " ", slashes(24, strlen(s)));
 }
 
 void sectionComment_msg(ZString out, const char * s)
 {
    char * t = CopyString(s);
    ChangeCh(t, ':', '|');
-   out.concatx(" ", slashes(8, 0), "  ", t, "  ", slashes(60, 2 + strlen(t) + 2));
+   out.concatx(genspc__, " ", slashes(8, 0), "  ", t, "  ", slashes(60, 2 + strlen(t) + 2));
    delete t;
 }
 
 void sectionComment_msg_line(ZString out)
 {
-   out.concatx(" ", slashes(4 + 64, 0));
+   out.concatx(genspc__, " ", slashes(4 + 64, 0));
 }
 
 void sectionComment_ftr(ZString out)
 {
-   out.concatx(" ", slashes(32, 0));
+   out.concatx(genspc__, " ", slashes(32, 0));
 }
 
 bool sourceFileProcessToZedString(ZString out, const char * pathToFile, Map<String, String> vars, bool noComments, bool quiet)
