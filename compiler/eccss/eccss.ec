@@ -294,6 +294,21 @@ public:
       }
       return m;
    }
+
+   StylesMask apply2(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, StylesMask * fm)
+   {
+      Link it = list.last;
+      //Iterator<StylingRuleBlock> it { list };
+      while(m && it) //it.Prev())
+      {
+         StylingRuleBlock block = (StylingRuleBlock)(uint64)it.data;
+         StylesMask bm = block.mask & m;
+         if(bm)
+            m = block.apply2(object, m, evaluator, flg, false, fm);
+         it = it.prev;
+      }
+      return m;
+   }
 }
 
 private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator evaluator, ExpFlags * flg)
@@ -831,6 +846,84 @@ public:
       return b;
    }
 
+   // This should return the mask of symbolization properties which could be different based on exp flags...
+   private StylesMask apply2(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, bool ignoreSelectors, StylesMask * fm)
+   {
+      StylesMask result = m;
+      ExpFlags flags = 0;
+      bool apply = true;
+      bool neverHappening = false;
+
+      if(selectors && !ignoreSelectors)
+      {
+         Link s;
+         for(s = selectors.list.first; s; s = s.next)
+         {
+            StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
+            FieldValue value { };
+            CMSSExpression e = sel.exp;
+            ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
+            flags |= sFlags;
+
+            if(sFlags == ExpFlags { resolved = true } && !value.i)
+               neverHappening = true;
+
+            if(!sFlags.resolved || !value.i)
+               apply = false;
+         }
+         *flg |= flags;
+      }
+
+      if(apply || (!neverHappening && (flags & ~ ExpFlags { resolved = true })))
+      {
+         StylesMask nfm = 0;
+         if(nestedRules)
+         {
+            m = nestedRules.apply2(apply ? object : null, m, evaluator, flg, &nfm);
+            if(apply)
+               result = m;
+            if(fm)
+               *fm |= nfm;
+         }
+         if(m)
+         {
+            Link itStyle = styles ? styles.list.last : null;
+            while(itStyle)
+            {
+               CMSSMemberInitList initList = (CMSSMemberInitList)(uintptr)itStyle.data;
+               Link itMember = initList.list.last;
+               while(itMember)
+               {
+                  CMSSMemberInit member = (CMSSMemberInit)itMember.data;
+                  CMSSExpression e = member.initializer;
+                  StylesMask sm = member.stylesMask;
+                  ExpFlags f = 0;
+                  if(apply)
+                  {
+                     if(sm & m)
+                     {
+                        applyStyle(object, sm & m, evaluator, e, &f);
+                        *flg |= f;
+                        m &= ~sm;
+                        result = m;
+                     }
+                  }
+                  else
+                  {
+                     FieldValue value { };
+                     f = e.compute(value, evaluator, runtime, e.destType);
+                  }
+                  if(fm && (f | flags) & ~ExpFlags { resolved = true })
+                     *fm |= sm;
+                  itMember = itMember.prev;
+               }
+               itStyle = itStyle.prev;
+            }
+         }
+      }
+      return result;
+   }
+
    // TOCHECK: Both mask and flags must be returned?
    private /*static*/ StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, bool ignoreSelectors)
    {
@@ -919,7 +1012,7 @@ public:
             }
             inst = null;
          }
-         else
+         else if(object)
             applyInstanceStyle(object, mSet, inst, evaluator, flg);
       }
 
@@ -928,16 +1021,17 @@ public:
          if(evaluator != null)
          {
             // TODO: Do this in a more generic manner
-            Array<Instance> array = evaluator.evaluatorClass.accessSubArray(object, mSet);
+            Array<Instance> array = object ? evaluator.evaluatorClass.accessSubArray(object, mSet) : null;
             if(array)
                for(e : arr.elements; e._class == class(CMSSExpInstance))
                   array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
             else
             {
-               // New more generic approach for colomaps etc. with blob, which could eventually work for GEs as well?
+               // New more generic approach for colormaps etc. with blob, which could eventually work for GEs as well?
                FieldValue value { };
                ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
-               evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
+               if(object)
+                  evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
                *flg |= mFlg;
             }
          }
@@ -957,7 +1051,8 @@ public:
             else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
                convertFieldValue(value, integer, value);
          }
-         evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
+         if(object)
+            evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
          *flg |= mFlg;
       }
    }
