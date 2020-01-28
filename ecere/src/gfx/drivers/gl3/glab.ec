@@ -845,8 +845,8 @@ public struct GLFB
    }
 };
 
-static Map<uint, uint> textures { };
-static Map<uint, uint> buffers { };
+static Map<uint, uint64> textures { };
+static Map<uint, uint64> buffers { };
 
 static uint64 texMem;
 static uint64 bufMem;
@@ -856,12 +856,13 @@ public class GLStats
 public:
    void ::allocTexture(uint tex, uint w, uint h, bool mipMaps)
    {
-      uint currentMem = textures[tex];
-      uint newMem = w * h * 4;
+      uint64 currentMem = textures[tex];
+      uint64 newMem = (uint64)w * h * 4;
 
       if(mipMaps)
-         newMem += (uint)(newMem * 1.33);
-      texMem += (int)newMem - (int)currentMem;
+         newMem += (uint64)(newMem * 1.33);
+      texMem += (int64)newMem - (int64)currentMem;
+
       textures[tex] = newMem;
    }
 
@@ -871,7 +872,7 @@ public:
       for(i = 0; i < count; i++)
       {
          uint tex = texs[i];
-         MapIterator<uint, uint> it { map = textures };
+         MapIterator<uint, uint64> it { map = textures };
          if(it.Index(tex, false))
          {
             texMem -= it.data;
@@ -882,8 +883,8 @@ public:
 
    void ::allocBuffer(uint buf, uint size)
    {
-      uint currentMem = buffers[buf];
-      bufMem += (int)size - (int)currentMem;
+      uint64 currentMem = buffers[buf];
+      bufMem += (int64)size - (int64)currentMem;
       buffers[buf] = size;
    }
 
@@ -893,7 +894,7 @@ public:
       for(i = 0; i < count; i++)
       {
          uint buf = bufs[i];
-         MapIterator<uint, uint> it { map = buffers };
+         MapIterator<uint, uint64> it { map = buffers };
          if(it.Index(buf, false))
          {
             bufMem -= it.data;
