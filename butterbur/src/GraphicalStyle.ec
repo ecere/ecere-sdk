@@ -450,6 +450,22 @@ public:
       return symbolizer;
    }
 
+   public GraphicalStyle ::build2(CMSSStyleSheet styleSheet, ECCSSEvaluator evaluator, Class stylesClass, StylesMask * fm)
+   {
+      GraphicalStyle symbolizer = eInstance_New(stylesClass ? stylesClass : class(GraphicalStyle));
+      GraphicalStyleMask m = 0xffffffffffffffff;
+      ExpFlags flg = 0;
+      if(styleSheet)
+      {
+         m = (GraphicalStyleMask)styleSheet.list.apply2(symbolizer, m, evaluator, &flg, fm);
+      }
+      else if(fm)
+         *fm = 0;
+      if(m) symbolizer.applyDefaults(m);
+      symbolizer.flags = flg;
+      return symbolizer;
+   }
+
    private void applyDefaults(GraphicalStyleMask mask)
    {
       if(mask.opacity) opacity = 1.0;
