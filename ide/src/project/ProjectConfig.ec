@@ -2,6 +2,21 @@ import "Project"
 
 enum DirExpressionType { unknown, targetDir, intermediateObjectsDir };  // "type" is not right
 
+static inline void evalAppendEnvVarValToBuffer(char * buffer, int * d, int * c, int * i, char * val, bool * matched)
+{
+   buffer[*d] = '\0';
+#if defined(__WIN32__)
+   ChangeCh(val, '\\', '/');
+#endif
+   strcat(buffer + *d, val);
+#if defined(__WIN32__)
+   ChangeCh(val, '/', '\\');
+#endif
+   *d += strlen(val);
+   *c = *i;
+   *matched = true;
+}
+
 class DirExpression : struct
 {
    char * dir;
@@ -135,23 +150,28 @@ class DirExpression : struct
                         }
                         else
                         {
-                           if(compiler && compiler.environmentVars && compiler.environmentVars.count)
-                              for(ev : compiler.environmentVars;
-                                    ev.name && ev.string && ev.name[0] && ev.string[0] && !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
+#if !defined(ECERE_EPJ2MAKE)
+                           if(ide.workspace && ide.workspace.environmentVars && ide.workspace.environmentVars.count)
+                           {
+                              for(ev : ide.workspace.environmentVars;
+                                    ev.name && ev.string && ev.name[0] && ev.string[0] &&
+                                    !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
                               {
-                                 buffer[d] = '\0';
-#if defined(__WIN32__)
-                                 ChangeCh(ev.string, '\\', '/');
-#endif
-                                 strcat(buffer, ev.string);
-#if defined(__WIN32__)
-                                 ChangeCh(ev.string, '/', '\\');
-#endif
-                                 d += strlen(ev.string);
-                                 c = i;
-                                 matched = true;
+                                 evalAppendEnvVarValToBuffer(buffer, &d, &c, &i, ev.string, &matched);
                                  break;
                               }
+                           }
+#endif
+                           if(compiler && compiler.environmentVars && compiler.environmentVars.count)
+                           {
+                              for(ev : compiler.environmentVars;
+                                    ev.name && ev.string && ev.name[0] && ev.string[0] &&
+                                    !strnicmp(&expr[c + 2], ev.name, n) && strlen(ev.name) == n)
+                              {
+                                 evalAppendEnvVarValToBuffer(buffer, &d, &c, &i, ev.string, &matched);
+                                 break;
+                              }
+                           }
                            if(!matched)
                            {
                               char name[512];
