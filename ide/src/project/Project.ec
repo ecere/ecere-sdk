@@ -2234,7 +2234,8 @@ private:
       bool eC_Debug = mode.eC_ToolsDebug;
       bool singleProjectOnlyNode = onlyNodes && onlyNodes.count == 1 && onlyNodes[0].type == project;
       int numJobs = ide.toolBar.forceSingleJob.checked == true ? 1 : compiler.numJobs;
-      char command[MAX_F_STRING*4];
+      char * workspaceEnvironmentVars = ide.workspace.getEnvVarsString();
+      char command[MAX_LOCATION*8 + strlen(workspaceEnvironmentVars)];
       char * compilerName = CopyString(compiler.name);
       Map<CIString, NameCollisionInfo> cfgNameCollisions;
 
@@ -2281,16 +2282,17 @@ private:
             if(!FileExists(objDirExp.dir).isDirectory)
             {
 #ifdef __APPLE__
-               sprintf(command, "%s CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir, dyldPath,
 #else
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
 #endif
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                      /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
+                     workspaceEnvironmentVars,
                      compilerName,
                      topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n" : "", makeFilePath);
                if(outputMode != normal)
@@ -2345,9 +2347,9 @@ private:
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
 #ifdef __APPLE__
-         sprintf(command, "%s%s %sCF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #else
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
 #endif
 #if defined(__WIN32__)
                "",
@@ -2366,6 +2368,7 @@ private:
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                ide.workspace.useValgrind ? " DISABLED_POOLING=1" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
+               workspaceEnvironmentVars,
                compilerName,
                compiler.noStripTarget ? " NOSTRIP=y" : "",
                eC_Debug ? "--always-make " : "",
@@ -2433,6 +2436,7 @@ private:
       delete objDirExp;
       delete compilerName;
       delete makeTargets;
+      delete workspaceEnvironmentVars;
       return result;
    }
 
@@ -2440,7 +2444,8 @@ private:
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
-      char command[MAX_LOCATION];
+      char * workspaceEnvironmentVars = ide.workspace.getEnvVarsString();
+      char command[MAX_LOCATION*8 + strlen(workspaceEnvironmentVars)];
       char * compilerName;
       DualPipe f;
       PathBackup pathBackup { };
@@ -2481,10 +2486,11 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
+               workspaceEnvironmentVars,
                compilerName,
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
                topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n": "", makeFilePath);
@@ -2509,6 +2515,7 @@ private:
 
       delete pathBackup;
       delete compilerName;
+      delete workspaceEnvironmentVars;
    }
 
    void Run(const char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool shellOpen)
