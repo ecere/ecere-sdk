@@ -946,6 +946,42 @@ public:
       }
    }
 
+   char * getEnvVarsString()
+   {
+      int len = 0;
+      char * vars;
+      char * d;
+      for(e : environmentVars)
+      {
+         int l = strlen(e.string);
+         if(l)
+         {
+            bool quoted = e.string[0] == '\"' && e.string[l - 1] == '\"';
+            len += strlen(e.name) + l + (quoted ? 2 : 4);
+         }
+      }
+      vars = new char[len + 1];
+      d = vars;
+      for(e : environmentVars)
+      {
+         int l = strlen(e.string);
+         if(l)
+         {
+            bool quoted = e.string[0] == '\"' && e.string[l - 1] == '\"';
+            if(quoted)
+               sprintf(d, " %s=%s", e.name, e.string);
+            else
+               sprintf(d, " %s=\"%s\"", e.name, e.string);
+            d += strlen(e.name) + l + (quoted ? 2 : 4);
+         }
+      }
+      *d = '\0';
+#if defined(__WIN32__)
+      ChangeCh(vars, '\\', '/');
+#endif
+      return vars;
+   }
+
    void Init()
    {
       if(!addedProjects) addedProjects = { };
