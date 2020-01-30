@@ -329,7 +329,7 @@ class ProjectView : Window
                   }
                   MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuDivider { pop };
-                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { pop, $"Browse Folder(s)", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { pop };
                   MenuItem { pop, $"Save", v, Key { s, ctrl = true }, NotifySelect = ProjectSave }.disabled = !node.modified;
                   MenuDivider { pop };
@@ -341,7 +341,7 @@ class ProjectView : Window
                   MenuItem { pop, $"New Folder...", n, Key { f, ctrl = true }, NotifySelect = ProjectNewFolder };
                   MenuItem { pop, $"Import Folder...", i, NotifySelect = ProjectImportFolder };
                   MenuItem { pop, $"Add Resources to Project...", f, NotifySelect = ResourcesAddFiles };
-                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { pop, $"Browse Folder(s)", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { pop };
                   MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
@@ -366,7 +366,7 @@ class ProjectView : Window
                   MenuDivider { pop };
                   MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { pop };
-                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { pop, $"Browse Folder(s)", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { pop };
                   MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuItem { pop, $"Properties..", p, Key { enter, alt = true }, NotifySelect = FileProperties };
@@ -398,7 +398,7 @@ class ProjectView : Window
                   MenuDivider { pop };
                   MenuItem { pop, $"Remove", r, NotifySelect = FileRemoveFile };
                   MenuDivider { pop };
-                  MenuItem { pop, $"Browse Folder", w, NotifySelect = MenuBrowseFolder };
+                  MenuItem { pop, $"Browse Folder(s)", w, NotifySelect = MenuBrowseFolder };
                   MenuDivider { pop };
                   MenuItem { pop, $"Settings...", s, Key { f7, alt = true } , NotifySelect = MenuSettings };
                   MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
@@ -1607,17 +1607,38 @@ class ProjectView : Window
 
    bool MenuBrowseFolder(MenuItem selection, Modifiers mods)
    {
-      char folder[MAX_LOCATION];
-      Project prj;
-      ProjectNode node = GetSelectedNode(true);
-      if(!node)
-         node = project.topNode;
-      prj = node.project;
+      char filePath[MAX_LOCATION];
+      AVLTree<String> folders { };
+      OldList selected;
+      OldLink item;
 
-      strcpy(folder, prj.topNode.path);
-      if(node != prj.topNode)
-         PathCatSlash(folder, node.path);
-      ShellOpen(folder);
+      fileList.GetMultiSelection(selected);
+      for(item = selected.first; item; item = item.next)
+      {
+         DataRow row = item.data;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
+         node.GetFullFilePath(filePath, true, true);
+         while(!FileExists(filePath).isDirectory)
+         {
+            StripLastDirectory(filePath, filePath);
+            if(filePath[0] == '\0')
+               break;
+         }
+         if(filePath[0] != '\0')
+            folders.Add(CopyString(filePath));
+      }
+      selected.Free(null);
+      if(folders.count)
+      {
+         for(e : folders)
+            ShellOpen(e);
+         folders.Free();
+      }
+      else
+      {
+         MessageBox { master = ide, type = ok, text = $"Browse Folder(s)", contents = $"Couldn't open any folder." }.Modal();
+      }
+      delete folders;
       return true;
    }
 
