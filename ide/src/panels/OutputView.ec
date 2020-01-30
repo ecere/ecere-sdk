@@ -121,7 +121,7 @@ class OutputView : Window
 
    Button autoGo
    {
-      this, inactive = true, text = $"Automatic Go To Line", isCheckbox = true, hotKey = ctrlSpace, checked = true;
+      this, inactive = true, text = $"Automatic Go To Line", isCheckbox = true, hotKey = ctrlSpace, checked = false;
       anchor = { top = 4, right = 4 };
    };
 
