@@ -96,8 +96,16 @@ bool egl_init_display(uint window)
 #ifdef _DEBUG
       PrintLn("EGL: No 32 bit depth buffer support");
 #endif
-      attribs[9] = 16;
+      attribs[9] = 24;
       eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+      if(numConfigs == 0)
+      {
+#ifdef _DEBUG
+         PrintLn("EGL: No 24 bit depth buffer support either :(");
+#endif
+         attribs[9] = 16;
+         eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+      }
    }
 #if defined(__LUMIN__)
    eglGetConfigAttrib(display, config, EGL_TRUE, &format);
