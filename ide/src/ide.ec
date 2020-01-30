@@ -2560,8 +2560,8 @@ class IDEWorkSpace : Window
                         CreateProjectView(workspace, filePath);
                         document = projectView;
 
-                        toolBox.visible = true;
-                        sheet.visible = true;
+                        // toolBox.visible = true;
+                        // sheet.visible = true;
                         projectView.MakeActive();
 
                         workspace.ParseLoadedBreakpoints();
