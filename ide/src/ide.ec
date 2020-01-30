@@ -2745,8 +2745,9 @@ class IDEWorkSpace : Window
 
       if(!document && createIfFails != no)
       {
+         String msg = PrintString($"\nFile doesn't exist.\n\nLocation: ", filePath, $"\n\nCreate?");
          if(createIfFails != yes && !needFileModified &&
-               MessageBox { type = yesNo, master = this, text = filePath, contents = $"File doesn't exist. Create?" }.Modal() == yes)
+               MessageBox { type = yesNo, master = this, text = $"File not found", contents = msg }.Modal() == yes)
             createIfFails = yes;
          if(createIfFails == yes || createIfFails == whatever)
          {
@@ -2754,6 +2755,7 @@ class IDEWorkSpace : Window
             if(document)
                document.fileName = filePath;
          }
+         delete msg;
       }
 
       if(document)
