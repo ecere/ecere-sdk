@@ -1510,7 +1510,7 @@ class RecentPaths : Array<String>
             snprintf(itemName, MAX_LOCATION + 4, "%s", itemPath);
          itemName[MAX_LOCATION + 4 - 1] = '\0';
          {
-            MenuItem item { copyText = true, text = itemName, id = c, NotifySelect = recentNotifySelect };
+            MenuItem item { copyText = true/*, deletable = true*/, text = itemName, id = c, NotifySelect = recentNotifySelect };
             if(key)
                item.hotKey = (Key)k1 + addedExistCount;
             if(exists)
