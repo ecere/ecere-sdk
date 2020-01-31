@@ -69,14 +69,17 @@ static Array<FileFilter> resourceFilters
    { $"All files", null }
 ] };
 
-static Array<FileFilter> projectFilters
+static Array<FileFilter> projectFilters // note: projectFilters and projectTypes seem to be duplicated from ide.ec or vice versa
 { [
    { $"Project Files (*.epj)", ProjectExtension },
    { $"Workspace Files (*.ews)", WorkspaceExtension },
    { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" }
 ] };
 
-static Array<FileType> projectTypes
+static Array<FileType> projectTypes // note: is this somehow never used?
+                                    // saveDialog = projectFileDialog // projectTypes seems to be in use for the save dialog but
+                                    // when trying the "Project|Save As..." menu these "Ecere IDE Project" and "Ecere IDE Workspace"
+                                    // never show up? :S
 { [
    { $"Ecere IDE Project", ProjectExtension },
    { $"Ecere IDE Workspace", WorkspaceExtension }
