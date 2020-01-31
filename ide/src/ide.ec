@@ -208,7 +208,10 @@ define addProjectFileDialogTitle = $"Open Additional Project";
 FileDialog ideProjectFileDialog
 {
    type = open;
-   types = projectTypes.array, sizeTypes = projectTypes.count * sizeof(FileType), filters = projectFilters.array, sizeFilters = projectFilters.count * sizeof(FileFilter);
+   types = projectTypes.array;
+   sizeTypes = projectTypes.count * sizeof(FileType);
+   filters = projectFilters.array;
+   sizeFilters = projectFilters.count * sizeof(FileFilter);
 };
 
 GlobalSettingsDialog globalSettingsDialog
@@ -1034,6 +1037,7 @@ class IDEWorkSpace : Window
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
             ideProjectFileDialog.text = openProjectFileDialogTitle;
+            ideProjectFileDialog.filter = 2; // default to Project and Workspace Files
             if(ideProjectFileDialog.Modal() == ok)
             {
                OpenFile(ideProjectFileDialog.filePath, false, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
@@ -1063,6 +1067,7 @@ class IDEWorkSpace : Window
                ideProjectFileDialog.currentDirectory = ideSettings.ideProjectFileDialogLocation;
 
             ideProjectFileDialog.text = addProjectFileDialogTitle;
+            ideProjectFileDialog.filter = 0; // default to Project Files
             for(;;)
             {
                if(ideProjectFileDialog.Modal() == ok)
@@ -2633,6 +2638,7 @@ class IDEWorkSpace : Window
                         if(MessageBox { type = yesNo, master = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
                            ideProjectFileDialog.text = openProjectFileDialogTitle;
+                           ideProjectFileDialog.filter = 2; // default to Project and Workspace Files
                            if(ideProjectFileDialog.Modal() == cancel)
                               return null;
                            filePath = ideProjectFileDialog.filePath;
