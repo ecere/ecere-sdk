@@ -206,6 +206,7 @@ public:
       }
    };
    property bool bold { set { bold = value; } get { return bold; } };
+   property bool deletable { set { deletable = value; } get { return deletable; } };
 
    virtual bool Window::NotifySelect(MenuItem selection, Modifiers mods);
 
@@ -226,6 +227,7 @@ private:
    bool copyText;
    bool manualAccelText;
    bool bold;
+   bool deletable;
 
    ~MenuItem()
    {
@@ -1499,6 +1501,20 @@ public class PopupMenu : Window
                      {
                         if(MenuItemSelection(menu, selected, key))
                            result = false;
+                     }
+                  }
+                  break;
+               case del:
+                  if(selected && selected.item.deletable)
+                  {
+                     if(!selected.item.isDivider && !selected.item.subMenu)
+                     {
+                        key.modifiers.isSideEffect = true;
+                        if(MenuItemSelection(menu, selected, key))
+                        {
+                           menu.RemoveItem(selected.item);
+                           result = false;
+                        }
                      }
                   }
                   break;
