@@ -158,12 +158,14 @@ static Array<FileType> fileTypes
 
 static Array<FileFilter> projectFilters
 { [
-   { $"Project Files (*.epj)", ProjectExtension }
+   { $"Project Files (*.epj)", ProjectExtension },
+   { $"Workspace Files (*.ews)", WorkspaceExtension },
+   { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" }
 ] };
 
 static Array<FileType> projectTypes
 { [
-   { $"Project File", ProjectExtension }
+   { $"Project / Workspace File", ProjectExtension }
 ] };
 
 static Array<FileFilter> findInFilesFileFilters

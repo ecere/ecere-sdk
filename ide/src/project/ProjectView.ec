@@ -72,7 +72,8 @@ static Array<FileFilter> resourceFilters
 static Array<FileFilter> projectFilters
 { [
    { $"Project Files (*.epj)", ProjectExtension },
-   { $"Workspace Files (*.ews)", WorkspaceExtension }
+   { $"Workspace Files (*.ews)", WorkspaceExtension },
+   { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" }
 ] };
 
 static Array<FileType> projectTypes
