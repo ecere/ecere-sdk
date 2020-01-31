@@ -4,6 +4,8 @@ import "ProjectTabSettings"
 import "StringsBox"
 // import "SelectorBar"
 
+enum SettingsDialogTab { project, build, workspace };
+
 static ProjectConfig config;
 static Platform platform;
 static ProjectNode currentNode;
@@ -196,18 +198,18 @@ class ProjectSettings : Window
             }.Modal();
             if(diagRes == ok)
             {
-               if(prjTabControl.curTab == buildTab)
+               switch(tab)
                {
-                  buildTab.RevertChanges();
-                  buildTab.modifiedDocument = false;
-               }
-               if(prjTabControl.curTab == workspaceTab)
-               {
-                  workspaceTab.modifiedDocument = false;
-               }
-               if(prjTabControl.curTab == projectTab)
-               {
-                  projectTab.modifiedDocument = false;
+                  case project:
+                     projectTab.modifiedDocument = false;
+                     break;
+                  case build:
+                     buildTab.RevertChanges();
+                     buildTab.modifiedDocument = false;
+                     break;
+                  case workspace:
+                     workspaceTab.modifiedDocument = false;
+                     break;
                }
                Destroy(DialogResult::cancel);
             }
@@ -238,6 +240,7 @@ class ProjectSettings : Window
          {
             workspaceTab.SaveChanges();
             workspaceTab.modifiedDocument = false;
+            ide.workspace.Save();
          }
          if(prjTabControl.curTab == projectTab && projectTab.modifiedDocument)
          {
@@ -252,13 +255,33 @@ class ProjectSettings : Window
    bool OnPostCreate()
    {
       UpdateDialogTitle();
-      prjTabControl.curTab = buildTab;
+      prjTabControl.curTab = prjTabControl.curTab; // tofix: this is how we can ensure that a tab selected at instantiation is created
 
       ((DirectoriesBox)buildTab.compilerTab.includeDirs.editor).baseBrowsePath = project.topNode.path;
       ((DirectoriesBox)buildTab.linkerTab.libraryDirs.editor).baseBrowsePath = project.topNode.path;
 
       return true;
    }
+
+   property SettingsDialogTab tab
+   {
+      set
+      {
+         switch(value)
+         {
+            case project:     projectTab.SelectTab();    break;
+            case build:       buildTab.SelectTab();      break;
+            case workspace:   workspaceTab.SelectTab();  break;
+         }
+      }
+      get
+      {
+         if(prjTabControl.curTab == projectTab)    return project;
+         if(prjTabControl.curTab == buildTab)      return build;
+         if(prjTabControl.curTab == workspaceTab)  return workspace;
+         return project; // unreachable
+      }
+   };
 }
 
 #define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))

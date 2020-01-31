@@ -1232,6 +1232,18 @@ class IDEWorkSpace : Window
          }
       };
       MenuItem projectCompileItem;
+
+   Menu workspaceMenu { menu, $"Menu"."Workspace", s, hasMargin = true };
+      MenuItem workspaceSettingsItem
+      {
+         workspaceMenu, $"Settings...", s, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            projectView.MenuWorkspaceSettings(projectView.active ? selection : null, mods);
+            return true;
+         }
+      };
+
    Menu debugMenu { menu, $"Debug", d, hasMargin = true };
       MenuItem debugStartResumeItem
       {
@@ -2184,6 +2196,8 @@ class IDEWorkSpace : Window
       projectSettingsItem.disabled        = unavailable;
 
       projectBrowseFolderItem.disabled    = unavailable;
+
+      workspaceSettingsItem.disabled      = unavailable;
 
       viewProjectItem.disabled            = unavailable;
 

@@ -1412,16 +1412,27 @@ class ProjectView : Window
 
    bool MenuSettings(MenuItem selection, Modifiers mods)
    {
+      openSettingsDialog(build);
+      return true;
+   }
+
+   bool MenuWorkspaceSettings(MenuItem selection, Modifiers mods)
+   {
+      openSettingsDialog(workspace);
+      return true;
+   }
+
+   void openSettingsDialog(SettingsDialogTab tab)
+   {
       ProjectNode node = GetSelectedNode(true);
       Project prj = node ? node.project : project;
-      projectSettingsDialog = ProjectSettings { master = parent, project = prj, projectNode = node };
+      projectSettingsDialog = ProjectSettings { master = parent, tab = tab, project = prj, projectNode = node };
       incref projectSettingsDialog;
       projectSettingsDialog.Modal();
       delete projectSettingsDialog;
       ide.UpdateToolBarActiveConfigs(false);
       Update(null);
       ide.AdjustMenus();
-      return true;
    }
 
    bool FileProperties(MenuItem selection, Modifiers mods)
