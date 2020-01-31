@@ -410,7 +410,15 @@ public:
       get { return sizeTypes; }
    };
 
-   property int filter { set { fileFilter = value; } get { return fileFilter; } };
+   property int filter
+   {
+      set
+      {
+         fileFilter = value;
+         filter.currentRow = filter.FindRow(fileFilter);
+      }
+      get { return fileFilter; }
+   };
    property int fileType { set { fileType = value; } get { return fileType; } };
    property bool mayNotExist { set { mayNotExist = value; } get { return mayNotExist; } };
 
