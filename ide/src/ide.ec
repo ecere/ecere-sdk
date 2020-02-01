@@ -1134,12 +1134,7 @@ class IDEWorkSpace : Window
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView)
-            {
-               if(projectView.buildInProgress == none)
-                  projectView.ProjectBuild(projectView.active ? selection : null, mods);
-               else
-                  projectView.stopBuild = true;
-            }
+               projectView.ProjectBuild(projectView.active ? selection : null, mods);
             return true;
          }
       };

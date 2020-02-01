@@ -211,6 +211,7 @@ public:
    ValgrindLeakCheck vgLeakCheck;
    bool vgTrackOrigins;
    int vgRedzoneSize;
+   bool alwaysRebuild;
 
 private:
    char * name;

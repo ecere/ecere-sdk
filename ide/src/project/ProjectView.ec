@@ -119,6 +119,15 @@ enum BuildState
    //property bool actualBuild { get { return this == buildingMainProject || this == buildingSecondaryProject;  } }
 };
 enum BuildOutputMode { normal, raw, verbose, justPrint }; // note: verbose and justPrint both imply raw output
+
+class BuildOptions
+{
+public:
+   BuildType buildType:5;
+   BuildOutputMode outMode:5;
+   bool coercedRebuild:1;
+}
+
 Array<const String> bldMnuStrBuild
 {[
    $"Build",
@@ -824,12 +833,31 @@ class ProjectView : Window
       return false;
    }
 
-   bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode)
+   bool BuildInterrim(Project prj, BuildOptions opts, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
+      if(ide.workspace && ide.workspace.alwaysRebuild)
+         return RebuildInterrim(prj, { rebuild, opts.outMode, coercedRebuild = true }, compiler, config, bitDepth);
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
       {
          ide.outputView.buildBox.Logf($"Building project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-         return Build(prj, buildType, compiler, config, bitDepth, outputMode);
+         return Build(prj, opts, compiler, config, bitDepth);
+      }
+      return false;
+   }
+
+   bool RebuildInterrim(Project prj, BuildOptions opts, CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   {
+      if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
+      {
+         if(opts.coercedRebuild)
+            ide.outputView.buildBox.Logf($"Always rebuild option is enabled!\n");
+         ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
+         /*if(config)
+         {
+            config.compilingModified = true;
+            config.makingModified = true;
+         }*/ // -- should this still be used depite the new solution of BuildType?
+         return Build(prj, opts, compiler, config, bitDepth);
       }
       return false;
    }
@@ -861,7 +889,7 @@ class ProjectView : Window
       return result;
    }
 
-   bool Build(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode)
+   bool Build(Project prj, BuildOptions opts, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       bool result = true;
       Window document;
@@ -883,15 +911,15 @@ class ProjectView : Window
       {
          DirExpression targetDir = prj.GetTargetDir(compiler, config, bitDepth);
 
-         DebugStopForMake(prj, buildType, compiler, config);
+         DebugStopForMake(prj, opts.buildType, compiler, config);
 
          // TODO: Disabled until problems fixed... is it fixed?
-         if(buildType == rebuild || (config && config.compilingModified))
-            prj.Clean(compiler, config, bitDepth, clean, outputMode);
+         if(opts.buildType == rebuild || (config && config.compilingModified))
+            prj.Clean(compiler, config, bitDepth, clean, opts.outMode);
          else
          {
-            if(buildType == relink || (config && config.linkingModified))
-               prj.Clean(compiler, config, bitDepth, cleanTarget, outputMode);
+            if(opts.buildType == relink || (config && config.linkingModified))
+               prj.Clean(compiler, config, bitDepth, cleanTarget, opts.outMode);
             if(config && config.symbolGenModified)
             {
                DirExpression objDir = prj.GetObjDir(compiler, config, bitDepth);
@@ -918,7 +946,7 @@ class ProjectView : Window
          ide.AdjustBuildMenus();
          ide.AdjustDebugMenus();
 
-         result = prj.Build(buildType, null, compiler, config, bitDepth, outputMode, normal);
+         result = prj.Build(opts, null, compiler, config, bitDepth, normal);
 
          if(config)
          {
@@ -949,7 +977,6 @@ class ProjectView : Window
 
    bool ProjectBuild(MenuItem selection, Modifiers mods)
    {
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(buildInProgress == none)
       {
          Project prj = project;
@@ -971,7 +998,8 @@ class ProjectView : Window
          config = prj.config;
          if(/*prj != project || */!prj.GetConfigIsInDebugSession(config) || !ide.DontTerminateDebugSession($"Project Build"))
          {
-            BuildInterrim(prj, build, compiler, config, bitDepth, mode);
+            BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+            BuildInterrim(prj, { build, mode }, compiler, config, bitDepth);
          }
          delete compiler;
       }
@@ -985,7 +1013,6 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -1003,11 +1030,12 @@ class ProjectView : Window
       if(!prj.GetConfigIsInDebugSession(config) ||
             (!ide.DontTerminateDebugSession($"Project Install") && DebugStopForMake(prj, relink, compiler, config)))
       {
-         BuildInterrim(prj, build, compiler, config, bitDepth, mode);
+         BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+         BuildInterrim(prj, { build, mode }, compiler, config, bitDepth);
          if(ProjectPrepareForToolchain(prj, normal, false, false, compiler, config))
          {
             ide.outputView.buildBox.Logf($"\nInstalling project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-            Build(prj, install, compiler, config, bitDepth, mode);
+            Build(prj, { install, mode }, compiler, config, bitDepth);
          }
       }
       delete compiler;
@@ -1019,7 +1047,6 @@ class ProjectView : Window
       Project prj = project;
       CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -1039,10 +1066,11 @@ class ProjectView : Window
       {
          if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
          {
+            BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
             ide.outputView.buildBox.Logf($"Relinking project %s using the %s configuration...\n", prj.name, GetConfigName(config));
             if(config)
                config.linkingModified = true;
-            Build(prj, relink, compiler, config, bitDepth, mode);
+            Build(prj, { relink, mode }, compiler, config, bitDepth);
          }
       }
       delete compiler;
@@ -1054,7 +1082,6 @@ class ProjectView : Window
       CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
       int bitDepth = ide.workspace.bitDepth;
       Project prj = project;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       ProjectConfig config;
       if(selection || !ide.activeClient)
       {
@@ -1072,16 +1099,8 @@ class ProjectView : Window
       if(!prj.GetConfigIsInDebugSession(config) ||
             (!ide.DontTerminateDebugSession($"Project Rebuild") && DebugStopForMake(prj, rebuild, compiler, config)))
       {
-         if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
-         {
-            ide.outputView.buildBox.Logf($"Rebuilding project %s using the %s configuration...\n", prj.name, GetConfigName(config));
-            /*if(config)
-            {
-               config.compilingModified = true;
-               config.makingModified = true;
-            }*/ // -- should this still be used depite the new solution of BuildType?
-            Build(prj, rebuild, compiler, config, bitDepth, mode);
-         }
+         BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
+         RebuildInterrim(prj, { rebuild, mode }, compiler, config, bitDepth);
       }
       delete compiler;
       return true;
@@ -1522,10 +1541,10 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
+         BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
          nodes.Add(node);
          if(node.type == project)
             ProjectBuild(selection, mods);
@@ -1541,10 +1560,10 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
+         BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
          nodes.Add(node);
          if(node.type == project)
             ProjectBuild(selection, mods);
@@ -1561,10 +1580,10 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
-      BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
       if(node)
       {
          List<ProjectNode> nodes { };
+         BuildOutputMode mode = selection ? (BuildOutputMode)selection.id : normal;
          nodes.Add(node);
          if(node.type == project)
             ProjectBuild(selection, mods);
@@ -1678,7 +1697,7 @@ class ProjectView : Window
          project.Run(args, compiler, config, bitDepth, shellOpen);
       /*else if(config.targetType == sharedLibrary || config.targetType == staticLibrary)
          MessageBox { master = ide, type = ok, text = "Run", contents = "Shared and static libraries cannot be run like executables." }.Modal();*/
-      else if(BuildInterrim(project, run, compiler, config, bitDepth, normal))
+      else if(BuildInterrim(project, { run, normal }, compiler, config, bitDepth))
          project.Run(args, compiler, config, bitDepth, shellOpen);
       delete args;
       delete compiler;
@@ -1700,7 +1719,7 @@ class ProjectView : Window
       else if(project.GetDebug(config) ||
          MessageBox { master = ide, type = okCancel, text = $"Starting Debug", contents = $"Attempting to debug non-debug configuration\nProceed anyways?" }.Modal() == ok)
       {
-         if(/*!IsProjectModified() ||*/ BuildInterrim(project, start, compiler, config, bitDepth, normal))
+         if(/*!IsProjectModified() ||*/ BuildInterrim(project, { start, normal }, compiler, config, bitDepth))
          {
             if(compiler.type.isVC)
             {
@@ -2116,7 +2135,7 @@ class ProjectView : Window
       bool useValgrind = ide.workspace.useValgrind;
 
       bool result = false;
-      if(/*!IsProjectModified() ||*/ BuildInterrim(project, restart, compiler, config, bitDepth, normal))
+      if(/*!IsProjectModified() ||*/ BuildInterrim(project, { restart, normal }, compiler, config, bitDepth))
       {
          // For Restart, compiler and config will only be used if for
          // whatever reason (if at all possible) the Debugger is in a
@@ -2154,7 +2173,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, { start, normal }, compiler, config, bitDepth)))
          ide.debugger.StepInto(compiler, config, bitDepth, useValgrind);
       delete compiler;
       return true;
@@ -2167,7 +2186,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, { start, normal }, compiler, config, bitDepth)))
          ide.debugger.StepOver(compiler, config, bitDepth, useValgrind, skip);
 
       delete compiler;
@@ -2181,7 +2200,7 @@ class ProjectView : Window
       int bitDepth = ide.workspace.bitDepth;
       bool useValgrind = ide.workspace.useValgrind;
 
-      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, start, compiler, config, bitDepth, normal)))
+      if((ide.debugger.isActive) || (!buildInProgress && BuildInterrim(project, { start, normal }, compiler, config, bitDepth)))
          ide.debugger.StepUntil(compiler, config, bitDepth, useValgrind, skip);
 
       delete compiler;

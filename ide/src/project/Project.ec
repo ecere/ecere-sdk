@@ -2219,7 +2219,7 @@ private:
       }
    }
 
-   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode, SingleFileCompileMode mode)
+   bool Build(BuildOptions opts, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -2265,7 +2265,7 @@ private:
 #endif
 
       // TODO: TEST ON UNIX IF \" around makeTarget is ok
-      if(buildType == install)
+      if(opts.buildType == install)
          makeTargets.concat(" install");
       else if(onlyNodes)
       {
@@ -2296,8 +2296,8 @@ private:
                      /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
                      workspaceEnvironmentVars,
                      compilerName,
-                     topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n" : "", makeFilePath);
-               if(outputMode != normal)
+                     topNode.path, opts.outMode == verbose ? " V=1" : "", opts.outMode == justPrint ? " -n" : "", makeFilePath);
+               if(opts.outMode != normal)
                   ide.outputView.buildBox.Logf("%s\n", command);
                Execute(command);
             }
@@ -2327,7 +2327,7 @@ private:
 
          // TODO: support justPrint and verbose
          sprintf(command, "%s /useenv /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
-         if(outputMode != normal)
+         if(opts.outMode != normal)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
          {
@@ -2356,7 +2356,7 @@ private:
 #if defined(__WIN32__)
                "",
 #else
-               buildType == install ? "pkexec --user root " : "",
+               opts.buildType == install ? "pkexec --user root " : "",
 #endif
                compiler.makeCommand,
                mode == debugPrecompile ? "ECP_DEBUG=y " : mode == debugCompile ? "ECC_DEBUG=y " : mode == debugGenerateSymbols ? "ECS_DEBUG=y " : "",
@@ -2379,8 +2379,8 @@ private:
                numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
                (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, outputMode == verbose ? " V=1" : "", (outputMode == justPrint || eC_Debug) ? " -n" : "", makeFilePath);
-         if(outputMode != normal)
+               (String)makeTargets, topNode.path, opts.outMode == verbose ? " V=1" : "", (opts.outMode == justPrint || eC_Debug) ? " -n" : "", makeFilePath);
+         if(opts.outMode != normal)
             ide.outputView.buildBox.Logf("%s\n", command);
 
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
@@ -2390,7 +2390,7 @@ private:
             if(eC_Debug)
             {
                char line[65536];
-               if(outputMode == justPrint)
+               if(opts.outMode == justPrint)
                   ide.outputView.buildBox.Logf($"\nMake outputs the following list of commands to choose from:\n");
                while(!f.Eof())
                {
@@ -2399,7 +2399,7 @@ private:
                   {
                      if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
                      {
-                        if(outputMode == justPrint)
+                        if(opts.outMode == justPrint)
                            ide.outputView.buildBox.Logf("%s\n", line);
                         if(!error && !found && strstr(line, "echo ") == line && strstr(line, "ECERE_SDK_SRC"))
                         {
@@ -2417,15 +2417,15 @@ private:
                if(found)
                   result = true;
             }
-            else if(outputMode != normal)
+            else if(opts.outMode != normal)
                result = ProcessPipeOutputRaw(f);
             else
-               result = ProcessBuildPipeOutput(f, objDirExp, buildType, onlyNodes, compiler, config, bitDepth);
+               result = ProcessBuildPipeOutput(f, objDirExp, opts.buildType, onlyNodes, compiler, config, bitDepth);
             f.Wait();
             delete f;
             if(error)
                ide.outputView.buildBox.Logf("%s\n", command);
-            else if(outputMode == justPrint && found)
+            else if(opts.outMode == justPrint && found)
                ide.outputView.buildBox.Logf($"\nThe following command was chosen to be executed:\n%s\n", command);
             else if(found)
                Execute(command);
@@ -2589,7 +2589,7 @@ private:
 
    bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, BuildOutputMode outputMode, SingleFileCompileMode mode)
    {
-      return Build(build, nodes, compiler, config, bitDepth, outputMode, mode);
+      return Build({ build, outputMode }, nodes, compiler, config, bitDepth, mode);
    }
 #endif
 
