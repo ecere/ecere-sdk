@@ -1516,6 +1516,17 @@ public:
       SetCurrentRow(row, true);
    }
 
+   void CollapseAllRow(DataRow row, bool collapsed)
+   {
+      if(row)
+      {
+         DataRow sub;
+         row.collapsed = collapsed;
+         for(sub = row.subRows.first; sub; sub = sub.next)
+            CollapseAllRow(sub, collapsed);
+      }
+   }
+
    void DeleteRow(DataRow row)
    {
       if(!row) row = currentRow;
@@ -4403,7 +4414,7 @@ private:
       if(editData && editData.visible && ch && !key.alt && !key.ctrl && editData.active && (key.code != tab || (editData._class == class(EditBox) && ((EditBox)editData).tabKey)))
          return false;
 
-      if(!key.alt && (style.multiSelect || !key.ctrl))
+      if(!key.alt && (style.multiSelect || !key.ctrl || (key.code == left || key.code == right)))
       {
          switch(key.code)
          {
@@ -4429,9 +4440,11 @@ private:
                {
                   if(currentRow.subRows.first && !currentRow.collapsed)
                   {
+                     if(key.ctrl)
+                        CollapseAllRow(currentRow, true);
                      currentRow.collapsed = true;
                   }
-                  else if(currentRow.parent)
+                  else if(currentRow.parent && !key.ctrl)
                      SetCurrentRow(currentRow.parent, true);
                   return false;
                }
@@ -4439,9 +4452,11 @@ private:
             case right:
                if(style.collapse && currentRow && currentRow.subRows.first)
                {
+                  if(key.ctrl)
+                     CollapseAllRow(currentRow, false);
                   if(currentRow.collapsed)
                      currentRow.collapsed = false;
-                  else
+                  else if(!key.ctrl)
                      SetCurrentRow(currentRow.subRows.first, true);
                   return false;
                }
