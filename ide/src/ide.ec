@@ -617,23 +617,23 @@ class IDEWorkSpace : Window
    {
       parent = this;
 
-      void OnGotoError(const char * line, bool noParsing)
+      void OnGotoError(const char * line, bool openAsText, bool noParsing)
       {
          CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
-         ide.GoToError(line, noParsing, objectFileExt);
+         ide.GoToError(line, openAsText, noParsing, objectFileExt);
          delete compiler;
       }
 
-      void OnCodeLocationParseAndGoTo(const char * line)
+      void OnCodeLocationParseAndGoTo(const char * line, bool openAsText, bool noParsing)
       {
          CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          bool inFind = ide.outputView.activeBox == ide.outputView.findBox;
          if(inFind)
-            ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, objectFileExt);
+            ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, openAsText, noParsing, objectFileExt);
          else
-            ide.CodeLocationParseAndGoTo(line, null, null, objectFileExt);
+            ide.CodeLocationParseAndGoTo(line, null, null, openAsText, noParsing, objectFileExt);
          delete compiler;
       }
 
@@ -946,7 +946,7 @@ class IDEWorkSpace : Window
                bool isProjectFile;
                char extension[MAX_EXTENSION] = "";
                GetExtension(file, extension);
-               isProjectFile = (!strcmpi(extension, "epj") || !strcmpi(extension, "ews"));
+               isProjectFile = (!strcmpi(extension, ProjectExtension) || !strcmpi(extension, WorkspaceExtension));
                if(mods.ctrl && !mods.shift)
                {
                   char * command = PrintString("ecere-ide ", isProjectFile ? "-t " : "", file);
@@ -2884,10 +2884,10 @@ class IDEWorkSpace : Window
       return true;
    }
 
-   void GoToError(const char * line, bool noParsing, const char * objectFileExt)
+   void GoToError(const char * line, bool openAsText, bool noParsing, const char * objectFileExt)
    {
       if(projectView)
-         projectView.GoToError(line, noParsing, objectFileExt);
+         projectView.GoToError(line, openAsText, noParsing, objectFileExt);
    }
 
    FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, Project prj, ProjectNode * node, char * selectedPath, const char * objectFileExt)
@@ -2980,7 +2980,7 @@ class IDEWorkSpace : Window
       return result;
    }
 
-   void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir, const char * objectFileExt)
+   void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir, bool openAsText, bool noParsing, const char * objectFileExt)
    {
       char *s = null;
       const char *path = text;
@@ -3088,10 +3088,10 @@ class IDEWorkSpace : Window
       }
 
       if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath, objectFileExt)))
-         CodeLocationGoTo(completePath, fileAttribs, line, col);
+         CodeLocationGoTo(completePath, fileAttribs, line, col, openAsText, noParsing);
    }
 
-   void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col)
+   void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col, bool openAsText, bool noParsing)
    {
       if(fileAttribs.isFile)
       {
@@ -3109,7 +3109,8 @@ class IDEWorkSpace : Window
          }
          else
          {
-            CodeEditor codeEditor = (CodeEditor)OpenFile(path, false, true, !strcmpi(ext, "epj") ? "txt" : ext, no, normal, false);
+            bool asText = (openAsText || !strcmpi(ext, ProjectExtension) || !strcmpi(ext, WorkspaceExtension));
+            CodeEditor codeEditor = (CodeEditor)OpenFile(path, false, true, asText ? "txt" : ext, no, normal, noParsing);
             if(codeEditor && codeEditor._class == class(CodeEditor) && line)
             {
                EditBox editBox = codeEditor.editBox;
@@ -3417,7 +3418,7 @@ class IDEWorkSpace : Window
             PathCat(fullPath, app.argv[c]);
             StripLastDirectory(fullPath, parentPath);
             GetExtension(app.argv[c], ext);
-            isProject = !openAsText && !strcmpi(ext, "epj");
+            isProject = !openAsText && !strcmpi(ext, ProjectExtension);
 
             if(isProject && c > 1 + (ide.debugStart ? 1 : 0)) continue;
 
