@@ -101,6 +101,7 @@ class EditBoxBits
 
    // bool lineNumbers:1;
    bool autoSize:1;
+   bool allowNewLineChar:1;
 };
 
 default:
@@ -809,6 +810,8 @@ public:
    };
    property bool overwrite { get { return overwrite; } };
    property bool caretFollowsScrolling { get { return style.cursorFollowsView; } set { style.cursorFollowsView = value; } }
+
+   property bool allowNewLineChar { get { return style.allowNewLineChar; } set { style.allowNewLineChar = value; } }
 
    property char * multiLineContents
    {
@@ -4666,7 +4669,7 @@ private:
       if(style.stuckCaret /*|EES_READONLY)*/ )
          GoToEnd(true);
 
-      if(ch == '\n' && !(style.multiLine) && this.line) return false;
+      if(ch == '\n' && !(style.multiLine || style.allowNewLineChar) && this.line) return false;
 
       if(!undoBuffer.dontRecord)
       {
@@ -4706,7 +4709,7 @@ private:
          }
       }
 
-      if(ch == '\n')
+      if(ch == '\n' && !(style.allowNewLineChar))
       {
          DelSel(&addedSpaces);
          if(this.lineCount+1 > this.maxLines)
