@@ -369,6 +369,7 @@ private:
    EditBox findContent
    {
       llfindWhat, this, $"Find what:", altT, size.h = 24, anchor.right = 0;
+      allowNewLineChar = true;
    };
 
    Label lreplaceWith { llreplaceWith, this, size.w = 72, labeledWindow = replaceWith };
@@ -376,6 +377,7 @@ private:
    {
       llreplaceWith, this, $"Replace with:", altE;
       size.h = 24, anchor.right = 0;
+      allowNewLineChar = true;
    };
 
    Window spacerB { llwholeWord, this, size = { 72, 10 }, clickThrough = true, background = formColor, inactive = true };
@@ -547,7 +549,7 @@ private:
       searchThread.filter = filters[fileFilter];
 
       strcpy(searchThread.nameCriteria, fileName.contents);
-      strcpy(searchThread.contentCriteria, findContent.contents);
+      searchThread.contentCriteria = findContent.contents;
       if(replaceMode)
          strcpy(searchThread.contentReplace, replaceWith.contents);
       searchThread.replaceMode = replaceMode;
@@ -618,13 +620,65 @@ class SearchThread : Thread
 {
 public:
    bool active, subDirs, objDirs, gitDirs/*, nameMatchCase, nameWholeWord*/, contentMatchCase, contentWholeWord;
-   char dir[MAX_DIRECTORY], contentCriteria[1024], contentReplace[1024], nameCriteria[1024];
+   char dir[MAX_DIRECTORY], contentReplace[1024], nameCriteria[1024];
    FileFilter filter;
    FindInFilesDialog findDialog;
    FindInFilesMode mode;
    Project project;
    ProjectNode projectNode;
    bool replaceMode;
+
+   property const String contentCriteria
+   {
+      set
+      {
+         int len = strlen(value);
+         int count = 0;
+         if(contentFind)
+         {
+            delete contentFind;
+            delete messageContentFind;
+         }
+         contentFind = new char[len + 1];
+         {
+            const char * s = value;
+            char * d = contentFind;
+            while(*s)
+            {
+               *d = *s;
+               if(*s == '\n')
+                  count++;
+               s++;
+               d++;
+            }
+            *d = '\0';
+         }
+         if(count)
+         {
+            messageContentFind = new char[len + count + 1];
+            {
+               const char * s = value;
+               char * d = messageContentFind;
+               while(*s)
+               {
+                  *d = *s;
+                  if(*s == '\n')
+                  {
+                     *d = '\\';
+                     d++;
+                     *d = 'n';
+                  }
+                  s++;
+                  d++;
+               }
+               *d = '\0';
+            }
+         }
+         else
+            messageContentFind = CopyString(value);
+      }
+      get { return contentFind; }
+   }
 
    void Abort()
    {
@@ -637,6 +691,8 @@ public:
 private:
 
    bool abort, abortNow;
+   char * contentFind;
+   char * messageContentFind;
 
    SearchThread()
    {
@@ -682,8 +738,8 @@ private:
                sprintf(substring, $" with file name matching \"%s\"", nameCriteria);
             else
                substring[0] = '\0';
-            if(contentCriteria && contentCriteria[0])
-               sprintf(containing, $" containing \"%s\"", contentCriteria);
+            if(contentFind && contentFind[0])
+               sprintf(containing, $" containing \"%s\"", messageContentFind);
             else
                containing[0] = '\0';
             if(substring[0] && containing[0])
@@ -714,8 +770,8 @@ private:
       {
          replaceEdit = EditBox
          {
-            multiLine = true,textHorzScroll = true,textVertScroll = true,
-            text = $"Replacing Editbox", size = Size { 640,480 }/*,maxLineSize = 65536*/
+            multiLine = true, textHorzScroll = true, textVertScroll = true,
+            text = $"Replacing Editbox", size = Size { 640,480 }/*, maxLineSize = 65536*/
          };
       }
 
@@ -748,13 +804,13 @@ private:
                      relative = true;
 
                      filesSearchedCount++;
-                     if(match && contentCriteria[0])
+                     if(match && contentFind[0])
                      {
                         int ret;
 
                         app.Lock();
                            ide.outputView.findBox.Tellf(
-                                 $"Searching %s for %s", relative ? fileRelative : stack[frame].fileList.path, contentCriteria);
+                                 $"Searching %s for %s", relative ? fileRelative : stack[frame].fileList.path, messageContentFind);
                         app.Unlock();
 
                         if(replaceMode)
@@ -891,14 +947,14 @@ private:
                         filesSearchedCount++;
                         if(!nameCriteria[0] || SearchString(stack[frame].name, 0, nameCriteria, false, false) != null)
                         {
-                           if(contentCriteria[0])
+                           if(contentFind[0])
                            {
                               int ret;
 
                               app.Lock();
                                  ide.outputView.findBox.Tellf(
                                        $"Searching %s for \"%s\"", relative ? fileRelative : filePath,
-                                       contentCriteria);
+                                       messageContentFind);
                               app.Unlock();
 
                               if(replaceMode)
@@ -981,7 +1037,7 @@ private:
       app.Lock();
          if(filesSearchedCount)
          {
-            if(!contentCriteria[0] && (filesMatchedCount || dirsMatchedCount))
+            if(!contentFind[0] && (filesMatchedCount || dirsMatchedCount))
                ide.outputView.findBox.Logf("\n");
             if(globalFindCount)
                ide.outputView.findBox.Logf(
@@ -1022,11 +1078,11 @@ private:
             char * find = null;
             int inLineFindCount = 0;
             lineNum++;
-            while((find = SearchString(line, start, contentCriteria, contentMatchCase, contentWholeWord)) && !abortNow)
+            while((find = SearchString(line, start, contentFind, contentMatchCase, contentWholeWord)) && !abortNow)
             {
                if(!col)
                   col = find - &line[start] + 1;
-               start += (find - &line[start]) / sizeof(char) + strlen(contentCriteria);
+               start += (find - &line[start]) / sizeof(char) + strlen(contentFind);
                inLineFindCount++;
             }
             if(inLineFindCount && !abortNow)
@@ -1053,7 +1109,7 @@ private:
             }
             // todo
             /*else
-               f.Seek(-strlen(contentCriteria), current);*/
+               f.Seek(-strlen(contentFind), current);*/
          }
          delete f;
          if(findCount)
@@ -1085,14 +1141,14 @@ private:
          while(f.GetLine(line, 65536/* should there be a - 1 here? */) && !abortNow)
          {
             int col = 0;
-            if(SearchString(line, 0, contentCriteria, contentMatchCase, contentWholeWord) && !abortNow)
+            if(SearchString(line, 0, contentFind, contentMatchCase, contentWholeWord) && !abortNow)
             {
                int lastLineNum = 0;
                f.Seek(0, start);
                edit.Load(f);
                delete f;
 
-               for(; edit.Find(contentCriteria, contentWholeWord, contentMatchCase, true) == found; replaceCount++)
+               for(; edit.Find(contentFind, contentWholeWord, contentMatchCase, true) == found; replaceCount++)
                {
                   int lineNum = edit.lineNumber + 1;
                   edit.PutS(contentReplace);
@@ -1136,7 +1192,7 @@ private:
             }
             // todo
             /*else
-               f.Seek(-strlen(contentCriteria), current);*/
+               f.Seek(-strlen(contentFind), current);*/
 
          }
          delete f;
