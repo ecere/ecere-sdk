@@ -1714,7 +1714,7 @@ class ProjectView : Window
       return result;
    }
 
-   void GoToError(const char * line, const bool noParsing, const char * objectFileExt)
+   void GoToError(const char * line, bool openAsText, bool noParsing, const char * objectFileExt)
    {
       char * colon;
 
@@ -1904,7 +1904,7 @@ class ProjectView : Window
 
                if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath, objectFileExt))
                {
-                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, openAsText ? "txt" : null, no, normal, noParsing);
                   ide.RepositionWindows(false);
                }
 
@@ -1916,12 +1916,12 @@ class ProjectView : Window
                      PathCatSlash(filePath, moduleName);
                   }
 
-                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, openAsText ? "txt" : null, no, normal, noParsing);
                   if(!codeEditor && !strcmp(ext, "c"))
                   {
                      char ecName[MAX_LOCATION];
                      ChangeExtension(filePath, "ec", ecName);
-                     codeEditor = (CodeEditor)ide.OpenFile(ecName, false, true, null, no, normal, noParsing);
+                     codeEditor = (CodeEditor)ide.OpenFile(ecName, false, true, openAsText ? "txt" : null, no, normal, noParsing);
                   }
                   if(!codeEditor)
                   {

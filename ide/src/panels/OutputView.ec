@@ -59,8 +59,8 @@ class OutputView : Window
    size.h = 240;
    background = formColor;
 
-   virtual void OnGotoError(const char * line, bool noParsing);
-   virtual void OnCodeLocationParseAndGoTo(const char * line);
+   virtual void OnGotoError(const char * line, bool openAsText, bool noParsing);
+   virtual void OnCodeLocationParseAndGoTo(const char * line, bool openAsText, bool noParsing);
 
    FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = $"Find" };
 
@@ -176,7 +176,7 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnGotoError(editBox.line.text, mods.ctrl && mods.shift);
+         OnGotoError(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
 
@@ -237,7 +237,7 @@ class OutputView : Window
                   buildBox.GoToLineNum(marks[nextPos].lineNumber - 1);
                   if(outputView.autoGo.checked)
                   {
-                     outputView.OnGotoError(this.line.text, false);
+                     outputView.OnGotoError(this.line.text, false, false);
                      Activate();
                   }
                }
@@ -251,7 +251,7 @@ class OutputView : Window
       {
          if(key.code == enter || key.code == keyPadEnter)
          {
-            OnGotoError(editBox.line.text, key.ctrl && key.shift);
+            OnGotoError(editBox.line.text, key.ctrl && key.shift, key.ctrl && !key.shift);
             return false;
          }
          return true;
@@ -281,15 +281,15 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnCodeLocationParseAndGoTo(editBox.line.text);
+         OnCodeLocationParseAndGoTo(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
-         if((SmartKey)key == enter)
+         if(key.code == enter || key.code == keyPadEnter)
          {
-            OnCodeLocationParseAndGoTo(editBox.line.text);
+            OnCodeLocationParseAndGoTo(editBox.line.text, key.ctrl && key.shift, key.ctrl && !key.shift);
             return false;
          }
          return true;
@@ -311,15 +311,15 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnCodeLocationParseAndGoTo(editBox.line.text);
+         OnCodeLocationParseAndGoTo(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
 
       bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
       {
-         if((SmartKey)key == enter)
+         if(key.code == enter || key.code == keyPadEnter)
          {
-            OnCodeLocationParseAndGoTo(editBox.line.text);
+            OnCodeLocationParseAndGoTo(editBox.line.text, key.ctrl && key.shift, key.ctrl && !key.shift);
             return false;
          }
          return true;
