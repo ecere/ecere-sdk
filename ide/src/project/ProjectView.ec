@@ -1936,9 +1936,7 @@ class ProjectView : Window
 
                            if((node = prj.topNode.FindWithPath(path, false)))
                            {
-                              strcpy(filePath, prj.topNode.path);
-                              PathCatSlash(filePath, node.path);
-                              PathCatSlash(filePath, node.name);
+                              node.GetFullFilePath(filePath, true, true);
                               codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                               if(codeEditor)
                                  break;
@@ -1951,9 +1949,7 @@ class ProjectView : Window
                               ProjectNode node;
                               if((node = prj.topNode.FindWithPath(moduleName, false)))
                               {
-                                 strcpy(filePath, prj.topNode.path);
-                                 PathCatSlash(filePath, node.path);
-                                 PathCatSlash(filePath, node.name);
+                                 node.GetFullFilePath(filePath, true, true);
                                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                                  if(codeEditor)
                                     break;
@@ -1968,9 +1964,7 @@ class ProjectView : Window
                               ProjectNode node;
                               if((node = prj.topNode.Find(moduleName, false)))
                               {
-                                 strcpy(filePath, prj.topNode.path);
-                                 PathCatSlash(filePath, node.path);
-                                 PathCatSlash(filePath, node.name);
+                                 node.GetFullFilePath(filePath, true, true);
                                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                                  if(codeEditor)
                                     break;
