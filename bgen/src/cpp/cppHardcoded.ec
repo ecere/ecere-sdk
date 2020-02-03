@@ -9,16 +9,6 @@ define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
 
-void cppHardcodedModule(BOutput o)
-{
-   o.z.concatx(genloc__, "   // hardcoded content start", ln,
-               genloc__, "   static TCPPClass<Module> _class;", ln,
-               genloc__, "   inline explicit Module(C(Instance) _impl, CPPClass & c = _class) : Instance(_impl, c) { }", ln,
-            // genloc__, "   MODULE_VIRTUAL_METHODS(Module)", ln,
-            // genloc__, "   REGISTER() { Module_class_registration(Module); }", ln,
-               genloc__, "   // end of hardcoded content", ln);
-}
-
 void cppHardcodedInstancePart1(BOutput o)
 {
    o.z.concatx(genloc__, "   // hardcoded content start", ln,
