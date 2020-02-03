@@ -885,8 +885,6 @@ static void processCppClass(CPPGen g, BClass c)
                cppMacroClassVirtualMethods(g, o.z, configuration, true, 1, un, c.name, c, cBase, v, 0);
                cppHardcodedInstancePart2(o);
             }
-            else if(c.isModule)
-               cppHardcodedModule(o);
             else if(c.cl.type == normalClass)
             {
                cppMacroConstructClass(g, o.z, mode, 1, cn, isBaseString ? "Instance" : bn, 0);
@@ -1291,7 +1289,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
                bool ref = (ct == normalClass && !isString) || ct == noHeadClass;
                // bool u = ct == unitClass;
                o.z.concatx(comma, ref ? "const " : ""/*, u ? "U" : ""*/, tn, ref ? "&" : "", " ", mn, tnp2 ? tnp2 : "");
-               if(!first || c.cl.type == structClass)
+               if(!first)
                   o.z.concatx(" = ", tz);
                if(first)
                {
@@ -3694,7 +3692,7 @@ static void cppMacroIntRegisterMethod(
          o.concatx(genloc__, indents(ind), "#define _REGISTER_METHOD(", cp1, ", ", cp2, ", ", ns, ", ",
                n, ", ", bc, ", ", c, ", ", r, ", ", p, ", ", ocl, ", ", oi, ", ", code, ", ", ea, ", ", rv, ")", lc, ln);
       case expansion:
-            o.concatx(genloc__, indents(ind + 1), "addMethod(_class.impl,", edq, ns, edq, ", (void *) +[]", eop, p, ecp, lc, ln);
+            o.concatx(genloc__, indents(ind + 1), "addMethod(_class.impl, ", edq, ns, edq, ", (void *) +[]", eop, p, ecp, lc, ln);
             o.concatx(genloc__, indents(ind + 1), "{", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "XClass * cl = (", ocl, ") ? (XClass *)(", ocl, ")->_class : null;", lc, ln);
                o.concatx(genloc__, indents(ind + 2), "", cp1[0] ? cp1 : "// 'cp1' is empty", lc, ln);
