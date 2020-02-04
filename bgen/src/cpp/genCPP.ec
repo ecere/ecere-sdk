@@ -355,6 +355,9 @@ void prototypeClasses(CPPGen g, File f)
             case structClass:
                f.PrintLn(genloc__, "struct ", cn, ";");
                break;
+            case unitClass:
+               f.PrintLn(genloc__, "class ", "U", cn, ";");
+               break;
          }
       }
    }
@@ -686,6 +689,12 @@ AVLTree<consttstr> brokenMethods { [
    // struct methods with name issue
    // { "Extent", "Union" },
 
+   // container returns nohead
+   { "Container", "GetFirst" },
+   { "Container", "GetLast" },
+   { "Container", "GetNext" },
+   { "Container", "GetPrev" },
+
    { null, null }
 ] };
 
@@ -731,6 +740,11 @@ AVLTree<consttstr> brokenMembers { [
    // { "Light", "diffuse" },
    // { "Light", "specular" },
    // { "Light", "direction" },
+   // something re C++ vs C type
+   { "BuiltInContainer", "_class" },
+   { "BuiltInContainer", "type" },
+   { "Iterator", "pointer" },
+   { "BinaryTree", "root" },
    { "C", "M" },
    { null, null }
 ] };
@@ -1249,7 +1263,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
             skip = true;
          else if(dataType.kind != functionType && dataType.kind != arrayType)
          {
-            // if(clDataType)
+            // if(clDataType && clDataType.type == unitClass)
             //    v.processDependency(otypedef, otypedef, clDataType);
             count++;
          }
@@ -1770,7 +1784,7 @@ char * cppTypeName(TypeInfo ti, bool bare, char ** typeZero, char ** typeNameSec
    // BClass cRegRet = clRegRet;
    //cppTypeNameCall = true;
    // note: calling zTypeName creates templaton output objects with null z
-   zTypeName(z, null, ti, { anonymous = true, bare = /*cRegRet && cRegRet.isBool ? true : */bare, cpp = true }, null);
+   zTypeName(z, null, ti, { anonymous = true, bare = /*cRegRet && cRegRet.isBool ? true : */bare/**/, cpp = true/**/ }, null);
    //cppTypeNameCall = false;
    {
       //if(ct == normalClass) // || ct == noHeadClass)
@@ -3068,6 +3082,8 @@ static void cppMacroClassRegistration(
 
                    if(returnAddress) code.concatx(" &");
                }
+               if(!strcmp(m.name, "GetFirst"))
+                  Print("");
                {
                   bool comma = false;
                   bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
