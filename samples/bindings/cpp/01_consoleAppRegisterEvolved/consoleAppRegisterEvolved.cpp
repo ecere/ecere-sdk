@@ -18,8 +18,16 @@ class MyApp : public Application
 {
 public:
    APP_CONSTRUCT(MyApp, Application) { }
+
+   void main()
+   {
+      printLn(class_String, "C++: Hello, eC", null);
+   }
+
    REGISTER()
    {
+      REG_Application(MyApp);
+      /*
       Application::class_registration(_class);
       register_main(_class,
          [](Application & app)
@@ -27,6 +35,7 @@ public:
             printLn(class_String, "C++: Hello, eC", null);
          }
       );
+      */
       EVOLVE_APP(MyApp, app);
    }
 };

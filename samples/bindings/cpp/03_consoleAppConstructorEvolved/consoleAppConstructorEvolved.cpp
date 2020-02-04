@@ -12,14 +12,24 @@
 class MyApp : public Application
 {
 public:
+
+#if 1 // both work
+   void main()
+   {
+      printLn(class_String, "C++: Hello, eC", null);
+   }
+#endif
+
    APP_CONSTRUCT(MyApp, Application)
    {
       REGISTER_APP_CLASS(MyApp, Application, *this);
 
+#if 0 // both work
       main = [](Application & app)
       {
          printLn(class_String, "C++: Hello, eC", null);
       };
+#endif
    }
 };
 
