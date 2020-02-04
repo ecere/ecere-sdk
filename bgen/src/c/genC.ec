@@ -1581,7 +1581,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
 
    if(t.kind == classType || t.kind == subClassType)
    {
-      _class = g_.getClassFromType(t, !opt.cpp);
+      _class = g_.getClassFromType(t, /*true*/!opt.cpp);
       if(_class)
          c = _class;
       isBaseClass = /*!t._class || !t._class.string || */c && c.is_class/*_class && !strcmp(_class.name, "class")*/;
