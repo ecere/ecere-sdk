@@ -1263,8 +1263,8 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
             skip = true;
          else if(dataType.kind != functionType && dataType.kind != arrayType)
          {
-            // if(clDataType && clDataType.type == unitClass)
-            //    v.processDependency(otypedef, otypedef, clDataType);
+            if(clDataType && clDataType.type == unitClass)
+               v.processDependency(otypedef, otypedef, clDataType);
             count++;
          }
       }
@@ -3056,6 +3056,8 @@ static void cppMacroClassRegistration(
                }
                if(!noRet)
                {
+                  if(!strcmp(c.name, "Archive") && !strcmp(m.name, "FileOpen"))
+                     Print("");
                   if(returnType.kind == templateType)
                      code.concatx("TP(", c.name, ", ", returnType.templateParameter.identifier.string, ")");
                   else if((ctRT == normalClass || ctRT == noHeadClass))
@@ -3067,10 +3069,12 @@ static void cppMacroClassRegistration(
 
                      if(ctRT == normalClass)
                      {
-                        if(!strcmp(cParamRT.name, "Instance"))   // Exception
-                           code.concatx(cParamRT.name, " *");
-                        else
-                           code.concatx(cParamRT.symbolName);
+                        // if(cParamRT.isInstance)   // Exception
+                           code.concat(cParamRT.name/*, " *"*/);
+                           if(returnAddress)
+                              code.concat(" *");
+                        // else
+                        //    code.concatx(cParamRT.symbolName);
                      }
                      else if(ctRT == noHeadClass)
                         code.concatx(cParamRT.symbolName, " *");
@@ -3104,9 +3108,13 @@ static void cppMacroClassRegistration(
                {
                   code.concatx("; return ");
                   if(returnAddress)
-                     code.concatx("ret ? ret->impl : null;");
+                     code.concat("ret ? ret->impl : null;");
                   else
-                     code.concatx("ret");
+                  {
+                     code.concat("ret");
+                     if(ctRT == normalClass)
+                        code.concat(".impl");
+                  }
                }
                delete args;
 
@@ -3498,6 +3506,9 @@ static void cppMacroClassVirtualMethods(
                      s3 = CopyString("");
                   else
                      s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, null, null, { });
+
+                  if(clRegRT)
+                     vClass.processDependency(otypedef, otypedef, clRegRT);
 
                   if(!strcmp(cn, "Window") && !strcmp(mn, "showDecorations"))
                      Print("");
