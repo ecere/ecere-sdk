@@ -1560,6 +1560,7 @@ static inline bool bareSymbolName(Class cl, OptBits opt)
          case enumClass:
          case normalClass:
          case noHeadClass:
+         case structClass:
          case unitClass:
             return true;
       }
