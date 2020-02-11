@@ -1164,7 +1164,7 @@ private:
                      if(curMember._class.type == normalClass || curMember._class.type == noHeadClass)
                      {
                         int add = curMember._class.base.structSize;
-                        if(curMember._class.base.structSize % curMember._class.structAlignment)
+                        if(curMember._class.structAlignment && curMember._class.base.structSize % curMember._class.structAlignment)
                            add += curMember._class.structAlignment - curMember._class.base.structSize % curMember._class.structAlignment;
                         offset += add;
                      }
@@ -1225,7 +1225,7 @@ private:
                            if(member._class.type == normalClass || member._class.type == noHeadClass)
                            {
                               int add = member._class.base.structSize;
-                              if(member._class.base.structSize % member._class.structAlignment)
+                              if(member._class.structAlignment && member._class.base.structSize % member._class.structAlignment)
                                  add += member._class.structAlignment - member._class.base.structSize % member._class.structAlignment;
                               offset += add;
                            }
@@ -2378,7 +2378,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                   if(member._class.type == normalClass || member._class.type == noHeadClass)
                   {
                      int add = member._class.base.structSize;
-                     if(member._class.base.structSize % member._class.structAlignment)
+                     if(member._class.structAlignment && member._class.base.structSize % member._class.structAlignment)
                         add += member._class.structAlignment - member._class.base.structSize % member._class.structAlignment;
                      offset += add;
                   }
