@@ -619,7 +619,7 @@ class dBaseTableRow : dBaseRow
                }
                break;
             case 'L':  // Logical (true or false)
-               *(bool *)data = fldData[0] == 'T';
+               *(int64 *)data = fldData[0] == 'T';
                result = fldData[0] == 'T' || fldData[0] == 'F';
                break;
             case 'N': // Numbers (as strings)
@@ -627,7 +627,7 @@ class dBaseTableRow : dBaseRow
                if(!field.info.decimalCount)
                {
                   char * p;
-                  *(int *)data = strtol(fldData, &p, 10);
+                  *(int64 *)data = strtoll(fldData, &p, 10);
                   result = p > fldData; // Why do we have **** for 0?
                   break;
                }
@@ -656,7 +656,7 @@ class dBaseTableRow : dBaseRow
             case '+':  // (Autoincrement)
             {
                int * iPtr = (int *)fldData;
-               *(int *)data = *iPtr;
+               *(int64 *)data = *iPtr;
                result = true;
                break;
             }
