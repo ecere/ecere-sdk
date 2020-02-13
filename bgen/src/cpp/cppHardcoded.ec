@@ -8,6 +8,7 @@ define cpptemplateArgClassObject = "TCO";
 define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
+define cpptemplateTemplateDef = "template <class TPT>";
 
 void cppHardcodedInstancePart1(BOutput o)
 {
@@ -115,6 +116,31 @@ void cppHardcodedInstancePart2(BOutput o)
                genloc__, "   // end of hardcoded content", ln);
 }
 
+void cppHardcodedContainer(BOutput o)
+{
+   o.z.concatx(genloc__, "   TContainer(std::initializer_list<TPT> list) : TContainer()", ln);
+   o.z.concatx(genloc__, "   {", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
+   o.z.concatx(genloc__, "         add(*it);", ln);
+   o.z.concatx(genloc__, "   }", ln, ln);
+
+   o.z.concatx(genloc__, "   TContainer & operator =(std::initializer_list<TPT> list)", ln);
+   o.z.concatx(genloc__, "   {", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
+   o.z.concatx(genloc__, "         add(*it);", ln);
+   o.z.concatx(genloc__, "      return *this;", ln);
+   o.z.concatx(genloc__, "   }", ln, ln);
+
+   o.z.concatx(genloc__, "   inline C(bool) takeOut(TP(Container, D) d);", ln, ln);
+
+   o.z.concatx(genloc__, "   IteratorPointer add(TPT value)", ln);
+   o.z.concatx(genloc__, "   {", ln);
+   o.z.concatx(genloc__, "      return IteratorPointer(Container_add(impl, toTA<TPT>(value)));", ln);
+   o.z.concatx(genloc__, "   }", ln);
+}
+
 void cppTmpDefineVirtualMethod      (CPPGen g, File f, bool prototype, bool template)
 {
    ZString z { allocType = heap };
@@ -137,7 +163,7 @@ void cppTmpDefineRegisterMethod     (CPPGen g, File f, bool template)
    delete z;
    f.Print(ln);
 }
-void cppTmpDefineRegisterTypedMethod   (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterTypedMethod(g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefineRegisterTypedMethod   (CPPGen g, File f, bool template) { ZString z { allocType = heap }; cppDefineMacroRegisterTypedMethod(g, z, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineIntRegisterClass      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntRegisterClass   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineRegisterClassDef      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClassDef   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineClassDef              (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassDef           (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
@@ -145,8 +171,7 @@ void cppTmpDefineRegisterClass         (CPPGen g, File f) { ZString z { allocTyp
 void cppTmpDefineRegisterClassCPP      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClassCPP   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineIntConstructClass     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntConstructClass  (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineMacroMoveConstructors (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroMoveConstructors   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefineConstructClass        (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroConstructClass     (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefineTemplateConstruct     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroTemplateConstruct  (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefineConstructClass        (CPPGen g, File f, bool template) { ZString z { allocType = heap }; cppDefineMacroConstructClass     (g, z, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineDestructClass         (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroDestructClass      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineClassRegistration     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassRegister      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineProperty              (CPPGen g, File f, PropertyMacroBits opts) { ZString z { allocType = heap }; cppDefineMacroProperty   (g, z, opts, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
@@ -197,8 +222,8 @@ void cppHardcodedCore(CPPGen g, File f)
 
    cppTmpDefineIntConstructClass(g, f);
    cppTmpDefineMacroMoveConstructors(g, f);
-   cppTmpDefineConstructClass(g, f);
-   cppTmpDefineTemplateConstruct(g, f);
+   cppTmpDefineConstructClass(g, f, false);
+   cppTmpDefineConstructClass(g, f, true);
    cppTmpDefineDestructClass(g, f);
    cppTmpDefineClassRegistration(g, f);
 
@@ -239,10 +264,11 @@ void cppHardcodedCore(CPPGen g, File f)
 
    cppTmpDefineIntRegisterMethod(g, f, false);
    cppTmpDefineRegisterMethod(g, f, false);
-   cppTmpDefineRegisterTypedMethod(g, f); // t this one too?
+   cppTmpDefineRegisterTypedMethod(g, f, false);
 
    cppTmpDefineIntRegisterMethod(g, f, true);
    cppTmpDefineRegisterMethod(g, f, true);
+   cppTmpDefineRegisterTypedMethod(g, f, true);
 
    f.PrintLn(genloc__, "template<typename T, typename U> struct is_same       { static const bool value = false; };");
    f.PrintLn(genloc__, "template<typename T>             struct is_same<T, T> { static const bool value = true; };");
