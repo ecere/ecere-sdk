@@ -234,7 +234,12 @@ AVLTree<const String> skipFunctionTree { [
    "vsprintf",
 
    "_strtoi64",
-   "_strtoui64"
+   "_strtoui64",
+
+   // todo: use command line flags and/or list file to skip those?
+   "fmAddFont",
+
+   null
 ] };
 
 bool skipFunction(const char * name, const char * moduleName, NameSpace * ns)
