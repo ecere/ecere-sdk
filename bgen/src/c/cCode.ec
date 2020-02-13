@@ -380,6 +380,8 @@ static void cInCodeInitClasses(AST out, CGen g)
             Property cn; IterConversion conv { cl };
             while((md = met.next(publicOnly)))
             {
+               if(brokenMethodsC.Find({ cl.name, md.name }))
+                  continue;
                // skipping Module::Load and Module::Unload here because we want to use the dllexported methods directly
                if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
                {
