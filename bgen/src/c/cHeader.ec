@@ -146,6 +146,11 @@ static void cInHeaderIncludes(AST out, Gen g)
    {
       for(libDep : g.libDeps)
          z.concatx(g.preproLimiter, "#include \"", libDep.bindingName, ".h\"", ln);
+      if(!strcmp(g.lib.moduleName, "gnosis3")) // hack, todo
+      {
+         z.concatx(g.preproLimiter, "#include \"roadpath.h\"", ln);
+         z.concatx(g.preproLimiter, "#include \"fontmanager.h\"", ln);
+      }
    }
    raw.string = CopyString(z._string); delete z;
    out.Add(raw);
