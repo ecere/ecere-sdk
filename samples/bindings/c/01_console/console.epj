@@ -28,10 +28,10 @@
    ],
    "Files" : [
       {
-         "Folder" : "bindings",
+         "Folder" : "$(ECERE_SDK_BINDINGS_C)/bindings",
          "Files" : [
-            "$(ECERE_SDK_BINDINGS)/c/eC.c",
-            "$(ECERE_SDK_BINDINGS)/c/eC.h"
+            "eC.c",
+            "eC.h"
          ]
       },
       "console.c"
