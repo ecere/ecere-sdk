@@ -483,6 +483,15 @@ class ProjectView : Window
                   }
                   break;
                }
+               case ctrlL:
+               {
+                  if(node.type == project || node.type == folder || node.type == resources)
+                  {
+                     ProjectNewFile(null, 0);
+                     return false;
+                  }
+                  break;
+               }
                case ctrlF7:
                {
                   if(node.type == file)
