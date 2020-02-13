@@ -187,23 +187,29 @@ public:
       displayDriver = "OpenGL";
 
       camera.position = { 0, 0, -300 };
-      camera.fov = Degrees(53); // todo: 53;
+      camera.fov = 53;
 
-      C(Euler) eul = { Degrees(30), Degrees(10) };
-      Euler_to_Quaternion(&eul, &light.orientation);
+      //C(Euler) eul = { Degrees(30), Degrees(10) };
+      Euler eul = { 30, 10 };
+      Euler_to_Quaternion(&eul.impl, &light.orientation);
       Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
       // todo: light.orientation = Euler(30, 10);
       // todo: light.diffuse = DefinedColor_lightCoral;
    }
 
-   C(bool) onLoadGraphics()
+   bool onLoadGraphics()
    {
       DisplaySystem ds = displaySystem;
       cube.create(ds); // todo: cube.create(displaySystem);
       C(Transform) transform;
+      //Transform transform;
       transform.scaling = { 100, 100, 100 };
-      C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
-      Euler_to_Quaternion(&euler, &transform.orientation);
+      //C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
+      //Euler euler = { Degrees(50), Degrees(30), Degrees(50) };
+      Euler euler = { 50, 30, 50 };
+      //Euler_to_Quaternion(&euler, &transform.orientation);
+      //Euler_to_Quaternion(&euler.impl, &transform.orientation);
+      Euler_to_Quaternion(&euler.impl, &transform.orientation);
       // Object_set_transform((C(Object)*)cube.impl, &transform);
       cube.transform = transform;
       printLn(CO(Transform), &transform, null);
@@ -212,10 +218,12 @@ public:
          // printLn(CO(Transform), &t1, null);
       }
       /* todo:
-      Transform transform;
-      transform.scaling = { 100, 100, 100 };
-      transform.orientation = Euler(50, 30, 50);
-      cube.transform = transform;
+      {
+         Transform transform;
+         transform.scaling = { 100, 100, 100 };
+         transform.orientation = Euler(50, 30, 50); // conversion, todo
+         cube.transform = transform;
+      }
       */
       cube.updateTransform();
       return true;
