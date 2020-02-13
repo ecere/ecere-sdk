@@ -24,6 +24,38 @@ define _noHeadClass = "ClassType_noHeadClass";
 define _unionClass = "ClassType_unionClass";
 define _systemClass = "ClassType_systemClass";
 
+AVLTree<consttstr> brokenMethodsC { [
+   // AttributeStore::requestAttributes
+   //    virtual void requestAttributes(Array<AttributesKey> requests, void (* completedCallback)(void *context, HashMap<int64, Map<int, FieldValue>> multiResults), void* context)
+   // generates following code:
+   //    // void AttributeStore_requestAttributes(C(AttributeStore) __i, C(Array) requests, void (* completedCallback)(void * context, C(HashMap) multiResults), void * context);
+   //    #define AttributeStore_requestAttributes(__i, requests, void (* completedCallback)(context, multiResults), context) \
+   //       VMETHOD(CO(AttributeStore), AttributeStore, requestAttributes, __i, void, \
+   //          C(AttributeStore) _ARG C(Array) _ARG void (*)(void *, C(HashMap)) _ARG void *, \
+   //          __i _ARG requests _ARG void (* completedCallback)(context, multiResults) _ARG context)
+   // gives following error:
+   //    gnosis3.h:1310:62: error: "(" may not appear in macro parameter list
+   { "AttributeStore", "requestAttributes" },
+
+   // AttributeStore::retrieveMultiValues
+   //    HashMap<int64, Map<int, FieldValue>> retrieveMultiValues(Map<Array<int>, Array<int64>> fieldAndFeatureIDs,
+   //       bool AttributeStore::getValueMethod(int64 featureID, int fieldID, FieldValue value))
+   // generates following code:
+   //          METHOD(AttributeStore, retrieveMultiValues) = Class_findMethod(CO(AttributeStore), "retrieveMultiValues", module);
+   //          if(METHOD(AttributeStore, retrieveMultiValues))
+   //             AttributeStore_retrieveMultiValues = (C(HashMap) (*)(C(AttributeStore), C(Map), C(bool) ()(int64, int, C(FieldValue) *)))METHOD(AttributeStore, retrieveMultiValues)->function;
+   // gives following error:
+   //    error: type name declared as function returning a function
+   { "AttributeStore", "retrieveMultiValues" },
+
+   // CMSSList::parse
+   // same case
+   { "CMSSList", "parse" },
+
+
+   { null, null }
+] };
+
 void runPreprocessor(const String src, const String tmp, Gen g)
 {
    String cppCommand = CopyString("gcc");
@@ -755,6 +787,8 @@ class CGen : Gen
          {
             BMethod m = md;
             BVariant v = m;
+            if(brokenMethodsC.Find({ cl.name, md.name }))
+               continue;
             conassertctx(m != null, "?");
             o = m.outInHeader = BOutput { vmethod, m = m, omethod };
             o.output.Add(astMethod(this, md, cl, c, methodFlag, instanceClass, &haveContent, v));
@@ -783,7 +817,7 @@ class CGen : Gen
             BVariant v = p;
             o = p.outInHeader = BOutput { vproperty, p = p, oconversion };
             o.output.Add(astProperty(cn, c, _import, false, &c.first, &haveContent));
-            c.outProperties.Add(o);
+            c.outConversions.Add(o);
             c.nspace.addContent(v);
             if(lib.ecereCOM)
                v.processDependency(oconversion, otypedef, clDepProperty);
@@ -794,7 +828,7 @@ class CGen : Gen
             BVariant v = p;
             o = p.outInHeader = BOutput { vproperty, p = p, oproperty };
             o.output.Add(astProperty(pt, c, _import, false, &c.first, &haveContent));
-            c.outConversions.Add(o);
+            c.outProperties.Add(o);
             c.nspace.addContent(v);
             processTypeDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
             if(lib.ecereCOM)
