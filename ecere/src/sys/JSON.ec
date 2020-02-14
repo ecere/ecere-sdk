@@ -1060,7 +1060,11 @@ private:
    public JSONResult GetObject(Class objectType, void ** object)
    {
       charPos = 0, line = 1, col = 1, maxPos = 0;
-      if(objectType && objectType.type == structClass)
+      if(!eCON && objectType && objectType.type == normalClass && eClass_IsDerived(objectType, class(Map)))
+      {
+         return GetJSONMap(objectType, (Map *)&object);
+      }
+      else if(objectType && objectType.type == structClass)
       {
          memset(object, 0, objectType.structSize);
          return _GetObject(objectType, &object, null);
