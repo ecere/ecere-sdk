@@ -138,14 +138,6 @@
                ]
             },
             {
-               "Folder" : "cpp",
-               "Files" : [
-                  "cpp_header_open.src",
-                  "cpp_header_close.src",
-                  "cpp_header_ec_macros.src"
-               ]
-            },
-            {
                "Folder" : "py",
                "Files" : [
                   "cffi_hardcode_ec_begin.src",
