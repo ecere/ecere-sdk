@@ -1013,8 +1013,8 @@ bool cppTypeNameCall;
 
 AVLTree<const String> tmpcppececeremesstypedef // hack
 { [
-   "Alignment",
-   "DataDisplayFlags"
+   // "Alignment",
+   // "DataDisplayFlags"
 ] };
 
 AVLTree<const String> tmpcppececeremessclass // hack

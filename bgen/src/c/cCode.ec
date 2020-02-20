@@ -458,7 +458,7 @@ static void cInCodeInitStart(AST out, CGen g)
    ASTRawString raw { }; ZString z { allocType = heap };
    if(g.lib.ecereCOM)
    {
-      z.concatx(g_.sym.module, " theEcereModule;", ln);
+      z.concatx(g_.sym.module, " theEcereModule;", ln, ln);
 
       z.concatx("LIB_EXPORT ", g.sym.application, " ", g.lib.bindingName,
             "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])", ln);

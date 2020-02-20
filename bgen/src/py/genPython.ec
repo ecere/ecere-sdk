@@ -195,7 +195,7 @@ class PythonGen : CGen
                   for(e : visited)
                   {
                      Class cl = (Class)e;
-                     v.processDependency(oother, otypedef, cl);
+                     v.processDependency(this, oother, otypedef, cl);
                   }
                   delete val;
                   delete batch;
@@ -651,7 +651,7 @@ void processPyClass(PythonGen g, BClass c)
       else if(hasBase && (!c.nativeSpec || cBase.cl.type == unitClass) && !c.isBool)
       {
          out.z.concatx("(", cBase.symbolName, ")"); // c.baseSymbolName
-         v.processDependency(otypedef, otypedef, cBase.cl);
+         v.processDependency(g, otypedef, otypedef, cBase.cl);
       }
       else if(c.cl.type == structClass && cBase && cBase.is_struct)
          out.z.concatx("(Struct)"); // ("(", g.lib.bindingName, "_struct)")
@@ -1038,7 +1038,7 @@ void processPyClass(PythonGen g, BClass c)
                      //out.z.concatx(sk, "            val = lib.", p.fpnSet, ln);
                      //out.z.concatx(sk, "            val = lib.", p.fpnSet, ln);
                      }*/
-                     v.processDependency(otypedef, otypedef, p.cConv.cl);
+                     v.processDependency(g, otypedef, otypedef, p.cConv.cl);
                   }
    //#if 0
                   {
@@ -1058,7 +1058,7 @@ void processPyClass(PythonGen g, BClass c)
                               out.z.concatx(sk, "         ", elif ? "el" : "", "if isinstance(", name, ", ", itacl.cl.name, "):", ln);
                               out.z.concatx(sk, "            self.impl = lib.", p.fpnGet, "(", name, impl ? ".impl" : "", zero ? "[0]" : "", ")", ln);
                               out.z.concatx(sk, "            return", ln);
-                              //v.processDependency(otypedef, otypedef, itacl.cl);
+                              //v.processDependency(g, otypedef, otypedef, itacl.cl);
                            }
                         }
                      }
@@ -1130,7 +1130,7 @@ void processPyClass(PythonGen g, BClass c)
                                  out.z.concatx(sk, "            self.impl = ffi.new(\"", c.name, " *\")", ln);
                                  out.z.concatx(sk, "            lib.", p.fpnGet, "(", name, forStruct ? ".impl" : "", ", self.impl)", ln);
                                  out.z.concatx(sk, "            return", ln); // todo: do away with this return and others too maybe by adding an else at the end
-                                 //v.processDependency(otypedef, otypedef, itacl.cl);
+                                 //v.processDependency(g, otypedef, otypedef, itacl.cl);
                               }
                            }
                         }
@@ -1522,7 +1522,7 @@ void processPyClass(PythonGen g, BClass c)
                /*if(cType && !cType.isBool && cType.cl.type != systemClass)
                {
                   out.z.concatx("value = ", typeName, "(); ");
-                  //v.processDependency(otypedef, otypedef, cType.cl);
+                  //v.processDependency(g, otypedef, otypedef, cType.cl);
                }
                out.z.concatx("lib.", "_get_", itmpp.name, "(", selfimpl, ", value.impl)", ln);*/
                   if(itmpptype.kind == classType && itmpptype._class.registered &&
@@ -2853,12 +2853,12 @@ static const char * getTypeZeroValuePy(PythonGen g, Type t, BVariant v)
                return "False";
             if(cl.type == bitClass)
             {
-               //v.processDependency(otypedef, otypedef, cl);
+               //v.processDependency(g, otypedef, otypedef, cl);
                return "0"; // return c.py_initializer;
             }
             else if(cl.type == unitClass)
             {
-               //v.processDependency(otypedef, otypedef, cl);
+               //v.processDependency(g, otypedef, otypedef, cl);
                return "0"; // return c.py_initializer;
             }
             else if(cl.type == enumClass)
