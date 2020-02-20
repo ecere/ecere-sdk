@@ -8,7 +8,8 @@ define cpptemplateArgClassObject = "TCO";
 define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
-define cpptemplateTemplateDef = "template <class TPT>";
+define cpptemplateTemplateClassDef = "template <class TPT>";
+define cpptemplateTemplateTypeDef = "template <typename TPT>";
 
 void cppHardcodedInstancePart1(BOutput o)
 {
@@ -141,6 +142,25 @@ void cppHardcodedContainer(BOutput o)
    o.z.concatx(genloc__, "   }", ln);
 }
 
+void cppHardcodedArray(BOutput o)
+{
+   o.z.concatx(ln);
+   o.z.concatx(genloc__, "   TArray<TPT> (std::initializer_list<TPT> list) : TArray<TPT> ()", ln);
+   o.z.concatx(genloc__, "   {", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
+   o.z.concatx(genloc__, "         this->add(*it);", ln);
+   o.z.concatx(genloc__, "   }", ln, ln);
+
+   o.z.concatx(genloc__, "   TArray<TPT> & operator =(std::initializer_list<TPT> list)", ln);
+   o.z.concatx(genloc__, "   {", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
+   o.z.concatx(genloc__, "         this->add(*it);", ln);
+   o.z.concatx(genloc__, "      return *this;", ln);
+   o.z.concatx(genloc__, "   }", ln);
+}
+
 void cppTmpDefineVirtualMethod      (CPPGen g, File f, bool prototype, bool template)
 {
    ZString z { allocType = heap };
@@ -185,10 +205,8 @@ void printZedStringToFile(File f, ZString z)
    z.copy("");
 }
 
-void cppHardcodedCore(CPPGen g, File f)
+void cppHardcodedCorePart1(CPPGen g, File f)
 {
-   ZString z { allocType = heap };
-
    f.PrintLn(genloc__, "#include <initializer_list>");
    f.PrintLn(genloc__, "#include <tuple>", ln);
 
@@ -316,7 +334,10 @@ void cppHardcodedCore(CPPGen g, File f)
    cppTmpDefineIntPropSet(g, f, { false, template });
    cppTmpDefinePropSet(g, f, { false, template });
    cppTmpDefinePropGet(g, f, { false, template });
+}
 
+void cppHardcodedCorePart2(CPPGen g, File f)
+{
    f.PrintLn(genloc__, "extern \"C\" ", g_.sym.module, " ecere_init(", g_.sym.module, " fromModule);", ln);
 
    f.PrintLn(genloc__, "class XClass : public ", g_.sym.__class, " { };", ln);
@@ -485,8 +506,29 @@ void cppHardcodedCore(CPPGen g, File f)
    f.PrintLn(genloc__, "   TC& operator*() const { return *object; }");
    f.PrintLn(genloc__, "   TC* operator->() const { return object; }");
    f.PrintLn(genloc__, "};", ln);
+}
 
-   delete z;
+void cppHardcodedNativeTypeTemplates(CPPGen g, File f)
+{
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const Instance & v) { return v.impl ? v.impl->_class : v._class.impl; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(short v) { C(Class) * c = CO(int); return c; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(int v) { C(Class) * c = CO(int); return c; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(int64 v) { C(Class) * c = CO(int); return c; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(double v) { return CO(double); };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(float v)  { return CO(float); };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const char * v) { C(Class) * c = CO(String); return c; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(char * v) { return CO(String); };", ln);
+
+   f.PrintLn(genloc__, "#define classof(x) class_of<decltype(x)>((x))", ln);
+
+   f.PrintLn(genloc__, "template <typename TTT, C(Class) ** TCO> inline const void * vapass(TNHInstance<TTT, TCO> & f) { return f.impl; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const char * f) { return f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const short & f) { return &f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const int & f) { return &f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const int64 & f) { return &f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const float & f) { return &f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const double & f) { return &f; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const Instance & f) { return f.impl; }", ln);
 }
 
 #if 0

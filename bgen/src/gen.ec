@@ -640,7 +640,7 @@ private:
       return strcmp(this.name, that.name);
    }
 
-   void processDependency(BOutputType from, BOutputType to, BVariant vDep)
+   void processDependency(Gen g, BOutputType from, BOutputType to, BVariant vDep)
    {
       BNamespace nDep = vDep.nspace;
       BNamespace n = nspace;
@@ -655,7 +655,19 @@ private:
          if(dependencies.Find(d))
             delete d;
          else
+         {
+            // if(g.lang == CPlusPlus)
+            //    PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+            if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
+               Print("");
+            if(g.lang == CPlusPlus && !strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
+               Print("");
+            if(g.lang == CPlusPlus && !strcmp(vDep.name, name))
+               Print("");
+            if(g.lang == CPlusPlus && !(from == otypedef && to == otypedef))
+               Print("");
             dependencies.Add(d);
+         }
       }
    }
 }
@@ -1511,6 +1523,7 @@ class BClass : struct
    bool isFromCurrentModule;
    bool is_class;// bool is_Class;
    bool is_struct;
+   bool is_enum;
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
    bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor;
    bool isSurface, isIOChannel, isWindow, isDataBox;
@@ -1549,6 +1562,7 @@ class BClass : struct
 
       is_class          = cl.type == systemClass   && !strcmp(name, "class");
       is_struct         = cl.type == systemClass   && !strcmp(name, "struct");
+      is_enum           = cl.type == systemClass   && !strcmp(name, "enum");
       isBool            = cl.type == enumClass     && !strcmp(name, "bool");
       isString          = cl.type == normalClass   && !strcmp(name, "String");
       isUnichar         = cl.type == unitClass     && !strcmp(name, "unichar");
