@@ -1241,7 +1241,8 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(!pt.Get && !pt.Set)
             {
                const char * dataType = tokenTypeString(cl.dataType);
-               z.concatx(g_.preproLimiter, "#define ", c.name, "(x)  ((", p.cConvUse.symbolName, ")(x))", ln);
+               z.concatx(g_.preproLimiter, "#define ", c.name, " ", c.upper, ln);
+               z.concatx(g_.preproLimiter, "#define ", c.upper, "(x)  ((", p.cConvUse.symbolName, ")(x))", ln);
                z.concatx(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))", ln);
                if(haveContent) *haveContent = true;
             }
