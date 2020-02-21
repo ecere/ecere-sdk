@@ -102,6 +102,7 @@ public:
    bool preprocess;
    const String preproLimiter;
    const String linejoinLimiter;
+   Map<const String, const String> cpp_classNameSwaps;
 private:
    MacroMode expansionOrUse;
    //preprocess = true;
@@ -1540,13 +1541,16 @@ class BClass : struct
    char * symbolName;
    char * baseSymbolName;
    char * py_initializer;
+   const char * cpp_name;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
       bool ecere = gen.lib.ecere;
+      MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
       this.cl = cl;
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
       name = strptrNoNamespace(cl.name);
+      cpp_name = iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
       // skipping these classes here as they are internal native types or base class/struct
       skipTypeDef = skipClassTypeDef.Find(cl.name) != 0;
       // skipping these classes here since they are hardcoded
