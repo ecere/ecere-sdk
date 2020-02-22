@@ -12,10 +12,11 @@ class HelloForm : public Window
 public:
    Label label;
 
+   // REGISTER() { REG_Window(HelloForm); }
    CONSTRUCT(HelloForm, Window)
    {
       caption = $("My First Ecere/C++ Bindings App");
-      borderStyle = BorderStyle_sizable;
+      borderStyle = BorderStyle::sizable;
       size = { 380, 190 };
       hasClose = true;
 

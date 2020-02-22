@@ -10,18 +10,18 @@ public:
    HelloForm()
    {
       caption = $("Sample App using Ecere Toolkit/C++ Bindings");
-      borderStyle = BorderStyle_sizable;
+      borderStyle = BorderStyle::sizable;
       clientSize = { 640, 480 };
       hasClose = true;
       hasMaximize = true;
       hasMinimize = true;
-      background = SystemColor_formColor;
+      background = SystemColor::formColor;
       font = { "Arial", 30 };
 
       button.parent = this;
       button.position = { 200, 200 };
       button.caption = $("Yay!!");
-      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods) -> C(bool)
+      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods) -> bool
       {
          HelloForm & self = (HelloForm &)owner;
          MessageBox msgBox;
