@@ -22,11 +22,13 @@ public:
    REGISTER()
    {
       GuiApplication::class_registration(_class);
+      /*
       register_cycle(_class, [](GuiApplication & app, bool idle) -> C(bool)
       {
          printLn(class_String, "   Cycling!", null);
          return true;
       });
+      */
    }
 
    void main()
