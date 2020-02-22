@@ -12,6 +12,18 @@ import "licensing"
 #define X64STRING " (32 bit)"
 #endif
 
+#ifdef __DATE__
+define compileDate = __DATE__;
+#else
+define compileDate = "unknown";
+#endif
+
+#ifdef __TIME__
+define compileTime = __TIME__;
+#else
+define compileTime = "unknown";
+#endif
+
 class AboutIDE : Window
 {
    borderStyle = sizable;
@@ -36,7 +48,8 @@ class AboutIDE : Window
       if(occ) *occ = '\0';
       message = PrintString(
             "Ecere Software Development Kit (MOD) ", strcmp(shortVersion, "unknown") ? "v" : "", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
-            "Build " REPOSITORY_VERSION "\n"
+            "Build " REPOSITORY_VERSION "\n",
+            "Compile date time: ", compileDate, " ", compileTime, "\n"
             "Copyright © 2005-2016 Ecere Corporation\n"
             "Copyright © 1996-2016 Jérôme Jacovella-St-Louis");
       versionCopyright.contents = message;
