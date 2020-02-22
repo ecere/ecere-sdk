@@ -2370,11 +2370,13 @@ private:
          GccVersionInfo ccVersion = GetGccVersionInfo(compiler, compiler.ccCommand);
          GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
+         bool dashN = opts.outMode == justPrint || eC_Debug;
+         bool dashD = opts.outMode == raw;
          GetIDECompilerConfigsDir(cfDir, true, true);
 #ifdef __APPLE__
-         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\" DYLD_LIBRARY_PATH=\"%s\" %s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s%s -f \"%s\"",
 #else
-         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\"%s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s%s %sV=1 CF_DIR=\"%s\"%s%s%s%s%s%s%s COMPILER=%s%s %s%s%s-j%d %s%s%s -C \"%s\"%s%s%s -f \"%s\"",
 #endif
 #if defined(__WIN32__)
                "",
@@ -2402,7 +2404,10 @@ private:
                numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
                (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
-               (String)makeTargets, topNode.path, opts.outMode == verbose ? " V=1" : "", (opts.outMode == justPrint || eC_Debug) ? " -n" : "", makeFilePath);
+               (String)makeTargets, topNode.path, opts.outMode == verbose ? " V=1" : "",
+               dashN ? " -n" : "",
+               dashD ? " -d"/*" --debug=j"*/ : "",
+               makeFilePath);
          if(opts.outMode != normal)
             ide.outputView.buildBox.Logf("%s\n", command);
 
