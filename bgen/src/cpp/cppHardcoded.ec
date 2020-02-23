@@ -193,7 +193,7 @@ void cppTmpDefineIntConstructClass     (CPPGen g, File f) { ZString z { allocTyp
 void cppTmpDefineMacroMoveConstructors (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroMoveConstructors   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineConstructClass        (CPPGen g, File f, bool template) { ZString z { allocType = heap }; cppDefineMacroConstructClass     (g, z, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineDestructClass         (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroDestructClass      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefineClassRegistration     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroClassRegister      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefineClassRegistration     (CPPGen g, File f, bool prototype, bool template) { ZString z { allocType = heap }; cppDefineMacroClassRegister      (g, z, prototype, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineProperty              (CPPGen g, File f, PropertyMacroBits opts) { ZString z { allocType = heap }; cppDefineMacroProperty   (g, z, opts, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineIntPropSet            (CPPGen g, File f, PropertyMacroBits opts) { ZString z { allocType = heap }; cppDefineMacroIntPropSet (g, z, opts, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefinePropSet               (CPPGen g, File f, PropertyMacroBits opts) { ZString z { allocType = heap }; cppDefineMacroPropSet    (g, z, opts, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
@@ -243,7 +243,10 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    cppTmpDefineConstructClass(g, f, false);
    cppTmpDefineConstructClass(g, f, true);
    cppTmpDefineDestructClass(g, f);
-   cppTmpDefineClassRegistration(g, f);
+   cppTmpDefineClassRegistration(g, f, true, false);
+   cppTmpDefineClassRegistration(g, f, false, false);
+   cppTmpDefineClassRegistration(g, f, true, true);
+   cppTmpDefineClassRegistration(g, f, false, true);
 
    f.PrintLn(genloc__, "#if !defined(__LINK_ECERE__)");
    f.PrintLn(genloc__, "#define __LINK_ECERE__ 1");
@@ -312,6 +315,11 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "#define REGVMETHOD(b, n, m, p, t, a) \\");
    f.PrintLn(genloc__, "    if(!eqTypes<decltype(&m), decltype(&b::n)>()) \\");
    f.PrintLn(genloc__, "       ((b::b ## _ ## n ## _Functor::FunctionType *)_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
+
+   // bring back BIND_* and / or register_* ?
+   // f.PrintLn("#define SETVMETHOD(n, m, p, t, a) \\");
+   // f.PrintLn("    if(!eqTypes<typeof(&m), typeof(&n)>()) \\");
+   // f.PrintLn("       n = +[]p { return ((t &)self).m a; }");
 
    cppTmpDefineProperty(g, f, { true });
    cppTmpDefineIntPropSet(g, f, { true });

@@ -103,6 +103,7 @@ public:
    const String preproLimiter;
    const String linejoinLimiter;
    Map<const String, const String> cpp_classNameSwaps;
+   Map<consttstr, const String> cpp_methodNameSwaps;
 private:
    MacroMode expansionOrUse;
    //preprocess = true;
@@ -657,8 +658,8 @@ private:
             delete d;
          else
          {
-            // if(g.lang == CPlusPlus)
-            //    PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+            if(g.lang == CPlusPlus && !strcmp(g.lib.name, "EDA"))
+               PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
                Print("");
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
@@ -1545,12 +1546,10 @@ class BClass : struct
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
       bool ecere = gen.lib.ecere;
-      MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
       this.cl = cl;
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
       name = strptrNoNamespace(cl.name);
-      cpp_name = iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
       // skipping these classes here as they are internal native types or base class/struct
       skipTypeDef = skipClassTypeDef.Find(cl.name) != 0;
       // skipping these classes here since they are hardcoded
@@ -1596,6 +1595,12 @@ class BClass : struct
          symbolName = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
       else
          symbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
+
+      if(gen.lang == CPlusPlus)
+      {
+         MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
+         cpp_name = isString ? symbolName : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
+      }
 
       if(python && py && isBool)
          symbolName[0] = (char)toupper(symbolName[0]); // Bool
@@ -1902,8 +1907,9 @@ class BMethod : struct
    }
    const char * name;
    char * mname;/* char * name;*/ char * m; char * v; char * s; char * n;
+   const char * cpp_name;
    void noinit() { }
-   void init(Method md, BClass c)
+   void init(Method md, BClass c, Gen gen)
    {
       conassertctx(md._class == c.cl, "?");
       if(this.md && this.c) return;
@@ -1911,6 +1917,11 @@ class BMethod : struct
       this.c = c;
       name = strptrNoNamespace(md.name);
       mname = copyCamelCaseString(md.name);
+      if(gen.lang == CPlusPlus)
+      {
+         MapIterator<consttstr, const String> iNameSwaps { map = gen.cpp_methodNameSwaps };
+         cpp_name = gen.cpp_methodNameSwaps && iNameSwaps.Index({ c.cl.name, name }, false) ? iNameSwaps.data : mname;
+      }
       //name = PrintString(c.cname, "_", mname);
       n = PrintString(c.cname, "_", mname); // n = PrintString("MN(", c.cname, ", ", mname, ")");
       m = g_.allocMacroSymbolName(false, METHOD, { }, c.cname, mname, 0);
