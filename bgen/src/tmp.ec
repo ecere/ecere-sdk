@@ -526,50 +526,50 @@ char * getClassTypeName(Class c)
    conassert(cl != null, "?");
    if(cl.templateClass)
    {
-            bool skipAllTemplated = false;
-            ClassTemplateArgument * tArgs = cl.templateArgs;
-            int tCount = cl.templateParams.count;
-            int baseParam = cl.numParams - tCount;
-            int n;
-            //name = getNoNamespaceString(t.cl.string, null, false);
-            if(tArgs)
+      bool skipAllTemplated = false;
+      ClassTemplateArgument * tArgs = cl.templateArgs;
+      int tCount = cl.templateParams.count;
+      int baseParam = cl.numParams - tCount;
+      int n;
+      //name = getNoNamespaceString(t.cl.string, null, false);
+      if(tArgs)
+      {
+         for(n = baseParam; n < tCount; n++)
+         {
+            Type argType;
+            ClassTemplateArgument * tArg = &tArgs[n];
+            if(!tArg->dataTypeString) conmsgs("check");
+            argType = ProcessTypeString(tArg->dataTypeString, false);
+            if(argType.kind == templateType)
+               skipAllTemplated = true;
+            else
             {
-               for(n = baseParam; n < tCount; n++)
-               {
-                  Type argType;
-                  ClassTemplateArgument * tArg = &tArgs[n];
-                  if(!tArg->dataTypeString) conmsgs("check");
-                  argType = ProcessTypeString(tArg->dataTypeString, false);
-                  if(argType.kind == templateType)
-                     skipAllTemplated = true;
-                  else
-                  {
-                     skipAllTemplated = false;
-                     break;
-                  }
-                  FreeType(argType);
-               }
+               skipAllTemplated = false;
+               break;
             }
-            if(skipAllTemplated) conmsgs("check");
-               //name = PrintString("C(", cl.templateClass.name, ")");
-            else if(tArgs)
-            {
-               ZString z { allocType = heap };
-               z.concatx("T(", cl.templateClass.name);
-               for(n = baseParam; n < tCount; n++)
-               {
-                  ClassTemplateArgument * tArg = &tArgs[n];
-                  if(!tArg->dataTypeString) conmsgs("check");
-                  if(!strcmp(tArg->dataTypeString, "thisclass"))
-                     z.concatx(", thisclass(", cl.name, cl.type == noHeadClass ? " *" : "", ")");
-                  else
-                     z.concatx(", ", tArg->dataTypeString);
-               }
-               z.concat(")");
-               name = CopyString(z._string);
-               delete z;
-            }
-            else conmsgs("check");
+            FreeType(argType);
+         }
+      }
+      if(skipAllTemplated) conmsgs("check");
+         //name = PrintString("C(", cl.templateClass.name, ")");
+      else if(tArgs)
+      {
+         ZString z { allocType = heap };
+         z.concatx("T(", cl.templateClass.name);
+         for(n = baseParam; n < tCount; n++)
+         {
+            ClassTemplateArgument * tArg = &tArgs[n];
+            if(!tArg->dataTypeString) conmsgs("check");
+            if(!strcmp(tArg->dataTypeString, "thisclass"))
+               z.concatx(", thisclass(", cl.name, cl.type == noHeadClass ? " *" : "", ")");
+            else
+               z.concatx(", ", tArg->dataTypeString);
+         }
+         z.concat(")");
+         name = CopyString(z._string);
+         delete z;
+      }
+      else conmsgs("check");
    }
    else
       name = CopyString(cl.name);

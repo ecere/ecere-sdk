@@ -76,7 +76,7 @@ static void cInCodeVirtualMethods(AST out, CGen g)
             while((md = met.next(publicOnly)))
             {
                BMethod m = md;
-               m.init(md, c);
+               m.init(md, c, g);
                z.concatx("LIB_EXPORT ", g_.sym.method, " * ", m.m, ";", ln);
                haveContent = true;
             }
@@ -111,7 +111,7 @@ static void cInCodeMethodFunctionPointers(AST out, CGen g)
                if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
                {
                   BMethod m = md;
-                  m.init(md, c);
+                  m.init(md, c, g);
                   if(md.type == normalMethod)
                   {
                      ASTNode node = astFunction(m.s, { type = md.dataType, md = md, cl = cl, m = m, c = c }, { pointer = true }, null);
@@ -299,7 +299,7 @@ static void cInCodeVirtualMethodIDs(AST out, CGen g)
             while((md = met.next(publicVirtual)))
             {
                BMethod m = md;
-               m.init(md, c);
+               m.init(md, c, g);
                z.concatx("LIB_EXPORT int ", m.v, ";", ln);
                haveContent = true;
             }
@@ -386,7 +386,7 @@ static void cInCodeInitClasses(AST out, CGen g)
                if(!g.lib.ecereCOM || !(c.isModule && (!strcmp(md.name, "Load") || !strcmp(md.name, "Unload"))))
                {
                   BMethod m = md;
-                  m.init(md, c);
+                  m.init(md, c, g);
                   if(!c.first)
                      z.concatx(ln);
                   else

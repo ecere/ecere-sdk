@@ -820,7 +820,7 @@ void processPyClass(PythonGen g, BClass c)
                      while((m = itm.next(publicVirtual)))
                      {
                         char * mname;
-                        m.init(itm.md, c);
+                        m.init(itm.md, c, g);
                         mname = pyGetNoConflictSymbolName(m.mname);
                         out.z.concatx(added ? "" : sln, sk, "                      '", mname, "',", ln);
                         delete mname;
@@ -961,7 +961,7 @@ void processPyClass(PythonGen g, BClass c)
                         while((m = itm.next(publicVirtual)))
                         {
                            char * mname;
-                           m.init(itm.md, cc);
+                           m.init(itm.md, cc, g);
                            mname = pyGetNoConflictSymbolName(m.mname);
                            out.z.concatx("      if ", mname, " is not ", "None", ": ", spaces(memberLen, strlen(mname)), "self.", mname, " = ", mname, ln);
                            delete mname;
@@ -1905,7 +1905,7 @@ void processPyClass(PythonGen g, BClass c)
          {
             bool isStatic = m.md.dataType.staticMethod;
             const char * comma = isStatic ? "" : ", ";
-            m.init(itm.md, c);
+            m.init(itm.md, c, g);
 
             // method
             {
@@ -2092,7 +2092,7 @@ char * initArguments(PythonGen g, BClass c, BVariant v, BOutput out, const char 
             while((m = itm.next(publicVirtual)))
             {
                char * mname;
-               m.init(itm.md, cc);
+               m.init(itm.md, cc, g);
                mname = pyGetNoConflictSymbolName(m.mname);
                printClassInitArgument(out, g, mname, null, lineEachIndent, &memberLen, v);
                delete mname;
@@ -2133,7 +2133,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
       BMethod m; IterMethod itm { c.cl };
       while((m = itm.next(publicOnly))) //publicVirtual
       {
-         m.init(itm.md, c);
+         m.init(itm.md, c, g);
          // method
          if(m.md.type == virtualMethod)
          {
