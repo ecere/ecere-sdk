@@ -9,6 +9,7 @@ define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
 define cpptemplateTemplateClassDef = "template <class TPT>";
+define cpptemplateTemplateClassParams = "<TPT>";
 define cpptemplateTemplateTypeDef = "template <typename TPT>";
 
 void cppHardcodedInstancePart1(BOutput o)
