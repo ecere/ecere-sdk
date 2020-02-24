@@ -1752,7 +1752,8 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          else
          {
             char * symbolName;
-            if(opt.cpp && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt))
+            if((opt.cpp && _class && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt)) ||
+                  (!_class && t.kind == classType && t._class && !t._class.registered))
                symbolName = CopyString(name);
             else
                symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
