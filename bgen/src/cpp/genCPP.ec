@@ -581,7 +581,7 @@ static void generateCPP(CPPGen g, File f)
 
    f.PrintLn(ln);
 
-   // outputImplementationsContents(g, f);
+   outputImplementationsContents(g, f);
 }
 
 // TODO: Get rid of this non-sense...
@@ -1661,12 +1661,12 @@ static void processCppClass(CPPGen g, BClass c)
       {
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
-            // BOutput o { vclass, c = c, z = { allocType = heap } };
-            // c.outImplementation = o;
-            // n.implementationsContents.Add(v);
             BOutput o { vclass, c = c, z = { allocType = heap } };
+            BOutput o2 { vclass, c = c, z = { allocType = heap } };
             c.outSplit = o;
             n.splitContents.Add(v);
+            c.outImplementation = o2;
+            n.implementationsContents.Add(v);
 
             if(!c.isInstance) // todo: remove this if, keep the next line
                o.z.concatx(ln);
@@ -1677,12 +1677,12 @@ static void processCppClass(CPPGen g, BClass c)
             {
                // if(mode == expansion)
                {
-                  cppMacroClassRegister(g, o.z, mode, false,
+                  cppMacroClassRegister(g, o2.z, mode, false,
                         c && c.cl.type == normalClass && c.cl.templateArgs, 0, c.name,
                         c.isContainer ? cpptemplateTemplateTypeDef : cpptemplateTemplateClassDef, 0);
-                  o.z.concatx(genloc__, "{", ln);
-                  cppMacroClassRegistration(g, o.z, configuration, 2, c, cBase, c, 0);
-                  o.z.concatx(genloc__, "}", ln);
+                  o2.z.concatx(genloc__, "{", ln);
+                  cppMacroClassRegistration(g, o2.z, configuration, 2, c, cBase, c, 0);
+                  o2.z.concatx(genloc__, "}", ln);
                }
             }
 
@@ -3037,7 +3037,6 @@ static void outputSplitContents(CPPGen g, File f)
    }
 }
 
-/*
 static void outputImplementationsContents(CPPGen g, File f)
 {
    ZString z { allocType = heap };
@@ -3067,7 +3066,6 @@ static void outputImplementationsContents(CPPGen g, File f)
       }
    }
 }
-*/
 
 static void cppHeaderStart(CPPGen g, File f)
 {
