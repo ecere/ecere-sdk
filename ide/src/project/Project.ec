@@ -2881,6 +2881,12 @@ private:
                OutputFlags(f, any, compiler.cxxFlags, inPlace);
                f.Puts("\n");
             }
+            if(compiler.prepDirectives && compiler.prepDirectives.count)
+            {
+               f.Puts("\nCXXFLAGS +=");
+               OutputFlags(f, _D, compiler.prepDirectives, inPlace);
+               f.Puts("\n");
+            }
             if(compiler.linkerFlags && compiler.linkerFlags.count)
             {
                f.Puts("\nLDFLAGS +=");
