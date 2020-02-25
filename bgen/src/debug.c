@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef CODE_LOC_FIXED_LEN
-#define CODE_LOC_FIXED_LEN 26
-#endif
+#include "debug.h"
+
 static char ___fixedLengthCodeLocation[256];
 // note: this is not thread safe! there should be a language feature in eC? -- need a way to easily make this thread safe
 char * ___getFixedLengthCodeLocation(const char * prefix, const char * file, const int line)

@@ -1,6 +1,8 @@
 #ifndef __DEBUG_EH_
 #define __DEBUG_EH_
 
+#include "debug.h"
+
 char * ___getFixedLengthCodeLocation(const char * prefix, const char * file, const int line);
 
 // note: __getloc__ is not thread safe
