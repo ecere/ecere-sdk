@@ -563,7 +563,7 @@ static void generateCPP(CPPGen g, File f)
    {
       f.PrintLn("");
       f.PrintLn(genloc__, "// Instance methods depending on libecere");
-      f.Print(genloc__, "void Instance::class_registration(CPPClass & _class)");
+      f.Print(genloc__, "void Instance::class_registration(CPPClass & _class)\n");
       // TONOMACRO
       if(g.options.expandMacros)
       {
@@ -1620,7 +1620,6 @@ static void processCppClass(CPPGen g, BClass c)
                   ; // o.z.concatx(genloc__, indents(1), "}", ln);
                else
                   o.z.concatx("; }", ln);*/
-               o.z.concatx(";", ln);
             }
 
             if(c.isArray)
@@ -3722,7 +3721,8 @@ static void cppMacroClassRegister(
    bool pe = prototype;
    bool te = template;
    const char * lc = mode == definition ? " \\" : "";       // lc: line continuation
-   const char * pt = pe && mode == expansion ? ";\n" : "";   // pt: prototype termination
+   const char * lt = pe ? ";" : "";                         // lt: line termination
+   const char * pt = mode == expansion ? "\n" : "";   // pt: prototype termination
    const char * sc = mode == expansion ? "" : " ## ";    // sc: symbol concatenation
    switch(mode)
    {
@@ -3740,16 +3740,22 @@ static void cppMacroClassRegister(
          o.concatx("void ");
          if(!pe)
             o.concatx(te ? cpptemplatePrefix : "", te ? sc : "", c, te ? "<TPT>" : "", "::");
-         o.concatx("class_registration(CPPClass & _class)", pt);
+         o.concatx("class_registration(CPPClass & _class)", lt, pt);
          break;
       }
-      case use:
       case encapsulation:
+         Print("");
+         break;
+      case use:
+      {
+         // if(mode == expansion)
+         //    o.concatx(genloc__, indents(ind));
          o.concatx(genloc__, indents(ind), te ? "T" : "", "REGISTER_", pe ? "PROTO" : "IMPL", "(",
                !pe ? c : "", !pe && te ? ", " : "",
                te ? t : "",
-                     ")");
+                     ")", lt, ln);
          break;
+      }
    }
 }
 
@@ -4145,7 +4151,7 @@ static void cppMacroClassRegistration(
       case encapsulation:
          if(mode == expansion)
             o.concatx(genloc__, indents(ind));
-         o.concatx(c.name, "_class_registration(", c.name, ")");
+         o.concatx(c.name, "_class_registration(", c.name, ")", ln);
          break;
    }
 }
@@ -4943,7 +4949,7 @@ static void cppMacroProperty(
    switch(mode)
    {
       case definition:
-         o.concatx(genloc__, indents(ind), "#define property", ps, "(", n, ", ", sg, ") ");
+         o.concatx(genloc__, indents(ind), "#define property", ps, "(", n, ", ", sg, ")", lc, ln);
          ind++;
       case expansion:
          if(opts.prototype)
@@ -5112,6 +5118,7 @@ static void cppMacroIntPropSet(
          o.concatx(genloc__);
          if(mode == use)
             o.concat(indents(ind + 2));
+         o.concat(indents(ind + mode == use ? 2 : 0));
 
    /*
    if(!strcmp(mn, "transform"))
@@ -5202,6 +5209,7 @@ static void cppMacroPropSet(
 // const char * sso = mode == expansion ? "" : "\"#";    // sso: symbol stringification open
 // const char * ssc = mode == expansion ? "" : "\"";     // ssc: symbol stringification close
    MacroMode submode = mode == definition ? encapsulation : mode;
+                    // mode == definition ? encapsulation : configuration
    //MacroMode /*submode = mode == expansion ? expansion : use;*/submode = mode == definition ? g.expansionOrUse : g.macroModeBits.intPropSet;
    if(mode == configuration)
       mode = g.macroModeBits.propSet ? expansion : use;
@@ -5215,9 +5223,9 @@ static void cppMacroPropSet(
          const char * lc = submode == expansion ? "" : " \\";  // lc: line continuation
          const char * sc = submode == expansion ? "" : " ## "; // sc: symbol concatenation
          char * cx = te ? PrintString(cpptemplatePrefix, sc, c, " ", tp/*, pp ? tp2 : tp*/) : CopyString(c);
-         if(mode == definition)
-            o.concat(indents(ind));
-         cppMacroIntPropSet(g, o, submode, pe ? { opts.prototype, opts.type == template ? normal : opts.type } : opts, code, ind,
+         // if(mode == definition)
+         //    o.concat(indents(ind));
+         cppMacroIntPropSet(g, o, mode == definition ? encapsulation : configuration, pe ? { opts.prototype, opts.type == template ? normal : opts.type } : opts, code, ind,
             t,
             t2,
             n,
