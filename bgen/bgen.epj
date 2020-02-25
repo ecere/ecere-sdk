@@ -22,7 +22,10 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "FastMath" : false
+            "FastMath" : false,
+            "InstallCommands" : [
+               "D:/c/e/e/misc/bgen-genloc-remover/obj/debug.win32/bgen-genloc-remover.exe D:/c/e/e/bindings"
+            ]
          }
       },
       {
@@ -81,7 +84,19 @@
             {
                "Folder" : "cpp",
                "Files" : [
-                  "genCPP.ec",
+                  {
+                     "FileName" : "genCPP.ec",
+                     "Configurations" : [
+                        {
+                           "Name" : "Debug",
+                           "Options" : {
+                              "PostbuildCommands" : [
+                                 "D:/c/e/e/misc/bgen-genloc-remover/obj/debug.win32/bgen-genloc-remover.exe D:/c/e/e/bindings"
+                              ]
+                           }
+                        }
+                     ]
+                  },
                   "cppHardcoded.ec"
                ]
             },
@@ -117,7 +132,8 @@
             "debug.c",
             "extras.ec",
             "bgen.eh",
-            "econe.eh"
+            "econe.eh",
+            "debug.h"
          ]
       }
    ],
