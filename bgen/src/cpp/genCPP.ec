@@ -1495,7 +1495,7 @@ static void processCppClass(CPPGen g, BClass c)
                   o.z.concatx(genloc__, indents(1), c.cpp_name, "(", cBase.name, " value) : ", cBase.name, "(value) { }", ln);
                   // todo: missing constructors if unit class derrived more than once?
                   o.z.concatx(genloc__, indents(1), c.cpp_name, "(", c.cl.dataTypeString, " value) : ",
-                        cBase.name, "(", c.name, "(value)) { }", ln);
+                        cBase.name, "(", c.upper, "(value)) { }", ln);
                   o.z.concatx(genloc__, indents(1), "operator ", c.cl.dataTypeString, "() { return ", cBase.name, "_in_", c.name, "(impl); }", ln);
                   o.z.concatx(genloc__, indents(1), c.cpp_name, " & operator =(", c.cl.dataTypeString, " value) { impl = ", c.name, "(value); return *this; }", ln);
                }
