@@ -14,7 +14,6 @@ public:
    REGISTER() { REG_Window(HelloCube); }
    CONSTRUCT(HelloCube, Window)
    {
-      system("pause");
       caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
       background = DefinedColor::black;
       borderStyle = BorderStyle::sizable;
@@ -37,7 +36,7 @@ public:
 
    bool onLoadGraphics()
    {
-      system("pause");
+      printLn(CO(String), "onLoadGraphics", null);
       DisplaySystem ds = displaySystem;
       cube.create(ds); // todo: cube.create(displaySystem);
       C(Transform) transform;
@@ -70,14 +69,14 @@ public:
 
    void onResize(int w, int h)
    {
-      system("pause");
+      printLn(CO(String), "onResize", null);
       camera.setup(w, h, null);
       camera.update();
    }
 
    void onRedraw(Surface & surface)
    {
-      system("pause");
+      printLn(CO(String), "onRedraw", null);
       surface.clear(ClearType::depthBuffer);
       display->setLight(0, &light); // todo: display->setLight(0, light);
       display->setCamera(surface, camera);
