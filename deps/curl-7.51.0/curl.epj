@@ -17,6 +17,16 @@
       "TargetType" : "StaticLibrary",
       "TargetFileName" : "curl"
    },
+   "Platforms" : [
+      {
+         "Name" : "win32",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "CURL_WANTS_CA_BUNDLE_ENV"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",

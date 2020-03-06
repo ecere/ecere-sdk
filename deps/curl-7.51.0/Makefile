@@ -57,6 +57,8 @@ RCSOURCES = $(call shwspace,$(_RCSOURCES))
 
 RCOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.rc,%$(O),$(notdir $(_RCSOURCES)))))
 
+CFLAGS += -DCURL_WANTS_CA_BUNDLE_ENV
+
 else
 RCSOURCES =
 RCOBJECTS =
