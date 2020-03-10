@@ -342,9 +342,10 @@ class LWFontManager
             sprintf(tmp, "data/%s", baseName);
 #elif defined(__ANDROID__)
             //if(SearchString(font.face, 0, "Arial", false, false))
-               baseName = font.bold ? "Arial-Unicode-Bold.ttf" : "ARIALUNI.TTF";
+               baseName = font.bold ? "Arial-Unicode-Bold.ttf" : "Arial-Unicode-Regular.ttf";
 
-            sprintf(tmp, ":fonts/%s", baseName);
+            //sprintf(tmp, ":fonts/%s", baseName);
+            sprintf(tmp, "/sdcard/fonts/%s", baseName);
 #else
             strcpy(tmp, baseName);
 #endif
