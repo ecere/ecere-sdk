@@ -115,7 +115,7 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
 
 #if defined(__ANDROID__)
    if(SearchString(faceName, 0, "Arial", false, false))
-      faceName = flags.bold ? ":fonts/Arial-Unicode-Bold.ttf" : ":fonts/ARIALUNI.TTF";
+      faceName = flags.bold ? "/sdcard/fonts/Arial-Unicode-Bold.ttf" : "/sdcard/fonts/Arial-Unicode-Regular.ttf";
 #endif
    strcpy(fileName, faceName);
 
