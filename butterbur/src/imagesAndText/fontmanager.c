@@ -1043,7 +1043,7 @@ int fmDrawText( fmManager *fm, int x, int y, const char *string, int stringlengt
     return x;
   font = state->font;
   if( !( stringlength ) )
-    stringlength = strlen( string );
+    stringlength = string ? strlen( string ) : 0;
 
   /* Align horizontally */
   if( state->align & FM_ALIGN_RIGHT )
