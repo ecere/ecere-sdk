@@ -987,7 +987,7 @@ public:
       CMSSExpArray arr = e && e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
       int unit = 0;
 
-      if(inst)
+      if(inst && inst.instance)
       {
          CMSSSpecName spec = (CMSSSpecName)inst.instance._class;
          String n = spec ? spec.name : null;
