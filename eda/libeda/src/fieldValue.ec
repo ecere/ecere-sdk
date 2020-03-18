@@ -124,6 +124,13 @@ public struct FieldValue
       }
    }
 
+   void OnCopy(FieldValue b)
+   {
+      this = b;
+      if(type.type == text && type.mustFree)
+         s = CopyString(b.s);
+   }
+
    void OnFree()
    {
       if(type.mustFree)
