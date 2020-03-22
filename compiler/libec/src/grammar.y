@@ -2404,6 +2404,9 @@ struct_class_error:
         {
            $$ = MkStructOrUnion($1.type, $1.id, $3);
            $1.id = null;
+           $$.ctx = $1.ctx;
+           $1.ctx = null;
+
            FreeSpecifier($1);
         }
         else
