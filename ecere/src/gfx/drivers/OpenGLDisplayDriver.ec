@@ -805,6 +805,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if defined(__LUMIN__)
       capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true };
+#elif defined(_GLES3)
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true };
 #elif defined(_GLES)
       capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
@@ -859,6 +861,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if defined(__LUMIN__)
       oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true };
+#elif defined(_GLES3)
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true };
 #elif defined(_GLES)
       oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #elif defined(_GLES2)
@@ -4460,7 +4464,7 @@ class OpenGLDisplayDriver : DisplayDriver
          bool collectingHits = display3D && display3D.collectingHits;
          GLEAB eab = ((!collectingHits && oglIndices && glCaps_vertexBuffer) ? oglIndices.buffer : noEAB);
          uint nIndices = primitive.nIndices;
-         if(mesh.meab && !mesh.meab.keepSameBufferID)
+         if(mesh.meab && (!oglIndices || !mesh.meab.keepSameBufferID))
             eab.buffer = mesh.meab.ab.buffer;
 
          if(!glCaps_intAndDouble && !glCaps_vertexBuffer && indices32Bit)
