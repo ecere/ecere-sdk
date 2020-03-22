@@ -83,8 +83,8 @@ bool egl_init_display(uint window)
    EGLint major = 4;
    EGLint minor = 0;
 #else
-   EGLint major = 0;
-   EGLint minor = 0;
+   EGLint major = 3; //0;
+   EGLint minor = 2; //0;
 #endif
    eglInitialize(display, &major, &minor);
 #if defined(__LUMIN__)
