@@ -9,7 +9,14 @@ public:
    // NOTE: neither of these are currently kept in Mesh's flags member
    bool memAllocOnly:1, interleaved:1;
 };
-public class PrimitiveGroupType { public: RenderPrimitiveType primitiveType:8; bool vertexRange:1, indices32bit:1; };
+
+public class PrimitiveGroupType : uint32
+{
+public:
+   RenderPrimitiveType primitiveType:8;
+   bool vertexRange:1, indices32bit:1, sharedIndices:1;
+};
+
 public enum RenderPrimitiveType : PrimitiveGroupType
 {
    dot, // Point,
@@ -158,6 +165,10 @@ public:
    property Pointf * texCoords { get { return texCoords; } set { texCoords = value; } };
    property int nVertices { get { return nVertices; } set { nVertices = value; } };
    property Vector3Df * vertices { get { return vertices; } set { vertices = value; } };
+   property int nIndices { get { return nIndices; } set { nIndices = value; } };
+   property GLMB meab { get { return meab; } set { meab = value; } };
+   property int baseIndex { get { return baseIndex; } set { baseIndex = value; } };
+   property uint32 * indices { get { return indices; } set { indices = value; } };
    property Vector3Df * normals { get { return normals; } set { normals = value; } };
    property Vector3Df * tangents { get { return tangents; } set { tangents = value; } };
    property ColorRGBAf * colors { get { return colors; } set { colors = value; } };
@@ -299,7 +310,7 @@ public:
          if(!(flags.vertexRange))
          {
             group.nIndices = nIndices;
-            if(driver)
+            if(!flags.sharedIndices && driver)
             {
                group.indices = (void *)(flags.indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
                group.data = driver.AllocateIndices(displaySystem, nIndices, flags.indices32bit);
@@ -1067,6 +1078,10 @@ private:
    GLMB mab, meab;
    uint baseVertex;
    Array<MeshPart> parts;
+
+   // Mesh-wide indices
+   uint * indices;
+   int baseIndex, nIndices;
 };
 
 void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
