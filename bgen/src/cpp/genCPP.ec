@@ -154,7 +154,7 @@ class CPPGen : CGen
          //   manualTypes(n);
          processClasses(n);
          //processOptionalClasses(n);
-         //processFunctions(n);
+         // processFunctions(n);
       }
       processTemplatons();
       ns.cleanup();
@@ -187,6 +187,26 @@ class CPPGen : CGen
          } // end of temporary
       }
    }
+
+   void processFunctions(BNamespace n)
+   {
+      /*
+      GlobalFunction fn; IterFunction func { n.ns, list = options.functionList };
+      while((fn = func.next()))
+      {
+         BFunction f = fn;
+         if(!f.skip && !f.isDllExport)
+         {
+            BVariant v = f;
+            BOutput out { vfunction, f = f };
+            f.nspace.addContent(v);
+            f.out = out;
+            out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true }, v));
+         }
+      }
+      */
+   }
+
 
    void generate()
    {
@@ -314,7 +334,7 @@ static void generateHPP(CPPGen g, File f)
    // typedefClasses(g, f); // temporary
    prototypeClasses(g, f);
 
-   f.PrintLn(genloc__, "void ", g.lib.bindingName, "_cpp_init(Module & module);", ln);
+   f.PrintLn(genloc__, "int ", g.lib.bindingName, "_cpp_init(const Module & module);", ln); // todo? back to void returning?
 
    outputContents(g, f);
 
@@ -534,7 +554,7 @@ static void generateCPP(CPPGen g, File f)
       }
    }
    f.PrintLn(       "");
-   f.PrintLn(genloc__, "void ", g.lib.bindingName /*name*/, "_cpp_init(Module & module)");
+   f.PrintLn(genloc__, "int ", g.lib.bindingName /*name*/, "_cpp_init(const Module & module)"); // todo? back to void returning?
    f.PrintLn(genloc__, "{");
    f.PrintLn(genloc__, "   if(!", firstClass.name, "::_class.impl)");
    f.PrintLn(genloc__, "   {");
@@ -556,6 +576,7 @@ static void generateCPP(CPPGen g, File f)
       }
    }
    f.PrintLn(genloc__, "   }");
+   f.PrintLn(genloc__, "   return 0;"); // todo? back to void returning?
    f.PrintLn(genloc__, "}");
    //if(g.lib.ecere) // hardcoded
 
@@ -1297,9 +1318,9 @@ static void processCppClass(CPPGen g, BClass c)
          if(c.isApplication)
          {
             o.z.concatx(ln);
-            o.z.concatx(genloc__, "void eC_cpp_init(Module & module);", ln);
-            o.z.concatx(genloc__, "void ecere_cpp_init(Module & module);", ln, ln);
-            o.z.concatx(genloc__, "extern ", g.sym.module, " theEcereModule;", ln);
+            // o.z.concatx(genloc__, "int eC_cpp_init(const Module & module);", ln); // todo? back to void returning?
+            o.z.concatx(genloc__, "int ecere_cpp_init(const Module & module);", ln, ln); // todo? back to void returning?
+            // o.z.concatx(genloc__, "extern ", g.sym.module, " theEcereModule;", ln);
          }
 
          if(c.cl.type == noHeadClass)
@@ -1542,13 +1563,10 @@ static void processCppClass(CPPGen g, BClass c)
                      o.z.concatx(ln, genloc__, indents(1), "{", ln);
                      // o.z.concatx(genloc__, " {  }", ln);
                      o.z.concatx(genloc__, indents(2), "EVOLVE_APP(GuiApplication, *this);", ln);
-                     // o.z.concatx(genloc__, indents(2), "// TODO: Omit this if we're linking against eC rt only", ln);
-                     // o.z.concatx(genloc__, indents(2), "ecere_init(impl);", ln);
-                     // o.z.concatx(genloc__, indents(2), "ecere_cpp_init(*this);", ln);
 
-                     o.z.concatx("#ifdef MODULE_NAME", ln);
+                     o.z.concatx(genloc__, "#ifdef MODULE_NAME", ln);
                      o.z.concatx(genloc__, indents(2), "loadTranslatedStrings(null, MODULE_NAME);", ln);
-                     o.z.concatx("#endif", ln);
+                     o.z.concatx(genloc__, "#endif", ln);
                      o.z.concatx(genloc__, indents(1), "}", ln);
                   }
                   else
@@ -1603,7 +1621,7 @@ static void processCppClass(CPPGen g, BClass c)
                // Class Registration
                // o.z.concatx("   REGISTER() { ", cn, "_class_registration(", cn, ");", " }", ln);
                cppMacroClassRegister(g, o.z, mode, true/*mode == expansion*/,
-                     c && c.cl.type == normalClass && c.cl.templateArgs, 1, c.name,
+                     c && c.cl.type == normalClass && c.cl.templateArgs, false, 1, c.name,
                      c.isContainer ? cpptemplateTemplateTypeDef : cpptemplateTemplateClassDef, 0);
                //o.z.concatx("      { ", cn, "_class_registration(", cn, ");", " }", ln);
                /*if(mode == expansion)
@@ -1677,7 +1695,7 @@ static void processCppClass(CPPGen g, BClass c)
                // if(mode == expansion)
                {
                   cppMacroClassRegister(g, o2.z, mode, false,
-                        c && c.cl.type == normalClass && c.cl.templateArgs, 0, c.name,
+                        c && c.cl.type == normalClass && c.cl.templateArgs, false, 0, c.name,
                         c.isContainer ? cpptemplateTemplateTypeDef : cpptemplateTemplateClassDef, 0);
                   o2.z.concatx(genloc__, "{", ln);
                   cppMacroClassRegistration(g, o2.z, configuration, 2, c, cBase, c, 0);
@@ -3393,7 +3411,7 @@ static void cppToFileMacroRegisterClassCPP(
       MacroMode mode,
       uint ind,            // indentation
       const char * n,      // class name
-      const char * a,      // a? we use the module parameter of *_cpp_init(Module & module)
+      const char * a,      // a? we use the module parameter of *_cpp_init(const Module & module)
       void * unused)
 {
    ZString z { allocType = heap };
@@ -3408,7 +3426,7 @@ static void cppMacroRegisterClassCPP(
       MacroMode mode,
       uint ind,            // indentation
       const char * n,      // class name
-      const char * a,      // a? we use the module parameter of *_cpp_init(Module & module)
+      const char * a,      // a? we use the module parameter of *_cpp_init(const Module & module)
       void * unused)
 {
    MacroMode smod = /*mode == configuration ? g.macroModeBits.propSet ? expansion : use : */mode; // selected mode
@@ -3642,7 +3660,10 @@ static void cppMacroConstructClass(
          {
             cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, ind, c, 0);
             o.concatx(lc, ln);
-            o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
+            if(!strcmp(c, "Application") || !strcmp(c, "GuiApplication"))
+               o.concatx(genloc__, indents(ind), "inline ", c, "() : ", c, "(eC_init_CALL(__LINK_ECERE__)) { }", ln);
+            else
+               o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
             //o.concatx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
             cppMacroIntConstructClass(g, o, smod == definition ? encapsulation : configuration, template, ind, c, b, 0);
             if(smod != expansion) o.concatx(ln);
@@ -3705,9 +3726,10 @@ static void cppMacroDestructClass(
       ZString o,           // output
       bool prototype,
       bool template,
+      bool original,
       uint ind,            // indentation
       void * unused) {     // unused
-   cppMacroClassRegister(g, o, definition, prototype, template, ind,
+   cppMacroClassRegister(g, o, definition, prototype, template, original, ind,
          "c",
          "t",
          0); }
@@ -3718,6 +3740,7 @@ static void cppMacroClassRegister(
       MacroMode mode,
       bool prototype,
       bool template,
+      bool original,
       uint ind,            // indentation
       const char * c,      // class name
       const char * t,      // template def
@@ -3726,6 +3749,7 @@ static void cppMacroClassRegister(
    MacroMode smod = /*mode == configuration ? g.macroModeBits.propSet ? expansion : use : */mode; // selected mode
    bool pe = prototype;
    bool te = template;
+   bool ol = original;
    const char * lc = smod == definition ? " \\" : "";       // lc: line continuation
    const char * lt = pe ? ";" : "";                         // lt: line termination
    const char * pt = smod == expansion ? "\n" : "";   // pt: prototype termination
@@ -3734,17 +3758,17 @@ static void cppMacroClassRegister(
    {
       case definition:
          o.concatx(genloc__, indents(ind),
-               "#define ", te ? "T" : "", "REGISTER_", pe ? "PROTO" : "IMPL", "(", !pe ? c : "", !pe && te ? ", " : "", te ? t : "", ")", lc, ln);
+               "#define ", te ? "T" : "", "REGISTER", ol ? "" : "_", pe ? "PROTO" : ol ? "" : "IMPL", "(", !pe && !ol ? c : "", !pe && te ? ", " : "", te ? t : "", ")", lc, ln);
          ind++;
       case expansion:
       {
          o.concatx(genloc__, indents(ind));
-         if(pe)
+         if(pe || ol)
             o.concat("static ");
          else if(te)
             o.concatx(t, " ");
          o.concatx("void ");
-         if(!pe)
+         if(!pe && !ol)
             o.concatx(te ? cpptemplatePrefix : "", te ? sc : "", c, te ? "<TPT>" : "", "::");
          o.concatx("class_registration(CPPClass & _class)", lt, pt);
          break;
@@ -5082,6 +5106,15 @@ static void cppMacroIntPropSet(
 // const char * ssc = smod == expansion ? "" : "\"";     // ssc: symbol stringification close
 // if(g.macroModeBits.intPropSet && smod != expansion)
 //    Print("");
+   /*
+   if(!strcmp(c, "BinaryTree") && !strcmp(t, "int"))
+   {
+      PrintLn(smod);
+      PrintLn(smod == expansion);
+      PrintLn(sc);
+      Print("");
+   }
+   */
    switch(smod)
    {
       case definition:
