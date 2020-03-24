@@ -589,6 +589,23 @@ public:
       set { mapGetCreateVariant(vproperty, v.p); }
       get { if(kind == vproperty) return p; conassertctx(0, "?"); return null; }
    }
+#if 0
+   // removing all of this in favor of using BManual class
+   // this won't work as a string will convert to a Class and that will trigger the BClass conversion property instead
+   property String
+   {
+      set { mapGetCreateVariant(vmanual, v.x); }
+      get { if(kind == vmanual) return x; conassertctx(0, "?"); return null; }
+   }
+   BVariant ::manual(const String value) { mapGetCreateVariant(vmanual, v.x); }
+   const String getManual() { if(kind == vmanual) return x; conassertctx(0, "?"); return null; }
+#endif
+   property BManual
+   {
+      set { mapGetCreateVariant(vmanual, v.x); }
+      get { if(kind == vmanual) return x; conassertctx(0, "?"); return null; }
+   }
+
    property BNamespace nspace
    {
       get
@@ -611,6 +628,7 @@ public:
       {
          switch(kind)
          {
+            case vmanual:     return x.name;
             case vclass:      return c.cl.name;
             case vfunction:   return f.name;
             case vdefine:     return d.name;
@@ -630,6 +648,7 @@ private:
       BTemplaton t;
       BMethod m;
       BProperty p;
+      BManual x;
    };
    void noinit() { }
 
@@ -850,6 +869,25 @@ bool checkForDependency(BOutput a, BOutputPtr b, AVLTree<BVariantPtr> visited, L
       // dependencies outside current module already filtered out by BClass::processDependency()
       if(b != a)
          a.addOutputDependency(b, to);
+   }
+}
+
+class BManual : struct
+{
+   const String manual;
+   // BNamespace nspace;
+   BOutput out;
+   char * name;
+   ~BManual() { delete name; }
+
+   BVariant ::manual(const String value) { storeMapGetInstantiate(BManual, String, storeManuals, allManuals, init(value/*, app.gen*/)); }
+   const String getManual() { return manual; }
+
+
+   void init(const String str/*, Gen gen*/)
+   {
+      manual = str;
+      name = CopyString(str);
    }
 }
 
@@ -1230,13 +1268,32 @@ class BNamespace : struct
       AVLTree<BOutputPtr> outs { };
       for(v : contents; v.kind == vdefine)
          addThatThing((BOutputPtr)v.d.out), conassertctx(v.d.out != null, "?");
-      for(vv : contents; (vv.kind == vclass && vv.c.outTypedef) || (vv.kind == vtemplaton && vv.t.outTypedef))
+      for(vv : contents/*; (vv.kind == vclass && vv.c.outTypedef) || (vv.kind == vtemplaton && vv.t.outTypedef)*/)
       {
          BVariant v = vv;
-         BOutput o = v.kind == vclass ? v.c.outTypedef : v.t.outTypedef;
-         orderedOutputs.Add((BOutputPtr)o);
-         conassertctx(!outs.Find((BOutputPtr)o), "?");
-         outs.Add((BOutputPtr)o);
+         if(/*(v.kind == vmanual && v.x.out) || */(v.kind == vclass && v.c.outTypedef) || (v.kind == vtemplaton && v.t.outTypedef))
+         {
+            BOutput o = /*v.kind == vmanual ? v.x.out : */v.kind == vclass ? v.c.outTypedef : v.t.outTypedef;
+            addThatThing((BOutputPtr)o);
+            /*
+            orderedOutputs.Add((BOutputPtr)o);
+            conassertctx(!outs.Find((BOutputPtr)o), "?");
+            outs.Add((BOutputPtr)o);
+            */
+         }
+         /*else if(v.kind == vmanual || v.kind == vclass) // tocheck: those have null output?
+            ;
+         else if(v.kind == vdefine || v.kind == vproperty || v.kind == vmethod || v.kind == vfunction)
+            ; // PrintLn(v.name); // tocheck: these are outputed somewhere else
+         else
+            PrintLn(v.name);*/
+      }
+      for(vv : contents; vv.kind == vmanual)
+      {
+         BVariant v = vv;
+         BManual x = v.x;
+         if(x.out)
+            addThatThing((BOutputPtr)x.out);
       }
       for(v : contents; v.kind == vclass)
       {

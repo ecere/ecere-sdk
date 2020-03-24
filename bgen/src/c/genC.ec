@@ -154,6 +154,7 @@ class CGen : Gen
 
    Array<BNamespace> storeNamespaces { };
    Array<BVariant> storeVariants { };
+   Array<BVariant> storeManuals { };
    Array<BDefine> storeDefines { };
    Array<BFunction> storeFunctions { };
    Array<BClass> storeClasses { };
@@ -162,6 +163,7 @@ class CGen : Gen
 
    Map<NameSpacePtr, BNamespace> allNamespaces { };
    Map<UIntPtr, BVariant> allVariants { };
+   Map<UIntPtr, BManual> allManuals { };
    Map<DefinedExpressionPtr, BDefine> allDefines { };
    Map<GlobalFunctionPtr, BFunction> allFunctions { };
    Map<ClassPtr, BClass> allClasses { };
@@ -482,6 +484,7 @@ class CGen : Gen
       for(node = !python ? manualTypedefs.root.minimum : pythonManualTypedefs.root.minimum; node; node = node.next)
       {
          Class clDep = null;
+         if(!node.key) continue;
          if(node.value && !strcmp(node.value, "Instance"))
          {
             clDep = eSystem_FindClass(mod, node.value);
@@ -492,7 +495,14 @@ class CGen : Gen
             char * ident;
             char * spec = allocMacroSymbolName(strcmp(node.value, "Instance") != 0, C, { cl = clDep }, node.value, null, 0);
             bool noC = false;
+            // missing connection!
             BOutput out { vmanual };
+            // example:
+            /*
+               BOutput out { vdefine, d = d };
+               d.nspace.addContent(v);
+               d.out = out;
+            */
             Class clKey = eSystem_FindClass(mod, node.key);
             if(actualTypeNames.Find(node.key))
                noC = true;
@@ -502,10 +512,30 @@ class CGen : Gen
                Class clDep = eSystem_FindClass(mod, node.value);
                conassertctx(clDep != null, "(bgen?) eSystem_FindClass(mod, \"", node.value, "\") is returning null?");
             }
+            out.output.Add(ASTRawString { string = PrintString("// wth: manualType(", node.key, ", ", node.value, ") not outputed?") });
             out.output.Add(astDeclInit(node.key, createTypedef, ident, spec, { }, null, null));
             delete ident;
             delete spec;
+            // n.addContent(v);
          }
+#if 0
+         else if(!strcmp(node.key, typed_object_class))
+         {
+            BManual x = BManual::manual(typed_object_class);
+            BOutput out { vmanual, x = x };
+            Class clDep = eSystem_FindClass(mod, "Class");
+            BVariant v = x; // BVariant::manual(typed_object_class);
+            /*x.nspace*/n.addContent(v);
+            x.out = out;
+            out.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
+            out.output.Add(ASTRawString { string = PrintString("typedef void ", typed_object_class, ";") });
+            out.output.Add(ASTRawString { string = CopyString("#else") });
+            out.output.Add(ASTRawString { string = PrintString("typedef C(Class) ", typed_object_class, ";") });
+            out.output.Add(ASTRawString { string = CopyString("#endif") });
+            if(clDep)
+               v.processDependency(this, otypedef, otypedef, clDep);
+         }
+#endif
       }
    }
 
@@ -640,18 +670,31 @@ class CGen : Gen
          {
             BVariant v = f;
             BOutput out { vfunction, f = f };
-            bool hasTypedObjectParam = astFuncHasTypedObjectParam({ type = fn.dataType, fn = fn });
+            // bool hasTypedObjectParam = astFuncHasTypedObjectParam({ type = fn.dataType, fn = fn });
             f.nspace.addContent(v);
             f.out = out;
+#if 0
             if(hasTypedObjectParam)
             {
                out.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
                out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true, cpp = true }, v));
                out.output.Add(ASTRawString { string = CopyString("#else") });
             }
+#endif
             out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true }, v));
+#if 0
             if(hasTypedObjectParam)
-            out.output.Add(ASTRawString { string = CopyString("#endif") });
+               out.output.Add(ASTRawString { string = CopyString("#endif") });
+#endif
+#if 0
+            if(hasTypedObjectParam)
+            {
+               // BManual x = BManual::manual(typed_object_class);
+               // BVariant vDep = x;
+               // if(vDep)
+               //    v.processDependency(this, ofunction, otypedef, vDep);
+            }
+#endif
          }
       }
    }
@@ -727,6 +770,14 @@ class CGen : Gen
                   delete z;
                }
             }
+         }
+         if(c.isClass)
+         {
+            o.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
+            o.output.Add(ASTRawString { string = PrintString("typedef void ", typed_object_class, ";") });
+            o.output.Add(ASTRawString { string = CopyString("#else") });
+            o.output.Add(ASTRawString { string = PrintString("typedef C(Class) ", typed_object_class, ";") });
+            o.output.Add(ASTRawString { string = CopyString("#endif") });
          }
          if(cl.type == bitClass)
          {
@@ -877,9 +928,12 @@ Class getUnitClassReducedToBase(Class cl)
    return null;
 }
 
+define typed_object_class = "typed_object_class";
+
 Map<const String, const String> manualTypedefs { [
    { "constString", "const char *" },
    { "any_object", "const void *" },
+   { typed_object_class, null },
    { null, null }
 ] };
 
@@ -1858,7 +1912,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          quals = { };
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
-         quals.Add(SpecName { name = opt.cpp ? CopyString("void *") : PrintString(g_.sym.__class, " *") });
+         quals.Add(SpecName { name = PrintString(typed_object_class, " *") });
          if(!opt.cpp)
          {
             Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
@@ -1987,6 +2041,7 @@ DeclArray astDeclArray(ASTDeclarator declarator, DeclarationInit di, bool setExp
    return result;
 }
 
+#if 0
 bool astFuncHasTypedObjectParam(TypeInfo ti)
 {
    int ptr2 = 0;
@@ -2006,6 +2061,7 @@ bool astFuncHasTypedObjectParam(TypeInfo ti)
    }
    return false;
 }
+#endif
 
 DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop)
 {
