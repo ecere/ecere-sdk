@@ -2615,7 +2615,7 @@ private:
                   Window document = cycle.data;
                   if(!document.style.nonClient && document.style.isActiveClient && document.visible)
                   {
-                     char name[2048], caption[2048];
+                     char name[2060], caption[2048];
                      document.FigureCaption(caption);
                      sprintf(name, "%d %s", id+1, caption);
                      windowMenu.AddDynamic(MenuItem
@@ -2767,7 +2767,7 @@ private:
          // Default Settings
          surface.TextFont(usedFont.font);
          surface.TextOpacity(false);
-         surface.outlineColor = black;
+         surface.outlineColor = background.color; //black;
 
          OnRedraw(surface);
 
@@ -2796,7 +2796,7 @@ private:
 
          surface.TextFont(usedFont.font);
          surface.TextOpacity(false);
-         surface.outlineColor = black;
+         surface.outlineColor = background.color; //black;
 
          OnDrawOverChildren(surface);
 
