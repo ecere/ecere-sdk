@@ -371,6 +371,9 @@ public class GraphicalPresentation : Presentation
    Transform transform; // The transform applied at this specific level of the hierarchy
    transform.scaling = { 1, 1, 1 };
 
+   Map<Color, Array<uint64>> modelColorMap;
+   bool updateModelColorMap;
+
    // REVIEW: Should we allocate separate side data for specific implementations?
   // union  // REVIEW: image is non-null with the union?
   // {
@@ -416,6 +419,18 @@ public:
    {
       set { model = value; geType = model; }
       get { return model; }
+   }
+
+   property Map<Color, Array<uint64>> modelColorMap
+   {
+      set
+      {
+         // if(value != modelColorMap)
+         {
+            modelColorMap = value;
+            updateModelColorMap = true;
+         }
+      }
    }
 
    property GraphicalElement graphic
@@ -593,6 +608,68 @@ public:
                   }
                   else
                      delete object;
+               }
+
+               if(updateModelColorMap && model && model.mesh && model.mesh.parts && modelColorMap)
+               {
+                  Mesh mesh = model.mesh;
+                  uint32 * indices = mesh.indices;
+                  if(indices)
+                  {
+                     Array<MeshPart> parts = mesh.parts;
+                     PrimitiveGroup group;
+                     Map<Color, Array<uint64>> colorMap = modelColorMap;
+                     int i;
+                     Map<uint64, StartAndCount> partsMap { };
+
+                     for(i = 0; i < parts.count; i++)
+                        partsMap[parts[i].id] = { parts[i].start, parts[i].count };
+
+                     while((group = mesh.groups.first))
+                        mesh.FreePrimitiveGroup(group);
+
+                     for(c : colorMap)
+                     {
+                        Color color = &c;
+                        Material mat { };
+                        int nIndices = 0;
+                        Array<uint64> p = c;
+
+                        mat.diffuse = color;
+                        mat.specular = color;
+                        mat.ambient = color;
+                        mat.opacity = 1.0;
+                        mat.shader = butterburShader;
+
+                        for(i = 0; i < p.count; i++)
+                        {
+                           MapIterator<uint64, StartAndCount> it { map = partsMap };
+                           if(it.Index(p[i], false))
+                           {
+                              StartAndCount part = it.data;
+                              nIndices += 3*part.count;
+                           }
+                        }
+
+                        group = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, nIndices);
+                        group.material = mat;
+
+                        nIndices = 0;
+                        for(i = 0; i < p.count; i++)
+                        {
+                           MapIterator<uint64, StartAndCount> it { map = partsMap };
+                           if(it.Index(p[i], false))
+                           {
+                              StartAndCount part = it.data;
+                              memcpy(group.indices32 + nIndices, indices + 3*part.start, 3*part.count * sizeof(uint32));
+                              nIndices += 3*part.count;
+                           }
+                        }
+                        mesh.UnlockPrimitiveGroup(group);
+                     }
+                     delete partsMap;
+                  }
+                  updateModelColorMap = false;
                }
                break;
             }
