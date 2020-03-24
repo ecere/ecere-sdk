@@ -640,9 +640,18 @@ class CGen : Gen
          {
             BVariant v = f;
             BOutput out { vfunction, f = f };
+            bool hasTypedObjectParam = astFuncHasTypedObjectParam({ type = fn.dataType, fn = fn });
             f.nspace.addContent(v);
             f.out = out;
+            if(hasTypedObjectParam)
+            {
+               out.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
+               out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true, cpp = true }, v));
+               out.output.Add(ASTRawString { string = CopyString("#else") });
+            }
             out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true }, v));
+            if(hasTypedObjectParam)
+            out.output.Add(ASTRawString { string = CopyString("#endif") });
          }
       }
    }
@@ -1849,11 +1858,12 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          quals = { };
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
-         quals.Add(SpecName { name = PrintString(g_.sym.__class, " *") });
+         quals.Add(SpecName { name = opt.cpp ? CopyString("void *") : PrintString(g_.sym.__class, " *") });
+         if(!opt.cpp)
          {
             Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
             BOutputType vTopOutputType = clDep ? BOutputType::getFromVariantKind(vTop.kind) : nil;
-            if(!opt.cpp && vTopOutputType)
+            if(vTopOutputType)
                vTop.processDependency(g_, vTopOutputType, otypedef, clDep);
          }
       }
@@ -1975,6 +1985,26 @@ DeclArray astDeclArray(ASTDeclarator declarator, DeclarationInit di, bool setExp
    }
    if(decl != declarator) result = (DeclArray)decl;
    return result;
+}
+
+bool astFuncHasTypedObjectParam(TypeInfo ti)
+{
+   int ptr2 = 0;
+   Type t = null;
+   SpecsList s = null;
+   s = astTypeSpec(ti, &ptr2, &t, null, { }, null);
+   if(s); // get rid of warning
+   if(t && t.kind == functionType && t.params.count)
+   {
+      Type param;
+      for(param = t.params.first; param; param = param.next)
+      {
+         SpecialType st = specialType(param);
+         if(st == typedObject)
+            return true;
+      }
+   }
+   return false;
 }
 
 DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop)
