@@ -87,6 +87,20 @@ public:
       delete name;
    }
 
+   ~Material()
+   {
+      // NOTE: OldList::Delete() and FreeMaterial() is also used...
+      Free();
+   }
+
+   void OnCopy(Material b)
+   {
+      // NOTE: OnCopy is non-intuitive for class : struct ...
+      this = { };
+      *this = *b;
+      name = CopyString(b.name);
+   }
+
    int OnCompare(Material b)
    {
       return memcmp(&opacity, &b.opacity, (byte *)((&shader) + 1) - (byte *)&opacity);
