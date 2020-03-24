@@ -596,6 +596,12 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             if(!mat.ambient.r && !mat.ambient.g && !mat.ambient.b)
                mat.ambient = mat.diffuse;
 
+            if((mat.diffuse.r != 1.0 || mat.diffuse.g != 1.0 || mat.diffuse.b != 1.0) ||
+               (mat.ambient.r != 1.0 || mat.ambient.g != 1.0 || mat.ambient.b != 1.0) ||
+               (mat.specular.r != 1.0 || mat.specular.g != 1.0 || mat.specular.b != 1.0) ||
+               (mat.emissive.r != 0.0 || mat.emissive.g != 0.0 || mat.emissive.b != 0.0))
+               mat.flags.constantColor = true;
+
             if(ctx.materials)
             {
                MapIterator<uint, Material> it { map = ctx.materialsByID };
