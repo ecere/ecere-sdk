@@ -414,7 +414,7 @@ public:
 
    property Object modelObject
    {
-      set { model = value; }
+      set { model = value; geType = model; }
       get { return model; }
    }
 
