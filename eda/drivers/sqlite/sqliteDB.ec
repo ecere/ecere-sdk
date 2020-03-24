@@ -186,8 +186,8 @@ public:
       va_end(args);
       return stmt != null;
    }
-   void reset() { sqlite3_reset(stmt); }
-   void finalize() { sqlite3_finalize(stmt); stmt = null; }
+   void reset() { if(stmt) sqlite3_reset(stmt); }
+   void finalize() { if(stmt) sqlite3_finalize(stmt); stmt = null; }
    SQLiteResult step() { return (SQLiteResult)sqlite3_step(stmt); }
 
    void bind_null(int pos) { sqlite3_bind_null(stmt, pos); }
