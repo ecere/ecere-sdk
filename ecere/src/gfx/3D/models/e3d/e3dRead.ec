@@ -153,8 +153,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             }
             case material:
             {
-               Material mat { };
-               *mat = *GetDefaultMaterial();
+               Material mat = null;
+               mat.OnCopy(GetDefaultMaterial());
                mat.flags.separateSpecular = true;
                subData = mat;
                readSubBlocks = true;
