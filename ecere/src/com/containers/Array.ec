@@ -300,7 +300,7 @@ public:
       {
          if(count != value)
          {
-            if(value > minAllocSize)
+            if(!minAllocSize || value > minAllocSize)
                array = renew0 array T[value];
             else if(value > count)
                memset((byte *)array + count * class(T).typeSize, 0, (value - count) * class(T).typeSize);
