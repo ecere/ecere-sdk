@@ -44,6 +44,8 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
 
    if(id) *id = 0;
 
+   if(!mesh.vertices) return false; // Need vertices here...
+
    for(p = 0; p < (parts ? parts.count : 1); p++)
    {
       MeshPart * part = parts ? &parts[p] : null;
