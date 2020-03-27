@@ -2660,6 +2660,23 @@ private:
          if(x + (((half && len == 1) ? (w / 2) : w)) >= position)
          {
             int lastW;
+
+            {
+               int loLen = 0, hiLen = len;
+
+               while(hiLen - loLen > 2)
+               {
+                  int oh, sw;
+                  int tLen = (loLen + hiLen) >> 1;
+                  FontExtent(display, font, line.buffer + start, tLen, &sw, null, 0, null, &oh);
+
+                  if(x + sw > position)
+                     hiLen = tLen;
+                  else
+                     loLen = tLen;
+               }
+               len = hiLen;
+            }
             while(len > 0)
             {
                int a = start + len;
@@ -5394,7 +5411,7 @@ public:
             {
                if(x + space.w >= this.viewX + clientSize.w && clientSize.w >= space.w)
                   viewX = x - clientSize.w+space.w;
-               if(x < this.viewX + clientSize.w/2 - space.w)
+               if(x < this.viewX + (selX > this.x ? clientSize.w/2 - space.w : space.w))
                   viewX = Max(0, x - clientSize.w/2 + space.w);
             }
          }
