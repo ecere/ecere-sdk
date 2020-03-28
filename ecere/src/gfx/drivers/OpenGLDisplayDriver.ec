@@ -1,3 +1,7 @@
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver log,log@GLIBC_2.2.5");
+#endif
+
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
 #ifdef _DEBUG
