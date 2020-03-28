@@ -1,5 +1,9 @@
 public import IMPORT_STATIC "ecere"
 
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver log,log@GLIBC_2.2.5");
+#endif
+
 #include "gl123es.h"
 
 import "VersionedShader"
