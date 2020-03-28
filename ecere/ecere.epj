@@ -199,6 +199,9 @@
                "-msse3",
                "-msse4"
             ],
+            "LinkerOptions" : [
+               "--wrap=fcntl64"
+            ],
             "FastMath" : true,
             "PostbuildCommands" : [
                "$(call mkdir,../$(SODESTDIR))",

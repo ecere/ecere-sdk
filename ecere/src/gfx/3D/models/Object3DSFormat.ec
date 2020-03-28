@@ -2,6 +2,10 @@ namespace gfx3D::models;
 
 import "Object"
 
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver pow,pow@GLIBC_2.2.5");
+#endif
+
 #if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
 #if !defined(_GLES2)
 #define _GLES2

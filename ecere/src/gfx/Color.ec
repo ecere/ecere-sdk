@@ -1,5 +1,9 @@
 namespace gfx;
 
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver pow,pow@GLIBC_2.2.5");
+#endif
+
 import "ListBox"
 import "DropBox"
 import "ColorPicker"

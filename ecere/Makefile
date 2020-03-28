@@ -539,7 +539,7 @@ ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L/usr/X11R6/lib
+	 -Wl,--wrap=fcntl64 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \

@@ -19,6 +19,11 @@ import "dataTypes"
 //#define JUST_CHECK_LEAKS
 //#define JUST_CHECK_BOUNDARIES
 
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver pow,pow@GLIBC_2.2.5");
+asm(".symver log,log@GLIBC_2.2.5");
+asm(".symver exp,exp@GLIBC_2.2.5");
+#endif
 
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
