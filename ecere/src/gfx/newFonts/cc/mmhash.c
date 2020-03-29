@@ -1866,24 +1866,26 @@ void mmHashResize( void *newtable, void *oldtable, const mmHashAccess *access, u
 
   /* Move all entries from the src table to the dst table */
   srcentry = MM_HASH_ENTRYLIST( src );
+
   for( hashpos = 0 ; hashpos < src->hashsize ; hashpos++ )
   {
-    hashkey = access->entrykey( srcentry );
-    dstkey = hashkey & dst->hashmask;
-
-    /* Search an empty spot in the destination table */
-    for( dstpos = dstkey ; ; dstpos = ( dstpos + 1 ) & dst->hashmask )
     {
-      dstentry = MM_HASH_ENTRY( dst, dstpos );
-      if( !( access->entryvalid( dstentry ) ) )
-        break;
+       hashkey = access->entryvalid( srcentry ) ? access->entrykey( srcentry ) : 0;
+       dstkey = hashkey & dst->hashmask;
+
+       /* Search an empty spot in the destination table */
+       for( dstpos = dstkey ; ; dstpos = ( dstpos + 1 ) & dst->hashmask )
+       {
+         dstentry = MM_HASH_ENTRY( dst, dstpos );
+         if( !( access->entryvalid( dstentry ) ) )
+           break;
+       }
+
+       /* Copy entry from src table to dst table */
+       memcpy( dstentry, srcentry, src->entrysize );
+       srcentry = ADDRESS( srcentry, src->entrysize );
     }
-
-    /* Copy entry from src table to dst table */
-    memcpy( dstentry, srcentry, src->entrysize );
-    srcentry = ADDRESS( srcentry, src->entrysize );
   }
-
   return;
 }
 
@@ -1960,23 +1962,25 @@ void mmHashResize2( void *newtable, void *oldtable, const mmHashAccess *access, 
   srcentry = MM_HASH_ENTRYLIST( src );
   for( hashpos = 0 ; hashpos < src->hashsize ; hashpos++ )
   {
-    hashkey = access->entrykey( srcentry );
-    dstkey = hashkey & dst->hashmask;
-
-    /* Search an empty spot in the destination table */
-    for( dstpos = dstkey ; ; dstpos = ( dstpos + 1 ) & dst->hashmask )
     {
-      dstentry = MM_HASH_ENTRY( dst, dstpos );
-      if( !( access->entryvalid( dstentry ) ) )
-        break;
+      hashkey = access->entryvalid( srcentry ) ? access->entrykey( srcentry ) : 0;
+      dstkey = hashkey & dst->hashmask;
+
+      /* Search an empty spot in the destination table */
+      for( dstpos = dstkey ; ; dstpos = ( dstpos + 1 ) & dst->hashmask )
+      {
+        dstentry = MM_HASH_ENTRY( dst, dstpos );
+        if( !( access->entryvalid( dstentry ) ) )
+          break;
+      }
+
+      if(srcentry == movedentry)
+        *movedEntryPtr = dstentry;
+
+      /* Copy entry from src table to dst table */
+      memcpy( dstentry, srcentry, src->entrysize );
+      srcentry = ADDRESS( srcentry, src->entrysize );
     }
-
-    if(srcentry == movedentry)
-      *movedEntryPtr = dstentry;
-
-    /* Copy entry from src table to dst table */
-    memcpy( dstentry, srcentry, src->entrysize );
-    srcentry = ADDRESS( srcentry, src->entrysize );
   }
 
   return;
