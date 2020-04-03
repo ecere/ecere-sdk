@@ -242,7 +242,7 @@ public:
    {
       switch(column_type(pos))
       {
-         case integer: value = { { integer },    i = column_int      (pos) }; break;
+         case integer: value = { { integer },    i = column_int64    (pos) }; break;
          case real:    value = { { real },       r = column_double   (pos) }; break;
          case text:    value = { { text, true }, s = column_text_copy(pos) }; break;
          default:      value = { { nil } };                                   break;
