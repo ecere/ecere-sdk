@@ -8,6 +8,19 @@ import "DrawingManager"
 #include "fontmanager.h"
 
 #include <stdlib.h>
+#include <stdarg.h>
+
+int eC_Logf(const char * format, ...)
+{
+   va_list args;
+   char string[MAX_F_STRING];
+   va_start(args, format);
+   vsnprintf(string, sizeof(string), format, args);
+   string[sizeof(string)-1] = 0;
+   Log(string);
+   va_end(args);
+   return 0;
+}
 
 fmFont *fmAddFont( fmManager *fm, const char *path, int glyphpaddingwidth )
 {
