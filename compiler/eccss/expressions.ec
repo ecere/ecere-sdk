@@ -614,13 +614,24 @@ public:
             flags.resolved = true;
          }
          else if(evaluator != null)
-            expType = evaluator.evaluatorClass.resolve(evaluator, identifier, &fieldID, &flags);
+         {
+            bool isFunction = destType == class(GlobalFunction);
+
+            expType = evaluator.evaluatorClass.resolve(evaluator, identifier, isFunction, &fieldID, &flags);
+
+            if(isFunction && fieldID != -1)
+            {
+               value.i = fieldID;
+               value.type.type = integer;
+            }
+         }
          else
             value.type.type = nil;
       }
       else if(evaluator != null)
       {
-         evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, value, &flags);
+         bool isFunction = destType == class(GlobalFunction);
+         evaluator.evaluatorClass.compute(evaluator, fieldID, identifier, isFunction, value, &flags);
       }
       else
          value.type.type = nil;
@@ -1065,7 +1076,36 @@ public:
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
-      //how to map exp to functions?
+
+      value.type.type = nil;
+      if(exp)
+      {
+         FieldValue expValue { type = { nil } };
+         FieldValue args[50]; // Max 50 args for now?
+         int numArgs = 0;
+
+         if(computeType == preprocessing)
+            exp.destType = class(GlobalFunction);
+
+         flags |= exp.compute(expValue, evaluator, computeType, stylesClass);
+         if(arguments)
+         {
+            bool nonResolved = false;
+
+            flags.resolved = false;
+            if(computeType == preprocessing)
+               expType = evaluator.evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags);
+            for(a : arguments; numArgs < 50)
+            {
+               flags.resolved = false;
+               flags |= a.compute(args[numArgs++], evaluator, computeType, stylesClass);
+               if(!flags.resolved) nonResolved = true;
+            }
+            if(nonResolved) flags.resolved = false;
+         }
+         if(evaluator != null && computeType != preprocessing && flags.resolved)
+            expType = evaluator.evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
+      }
       return flags;
    }
 

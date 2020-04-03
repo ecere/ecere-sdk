@@ -3,14 +3,366 @@ public import IMPORT_STATIC "EDA"   // For FieldValue
 
 import "expressions"
 
+enum ECCSSFunctionIndex : int
+{
+   unresolved = -1,
+   // Text manipulation
+   strupr = 1,
+   strlwr,
+   subst,
+   format
+};
+
+static int strncpymax(String output, const String input, int count, int max)
+{
+   int copied = Min(count, Max(0, max - 1));
+   if(copied)
+   {
+      memcpy(output, input, copied);
+      output[copied] = 0;
+   }
+   return copied;
+}
+
+static String formatValues(const String format, int numArgs, const FieldValue * values)
+{
+   char output[1024];
+   int totalLen = 0;
+   int formatLen = format ? strlen(format) : 0;
+   const String start = format;
+   int arg = 0;
+   const FieldValue * value = &values[arg];
+
+   output[0] = '\0';
+
+   while(true)
+   {
+      String nextArg = strchr(start, '%');
+      if(nextArg)
+      {
+         if(nextArg[1] == '%')
+         {
+            totalLen += strncpymax(output + totalLen, start, (int)(nextArg+1 - start), sizeof(output) - totalLen);
+            start = nextArg + 2;
+         }
+         else
+         {
+            bool valid = true;
+            FieldType type = integer;
+            String s = nextArg + 1;
+            bool argWidth = false, argPrecision = false;
+            int width = 0, precision = 0;
+
+            totalLen += strncpymax(output + totalLen, start, (int)(nextArg - start), sizeof(output) - totalLen);
+
+            while(true)
+            {
+               bool done = false;
+               switch(*s)
+               {
+                  case '-': case '+': case '#': case ' ': case '0':
+                     s++;
+                     break;
+                  default:
+                     done = true;
+               }
+               if(done) break;
+            }
+            if(*s == '*')
+            {
+               argWidth = true;
+               if(arg < numArgs)
+               {
+                  switch(value->type.type)
+                  {
+                     default:
+                     case integer: width = (int)value->i; break;
+                     case text:    width = strtol(value->s, null, 0); break;
+                     case real:    width = (int)value->r; break;
+                  }
+                  value = &values[++arg];
+               }
+            }
+            else
+               strtol(s, &s, 10);
+
+            if(*s == '.')
+            {
+               s++;
+               if(*s == '*')
+               {
+                  argPrecision = true;
+                  if(arg < numArgs)
+                  {
+                     switch(value->type.type)
+                     {
+                        default:
+                        case integer: precision = (int)value->i; break;
+                        case text:    precision = strtol(value->s, null, 0); break;
+                        case real:    precision = (int)value->r; break;
+                     }
+                     value = &values[++arg];
+                  }
+               }
+               else
+                  strtol(s, &s, 10);
+            }
+
+            switch(*s)
+            {
+               case 'c': case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
+                  type = integer;
+                  s++;
+                  break;
+               case 'f': case 'F': case 'e': case 'E': case 'g': case 'G':
+                  type = real;
+                  s++;
+                  break;
+               case 's':
+                  type = text;
+                  s++;
+                  break;
+               default:
+                  valid = false;
+            }
+            start = s;
+
+            if(valid && arg < numArgs)
+            {
+               char argFormat[256];
+               memcpy(argFormat, nextArg, (int)(s - nextArg));
+               argFormat[s - nextArg] = '\0';
+
+               if(type == text && value->type.type == text && argFormat[0] == '%' && argFormat[1] == 's')
+               {
+                  if(value->s)
+                     totalLen += strncpymax(output + totalLen, value->s, strlen(value->s), sizeof(output) - totalLen);
+               }
+               else
+               {
+                  char argString[1024];
+                  int numArgs = 0;
+                  switch(type)
+                  {
+                     case integer:
+                     {
+                        if(value->type.type != nil)
+                        {
+                           int intValue;
+                           switch(value->type.type)
+                           {
+                              default:
+                              case integer: intValue = (int)value->i; break;
+                              case real:    intValue = (int)value->r; break;
+                              case text:    intValue = value->s ? strtol(value->s, null, 0) : 0; break;
+                           }
+                           if(argWidth && argPrecision)
+                              numArgs = sprintf(argString, argFormat, width, precision, intValue);
+                           else if(argWidth)
+                              numArgs = sprintf(argString, argFormat, width, intValue);
+                           else if(argPrecision)
+                              numArgs = sprintf(argString, argFormat, precision, intValue);
+                           else
+                              numArgs = sprintf(argString, argFormat, intValue);
+                        }
+                        else
+                           argString[0] = '\0';
+                        break;
+                     }
+                     case real:
+                     {
+                        if(value->type.type != nil)
+                        {
+                           double doubleValue;
+                           switch(value->type.type)
+                           {
+                              default:
+                              case integer: doubleValue = (double)value->i; break;
+                              case real:    doubleValue = value->r; break;
+                              case text:    doubleValue = value->s ? strtod(value->s, null) : 0; break;
+                           }
+                           if(argWidth && argPrecision)
+                              numArgs = sprintf(argString, argFormat, width, precision, doubleValue);
+                           else if(argWidth)
+                              numArgs = sprintf(argString, argFormat, width, doubleValue);
+                           else if(argPrecision)
+                              numArgs = sprintf(argString, argFormat, precision, doubleValue);
+                           else
+                              numArgs = sprintf(argString, argFormat, doubleValue);
+                        }
+                        else
+                           argString[0] = '\0';
+                        break;
+                     }
+                     case text:
+                     {
+                        char temp[100];
+                        const String strValue;
+                        switch(value->type.type)
+                        {
+                           default:
+                           case integer: strValue = (sprintf(temp, FORMAT64D, value->i), temp); break;
+                           case real:    strValue = value->r.OnGetString(temp, null, null); break;
+                           case text:    strValue = value->s ? value->s : ""; break;
+                           case nil:     strValue = ""; break;
+                        }
+                        if(argWidth && argPrecision)
+                           numArgs = sprintf(argString, argFormat, width, precision, strValue);
+                        else if(argWidth)
+                           numArgs = sprintf(argString, argFormat, width, strValue);
+                        else if(argPrecision)
+                           numArgs = sprintf(argString, argFormat, precision, strValue);
+                        else
+                           numArgs = sprintf(argString, argFormat, strValue);
+                        break;
+                     }
+                  }
+                  if(numArgs > 0)
+                     totalLen += strncpymax(output + totalLen, argString, numArgs, sizeof(output) - totalLen);
+               }
+
+               value = &values[++arg];
+            }
+         }
+      }
+      else
+      {
+         totalLen += strncpymax(output + totalLen, start, (int)(formatLen - (start - format)), sizeof(output) - totalLen);
+         break;
+      }
+   }
+   return CopyString(output);
+}
+
 // For extending ECCSS with custom identifiers and styling properties
 public struct ECCSSEvaluator
 {
    subclass(ECCSSEvaluator) evaluatorClass;        // This is effectively adding a virtual function table...
 
-   virtual Class resolve(const CMSSIdentifier identifier, int * fieldID, ExpFlags * flags) { return null; }
-   virtual void compute(int fieldID, const CMSSIdentifier identifier, FieldValue value, ExpFlags * flags);
+   virtual Class resolve(const CMSSIdentifier identifier, bool isFunction, int * id, ExpFlags * flags)
+   {
+      Class expType = null;
+      if(isFunction)
+      {
+         ECCSSFunctionIndex fnIndex = unresolved;
+
+         if(fnIndex.OnGetDataFromString(identifier.string))
+         {
+            *id = fnIndex;
+            expType = class(GlobalFunction);
+            flags->resolved = true;
+         }
+         else
+            *id = ECCSSFunctionIndex::unresolved;
+      }
+      return expType;
+   }
+   virtual void compute(int id, const CMSSIdentifier identifier, bool isFunction, FieldValue value, ExpFlags * flags)
+   {
+      if(isFunction)
+      {
+         if(id != -1)
+         {
+            value = { type = { integer }, i = id };
+            flags->resolved = true;
+         }
+      }
+   }
    virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
+   virtual Class resolveFunction(const FieldValue e, CMSSExpList args, ExpFlags * flags)
+   {
+      Class expType = null;
+
+      if(e.type.type == integer)
+      {
+         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)e.i;
+         switch(fnIndex)
+         {
+            case strlwr:
+            case strupr:
+            {
+               if(args.list.count >= 1) args[0].destType = class(String);
+               expType = class(String);
+               break;
+            }
+            case subst:
+            {
+               if(args.list.count >= 1) args[0].destType = class(String);
+               if(args.list.count >= 2) args[1].destType = class(String);
+               if(args.list.count >= 3) args[2].destType = class(String);
+               expType = class(String);
+               break;
+            }
+            case format:
+            {
+               if(args.list.count >= 1) args[0].destType = class(String);
+               expType = class(String);
+               break;
+            }
+         }
+      }
+      return expType;
+   }
+   virtual Class computeFunction(FieldValue value, const FieldValue e, const FieldValue * args, int numArgs, ExpFlags * flags)
+   {
+      Class expType = null;
+
+      if(e.type.type == integer)
+      {
+         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)e.i;
+         switch(fnIndex)
+         {
+            case strlwr:
+            case strupr:
+            {
+               if(numArgs >= 1 && args[0].type.type == text)
+               {
+                  value.type = { type = text, mustFree = true };
+                  value.s = CopyString(args[0].s);
+                  if(fnIndex == strlwr)
+                     strupr(value.s);
+                  else
+                     strupr(value.s);
+               }
+               break;
+            }
+            case subst:
+            {
+               if(numArgs >= 3 && args[0].type.type == text && args[1].type.type == text && args[2].type.type == text)
+               {
+                  String n = SearchString(args[0].s, 0, args[1].s, false, false);
+                  if(n)
+                  {
+                     int len = strlen(args[0].s);
+                     int startLen = (uint)(n - args[0].s);
+                     int replacedLen = strlen(args[1].s);
+                     int replacingLen = strlen(args[2].s);
+                     int remainingLen = len - startLen - replacedLen;
+                     value.s = new char[startLen + replacingLen + 1];
+                     memcpy(value.s, args[0].s, startLen);
+                     memcpy(value.s + startLen, args[2].s, replacingLen);
+                     memcpy(value.s + startLen + replacingLen, args[0].s + startLen + replacedLen, remainingLen);
+                     value.s[startLen + replacingLen] = 0;
+                  }
+                  else
+                     value.s = CopyString(args[0].s);
+                  value.type = { text, true };
+               }
+               break;
+            }
+            case format:
+            {
+               if(numArgs >= 1 && args[0].type.type == text)
+               {
+                  value.type = { text, true };
+                  value.s = formatValues(args[0].s, numArgs-1, &args[1]);
+               }
+               break;
+            }
+         }
+      }
+      return expType;
+   }
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
@@ -378,7 +730,8 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   {
                      Property prop = (Property)mInit.dataMember;
 
-                     if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
+                     if(!prop.Set);
+                     else if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
                      {
                         void (* setInt)(void * o, int v) = (void *)prop.Set;
@@ -468,8 +821,14 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if(destType == class(int64) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
                         *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
-                     else if(destType == class(double))
+                     // TODO: Better units handling
+                     else if(destType == class(double) || destType == class(Radians) || destType == class(Meters))
                         *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
+                     else if(destType == class(Degrees))
+                     {
+                        *(double *)((byte *)object + mInit.offset) =
+                           Pi / 180 * (val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0);
+                     }
                      else if(destType == class(float))
                         *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
                      else if(destType == class(String))
