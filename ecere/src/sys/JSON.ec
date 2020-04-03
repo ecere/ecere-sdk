@@ -1122,7 +1122,10 @@ private:
          if(objectType && (objectType.type == noHeadClass || objectType.type == normalClass))
          {
             mutexTemplateInstanceFix.Wait();
-            *object = eInstance_New(objectType);
+            if(!strcmp(objectType.dataTypeString, "char *"))
+               *object = null; // Type mismatch... was expecting String
+            else
+               *object = eInstance_New(objectType);
             mutexTemplateInstanceFix.Release();
          }
 
