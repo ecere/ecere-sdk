@@ -10,6 +10,12 @@
 #include <string.h>
 #include <math.h>
 
+#if defined(__UWP__)
+#define printf eC_Logf
+
+int eC_Logf(const char * format, ...);
+#endif
+
 typedef unsigned int GLCapabilities;
 typedef unsigned int bool;
 #include "gl123es.h"
@@ -163,17 +169,23 @@ static int dmCreateProgram( dmProgram *program, const char *vertexsource, const 
 
 
 const char *dmVertexShaderNormal =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define attribute in\n"
+   "#define varying   out\n"
+   "#endif\n"
 "uniform mat4 uniMatrix;\n"
 "attribute vec2 inVertex;\n"
 "attribute vec2 inTexcoord0;\n"
@@ -186,23 +198,31 @@ const char *dmVertexShaderNormal =
 "  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmFragmentShaderNormal =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
 "uniform sampler2D texBase;\n"
 "varying vec2 varTexcoord0;\n"
 "varying vec4 varColor;\n"
@@ -210,23 +230,29 @@ const char *dmFragmentShaderNormal =
 "void main()\n"
 "{\n"
 "  gl_FragColor = varColor * texture2D( texBase, varTexcoord0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmVertexShaderAlpha =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define attribute in\n"
+   "#define varying   out\n"
+   "#endif\n"
 "uniform mat4 uniMatrix;\n"
 "attribute vec2 inVertex;\n"
 "attribute vec2 inTexcoord0;\n"
@@ -239,23 +265,31 @@ const char *dmVertexShaderAlpha =
 "  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmFragmentShaderAlpha =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
 "uniform sampler2D texBase;\n"
 "varying vec2 varTexcoord0;\n"
 "varying vec4 varColor;\n"
@@ -263,23 +297,29 @@ const char *dmFragmentShaderAlpha =
 "void main()\n"
 "{\n"
 "  gl_FragColor = vec4( varColor.rgb, varColor.a * texture2D( texBase, varTexcoord0 ).r );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmVertexShaderAlphaIntensity =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define attribute in\n"
+   "#define varying   out\n"
+   "#endif\n"
 "uniform mat4 uniMatrix;\n"
 "attribute vec2 inVertex;\n"
 "attribute vec2 inTexcoord0;\n"
@@ -292,23 +332,31 @@ const char *dmVertexShaderAlphaIntensity =
 "  varTexcoord0 = inTexcoord0 * (1.0/" CC_STRINGIFY(DM_TEXCOORD_NORMFACTOR) ");\n"
 "  varColor = inColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmFragmentShaderAlphaIntensity =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
 "uniform sampler2D texBase;\n"
 "varying vec2 varTexcoord0;\n"
 "varying vec4 varColor;\n"
@@ -318,23 +366,29 @@ const char *dmFragmentShaderAlphaIntensity =
 "  vec2 tex;\n"
 "  tex = texture2D( texBase, varTexcoord0 ).rg;\n"
 "  gl_FragColor = vec4( varColor.rgb * tex.g, varColor.a * tex.r );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmVertexShaderAlphaIntensityExtColor =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define attribute in\n"
+   "#define varying   out\n"
+   "#endif\n"
 "uniform mat4 uniMatrix;\n"
 "attribute vec2 inVertex;\n"
 "attribute vec2 inTexcoord0;\n"
@@ -350,23 +404,31 @@ const char *dmVertexShaderAlphaIntensityExtColor =
 "  varColor = inColor;\n"
 "  varExtColor = inExtColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmFragmentShaderAlphaIntensityExtColor =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
 "uniform sampler2D texBase;\n"
 "varying vec2 varTexcoord0;\n"
 "varying vec4 varColor;\n"
@@ -377,22 +439,28 @@ const char *dmFragmentShaderAlphaIntensityExtColor =
 "  vec2 tex;\n"
 "  tex = texture2D( texBase, varTexcoord0 ).rg;\n"
 "  gl_FragColor = vec4( mix( varExtColor.rgb, varColor.rgb, tex.g ), mix( varExtColor.a, varColor.a, tex.g ) * tex.r );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 const char *dmVertexShaderBichrome =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define attribute in\n"
+   "#define varying   out\n"
+   "#endif\n"
 "uniform mat4 uniMatrix;\n"
 "attribute vec2 inVertex;\n"
 "attribute vec2 inTexcoord0;\n"
@@ -408,23 +476,31 @@ const char *dmVertexShaderBichrome =
 "  varColor = inColor;\n"
 "  varExtColor = inExtColor;\n"
 "  gl_Position = uniMatrix * vec4( inVertex, 0.0, 1.0 );\n"
-"  return;\n"
+//"  return;\n"
 "}\n"
 ;
 
 
 const char *dmFragmentShaderBichrome =
-#if defined(__EMSCRIPTEN__) || defined(_GLES2)
+#if defined(__UWP__)
+   "#version 300 es\n"
+#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2)
+#if defined(_GLES2) || defined(__UWP__)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
    "#define GLSL_FLOAT_PRECISION   0\n"
 #endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
 "uniform sampler2D texBase;\n"
 "varying vec2 varTexcoord0;\n"
 "varying vec4 varExtColor;\n"
