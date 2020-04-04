@@ -18,8 +18,7 @@
       ],
       "Console" : true,
       "PrebuildCommands" : [
-         "make --version",
-         "gcc --version"
+         "@$(call echo,gcc $(shell @gcc -dumpversion $(nullerror)))"
       ]
    },
    "Configurations" : [
