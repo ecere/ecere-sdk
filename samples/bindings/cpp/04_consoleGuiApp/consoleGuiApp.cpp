@@ -39,7 +39,7 @@ public:
 };
 
 MyApp app;
-Window w;
+// Window w;
 CLASS_DEF(MyApp);
 MAIN_DEFINITION
 
