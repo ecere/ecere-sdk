@@ -749,8 +749,12 @@ public:
             else
                flags.resolved = false;
          }
-         else if(flags1.resolved && flags2.resolved)
+         else if((flags1.resolved && flags2.resolved) || (flags.resolved && (flags1.resolved ? !val1.i : !val2.i) && op == '&'))
          {
+            if(!flags1.resolved)
+               val1 = { type = { integer }, i = 0 };
+            if(!flags2.resolved)
+               val2 = { type = { integer }, i = 0 };
             if(val2.type.type != type)
                convertFieldValue(val2, type, val2);
 
