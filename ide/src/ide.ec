@@ -2010,8 +2010,16 @@ class IDEWorkSpace : Window
 
    void DocumentSaved(Window document, const char * fileName)
    {
-      ideConfig.recentFiles.addRecent(fileName);
-      ideConfig.recentFiles.write(settingsContainer);
+      if(ide.workspace)
+      {
+         ide.workspace.recentFiles.addRecent(fileName);
+         ide.workspace.Save();
+      }
+      else
+      {
+         ideConfig.recentFiles.addRecent(fileName);
+         ideConfig.recentFiles.write(settingsContainer);
+      }
       ide.updateRecentFilesMenu();
       ide.AdjustFileMenus();
    }
@@ -2793,7 +2801,10 @@ class IDEWorkSpace : Window
             ide.updateRecentProjectsMenu();
          }
          else if(workspace)
+         {
             workspace.recentFiles.addRecent(document.fileName);
+            workspace.Save();
+         }
          else
          {
             ideConfig.recentFiles.addRecent(document.fileName);
