@@ -84,19 +84,7 @@
             {
                "Folder" : "cpp",
                "Files" : [
-                  {
-                     "FileName" : "genCPP.ec",
-                     "Configurations" : [
-                        {
-                           "Name" : "Debug",
-                           "Options" : {
-                              "PostbuildCommands" : [
-                                 "D:/c/e/e/misc/bgen-genloc-remover/obj/debug.win32/bgen-genloc-remover.exe D:/c/e/e/bindings"
-                              ]
-                           }
-                        }
-                     ]
-                  },
+                  "genCPP.ec",
                   "cppHardcoded.ec"
                ]
             },
