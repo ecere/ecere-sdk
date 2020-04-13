@@ -88,6 +88,7 @@ public class SyntaxHighlighting : EditSyntaxHL
 
    bool allowHashInKeyword;
    bool allowDashInKeyword;
+   bool allowAtInKeyword;
 
    void InitDraw()
    {
@@ -375,9 +376,11 @@ public class SyntaxHighlighting : EditSyntaxHL
          bool bfHash = bf == '#' && allowHashInKeyword;
          bool chDash = ch == '-' && allowDashInKeyword;
          bool bfDash = bf == '-' && allowDashInKeyword;
+         bool chAt =   ch == '@' && allowAtInKeyword;
+         bool bfAt =   bf == '@' && allowAtInKeyword;
          if(CharMatchCategories(ch, separators) || ch == '\t' ||
-            (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && !chHash && !chDash) ||
-            (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && !bfHash && !bfDash && bf != '\t'))
+            (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && !chHash && !chDash && !chAt) ||
+            (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && !bfHash && !bfDash && !bfAt && bf != '\t'))
             break;
          wordLen++;
       }
