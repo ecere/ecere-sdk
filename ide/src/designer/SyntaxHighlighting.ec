@@ -753,6 +753,91 @@ class PythonSHL : SyntaxHighlighting
    }
 }
 
+static const char * zigExtensions[] = { "zig", null };
+class ZigSHL : SyntaxHighlighting
+{
+   class_property(extensions) = zigExtensions;
+   keywords =
+   [
+      // comptime?
+      "comptime",
+      // control
+      "while", "for", "break", "return", "continue", "asm", "defer", "errdefer", "unreachable",
+      // async
+      "noasync", "async", "await", "suspend", "resume", "cancel",
+      // conditional
+      "if", "else", "switch", "try", "catch", "orelse",
+      // import
+      "@import", "@cImport", "@cInclude",
+      // other
+      "usingnamespace",
+
+      // type
+      "bool", "void", "noreturn", "type", "anyerror",
+
+       "i0",   "i1",   "i2",   "i3",   "i4",   "i5",   "i6",   "i7",   "i8",   "i9",
+      "i10",  "i11",  "i12",  "i13",  "i14",  "i15",  "i16",  "i17",  "i18",  "i19",
+      "i20",  "i21",  "i22",  "i23",  "i24",  "i25",  "i26",  "i27",  "i28",  "i29",
+      "i30",  "i31",  "i32",  "i33",  "i34",  "i35",  "i36",  "i37",  "i38",  "i39",
+      "i40",  "i41",  "i42",  "i43",  "i44",  "i45",  "i46",  "i47",  "i48",  "i49",
+      "i50",  "i51",  "i52",  "i53",  "i54",  "i55",  "i56",  "i57",  "i58",  "i59",
+      "i60",  "i61",  "i62",  "i63",  "i64",  "i65",  "i66",  "i67",  "i68",  "i69",
+      "i70",  "i71",  "i72",  "i73",  "i74",  "i75",  "i76",  "i77",  "i78",  "i79",
+      "i80",  "i81",  "i82",  "i83",  "i84",  "i85",  "i86",  "i87",  "i88",  "i89",
+      "i90",  "i91",  "i92",  "i93",  "i94",  "i95",  "i96",  "i97",  "i98",  "i99",
+      "i128", "i256", "i512", "isize",
+
+       "u0",   "u1",   "u2",   "u3",   "u4",   "u5",   "u6",   "u7",   "u8",   "u9",
+      "u10",  "u11",  "u12",  "u13",  "u14",  "u15",  "u16",  "u17",  "u18",  "u19",
+      "u20",  "u21",  "u22",  "u23",  "u24",  "u25",  "u26",  "u27",  "u28",  "u29",
+      "u30",  "u31",  "u32",  "u33",  "u34",  "u35",  "u36",  "u37",  "u38",  "u39",
+      "u40",  "u41",  "u42",  "u43",  "u44",  "u45",  "u46",  "u47",  "u48",  "u49",
+      "u50",  "u51",  "u52",  "u53",  "u54",  "u55",  "u56",  "u57",  "u58",  "u59",
+      "u60",  "u61",  "u62",  "u63",  "u64",  "u65",  "u66",  "u67",  "u68",  "u69",
+      "u70",  "u71",  "u72",  "u73",  "u74",  "u75",  "u76",  "u77",  "u78",  "u79",
+      "u80",  "u81",  "u82",  "u83",  "u84",  "u85",  "u86",  "u87",  "u88",  "u89",
+      "u90",  "u91",  "u92",  "u93",  "u94",  "u95",  "u96",  "u97",  "u98",  "u99",
+      "u128", "u256", "u512", "usuze",
+
+      "comptime_int",
+
+      // float
+      "f16", "f32", "f64", "f128", "comptime_float",
+
+      // c_compat
+      "c_short", "c_ushort", "c_int", "c_uint", "c_long", "c_ulong", "c_longlong", "c_ulonglong", "c_longdouble", "c_void",
+
+      // ...
+      "anyframe",
+
+      // function
+      "fn",
+
+      // test
+      "test",
+
+      // struct
+      "struct",
+
+      // enum
+      "enum",
+
+      // union
+      "union",
+
+      // error
+      "error",
+
+      // not keywords?
+      "const",
+      "pub",
+      "var"
+   ];
+
+   cppSingle = true;
+   allowAtInKeyword = true;
+}
+
 static const char * swiftExtensions[] = { "swift", null };
 class SwiftSHL : SyntaxHighlighting
 {
