@@ -1086,6 +1086,18 @@ public:
       return styles ? styles.getStyle(mask) : null;
    }
 
+
+   void setStyle(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression,
+      ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      if(msk)
+      {
+         if(!styles) styles = { };
+         styles.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass);
+         mask |= msk;
+      }
+   }
+
    // NOTE: isNested means this is a nested rule, and we want to set top.sub = as opposed to top = { sub = }
    bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
