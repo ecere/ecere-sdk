@@ -309,6 +309,8 @@ public class CMSSLexer
          bool escaped = false;
          char quoteChar = 0;
          CMSSLexingState lexingState = none;
+         bool backQuotedID = false;
+
          text[0] = 0;
          while(type == none)
          {
@@ -347,13 +349,17 @@ public class CMSSLexer
                   break;
                case identifier:
                {
-                  if(ch != '_' && !isalnum(ch))
+                  if(ch != '_' && !isalnum(ch) && (!backQuotedID || ch == '`'))
                   {
                      int len = Min(pos.pos - start, sizeof(this.text)-1);
+                     if(ch == '`')
+                        start++, len --;
+                     else
+                        advanceChar = false;
                      strncpy(this.text, input + start, len);
                      this.text[len] = 0;
                      type = matchToken(text);
-                     advanceChar = false;
+                     backQuotedID = false;
                      break;
                   }
                   break;
@@ -491,8 +497,12 @@ public class CMSSLexer
                         start = pos.pos;
                         if(ch == '.' || isdigit(ch))
                            lexingState = number;
-                        else if(ch == '_' || isalpha(ch))
+                        else if(ch == '_' || isalpha(ch) || ch == '`')
+                        {
+                           if(ch == '`')
+                              backQuotedID = true;
                            lexingState = identifier;
+                        }
                         else
                            PrintLn("Invalid character: ", ch, " at line: ", pos.line, ", col: ", pos.col);
                         break;
