@@ -2760,9 +2760,9 @@ private:
 #ifdef __APPLE__
             if(eC)
             {
-               f.Printf("ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECP_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
-               f.Printf("ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECC_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
-               f.Printf("ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECS_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+               f.Printf("ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECP_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
+               f.Printf("ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECC_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
+               f.Printf("ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(if $(ECS_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
             }
             else
             {
@@ -2774,9 +2774,9 @@ private:
 #else
             if(eC)
             {
-               f.Printf("ECP := $(if $(ECP_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
-               f.Printf("ECC := $(if $(ECC_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
-               f.Printf("ECS := $(if $(ECS_DEBUG),ecere-ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+               f.Printf("ECP := $(if $(ECP_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
+               f.Printf("ECC := $(if $(ECC_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
+               f.Printf("ECS := $(if $(ECS_DEBUG),ecere-ide \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
             }
             else
             {
