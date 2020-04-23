@@ -608,7 +608,9 @@ void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMetho
          if(lineMethod == lineEach)
             f.Puts(" \\\n\t");
          f.Printf(" %s", flagNames[flag]);
-         if(flag != _D && flag != _Wl && flag != any)
+         if(flag == _D)
+            f.Printf("%s", item);
+         else if(flag != _Wl && flag != any)
          {
             char * tmp = new char[strlen(item)*2+1];
             EscapeForMake(tmp, item, false, true, false);
