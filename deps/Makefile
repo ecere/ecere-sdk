@@ -9,6 +9,8 @@ _CF_DIR = ../
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+.NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
+
 ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z curl
 else

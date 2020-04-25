@@ -11,6 +11,8 @@ _CF_DIR = ../../
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+.NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
+
 all: bindir ecere libec ecp ecc ecs
 	$(call cp,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E),$(OBJ))
 	@$(call echo,All done!)

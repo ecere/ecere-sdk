@@ -10,6 +10,8 @@ _CF_DIR = $(ROOT_ABSPATH)
 include crossplatform.mk
 include default.cf
 
+.NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
+
 ifdef BSD_HOST
 INSTALL_FLAGS :=
 CPFLAGS := -pRf
