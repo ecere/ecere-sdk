@@ -9,6 +9,8 @@ ifndef VERBOSE
 MAKEFLAGS += --no-print-directory
 endif
 
+NOT_PARALLEL_TARGETS += clean realclean wipeclean distclean install
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
