@@ -13,6 +13,8 @@ MAKEFLAGS += --no-print-directory --silent
 endif
 endif
 
+NOT_PARALLEL_TARGETS += realclean wipeclean distclean install
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
