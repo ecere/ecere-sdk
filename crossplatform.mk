@@ -24,6 +24,8 @@ goals_is_single_print_target = $(if $(single_goal),$(if $(call str_is,$(word 1,$
 
 NOT_PARALLEL_TARGETS += realclean wipeclean distclean install
 
+NOT_PARALLEL_TARGETS += realclean wipeclean distclean install
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
