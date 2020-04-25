@@ -10,6 +10,8 @@ _CF_DIR = ../
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
+.NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
+
 all: ecp ecc ecs
 
 libec:
