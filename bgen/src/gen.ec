@@ -677,8 +677,8 @@ private:
             delete d;
          else
          {
-            if(g.lang == CPlusPlus && !strcmp(g.lib.name, "EDA"))
-               PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+            // if(g.lang == CPlusPlus && !strcmp(g.lib.name, "EDA"))
+            //    PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
                Print("");
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
@@ -1599,6 +1599,7 @@ class BClass : struct
    char * symbolName;
    char * baseSymbolName;
    char * py_initializer;
+   char * simplestIdentName;
    const char * cpp_name;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
@@ -1607,6 +1608,9 @@ class BClass : struct
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
       name = strptrNoNamespace(cl.name);
+      simplestIdentName = new char[2];
+      simplestIdentName[0] = (char)tolower(name[0]);
+      simplestIdentName[1] = '\0';
       // skipping these classes here as they are internal native types or base class/struct
       skipTypeDef = skipClassTypeDef.Find(cl.name) != 0;
       // skipping these classes here since they are hardcoded
@@ -1968,7 +1972,8 @@ class BMethod : struct
    void noinit() { }
    void init(Method md, BClass c, Gen gen)
    {
-      conassertctx(md._class == c.cl, "?");
+      if(!(c.isInstance && md._class == c.cl.base))
+         conassertctx(md._class == c.cl, "md._class.name != c.cl.name: ", md._class.name, " != ", c.cl.name);
       if(this.md && this.c) return;
       this.md = md;
       this.c = c;
