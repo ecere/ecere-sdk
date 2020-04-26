@@ -335,21 +335,27 @@ public class BGen : ConsoleApplication // <ArgSym>
       addArgumentSymbol(ArgSym::blackList,      "black-list",           super,   0);
       addArgumentSymbol(ArgSym::forceList,      "force-list",           super,   0);
       addArgumentSymbol(ArgSym::examples,       "examples",             super,   0);
+      addArgumentSymbol(ArgSym::C,              "C",                    strict,  0);
       addArgumentSymbol(ArgSym::C,              "c",                    strict,  0);
+      addArgumentSymbol(ArgSym::C,              "C89",                  strict,  0);
       addArgumentSymbol(ArgSym::C,              "c89",                  strict,  0);
       //addArgumentSymbol(ArgSym::C,            "c90",                  strict,  0);
       //addArgumentSymbol(ArgSym::C,            "c95",                  strict,  0);
       //addArgumentSymbol(ArgSym::C,            "c99",                  strict,  0);
       //addArgumentSymbol(ArgSym::C,            "c11",                  strict,  0);
+      addArgumentSymbol(ArgSym::CPlusPlus,      "C++",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "c++",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "cxx",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "cpp",                  strict,  0);
       addArgumentSymbol(ArgSym::CPlusPlus,      "cplusplus",            strict,  0);
+      addArgumentSymbol(ArgSym::CSharp,         "C#",                   strict,  0);
       addArgumentSymbol(ArgSym::CSharp,         "c#",                   strict,  0);
       addArgumentSymbol(ArgSym::CSharp,         "cs",                   strict,  0);
       addArgumentSymbol(ArgSym::CSharp,         "csharp",               strict,  0);
+      addArgumentSymbol(ArgSym::Java,           "Java",                 strict,  0);
       addArgumentSymbol(ArgSym::Java,           "java",                 strict,  0);
       addArgumentSymbol(ArgSym::Python,         "py",                   strict,  0);
+      addArgumentSymbol(ArgSym::Python,         "Python",               strict,  0);
       addArgumentSymbol(ArgSym::Python,         "python",               strict,  0);
       addArgumentSymbol(ArgSym::genLocs,        "generate-locations",   super,   0);
       addArgumentSymbol(ArgSym::bypassMacros,   "bypass-macros",        super,   0);
@@ -920,7 +926,7 @@ public class BGen : ConsoleApplication // <ArgSym>
             "\n"
             "   languages: language for which to output bindings (case insensitive) any of:\n"
             "      C      (c, c89)                       (default) \n"
-            "      C++    (cpp, cxx, cplusplus, c++)\n"
+            "      C++    (cxx, cpp, cplusplus, c++)\n"
             "      C#     (c#, cs, csharp)\n"
             "      Java   (java)\n"
             "      Python (py, python)\n"
