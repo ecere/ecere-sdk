@@ -207,7 +207,6 @@ class CPPGen : CGen
       */
    }
 
-
    void generate()
    {
       File f;
@@ -1109,9 +1108,6 @@ static AVLTree<consttstr> brokenMembers { [
    { "NameSpace", "right" },
    { "NameSpace", "parent" },
 
-   // const issue
-   { "GlobalSettings", "driver" },
-
    { "Bitmap", "driver" },
    { "Bitmap", "bitmaps" },
    { "Bitmap", "palette" },
@@ -1239,8 +1235,6 @@ struct BitMemberTypeStringZero
 static void processCppClass(CPPGen g, BClass c)
 {
    bool skip = false;
-   if(!strcmp(c.name, "DataRow"))
-      Print("");
    if(!skip)
    {
       bool template = c.cl.templateArgs != null;
@@ -1502,6 +1496,65 @@ static void processCppClass(CPPGen g, BClass c)
                }
                // else
                {
+               }
+
+               // conversions via constructors or operators
+               {
+                  Property cn; IterConversion conv { c.cl };
+                  while((cn = conv.next(publicOnly)))
+                  {
+                     BProperty p = cn;
+                     if(p.cConv && p.cConv.cl)
+                     {
+                        if(p.cConv.cl.type == structClass)
+                        {
+                           o.z.concatx(genloc__, indents(1), "operator ", p.cConv.cpp_name, "() ",
+                                 "{ ", p.cConv.cpp_name, " ", p.cConv.simplestIdentName, "; ", c.name, "_to_", p.cConv.name,
+                                    "(&impl, &", p.cConv.simplestIdentName, ".impl); return ", p.cConv.simplestIdentName, "; }", ln);
+                           v.processDependency(g, otypedef, otypedef, p.cConv);
+                        }
+                        // todo: p.cConv.cl.type == otherstypes?
+                     }
+                  }
+               }
+               {
+                  BClass c2; IterAllClass itacl { itn.module = g.mod/*module = g.mod*/ };
+                  while((c2 = itacl.next(all)))
+                  {
+                     if(c2 != c)
+                     {
+                        Property cn; IterConversion conv { c2.cl };
+                        while((cn = conv.next(publicOnly)))
+                        {
+                           BProperty p = cn;
+                           if(p.cConv && p.cConv.cl == c.cl)
+                           {
+                              if(c2.cl.type == bitClass)
+                              {
+                                 o.z.concatx(genloc__, indents(1), c.cpp_name, " & operator= (", c2.cpp_name, " value) ",
+                                       "{ ", c2.name, "_to_", c.name, "(value.impl, &impl); return *this; }", ln);
+                                 o.z.concatx(genloc__, indents(1), c.cpp_name, "(", c2.cpp_name, " value) ",
+                                       "{ ", c2.name, "_to_", c.name, "(value.impl, &impl); }", ln);
+                                 // C++ doesn't guess conversion chains, so we need explicit conversion from enums who's base class is this c2 bitclass here...
+                                 {
+                                    BClass c3; IterAllClass itacl { itn.module = g.mod/*module = g.mod*/ };
+                                    while((c3 = itacl.next(all)))
+                                    {
+                                       if(c3.cl.type == enumClass && c3.cl.base == c2.cl)
+                                       {
+                                          o.z.concatx(genloc__, indents(1), c.cpp_name, " & operator= (", c3.cpp_name, " value) ",
+                                                "{ ", c2.name, "_to_", c.name, "((", c2.symbolName, ")value, &impl); return *this; }", ln);
+                                          o.z.concatx(genloc__, indents(1), c.cpp_name, "(", c3.cpp_name, " value) ",
+                                                "{ ", c2.name, "_to_", c.name, "((", c2.symbolName, ")value, &impl); }", ln);
+                                       }
+                                    }
+                                 }
+                              }
+                              // todo: c2.cl.type == structClass and others
+                           }
+                        }
+                     }
+                  }
                }
             }
             else if(c.cl.type == unitClass)
@@ -2803,8 +2856,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         else if(param.kind == classType && param._class && param._class.registered && param._class.registered.templateClass)
                         {
                            // todo -- c.name is wrong, tofix
-                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass))
-                              typeString = CopyString(c.name);
+                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == structClass || ct == bitClass))
+                              typeString = CopyString(c.cpp_name);
                            else
                               typeString = CopyString(c.symbolName);
                         }
@@ -2815,10 +2868,12 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                         }
                         else
                         {
-                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == enumClass || ct == bitClass)) normalClassMacroOverride = true;
+                           // tocheck: unitClass is missing here compared to the dependency thing next
+                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == enumClass || ct == bitClass || ct == structClass)) normalClassMacroOverride = true;
                            typeString = printType(param, false, false, true);
-                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == enumClass || ct == bitClass)) normalClassMacroOverride = false;
+                           if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == enumClass || ct == bitClass || ct == structClass)) normalClassMacroOverride = false;
                         }
+                        // ct == structClass param doesn't require a dependency here since it's always a reference
                         if(cpp && ((ct == normalClass && !isString) || ct == noHeadClass || ct == bitClass || ct == enumClass || ct == unitClass) &&
                               !cParam.isBool && !(vClass.kind == vclass && cParam == vClass.c))
                            vClass.processDependency(g_, otypedef, otypedef, cParam.cl);
@@ -2829,11 +2884,11 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            *nameParamOfClassType = name;
                         if(typeString)
                            z.concatx(strptrNoNamespace(typeString));
-                        if((param.kind == classType && ((ct == noHeadClass && !cpp) || ct == structClass)) ||
+                        if((param.kind == classType && ((ct == noHeadClass && !cpp) || (ct == structClass && !cpp))) ||
                            (firstParam && t.classObjectType == typedObject && t.byReference))
                            z.concatx(" *");
                         else if(param.kind == classType &&
-                              ((ct == normalClass && !isString) || (cpp && ct == noHeadClass)) && (cpp || (cParam && cParam.isString)))
+                              ((ct == normalClass && !isString) || (cpp && ct == noHeadClass) || (cpp && ct == structClass)) && (cpp || (cParam && cParam.isString)))
                            z.concatx(" &");
                         z.concatx(" ", name);
                         delete typeString;
@@ -2868,8 +2923,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vClas
                            z.concatx("*", name, "_l");
                         else if(!forMethodCallers && !inReg && ct == noHeadClass)
                            z.concatx(name, "_l");
-                        else if(forMethodCallers && !opts.cppDirectObjects && ((ct == normalClass && !isString) || ct == noHeadClass))
-                           z.concatx(name, ".impl");
+                        else if(forMethodCallers && !opts.cppDirectObjects && ((ct == normalClass && !isString) || ct == noHeadClass || ct == structClass))
+                           z.concatx(ct == structClass ? "&" : "", name, ".impl");
                         else if(!forMethodCallers && !inReg && typeIsBoolOrPtrTo(param, &ptr) && ptr)
                         {
                            z.concatx("(bool", ptr ? " " : "", stars(ptr, 0), ")", name);
@@ -3049,7 +3104,7 @@ static void outputSplitContents(CPPGen g, File f)
             f.Puts(c.outSplit.z._string);
          }
          else
-            PrintLn("error: unexpected kind (", v.kind, ") of splitContents");
+            locprintxln("error: unexpected kind (", v.kind, ") of splitContents");
       }
    }
 }
@@ -3076,10 +3131,13 @@ static void outputImplementationsContents(CPPGen g, File f)
          if(v.kind == vclass)
          {
             BClass c = v;
-            f.Puts(c.outImplementation.z._string);
+            if(c.outImplementation.z._string)
+               f.Puts(c.outImplementation.z._string);
+            // else
+            //    locprintxln("why is this c.outImplementation.z._string null for this v(", v.kind, ":", v.name, ")");
          }
          else
-            PrintLn("error: unexpected kind (", v.kind, ") of implementationsContents");
+            locprintxln("error: unexpected kind (", v.kind, ") of implementationsContents");
       }
    }
 }

@@ -627,7 +627,7 @@ class CGen : Gen
             BVariant v = t;
             BNamespace n = v.nspace;
             BOutput o = t.outTypedef = bmod.getTypedefOutput((UIntPtr)t, &init);
-            conassertctx(init, "(bgen?) getTypedefOutput did not init?");
+            // conassertctx(init, "(bgen?) getTypedefOutput did not init? -- basicaly not typedef output was found for this templaton so it was created");
             o.kind = vtemplaton, o.t = t, o.type = otypedef;
             n.addContent(v);
             o.output.Add(astDeclInit(t.cname, emptyTypedef, null, null, { t = t }, null, null/*, ast*/));
