@@ -2,13 +2,11 @@
 
 #include "ecere.hpp"
 
-CPPClass nullClass;
-Camera nullCamera ( (C(Instance))null, nullClass );
 class HelloCube : public Window
 {
 public:
    Cube cube;
-   C(Light) light { }; // todo: Light light;
+   Light light;
    Camera camera;
 
    REGISTER() { REG_Window(HelloCube); }
@@ -23,54 +21,49 @@ public:
       hasMinimize = true;
       displayDriver = "OpenGL";
 
+      TArray<double> b { 5.0, 3.2, 1.5 };
+      TList<double> a;
+      b = { 5.0, 3.2, 1.5 };
+
+      // todo:
+      // TList<const char *> c { "bgen: ", "Hello", "C++" };
+      // printLn2(c);
+
+      a.add(3.0);
+      a.add(4.2);
+      a.add(5.5);
+      // todo:
+      // printLn2(a);
+
       camera.position = { 0, 0, -300 };
       camera.fov = 53;
 
-      //C(Euler) eul = { Degrees(30), Degrees(10) };
-      Euler eul = { 30, 10 };
-      Euler_to_Quaternion(&eul.impl, &light.orientation);
-      Color_to_ColorRGB(DefinedColor_lightCoral, &light.diffuse);
-      // todo: light.orientation = Euler(30, 10);
-      // todo: light.diffuse = DefinedColor_lightCoral;
+      light.orientation = Euler(30, 10);
+      light.diffuse = DefinedColor::lightCoral;
    }
 
    bool onLoadGraphics()
    {
-      printLn(CO(String), "onLoadGraphics", null);
-      DisplaySystem ds = displaySystem;
-      cube.create(ds); // todo: cube.create(displaySystem);
-      C(Transform) transform;
-      //Transform transform;
+      cube.create(displaySystem);
+
+      Transform transform;
       transform.scaling = { 100, 100, 100 };
-      //C(Euler) euler { Degrees(50), Degrees(30), Degrees(50) };
-      //Euler euler = { Degrees(50), Degrees(30), Degrees(50) };
-      Euler euler = { 50, 30, 50 };
-      //Euler_to_Quaternion(&euler, &transform.orientation);
-      //Euler_to_Quaternion(&euler.impl, &transform.orientation);
-      Euler_to_Quaternion(&euler.impl, &transform.orientation);
-      // Object_set_transform((C(Object)*)cube.impl, &transform);
+      transform.orientation = Euler(50, 30, 50);
       cube.transform = transform;
       printLn(CO(Transform), &transform, null);
-      {
-         // C(Transform) * t1 = cube.transform;
-         // printLn(CO(Transform), &t1, null);
-      }
-      /* todo:
-      {
-         Transform transform;
-         transform.scaling = { 100, 100, 100 };
-         transform.orientation = Euler(50, 30, 50); // conversion, todo
-         cube.transform = transform;
-      }
-      */
       cube.updateTransform();
       return true;
+   }
+
+   void onUnloadGraphics()
+   {
+      cube.free(displaySystem);
    }
 
    void onResize(int w, int h)
    {
       printLn(CO(String), "onResize", null);
-      camera.setup(w, h, null);
+      camera.setup(w, h, Point(null));
       camera.update();
    }
 
@@ -78,10 +71,10 @@ public:
    {
       printLn(CO(String), "onRedraw", null);
       surface.clear(ClearType::depthBuffer);
-      display->setLight(0, &light); // todo: display->setLight(0, light);
+      display->setLight(0, light);
       display->setCamera(surface, camera);
       display->drawObject(cube);
-      display->setCamera(surface, nullCamera); // todo: display->setCamera(surface, Camera(null));
+      display->setCamera(surface, Camera(null));
    }
 };
 
