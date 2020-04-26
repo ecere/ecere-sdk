@@ -717,7 +717,7 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePoin
 
 if(__ecerePointer___ecereNameSpace__ecere__com__Array->count != value)
 {
-if(value > __ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize)
+if(!__ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize || value > __ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize)
 __ecerePointer___ecereNameSpace__ecere__com__Array->array = __ecereNameSpace__ecere__com__eSystem_Renew0(__ecerePointer___ecereNameSpace__ecere__com__Array->array, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize * (value));
 else if(value > __ecerePointer___ecereNameSpace__ecere__com__Array->count)
 memset((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array + __ecerePointer___ecereNameSpace__ecere__com__Array->count * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize, 0, (value - __ecerePointer___ecereNameSpace__ecere__com__Array->count) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize);

@@ -456,7 +456,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereN
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
 
 unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile(struct __ecereNameSpace__ecere__com__Instance * this)
 {

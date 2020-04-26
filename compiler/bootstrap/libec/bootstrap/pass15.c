@@ -13650,7 +13650,7 @@ memcpy(ptr, value->__anon1.instance->data, type->size);
 }
 }
 }
-else if(prop && prop->Set != (void *)(intptr_t)1)
+else if(prop && prop->Set && prop->Set != (void *)(intptr_t)1)
 {
 if(value->type == 1 && value->__anon1.instance->data)
 {

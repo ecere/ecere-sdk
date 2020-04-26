@@ -918,7 +918,7 @@ static void OutputAttrib(Attrib attr, File f)
    f.Puts("))");
 }
 
-static void OutputExtDecl(ExtDecl extDecl, File f)
+/*static */void OutputExtDecl(ExtDecl extDecl, File f)
 {
    if(extDecl.type == extDeclString && extDecl.s)
       f.Puts(extDecl.s);

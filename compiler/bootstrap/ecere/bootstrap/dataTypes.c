@@ -1605,6 +1605,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Container;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
@@ -3061,7 +3063,9 @@ struct __ecereNameSpace__ecere__com__DataValue value =
 
 if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTbl[__ecereVMethodID_class_OnGetDataFromString])
 {
-if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, (void **)&value, memberString))
+if(_class->templateClass == __ecereClass___ecereNameSpace__ecere__com__Container && memberType == _class && !strcmp(thisMember->name, "copySrc"))
+result = 0;
+else if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, (void **)&value, memberString))
 result = 0;
 }
 else if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
@@ -3082,7 +3086,24 @@ else if(_class->typeSize == 8)
 }
 }
 else
+{
+if(memberType->typeSize == 1)
+{
+*(char *)memberData = value.__anon1.c;
+}
+else if(memberType->typeSize == 2)
+{
+*(short *)memberData = value.__anon1.s;
+}
+else if(memberType->typeSize == 4)
+{
 *(int *)memberData = value.__anon1.i;
+}
+else if(memberType->typeSize == 8)
+{
+*(long long *)memberData = value.__anon1.i64;
+}
+}
 }
 else if(thisMember->isProperty && ((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)
 {
