@@ -492,7 +492,7 @@ installer:
 	@$(call echo,The Ecere SDK Windows Installer is fully built.)
 endif
 
-clean: emptyoutput bindingsclean
+clean: emptyoutput bindings_clean
 ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) clean
 endif
@@ -513,7 +513,7 @@ endif
 	+cd eda && $(_MAKE) clean
 	@$(call echo,Done.)
 
-realclean: bindingsrealclean
+realclean: bindings_realclean
 ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) realclean
 endif
@@ -535,7 +535,7 @@ endif
 	$(call rmr,obj/$(PLATFORM)/)
 	@$(call echo,Done.)
 
-wipeclean: bindingswipeclean
+wipeclean: bindings_wipeclean
 	$(call rmr,obj/)
 	+cd deps && $(_MAKE) wipeclean
 	+cd ecere && $(_MAKE) wipeclean
@@ -550,7 +550,7 @@ wipeclean: bindingswipeclean
 	+cd eda && $(_MAKE) wipeclean
 	@$(call echo,Done.)
 
-distclean: bindingsdistclean
+distclean: bindings_distclean
 	$(_MAKE) -f Cleanfile distclean distclean_all_subdirs
 	@$(call echo,Done.)
 
