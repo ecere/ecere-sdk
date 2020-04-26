@@ -145,6 +145,10 @@ default:
 "restrict"           { return(EXT_DECL); }
 "_Nullable"          { return(EXT_DECL); }
 "_Nonnull"           { return(EXT_DECL); }
+"__ptr32"            { return(EXT_DECL); }
+"__ptr64"            { return(EXT_DECL); }
+"__forceinline"      { return(EXT_DECL); }
+"__unaligned"        { return(EXT_DECL); }
 
  /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 
@@ -179,7 +183,8 @@ default:
 "_inline"                  { return(EXT_STORAGE); }
 "__inline"                 { return(EXT_STORAGE); }
 "inline"                   { return(EXT_STORAGE); }
-"__declspec("({D}|{L})*")" { return(EXT_STORAGE); }
+"__declspec("({D}|{L}|([ \n\t\r]))*")" { return(EXT_STORAGE); }
+"__declspec("({D}|{L}|([ \n\t\r]))*"("({D}|{L})*")"([ \n\t\r])*")" { return(EXT_STORAGE); }
 "dllexport"                { return(EXT_STORAGE); }
 "dllimport"                { return(EXT_STORAGE); }
 "_Noreturn"                { return(EXT_STORAGE); }
