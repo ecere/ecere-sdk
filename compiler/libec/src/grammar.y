@@ -2876,6 +2876,29 @@ ext_decl:
 ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
    | EXT_STORAGE  { $$ = MkExtDeclString(CopyString(yytext)); }
+
+   | ext_decl EXT_STORAGE
+      {
+         TempFile f { };
+         OutputExtDecl($1, f);
+         f.Putc(' ');
+         f.Puts(yytext);
+         f.Putc(0);
+         $$ = MkExtDeclString(f.StealBuffer());
+         FreeExtDecl($1);
+         delete f;
+      }
+   | ext_decl EXT_DECL
+      {
+         TempFile f { };
+         OutputExtDecl($1, f);
+         f.Putc(' ');
+         f.Puts(yytext);
+         f.Putc(0);
+         $$ = MkExtDeclString(f.StealBuffer());
+         FreeExtDecl($1);
+         delete f;
+      }
    | attrib { $$ = MkExtDeclAttrib($1); }
    | multi_attrib { $$ = MkExtDeclMultiAttrib($1); }
    | ASM '(' string_literal ')'

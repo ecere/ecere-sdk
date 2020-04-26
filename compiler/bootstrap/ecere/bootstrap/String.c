@@ -1740,8 +1740,8 @@ if(addedLen > 0)
 {
 memcpy(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->_string, addedLen);
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->len += addedLen;
-__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string[__ecerePointer___ecereNameSpace__ecere__sys__ZString->len] = 0;
 }
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string[__ecerePointer___ecereNameSpace__ecere__sys__ZString->len] = 0;
 if(((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->allocType == 0)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(s), s = 0);
 }

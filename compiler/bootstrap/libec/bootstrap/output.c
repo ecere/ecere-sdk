@@ -2148,7 +2148,7 @@ OutputExpression(enumerator->exp, f);
 }
 }
 
-static void OutputExtDecl(struct ExtDecl * extDecl, struct __ecereNameSpace__ecere__com__Instance * f)
+void OutputExtDecl(struct ExtDecl * extDecl, struct __ecereNameSpace__ecere__com__Instance * f)
 {
 if(extDecl->type == 0 && extDecl->__anon1.s)
 (__extension__ ({
@@ -2540,6 +2540,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMemoryGuard", "void S
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetMemoryGuard", "bool GetMemoryGuard(void)", GetMemoryGuard, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f, bool typeName)", OutputTypeName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExpression", "void OutputExpression(Expression exp, ecere::sys::File f)", OutputExpression, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExtDecl", "void OutputExtDecl(ExtDecl extDecl, ecere::sys::File f)", OutputExtDecl, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTree", "void OutputTree(ecere::sys::OldList ast, ecere::sys::File f)", OutputTree, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExternal", "void OutputExternal(External external, ecere::sys::File f)", OutputExternal, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("StringFromSpecDecl", "char * StringFromSpecDecl(ecere::sys::OldList specs, Declarator decl)", StringFromSpecDecl, module, 1);
