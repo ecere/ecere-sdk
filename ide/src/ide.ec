@@ -169,8 +169,10 @@ static Array<FileType> projectTypes
 static Array<FileFilter> findInFilesFileFilters
 { [
    { $"eC Files (*.ec, *.eh)", "ec, eh" },
+   { $"C Files (*.c, *.h)", "c, h" },
+   { $"C++ Files (*.cpp, *.cc, *.cxx, *.hpp, *.hh, *.hxx)", "cpp, cc, cxx, hpp, hh, hxx" },
    { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
-   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"Header Files for C/C++/eC (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
    { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
    { $"Text files (*.txt)", "txt" },
    { $"All files", null }
@@ -1805,7 +1807,6 @@ class IDEWorkSpace : Window
    {
       master = this,
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
-      filter = 1;
    };
 
    bool noParsing;
