@@ -519,18 +519,18 @@ class CGen : Gen
             // n.addContent(v);
          }
 #if 0
-         else if(!strcmp(node.key, typed_object_class))
+         else if(!strcmp(node.key, typed_object_class_ptr))
          {
-            BManual x = BManual::manual(typed_object_class);
+            BManual x = BManual::manual(typed_object_class_ptr);
             BOutput out { vmanual, x = x };
             Class clDep = eSystem_FindClass(mod, "Class");
-            BVariant v = x; // BVariant::manual(typed_object_class);
+            BVariant v = x; // BVariant::manual(typed_object_class_ptr);
             /*x.nspace*/n.addContent(v);
             x.out = out;
             out.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
-            out.output.Add(ASTRawString { string = PrintString("typedef void ", typed_object_class, ";") });
+            out.output.Add(ASTRawString { string = PrintString("typedef void ", typed_object_class_ptr, ";") });
             out.output.Add(ASTRawString { string = CopyString("#else") });
-            out.output.Add(ASTRawString { string = PrintString("typedef C(Class) ", typed_object_class, ";") });
+            out.output.Add(ASTRawString { string = PrintString("typedef C(Class) ", typed_object_class_ptr, ";") });
             out.output.Add(ASTRawString { string = CopyString("#endif") });
             if(clDep)
                v.processDependency(this, otypedef, otypedef, clDep);
@@ -689,7 +689,7 @@ class CGen : Gen
 #if 0
             if(hasTypedObjectParam)
             {
-               // BManual x = BManual::manual(typed_object_class);
+               // BManual x = BManual::manual(typed_object_class_ptr);
                // BVariant vDep = x;
                // if(vDep)
                //    v.processDependency(this, ofunction, otypedef, vDep);
@@ -771,12 +771,12 @@ class CGen : Gen
                }
             }
          }
-         if(c.isClass)
+         if(c.isClass && !python)
          {
             o.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
-            o.output.Add(ASTRawString { string = PrintString("typedef void ", typed_object_class, ";") });
+            o.output.Add(ASTRawString { string = PrintString("typedef void * ", typed_object_class_ptr, ";") });
             o.output.Add(ASTRawString { string = CopyString("#else") });
-            o.output.Add(ASTRawString { string = PrintString("typedef C(Class) ", typed_object_class, ";") });
+            o.output.Add(ASTRawString { string = PrintString("typedef C(Class) * ", typed_object_class_ptr, ";") });
             o.output.Add(ASTRawString { string = CopyString("#endif") });
          }
          if(cl.type == bitClass)
@@ -928,12 +928,12 @@ Class getUnitClassReducedToBase(Class cl)
    return null;
 }
 
-define typed_object_class = "typed_object_class";
+define typed_object_class_ptr = "typed_object_class_ptr";
 
 Map<const String, const String> manualTypedefs { [
    { "constString", "const char *" },
    { "any_object", "const void *" },
-   { typed_object_class, null },
+   { typed_object_class_ptr, null },
    { null, null }
 ] };
 
@@ -1912,7 +1912,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          quals = { };
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
-         quals.Add(SpecName { name = PrintString(typed_object_class, " *") });
+         quals.Add(SpecName { name = PrintString(python ? "void *" : typed_object_class_ptr) });
          if(!opt.cpp)
          {
             Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
