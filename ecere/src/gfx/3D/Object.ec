@@ -744,7 +744,7 @@ public:
       }
    }
 
-   void Free(DisplaySystem displaySystem)
+   void Free(const DisplaySystem displaySystem)
    {
       if(this)
       {

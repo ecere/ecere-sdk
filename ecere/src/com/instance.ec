@@ -6595,7 +6595,7 @@ static void LoadCOM(Module module)
       applicationClass.offset = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4*16) + (16 + 4 + 4 + 4*16);
       applicationClass.structSize = applicationClass.offset + (4+4+4+4 + 20 + 4 + 88);
    }
-   eClass_AddVirtualMethod(applicationClass, "Main", "void()", null, publicAccess);
+   eClass_AddVirtualMethod(applicationClass, "Main", "void()", DefaultFunction, publicAccess);
    eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, publicAccess);
    eClass_AddDataMember(applicationClass, "argv", "const char **", pointerSize, pointerSize, publicAccess);
    eClass_AddDataMember(applicationClass, "exitCode", "int", sizeof(int), 4, publicAccess);
