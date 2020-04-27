@@ -170,8 +170,10 @@ static Array<FileFilter> findInFilesFileFilters
 { [
    { $"Project and Workspace Files (*.epj, *.ews)", "epj, ews" },
    { $"eC Files (*.ec, *.eh)", "ec, eh" },
+   { $"C Files (*.c, *.h)", "c, h" },
+   { $"C++ Files (*.cpp, *.cc, *.cxx, *.hpp, *.hh, *.hxx)", "cpp, cc, cxx, hpp, hh, hxx" },
    { $"C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)", "ec, eh, c, cpp, cc, cxx, h, hpp, hh, hxx" },
-   { $"Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
+   { $"Header Files for C/C++/eC (*.eh, *.h, *.hpp, *.hh, *.hxx)", "eh, h, hpp, hh, hxx" },
    { $"C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)", "ec, c, cpp, cc, cxx" },
    { $"Objective-C Source Files (*.m, *.mm)", "m, mm" },
    { $"GLSL Source Files (*.glsl, *.vert, *.frag)", "glsl, vert, frag" },
@@ -1824,7 +1826,6 @@ class IDEWorkSpace : Window
    {
       master = this,
       filters = findInFilesFileFilters.array, sizeFilters = findInFilesFileFilters.count * sizeof(FileFilter);
-      filter = 2; // default to C/C++/eC Files
    };
 
    bool noParsing;
