@@ -1209,14 +1209,14 @@ void processPyClass(PythonGen g, BClass c)
                                     break;
                                  //case :
                                  default:
-                                    PrintLn("------- ", itmpp.name, " ", itmpp.type.kind, " -- ", itmpp.type._class.registered.name, " ", itmpp.type._class.registered.type);
+                                    locprintxln("------- ", itmpp.name, " ", itmpp.type.kind, " -- ", itmpp.type._class.registered.name, " ", itmpp.type._class.registered.type);
                               }
                            }
                            else
-                              PrintLn("------- ", itmpp.name, " ", itmpp.type.kind, " -- class not registered!");
+                              locprintxln("------- ", itmpp.name, " ", itmpp.type.kind, " -- class not registered!");
                         }
                         else
-                           PrintLn("------- ", itmpp.name, " ", itmpp.type.kind);
+                           locprintxln("------- ", itmpp.name, " ", itmpp.type.kind);
                      }
                   }
                }
