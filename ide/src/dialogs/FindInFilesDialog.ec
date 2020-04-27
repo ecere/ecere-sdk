@@ -58,8 +58,7 @@ public:
          if(!numFilters)
             filterDrop.AddString($"All files");
 
-         //if(fileFilter >= numFilters)
-         //  fileFilter = 0;
+         if(fileFilter >= numFilters) fileFilter = 0;
          filterDrop.currentRow = filterDrop.FindRow(fileFilter);
       }
       get { return sizeFilters; }
