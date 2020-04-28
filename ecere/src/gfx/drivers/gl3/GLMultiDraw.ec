@@ -1,4 +1,6 @@
-public import IMPORT_STATIC "ecere"
+#if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
+
+import "OpenGLDisplayDriver"
 
 #include "gl123es.h"
 
@@ -8,82 +10,17 @@ public import IMPORT_STATIC "ecere"
 #define GL_R16 GL_LUMINANCE
 #endif
 
-import "ButterburShader"
+public define drawIDAttribute = 7;
+public define posOffsetAttribute = 8;
+
+public define transform0Attribute = 9;
+public define transform1Attribute = 10;
+public define transform2Attribute = 11;
+public define transform3Attribute = 12;
 
 private:
 
 // #define CLIENT_MEM_COMMANDS  // Defined as a work-around for Intel driver that does not seem to support indirect commands buffers?
-
-GLCapabilities glCaps;
-bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
-bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
-
-int glVersion;
-int glMinorVersion;
-
-uint defaultVAO;
-
-#ifdef _DEBUG
-void checkGLErrors( const char *file, int line )
-{
-   int e, nCount = 0;
-   while((e = glGetError()) && nCount++ < 10)
-      PrintLn("GL error ", e, "! (at ", file, ":", line, ")");
-}
-#endif
-
-// FIXME: This is currently duplicated here from Ecere's OGL display driver because there is no other mechanism to access defualt VAO
-class TempOGLDisplay : struct
-{
-   GLCapabilities capabilities, originalCapabilities;
-   bool compat;
-   int version;
-   ColorAlpha * flippingBuffer;
-   int flipBufH, flipBufW;
-   bool depthWrite;
-   int x, y;
-   uint vao;
-   int maxTMU;
-}
-
-Size resetDisplaySize;
-Size displaySize;
-DisplaySystem displaySystem;
-Display glDisplay;
-
-public void setupGL(Display display)
-{
-   GLCapabilities caps = display.glCapabilities;
-   void * data = display.driverData;
-
-   glDisplay = display;
-   displaySystem = display.displaySystem;
-
-   displaySize = { display.width, display.height };
-   resetDisplaySize = displaySize;
-
-   SETCAPS(caps);
-
-   defaultVAO = ((TempOGLDisplay)data).vao;
-   if(!loadedGLExts)
-   {
-#if defined(__LUMIN__)
-      // TODO: !
-      loadedGLExts = true;
-      glVersion = 4;
-      glMinorVersion = 5;
-#elif defined(__ANDROID__)
-      loadedGLExts = true;
-      glVersion = 3;
-      glMinorVersion = 2;
-#else
-      ogl_LoadFunctions();
-      loadedGLExts = true;
-      glVersion = ogl_GetMajorVersion();
-      glMinorVersion = ogl_GetMinorVersion();
-#endif
-   }
-}
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -95,11 +32,7 @@ public void setupGL(Display display)
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
 #endif
 
-bool loadedGLExts;
-
-uint tempTexFBO; // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
-
-struct FreeSpots
+public struct FreeSpots
 {
    uint size;
    int * spots;
@@ -159,17 +92,28 @@ struct FreeSpots
          size = count;
       }
    }
-}
+};
 
+default:
+#if defined(_GLES3)
+int glVersion = 3;
+#elif defined(_GLES2)
+int glVersion = 2;
+#elif defined(_GLES)
+int glVersion = 1;
+#else
+int glVersion = 0;
+#endif
+private:
 
-struct GLArrayTexture
+public struct GLArrayTexture
 {
    uint texture;
    uint width, height, numLayers;
    uint numLevels;
    bool maxLevel;
    int format;
-   private FreeSpots spots;
+   /*private */FreeSpots spots;
 
    void free()
    {
@@ -203,6 +147,12 @@ struct GLArrayTexture
          glDeleteTextures(1, &texture);
          texture = 0;
       }*/
+
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+      if(!glVersion)
+         glVersion = ogl_GetMajorVersion();
+#endif
+
       if(!texture)
          glGenTextures(1, &texture);
 
@@ -218,7 +168,7 @@ struct GLArrayTexture
          glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels-1);
 
 #ifdef _DEBUG
-      checkGLErrors(__FILE__,__LINE__);
+      CheckGLErrors(__FILE__,__LINE__);
 #endif
       glTexStorage3D(target, levels, format, w, h, count);
 
@@ -227,7 +177,7 @@ struct GLArrayTexture
 #endif
 
 #ifdef _DEBUG
-      checkGLErrors(__FILE__,__LINE__);
+      CheckGLErrors(__FILE__,__LINE__);
 #endif
    #ifdef GL_TEXTURE_MAX_ANISOTROPY_EXT
       if(glVersion >= 2)
@@ -354,7 +304,7 @@ struct GLArrayTexture
    }
 };
 
-struct GLDrawCommand
+public struct GLDrawCommand
 {
    uint count;
    uint instanceCount;
@@ -363,7 +313,7 @@ struct GLDrawCommand
    uint baseInstance;
 };
 
-struct GLMultiDraw
+public struct GLMultiDraw
 {
    GLMB indexGLMB;
    GLMB vertexGLMB;
@@ -562,7 +512,7 @@ struct GLMultiDraw
 #endif
          }
    #ifdef _DEBUG
-         checkGLErrors(__FILE__,__LINE__);
+         CheckGLErrors(__FILE__,__LINE__);
    #endif
       }
 #else
@@ -574,7 +524,7 @@ struct GLMultiDraw
 #endif
 
    #ifdef _DEBUG
-         checkGLErrors(__FILE__,__LINE__);
+         CheckGLErrors(__FILE__,__LINE__);
    #endif
 
          glMultiDrawElementsIndirect(
@@ -588,7 +538,7 @@ struct GLMultiDraw
             commandsCount, 0);
 
    #ifdef _DEBUG
-         checkGLErrors(__FILE__,__LINE__);
+         CheckGLErrors(__FILE__,__LINE__);
    #endif
 
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
@@ -598,9 +548,11 @@ struct GLMultiDraw
    }
 };
 
-void GLMultisampling(bool value)
+public void GLMultisampling(bool value)
 {
 #if !defined(_GLES) && !defined(_GLES2)
    (value ? glEnable : glDisable)(GL_MULTISAMPLE);
 #endif
 }
+
+#endif

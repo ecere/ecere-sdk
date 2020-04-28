@@ -3,7 +3,6 @@ public import IMPORT_STATIC "ecere"
 #include "gl123es.h"
 
 import "Presentation"
-import "GLMultiDraw"
 import "ButterburShader"
 import "TIManager"
 

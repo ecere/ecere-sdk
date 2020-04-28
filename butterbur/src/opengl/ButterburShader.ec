@@ -10,14 +10,82 @@ import "VersionedShader"
 
 private: // FIXME:  eC bug
 
-define squishFactorAttribute = 7;
-define drawIDAttribute = 8;
-define posOffsetAttribute = 9;
+define squishFactorAttribute = 100;
 
-define transform0Attribute = 10;
-define transform1Attribute = 11;
-define transform2Attribute = 12;
-define transform3Attribute = 13;
+Size resetDisplaySize;
+Size displaySize;
+DisplaySystem displaySystem;
+Display glDisplay;
+
+GLCapabilities glCaps;
+bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
+bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
+
+int glVersion;
+int glMinorVersion;
+
+uint defaultVAO;
+
+#ifdef _DEBUG
+void checkGLErrors( const char *file, int line )
+{
+   int e, nCount = 0;
+   while((e = glGetError()) && nCount++ < 10)
+      PrintLn("GL error ", e, "! (at ", file, ":", line, ")");
+}
+#endif
+
+bool loadedGLExts;
+
+uint tempTexFBO; // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
+
+// FIXME: This is currently duplicated here from Ecere's OGL display driver because there is no other mechanism to access defualt VAO
+class TempOGLDisplay : struct
+{
+   GLCapabilities capabilities, originalCapabilities;
+   bool compat;
+   int version;
+   ColorAlpha * flippingBuffer;
+   int flipBufH, flipBufW;
+   bool depthWrite;
+   int x, y;
+   uint vao;
+   int maxTMU;
+}
+
+public void setupGL(Display display)
+{
+   GLCapabilities caps = display.glCapabilities;
+   void * data = display.driverData;
+
+   glDisplay = display;
+   displaySystem = display.displaySystem;
+
+   displaySize = { display.width, display.height };
+   resetDisplaySize = displaySize;
+
+   SETCAPS(caps);
+
+   defaultVAO = ((TempOGLDisplay)data).vao;
+   if(!loadedGLExts)
+   {
+#if defined(__LUMIN__)
+      // TODO: !
+      loadedGLExts = true;
+      glVersion = 4;
+      glMinorVersion = 5;
+#elif defined(__ANDROID__)
+      loadedGLExts = true;
+      glVersion = 3;
+      glMinorVersion = 2;
+#else
+      ogl_LoadFunctions();
+      loadedGLExts = true;
+      glVersion = ogl_GetMajorVersion();
+      glMinorVersion = ogl_GetMinorVersion();
+#endif
+   }
+}
 
 public class ButterburShaderBits : uint64
 {

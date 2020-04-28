@@ -194,14 +194,15 @@ private:
 
 
 // **********   Errors and Debugging   **********
-/*
+#ifdef _DEBUG
 void CheckGLErrors(const String s, int l)
 {
    int e, nCount = 0;
    while((e = glGetError()) && nCount++ < 10)
       printf("GL error %d! (%s:%d)\n", e, s, l);
 }
-*/
+#endif
+
 #ifdef GL_DEBUGGING
 #ifndef APIENTRY
    #define APIENTRY

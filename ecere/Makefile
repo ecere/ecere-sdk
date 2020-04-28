@@ -113,6 +113,7 @@ _ECSOURCES1 = \
 	src/gfx/drivers/LFBDisplayDriver.ec \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,) \
 	$(if $(DISABLE_GL),,src/gfx/drivers/OpenGLDisplayDriver.ec) \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/GLMultiDraw.ec) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec,)
 _ECSOURCES2 = \
 	$(if ,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
@@ -798,6 +799,9 @@ $(OBJ)ETC2Format.sym: src/gfx/bitmaps/ETC2Format.ec
 $(OBJ)glab.sym: src/gfx/drivers/gl3/glab.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.sym
 
+$(OBJ)GLMultiDraw.sym: src/gfx/drivers/gl3/GLMultiDraw.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/GLMultiDraw.ec -o $(OBJ)GLMultiDraw.sym
+
 $(OBJ)immediate.sym: src/gfx/drivers/gl3/immediate.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/immediate.ec -o $(OBJ)immediate.sym
 
@@ -1257,6 +1261,9 @@ $(OBJ)ETC2Format.c: src/gfx/bitmaps/ETC2Format.ec $(OBJ)ETC2Format.sym | $(SYMBO
 
 $(OBJ)glab.c: src/gfx/drivers/gl3/glab.ec $(OBJ)glab.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/glab.ec -o $(OBJ)glab.c -symbols $(OBJ)
+
+$(OBJ)GLMultiDraw.c: src/gfx/drivers/gl3/GLMultiDraw.ec $(OBJ)GLMultiDraw.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/GLMultiDraw.ec -o $(OBJ)GLMultiDraw.c -symbols $(OBJ)
 
 $(OBJ)immediate.c: src/gfx/drivers/gl3/immediate.ec $(OBJ)immediate.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/immediate.ec -o $(OBJ)immediate.c -symbols $(OBJ)
@@ -2062,6 +2069,9 @@ $(OBJ)gl_compat_4_4.o: src/gfx/drivers/gl3/gl_compat_4_4.c
 
 $(OBJ)glab.o: $(OBJ)glab.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)glab.c -o $(OBJ)glab.o
+
+$(OBJ)GLMultiDraw.o: $(OBJ)GLMultiDraw.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)GLMultiDraw.c -o $(OBJ)GLMultiDraw.o
 
 $(OBJ)immediate.o: $(OBJ)immediate.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)immediate.c -o $(OBJ)immediate.o
