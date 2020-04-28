@@ -13,12 +13,20 @@ public:
    CONSTRUCT(HelloCube, Window)
    {
       caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
-      background = DefinedColor::black;
-      borderStyle = BorderStyle::sizable;
       size = { 640, 480 };
+      background = DefinedColor::black;
+#if 0
+      borderStyle = BorderStyle::sizable;
       hasClose = true;
       hasMaximize = true;
       hasMinimize = true;
+#else
+      moveable = true;
+      borderStyle = BorderStyle::none;
+      opacity = 0;
+      alphaBlend = true;
+      stayOnTop = true;
+#endif
       displayDriver = "OpenGL";
 
       TArray<double> b { 5.0, 3.2, 1.5 };
@@ -63,7 +71,7 @@ public:
    void onResize(int w, int h)
    {
       printLn(CO(String), "onResize", null);
-      camera.setup(w, h, Point(null));
+      camera.setup(w, h, null);
       camera.update();
    }
 
@@ -75,6 +83,14 @@ public:
       display->setCamera(surface, camera);
       display->drawObject(cube);
       display->setCamera(surface, Camera(null));
+   }
+
+   bool onKeyDown(Key key, unichar ch)
+   {
+      // todo:
+      if(key.code == KeyCode::escape)
+         destroy(0);
+      return true;
    }
 };
 
