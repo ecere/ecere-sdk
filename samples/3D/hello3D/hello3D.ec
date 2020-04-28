@@ -23,17 +23,27 @@ class Hello3D : Window
 {
    caption = "Hello, 3D";
    background = black;
+#if 0
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
+#else
+   moveable = true;
+   borderStyle = none;
+   opacity = 0;
+   alphaBlend = true;
+   stayOnTop = true;
+#endif
    size = { 640, 480 };
 
    Cube cube { };
+   Material material { diffuse = white/*, ambient = blue*//*, specular = red, power = 8*/, opacity = 0.5f/*, flags = { translucent = true, doubleSided = true }*/ };
 
    bool OnLoadGraphics()
    {
       cube.Create(displaySystem);
+      cube.mesh.ApplyMaterial(material);
       cube.transform.scaling = { 100, 100, 100 };
       cube.transform.orientation = Euler { 50, 30, 50 };
       cube.UpdateTransform();
@@ -58,6 +68,12 @@ class Hello3D : Window
       display.SetCamera(surface, camera);
       display.DrawObject(cube);
       display.SetCamera(surface, null);
+   }
+
+   bool OnKeyDown(Key key, unichar ch)
+   {
+      if(key == escape) Destroy(0);
+      return true;
    }
 }
 
