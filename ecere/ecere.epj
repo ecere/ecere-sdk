@@ -1329,6 +1329,12 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "FileName" : "GLMultiDraw.ec",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
                               }
                            ],
                            "Configurations" : [
