@@ -182,6 +182,7 @@ public:
    property int nIndices { get { return nIndices; } set { nIndices = value; } };
    property GLMB meab { get { return meab; } set { meab = value; } };
    property int baseIndex { get { return baseIndex; } set { baseIndex = value; } };
+   property int baseVertex { get { return baseVertex; } set { baseVertex = value; } };
    property uint32 * indices { get { return indices; } set { indices = value; } };
    property Vector3Df * normals { get { return normals; } set { normals = value; } };
    property Vector3Df * tangents { get { return tangents; } set { tangents = value; } };
@@ -362,7 +363,15 @@ public:
    {
       if(this && group)
       {
+         bool shareIndicesTweak = false;
+         if(group.type.sharedIndices && !group.indices && indices)
+         {
+            shareIndicesTweak = true;
+            group.indices = (uint16 *)((byte *)indices + (group.baseIndex * (group.type.indices32bit ? 4 : 2)));
+         }
          driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, meab);
+         if(shareIndicesTweak)
+            group.indices = null;
       }
    }
 

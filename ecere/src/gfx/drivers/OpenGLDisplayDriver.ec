@@ -4110,7 +4110,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
-
+      // TODO: Not yet handling single allocation of all (shared) mesh indices when uploading separately
       if(glCaps_vertexBuffer)
       {
          GLMB mab = mesh.mab;
@@ -4242,6 +4242,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLIndices oglIndices = group.data;
       SETCAPS(oglSystem.capabilities);
 
+      // TODO: Not yet handling single allocation of all (shared) mesh indices when uploading separately
       if(glCaps_vertexBuffer)
       {
          uint16 * b = group.indices;
