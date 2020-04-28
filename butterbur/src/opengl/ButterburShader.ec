@@ -10,7 +10,7 @@ import "VersionedShader"
 
 private: // FIXME:  eC bug
 
-define squishFactorAttribute = 100;
+define squishFactorAttribute = 13;
 
 Size resetDisplaySize;
 Size displaySize;

@@ -41,13 +41,16 @@ public struct FreeSpots
 
    void init(uint count)
    {
-      int i;
-      spots = new int[count];
-      for(i = 0; i < count-1; i++)
-         spots[i] = i+1;
-      spots[i] = -1;
-      nextSpot = 0;
-      size = count;
+      if(count)
+      {
+         int i;
+         spots = new int[count];
+         for(i = 0; i < (int)count-1; i++)
+            spots[i] = i+1;
+         spots[i] = -1;
+         nextSpot = 0;
+         size = count;
+      }
    }
 
    void markFree(int spot)
@@ -162,6 +165,7 @@ public struct GLArrayTexture
       width = w;
       height = h;
       numLayers = count;
+
       glBindTexture(target, texture);
 
       if(setMaxLevel)
@@ -187,9 +191,16 @@ public struct GLArrayTexture
       glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
       glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-      glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
-      glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
-
+      if(levels > 3) // TODO: Wrap options as a property?
+      {
+         glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
+         glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      }
+      else
+      {
+         glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
+         glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
+      }
       glBindTexture(target, 0);
    }
 
@@ -261,11 +272,13 @@ public struct GLArrayTexture
    void setLayerFormat(int level, int x, int y, int layer, byte * c, uint targetFBO, int format, int type)
    {
       int target = GL_TEXTURE_2D_ARRAY;
+
       if(layer >= numLayers)
          resize(layer + Max(2, layer)/2, targetFBO);
+
       glBindTexture(target, texture);
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-      glTexSubImage3D(target, level, x, y, layer, width, height, 1, format, type, c);
+      glTexSubImage3D(target, level, x, y, layer, width >> level, height >> level, 1, format, type, c);
       glBindTexture(target, 0);
    }
 
@@ -285,7 +298,7 @@ public struct GLArrayTexture
       int layer;
       if(!spots.spots)
          spots.init(numLayers);
-      layer = spots.next();
+      layer = spots.spots ? spots.next() : -1;
       if(layer == -1 && numLayers < 2048)
       {
          resize(Min(2048, Max(8, numLayers + numLayers/2)), targetFBO);

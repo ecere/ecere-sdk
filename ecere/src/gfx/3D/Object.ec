@@ -1875,19 +1875,19 @@ private:
 
    public property DisplaySystem displaySystem
    {
-      set { Upload(value, null, null); }
+      set { Upload(value, null, null, 0, null); }
       get { return displaySystem; }
    }
 
-   public void Upload(DisplaySystem displaySystem, GLMB mab, GLMB meab)
+   public void Upload(DisplaySystem displaySystem, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       Object o;
 
       this.displaySystem = displaySystem;
       if(flags.mesh && mesh)
-         mesh.Upload(displaySystem, true, mab, meab);
+         mesh.Upload(displaySystem, true, mab, meab, nAT, mAT);
       for(o = children.first; o; o = o.next)
-         o.Upload(displaySystem, mab, meab);
+         o.Upload(displaySystem, mab, meab, nAT, mAT);
    }
 
    void setTransform(Matrix sm, Matrix svm, Vector3D cp) // Start-up matrix, Start-up X View Matrix, Camera Position
