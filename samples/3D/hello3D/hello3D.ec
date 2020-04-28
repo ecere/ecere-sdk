@@ -19,6 +19,7 @@ Light light
    orientation = Euler { pitch = 10, yaw = 30 };
 };
 
+
 class Hello3D : Window
 {
    caption = "Hello, 3D";
