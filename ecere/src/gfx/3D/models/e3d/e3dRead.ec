@@ -535,7 +535,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   // TODO: 16 bit indices here?
                   mesh.indices = new uint32[nFaces * 3];
                   mesh.nIndices = nFaces * 3;
-                  f.Read(indices16, sizeof(uint32), nFaces * 3);
+                  f.Read(indices16, sizeof(uint16), nFaces * 3);
                   for(i = 0; i < nFaces * 3; i++)
                      mesh.indices[i] = indices16[i];
                   delete indices16;
@@ -554,7 +554,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      mesh.meab.ab.upload(block.start, size, mesh.indices);
                }
 
-               mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
+               PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
+               if(displaySystem)
+                  g.baseIndex = mesh.baseIndex;
 #else
                // Assuming triangles for now
                {
@@ -603,6 +605,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      // Assuming triangles for now
                      f.Read(g.indices, sizeof(uint32), nFaces * 3);
+                     g.baseIndex = mesh.baseIndex;
                      mesh.UnlockPrimitiveGroup(g);
                   }
                }
