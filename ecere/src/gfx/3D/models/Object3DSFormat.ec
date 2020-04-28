@@ -751,7 +751,7 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
          count = ReadWORD(info->f);
          strcat(matName, name);
 
-         mat = displaySystem.GetMaterial(matName);
+         mat = displaySystem ? displaySystem.GetMaterial(matName) : null;
          faces = info->matFaces[(uintptr)mat];
          if(!faces)
             info->matFaces[(uintptr)mat] = faces = { };
@@ -856,7 +856,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          {
             Material mat = (Material)&m;
             Array<int> faces = m;
-            if(mat.flags.translucent)
+            if(mat && mat.flags.translucent)
             {
                mesh.primitives = renew mesh.primitives PrimitiveSingle[mesh.nPrimitives + faces.count];
                for(i : faces)
@@ -1170,17 +1170,17 @@ static bool ReadMap(FileInfo * info, Material mat)
             bool translucent = false;
             if(!mat.baseMap)
             {
-               mat.baseMap = displaySystem.GetTexture(location);
+               mat.baseMap = displaySystem ? displaySystem.GetTexture(location) : null;
                if(!mat.baseMap)
                {
                   mat.baseMap = Bitmap { };
-                  if(displaySystem.GetTexture(bumpName))
+                  if(displaySystem && displaySystem.GetTexture(bumpName))
                   {
                      mat.bumpMap = null; // Bad bump map if it's the same as the diffuse map...
                   }
                   if(!mat.baseMap.Load(location, null, null) ||
                      !mat.baseMap.Convert(null, pixelFormat888, null) ||
-                     !displaySystem.AddTexture(location, mat.baseMap))
+                     (displaySystem && !displaySystem.AddTexture(location, mat.baseMap)))
                   {
                      delete mat.baseMap;
                   }
@@ -1593,7 +1593,7 @@ static bool ReadEditChunks(FileInfo * info, void * data)
          Material mat;
          ReadChunks(ReadMaterial, info, material);
 
-         mat = info->displaySystem.AddNamedMaterial(material.name);
+         mat = info->displaySystem ? info->displaySystem.AddNamedMaterial(material.name) : { };
          if(mat)
          {
             if(material.baseMap)
