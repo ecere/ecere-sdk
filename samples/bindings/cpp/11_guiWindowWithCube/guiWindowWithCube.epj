@@ -71,19 +71,7 @@
             }
          ]
       },
-      "guiWindowWithCube.cpp",
-      {
-         "FileName" : "../../../../../../../b/g/b/hack/jer-cpp-fun-06-20200115-1123-allTheGoodStuff/samples/bindings/cpp/11_guiWindowWithCube/guiWindowWithCube.cpp",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "guiWindowWithCube-mess.cpp",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "guiWindowWithCube.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [
