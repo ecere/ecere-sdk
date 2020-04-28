@@ -2,6 +2,8 @@ namespace gfx3D;
 
 import "Display"
 
+import "GLMultiDraw"
+
 public class MeshFeatures
 {
 public:
@@ -974,7 +976,7 @@ public:
       data = value;
    }
 
-   bool Upload(DisplaySystem displaySystem, bool uploadTextures, GLMB mab, GLMB meab)
+   bool Upload(DisplaySystem displaySystem, bool uploadTextures, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       bool result = false;
       PrimitiveGroup g;
@@ -999,16 +1001,64 @@ public:
 
       for(g = groups.first; g; g = g.next)
       {
+         Material mat = g.material;
          if(!g.type.vertexRange)
          {
             if(clearData)
                g.data = null;
             UnlockPrimitiveGroup(g);
          }
-         if(uploadTextures)
+         if(mat && uploadTextures)
          {
-            Material mat = g.material;
-            if(mat && mat.baseMap && mat.baseMap.displaySystem != displaySystem)
+            if(nAT && mAT != null)
+            {
+               int i;
+               for(i = 0; i < Min(1, nAT); i++)
+               {
+                  Bitmap bitmap = i == 0 ? mat.baseMap : null;
+                  if(bitmap && bitmap.displaySystem != displaySystem)
+                  {
+                     Bitmap convBitmap = bitmap;
+                     GLArrayTexture * at = &mAT[i];
+                     if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
+                        convBitmap = bitmap.ProcessDD(true, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+                     if(convBitmap)
+                     {
+                        if(convBitmap.bitmaps)
+                        {
+                           int layer = at->allocateLayer(0);
+                           int j;
+                           int numLevels = at->numLevels;
+                           int skipLevel = Max(0, convBitmap.numMipMaps - numLevels);
+                           if(layer != -1)
+                           {
+                              for(j = 0; j < convBitmap.numMipMaps; j++)
+                              {
+                                 Bitmap bmp = convBitmap.bitmaps[j];
+                                 if(bmp)
+                                 {
+                                    int level = j - skipLevel;
+                                    if(level >= 0)
+                                       at->setLayer(level, 0, 0, layer, bmp.picture, 0);
+                                    delete bmp.picture;
+                                    delete bmp;
+                                 }
+                              }
+                              delete convBitmap.bitmaps;
+
+                              bitmap.displaySystem = displaySystem;
+                              bitmap.driver = displaySystem.driver;
+                              bitmap.driverData = (void *)(intptr)layer;   // TOFIX: *not* a texture in this case! Don't free as one.
+                           }
+                        }
+                     }
+
+                     if(convBitmap != bitmap)
+                        delete convBitmap;
+                  }
+               }
+            }
+            else if(mat.baseMap && mat.baseMap.displaySystem != displaySystem)
                mat.baseMap.MakeMipMaps(displaySystem);
          }
          delete g.indices;
