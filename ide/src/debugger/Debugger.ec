@@ -391,6 +391,10 @@ class Debugger
    bool entryPoint;
    Map<String, bool> projectsLibraryLoaded { };
 
+   Time targetRunTime;
+   Time targetLastStopTime;
+   Time targetStoppedTime;
+
    Timer gdbTimer
    {
       delay = 0.0, userData = this;
@@ -646,6 +650,8 @@ class Debugger
 #if 0 //def _DPL_ON
       __dpl(file, line, _dpct, dplchan::debuggerState, 0, state, same ? " *** == *** " : " -> ", value);
 #endif
+      if(value == stopped)
+         targetLastStopTime = GetTime();
       state = value;
       if(!same) ide.AdjustDebugMenus();
    }
@@ -905,6 +911,9 @@ class Debugger
    void HandleExit(char * reason, char * code)
    {
       char verboseExitCode[128];
+      Time targetExitTime = 0;
+      if(targetRunTime)
+         targetExitTime = GetTime();
 
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::HandleExit(", reason, ", ", code, ")");
       _ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
@@ -962,7 +971,10 @@ class Debugger
          else
             ide.outputView.debugBox.Logf($"The program %s has exited (gdb provided an unknown reason)%s.\n", program, verboseExitCode);
       }
+      if(targetRunTime)
+         ide.outputView.debugBox.Logf($"It ran for %.1f seconds.\n", targetExitTime - targetRunTime - targetStoppedTime);
       ide.Update(null);
+      targetRunTime = 0;
    }
 
    DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints)
@@ -2063,8 +2075,8 @@ class Debugger
       GdbTargetSet();
       if(!usingValgrind)
          gdbExecution = run;
-      GdbExecCommon();
       ShowDebuggerViews();
+      GdbExecCommon();
       if(usingValgrind)
          GdbExecContinue(true);
       else if(!GdbCommand(3, true, "-exec-run"))
@@ -2181,6 +2193,18 @@ class Debugger
    {
       //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecCommon()");
       BreakpointsMaintenance();
+
+      if(!targetRunTime)
+      {
+         targetRunTime = GetTime();
+         targetStoppedTime = 0;
+      }
+      if(targetLastStopTime)
+      {
+         Time now = GetTime();
+         targetStoppedTime = targetStoppedTime + (now - targetLastStopTime);
+         targetLastStopTime = 0;
+      }
    }
 
 #ifdef GDB_DEBUG_GUI
