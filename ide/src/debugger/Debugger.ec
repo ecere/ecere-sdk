@@ -302,10 +302,10 @@ enum DebuggerReason
 };
 enum BreakpointType
 {
-   none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad, internalEntry;
+   none, internalMain, internalWinMain, internalModulesLoaded, user, runToCursor, internalModuleLoad, internalEntry, debugBreakpoint;
 
    property bool isInternal { get { return (this == internalMain || this == internalWinMain || this == internalModulesLoaded || this == internalModuleLoad || this == internalEntry); } };
-   property bool isUser { get { return (this == user || this == runToCursor); } };
+   property bool isUser { get { return (this == user || this == runToCursor || this == debugBreakpoint); } };
 };
 enum DebuggerEvaluationError { none, symbolNotFound, memoryCantBeRead, unknown };
 enum DebuggerUserAction
@@ -501,6 +501,8 @@ class Debugger
                         bpInternal = bp;
                      else
                         bpUser = bp;
+                     if(bp.type == debugBreakpoint)
+                        activeFrameLevel = 1;
                      if(stopItem && stopItem.frame)
                      {
                         if(bpInternal && bpRunToCursor && bpRunToCursor.inserted && !strcmp(bpRunToCursor.bp.addr, bp.bp.addr))
@@ -726,6 +728,7 @@ class Debugger
 #endif
       sysBPs.Add(Breakpoint { type = internalModulesLoaded, enabled = true, level = -1 });
       sysBPs.Add(Breakpoint { type = internalModuleLoad, function = "InternalModuleLoadBreakpoint", enabled = true, level = -1 });
+      sysBPs.Add(Breakpoint { type = debugBreakpoint, function = "debugBreakpoint", enabled = true, level = -1 });
    }
 
    ~Debugger()
