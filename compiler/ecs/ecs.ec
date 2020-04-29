@@ -787,6 +787,7 @@ static void WriteMain(const char * fileName)
       else
          f.Puts("   return true;\n");
       f.Puts("}\n");
+      f.Puts("\nvoid debugBreakpoint()\n{\n}\n");
       eInstance_Delete(f);
    }
 }

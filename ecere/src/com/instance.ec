@@ -6705,6 +6705,8 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, baseSystemAccess);
    eSystem_RegisterFunction("isblank", "int isblank(int c)", isblank, module, baseSystemAccess);
 
+   // --- eC Debug ---
+   eSystem_RegisterFunction("debugBreakpoint", "void debugBreakpoint()", null, module, baseSystemAccess);
 }
 
 public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char * argv[])
