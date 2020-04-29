@@ -15,9 +15,11 @@ const char * indents(int count)
    BType result = null; \
    if(value) \
    { \
-   MapIterator<ECType, BType> i { map = g_._map }; \
-   if(i.Index(value, true)) result = i.data; \
-   else i.data = result = BType { }, g_.array.Add(result), result.init; \
+      HashMapIterator<ECType, BType> i { map = g_._map }; \
+      if(i.Index(value, true)) \
+         result = i.data; \
+      else \
+         i.data = result = BType { }, g_.array.Add(result), result.init; \
    } \
    return result;
 
@@ -524,7 +526,7 @@ class BOutputPtr : UIntPtr;
 
 #define mapGetCreateVariant(_kind, _ptr) \
    BVariant v; \
-   MapIterator<UIntPtr, BVariant> i { map = g_.allVariants }; \
+   HashMapIterator<UIntPtr, BVariant> i { map = g_.allVariants }; \
    if(i.Index((UIntPtr)value, true)) v = i.data; \
    else i.data = v = BVariant { }, g_.storeVariants.Add(v), v.kind = _kind, _ptr = value; \
    return v;
@@ -1025,7 +1027,7 @@ struct NamespaceDependencyInfo
 
 #define mapGetCreateOutput(_map, _kind, _type) \
    BOutput o; \
-   MapIterator<UIntPtr, BOutput> i { map = g_._map }; \
+   HashMapIterator<UIntPtr, BOutput> i { map = g_._map }; \
    if((*init = !i.Index(object, true))) i.data = o = BOutput { _kind, type2 = _type }; \
    else o = i.data; \
    return o;
@@ -1042,7 +1044,7 @@ class BModule : struct
    {
       BTemplaton t;
       BTemplatonKey key { (uintptr)tp, (uintptr)cl };
-      MapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
+      HashMapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
       if(i.Index(key, true)) t = i.data;
       else i.data = t = BTemplaton { tp, cl }, t.init();
       return t;
@@ -1051,7 +1053,7 @@ class BModule : struct
    {
       BTemplaton t;
       BTemplatonKey key { (uintptr)0, (uintptr)cl };
-      MapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
+      HashMapIterator<BTemplatonKey, BTemplaton> i { map = g_.allTemplatons };
       if(i.Index(key, true)) t = i.data;
       else i.data = t = BTemplaton { null, cl, nspace }, t.init();
       return t;
