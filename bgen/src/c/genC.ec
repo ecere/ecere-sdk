@@ -161,26 +161,26 @@ class CGen : Gen
    Array<BMethod> storeMethods { };
    Array<BProperty> storeProperties { };
 
-   Map<NameSpacePtr, BNamespace> allNamespaces { };
-   Map<UIntPtr, BVariant> allVariants { };
-   Map<UIntPtr, BManual> allManuals { };
-   Map<DefinedExpressionPtr, BDefine> allDefines { };
-   Map<GlobalFunctionPtr, BFunction> allFunctions { };
-   Map<ClassPtr, BClass> allClasses { };
-   Map<BTemplatonKey, BTemplaton> allTemplatons { };
-   Map<MethodPtr, BMethod> allMethods { };
-   Map<PropertyPtr, BProperty> allProperties { };
+   HashMap<NameSpacePtr, BNamespace> allNamespaces { };
+   HashMap<UIntPtr, BVariant> allVariants { };
+   HashMap<UIntPtr, BManual> allManuals { };
+   HashMap<DefinedExpressionPtr, BDefine> allDefines { };
+   HashMap<GlobalFunctionPtr, BFunction> allFunctions { };
+   HashMap<ClassPtr, BClass> allClasses { };
+   HashMap<BTemplatonKey, BTemplaton> allTemplatons { };
+   HashMap<MethodPtr, BMethod> allMethods { };
+   HashMap<PropertyPtr, BProperty> allProperties { };
 
-   Map<UIntPtr, BOutput> mapDefine { };
-   Map<UIntPtr, BOutput> mapFunction { };
-   Map<UIntPtr, BOutput> mapTypedef { };
-   Map<UIntPtr, BOutput> mapClassPointer { };
-   Map<UIntPtr, BOutput> mapBitTool { };
-   Map<UIntPtr, BOutput> mapEnum { };
-   Map<UIntPtr, BOutput> mapStruct { };
-   Map<UIntPtr, BOutput> mapMethod { };
-   Map<UIntPtr, BOutput> mapProperty { };
-   Map<UIntPtr, BOutput> mapConversion { };
+   HashMap<UIntPtr, BOutput> mapDefine { };
+   HashMap<UIntPtr, BOutput> mapFunction { };
+   HashMap<UIntPtr, BOutput> mapTypedef { };
+   HashMap<UIntPtr, BOutput> mapClassPointer { };
+   HashMap<UIntPtr, BOutput> mapBitTool { };
+   HashMap<UIntPtr, BOutput> mapEnum { };
+   HashMap<UIntPtr, BOutput> mapStruct { };
+   HashMap<UIntPtr, BOutput> mapMethod { };
+   HashMap<UIntPtr, BOutput> mapProperty { };
+   HashMap<UIntPtr, BOutput> mapConversion { };
 
    AVLTree<UIntPtr> optionalClasses { };
    void addOptionalClass(BTemplaton t)
