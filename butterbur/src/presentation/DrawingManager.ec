@@ -81,6 +81,7 @@ public class MDManager : DrawingManager
       }
       // Allocate MD, add draw commands
       md.commandsCount = 0;
+      md.totalInstances = 0;
 
       presentation.prepareDraw(renderFlags, this, transform);
 

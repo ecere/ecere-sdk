@@ -52,7 +52,6 @@
                "Folder" : "opengl",
                "Files" : [
                   "$(ECERE_SDK_SRC)/butterbur/src/opengl/ButterburShader.ec",
-                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/GLMultiDraw.ec",
                   "$(ECERE_SDK_SRC)/butterbur/src/opengl/VersionedShader.ec",
                   "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/gl_compat_4_4.c"
                ]
