@@ -339,6 +339,8 @@ public struct GLMultiDraw
    uint * drawIDs;
    GLDrawCommand * commands;
    uint type;
+   uint idsAlloced;
+   uint totalInstances;
 
    // For GL ES lack of baseInstance, we need to know this here...
    GLAB transformsAB;
@@ -375,10 +377,27 @@ public struct GLMultiDraw
       drawIDs = renew0 drawIDs uint[size];
       commands = renew0 commands GLDrawCommand[size];
       commandsAlloced = size;
+      idsAlloced = size;
       idsAB.allocate(size * sizeof(uint), null, streamDraw);
 #ifndef CLIENT_MEM_COMMANDS
       commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
 #endif
+   }
+
+   void resizeCommands(uint size)
+   {
+      commands = renew0 commands GLDrawCommand[size];
+      commandsAlloced = size;
+#ifndef CLIENT_MEM_COMMANDS
+      commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
+#endif
+   }
+
+   void resizeIDs(uint size)
+   {
+      drawIDs = renew0 drawIDs uint[size];
+      idsAlloced = size;
+      idsAB.allocate(size * sizeof(uint), null, streamDraw);
    }
 
    void free()
@@ -395,6 +414,7 @@ public struct GLMultiDraw
          vao = 0;
       }
       commandsAlloced = 0;
+      idsAlloced = 0;
    }
 
    int allocateVbo(uint nVertices, uint vertexSize, const void *data)
@@ -431,13 +451,16 @@ public struct GLMultiDraw
 
    void addDrawCommand(uint indexCount, uint instanceCount, uint firstIndex, uint baseVertex, uint baseInstance)
    {
-      addDrawCommandCustomID(indexCount, instanceCount, firstIndex, baseVertex, baseInstance, commandsCount);
+      addDrawCommandCustomID(indexCount, instanceCount, firstIndex, baseVertex, baseInstance, totalInstances);
    }
 
-   void addDrawCommandCustomID(uint indexCount, uint instanceCount, uint firstIndex, uint baseVertex, uint baseInstance, uint drawID)
+   void addDrawCommandCustomID(uint indexCount, uint instanceCount, uint firstIndex, uint baseVertex, uint baseInstance, uint layer)
    {
       if(commandsCount >= commandsAlloced)
-         resize(commandsCount + Max(1, commandsCount / 2));
+         resizeCommands(commandsCount + Max(1, commandsCount / 2));
+      if(totalInstances + instanceCount >= idsAlloced)
+         resizeIDs(totalInstances + Max(instanceCount, totalInstances / 2));
+
       commands[commandsCount] =
       {
          count = indexCount,
@@ -446,13 +469,14 @@ public struct GLMultiDraw
          baseVertex = baseVertex,
          baseInstance = baseInstance
       };
-      drawIDs[commandsCount] = drawID;
       commandsCount++;
+      FillBytesBy4(drawIDs + totalInstances, layer, instanceCount);
+      totalInstances += instanceCount;
    }
 
    void prepare(int vertNCoords, int verticesStride)
    {
-      idsAB.upload(0, commandsCount * sizeof(uint), drawIDs);
+      idsAB.upload(0, totalInstances * sizeof(uint), drawIDs);
 #ifndef CLIENT_MEM_COMMANDS
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
 #endif
