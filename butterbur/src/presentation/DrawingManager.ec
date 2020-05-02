@@ -94,32 +94,35 @@ public class MDManager : DrawingManager
             transformsAlloced = md.commandsCount;
             md.transformsAB.allocate(md.transformSize * sizeof(float) * transformsAlloced, null, streamDraw);
          }
-
          md.transformsAB.upload(0, md.commandsCount * md.transformSize * sizeof(float), transforms.array);
 
-         GLABBindBuffer(GL_ARRAY_BUFFER, md.transformsAB.buffer);
-         if(md.transformSize == 3)
+         if(!glCaps_vao || md.lastTransformAB != md.transformsAB.buffer)
          {
-            glVertexAttribPointer(posOffsetAttribute, md.transformSize, GL_FLOAT, GL_FALSE, 0, 0);
-            glVertexAttribDivisor(posOffsetAttribute, 1);
-            glEnableVertexAttribArray(posOffsetAttribute);
-         }
-         else
-         {
-            glVertexAttribPointer(transform0Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), 0);
-            glVertexAttribPointer(transform1Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(3 * sizeof(float)));
-            glVertexAttribPointer(transform2Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(6 * sizeof(float)));
-            glVertexAttribPointer(transform3Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(9 * sizeof(float)));
+            GLABBindBuffer(GL_ARRAY_BUFFER, md.transformsAB.buffer);
+            if(md.transformSize == 3)
+            {
+               glVertexAttribPointer(posOffsetAttribute, md.transformSize, GL_FLOAT, GL_FALSE, 0, 0);
+               glVertexAttribDivisor(posOffsetAttribute, 1);
+               glEnableVertexAttribArray(posOffsetAttribute);
+            }
+            else
+            {
+               glVertexAttribPointer(transform0Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), 0);
+               glVertexAttribPointer(transform1Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(3 * sizeof(float)));
+               glVertexAttribPointer(transform2Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(6 * sizeof(float)));
+               glVertexAttribPointer(transform3Attribute, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void *)(uintptr)(9 * sizeof(float)));
 
-            glVertexAttribDivisor(transform0Attribute, 1);
-            glVertexAttribDivisor(transform1Attribute, 1);
-            glVertexAttribDivisor(transform2Attribute, 1);
-            glVertexAttribDivisor(transform3Attribute, 1);
+               glVertexAttribDivisor(transform0Attribute, 1);
+               glVertexAttribDivisor(transform1Attribute, 1);
+               glVertexAttribDivisor(transform2Attribute, 1);
+               glVertexAttribDivisor(transform3Attribute, 1);
 
-            glEnableVertexAttribArray(transform0Attribute);
-            glEnableVertexAttribArray(transform1Attribute);
-            glEnableVertexAttribArray(transform2Attribute);
-            glEnableVertexAttribArray(transform3Attribute);
+               glEnableVertexAttribArray(transform0Attribute);
+               glEnableVertexAttribArray(transform1Attribute);
+               glEnableVertexAttribArray(transform2Attribute);
+               glEnableVertexAttribArray(transform3Attribute);
+            }
+            md.lastTransformAB = md.transformsAB.buffer;
          }
       }
 
