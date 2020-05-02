@@ -346,6 +346,12 @@ public struct GLMultiDraw
    GLAB transformsAB;
    int transformSize;
 
+   // To avoid changing the state of the VAO unnecessarily
+   uint lastTransformAB;
+   uint lastIDAB;
+   uint lastVBO;
+   uint lastIBO;
+
    void printStats()
    {
       PrintLn("* Indices Stats: ");
@@ -415,6 +421,11 @@ public struct GLMultiDraw
       }
       commandsAlloced = 0;
       idsAlloced = 0;
+
+      lastIDAB = 0;
+      lastIBO = 0;
+      lastVBO = 0;
+      lastTransformAB = 0;
    }
 
    int allocateVbo(uint nVertices, uint vertexSize, const void *data)
@@ -482,19 +493,31 @@ public struct GLMultiDraw
 #endif
 
       if(glCaps_vao) glBindVertexArray(vao);
-      // Draw IDs
-      GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
-      glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
-      glVertexAttribDivisor(drawIDAttribute, 1);
-      glEnableVertexAttribArray(drawIDAttribute);
 
-      if(vertNCoords)
+      // Draw IDs
+      if(!glCaps_vao || lastIDAB != idsAB.buffer)
       {
-         GLAB ab { vertexGLMB.ab.buffer };
-         glEnableVertexAttribArray(GLBufferContents::vertex);
-         ab.use(vertex, vertNCoords, GL_FLOAT, verticesStride, null);
+         GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
+         glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
+         glVertexAttribDivisor(drawIDAttribute, 1);
+         glEnableVertexAttribArray(drawIDAttribute);
+         lastIDAB = idsAB.buffer;
       }
-      GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
+      if(!glCaps_vao || lastVBO != vertexGLMB.ab.buffer)
+      {
+         if(vertNCoords)
+         {
+            GLAB ab { vertexGLMB.ab.buffer };
+            glEnableVertexAttribArray(GLBufferContents::vertex);
+            ab.use(vertex, vertNCoords, GL_FLOAT, verticesStride, null);
+         }
+         lastVBO = vertexGLMB.ab.buffer;
+      }
+      if(!glCaps_vao || lastIBO != indexGLMB.ab.buffer)
+      {
+         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
+         lastIBO = indexGLMB.ab.buffer;
+      }
    }
 
    void draw()
