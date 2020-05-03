@@ -2884,7 +2884,7 @@ ext_decl:
          f.Putc(' ');
          f.Puts(yytext);
          f.Putc(0);
-         $$ = MkExtDeclString(f.StealBuffer());
+         $$ = MkExtDeclString((String)f.StealBuffer());
          FreeExtDecl($1);
          delete f;
       }
@@ -2895,7 +2895,7 @@ ext_decl:
          f.Putc(' ');
          f.Puts(yytext);
          f.Putc(0);
-         $$ = MkExtDeclString(f.StealBuffer());
+         $$ = MkExtDeclString((String)f.StealBuffer());
          FreeExtDecl($1);
          delete f;
       }
