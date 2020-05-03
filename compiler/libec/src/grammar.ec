@@ -19223,7 +19223,7 @@ yyreduce:
          f.Putc(' ');
          f.Puts(yytext);
          f.Putc(0);
-         (yyval.extDecl) = MkExtDeclString(f.StealBuffer());
+         (yyval.extDecl) = MkExtDeclString((String)f.StealBuffer());
          FreeExtDecl((yyvsp[(1) - (2)].extDecl));
          delete f;
       }
@@ -19238,7 +19238,7 @@ yyreduce:
          f.Putc(' ');
          f.Puts(yytext);
          f.Putc(0);
-         (yyval.extDecl) = MkExtDeclString(f.StealBuffer());
+         (yyval.extDecl) = MkExtDeclString((String)f.StealBuffer());
          FreeExtDecl((yyvsp[(1) - (2)].extDecl));
          delete f;
       }
