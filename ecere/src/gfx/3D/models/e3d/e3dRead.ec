@@ -192,6 +192,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             {
                Bitmap bitmap { };
                subData = bitmap;
+               incref bitmap;
                readSubBlocks = true;
                break;
             }
@@ -335,8 +336,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      }
                      else
                      {
+                        Bitmap bitmap = data;
+                        incref bitmap;
                         ctx.curTextureID = id;
-                        ctx.texturesByID[id] = data;
+                        ctx.texturesByID[id] = bitmap;
                      }
                   }
                }
