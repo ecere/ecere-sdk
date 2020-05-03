@@ -1,3 +1,24 @@
+define genidx = "";
+
+define genloc__ = "";
+define genspc__ = "";
+
+define __getloc__ = "";
+define __getflow__ = "";
+define __getctxx__ = "";
+
+define locprintx = "";
+define locprintxln = "";
+define locfprintx = "";
+define locfprintxln = "";
+define conmsgs = "";
+define conassert = "";
+define logmsgs = "";
+define conmsg = "";
+define conassertctx = "";
+define logmsg = "";
+define logmsgc = "";
+
 #include "debug.eh"
 
 import "ecere"
