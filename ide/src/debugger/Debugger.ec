@@ -979,6 +979,7 @@ class Debugger
          ide.outputView.debugBox.Logf($"It ran for %.1f seconds.\n", targetExitTime - targetRunTime - targetStoppedTime);
       ide.Update(null);
       targetRunTime = 0;
+      targetStoppedTime = 0;
    }
 
    DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints, bool usePython)
@@ -2208,10 +2209,7 @@ class Debugger
       BreakpointsMaintenance();
 
       if(!targetRunTime)
-      {
          targetRunTime = GetTime();
-         targetStoppedTime = 0;
-      }
       if(targetLastStopTime)
       {
          Time now = GetTime();
