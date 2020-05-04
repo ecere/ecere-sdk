@@ -471,15 +471,21 @@ public:
       terminate();
    }
 
-   void addTask(ProcessingTask task, int stage, int priority)
+   bool addTask(ProcessingTask task, int stage, int priority)
    {
+      bool result = false;
       if(stage > 0 && stages.count) // TODO: Should not come here if already destroyed
       {
          if(stage-1 >= stages.count)
             setup(stage, 0);
-         task.status = { stage };
-         stages[stage-1].addTask(task, priority);
+         if(stages[stage-1])
+         {
+            task.status = { stage };
+            stages[stage-1].addTask(task, priority);
+            result = true;
+         }
       }
+      return result;
    }
 
    void cancelTask(ProcessingTask task, bool wait)
