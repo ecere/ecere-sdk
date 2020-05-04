@@ -4,6 +4,8 @@ import "Display"
 
 import "GLMultiDraw"
 
+#include "gl123es.h"
+
 public class MeshFeatures
 {
 public:
@@ -1024,6 +1026,15 @@ public:
                         convBitmap = bitmap.ProcessDD(true, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
                      if(convBitmap)
                      {
+                        if(!at->texture)
+                        {
+                           // TOCHECK: Shouldn't the overall bitmap width be set?
+                           Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
+                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1, bmp.width, bmp.height, 256,
+                              convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? GL_COMPRESSED_RGBA8_ETC2_EAC : GL_RGBA8,
+                              false);
+                        }
+
                         if(convBitmap.bitmaps)
                         {
                            int layer = at->allocateLayer(0);
@@ -1039,7 +1050,12 @@ public:
                                  {
                                     int level = j - skipLevel;
                                     if(level >= 0)
-                                       at->setLayer(level, 0, 0, layer, bmp.picture, 0);
+                                    {
+                                       if(bmp.pixelFormat == pixelFormatETC2RGBA8)
+                                          at->setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
+                                       else
+                                          at->setLayer(level, 0, 0, layer, bmp.picture, 0);
+                                    }
                                     delete bmp.picture;
                                     delete bmp;
                                  }
