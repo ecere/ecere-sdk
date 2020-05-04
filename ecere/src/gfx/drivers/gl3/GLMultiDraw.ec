@@ -282,6 +282,20 @@ public struct GLArrayTexture
       glBindTexture(target, 0);
    }
 
+   void setLayerCompressed(int level, int x, int y, int layer, byte * c, uintsize sizeBytes, uint targetFBO)
+   {
+      int target = GL_TEXTURE_2D_ARRAY;
+
+      if(layer >= numLayers)
+         resize(layer + Max(2, layer)/2, targetFBO);
+
+      glBindTexture(target, texture);
+      glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+      glCompressedTexSubImage3D(target, level, x, y, layer, width >> level, height >> level, 1,
+         format, sizeBytes, c);
+      glBindTexture(target, 0);
+   }
+
    void set1x1Layer(int layer, ColorAlpha color, uint targetFBO)
    {
       byte c[4] = { color.color.r, color.color.g, color.color.b, color.a };
