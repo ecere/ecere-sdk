@@ -497,13 +497,18 @@ public:
          {
             int s = task.status.stage;
             ProcessingStage stage = stages[s-1];
-            stage.mutex.Wait();
-            if(task.status.stage == s)
+            if(stage)
             {
-               stage.cancelTask(task, wait);
-               done = true;
+               stage.mutex.Wait();
+               if(task.status.stage == s)
+               {
+                  stage.cancelTask(task, wait);
+                  done = true;
+               }
+               stage.mutex.Release();
             }
-            stage.mutex.Release();
+            else
+               break;
          }
       }
    }
