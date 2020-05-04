@@ -184,7 +184,7 @@ default:
 "__inline"                 { return(EXT_STORAGE); }
 "inline"                   { return(EXT_STORAGE); }
 "__declspec("({D}|{L}|([ \n\t\r]))*")" { return(EXT_STORAGE); }
-"__declspec("({D}|{L}|([ \n\t\r]))*"("({D}|{L})*")"([ \n\t\r])*")" { return(EXT_STORAGE); }
+"__declspec("({D}|{L}|([ \n\t\r]))*"("((({D}|{L})*)|((\"(\\.|[^\\"])*\"([ \n\t\r])*)*))")"([ \n\t\r])*")" { return(EXT_STORAGE); }
 "dllexport"                { return(EXT_STORAGE); }
 "dllimport"                { return(EXT_STORAGE); }
 "_Noreturn"                { return(EXT_STORAGE); }
