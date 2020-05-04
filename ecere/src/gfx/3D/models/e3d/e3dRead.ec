@@ -45,6 +45,8 @@ static String readString(File f)
    return s;
 }
 
+TempFile downloadFile(const String urlOrig);
+
 // Right now this is global and requires a lock... Support supplying optional textures ID map ?
 static Mutex texMutex { };
 
@@ -211,6 +213,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                {
                   char ext[MAX_EXTENSION];
                   char path[MAX_LOCATION];
+                  File f = null;
+                  const String format = null;
 
                   GetExtension(name, ext);
 
@@ -220,7 +224,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      const String authKey = strstr(ctx.texturesQuery, "?authKey=");
                      int l = authKey ? (int)(authKey - ctx.texturesQuery) : strlen(ctx.texturesQuery);
                      bool rest = strstr(ctx.texturesQuery, "/textures") ? true : false;
-                     bool found = false;
 
                      strcpy(ext, "etc2");
 
@@ -234,7 +237,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      }
                      else
                         sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
-                     if(!bitmap.Load(path, ext /*null*/, null))
+
+                     f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+
+                     if(!f)
                      {
                         if(rest)
                         {
@@ -246,13 +252,15 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         }
                         else
                            sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
-                        found = bitmap.Load(path, ext /*null*/, null);
+                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                        if(f)
+                           format = ext;
                      }
                      else
-                        found = true;
+                        format = ext;
 
                      // Fall back to non-compressed
-                     if(!found)
+                     if(!f)
                      {
                         GetExtension(name, ext);
 
@@ -266,7 +274,11 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         }
                         else
                            sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
-                        if(!bitmap.Load(path, ext /*null*/, null))
+                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+
+                        if(f)
+                           format = ext;
+                        else
                         {
                            if(rest)
                            {
@@ -278,7 +290,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                            }
                            else
                               sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
-                           found = bitmap.Load(path, ext /*null*/, null);
+                           f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                           if(f)
+                              format = ext;
                         }
                      }
                   }
@@ -289,33 +303,48 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      StripExtension(path);
                      strcat(path, "-256");
                      ChangeExtension(path, "etc2", path);
-                     if(!bitmap.Load(path, "etc2", null))
+                     f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                     if(f)
+                        format = "etc2";
+                     else
                      {
                         ChangeExtension(path, ext, path);
-                        if(!bitmap.Load(path, ext, null))
+                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                        if(f)
+                           format = ext;
+                        else
                         {
                            strcpy(path, ctx.path);
                            PathCat(path, name);
                            ChangeExtension(path, "etc2", path);
-                           if(!bitmap.Load(path, "etc2", null))
+                           f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                           if(f)
+                              format = "etc2";
+                           else
                            {
                               ChangeExtension(path, ext, path);
-                              bitmap.Load(path, ext, null);
+                              f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                              if(f)
+                                 format = ext;
                            }
                         }
                      }
                   }
-                  if(bitmap.pixelFormat != pixelFormatETC2RGBA8)
+                  if(f && bitmap.LoadFromFile(f, format, null))
                   {
-                     Bitmap bmp = bitmap.ProcessDD(true, 0, false /*true*/, 16384, true);
-                     bitmap.Copy2(bmp, true);
-                     delete bmp;
-                     #if 0
-                     ChangeExtension(path, "etc2", path);
-                     bitmap.Save(path, null, null);
-                     #endif
+                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8)
+                     {
+                        Bitmap bmp = bitmap.ProcessDD(true, 0, false /*true*/, 16384, true);
+                        bitmap.Copy2(bmp, true);
+                        delete bmp;
+                        #if 0
+                        ChangeExtension(path, "etc2", path);
+                        bitmap.Save(path, null, null);
+                        #endif
+                     }
+                     bitmap.MakeMipMaps(displaySystem);
                   }
-                  bitmap.MakeMipMaps(displaySystem);
+                  delete f;
                }
                delete name;
                break;
