@@ -30,6 +30,7 @@ public class DrawingManager
    virtual void init();
    virtual void prepareDraw(Presentation presentation);
    virtual void draw();
+   virtual void free();
 }
 
 public class MDManager : DrawingManager
@@ -61,6 +62,12 @@ public class MDManager : DrawingManager
          md.init(primMode, minAlloc);
          texture.init(texLevels, texW, texH, minAlloc);
       }
+   }
+
+   void free()
+   {
+      md.free();
+      texture.free();
    }
 
    void prepareDraw(Presentation presentation)
@@ -386,5 +393,15 @@ public class PresentationManager
       tiOverlayDM.height = height;
       tiBillboardDM.width = width;
       tiBillboardDM.height = height;
+   }
+
+   void free()
+   {
+      texturesDM.free();
+      shapeOverlayDM.free();
+      shapeBillboardDM.free();
+      perspective3DDM.free();
+      tiOverlayDM.free();
+      tiBillboardDM.free();
    }
 };
