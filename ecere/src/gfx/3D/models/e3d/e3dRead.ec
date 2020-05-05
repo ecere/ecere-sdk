@@ -728,7 +728,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                }
                else
                {
-                  ctx.materials.Add(mat);
+                  AVLNode<Material> node = (AVLNode<Material>)ctx.materials.Add(mat);
+                  Material mm = node.key; // AVLTree will copy the key now, which we don't want in this case
+                  node.key = mat;
+                  delete mm;
                   mat = null;
                }
                texMutex.Release();
