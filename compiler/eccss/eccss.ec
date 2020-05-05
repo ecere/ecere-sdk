@@ -373,6 +373,11 @@ public struct ECCSSEvaluator
 
 public class CMSSStyleSheet
 {
+   ~CMSSStyleSheet()
+   {
+      if(list) list.Free(), delete list;
+   }
+
 public:
    StylingRuleBlockList list;
 
