@@ -236,6 +236,7 @@ public:
                   delete prim->indices;
             }
 
+            delete indices;
             delete primitives;
             nPrimitives = 0;
             nVertices = 0;
