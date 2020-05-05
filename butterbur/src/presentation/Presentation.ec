@@ -32,6 +32,7 @@ public class Presentation
    {
       return 0;
    }
+   public virtual void unloadGraphics(bool shutDown);
 
    public property MultiPresentation parent
    {
@@ -199,5 +200,14 @@ public:
       results.minAllocSize = 0;
       if(!results.count) delete results;
       return results;
+   }
+
+   void unloadGraphics(bool shutDown)
+   {
+      for(o : subElements)
+      {
+         Presentation p = o;
+         p.unloadGraphics(shutDown);
+      }
    }
 }

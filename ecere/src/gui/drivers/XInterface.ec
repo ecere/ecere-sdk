@@ -1650,6 +1650,8 @@ class XInterface : Interface
       XFreeCursor(xGlobalDisplay, systemCursors[hand]);
       XFreeCursor(xGlobalDisplay, systemCursors[arrow]);
 
+      delete clipBoardData;
+
       //XPutBackEvent(xGlobalDisplay, &e);
       // xThread.Wait();
       // delete xThread;
@@ -3393,8 +3395,7 @@ class XInterface : Interface
                rootWindow && (!rootWindow.windowHandle || !rootWindow.visible || rootWindow.interim);
                rootWindow = rootWindow.next);
          }
-         if(clipBoardData)
-            delete clipBoardData;
+         delete clipBoardData;
          if(rootWindow)
             XSetSelectionOwner(xGlobalDisplay, atoms[clipboard],
                (X11Window) rootWindow.windowHandle, CurrentTime);
