@@ -495,10 +495,21 @@ public:
 
 public class ShapeStyle : GraphicalStyle
 {
-public:
    // Properties...
    Fill fill { };
    Stroke stroke { };
+public:
+   property Stroke stroke
+   {
+      set { delete stroke; stroke = value; }
+      get { return stroke; }
+   };
+
+   property Fill fill
+   {
+      set { delete fill; fill = value; }
+      get { return fill; }
+   };
 
    //return sym for visualization classes
    public ShapeStyle ::build(CMSSStyleSheet styleSheet, ECCSSEvaluator evaluator)
