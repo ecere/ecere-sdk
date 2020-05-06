@@ -103,7 +103,7 @@ const char * systemTypeSubst(const char * name, const char * dataTypeString)
          !strcmp(name, "float") ||
          !strcmp(name, "double")
                )) ||
-         (!strcmp(name, "String") && !strcmp(dataTypeString, "char *")) ||
+         (/*!strcmp(name, "String") && */!strcmp(dataTypeString, "char *")) ||
          (!strcmp(name, "byte") && !strcmp(dataTypeString, "unsigned char")) ||
          (!strcmp(name, "uint") && !strcmp(dataTypeString, "unsigned int")) ||
          (!strcmp(name, "unichar") && !strcmp(dataTypeString, "uint")) ||
@@ -653,7 +653,7 @@ char * oldGetClassTypeName(const char * className)
          if(*s == '<')
          {
             template = true;
-            strncpy(d, of, strlen(of));
+            strncpy(d, of, strlen(of) + 1);
             d += strlen(of);
          }
          else if(template)
@@ -663,7 +663,7 @@ char * oldGetClassTypeName(const char * className)
                if(*(s + 1) == ' ')
                   s++;
                pluriparams = true;
-               strncpy(d, with, strlen(with));
+               strncpy(d, with, strlen(with) + 1);
                d += strlen(with);
             }
             else if(*s == ' ')
@@ -675,12 +675,12 @@ char * oldGetClassTypeName(const char * className)
             {
                if(*(s + 1) == ' ')
                   s++;
-               strncpy(d, as, strlen(as));
+               strncpy(d, as, strlen(as) + 1);
                d += strlen(as);
             }
             else if(*s == '>')
             {
-               strncpy(d, close, strlen(close));
+               strncpy(d, close, strlen(close) + 1);
                d += strlen(close);
             }
             else if(!(isalpha(*s) || isdigit(*s) || *s == '_'))
@@ -730,13 +730,13 @@ char * getSymbolNameStringFromTypeString(const char * typeString, const char * s
          if(*s == ' ') continue;
          if(*s == '*')
          {
-            strncpy(d, ptr, strlen(ptr));
+            strncpy(d, ptr, strlen(ptr) + 1);
             d += strlen(ptr);
          }
          else if(*s == '<')
          {
             template = true;
-            strncpy(d, of, strlen(of));
+            strncpy(d, of, strlen(of) + 1);
             d += strlen(of);
          }
          else if(template)
@@ -746,7 +746,7 @@ char * getSymbolNameStringFromTypeString(const char * typeString, const char * s
                if(*(s + 1) == ' ')
                   s++;
                pluriparams = true;
-               strncpy(d, with, strlen(with));
+               strncpy(d, with, strlen(with) + 1);
                d += strlen(with);
             }
             else if(*s == ' ')
@@ -758,12 +758,12 @@ char * getSymbolNameStringFromTypeString(const char * typeString, const char * s
             {
                if(*(s + 1) == ' ')
                   s++;
-               strncpy(d, as, strlen(as));
+               strncpy(d, as, strlen(as) + 1);
                d += strlen(as);
             }
             else if(*s == '>')
             {
-               strncpy(d, close, strlen(close));
+               strncpy(d, close, strlen(close) + 1);
                d += strlen(close);
             }
             else if(!(isalpha(*s) || isdigit(*s) || *s == '_' || (special && (*s == '(' || *s == ')'))))

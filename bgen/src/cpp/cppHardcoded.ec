@@ -467,6 +467,9 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }");
    f.PrintLn(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }");
    f.PrintLn(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }");
+#ifdef NORMAL_CLASS_RETURN_METHOD_TIH
+   f.PrintLn(genloc__, "   operator TC() const { return *object; }"); // error: use of deleted function ‘GeoData::GeoData(const GeoData&)
+#endif
    f.PrintLn(genloc__, "   TC * object;", ln);
 
    f.PrintLn(genloc__, "   TIH(C(Instance) eo) : TIH(*(BINDINGS_CLASS(eo) ? (TC *)INSTANCE(eo, eo->_class) : new TC(eo)))");
@@ -521,6 +524,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
 void cppHardcodedNativeTypeTemplates(CPPGen g, File f)
 {
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const Instance & v) { return v.impl ? v.impl->_class : v._class.impl; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(char v) { C(Class) * c = CO(char); return c; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(short v) { C(Class) * c = CO(int); return c; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(int v) { C(Class) * c = CO(int); return c; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(int64 v) { C(Class) * c = CO(int); return c; };");
