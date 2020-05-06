@@ -196,7 +196,6 @@ public class DefaultShader : Shader
    fragmentShaderFile = "<:ecere>shaders/default.frag";
 #endif
 
-public:
    float modelView[16];
    float projection[16];
    float matTexture[16];
@@ -232,6 +231,7 @@ public:
    float color[4];
    Color blackTint;
 
+public:
    DefaultShaderBits backLightState; backLightState = DefaultShaderBits { separateSpecular = true };
 
    DefaultShader()
