@@ -125,9 +125,9 @@ public:
    {
       printStart(out, o);
       if(declarator) declarator.print(out, o);
-      out.Print("(");
+      printParenOpen(out);
       if(parameters) parameters.print(out, o);
-      out.Print(")");
+      printParenClose(out);
       printEnd(out, o);
    }
 
@@ -176,9 +176,9 @@ public:
    void print(File out, OutputOptions o)
    {
       printStart(out, o);
-      out.Print("(");
+      printParenOpen(out);
       if(declarator) declarator.print(out, o);
-      out.Print(")");
+      printParenClose(out);
       printEnd(out, o);
    }
 

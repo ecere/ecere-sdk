@@ -463,7 +463,10 @@ public:
          GetLastDirectory(name, str);
          StripLastDirectory(name, loc);
          StripExtension(str);
-         loadModuleName = CopyString(str);
+         if(strstr(str, "lib") == str)
+            loadModuleName = CopyString(str + 3);
+         else
+            loadModuleName = CopyString(str);
          loadModulePath = loc[0] ? CopyString(name) : null;
          loadModuleLocation = CopyString(loc[0] ? loc : "obj");
          if(strstr(loadModuleName, "gnosis2-") == loadModuleName)
@@ -679,8 +682,13 @@ private:
             delete d;
          else
          {
-            // if(g.lang == CPlusPlus && !strcmp(g.lib.name, "EDA"))
-            //    PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+#ifdef _DEBUG
+            if(g.lang == CPlusPlus && !strcmp(g.lib.name, "ecere"))
+            {
+               // PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+               // if(!strcmp(vDep.name, "Surface") && !strcmp(name, "Window")) debugBreakpoint();
+               Print("");
+            }
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
                Print("");
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
@@ -689,6 +697,7 @@ private:
                Print("");
             if(g.lang == CPlusPlus && !(from == otypedef && to == otypedef))
                Print("");
+#endif // _DEBUG
             dependencies.Add(d);
          }
       }
@@ -1003,6 +1012,7 @@ struct OptBits
    bool param;//:1;
    bool bare;//:1;       // use bare symbol names. i.e.: Window instead of C(Window)
    bool cpp;//:1;
+   bool macroCommas;//:1;
 };
 
 struct TypeInfo
@@ -1328,7 +1338,7 @@ class BNamespace : struct
    {
       bool sorted = true;
       int fix = 0;
-      if(python && py)
+      if((python && py) || g_.lang == CPlusPlus)
          printCircularOutputDependencies(orderedOutputs, false);
       while(sorted)
       {
@@ -1586,6 +1596,7 @@ class BClass : struct
    bool is_struct;
    bool is_enum;
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
+   bool isBaseString;
    bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor;
    bool isSurface, isIOChannel, isWindow, isDataBox;
 
@@ -1647,6 +1658,21 @@ class BClass : struct
       isIOChannel       = cl.type == normalClass   && !strcmp(name, "IOChannel");
       isWindow          = cl.type == normalClass   && !strcmp(name, "Window");
       isDataBox         = cl.type == normalClass   && !strcmp(name, "DataBox");
+
+      if(cl.type == normalClass)
+      {
+         Class base = cl;
+         while((base = base.base && base.base.templateClass ? base.base.templateClass : base.base))
+         {
+            if(!strcmp(base.name, "String"))
+            {
+               isBaseString = true;
+               // tocheck: is setting isString all good?
+               isString = true;
+               break;
+            }
+         }
+      }
 
       if(is_class)
          clAlt = eSystem_FindClass(g_.mod, "Class");
@@ -1984,7 +2010,15 @@ class BMethod : struct
       if(gen.lang == CPlusPlus)
       {
          MapIterator<consttstr, const String> iNameSwaps { map = gen.cpp_methodNameSwaps };
-         cpp_name = gen.cpp_methodNameSwaps && iNameSwaps.Index({ c.cl.name, name }, false) ? iNameSwaps.data : mname;
+         if(gen.cpp_methodNameSwaps && iNameSwaps.Index({ c.cl.name, name }, false))
+            cpp_name = iNameSwaps.data;
+         else if(gen.cpp_methodNameSwaps && iNameSwaps.Index({ "", name }, false))
+         {
+            cpp_name = iNameSwaps.data;
+            debugBreakpoint();
+         }
+         else
+            cpp_name = mname;
       }
       //name = PrintString(c.cname, "_", mname);
       n = PrintString(c.cname, "_", mname); // n = PrintString("MN(", c.cname, ", ", mname, ")");

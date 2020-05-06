@@ -477,9 +477,9 @@ public class BGen : ConsoleApplication // <ArgSym>
       }
       onTask(task);
       //ad.printAllSpecs();
-#ifdef _DEBUG
-      system("pause");
-#endif // def _DEBUG
+#if defined(_DEBUG) && defined(__WIN32__)
+      // debugBreakpoint();
+#endif
    }
 
    void failOutput()

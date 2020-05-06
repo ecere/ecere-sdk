@@ -1,6 +1,32 @@
 import "ecere"
 import "ec2"
 
+class InMacroDeclFunction : DeclFunction
+{
+   void printParenOpen(File out)
+   {
+      out.Print(" _PRN_OPN ");
+   }
+
+   void printParenClose(File out)
+   {
+      out.Print(" _PRN_CLS ");
+   }
+}
+
+class InMacroDeclBrackets : DeclBrackets
+{
+   void printParenOpen(File out)
+   {
+      out.Print(" _PRN_OPN ");
+   }
+
+   void printParenClose(File out)
+   {
+      out.Print(" _PRN_CLS ");
+   }
+}
+
 class ARGPrintTypeNameList : TypeNameList
 {
    void printSep(File out)
@@ -8,6 +34,37 @@ class ARGPrintTypeNameList : TypeNameList
       out.Print(" _ARG ");
    }
 };
+
+char * ec2PrintToString(ASTNode node, bool addln)
+{
+   TempFile f { };
+   char buf[1024*1024];
+   uint count, len = 0;
+   char * s = buf;
+   node.print(f, { });
+   f.Seek(0, start);
+   buf[0] = '\0';
+   while(!f.Eof())
+   {
+      bool hasNewLine = false;
+      count = f.GetLineEx(s, sizeof(buf), &hasNewLine);
+      if(count)
+      {
+         s += count;
+         len += count;
+      }
+      if(hasNewLine)
+      {
+         *s++ = '\n';
+         *s = 0;
+         len++;
+      }
+   }
+   if(addln && len > 0 && buf[len-1] != '\n')
+      buf[len++] = '\n';
+   delete f;
+   return CopyString(buf);
+}
 
 void ec2PrintToZedString(ZString o, ASTNode node, bool addln)
 {
@@ -17,11 +74,11 @@ void ec2PrintToZedString(ZString o, ASTNode node, bool addln)
    char * s = buf;
    node.print(f, { });
    f.Seek(0, start);
-   buf[0] = 0;
+   buf[0] = '\0';
    while(!f.Eof())
    {
       bool hasNewLine = false;
-      count = f.GetLineEx(s, sizeof(buf), &hasNewLine);
+      count = f.GetLineEx(s, sizeof(buf) - len, &hasNewLine);
       if(count)
       {
          s += count;
