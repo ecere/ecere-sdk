@@ -27,6 +27,16 @@ public:
 //public:
    virtual void print(File out, OutputOptions o);
 
+   virtual void printParenOpen(File out)
+   {
+      out.Print("(");
+   }
+
+   virtual void printParenClose(File out)
+   {
+      out.Print(")");
+   }
+
    void printStart(File out, OutputOptions o)
    {
       if(o.astType)

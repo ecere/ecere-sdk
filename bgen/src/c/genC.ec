@@ -35,7 +35,7 @@ AVLTree<consttstr> brokenMethodsC { [
    //          __i _ARG requests _ARG void (* completedCallback)(context, multiResults) _ARG context)
    // gives following error:
    //    gnosis3.h:1310:62: error: "(" may not appear in macro parameter list
-   { "AttributeStore", "requestAttributes" },
+   // { "AttributeStore", "requestAttributes" },
 
    // AttributeStore::retrieveMultiValues
    //    HashMap<int64, Map<int, FieldValue>> retrieveMultiValues(Map<Array<int>, Array<int64>> fieldAndFeatureIDs,
@@ -46,11 +46,11 @@ AVLTree<consttstr> brokenMethodsC { [
    //             AttributeStore_retrieveMultiValues = (C(HashMap) (*)(C(AttributeStore), C(Map), C(bool) ()(int64, int, C(FieldValue) *)))METHOD(AttributeStore, retrieveMultiValues)->function;
    // gives following error:
    //    error: type name declared as function returning a function
-   { "AttributeStore", "retrieveMultiValues" },
+   // { "AttributeStore", "retrieveMultiValues" },
 
    // CMSSList::parse
    // same case
-   { "CMSSList", "parse" },
+   // { "CMSSList", "parse" },
 
 
    { null, null }
@@ -276,6 +276,16 @@ class CGen : Gen
             sourceProcessorVars["DEP_LIBS"] = (lib.ecere || lib.ecereCOM) ? CopyString("") : CopyString(
                "	$(call _L,ecere) \\\n"
             );
+            if(!strcmp(lib.moduleName, "gnosis3")) // hack, todo
+            {
+               sourceProcessorVars["DEP_INCLUDES"] = CopyString(
+                  "PRJ_CFLAGS += \\\n"
+                  "   $(if $(ROUTING_INCLUDE), \\\n" // $(GNOSIS_SDK_SRC)/src/routing
+                  "      -I$(ROUTING_INCLUDE),) \\\n"
+                  "   $(if $(FONTMAN_INCLUDE), \\\n" // $(ECERE_SDK_SRC)/butterbur/src/imagesAndText
+                  "      -I$(FONTMAN_INCLUDE),) \\\n"
+               );
+            }
             sourceFileProcessToFile(o, null, ":src/c/c_make.src", sourceProcessorVars, false, false);
             delete o;
          }
@@ -793,13 +803,11 @@ class CGen : Gen
          }
          if(c.declStruct) conmsg("check");
          if(c.hasPublicMembers/*hasOrBaseHasPublicMembers*/ ||
-               ((cl.type == structClass/* || cl.type == noHeadClass*/) && !cl.templateClass))
+               ((cl.type == structClass || cl.type == noHeadClass) && !cl.templateClass))
          {
             SpecClass sc;
             ClassDefList defs;
             char * ident = allocMacroSymbolName(false, cl.type == normalClass ? CM : C, { c = c }, c.cname, null, 0);
-            if(!strcmp(c.name, "Cube"))
-               Print("");
             if(cl.type == enumClass) conmsg("check");
             if(cl.type == systemClass) conmsg("check");
             if(cl.type == unitClass) conmsg("check");
@@ -1108,7 +1116,7 @@ void cgenPrintVirtualMethodDefs(ZString z, BClass c, BMethod m, bool assumeTyped
             {
                char * apname = null;
                if(!param.name) apname = PrintString("ap", ++ap);
-               astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { notype = true, param = true }, vTop, params);
+               astTypeName(apname ? apname : param.name, { type = param, md = md, cl = cl }, { notype = true, param = true, macroCommas = true }, vTop, params);
                delete apname;
             }
          }
@@ -1187,7 +1195,7 @@ void cgenPrintVirtualMethodDefs(ZString z, BClass c, BMethod m, bool assumeTyped
          ap = 0;
          for(param = md.dataType.params.first; param; param = param.next)
          {
-            astTypeName(null, { type = param, md = md, cl = cl }, { anonymous = true, param = true }, vTop, params);
+            astTypeName(null, { type = param, md = md, cl = cl }, { anonymous = true, param = true, macroCommas = true  }, vTop, params);
          }
       }
          ec2PrintToZedString(z, params, false);
@@ -1974,16 +1982,31 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
       else if(t.kind == functionType)
       {
          Type t2 = null;
-         TypeNameList list { };
+         TypeNameList list = opt.macroCommas ? ARGPrintTypeNameList { } : TypeNameList { };
          int ptr2 = 0;
          //if(ptr) conmsg("check");
          if(quals) conmsg("check");
+         if(ti.type.kind != pointerType) // a function pointer arg apparently has no ptr wrapping? this is when void method(void This::x(args)); or void method(void x(args)); syntax is used
+            ptr = 1;
          ti.type = t.returnType;
-         quals = astTypeSpec(ti, &ptr2, &t2, null, { bare = opt.bare, cpp = opt.cpp }, vTop);
-         decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
-         ptr = 0;
-         for(param = t.params.first; param; param = param.next)
-            astTypeName(param.name, { type = param }, opt, vTop, list);
+         if(!opt.notype)
+         {
+            quals = astTypeSpec(ti, &ptr2, &t2, null, { bare = opt.bare, cpp = opt.cpp }, vTop);
+            if(opt.macroCommas)
+               decl = InMacroDeclFunction { declarator = InMacroDeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
+            else
+               decl = DeclFunction { declarator = DeclBrackets { declarator = astDeclPointer(ptr, decl) }, parameters = list };
+            ptr = 0;
+            if(!t.staticMethod && t.thisClass && t.thisClass.registered)
+            {
+               Type t2 = ProcessTypeString(t.thisClass.registered, false);
+               if(t.thisClass.registered.type == systemClass) conmsg("check");
+               astTypeName("__this", { type = t2/*, TYPE_INFO_FROM(ti)*/ }, opt, vTop, list);
+               FreeType(t2);
+            }
+            for(param = t.params.first; param; param = param.next)
+               astTypeName(param.name, { type = param }, opt, vTop, list);
+         }
       }
       tn = { qualifiers = quals, declarator = (ptr && !opt.notype) ? astDeclPointer(ptr, decl) : decl };
       list.Add(tn);
@@ -2069,7 +2092,7 @@ DeclarationInit astFunction(const char * ident, TypeInfo ti, OptBits opt, BVaria
    Type param;
    SpecsList specs { };
    //InitDeclList decls { };
-   TypeNameList params { };
+   TypeNameList params = opt.macroCommas ? ARGPrintTypeNameList { } : TypeNameList { };
    DeclFunction declFunction { parameters = params };
    ASTInitDeclarator initDecl { };
    DeclarationInit declInit { specifiers = specs, declarators = { [ initDecl ] } };

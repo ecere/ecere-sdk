@@ -277,9 +277,10 @@ public:
    void print(File out, OutputOptions o)
    {
       printStart(out, o);
-      out.Print("if(");
+      out.Print("if");
+      printParenOpen(out);
       if(exp) exp.print(out, o);
-      out.PrintLn(")");
+      printParenClose(out);
       if(stmt)
       {
          if(stmt._class != class(StmtCompound)) indent++;
@@ -341,9 +342,10 @@ public:
    {
       int backCaseIndent = caseIndent;
       printStart(out, o);
-      out.Print("switch(");
+      out.Print("switch");
+      printParenOpen(out);
       if(exp) exp.print(out, o);
-      out.PrintLn(")");
+      printParenClose(out);
       if(stmt)
       {
          caseIndent = indent+1;
@@ -523,7 +525,8 @@ public:
    void print(File out, OutputOptions o)
    {
       printStart(out, o);
-      out.Print("for(");
+      out.Print("for");
+      printParenOpen(out);
       if(init)
          init.print(out, o);
       if(check)
@@ -536,7 +539,7 @@ public:
          out.Print(" ");
          increment.print(out, o);
       }
-      out.PrintLn(")");
+      printParenClose(out);
 
       if(stmt)
       {

@@ -135,6 +135,8 @@
 
 // _ARG: Used to specify comma for parameters/arguments list being passed to macros
 #define _ARG ,
+#define _PRN_OPN (
+#define _PRN_CLS )
 
 // VMETHOD(c: class object, mc: method class, m: method name, i: instance object, r: return type, p: parameters, a: arguments)
 //    Used to define a virtual method invoker, e.g.:

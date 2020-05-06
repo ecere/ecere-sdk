@@ -459,9 +459,9 @@ public:
    void print(File out, OutputOptions o)
    {
       printStart(out, o);
-      out.Print("(");
+      printParenOpen(out);
       if(list) list.print(out, o);
-      out.Print(")");
+      printParenClose(out);
       printEnd(out, o);
    }
 
@@ -614,9 +614,9 @@ public:
    {
       printStart(out, o);
       if(exp) exp.print(out, o);
-      out.Print("(");
+      printParenOpen(out);
       if(arguments) arguments.print(out, o);
-      out.Print(")");
+      printParenClose(out);
       printEnd(out, o);
    }
 

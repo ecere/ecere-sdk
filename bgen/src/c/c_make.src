@@ -73,6 +73,8 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
+#(DEP_INCLUDES)#
+
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
