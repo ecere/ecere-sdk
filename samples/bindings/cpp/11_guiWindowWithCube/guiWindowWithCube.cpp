@@ -15,7 +15,7 @@ public:
       caption = $("HelloCube -- Sample App using Ecere Toolkit/C++ Bindings");
       size = { 640, 480 };
       background = DefinedColor::black;
-#if 0
+#if 1
       borderStyle = BorderStyle::sizable;
       hasClose = true;
       hasMaximize = true;
@@ -41,13 +41,34 @@ public:
       a.add(4.2);
       a.add(5.5);
       // todo:
-      // printLn2(a);
+      printLn2(a);
+      // t_args_x<printLn>(a);
+      {
+         ZString z;
+         ZString s = "#";
+         // broken: z.concat("#");
+         z.concat(s);
+         // z.concatx(9);
+         // z.concatx("works");
+         printLn2(z.string);
+      }
+      {
+         ConsoleFile con;
+         con.printLn("#works");
+         con.print(1, ":1, ", 2, ":2, ", 3, ":3, ", 'x', ":x, ", 4.3, "\n");
+      }
 
       camera.position = { 0, 0, -300 };
       camera.fov = 53;
 
       light.orientation = Euler(30, 10);
       light.diffuse = DefinedColor::lightCoral;
+
+      if(sizeof(Point) == sizeof(C(Point)))
+         printLn(CO(String), "sizeof(Point) == sizeof(C(Point))", null);
+      else
+         printLn(CO(String), "no", null);
+
    }
 
    bool onLoadGraphics()
@@ -87,7 +108,7 @@ public:
 
    bool onKeyDown(Key key, unichar ch)
    {
-      // todo:
+      // todo?: key == KeyCode::escape
       if(key.code == KeyCode::escape)
          destroy(0);
       return true;
