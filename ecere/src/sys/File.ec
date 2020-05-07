@@ -605,7 +605,7 @@ public:
       return result;
    }
 
-   public void PrintLn(typed_object object, ...)
+   public void PrintLn(const typed_object object, ...)
    {
       va_list args;
       char buffer[4096];
@@ -617,7 +617,7 @@ public:
       va_end(args);
    }
 
-   public void Print(typed_object object, ...)
+   public void Print(const typed_object object, ...)
    {
       va_list args;
       char buffer[4096];

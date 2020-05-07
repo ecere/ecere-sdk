@@ -1508,7 +1508,7 @@ public:
       }
    }
 
-   void concatx(typed_object object, ...)
+   void concatx(const typed_object object, ...)
    {
       if(allocType != pointer)
       {
