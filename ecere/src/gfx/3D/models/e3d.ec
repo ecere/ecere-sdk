@@ -32,4 +32,33 @@ public class E3DFormat : ObjectFormat
       }
       return false;
    }
+
+   static Array<String> listTextures(File modelFile, const String fileName, E3DOptions options)
+   {
+      Array<String> textures { };
+      char path[MAX_LOCATION];
+      E3DContext ctx { path = path };
+
+      if(options != null)
+      {
+         ctx.texturesByID = options.texturesByID;
+         ctx.materials = options.materials;
+         ctx.texturesQuery = options.texturesQuery;
+         ctx.positiveYUp = options.positiveYUp;
+         ctx.resolution = options.resolution;
+         ctx.compressedTextures = options.compressedTextures;
+      }
+      else
+         ctx.texturesByID = { };
+
+      if(fileName)
+         StripLastDirectory(fileName, path);
+      else
+         path[0] = 0;
+      listTexturesReadBlocks(ctx, modelFile, 0, 0, modelFile.GetSize(), null, textures);
+
+      delete ctx;
+
+      return textures;
+   }
 };

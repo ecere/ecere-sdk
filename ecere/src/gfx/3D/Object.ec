@@ -19,6 +19,7 @@ public class ObjectFormat
 
    virtual bool ::Load(Object object, const char * fileName, DisplaySystem displaySystem, void * options);
    virtual bool ::Save(Object object, const char * fileName, void * options);
+   virtual Array<String> ::listTextures(File f, const char * fileName, void * options);
 };
 
 // TODO: Review these:
@@ -727,6 +728,29 @@ public:
 
          delete name;
       }
+   }
+
+   Array<String> ::listTextures(File file, const char * fileName, const char * type, void * options)
+   {
+      char ext[MAX_EXTENSION];
+      subclass(ObjectFormat) format;
+      OldLink link;
+      Array<String> textures = null;
+
+      if(!type && fileName)
+         type = strlwr(GetExtension(fileName, ext));
+
+      for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
+      {
+         format = link.data;
+         if(format.extension && !strcmp(format.extension, type))
+            break;
+      }
+      if(!link) format = null;
+
+      if(format)
+         textures = format.listTextures(file, fileName, options);
+      return textures;
    }
 
    bool Load(const char * fileName, const char * type, DisplaySystem displaySystem)

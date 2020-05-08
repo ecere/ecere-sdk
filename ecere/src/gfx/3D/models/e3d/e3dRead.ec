@@ -45,12 +45,16 @@ static String readString(File f)
    return s;
 }
 
-TempFile downloadFile(const String urlOrig);
+TempFile downloadFile(const String url)
+#if !defined(__GNOSIS3__)
+{ return FileOpen(url, read); }
+#endif
+;
 
 // Right now this is global and requires a lock... Support supplying optional textures ID map ?
 static Mutex texMutex { };
 
-static class E3DContext : struct
+class E3DContext : struct
 {
    Map<uint, Bitmap> texturesByID;
    const String path;
@@ -63,6 +67,8 @@ static class E3DContext : struct
 
    int curTextureID;
    bool positiveYUp;
+   int resolution;
+   bool compressedTextures;
 }
 
 static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data)
@@ -225,22 +231,22 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      int l = authKey ? (int)(authKey - ctx.texturesQuery) : strlen(ctx.texturesQuery);
                      bool rest = strstr(ctx.texturesQuery, "/textures") ? true : false;
 
-                     strcpy(ext, "etc2");
+                     if(ctx.compressedTextures) strcpy(ext, "etc2");
 
-                     if(rest)
+                     if(ctx.resolution > 0)
                      {
-                        memcpy(path, ctx.texturesQuery, l);
-                        path[l] = 0;
-                        sprintf(path + l, "%d.%s?resolution=256", id, ext);
-                        if(authKey)
-                           strcatf(path, "&%s", authKey + 1);
+                        if(rest)
+                        {
+                           memcpy(path, ctx.texturesQuery, l);
+                           path[l] = 0;
+                           sprintf(path + l, "%d.%s?resolution=256", id, ext);
+                           if(authKey)
+                              strcatf(path, "&%s", authKey + 1);
+                        }
+                        else
+                           sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
                      }
                      else
-                        sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
-
-                     f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
-
-                     if(!f)
                      {
                         if(rest)
                         {
@@ -252,64 +258,27 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         }
                         else
                            sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
-                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
-                        if(f)
-                           format = ext;
                      }
-                     else
+
+                     f = FileOpen(path, read);
+                     if(f)
                         format = ext;
-
-                     // Fall back to non-compressed
-                     if(!f)
-                     {
-                        GetExtension(name, ext);
-
-                        if(rest)
-                        {
-                           memcpy(path, ctx.texturesQuery, l);
-                           path[l] = 0;
-                           sprintf(path + l, "%d.%s?resolution=256", id, ext);
-                           if(authKey)
-                              strcatf(path, "&%s", authKey + 1);
-                        }
-                        else
-                           sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
-                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
-
-                        if(f)
-                           format = ext;
-                        else
-                        {
-                           if(rest)
-                           {
-                              memcpy(path, ctx.texturesQuery, l);
-                              path[l] = 0;
-                              sprintf(path + l, "%d.%s", id, ext);
-                              if(authKey)
-                                 strcat(path, authKey);
-                           }
-                           else
-                              sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
-                           f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
-                           if(f)
-                              format = ext;
-                        }
-                     }
                   }
-                  else
+                  else // what of this section?
                   {
+                     bool isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
                      strcpy(path, ctx.path);
                      PathCat(path, name);
                      StripExtension(path);
                      strcat(path, "-256");
                      ChangeExtension(path, "etc2", path);
-                     f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                     f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                      if(f)
                         format = "etc2";
                      else
                      {
                         ChangeExtension(path, ext, path);
-                        f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                        f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                         if(f)
                            format = ext;
                         else
@@ -317,13 +286,13 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                            strcpy(path, ctx.path);
                            PathCat(path, name);
                            ChangeExtension(path, "etc2", path);
-                           f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                            if(f)
                               format = "etc2";
                            else
                            {
                               ChangeExtension(path, ext, path);
-                              f = (strstr(path, "http://") == path || strstr(path, "https://")) ? downloadFile(path) : FileOpen(path, read);
+                              f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                               if(f)
                                  format = ext;
                            }
@@ -775,7 +744,212 @@ struct E3DOptions
    AVLTree<Material> materials;    // Not currently resolving IDs globally for materials...
    const String texturesQuery;
    bool positiveYUp;
+   int resolution;
+   bool compressedTextures;
 };
+
+void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
+{
+   uint64 pos = pbStart;
+   static int indent = 0;
+   indent++;
+   while(end - pos >= sizeof(E3DBlockHeader))
+   {
+      E3DBlockHeader header;
+      if(f.Read(&header, sizeof(E3DBlockHeader), 1) == 1)
+      {
+         uint64 bEnd = pos + header.size;
+         bool readSubBlocks = false;
+         void * subData = data;
+#if 0 //def _DEBUG
+         int i;
+         for(i = 0; i < indent; i++) Print("   ");
+         PrintLn(header.type, "(", header.size, " bytes)");
+#endif
+
+         pos += sizeof(E3DBlockHeader);
+
+         switch(header.type)
+         {
+            case lzma: //recurse?
+            {
+               uint cSize = (uint)(bEnd - pos - sizeof(uint)), size;
+               byte * cData;
+               TempFile tmp { };
+               f.Read(&size, sizeof(uint), 1);
+               cData = new byte[cSize]; //size];
+               f.Read(cData, 1, cSize); //bEnd - pos);
+               tmp.buffer = decodeLZMA(cData, cSize, size, null);
+               tmp.size = size;
+               listTexturesReadBlocks(ctx, tmp, containerType, 0, size, subData, textureList);
+
+               delete cData;
+               delete tmp;
+
+               break;
+            }
+            case nodes:
+            case meshes:
+            case materials:
+            case textures:
+               readSubBlocks = true;
+               break;
+            case meshNode:
+               //readSubBlocks = true;
+               break;
+            case scaling:
+            case position:
+            case orientation:
+               break;
+            case material:
+               //readSubBlocks = true;
+               break;
+            case materialID:
+            case materialFlags:
+            case opacity:
+            case phongShininess:
+            case diffuse:
+            case specular:
+            case ambient:
+            case emissive:
+            case phongDiffuseMap:
+            case normalMap:
+            case phongSpecularMap:
+               break;
+            // case phongAmbientMap: { Material mat = data; subData = &mat.amb; readSubBlocks = true; break; }
+            //case pbrSpecDiffuseMap: { Material mat = data; subData = &mat.reflectMap; readSubBlocks = true; break; }
+            case texture:
+            {
+               /*Bitmap bitmap { };
+               subData = bitmap;
+               incref bitmap;*/
+               readSubBlocks = true;
+               break;
+            }
+            case textureName:
+            {
+               char * name = readString(f);
+               /*Bitmap bitmap;
+
+               if(containerType == texture)
+                  bitmap = data;
+               else
+               {
+                  *(Bitmap *)data = bitmap = { };
+               }
+               if(bitmap)*/
+               {
+                  char ext[MAX_EXTENSION];
+                  char path[MAX_LOCATION];
+                  //const String format = null;
+
+                  GetExtension(name, ext);
+
+                  if(ctx.texturesQuery && ctx.curTextureID)
+                  {
+                     int id = ctx.curTextureID;
+                     const String authKey = strstr(ctx.texturesQuery, "?authKey=");
+                     int l = authKey ? (int)(authKey - ctx.texturesQuery) : strlen(ctx.texturesQuery);
+                     bool rest = strstr(ctx.texturesQuery, "/textures") ? true : false;
+
+                     if(ctx.compressedTextures) strcpy(ext, "etc2");
+
+                     if(ctx.resolution > 0)
+                     {
+                        if(rest)
+                        {
+                           memcpy(path, ctx.texturesQuery, l);
+                           path[l] = 0;
+                           sprintf(path + l, "%d.%s?resolution=256", id, ext);
+                           if(authKey)
+                              strcatf(path, "&%s", authKey + 1);
+                        }
+                        else
+                           sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
+                     }
+                     else
+                     {
+                        if(rest)
+                        {
+                           memcpy(path, ctx.texturesQuery, l);
+                           path[l] = 0;
+                           sprintf(path + l, "%d.%s", id, ext);
+                           if(authKey)
+                              strcat(path, authKey);
+                        }
+                        else
+                           sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
+                     }
+
+                     //if(!textureList) textureList = { };
+                     textureList.Add(CopyString(path));
+                  }
+               }
+               delete name;
+               break;
+            }
+            case textureID:
+            {
+               int id = 0;
+               f.Read(&id, sizeof(int), 1);
+               texMutex.Wait();
+               if(containerType == texture)
+               {
+                  if(ctx.texturesByID)
+                  {
+                     ctx.curTextureID = id;
+                     /*
+                     if(ctx.texturesByID[id]) // is this necessary?
+                     {
+                        //delete (Bitmap)data;
+                        readSubBlocks = false;
+                     }
+                     else
+                     {
+
+                        Bitmap bitmap = data;
+                        incref bitmap;
+                        ctx.curTextureID = id;
+                        ctx.texturesByID[id] = bitmap;
+                     }*/
+                  }
+               }
+               else
+               {
+                  //Bitmap * bPtr = data;
+                  //*bPtr = ctx.texturesByID ? ctx.texturesByID[id] : null;
+               }
+               texMutex.Release();
+               break;
+            }
+            case textureJPG:
+            case texturePNG:
+            case E3DBlockType::mesh:
+            case meshID:
+            case attributes:
+            case attrInterleaved:
+            case triFaces16:
+            case triFaces32:
+            case facesMaterials:
+               break;
+
+            default:
+               //PrintLn("   ...skipping");
+               break;
+         }
+
+         if(readSubBlocks)
+         {
+            // this sometimes has an address when it shouldn't
+            listTexturesReadBlocks(ctx, f, header.type, pos, bEnd, subData, textureList);
+         }
+
+         f.Seek(bEnd, start);
+         pos = bEnd;
+      }
+   }
+   indent--;
+}
 
 void readE3D(File f, const String fileName, Object object, DisplaySystem displaySystem, E3DOptions options)
 {
@@ -789,6 +963,8 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.materials = options.materials;
       ctx.texturesQuery = options.texturesQuery;
       ctx.positiveYUp = options.positiveYUp;
+      ctx.resolution = options.resolution;
+      ctx.compressedTextures = options.compressedTextures;
    }
    else
       ctx.texturesByID = { }, freeTexturesByID = true;
