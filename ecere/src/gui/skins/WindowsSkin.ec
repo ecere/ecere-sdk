@@ -1,4 +1,4 @@
-#if defined(WIN32)
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define String _String
 #define Method _Method
@@ -11,7 +11,7 @@
 
 import "Window"
 
-#if !defined(WIN32)
+#if !defined(__WIN32__)
 bool gui::drivers::XGetBorderWidths(Window window, Box box);
 #endif
 
@@ -187,7 +187,7 @@ public class WindowsSkin_Window : Window
 
       if(nativeDecorations && rootWindow == this && windowHandle && !is3D)
       {
-#if defined(WIN32)
+#if defined(__WIN32__)
          RECT rcClient = { 0 }, rcWindow = { 0 };
          if(GetClientRect(windowHandle, &rcClient) && GetWindowRect(windowHandle, &rcWindow))
          {
@@ -276,7 +276,7 @@ public class WindowsSkin_Window : Window
 
       if(nativeDecorations && rootWindow == this && windowHandle && !is3D)
       {
-#if defined(WIN32)
+#if defined(__WIN32__)
          RECT rcWindow = { 0, 0, 0, 0 };
          POINT client00 = { 0, 0 };
          ClientToScreen(windowHandle, &client00);

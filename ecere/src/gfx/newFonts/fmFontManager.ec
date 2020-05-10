@@ -13,7 +13,10 @@ import "fontRenderer"
 import "atlasBuilder"
 import "imgDistMap"
 
+
+#define Alignment Alignment_
 #include "gl123es.h"
+#undef Alignment
 
 namespace gfx;
 

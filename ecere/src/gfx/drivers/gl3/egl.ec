@@ -1,8 +1,17 @@
-#if defined(__ANDROID__) || defined(__ODROID__)
+#if defined(__ANDROID__) || defined(__ODROID__) || defined(__UWP__)
 
 import "instance"
 
+#define String String_
+#define Size Size_
+#define Alignment Alignment_
+
 #include <EGL/egl.h>
+
+#undef String
+#undef Size
+#undef Alignment
+
 #if defined(__LUMIN__)
 #define get _get
 #define set _set

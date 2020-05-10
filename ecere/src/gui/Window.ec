@@ -9661,7 +9661,7 @@ public:
       set
       {
          style.showInTaskBar = value;
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
          Win32UpdateStyle(this);
 #endif
       }

@@ -17,8 +17,14 @@ import "Color"
 
 namespace gfx;
 
+#define Size Size_
+#define String String_
+#define Alignment Alignment_
 #include "cc.h"
 #include "mm.h"
+#undef Size
+#undef String
+#undef Alignment
 
 #undef set
 

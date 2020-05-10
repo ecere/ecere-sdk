@@ -694,7 +694,7 @@ class GlyphPack : BTNode
          if(displaySystem && displaySystem.pixelFormat != pixelFormat4) // TODO: Add none PixelFormat
          {
             displaySystem.Lock();
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
             // Is this check still required?
             if(displaySystem.driver == class(OpenGLDisplayDriver)
 

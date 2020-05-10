@@ -10,6 +10,9 @@ import "String"
 #define printf(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #define puts PrintLn
 // #define _DEBUG
+#elif defined(__UWP__)
+#define printf Logf
+#define puts(x) Logf("%s\n", x)
 #endif
 
 namespace gfx::drivers;
@@ -167,14 +170,17 @@ public:
       CompiledShader shader = null;
 #if ENABLE_GL_SHADERS
       MapIterator<uint64, CompiledShader> it { map = programs };
-      if(!vertexShaderSource && vertexShaderFile)
-         loadShader(vertexShaderFile, &vertexShaderSource, &vsLen);
-      if(!fragmentShaderSource && fragmentShaderFile)
-         loadShader(fragmentShaderFile, &fragmentShaderSource, &fsLen);
+      //PrintLn("Loading ", _class.name, " shader for state 0x", state, " (", (DefaultShaderBits)state, ")");
 
       if(!it.Index(state, true))
       {
+         if(!vertexShaderSource && vertexShaderFile)
+            loadShader(vertexShaderFile, &vertexShaderSource, &vsLen);
+         if(!fragmentShaderSource && fragmentShaderFile)
+            loadShader(fragmentShaderFile, &fragmentShaderSource, &fsLen);
+
 #ifdef _DEBUG
+         PrintLn("Compiling ", _class.name, " shader for state 0x", state, " (", (DefaultShaderBits)state, ")");
          printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
          printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
 #endif
@@ -185,6 +191,9 @@ public:
             int fShader = glCreateShader(GL_FRAGMENT_SHADER);
             int vStatus = 0, fStatus = 0;
             ZString definitions = getDefinitions(state);
+
+            //PrintLn("Created program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
+
             if(definitions)
             {
                const char * vSources[2] = { definitions._string, vertexShaderSource };
@@ -273,8 +282,16 @@ public:
                   shader.program = program;
                   shader.vertex = vShader;
                   shader.fragment = fShader;
+
+#ifdef _DEBUG
+                  PrintLn("Successfully registered program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
+#endif
                }
+               else
+                  PrintLn("Failure (2) to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
             }
+            else
+               PrintLn("Failure to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
          }
    #if defined(_DEBUG) && defined(__WIN32__)
          if(!shader)

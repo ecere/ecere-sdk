@@ -38,7 +38,7 @@ import "lfbConvert"
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && defined(__WIN32__)
 import "OpenGLDisplayDriver"
 
-#if !defined(_GLES) && !defined(ECERE_STATIC)
+#if !defined(_GLES) && !defined(ECERE_STATIC) && !defined(_GLES2) && !defined(_GLES3)
 import "Direct3D8DisplayDriver"
 import "Direct3D9DisplayDriver"
 #endif
@@ -1193,7 +1193,7 @@ public class LFBDisplayDriver : DisplayDriver
                         theOffset = (byte *) (((uint32 *)lfbSurface.bitmap.picture) + y1 * lfbSurface.bitmap.stride + x1);
                         for(y = y1; y<= y2; y++)
                         {
-         #if defined(__GNUC__)
+         #if 1 //defined(__GNUC__)
                            FillBytesBy4((uint32 *) theOffset,color,w);
          #else
                            memset_32((uint32 *) theOffset,color,w);

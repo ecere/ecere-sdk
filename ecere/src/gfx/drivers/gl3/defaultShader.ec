@@ -6,6 +6,16 @@ asm(".symver log,log@GLIBC_2.2.5");
 
 #include "gl123es.h"
 
+#define GL_CLAMP_TO_EDGE 0x812F
+
+#if defined _GLES1
+#define glClampFunction(version) (GL_CLAMP)
+#elif defined(_GLES2) || defined(__UWP__)
+#define glClampFunction(version) (GL_CLAMP_TO_EDGE)
+#else
+#define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
+#endif
+
 namespace gfx::drivers;
 
 // **********   Default Shader   **********
@@ -265,12 +275,18 @@ public:
        //PrintLn("Compiling shader for state: ", state);
 #endif
 
-#if defined(_GLES2)
+#if defined(__UWP__)
+      defs.concatf("#version 300 es\n");
+      defs.concatf("#define GLSL_FLOAT_PRECISION   1\n");
+      defs.concatf("#define MODERN_GLSL            1\n");
+#elif defined(_GLES2) || defined(_GLES3)
       defs.concatf("#version 100\n");
       defs.concatf("#define GLSL_FLOAT_PRECISION   1\n");
+      defs.concatf("#define MODERN_GLSL            0\n");
 #else
       defs.concatf("#version 110\n");
       defs.concatf("#define GLSL_FLOAT_PRECISION   0\n");
+      defs.concatf("#define MODERN_GLSL            0\n");
 #endif
 
       defs.concatf("\n#define NUM_LIGHTS %d",               8);
@@ -704,6 +720,7 @@ public:
    void setMaterial(Material material, MeshFeatures flags)
    {
 #if ENABLE_GL_SHADERS
+      __attribute__((unused)) int version = 2;
       DefaultShaderBits state = (DefaultShaderBits)this.state;
       state &= ~
       {
@@ -755,8 +772,8 @@ public:
             glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
             if(matFlags.setupTextures)
             {
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : glClampFunction(version));
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : glClampFunction(version));
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.bumpMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             }
@@ -793,8 +810,8 @@ public:
                   glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.reflectMap.driverData);
                   if(matFlags.setupTextures)
                   {
-                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : glClampFunction(version));
+                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : glClampFunction(version));
 
                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.reflectMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
                      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -814,8 +831,8 @@ public:
             glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.specularMap.driverData);
             if(matFlags.setupTextures)
             {
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
-               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tile ? GL_REPEAT : glClampFunction(version));
+               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tile ? GL_REPEAT : glClampFunction(version));
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, material.specularMap.mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             }

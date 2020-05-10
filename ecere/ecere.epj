@@ -499,6 +499,39 @@
             "TargetFileName" : "ecereStatic",
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "UWP",
+         "Options" : {
+            "NoLineNumbers" : false,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "_GLES3",
+               "__UWP__",
+               "ECERE_NOSSL",
+               "ECERE_NOFONTCONFIG",
+               "ECERE_NODINPUT"
+            ],
+            "FastMath" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "dxguid",
+                     "dinput",
+                     "winmm",
+                     "libGLESv2",
+                     "libEGL",
+                     "ws2_32",
+                     "kernel32",
+                     "user32",
+                     "ungif"
+                  ]
+               }
+            }
+         ]
       }
    ],
    "Files" : [
@@ -1241,6 +1274,12 @@
                                        "Options" : {
                                           "ExcludeFromBuild" : false
                                        }
+                                    },
+                                    {
+                                       "Name" : "UWP",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               },
@@ -1343,6 +1382,12 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
                               }
                            ]
                         },
@@ -1425,6 +1470,28 @@
                               },
                               {
                                  "Name" : "Static",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Debug",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -1523,6 +1590,28 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "Debug",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1613,6 +1702,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -1645,6 +1745,17 @@
                                        "Name" : "win32",
                                        "Options" : {
                                           "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
                                        }
                                     }
                                  ]
@@ -1898,6 +2009,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2064,6 +2186,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2135,6 +2268,17 @@
                               },
                               {
                                  "Name" : "Static",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
+                              },
+                              {
+                                 "Name" : "UWP",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
@@ -2683,6 +2827,17 @@
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "UWP",
+                                 "Platforms" : [
+                                    {
+                                       "Name" : "win32",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               }
                            ]
                         },
@@ -2805,7 +2960,18 @@
                               }
                            ]
                         },
-                        "test_html5.c"
+                        "test_html5.c",
+                        {
+                           "FileName" : "UWPInterface.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "UWP",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
+                        }
                      ],
                      "Options" : {
                         "ExcludeFromBuild" : true

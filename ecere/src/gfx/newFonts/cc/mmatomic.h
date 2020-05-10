@@ -11,7 +11,7 @@
 
 #include "mm.h"
 
-#if ( defined(CPUCONF_ARCH_IA32) || defined(CPUCONF_ARCH_AMD64) ) && defined(__GNUC__) && !defined(MM_ATOMIC_SUPPORT)
+#if ( defined(CPUCONF_ARCH_IA32) || defined(CPUCONF_ARCH_AMD64) ) && defined(__GNUC__) && !defined(MM_ATOMIC_SUPPORT) && !defined(__UWP__)
 
 
 #define MM_ATOMIC_SUPPORT

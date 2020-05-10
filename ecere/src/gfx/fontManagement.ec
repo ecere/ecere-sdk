@@ -4,9 +4,13 @@ namespace gfx;
 
 #if defined(__WIN32__)
    #define WIN32_LEAN_AND_MEAN
-   #define String _String
+   #define String String_
+   #define Size Size_
+   #define Alignment Alignment_
    #include <windows.h>
    #undef String
+   #undef Size
+   #undef Alignment
 #elif !defined(ECERE_NOTRUETYPE) && !defined(ECERE_NOFONTCONFIG)
    #define set _set
    #include <fontconfig/fontconfig.h>
@@ -14,7 +18,7 @@ namespace gfx;
    #undef set
 #endif
 
-#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
+#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE) && !defined(__UWP__)
 struct FontData
 {
    char fileName[MAX_FILENAME];
@@ -161,7 +165,7 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
          }
       }
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
       if(!FileExists(fileName))
       {
          FontData fontData = { { 0 } };
@@ -268,7 +272,7 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
    {
       char links[1024] = "";
       int linksPos = 0;
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
       HKEY key;
       links[0] = 0;
       if(!RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key) ||
@@ -281,7 +285,7 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
          memset(links + size, 0, 1024 - size);
          RegCloseKey(key);
       }
-#else
+#elif !defined(__UWP__)
       links[0] = 0;
       if(linkCfg)
       {
@@ -332,7 +336,7 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
             fontName[c] = 0;
             if(fontName[0] || ch == ',')
             {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
                GetWindowsDirectory(fileName, MAX_LOCATION);
                PathCat(fileName, "fonts");
                PathCat(fileName, fontName);
@@ -415,7 +419,7 @@ public struct FontInfo
    bool defaultOrAnsiCharSet;
 };
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
 static int CALLBACK fontLister(ENUMLOGFONTEXW * font, NEWTEXTMETRICEX *lpntme, int fontType, LPARAM lParam)
 {
    // const String faceName = font->elfLogFont.lfFaceName;
@@ -437,7 +441,7 @@ public Map<String, FontInfo> ListAvailableFonts()
 {
    Map<String, FontInfo> fonts { };
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
    LOGFONTW logFont = { 0 };
    HDC hdc = GetDC(0);
    logFont.lfCharSet = DEFAULT_CHARSET;
