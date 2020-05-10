@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HoloLensModelViewer", "HoloLensModelViewer.vcxproj", "{AFF38973-8374-415C-86F2-558C248C730F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM.ActiveCfg = Debug|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM.Build.0 = Debug|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM.Deploy.0 = Debug|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM64.Build.0 = Debug|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x64.ActiveCfg = Debug|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x64.Build.0 = Debug|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x64.Deploy.0 = Debug|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x86.ActiveCfg = Debug|Win32
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x86.Build.0 = Debug|Win32
+		{AFF38973-8374-415C-86F2-558C248C730F}.Debug|x86.Deploy.0 = Debug|Win32
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM.ActiveCfg = Release|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM.Build.0 = Release|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM.Deploy.0 = Release|ARM
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM64.ActiveCfg = Release|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM64.Build.0 = Release|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|ARM64.Deploy.0 = Release|ARM64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x64.ActiveCfg = Release|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x64.Build.0 = Release|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x64.Deploy.0 = Release|x64
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x86.ActiveCfg = Release|Win32
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x86.Build.0 = Release|Win32
+		{AFF38973-8374-415C-86F2-558C248C730F}.Release|x86.Deploy.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1585234-F662-4650-A177-AC8FBC7E6149}
+	EndGlobalSection
+EndGlobal
