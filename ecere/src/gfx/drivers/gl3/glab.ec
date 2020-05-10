@@ -596,7 +596,7 @@ public struct GLEAB : GLB
          GLFlushMatrices();
 
          //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
-#if defined(__LUMIN__) || defined(_GLES3) || (!defined(_GLES) && !defined(_GLES2))
+#if !defined(__UWP__) && (defined(__LUMIN__) || defined(_GLES3) || (!defined(_GLES) && !defined(_GLES2)))
          if(baseVertex)
             glDrawElementsBaseVertex(primType, count, type, indices, baseVertex);
          else
@@ -695,7 +695,7 @@ public struct GLFB
             glBindRenderbuffer(GL_RENDERBUFFER, colorRBO);
          for(s = samples; ; s >>= 1)
          {
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
             if(s > 1)
             {
                if(textureFBO)
@@ -759,7 +759,7 @@ public struct GLFB
          if(textureFBO || allocTextures)
          {
             glBindTexture(texTarget, depth);
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
             if(samples > 1)
                glTexImage2DMultisample(texTarget, samples, depthFormat, width, height, GL_FALSE);
             else
@@ -834,7 +834,7 @@ public struct GLFB
 
    void read(Bitmap bitmap, ClearType buffer, bool sRGB)
    {
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
       glBindFramebuffer(GL_FRAMEBUFFER, fbo);
       glReadBuffer(buffer == depthBuffer ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0);
       if(sRGB) glEnable( GL_FRAMEBUFFER_SRGB );

@@ -1130,7 +1130,7 @@ public bool FileSetTime(const char * fileName, TimeStamp created, TimeStamp acce
    if(!modified) modified = currentTime;
    if(fileName)
    {
-#ifdef __WIN32__
+#if defined(__WIN32__) && !defined(__UWP__)
       uint16 * _wfileName = UTF8toUTF16(fileName, null);
       HANDLE hFile = CreateFile(_wfileName, GENERIC_WRITE|GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, null,
          OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, null);
@@ -1158,7 +1158,7 @@ public bool FileSetTime(const char * fileName, TimeStamp created, TimeStamp acce
 
          CloseHandle(hFile);
       }
-#else
+#elif !defined(__UWP__)
       struct utimbuf t = { (int)accessed, (int)modified };
       if(!utime(fileName, &t))
          result = true;
@@ -1176,6 +1176,7 @@ private class Dir : struct
 #if defined(__WIN32__)
    HANDLE fHandle;
 
+#if !defined(__UWP__)
    int resource;
    NETRESOURCE * resources;
    int numResources;
@@ -1183,6 +1184,8 @@ private class Dir : struct
    int workGroup;
    NETRESOURCE * workGroups;
    int numWorkGroups;
+#endif
+
 #else
    DIR * d;
 #endif
@@ -1260,7 +1263,9 @@ static FileDesc FileFind(const char * path, const char * extensions)
                      break;
                   }
                d.fHandle = (HANDLE)(uintptr) drives;
+#if !defined(__UWP__)
                d.resource = 0;
+#endif
             }
             else if(path[0] != '\\' || path[1] != '\\' || strstr(path+2, "\\"))
             {
@@ -1272,8 +1277,10 @@ static FileDesc FileFind(const char * path, const char * extensions)
                wcscat(dir, L"*.*");
 
                d.fHandle = FindFirstFile(dir, &winFile);
+ #if !defined(__UWP__)
                if(d.fHandle == INVALID_HANDLE_VALUE && WinReviveNetworkResource(dir))
                   d.fHandle = FindFirstFile(dir, &winFile);
+#endif
                if(d.fHandle != INVALID_HANDLE_VALUE)
                {
                   UTF16toUTF8Buffer(winFile.cFileName, file.name, MAX_FILENAME);
@@ -1301,6 +1308,7 @@ static FileDesc FileFind(const char * path, const char * extensions)
                   result = file;
                }
             }
+ #if !defined(__UWP__)
             else
             {
                HANDLE handle = 0;
@@ -1423,6 +1431,7 @@ static FileDesc FileFind(const char * path, const char * extensions)
                   if(c >= count && buffer) delete buffer;
                }
             }
+#endif
 #else
             struct dirent *de;
             struct stat s;
@@ -1556,6 +1565,7 @@ private class FileDesc : struct
                         case DRIVE_REMOTE:    stats.attribs.isRemote = true;    break;
                         case DRIVE_CDROM:     stats.attribs.isCDROM = true;     break;
                      }
+ #if !defined(__UWP__)
                      if(driveType == DRIVE_NO_ROOT_DIR)
                      {
                         uint16 remoteName[1024];
@@ -1570,6 +1580,7 @@ private class FileDesc : struct
                         _wpath[2] = '\\';
                         _wpath[3] = 0;
                      }
+#endif
 
                      if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE &&
                         GetVolumeInformation(_wpath, _wvolume, MAX_FILENAME - 1, null, null, null, null, 0))
@@ -1620,6 +1631,7 @@ private class FileDesc : struct
                else
                   break;
             }
+#if !defined(__UWP__)
             else
             {
                if(d.name[2])
@@ -1703,6 +1715,7 @@ private class FileDesc : struct
                   }
                }
             }
+#endif
 #else
             struct dirent *de;
             struct stat s;

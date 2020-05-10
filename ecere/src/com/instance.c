@@ -192,7 +192,30 @@ static bool DualPipe_GetLine(FILE * p, char *s, int max)
 
 bool Instance_LocateModule(const char * name, char * fileName)
 {
-#if defined(__WIN32__)
+#if defined(__UWP__)
+   if(name && name[0])
+   {
+      uint16 _wmoduleName[MAX_LOCATION];
+      HMODULE hModule = null;
+      UTF8toUTF16Buffer(name, _wmoduleName, MAX_LOCATION);
+      hModule = LoadPackagedLibrary(_wmoduleName, 0);
+      if(hModule)
+      {
+         uint16 _wfileName[MAX_LOCATION];
+         GetModuleFileNameW(hModule, _wfileName, MAX_LOCATION);
+         UTF16toUTF8Buffer(_wfileName, fileName, MAX_LOCATION);
+         FreeLibrary(hModule);
+         return true;
+      }
+   }
+   else
+   {
+      uint16 _wfileName[MAX_LOCATION];
+      GetModuleFileNameW(null, _wfileName, MAX_LOCATION);
+      UTF16toUTF8Buffer(_wfileName, fileName, MAX_LOCATION);
+      return true;
+   }
+#elif defined(__WIN32__)
    HMODULE hModule = null;
    if(name && name[0])
    {
@@ -456,7 +479,30 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    *Load = null;
    *Unload = null;
 
-#if defined(__WIN32__)
+#if defined(__UWP__)
+   strcpy(fileName, name);
+   GetExtension(fileName, extension);
+   if(!extension[0])
+      strcat(fileName, ".dll");
+
+   {
+      uint16 _wfileName[MAX_LOCATION];
+      UTF8toUTF16Buffer(fileName, _wfileName, MAX_LOCATION);
+      library = LoadPackagedLibrary(_wfileName, 0);
+   }
+   if(library)
+   {
+#ifdef _WIN64
+      *Load = (void *)GetProcAddress(library, "__ecereDll_Load");
+      *Unload = (void *)GetProcAddress(library, "__ecereDll_Unload");
+#else
+      *Load = (void *)GetProcAddress(library, "__ecereDll_Load@4");
+      *Unload = (void *)GetProcAddress(library, "__ecereDll_Unload@4");
+#endif
+      if(!*Load)
+         FreeLibrary(library);
+   }
+#elif defined(__WIN32__)
    strcpy(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])
@@ -604,3 +650,17 @@ bool Double_isInf(double n) { return isinf(n); }
 int Double_signBit(double n) { return signbit(n); }
 double Double_nan(void) { return NAN; }
 double Double_inf(void) { return INFINITY; }
+
+#if defined(__clang__) && defined(_MSC_VER)
+
+int strcasecmp(const char * a, const char * b)
+{
+   return strcmpi(a, b);
+}
+
+int strncasecmp(const char * a, const char * b, size_t n)
+{
+   return strnicmp(a, b, n);
+}
+
+#endif

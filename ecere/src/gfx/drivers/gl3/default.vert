@@ -1,3 +1,8 @@
+#if MODERN_GLSL
+#define attribute in
+#define varying out
+#endif
+
 attribute vec3 vertex;
 uniform mat4 projection_matrix;
 

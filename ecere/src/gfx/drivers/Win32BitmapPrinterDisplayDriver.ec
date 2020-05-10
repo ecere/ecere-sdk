@@ -19,7 +19,11 @@ import "instance"
 #undef String
 #undef strlen
 
+#if defined(__clang__)
+#define wcstok(a, b) wcstok(a, b, (void *)0)
+#else
 default wchar_t *wcstok(wchar_t *strToken,const wchar_t *strDelimit);
+#endif
 
 import "Display"
 

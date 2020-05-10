@@ -4,7 +4,7 @@ import "OpenGLDisplayDriver"
 
 #include "gl123es.h"
 
-#if defined(__ANDROID__)
+#if defined(_GLES3)
 #include <GLES3/gl32.h>
 
 #define GL_R16 GL_LUMINANCE
@@ -26,7 +26,7 @@ private:
 
 #if defined _GLES1
 #define glClampFunction(version) (GL_CLAMP)
-#elif defined _GLES2
+#elif defined(_GLES2) || defined(_GLES3)
 #define glClampFunction(version) (GL_CLAMP_TO_EDGE)
 #else
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
@@ -108,6 +108,10 @@ int glVersion = 1;
 int glVersion = 0;
 #endif
 private:
+
+#if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
+uint tempTexFBO;  // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
+#endif
 
 public struct GLArrayTexture
 {
@@ -225,7 +229,7 @@ public struct GLArrayTexture
    {
       int target = GL_TEXTURE_2D_ARRAY;
       // 4.3+
-#if !defined(__ANDROID__) || defined(__LUMIN__)
+#if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__)
       int level = 0;
       int w = width, h = height;
       glBindTexture(target, src.texture);
@@ -542,7 +546,7 @@ public struct GLMultiDraw
       GLFlushMatrices();
 
       // Then render:
-#if 0 // defined(__ANDROID__)
+#if defined(__UWP__)     // ******* Basic Draw Elements *******
       {
          int n;
          uint ixSize = type == GL_UNSIGNED_INT ? 4 : 2;
@@ -556,7 +560,7 @@ public struct GLMultiDraw
             glDrawElements(drawMode, cmd->count, type, (void *)(uintptr)(cmd->firstIndex * ixSize));
          }
       }
-#elif defined(__ANDROID__) && !defined(__LUMIN__)
+#elif (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)     // ******* Instanced Draws with Base Vertex *******
       //This path that isn't taken here is the fallback for when MDEI is not available.  TODO: proper condition
       {
          int n;
@@ -565,7 +569,7 @@ public struct GLMultiDraw
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
-#if defined(__ANDROID__)
+#if defined(__ANDROID__) || defined(__UWP__)
             // NOTE: glVertexAttribPointer might cause VAOs to be re-validated... Uniforms faster?
             uint baseInstance = cmd->baseInstance;
             GLABBindBuffer(GL_ARRAY_BUFFER, transformsAB.buffer);
@@ -589,7 +593,7 @@ public struct GLMultiDraw
          CheckGLErrors(__FILE__,__LINE__);
    #endif
       }
-#else
+#else // ******* Indirect Multi Draw *******
       {
 #ifdef CLIENT_MEM_COMMANDS
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
@@ -624,7 +628,7 @@ public struct GLMultiDraw
 
 public void GLMultisampling(bool value)
 {
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
    (value ? glEnable : glDisable)(GL_MULTISAMPLE);
 #endif
 }

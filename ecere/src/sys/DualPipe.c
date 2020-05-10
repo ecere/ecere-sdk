@@ -408,7 +408,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
             close(hOutput[PIPE_READ]);
       }
    }
-#else
+#elif !defined(__UWP__)
    {
       HANDLE hOutput[2] = { 0 },hOutputRead = 0;
       HANDLE hInput[2] = { 0 }, hInputWrite = 0;

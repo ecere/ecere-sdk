@@ -17,7 +17,7 @@ import "BitmapResource"
 import "LFBDisplayDriver"
 
 // TOFIX: Temporary until we pass Display instead of DisplaySystem to FontExtent
-#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
+#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE) && !defined(__UWP__)
 import "GDIDisplayDriver"
 #endif
 
@@ -34,11 +34,15 @@ import "Vector3D"
 #if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D))
 import "OpenGLDisplayDriver"
 
-#define near _near
-#define far _far
+#define Size Size_
+#define near near_
+#define far far_
+#define String String_
 #include "gl123es.h"
 #undef near
 #undef far
+#undef Size
+#undef String
 #endif
 
 public class GLCapabilities : uint
@@ -541,7 +545,7 @@ public:
    void FontExtent2(Font font, const char * text, int len, int * width, int * height, int prevGlyph, int * rPrevGlyph, int * overHang)
    {
       // Fix for OnLoadGraphics time alpha blended window text extent on GDI
-#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
+#if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE) && !defined(__UWP__)
       if(this && alphaBlend && pixelFormat == pixelFormat888 &&
          displaySystem.driver == class(GDIDisplayDriver))
       {

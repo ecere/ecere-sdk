@@ -13,7 +13,7 @@ namespace net;
 #define SOCKLEN_TYPE int
 #define WIN32_LEAN_AND_MEAN
 #define String _String
-#include <winsock.h>
+#include <winsock2.h>
 #undef String
 
 #elif defined(__unix__) || defined(__APPLE__)

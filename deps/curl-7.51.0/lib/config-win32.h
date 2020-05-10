@@ -705,9 +705,15 @@ Vista
 #  define CURL_DISABLE_LDAP 1
 #endif
 
+#if defined(__UWP__)
+ #define CURL_DISABLE_CRYPTO_AUTH
+#else
+
 /* Define to use the Windows crypto library. */
 #if !defined(USE_OPENSSL) && !defined(USE_NSS)
-#define USE_WIN32_CRYPTO
+ #define USE_WIN32_CRYPTO
+#endif
+
 #endif
 
 /* ---------------------------------------------------------------- */

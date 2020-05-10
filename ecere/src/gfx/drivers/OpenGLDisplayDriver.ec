@@ -9,7 +9,7 @@ asm(".symver log,log@GLIBC_2.2.5");
 #endif
 
 // #define DIAGNOSTICS
-#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__UWP__)
  #define GL_DEBUGGING
 #endif
 
@@ -28,7 +28,7 @@ namespace gfx::drivers;
 
 #if defined _GLES1
 #define glClampFunction(version) (GL_CLAMP)
-#elif defined _GLES2
+#elif defined(_GLES2) || defined(__UWP__)
 #define glClampFunction(version) (GL_CLAMP_TO_EDGE)
 #else
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
@@ -36,10 +36,10 @@ namespace gfx::drivers;
 
 // **********   GL PLATFORMS INCLUDES   **********
 // UNIX
-#if defined(__unix__) || defined(__APPLE__)
+#if defined(__unix__) || defined(__APPLE__) || defined(__UWP__)
 
    // EGL
-   #if defined(__ANDROID__) || defined(__ODROID__)
+   #if defined(__ANDROID__) || defined(__ODROID__) || defined(__UWP__)
       import "egl"
 
       #if defined(__ANDROID__)
@@ -50,6 +50,8 @@ namespace gfx::drivers;
             #include <android/native_activity.h>
             #define printf(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
          #endif
+      #elif defined(__UWP__)
+      #define printf Logf
       #endif
 
    // Emscripten
@@ -122,12 +124,14 @@ namespace gfx::drivers;
    #include <OpenGl/gl.h>
 
 // WGL
-#elif defined(__WIN32__)
+#elif defined(__WIN32__) && !defined(__UWP__)
    //#define WIN32_LEAN_AND_MEAN
    #undef _WIN32_WINNT
    #define _WIN32_WINNT 0x0502
-   #define String Sting_
+   #define String String_
+   #define Size Size_
    #include <windows.h>
+   #undef Size
    #undef String
 
    #include "wglDefs.h"
@@ -402,7 +406,7 @@ class OGLDisplay : struct
    uint vao;
    int maxTMU;
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
    HDC hdc;
    HGLRC glrc;
 
@@ -415,7 +419,7 @@ class OGLDisplay : struct
    int imageBuffers[2];
    byte * pboMemory1, * pboMemory2;
    */
-#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__UWP__)
    GLXContext glContext;
 
    Pixmap pixmap;
@@ -437,7 +441,7 @@ class OGLSystem : struct
 {
    int maxTextureSize;
    bool loadingFont;
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
    PIXELFORMATDESCRIPTOR pfd;
    int format;
    HDC hdc;
@@ -445,7 +449,7 @@ class OGLSystem : struct
    HWND hwnd;
 #elif defined(__EMSCRIPTEN__)
    EMSCRIPTEN_WEBGL_CONTEXT_HANDLE glc;
-#elif !defined(__ANDROID__) && !defined(__ODROID__)
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__UWP__)
    XVisualInfo * visualInfo;
    GLXContext glContext;
    GLXDrawable glxDrawable;
@@ -492,7 +496,7 @@ class OGLIndices : struct
 int current;
 void * previous;
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
 static HGLRC winCreateContext(HDC hdc, int * contextVersion, bool * isCompatible, bool compatible)
 {
    HGLRC result = 0;
@@ -670,7 +674,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__EMSCRIPTEN__)
       OGLSystem oglSystem = displaySystem.driverData;
       emscripten_webgl_make_context_current(oglSystem.glc);
-#elif !defined(__ANDROID__) && !defined(__ODROID__)
+#elif !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__UWP__)
       OGLSystem oglSystem = displaySystem.driverData;
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -690,7 +694,7 @@ class OpenGLDisplayDriver : DisplayDriver
    void UnlockSystem(DisplaySystem displaySystem)
    {
       if(useSingleGLContext) return;
-   #if defined(__WIN32__)
+   #if defined(__WIN32__) && !defined(__UWP__)
       wglMakeCurrent(null, null);
    #elif defined(__unix__) || defined(__APPLE__)
       // printf("Making NULL current\n");
@@ -707,7 +711,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if !defined(__ANDROID__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
       OGLDisplay oglDisplay = display.driverData;
       if(useSingleGLContext) return true;
-   #if defined(__WIN32__)
+   #if defined(__WIN32__) && !defined(__UWP__)
       wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
    #elif defined(__unix__) || defined(__APPLE__)
       // if(previous) glXMakeCurrent(xGlobalDisplay, None, null);
@@ -735,7 +739,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(oglDisplay)
       {
-   #if defined(__WIN32__)
+   #if defined(__WIN32__) && !defined(__UWP__)
          wglMakeCurrent( null, null );
 
          if(oglDisplay.glrc)
@@ -880,7 +884,7 @@ class OpenGLDisplayDriver : DisplayDriver
       PrintLn("OpenGL driver's CreateDisplaySystem()");
 #endif
 
-   #ifdef __WIN32__
+   #if defined(__WIN32__) && !defined(__UWP__)
       oglSystem.hwnd = CreateWindow("static", null, 0,0,0,0,0,null,null,null,null);
 
       oglSystem.hdc = GetDC(oglSystem.hwnd);
@@ -1169,6 +1173,12 @@ class OpenGLDisplayDriver : DisplayDriver
       #endif
    #endif
 
+   #if defined(__UWP__)
+      result = true;
+      oglSystem.maxTextureSize = 16384;
+      oglSystem.compat = false;
+   #endif
+
       displaySystem.flags.alpha = true;
       displaySystem.flags.flipping = true;
       displaySystem.pixelFormat = pixelFormat888;
@@ -1192,7 +1202,7 @@ class OpenGLDisplayDriver : DisplayDriver
       delete oglSystem.shortBDBuffer;
       glimtkTerminate();
 
-   #if defined(__WIN32__)
+   #if defined(__WIN32__) && !defined(__UWP__)
       wglMakeCurrent( null, null );
 
       if(oglSystem.glrc)
@@ -1235,7 +1245,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = display.displaySystem.driverData;
       bool result = true;
 
-#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__)
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__UWP__)
       if(loadExtensions && ogl_LoadFunctions() == ogl_LOAD_FAILED)
          PrintLn("ogl_LoadFunctions() failed!");
       CheckCapabilities(oglSystem, oglDisplay, canCheckExtensions);
@@ -1393,8 +1403,11 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 #endif
       glDepthFunc(GL_LESS);
+#if !defined(__UWP__)
       glClearDepth(1.0);
-#if !defined(_GLES) && !defined(_GLES2)
+#endif
+
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
       glDisable(GL_MULTISAMPLE);
 #endif
 
@@ -1414,11 +1427,11 @@ class OpenGLDisplayDriver : DisplayDriver
          oglDisplay = display.driverData = OGLDisplay { };
       oglDisplay.capabilities = oglSystem.capabilities;
 
-#if defined(__WIN32__) || defined(USEPBUFFER)
+#if (defined(__WIN32__) && !defined(__UWP__)) || defined(USEPBUFFER)
       if(!display.alphaBlend)
 #endif
       {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
          oglDisplay.hdc = GetDC(display.window);
          SetPixelFormat(oglDisplay.hdc, oglSystem.format, &oglSystem.pfd);
          if((oglDisplay.glrc = winCreateContext(oglDisplay.hdc, &oglDisplay.version, &oglDisplay.compat, (*&display.glCapabilities).compatible)))
@@ -1433,6 +1446,9 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
             ReleaseDC(display.window, oglDisplay.hdc);
+#elif defined(__UWP__)
+         oglDisplay.version = 3;
+         result = true;
 #elif defined(__unix__) || defined(__APPLE__)
 #  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
          #if defined(__LUMIN__)
@@ -1487,7 +1503,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #  endif
 #endif
       }
-#if defined(__WIN32__) || defined(USEPBUFFER)
+#if (defined(__WIN32__) && !defined(__UWP__))|| defined(USEPBUFFER)
       else
       {
          oglDisplay.compat = (*&display.glCapabilities).compatible;
@@ -1501,7 +1517,7 @@ class OpenGLDisplayDriver : DisplayDriver
          emscripten_webgl_make_context_current(oglSystem.glc);
 #endif
 
-#if defined(__WIN32__) || defined(USEPBUFFER)
+#if (defined(__WIN32__) && !defined(__UWP__)) || defined(USEPBUFFER)
          initialDisplaySetup(display, !display.alphaBlend, true);
 #else
          initialDisplaySetup(display, true, true);
@@ -1510,7 +1526,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(!useSingleGLContext)
       {
-   #if defined(__WIN32__)
+   #if defined(__WIN32__) && !defined(__UWP__)
          wglMakeCurrent(null, null);
    #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__) || defined(__ODROID__) || defined(__EMSCRIPTEN__)
@@ -1534,7 +1550,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLDisplay oglDisplay = display.driverData;
       bool result = false;
 
-#if defined(__WIN32__) || defined(USEPBUFFER)
+#if (defined(__WIN32__) && !defined(__UWP__)) || defined(USEPBUFFER)
       OGLSystem oglSystem = display.displaySystem.driverData;
       if(display.alphaBlend)
       {
@@ -1975,7 +1991,7 @@ class OpenGLDisplayDriver : DisplayDriver
       glFinish();*/
 #endif
 
-#if defined(__WIN32__) || defined(USEPBUFFER)
+#if (defined(__WIN32__) && !defined(__UWP__)) || defined(USEPBUFFER)
       if(display.alphaBlend)
       {
          glPixelStorei(GL_PACK_ALIGNMENT, 4);
@@ -1985,7 +2001,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glReadPixels(0,0,display.width,display.height,GL_BGRA_EXT,GL_UNSIGNED_BYTE, oglDisplay.picture);
 
          {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
             HDC hdc = GetDC(0);
             POINT point = { oglDisplay.x, oglDisplay.y};
             POINT srcPoint = { 0, 0 };
@@ -2060,7 +2076,7 @@ class OpenGLDisplayDriver : DisplayDriver
       else
 #endif
       {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
          //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE);
          SwapBuffers(oglDisplay.hdc);
          //ecere::sys::Sleep(0.1);
@@ -2073,6 +2089,10 @@ class OpenGLDisplayDriver : DisplayDriver
       #endif
 #endif
       }
+#ifdef _DEBUG
+      CheckGLErrors(__FILE__, __LINE__);
+#endif
+      // PrintLn("End of frame.");
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
@@ -2986,7 +3006,7 @@ class OpenGLDisplayDriver : DisplayDriver
       switch(state)
       {
          case antiAlias:
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
             if(value)
                glEnable(GL_MULTISAMPLE);
             else
@@ -3059,7 +3079,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          case vSync:
          {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
             if(wglSwapIntervalEXT)
                wglSwapIntervalEXT(value ? 1 : 0);
 #endif
@@ -3276,12 +3296,15 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
             GLLoadIdentity();
+
+#if !defined(__UWP__)
          GLFrustum(
             (left   - origX) * camera.zMin / camera.focalX,
             (right  - origX) * camera.zMin / camera.focalX,
             (bottom - origY) * camera.zMin / camera.focalY,
             (top    - origY) * camera.zMin / camera.focalY,
             camera.zMin, camera.zMax);
+#endif
 
          glDisable(GL_BLEND);
 
@@ -3291,6 +3314,10 @@ class OpenGLDisplayDriver : DisplayDriver
             GLPushMatrix();
 
          GLLoadIdentity();
+
+#if defined(__UWP__)
+         glmsScaled(1, -1, 1);
+#endif
 
          GLScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
 
@@ -3318,7 +3345,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
          if(oglDisplay.version >= 2)
             glEnable(GL_MULTISAMPLE);
 #endif
@@ -3401,7 +3428,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
          if(oglDisplay.version >= 2)
             glDisable(GL_MULTISAMPLE);
 #endif
@@ -3672,16 +3699,8 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
          if(flags.setupTextures)
          {
-            if(flags.tile)
-            {
-               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
-               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            }
-            else
-            {
-               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, glClampFunction(oglDisplay.version));
-               glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, glClampFunction(oglDisplay.version));
-            }
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_S, flags.tile ? GL_REPEAT : glClampFunction(oglDisplay.version));
+            glTexParameteri(diffuseTarget, GL_TEXTURE_WRAP_T, flags.tile ? GL_REPEAT : glClampFunction(oglDisplay.version));
          }
       }
       else
@@ -3898,6 +3917,10 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 #endif
       material.flags.setupTextures = false;
+
+#ifdef _DEBUG
+      CheckGLErrors(__FILE__, __LINE__);
+#endif
    }
 
    void FreeMesh(DisplaySystem displaySystem, Mesh mesh)
@@ -4287,7 +4310,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__APPLE__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__APPLE__) && !defined(__UWP__)
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
@@ -4442,7 +4465,7 @@ class OpenGLDisplayDriver : DisplayDriver
                GLDisableClientState(COLORS);
          }
 
-#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__)
+#if !defined(__ANDROID__) && !defined(__APPLE__) && !defined(__ODROID__) && !defined(__EMSCRIPTEN__) && !defined(__UWP__)
 
 #if defined(__WIN32__)
          if(glLockArraysEXT)
@@ -4451,6 +4474,9 @@ class OpenGLDisplayDriver : DisplayDriver
                glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
+#ifdef _DEBUG
+      CheckGLErrors(__FILE__, __LINE__);
+#endif
    }
 
    void DrawPrimitives(Display display, PrimitiveSingle primitive, Mesh mesh)
@@ -4489,6 +4515,9 @@ class OpenGLDisplayDriver : DisplayDriver
                eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices, mesh.baseVertex);
          // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
+#ifdef _DEBUG
+      CheckGLErrors(__FILE__, __LINE__);
+#endif
    }
 
    void PushMatrix(Display display)
@@ -4547,10 +4576,10 @@ IS_GLGetContext(DisplaySystem displaySystem)
 {
    if(displaySystem)
    {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
       OGLSystem system = displaySystem.driverData;
       return system.glrc;
-#elif defined(__ANDROID__) || defined(__ODROID__)
+#elif defined(__ANDROID__) || defined(__ODROID__) || defined(__UWP__)
       return eglContext;
 #elif defined(__EMSCRIPTEN__)
       OGLSystem system = displaySystem.driverData;

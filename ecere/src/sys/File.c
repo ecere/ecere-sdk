@@ -224,6 +224,7 @@ bool __ecereNameSpace__ecere__sys__SplitArchivePath(const char * fileName, char 
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
 void __ecereMethod___ecereNameSpace__ecere__sys__EARFileSystem_FixCase(const char * archive, char * name);
 
+#if !defined(__UWP__)
 static BOOL CALLBACK EnumThreadWindowsProc(HWND hwnd, LPARAM lParam)
 {
    DWORD pid;
@@ -234,6 +235,7 @@ static BOOL CALLBACK EnumThreadWindowsProc(HWND hwnd, LPARAM lParam)
    }
    return TRUE;
 }
+
 bool WinReviveNetworkResource(uint16 * _wfileName)
 {
    bool result = false;
@@ -270,6 +272,7 @@ bool WinReviveNetworkResource(uint16 * _wfileName)
       result = true;
    return result;
 }
+#endif
 
 TimeStamp Win32FileTimeToTimeStamp(FILETIME * fileTime);
 void TimeStampToWin32FileTime(TimeStamp t, FILETIME * fileTime);
@@ -348,7 +351,7 @@ FileAttribs FILE_FileExists(const char * fileName)
    }
    else
       attribute = GetFileAttributes(_wfileName);
-#if !defined(ECERE_BOOTSTRAP)
+#if !defined(ECERE_BOOTSTRAP) && !defined(__UWP__)
    if(!result && attribute == 0xFFFFFFFF)
    {
       if(WinReviveNetworkResource(_wfileName))
@@ -448,7 +451,7 @@ bool FILE_FileGetStats(const char * fileName, FileStats * stats)
       stats->size = s.st_size;
       stats->attribs = (s.st_mode & S_IFDIR) ? ((FileAttribs) (isDirectory)): ((FileAttribs) 0);
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
       {
          HANDLE hFile = CreateFile(_wfileName, 0, FILE_SHARE_READ, null,
             OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, null);
@@ -597,7 +600,7 @@ void FILE_FileFixCase(char * file)
                strcat(parent, directory);
             }
          }
-#ifndef ECERE_BOOTSTRAP
+#if !defined(ECERE_BOOTSTRAP) && !defined(__UWP__)
          else
          {
             // Network server
@@ -720,6 +723,7 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
       case FOM_writeRead:  *input = *output = _wfopen(_wfileName, L"w+b"); break;
       case FOM_appendRead: *input = *output = _wfopen(_wfileName, L"a+b"); break;
    }
+ #if !defined(__UWP__)
    if(!mode && WinReviveNetworkResource(_wfileName))
    {
       switch(mode)
@@ -732,6 +736,7 @@ void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE
          case FOM_appendRead: *input = *output = _wfopen(_wfileName, L"a+b"); break;
       }
    }
+#endif
    __ecereNameSpace__ecere__com__eSystem_Delete(_wfileName);
 #else
    switch(mode)
