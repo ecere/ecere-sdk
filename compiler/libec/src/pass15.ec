@@ -5776,13 +5776,16 @@ void ComputeExpression(Expression exp)
                }
                ComputeExpression(e);
                //FreeExpContents(exp);
-               FreeType(exp.expType);
-               FreeType(exp.destType);
-               *exp = *e;
-               exp.prev = prev;
-               exp.next = next;
-               delete e;
-               delete list;
+               if(/*e.type != memberExp && */e.type != opExp && e.type != castExp)
+               {
+                  FreeType(exp.expType);
+                  FreeType(exp.destType);
+                  *exp = *e;
+                  exp.prev = prev;
+                  exp.next = next;
+                  delete e;
+                  delete list;
+               }
             }
             else
             {
@@ -6178,10 +6181,19 @@ void ComputeExpression(Expression exp)
       case typeSizeExp:
       {
          Type type = ProcessType(exp.typeName.qualifiers, exp.typeName.declarator);
-         FreeExpContents(exp);
-         exp.constant = PrintUInt(ComputeTypeSize(type));
-         exp.type = constantExp;
-         FreeType(type);
+         if(type.name && (
+            !strcmpi(type.name, "SCOPE_ID") ||
+            !strcmpi(type.name, "IN_PKTINFO_EX")
+            ))
+            // TODO: Detect types we cannot compute (e.g. bit fields)
+            ;
+         else
+         {
+            FreeExpContents(exp);
+            exp.constant = PrintUInt(ComputeTypeSize(type));
+            exp.type = constantExp;
+            FreeType(type);
+         }
          break;
       }
       case classSizeExp:
