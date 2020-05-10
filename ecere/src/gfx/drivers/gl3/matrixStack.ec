@@ -259,6 +259,24 @@ public void glmsMultMatrixd(double * i)
    stackModified[curStack] = true;
 }
 
+public void glmsMultMatrixf(float * i)
+{
+   double m[16] =
+   {
+      i[0*4+0], i[0*4+1], i[0*4+2], i[0*4+3],
+      i[1*4+0], i[1*4+1], i[1*4+2], i[1*4+3],
+      i[2*4+0], i[2*4+1], i[2*4+2], i[2*4+3],
+      i[3*4+0], i[3*4+1], i[3*4+2], i[3*4+3]
+   };
+   Matrix r;
+   int ix = matrixIndex[curStack];
+   isIdentity[curStack][ix] = false;
+
+   r.Multiply((Matrix *)m, matrixStack[curStack][ix]);
+   matrixStack[curStack][ix] = r;
+   stackModified[curStack] = true;
+}
+
 public void glmsGetDoublev(GLMSWhatToGet what, double * i)
 {
    int ix;
