@@ -508,7 +508,7 @@ class CompilerApp : Application
             globalData.functions.Add((BTNode)data);
          }
 
-         snprintf(command, sizeof(command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
+         snprintf(command, sizeof(command), "%s%s -x c -E %s \"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h", GetSourceFile());
          command[sizeof(command)-1] = 0;
 #if 0 //def _DEBUG
          PrintLn("ECC Executing:");
@@ -668,9 +668,20 @@ class CompilerApp : Application
                      output.Printf("#define __runtimePlatform 2\n");
                      output.Printf("#endif\n");
 
-                     output.Printf("#if defined(__GNUC__)\n");
-                        output.Printf("typedef long long int64;\n");
-                        output.Printf("typedef unsigned long long uint64;\n");
+                     output.Printf("#if defined(__GNUC__) || defined(__clang__)\n");
+                        output.Printf("#if defined(__clang__) && defined(__WIN32__)\n");
+                           output.Printf("#define int64 long long\n");
+                           output.Printf("#define uint64 unsigned long long\n");
+                           output.Printf("#if defined(_WIN64)\n");
+                           output.Printf("#define ssize_t long long\n");
+                           output.Printf("#else\n");
+                           output.Printf("#define ssize_t long\n");
+                           output.Printf("#endif\n");
+                        output.Printf("#else\n");
+                           output.Printf("typedef long long int64;\n");
+                           output.Printf("typedef unsigned long long uint64;\n");
+                        output.Printf("#endif\n");
+
                         output.Printf("#ifndef _WIN32\n");
                            output.Printf("#define __declspec(x)\n");
                         output.Printf("#endif\n");
@@ -699,7 +710,10 @@ class CompilerApp : Application
                      output.Printf("#endif\n");
 
                      output.Printf("#if defined(_WIN32)\n");
-                     output.Printf("#   if defined(__GNUC__) || defined(__TINYC__)\n");
+                     output.Printf("#   if defined(__clang__) && defined(__WIN32__)\n");
+                     output.Printf("#      define ecere_stdcall __stdcall\n");
+                     output.Printf("#      define ecere_gcc_struct\n");
+                     output.Printf("#   elif defined(__GNUC__) || defined(__TINYC__)\n");
                      output.Printf("#      define ecere_stdcall __attribute__((__stdcall__))\n");
                      output.Printf("#      define ecere_gcc_struct __attribute__((gcc_struct))\n");
                      output.Printf("#   else\n");
