@@ -637,7 +637,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      // Assuming triangles for now
                      f.Read(g.indices, sizeof(uint32), nFaces * 3);
-                     g.baseIndex = mesh.baseIndex;
                      mesh.UnlockPrimitiveGroup(g);
                   }
                }
