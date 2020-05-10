@@ -10,7 +10,17 @@ import "network"
 import "SSLSocket"
 #endif
 
+#define Size Size_
+#define String String_
+#define Interface Interface_
+#define Socket Socket_
+#define Alignment Alignment_
 #include <curl/curl.h>
+#undef Size
+#undef String
+#undef Interface
+#undef Socket
+#undef Alignment
 
 #undef CompareString
 

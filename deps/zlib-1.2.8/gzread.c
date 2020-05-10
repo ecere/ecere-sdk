@@ -3,7 +3,9 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
+#if !defined(_MSC_VER)
 #include <unistd.h>
+#endif
 
 #include "gzguts.h"
 

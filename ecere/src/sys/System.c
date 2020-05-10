@@ -238,7 +238,9 @@ char * System_GetWorkingDir(char * buf, int size)
 
 bool System_ChangeWorkingDir(const char * buf)
 {
-#if defined(__WIN32__)
+#if defined(__UWP__)
+   return false;
+#elif defined(__WIN32__)
    bool result;
    uint16 * _wbuf = __ecereNameSpace__ecere__sys__UTF8toUTF16(buf, null);
    result = !chdir(buf);
@@ -383,7 +385,7 @@ bool System_ShellOpen(const char * fileName, va_list args)
       if(command[0] && system(command) != -1)
          result = true;
    }
-#elif defined(ECERE_VANILLA)
+#elif defined(ECERE_VANILLA) || defined(__UWP__)
    {
       uint16 * _wfilePath = __ecereNameSpace__ecere__sys__UTF8toUTF16(filePath, null);
       if(_wsystem(_wfilePath) != -1)

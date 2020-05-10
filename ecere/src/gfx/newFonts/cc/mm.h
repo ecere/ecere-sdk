@@ -151,7 +151,9 @@ extern "C" {
 #endif
 
 
+#if CC_UNIX
 #include <sys/time.h>
+#endif
 
 #ifdef __WIN32__
 int mmGetTimeOfDay( struct timeval *tv );

@@ -5,6 +5,13 @@ precision highp float;
 #extension GL_OES_EGL_image_external : enable
 #endif
 
+#if MODERN_GLSL
+#define varying in
+#define texture2D texture
+#define gl_FragColor fragColor
+out vec4 fragColor;
+#endif
+
 #if ALPHATEST_ON
    uniform float alphaFuncValue;
 #endif
@@ -181,7 +188,7 @@ void main(void)
 #elif NORMALS_MAPPING || TEXTURE_ON || SPECULAR_MAPPING || REFLECTION_MAP
    vec2 texCoord;
    #if TEXTURE_MATRIX
-       texCoord = (vec4(fTexCoord, 0, 1) * texture_matrix).xy;
+       texCoord = (vec4(fTexCoord, 0.0, 1.0) * texture_matrix).xy;
    #else
        texCoord = fTexCoord;
    #endif

@@ -4,7 +4,7 @@ import "instance"
 
 #define UNICODE
 
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__UWP__)
 
 #undef WINVER
 #define WINVER 0x0500
@@ -165,6 +165,7 @@ static Box lastMonitorAreas[32];
 static Box monitorAreas[32];
 static int monitor;
 
+#if !defined(__UWP__)
 static bool EnumerateMonitors(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
 {
    MONITORINFO info = { 0 };
@@ -174,6 +175,7 @@ static bool EnumerateMonitors(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
    monitor++;
    return monitor < 32;
 }
+#endif
 
 static bool externalDisplayChange;
 
@@ -280,12 +282,14 @@ class Win32Interface : Interface
       lastTime = time;
 
       // Every sec, check for the auto hide property
+#if !defined(__UWP__)
       if(time - lastAutoHideCheck > 1)
       {
          APPBARDATA appBarData = { 0 };
          newTaskBarState = (int)SHAppBarMessage(ABM_GETSTATE, &appBarData);
          lastAutoHideCheck = time;
       }
+#endif
 
       monitor = 0;
       EnumDisplayMonitors(null, null, EnumerateMonitors, 0);
@@ -313,6 +317,7 @@ class Win32Interface : Interface
          y = GetSystemMetrics(SM_YVIRTUALSCREEN)
       };
 
+#if !defined(__UWP__)
       {
          HMONITOR monitor = MonitorFromWindow(NULL, MONITOR_DEFAULTTOPRIMARY);
          if(monitor)
@@ -327,6 +332,7 @@ class Win32Interface : Interface
             h = info.rcMonitor.bottom - info.rcWork.top;
          }
       }
+#endif
 
      {
          WINDOWPLACEMENT placement = { 0 };
@@ -570,6 +576,7 @@ class Win32Interface : Interface
 
                      HWND modalWindow = modalRoot ? modalRoot.windowHandle : null;
 
+#if !defined(__UWP__)
                      if(window.creationActivation == flash || window.hasMinimize || window.borderStyle != sizableThin)
                      {
                         FLASHWINFO flashInfo = { 0 };
@@ -579,6 +586,7 @@ class Win32Interface : Interface
                         flashInfo.dwFlags = FLASHW_STOP;
                         FlashWindowEx((void *)&flashInfo);
                      }
+#endif
 
                      if(modalWindow && modalWindow != windowHandle)
                         modalRoot.ExternalActivate(true, true, window, null);
@@ -641,12 +649,16 @@ class Win32Interface : Interface
                         guiApp.SetAppFocus(false);
                         ShowWindow(windowHandle, SW_MINIMIZE);
                         ChangeDisplaySettings(null,0);
+#if !defined(__UWP__)
                         SetSystemPaletteUse(hdc, SYSPAL_STATIC);
+#endif
                      }
                      else
                      {
                         ChangeDisplaySettings(&devMode, CDS_FULLSCREEN);
+#if !defined(__UWP__)
                         SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
+#endif
                         if(window.display)
                            window.display.RestorePalette();
                         ShowWindow(windowHandle, SW_SHOWNORMAL);
@@ -678,6 +690,7 @@ class Win32Interface : Interface
                break;
             case WM_PAINT:
             {
+#if !defined(__UWP__)
                PAINTSTRUCT ps;
                if(!window.alphaBlend || window.display.pixelFormat != pixelFormat888)
                {
@@ -721,6 +734,7 @@ class Win32Interface : Interface
                   BeginPaint(windowHandle, &ps);
                   EndPaint(windowHandle, &ps);
                }
+#endif
                break;
             }
             case WM_DISPLAYCHANGE:
@@ -807,6 +821,7 @@ class Win32Interface : Interface
                {
                   COMPOSITIONFORM form;
                   Window caretOwner = guiApp.caretOwner;
+#if !defined(__UWP__)
                   if(caretOwner)
                   {
                      HIMC ctx = ImmGetContext(windowHandle);
@@ -817,6 +832,7 @@ class Win32Interface : Interface
                      ImmSetCompositionWindow(ctx, &form);
                      ImmReleaseContext(windowHandle, ctx);
                   }
+#endif
                }
                if(msg != WM_MOUSEWHEEL)
                   delete window;
@@ -834,6 +850,7 @@ class Win32Interface : Interface
                Window caretOwner = guiApp.caretOwner;
                if(caretOwner)
                {
+#if !defined(__UWP__)
                   HIMC ctx = ImmGetContext(windowHandle);
                   form.dwStyle = CFS_POINT;
                   form.ptCurrentPos.x = caretOwner.caretPos.x - caretOwner.scroll.x + caretOwner.absPosition.x - window.absPosition.x + 4;
@@ -868,6 +885,7 @@ class Win32Interface : Interface
                      ImmSetCompositionFont(ctx, &font);
                      ImmReleaseContext(windowHandle, ctx);
                   }
+#endif
                   return 1;
                }
                break;
@@ -1299,7 +1317,11 @@ class Win32Interface : Interface
       };
       HDC hdc = GetDC(0);
       lastRes = MAKELPARAM(GetSystemMetrics(SM_CYSCREEN), GetSystemMetrics(SM_CXSCREEN));
+#if defined(__UWP__)
+      lastBits = 32;
+#else
       lastBits = (WPARAM)GetDeviceCaps(hdc, BITSPIXEL);
+#endif
       ReleaseDC(0, hdc);
 
       AttachConsole(-1);
@@ -1440,15 +1462,27 @@ class Win32Interface : Interface
          devMode.dmFields |=DM_BITSPERPEL;
          devMode.dmFields |=DM_PELSWIDTH|DM_PELSHEIGHT;
          devMode.dmFields |= DM_DISPLAYFREQUENCY;
+#if defined(__UWP__)
+         devMode.dmBitsPerPel = colorDepth ? GetDepthBits(colorDepth) : 32;
+#else
          devMode.dmBitsPerPel = colorDepth ? GetDepthBits(colorDepth) : GetDeviceCaps(hdc, BITSPIXEL);
+#endif
+
          devMode.dmPelsWidth = resolution ? GetResolutionWidth(resolution) : GetSystemMetrics(SM_CXSCREEN);
          devMode.dmPelsHeight = resolution ? GetResolutionHeight(resolution) : GetSystemMetrics(SM_CYSCREEN);
+
+#if defined(__UWP__)
+         devMode.dmDisplayFrequency = refreshRate ? refreshRate : 60;
+#else
          devMode.dmDisplayFrequency = refreshRate ? refreshRate : GetDeviceCaps(hdc, VREFRESH);
+#endif
          if(ChangeDisplaySettings(&devMode, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
             result = false;
          else
          {
+#if !defined(__UWP__)
             SetSystemPaletteUse(hdc, SYSPAL_NOSTATIC);
+#endif
             guiApp.SetDesktopPosition(0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), false);
          }
       }
@@ -1458,7 +1492,9 @@ class Win32Interface : Interface
          if(!firstTime)
             ChangeDisplaySettings(null, 0);
          firstTime = false;
+#if !defined(__UWP__)
          SetSystemPaletteUse(hdc, SYSPAL_STATIC);
+#endif
          desktopX = desktopY = desktopW = desktopH = 0;
 
          RepositionDesktop(false);

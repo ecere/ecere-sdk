@@ -17,7 +17,7 @@ extern int __ecereVMethodID_class_OnCompare;
      defined __NetBSD__ || defined __DragonFly__ || defined AMIGA)
    #define BSD
    extern void qsort_r(void *base, uintsize nel, uintsize width, void *arg, int (*compare)(void *, const void *, const void *));
-#elif defined(__WIN32__)
+#elif defined(__WIN32__) && defined(__MINGW32__)
    __declspec(dllimport) __cdecl extern void qsort_s(void *base, uintsize nel, uintsize width, int (*compare)(void *, const void *, const void *), void * arg);
 #elif (defined __GLIBC__ && ((__GLIBC__ > 2) || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 8)))
    #define GLIBC

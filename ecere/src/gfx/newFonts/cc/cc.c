@@ -17,6 +17,12 @@
 #include <errno.h>
 #include <assert.h>
 
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <stdlib.h>
+
 #include "cc.h"
 #include "ccstr.h"
 
@@ -30,6 +36,7 @@
  #include <dirent.h> /* For readdir() */
  #include <sys/statvfs.h> /* For statvfs( ) */
 #elif CC_WINDOWS
+ #define WIN32_LEAN_AND_MEAN
  #include <windows.h>
  #include <direct.h>
  #include <sys/types.h>
@@ -1530,7 +1537,7 @@ int ccFileStore( const char *path, void *data, size_t datasize, int fsyncflag )
   }
   if( close( fd ) != 0 )
     retval = 0;
-#elif CC_WINDOWS
+#elif CC_WINDOWS && !defined(__UWP__)
   HANDLE file;
   DWORD byteswritten;
   file = CreateFileA( path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
@@ -1549,7 +1556,7 @@ int ccFileStore( const char *path, void *data, size_t datasize, int fsyncflag )
   if( !( file ) )
     return 0;
   retval = 1;
-  if( fwrite( data, size, 1, file ) != 1 )
+  if( fwrite( data, datasize, 1, file ) != 1 )
     retval = 0;
   if( fclose( file ) != 0 )
     retval = 0;
@@ -1757,9 +1764,10 @@ int ccGetTimeOfDay( struct timeval *tv )
     tv->tv_sec = (long)( curtime / 1000000UL );
     tv->tv_usec = (long)( curtime % 1000000UL );
   }
-#endif
+#else
   if( tv )
     gettimeofday( tv, 0 );
+#endif
   return 0;
 }
 
@@ -1865,9 +1873,12 @@ char *ccGetSystemName()
   ZeroMemory( &si, sizeof(SYSTEM_INFO) );
   ZeroMemory( &osvi, sizeof(OSVERSIONINFOEX) );
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+#if !defined(__UWP__)
   if( !( GetVersionEx( (OSVERSIONINFO*) &osvi ) ) )
+#endif
    return 0;
 
+#if !defined(__UWP__)
   pGNSI = (PGNSI)GetProcAddress( GetModuleHandleA( "kernel32.dll" ), "GetNativeSystemInfo" );
   if( pGNSI )
     pGNSI( &si );
@@ -2036,6 +2047,7 @@ char *ccGetSystemName()
 
   /* Finally build the string */
   string = ccStrAllocPrintf( "%s%s%s%s%s (build %d )%s", sysname, ( detailname ? ", " : "" ), ( detailname ? detailname : "" ), ( packname ? ", " : "" ), ( packname ? packname : "" ), buildnumber, ( archname ? archname : "" ) );
+#endif
 
 #endif
   return string;

@@ -7,9 +7,8 @@
 #ifndef CC_H
 #define CC_H
 
-
-#include <sys/time.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <math.h>
 
 #include "cpuconfig.h"
@@ -31,7 +30,29 @@
  #define CC_WINDOWS (1)
 #endif
 
+#if CC_UNIX || defined(__MINGW32__)
+#include <sys/time.h>
+#endif
 
+#if CC_WINDOWS
+
+#if defined(__UWP__) || !defined(__MINGW32__)
+struct timeval
+{
+   long tv_sec;
+   long tv_usec;
+};
+#endif
+
+#if !defined(ssize_t) && !defined(__MINGW32__)
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#endif
+
+#endif
 ////
 
 

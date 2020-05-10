@@ -13,7 +13,7 @@
 #ifndef MMTHREAD_H
 #define MMTHREAD_H
 
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) || defined(__UWP__)
    #define MT_NOTHREADS   1
 #endif
 

@@ -16,8 +16,9 @@
  */
 
 
+#if !defined(__WIN32__)
 #define MM_THREADING (1)
-
+#endif
 
 #ifdef MM_THREADING
  #define _GNU_SOURCE

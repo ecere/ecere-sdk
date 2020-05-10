@@ -3,6 +3,9 @@
    #define MessageBox _MessageBox
    #define Sleep _Sleep
    #define Polygon _Polygon
+   #define Size Size_
+   #define String String_
+   #define Alignment Alignment_
 
    #define WIN32_LEAN_AND_MEAN
 #endif
@@ -18,7 +21,7 @@
 #endif
 
 #if defined(_GLES2) || defined(_GLES3)
-#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__UWP__)
 
 #if defined(__LUMIN__)
    #include <GLES3/gl32.h>
@@ -33,6 +36,11 @@
    #define GL_LINE 0x1B01
 
 #else
+
+#if defined(__UWP__)
+   #define GL_GLEXT_PROTOTYPES
+#endif
+
 #if defined(_GLES3)
    //#define GL_GLEXT_PROTOTYPES
 
@@ -89,6 +97,9 @@
    #undef MessageBox
    #undef Sleep
    #undef GetObject
+   #undef Size
+   #undef String
+   #undef Alignment
 #endif
 
 #ifdef _GLES

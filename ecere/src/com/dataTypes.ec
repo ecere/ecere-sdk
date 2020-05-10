@@ -2653,6 +2653,10 @@ public char * PrintLnString(const typed_object object, ...)
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #endif
 
+#if defined(__UWP__)
+import "System"
+#endif
+
 public void PrintLn(const typed_object object, ...)
 {
    va_list args;
@@ -2664,6 +2668,8 @@ public void PrintLn(const typed_object object, ...)
    LOGI("%s", buffer);
 #elif defined(__LUMIN__)
    ML_LOG(Info, "%s", buffer);
+#elif defined(__UWP__)
+   Logf("%s\n", buffer);
 #else
    puts(buffer);
 #endif
