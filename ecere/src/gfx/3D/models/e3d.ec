@@ -12,8 +12,9 @@ public class E3DFormat : ObjectFormat
       {
          readE3D(f, fileName, object, displaySystem, options);
          delete f;
+         return true;
       }
-      return true;
+      return false;
    }
 
    bool Save(Object object, const char * fileName, void * options)
@@ -27,7 +28,8 @@ public class E3DFormat : ObjectFormat
 
          writeE3D(f, /*fileName, */object/*, options*/);
          delete f;
+         return true;
       }
-      return true;
+      return false;
    }
 };
