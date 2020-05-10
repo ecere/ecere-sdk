@@ -89,6 +89,8 @@ default:
 "goto"               { return(GOTO); }
 "if"                 { return(IF); }
 "int"                { return(INT); }
+"__int32"            { return(INT); }
+"int32"              { return(INT); }
 "uint"               { return(UINT); }
  /* "uint16"            { return(UINT16); } */
  /* "uint32"            { return(UINT32); } */
