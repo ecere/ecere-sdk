@@ -579,12 +579,13 @@ public:
             case model:
             {
                Model mdl = (Model)ge;
+               Object m = this.model;
                // MDManager dm = mgr.perspective3DDM;
-               if(model)
+               if(m)
                {
-                  if(model.mesh)
+                  if(m.mesh)
                   {
-                     PrimitiveGroup g = model.mesh.groups.first;
+                     PrimitiveGroup g = m.mesh ? m.mesh.groups.first : null;
                      if(g)
                      {
                         Material m = g.material;

@@ -124,6 +124,9 @@ public struct GLArrayTexture
 
    void free()
    {
+#ifdef _DEBUG
+      GLStats::freeTextures(1, &texture);
+#endif
       if(texture)
          glDeleteTextures(1, &texture);
       delete spots.spots;
