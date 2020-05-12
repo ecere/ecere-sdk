@@ -1024,14 +1024,14 @@ public:
                      Bitmap convBitmap = bitmap;
                      GLArrayTexture * at = &mAT[i];
                      if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
-                        convBitmap = bitmap.ProcessDD(true, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+                        convBitmap = bitmap.ProcessDD((bool)2, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
                      if(convBitmap)
                      {
                         if(!at->texture)
                         {
                            // TOCHECK: Shouldn't the overall bitmap width be set?
-                           Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
-                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1, bmp.width, bmp.height, 256,
+                           // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
+                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1, 512 /*bmp.width*/, 512 /*bmp.height*/, 256,
                               convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? GL_COMPRESSED_RGBA8_ETC2_EAC : GL_RGBA8,
                               false);
                         }
@@ -1059,6 +1059,7 @@ public:
                                     }
                                     delete bmp.picture;
                                     delete bmp;
+                                    convBitmap.bitmaps[j] = null; // TOCHECK: ?
                                  }
                               }
                               delete convBitmap.bitmaps;

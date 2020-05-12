@@ -623,8 +623,20 @@ public struct GLFB
          glDeleteFramebuffers(1, &fbo);
          fbo = 0;
       }
-      if(color) glDeleteTextures(1, &color);
-      if(depth) glDeleteTextures(1, &depth);
+      if(color)
+      {
+#ifdef _DEBUG
+         GLStats::freeTextures(1, &color);
+#endif
+         glDeleteTextures(1, &color);
+      }
+      if(depth)
+      {
+#ifdef _DEBUG
+         GLStats::freeTextures(1, &depth);
+#endif
+         glDeleteTextures(1, &depth);
+      }
       color = 0;
       depth = 0;
 

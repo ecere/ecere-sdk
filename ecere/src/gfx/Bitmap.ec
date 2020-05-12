@@ -1063,8 +1063,16 @@ public:
 
          if(mipMaps)
          {
-            while(w * 2 < h) w *= 2;
-            while(h * 2 < w) h *= 2;
+            if((int)mipMaps == 2)
+            {
+               w = 512;
+               h = 512;
+            }
+            else
+            {
+               while(w * 2 < h) w *= 2;
+               while(h * 2 < w) h *= 2;
+            }
             numMipMaps = 1+Max(log2i(w), log2i(h));
          }
 
@@ -1075,7 +1083,8 @@ public:
             for(c = 0; c < size; c++)
             {
                ColorAlpha color = pic[c];
-               pic[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
+               Color clr = color.color;
+               pic[c] = ColorRGBA { clr.r, clr.g, clr.b, color.a };
             }
          }
 
