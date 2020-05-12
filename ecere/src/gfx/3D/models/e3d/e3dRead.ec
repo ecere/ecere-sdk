@@ -334,7 +334,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8)
                      {
-                        Bitmap bmp = bitmap.ProcessDD(true, 0, false /*true*/, 16384, true);
+                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, false /*true*/, 16384, true);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
                         #if 0

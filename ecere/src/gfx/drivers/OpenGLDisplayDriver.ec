@@ -2100,6 +2100,9 @@ class OpenGLDisplayDriver : DisplayDriver
       if(bitmap.driverData)
       {
          GLuint tex = (GLuint)(uintptr)bitmap.driverData;
+#ifdef _DEBUG
+         GLStats::freeTextures(1, &tex);
+#endif
          glDeleteTextures(1, &tex);
          bitmap.driverData = 0;
       }
@@ -4169,7 +4172,8 @@ class OpenGLDisplayDriver : DisplayDriver
                for(i = 0; i < nVertices; i++)
                {
                   float * v = buf + (i << 3);
-                  memcpy(v, vertices + i, 3 * sizeof(float));
+                  if(vertices)
+                     memcpy(v, vertices + i, 3 * sizeof(float));
                   if(normals)
                      memcpy(v + 3, normals + i, 3 * sizeof(float));
                   else
