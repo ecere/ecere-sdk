@@ -151,7 +151,7 @@ extern "C" {
 #endif
 
 
-#if CC_UNIX
+#if CC_UNIX || defined(__MINGW32__)
 #include <sys/time.h>
 #endif
 
