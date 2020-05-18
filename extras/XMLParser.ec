@@ -19,6 +19,7 @@ static WordStatus GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool 
    char ch;
    int c = 0;
    bool quoted = false, start = true, wasQuoted = false;
+   char quoteChar = 0;
 
    for(; (ch = *string); string++)
    {
@@ -33,8 +34,12 @@ static WordStatus GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool 
       {
          if(!quoted && ((ch == ',' || (treatEqual && ch == '=')) || ch == '>') )
             break;
-         else if(ch == '\"' /*|| ch == '\''*/)
+         // TOCHECK: Why weren't single quotes accepted here? How was this working?
+         else if((ch == '\"' || (/*acceptSingleQuote && */ch == '\'')) && (!quoteChar || quoteChar == ch))
+         // else if(ch == '\"' /*|| ch == '\''*/)
          {
+            if(!wasQuoted)
+               quoteChar = ch;
             quoted ^= true;
             wasQuoted = true;
             start = false;

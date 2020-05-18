@@ -1,0 +1,61 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "Writer",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3",
+         "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc",
+         "$(ECERE_SDK_SRC)/butterbur/src/imagesAndText",
+         "$(ECERE_SDK_SRC)/deps/libtess"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "Writer",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "HTMLView",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/extras/html/htmlParser.ec",
+            "$(ECERE_SDK_SRC)/extras/html/HTMLView.ec",
+            "$(ECERE_SDK_SRC)/extras/html/lines.ec",
+            "$(ECERE_SDK_SRC)/extras/html/tables.ec"
+         ]
+      },
+      "Writer.ec",
+      "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/ccstr.c",
+      "RichEdit.ec",
+      "ewd.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
