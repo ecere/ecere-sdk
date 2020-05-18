@@ -147,6 +147,26 @@ class LWFMFont : struct
    float outlineAlphaFactor;
    float outlineIntensityFactor;
 
+   property float ascender
+   {
+      get
+      {
+         float ascender;
+         fmFont_getMetrics(font, &ascender, null, null, null, null, null);
+         return ascender;
+      }
+   }
+
+   property float lineHeight
+   {
+      get
+      {
+         float lineHeight;
+         fmFont_getMetrics(font, null, null, null, &lineHeight, null, null);
+         return lineHeight;
+      }
+   }
+
    static void ::outlineProcessGlyphImage( byte *image, int width, int height, int bytesperpixel, int bytesperline, int processIndex, int paddingwidth, LWFMFont font )
    {
      int x, y;
@@ -420,6 +440,13 @@ class LWFontManager
    void drawTextf(float x, float y, const String text, int length)
    {
       fmDrawTextFloat(fm, x, y, text, length);
+   }
+
+   void getExtent(float x, float y, const String text, int length, Box box)
+   {
+      int bounds[4];
+      fmGetTextBounds(fm, (int)x, (int)y, text, 0, length, bounds);
+      box = { bounds[0], bounds[2], bounds[1], bounds[3] };
    }
 }
 
