@@ -173,7 +173,7 @@ String ParseURL(String input)
 
 static int GetKeyWord(char ** input, char * keyWord, int maxSize)
 {
-   return GetKeyWordEx(input, keyWord, maxSize, true, false);
+   return GetKeyWordEx(input, keyWord, maxSize, true, true); //false);
 }
 
 /*static char * GetString(char * string, char * what, int count)
@@ -535,7 +535,7 @@ class HTMLFile
                                        }
                                     subBlock.size = fontSizes[c];
                                  }
-                                 else if(size && size < NUM_FONT_SIZES)
+                                 else if(size && size <= NUM_FONT_SIZES)
                                  {
                                     subBlock.size = fontSizes[size-1];
                                  }

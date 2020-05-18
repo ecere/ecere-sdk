@@ -345,8 +345,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
          {
             int bw = block.pWidth ? (w * block.pWidth / 100) : block.w;
             int bh = block.pHeight ? (h * block.pHeight / 100) : block.h;
-
-            int dx, dy;
+            int dx = 0, dy = 0;
 
             ColorAlpha fg = surface.GetForeground();
             surface.SetForeground(white);
@@ -499,7 +498,7 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
          {
             int bw = block.pWidth ? (w * block.pWidth / 100) : block.w;
             int bh = block.pHeight ? (h * block.pHeight / 100) : block.h;
-            int dx, dy;
+            int dx = 0, dy = 0;
 
             switch(block.halign)
             {
