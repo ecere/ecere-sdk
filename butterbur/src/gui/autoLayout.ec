@@ -2,6 +2,92 @@ public import "ecere"
 import "GraphicalSurface"
 import "GraphicalPresentation"
 
+int wrapTextExtentFM(LWFontManager fm, GEFont geFont, LWFMFont font, const String text, int ex, int ey, int * wtw, int * wth)
+{
+   const String start = text;
+   const String drawUntil = null;
+   int w = 0;
+   int y = 0;
+   int tw, th;
+   int lh;
+   Box box;
+   float pixelSize = (geFont ? geFont.size : 12) * 96 / 72;
+
+   fm.setState(font, pixelSize, { left, top }, 0, 1); // FIXME: outline padding width
+   fm.getExtent(0, 0, "W", 1, box);
+   tw = box.right - box.left;
+   th = box.bottom - box.top;
+   th = (font.lineHeight) * pixelSize;
+   lh = th;
+
+   *wtw = 0;
+   *wth = th;
+
+   while(true)
+   {
+      bool canAddMore = false;
+      if(ey - y >= 2*th)
+      {
+         const String s = drawUntil ? drawUntil + 1 : start;
+         const String nextSpace = strchr(s, ' ');
+         const String newLine = strchr(s, '\n');
+         if(newLine && (!nextSpace || (newLine < nextSpace)))
+            nextSpace = newLine;
+         if(!nextSpace)
+            nextSpace = strchr(s, 0);
+         if(nextSpace)
+         {
+            fm.getExtent(0, 0, drawUntil ? drawUntil : start, (int)(nextSpace - (drawUntil ? drawUntil : start)), box);
+            tw = box.right - box.left;
+            th = box.bottom - box.top;
+            th = (font.lineHeight) * pixelSize;
+
+            if(!th) th = lh;
+            if(w + tw < ex || !drawUntil)
+            {
+               drawUntil = nextSpace;
+               w += tw;
+               if(*nextSpace != 0 && *nextSpace != '\n')
+                  canAddMore = true;
+            }
+         }
+      }
+      if(!canAddMore)
+      {
+         if(!drawUntil && !y && !w)
+         {
+            drawUntil = strchr(start, '\0');
+            if(drawUntil)
+            {
+               fm.getExtent(0, 0, start, (int)(drawUntil - start), box);
+               w = box.right - box.left;
+               th = box.bottom - box.top;
+               th = (font.lineHeight) * pixelSize;
+            }
+         }
+         if(drawUntil)
+         {
+            *wtw = Max(*wtw, w);
+            *wth = Max(*wth, y + th);
+            w = 0;
+            y += th;
+            if(!*drawUntil)
+               break;
+            start = drawUntil + 1;
+            drawUntil = null;
+         }
+         else
+         {
+            *wtw = Max(*wtw, w);
+            *wth = Max(*wth, y + th);
+            y += th;
+            break;
+         }
+      }
+   }
+   return y;
+}
+
 struct Dimension
 {
    GraphicalUnit type;
@@ -128,8 +214,29 @@ private:
          /*if(!cw) cw = MAXINT;
          if(!ch) ch = MAXINT;*/
 
-         //displaySystem.FontExtent(fontObject, caption, strlen(caption), (int *)&graphicsSize.w, (int *)&graphicsSize.h);
-         // TODO: wrapTextExtent(displaySystem, fontObject, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
+         MultiPresentation topPres = parent;
+         GraphicalSurface gSurface;
+         LWFMFont font;
+         LWFontManager fm;
+
+         Element p = this;
+         while(!p.font && p.parent && eClass_IsDerived(p.parent._class, class(Element)))
+            p = (Element)p.parent;
+
+         GEFont tFont;
+         tFont.OnCopy(p.font);
+         tFont.color = fgColor;
+
+         gText.font = tFont;
+         gText.text = caption;
+
+         while(topPres.parent) topPres = topPres.parent;
+         gSurface = (GraphicalSurface)topPres;
+         fm = gSurface.fontManager;
+
+         font = fm.getFont(gText.font);
+
+         wrapTextExtentFM(gSurface.fontManager, gText.font, font, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
          if(graphicsSize.w)
             graphicsSize.w += 1;
       }
@@ -159,7 +266,7 @@ private:
       int thickness = direction == vertical   ? clientSize.w : clientSize.h;
       int start = 0;
       int totalMin = 0;
-      Alignment2D lastAlignment = subElements.count ? ((Element)subElements[0]).selfAlignment : { };
+      Alignment2D lastAlignment = subElements.count > 2 ? ((Element)subElements[2]).selfAlignment : { };
       if(!(int)(direction == horizontal ? lastAlignment.horzAlign : lastAlignment.vertAlign))
          lastAlignment = alignment;
 
@@ -191,7 +298,7 @@ private:
                if(xw && w > xw) xw = w;
 
                totalMax += Max(w, xw) + mm;
-               totalUsed[(VAlignment)(e.selfAlignment.horzAlign == unset ? selfAlignment.horzAlign : e.selfAlignment.horzAlign)] += Max(xw, w) + mm;
+               totalUsed[(VAlignment)(e.selfAlignment.horzAlign == unset ? alignment.horzAlign : e.selfAlignment.horzAlign)] += Max(xw, w) + mm;
             }
             else
             {
@@ -206,7 +313,7 @@ private:
                if(xh && h > xh) xh = h;
 
                totalMax += Max(h, xh) + mm;
-               totalUsed[(VAlignment)(e.selfAlignment.vertAlign == unset ? selfAlignment.vertAlign : e.selfAlignment.vertAlign)] += Max(xh, h) + mm;
+               totalUsed[(VAlignment)(e.selfAlignment.vertAlign == unset ? alignment.vertAlign : e.selfAlignment.vertAlign)] += Max(xh, h) + mm;
             }
          }
       }
@@ -342,15 +449,35 @@ private:
          }
       }
 
+
+      Element p = this;
+      while(!p.font && p.parent && eClass_IsDerived(p.parent._class, class(Element)))
+         p = (Element)p.parent;
+
+      GEFont tFont;
+      tFont.OnCopy(p.font);
+      tFont.color = fgColor;
+
+      int sw = contentSize.w, sh = contentSize.h;
+      int x = tlPosition.x, y = tlPosition.y;
+
+      gText.font = tFont;
+      gText.text = caption;
+
       // TODO: Use graphical elements to render?
-      gRect.box = { tlPosition.x, tlPosition.y, tlPosition.x + clientSize.w, tlPosition.y + clientSize.h };
-      gRect.fill = { bgColor };
-      gRect.stroke = { borderColor, width = 5 };
+      gRect.box = { x, y, x + cw, y + ch };
+      gRect.fill = { bgColor.color, opacity = bgColor.a / 255.0 };
+      gRect.stroke = { borderColor.color, opacity = borderColor.a / 255.0, width = 0 };
+
       pRect.graphic = gRect;
 
-      pText.position2D = { tlPosition.x, tlPosition.y };
-      gText.font = font;
-      gText.text = caption;
+      if(alignment.horzAlign == center)
+         x += (cw - sw) / 2;
+      if(alignment.vertAlign == middle)
+         y += (ch - sh) / 2;
+      pText.position2D = { x, y };
+
+      gText.alignment = { left, top };
       pText.graphic = gText;
    }
 
@@ -505,11 +632,20 @@ class AutoLayoutForm : Window
 
    Element contents;
 
+   AutoLayoutForm()
+   {
+      UseSingleGLContext(true);
+   }
+
    bool OnLoadGraphics()
    {
       // contents.loadGraphics(displaySystem);
       incref contents;
       contents.parent = gs;
+
+      setupGL(display);
+      gs.calculate(gs, gs.presManager);
+
       return true;
    }
 
@@ -517,6 +653,8 @@ class AutoLayoutForm : Window
    {
       int nw = contents.minSize.w.getPixels(width);
       int nh = contents.minSize.h.getPixels(height);
+
+      setupGL(display);
       contents.clientSize = { Max(nw, width), Max(nh, height) };
       if(contents.subElements)
       {

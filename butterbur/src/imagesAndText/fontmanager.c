@@ -126,6 +126,21 @@ struct fmFont
   mmListNode list;
 };
 
+void fmFont_getMetrics(fmFont * font, float * ascender, float * descender, float * middleAlign,
+   float * lineHeight, float * minY, float * maxY)
+{
+   if(font)
+   {
+      if(ascender) *ascender = font->ascender;
+      if(descender) *descender = font->descender;
+      if(middleAlign) *middleAlign = font->middlealign;
+      if(lineHeight) *lineHeight = font->lineheight;
+      if(minY) *minY = font->limitminy;
+      if(maxY) *maxY = font->limitmaxy;
+   }
+}
+
+
 typedef struct
 {
   fmFont *font;
