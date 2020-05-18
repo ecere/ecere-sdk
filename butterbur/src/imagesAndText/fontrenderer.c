@@ -161,8 +161,10 @@ static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned
   glPixelStorei( GL_UNPACK_ROW_LENGTH, state->texturewidth );
   glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], sizex, sizey, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * state->texturewidth + rect[0]) * state->channelcount);
 
-  glBindTexture( GL_TEXTURE_2D, 0);
-  glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+  // BIG BUG HERE: The caller expects the texture to remain bound!!
+  //glBindTexture( GL_TEXTURE_2D, 0);
+  //glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
 
 #if PNG_SUPPORT && 0
