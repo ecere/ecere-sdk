@@ -549,10 +549,33 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
             if(block.text[0] == ' ' && block.text[1] == 0) pickX += tw; else
             if(pickX >= x && pickY >= y+h-th && pickX < x + tw + 2 && pickY < y+h)
             {
-               result = true;
+               // TODO: Binary search?
+#define UTF8_NUM_BYTES(x)  (__extension__({ byte b = x; (b & 0x80 && b & 0x40) ? ((b & 0x20) ? ((b & 0x10) ? 4 : 3) : 2) : 1; }))
+
+               int c;
+               char ch;
+               int numBytes = 1;
+               bool half = false;
+               int space;
+
+               *pickTextPos = textPos;
+
+               surface.TextExtent(" ", 1, &space, null);
+               for(c = textPos; (ch = block.text[c]); c += numBytes)
+               {
+                  int w, th;
+
+                  numBytes = UTF8_NUM_BYTES(ch);
+                  surface.TextExtent(block.text + textPos, c - textPos, &w, &th);
+                  if(th && pickX < x + (half ? w/2 : w) - space)
+                     break;
+                  *pickTextPos = c;
+               }
+               if(!block.text[c])
+                  *pickTextPos = c;
+
                *pickBlock = block;
-               // Have to properly compute this
-               *pickTextPos = 0;
+               result = true;
             }
             textPos += len;
             x += tw;
