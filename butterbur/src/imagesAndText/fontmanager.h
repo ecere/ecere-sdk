@@ -148,6 +148,9 @@ float fmGetFontVerticalOffset( fmManager *fm );
 void fmGetFontLimits( fmManager *fm, int *retlimitminy, int *retlimitmaxy );
 int fmGetFontLineHeight( fmManager *fm );
 
+void fmFont_getMetrics(fmFont * font, float * ascender, float * descender, float * middleAlign,
+   float * lineHeight, float * minY, float * maxY);
+
 
 /* Pull texture changes */
 const unsigned char *fmGetTextureData( fmManager *fm, int *width, int *height );
