@@ -1,0 +1,55 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "convertDoc",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "../../../../ecere/src/gfx/newFonts/cc"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "convertDoc",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "HTML",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/extras/html/htmlParser.ec",
+            "$(ECERE_SDK_SRC)/extras/html/lines.ec",
+            "$(ECERE_SDK_SRC)/extras/html/tables.ec",
+            "$(ECERE_SDK_SRC)/extras/html/HTMLView.ec"
+         ]
+      },
+      "ewd.ec",
+      "$(ECERE_SDK_SRC)/ecere/src/gfx/newFonts/cc/ccstr.c",
+      "convertDoc.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

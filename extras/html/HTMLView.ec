@@ -120,7 +120,7 @@ class ObjectThread : Thread
 
                strcpy(path, entry.src);
                //strcpy(referer, browserWindow.location ? browserWindow.location : "");
-               strcpy(referer, entry.referer); //browserWindow.location ? browserWindow.location : "");
+               strcpy(referer, entry.referer ? entry.referer : ""); //browserWindow.location ? browserWindow.location : "");
 
                //((GuiApplication)__thisModule).Unlock();
 
@@ -1002,17 +1002,13 @@ class HTMLView : Window
       NotifyPageOpened(master);
    }
 
-   void OpenFile(File f, char * firstReferer)
+   void OpenFile(File f, const char * firstReferer)
    {
-      char referer[MAX_LOCATION] = "";
       bool opened = false;
 
       clickedLink = null;
       overLink = null;
       overBlock = null;
-
-      if(firstReferer)
-         strcpy(referer, firstReferer);
 
       delete html;
       html = HTMLFile {};
@@ -1021,8 +1017,9 @@ class HTMLView : Window
       Update(null);
 
       opened = true;
-      this.location = null;
-      fileName = this.location;
+      delete location;
+      location = CopyString(firstReferer);
+      fileName = location;
 
       if(opened)
       {
