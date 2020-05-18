@@ -74,7 +74,7 @@ public class TIManager : DrawingManager
          ColorAlpha color { (byte)(opacity * (font ? font.opacity : 1.0f) * 255), font ? font.color : black };
          ColorAlpha outlineColor { (byte)(opacity * (font ? font.outline.opacity : 1.0f) * 255), font ? font.outline.color : white };
          int paddingWidth = Max(2, (int)(1+(font ? font.outline.size : 0)));
-         LWFMHorizontalAlignment hAlign = (LWFMHorizontalAlignment)alignment.horzAlign;
+         LWFMHorizontalAlignment hAlign = alignment.horzAlign == unset ? left : (LWFMHorizontalAlignment)(alignment.horzAlign-1);
          LWFMVerticalAlignment vAlign = alignment.vertAlign == top ? top : alignment.vertAlign == middle ? middle : bottom ;
 
          fontManager.setState(lwfmFont, (font ? font.size : 12) * 96 / 72, { hAlign, vAlign }, 0, paddingWidth);
