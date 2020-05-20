@@ -774,7 +774,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
          symbol.className = CopyString(className);
 
-         if(!strstr(sourceFile, ".main.ec"))
+         if(!strstr(sourceFile, ".main.ec")) // TOCHECK: Should this be extern?
             ListAdd(specs, MkSpecifier(STATIC));
          ListAdd(specs, MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
          ListAdd(declarators, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
