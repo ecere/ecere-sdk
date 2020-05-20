@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -1970,7 +1983,16 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(f, "static Module __currentModule;\n\n") : (unsigned int)1;
 }));
 if(!isStaticLibrary)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sModule __thisModule;\n\n", attributeCommon);
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, "__attribute__((__common__)) Module __thisModule;\n\n") : (unsigned int)1;
+}));
 BindDCOMServer();
 BindDCOMClient();
 if(dcomSymbols)
@@ -1996,7 +2018,7 @@ struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere_
 
 FullClassNameCat(className, _class->name, 1);
 if(_class->itself)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sClass __ecereClass_%s;\n", attributeCommon, className);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) Class __ecereClass_%s;\n", className);
 {
 {
 for(method = _class->methods.first; method; method = method->next)
@@ -2011,10 +2033,10 @@ meth->dataType = ProcessTypeString(meth->dataTypeString, 0);
 FinishTemplatesContext(context);
 }
 if(method->isVirtual)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sint __ecereVMethodID_%s_%s;\n", attributeCommon, className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) int __ecereVMethodID_%s_%s;\n", className, method->name);
 else if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1 && (!meth || !meth->dataType->dllExport))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sint (*__ecereMethod_%s_%s)();\n", attributeCommon, className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) int (*__ecereMethod_%s_%s)();\n", className, method->name);
 }
 anyMethod = 1;
 }
@@ -2028,11 +2050,11 @@ FullClassNameCat(propName, prop->name, 1);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereProp_%s_Set_%s;\n", attributeCommon, className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereProp_%s_Set_%s;\n", className, propName);
 if(prop->hasGet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereProp_%s_Get_%s;\n", attributeCommon, className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereProp_%s_Get_%s;\n", className, propName);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sProperty __ecereProp_%s_%s;\n", attributeCommon, className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) Property __ecereProp_%s_%s;\n", className, propName);
 anyProp = 1;
 }
 }
@@ -2049,7 +2071,7 @@ char functionName[1024];
 
 functionName[0] = 0;
 FullClassNameCat(functionName, function->name, 0);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereFunction_%s;\n", attributeCommon, functionName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereFunction_%s;\n", functionName);
 anyFunction = 1;
 }
 }
