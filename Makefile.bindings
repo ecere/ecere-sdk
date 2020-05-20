@@ -178,17 +178,17 @@ bindingscleanpy:
 # todo: missing bgen output cleaning
 #_BGEN_OUTS = $(call renameEcereCOM,$(BGEN_LIBS))
 #_BGEN_OUTPUT := $(addsuffix .py,$(addprefix build_,$(_BGEN_OUTS))) $(addsuffix .h,$(addprefix cffi-,$(_BGEN_OUTS))) $(addsuffix .py,$(addprefix py,$(_BGEN_OUTS)))
-	@$(call echo,todo: bindingscleanpy)
+#	@$(call echo,todo: bindingscleanpy)
 
 .PHONY: bindingscleantargetpy
 bindingscleantargetpy:
-	@$(call echo,todo: bindingscleantargetpy)
+#	@$(call echo,todo: bindingscleantargetpy)
 
 .PHONY: bindingsrealcleanpy
 bindingsrealcleanpy:
 	$(call rmr,bindings/py/obj)
 	$(call rmr,bindings/py/__pycache__)
-	@$(call echo,todo: bindingsrealcleanpy -- _py*.c _py*.pyd)
+#	@$(call echo,todo: bindingsrealcleanpy -- _py*.c _py*.pyd)
 
 .PHONY: bindingswipecleanpy
 bindingswipecleanpy:
