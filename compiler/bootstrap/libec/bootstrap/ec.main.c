@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -49,51 +62,51 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-int __ecereVMethodID_class_OnGetString;
+__attribute__((__common__)) int __ecereVMethodID_class_OnGetString;
 
-int (* __ecereMethod_double_inf)();
+__attribute__((__common__)) int (* __ecereMethod_double_inf)();
 
-int (* __ecereMethod_double_nan)();
+__attribute__((__common__)) int (* __ecereMethod_double_nan)();
 
-void * __ecereProp_double_Get_isInf;
+__attribute__((__common__)) void * __ecereProp_double_Get_isInf;
 
-void * __ecereProp_double_Get_isNan;
+__attribute__((__common__)) void * __ecereProp_double_Get_isNan;
 
-void * __ecereProp_double_Get_signBit;
+__attribute__((__common__)) void * __ecereProp_double_Get_signBit;
 
-int (* __ecereMethod_float_inf)();
+__attribute__((__common__)) int (* __ecereMethod_float_inf)();
 
-int (* __ecereMethod_float_nan)();
+__attribute__((__common__)) int (* __ecereMethod_float_nan)();
 
-void * __ecereProp_float_Get_isInf;
+__attribute__((__common__)) void * __ecereProp_float_Get_isInf;
 
-void * __ecereProp_float_Get_isNan;
+__attribute__((__common__)) void * __ecereProp_float_Get_isNan;
 
-void * __ecereProp_float_Get_signBit;
+__attribute__((__common__)) void * __ecereProp_float_Get_signBit;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 void __ecereCreateModuleInstances_ast();
 
@@ -175,139 +188,139 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBIndexItem;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBIndexItem;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableDef;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableDef;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntry;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntry;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_DataRedefinition;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_DataRedefinition;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitDeclarator;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitDeclarator;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TopoEdge;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TopoEdge;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__TemplateMemberType;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__TemplateMemberType;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
@@ -349,33 +362,33 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpac
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerTypeSize;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerTypeSize;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

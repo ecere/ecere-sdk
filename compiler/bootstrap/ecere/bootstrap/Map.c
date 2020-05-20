@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -130,7 +143,7 @@ int count;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 struct __ecereNameSpace__ecere__com__MapNode
 {
@@ -255,29 +268,29 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 
 void __ecereProp___ecereNameSpace__ecere__com__Map_Set_mapSrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(struct __ecereNameSpace__ecere__com__Instance * this, uint64 node, uint64 addNode, int addSide);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data);
 

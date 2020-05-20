@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -191,23 +204,23 @@ extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value);
 

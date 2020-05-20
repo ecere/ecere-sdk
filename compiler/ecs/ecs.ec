@@ -288,7 +288,7 @@ static void WriteMain(const char * fileName)
       f.Puts("static Module __currentModule;\n\n");
 
       if(!isStaticLibrary)
-         f.Puts("Module __thisModule;\n\n");
+         f.Puts("__attribute__((__common__)) Module __thisModule;\n\n");
 
       // TOCHECK: Problem compiling Scrabble.main.ec when binding Client first
       BindDCOMServer();
@@ -324,7 +324,7 @@ static void WriteMain(const char * fileName)
             FullClassNameCat(className, _class.name, true);
 
             if(_class.itself)
-               f.Printf("Class __ecereClass_%s;\n", className);
+               f.Printf("__attribute__((__common__)) Class __ecereClass_%s;\n", className);
             /*else
                nonInst = true;*/
             //if(!_class.isRemote)
@@ -342,7 +342,7 @@ static void WriteMain(const char * fileName)
                      }
 
                      if(method.isVirtual)
-                        f.Printf("int __ecereVMethodID_%s_%s;\n", className, method.name);
+                        f.Printf("__attribute__((__common__)) int __ecereVMethodID_%s_%s;\n", className, method.name);
                      else if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
                      {
                         /*char name[4096];
@@ -360,7 +360,7 @@ static void WriteMain(const char * fileName)
                         */
                         //f.Printf("void * __ecereMethod_%s_%s;\n", className, method.name);
 
-                        f.Printf("int (*__ecereMethod_%s_%s)();\n", className, method.name);
+                        f.Printf("__attribute__((__common__)) int (*__ecereMethod_%s_%s)();\n", className, method.name);
                      }
 
                      anyMethod = true;
@@ -376,11 +376,11 @@ static void WriteMain(const char * fileName)
                   if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
                      if(prop.hasSet)
-                        f.Printf("void * __ecereProp_%s_Set_%s;\n", className, propName);
+                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Set_%s;\n", className, propName);
                      if(prop.hasGet)
-                        f.Printf("void * __ecereProp_%s_Get_%s;\n", className, propName);
+                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Get_%s;\n", className, propName);
                   }
-                  f.Printf("Property __ecereProp_%s_%s;\n", className, propName);
+                  f.Printf("__attribute__((__common__)) Property __ecereProp_%s_%s;\n", className, propName);
                   anyProp = true;
                }
             }
@@ -396,7 +396,7 @@ static void WriteMain(const char * fileName)
                char functionName[1024];
                functionName[0] = 0;
                FullClassNameCat(functionName, function.name, false);
-               f.Printf("void * __ecereFunction_%s;\n", functionName);
+               f.Printf("__attribute__((__common__)) void * __ecereFunction_%s;\n", functionName);
                anyFunction = true;
             }
          }

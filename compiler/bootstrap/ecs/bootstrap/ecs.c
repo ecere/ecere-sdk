@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -349,23 +362,23 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __e
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
@@ -1976,7 +1989,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "Module __thisModule;\n\n") : (unsigned int)1;
+__internal_VirtualMethod ? __internal_VirtualMethod(f, "__attribute__((__common__)) Module __thisModule;\n\n") : (unsigned int)1;
 }));
 BindDCOMServer();
 BindDCOMClient();
@@ -2003,7 +2016,7 @@ struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere_
 
 FullClassNameCat(className, _class->name, 1);
 if(_class->itself)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Class __ecereClass_%s;\n", className);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) Class __ecereClass_%s;\n", className);
 {
 {
 for(method = _class->methods.first; method; method = method->next)
@@ -2018,10 +2031,10 @@ meth->dataType = ProcessTypeString(meth->dataTypeString, 0);
 FinishTemplatesContext(context);
 }
 if(method->isVirtual)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int __ecereVMethodID_%s_%s;\n", className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) int __ecereVMethodID_%s_%s;\n", className, method->name);
 else if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1 && (!meth || !meth->dataType->dllExport))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int (*__ecereMethod_%s_%s)();\n", className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) int (*__ecereMethod_%s_%s)();\n", className, method->name);
 }
 anyMethod = 1;
 }
@@ -2035,11 +2048,11 @@ FullClassNameCat(propName, prop->name, 1);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Set_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereProp_%s_Set_%s;\n", className, propName);
 if(prop->hasGet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Get_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereProp_%s_Get_%s;\n", className, propName);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Property __ecereProp_%s_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) Property __ecereProp_%s_%s;\n", className, propName);
 anyProp = 1;
 }
 }
@@ -2056,7 +2069,7 @@ char functionName[1024];
 
 functionName[0] = 0;
 FullClassNameCat(functionName, function->name, 0);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereFunction_%s;\n", functionName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__attribute__((__common__)) void * __ecereFunction_%s;\n", functionName);
 anyFunction = 1;
 }
 }

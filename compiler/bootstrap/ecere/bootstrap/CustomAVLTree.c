@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -122,9 +135,9 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
-int __ecereVMethodID_class_OnCompare;
+extern int __ecereVMethodID_class_OnCompare;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 struct __ecereNameSpace__ecere__com__AVLNode
 {
@@ -535,7 +548,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpac
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

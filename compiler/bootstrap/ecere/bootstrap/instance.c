@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -775,7 +788,7 @@ extern int isprint(int c);
 
 extern int isblank(int c);
 
-int __ecereVMethodID_class_OnGetString;
+extern int __ecereVMethodID_class_OnGetString;
 
 const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this);
 
@@ -1113,31 +1126,31 @@ const char * objectClass;
 unsigned int isDragging;
 } ecere_gcc_struct;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_Reset;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_Reset;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DestroyObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DestroyObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data);
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * *  data);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_FindObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_FindObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddToolBoxClass;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddToolBoxClass;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddDefaultMethod;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddDefaultMethod;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ModifyCode;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ModifyCode;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_UpdateProperties;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_UpdateProperties;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_ListToolBoxClasses;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_ListToolBoxClasses;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PrepareTestObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PrepareTestObject;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_classDesigner(struct __ecereNameSpace__ecere__com__Instance * this);
 
@@ -1201,7 +1214,7 @@ unsigned int compiled;
 unsigned int selfWatchable, isWatchable;
 } ecere_gcc_struct;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_FixProperty;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_FixProperty;
 
 void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -1715,25 +1728,25 @@ unsigned int modified;
 void * i18nStrings;
 } ecere_gcc_struct;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_RenameObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_RenameObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SelectObjectFromDesigner;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SelectObjectFromDesigner;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_CodeAddObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_CodeAddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SheetAddObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SheetAddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_DeleteObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_DeleteObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ObjectContainsCode;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ObjectContainsCode;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_SelectObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_SelectObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PostCreateObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PostCreateObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DroppedObject;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DroppedObject;
 
 struct __ecereNameSpace__ecere__com__Module;
 

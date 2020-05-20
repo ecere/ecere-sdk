@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -176,31 +189,31 @@ void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_input(struct __ecereN
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(struct __ecereNameSpace__ecere__com__Instance * this, void *  value);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
 void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(struct __ecereNameSpace__ecere__com__Instance * this);
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(struct __ecereNameSpace__ecere__com__Instance * this, void *  value);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Flush(struct __ecereNameSpace__ecere__com__Instance * this);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

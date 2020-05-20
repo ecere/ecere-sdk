@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -173,43 +186,43 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpac
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetLast;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetLast;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Insert;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Insert;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Move;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Move;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Copy;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Copy;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Find;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Find;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_FreeIterator;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_FreeIterator;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetCount;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetCount;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {

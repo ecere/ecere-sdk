@@ -2496,6 +2496,8 @@ public void DeclareMethod(External neededFor, Method method, const char * name)
 
          if(method.type == virtualMethod)
          {
+            if(!dllImport && !specifiers->count)
+               ListAdd(specifiers, MkSpecifier(EXTERN));
             ListAdd(specifiers, MkSpecifier(INT));
             d = MkDeclaratorIdentifier(MkIdentifier(name));
          }

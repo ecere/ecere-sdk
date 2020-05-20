@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -49,209 +62,209 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-int __ecereVMethodID_class_OnCompare;
+__attribute__((__common__)) int __ecereVMethodID_class_OnCompare;
 
-int __ecereVMethodID_class_OnCopy;
+__attribute__((__common__)) int __ecereVMethodID_class_OnCopy;
 
-int __ecereVMethodID_class_OnEdit;
+__attribute__((__common__)) int __ecereVMethodID_class_OnEdit;
 
-int __ecereVMethodID_class_OnFree;
+__attribute__((__common__)) int __ecereVMethodID_class_OnFree;
 
-int __ecereVMethodID_class_OnGetDataFromString;
+__attribute__((__common__)) int __ecereVMethodID_class_OnGetDataFromString;
 
-int __ecereVMethodID_class_OnGetString;
+__attribute__((__common__)) int __ecereVMethodID_class_OnGetString;
 
-int __ecereVMethodID_class_OnSaveEdit;
+__attribute__((__common__)) int __ecereVMethodID_class_OnSaveEdit;
 
-int __ecereVMethodID_class_OnSerialize;
+__attribute__((__common__)) int __ecereVMethodID_class_OnSerialize;
 
-int __ecereVMethodID_class_OnUnserialize;
+__attribute__((__common__)) int __ecereVMethodID_class_OnUnserialize;
 
-void * __ecereProp_double_Get_isInf;
+__attribute__((__common__)) void * __ecereProp_double_Get_isInf;
 
-void * __ecereProp_double_Get_isNan;
+__attribute__((__common__)) void * __ecereProp_double_Get_isNan;
 
-void * __ecereProp_double_Get_signBit;
+__attribute__((__common__)) void * __ecereProp_double_Get_signBit;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Add;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Copy;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Copy;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Find;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Find;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_FreeIterator;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_FreeIterator;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetCount;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetCount;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetLast;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetLast;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Insert;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Insert;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Move;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Move;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_SetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Sort;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_AddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DestroyObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DestroyObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DroppedObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_DroppedObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_FixProperty;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_FixProperty;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_ListToolBoxClasses;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_ListToolBoxClasses;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PostCreateObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PostCreateObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PrepareTestObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_PrepareTestObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_Reset;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_Reset;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_SelectObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_SelectObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_FreeIterator;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_FreeIterator;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetPrev;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetPrev;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Move;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Move;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Sort;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Sort;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddDefaultMethod;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddDefaultMethod;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddToolBoxClass;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_AddToolBoxClass;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_CodeAddObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_CodeAddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_DeleteObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_DeleteObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_FindObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_FindObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ModifyCode;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ModifyCode;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ObjectContainsCode;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_ObjectContainsCode;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_RenameObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_RenameObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SelectObjectFromDesigner;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SelectObjectFromDesigner;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SheetAddObject;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_SheetAddObject;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_UpdateProperties;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__DesignerBase_UpdateProperties;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Close;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Close;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Tell;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_CloseDir;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_CloseDir;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Exists;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Exists;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Find;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Find;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_FindNext;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_FindNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_FixCase;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_FixCase;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_GetSize;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_GetSize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Open;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Open;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_OpenArchive;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_OpenArchive;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats;
 
-void * __ecereProp_float_Get_isInf;
+__attribute__((__common__)) void * __ecereProp_float_Get_isInf;
 
-void * __ecereProp_float_Get_isNan;
+__attribute__((__common__)) void * __ecereProp_float_Get_isNan;
 
-void * __ecereProp_float_Get_signBit;
+__attribute__((__common__)) void * __ecereProp_float_Get_signBit;
 
 void __ecereCreateModuleInstances_System();
 
@@ -325,67 +338,67 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_bool;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_bool;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AVLNode;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AVLNode;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_ecere__com__Array_TPL_String___;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_ecere__com__Array_TPL_String___;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Container;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Container;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__const_String___;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__const_String___;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__StringBTNode;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__StringBTNode;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_float;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_float;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
 
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
@@ -427,49 +440,49 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(struct __ecereNameSpac
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_count;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_count;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_maximum;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_maximum;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_minimum;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_minimum;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_buffered;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_buffered;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_input;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_input;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_output;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_output;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

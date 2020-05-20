@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -313,15 +326,15 @@ int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSp
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode();
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 struct FunctionImport;
 
@@ -1136,7 +1149,7 @@ struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(_
 data->key = (uintptr_t)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-snprintf(command, sizeof (command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
+snprintf(command, sizeof (command), "%s%s -x c -E %s \"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h", GetSourceFile());
 command[sizeof (command) - 1] = 0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(1))), command)))
 {
@@ -1269,9 +1282,19 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runti
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 2\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__) || defined(__clang__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__clang__) && defined(__WIN32__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define int64 long long\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define uint64 unsigned long long\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN64)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define ssize_t long long\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define ssize_t long\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifndef _WIN32\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __declspec(x)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
@@ -1299,7 +1322,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIAN_PAD(x) 0\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN32)\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   if defined(__GNUC__) || defined(__TINYC__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   if defined(__clang__) && defined(__WIN32__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_stdcall __stdcall\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_gcc_struct\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   elif defined(__GNUC__) || defined(__TINYC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_stdcall __attribute__((__stdcall__))\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_gcc_struct __attribute__((gcc_struct))\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   else\n");
