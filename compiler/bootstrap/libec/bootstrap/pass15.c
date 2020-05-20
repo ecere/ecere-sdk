@@ -6,9 +6,19 @@
 #else
 #define __runtimePlatform 2
 #endif
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined(__clang__)
+#if defined(__clang__) && defined(__WIN32__)
+#define int64 long long
+#define uint64 unsigned long long
+#if defined(_WIN64)
+#define ssize_t long long
+#else
+#define ssize_t long
+#endif
+#else
 typedef long long int64;
 typedef unsigned long long uint64;
+#endif
 #ifndef _WIN32
 #define __declspec(x)
 #endif
@@ -36,7 +46,10 @@ typedef unsigned __int64 uint64;
 #define __ENDIAN_PAD(x) 0
 #endif
 #if defined(_WIN32)
-#   if defined(__GNUC__) || defined(__TINYC__)
+#   if defined(__clang__) && defined(__WIN32__)
+#      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
+#   elif defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
 #      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
@@ -309,6 +322,8 @@ extern long long __ecereNameSpace__ecere__com___strtoi64(const char *  string, c
 extern uint64 __ecereNameSpace__ecere__com___strtoui64(const char *  string, const char * *  endString, int base);
 
 extern double strtod(const char * , char * * );
+
+extern int strcasecmp(const char * , const char * );
 
 extern int strncmp(const char * , const char * , size_t n);
 
@@ -14043,6 +14058,8 @@ e->expType = exp->expType;
 e->expType->refCount++;
 }
 ComputeExpression(e);
+if(e->type != 4 && e->type != 11)
+{
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *e;
@@ -14054,6 +14071,7 @@ void * __ecerePtrToDelete = (e);
 __ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), e = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(list), list = 0);
+}
 }
 else
 {
@@ -14395,10 +14413,15 @@ case 10:
 {
 struct Type * type = ProcessType(exp->__anon1.typeName->qualifiers, exp->__anon1.typeName->declarator);
 
+if(type->name && (!(strcasecmp)(type->name, "SCOPE_ID") || !(strcasecmp)(type->name, "IN_PKTINFO_EX")))
+;
+else
+{
 FreeExpContents(exp);
 exp->__anon1.__anon1.constant = PrintUInt(ComputeTypeSize(type));
 exp->type = 2;
 FreeType(type);
+}
 break;
 }
 case 15:
