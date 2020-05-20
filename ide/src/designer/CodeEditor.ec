@@ -1598,7 +1598,7 @@ class CodeEditor : Window
       {
          CodeEditor editor = (CodeEditor) master;
 
-         switch(key)
+         switch((SmartKey)key)
          {
             case enter: case tab:
             {

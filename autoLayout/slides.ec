@@ -34,7 +34,7 @@ class SlideForm : AutoLayoutForm
    bool OnKeyHit(Key key, unichar ch)
    {
       int num = slideNum;
-      switch(key)
+      switch((SmartKey)key)
       {
          case home:     num = 0; break;
          case end:      if(slides.count) num = slides.count-1; break;

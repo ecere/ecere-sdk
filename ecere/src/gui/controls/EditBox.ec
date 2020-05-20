@@ -3258,7 +3258,7 @@ private:
 #ifdef _DEBUG
       //PrintLn("OnKeyHit: code = ", key.code, ", mods = ", key.modifiers, ", ch = ", (int)ch);
 #endif
-      if(!ch && !key.alt && !key.ctrl)
+      if(!ch && !key.alt /*&& !key.ctrl*/)
       {
          key.code = (SmartKey)key.code;
       }
