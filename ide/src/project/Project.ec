@@ -4979,7 +4979,7 @@ static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String co
                   bool inPar = false;
                   for(i = 0; i < count; i++)
                   {
-                     if(strcmpi(tokens[i], "clang"))
+                     if(!strcmpi(tokens[i], "clang"))
                         break;
                      if(tokens[i][0] == '(')
                      {
