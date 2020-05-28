@@ -70,6 +70,7 @@ public:
    property int port { set { port = value; } get { return port; } };
    property Socket firstClient { get { return sockets.first; } };
    property bool processAlone { get { return processAlone; } set { processAlone = value; } };
+   property bool started { get { return s != -1; } }
 
    virtual void OnAccept();
 
@@ -127,9 +128,15 @@ public:
                network.mutex.Release();
                return true;
             }
+            else
+               PrintLn("Service: Start() could not listen on socket!");
          }
+         else
+            PrintLn("Service: Start() could not bind socket!");
          closesocket(s);
       }
+      else
+         PrintLn("Service: Start() could not allocate socket!");
    #endif
       return false;
    }
