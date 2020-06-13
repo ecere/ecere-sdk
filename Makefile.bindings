@@ -44,7 +44,7 @@ PY_VER := 3
 BG_LANG_c := C
 BG_LANG_py := Python $(PY_VER)
 
-get_binding_name = $(basename $(notdir $(1)))
+get_binding_name = $(basename $(patsubst lib%.so,%.so,$(notdir $(1))))
 
 bg_bld_file_c = $(C_BINDINGS_DIR)/$(call get_binding_name,$(1)).Makefile
 bg_bld_file_cxx = $(CXX_BINDINGS_DIR)/$(call get_binding_name,$(1)).Makefile
@@ -53,6 +53,8 @@ bg_bld_file_py = $(PY_BINDINGS_DIR)/build_$(call get_binding_name,$(1)).py
 bg_bld_cmd_c = $(_MAKE) -f $(call get_binding_name,$(1)).Makefile $(2)
 bg_bld_cmd_cxx = $(_MAKE) -f $(call get_binding_name,$(1)).Makefile $(2)
 bg_bld_cmd_py = $(PYTHON) build_$(call get_binding_name,$(1)).py
+
+bg_print_lib_name = $(call echo,$(call renameEcereCOM,$(call get_binding_name,$(word $(1),$(BGEN_LIBS)))))
 
 bg_bind_____echo = $(call bg_bind_echo_,$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS))),$(2))
 bg_bind_echo_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),@$(call echo,Building $(BG_LANG_$(2)) bindings for $(1)...),),)
@@ -68,6 +70,18 @@ bg_bind_cd_build_ = $(if $(1),$(if $(wildcard $(call bg_bld_file_$(2),$(1))),+cd
 bgentalk: bindings_build
 	@$(call echo,  have a great day!)
 	@$(call echo,         -bgen)
+
+.PHONY: list_bindings_name
+list_bindings_name:
+	$(call bg_print_lib_name,1)
+	$(call bg_print_lib_name,2)
+	$(call bg_print_lib_name,3)
+	$(call bg_print_lib_name,4)
+	$(call bg_print_lib_name,5)
+	$(call bg_print_lib_name,6)
+	$(call bg_print_lib_name,7)
+	$(call bg_print_lib_name,8)
+	$(call bg_print_lib_name,9)
 
 .PHONY: bindings
 .NOTPARALLEL: bindings
