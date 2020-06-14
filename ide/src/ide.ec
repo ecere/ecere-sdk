@@ -1830,8 +1830,8 @@ class IDEWorkSpace : Window
    Menu windowMenu { menu, $"Window", w };
       MenuItem { windowMenu, $"Close All", l, NotifySelect = MenuWindowCloseAll };
       MenuDivider { windowMenu };
-      MenuItem { windowMenu, $"Next", n, Key { right, ctrl = true, alt = true }, NotifySelect = MenuWindowNext };
-      MenuItem { windowMenu, $"Previous", p, Key { left, ctrl = true, alt = true }, NotifySelect = MenuWindowPrevious };
+      MenuItem { windowMenu, $"Next", n, Key { right, alt = true }, NotifySelect = MenuWindowNext };
+      MenuItem { windowMenu, $"Previous", p, Key { left, alt = true }, NotifySelect = MenuWindowPrevious };
       MenuDivider { windowMenu };
       MenuItem { windowMenu, $"Cascade", c, NotifySelect = MenuWindowCascade };
       MenuItem { windowMenu, $"Tile Horizontally", h, NotifySelect = MenuWindowTileHorz };
