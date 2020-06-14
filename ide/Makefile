@@ -232,6 +232,7 @@ PRJ_CFLAGS += \
 		 $(FVISIBILITY) \
 		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 		 -DECERE_IDE \
+		 -DGDB_DEBUG_GUI \
 		 -I../extras/include
 
 ECFLAGS += -module $(MODULE)
