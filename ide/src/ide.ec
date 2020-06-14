@@ -474,7 +474,7 @@ class IDEMainFrame : Window
 #if defined(__linux__) // 0 //def _DEBUG
    //stayOnTop = true;
    //size = { 800, 600 };
-   anchor = { left = 0, top = 0, right = 0, bottom = 92 };
+   anchor = { left = 62, top = 0, right = 0, bottom = 100 };
 #else
    state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
