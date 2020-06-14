@@ -40,7 +40,14 @@ class ImportFolderFSI : NormalFileSystemIterator
       if(!abort)
       {
          ProjectNode parentNode = stack.lastIterator.data;
-         if(!projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
+         if(projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
+         {
+            // ide.outputView.buildBox.Logf("%s\n", filePath);
+            // ide.outputView.buildBox.Update(null);
+            // ide.outputView.buildBox.UpdateDisplay();
+            // app.UpdateDisplay();
+         }
+         else
          {
             char * msg = PrintString($"This file can't be imported due to a conflict.\n\n", filePath,
                   "\n\nThis occurs with identical file paths and with conflicting file names.\n");
@@ -2339,6 +2346,9 @@ class ProjectView : Window
          if(fileDialog.Modal() == ok)
          {
             ImportFolderFSI fsi { projectView = this, sorted = true };
+            // ide.outputView.buildBox.Clear();
+            // ide.outputView.ShowClearSelectTab(build);
+            // ide.outputView.buildBox.Logf($"Importing folder %s\n", path);
             fsi.stack.Add(toNode);
             fsi.Iterate(fileDialog.filePath);
             delete fsi;

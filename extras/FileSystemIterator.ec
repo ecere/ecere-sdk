@@ -189,6 +189,7 @@ public class FileSystemIterator
 {
 public:
    bool iterateStartPath;
+   // bool abort;
 
    virtual bool OnInit(const char * startPath)
    {
@@ -244,9 +245,11 @@ public class StackFrame
    FileListing listing;
 private:
    StackFrameState state;
+   // int n;
    int count;
    AVLTree<StatsAndPath> dirPaths;
    AVLTree<StatsAndPath> filePaths;
+   // AVLNode<StatsAndPath> node;
    Iterator<StatsAndPath> it { };
    bool next;
 
