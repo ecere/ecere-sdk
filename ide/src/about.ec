@@ -235,4 +235,13 @@ class AboutIDE : Window
          return true;
       }
    };
+
+   bool OnKeyDown(Key key, unichar ch)
+   {
+      if(key == escape)
+         Destroy(0);
+      else
+         return Window::OnKeyDown(key, ch);
+      return true;
+   }
 }
