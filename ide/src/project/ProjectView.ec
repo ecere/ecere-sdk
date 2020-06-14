@@ -6,18 +6,28 @@ class ImportFolderFSI : NormalFileSystemIterator
 {
    ProjectView projectView;
    Array<ProjectNode> stack { };
+   bool abort;
 
    bool OnFolder(const char * folderPath)
    {
-      char name[MAX_LOCATION];
-      ProjectNode parentNode = stack.lastIterator.data;
-      ProjectNode folder;
-      GetLastDirectory(folderPath, name);
-      folder = parentNode.FindSpecial(name, false, true, true);
-      if(!folder)
-         folder = projectView.NewFolder(parentNode, name, false);
-      stack.Add(folder);
-      return true;
+      if(!abort)
+      {
+         char name[MAX_LOCATION];
+         ProjectNode parentNode = stack.lastIterator.data;
+         ProjectNode folder;
+         app.ProcessInput(true);
+         GetLastDirectory(folderPath, name);
+         folder = parentNode.FindSpecial(name, false, true, true);
+         if(!folder)
+         {
+            folder = projectView.NewFolder(parentNode, name, false);
+            if(stack.count == 1)
+               folder.options = { excludeFromBuild = true };
+         }
+         stack.Add(folder);
+         return true;
+      }
+      return false;
    }
 
    void OutFolder(const char * folderPath, bool isRoot)
@@ -27,13 +37,17 @@ class ImportFolderFSI : NormalFileSystemIterator
 
    bool OnFile(const char * filePath)
    {
-      ProjectNode parentNode = stack.lastIterator.data;
-      if(!projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
+      if(!abort)
       {
-         char * msg = PrintString($"This file can't be imported due to a conflict.\n\n", filePath,
-               "\n\nThis occurs with identical file paths and with conflicting file names.\n");
-         MessageBox { master = ide, type = ok, text = "Import File Conflict", contents = msg }.Modal();
-         delete msg;
+         ProjectNode parentNode = stack.lastIterator.data;
+         if(!projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
+         {
+            char * msg = PrintString($"This file can't be imported due to a conflict.\n\n", filePath,
+                  "\n\nThis occurs with identical file paths and with conflicting file names.\n");
+            if(MessageBox { master = ide, type = okCancel, text = "Import File Conflict", contents = msg }.Modal() == cancel)
+               abort = true;
+            delete msg;
+         }
       }
       return true;
    }
@@ -2324,7 +2338,7 @@ class ProjectView : Window
          fileDialog.filePath = path;
          if(fileDialog.Modal() == ok)
          {
-            ImportFolderFSI fsi { projectView = this };
+            ImportFolderFSI fsi { projectView = this, sorted = true };
             fsi.stack.Add(toNode);
             fsi.Iterate(fileDialog.filePath);
             delete fsi;

@@ -29,6 +29,7 @@ public:
 
    char * extensions;
    property const char * extensions { set { delete extensions; if(value) extensions = CopyString(value); } }
+   bool sorted;
 
    ~NormalFileSystemIterator()
    {
@@ -59,35 +60,126 @@ public:
             OnFile(startPath);
       }
 
-      while(stack.count)
+      if(sorted)
       {
-         if(frame.listing.Find())
+         while(stack.count)
          {
-            bool peek = frame.listing.stats.attribs.isDirectory && OnFolder(frame.listing.path);
-            if(!frame.listing.stats.attribs.isDirectory)
+            bool done = false;
+            switch(frame.state)
             {
-               const char * path = frame.listing.path;
-               OnFile(path);
+               case uninit:
+                  while(frame.listing.Find())
+                  {
+                     if(frame.listing.stats.attribs.isDirectory)
+                     {
+                        if(!frame.dirPaths) frame.dirPaths = { };
+                        frame.dirPaths.Add({ CopyString(frame.listing.path), frame.listing.stats });
+                     }
+                     else
+                     {
+                        if(!frame.filePaths) frame.filePaths = { };
+                        frame.filePaths.Add({ CopyString(frame.listing.path), frame.listing.stats });
+                     }
+                  }
+                  // frame.node = frame.dirPaths ? frame.dirPaths.root.minimum : null;
+                  frame.it.container = (void*)frame.dirPaths;
+                  frame.next = frame.dirPaths ? frame.it.Next() : false;
+                  frame.count = frame.dirPaths ? frame.dirPaths.GetCount() : 0;
+                  frame.state = dirs;
+                  break;
             }
-            else if(peek)
+            switch(frame.state)
             {
-               StackFrame newFrame { };
-               stack.Add(newFrame);
-               newFrame.path = CopyString(frame.listing.path);
-               newFrame.listing = FileListing { newFrame.path, extensions = frame.listing.extensions };
-               frame = newFrame;
+               case dirs:
+                  // if(frame.count && frame.node)
+                  if(frame.next)
+                  {
+                     // const char * path = frame.node.key.path;
+                     const char * path = frame.it.data.path;
+                     bool peek = OnFolder(path);
+                     // frame.node = frame.node.next;
+                     frame.next = frame.it.Next();
+                     if(peek)
+                     {
+                        StackFrame newFrame { };
+                        stack.Add(newFrame);
+                        newFrame.path = CopyString(path);
+                        newFrame.listing = FileListing { newFrame.path, extensions = frame.listing.extensions };
+                        frame = newFrame;
+                     }
+                     done = true;
+                  }
+                  else
+                  {
+                     // frame.node = frame.filePaths ? frame.filePaths.root.minimum : null;
+                     frame.it.container = (void*)frame.filePaths;
+                     frame.next = frame.filePaths ? frame.it.Next() : false;
+                     frame.count = frame.filePaths ? frame.filePaths.GetCount() : 0;
+                     frame.state = files;
+                  }
+                  break;
+            }
+            if(done) continue;
+            switch(frame.state)
+            {
+               case files:
+                  // if(frame.count && frame.node)
+                  if(frame.next)
+                  {
+                     // const char * path = frame.node.key.path;
+                     const char * path = frame.it.data.path;
+                     OnFile(path);
+                     // frame.node = frame.node.next;
+                     frame.next = frame.it.Next();
+                     done = true;
+                  }
+                  break;
+            }
+            if(!done)
+            {
+               StackFrame parentFrame = stack.count > 1 ? stack[stack.count - 2] : null;
+               OutFolder(parentFrame ? parentFrame.listing.path : startPath, !parentFrame);
+               stack.lastIterator.Remove();
+               delete frame;
+               if(stack.count)
+                  frame = stack.lastIterator.data;
+               else
+                  frame = null;
             }
          }
-         else
+      }
+      else
+      {
+         while(stack.count)
          {
-            StackFrame parentFrame = stack.count > 1 ? stack[stack.count - 2] : null;
-            OutFolder(parentFrame ? parentFrame.listing.path : startPath, !parentFrame);
-            stack.lastIterator.Remove();
-            delete frame;
-            if(stack.count)
-               frame = stack.lastIterator.data;
+            if(frame.listing.Find())
+            {
+               bool peek = frame.listing.stats.attribs.isDirectory && OnFolder(frame.listing.path);
+               if(!frame.listing.stats.attribs.isDirectory)
+               {
+                  const char * path = frame.listing.path;
+                  OnFile(path);
+               }
+               else if(peek)
+               {
+                  StackFrame newFrame { };
+                  stack.Add(newFrame);
+                  newFrame.path = CopyString(frame.listing.path);
+                  newFrame.listing = FileListing { newFrame.path, extensions = frame.listing.extensions };
+                  frame = newFrame;
+               }
+            }
             else
-               frame = null;
+            {
+               StackFrame parentFrame = stack.count > 1 ? stack[stack.count - 2] : null;
+               OutFolder(parentFrame ? parentFrame.listing.path : startPath, !parentFrame);
+               stack.lastIterator.Remove();
+               delete frame;
+               if(stack.count)
+                  frame = stack.lastIterator.data;
+               else
+                  frame = null;
+            }
          }
       }
    }
@@ -131,15 +223,38 @@ static class IteratorThread : Thread
    }
 }
 */
+
+enum StackFrameState { uninit, dirs, files };
+
+struct StatsAndPath
+{
+   const char * path;
+   FileStats stats;
+
+   int OnCompare(StatsAndPath b)
+   {
+      return strcmp(path, b.path);
+   }
+};
+
 public class StackFrame
 {
    int tag;
    char * path;
    FileListing listing;
+private:
+   StackFrameState state;
+   int count;
+   AVLTree<StatsAndPath> dirPaths;
+   AVLTree<StatsAndPath> filePaths;
+   Iterator<StatsAndPath> it { };
+   bool next;
 
    ~StackFrame()
    {
       delete path;
       //delete listing;
+      delete dirPaths;
+      delete filePaths;
    }
 };
