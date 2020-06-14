@@ -1484,75 +1484,78 @@ class RecentPaths : Array<String>
 
    void updateRecentMenu(Window master, bool(recentNotifySelect)(Window this, MenuItem selection, Modifiers mods), Menu recentMenu)
    {
-      int c = 0;
-      int addedExistCount = 0;
-      int addedMissingCount = 0;
-      int existMoreCount = 0;
-      int missingMoreCount = 0;
-      char * itemPath = new char[MAX_LOCATION];
-      char * itemName = new char[MAX_LOCATION + 4];
-      Menu missingMenu = null;
-      Menu addToExist = recentMenu;
-      Menu addToMissing = null;
       recentMenu.Clear();
-      for(recent : this)
+      if(this)
       {
-         bool key = false;
-         bool exists = false;
-         strncpy(itemPath, recent, MAX_LOCATION);
-         itemPath[MAX_LOCATION - 1] = '\0';
-         MakeSystemPath(itemPath);
-         exists = FileExists(itemPath).isFile;
-         key = exists && addedExistCount < NumKeyRecent;
-         if(key)
-            snprintf(itemName, MAX_LOCATION + 4, "%d %s", 1 + addedExistCount, itemPath);
-         else
-            snprintf(itemName, MAX_LOCATION + 4, "%s", itemPath);
-         itemName[MAX_LOCATION + 4 - 1] = '\0';
+         int c = 0;
+         int addedExistCount = 0;
+         int addedMissingCount = 0;
+         int existMoreCount = 0;
+         int missingMoreCount = 0;
+         char * itemPath = new char[MAX_LOCATION];
+         char * itemName = new char[MAX_LOCATION + 4];
+         Menu missingMenu = null;
+         Menu addToExist = recentMenu;
+         Menu addToMissing = null;
+         for(recent : this)
          {
-            MenuItem item { copyText = true/*, deletable = true*/, text = itemName, id = c, NotifySelect = recentNotifySelect };
+            bool key = false;
+            bool exists = false;
+            strncpy(itemPath, recent, MAX_LOCATION);
+            itemPath[MAX_LOCATION - 1] = '\0';
+            MakeSystemPath(itemPath);
+            exists = FileExists(itemPath).isFile;
+            key = exists && addedExistCount < NumKeyRecent;
             if(key)
-               item.hotKey = (Key)k1 + addedExistCount;
-            if(exists)
-            {
-               if(addedExistCount == NumKeyRecent)
-                  addToExist.AddDynamic(MenuDivider { }, master, true);
-               else if(addedExistCount - NumKeyRecent - MaxMoreRecent >= existMoreCount && this.count - 2 > c)
-               {
-                  addToExist.AddDynamic(MenuDivider { }, master, true);
-                  {
-                     Menu moreMenu { addToExist, $"More", m };
-                     addToExist = moreMenu;
-                  }
-                  existMoreCount += MaxMoreRecent;
-               }
-               addToExist.AddDynamic(item, master, true);
-               addedExistCount++;
-            }
+               snprintf(itemName, MAX_LOCATION + 4, "%d %s", 1 + addedExistCount, itemPath);
             else
+               snprintf(itemName, MAX_LOCATION + 4, "%s", itemPath);
+            itemName[MAX_LOCATION + 4 - 1] = '\0';
             {
-               if(!missingMenu)
-                  addToMissing = missingMenu = { null, $"Missing", n };
-               if(addedMissingCount - MaxMoreRecent >= missingMoreCount)
+               MenuItem item { copyText = true/*, deletable = true*/, text = itemName, id = c, NotifySelect = recentNotifySelect };
+               if(key)
+                  item.hotKey = (Key)k1 + addedExistCount;
+               if(exists)
                {
-                  addToMissing.AddDynamic(MenuDivider { }, master, true);
+                  if(addedExistCount == NumKeyRecent)
+                     addToExist.AddDynamic(MenuDivider { }, master, true);
+                  else if(addedExistCount - NumKeyRecent - MaxMoreRecent >= existMoreCount && this.count - 2 > c)
                   {
-                     Menu moreMenu { addToMissing, $"More", m };
-                     addToMissing = moreMenu;
+                     addToExist.AddDynamic(MenuDivider { }, master, true);
+                     {
+                        Menu moreMenu { addToExist, $"More", m };
+                        addToExist = moreMenu;
+                     }
+                     existMoreCount += MaxMoreRecent;
                   }
-                  missingMoreCount += MaxMoreRecent;
+                  addToExist.AddDynamic(item, master, true);
+                  addedExistCount++;
                }
-               addToMissing.AddDynamic(item, master, true);
-               addedMissingCount++;
+               else
+               {
+                  if(!missingMenu)
+                     addToMissing = missingMenu = { null, $"Missing", n };
+                  if(addedMissingCount - MaxMoreRecent >= missingMoreCount)
+                  {
+                     addToMissing.AddDynamic(MenuDivider { }, master, true);
+                     {
+                        Menu moreMenu { addToMissing, $"More", m };
+                        addToMissing = moreMenu;
+                     }
+                     missingMoreCount += MaxMoreRecent;
+                  }
+                  addToMissing.AddDynamic(item, master, true);
+                  addedMissingCount++;
+               }
             }
+            c++;
          }
-         c++;
+         if(missingMenu && addedExistCount)
+            recentMenu.AddDynamic(MenuDivider { }, master, true);
+         missingMenu.parent = recentMenu;
+         delete itemPath;
+         delete itemName;
       }
-      if(missingMenu && addedExistCount)
-         recentMenu.AddDynamic(MenuDivider { }, master, true);
-      missingMenu.parent = recentMenu;
-      delete itemPath;
-      delete itemName;
    }
 }
 
