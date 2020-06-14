@@ -2481,6 +2481,7 @@ private:
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != __runtimePlatform);
       const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
+      int numJobs = ide.toolBar.forceSingleJob.checked == true ? 1 : compiler.numJobs;
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -2516,14 +2517,14 @@ private:
       {
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s V=1 CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -f \"%s\"",
+         sprintf(command, "%s V=1 CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s %sclean%s -C \"%s\"%s%s -j%d -f \"%s\"",
                compiler.makeCommand, cfDir,
                crossCompiling ? " TARGET_PLATFORM=" : "", targetPlatform,
                bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                workspaceEnvironmentVars,
                compilerName,
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
-               topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n": "", makeFilePath);
+               topNode.path, outputMode == verbose ? " V=1" : "", outputMode == justPrint ? " -n": "", numJobs, makeFilePath);
          if(outputMode != normal)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
