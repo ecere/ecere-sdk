@@ -567,13 +567,13 @@ class IDEWorkSpace : Window
       outputView.debugBox.font  = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
       outputView.findBox.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
    #ifdef GDB_DEBUG_OUTPUT
-      outputView.gdbBox.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+      outputView.gdbBox.font    = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
    #endif
 #ifdef GDB_DEBUG_GUI
       if(gdbDialog)
       {
-         gdbDialog.tree.font   = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
-         gdbDialog.output.font = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+         gdbDialog.tree.font    = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
+         gdbDialog.output.font  = { panelFont.faceName, panelFont.size, panelFont.bold, panelFont.italic };
       }
 #endif
    }
