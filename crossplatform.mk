@@ -3,6 +3,10 @@ $(info Using config.mk configuration file.)
 include config.mk
 endif
 
+ifndef VERBOSE
+MAKEFLAGS += --no-print-directory
+endif
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
