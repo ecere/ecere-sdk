@@ -3,6 +3,10 @@ $(info Using config.mk configuration file.)
 include config.mk
 endif
 
+ifndef VERBOSE
+MAKEFLAGS += --no-print-directory
+endif
+
 NOT_PARALLEL_TARGETS += realclean wipeclean distclean install
 
 # HOST PLATFORM DETECTION
