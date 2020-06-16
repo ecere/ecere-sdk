@@ -500,9 +500,57 @@ class IDEMainFrame : Window
       }
    };
    IDEWorkSpace ideWorkSpace { stack, this, toolBar = toolBar };
+
+   bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+   {
+      if(direct)
+      {
+         ide.on = !active;
+         ide.Update(null);
+      }
+      return true;
+   }
 }
 
 define ide = ideMainFrame.ideWorkSpace;
+
+define bigFontSize = 256;
+define sameDirString = "•";
+
+void strsqshchrs(char * string, const char * chars)
+{
+   char * s = string;
+   char * d = string;
+   while(*s)
+   {
+      bool found = strchr(chars, *s) != null;
+      if(!found)
+      {
+         if(d != s)
+            *d = *s;
+         d++;
+      }
+      s++;
+   }
+   if(d != s)
+      *d = '\0';
+}
+
+void strrplchrs(char * string, const char * chars, const char replace)
+{
+   char * s = string;
+   char * d = string;
+   while(*s)
+   {
+      bool found = strchr(chars, *s) != null;
+      if(d != s || found)
+         *d = found ? replace : *s;
+      d++;
+      s++;
+   }
+   if(d != s)
+      *d = '\0';
+}
 
 class IDEWorkSpace : Window
 {
@@ -515,6 +563,9 @@ class IDEWorkSpace : Window
    isActiveClient = true;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    menu = Menu {  };
+
+   FontResource bigFont { $"Inconsolata Condensed", bigFontSize, window = this }; // font = { $"Courier New", 64 };
+
    IDEToolbar toolBar;
 
    MenuItem * driverItems, * skinItems, * languageItems;
@@ -3270,6 +3321,69 @@ class IDEWorkSpace : Window
       Bitmap bitmap = back.bitmap;
       if(bitmap)
          surface.Blit(bitmap, (clientSize.w - bitmap.width) / 2, (clientSize.h - bitmap.height) / 2, 0, 0, bitmap.width, bitmap.height);
+   }
+
+   bool on;
+   void OnDrawOverChildren(Surface surface)
+   {
+      if(ide.project && on)
+      {
+         char * path = CopyString(ide.projectView.fileName);
+         int len = strlen(path);
+         char * location = new char[len];
+         char * directory = new char[len];
+         char * file = new char[len];
+         GetLastDirectory(path, file);
+         StripLastDirectory(path, location);
+         GetLastDirectory(location, directory);
+         StripLastDirectory(location, location);
+         {
+            bool sd = strstr(location, "/a/sd/d/") == location;
+            bool th = strstr(location, "/a/th/d/") == location;
+            char * loc = (sd || th) ? PrintString(sd ? "sd" : "th", location + 7) : CopyString(location);
+            delete location;
+            location = loc;
+            ChangeCh(location, '/', ' ');
+            strsqshchrs(file, "~!@#$%^&*()-=<>_+{}[]\\/|'\"?");
+            strsqshchrs(directory, "~!@#$%^&*()-=<>_+{}[]\\/|'\"?");
+            strsqshchrs(location, "~!@#$%^&*()-=<>_+{}[]\\/|'\"?");
+            ChangeCh(file, '.', ' ');
+         }
+         surface.background = Color { 33, 33, 44 };
+         surface.foreground = white;
+         surface.TextFont(ide.bigFont.font);
+
+         {
+            int wf = 0;
+            int hf = 0;
+            int wd = 0;
+            int hd = 0;
+            int wl = 0;
+            int hl = 0;
+            int lf = strlen(file);
+            int ld = strlen(directory);
+            int ll = strlen(location);
+            bool same = !strncmp(file, directory, ld);
+            if(same) ld = strlen(sameDirString);
+
+            display.FontExtent(surface.font, file, lf, &wf, &hf);
+            display.FontExtent(surface.font, same ? sameDirString : directory, ld, &wd, &hd);
+            display.FontExtent(surface.font, location, ll, &wl, &hl);
+
+            surface.Area(clientSize.w - 32, 0, clientSize.w, clientSize.h);
+            surface.Area(clientSize.w - wf, 0, clientSize.w, hf);
+            surface.Area(clientSize.w - wd, (clientSize.h - hd) / 2, clientSize.w, (clientSize.h - hd) / 2 + hd);
+            surface.Area(clientSize.w - wl, clientSize.h - hl, clientSize.w, clientSize.h);
+
+            surface.WriteText(clientSize.w - wf, 0, file, lf);
+            surface.WriteText(clientSize.w - wd, (clientSize.h - hd) / 2, same ? sameDirString : directory, ld);
+            surface.WriteText(clientSize.w - wl, clientSize.h - hl, location, ll);
+         }
+         delete path;
+         delete location;
+         delete directory;
+         delete file;
+      }
    }
 
    void SheetSelected(SheetType sheetSelected)
