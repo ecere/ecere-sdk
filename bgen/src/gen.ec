@@ -686,7 +686,6 @@ private:
             if(g.lang == CPlusPlus && !strcmp(g.lib.name, "ecere"))
             {
                // PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
-               // if(!strcmp(vDep.name, "Surface") && !strcmp(name, "Window")) debugBreakpoint();
                Print("");
             }
             if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
