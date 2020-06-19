@@ -7,14 +7,9 @@ import "cppHardcoded"
 
 static AVLTree<consttstr> skipClasses
 { [
-   { "eC", "CIString" },                  // Errors with bases String class
    { "eC", "Window" },                    // Dependency on Window
    { "eC", "ClassDesignerBase" },         // Dependency on Window
    { "eC", "DesignerBase" },              // Dependency on Window
-   { "EDA", "FieldTypeEx" },              // Derrived from enum; todo
-// { "gnosis3", "GraphicalStyleMask" },   // some Constructor issue
-// { "gnosis3", "ShapeStyleMask" },       // see GraphicalStyleMask
-// { "gnosis3", "GeoSymbolizerMask" },    // see GraphicalStyleMask
 
    { null, null }
 ] };
@@ -532,7 +527,7 @@ bool templateClassThings(CPPGen g, File f)
    {
       if(c.cl.type == normalClass && c.cl.templateArgs && !c.cl.templateClass)
       {
-         f.PrintLn(genloc__, "template<class TPT> TCPPClass<", cpptemplatePrefix, c.cl.name, "<TPT>> ", cpptemplatePrefix, c.cl.name, "<TPT>::_class;");
+         f.PrintLn(genloc__, "template<class TPT> TCPPClass<", cpptemplatePrefix, c.cl.name, "<TPT>> ", cpptemplatePrefix, c.cl.name, "<TPT>::_cpp_class;");
          if(!contents)
             contents = true;
       }
@@ -569,14 +564,14 @@ static void generateCPP(CPPGen g, File f)
          if(!skip && !template && c.cl.type == normalClass && !c.cl.templateArgs)
          {
             firstClass = c.cl;
-            f.PrintLn(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_class;");
+            f.PrintLn(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_cpp_class;");
          }
       }
    }
    f.PrintLn(       "");
    f.PrintLn(genloc__, "int ", g.lib.bindingName /*name*/, "_cpp_init(const Module & module)"); // todo? back to void returning?
    f.PrintLn(genloc__, "{");
-   f.PrintLn(genloc__, "   if(!", firstClass.name, "::_class.impl)");
+   f.PrintLn(genloc__, "   if(!", firstClass.name, "::_cpp_class.impl)");
    f.PrintLn(genloc__, "   {");
    f.PrintLn(genloc__, "#ifdef _DEBUG");
    f.PrintLn(genloc__, "      printf(\"%s_cpp_init\\n\", \"", g.lib.bindingName, "\");");
@@ -604,7 +599,7 @@ static void generateCPP(CPPGen g, File f)
    {
       f.PrintLn("");
       f.PrintLn(genloc__, "// Instance methods depending on libecere");
-      f.Print(genloc__, "void Instance::class_registration(CPPClass & _class)\n");
+      f.Print(genloc__, "void Instance::class_registration(CPPClass & _cpp_class)\n");
       // TONOMACRO
       if(g.options.expandMacros)
       {
@@ -617,7 +612,7 @@ static void generateCPP(CPPGen g, File f)
       }
       else
          f.PrintLn(genloc__, "{ Instance_class_registration(Instance); }");
-      //f.PrintLn("void FontResource::class_registration(CPPClass & _class) { Instance_class_registration(FontResource); }");
+      //f.PrintLn("void FontResource::class_registration(CPPClass & _cpp_class) { Instance_class_registration(FontResource); }");
    }
 
    f.PrintLn(ln);
@@ -650,7 +645,7 @@ static AVLTree<consttstr> brokenRegs { [
 
 static AVLTree<consttstr> brokenMethods { [
    // error: 'o_' was not declared in this scope
-   { "Timer", "DelayExpired" }, // virtual bool any_object::DelayExpired(void);
+   // { "Timer", "DelayExpired" }, // virtual bool any_object::DelayExpired(void);
    /*
 // C(bool) Timer_delayExpired(C(Timer) __i, any_object __t);
 #define Timer_delayExpired(__i, __t) \
@@ -714,29 +709,7 @@ static AVLTree<const String> brokenOrderedPublicMembersInitializersTypes { [
 */
 
 static AVLTree<consttstr> brokenMembers { [
-   // error: ‘Button::symbolProp::operator uint32_t() const’ cannot be overloaded with ‘Button::symbolProp::operator unichar() const’
-   /*
-                  inline operator unichar () const;
-                  inline operator uint32_t () const;
-   */
-   { "Button", "symbol" },
-   // error: cannot convert ‘GlobalSettingsData*’ to ‘class_members_Instance**’ in assignment
-   // { "Bitmap", "bitmaps" },
-   // { "GlobalSettings", "dataOwner" },
-   // { "ToolButton", "menuItemPtr" },
-   // from ‘eC_Class*’ to ‘Skin’ -- bad subclass support?
-   { "GuiApplication", "currentSkin" },
-   //
-   { "BTNode", "depth" }, // broken when using macros
-
-   // eda
-   { "FieldValue", "type" },
-
-   // gis
-   { "CMSSInstantiation", "_class" }, // collides with core cpp bindings class member?
-
-   { "C", "M" },
-
+   // { "C", "M" },
    { null, null }
 ] };
 
@@ -881,7 +854,7 @@ static void processCppClass(CPPGen g, BClass c)
                   */
                }
             }
-            else if((cBase && cBase.cl.type != systemClass && !cBase.isBool) || c.cl.type == noHeadClass)
+            else if(((cBase && cBase.cl.type != systemClass && !cBase.isBool) || c.cl.type == noHeadClass) && !(c.cl.type == bitClass && cBase.cl.type == enumClass))
             {
                o.z.concatx(" : public ", baseClassString);
                if(c.cl.type == noHeadClass)
@@ -1052,7 +1025,7 @@ static void processCppClass(CPPGen g, BClass c)
                      //   o.z.concatx(genloc__, "      ecere_cpp_init(*this);", ln);
                      o.z.concatx(genloc__, "      INSTANCEL(impl, impl->_class) = this;", ln);
                      o.z.concatx(genloc__, "      mustFree = true;", ln);
-                     o.z.concatx(genloc__, "      vTbl = _class.vTbl;", ln);
+                     o.z.concatx(genloc__, "      vTbl = _cpp_class.vTbl;", ln);
                      o.z.concatx(genloc__, "      __thisModule = impl;", ln);
                      o.z.concatx(genloc__, "   }", ln);
                      o.z.concatx(genloc__, "   ~Application()", ln);
@@ -2002,7 +1975,7 @@ static void commonMemberHandling(
    ClassType ct = cppGetClassInfoFromType(ti.type, true, null, &cType, null, &isString, null);
    String tz = null;
    String tnp2 = null;
-   bool bareStyle = (ct == normalClass && !isString) || ct == structClass || ct == unitClass || ct == noHeadClass;
+   bool bareStyle = (ct == normalClass && !isString) || ct == structClass || (ct == unitClass && !cType.isUnichar) || ct == noHeadClass;
    String tn = cppTypeName(ti, bareStyle, &tz, &tnp2);
    PropertyComponent component;
    Array<PropertyComponent> components { };
@@ -2156,14 +2129,14 @@ static void commonMemberHandling(
             if(addAmp)
                gd.concatx(tn, " value;", cn, "_get_", mn, "(self->impl", ", &value","); ","return value;");
             else if(addImpl)
-               gd.concatx(tn, " value(", cn, "_get_", mn, "(self->impl), ", cn, "::_class); ", "return value;");
+               gd.concatx(tn, " value(", cn, "_get_", mn, "(self->impl), ", cn, "::_cpp_class); ", "return value;");
             else
                gd.concatx("return ", cn, "_get_", mn, "(self->impl);");
          }
          else if(different)
          {
             if(addImpl)
-               gd.concatx("self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_class); ", "return value;", " : ", tz, ";");
+               gd.concatx("self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_cpp_class); ", "return value;", " : ", tz, ";");
             else
                gd.concatx("return self ? IPTR(self->impl, ", cn, ")->", mn, " : ", tz, ";");
          }
@@ -2178,7 +2151,7 @@ static void commonMemberHandling(
          {
             sd.concatx("IPTR(self->impl, ", cn, ")->", mn, " = v", addImpl ? ".impl" : "", ";");
             if(addImpl)
-               gd.concatx(tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_class); ", "return value;");
+               gd.concatx(tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_cpp_class); ", "return value;");
             else
                gd.concatx("return self ? IPTR(self->impl, ", cn, ")->", mn, " : ", tz, ";");
          }
@@ -2277,7 +2250,7 @@ static void commonMemberHandling(
                         PrintString(lc, ln, genloc__, indents(ind), "return value;") ] };
                else if(addImpl)
                   component.code = { [
-                        PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value(", cn, "_get_", mn, "(", c.cl.type == structClass ? "&" : "", "self->impl)", nc ? "" : ", ", nc ? "" : c.cl.type == noHeadClass ? cpptemplatePrefix : "", nc ? "" : cn, nc ? "" : "::_class", ");"),
+                        PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value(", cn, "_get_", mn, "(", c.cl.type == structClass ? "&" : "", "self->impl)", nc ? "" : ", ", nc ? "" : c.cl.type == noHeadClass ? cpptemplatePrefix : "", nc ? "" : cn, nc ? "" : "::_cpp_class", ");"),
                         PrintString(lc, ln, genloc__, indents(ind), "return value;") ] };
                else
                   component.code = { [
@@ -2288,12 +2261,12 @@ static void commonMemberHandling(
             {
                if(addImpl)
                   component.code = { [
-                        PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value(IPTR(self->impl, ", cn, ")->", mn, nc ? "" : ", ", nc ? "" : cn, nc ? "" : "::_class", ");"),
-                  // Container value(((C(Iterator))self->impl).container, Iterator::_class); return value;
+                        PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value(IPTR(self->impl, ", cn, ")->", mn, nc ? "" : ", ", nc ? "" : cn, nc ? "" : "::_cpp_class", ");"),
+                  // Container value(((C(Iterator))self->impl).container, Iterator::_cpp_class); return value;
                   //  TIH<Container> value((C(Iterator))self->impl).container); return value;
                   // component.code = { [
-                  //       PrintString("TIH<", tn, tnp2 ? tnp2 : "", "> value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_class);"),
-          //  gd.concatx("self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_class);", "return value;", " : ", tz, ";");
+                  //       PrintString("TIH<", tn, tnp2 ? tnp2 : "", "> value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_cpp_class);"),
+          //  gd.concatx("self ? ", tn, " value(IPTR(self->impl, ", cn, ")->", mn, ", ", cn, "::_cpp_class);", "return value;", " : ", tz, ";");
           // note: this is apparently missing a self check for when different == true ... but that seems broken...  ? : syntax spanning
           //       two lines of code...
                         PrintString(lc, ln, genloc__, indents(ind), "return value;") ] };
@@ -2311,8 +2284,8 @@ static void commonMemberHandling(
             {
                if(addImpl)
                   // component.code = { [
-                  //       PrintString(tn, tnp2 ? tnp2 : "", " value(((", c.symbolName, " *)self->impl)->", mn, ", ", cn, "::_class);"),
-                  // Container value(((C(Iterator))self->impl).container, Iterator::_class); return value;
+                  //       PrintString(tn, tnp2 ? tnp2 : "", " value(((", c.symbolName, " *)self->impl)->", mn, ", ", cn, "::_cpp_class);"),
+                  // Container value(((C(Iterator))self->impl).container, Iterator::_cpp_class); return value;
                   //  TIH<Container> value((C(Iterator))self->impl).container); return value;
                   component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), valDecl, " value(((", c.symbolName, " *)self->impl)->", mn, ");"),
@@ -2330,8 +2303,8 @@ static void commonMemberHandling(
             {
                if(addImpl)
                   // component.code = { [
-                  //       PrintString(tn, tnp2 ? tnp2 : "", " value(((", c.symbolName, ")self->impl).", mn, ", ", cn, "::_class);"),
-                  // Container value(((C(Iterator))self->impl).container, Iterator::_class); return value;
+                  //       PrintString(tn, tnp2 ? tnp2 : "", " value(((", c.symbolName, ")self->impl).", mn, ", ", cn, "::_cpp_class);"),
+                  // Container value(((C(Iterator))self->impl).container, Iterator::_cpp_class); return value;
                   //  TIH<Container> value((C(Iterator))self->impl).container); return value;
                   component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), valDecl, " value(((", c.symbolName, " *)&self->impl)->", mn, ");"),
@@ -2349,7 +2322,7 @@ static void commonMemberHandling(
          }
          delete valDecl;
          components.Add(component);
-         if(ct == unitClass)
+         if(ct == unitClass && !cType.isUnichar)
          {
             component = { macroPropGet, mn, CopyString(cType.spec), null/*, commented = true*/ };
             if(!prototype)
@@ -3435,7 +3408,7 @@ static void cppMacroRegisterClassDef(
          o.concatx(genloc__, indents(ind), "#define REGISTER_CLASS_DEF(", n, ", ", b, ", ", a, ") ");
          ind++;
       case expansion:
-            o.concatx(indents(ind), "TCPPClass<", n, "> ", n, "::_class(_REGISTER_CLASS(", n, ",     #n, ", b, "::_class.impl->name, ", a, "));", ln);
+            o.concatx(indents(ind), "TCPPClass<", n, "> ", n, "::_cpp_class(_REGISTER_CLASS(", n, ",     #n, ", b, "::_cpp_class.impl->name, ", a, "));", ln);
          break;
       case use:
       case encapsulation:
@@ -3472,7 +3445,7 @@ static void cppMacroClassDef(
          o.concatx(genloc__, indents(ind), "#define CLASS_DEF(", n, ")                ");
          ind++;
       case expansion:
-            o.concatx(indents(ind), "TCPPClass<", n, "> ", n, "::_class;", ln);
+            o.concatx(indents(ind), "TCPPClass<", n, "> ", n, "::_cpp_class;", ln);
          break;
       case use:
       case encapsulation:
@@ -3510,7 +3483,7 @@ static void cppMacroRegisterClass(
          o.concatx(genloc__, indents(ind), "#define REGISTER_CLASS(", n, ", ", b, ", ", a, ")     ");
          ind++;
       case expansion:
-            o.concatx(indents(ind), n, "::_class.setup(_REGISTER_CLASS(", n, ",       #n, ", b, "::_class.impl->name, ", a, "));", ln);
+            o.concatx(indents(ind), n, "::_cpp_class.setup(_REGISTER_CLASS(", n, ",       #n, ", b, "::_cpp_class.impl->name, ", a, "));", ln);
          break;
       case use:
       case encapsulation:
@@ -3563,13 +3536,13 @@ static void cppMacroRegisterClassCPP(
          o.concatx(genloc__, indents(ind), "// For C++ classes proxying eC classes:", ln);
          o.concatx(genloc__, indents(ind), "#define REGISTER_CPP_CLASS(", n, ", ", a, ")    ");
          ind++;
-            o.concatx(indents(ind), n, "::_class.setup(_REGISTER_CLASS(", n, ", \"CPP\" #n, #n, ", a, "));", ln);
+            o.concatx(indents(ind), n, "::_cpp_class.setup(_REGISTER_CLASS(", n, ", \"CPP\" #n, #n, ", a, "));", ln);
          break;
       case expansion:
          {
             String bs = PrintString("\"", n, "\"");
             String ns = PrintString("\"CPP\" ", bs);
-            o.concatx(genloc__, indents(ind), n, "::_class.setup(", ln);
+            o.concatx(genloc__, indents(ind), n, "::_cpp_class.setup(", ln);
             // "_REGISTER_CLASS(", n, ", \"CPP\" #n, #n, ", a, ")"
             cppMacroIntRegisterClass(g, o, smod, ind + 2, n, ns, bs, a, 0);
             delete ns;
@@ -3621,12 +3594,12 @@ static void cppMacroIntConstructClass(
             // if(smod != definition) o.concatx(ln);
             cppMacroClassVirtualMethods(g, o, smod == definition ? encapsulation : configuration, true, template, ind, "INSTANCE", c, g.cInstance, g.cclass, g.cInstance, 0);
             // todo: spread the lines here
-            o.concatx(genloc__, indents(ind), "static TCPPClass<", c, "> _class;", lc, ln);
+            o.concatx(genloc__, indents(ind), "static TCPPClass<", c, "> _cpp_class;", lc, ln);
             o.concatx(genloc__, indents(ind), "static C(bool) constructor(C(Instance) i, C(bool) alloc)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
-            o.concatx(genloc__, indents(ind), "   if(alloc && !INSTANCEL(i, _class.impl))", lc, ln);
+            o.concatx(genloc__, indents(ind), "   if(alloc && !INSTANCEL(i, _cpp_class.impl))", lc, ln);
             o.concatx(genloc__, indents(ind), "   {", lc, ln);
-            o.concatx(genloc__, indents(ind), "      ", c, " * inst = new ", c, "(i, _class);", lc, ln);
+            o.concatx(genloc__, indents(ind), "      ", c, " * inst = new ", c, "(i, _cpp_class);", lc, ln);
             o.concatx(genloc__, indents(ind), "      if(inst)", lc, ln);
             o.concatx(genloc__, indents(ind), "      {", lc, ln);
             o.concatx(genloc__, indents(ind), "         /* printf(\"Must free!\\n\");*/", lc, ln);
@@ -3638,14 +3611,14 @@ static void cppMacroIntConstructClass(
             o.concatx(genloc__, indents(ind), "}", lc, ln);
             o.concatx(genloc__, indents(ind), "static void destructor(C(Instance) i)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
-            o.concatx(genloc__, indents(ind), "   ", c, " * inst = (", c, " *)INSTANCEL(i, _class.impl);", lc, ln);
+            o.concatx(genloc__, indents(ind), "   ", c, " * inst = (", c, " *)INSTANCEL(i, _cpp_class.impl);", lc, ln);
             o.concatx(genloc__, indents(ind), "   if(inst)", lc, ln);
             o.concatx(genloc__, indents(ind), "   {", lc, ln);
-            o.concatx(genloc__, indents(ind), "      if(_class.destructor) ((void (*)(", c, " & self))_class.destructor)(*inst);", lc, ln);
+            o.concatx(genloc__, indents(ind), "      if(_cpp_class.destructor) ((void (*)(", c, " & self))_cpp_class.destructor)(*inst);", lc, ln);
             o.concatx(genloc__, indents(ind), "      if(inst->mustFree) delete inst;", lc, ln);
             o.concatx(genloc__, indents(ind), "   }", lc, ln);
             o.concatx(genloc__, indents(ind), "}", lc, ln);
-            o.concatx(genloc__, indents(ind), "explicit inline ", c, "(", g_.sym.instance, " _impl, CPPClass & cl = _class) : ", b, "(_impl, cl)"/*, lt*/);
+            o.concatx(genloc__, indents(ind), "explicit inline ", c, "(", g_.sym.instance, " _impl, CPPClass & cl = _cpp_class) : ", b, "(_impl, cl)"/*, lt*/);
             if(smod != expansion) o.concatx(ln);
          break;
       case use:
@@ -3755,14 +3728,14 @@ static void cppMacroConstructClass(
             // todo: expansion
             cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, ind, /*c*/cx, 0);
             o.concatx(lc, ln);
-            o.concatx(genloc__, indents(ind), cx, "() : T", sc, c, "((C(Instance))Instance_newEx(ensureTemplatized ", t, "(_class, ", sso, c, ssc, ").impl, false), ensureTemplatized ", t, "(_class, ", sso, c, ssc, ")) { }", lc, ln);
+            o.concatx(genloc__, indents(ind), cx, "() : T", sc, c, "((C(Instance))Instance_newEx(ensureTemplatized ", t, "(_cpp_class, ", sso, c, ssc, ").impl, false), ensureTemplatized ", t, "(_cpp_class, ", sso, c, ssc, ")) { }", lc, ln);
             o.concatx(genloc__, indents(ind), "INSTANCE_VIRTUAL_METHODS_PROTO(T", sc, c, ")", lc, ln);
-            o.concatx(genloc__, indents(ind), "static TCPPClass<T", sc, c, "> _class;", lc, ln);
+            o.concatx(genloc__, indents(ind), "static TCPPClass<T", sc, c, "> _cpp_class;", lc, ln);
             o.concatx(genloc__, indents(ind), "static C(bool) constructor(C(Instance) i, C(bool) alloc)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
-            o.concatx(genloc__, indents(ind), "   if(alloc && !INSTANCEL(i, _class.impl))", lc, ln);
+            o.concatx(genloc__, indents(ind), "   if(alloc && !INSTANCEL(i, _cpp_class.impl))", lc, ln);
             o.concatx(genloc__, indents(ind), "   {", lc, ln);
-            o.concatx(genloc__, indents(ind), "      ", cx, " * inst = new ", cx, "(i, _class);", lc, ln);
+            o.concatx(genloc__, indents(ind), "      ", cx, " * inst = new ", cx, "(i, _cpp_class);", lc, ln);
             o.concatx(genloc__, indents(ind), "      if(inst)", lc, ln);
             o.concatx(genloc__, indents(ind), "      {", lc, ln);
             o.concatx(genloc__, indents(ind), "         /*printf(\"Must free!\\n\");*/", lc, ln);
@@ -3774,14 +3747,14 @@ static void cppMacroConstructClass(
             o.concatx(genloc__, indents(ind), "}", lc, ln);
             o.concatx(genloc__, indents(ind), "static void destructor(C(Instance) i)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
-            o.concatx(genloc__, indents(ind), "   ", cx, "* inst = (", cx, "*)INSTANCEL(i, _class.impl);", lc, ln);
+            o.concatx(genloc__, indents(ind), "   ", cx, "* inst = (", cx, "*)INSTANCEL(i, _cpp_class.impl);", lc, ln);
             o.concatx(genloc__, indents(ind), "   if(inst)", lc, ln);
             o.concatx(genloc__, indents(ind), "   {", lc, ln);
-            o.concatx(genloc__, indents(ind), "      if(_class.destructor) ((void (*)(", cx, " & self))_class.destructor)(*inst);", lc, ln);
+            o.concatx(genloc__, indents(ind), "      if(_cpp_class.destructor) ((void (*)(", cx, " & self))_cpp_class.destructor)(*inst);", lc, ln);
             o.concatx(genloc__, indents(ind), "      if(inst->mustFree) delete inst;", lc, ln);
             o.concatx(genloc__, indents(ind), "   }", lc, ln);
             o.concatx(genloc__, indents(ind), "}", lc, ln);
-            o.concatx(genloc__, indents(ind), "explicit inline ", cx, "(C(Instance) _impl, CPPClass & cl = _class) : ", b, "(_impl, cl)", ln);
+            o.concatx(genloc__, indents(ind), "explicit inline ", cx, "(C(Instance) _impl, CPPClass & cl = _cpp_class) : ", b, "(_impl, cl)", ln);
          }
          else
          {
@@ -3790,7 +3763,7 @@ static void cppMacroConstructClass(
             if(!strcmp(c, "Application") || !strcmp(c, "GuiApplication"))
                o.concatx(genloc__, indents(ind), "inline ", c, "() : ", c, "(eC_init_CALL(__LINK_ECERE__)) { }", ln);
             else
-               o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_class.impl, false), _class) { }", lc, ln);
+               o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_cpp_class.impl, false), _cpp_class) { }", lc, ln);
             //o.concatx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
             cppMacroIntConstructClass(g, o, smod == definition ? encapsulation : configuration, template, ind, c, b, 0);
             if(smod != expansion) o.concatx(ln);
@@ -3838,7 +3811,7 @@ static void cppMacroDestructClass(
          o.concatx(genloc__, indents(ind), "#define DESTRUCT(", c, ")", lc, ln);
          ind++;
       case expansion:
-         o.concatx(genloc__, indents(ind), "((TCPPClass<", c, "> &)_class).destructor", ln);
+         o.concatx(genloc__, indents(ind), "((TCPPClass<", c, "> &)_cpp_class).destructor", ln);
          break;
       case use:
       case encapsulation:
@@ -3897,7 +3870,7 @@ static void cppMacroClassRegister(
          o.concatx("void ");
          if(!pe && !ol)
             o.concatx(te ? cpptemplatePrefix : "", te ? sc : "", c, te ? "<TPT>" : "", "::");
-         o.concatx("class_registration(CPPClass & _class)", lt, pt);
+         o.concatx("class_registration(CPPClass & _cpp_class)", lt, pt);
          break;
       }
       case encapsulation:
@@ -4075,7 +4048,7 @@ static void cppMacroClassRegistration(
                         byRefTypedThis = t.byReference;
                         returnAddress = ctRT == normalClass || ctRT == noHeadClass;
                         nthis = /*iMetThisNameSwap.Index(mn, false) ? iMetThisNameSwap.data :*/ "o_";
-                        // p.concatx("XClass * _class, C(Instance) ", byRefTypedThis ? "* " : "", nthis);
+                        // p.concatx("XClass * _cpp_class, C(Instance) ", byRefTypedThis ? "* " : "", nthis);
                         // comma = true;
                         break;
                      }
@@ -4397,7 +4370,7 @@ static void cppMacroRegVirtualMethods(
 
          o.concatx(ln);
          o.concatx(genloc__, "#define REG_", cn, "(c)", lc, ln,
-                     genloc__, indents(2), cn, "::class_registration(_class);");
+                     genloc__, indents(2), cn, "::class_registration(_cpp_class);");
 
          {
             Class cl = c.cl;
@@ -4562,7 +4535,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance) s3z.concatx("Instance"); // Instance_* prefix for base instance methods
                      s3z.concatx(tn, "(");
                      if(c.isInstance || c.cl.type != normalClass)
-                         s3z.concatx("_class.impl, ");
+                         s3z.concatx("_cpp_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
                      if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
@@ -4581,7 +4554,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance) s3z.concatx("Instance"); // Instance_* prefix for base instance methods
                      s3z.concatx(tn, "(");
                      if(c.isInstance || c.cl.type != normalClass)
-                         s3z.concatx("_class.impl, ");
+                         s3z.concatx("_cpp_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
                      s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, mode, null, null, null, null, { })));
                      s3z.concatx(");", lc, ln);
@@ -4604,7 +4577,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance) s3z.concatx("Instance"); // Instance_* prefix for base instance methods
                      s3z.concatx(tn, "(");
                      if(c.isInstance || c.cl.type != normalClass)
-                        s3z.concatx("_class.impl, ");
+                        s3z.concatx("_cpp_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
                      if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
@@ -4755,12 +4728,12 @@ static void cppMacroClassVirtualMethods(
                o.concatx(genloc__, indents(ind), "{", lc, ln);
                ind++;
                   o.concatx(genloc__, indents(ind), "SELF(", c, ", ", ncpp, ");", lc, ln);
-                  o.concatx(genloc__, indents(ind), "if(self->vTbl == ", cx, "::_class.vTbl)", lc, ln);
+                  o.concatx(genloc__, indents(ind), "if(self->vTbl == ", cx, "::_cpp_class.vTbl)", lc, ln);
                   o.concatx(genloc__, indents(ind), "{", lc, ln);
                   ind++;
-                     o.concatx(genloc__, indents(ind), "uint size = ", cx, "::_class.impl->vTblSize;", lc, ln);
+                     o.concatx(genloc__, indents(ind), "uint size = ", cx, "::_cpp_class.impl->vTblSize;", lc, ln);
                      o.concatx(genloc__, indents(ind), "self->vTbl = (void (**)())newt(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ", size);", lc, ln);
-                     o.concatx(genloc__, indents(ind), "memcpy(self->vTbl, ", c, "::_class.vTbl, sizeof(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ") * size);", lc, ln);
+                     o.concatx(genloc__, indents(ind), "memcpy(self->vTbl, ", c, "::_cpp_class.vTbl, sizeof(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ") * size);", lc, ln);
                   ind--;
                   o.concatx(genloc__, indents(ind), "}", lc, ln);
                   o.concatx(genloc__, indents(ind), "((", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", " *)self->vTbl)[M_VTBLID(", b, ", ", n, ")] = func;", lc, ln);
@@ -4887,7 +4860,7 @@ static void cppMacroIntRegisterMethod(
                n, ", ", bc, ", ", c, ", ", te ? t : "", te ? ", " : "", r, ", ", p, ", ", ocl, ", ", oi, ", ", code, ", ", ea, ", ", rv, ")", lc, ln);
          ind++;
       case expansion:
-            o.concatx(genloc__, indents(ind), "addMethod(_class.impl, ", edq, ns, edq, ", (void *) +[]", eop, p, ecp, lc, ln);
+            o.concatx(genloc__, indents(ind), "addMethod(_cpp_class.impl, ", edq, ns, edq, ", (void *) +[]", eop, p, ecp, lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
                o.concatx(genloc__, indents(ind + 1), "XClass * cl = (", ocl, ") ? (XClass *)(", ocl, ")->_class : null;", lc, ln);
                if(smod != definition)
@@ -5160,10 +5133,10 @@ static void cppMacroProperty(
             o.concat(indents(ind));
          if(opts.prototype)
          {
-            o.concatx("struct ", n, sc, "Prop", lc, ln);
+            o.concatx("struct ", n, sc, "_Prop", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             ind++;
-            o.concatx(genloc__, indents(ind), n, sc, "Prop() { };", lc, ln);
+            o.concatx(genloc__, indents(ind), n, sc, "_Prop() { };", lc, ln);
             o.concatx(genloc__, indents(ind), "int _[0];", lc, ln);
          }
          if(smod == definition)
@@ -5305,11 +5278,11 @@ static void cppMacroIntPropSet(
                o.concatx(cpptemplateNoHeadDef, " ");
             else if(opts.type == template)
                o.concatx("template ", tp2, " ");
-            o.concatx("inline ", t, sc, t2 ? t2 : "", " ", nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "Prop::", "operator= (", t, " v", sc, t2 ? t2 : "", ")", lc, ln);
+            o.concatx("inline ", t, sc, t2 ? t2 : "", " ", nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "_Prop::", "operator= (", t, " v", sc, t2 ? t2 : "", ")", lc, ln);
             o.concatx(genloc__, commented ? "// " : "", indents(ind), "{", lc, ln);
             ind++;
                o.concatx(genloc__, commented ? "// " : "", indents(ind), "SELF(", cx, ", ", n, ");"/*, lc, ln*/);
-               // o.concatx(genloc__, indents(ind), "printf(\"inside (property _set) ", sso, c, ssc, "::", sso, n, ssc, "Prop::", "operator= (", sso, t, ssc, " v", t2 ? sso : "", t2 ? t2 : "", t2 ? ssc : "", ")", "\\n\");", lc, ln);
+               // o.concatx(genloc__, indents(ind), "printf(\"inside (property _set) ", sso, c, ssc, "::", sso, n, ssc, "_Prop::", "operator= (", sso, t, ssc, " v", t2 ? sso : "", t2 ? t2 : "", t2 ? ssc : "", ")", "\\n\");", lc, ln);
                if(code)
                {
                   for(c : code)
@@ -5453,17 +5426,17 @@ static void cppMacroPropSet(
             o.concatx(cpptemplateNoHeadDef, " ");
          else if(!opts.prototype && opts.type == template)
             o.concatx("template ", tp2, " ");
-         o.concatx("inline ", nh ? "typename " : "", nh ? cpptemplatePrefix : "", nh ? sc : "", pp ? "typename " : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "Prop & ");
+         o.concatx("inline ", nh ? "typename " : "", nh ? cpptemplatePrefix : "", nh ? sc : "", pp ? "typename " : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "_Prop & ");
          if(!opts.prototype)
-            o.concatx(nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "Prop::");
-         o.concatx("operator= (", nh ? "typename " : "", nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "Prop & prop)", pt);
+            o.concatx(nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "_Prop::");
+         o.concatx("operator= (", nh ? "typename " : "", nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "_Prop & prop)", pt);
          if(!opts.prototype)
          {
             o.concatx(lc, ln);
             o.concatx(genloc__, commented ? "// " : "", indents(ind), "{", lc, ln);
             ind++;
                o.concatx(genloc__, commented ? "// " : "", indents(ind), "SELF(", cx, ", ", n, ");", lc, ln);
-               // o.concatx(genloc__, indents(ind), "printf(\"inside (property set) ", sso, c, ssc, "::", sso, n, ssc, "Prop::", "operator= (", sso, c, ssc, "::", sso, n, ssc, "Prop & prop)", "\\n\");", lc, ln);
+               // o.concatx(genloc__, indents(ind), "printf(\"inside (property set) ", sso, c, ssc, "::", sso, n, ssc, "_Prop::", "operator= (", sso, c, ssc, "::", sso, n, ssc, "_Prop & prop)", "\\n\");", lc, ln);
                o.concatx(genloc__, commented ? "// " : "", indents(ind), t, sc, t2 ? t2 : "", " v = prop;"/*, lc, ln*/);
                if(code)
                {
@@ -5579,7 +5552,7 @@ static void cppMacroPropGet(
             o.concatx("template ", tp2, " ");
          o.concatx("inline ", r ? r : "", r && *r ? " " : "");
          if(!opts.prototype)
-            o.concatx(nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "Prop::");
+            o.concatx(nh ? cpptemplatePrefix : "", nh ? sc : "", cx, nh ? "<TC, TCO>" : "", "::", n, sc, "_Prop::");
          o.concatx("operator ", t, " () const", pt);
          if(!opts.prototype)
          {
@@ -5590,7 +5563,7 @@ static void cppMacroPropGet(
                o.concatx(genloc__, commented ? "// " : "", indents(ind), "SELF(", cx, ", ", n, ");"/*, lc, ln*/);
             else if(opts.type == nohead)
                o.concatx(genloc__, commented ? "// " : "", indents(ind), "__attribute__((unused)) T", sc, c, " TCTCO * self = CONTAINER_OF(this, T", sc, c, " TCTCO, ", n, ");"/*, lc, ln*/);
-               // o.concatx(genloc__, indents(ind), "printf(\"inside (property get) ", sso, c, ssc, "::", sso, n, ssc, "Prop::", "operator ", sso, t, ssc, sso, t2, ssc, " () const", "\\n\");", lc, ln);
+               // o.concatx(genloc__, indents(ind), "printf(\"inside (property get) ", sso, c, ssc, "::", sso, n, ssc, "_Prop::", "operator ", sso, t, ssc, sso, t2, ssc, " () const", "\\n\");", lc, ln);
                if(code)
                {
                   for(c : code)
