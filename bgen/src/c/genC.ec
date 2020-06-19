@@ -1688,15 +1688,17 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
    bool nativeSpec = false;
    BClass c = null;
 
-   if(t.kind == classType || t.kind == subClassType)
+   if(t.kind == subClassType && opt.cpp)
+      _class = eSystem_FindClass(g_.mod, "Class");
+   else if(t.kind == classType || t.kind == subClassType)
    {
       _class = g_.getClassFromType(t, /*true*/!opt.cpp);
       if(_class && _class.templateClass)
          _class = _class.templateClass;
-      if(_class)
-         c = _class;
-      isBaseClass = /*!t._class || !t._class.string || */c && c.is_class/*_class && !strcmp(_class.name, "class")*/;
    }
+   if(_class)
+      c = _class;
+   isBaseClass = /*!t._class || !t._class.string || */c && c.is_class/*_class && !strcmp(_class.name, "class")*/;
 
    if(t.kind == classType && _class &&
          ((_class.type == noHeadClass && !opt.cpp) || (_class.type == structClass && opt.param) ||

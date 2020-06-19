@@ -15,7 +15,7 @@ define cpptemplateTemplateTypeDef = "template <typename TPT>";
 void cppHardcodedInstancePart1(BOutput o)
 {
    o.z.concatx(genloc__, "   // hardcoded content start", ln,
-               genloc__, "   static TCPPClass<Instance> _class;", ln,
+               genloc__, "   static TCPPClass<Instance> _cpp_class;", ln,
                genloc__, "   C(Instance) impl;", ln,
                genloc__, "   void (**vTbl)(void);", ln,
                genloc__, "   bool mustFree = 0;", ln, ln);
@@ -27,9 +27,9 @@ void cppHardcodedInstancePart1(BOutput o)
 
    o.z.concatx(genloc__, "   static C(bool) constructor(C(Instance) i, C(bool) alloc)", ln,
                genloc__, "   {", ln,
-               genloc__, "      if(alloc && !INSTANCEL(i, _class.impl))", ln,
+               genloc__, "      if(alloc && !INSTANCEL(i, _cpp_class.impl))", ln,
                genloc__, "      {", ln);
-   o.z.concatx(genloc__, "         Instance * inst = new Instance(i, _class);", ln,
+   o.z.concatx(genloc__, "         Instance * inst = new Instance(i, _cpp_class);", ln,
                genloc__, "         if(inst)", ln,
                genloc__, "            inst->mustFree = true;", ln,
                genloc__, "         return inst != null;", ln);
@@ -38,7 +38,7 @@ void cppHardcodedInstancePart1(BOutput o)
                genloc__, "   }", ln);
    o.z.concatx(genloc__, "   static void destructor(C(Instance) i)", ln,
                genloc__, "   {", ln,
-               genloc__, "      Instance * inst = (Instance *)INSTANCEL(i, _class.impl);", ln);
+               genloc__, "      Instance * inst = (Instance *)INSTANCEL(i, _cpp_class.impl);", ln);
    o.z.concatx(genloc__, "      if(inst->mustFree)", ln,
                genloc__, "         delete inst;", ln,
                genloc__, "   }", ln);
@@ -47,7 +47,7 @@ void cppHardcodedInstancePart1(BOutput o)
 
 void cppHardcodedInstancePart2(BOutput o)
 {
-   o.z.concatx(genloc__, "   explicit inline Instance(C(Instance) _impl, CPPClass & cl = _class)", ln,
+   o.z.concatx(genloc__, "   explicit inline Instance(C(Instance) _impl, CPPClass & cl = _cpp_class)", ln,
                genloc__, "   {", ln,
                genloc__, "      XClass * c = cl.impl;", ln,
                genloc__, "      impl = _impl;", ln,
@@ -230,10 +230,10 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    cppTmpDefineRegisterClassCPP(g, f);
 
    f.PrintLn(genloc__, "#define EVOLVE_APP(ac, a) \\");
-   f.PrintLn(genloc__, "   Instance_evolve(&(a).impl, ac::_class.impl); \\");
+   f.PrintLn(genloc__, "   Instance_evolve(&(a).impl, ac::_cpp_class.impl); \\");
    f.PrintLn(genloc__, "   INSTANCEL((a).impl, (a).impl->_class) = &(a); \\");
    f.PrintLn(genloc__, "   __thisModule = (a).impl; \\");
-   f.PrintLn(genloc__, "   (a).vTbl = _class.vTbl;", ln);
+   f.PrintLn(genloc__, "   (a).vTbl = _cpp_class.vTbl;", ln);
 
    f.PrintLn(genloc__, "#define REGISTER_APP_CLASS(ac, b, a) \\");
    f.PrintLn(genloc__, "   REGISTER_CLASS(ac, b, a); \\");
@@ -316,7 +316,7 @@ void cppHardcodedCorePart1(CPPGen g, File f)
 
    f.PrintLn(genloc__, "#define REGVMETHOD(b, n, m, p, t, a) \\");
    f.PrintLn(genloc__, "    if(!eqTypes<decltype(&m), decltype(&b::n)>()) \\");
-   f.PrintLn(genloc__, "       ((b::b ## _ ## n ## _Functor::FunctionType *)_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
+   f.PrintLn(genloc__, "       ((b::b ## _ ## n ## _Functor::FunctionType *)_cpp_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
 
    // bring back BIND_* and / or register_* ?
    // f.PrintLn("#define SETVMETHOD(n, m, p, t, a) \\");
@@ -523,7 +523,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
 
 void cppHardcodedNativeTypeTemplates(CPPGen g, File f)
 {
-   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const Instance & v) { return v.impl ? v.impl->_class : v._class.impl; };");
+   f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const Instance & v) { return v.impl ? v.impl->_class : v._cpp_class.impl; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(char v) { C(Class) * c = CO(char); return c; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(short v) { C(Class) * c = CO(int); return c; };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(int v) { C(Class) * c = CO(int); return c; };");
