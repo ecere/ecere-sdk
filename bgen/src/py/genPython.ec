@@ -594,7 +594,7 @@ void processPyClass(PythonGen g, BClass c)
       List<Class> classOnly { [ c.cl ] };
 
       char * selfimpl = c.cl.type == noHeadClass ?
-            PrintString("ffi.cast(\"struct ", c.symbolName, " *\", self.impl)") :
+            PrintString("ffi.cast(\"struct ", c.cSymbol, " *\", self.impl)") :
             CopyString("self.impl");
       int memberArgCount = 0;
       int memberLen = 0, len;
@@ -643,14 +643,14 @@ void processPyClass(PythonGen g, BClass c)
       }
 
       out.z.concatx(ln);
-      out.z.concatx(sk, "class ", c.symbolName);
+      out.z.concatx(sk, "class ", c.cSymbol);
 
       //if(cBase && cBase.cl.type != bitClass)
       if((c.cl.type == unitClass || c.cl.type == bitClass) && cBase.cl.type == systemClass)
          out.z.concat("(pyBaseClass)");
       else if(hasBase && (!c.nativeSpec || cBase.cl.type == unitClass) && !c.isBool)
       {
-         out.z.concatx("(", cBase.symbolName, ")"); // c.baseSymbolName
+         out.z.concatx("(", cBase.cSymbol, ")"); // c.baseSymbolName
          v.processDependency(g, otypedef, otypedef, cBase.cl);
       }
       else if(c.cl.type == structClass && cBase && cBase.is_struct)
@@ -711,7 +711,7 @@ void processPyClass(PythonGen g, BClass c)
             BProperty p; IterConversion itc { c.cl };
             while((p = itc.next(publicOnly)))
             {
-               if(!p.pt.Get && !p.pt.Set && !strcmp(p.cConv.symbolName, c.baseSymbolName))
+               if(!p.pt.Get && !p.pt.Set && !strcmp(p.cConv.cSymbol, c.baseSymbolName))
                {
                   hasOneToOneBaseConv = true;
                   break;
@@ -1460,7 +1460,7 @@ void processPyClass(PythonGen g, BClass c)
                      bool lG = checkLinearMapping(type, p.pt.Get, &m, &b);
                      char * mG = PrintString(m);
                      out.z.concatx("", ln,
-                           sk, "   # conv ", c.baseSymbolName, " <-> ", p.cConv.symbolName, ln,
+                           sk, "   # conv ", c.baseSymbolName, " <-> ", p.cConv.cSymbol, ln,
                            sk, "   @property", ln,
                            sk, "   def value(self): return ", lS ? "self.impl * " : "lib.", lS ? mS : p.fpnSet, lS ? "" : "(self.impl)", ln,
                            sk, "   @value.setter", ln,
@@ -2020,7 +2020,7 @@ void processPyClass(PythonGen g, BClass c)
       if(c.cl.type == unitClass)
       {
          out.z.concatx(ln);
-         out.z.concatx(sk, c.symbolName, ".buc = ", cBase.cl.type == unitClass ? cBase.symbolName : c.symbolName, ln);
+         out.z.concatx(sk, c.cSymbol, ".buc = ", cBase.cl.type == unitClass ? cBase.cSymbol : c.cSymbol, ln);
       }
       // end of class
       delete selfimpl;

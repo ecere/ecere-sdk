@@ -1608,7 +1608,7 @@ class BClass : struct
    char * upper; char * spec;
    char * cname;
    char * coSymbol;
-   char * symbolName;
+   char * cSymbol;
    char * baseSymbolName;
    char * py_initializer;
    char * simplestIdentName;
@@ -1680,18 +1680,18 @@ class BClass : struct
       noSpecMacro = noMacro || cl.type == enumClass || isString;
 
       if(cl.templateClass)
-         symbolName = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
+         cSymbol = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
       else
-         symbolName = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
+         cSymbol = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
 
       if(gen.lang == CPlusPlus)
       {
          MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
-         cpp_name = isString ? symbolName : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
+         cpp_name = isString ? cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
       }
 
       if(python && py && isBool)
-         symbolName[0] = (char)toupper(symbolName[0]); // Bool
+         cSymbol[0] = (char)toupper(cSymbol[0]); // Bool
 
       clBase = getClassBaseAndProcessTemplateDataType(cl, &cleanDataType);
 
@@ -1769,13 +1769,13 @@ class BClass : struct
       if(nativeSpec || actualTypeNames.Find(spec)) noSpecMacro = true;
       if(cl.type == unitClass)
          //py_initializer = CopyString("0");
-         py_initializer = PrintString(symbolName, "(0)");
+         py_initializer = PrintString(cSymbol, "(0)");
       else
-         py_initializer = PrintString(symbolName, "()");
+         py_initializer = PrintString(cSymbol, "()");
    }
    void free()
    {
-      delete base; delete upper; delete spec; delete cname; delete symbolName; delete baseSymbolName;
+      delete base; delete upper; delete spec; delete cname; delete cSymbol; delete baseSymbolName;
       delete coSymbol;
       delete py_initializer;
       if(cleanDataType)
@@ -1804,7 +1804,7 @@ const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
    {
       Class cl2 = reduce ? reduceUnitClass(cl) : cl;
       BClass c = cl2;
-      return macro && !normalClassMacroOverride ? c.symbolName : c.name;
+      return macro && !normalClassMacroOverride ? c.cSymbol : c.name;
    }
    return symbol;
 }
@@ -1833,7 +1833,7 @@ const char * getSpecifierSymbolName(const char * spec)
    if(cl)
    {
       BClass c = cl;
-      return c.symbolName;
+      return c.cSymbol;
    }
    return spec;
 }
@@ -2123,8 +2123,8 @@ class BProperty : struct
             }
             else if(cConv)
             {
-               ptType = CopyString(cConv.symbolName);
-               ptTypeUse = CopyString(cConvUse.symbolName);
+               ptType = CopyString(cConv.cSymbol);
+               ptTypeUse = CopyString(cConvUse.cSymbol);
             }
          }
          else
