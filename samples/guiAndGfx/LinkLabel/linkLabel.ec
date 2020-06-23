@@ -9,7 +9,7 @@ class LinkLabel : Label
       get { return url; }
    }
    ~LinkLabel() { delete url; }
-   font = { "Arial", 10, bold = true, underline = true };
+   font = { "Incosolata", 10, bold = true, underline = true };
    foreground = blue;
    cursor = ((GuiApplication)__thisModule.application).GetCursor(hand);
 

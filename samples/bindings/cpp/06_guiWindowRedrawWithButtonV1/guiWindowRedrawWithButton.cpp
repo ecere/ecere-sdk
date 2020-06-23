@@ -10,7 +10,7 @@ public:
    REGISTER()
    {
       REG_Window(HelloForm);
-      DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n"); system("pause"); };
+      DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n");/* system("pause");*/ };
    }
    CONSTRUCT(HelloForm, Window)
    {
