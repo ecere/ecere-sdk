@@ -18,7 +18,7 @@ public:
       register_main(_class,
          [](Application & app)
          {
-            printLn(class_String, "C++: Hello, eC", null);
+            eC_printLn(class_String, "C++: Hello, eC", null);
          }
       );
       EVOLVE_APP(MyApp, app);

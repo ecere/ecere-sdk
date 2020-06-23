@@ -16,7 +16,7 @@ public:
 #if 1 // both work
    void main()
    {
-      printLn(class_String, "C++: Hello, eC", null);
+      eC_printLn(class_String, "C++: Hello, eC", null);
    }
 #endif
 
@@ -27,7 +27,7 @@ public:
 #if 0 // both work
       main = [](Application & app)
       {
-         printLn(class_String, "C++: Hello, eC", null);
+         eC_printLn(class_String, "C++: Hello, eC", null);
       };
 #endif
    }
@@ -51,7 +51,7 @@ public:
 
       main = [](Application & app)
       {
-         printLn(class_String, "C++: Hello, eC", null);
+         eC_printLn(class_String, "C++: Hello, eC", null);
       };
    }
 };

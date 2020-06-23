@@ -35,13 +35,13 @@ public:
 
       // todo:
       // TList<const char *> c { "bgen: ", "Hello", "C++" };
-      // printLn2(c);
+      // printLn(c);
 
       a.add(3.0);
       a.add(4.2);
       a.add(5.5);
       // todo:
-      printLn2(a);
+      printLn(a);
       // t_args_x<printLn>(a);
       {
          ZString z;
@@ -50,7 +50,7 @@ public:
          z.concat(s);
          // z.concatx(9);
          // z.concatx("works");
-         printLn2(z.string);
+         printLn(z.string);
       }
       {
          ConsoleFile con;
@@ -65,9 +65,9 @@ public:
       light.diffuse = DefinedColor::lightCoral;
 
       if(sizeof(Point) == sizeof(C(Point)))
-         printLn(CO(String), "sizeof(Point) == sizeof(C(Point))", null);
+         eC_printLn(CO(String), "sizeof(Point) == sizeof(C(Point))", null);
       else
-         printLn(CO(String), "no", null);
+         eC_printLn(CO(String), "no", null);
 
    }
 
@@ -79,7 +79,7 @@ public:
       transform.scaling = { 100, 100, 100 };
       transform.orientation = Euler(50, 30, 50);
       cube.transform = transform;
-      printLn(CO(Transform), &transform, null);
+      eC_printLn(CO(Transform), &transform, null);
       cube.updateTransform();
       return true;
    }
@@ -91,14 +91,14 @@ public:
 
    void onResize(int w, int h)
    {
-      printLn(CO(String), "onResize", null);
+      eC_printLn(CO(String), "onResize", null);
       camera.setup(w, h, null);
       camera.update();
    }
 
    void onRedraw(Surface & surface)
    {
-      printLn(CO(String), "onRedraw", null);
+      eC_printLn(CO(String), "onRedraw", null);
       surface.clear(ClearType::depthBuffer);
       display->setLight(0, light);
       display->setCamera(surface, camera);

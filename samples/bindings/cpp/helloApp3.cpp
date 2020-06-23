@@ -24,14 +24,14 @@ public:
       GuiApplication::class_registration(_class);
       register_cycle(_class, [](GuiApplication & app, bool idle)
       {
-         printLn(class_String, "   Cycling!", null);
+         eC_printLn(class_String, "   Cycling!", null);
          return true;
       });
    }
 
    void main()
    {
-      printLn(class_String, "C++: Hello, eC", null);
+      eC_printLn(class_String, "C++: Hello, eC", null);
       GuiApplication::main();
    }
 };

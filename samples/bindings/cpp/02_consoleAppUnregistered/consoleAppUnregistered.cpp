@@ -10,7 +10,8 @@ class MyApp : public Application
 public:
    void main()
    {
-      printLn(class_String, "C++: Hello, eC", null);
+      // eC_printLn(class_String, "C++: Hello, eC", null);
+      printLn("C++: Hello, eC");
    }
 };
 
