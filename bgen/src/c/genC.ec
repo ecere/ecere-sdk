@@ -1280,20 +1280,20 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(pt.Set)
             {
                if(pt.conversion && /*cl.type != normalClass && */cl.type != structClass && cl.type != noHeadClass)
-                  z.concatx(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");", ln);
+                  z.concatx(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");", ln);
                else
-                  z.concatx(port, "void (* ", p.fpnSet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);", ln);
+                  z.concatx(port, "void (* ", p.fpnSet, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);", ln);
             }
             if(pt.Get)
             {
                if(*p.v)
-                  z.concatx(port, "void (* ", p.fpnGet, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);", ln);
+                  z.concatx(port, "void (* ", p.fpnGet, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);", ln);
                else
-                  z.concatx(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.symbolName, p.r, " ", p.otherParamName, ");", ln);
+                  z.concatx(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             }
 
             if(pt.IsSet)
-               z.concatx(port, "bool (* ", p.fpnIst, ")(", p.cUse.symbolName, p.r, " ", p.otherParamName, ");", ln);
+               z.concatx(port, "bool (* ", p.fpnIst, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             delete port;
             //z.concatx(ln);
          }
@@ -1313,7 +1313,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             {
                const char * dataType = tokenTypeString(cl.dataType);
                z.concatx(g_.preproLimiter, "#define ", c.name, " ", c.upper, ln);
-               z.concatx(g_.preproLimiter, "#define ", c.upper, "(x)  ((", p.cConvUse.symbolName, ")(x))", ln);
+               z.concatx(g_.preproLimiter, "#define ", c.upper, "(x)  ((", p.cConvUse.cSymbol, ")(x))", ln);
                z.concatx(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))", ln);
                if(haveContent) *haveContent = true;
             }
@@ -1337,7 +1337,7 @@ void genPropertyConversion(ZString z, BClass c, BProperty p, DataValueType type,
       z.concatx(g_.preproLimiter, "#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", forSet ? c.name : c.upper, "(x)  ");
       if(checkLinearMapping(type, fn, &m, &b))
       {
-         const char * castString = forSet ? tokenTypeString(c.cl.dataType) : p.cConvUse.symbolName;
+         const char * castString = forSet ? tokenTypeString(c.cl.dataType) : p.cConvUse.cSymbol;
          z.concatx("((", castString, ")((x)");
          if(m != 1)
          {
@@ -1503,10 +1503,10 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
 
             if(typedefType == _struct)
             {
-               char * symbolName = g_.allocMacroSymbolName(false, C, { c = c }, c.spec, null, 0);
+               char * cSymbol = g_.allocMacroSymbolName(false, C, { c = c }, c.spec, null, 0);
                typedefDI.specifiers = { [
                   SpecBase { specifier = _typedef },
-                  SpecClass { type = _struct, id = ASTIdentifier { string = symbolName } }
+                  SpecClass { type = _struct, id = ASTIdentifier { string = cSymbol } }
                ] };
             }
             else if(typedefType == identifier)
@@ -1520,10 +1520,10 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                }
                else
                {
-                  char * symbolName = g_.allocMacroSymbolName(c.noSpecMacro, C, { c = c }, c.spec, null, 0);
+                  char * cSymbol = g_.allocMacroSymbolName(c.noSpecMacro, C, { c = c }, c.spec, null, 0);
                   typedefDI.specifiers = { [
                      SpecBase { specifier = _typedef },
-                     SpecClass { id = ASTIdentifier { string = symbolName } }
+                     SpecClass { id = ASTIdentifier { string = cSymbol } }
                   ] };
                }
             }
@@ -1531,7 +1531,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
             typedefDI.declarators = { [
                ASTInitDeclarator { declarator = DeclIdentifier {
                      identifier = ASTIdentifier {
-                           string = CopyString(c.symbolName) } } }
+                           string = CopyString(c.cSymbol) } } }
             ] };
             if(typedefDI)
                ;
@@ -1568,7 +1568,7 @@ DeclarationInit astDeclInit(const char * name, CreateDeclInitMode mode,
                else
                {
                   BClass c = t.c.cl.templateClass;
-                  baseName = CopyString(c.symbolName);
+                  baseName = CopyString(c.cSymbol);
                }
                if(!baseName) conmsg("check");
             }
@@ -1809,8 +1809,8 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          {
             if(isBaseClass)
             {
-               char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
-               quals.Add(SpecName { name = symbolName });
+               char * cSymbol = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { cl = _class }, name, null, 0);
+               quals.Add(SpecName { name = cSymbol });
                if(!opt.cpp && vTopOutputType)
                   vTop.processDependency(g_, vTopOutputType, otypedef, _class);
 
@@ -1824,15 +1824,15 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          }
          else
          {
-            char * symbolName;
+            char * cSymbol;
             if((opt.cpp && _class && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt)) ||
                   (!_class && t.kind == classType && t._class && !t._class.registered))
-               symbolName = CopyString(name);
+               cSymbol = CopyString(name);
             else
-               symbolName = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
-            if(ti.type.constant && strcmp(symbolName, "constString"))
+               cSymbol = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
+            if(ti.type.constant && strcmp(cSymbol, "constString"))
                quals.Add(SpecBase { specifier = _const });
-            quals.Add(SpecName { name = symbolName });
+            quals.Add(SpecName { name = cSymbol });
             if(!opt.cpp && vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))
                vTop.processDependency(g_, vTopOutputType, otypedef, _class ? _class : t._class.registered);
          }
@@ -1840,16 +1840,16 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       }
       case thisClassType:
       {
-         char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) :
+         char * cSymbol = bareSymbolName(_class, opt) ? CopyString(name) :
                g_.allocMacroSymbolName(false, THISCLASS, { cl = ti.cl }, ti.cl ? ti.cl.name : "Instance", null, ti.cl && ti.cl.type == noHeadClass ? 1 : 0);
-         quals.Add(SpecName { name = symbolName });
+         quals.Add(SpecName { name = cSymbol });
          break;
       }
       case subClassType:
       {
-         char * symbolName = bareSymbolName(_class, opt) ? CopyString(name) :
+         char * cSymbol = bareSymbolName(_class, opt) ? CopyString(name) :
                g_.allocMacroSymbolName(false, SUBCLASS, { cl = _class }, name, null, 0);
-         quals.Add(SpecName { name = symbolName });
+         quals.Add(SpecName { name = cSymbol });
          break;
       }
       case templateType:
@@ -2211,7 +2211,7 @@ char * getReducedTypesExpressionString(char * str)
                {
                   Class clReduced = reduceUnitClass(cl);
                   BClass cReduced = clReduced;
-                  z.concat(cReduced.symbolName);
+                  z.concat(cReduced.cSymbol);
                }
                else
                   z.concat(s + 2);
@@ -2447,10 +2447,10 @@ ASTRawString astBitTool(Class cl, BClass c)
          if(!python)
          {
             z.concatx(g_.preproLimiter, "#define ", n, "(x)", spaces(48, strlen(n) + 3),
-                  " ((((", c.symbolName, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)", ln);
+                  " ((((", c.cSymbol, ")(x)) & ", n_, "MASK) >> ", n_, "SHIFT)", ln);
             z.concatx(g_.preproLimiter, "#define ", s, "(x, ", bm.name, ")", spaces(48, strlen(s) + 6),
-                  " (x) = ((", c.symbolName, ")(x) & ~((", c.symbolName, ")", n_,
-                  "MASK)) | (((", c.symbolName, ")(", bm.name, ")) << ", n_, "SHIFT)", ln);
+                  " (x) = ((", c.cSymbol, ")(x) & ~((", c.cSymbol, ")", n_,
+                  "MASK)) | (((", c.cSymbol, ")(", bm.name, ")) << ", n_, "SHIFT)", ln);
          }
          haveContent = true;
          delete x;
@@ -2477,7 +2477,7 @@ ASTRawString astBitTool(Class cl, BClass c)
       {
          const char * name = bitMembers[i];
          if(i) z.concatx(" | ");
-         z.concatx("((", c.symbolName, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
+         z.concatx("((", c.cSymbol, ")(", name, ")) << ", c.upper, "_", name, "_SHIFT)");
       }
       z.concatx(ln);
       delete bitMembers;
