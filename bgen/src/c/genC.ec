@@ -111,6 +111,7 @@ char * Gen::allocMacroSymbolNameC(const bool noMacro, const MacroType type, cons
       case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
       case T:           return getTemplateClassSymbol(   name, false);
       case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
+      case F:           return PrintString(        "F(", name, ")");
       case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
       case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
       case FUNCTION:    return PrintString( "FUNCTION(", name, ")");
@@ -132,6 +133,7 @@ char * Gen::allocMacroSymbolNameExpandedC(const bool noMacro, const MacroType ty
       case THISCLASS:   return PrintString(         cPrefix, name, ptr ? " *" : "");
       case T:           return getTemplateClassSymbol(       name, true);
       case TP:          return PrintString(       "tparam_", name, "_", name2);
+      case F:           return PrintString(         cPrefix, name);
       case METHOD:      return PrintString(       "method_", name, "_", name2);
       case PROPERTY:    return PrintString(     "property_", name, "_", name2);
       case FUNCTION:    return PrintString(     "function_", name);
@@ -687,11 +689,11 @@ class CGen : Gen
             if(hasTypedObjectParam)
             {
                out.output.Add(ASTRawString { string = CopyString("#ifdef __cplusplus") });
-               out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true, cpp = true }, v));
+               out.output.Add(astFunction(f.cSymbol, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true, cpp = true }, v));
                out.output.Add(ASTRawString { string = CopyString("#else") });
             }
 #endif
-            out.output.Add(astFunction(f.oname, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true }, v));
+            out.output.Add(astFunction(f.cSymbol, { type = fn.dataType, fn = fn }, { _extern = true, pointer = true }, v));
 #if 0
             if(hasTypedObjectParam)
                out.output.Add(ASTRawString { string = CopyString("#endif") });
@@ -1293,7 +1295,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             }
 
             if(pt.IsSet)
-               z.concatx(port, "bool (* ", p.fpnIst, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
+               z.concatx(port, "C(bool) (* ", p.fpnIst, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             delete port;
             //z.concatx(ln);
          }
@@ -1825,12 +1827,14 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          else
          {
             char * cSymbol;
+            bool x = ti.type.constant;
+            bool x2 = ti.type.constant;
             if((opt.cpp && _class && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt)) ||
                   (!_class && t.kind == classType && t._class && !t._class.registered))
                cSymbol = CopyString(name);
             else
                cSymbol = bareSymbolName(_class, opt) ? CopyString(name) : g_.allocMacroSymbolName(nativeSpec, C, { }, name, null, 0);
-            if(ti.type.constant && strcmp(cSymbol, "constString"))
+            if((ti.type.constant || (ti.type.kind == pointerType && ti.type.type.constant)) && strcmp(cSymbol, "constString"))
                quals.Add(SpecBase { specifier = _const });
             quals.Add(SpecName { name = cSymbol });
             if(!opt.cpp && vTopOutputType && !(vTopOutputType == otypedef && vTop.kind == vclass) && (_class || t._class.registered))

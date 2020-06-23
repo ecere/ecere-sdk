@@ -14,6 +14,7 @@ char * Gen::allocMacroSymbolNamePy(const bool noMacro, const MacroType type, con
       case THISCLASS:   return PrintString(                  name, ptr ? " *" : "");
       case T:           return getTemplateClassSymbol(       name, true);
       case TP:          return PrintString(       "tparam_", name, "_", name2);
+      case F:           return                    CopyString(name);
       case METHOD:      return PrintString(       "method_", name, "_", name2);
       case PROPERTY:    return PrintString(     "property_", name, "_", name2);
       case FUNCTION:    return PrintString(     "function_", name);

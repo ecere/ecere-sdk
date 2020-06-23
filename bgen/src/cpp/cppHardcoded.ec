@@ -93,7 +93,7 @@ void cppHardcodedInstancePart2(BOutput o)
                genloc__, "         if(isApp)", ln,
                genloc__, "         {", ln,
                genloc__, "            // printf(\"Is app\\n\");", ln,
-               genloc__, "            // checkMemory();", ln,
+               genloc__, "            // F(checkMemory)();", ln,
                genloc__, "         }", ln,
                genloc__, "#endif", ln);
    o.z.concatx(genloc__, "      }", ln,
@@ -381,7 +381,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "      if(!--cppClassCount)");
    f.PrintLn(genloc__, "      {");
    f.PrintLn(genloc__, "         //printf(\"No more classes\\n\");");
-   f.PrintLn(genloc__, "         checkMemory();");
+   f.PrintLn(genloc__, "         F(checkMemory)();");
    f.PrintLn(genloc__, "      }");
    f.PrintLn(genloc__, "   }");
    f.PrintLn(genloc__, "};", ln);
@@ -402,7 +402,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "      impl = _impl;");
    f.PrintLn(genloc__, "      if(impl)");
    f.PrintLn(genloc__, "      {");
-   f.PrintLn(genloc__, "         name = copyString(impl->name);");
+   f.PrintLn(genloc__, "         name = F(copyString)(impl->name);");
    f.PrintLn(genloc__, "         _impl->bindingsClass = this;");
    f.PrintLn(genloc__, "         if(vTbl)");
    f.PrintLn(genloc__, "            eC_delete(vTbl);");

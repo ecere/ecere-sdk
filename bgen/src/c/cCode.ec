@@ -326,7 +326,7 @@ static void cInCodeGlobalFunctions(AST out, CGen g)
          BFunction f = fn;
          if(!f.skip && !f.isDllExport)
          {
-            ASTNode node = astFunction(f.oname, { type = fn.dataType, fn = fn }, { pointer = true }, null);
+            ASTNode node = astFunction(f.cSymbol, { type = fn.dataType, fn = fn }, { pointer = true }, null);
             ec2PrintToZedString(z, node, true);
          }
       }
@@ -444,7 +444,7 @@ static void cInCodeInitFunctions(AST out, CGen g)
             z.concatx(ln);
             z.concatx(indent, f.foSymbol, " = eC_findFunction(", findin, ", \"", f.fname, "\");", ln);
             z.concatx(indent, "if(", f.foSymbol, ")", ln);
-            z.concatx(indent, "   ", f.oname, " = (void *)", f.foSymbol, "->function;", ln);
+            z.concatx(indent, "   ", f.cSymbol, " = (void *)", f.foSymbol, "->function;", ln);
          }
       }
    }
@@ -461,7 +461,7 @@ static void cInCodeInitStart(AST out, CGen g)
       z.concatx(g_.sym.module, " theEcereModule;", ln, ln);
 
       z.concatx("LIB_EXPORT ", g.sym.application, " ", g.lib.bindingName,
-            "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[])", ln);
+            "_init(", g_.sym.module, " fromModule, C(bool) loadEcere, C(bool) guiApp, int argc, char * argv[])", ln);
       z.concatx("{", ln);
       z.concatx("#ifdef _DEBUG", ln);
       z.concatx("   printf(\"%s_init\\n\", \"", g.lib.bindingName, "\");", ln);
