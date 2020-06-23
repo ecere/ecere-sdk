@@ -288,7 +288,7 @@ class SymbolNameCollection
    }
 }
 
-enum MacroType { C, CM, CO, T, TP, METHOD, PROPERTY, FUNCTION, M_VTBLID, SUBCLASS, THISCLASS };
+enum MacroType { C, CM, CO, T, TP, F, METHOD, PROPERTY, FUNCTION, M_VTBLID, SUBCLASS, THISCLASS };
 
 Library createLibrary(const char * name)
 {
@@ -1483,6 +1483,7 @@ class BFunction : struct
    bool cleanDataType;
    const char * name;
    char * fname; char * ccfname; char * gname; const char * easy; const char * mapName; const char * oname;
+   char * cSymbol;
    char * foSymbol;
    void init(GlobalFunction fn/*, Module m*/, Map<String, String> funcRename)
    {
@@ -1503,6 +1504,7 @@ class BFunction : struct
             mapName = funcRename[fname];
       }
       oname = mapName ? mapName : ccfname;
+      cSymbol = g_.allocMacroSymbolName(false, F, { }, oname, null, 0);
       foSymbol = g_.allocMacroSymbolName(false, FUNCTION, { }, oname, null, 0);
       if(!fn.dataType)
       {
@@ -1524,6 +1526,7 @@ class BFunction : struct
       delete fname;
       delete ccfname;
       delete gname;
+      delete cSymbol;
       delete foSymbol;
    }
    void OnFree() { free(); };

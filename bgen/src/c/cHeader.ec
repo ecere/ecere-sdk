@@ -301,7 +301,7 @@ static void cInHeaderLibraryInitPrototype(AST out, Gen g)
 {
    ASTRawString raw { }; ZString z { allocType = heap };
    if(g.lib.ecereCOM)
-      z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, bool loadEcere, bool guiApp, int argc, char * argv[]);", ln);
+      z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.application, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule, C(bool) loadEcere, C(bool) guiApp, int argc, char * argv[]);", ln);
    else
       z.concatx("extern ", !python ? "THIS_LIB_IMPORT " : "", g_.sym.module, " ", g.lib.bindingName, "_init(", g_.sym.module, " fromModule);", ln);
    raw.string = CopyString(z._string); delete z;
