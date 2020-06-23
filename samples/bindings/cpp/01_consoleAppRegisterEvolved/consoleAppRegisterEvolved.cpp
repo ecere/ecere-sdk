@@ -21,21 +21,21 @@ public:
 
    void main()
    {
-      // breakpoint on first line - and when not much else is in main() - with printLn or printLn2 won't work
-      // printLn(class_String, "C++: Hello, eC", null); // just this line won't break
-      // printLn2("C++: Hello, eC"); // just this line won't break
-      // printLn2("C++: Hello, eC", 1); // this will break
+      // breakpoint on first line - and when not much else is in main() - with eC_printLn or printLn won't work
+      // eC_printLn(class_String, "C++: Hello, eC", null); // just this line won't break
+      // printLn("C++: Hello, eC"); // just this line won't break
+      // printLn("C++: Hello, eC", 1); // this will break
       printf("why\n"); // adding this before will allow the breakpoint on printLn or printLn2 to work
-      printLn2("C++: Hello, eC");
+      printLn("C++: Hello, eC");
 
       // printf("why this is so messed up\n");
       // printf("\n");
-      // printLn(class_String, "C++: Hello, eC", null);
-      // printLn(class_String, "C++: Hello, eC", null);
+      // eC_printLn(class_String, "C++: Hello, eC", null);
+      // eC_printLn(class_String, "C++: Hello, eC", null);
 
-      // printLn(class_String, "wth", null);
+      // eC_printLn(class_String, "wth", null);
       // printf("why\n");
-      // printLn2("C++: Hello, eC", 5, 4.3, '2');
+      // printLn("C++: Hello, eC", 5, 4.3, '2');
       // printf("%d\n", 5);
    }
 
@@ -47,7 +47,7 @@ public:
       register_main(_class,
          [](Application & app)
          {
-            printLn(class_String, "C++: Hello, eC", null);
+            eC_printLn(class_String, "C++: Hello, eC", null);
          }
       );
       */
@@ -175,7 +175,8 @@ public:
       register_main(_class,
          [](Application & app)
          {
-            printLn(class_String, "C++: Hello, eC", null);
+            // eC_printLn(class_String, "C++: Hello, eC", null);
+            printLn("C++: Hello, eC");
          }
       );
       Instance_evolve(&(app).impl, MyApp::_class.impl);

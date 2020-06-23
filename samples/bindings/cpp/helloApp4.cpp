@@ -13,7 +13,7 @@ public:
 
       main = [](Application & app)
       {
-         printLn(class_String, "C++: Hello, eC", null);
+         eC_printLn(class_String, "C++: Hello, eC", null);
       };
    }
 };

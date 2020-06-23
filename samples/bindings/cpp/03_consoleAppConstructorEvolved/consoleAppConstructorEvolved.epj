@@ -54,7 +54,12 @@
                         "ExcludeFromBuild" : true
                      }
                   }
-               ]
+               ],
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ECPRFX=eC_"
+                  ]
+               }
             },
             {
                "Folder" : "$(ECERE_SDK_BINDINGS)/cpp",
