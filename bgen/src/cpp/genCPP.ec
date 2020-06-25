@@ -1440,8 +1440,6 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          !strcmp(mn, "__e_logf") ||          // va_list args ... thing
          !strcmp(mn, "shellOpen") ||         // va_list args ... thing
          !strcmp(mn, "setActiveDesigner") || // missing eC class thing -- DesignerBase
-         !strcmp(mn, "tokenize") ||          // char *[] tokens -> char *tokens[]
-         // !strcmp(mn, "tokenizeWith") ||      // same
          false))
       return; // todo: fix new brokens
    if(cRT && cRT.cl.module && cRT.cl.module.name && skipClasses.Find({ !strcmp(cRT.cl.module.name, "ecereCOM") ? "eC" : cRT.cl.module.name, cRT.cl.name })) return;
@@ -1516,7 +1514,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
       else
       {
          argsInfo = { type = t, m = m, md = m ? m.md : null, cl = c ? c.cl : null, c = c, fn = f ? f.fn : null, f = f };
-         o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList, v, null, false, comma, configuration, &first, null, &hasStructClassParam, null, { })));
+         o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList, v, null, false, comma, null, configuration, &first, null, &hasStructClassParam, null, { })));
          delete params;
       }
       // }
@@ -1545,7 +1543,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          {
             bool comma = false;
             // bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
-            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing2, /*vClass*/null, cn, /*!ptrI*/false, comma, configuration, null, null, null, &hasVarArgs, { });
+            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing2, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, &hasVarArgs, { });
             int len = strlen(args);
             if(len > 1)
             {
@@ -1607,7 +1605,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
             }
          }
 
-         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing2, v, null, false, comma, configuration, null, null, null, null, { })));
+         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing2, v, null, false, comma, null, configuration, null, null, null, null, { })));
          o.z.concatx(")");
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
             o.z.concatx(")");
@@ -1650,7 +1648,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
       {
          bool comma = false; //const char * comma = "";
          argsInfo = { type = t, m = m, md = m ? m.md : null, cl = c ? c.cl : null, c = c, fn = f ? f.fn : null, f = f };
-         o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList2, v, null, false, comma, configuration, &first, null, null, null, { })));
+         o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList2, v, null, false, comma, null, configuration, &first, null, null, null, { })));
       }
       o.z.concatx(")", prototype ? ";" : "");
       // if(prototype)
@@ -1666,7 +1664,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          {
             bool comma = false;
             // bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
-            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing3, /*vClass*/null, cn, /*!ptrI*/false, comma, configuration, null, null, null, &hasVarArgs, { });
+            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing3, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, &hasVarArgs, { });
             int len = strlen(args);
             if(len > 1)
             {
@@ -1710,7 +1708,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
             }
          }
 
-         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing3, v, null, false, comma, configuration, null, null, null, null, { })));
+         o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing3, v, null, false, comma, null, configuration, null, null, null, null, { })));
          if(hasVarArgs)
             o.z.concatx(genloc__, indents(ind + 1), "va_end(args);", ln);
          o.z.concatx(");", ln);
@@ -2646,6 +2644,7 @@ enum CPPParamsOutputMode
    regMethodArgsPassingCppToEc,
    regMethodArgsPassing2,
    regMethodArgsPassing3,
+   regMethodArgsPassingOther,
    regMethodLocalConvEcToCppVarsForArgsPassing,
    regMethodArgsPoorObjectPassing2,
    regMethodArgsPoorObjectPassing3,
@@ -2666,6 +2665,7 @@ enum CPPParamsOutputMode
             case regMethodArgsPassingCppToEc:                  return 'm';
             case regMethodArgsPassing2:                        return 'e';
             case regMethodArgsPassing3:                        return 'f';
+            case regMethodArgsPassingOther:                    return 'm';
             case regMethodLocalConvEcToCppVarsForArgsPassing:  return 'g';
             case regMethodArgsPoorObjectPassing2:              return 'h';
             case regMethodArgsPoorObjectPassing3:              return 'i';
@@ -2686,7 +2686,7 @@ struct ParamsOptions
 };
 
 char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop, const char * cn,
-      bool addthisarg, bool comma, MacroMode macro, const char ** first, const char ** nameParamOfClassType, bool * hasStructClassParam, bool * hasVarArgs, ParamsOptions opts)
+      bool addthisarg, bool comma, const char * prefix, MacroMode macro, const char ** first, const char ** nameParamOfClassType, bool * hasStructClassParam, bool * hasVarArgs, ParamsOptions opts)
 {
    char x = mode;
    // char m = macro;
@@ -2695,6 +2695,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
    Type t = ti.type;
    bool noParams = t.params.count == 0 || (t.params.count == 1 && ((Type)t.params.first).kind == voidType);
    if(x); // get rid of warning
+   if(mode == regMethodArgsPassingOther && prefix)
+      z.concat(prefix);
    if(noParams && !addthisarg)
    {
       /*if(mode == _argParamList)
@@ -2703,6 +2705,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
    else
    {
       Type param;
+      Type templateParam = null;
       Type firstParam = null;
       Type nextParam = null;
       const char * sep = "";
@@ -2737,13 +2740,16 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
          }
       }
 
+      if(c && !t.staticMethod && t.thisClassTemplate && mode != passing)
+         templateParam = ProcessTypeString("uint64", false);
+
             // todo: handle typed object
             if(((mode == regMethodParamList || mode == regMethodCppParamList || mode == regMethodArgsPassingEcToCpp || mode == regMethodArgsPassingCppToEc ||
                   mode == regMethodArgsPassing2 || mode == regMethodArgsPassing3 || mode == regMethodLocalConvEcToCppVarsForArgsPassing ||
                   mode == regMethodArgsPoorObjectPassing2 || mode == regMethodArgsPoorObjectPassing3) &&
                   comma == true) || mode == passing) sep = ", ";
             ap = 0;
-            for(param = firstParam ? firstParam : t.params.first; param; param = nextParam)
+            for(param = templateParam ? templateParam : firstParam ? firstParam : t.params.first; param; param = nextParam)
             {
                if(param.kind != voidType)
                {
@@ -2762,11 +2768,13 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                   bool boolPtr = ptr && cParam && cParam.isBool;
                   ClassType ct = clReg ? clReg.type : systemClass;
                   // ClassType ct = cppGetClassInfoFromType(param, true, &clReg, &cParam, &hack, &isString, &isConst);
-                  char * typeString = null;
+                  char * typeString = null; // will have the name in if dealing with an arrayType
                   char * paramString = null;
                   if(hasVarArgs && param.kind == ellipsisType)
                      *hasVarArgs = true;
-                  if(!name) apname = firstParam ? CopyString(opts.utilStr1 ? opts.utilStr1 : "o_") : PrintString("ap", ++ap), name = apname;
+                  if(!name) apname = templateParam ? CopyString(t.thisClassTemplate.identifier.string) : firstParam ? CopyString(opts.utilStr1 ? opts.utilStr1 : "o_") : PrintString("ap", ++ap), name = apname;
+                  if(templateParam)
+                     apname[0] = (char)tolower(apname[0]);
                   z.concatx(sep);
                   if(hasStructClassParam && param != firstParam && param.kind == classType && ct == structClass)
                      *hasStructClassParam = true;
@@ -2828,7 +2836,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                                  ((ct == bitClass && !passing) || (ct == enumClass && !passing) || ct == noHeadClass ||
                                  (ct == normalClass && !isString) || (ct == structClass && !passing) || (ct == unitClass && !passing)); // (!v2 || passing)
                            if(override) normalClassMacroOverride = true;
-                           typeString = printType(type, false, false, true);
+                           typeString = printType(type, type.kind == arrayType, false, true);
                            if(override) normalClassMacroOverride = false;
                         }
                         break;
@@ -2858,7 +2866,6 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         if(nameParamOfClassType && !firstParam && !*nameParamOfClassType &&
                               clReg && !strcmp(clReg.name, ti.cl.name))
                            *nameParamOfClassType = name;
-                        if(param.kind == vaListType) debugBreakpoint();
                         if(typeString)
                            z.concatx(genidx(1A, x), strptrNoNamespace(typeString), !ptr ? "" : " ", !ptr ? "" : stars(ptr, 0));
                         else if(param.kind == classType && param.classObjectType == typedObject)
@@ -2873,7 +2880,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                            z.concatx(paramString);
                         else if(param.kind == ellipsisType || (param.kind == classType && param.classObjectType == typedObject))
                            ;
-                        else
+                        else if(param.kind != arrayType)
                            z.concatx(" ", name);
                         delete typeString;
                         if(!sep[0]) sep = ", ";
@@ -2896,6 +2903,12 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         }
                         break;
                      }
+                     case regMethodArgsPassingOther:
+                        if(param.kind == classType && param.classObjectType == typedObject)
+                           z.concatx("class_", name, ", ");
+                        z.concatx(name);
+                        if(!sep[0]) sep = ", ";
+                        break;
                      case regMethodArgsPassingEcToCpp:
                      {
                         bool inReg = opts.cppDirectObjects;
@@ -3049,7 +3062,14 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                   delete typeString;
                   delete paramString;
                }
-               if(firstParam)
+               if(templateParam)
+               {
+                  FreeType(templateParam);
+                  templateParam = null;
+                  nextParam = firstParam ? firstParam : t.params.first;
+                  if(mode == _argSpecialThisParamList) debugBreakpoint();
+               }
+               else if(firstParam)
                {
                   FreeType(firstParam);
                   firstParam = null;
@@ -4103,7 +4123,7 @@ static void cppMacroClassRegistration(
                   // if(!strcmp(cn, "Skin") && !strcmp(on, "CaptionFont"))
                   //    PrintLn(p);
                   // normalClassMacroOverride = true;
-                  params = cppParams(c, argsInfo, regMethodParamList, vClass, cn, true, comma, mode, &first, &nameParamOfClassType, null, null, { });
+                  params = cppParams(c, argsInfo, regMethodParamList, vClass, cn, true, comma, null, mode, &first, &nameParamOfClassType, null, null, { });
                   // normalClassMacroOverride = false;
                   if(nameParamOfClassType && t.classObjectType == none && t.thisClass && t.thisClass.registered)
                      oname = nameParamOfClassType;
@@ -4141,7 +4161,7 @@ static void cppMacroClassRegistration(
                {
                   bool comma = false;
                   bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
-                  char * args = cppParams(c, argsInfo, regMethodLocalConvEcToCppVarsForArgsPassing, vClass, cn, !ptrI, comma, mode, null, null, null, null, { });
+                  char * args = cppParams(c, argsInfo, regMethodLocalConvEcToCppVarsForArgsPassing, vClass, cn, !ptrI, comma, null, mode, null, null, null, null, { });
                   code.concatx(genspc__, args);
                   delete args;
                }
@@ -4197,7 +4217,7 @@ static void cppMacroClassRegistration(
                      code.concat("*i");
                      comma = true;
                   }
-                  code.concat((args = cppParams(c, argsInfo, regMethodArgsPassingEcToCpp, vClass, cn, !ptrI, comma, mode, null, null, null, null, { })));
+                  code.concat((args = cppParams(c, argsInfo, regMethodArgsPassingEcToCpp, vClass, cn, !ptrI, comma, null, mode, null, null, null, null, { })));
                   code.concatx(")", scptr ? "->impl" : impl ? ".impl" : "");
                }
                if(!noRet)
@@ -4218,48 +4238,11 @@ static void cppMacroClassRegistration(
                ea.copy("");
                if(t.kind == functionType)
                {
-                  const char * comma = "";
-                  switch(t.classObjectType)
-                  {
-                     //case none:         conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
-                     //case classPointer: conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
-                     case typedObject:
-                     {
-                        //if(!strcmp(name, "dest"))
-                        //   conmsg("breakpoint");
-                        ea.concatx("_class, ", nthis);
-                        comma = ", ";
-                        break;
-                     }
-                     //case anyObject:    conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
-                     case none:
-                        if(!t.staticMethod)
-                        {
-                           ea.concatx(nthis);
-                           comma = ", ";
-                        }
-                        break;
-                     default:           conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
-                  }
-                  if(!(t.params.count == 1 && ((Type)t.params.first).kind == voidType))
-                  {
-                     char * apname = null;
-                     uint ap = 0;
-                     MapIterator<consttstr, const String> i { map = methodParamNameSwap };
-                     // why isn't this in cppParams or whatnot?
-                     for(param = t.params.first; param; param = param.next)
-                     {
-                        const char * name = i.Index({ mn, param.name }, false) ? i.data : param.name;
-                        if(!name)
-                           apname = PrintString("ap", ++ap);
-                        if(param.kind == classType && param.classObjectType == typedObject)
-                           ea.concatx(", class_", name ? name : apname);
-                        ea.concatx(comma, name ? name : apname);
-                        if(!name) delete apname;
-                        if(!comma[0]) comma = ", ";
-                     }
-                  }
-
+                  const char * prefix = null;
+                  if(t.classObjectType == typedObject)
+                     prefix = "_class, ";
+                  ea.concatx((args = cppParams(c, argsInfo, regMethodArgsPassingOther, vClass, cn, true, prefix != null, prefix, mode, null, null, null, null, { })));
+                  delete args;
                }
                else conmsg(t.kind, " is not handled here. todo?");
 
@@ -4377,7 +4360,7 @@ static void cppMacroRegVirtualMethods(
             {
                Type t = m.md.dataType;
                TypeInfo argsInfo { type = t, m = m, md = m.md, cl = c.cl, c = c };
-               char * paramsDef = cppParams(c, argsInfo, regMethodCppParamList, vClass, cn, true, false, mode, null, null, null, null, { utilStr1 = "self" });
+               char * paramsDef = cppParams(c, argsInfo, regMethodCppParamList, vClass, cn, true, false, null, mode, null, null, null, null, { utilStr1 = "self" });
                paramsDefs.Add(paramsDef);
                if((len = strlen(paramsDef)) > maxDefLen)
                   maxDefLen = len;
@@ -4395,7 +4378,7 @@ static void cppMacroRegVirtualMethods(
                char * paramsDef = paramsDefs.firstIterator.data;
                Type t = m.md.dataType;
                TypeInfo argsInfo { type = t, m = m, md = m.md, cl = c.cl, c = c };
-               char * paramsPassing = cppParams(c, argsInfo, regMethodArgsPassingCppToEc, vClass, null, false, false, mode, null, null, null, null, { cppDirectObjects = true });
+               char * paramsPassing = cppParams(c, argsInfo, regMethodArgsPassingCppToEc, vClass, null, false, false, null, mode, null, null, null, null, { cppDirectObjects = true });
                int lenName = strlen(mn);
                int lenDef = strlen(paramsDef);
                // #define REG_$(classname)_$(methodname)(m,c)
@@ -4586,7 +4569,7 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx(", ");
                         s3z.concatx("self ? self->impl : (", sn, ")null");
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, mode, null, null, null, null, { })));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, mode, null, null, null, null, { })));
                      s3z.concatx(");");
                   }
                   else if((ctRT == normalClass && !cRT.isString) || ctRT == noHeadClass)
@@ -4600,7 +4583,7 @@ static void cppMacroClassVirtualMethods(
                      if(c.isInstance || c.cl.type != normalClass)
                          s3z.concatx("_cpp_class.impl, ");
                      s3z.concatx("self ? self->impl : (", sn, ")null");
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, mode, null, null, null, null, { })));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, mode, null, null, null, null, { })));
                      s3z.concatx(");", lc, ln);
 
                      s3z.concatx(genloc__, indents(ind + 2), "return ");
@@ -4628,7 +4611,7 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx(", ");
                         s3z.concatx("o_", anyObject ? "" : ".impl"/*" : (", cThis ? cThis.name : sn, ")null"*/);
                      }
-                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, mode, null, null, null, null, { })));
+                     s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, mode, null, null, null, null, { })));
                      s3z.concatx(")", cnst ? ")" : "", ";");
                   }
                   s4 = s3z._string;
@@ -4667,14 +4650,14 @@ static void cppMacroClassVirtualMethods(
                   if(ptrI)
                      s3 = CopyString("");
                   else
-                     s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, mode, null, null, null, null, { });
+                     s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, null, mode, null, null, null, null, { });
 
                   if(cRT && !cRT.isBool && !ptrRTGood && !(vClass.kind == vclass && cRT == vClass.c))
                      vClass.processDependency(g, otypedef, otypedef, cRT.cl);
 
                   cppMacroVirtualMethod(g, o, submode, prototype, template, ind + g.options.expandMacros && !prototype ? 0 : 1,
                         mn, mncpp, template ? c.name : cn, template ? "<TPT>" : "", bn, s1, s2, s3,
-                        (params = cppParams(c, argsInfo, _argParamList, vClass, cn, false, false, mode, null, null, null, null, { })), s4, 0);
+                        (params = cppParams(c, argsInfo, _argParamList, vClass, cn, false, false, null, mode, null, null, null, null, { })), s4, 0);
                   content = true;
                   delete s1;
                   delete s2;
