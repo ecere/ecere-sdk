@@ -1827,8 +1827,6 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
          else
          {
             char * cSymbol;
-            bool x = ti.type.constant;
-            bool x2 = ti.type.constant;
             if((opt.cpp && _class && _class.type == unitClass && !c.isUnichar && bareSymbolName(_class, opt)) ||
                   (!_class && t.kind == classType && t._class && !t._class.registered))
                cSymbol = CopyString(name);
