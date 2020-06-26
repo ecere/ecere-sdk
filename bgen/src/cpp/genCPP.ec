@@ -212,28 +212,12 @@ class CPPGen : CGen
          {
             BVariant v = f;
             BOutput out { vfunction, f = f, z = { allocType = heap } };
-            Type t = fn.dataType;
-            Type p1 = t.params.count == 2 ? t.params.first : null;
-            Type p2 = t.params.count == 2 ? t.params.last : null;
-            bool typedVarArgs = t.params.count == 2 && p1.kind == classType && p1.classObjectType == typedObject && p2.kind == ellipsisType;
+            // Type t = fn.dataType;
+            TypeInfo ti { type = fn.dataType, typeString = fn.dataTypeString };
             n.splitContents.Add(v);
             f.out = out;
-            if(typedVarArgs)
-            {
-               out.z.concatx(genloc__, "template <typename ...Ts> inline void ", f.oname, "(const Ts&... ts)", ln);
-               out.z.concatx(genloc__, "{", ln);
-               out.z.concatx(genloc__, "   std::apply(", ln);
-               out.z.concatx(genloc__, "      [](auto ...args) { ", f.cSymbol, "(args...); },", ln);
-               out.z.concatx(genloc__, "      std::tuple_cat(std::make_tuple(classof(ts), vapass(ts))..., std::make_tuple(null))", ln);
-               out.z.concatx(genloc__, "   );", ln);
-               out.z.concatx(genloc__, "}", ln, ln);
-            }
-            else
-            {
-               TypeInfo ti { type = f.fn.dataType, typeString = f.fn.dataTypeString };
-               out.z.concatx("// function: ", f.oname, ln);
-               genGenGlobalFunctionOrMethod(this, null, null, f, ti, v, 0, null, f.oname, false, out);
-            }
+            out.z.concatx("// function: ", f.oname, ln); // todo: remove line
+            genGenGlobalFunctionOrMethod(this, null, null, f, ti, v, 0, null, f.oname, false, out);
          }
       }
    }
@@ -1424,30 +1408,41 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
    char * args = null;
    TypeInfo argsInfo;
    // todo: support preceding arguments?
-   Type p1 = t.params.count == 2 ? t.params.first : null;
-   Type p2 = t.params.count == 2 ? t.params.last : null;
+   // Type p1 = t.params.count == 2 ? t.params.first : null;
+   // Type p2 = t.params.count == 2 ? t.params.last : null;
    bool hasStructClassParam = false;
-   bool typedVarArgs = t.params.count == 2 && p1.kind == classType && p1.classObjectType == typedObject && p2.kind == ellipsisType;
+   bool varArgs = false;
+   bool typedVarArgs = false; // t.params.count == 2 && p1.kind == classType && p1.classObjectType == typedObject && p2.kind == ellipsisType;
+   {
+      bool prevParamIsTypedObject = false;
+      Type param;
+      for(param = t.params.first; param; param = param.next)
+      {
+         if(param.kind == ellipsisType)
+         {
+            if(prevParamIsTypedObject)
+               typedVarArgs = true;
+            else
+               varArgs = true;
+            break;
+         }
+         prevParamIsTypedObject = param.kind == classType && param.classObjectType == typedObject;
+      }
+   }
 
    if(f && (
-         !strcmp(mn, "printBuf") ||          // va_list args ... thing
-         !strcmp(mn, "printLnBuf") ||        // va_list args ... thing
-         !strcmp(mn, "dualPipeOpenEnvf") ||  // va_list args ... thing
-         !strcmp(mn, "dualPipeOpenf") ||     // va_list args ... thing
-         !strcmp(mn, "execute") ||           // va_list args ... thing
-         !strcmp(mn, "executeEnv") ||        // va_list args ... thing
-         !strcmp(mn, "executeWait") ||       // va_list args ... thing
-         !strcmp(mn, "__e_logf") ||          // va_list args ... thing
-         !strcmp(mn, "shellOpen") ||         // va_list args ... thing
-         !strcmp(mn, "setActiveDesigner") || // missing eC class thing -- DesignerBase
+         !strcmp(mn, "setActiveDesigner") || // broken -- missing eC class thing -- DesignerBase
          false))
-      return; // todo: fix new brokens
+      return; // todo: fix new broken brokens
+
    if(cRT && cRT.cl.module && cRT.cl.module.name && skipClasses.Find({ !strcmp(cRT.cl.module.name, "ecereCOM") ? "eC" : cRT.cl.module.name, cRT.cl.name })) return;
 
    o.z.concatx(genloc__, indents(ind));
    if(!prototype)
       o.z.concatx(noHead ? cpptemplateNoHeadDef : template ? cpptemplateTemplateClassDef : "", (noHead || template) ? " " : "");
-   if(typedVarArgs)
+   if(varArgs)
+      o.z.concatx("template<typename... Args> ");
+   else if(typedVarArgs)
       o.z.concatx("template <typename ...Ts> ");
    if(t.staticMethod && prototype)
       o.z.concat("static ");
@@ -1509,9 +1504,9 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
       // if(!(t.params.count == 1 && ((Type)t.params.first).kind == voidType))
       // {
       //    bool comma = false;
-      if(typedVarArgs)
+      /*if(typedVarArgs)
          o.z.concat("const Ts&... ts");
-      else
+      else*/
       {
          argsInfo = { type = t, m = m, md = m ? m.md : null, cl = c ? c.cl : null, c = c, fn = f ? f.fn : null, f = f };
          o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList, v, null, false, comma, null, configuration, &first, null, &hasStructClassParam, null, { })));
@@ -1525,41 +1520,49 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
    o.z.concatx(ln);
    if(!prototype)
    {
-      bool hasVarArgs = false;
+      // bool hasVarArgs = false;
       bool comma = false;
       if(returnAddress)
          Print("");
       o.z.concatx(genloc__, indents(ind), "{", ln);
+      /*
       if(typedVarArgs)
       {
          // todo: support static method?
          o.z.concatx(genloc__, indents(ind + 1), "std::apply(", ln);
-         o.z.concatx(genloc__, indents(ind + 2), "[this](auto ...args) { ", c.name, "_", mn, "(impl, args...); },", ln);
+         o.z.concatx(genloc__, indents(ind + 2), "[", c ? "this" : "", "](auto ...args) { ", c ? c.name : "", c ? "_" : "", mn, "(", c ? "impl, " : "", args/-*"args..."*-/, "); },", ln);
          o.z.concatx(genloc__, indents(ind + 2), "std::tuple_cat(std::make_tuple(classof(ts), vapass(ts))..., std::make_tuple(null))", ln);
          o.z.concatx(genloc__, indents(ind + 1), ");", ln);
       }
       else
+      */
       {
          {
             bool comma = false;
+            char * args;
+            int len;
             // bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
-            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing2, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, &hasVarArgs, { });
-            int len = strlen(args);
+            // if(!strcmp(mn, "printBuf")) debugBreakpoint();
+            args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing2, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, null/*&hasVarArgs*/, { });
+            len = strlen(args);
             if(len > 1)
             {
                if(args[len - 1] == ' ')
                   args[len - 1] = '\0';
                o.z.concat(indents(ind + 1));
-               o.z.concat(args);
+               o.z.concatx(args, ln);
                o.z.concatx(ln);
             }
             delete args;
          }
+         //
+         /*
          if(hasVarArgs)
          {
             o.z.concatx(genloc__, indents(ind + 1), "va_list args;", ln);
             o.z.concatx(genloc__, indents(ind + 1), "va_start(args, format);", ln);
          }
+         */
          o.z.concatx(genloc__, indents(ind + 1),    noRet ? "" : "return ");
 #ifdef NORMAL_CLASS_RETURN_METHOD_TIH
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
@@ -1568,6 +1571,16 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
             o.z.concatx(cRT.cpp_name, "(");
 #endif
+
+         if(typedVarArgs)
+         {
+            char * args = cppParams(c, argsInfo, regMethodCppParamList, v, null, false, comma, null, configuration, &first, null, &hasStructClassParam, null, { inStdApply = true });
+            // todo: support static method?
+            o.z.concatx("std::apply(", ln);
+            o.z.concatx(genloc__, indents(ind + 2), "[", c ? "this" : "", "](", args, ") { "); // , c ? c.name : "", c ? "_" : "", mn, "(", c ? "impl, " : "", args/*"args..."*/, "); },", ln);
+            delete args;
+         }
+
          if(c)
             o.z.concatx(c.name, "_", mn, "(");
          else if(f)
@@ -1609,9 +1622,17 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          o.z.concatx(")");
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
             o.z.concatx(")");
+         if(typedVarArgs)
+         {
+            o.z.concatx("; },", ln);
+            o.z.concatx(genloc__, indents(ind + 2), "std::tuple_cat(std::make_tuple(classof(ts), vapass(ts))..., std::make_tuple(null))", ln);
+            o.z.concatx(genloc__, indents(ind + 1), ")");
+         }
          o.z.concatx(";", ln);
+         /*
          if(hasVarArgs)
             o.z.concatx(genloc__, indents(ind + 1), "va_end(args);", ln);
+         */
          delete args;
       }
       o.z.concatx(genloc__, indents(ind), "}", ln);
@@ -1649,6 +1670,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          bool comma = false; //const char * comma = "";
          argsInfo = { type = t, m = m, md = m ? m.md : null, cl = c ? c.cl : null, c = c, fn = f ? f.fn : null, f = f };
          o.z.concatx((params = cppParams(c, argsInfo, regMethodCppParamList2, v, null, false, comma, null, configuration, &first, null, null, null, { })));
+         delete params;
       }
       o.z.concatx(")", prototype ? ";" : "");
       // if(prototype)
@@ -1656,7 +1678,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
       o.z.concatx(ln);
       if(!prototype)
       {
-         bool hasVarArgs = false;
+         // bool hasVarArgs = false;
          bool comma = false;
          if(returnAddress)
             Print("");
@@ -1664,7 +1686,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          {
             bool comma = false;
             // bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
-            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing3, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, &hasVarArgs, { });
+            char * args = cppParams(c, argsInfo, regMethodArgsPoorObjectPassing3, /*vClass*/null, cn, /*!ptrI*/false, comma, null, configuration, null, null, null, null/*&hasVarArgs*/, { });
             int len = strlen(args);
             if(len > 1)
             {
@@ -1676,11 +1698,13 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
             }
             delete args;
          }
+         /*
          if(hasVarArgs)
          {
             o.z.concatx(genloc__, indents(ind + 1), "va_list args;", ln);
             o.z.concatx(genloc__, indents(ind + 1), "va_start(args, format);", ln);
          }
+         */
          o.z.concatx(genloc__, indents(ind + 1),    noRet ? "" : "return ");
          if(c)
             o.z.concatx(c.name, "_", mn, "(");
@@ -1709,8 +1733,10 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          }
 
          o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing3, v, null, false, comma, null, configuration, null, null, null, null, { })));
+         /*
          if(hasVarArgs)
             o.z.concatx(genloc__, indents(ind + 1), "va_end(args);", ln);
+            */
          o.z.concatx(");", ln);
          o.z.concatx(genloc__, indents(ind), "}", ln);
       }
@@ -1918,23 +1944,49 @@ static void processDataMembers(CPPGen g, BClass c, BVariant v, const char * cn, 
 {
    bool content = false;
    DataMember dm; IterDataMember dat { c };
-   while((dm = dat.next(all)))
+   while((dm = dat.next(publicOnly)))
    {
       const char * mn = dm.name; // member name
       Type t = dm.dataType ? dm.dataType : (dm.dataType = resolveDataType(c, dm.dataTypeString));
       TypeInfo ti { type = t, typeString = dm.dataTypeString, cl = c.cl };
       BitMember bm = (BitMember)dm;
 
+      if(mn && strstr(mn, "__ecerePrivateData") == mn) debugBreakpoint();
+
       // todo, recurse struct/union? members for bitfields inside structs i.e.: PolygonRing
-      if(bm.type != normalMember) continue;
-      if(t.kind == arrayType) continue; // todo: fix those? broken or unsupported?
-      if(t.kind == pointerType && t.type.kind == functionType) continue; // todo: fix those? broken or unsupported?
-      if(t.kind == pointerType && t.type.kind == pointerType && t.type.type.kind == functionType) continue; // todo: fix those? broken or unsupported?
-      if(t.kind == subClassType) continue; // todo: fix those? broken
-      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "Type")) continue; // todo: what with those?
-      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "Instantiation")) continue; // todo: what with those?
-      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "ClassDefinition")) continue; // todo: what with those?
-      if(t.kind == pointerType && t.type.kind == classType && t.type._class.registered && t.type._class.registered.type == structClass) continue; // todo: fix those? broken or unsupported?
+      // BM1 -- do it
+      if(bm.type != normalMember) { PrintLn(" -- broken member kind -- BM1 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; }
+      // BM2 -- won't hold you to that tonight , you can skip it or make it double * array;
+      /*
+struct C(Matrix)
+{
+   union
+   {
+      double array[16];
+      double m[4][4];
+   };
+};
+   double (* m)[4]; -- where that 4 is the second one, not the first.
+ double array[16];
+i.e.
+    double m[4][5];  ->  double (* m)[5];
+   double array[16]; -> double * array;
+      */
+      if(t.kind == arrayType) { /*PrintLn(" -- broken member kind -- BM2 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); */continue; } // todo: find a way for arrays -- proper fix: proper accessor
+      // BM3 --
+      if(t.kind == pointerType && t.type.kind == functionType) { PrintLn(" -- broken member kind -- BM3 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: fix those? broken or unsupported?
+      // BM4 --
+      if(t.kind == pointerType && t.type.kind == pointerType && t.type.type.kind == functionType) { PrintLn(" -- broken member kind -- BM4 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: fix those? broken or unsupported?
+      // BM5 --
+      if(t.kind == subClassType) { PrintLn(" -- broken member kind -- BM5 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: fix those? broken
+      // BM6 --
+      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "Type")) { PrintLn(" -- broken member kind -- BM6 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: what with those?
+      // BM7 --
+      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "Instantiation")) { PrintLn(" -- broken member kind -- BM7 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: what with those?
+      // BM8 --
+      if(t.kind == classType && !t._class.registered && !strcmp(t._class.string, "ClassDefinition")) { PrintLn(" -- broken member kind -- BM8 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: what with those?
+      // BM9 --
+      if(t.kind == pointerType && t.type.kind == classType && t.type._class.registered && t.type._class.registered.type == structClass) { PrintLn(" -- broken member kind -- BM9 -- ", g.lib.bindingName, " -- ", c.name, "::", mn); continue; } // todo: fix those? broken or unsupported?
 
       // Skip members which already have properties of the same name...
       if(eClass_FindProperty(c.cl, mn, c.cl.module) || strstr(mn, "__ecerePrivateData")) continue;
@@ -2682,6 +2734,7 @@ struct ParamsOptions
 {
    bool forMethodCallers; // todo
    bool cppDirectObjects;
+   bool inStdApply;
    const String utilStr1;
 };
 
@@ -2708,6 +2761,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
       Type templateParam = null;
       Type firstParam = null;
       Type nextParam = null;
+      bool prevParamIsTypedObject = false;
+      bool skipSep = false;
       const char * sep = "";
       uint ap;
 
@@ -2775,7 +2830,10 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                   if(!name) apname = templateParam ? CopyString(t.thisClassTemplate.identifier.string) : firstParam ? CopyString(opts.utilStr1 ? opts.utilStr1 : "o_") : PrintString("ap", ++ap), name = apname;
                   if(templateParam)
                      apname[0] = (char)tolower(apname[0]);
-                  z.concatx(sep);
+                  if(skipSep)
+                     skipSep = false;
+                  else
+                     z.concatx(sep);
                   if(hasStructClassParam && param != firstParam && param.kind == classType && ct == structClass)
                      *hasStructClassParam = true;
 
@@ -2825,6 +2883,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         }
                         else if(type.kind == subClassType)
                            typeString = PrintString(g_.sym.__class, " *");
+                        else if(type.kind == ellipsisType)
+                           typeString = prevParamIsTypedObject ? CopyString(opts.inStdApply ? "auto ...args" : "const Ts&... ts") : CopyString("Args... args");
                         else if(!cParam && type.kind == classType && type.classObjectType == typedObject)
                            ;
                         else if(ptr && cParam && cParam.isBool)
@@ -2869,7 +2929,12 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         if(typeString)
                            z.concatx(genidx(1A, x), strptrNoNamespace(typeString), !ptr ? "" : " ", !ptr ? "" : stars(ptr, 0));
                         else if(param.kind == classType && param.classObjectType == typedObject)
-                           z.concatx(genidx(1B, x), "typed_object_class_ptr class_", name, ", void * ", name);
+                        {
+                           if(!(param.next && param.next.kind == ellipsisType))
+                              z.concatx(genidx(1B, x), "typed_object_class_ptr class_", name, ", void * ", name);
+                           else
+                              skipSep = true;
+                        }
                         if((param.kind == classType && ((ct == noHeadClass && !cpp) || (ct == structClass && (!cpp || v2)))) ||
                            (firstParam && t.classObjectType == typedObject && t.byReference))
                            z.concatx(" *");
@@ -2891,6 +2956,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                      case regMethodArgsPoorObjectPassing3:
                      {
                         bool forMethodCallers = mode == regMethodArgsPoorObjectPassing2 || mode == regMethodArgsPoorObjectPassing3;
+                        // use of c instead of cParam probably broken
                         if(c && c.isInstance && param.kind == classType && param.classObjectType == anyObject)
                            z.concatx(genidx(2A, x), "TIH<", c.name, "> ", name, "_l(", name, "); ");
                         else if((ct == normalClass && !isString) && !forMethodCallers)
@@ -2959,7 +3025,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         // int ptr2 = 0;
                         bool v2 = mode == regMethodArgsPassing3;
                         if(param.kind == ellipsisType)
-                           z.concatx(genidx(5A, x), "args");
+                           z.concatx(genidx(5A, x), /*prevParamIsTypedObject ? "ts..." : */"args...");
                         else if(c && c.isInstance && type.kind == classType && type.classObjectType == anyObject)
                            z.concatx(genidx(5B, x), "*", name, "_l");
                         else if(!opts.cppDirectObjects && ((ct == normalClass && !isString) || ct == noHeadClass || (ct == structClass && !ptr)))
@@ -2977,7 +3043,12 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                            z.concatx(genidx(5E, x), "(", strptrNoNamespace(typeString), ptr ? " " : "", ptr ? stars(ptr, 0): "", ")", name, impl ? ".impl" : "");
                         }
                         else if(param.kind == classType && param.classObjectType == typedObject)
-                           z.concatx(genidx(5F, x), "class_", name, ", ", name);
+                        {
+                           if(!(param.next && param.next.kind == ellipsisType))
+                              z.concatx(genidx(5F, x), "class_", name, ", ", name);
+                           else
+                              skipSep = true;
+                        }
                         else
                            z.concatx(genidx(5G, x), name);
                         if(!sep[0]) sep = ", ";
@@ -3078,7 +3149,10 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                      break;
                }
                else
+               {
+                  prevParamIsTypedObject = param.kind == classType && param.classObjectType == typedObject;
                   nextParam = param.next;
+               }
             }
    }
    result = CopyString(z._string ? z._string : "");
@@ -4000,7 +4074,6 @@ static void cppMacroClassRegistration(
                continue;
 
             {
-               Type param;
                Type t = m.md.dataType;
                const char * on = m.name, * mn = m.mname;
                bool byRefTypedThis = false;

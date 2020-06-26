@@ -2433,7 +2433,7 @@ ASTRawString astBitTool(Class cl, BClass c)
          dm.dataType = ProcessTypeString(dm.dataTypeString, false);
          FinishTemplatesContext(context);
       }
-      if(bm.type == normalMember) // todo, recurse struct/union? members for bitfields inside structs i.e.: PolygonRing
+      if(bm.type == normalMember)
       {
          String n_ = PrintString(c.upper, "_", bm.name, "_");
          String n = CopyString(n_);
