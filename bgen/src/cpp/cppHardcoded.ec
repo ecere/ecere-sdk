@@ -135,12 +135,7 @@ void cppHardcodedContainer(BOutput o)
    o.z.concatx(genloc__, "      return *this;", ln);
    o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "   inline C(bool) takeOut(TP(Container, D) d);", ln, ln);
-
-   o.z.concatx(genloc__, "   IteratorPointer add(TPT value)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      return IteratorPointer(Container_add(impl, toTA<TPT>(value)));", ln);
-   o.z.concatx(genloc__, "   }", ln);
+   o.z.concatx(genloc__, "   inline C(bool) takeOut(/*fxme?*/TP(Container, D) d);", ln, ln);
 }
 
 void cppHardcodedArray(BOutput o)
@@ -297,10 +292,15 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "template<typename T>             struct is_same<T, T> { static const bool value = true; };");
    f.PrintLn(genloc__, "template<typename T, typename U> bool eqTypes()       { return is_same<T, U>::value; }", ln);
 
-   f.PrintLn(genloc__, "template<typename TTT> inline uint64 toTA(TTT x) { C(DataValue) p = { }; p.p = x; return p.ui64; }");
+   f.PrintLn(genloc__, "template<typename TTT> inline uint64 toTA(TTT x) { C(DataValue) p = { }; p.p = (void *)x; return p.ui64; }");
    f.PrintLn(genloc__, "template<> inline uint64 toTA(double x) { C(DataValue) p = { }; p.d = x; return p.ui64; }");
    f.PrintLn(genloc__, "template<> inline uint64 toTA(float x)  { C(DataValue) p = { }; p.f = x; return p.ui64; }");
    f.PrintLn(genloc__, "template<> inline uint64 toTA(int x)    { C(DataValue) p = { }; p.i = x; return p.ui64; }", ln);
+
+   f.PrintLn(genloc__, "template<typename TTT> inline TTT fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return (TTT)p.p; }");
+   f.PrintLn(genloc__, "template<> inline double fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.d; }");
+   f.PrintLn(genloc__, "template<> inline float  fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.f; }");
+   f.PrintLn(genloc__, "template<> inline int    fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.i; }", ln);
 
    f.PrintLn(genloc__, "template<typename T> struct is_const          { static const bool value = false; };");
    f.PrintLn(genloc__, "template<typename T> struct is_const<const T> { static const bool value = true; };");
