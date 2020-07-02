@@ -93,6 +93,7 @@ public struct Quaternion
          default:
          case zxy: a.Multiply(qPitch, qRoll);  q.Multiply(qYaw,   a); break;
       }
+      this = q;
    }
 
    void RotationDirection(const Vector3D direction)
