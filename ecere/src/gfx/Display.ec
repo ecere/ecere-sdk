@@ -436,6 +436,17 @@ struct SortPrimitive
 
 #define MAX_CLIP_POINTS    50
 
+#if !defined(_GLES) && !defined(_GLES2)
+#define USE_32_BIT_INDICES true
+#define uintindex uint32
+#else
+#define USE_32_BIT_INDICES false
+#define uintindex uint16
+#endif
+
+static uintindex * transIndices = null;
+static int transSize = 0;
+
 public class Display
 {
 public:
@@ -444,6 +455,11 @@ public:
       if(displaySystem)
       {
          displaySystem.numDisplays--;
+         if(!displaySystem.numDisplays)
+         {
+            transSize = 0;
+            delete transIndices;
+         }
          displaySystem.driver.DestroyDisplay(this);
       }
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
@@ -1216,14 +1232,6 @@ public:
       }
    }
 
-#if !defined(_GLES) && !defined(_GLES2)
-#define USE_32_BIT_INDICES true
-#define uintindex uint32
-#else
-#define USE_32_BIT_INDICES false
-#define uintindex uint16
-#endif
-
    void DrawTranslucency(void)
    {
       if(display3D && display3D.camera)
@@ -1237,8 +1245,6 @@ public:
             #define NUM_ROTATE_BUFS 40
             static GLEAB transBuffer[NUM_ROTATE_BUFS];
             static int bufSizes[NUM_ROTATE_BUFS];
-            static int transSize = 0;
-            static uintindex * transIndices = null;
             static int bufID = 0;
             Object * partlyTransparentObjects = display3D.partlyTransparentObjects.array;
             int count = display3D.partlyTransparentObjects.count;
