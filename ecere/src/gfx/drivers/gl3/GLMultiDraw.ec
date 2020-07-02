@@ -322,8 +322,8 @@ public struct GLArrayTexture
          resize(Min(2048, Max(8, numLayers + numLayers/2)), targetFBO);
          layer = spots.next();
       }
-      if(spots.used > 1024)
-         ; //PrintLn("WARNING: More than 1024 layers used in array texture!");
+      if(spots.used >= 2048)
+         PrintLn("WARNING: Already 2048 layers used in array texture!");
       if(layer == -1)
          PrintLn("ERROR: Failure to allocate texture layer!");
       return layer;
