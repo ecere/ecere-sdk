@@ -356,7 +356,14 @@ private:
             result = GetMap(type, (Map *)&array);
          }
          else if(!type || eClass_IsDerived(type, class(Container)))
+         {
             result = GetArray(type ? type : class(Array), &array);
+            if(!type && array)
+            {
+               array.Free();
+               delete array;
+            }
+         }
          else
             result = typeMismatch;
 
@@ -855,7 +862,7 @@ private:
                      delete value.p;
                }
             }
-
+            delete string;
             if(result != syntaxError)
             {
                if(ch != '}' && ch != ',')
@@ -1343,6 +1350,13 @@ private:
                                        Container container = (Container)*ptr;
                                        container.Free();
                                        delete container;
+                                    }
+                                    else if(*ptr)
+                                    {
+                                       delete *ptr;
+#ifdef _DEBUG
+                                       PrintLn("JSON: Warning: deleting existing instance!");
+#endif
                                     }
                                     *ptr = value.p;
                                  }
