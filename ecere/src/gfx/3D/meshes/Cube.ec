@@ -89,7 +89,7 @@ public:
                   if(c == 3) strcpy(name, "glass.bmp");
                   */
                   sprintf(name, "Cube Face %d", c+1);
-                  material = displaySystem.AddNamedMaterial(name);
+                  material = displaySystem ? displaySystem.AddNamedMaterial(name) : null;
                   if(material)
                   {
                      material.flags = { noFog = true, doubleSided = true, translucent = true };
