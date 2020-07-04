@@ -276,10 +276,17 @@ public:
 
    void Move(IteratorPointer ip, IteratorPointer afterIp)
    {
-      /*
       T * it = (T *)ip;
       T * after = (T *)afterIp;
-      */
+      uintsize size = class(T).typeSize;
+      byte * temp = new byte[size];
+      memcpy(temp, it, size);
+      if(it < after)
+         memmove(it,        it + 1, (byte *)after - (byte *)it);
+      else
+         memmove(after + 1, after,  (byte *)it - (byte *)after);
+      memcpy(after, temp, size);
+      delete temp;
    }
 
    virtual void RemoveAll()
