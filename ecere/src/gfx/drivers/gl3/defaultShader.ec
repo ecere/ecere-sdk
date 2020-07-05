@@ -51,6 +51,10 @@ public:
    bool normalsInvScale2:1;
    bool externalTexture:1;
    bool blackTint:1;
+   bool textureArray:1;
+   bool multiDraw:1;
+   bool transform3D:1;
+   bool squishFactor:1;
 };
 
 public class CompiledDefaultShader : CompiledShader

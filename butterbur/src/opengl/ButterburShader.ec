@@ -114,6 +114,8 @@ public:
    bool debugging:1;
    bool constantColor:1;
    bool normalsInvScale2:1;
+   bool externalTexture:1;
+   bool blackTint:1;
    bool textureArray:1;
    bool multiDraw:1;
    bool transform3D:1;
