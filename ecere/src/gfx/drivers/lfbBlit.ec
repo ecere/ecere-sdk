@@ -1,6 +1,7 @@
 namespace gfx::drivers;
 
 import "Bitmap"
+import "Color"
 
 //////////////////////////////////////////////////////////////////////////////
 // BLITTING ROUTINES /////////////////////////////////////////////////////////
@@ -435,7 +436,97 @@ FILTER(565F,  Color565, Color565,-1, 0, (ColorAlpha)(color), (Color565)(color))
 FILTER(565T,  Color565, Color565, 1, 1, (ColorAlpha)(color), (Color565)(color))
 FILTER(565TF, Color565, Color565,-1, 1, (ColorAlpha)(color), (Color565)(color))
 
-FILTER(888,   ColorAlpha, ColorAlpha, 1, 0, color, color)
+// FILTER(888,   ColorAlpha, ColorAlpha, 1, 0, color, color)
+
+class ColorAlpha;
+
+static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
+{
+   uint dstStride = dst.stride, srcStride = src.stride;
+   ColorAlpha * source = ((ColorAlpha *)src.picture) + sy * srcStride + sx;
+   ColorAlpha * dest   = ((ColorAlpha *)dst.picture) + dy * dstStride + dx;
+   uint addDest = dstStride - w;
+
+   if (w > sw && h > sh)
+   {
+      float scaleX = (float)sw / w;
+      float scaleY = (float)sh / h;
+      int y;
+      for (y = 0; y < h; y++)
+      {
+         int y0 = y * sh / h;
+         int y1 = Min(y0 + 1, sh - 1);
+         float alpha = y * scaleY - y0;
+         int x;
+         for (x = 0; x < w; x++, dest += 1)
+         {
+            int x0 = x * sw / w;
+            int x1 = Min(x0 + 1, sw - 1);
+            float beta = x * scaleX - x0;
+            ColorAlpha src00 = source[y0 * srcStride + x0];
+            ColorAlpha src01 = source[y0 * srcStride + x1];
+            ColorAlpha src10 = source[y1 * srcStride + x0];
+            ColorAlpha src11 = source[y1 * srcStride + x1];
+            Color color00 = src00.color, color01 = src01.color, color10 = src10.color, color11 = src11.color;
+            float a1 = (src00.a)   * (1.0f - beta) + (src01.a)   * beta;
+            float r1 = (color00.r) * (1.0f - beta) + (color01.r) * beta;
+            float g1 = (color00.g) * (1.0f - beta) + (color01.g) * beta;
+            float b1 = (color00.b) * (1.0f - beta) + (color01.b) * beta;
+            float a2 = (src10.a)   * (1.0f - beta) + (src11.a)   * beta;
+            float r2 = (color10.r) * (1.0f - beta) + (color11.r) * beta;
+            float g2 = (color10.g) * (1.0f - beta) + (color11.g) * beta;
+            float b2 = (color10.b) * (1.0f - beta) + (color11.b) * beta;
+            float a = a1 * (1.0f - alpha) + a2 * alpha;
+            float r = r1 * (1.0f - alpha) + r2 * alpha;
+            float g = g1 * (1.0f - alpha) + g2 * alpha;
+            float b = b1 * (1.0f - alpha) + b2 * alpha;
+            *dest = ColorAlpha { (byte) a, { (byte) r, (byte) g, (byte) b } };
+         }
+         dest += addDest;
+      }
+   }
+   else
+   {
+      int y;
+      float scaleX = (float)sw / w;
+      float scaleY = (float)sh / h;
+
+      for(y = 0; y < h; y++)
+      {
+         int y0 = (int)(y * scaleY);
+         int yc = Min(y0 + 2, sh) - y0;
+         int x;
+         for(x = 0; x < w; x++, dest += 1)
+         {
+            int x0 = (int)(x * scaleX);
+            int xc = Min(x0 + 2, sw) - x0;
+            uint addSrc = srcStride - xc;
+            uint64 a = 0, r = 0, g = 0, b = 0;
+            int i, j, numPixels = yc * xc;
+            ColorAlpha * src = source + y0 * srcStride + x0;
+
+            for(i = y0; i < y0 + yc; i++, src += addSrc)
+            {
+               for(j = 0; j < xc; j++)
+               {
+                  ColorAlpha pixel = *(src++);
+                  Color c = pixel.color;
+                  a += pixel.a, r += c.r, g += c.g, b += c.b;
+               }
+            }
+            a /= numPixels;
+            r /= numPixels;
+            g /= numPixels;
+            b /= numPixels;
+
+            *dest = ColorAlpha { (byte) a, { (byte) r, (byte) g, (byte) b } };
+         }
+         dest += addDest;
+      }
+   }
+}
+
+
 FILTER(888TF, ColorAlpha, ColorAlpha,-1, 0, color, color)
 FILTER(888T,  ColorAlpha, ColorAlpha, 1, 1, color, color)
 FILTER(888F,  ColorAlpha, ColorAlpha,-1, 1, color, color)
