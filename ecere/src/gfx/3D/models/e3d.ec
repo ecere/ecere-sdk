@@ -47,6 +47,7 @@ public class E3DFormat : ObjectFormat
          ctx.positiveYUp = options.positiveYUp;
          ctx.resolution = options.resolution;
          ctx.compressedTextures = options.compressedTextures;
+         ctx.skipTexturesProcessing = options.skipTexturesProcessing;
       }
       else
          ctx.texturesByID = { };
