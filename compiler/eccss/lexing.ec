@@ -193,7 +193,7 @@ public:
 
 public class CMSSLexer
 {
-   const String input;
+   /*const */String input;
 
    CMSSTokenType type; type = none;
    CMSSToken token, nextToken;
@@ -201,6 +201,14 @@ public class CMSSLexer
    int ambiguous, stackPos;
    CMSSCodePosition pos;
    char text[1024]; // FIXME: dynamic size
+
+   ~CMSSLexer()
+   {
+      delete input;
+      tokenStack.Free();
+      delete nextToken;
+      delete token;
+   }
 
    /*
       C constants rules, using CodeEditor code leveraging strtod()/strtol() for now
@@ -627,7 +635,9 @@ public class CMSSLexer
       delete (char *)input;
       input = data;
       pos = { 1, 1, 0 };
-      token = 0;
+
+      tokenStack.Free();
+
       delete token;
       delete nextToken;
       tokenStack.size = 0;
@@ -638,9 +648,11 @@ public class CMSSLexer
    public void initString(const String string)
    {
       delete (char *)input;
-      input = string;
+      input = CopyString(string); // TODO: Flag whether to free to avoid copy?
       pos = { 1, 1, 0 };
-      token = 0;
+
+      tokenStack.Free();
+
       delete token;
       delete nextToken;
       tokenStack.size = 0;
