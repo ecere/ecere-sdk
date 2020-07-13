@@ -415,6 +415,8 @@ public:
       bool result = false;
       if(source)
       {
+         Free();
+
          // TODO: Watch out for inst stuff
          width = source.width;
          height = source.height;
