@@ -295,8 +295,9 @@ private:
          }
          else
          {
-            if(!type) type = class(String);
+            if(!type && rType) type = class(String);
             result = GetString(&string);
+            if(!type) delete string, string = null, result = typeMismatch;
          }
          if(result)
          {
@@ -338,7 +339,11 @@ private:
                if(onGetDataFromString(type, &value.p, string))
                   result = success;
                else
+               {
+                  if(type)
+                     ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, value.p);
                   result = typeMismatch;
+               }
                delete string;
             }
             else
