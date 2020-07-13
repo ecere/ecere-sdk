@@ -366,7 +366,11 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      else
                      {
                         Bitmap bitmap = data;
-                        incref bitmap;
+#ifdef _DEBUG
+                        if(!bitmap._refCount)
+                           PrintLn("WARNING: E3D/textureID bitmap with 0 refs");
+#endif
+                        //incref bitmap;
                         ctx.curTextureID = id;
                         ctx.texturesByID[id] = bitmap;
                      }
