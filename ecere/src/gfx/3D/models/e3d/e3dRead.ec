@@ -69,6 +69,7 @@ class E3DContext : struct
    bool positiveYUp;
    int resolution;
    bool compressedTextures;
+   bool skipTexturesProcessing;
 }
 
 static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data)
@@ -301,7 +302,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   }
                   if(f && bitmap.LoadFromFile(f, format, null))
                   {
-                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8)
+                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
                         Bitmap bmp = bitmap.ProcessDD((bool)2, 0, false /*true*/, 16384, true);
                         bitmap.Copy2(bmp, true);
@@ -746,6 +747,7 @@ struct E3DOptions
    bool positiveYUp;
    int resolution;
    bool compressedTextures;
+   bool skipTexturesProcessing;
 };
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
@@ -965,6 +967,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.positiveYUp = options.positiveYUp;
       ctx.resolution = options.resolution;
       ctx.compressedTextures = options.compressedTextures;
+      ctx.skipTexturesProcessing = options.skipTexturesProcessing;
    }
    else
       ctx.texturesByID = { }, freeTexturesByID = true;
