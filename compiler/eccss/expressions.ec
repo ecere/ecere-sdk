@@ -1922,6 +1922,7 @@ public:
             }
          }
       }
+      delete identifierStr;
       return flags;
    }
 
@@ -1983,7 +1984,8 @@ public:
 
    ~CMSSMemberInit()
    {
-      delete identifiers;
+      if(identifiers)
+         identifiers.Free(), delete identifiers;
       delete initializer;
    }
 };
