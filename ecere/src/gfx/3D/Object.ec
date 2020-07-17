@@ -1024,11 +1024,15 @@ public:
                   }
                }
             }
+            delete map;
             return false;
          }
 
          if(!nVertices)
+         {
+            delete map;
             return true;
+         }
 
          if(this.flags.camera)
             delete camera;
