@@ -27,15 +27,16 @@ enum CompilerMessageType
    {
       switch(code)
       {
-         case a:  return any;
-         case e:  return error;
-         case o:  return other;
-         case w:  return warning;
-         case n:  return note;
-         case l:  return location;
-         case f:  return unusedFunc;
-         case v:  return unusedVar;
-         case s:  return varSetButNotUsed;
+         case space: return any;
+         case a:     return any;
+         case e:     return error;
+         case o:     return other;
+         case w:     return warning;
+         case n:     return note;
+         case l:     return location;
+         case f:     return unusedFunc;
+         case v:     return unusedVar;
+         case s:     return varSetButNotUsed;
       }
       return nil;
    }
@@ -160,6 +161,9 @@ class OutputView : Window
 
    EditBox activeBox;
    activeBox = buildBox;
+
+   // todo: add marks to find results! using space for any.. and generate marks as something
+   //       have marks for files? use enter? to go from file to file?
 
    LogBox buildBox
    {
