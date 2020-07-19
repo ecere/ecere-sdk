@@ -1356,7 +1356,7 @@ private:
 
    void CatMakeFileName(char * string, ProjectConfig config)
    {
-      char projectName[MAX_LOCATION];
+      char projectName[MAX_FILENAME];
       strcpy(projectName, name);
       sprintf(string, "%s%s%s.Makefile", projectName, config ? "-" : "", config ? config.name : "");
    }
@@ -2534,7 +2534,7 @@ private:
       PathCatSlash(target, targetDirExp.dir);
       CatTargetFileName(target, compiler, config);
       if(args[0] && (executableLauncher || !shellOpen))
-         sprintf(target, "%s %s", target, args);
+         strcatf(target, " %s", args);
       GetWorkingDir(oldDirectory, MAX_LOCATION);
 
       if(ide.workspace.debugDir && strlen(ide.workspace.debugDir))
