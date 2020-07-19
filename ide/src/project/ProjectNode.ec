@@ -834,13 +834,21 @@ private:
       char path[MAX_LOCATION];
       GetFullFilePath(path, true, true);
       if(path[0] && !paths.Find(path))
-         paths.Add((absolutePath = CopyString(path)));
+      {
+         delete absolutePath;
+         absolutePath = CopyString(path);
+         paths.Add(absolutePath);
+      }
 #if !defined(ECERE_DOCUMENTOR) && !defined(ECERE_EPJ2MAKE) && !defined(TEST_SUITE)
       if(absolutePath)
       {
          getRealPath(absolutePath, path);
          if(path[0] && !paths.Find(path))
-            paths.Add((realPath = CopyString(path)));
+         {
+            delete realPath;
+            realPath = CopyString(path);
+            paths.Add(realPath);
+         }
       }
 #endif
 
@@ -913,6 +921,10 @@ private:
          configurations.Free();
          delete configurations;
       }
+
+      delete realPath;
+      delete absolutePath;
+      paths.Free();
 
       /////////////////////////////
       delete path;
