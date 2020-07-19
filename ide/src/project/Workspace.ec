@@ -220,6 +220,7 @@ public:
    bool vgTrackOrigins;
    int vgRedzoneSize;
    bool alwaysRebuild;
+   bool noParsing;
    GuiConfigData guiConfigData;
 
 private:

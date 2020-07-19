@@ -726,7 +726,7 @@ class CodeEditor : Window
    {
       get
       {
-         if(!noParsing && !ide.noParsing)
+         if(!noParsing && !ide.noParsing && (!ide.workspace || !ide.workspace.noParsing))
          {
             // Only try to parse C and eC as that is all we currently have a parser for:
             EditSyntaxHL hl = editBox.syntaxHighlighting;
