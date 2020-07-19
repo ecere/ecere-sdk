@@ -1572,6 +1572,8 @@ private:
       const char * t, * s, * s2;
       char moduleName[MAX_FILENAME];
       const char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
+      uint lineCount = 0;
+      const uint tooLong = 1000000;
 
       DynamicString test { };
       DynamicString ecp { };
@@ -1639,7 +1641,8 @@ private:
             else
             {
                linePos = 0;
-               if(line[0])
+               ++lineCount;
+               if(line[0] && lineCount < tooLong)
                {
                   const char * message = null;
                   const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
@@ -2131,7 +2134,9 @@ private:
          }
          //if(!result) Sleep(1.0 / PEEK_RESOLUTION);
       }
-      if(ide.projectView.stopBuild)
+      if(lineCount >= tooLong)
+         ide.outputView.buildBox.Logf($"\nBuild log too long. Truncated.\n", line);
+      else if(ide.projectView.stopBuild)
       {
          ide.outputView.buildBox.Logf($"\nBuild cancelled by user.\n", line);
          f.Terminate();
