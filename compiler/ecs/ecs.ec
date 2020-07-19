@@ -565,7 +565,7 @@ static void WriteMain(const char * fileName)
                {
                   MethodImport method;
                   PropertyImport prop;
-                  char classID[1024];
+                  char classID[1024 + 16];
                   char className[1024] = "";
                   FullClassNameCat(className, _class.name, true);
 

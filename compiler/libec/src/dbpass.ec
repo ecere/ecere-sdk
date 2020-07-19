@@ -165,7 +165,7 @@ static void ProcessExpression(Expression exp)
       case dbfieldExp:
       {
          char tableName[1024];
-         char name[1024];
+         char name[1024 + 1024 + 16];
          int len = strlen(exp.db.table);
          memcpy(tableName, exp.db.table+1, len-2);
          tableName[len-2] = 0;
@@ -179,7 +179,7 @@ static void ProcessExpression(Expression exp)
       case dbtableExp:
       {
          char tableName[1024];
-         char name[1024];
+         char name[1024 + 15];
          int len = strlen(exp.db.table);
          memcpy(tableName, exp.db.table+1, len-2);
          tableName[len-2] = 0;
@@ -193,7 +193,7 @@ static void ProcessExpression(Expression exp)
       case dbindexExp:
       {
          char tableName[1024];
-         char name[1024];
+         char name[1024 + 1024 + 16];
          int len = strlen(exp.db.table);
          memcpy(tableName, exp.db.table+1, len-2);
          tableName[len-2] = 0;
@@ -717,10 +717,10 @@ static void ProcessDBTable(DBTableDef table)
 {
    OldList * rowClassDefs = MkList(), * idClassDefs = null;
    char tableName[1024];
-   char rowClassName[1024];
+   char rowClassName[1024 + 3];
    int len = strlen(table.name);
    bool indexed = false;
-   char tableID[1024];
+   char tableID[1024 + 15];
    char nameField[1024];
    OldList * args;
    OldList * members;
@@ -797,7 +797,7 @@ static void ProcessDBTable(DBTableDef table)
             case fieldEntry:
             {
                bool isIndex = false;
-               char fieldID[1024];
+               char fieldID[1024 + 1024 + 16];
                OldList * args;
                Specifier spec = entry.dataType.qualifiers ? (Specifier)entry.dataType.qualifiers->first : null;
 
@@ -986,7 +986,7 @@ static void ProcessDBTable(DBTableDef table)
          {
             case fieldEntry:
             {
-               char fieldID[1024];
+               char fieldID[1024 + 1024 + 16];
                OldList * args;
                Specifier spec = entry.dataType.qualifiers ? (Specifier)entry.dataType.qualifiers->first : null;
 
@@ -1076,7 +1076,7 @@ static void ProcessDBTable(DBTableDef table)
             {
                if(entry.items && entry.items->count)
                {
-                  char indexID[1024];
+                  char indexID[1024 + 1024 + 16];
                   DBIndexItem item;
                   int c;
                   bool needTable = false;
@@ -1106,7 +1106,7 @@ static void ProcessDBTable(DBTableDef table)
 
                   for(c = 0, item = entry.items->first; item; item = item.next, c++)
                   {
-                     char fieldID[1024];
+                     char fieldID[1024 + 1024 + 16];
                      // indexes[c].field = fieldCLSid;
                      sprintf(num, "%d", c);
                      sprintf(fieldID, "__ecereDBField_%s_%s", tableName, item.id.string);
