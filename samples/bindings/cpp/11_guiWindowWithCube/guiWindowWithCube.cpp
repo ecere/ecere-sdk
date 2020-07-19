@@ -39,7 +39,7 @@ public:
 
       a.add(3.0);
       a.add(4.2);
-      a.add(5.5);
+      a.add(9.5);
       // todo:
       printLn(a);
       // t_args_x<printLn>(a);
@@ -91,14 +91,14 @@ public:
 
    void onResize(int w, int h)
    {
-      eC_printLn(CO(String), "onResize", null);
+      // eC_printLn(CO(String), "onResize", null);
       camera.setup(w, h, null);
       camera.update();
    }
 
    void onRedraw(Surface & surface)
    {
-      eC_printLn(CO(String), "onRedraw", null);
+      // eC_printLn(CO(String), "onRedraw", null);
       surface.clear(ClearType::depthBuffer);
       display->setLight(0, light);
       display->setCamera(surface, camera);
