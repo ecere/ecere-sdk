@@ -163,3 +163,47 @@ char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
       *output = (char)tolower(*output);
    return output;
 }
+
+/*inline */const char * nocmt(const char * str)
+{
+   const char * result;
+   const char * cmt = strstr(str, "/*");
+   if(cmt)
+   {
+      const char * x;
+      if(cmt == str)
+      {
+         x = strstr(cmt + 2, "*/");
+         if(x)
+            result = x + 2;
+         else
+            result = str;
+      }
+      else
+      {
+         x = RSearchString(str, "*/", strlen(str), false, false);
+         if(x)
+            result = x + 2;
+         else
+            result = str;
+      }
+   }
+   else
+      result = str;
+   return result;
+}
+
+public void strSquashComments(char * string)
+{
+   char * s = string;
+   bool prevIs = false;
+   bool nextIs = *s && *(s + 1) == '/';
+   while(*s)
+   {
+      if(*s == '*' && (prevIs || nextIs))
+         *s = '#';
+      prevIs = *s == '/';
+      ++s;
+      nextIs = *s && *(s + 1) == '/';
+   }
+}
