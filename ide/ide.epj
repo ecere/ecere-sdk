@@ -163,7 +163,8 @@
             "../extras/gui/layout.ec",
             "../extras/gui/controls/StringsBox.ec",
             "../extras/types/DynamicString.ec",
-            "../extras/include/dpl.ec"
+            "../extras/include/dpl.ec",
+            "../extras/gui/GuiConfigData.ec"
          ]
       },
       {

@@ -63,6 +63,7 @@ _ECSOURCES = \
 	../extras/gui/controls/StringsBox.ec \
 	../extras/types/DynamicString.ec \
 	../extras/include/dpl.ec \
+	../extras/gui/GuiConfigData.ec \
 	src/dialogs/CompilersDetectionDialog.ec \
 	src/dialogs/FindInFilesDialog.ec \
 	src/dialogs/GlobalSettingsDialog.ec \
@@ -331,6 +332,9 @@ $(OBJ)DynamicString.sym: ../extras/types/DynamicString.ec
 $(OBJ)dpl.sym: ../extras/include/dpl.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/include/dpl.ec -o $(OBJ)dpl.sym
 
+$(OBJ)GuiConfigData.sym: ../extras/gui/GuiConfigData.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/gui/GuiConfigData.ec -o $(OBJ)GuiConfigData.sym
+
 $(OBJ)CompilersDetectionDialog.sym: src/dialogs/CompilersDetectionDialog.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.sym
 
@@ -479,6 +483,9 @@ $(OBJ)DynamicString.c: ../extras/types/DynamicString.ec $(OBJ)DynamicString.sym 
 $(OBJ)dpl.c: ../extras/include/dpl.ec $(OBJ)dpl.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/include/dpl.ec -o $(OBJ)dpl.c -symbols $(OBJ)
 
+$(OBJ)GuiConfigData.c: ../extras/gui/GuiConfigData.ec $(OBJ)GuiConfigData.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/gui/GuiConfigData.ec -o $(OBJ)GuiConfigData.c -symbols $(OBJ)
+
 $(OBJ)CompilersDetectionDialog.c: src/dialogs/CompilersDetectionDialog.ec $(OBJ)CompilersDetectionDialog.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/dialogs/CompilersDetectionDialog.ec -o $(OBJ)CompilersDetectionDialog.c -symbols $(OBJ)
 
@@ -625,7 +632,10 @@ $(OBJ)DynamicString.o: $(OBJ)DynamicString.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)DynamicString.c -o $(OBJ)DynamicString.o
 
 $(OBJ)dpl.o: $(OBJ)dpl.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)dpl.c -o $(OBJ)dpl.o
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)dpl.c -o $(OBJ)dpl.o
+
+$(OBJ)GuiConfigData.o: $(OBJ)GuiConfigData.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)GuiConfigData.c -o $(OBJ)GuiConfigData.o
 
 $(OBJ)CompilersDetectionDialog.o: $(OBJ)CompilersDetectionDialog.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)CompilersDetectionDialog.c -o $(OBJ)CompilersDetectionDialog.o

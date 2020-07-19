@@ -10385,6 +10385,17 @@ class WindowControllerInterface : ControllableWindow
       return result;
    }
 
+   void OnPosition(int x, int y, int width, int height)
+   {
+      if(controller.OnPosition)
+         ((void(*)(Window, WindowController, int, int, int, int))(void *)controller.OnPosition)((Window)controller.controlled, controller, x, y, width, height);
+      {
+         void(* onPosition)(Window, int, int, int, int) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPosition];
+         if(onPosition)
+            onPosition(controller.window, x, y, width, height);
+      }
+   }
+
    void OnResize(int width, int height)
    {
       if(controller.OnResize)
@@ -10394,6 +10405,18 @@ class WindowControllerInterface : ControllableWindow
          if(onResize)
             onResize(controller.window, width, height);
       }
+   }
+
+   bool OnStateChange(WindowState state, Modifiers mods)
+   {
+      bool result = controller.OnStateChange ? ((bool(*)(Window, WindowController, WindowState state, Modifiers mods))(void *)controller.OnStateChange)((Window)controller.controlled, controller, state, mods) : true;
+      if(result)
+      {
+         bool(* onStateChange)(Window, WindowState state, Modifiers mods) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnStateChange];
+         if(onStateChange)
+            result = onStateChange(controller.window, state, mods);
+      }
+      return result;
    }
 
    void OnRedraw(Surface surface)
@@ -10417,6 +10440,29 @@ class WindowControllerInterface : ControllableWindow
             result = onCreate(controller.window);
       }
       return result;
+   }
+
+   bool OnPostCreate()
+   {
+      bool result = controller.OnCreate ? ((bool(*)(Window, WindowController))(void *)controller.OnPostCreate)((Window)controller.controlled, controller) : true;
+      if(result)
+      {
+         bool(* onPostCreate)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPostCreate];
+         if(onPostCreate)
+            result = onPostCreate(controller.window);
+      }
+      return result;
+   }
+
+   void OnDestroy()
+   {
+      if(controller.OnDestroy)
+         ((void(*)(Window, WindowController))(void *)controller.OnDestroy)((Window)controller.controlled, controller);
+      {
+         bool(* onDestroy)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnDestroy];
+         if(onDestroy)
+            onDestroy(controller.window);
+      }
    }
 
    bool OnLoadGraphics()
@@ -10487,7 +10533,7 @@ public:
       set { controlled = value; }
       get { return controlled; }
    }
-   // TODO: Add OnStateChange so we can implement SavedConfigWindow as a WindowController instead
+
    virtual bool V::OnKeyDown(WindowController controller, Key key, unichar ch);
    virtual bool V::OnKeyUp(WindowController controller, Key key, unichar ch);
    virtual bool V::OnKeyHit(WindowController controller, Key key, unichar ch);
@@ -10507,6 +10553,49 @@ public:
    virtual bool V::OnCreate(WindowController controller);
    virtual bool V::OnLoadGraphics(WindowController controller);
    virtual void V::OnUnloadGraphics(WindowController controller);
+   virtual void V::OnPosition(WindowController controller, int x, int y, int width, int height);
+   virtual bool V::OnStateChange(WindowController controller, WindowState state, Modifiers mods);
+   virtual bool V::OnPostCreate(WindowController controller);
+   virtual void V::OnDestroy(WindowController controller);
+
+   // CHECK: what else is missing?
+   /*
+   virtual void OnDestroyed(void);
+   virtual bool OnClose(bool parentClosing);
+   virtual bool OnMoving(int *x, int *y, int w, int h);
+   virtual bool OnResizing(int *width, int *height);
+   virtual void OnApplyGraphics(void);
+   virtual bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct);
+   virtual void OnActivateClient(Window client, Window previous);
+   virtual bool OnSysKeyDown(Key key, unichar ch);
+   virtual bool OnSysKeyUp(Key key, unichar ch);
+   virtual bool OnSysKeyHit(Key key, unichar ch);
+   virtual bool OnMouseOver(int x, int y, Modifiers mods);
+   virtual bool OnMouseLeave(Modifiers mods);
+   virtual void OnMouseCaptureLost(void);
+   virtual void OnHScroll(ScrollBarAction action, int position, Key key);
+   virtual void OnVScroll(ScrollBarAction action, int position, Key key);
+   virtual void OnDrawOverChildren(Surface surface);
+   virtual bool OnFileModified(FileChange fileChange, const char * param);
+   virtual bool OnSaveFile(const char * fileName);
+   virtual void OnChildAddedOrRemoved(Window child, bool removed);
+   virtual void OnChildVisibilityToggled(Window child, bool visible);
+   virtual void OnChildResized(Window child, int x, int y, int w, int h);
+   virtual void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h) { *w = 0, *h = 0; }
+   virtual void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh) { *mw = 0, *mh = 0; }
+   virtual void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
+   virtual void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving);
+   virtual void PreShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving);
+   virtual bool IsMouseMoving(int x, int y, int w, int h)
+   virtual bool IsMouseResizing(int x, int y, int w, int h, bool *resizeX, bool *resizeY, bool *resizeEndX, bool *resizeEndY)
+   virtual void UpdateNonClient();
+   virtual void SetBox(Box box);    // This is used in the MySkin skin
+   virtual bool IsInside(int x, int y)
+   virtual bool IsOpaque()
+   virtual bool Window::NotifyActivate(Window window, bool active, Window previous);
+   virtual void Window::NotifyDestroyed(Window window, DialogResult result);
+   virtual void Window::NotifySaved(Window window, const char * filePath);
+   */
 
 private:
    public int (** windowVTbl)();

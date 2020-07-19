@@ -7,6 +7,7 @@ public import "ecere"
 import "StringsBox"
 import "OldIDESettings"
 import "SyntaxColorScheme"
+import "GuiConfigData"
 
 // *** Color Schemes ***
 class IDEColorScheme
@@ -480,6 +481,8 @@ class IDESettingsContainer : GlobalSettings
    virtual void onLoadRecentFiles();
    virtual void onLoadRecentProjects();
    virtual void onLoad();
+   virtual void onInit();
+   virtual void onModified();
 
    CompilerConfigs compilerConfigs;
    RecentFiles recentFiles;
@@ -771,6 +774,8 @@ private:
          data.activeColorScheme = colorScheme.name;
       }
 
+      if(!data.guiConfigData) data.guiConfigData = { };
+
       // Import from previous ecereIDE settings
       if(oldConfig)
       {
@@ -787,6 +792,7 @@ private:
          data.recentProjects.write(this);
          data.recentProjects.Free();
       }
+      onInit();
       return result;
    }
 
@@ -1169,6 +1175,8 @@ public:
       }
       get { return activeColorScheme; }
    }
+
+   GuiConfigData guiConfigData;
 
 private:
    CompilerConfigs compilerConfigs { };

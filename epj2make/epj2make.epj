@@ -91,7 +91,8 @@
                ]
             },
             "../extras/gui/controls/StringsBox.ec",
-            "../extras/types/DynamicString.ec"
+            "../extras/types/DynamicString.ec",
+            "../extras/gui/GuiConfigData.ec"
          ]
       },
       "epj2make.ec"

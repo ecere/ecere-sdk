@@ -77,7 +77,8 @@
                   "../ide/src/designer/SyntaxColorScheme.ec"
                ]
             },
-            "../extras/gui/controls/StringsBox.ec"
+            "../extras/gui/controls/StringsBox.ec",
+            "../extras/gui/GuiConfigData.ec"
          ]
       },
       {

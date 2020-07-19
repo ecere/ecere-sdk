@@ -220,6 +220,7 @@ public:
    bool vgTrackOrigins;
    int vgRedzoneSize;
    bool alwaysRebuild;
+   GuiConfigData guiConfigData;
 
 private:
    char * name;
@@ -246,6 +247,8 @@ private:
    bool modified;
    bool holdTracking;
 
+   property bool isModified { get { return modified || (guiConfigData && guiConfigData.modified); } }
+
    vgRedzoneSize = -1;
    vgLeakCheck = summary;
 
@@ -257,7 +260,7 @@ private:
          static bool skip = true;
          if(skip)
             skip = false;
-         else if(modified)
+         else if(isModified)
             Save();
 
          if(ide.debugStart)
@@ -1020,6 +1023,7 @@ public:
       if(!watches) watches = { };
       if(!openedFiles) openedFiles = { };
       if(!recentFiles) recentFiles = { };
+      if(!guiConfigData) guiConfigData = { };
    }
 
    void Free()
@@ -1040,6 +1044,7 @@ public:
       if(watches) { watches.Free(); delete watches; }
       if(openedFiles) { openedFiles.Free(); delete openedFiles; }
       if(recentFiles) { recentFiles.Free(); delete recentFiles; }
+      delete guiConfigData;
 
       projects.Free();
    }
@@ -1072,6 +1077,8 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
 {
    File f;
    Workspace workspace = null;
+
+   ideMainFrame.holdGuiConfigDataSaving();
 
    f = FileOpen(filePath, read);
    if(f)
@@ -1180,6 +1187,8 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                }
             }
          }
+         if(workspace.guiConfigData)
+            workspace.guiConfigData.applyWindowConfig(((GuiDataSavingController)ideMainFrame.controller).name, ideMainFrame);
          workspace.Init();
          if(!workspace.projects.first)
          {
@@ -1203,6 +1212,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
             {
                MessageBox { type = ok, master = ide, contents = $"Workspace load file failed", text = $"Workspace Load File Error" }.Modal();
                delete workspace;
+               ideMainFrame.resumeGuiConfigDataSaving();
                return null;
             }
          }
@@ -1274,6 +1284,8 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
       if(!workspace.activeCompiler || !workspace.activeCompiler[0])
          workspace.activeCompiler = defaultCompilerName;
    }
+
+   ideMainFrame.resumeGuiConfigDataSaving();
 
    return workspace;
 }

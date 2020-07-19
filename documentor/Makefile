@@ -67,6 +67,7 @@ _ECSOURCES = \
 	../ide/src/designer/SyntaxColorScheme.ec \
 	../ide/src/OldIDESettings.ec \
 	../extras/gui/controls/StringsBox.ec \
+	../extras/gui/GuiConfigData.ec \
 	src/Documentor.ec \
 	src/SettingsDialog.ec
 
@@ -188,6 +189,9 @@ $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 $(OBJ)StringsBox.sym: ../extras/gui/controls/StringsBox.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.sym
 
+$(OBJ)GuiConfigData.sym: ../extras/gui/GuiConfigData.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../extras/gui/GuiConfigData.ec -o $(OBJ)GuiConfigData.sym
+
 $(OBJ)Documentor.sym: src/Documentor.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/Documentor.ec -o $(OBJ)Documentor.sym
 
@@ -220,6 +224,9 @@ $(OBJ)SyntaxColorScheme.c: ../ide/src/designer/SyntaxColorScheme.ec $(OBJ)Syntax
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
+$(OBJ)GuiConfigData.c: ../extras/gui/GuiConfigData.ec $(OBJ)GuiConfigData.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/gui/GuiConfigData.ec -o $(OBJ)GuiConfigData.c -symbols $(OBJ)
+
 $(OBJ)Documentor.c: src/Documentor.ec $(OBJ)Documentor.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/Documentor.ec -o $(OBJ)Documentor.c -symbols $(OBJ)
 
@@ -251,6 +258,9 @@ $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 
 $(OBJ)StringsBox.o: $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)StringsBox.c -o $(OBJ)StringsBox.o
+
+$(OBJ)GuiConfigData.o: $(OBJ)GuiConfigData.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)GuiConfigData.c -o $(OBJ)GuiConfigData.o
 
 $(OBJ)Documentor.o: $(OBJ)Documentor.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Documentor.c -o $(OBJ)Documentor.o

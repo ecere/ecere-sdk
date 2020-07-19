@@ -22,6 +22,8 @@ import "ProjectSettings"
 import "ProjectView"
 import "Workspace"
 
+import "GuiConfigData"
+
 import "CodeEditor"
 import "Designer"
 import "ToolBox"
@@ -43,6 +45,8 @@ import "PictureEdit"
 import "about"
 
 import "FileSystemIterator"
+
+GuiConfigData dummyGuiConfigData; // compiling Workspace.ec fails without this as it somehow fails at getting the symbols from this (ide.ec) file
 
 class ImportFolderProjectsFSI : NormalFileSystemIterator
 {
@@ -96,8 +100,37 @@ IDESettingsContainer settingsContainer
    void onLoadCompilerConfigs()     { ide.UpdateCompilerConfigs(true); }
    void onLoadRecentFiles()         { ide.updateRecentFilesMenu(); }
    void onLoadRecentProjects()      { ide.updateRecentProjectsMenu(); }
-   void onLoad()                    { ide.ApplyColorScheme(colorScheme); ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize); }
+   void onLoad()
+   {
+      ide.ApplyColorScheme(colorScheme);
+      ide.ApplyFont(ideSettings.codeEditorFont, ideSettings.codeEditorFontSize);
+      // if(!ideMainFrame.holding)
+      //    ideSettings.guiConfigData.controlSaving(true);
+   }
+   void onInit()
+   {
+      // ideSettings.guiConfigData.onModified = onGuiConfigDataModified;
+      ideSettings.guiConfigData.onSave = onGuiConfigDataSave;
+      if(!ideMainFrame.holding)
+         ideSettings.guiConfigData.controlSaving(true);
+   }
 };
+
+/*
+void GuiConfigData::onGuiConfigDataModified()
+{
+   //
+}
+*/
+
+bool GuiConfigData::onGuiConfigDataSave()
+{
+   //
+   settingsContainer.Save();
+   return true;
+}
+
+
 
 define maxPathLen = 65 * MAX_LOCATION;
 
@@ -479,6 +512,54 @@ class IDEMainFrame : Window
    state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 #endif
+
+   bool holding;
+
+   controller = GuiDataSavingController
+   {
+      controlled = this;
+      name = "ecereIDE";
+
+      GuiConfigData getGuiConfigData()
+      {
+         if(ideMainFrame.holding)
+            return null;
+         if(ide.workspace)
+            return ide.workspace.guiConfigData;
+         return ideSettings.guiConfigData;
+      }
+   };
+
+   void holdGuiConfigDataSaving()
+   {
+      bool inW = ide.workspace != null;
+      GuiConfigData gcd = inW ? ide.workspace.guiConfigData : ideSettings.guiConfigData;
+      if(gcd)
+      {
+         holding = true;
+         gcd.controlSaving(false);
+         if(gcd.modified)
+         {
+            if(inW)
+               ide.workspace.Save();
+            else
+               settingsContainer.Save();
+            gcd.modified = false;
+         }
+      }
+   }
+
+   void resumeGuiConfigDataSaving()
+   {
+      bool inW = ide.workspace != null;
+      GuiConfigData gcd = inW ? ide.workspace.guiConfigData : ideSettings.guiConfigData;
+      if(gcd)
+      {
+         gcd.applyWindowConfig(((GuiDataSavingController)controller).name, this);
+         gcd.controlSaving(true);
+         holding = false;
+      }
+   }
 
    Stacker stack
    {
@@ -2105,6 +2186,7 @@ class IDEWorkSpace : Window
 
    bool ProjectClose()
    {
+      ideMainFrame.holdGuiConfigDataSaving();
       projectView.visible = false;
       if((!projectView || projectView.created == false || projectView.Destroy(0)) && MenuWindowCloseAll(null, 0))
       {
@@ -2121,8 +2203,10 @@ class IDEWorkSpace : Window
          ideMainFrame.text = titleECEREIDE;
          ide.AdjustMenus();
          ide.updateRecentMenus();
+         ideMainFrame.resumeGuiConfigDataSaving();
          return true;
       }
+      ideMainFrame.resumeGuiConfigDataSaving();
       return false;
    }
 
