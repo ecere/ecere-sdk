@@ -1615,7 +1615,17 @@ class BClass : struct
    char * baseSymbolName;
    char * py_initializer;
    char * simplestIdentName;
-   const char * cpp_name;
+   char * cpp_name;
+   char * tcpp_name;
+   struct
+   {
+      int templParamsCount; // the C++ template parameters count
+      char * template;
+      char * templatem;
+      char * tprototype;
+      char * targs;
+      char * targsm;
+   } cpp;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
       bool ecere = gen.lib.ecere;
@@ -1689,8 +1699,13 @@ class BClass : struct
 
       if(gen.lang == CPlusPlus)
       {
+         bool templatePrefix = (cl.type == noHeadClass || ((cl.type == normalClass || cl.type == structClass) && cl.templateArgs));
          MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
-         cpp_name = isString ? cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
+         const char * n = isString ? cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
+         // todo: fix symbol construction issues before we can use this: ex: 'cn, "_get_", mn' where cn is not meant to be cpp_name
+         cpp_name = CopyString(n);
+         tcpp_name = templatePrefix ? PrintString(cpptemplatePrefix, n) : CopyString(n);
+         cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &cpp.tprototype, &cpp.template, &cpp.targs, &cpp.templatem, &cpp.targsm);
       }
 
       if(python && py && isBool)
@@ -1781,6 +1796,13 @@ class BClass : struct
       delete base; delete upper; delete spec; delete cname; delete cSymbol; delete baseSymbolName;
       delete coSymbol;
       delete py_initializer;
+      delete cpp_name;
+      delete tcpp_name;
+      delete cpp.template;
+      delete cpp.templatem;
+      delete cpp.tprototype;
+      delete cpp.targs;
+      delete cpp.targsm;
       if(cleanDataType)
       {
          FreeType(cl.dataType);

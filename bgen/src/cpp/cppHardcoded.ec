@@ -8,9 +8,6 @@ define cpptemplateArgClassObject = "TCO";
 define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
-define cpptemplateTemplateClassDef = "template <class TPT>";
-define cpptemplateTemplateClassParams = "<TPT>";
-define cpptemplateTemplateTypeDef = "template <typename TPT>";
 
 void cppHardcodedInstancePart1(BOutput o)
 {
@@ -118,39 +115,39 @@ void cppHardcodedInstancePart2(BOutput o)
                genloc__, "   // end of hardcoded content", ln);
 }
 
-void cppHardcodedContainer(BOutput o)
+void cppHardcodedContainer(BOutput o, BClass c)
 {
-   o.z.concatx(genloc__, "   TContainer(std::initializer_list<TPT> list) : TContainer()", ln);
+   o.z.concatx(genloc__, "   TContainer(std::initializer_list<TP_D> list) : TContainer()", ln);
    o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TP_D>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
    o.z.concatx(genloc__, "         add(*it);", ln);
    o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "   TContainer & operator =(std::initializer_list<TPT> list)", ln);
+   o.z.concatx(genloc__, "   TContainer & operator =(std::initializer_list<TP_D> list)", ln);
    o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TP_D>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
    o.z.concatx(genloc__, "         add(*it);", ln);
    o.z.concatx(genloc__, "      return *this;", ln);
    o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "   inline C(bool) takeOut(/*fxme?*/TP(Container, D) d);", ln, ln);
+   o.z.concatx(genloc__, "   inline C(bool) takeOut(TP_D d);", ln, ln);
 }
 
-void cppHardcodedArray(BOutput o)
+void cppHardcodedArray(BOutput o, BClass c)
 {
-   o.z.concatx(ln);
-   o.z.concatx(genloc__, "   TArray<TPT> (std::initializer_list<TPT> list) : TArray<TPT> ()", ln);
+   o.z.concatx(ln); // TP_D is not available here
+   o.z.concatx(genloc__, "   TArray", c.cpp.targs, " (std::initializer_list<TP_T> list) : TArray", c.cpp.targs, " ()", ln);
    o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
    o.z.concatx(genloc__, "         this->add(*it);", ln);
    o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "   TArray<TPT> & operator =(std::initializer_list<TPT> list)", ln);
+   o.z.concatx(genloc__, "   TArray", c.cpp.targs, " & operator =(std::initializer_list<TP_T> list)", ln);
    o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TPT>::iterator it;", ln);
+   o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
    o.z.concatx(genloc__, "         this->add(*it);", ln);
    o.z.concatx(genloc__, "      return *this;", ln);
@@ -160,7 +157,7 @@ void cppHardcodedArray(BOutput o)
 void cppTmpDefineVirtualMethod      (CPPGen g, File f, bool prototype, bool template)
 {
    ZString z { allocType = heap };
-   cppMacroVirtualMethod(g, z, definition, prototype, template, 0, "n", "ncpp", "c", "t", "b", "r", "p0", "ep", "p", "d", 0);
+   cppMacroVirtualMethod(g, z, definition, prototype, template, 0, "n", "ncpp", "c", "t", "t2", "b", "r", "p0", "ep", "p", "d", 0);
    f.Puts(z._string);
    delete z;
    f.Print(ln);
@@ -186,7 +183,7 @@ void cppTmpDefineClassDef              (CPPGen g, File f) { ZString z { allocTyp
 void cppTmpDefineRegisterClass         (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClass      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineRegisterClassCPP      (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroRegisterClassCPP   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineIntConstructClass     (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroIntConstructClass  (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
-void cppTmpDefineMacroMoveConstructors (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroMoveConstructors   (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
+void cppTmpDefineMacroMoveConstructors (CPPGen g, File f, bool template) { ZString z { allocType = heap }; cppDefineMacroMoveConstructors   (g, z, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineConstructClass        (CPPGen g, File f, bool template) { ZString z { allocType = heap }; cppDefineMacroConstructClass     (g, z, template, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineDestructClass         (CPPGen g, File f) { ZString z { allocType = heap }; cppDefineMacroDestructClass      (g, z, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
 void cppTmpDefineClassRegistration     (CPPGen g, File f, bool prototype, bool template, bool original) { ZString z { allocType = heap }; cppDefineMacroClassRegister      (g, z, prototype, template, original, 0, 0); f.Puts(z._string); delete z; f.Print(ln); }
@@ -204,9 +201,15 @@ void printZedStringToFile(File f, ZString z)
 void cppHardcodedCorePart1(CPPGen g, File f)
 {
    f.PrintLn(genloc__, "#include <initializer_list>");
-   f.PrintLn(genloc__, "#include <tuple>", ln);
+   f.PrintLn(genloc__, "#include <tuple>");
+   f.PrintLn(genloc__, "#include <array>");
+   f.PrintLn(genloc__, "#include <string_view>");
+   f.PrintLn(genloc__, "#include <cstdio>", ln);
 
    f.PrintLn(genloc__, "// Syntactic Sugar (NOT GENERATED)", ln);
+
+   f.PrintLn(genloc__, "#define UNPACK(...) __VA_ARGS__", ln);
+
    f.PrintLn(genloc__, "// INSTANCEL, INSTANCE: get the C++ instance out of supplied eC instance");
    f.PrintLn(genloc__, "//            x: pointer to eC instance");
    f.PrintLn(genloc__, "//            c: eC 'Class' object representing the C++ class");
@@ -235,7 +238,8 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "   EVOLVE_APP(ac, a)", ln);
 
    cppTmpDefineIntConstructClass(g, f);
-   cppTmpDefineMacroMoveConstructors(g, f);
+   cppTmpDefineMacroMoveConstructors(g, f, false);
+   cppTmpDefineMacroMoveConstructors(g, f, true);
    cppTmpDefineConstructClass(g, f, false);
    cppTmpDefineConstructClass(g, f, true);
    cppTmpDefineDestructClass(g, f);
@@ -270,7 +274,9 @@ void cppHardcodedCorePart1(CPPGen g, File f)
 
    f.PrintLn(genloc__, "// SELF: get C++ class instance pointer from within hackish member of the class");
    f.PrintLn(genloc__, "#define CONTAINER_OF(ptr, type, member) ((type *)(((char *)ptr) + 0x10 - (char *)&((type *)0x10)->member))");
+   f.PrintLn(genloc__, "#define TCONTAINER_OF(ptr, type, t, member) ((T ## type UNPACK t *)(((char *)ptr) + 0x10 - (char *)&((T ## type UNPACK t *)0x10)->member))");
    f.PrintLn(genloc__, "#define SELF(c, member)  __attribute__((unused)) c * self = CONTAINER_OF(this, c, member);");
+   f.PrintLn(genloc__, "#define TSELF(c, t, member)  __attribute__((unused)) T ## c UNPACK t * self = TCONTAINER_OF(this, c, (UNPACK t), member);");
 
    f.PrintLn(genloc__, "#define getimpli(i)  ((Instance)i).impl", ln);
 
@@ -302,17 +308,83 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "template<> inline float  fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.f; }");
    f.PrintLn(genloc__, "template<> inline int    fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.i; }", ln);
 
-   f.PrintLn(genloc__, "template<typename T> struct is_const          { static const bool value = false; };");
-   f.PrintLn(genloc__, "template<typename T> struct is_const<const T> { static const bool value = true; };");
-   f.PrintLn(genloc__, "template<typename T> bool isConst()       { return is_const<T>::value; }", ln);
-
-   f.PrintLn(genloc__, "template <typename T> struct TypeName");
+   f.PrintLn(genloc__, "template <std::string_view const&... Strs>");
+   f.PrintLn(genloc__, "struct join");
    f.PrintLn(genloc__, "{");
-   f.PrintLn(genloc__, "   static const char* get() { return \"int\"; }");
+   f.PrintLn(genloc__, "    // Helper to get a string literal from a std::array");
+   f.PrintLn(genloc__, "    template <std::size_t N, std::array<char, N> const& S, typename>");
+   f.PrintLn(genloc__, "    struct to_char_array;");
+   f.PrintLn(genloc__, "    template <std::size_t N, std::array<char, N> const& S, std::size_t... I>");
+   f.PrintLn(genloc__, "    struct to_char_array<N, S, std::index_sequence<I...>>");
+   f.PrintLn(genloc__, "    {");
+   f.PrintLn(genloc__, "        static constexpr const char value[]{S[I]..., 0};");
+   f.PrintLn(genloc__, "    };");
+   f.PrintLn(genloc__, "    // Join all strings into a single std::array of chars");
+   f.PrintLn(genloc__, "    static constexpr auto impl() noexcept");
+   f.PrintLn(genloc__, "    {");
+   f.PrintLn(genloc__, "        constexpr std::size_t len = (Strs.size() + ... + ((sizeof...(Strs) - 1) * 2));");
+   f.PrintLn(genloc__, "        std::array<char, len + 1> arr{};");
+   f.PrintLn(genloc__, "        auto append = [i = 0, first = true, &arr](auto const& s) mutable {");
+   f.PrintLn(genloc__, "            if (!first) {");
+   f.PrintLn(genloc__, "                arr[i++] = ',';");
+   f.PrintLn(genloc__, "                arr[i++] = ' ';");
+   f.PrintLn(genloc__, "            }");
+   f.PrintLn(genloc__, "            first = false;");
+   f.PrintLn(genloc__, "            for (auto c : s) arr[i++] = c;");
+   f.PrintLn(genloc__, "        };");
+   f.PrintLn(genloc__, "        (append(Strs), ...);");
+   f.PrintLn(genloc__, "        arr[len] = 0;");
+   f.PrintLn(genloc__, "        return arr;");
+   f.PrintLn(genloc__, "    }");
+   f.PrintLn(genloc__, "    // Give the joined string static storage");
+   f.PrintLn(genloc__, "    static constexpr auto arr = impl();");
+   f.PrintLn(genloc__, "    // Convert to a string literal, then view as a std::string_view");
+   f.PrintLn(genloc__, "    static constexpr std::string_view value =");
+   f.PrintLn(genloc__, "        to_char_array<arr.size(), arr, std::make_index_sequence<arr.size()>>::value;");
    f.PrintLn(genloc__, "};", ln);
 
-   f.PrintLn(genloc__, "template <> struct TypeName<int> { static const char* get() { return \"int\"; } };");
-   f.PrintLn(genloc__, "template <> struct TypeName<double> { static const char* get() { return \"double\"; } };", ln);
+   f.PrintLn(genloc__, "template <std::string_view const&... Strs>");
+   f.PrintLn(genloc__, "struct join_nocomma");
+   f.PrintLn(genloc__, "{");
+   f.PrintLn(genloc__, "    // Helper to get a string literal from a std::array");
+   f.PrintLn(genloc__, "    template <std::size_t N, std::array<char, N> const& S, typename>");
+   f.PrintLn(genloc__, "    struct to_char_array;");
+   f.PrintLn(genloc__, "    template <std::size_t N, std::array<char, N> const& S, std::size_t... I>");
+   f.PrintLn(genloc__, "    struct to_char_array<N, S, std::index_sequence<I...>>");
+   f.PrintLn(genloc__, "    {");
+   f.PrintLn(genloc__, "        static constexpr const char value[]{S[I]..., 0};");
+   f.PrintLn(genloc__, "    };");
+   f.PrintLn(genloc__, "    // Join all strings into a single std::array of chars");
+   f.PrintLn(genloc__, "    static constexpr auto impl() noexcept");
+   f.PrintLn(genloc__, "    {");
+   f.PrintLn(genloc__, "        constexpr std::size_t len = (Strs.size() + ...);");
+   f.PrintLn(genloc__, "        std::array<char, len + 1> arr{};");
+   f.PrintLn(genloc__, "        auto append = [i = 0, &arr](auto const& s) mutable {");
+   f.PrintLn(genloc__, "            for (auto c : s) arr[i++] = c;");
+   f.PrintLn(genloc__, "        };");
+   f.PrintLn(genloc__, "        (append(Strs), ...);");
+   f.PrintLn(genloc__, "        arr[len] = 0;");
+   f.PrintLn(genloc__, "        return arr;");
+   f.PrintLn(genloc__, "    }");
+   f.PrintLn(genloc__, "    // Give the joined string static storage");
+   f.PrintLn(genloc__, "    static constexpr auto arr = impl();");
+   f.PrintLn(genloc__, "    // Convert to a string literal, then view as a std::string_view");
+   f.PrintLn(genloc__, "    static constexpr std::string_view value =");
+   f.PrintLn(genloc__, "        to_char_array<arr.size(), arr, std::make_index_sequence<arr.size()>>::value;");
+   f.PrintLn(genloc__, "};", ln);
+
+   f.PrintLn(genloc__, "template<typename T> struct is_const            { static const bool value = false; };");
+   f.PrintLn(genloc__, "template<typename T> struct is_const<const T>   { static const bool value = true; };");
+   f.PrintLn(genloc__, "template<typename T> constexpr std::string_view isConst()   { return is_const<T>::value ? \"const \" : \"\"; }", ln);
+
+   f.PrintLn(genloc__, "template <typename T> struct TypeName  { static constexpr const char* get() { return \"int\";    } };");
+   f.PrintLn(genloc__, "template <> struct TypeName<int>       { static constexpr const char* get() { return \"int\";    } };");
+   f.PrintLn(genloc__, "template <> struct TypeName<double>    { static constexpr const char* get() { return \"double\"; } };", ln);
+
+   f.PrintLn(genloc__, "template <typename T> static constexpr std::string_view stringifyConst = isConst<T>();");
+   f.PrintLn(genloc__, "template <typename T> static constexpr std::string_view stringifyTypeName = TypeName<T>::get();");
+   f.PrintLn(genloc__, "template <typename T> static constexpr std::string_view stringifyType = join_nocomma<stringifyConst<T>, stringifyTypeName<T>>::value;");
+   f.PrintLn(genloc__, "template <typename... T> static constexpr const char * getTemplateArgsString = join<stringifyType<T>...>::value.data();", ln);
 
    f.PrintLn(genloc__, "#define REGVMETHOD(b, n, m, p, t, a) \\");
    f.PrintLn(genloc__, "    if(!eqTypes<decltype(&m), decltype(&b::n)>()) \\");
@@ -334,12 +406,14 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    cppTmpDefinePropSet(g, f, { false });
    cppTmpDefinePropGet(g, f, { false });
 
+   f.PrintLn(genloc__, "#define TCTCO  <TC, TCO>", ln);
    cppTmpDefineIntPropSet(g, f, { false, nohead });
    cppTmpDefinePropSet(g, f, { false, nohead });
-   f.PrintLn(genloc__, "#define TCTCO  <TC, TCO>", ln);
    cppTmpDefinePropGet(g, f, { false, nohead });
 
+   cppTmpDefineIntPropSet(g, f, { true, template });
    cppTmpDefinePropSet(g, f, { true, template });
+   cppTmpDefinePropGet(g, f, { true, template });
 
    cppTmpDefineIntPropSet(g, f, { false, template });
    cppTmpDefinePropSet(g, f, { false, template });
@@ -408,7 +482,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "            eC_delete(vTbl);");
    f.PrintLn(genloc__, "         vTbl = newt(Function, impl->vTblSize);");
    f.PrintLn(genloc__, "         memset(vTbl, 0, sizeof(Function) * impl->vTblSize);");
-   f.PrintLn(genloc__, "         // printf(\"setting up %s\\n\", impl->name);"); // todo: remove debug printing?
+// f.PrintLn(genloc__, "         printf(\"setting up %s\\n\", impl->name);"); // todo: remove debug printing?
    f.PrintLn(genloc__, "         TC::class_registration(*this);");
    f.PrintLn(genloc__, "      }");
    f.PrintLn(genloc__, "   }");
@@ -420,7 +494,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "   }");
    f.PrintLn(genloc__, "};", ln);
 
-   f.PrintLn(genloc__, "template<typename TPT> inline CPPClass & ensureTemplatized(CPPClass & _class, const char * name)");
+   f.PrintLn(genloc__, "template<typename ... TPs> inline CPPClass & ensureTemplatized(CPPClass & _class, const char * name)");
    f.PrintLn(genloc__, "{");
    f.PrintLn(genloc__, "   if(!_class.impl || !_class.impl->templateClass)");
    f.PrintLn(genloc__, "   {");
@@ -428,13 +502,9 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "      strcpy(type, \"CPP\");");
    f.PrintLn(genloc__, "      strcat(type, name);");
    f.PrintLn(genloc__, "      strcat(type, \"<\");");
-   f.PrintLn(genloc__, "      {");
-   f.PrintLn(genloc__, "         const char * t1 = TypeName<TPT>::get();");
-   f.PrintLn(genloc__, "         if(isConst<TPT>()) strcat(type, \"const \");");
-   f.PrintLn(genloc__, "         strcat(type, t1);");
-   f.PrintLn(genloc__, "      }");
+   f.PrintLn(genloc__, "      strcat(type, getTemplateArgsString<TPs...>);");
    f.PrintLn(genloc__, "      strcat(type, \">\");");
-   f.PrintLn(genloc__, "      // printf(\"Instantiating %s\\n\", type);");
+// f.PrintLn(genloc__, "      printf(\"Instantiating %s\\n\", type);");
    f.PrintLn(genloc__, "      _class.impl = (XClass *)eC_findClass(__thisModule, type);");
    f.PrintLn(genloc__, "      if(_class.impl) _class.impl->bindingsClass = &_class;");
    f.PrintLn(genloc__, "   }");
