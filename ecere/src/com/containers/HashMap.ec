@@ -75,7 +75,7 @@ static const mmHashAccess hashAccess =
 
 public struct HashMapIterator<class KT, class VT> : Iterator<VT, IT = KT>
 {
-   property HashMap map
+   property HashMap<KT, VT> map
    {
       set { container = (Container<VT, IT>)value; }
       get { return (HashMap<KT, VT>)container; }
