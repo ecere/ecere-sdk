@@ -1812,7 +1812,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       Class arrayType = (type = map._class, type.templateArgs[0].dataTypeClass);
       const String tArg = strchr(arrayType.name, '<');
       bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue"));
-      MapIterator it { map = map };
+      MapIterator it { map = (void*)map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
       bool jsonDicMap = false;
       if(mapNodeClass && mapNodeClass.templateClass && eClass_IsDerived(mapNodeClass.templateClass, class(MapNode)))
