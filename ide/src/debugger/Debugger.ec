@@ -555,6 +555,9 @@ class Debugger
                break;
          }
 
+         if(monitor && curEvent.canBeMonitored)
+            GdbGetStack();
+
          if(curEvent == signal)
          {
             char * s = null;
@@ -601,7 +604,6 @@ class Debugger
 
          if(monitor && curEvent.canBeMonitored)
          {
-            GdbGetStack();
             activeThread = stopItem.threadid;
             GdbCommand(0, false, "-thread-list-ids");
             InternalSelectFrame(activeFrameLevel);
@@ -1225,7 +1227,7 @@ class Debugger
       ide.workspace.Save();
       //if(expression && state == stopped)
       if(expression)
-         ResolveWatch(wh);
+         ResolveWatch(wh, null);
    }
 
    void MoveIcons(const char * fileName, int lineNumber, int move, bool start)
@@ -2654,9 +2656,9 @@ class Debugger
       }
    }
 
-   bool ResolveWatch(Watch wh)
+   bool ResolveWatch(Watch wh, bool * result)
    {
-      bool result = false;
+      bool resolved = false;
 
       _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::ResolveWatch()");
       wh.Reset();
@@ -3043,6 +3045,8 @@ class Debugger
                      break;
                   case stringExp:
                      wh.value = CopyString(exp.string);
+                     if(result)
+                        *result = wh.value[0] != '\0';
                      break;
                   case constantExp:
                      // Temporary Code for displaying Strings
@@ -3140,6 +3144,8 @@ class Debugger
                               delete string;
                            }
                            wh.value = CopyString(value);
+                           if(result)
+                              *result = wh.value[0] != '\0';
                         }
                      }
                      else if(wh.type && wh.type.kind == classType && wh.type._class &&
@@ -3157,6 +3163,8 @@ class Debugger
                         }
                         else
                            value = strtoll(exp.constant, null, 0);
+                        if(result)
+                           *result = value != 0;
 
                         for(item = enumeration.values.first; item; item = item.next)
                            if(item.data == value)
@@ -3165,7 +3173,7 @@ class Debugger
                            wh.value = CopyString(item.name);
                         else
                            wh.value = PrintString($"Invalid Enum Value (", value, ")");
-                        result = true;
+                        resolved = true;
                      }
                      else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class &&
                               wh.type._class.registered && !strcmp(wh.type._class.registered.fullName, "unichar"))) )
@@ -3235,12 +3243,16 @@ class Debugger
                         string[sizeof(string)-1] = 0;
 
                         wh.value = CopyString(string);
-                        result = true;
+                        if(result)
+                           *result = wh.value[0] != '\0';
+                        resolved = true;
                      }
                      else
                      {
                         wh.value = CopyString(exp.constant);
-                        result = true;
+                        if(result)
+                           *result = wh.value[0] != '\0';
+                        resolved = true;
                      }
                      break;
                   default:
@@ -3274,7 +3286,7 @@ class Debugger
                         if(showAddress)
                         {
                            wh.value = PrintHexUInt64(exp.address);
-                           result = true;
+                           resolved = true;
                            genericError = false;
                         }
                      }
@@ -3306,7 +3318,7 @@ class Debugger
             wh.value = CopyString(watchmsg);
       }
       ide.watchesView.UpdateWatch(wh);
-      return result;
+      return resolved;
    }
 
    void EvaluateWatches()
@@ -3316,7 +3328,7 @@ class Debugger
       if(state == stopped)
       {
          for(wh : ide.workspace.watches)
-            ResolveWatch(wh);
+            ResolveWatch(wh, null);
       }
    }
 
@@ -3399,16 +3411,22 @@ class Debugger
 
       if(bpUser)
       {
-         bool conditionMet = true;
+         bool skip = false;
          if(bpUser.condition)
          {
-            if(WatchesLinkCodeEditor())
-               conditionMet = ResolveWatch(bpUser.condition);
+            bool conditionMet = false;
+            if(WatchesLinkCodeEditor() && ResolveWatch(bpUser.condition, &conditionMet))
+            {
+               if(!conditionMet)
+                  skip = true;
+            }
             else
-               conditionMet = false;
+            {
+               ide.outputView.debugBox.Logf($"Debugger Warning: unable to resolve breakpoint condition\n");
+            }
          }
          bpUser.hits++;
-         if(conditionMet)
+         if(!skip)
          {
             if(!bpUser.ignore)
                bpUser.breaks++;
