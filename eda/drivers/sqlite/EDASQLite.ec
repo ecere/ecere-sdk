@@ -980,7 +980,7 @@ class SQLiteTable : Table
 
    bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init)
    {
-      char command[1024];
+      char command[4096 + 64];
       int c;
       int result;
       char indexName[4096];
@@ -1098,7 +1098,7 @@ class SQLiteTable : Table
 
    DriverRow CreateRow()
    {
-      char command[1024];
+      char command[1024*2];
       sqlite3_stmt * statement;
       sqlite3_stmt * sysIDStmt = null, * insertStmt = null, * deleteStmt = null, * selectRowIDsStmt = null, * setRowIDStmt = null;
       sqlite3_stmt * prevStmt = null, * nextStmt = null, * lastStmt = null, * insertIDStmt = null;
