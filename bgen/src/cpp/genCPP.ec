@@ -452,17 +452,7 @@ bool prototypeClasses(CPPGen g, File f)
          {
             case normalClass:
                if(c.cl.templateArgs)
-               {
-                  if(!c.cpp.templParamsCount) debugBreakpoint();
                   f.PrintLn(genloc__, c.cpp.tprototype, " class ", tcn, ";");
-                  f.Print(genloc__, "typedef ", tcn, "<");
-                  {
-                     int n = 0;
-                     for(n = 0; n < c.cpp.templParamsCount; n++)
-                        f.Print(n != 0 ? ", " : "", "uint64");
-                  }
-                  f.PrintLn("> ", cn, ";");
-               }
                else
                   f.PrintLn(genloc__, "class ", cn, ";");
                if(!contents) contents = true;
@@ -796,6 +786,17 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
 
          while((m = itm.next(publicVirtual))) { m.init(itm.md, c.isInstance ? cBase : c, g); if((l = strlen(m.mname)) > maxLen) maxLen = l;}
 
+         if(pfx)
+         {
+            o.z.concatx(ln);
+            o.z.concatx(genloc__, "class ", c.cpp_name, ln);
+            o.z.concatx(genspc__, "{", ln);
+            o.z.concatx(genspc__, "public:", ln);
+            o.z.concatx(genspc__, "   static TCPPClass<", c.cpp_name, "> _cpp_class;", ln);
+            o.z.concatx(genspc__, "   static void class_registration(CPPClass & _cpp_class);", ln);
+            o.z.concatx(genspc__, "};", ln);
+         }
+
          if(c.isInstance)
          {
             // int maxLen = c.maxVirtualMethodNameLen + 1;
@@ -900,7 +901,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             }
             else if(((cBase && cBase.cl.type != systemClass && !cBase.isBool) || c.cl.type == noHeadClass) && !(c.cl.type == bitClass && cBase.cl.type == enumClass))
             {
-               o.z.concatx(" : public ", baseClassString);
+               o.z.concatx(" : public ", baseClassString, pfx ? ", " : "", pfx ? "public " : "", pfx ? c.cpp_name : "");
                if(c.cl.type == structClass && c.cl.templateArgs)
                   o.z.concatx(c.cpp.targs);
                if(c.cl.type == noHeadClass)
@@ -2162,10 +2163,111 @@ static void commonMemberHandling(
 
    if(ti.type.kind == classType && ti.type._class && strchr(ti.type._class.string, '<') && strchr(ti.type._class.string, '>'))
    {
+      bool b = false;
+      const char * typeString = ti.type._class.string;
       BClass cX2 = ti.type._class.registered.templateClass;
+      char * x = null;
       delete tn;
       tn = CopyString(cX2./*t*/cpp_name);
       if(strchr(tn, '<') && strchr(tn, '>')) debugBreakpoint();
+
+           if(!strcmp(typeString, "ecere::com::Container<T>"))                      x = CopyString("TContainer<TP_T>"), b = true;
+      else if(!strcmp(typeString, "ecere::com::Iterator<T>"))                       x = CopyString("TIterator<TP_T>"), b = true;
+      else if(!strcmp(typeString, "ecere::com::Container<T, IT>"))                  x = CopyString("TContainer<TP_T, TP_IT>"), b = true;
+
+      else if(!strcmp(typeString, "ecere::com::Array<ecere::gfx3D::MeshPart>"))     x = CopyString("TArray<MeshPart>");
+      else if(!strcmp(typeString, "ecere::com::Array<String>"))                     x = CopyString("TArray<String>");
+      else if(!strcmp(typeString, "ecere::com::Array<ecere::gui::Window>"))         x = CopyString("TArray<Window>");
+      else if(!strcmp(typeString, "ecere::com::List<ecere::net::CallAck>"))         x = CopyString("TList<CallAck>");
+      else if(!strcmp(typeString, "ecere::com::List<ecere::net::VirtualCallAck>"))  x = CopyString("TList<TVirtualCallAck>");
+      else if(!strcmp(typeString, "ecere::com::Array<const String>"))               x = CopyString("TArray<constString>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::IdFilter>"))              x = CopyString("TArray<IdFilter>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::Grouping>"))              x = CopyString("TArray<Grouping>");
+      else if(!strcmp(typeString, "ecere::com::Array<ecere::com::Class>"))          x = CopyString("TArray<Class>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::SQLiteSearchField>"))     x = CopyString("TArray<SQLiteSearchField>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::StringSearchField>"))     x = CopyString("TArray<StringSearchField>");
+      else if(!strcmp(typeString, "ecere::com::Container<eda::Field>"))             x = CopyString("TContainer<Field>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::ListField>"))             x = CopyString("TArray<ListField>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::StringSearchTable>"))     x = CopyString("TArray<StringSearchTable>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::SQLiteSearchTable>"))     x = CopyString("TArray<SQLiteSearchTable>");
+      else if(!strcmp(typeString, "ecere::com::Array<eda::LookupEditor>"))          x = CopyString("TArray<LookupEditor>");
+      else if(!strcmp(typeString, "ecere::com::Array<RecordField>"))                x = CopyString("TArray<RecordField>");
+      else if(!strcmp(typeString, "ecere::com::Array<double>"))                     x = CopyString("TArray<double>");
+      else if(!strcmp(typeString, "CMSSList<CMSSExpression>"))                      x = CopyString("TCMSSList<CMSSExpression>");
+      else if(!strcmp(typeString, "ecere::com::List<CMSSNode>"))                    x = CopyString("TList<CMSSNode>");
+      else if(!strcmp(typeString, "ecere::com::List<CMSSIdentifier>"))              x = CopyString("TList<CMSSIdentifier>");
+      else if(!strcmp(typeString, "ecere::com::Array<ValueColor>"))                 x = CopyString("TArray<ValueColor>");
+      else if(!strcmp(typeString, "ecere::com::Array<ValueOpacity>)"))              x = CopyString("TArray<ValueOpacity>)");
+      else if(!strcmp(typeString, "ecere::com::Array<GraphicalElement>"))           x = CopyString("TArray<GraphicalElement>");
+      else if(!strcmp(typeString, "ecere::com::Array<ValueOpacity>"))               x = CopyString("TArray<ValueOpacity>");
+      else if(!strcmp(typeString, "ecere::com::Array<ecere::gfx::ColorKey>"))       x = CopyString("TArray<ColorKey>");
+      else if(!strcmp(typeString, "ecere::com::Array<GeoData>"))                    x = CopyString("TArray<GeoData>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, eda::FieldValue>"))      x = CopyString("TMap<String, FieldValue>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, GeoJSONValue>"))         x = CopyString("TMap<String, GeoJSONValue>");
+      else if(!strcmp(typeString, "ecere::com::Array<GeoJSONFeature>"))             x = CopyString("TArray<GeoJSONFeature>");
+      else if(!strcmp(typeString, "ecere::com::Array<GeoJSONSegment>"))             x = CopyString("TArray<GeoJSONSegment>");
+      else if(!strcmp(typeString, "ecere::com::List<GeoLayer>"))                    x = CopyString("TList<GeoLayer>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, CMSSStyleSheet>"))       x = CopyString("TMap<String, CMSSStyleSheet>");
+      else if(!strcmp(typeString, "ecere::com::List<Presentation>"))                x = CopyString("TList<Presentation>");
+      else if(!strcmp(typeString, "ecere::com::Map<ecere::gfx::Color, ecere::com::Array<uint64> >")) x = CopyString("TMap<Color, TArray<uint64>>");
+      else if(!strcmp(typeString, "ecere::com::Container<LineString>"))             x = CopyString("TContainer<LineString>");
+      else if(!strcmp(typeString, "ecere::com::Container<GeoPoint>"))               x = CopyString("TContainer<GeoPoint>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, MBGLSpriteSymbol>"))     x = CopyString("TMap<String, MBGLSpriteSymbol>");
+      else if(!strcmp(typeString, "ecere::com::Array<int64>"))                      x = CopyString("TArray<int64>");
+      else if(!strcmp(typeString, "ecere::com::List<GeoExtent>"))                   x = CopyString("TList<GeoExtent>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, MapboxGLSourceData>"))   x = CopyString("TMap<String, MapboxGLSourceData>");
+      else if(!strcmp(typeString, "ecere::com::Array<MBGLLayersJSONData>"))         x = CopyString("TArray<MBGLLayersJSONData>");
+      else if(!strcmp(typeString, "ecere::com::Container<GraphicalElement>"))       x = CopyString("TContainer<GraphicalElement>");
+      else if(!strcmp(typeString, "ecere::com::Array<StackFrame>"))                 x = CopyString("TArray<StackFrame>");
+      else if(!strcmp(typeString, "ecere::com::Container<ecere::sys::Pointf>"))     x = CopyString("TContainer<Pointf>");
+      else if(!strcmp(typeString, "ecere::com::Container<ecere::gfx3D::Vector3Df>")) x = CopyString("TContainer<Vector3Df>");
+      else if(!strcmp(typeString, "ecere::com::Container<PolygonContour>"))         x = CopyString("TContainer<PolygonContour>");
+      else if(!strcmp(typeString, "ecere::com::Container<StartEndPair>"))           x = CopyString("TContainer<StartEndPair>");
+      else if(!strcmp(typeString, "ecere::com::Container<Polygon>"))                x = CopyString("TContainer<Polygon>");
+      else if(!strcmp(typeString, "ecere::com::Array<ProcessInvocation>"))          x = CopyString("TArray<ProcessInvocation>");
+      else if(!strcmp(typeString, "ecere::com::Array<int>"))                        x = CopyString("TArray<int>");
+      else if(!strcmp(typeString, "ecere::com::Array<TSRow>"))                      x = CopyString("TArray<TSRow>");
+      else if(!strcmp(typeString, "ecere::com::Array<TSZoomLevel>"))                x = CopyString("TArray<TSZoomLevel>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3IdentifierAndLinks>"))     x = CopyString("TArray<WFS3IdentifierAndLinks>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3Link>"))                   x = CopyString("TArray<WFS3Link>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3Collection>"))             x = CopyString("TArray<WFS3Collection>");
+      else if(!strcmp(typeString, "ecere::com::Array<ecere::com::Array<String> >")) x = CopyString("TArray<TArray<String>>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3Queryable>"))              x = CopyString("TArray<WFS3Queryable>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3VariableWidth>"))          x = CopyString("TArray<WFS3VariableWidth>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3TileMatrixSetLimit>"))     x = CopyString("TArray<WFS3TileMatrixSetLimit>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3TileMatrixSetLink>"))      x = CopyString("TArray<WFS3TileMatrixSetLink>");
+      else if(!strcmp(typeString, "ecere::com::Array<WFS3TileMatrix>"))             x = CopyString("TArray<WFS3TileMatrix>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFAccessor>"))         x = CopyString("TMap<String, glTFAccessor>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFAnimation>"))        x = CopyString("TMap<String, glTFAnimation>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFBufferView>"))       x = CopyString("TMap<String, glTFBufferView>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFBuffer>"))           x = CopyString("TMap<String, glTFBuffer>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFImage>"))            x = CopyString("TMap<String, glTFImage>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFMaterial>"))         x = CopyString("TMap<String, glTFMaterial>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFMesh>"))             x = CopyString("TMap<String, glTFMesh>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFNode>"))             x = CopyString("TMap<String, glTFNode>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFProgram>"))          x = CopyString("TMap<String, glTFProgram>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFSampler>"))          x = CopyString("TMap<String, glTFSampler>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFScene>"))            x = CopyString("TMap<String, glTFScene>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFShader>"))           x = CopyString("TMap<String, glTFShader>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFSkin>"))             x = CopyString("TMap<String, glTFSkin>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFTechnique>"))        x = CopyString("TMap<String, glTFTechnique>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFTexture>"))          x = CopyString("TMap<String, glTFTexture>");
+      else if(!strcmp(typeString, "ecere::com::Array<glTFAnimationChannel>"))       x = CopyString("TArray<glTFAnimationChannel>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFAnimationSampler>")) x = CopyString("TMap<String, glTFAnimationSampler>");
+      else if(!strcmp(typeString, "ecere::com::Array<glTFPrimitive>"))              x = CopyString("TArray<glTFPrimitive>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, String>"))               x = CopyString("TMap<String, String>");
+      else if(!strcmp(typeString, "ecere::com::Array<uint>"))                       x = CopyString("TArray<uint>");
+      else if(!strcmp(typeString, "ecere::com::Array<bool>"))                       x = CopyString("TArray<bool>");
+      else if(!strcmp(typeString, "ecere::com::Map<String, glTFTechniqueParameter>")) x = CopyString("TMap<String, glTFTechniqueParameter>");
+      else if(!strcmp(typeString, "")) x = CopyString("");
+      else { PrintLn(typeString); debugBreakpoint(); }
+      if(b)
+      {
+         delete tn;
+         tn = x;
+      }
+      else if(x)
+         delete x;
    }
 
    if(!strcmp(tn, "HashMapIterator"))
@@ -3191,6 +3293,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         else
                         {
                            z.concatx(genidx(6F, x));
+                           if(ti.cl && ti.cl.templateArgs)
+                              z.concatx(cpptemplatePrefix);
                            cppTypeSpec(z, "ident___", { type = param, cl = ti.cl }, { anonymous = true, bare = bare, cpp = true }, ti.cl);
                            if(param.kind == classType)
                            {
@@ -4957,7 +5061,7 @@ static void cppMacroClassVirtualMethods(
             o.concatx(genloc__, indents(ind), "struct ", c, sc, "_", sc, n, sc, "_Functor", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             ind++;
-               o.concatx(genloc__, indents(ind), "int _[0];", lc, ln);
+               o.concatx(genloc__, indents(ind), "[[no_unique_address]] int _[0];", lc, ln);
                o.concatx(genloc__, indents(ind), "typedef ", r, " (* FunctionType)(", p0, " ", p, ")", pt, lc, ln);
          }
          if(!prototype && template)
@@ -4980,7 +5084,7 @@ static void cppMacroClassVirtualMethods(
          {
                o.concatx(genloc__, indents(ind), "{", lc, ln);
                ind++;
-                  o.concatx(genloc__, indents(ind), "SELF(", c, ", ", ncpp, ");", lc, ln);
+                  o.concatx(genloc__, indents(ind), te ? "T" : "", "SELF(", c, te ? ", (" : "", te ? t : "", te ? ")" : "", ", ", ncpp, ");", lc, ln);
                   o.concatx(genloc__, indents(ind), "if(self->vTbl == ", cx, "::_cpp_class.vTbl)", lc, ln);
                   o.concatx(genloc__, indents(ind), "{", lc, ln);
                   ind++;
@@ -4989,7 +5093,7 @@ static void cppMacroClassVirtualMethods(
                         o.concatx(genloc__, indents(ind), "self->vTbl = (void (**)())eC_new(sizeof(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType) * size);", lc, ln);
                      else
                         o.concatx(genloc__, indents(ind), "self->vTbl = (void (**)())newt(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ", size);", lc, ln);
-                     o.concatx(genloc__, indents(ind), "memcpy(self->vTbl, ", c, "::_cpp_class.vTbl, sizeof(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ") * size);", lc, ln);
+                     o.concatx(genloc__, indents(ind), "memcpy(self->vTbl, ", cx, "::_cpp_class.vTbl, sizeof(", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", ") * size);", lc, ln);
                   ind--;
                   o.concatx(genloc__, indents(ind), "}", lc, ln);
                   o.concatx(genloc__, indents(ind), "((", cx, "::", c, sc, "_", sc, n, sc, "_Functor::FunctionType", " *)self->vTbl)[M_VTBLID(", b, ", ", n, ")] = func;", lc, ln);
@@ -5395,7 +5499,7 @@ static void cppMacroProperty(
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             ind++;
             o.concatx(genloc__, indents(ind), n, sc, "_Prop() { };", lc, ln);
-            o.concatx(genloc__, indents(ind), "int _[0];", lc, ln);
+            o.concatx(genloc__, indents(ind), "[[no_unique_address]] int _[0];", lc, ln);
          }
          if(smod == definition)
          {
