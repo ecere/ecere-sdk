@@ -10551,6 +10551,11 @@ if(__ecereNameSpace__ecere__com__eClass_IsDerived(dest->__anon1._class->__anon1.
 return 1;
 }
 }
+else if(dest->__anon1._class && dest->__anon1._class->__anon1.registered && source->__anon1._class && source->__anon1._class->__anon1.registered && dest->__anon1._class->__anon1.registered->templateClass && source->__anon1._class->__anon1.registered->templateClass)
+{
+if(__ecereNameSpace__ecere__com__eClass_IsDerived(dest->__anon1._class->__anon1.registered->templateClass, source->__anon1._class->__anon1.registered->templateClass))
+return 1;
+}
 }
 }
 if(source->kind == 19 && dest->kind == 8 && dest->__anon1._class && !strcmp(dest->__anon1._class->string, "ecere::com::Class"))
