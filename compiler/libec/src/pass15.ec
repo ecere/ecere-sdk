@@ -2999,6 +2999,15 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   return true;
                }
             }
+            else if(dest._class && dest._class.registered && source._class && source._class.registered &&
+                  dest._class.registered.templateClass && source._class.registered.templateClass)
+            {
+               // testing this work around warnings
+               // source: Map<eda::Table, eda::Lookup>
+               //   dest: Map<eda::Table, eda::Lookup, BT = ecere::com::MapNode<KT, V, T = KT>, eda::Table, T = ecere::com::MapNode<KT, V, T = KT>, eda::Table, eda::Lookup>
+               if(eClass_IsDerived(dest._class.registered.templateClass, source._class.registered.templateClass))
+                  return true;
+            }
          }
       }
 
