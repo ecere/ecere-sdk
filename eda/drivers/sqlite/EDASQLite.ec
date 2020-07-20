@@ -534,7 +534,7 @@ public ffi_type * FFIGetType(Class type, bool structByValue)
          case structClass:
             if(structByValue)
             {
-               MapIterator<Class, String> it { map = structFFITypes };
+               MapIterator<Class, String> it { map = (void*)structFFITypes };
                ffi_type * ffiType = null;
                if(it.Index(type, false))
                   ffiType = (void *)it.data;
