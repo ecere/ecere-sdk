@@ -1702,7 +1702,21 @@ class BClass : struct
          bool templatePrefix = (cl.type == noHeadClass || ((cl.type == normalClass || cl.type == structClass) && cl.templateArgs));
          MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
          const char * n = isString ? cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
+         /*
+         const char * typeStr =
+               cl.type == bitClass ? "BIT" :
+               cl.type == enumClass ? "ENUM" :
+               cl.type == noHeadClass ? "NOHEAD" :
+               cl.type == normalClass ? "NORMAL" :
+               cl.type == structClass ? "STRUCT" :
+               cl.type == systemClass ? "SYSTEM" :
+               cl.type == unionClass ? "UNION" :
+               cl.type == unitClass ? "UNIT" :
+               "ERROR";
+         */
          // todo: fix symbol construction issues before we can use this: ex: 'cn, "_get_", mn' where cn is not meant to be cpp_name
+         // cpp_name = PrintString(n, "/*cpp_name_", typeStr, "*/");
+         // tcpp_name = templatePrefix ? PrintString(cpptemplatePrefix, n, "/*tcpp_name_", typeStr, "*/") : PrintString(n, "/*tcpp_name_", typeStr, "*/");
          cpp_name = CopyString(n);
          tcpp_name = templatePrefix ? PrintString(cpptemplatePrefix, n) : CopyString(n);
          cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &cpp.tprototype, &cpp.template, &cpp.targs, &cpp.templatem, &cpp.targsm);

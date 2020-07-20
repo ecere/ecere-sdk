@@ -838,6 +838,9 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                o.z.concatx(ln, genloc__, c.cpp.template);
             else
                o.z.concatx(ln, genloc__, c.cpp.template);
+            // o.z.concatx(ln, genloc__, '/', '*');
+            // outTemplateParams(o.z, c);
+            // o.z.concatx(ln, genloc__, '*', '/');
          }
          o.z.concatx(ln, genloc__);
          if(c.cl.type == enumClass)
@@ -860,7 +863,11 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             o.z.concat("C");
             */
          }
+         // else if(c.cl.type == noHeadClass/* || (c.cl.type == normalClass && c.cl.templateArgs)*/)
+         //  o.z.concat(cpptemplatePrefix);
          o.z.concat(tcn);
+
+         // if(c.isArray) debugBreakpoint();
 
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
@@ -2149,11 +2156,16 @@ static void commonMemberHandling(
    const String implStringThis;
    bool cast = ct == enumClass;
    bool cnst = ct == bitClass; // construct
+   // if(c.cl.type == structClass && c.cl.templateArgs && tn[0] != 'T') debugBreakpoint();
+   // delete tn;
+   // tn = cppTypeName(ti, bareStyle, &tz, &tnp2);
 
    // todo: fix these warnings, use the right local vars obtain using the correct function(s)
    if(typeX)
       ; // warning supression
 
+   // if(!strcmp(cn, "HashMapIterator")   && !strcmp(mn, "map")) debugBreakpoint();   // HashMap vs  THashMap<TP_KT, TP_VT>  for tn at C/D/E/F aka genidx(0, "C-F")
+   // if(!strcmp(cn, "MapIterator")       && !strcmp(mn, "map")) debugBreakpoint();   // Map vs      TMap<TP_KT, TP_V>       for tn at C/D/E/F aka genidx(0, "C-F")
 
    if(ptrX && (ctX == normalClass || ctX == noHeadClass))
    {
@@ -2164,12 +2176,19 @@ static void commonMemberHandling(
    if(ti.type.kind == classType && ti.type._class && strchr(ti.type._class.string, '<') && strchr(ti.type._class.string, '>'))
    {
       bool b = false;
-      const char * typeString = ti.type._class.string;
+      const char * typeString = ti.type._class.string; // strptrNoNamespace(ti.type._class.string);
+      // /*
+      BClass cT1 = ti.type._class.registered;
       BClass cX2 = ti.type._class.registered.templateClass;
       char * x = null;
       delete tn;
       tn = CopyString(cX2./*t*/cpp_name);
       if(strchr(tn, '<') && strchr(tn, '>')) debugBreakpoint();
+      if(cT1)
+         ;
+
+      // if(!strcmp(typeString, "ecere::com::Container<T, IT>")) debugBreakpoint();
+      // */
 
            if(!strcmp(typeString, "ecere::com::Container<T>"))                      x = CopyString("TContainer<TP_T>"), b = true;
       else if(!strcmp(typeString, "ecere::com::Iterator<T>"))                       x = CopyString("TIterator<TP_T>"), b = true;
@@ -2270,11 +2289,27 @@ static void commonMemberHandling(
          delete x;
    }
 
+   /*
+   if(ti.type.kind == classType && ti.type._class && !strcmp(ti.type._class.string, "ecere::com::Iterator<T>"))
+   {
+      // debugBreakpoint();
+      delete tn;
+      tn = PrintString("TIterator<TPT>");
+   }
+   */
+
    if(!strcmp(tn, "HashMapIterator"))
    {
+      debugBreakpoint();
       delete tn;
       tn = cppTypeName(ti, bareStyle, &tz, &tnp2);
    }
+
+   /*
+   if(!prototype && !strcmp(cn, "Iterator")) debugBreakpoint();
+   if(!prototype && !strcmp(cn, "HashMap")) debugBreakpoint();
+   if(!prototype && !strcmp(cn, "HashMapIterator")) debugBreakpoint();
+   */
 
    if(c.cl.type == structClass)
       implStringThis = "self ? &self->impl : null";
@@ -2297,10 +2332,13 @@ static void commonMemberHandling(
       tn = PrintString(cpptemplatePrefix, c.name);
    }*/
 
+   // if(ti.type.kind == templateType && strcmp(mn, "controlled")) return;
+   // if(strstr(tn, "TP(")) debugBreakpoint();
 
    // todo: remove when done solving all the cases
    if(brokenMembers.Find({ c.cl.name, mn })) return;
 
+   // if(ti.type.kind != templateType)      // todo
    // ti.type.kind != arrayType)         // todo (broken stuff that's not generated)
    {
       if(isProp)
@@ -2620,6 +2658,9 @@ static void commonMemberHandling(
       }
    }
 
+   // const char * tp = te ? "<TPT>" : "";
+   // const char * tp2 = te ? "<class TPT>" : "";
+   // opts.type == template
    {
       bool is = opts.type == template;
       cppMacroProperty(g, o.z, g.expansionOrUse, opts, ti, prototype ? 1 : 0, components, mn, tn, cn, "sg", is ? c.cpp.targsm : "", is ? c.cpp.templatem : "", 0); // todo: why 2... aka <TPT> vs <class TPT>
@@ -2995,7 +3036,13 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
       }
 
       if(c && !t.staticMethod && t.thisClassTemplate && mode != passing)
+      {
          templateParam = ProcessTypeString("uint64", false);
+         if(t.thisClassTemplate.type == type)
+         {
+            // t.thisClassTemplate.identifier.string
+         }
+      }
 
             // todo: handle typed object
             if(((mode == regMethodParamList || mode == regMethodCppParamList || mode == regMethodArgsPassingEcToCpp || mode == regMethodArgsPassingCppToEc ||
@@ -3054,6 +3101,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         bool cpp = mode == regMethodCppParamList || mode == regMethodCppParamList2 ||
                               mode == regMethodArgsPassing2 || mode == regMethodArgsPassing3;
                         // bool v2 = mode == regMethodCppParamList2 || mode == regMethodArgsPassing3;
+                        // if(param.name && !strcmp(param.name, "source")) debugBreakpoint();
                         if(type.kind == templateType)
                         {
                            // typeString = PrintString("TP(", c.name, ", ", type.templateParameter.identifier.string, ")");
@@ -3264,6 +3312,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                      {
                         bool bare = (ct == bitClass || ct == enumClass || (ct == normalClass && !isString)/* || ct == noHeadClass*/);
                         // bool bare = (ct == bitClass || ct == enumClass/* || ct == normalClass*/);
+                        // if(mode == _argParamList && param.name && !strcmp(param.name, "source")) debugBreakpoint();
                         if(prmIsFn)
                            ;
                         else if(hack)
@@ -4237,6 +4286,7 @@ static void cppMacroClassRegister(
          else if(te)
             o.concatx(t, " ");
          o.concatx("void ");
+         // if(!pe && strstr(c, "=")) debugBreakpoint();
          if(!pe && !ol)
             o.concatx(te ? cpptemplatePrefix : "", te ? sc : "", c, te ? /*prototype ? */a/* : t*//*"<TPT>"*/ : "", "::");
          o.concatx("class_registration(CPPClass & _cpp_class)", lt, pt);
@@ -5066,6 +5116,8 @@ static void cppMacroClassVirtualMethods(
          }
          if(!prototype && template)
          {
+            // if(!strcmp(cx, "TContainer <TP_T _ARG TP_I _ARG TP_D>")) debugBreakpoint();
+            // o.concatx(genloc__, indents(ind), "template<class TPT> /* TODO: another arg for the class form? */", lc, ln);
             o.concatx(genloc__, indents(ind), t2, lc, ln);
          }
          o.concatx(genloc__, indents(ind), "inline ");
@@ -5102,6 +5154,7 @@ static void cppMacroClassVirtualMethods(
                o.concatx(genloc__, indents(ind), "}", lc, ln);
          }
          if(!prototype && template)
+            // o.concatx(genloc__, indents(ind), "template<class TPT>", lc, ln);
             o.concatx(genloc__, indents(ind), t2, lc, ln);
                o.concatx(genloc__, indents(ind), "inline ", r, " ");
          if(!prototype)
@@ -5480,9 +5533,12 @@ static void cppMacroProperty(
       void * unused)
 {
    MacroMode smod = /*mode == configuration ? g.macroModeBits.prop ? expansion : use : */mode; // selected mode
+   // bool te = opts.type == template;
    const char * lc = smod == definition ? " \\" : "";    // lc: line continuation
    const char * sc = smod == expansion ? "" : " ## ";    // sc: symbol concatenation
    const char * ps = opts.prototype ? "Proto" : "Impl";       // ps: prototype string
+   // const char * tp = te ? "<TPT>" : "";
+   // const char * tp2 = te ? "<class TPT>" : "";
    switch(smod)
    {
       case definition:
@@ -5624,6 +5680,7 @@ static void cppMacroIntPropSet(
       case expansion:
       {
          char * cx = te ? PrintString(cpptemplatePrefix, sc, c, te && !ex ? " UNPACK " : "", te ? tp : "", te ? " " : "") : CopyString(c);
+         //
          if(opts.prototype)
             o.concatx(genloc__, commented ? "// " : "", indents(ind), "inline ", t, sc, t2 ? t2 : "", " operator= (", t, " v", t2 ? t2 : "", ");", ln);
          else
@@ -5927,6 +5984,7 @@ static void cppMacroPropGet(
             ind++;
             if(opts.type == normal || opts.type == template)
             {
+               // char * upkpastp = PrintString(smod == expansion ? "" : te ? " (UNPACK " : "", tp, smod == expansion ? "" : te ? ")" : ""); // upkpaso: unpack passing tp
                char * upkpastp = te && !ex ? PrintString(" (UNPACK ", tp, ")") : PrintString("(", tp, ")"); // upkpaso: unpack passing tp
                o.concatx(genloc__, commented ? "// " : "", indents(ind), te ? "T" : "", "SELF(", c, te ? ", " : "", te ? upkpastp : "", ", ", n, ");"/*, lc, ln*/);
                delete upkpastp;
@@ -6031,6 +6089,10 @@ int getClassTemplateParamsStringsCPP(Class _class, String * prototype, String * 
    }
    if(_class.templateArgs)
       PrintLn(x._string);
+   // tree.RemoveAll();
+   // for(cl = _class; cl; cl = cl.base)
+   //    tree.Insert(null, cl);
+   // for(i : tree)
    if(templateClass)
    {
       cl = templateClass; // i;
@@ -6043,6 +6105,7 @@ int getClassTemplateParamsStringsCPP(Class _class, String * prototype, String * 
             {
                Class clDef = def ? eSystem_FindClass(cl.module, tp.defaultArg.dataTypeString) : null;
                const char * typeString = tp.defaultArg.dataTypeString ? strptrNoNamespace(tp.defaultArg.dataTypeString) : "";
+               // if(!strcmp(typeString, "T")) debugBreakpoint();
                p.concatx(comma, "typename TP_", tp.name);
                d.concatx(comma, "typename TP_", tp.name, def ? " = " : "", def && !clDef ? "TP_" : "", def ? typeString : "");   // def && !clDef for TP_ not perfect? but should work
                e.concatx(comma2, "typename TP_", tp.name, def ? " = " : "", def && !clDef ? "TP_" : "", def ? typeString : "");  // same
@@ -6054,6 +6117,65 @@ int getClassTemplateParamsStringsCPP(Class _class, String * prototype, String * 
          }
       }
    }
+
+   // do the derivation thing as well
+   // eC: public class Array : Container
+
+   // eC: public class Container<class T, class I = int, class D = T>
+   // eC: public class CustomAVLTree<class BT:AVLNode<KT>, class KT = uint64> : Container<BT, I = KT>
+   // eC: public class AVLTree<class AT> : CustomAVLTree<BT = AVLNode<AT>, KT = AT, T = AT, D = AT>
+
+   // goal gen?: class TAVLTree : public TCustomAVLTree<TP_BT = AVLNode<TP_AT>, TP_KT = TP_AT, TP_T = TP_AT, TP_D = TP_AT>
+   // bad gen: class TAVLTree : public TCustomAVLTree<TP_BT ___ARG TP_KT>
+   // if(!strcmp(_class.name, "CustomAVLTree<BT = ecere::com::AVLNode<AT>, KT = AT, T = AT, D = AT>")) debugBreakpoint();
+   /*
+   if(!strcmp(_class.name, "AVLTree"))
+   {
+      BClass cB = _class.base;
+      PrintLn(cB.name);
+      debugBreakpoint();
+   }
+   */
+
+
+   /*
+   // if(cl.templateClass)
+   {
+      // bool skipAllTemplated = false;
+      ClassTemplateArgument * tArgs = cl.templateArgs;
+      int tCount = cl.templateParams.count;
+      int baseParam = cl.numParams - tCount;
+      int n;
+      //name = getNoNamespaceString(t.cl.string, null, false);
+      if(tArgs)
+      {
+         // for(n = baseParam; n < tCount; n++)
+         Print("");
+         for(n = 0; n < cl.numParams; n++)
+         {
+            // Type argType;
+            ClassTemplateArgument * tArg = &tArgs[n];
+            Print("");
+            // if(!tArg->dataTypeString) conmsgs("check");
+            // argType = ProcessTypeString(tArg->dataTypeString, false);
+            // FreeType(argType);
+         }
+      }
+   }
+   */
+            /*
+            if(argType.kind == templateType)
+            {
+               ClassTemplateParameter ctp;
+               for(ctp = cl.templateParams.first; ctp; ctp = ctp.next)
+                  if(!strcmp(ctp.name, type.templateParameter.identifier.string))
+                  {
+                     skip = true;
+                     break;
+                  }
+               if(skip) break;
+            }
+            */
 
    p.concatx(">");
    d.concatx(">");
@@ -6078,6 +6200,12 @@ int getClassTemplateParamsStringsCPP(Class _class, String * prototype, String * 
 
 void outTemplateParams(ZString z, BClass c)
 {
+/*
+   OldList templateParams;
+   ClassTemplateArgument * templateArgs;
+   Class templateClass;
+   OldList templatized;
+*/
    const char * comma = "";
    ClassTemplateParameter p = null;
    z.concatx("template <");
@@ -6090,5 +6218,63 @@ void outTemplateParams(ZString z, BClass c)
       }
    }
    z.concatx(">");
+   /*
+   for(p = c.cl.templateParams.first; p; p = p.next)
+   {
+      z.concatx(ln, p.name, "// type:", p.type);
+      switch(p.type)
+      {
+         case type:
+            // p.defaultArg.dataTypeString;
+            // p.defaultArg.dataTypeClass;
+            Print("");
+            break;
+         case identifier: // todo
+            // p.memberType
+            // p.defaultArg.memberString
+            // switch on member type
+            // p.defaultArg.member;
+            // p.defaultArg.prop;
+            // p.defaultArg.method;
+            z.concatx(" identMemberType:", p.memberType);
+            break;
+         case expression: // todo
+            // p.dataTypeString
+            // p.defaultArg.expression;
+            Print("");
+            break;
+      }
+      // void * param;  // To attach to Compiler TemplateParameter
+   }
+   Print("");
+   */
 
+   // ClassTemplateArgument * tArgs = c.cl.templateArgs;
+   // int tCount = c.cl.templateParams.count;
+   // int baseParam = c.cl.numParams - tCount;
+   // int n;
+   //name = getNoNamespaceString(t.cl.string, null, false);
+   // if(tArgs)
+   /*
+   {
+      for(n = baseParam; n < tCount; n++)
+      {
+         ClassTemplateArgument * tArg = &tArgs[n];
+         // if(!tArg->dataTypeString) conmsgs("check");
+         if(tArg->dataTypeString)
+         {
+            Type argType;
+            argType = ProcessTypeString(tArg->dataTypeString, false);
+            if(argType.kind == templateType)
+               ; // skipAllTemplated = true;
+            else
+            {
+               ; // skipAllTemplated = false;
+               break;
+            }
+            FreeType(argType);
+         }
+      }
+   }
+   */
 }
