@@ -42,7 +42,7 @@ public:
 
 public struct MapIterator<class KT, class V> : Iterator<V, IT = KT>
 {
-   property Map map
+   property Map<KT, V> map
    {
       set { container = (Container<V, IT>)value; }
       get { return (Map<KT, V>)container; }
