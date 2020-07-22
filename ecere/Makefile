@@ -529,8 +529,13 @@ else
 ifdef LINUX_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
+ifneq ($(ARCH),x32)
+$(warning ARCH: $(ARCH) -- adding -Wl,--wrap=fcntl64 to OFLAGS)
 OFLAGS += \
-	 -Wl,--wrap=fcntl64 -L/usr/X11R6/lib
+	 -Wl,--wrap=fcntl64
+endif
+OFLAGS += \
+	 -L/usr/X11R6/lib
 LIBS += \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \
