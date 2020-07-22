@@ -16,7 +16,7 @@
 #define __USE_LARGEFILE64
 #include <fcntl.h>
 
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
 
 // From https://stackoverflow.com/questions/58472958/how-to-force-linkage-to-older-libc-fcntl-instead-of-fcntl64
 
