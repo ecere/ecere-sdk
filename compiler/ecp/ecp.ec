@@ -1582,10 +1582,11 @@ class PrecompApp : Application
 
          snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
          command[sizeof(command)-1] = 0;
-#if 0 //def _DEBUG
-         PrintLn("ECP Executing:");
-         PrintLn(command);
-#endif
+         {
+            char verbose[2048];
+            if(GetEnvironment("V", verbose, sizeof(verbose)) && !strcmp(verbose, "1"))
+               PrintLn("ecp: note: executing preprocessor: ", command);
+         }
          if((cppOutput = DualPipeOpen({ output = true }, command)))
          {
             int exitCode;
