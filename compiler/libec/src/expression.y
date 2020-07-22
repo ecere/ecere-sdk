@@ -155,6 +155,8 @@ default:
 %token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
 %token WIDE_STRING_LITERAL
 %token BUILTIN_OFFSETOF
+%token PRAGMA
+%token STATIC_ASSERT
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer

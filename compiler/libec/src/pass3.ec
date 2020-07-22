@@ -965,7 +965,7 @@ void TopoSort(OldList * input)
             n.symbol.structExternal = null;
          FreeExternal(n);
       }
-      else if(!n.incoming.count)
+      else if(!n.incoming || !n.incoming.count)
       {
          input->Remove(n);
          S.Add(n);
@@ -1063,52 +1063,55 @@ void TopoSort(OldList * input)
          */
 
          L.Add(n);
-         for(e = n.outgoing.first; e; e = ne)
+         if(n.outgoing)
          {
-            External m = e.to;
-            OldList * list;
-
-            //DebugPrint(" This Free Node has an edge to [", m.id, "] ", m.output);
-            if(m.nonBreakableIncoming)
+            for(e = n.outgoing.first; e; e = ne)
             {
-               //DebugPrint("... which we think is in input");
-               list = input;
-            }
-            else
-            {
-               //DebugPrint("... which we think is in B");
-               list = &B;
-            }
+               External m = e.to;
+               OldList * list;
 
-            if(!list->count)
-               PrintLn("!!! Something's wrong !!!");
-            ne = e.out.next;
+               //DebugPrint(" This Free Node has an edge to [", m.id, "] ", m.output);
+               if(m.nonBreakableIncoming)
+               {
+                  //DebugPrint("... which we think is in input");
+                  list = input;
+               }
+               else
+               {
+                  //DebugPrint("... which we think is in B");
+                  list = &B;
+               }
 
-            if(!e.breakable)
-            {
+               if(!list->count)
+                  PrintLn("!!! Something's wrong !!!");
+               ne = e.out.next;
+
+               if(!e.breakable)
+               {
 #ifdef _DEBUG
-               if(!m.nonBreakableIncoming)
-                  printf("Bug");
+                  if(!m.nonBreakableIncoming)
+                     printf("Bug");
 #endif
-               m.nonBreakableIncoming--;
-               //DebugPrint("Reducing non breakable incoming, now ", m.nonBreakableIncoming);
-            }
+                  m.nonBreakableIncoming--;
+                  //DebugPrint("Reducing non breakable incoming, now ", m.nonBreakableIncoming);
+               }
 
-            n.outgoing.Remove((IteratorPointer)e);
-            m.incoming.Remove((IteratorPointer)e);
-            delete e;
+               n.outgoing.Remove((IteratorPointer)e);
+               m.incoming.Remove((IteratorPointer)e);
+               delete e;
 
-            if(!m.incoming.count)
-            {
-               //DebugPrint("Last edge to this node taken out, moving to S...");
-               list->Remove(m);
-               S.Add(m);
-            }
-            else if(!m.nonBreakableIncoming)
-            {
-               //DebugPrint("Last non-breakable edge to this node taken out, moving to B...");
-               list->Remove(m);
-               B.Add(m);
+               if(!m.incoming.count)
+               {
+                  //DebugPrint("Last edge to this node taken out, moving to S...");
+                  list->Remove(m);
+                  S.Add(m);
+               }
+               else if(!m.nonBreakableIncoming)
+               {
+                  //DebugPrint("Last non-breakable edge to this node taken out, moving to B...");
+                  list->Remove(m);
+                  B.Add(m);
+               }
             }
          }
       }
@@ -1118,227 +1121,230 @@ void TopoSort(OldList * input)
          B.Remove((IteratorPointer)n);
 
          // Break the edges of this node
-         for(e = n.incoming.first; e; e = ne)
+         if(n.incoming)
          {
-            TopoEdge e2, n2;
-            External m = e.from;
-            External f;
-/*
-         for(x = input->first; x; x = x.next)
-         {
-            int count = 0;
-            for(e : x.incoming; !e.breakable)
-               count++;
-            if(count != x.nonBreakableIncoming)
-               printf("Bug in input");
-            if(!x.incoming.count)
-               printf("This node should be in S!\n");
-            for(e : x.incoming)
+            for(e = n.incoming.first; e; e = ne)
             {
-               External y, from = e.from;
-               for(y = input->first; y; y = y.next)
-                  if(y == from)
-                     break;
-               if(!y)
-               {
-                  for(y = B.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-
-               if(!y)
-               {
-                  for(y = S.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-               if(!y && from != n)
-               {
-                  printf("This node is nowhere!\n");
-               }
-            }
-         }*/
-
-            f = m.ForwardDeclare();
-            ne = e.in.next;
-/*
-         for(x = input->first; x; x = x.next)
-         {
-            int count = 0;
-            for(e : x.incoming; !e.breakable)
-               count++;
-            if(count != x.nonBreakableIncoming)
-               printf("Bug in input");
-            if(!x.incoming.count)
-               printf("This node should be in S!\n");
-            for(e : x.incoming)
+               TopoEdge e2, n2;
+               External m = e.from;
+               External f;
+   /*
+            for(x = input->first; x; x = x.next)
             {
-               External y, from = e.from;
-               for(y = input->first; y; y = y.next)
-                  if(y == from)
-                     break;
-               if(!y)
+               int count = 0;
+               for(e : x.incoming; !e.breakable)
+                  count++;
+               if(count != x.nonBreakableIncoming)
+                  printf("Bug in input");
+               if(!x.incoming.count)
+                  printf("This node should be in S!\n");
+               for(e : x.incoming)
                {
-                  for(y = B.first; y; y = y.next)
+                  External y, from = e.from;
+                  for(y = input->first; y; y = y.next)
                      if(y == from)
                         break;
-               }
-
-               if(!y)
-               {
-                  for(y = S.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-               if(!y && from != n && from != f)
-               {
-                  printf("This node is nowhere!\n");
-               }
-            }
-         }
-*/
-            // Recheck input for edges created by forward declaration
-            {
-               External c, next;
-               for(c = input->first; c; c = next)
-               {
-                  next = c.next;
-                  if(!c.incoming.count)
+                  if(!y)
                   {
-                     input->Remove(c);
-                     S.Add(c);
+                     for(y = B.first; y; y = y.next)
+                        if(y == from)
+                           break;
                   }
-                  else if(!c.nonBreakableIncoming)
+
+                  if(!y)
                   {
-                     input->Remove(c);
-                     B.Add(c);
+                     for(y = S.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+                  if(!y && from != n)
+                  {
+                     printf("This node is nowhere!\n");
+                  }
+               }
+            }*/
+
+               f = m.ForwardDeclare();
+               ne = e.in.next;
+   /*
+            for(x = input->first; x; x = x.next)
+            {
+               int count = 0;
+               for(e : x.incoming; !e.breakable)
+                  count++;
+               if(count != x.nonBreakableIncoming)
+                  printf("Bug in input");
+               if(!x.incoming.count)
+                  printf("This node should be in S!\n");
+               for(e : x.incoming)
+               {
+                  External y, from = e.from;
+                  for(y = input->first; y; y = y.next)
+                     if(y == from)
+                        break;
+                  if(!y)
+                  {
+                     for(y = B.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+
+                  if(!y)
+                  {
+                     for(y = S.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+                  if(!y && from != n && from != f)
+                  {
+                     printf("This node is nowhere!\n");
                   }
                }
             }
-
-            //DebugPrint("Breaking edge from ", e.from.id, " to ", e.to.id);
-            //DebugPrint("Creating a forward decl node [", f.id, "] for [", m.id, "]");
-
-            for(e2 = m.outgoing.first; e2; e2 = n2)
-            {
-               n2 = e2.out.next;
-               if(e2.breakable)
+   */
+               // Recheck input for edges created by forward declaration
                {
-                  External to = e2.to;
-
-                  if(e2 == e)
-                     ;//DebugPrint("Breaking this particular connection");
-                  else
-                     ;//DebugPrint("Also redirecting connection from ", m.id, " to ", to.id, " to come from ", f.id, " instead.");
-                  e2.breakable = false;
-                  e2.from = f;
-                  m.outgoing.Remove((IteratorPointer)e2);
-                  f.outgoing.Add(e2);
-                  to.nonBreakableIncoming++;
-                  if(e2 != e && to.nonBreakableIncoming == 1)
+                  External c, next;
+                  for(c = input->first; c; c = next)
                   {
-                     // If this node was previously in B, move it to input
-                     B.Remove(to);
-                     input->Add(to);
-                  }
-
-                  //DebugPrint("Node ", e2.to.id, " now has ", e2.to.nonBreakableIncoming, " non-breakable incoming edges.");
-               }
-            }
-/*
-         for(x = input->first; x; x = x.next)
-         {
-            int count = 0;
-            for(e : x.incoming; !e.breakable)
-               count++;
-            if(count != x.nonBreakableIncoming)
-               printf("Bug in input");
-            if(!x.incoming.count)
-               printf("This node should be in S!\n");
-            for(e : x.incoming)
-            {
-               External y, from = e.from;
-               for(y = input->first; y; y = y.next)
-                  if(y == from)
-                     break;
-               if(!y)
-               {
-                  for(y = B.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-
-               if(!y)
-               {
-                  for(y = S.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-               if(!y && from != n && from != f)
-               {
-                  printf("This node is nowhere!\n");
-               }
-            }
-         }*/
-            if(!f.incoming.count)
-               S.Add(f);
-            else if(!f.nonBreakableIncoming)
-               B.Add(f);
-            else
-               input->Add(f);
-/*
-         for(x = input->first; x; x = x.next)
-         {
-            int count = 0;
-            for(e : x.incoming; !e.breakable)
-               count++;
-            if(count != x.nonBreakableIncoming)
-               printf("Bug in input");
-            if(!x.incoming.count)
-               printf("This node should be in S!\n");
-            for(e : x.incoming)
-            {
-               External y, from = e.from;
-               for(y = input->first; y; y = y.next)
-                  if(y == from)
-                     break;
-               if(!y)
-               {
-                  for(y = B.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-
-               if(!y)
-               {
-                  for(y = S.first; y; y = y.next)
-                     if(y == from)
-                        break;
-               }
-
-               if(!y)
-               {
-                  for(y = L.first; y; y = y.next)
-                     if(y == from)
+                     next = c.next;
+                     if(!c.incoming || !c.incoming.count)
                      {
-                        PrintLn("This node is already in L!");
-                        break;
+                        input->Remove(c);
+                        S.Add(c);
                      }
+                     else if(!c.nonBreakableIncoming)
+                     {
+                        input->Remove(c);
+                        B.Add(c);
+                     }
+                  }
                }
 
-               if(!y && from != n)
+               //DebugPrint("Breaking edge from ", e.from.id, " to ", e.to.id);
+               //DebugPrint("Creating a forward decl node [", f.id, "] for [", m.id, "]");
+
+               for(e2 = m.outgoing.first; e2; e2 = n2)
                {
-                  ConsoleFile file { };
-                  printf("This node is nowhere!\n");
-                  OutputExternal(from, file);
-                  delete file;
+                  n2 = e2.out.next;
+                  if(e2.breakable)
+                  {
+                     External to = e2.to;
+
+                     if(e2 == e)
+                        ;//DebugPrint("Breaking this particular connection");
+                     else
+                        ;//DebugPrint("Also redirecting connection from ", m.id, " to ", to.id, " to come from ", f.id, " instead.");
+                     e2.breakable = false;
+                     e2.from = f;
+                     m.outgoing.Remove((IteratorPointer)e2);
+                     f.outgoing.Add(e2);
+                     to.nonBreakableIncoming++;
+                     if(e2 != e && to.nonBreakableIncoming == 1)
+                     {
+                        // If this node was previously in B, move it to input
+                        B.Remove(to);
+                        input->Add(to);
+                     }
+
+                     //DebugPrint("Node ", e2.to.id, " now has ", e2.to.nonBreakableIncoming, " non-breakable incoming edges.");
+                  }
+               }
+   /*
+            for(x = input->first; x; x = x.next)
+            {
+               int count = 0;
+               for(e : x.incoming; !e.breakable)
+                  count++;
+               if(count != x.nonBreakableIncoming)
+                  printf("Bug in input");
+               if(!x.incoming.count)
+                  printf("This node should be in S!\n");
+               for(e : x.incoming)
+               {
+                  External y, from = e.from;
+                  for(y = input->first; y; y = y.next)
+                     if(y == from)
+                        break;
+                  if(!y)
+                  {
+                     for(y = B.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+
+                  if(!y)
+                  {
+                     for(y = S.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+                  if(!y && from != n && from != f)
+                  {
+                     printf("This node is nowhere!\n");
+                  }
+               }
+            }*/
+               if(!f.incoming.count)
+                  S.Add(f);
+               else if(!f.nonBreakableIncoming)
+                  B.Add(f);
+               else
+                  input->Add(f);
+   /*
+            for(x = input->first; x; x = x.next)
+            {
+               int count = 0;
+               for(e : x.incoming; !e.breakable)
+                  count++;
+               if(count != x.nonBreakableIncoming)
+                  printf("Bug in input");
+               if(!x.incoming.count)
+                  printf("This node should be in S!\n");
+               for(e : x.incoming)
+               {
+                  External y, from = e.from;
+                  for(y = input->first; y; y = y.next)
+                     if(y == from)
+                        break;
+                  if(!y)
+                  {
+                     for(y = B.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+
+                  if(!y)
+                  {
+                     for(y = S.first; y; y = y.next)
+                        if(y == from)
+                           break;
+                  }
+
+                  if(!y)
+                  {
+                     for(y = L.first; y; y = y.next)
+                        if(y == from)
+                        {
+                           PrintLn("This node is already in L!");
+                           break;
+                        }
+                  }
+
+                  if(!y && from != n)
+                  {
+                     ConsoleFile file { };
+                     printf("This node is nowhere!\n");
+                     OutputExternal(from, file);
+                     delete file;
+                  }
                }
             }
-         }
-*/
-            // Avoid needless edge breaking by processing a node as soon as one shows up in S
-            if(S.first)
-               break;
+   */
+               // Avoid needless edge breaking by processing a node as soon as one shows up in S
+               if(S.first)
+                  break;
+            }
          }
 
          // Put n back in input because it now has unbreakable edges
