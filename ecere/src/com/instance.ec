@@ -19,7 +19,7 @@ import "dataTypes"
 //#define JUST_CHECK_LEAKS
 //#define JUST_CHECK_BOUNDARIES
 
-#if defined(__linux__) && !defined(__ANDROID__) && !defined(ECERE_BOOTSTRAP)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__) && !defined(ECERE_BOOTSTRAP)
 asm(".symver pow,pow@GLIBC_2.2.5");
 asm(".symver log,log@GLIBC_2.2.5");
 asm(".symver exp,exp@GLIBC_2.2.5");

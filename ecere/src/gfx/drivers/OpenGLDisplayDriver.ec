@@ -1,4 +1,4 @@
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
 asm(".symver log,log@GLIBC_2.2.5");
 #endif
 
