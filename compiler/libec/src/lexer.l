@@ -151,6 +151,8 @@ default:
 "__ptr64"            { return(EXT_DECL); }
 "__forceinline"      { return(EXT_DECL); }
 "__unaligned"        { return(EXT_DECL); }
+"_Alignof"           { return(ALIGNOF); }
+"_Static_assert"     { return(STATIC_ASSERT); }
 
  /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 

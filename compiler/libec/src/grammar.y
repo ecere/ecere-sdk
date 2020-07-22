@@ -199,6 +199,7 @@ default:
 %token WIDE_STRING_LITERAL
 %token BUILTIN_OFFSETOF
 %token PRAGMA
+%token STATIC_ASSERT
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -1453,7 +1454,6 @@ simple_primary_expression:
    | CLASS '(' declaration_specifiers abstract_declarator ')' { $$ = MkExpClass($3, $4); $$.loc = @$; }
    | CLASS '(' identifier ')' { $$ = MkExpClass(MkListOne(MkSpecifierName($3.string)), null); FreeIdentifier($3); $$.loc = @$; }
    | VAARG '(' assignment_expression ',' type_name ')' { $$ = MkExpVaArg($3, $5); $$.loc = @$; }
-
    | CLASS_DATA '(' identifier ')' { $$ = MkExpClassData($3); $$.loc = @$; }
    | database_open
    | dbfield
@@ -3381,6 +3381,8 @@ declaration:
 	| declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; structDeclMode = defaultDeclMode; }
    | instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; structDeclMode = defaultDeclMode; }
    | declaration_error ';'                            { $$ = $1; structDeclMode = defaultDeclMode; }
+   | STATIC_ASSERT '(' expression ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); }
+   | STATIC_ASSERT '(' expression ',' string_literal ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); delete $5; }
 	;
 
 external_guess_declaration:
@@ -3640,6 +3642,8 @@ external_declaration:
    | dbtable_definition { $$ = MkExternalDBTable($1); $$.loc = @$;  $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | declaration_mode  dbtable_definition { $$ = MkExternalDBTable($2); $$.loc = @$;  $2.declMode = ($1 != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | PRAGMA { $$ = MkExternalPragma(yytext); $$.loc = @$; }
+   | STATIC_ASSERT '(' expression ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); }
+   | STATIC_ASSERT '(' expression ',' string_literal ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); delete $5; }
    ;
 
 external_declaration_error:
