@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := libfreetype
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -12,7 +13,6 @@ TARGET_TYPE = staticlib
 
 # FLAGS
 
-ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)freetype$(A)
+TARGET = $(OBJ)$(LP)freetype$(OUT)
 
 _OBJECTS = $(_OBJECTS1) $(_OBJECTS2)
 _OBJECTS1 = \
@@ -143,19 +143,13 @@ RESOURCES =
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-# Warning: Compiling with -O2 gives 0 font height with MinGW!!
 PRJ_CFLAGS += \
-	 $(if $(DEBUG),-g) $(FPIC) -w \
-			 -DFT2_BUILD_LIBRARY \
-			 -DFT_OPTION_AUTOFIT2 \
-			 -I../zlib \
-			 -Iinclude \
-			 -Iinclude/freetype \
-			 -Iinclude/freetype/internal
-
-
-
-
+	 $(if $(DEBUG), -g, -ffast-math) $(FPIC) -w \
+		 -DFT2_BUILD_LIBRARY \
+		 -DFT_OPTION_AUTOFIT2 \
+		 -Iinclude \
+		 -Iinclude/freetype \
+		 -Iinclude/freetype/internal
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -164,9 +158,11 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
-$(TARGET): $(SOURCES) $(RESOURCES) | objdir $(SYMBOLS) $(OBJECTS)
+$(SYMBOLS): | objdir
+$(OBJECTS): | objdir
+$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 
 # SYMBOL RULES

@@ -82,35 +82,28 @@ _ECSOURCES = \
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
 _COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
-
 _SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
-
 _IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
-
 _ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
-
 _BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
 COBJECTS = $(call shwspace,$(_COBJECTS))
-
 SYMBOLS = $(call shwspace,$(_SYMBOLS))
-
 IMPORTS = $(call shwspace,$(_IMPORTS))
-
 ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
-
 BOWLS = $(call shwspace,$(_BOWLS))
 
 SOURCES = $(ECSOURCES) \
 	../bootstrap/bsl.c
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -DECERE_BOOTSTRAP \
-			 -DECERE_STATIC
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+		 -DECERE_BOOTSTRAP \
+		 -DECERE_STATIC
 
 CUSTOM1_PRJ_CFLAGS = \
-			 -I../bootstrap/include \
+		 -I../bootstrap/include \
 	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
@@ -124,9 +117,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(COBJECTS) $(OBJ)$(MODULE).main.c
 
 objdir:
-	$(call mkdir,$(OBJ))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)

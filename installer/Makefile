@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := Installer
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -54,9 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/setup-ecere-0.44.15-win32$(E)
+TARGET = $(OBJ)setup-ecere-0.44.15-win32$(OUT)
 
 _ECSOURCES = \
 	../ide/src/IDESettings.ec \
@@ -70,23 +70,15 @@ _ECSOURCES = \
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
 _COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
-
 _SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
-
 _IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
-
 _ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
-
 _BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
 COBJECTS = $(call shwspace,$(_COBJECTS))
-
 SYMBOLS = $(call shwspace,$(_SYMBOLS))
-
 IMPORTS = $(call shwspace,$(_IMPORTS))
-
 ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
-
 BOWLS = $(call shwspace,$(_BOWLS))
 
 ifdef WINDOWS_TARGET
@@ -103,7 +95,7 @@ RCSOURCES =
 RCOBJECTS =
 endif
 
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O) $(RCOBJECTS)
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main.o $(RCOBJECTS)
 
 SOURCES = $(ECSOURCES) $(RCSOURCES)
 
@@ -2311,8 +2303,7 @@ RESOURCES100 = \
 	tdm/make-3.82.90/licenses/COPYING
 RESOURCES101 = \
 	tdm/libgnurx-2.7/bin/gnurx-0.dll \
-	tdm/libgnurx-2.7/include/regex.h
-RESOURCES91 = \
+	tdm/libgnurx-2.7/include/regex.h \
 	tdm/libgnurx-2.5.1-32/bin/libgnurx-0.dll \
 	tdm/libgnurx-2.7/include/regex.h \
 	tdm/binutils-2.25-tdm64-1/share/info/as.info \
@@ -5773,17 +5764,18 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -Os -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -DECERE_STATIC
+	 $(if $(DEBUG), -g, -Os -ffast-math) $(FPIC) -Wall \
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+		 -DECERE_STATIC
 
 ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)) \
-	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
+	 -L../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX) \
+	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 endif
 
 # TARGETS
@@ -5791,9 +5783,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -5802,11 +5792,11 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(call addtolistfile,$(IMPORTS),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
-pots: $(OBJ)$(MODULE).main.ec	
+pots: $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(OBJ)$(MODULE).main.ec) -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)$(MODULE).main.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -5816,10 +5806,10 @@ $(TARGET): $(SOURCES) $(RCSOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifdef WINDOWS_TARGET
 	$(call addtolistfile,$(RCOBJECTS),$(OBJ)objects.lst)
 endif
-	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(OBJ)$(MODULE).main.o,$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -6569,14 +6559,6 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
-endif
 
 # SYMBOL RULES
 
@@ -6650,25 +6632,17 @@ $(OBJ)CheckListBox.o: $(OBJ)CheckListBox.c
 ifdef WINDOWS_TARGET
 
 $(OBJ)resources.o: ../ide/src/resources.rc
-	$(WINDRES) $(WINDRES_FLAGS) $< "$(call escspace,$(call quote_path,$@))"
+	$(WINDRES) $(WINDRES_FLAGS) $(call quote_path,../ide/src/resources.rc) "$(call escspace,$(call quote_path,$@))"
 endif
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)$(MODULE).main.c) -o $(call quote_path,$@)
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rm,$(OBJ)symbols.lst)
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

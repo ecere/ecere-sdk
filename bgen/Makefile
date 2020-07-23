@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := bgen
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -54,9 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E)
+TARGET = $(OBJ)bgen$(OUT)
 
 _ECSOURCES = \
 	extras/consoleApp.ec \
@@ -85,23 +85,15 @@ _ECSOURCES = \
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
 _COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
-
 _SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
-
 _IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
-
 _ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
-
 _BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
 COBJECTS = $(call shwspace,$(_COBJECTS))
-
 SYMBOLS = $(call shwspace,$(_SYMBOLS))
-
 IMPORTS = $(call shwspace,$(_IMPORTS))
-
 ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
-
 BOWLS = $(call shwspace,$(_BOWLS))
 
 _OBJECTS = \
@@ -144,8 +136,9 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -Isrc
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+		 -Isrc
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
@@ -155,8 +148,8 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+	 -L$(call quote_path,../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin) \
+	 -L$(call quote_path,../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
 endif
 
 # TARGETS
@@ -164,14 +157,14 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) -console $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@) -symbols $(OBJ)
 
 ifdef USE_RESOURCES_EAR
 $(RESOURCES_EAR): $(RESOURCES) | objdir
@@ -183,8 +176,7 @@ endif
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
-ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) $(OBJ)$(MODULE).main$(O) $(_OBJECTS) $(ECOBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -192,21 +184,6 @@ ifndef USE_RESOURCES_EAR
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src src/c/c_make.src "src/c"
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/cpp/cpp_makefile.src "src/cpp"
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/py/cffi_hardcode_ec_begin.src src/py/cffi_hardcode_ec_end.src src/py/py_functions_ec_begin.src src/py/py_functions_ec_end.src src/py/py_hardcode_application.src src/py/py_hardcode_array.src src/py/py_hardcode_container.src src/py/py_hardcode_guiapplication.src src/py/py_hardcode_module.src "src/py"
-endif
-else
-ifdef WINDOWS_HOST
-	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
-else
-	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
-endif
-endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
 endif
 	$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
 
@@ -418,19 +395,11 @@ $(OBJ)extras$(O): $(OBJ)extras.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

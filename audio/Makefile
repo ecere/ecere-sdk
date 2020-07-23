@@ -54,13 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO)$(VER)
-
-ifdef LINUX_TARGET
-SONAME = -Wl,-soname,$(LP)EcereAudio$(SO).0
-endif
+TARGET = $(OBJ)$(LP)EcereAudio$(OUT)
 
 _ECSOURCES = \
 	alsa.ec \
@@ -71,26 +67,18 @@ _ECSOURCES = \
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
 _COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
-
 _SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
-
 _IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
-
 _ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
-
 _BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
 COBJECTS = $(call shwspace,$(_COBJECTS))
-
 SYMBOLS = $(call shwspace,$(_SYMBOLS))
-
 IMPORTS = $(call shwspace,$(_IMPORTS))
-
 ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
-
 BOWLS = $(call shwspace,$(_BOWLS))
 
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main.o
 
 SOURCES = $(ECSOURCES)
 
@@ -104,7 +92,8 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
 
 ECFLAGS += -module $(MODULE)
 # PLATFORM-SPECIFIC OPTIONS
@@ -134,8 +123,8 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+	 -L$(call quote_path,../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin) \
+	 -L$(call quote_path,../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
 endif
 
 # TARGETS
@@ -143,9 +132,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -155,15 +142,15 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(OBJ)$(MODULE).main.ec) -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)$(MODULE).main.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
-	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(OBJ)$(MODULE).main.o,$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
@@ -171,16 +158,15 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 else
+ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
-endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 endif
-endif
+	$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
@@ -224,22 +210,16 @@ $(OBJ)dsound.o: $(OBJ)dsound.c
 $(OBJ)mixer.o: $(OBJ)mixer.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)mixer.c) -o $(call quote_path,$@)
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)$(MODULE).main.c) -o $(call quote_path,$@)
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rm,$(OBJ)symbols.lst)
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

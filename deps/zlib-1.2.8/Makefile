@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := libz
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -13,7 +13,6 @@ TARGET_TYPE = staticlib
 
 # FLAGS
 
-ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
@@ -40,9 +39,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)z$(A)
+TARGET = $(OBJ)$(LP)z$(OUT)
 
 _OBJECTS = \
 	$(OBJ)adler32.o \
@@ -85,9 +84,8 @@ RESOURCES =
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
 # TARGETS
@@ -95,7 +93,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -103,25 +101,10 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
-ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
-ifndef NOSTRIP
-	$(STRIP) $(STRIPOPT) $(TARGET)
-endif
-else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
-endif
-endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
 endif
 
 # SYMBOL RULES
@@ -178,14 +161,6 @@ $(OBJ)gzwrite.o: gzwrite.c
 cleantarget:
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

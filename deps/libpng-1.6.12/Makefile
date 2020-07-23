@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := libpng
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -13,7 +13,6 @@ TARGET_TYPE = staticlib
 
 # FLAGS
 
-ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
@@ -40,9 +39,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)png$(A)
+TARGET = $(OBJ)$(LP)png$(OUT)
 
 _OBJECTS = \
 	$(OBJ)png.o \
@@ -85,11 +84,10 @@ RESOURCES =
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I. \
-			 -I../zlib-1.2.8
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
+		 -I. \
+		 -I../zlib-1.2.8
 
-ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
 # TARGETS
@@ -97,7 +95,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
@@ -106,7 +104,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -117,14 +115,8 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
@@ -180,14 +172,8 @@ $(OBJ)pngwutil.o: ./pngwutil.c
 cleantarget:
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

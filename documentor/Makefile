@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := documentor
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -53,9 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E)
+TARGET = $(OBJ)documentor$(OUT)
 
 _ECSOURCES = \
 	../extras/html/htmlParser.ec \
@@ -71,19 +72,35 @@ _ECSOURCES = \
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
-COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+_COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
+_SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
+_IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
+_ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
+_BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
-SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+COBJECTS = $(call shwspace,$(_COBJECTS))
+SYMBOLS = $(call shwspace,$(_SYMBOLS))
+IMPORTS = $(call shwspace,$(_IMPORTS))
+ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
+BOWLS = $(call shwspace,$(_BOWLS))
 
-IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
+ifdef WINDOWS_TARGET
 
-ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
+_RCSOURCES = \
+	resources.rc
 
-BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+RCSOURCES = $(call shwspace,$(_RCSOURCES))
 
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+RCOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.rc,%$(O),$(notdir $(_RCSOURCES)))))
 
-SOURCES = $(ECSOURCES)
+else
+RCSOURCES =
+RCOBJECTS =
+endif
+
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main.o $(RCOBJECTS)
+
+SOURCES = $(ECSOURCES) $(RCSOURCES)
 
 RESOURCES = \
 	locale/es.mo \
@@ -101,7 +118,7 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 -DECERE_DOCUMENTOR
+		 -DECERE_DOCUMENTOR
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
@@ -120,7 +137,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -131,9 +148,9 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
-$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+$(TARGET): $(SOURCES) $(RCSOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -243,37 +260,27 @@ $(OBJ)SettingsDialog.o: $(OBJ)SettingsDialog.c
 
 ifdef WINDOWS_TARGET
 
-$(OBJ)resources$(O): resources.rc
-	$(WINDRES) $(WINDRES_FLAGS) $< "$(call escspace,$(call quote_path,$@))"
+$(OBJ)resources.o: resources.rc
+	$(WINDRES) $(WINDRES_FLAGS) resources.rc $(OBJ)resources.o
 endif
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main.o
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rm,$(OBJ)symbols.lst)
-	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
 ifdef WINDOWS_TARGET
 	$(call rm,$(_RCOBJECTS))
 endif
-	$(call rm,$(ECOBJECTS))
-	$(call rm,$(COBJECTS))
-	$(call rm,$(BOWLS))
-	$(call rm,$(IMPORTS))
-	$(call rm,$(SYMBOLS))
+	$(call rm,$(_ECOBJECTS))
+	$(call rm,$(_COBJECTS))
+	$(call rm,$(_BOWLS))
+	$(call rm,$(_IMPORTS))
+	$(call rm,$(_SYMBOLS))
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

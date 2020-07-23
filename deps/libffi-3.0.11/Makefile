@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ffi
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -12,7 +13,6 @@ TARGET_TYPE = staticlib
 
 # FLAGS
 
-ECFLAGS =
 ifndef DEBIAN_PACKAGE
 CFLAGS =
 LDFLAGS =
@@ -37,11 +37,11 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)/$(LP)ffi$(A)
+TARGET = $(OBJ)$(LP)ffi$(OUT)
 
 ifeq ($(TARGET_ARCH),x86_64)
 PLATFORM_OBJ  := win64
@@ -73,13 +73,9 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall \
-			 -Iinclude \
-			 -Ii686-pc-mingw32/include \
-			 -Ii686-pc-mingw32
-
-
-
-
+		 -Iinclude \
+		 -Ii686-pc-mingw32/include \
+		 -Ii686-pc-mingw32
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -88,13 +84,13 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif

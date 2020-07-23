@@ -59,14 +59,9 @@ endif
 
 OBJ = obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SO)$(VER)
-ifdef LINUX_TARGET
-SONAME = -Wl,-soname,libecereCOM.so.0
-else
-SONAME =
-endif
+TARGET = $(OBJ)$(LP)ecereCOM$(OUT)
 
 _ECSOURCES = \
 	src/sys/Mutex.ec \
@@ -90,23 +85,26 @@ _ECSOURCES = \
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
-COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+_COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
+_SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
+_IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
+_ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
+_BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
-SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
-
-IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
-
-ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
-
-BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+COBJECTS = $(call shwspace,$(_COBJECTS))
+SYMBOLS = $(call shwspace,$(_SYMBOLS))
+IMPORTS = $(call shwspace,$(_IMPORTS))
+ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
+BOWLS = $(call shwspace,$(_BOWLS))
 
 _OBJECTS = \
-	$(OBJ)mmhash$(O) \
+	$(OBJ)mmhash.o \
 	$(OBJ)instance.c.o
 
-OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main.o
 
 SOURCES = $(ECSOURCES) \
+	src/gfx/newFonts/cc/mmhash.c \
 	src/com/instance.c
 
 RESOURCES =
@@ -119,12 +117,12 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 -DBUILDING_ECERE_COM \
-			 -DECERE_COM_MODULE \
-			 -DECERE_NOFILE
+		 -DBUILDING_ECERE_COM \
+		 -DECERE_COM_MODULE \
+		 -DECERE_NOFILE
 
 CUSTOM1_PRJ_CFLAGS = \
-			 -Isrc/gfx/newFonts/cc \
+		 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
@@ -151,7 +149,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -171,17 +169,11 @@ endif
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),)
-endif
-endif
-endif
 	$(call cp,$(TARGET),../$(SODESTDIR))
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
@@ -216,10 +208,10 @@ $(OBJ)Map.sym: src/com/containers/Map.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
 $(OBJ)HashMap.sym: src/com/containers/HashMap.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/HashMap.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.sym
 
 $(OBJ)HashTable.sym: src/com/containers/HashTable.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/HashTable.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.sym
 
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
@@ -272,10 +264,10 @@ $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
 $(OBJ)HashMap.c: src/com/containers/HashMap.ec $(OBJ)HashMap.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/HashMap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.c -symbols $(OBJ)
 
 $(OBJ)HashTable.c: src/com/containers/HashTable.ec $(OBJ)HashTable.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/HashTable.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.c -symbols $(OBJ)
 
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
@@ -327,14 +319,14 @@ $(OBJ)List.o: $(OBJ)List.c
 $(OBJ)Map.o: $(OBJ)Map.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
-$(OBJ)HashMap$(O): $(OBJ)HashMap.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HashMap.c) -o $(call quote_path,$@)
+$(OBJ)HashMap.o: $(OBJ)HashMap.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashMap.c -o $(OBJ)HashMap.o
 
-$(OBJ)HashTable$(O): $(OBJ)HashTable.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HashTable.c) -o $(call quote_path,$@)
+$(OBJ)HashTable.o: $(OBJ)HashTable.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashTable.c -o $(OBJ)HashTable.o
 
-$(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
+$(OBJ)mmhash.o: src/gfx/newFonts/cc/mmhash.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/gfx/newFonts/cc/mmhash.c -o $(OBJ)mmhash.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o
@@ -357,30 +349,22 @@ $(OBJ)OldList.o: $(OBJ)OldList.c
 $(OBJ)instance.c.o: src/com/instance.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/com/instance.c -o $(OBJ)instance.c.o
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main.o
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rm,$(OBJ)symbols.lst)
-	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
-	$(call rm,$(ECOBJECTS))
-	$(call rm,$(COBJECTS))
-	$(call rm,$(BOWLS))
-	$(call rm,$(IMPORTS))
-	$(call rm,$(SYMBOLS))
+	$(call rm,$(_ECOBJECTS))
+	$(call rm,$(_COBJECTS))
+	$(call rm,$(_BOWLS))
+	$(call rm,$(_IMPORTS))
+	$(call rm,$(_SYMBOLS))
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

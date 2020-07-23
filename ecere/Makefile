@@ -61,12 +61,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SO)$(VER)
-ifdef LINUX_TARGET
-SONAME = -Wl,-soname,libecere.so.0
-else
-SONAME =
-endif
+TARGET = $(OBJ)$(LP)ecere$(OUT)
 
 _ECSOURCES = $(_ECSOURCES1) $(_ECSOURCES2) $(_ECSOURCES3) $(_ECSOURCES4)
 _ECSOURCES1 = \
@@ -223,35 +218,65 @@ ECSOURCES2 = $(call shwspace,$(_ECSOURCES2))
 ECSOURCES3 = $(call shwspace,$(_ECSOURCES3))
 ECSOURCES4 = $(call shwspace,$(_ECSOURCES4))
 
+_COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3) $(COBJECTS4)
+_COBJECTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES1))))
+_COBJECTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES2))))
+_COBJECTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES3))))
+_COBJECTS4 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES4))))
+
+_SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3) $(SYMBOLS4)
+_SYMBOLS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES1))))
+_SYMBOLS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES2))))
+_SYMBOLS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES3))))
+_SYMBOLS4 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES4))))
+
+_IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3) $(IMPORTS4)
+_IMPORTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES1))))
+_IMPORTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES2))))
+_IMPORTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES3))))
+_IMPORTS4 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES4))))
+
+_ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3) $(ECOBJECTS4)
+_ECOBJECTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES1))))
+_ECOBJECTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES2))))
+_ECOBJECTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES3))))
+_ECOBJECTS4 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES4))))
+
+_BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3) $(BOWLS4)
+_BOWLS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES1))))
+_BOWLS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES2))))
+_BOWLS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES3))))
+_BOWLS4 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES4))))
+
 COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3) $(COBJECTS4)
-COBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES1)))))
-COBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES2)))))
-COBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES3)))))
-COBJECTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES4)))))
+COBJECTS1 = $(call shwspace,$(_COBJECTS1))
+COBJECTS2 = $(call shwspace,$(_COBJECTS2))
+COBJECTS3 = $(call shwspace,$(_COBJECTS3))
+COBJECTS4 = $(call shwspace,$(_COBJECTS4))
 
 SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3) $(SYMBOLS4)
-SYMBOLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES1)))))
-SYMBOLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES2)))))
-SYMBOLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES3)))))
-SYMBOLS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES4)))))
+SYMBOLS1 = $(call shwspace,$(_SYMBOLS1))
+SYMBOLS2 = $(call shwspace,$(_SYMBOLS2))
+SYMBOLS3 = $(call shwspace,$(_SYMBOLS3))
+SYMBOLS4 = $(call shwspace,$(_SYMBOLS4))
 
 IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3) $(IMPORTS4)
-IMPORTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES1)))))
-IMPORTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES2)))))
-IMPORTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES3)))))
-IMPORTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES4)))))
+IMPORTS1 = $(call shwspace,$(_IMPORTS1))
+IMPORTS2 = $(call shwspace,$(_IMPORTS2))
+IMPORTS3 = $(call shwspace,$(_IMPORTS3))
+IMPORTS4 = $(call shwspace,$(_IMPORTS4))
 
 ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3) $(ECOBJECTS4)
-ECOBJECTS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES1)))))
-ECOBJECTS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES2)))))
-ECOBJECTS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES3)))))
-ECOBJECTS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES4)))))
+ECOBJECTS1 = $(call shwspace,$(_ECOBJECTS1))
+ECOBJECTS2 = $(call shwspace,$(_ECOBJECTS2))
+ECOBJECTS3 = $(call shwspace,$(_ECOBJECTS3))
+ECOBJECTS4 = $(call shwspace,$(_ECOBJECTS4))
 
 BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3) $(BOWLS4)
-BOWLS1 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES1)))))
-BOWLS2 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES2)))))
-BOWLS3 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES3)))))
-BOWLS4 = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES4)))))
+BOWLS1 = $(call shwspace,$(_BOWLS1))
+BOWLS2 = $(call shwspace,$(_BOWLS2))
+BOWLS3 = $(call shwspace,$(_BOWLS3))
+BOWLS4 = $(call shwspace,$(_BOWLS4))
 
 _OBJECTS = \
 	$(OBJ)File.c.o \
@@ -285,7 +310,7 @@ _OBJECTS = \
 	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
 
-OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main.o
 
 SOURCES = $(ECSOURCES) \
 	src/sys/File.c \
@@ -451,49 +476,49 @@ PRJ_CFLAGS += \
 	 $(if $(DISABLE_GL), \
 			 -DECERE_NOGL,) \
 	 $(if $(WINDOWS_TARGET), \
-			 -isystem ../deps/glext \
-			 -I../deps/jpeg-9a \
-			 -I../deps/libpng-1.6.12 \
-			 -I../deps/libungif-4.1.1/lib \
-			 -I../deps/zlib-1.2.8 \
-			 -I../deps/freetype-2.3.12/include \
-			 -I../deps/curl-7.51.0/include \
-			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
+		 -isystem ../deps/glext \
+		 -I../deps/jpeg-9a \
+		 -I../deps/libpng-1.6.12 \
+		 -I../deps/libungif-4.1.1/lib \
+		 -I../deps/zlib-1.2.8 \
+		 -I../deps/freetype-2.3.12/include \
+		 -I../deps/curl-7.51.0/include \
+		 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
-			 -I/usr/include/freetype2,) \
+		 -I/usr/include/freetype2,) \
 	 $(if $(OSX_TARGET), \
-			 -I/usr/include/freetype2 \
-			 -I$(SYSROOT)/usr/X11/include/freetype2 \
-			 -I$(SYSROOT)/usr/X11/include \
-			 -I/usr/X11R6/include/freetype2 \
-			 -I/usr/X11R6/include \
-			 -Isrc/gui/drivers/cocoa \
-			 -I../deps/jpeg-9a \
-			 -I../deps/libpng-1.6.12 \
-			 -I../deps/libungif-4.1.1/lib,) \
+		 -I/usr/include/freetype2 \
+		 -I$(SYSROOT)/usr/X11/include/freetype2 \
+		 -I$(SYSROOT)/usr/X11/include \
+		 -I/usr/X11R6/include/freetype2 \
+		 -I/usr/X11R6/include \
+		 -Isrc/gui/drivers/cocoa \
+		 -I../deps/jpeg-9a \
+		 -I../deps/libpng-1.6.12 \
+		 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 -DBUILDING_ECERE_COM \
-			 -DCURL_DISABLE_TYPECHECK \
-			 -Isrc/gfx/drivers/gl3/ \
-			 -Isrc/gfx/drivers/harfbuzz \
-			 -I/usr/X11R6/include \
-			 -I/usr/X11R6/include/freetype2 $(FVISIBILITY)
+		 -DBUILDING_ECERE_COM \
+		 -DCURL_DISABLE_TYPECHECK \
+		 -Isrc/gfx/drivers/gl3/ \
+		 -Isrc/gfx/drivers/harfbuzz \
+		 -I/usr/X11R6/include \
+		 -I/usr/X11R6/include/freetype2 $(FVISIBILITY)
 
 CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(LINUX_TARGET), \
-			 -D_FILE_OFFSET_BITS=64,) \
+		 -D_FILE_OFFSET_BITS=64,) \
 	 $(PRJ_CFLAGS)
 
 CUSTOM2_PRJ_CFLAGS = \
-			 -DECERE_COM_MODULE \
+		 -DECERE_COM_MODULE \
 	 $(PRJ_CFLAGS)
 
 CUSTOM3_PRJ_CFLAGS = \
-			 -Isrc/gfx/newFonts/cc \
+		 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
 CUSTOM5_PRJ_CFLAGS = \
-			 -Isrc/gfx/newFonts/cc \
+		 -Isrc/gfx/newFonts/cc \
 	 $(CUSTOM2_PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
@@ -599,7 +624,7 @@ CECFLAGS += -cpp $(_CPP)
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -645,13 +670,13 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
-	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
+	$(call addtolistfile,$(OBJ)$(MODULE).main.o,$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS1),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS2),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS3),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS4),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -894,19 +919,19 @@ $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 endif
 
 $(OBJ)atlasBuilder.sym: src/gfx/newFonts/atlasBuilder.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/atlasBuilder.ec -o $(OBJ)atlasBuilder.sym
 
 $(OBJ)drawManager.sym: src/gfx/newFonts/drawManager.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/drawManager.ec -o $(OBJ)drawManager.sym
 
 $(OBJ)fmFontManager.sym: src/gfx/newFonts/fmFontManager.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/fmFontManager.ec -o $(OBJ)fmFontManager.sym
 
 $(OBJ)fontRenderer.sym: src/gfx/newFonts/fontRenderer.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/fontRenderer.ec -o $(OBJ)fontRenderer.sym
 
 $(OBJ)textureManager.sym: src/gfx/newFonts/textureManager.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/textureManager.ec -o $(OBJ)textureManager.sym
 
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.sym
@@ -933,13 +958,13 @@ $(OBJ)Surface.sym: src/gfx/Surface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Surface.ec -o $(OBJ)Surface.sym
 
 $(OBJ)fontManagement.sym: src/gfx/fontManagement.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/fontManagement.ec -o $(OBJ)fontManagement.sym
 
 $(OBJ)fontRendering.sym: src/gfx/fontRendering.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/fontRendering.ec -o $(OBJ)fontRendering.sym
 
 $(OBJ)imgDistMap.sym: src/gfx/imgDistMap.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@)
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/imgDistMap.ec -o $(OBJ)imgDistMap.sym
 
 $(OBJ)Button.sym: src/gui/controls/Button.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.sym
@@ -1357,19 +1382,19 @@ $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.s
 endif
 
 $(OBJ)atlasBuilder.c: src/gfx/newFonts/atlasBuilder.ec $(OBJ)atlasBuilder.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/atlasBuilder.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/atlasBuilder.ec -o $(OBJ)atlasBuilder.c -symbols $(OBJ)
 
 $(OBJ)drawManager.c: src/gfx/newFonts/drawManager.ec $(OBJ)drawManager.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/drawManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/drawManager.ec -o $(OBJ)drawManager.c -symbols $(OBJ)
 
 $(OBJ)fmFontManager.c: src/gfx/newFonts/fmFontManager.ec $(OBJ)fmFontManager.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fmFontManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/fmFontManager.ec -o $(OBJ)fmFontManager.c -symbols $(OBJ)
 
 $(OBJ)fontRenderer.c: src/gfx/newFonts/fontRenderer.ec $(OBJ)fontRenderer.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/fontRenderer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/fontRenderer.ec -o $(OBJ)fontRenderer.c -symbols $(OBJ)
 
 $(OBJ)textureManager.c: src/gfx/newFonts/textureManager.ec $(OBJ)textureManager.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/newFonts/textureManager.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/textureManager.ec -o $(OBJ)textureManager.c -symbols $(OBJ)
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
@@ -1396,13 +1421,13 @@ $(OBJ)Surface.c: src/gfx/Surface.ec $(OBJ)Surface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Surface.ec -o $(OBJ)Surface.c -symbols $(OBJ)
 
 $(OBJ)fontManagement.c: src/gfx/fontManagement.ec $(OBJ)fontManagement.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontManagement.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/fontManagement.ec -o $(OBJ)fontManagement.c -symbols $(OBJ)
 
 $(OBJ)fontRendering.c: src/gfx/fontRendering.ec $(OBJ)fontRendering.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/fontRendering.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/fontRendering.ec -o $(OBJ)fontRendering.c -symbols $(OBJ)
 
 $(OBJ)imgDistMap.c: src/gfx/imgDistMap.ec $(OBJ)imgDistMap.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/imgDistMap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/imgDistMap.ec -o $(OBJ)imgDistMap.c -symbols $(OBJ)
 
 $(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/controls/Button.ec -o $(OBJ)Button.c -symbols $(OBJ)
@@ -1805,6 +1830,24 @@ $(OBJ)harfbuzz-impl.o: src/gfx/drivers/harfbuzz/harfbuzz-impl.c
 $(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
 
+$(OBJ)glab.o: $(OBJ)glab.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)glab.c -o $(OBJ)glab.o
+
+$(OBJ)immediate.o: $(OBJ)immediate.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)immediate.c -o $(OBJ)immediate.o
+
+$(OBJ)matrixStack.o: $(OBJ)matrixStack.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)matrixStack.c -o $(OBJ)matrixStack.o
+
+$(OBJ)gl_compat_4_4.o: src/gfx/drivers/gl3/gl_compat_4_4.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/gl_compat_4_4.c -o $(OBJ)gl_compat_4_4.o
+
+$(OBJ)shaders.o: $(OBJ)shaders.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)shaders.c -o $(OBJ)shaders.o
+
+$(OBJ)defaultShader.o: $(OBJ)defaultShader.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)defaultShader.c -o $(OBJ)defaultShader.o
+
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.o: $(OBJ)Direct3D8DisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Direct3D8DisplayDriver.c -o $(OBJ)Direct3D8DisplayDriver.o
@@ -1867,32 +1910,32 @@ $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
 
-$(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/cc.c) -o $(call quote_path,$@)
+$(OBJ)cc.o: src/gfx/newFonts/cc/cc.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/cc/cc.c -o $(OBJ)cc.o
 
-$(OBJ)ccstr$(O): src/gfx/newFonts/cc/ccstr.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/ccstr.c) -o $(call quote_path,$@)
+$(OBJ)mm.o: src/gfx/newFonts/cc/mm.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/cc/mm.c -o $(OBJ)mm.o
 
-$(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
+$(OBJ)ccstr.o: src/gfx/newFonts/cc/ccstr.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/cc/ccstr.c -o $(OBJ)ccstr.o
 
-$(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)
+$(OBJ)mmhash.o: src/gfx/newFonts/cc/mmhash.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c src/gfx/newFonts/cc/mmhash.c -o $(OBJ)mmhash.o
 
-$(OBJ)atlasBuilder$(O): $(OBJ)atlasBuilder.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)atlasBuilder.c) -o $(call quote_path,$@)
+$(OBJ)atlasBuilder.o: $(OBJ)atlasBuilder.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)atlasBuilder.c -o $(OBJ)atlasBuilder.o
 
-$(OBJ)drawManager$(O): $(OBJ)drawManager.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)drawManager.c) -o $(call quote_path,$@)
+$(OBJ)drawManager.o: $(OBJ)drawManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)drawManager.c -o $(OBJ)drawManager.o
 
-$(OBJ)fmFontManager$(O): $(OBJ)fmFontManager.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fmFontManager.c) -o $(call quote_path,$@)
+$(OBJ)fmFontManager.o: $(OBJ)fmFontManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fmFontManager.c -o $(OBJ)fmFontManager.o
 
-$(OBJ)fontRenderer$(O): $(OBJ)fontRenderer.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRenderer.c) -o $(call quote_path,$@)
+$(OBJ)fontRenderer.o: $(OBJ)fontRenderer.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fontRenderer.c -o $(OBJ)fontRenderer.o
 
-$(OBJ)textureManager$(O): $(OBJ)textureManager.c
-	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)textureManager.c) -o $(call quote_path,$@)
+$(OBJ)textureManager.o: $(OBJ)textureManager.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)textureManager.c -o $(OBJ)textureManager.o
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
@@ -1918,14 +1961,14 @@ $(OBJ)Resource.o: $(OBJ)Resource.c
 $(OBJ)Surface.o: $(OBJ)Surface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Surface.c -o $(OBJ)Surface.o
 
-$(OBJ)fontManagement$(O): $(OBJ)fontManagement.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontManagement.c) -o $(call quote_path,$@)
+$(OBJ)fontManagement.o: $(OBJ)fontManagement.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fontManagement.c -o $(OBJ)fontManagement.o
 
-$(OBJ)fontRendering$(O): $(OBJ)fontRendering.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fontRendering.c) -o $(call quote_path,$@)
+$(OBJ)fontRendering.o: $(OBJ)fontRendering.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fontRendering.c -o $(OBJ)fontRendering.o
 
-$(OBJ)imgDistMap$(O): $(OBJ)imgDistMap.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)imgDistMap.c) -o $(call quote_path,$@)
+$(OBJ)imgDistMap.o: $(OBJ)imgDistMap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)imgDistMap.c -o $(OBJ)imgDistMap.o
 
 $(OBJ)Button.o: $(OBJ)Button.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Button.c -o $(OBJ)Button.o
@@ -2081,26 +2124,8 @@ $(OBJ)Timer.o: $(OBJ)Timer.c
 $(OBJ)typeEdit.o: $(OBJ)typeEdit.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)typeEdit.c -o $(OBJ)typeEdit.o
 
-$(OBJ)gl_compat_4_4.o: src/gfx/drivers/gl3/gl_compat_4_4.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/gl_compat_4_4.c -o $(OBJ)gl_compat_4_4.o
-
-$(OBJ)glab.o: $(OBJ)glab.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)glab.c -o $(OBJ)glab.o
-
 $(OBJ)GLMultiDraw.o: $(OBJ)GLMultiDraw.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)GLMultiDraw.c -o $(OBJ)GLMultiDraw.o
-
-$(OBJ)immediate.o: $(OBJ)immediate.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)immediate.c -o $(OBJ)immediate.o
-
-$(OBJ)matrixStack.o: $(OBJ)matrixStack.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)matrixStack.c -o $(OBJ)matrixStack.o
-
-$(OBJ)shaders.o: $(OBJ)shaders.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)shaders.c -o $(OBJ)shaders.o
-
-$(OBJ)defaultShader.o: $(OBJ)defaultShader.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)defaultShader.c -o $(OBJ)defaultShader.o
 
 $(OBJ)Window.o: $(OBJ)Window.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Window.c -o $(OBJ)Window.o
@@ -2150,10 +2175,10 @@ $(OBJ)List.o: $(OBJ)List.c
 $(OBJ)Map.o: $(OBJ)Map.c
 	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c $(OBJ)Map.c -o $(OBJ)Map.o
 
-$(OBJ)HashMap$(O): $(OBJ)HashMap.c
+$(OBJ)HashMap.o: $(OBJ)HashMap.c
 	$(CC) $(CFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashMap.c -o $(OBJ)HashMap.o
 
-$(OBJ)HashTable$(O): $(OBJ)HashTable.c
+$(OBJ)HashTable.o: $(OBJ)HashTable.c
 	$(CC) $(CFLAGS) $(CUSTOM5_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashTable.c -o $(OBJ)HashTable.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
@@ -2177,8 +2202,8 @@ $(OBJ)OldList.o: $(OBJ)OldList.c
 $(OBJ)instance.c.o: src/com/instance.c
 	$(CC) $(CFLAGS) $(CUSTOM2_PRJ_CFLAGS) -c src/com/instance.c -o $(OBJ)instance.c.o
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main.o
 
 cleaneceretarget:
 	$(call rm,$(TARGET))
@@ -2201,26 +2226,26 @@ endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
-	$(call rm,$(ECOBJECTS1))
-	$(call rm,$(ECOBJECTS2))
-	$(call rm,$(ECOBJECTS3))
-	$(call rm,$(ECOBJECTS4))
-	$(call rm,$(COBJECTS1))
-	$(call rm,$(COBJECTS2))
-	$(call rm,$(COBJECTS3))
-	$(call rm,$(COBJECTS4))
-	$(call rm,$(BOWLS1))
-	$(call rm,$(BOWLS2))
-	$(call rm,$(BOWLS3))
-	$(call rm,$(BOWLS4))
-	$(call rm,$(IMPORTS1))
-	$(call rm,$(IMPORTS2))
-	$(call rm,$(IMPORTS3))
-	$(call rm,$(IMPORTS4))
-	$(call rm,$(SYMBOLS1))
-	$(call rm,$(SYMBOLS2))
-	$(call rm,$(SYMBOLS3))
-	$(call rm,$(SYMBOLS4))
+	$(call rm,$(_ECOBJECTS1))
+	$(call rm,$(_ECOBJECTS2))
+	$(call rm,$(_ECOBJECTS3))
+	$(call rm,$(_ECOBJECTS4))
+	$(call rm,$(_COBJECTS1))
+	$(call rm,$(_COBJECTS2))
+	$(call rm,$(_COBJECTS3))
+	$(call rm,$(_COBJECTS4))
+	$(call rm,$(_BOWLS1))
+	$(call rm,$(_BOWLS2))
+	$(call rm,$(_BOWLS3))
+	$(call rm,$(_BOWLS4))
+	$(call rm,$(_IMPORTS1))
+	$(call rm,$(_IMPORTS2))
+	$(call rm,$(_IMPORTS3))
+	$(call rm,$(_IMPORTS4))
+	$(call rm,$(_SYMBOLS1))
+	$(call rm,$(_SYMBOLS2))
+	$(call rm,$(_SYMBOLS3))
+	$(call rm,$(_SYMBOLS4))
 	$(_MAKE) -f Makefile.ecereCOM clean
 	$(_MAKE) -f Makefile.vanilla clean
 

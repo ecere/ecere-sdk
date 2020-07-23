@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := EDA
+VERSION := 0.44
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -53,15 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO).0.44
-SONAME = -Wl,-soname,$(LP)EDA$(SO).0
-else
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO)
-SONAME =
-endif
+TARGET = $(OBJ)$(LP)EDA$(OUT)
 
 _ECSOURCES = \
 	src/DirFilesDataSource.ec \
@@ -77,17 +72,19 @@ _ECSOURCES = \
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
-COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+_COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
+_SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
+_IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
+_ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
+_BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
-SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
+COBJECTS = $(call shwspace,$(_COBJECTS))
+SYMBOLS = $(call shwspace,$(_SYMBOLS))
+IMPORTS = $(call shwspace,$(_IMPORTS))
+ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
+BOWLS = $(call shwspace,$(_BOWLS))
 
-IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
-
-ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
-
-BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
-
-OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main.o
 
 SOURCES = $(ECSOURCES)
 
@@ -106,7 +103,7 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+		 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall
 
 ECFLAGS += -module $(MODULE)
@@ -139,7 +136,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -161,12 +158,10 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 	$(call cp,$(TARGET),../../$(SODESTDIR))
-ifdef LINUX_TARGET
-	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO)
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
-endif
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
@@ -261,33 +256,25 @@ $(OBJ)gui.o: $(OBJ)gui.c
 $(OBJ)idList.o: $(OBJ)idList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)idList.c -o $(OBJ)idList.o
 
-$(OBJ)fieldValue$(O): $(OBJ)fieldValue.c
+$(OBJ)fieldValue.o: $(OBJ)fieldValue.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)fieldValue.c -o $(OBJ)fieldValue.o
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main.o
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rm,$(OBJ)symbols.lst)
-	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
-	$(call rm,$(ECOBJECTS))
-	$(call rm,$(COBJECTS))
-	$(call rm,$(BOWLS))
-	$(call rm,$(IMPORTS))
-	$(call rm,$(SYMBOLS))
+	$(call rm,$(_ECOBJECTS))
+	$(call rm,$(_COBJECTS))
+	$(call rm,$(_BOWLS))
+	$(call rm,$(_IMPORTS))
+	$(call rm,$(_SYMBOLS))
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

@@ -3,6 +3,7 @@
 # CORE VARIABLES
 
 MODULE := EDASQLiteCipher
+VERSION := 0.44
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -53,15 +54,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-ifdef LINUX_TARGET
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SO).0.44
-SONAME = -Wl,-soname,$(LP)EDASQLiteCipher$(SO).0
-else
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SO)
-SONAME =
-endif
+TARGET = $(OBJ)$(LP)EDASQLiteCipher$(OUT)
 
 _ECSOURCES = \
 	EDASQLiteCipher.ec \
@@ -69,20 +64,22 @@ _ECSOURCES = \
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
 
-COBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES)))))
+_COBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES))))
+_SYMBOLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES))))
+_IMPORTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES))))
+_ECOBJECTS = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES))))
+_BOWLS = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES))))
 
-SYMBOLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES)))))
-
-IMPORTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES)))))
-
-ECOBJECTS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES)))))
-
-BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES)))))
+COBJECTS = $(call shwspace,$(_COBJECTS))
+SYMBOLS = $(call shwspace,$(_SYMBOLS))
+IMPORTS = $(call shwspace,$(_IMPORTS))
+ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
+BOWLS = $(call shwspace,$(_BOWLS))
 
 _OBJECTS = \
 	$(OBJ)sqlite3.o
 
-OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main.o
 
 SOURCES = $(ECSOURCES) \
 	sqlite3.c
@@ -104,17 +101,19 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -I$(OPENSSL_INCLUDE_DIR) \
-			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+		 -I$(OPENSSL_INCLUDE_DIR) \
+		 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
-			 -DSQLITE_HAS_CODEC
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+		 -DSQLITE_HAS_CODEC
 
 CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(WINDOWS_TARGET), \
-			 -I$(OPENSSL_INCLUDE_DIR) \
-			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+		 -I$(OPENSSL_INCLUDE_DIR) \
+		 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2) $(FPIC) -w \
-			 -DSQLITE_HAS_CODEC
+		 -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+		 -DSQLITE_HAS_CODEC
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
@@ -126,8 +125,8 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(OPENSSL_LIB_DIR) \
-	 -L../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)
+	 $(if $(OPENSSL_LIB_DIR),-L$(OPENSSL_LIB_DIR),) \
+	 -L../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,libeay32)
 endif
@@ -173,7 +172,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
@@ -195,12 +194,10 @@ else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 	$(call cp,$(TARGET),../../../$(SODESTDIR))
-ifdef LINUX_TARGET
-	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO)
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
-	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
-endif	
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
@@ -229,8 +226,8 @@ $(OBJ)EDASQLiteCipher.o: $(OBJ)EDASQLiteCipher.c
 $(OBJ)EDASQLite.o: $(OBJ)EDASQLite.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EDASQLite.c -o $(OBJ)EDASQLite.o
 
-$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
+$(OBJ)$(MODULE).main.o: $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main.o
 
 openssl_debug:
 	@$(call echo,OPENSSL_CONF $(OPENSSL_CONF))
@@ -241,25 +238,17 @@ openssl_debug:
 
 cleantarget:
 	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
-	$(call rm,$(OBJ)symbols.lst)
-	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ)),)
+	$(if SO_LIB_LINKS,$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)),)
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))
-	$(call rm,$(ECOBJECTS))
-	$(call rm,$(COBJECTS))
-	$(call rm,$(BOWLS))
-	$(call rm,$(IMPORTS))
-	$(call rm,$(SYMBOLS))
+	$(call rm,$(_ECOBJECTS))
+	$(call rm,$(_COBJECTS))
+	$(call rm,$(_BOWLS))
+	$(call rm,$(_IMPORTS))
+	$(call rm,$(_SYMBOLS))
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))
