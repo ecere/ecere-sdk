@@ -294,10 +294,10 @@ ifndef LINUX_TARGET
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 endif
 endif
-	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJBINDIR))
+	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E),$(OBJBINDIR))
 
 ifdef CROSS_TARGET
 
@@ -448,10 +448,10 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call rm,$(SODESTDIR)$(LP)EcereAudio$(SOV))
 endif
 endif	
-	$(call rm,$(OBJBINDIR)ear$(E))
-	$(call rm,$(OBJBINDIR)ecc$(E))
-	$(call rm,$(OBJBINDIR)ecp$(E))
-	$(call rm,$(OBJBINDIR)ecs$(E))
+	$(call rm,$(OBJBINDIR)ear$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)ecc$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)ecp$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)ecs$(B32_SFX)$(E))
 	$(call rm,$(OBJBINDIR)epj2make$(E))
 	$(call rm,$(OBJBINDIR)bgen$(E))
 	$(call rm,$(OBJBINDIR)ecere-ide$(E))
@@ -564,10 +564,10 @@ BINARIES = \
 	ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A) \
 	compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV) \
 	compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV) \
-	compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) \
-	compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) \
-	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E) \
-	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E) \
+	compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E) \
+	compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E) \
+	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E) \
+	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(E) \
 	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
 
@@ -699,10 +699,10 @@ endif
 endif
 endif
 
-	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E),$(OBJBINDIR))
-	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJBINDIR))
+	$(call cp,ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E),$(OBJBINDIR))
 	$(call cp,bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E),$(OBJBINDIR))
 ifndef ECERE_PYTHON_PACKAGE
 	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
@@ -744,10 +744,10 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call cp,$(OBJBINDIR)$(LP)EcereAudio$(SO),"$(DESTLIBDIR)/")
 endif
 	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)ear$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)ecc$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)ecp$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)ecs$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ear$(B32_SFX)$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ecc$(B32_SFX)$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ecp$(B32_SFX)$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ecs$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)epj2make$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)bgen$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)documentor$(E),"$(BINDIR)/")
@@ -780,10 +780,10 @@ ifneq ($(ECERE_AUDIO),n)
 	install $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/
 endif
 	install $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/
-	install $(OBJBINDIR)ear$(E) $(BINDIR)/
-	install $(OBJBINDIR)ecc$(E) $(BINDIR)/
-	install $(OBJBINDIR)ecp$(E) $(BINDIR)/
-	install $(OBJBINDIR)ecs$(E) $(BINDIR)/
+	install $(OBJBINDIR)ear$(B32_SFX)$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecc$(B32_SFX)$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecp$(B32_SFX)$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecs$(B32_SFX)$(E) $(BINDIR)/
 	install $(OBJBINDIR)epj2make$(E) $(BINDIR)/
 	install $(OBJBINDIR)bgen$(E) $(BINDIR)/
 	install $(OBJBINDIR)documentor$(E) $(BINDIR)/
@@ -873,10 +873,10 @@ else
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
 endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/ecere-ide$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(E) $(BINDIR)/ecc$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(E) $(BINDIR)/ecp$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(B32_SFX)$(E) $(BINDIR)/ear$(B32_SFX)$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(B32_SFX)$(E) $(BINDIR)/ecc$(B32_SFX)$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(B32_SFX)$(E) $(BINDIR)/ecp$(B32_SFX)$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(B32_SFX)$(E) $(BINDIR)/ecs$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(E) $(BINDIR)/bgen$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
@@ -963,10 +963,10 @@ ifneq ($(ECERE_AUDIO),n)
 endif
 endif
 	$(call rm,"$(BINDIR)/ecere-ide$(E)")
-	$(call rm,"$(BINDIR)/ear$(E)")
-	$(call rm,"$(BINDIR)/ecc$(E)")
-	$(call rm,"$(BINDIR)/ecp$(E)")
-	$(call rm,"$(BINDIR)/ecs$(E)")
+	$(call rm,"$(BINDIR)/ear$(B32_SFX)$(E)")
+	$(call rm,"$(BINDIR)/ecc$(B32_SFX)$(E)")
+	$(call rm,"$(BINDIR)/ecp$(B32_SFX)$(E)")
+	$(call rm,"$(BINDIR)/ecs$(B32_SFX)$(E)")
 	$(call rm,"$(BINDIR)/epj2make$(E)")
 	$(call rm,"$(BINDIR)/bgen$(E)")
 	$(call rm,"$(BINDIR)/documentor$(E)")

@@ -12,7 +12,7 @@ include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
 all: bindir ecere libec ecp ecc ecs
-	$(call cp,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(E),$(OBJ))
+	$(call cp,ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E) ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E) ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E),$(OBJ))
 	@$(call echo,All done!)
 
 bindir:
@@ -39,7 +39,7 @@ ecs: ecere libec
 	+cd ecs && $(_MAKE)
 
 cleantarget:
-	$(call rm,$(OBJ)ecp$(E) $(OBJ)ecc$(E) $(OBJ)ecs$(E))
+	$(call rm,$(OBJ)ecp$(B32_SFX)$(E) $(OBJ)ecc$(B32_SFX)$(E) $(OBJ)ecs$(B32_SFX)$(E))
 ifdef WINDOWS_TARGET
 	$(call rm,$(OBJ)$(LP)ecere$(SO) $(OBJ)$(LP)ec$(SO))
 endif
