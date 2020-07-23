@@ -1650,6 +1650,11 @@ private:
                   test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
                   if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s2 = " failed"))) && (t+strlen(s2))[0] == '\0')
                      ; // ignore this new gnu make error but what is it about?
+                  else if(strstr(line, "ecp: note: executing preprocessor: ") == line)
+                     ; // ignore new ecp verbose output notef
+                  else if(strstr(line, "mkdir: created directory ") == line ||
+                        strstr(line, "removed ") == line) // this is a bit non-specific :P
+                     ; // ignore newer make version output
                   else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                   {
                      const char * moduleBackTick = strstr(line, "No rule to make target `");
