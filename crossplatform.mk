@@ -31,6 +31,7 @@ ifeq ($(OS),Windows_NT)
 else
  _UNAME := $(shell uname)
  UNAME_P := $(shell uname -p)
+ UNAME_M := $(shell uname -m)
  ifeq ($(_UNAME),FreeBSD)
  # Using Linux platform for Unix OSes for now
  #   HOST_PLATFORM := bsd
@@ -46,7 +47,11 @@ else
      LINUX_HOST := defined
   endif
  endif
- HOST_ARCH := $(UNAME_P)
+ ifeq ($(UNAME_P),unknown)
+  HOST_ARCH := $(UNAME_M)
+ else
+  HOST_ARCH := $(UNAME_P)
+ endif
 endif
 
 # TARGET_PLATFORM
@@ -156,7 +161,7 @@ ifdef ARCH
  ARCH_SUFFIX := .$(ARCH)
 
  ifdef LINUX_TARGET
-  TARGET_ARCH := $(TARGET_ARCH)-linux-gnu
+  TARGET_TRIPLE := $(TARGET_ARCH)-linux-gnu
  endif
 
 endif
@@ -170,6 +175,17 @@ ifndef ARCH
     ARCH := x32
     TARGET_ARCH := i386
     ARCH_FLAGS := -m32
+   endif
+  endif
+ endif
+endif
+
+ifdef RENAME_B32
+ ifeq ($(HOST_PLATFORM),$(TARGET_PLATFORM))
+ # note: arch stuff is missing on windows
+  ifeq ($(HOST_ARCH),x86_64)
+   ifeq ($(TARGET_ARCH),i386)
+	 B32_SFX := 32
    endif
   endif
  endif

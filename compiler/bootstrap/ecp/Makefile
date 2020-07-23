@@ -56,7 +56,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = 
 
-TARGET = $(OBJ)ecp$(OUT)
+TARGET = $(OBJ)ecp$(B32_SFX)$(OUT)
 
 OBJECTS = \
 	$(OBJ)ecp.o \

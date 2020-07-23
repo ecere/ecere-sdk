@@ -78,16 +78,16 @@ export DYLD_LIBRARY_PATH := $(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DE
 endif
 
 ifdef OSX_TARGET
-export ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecp$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
-export EAR := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
+export ECP := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecp$(B32_SFX)$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECC := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecc$(B32_SFX)$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECS := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(EC_BINS)ecs$(B32_SFX)$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
+export EAR := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(B32_SFX)$(HOST_E))
 export BGEN := DYLD_LIBRARY_PATH=$(DYLD_LIBRARY_PATH) $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
 else
-export ECP := $(call sys_path,$(EC_BINS)ecp$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECC := $(call sys_path,$(EC_BINS)ecc$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
-export ECS := $(call sys_path,$(EC_BINS)ecs$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
-export EAR := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(HOST_E))
+export ECP := $(call sys_path,$(EC_BINS)ecp$(B32_SFX)$(HOST_E))$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECC := $(call sys_path,$(EC_BINS)ecc$(B32_SFX)$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_FLAGS),$(space)$(GCC_FLAGS),)
+export ECS := $(call sys_path,$(EC_BINS)ecs$(B32_SFX)$(HOST_E))$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)
+export EAR := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/ear$(B32_SFX)$(HOST_E))
 export BGEN := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
 endif
 
