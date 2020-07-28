@@ -116,7 +116,7 @@ static FileAttribs EARGetEntry(File f, EAREntry entry, const char * name, char *
             if(path)
                PathCat(path, fileName);
             if(nameRest[0])
-               return EARGetEntry(f, entry, nameRest, path);
+               return (entry.type == ENTRY_FOLDER) ? EARGetEntry(f, entry, nameRest, path) : 0;
             else
                return (entry.type == ENTRY_FILE) ? FileAttribs { isFile = true } : FileAttribs { isDirectory = true };
          }
