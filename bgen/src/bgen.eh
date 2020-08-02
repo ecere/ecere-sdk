@@ -11,7 +11,6 @@
 #define genloc__ genloc__on ? "/*" : "", genloc__on ? ___getFixedLengthCodeLocation(" :", __FILE__, __LINE__) : "", genloc__on ? "*/ " : ""
 #define genspc__ genloc__on ? "  " : "", genloc__on ? spaces(CODE_LOC_FIXED_LEN + 2, 0)                       : "", genloc__on ? "   " : ""
 #else
-#define genidx(id) ""
 #define genloc__ ""
 #define genspc__ ""
 #endif
