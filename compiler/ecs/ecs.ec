@@ -223,6 +223,8 @@ static void LoadImports(const char * fileName)
 // static Class applicationClass;
 static Class thisAppClass;
 
+static const char * attributeCommon = "__attribute__((__common__)) ";
+
 class ModuleInfo : struct
 {
    ModuleInfo prev, next;
@@ -288,7 +290,7 @@ static void WriteMain(const char * fileName)
       f.Puts("static Module __currentModule;\n\n");
 
       if(!isStaticLibrary)
-         f.Puts("__attribute__((__common__)) Module __thisModule;\n\n");
+         f.Printf("%sModule __thisModule;\n\n", attributeCommon);
 
       // TOCHECK: Problem compiling Scrabble.main.ec when binding Client first
       BindDCOMServer();
@@ -324,7 +326,7 @@ static void WriteMain(const char * fileName)
             FullClassNameCat(className, _class.name, true);
 
             if(_class.itself)
-               f.Printf("__attribute__((__common__)) Class __ecereClass_%s;\n", className);
+               f.Printf("%sClass __ecereClass_%s;\n", attributeCommon, className);
             /*else
                nonInst = true;*/
             //if(!_class.isRemote)
@@ -342,7 +344,7 @@ static void WriteMain(const char * fileName)
                      }
 
                      if(method.isVirtual)
-                        f.Printf("__attribute__((__common__)) int __ecereVMethodID_%s_%s;\n", className, method.name);
+                        f.Printf("%sint __ecereVMethodID_%s_%s;\n", attributeCommon, className, method.name);
                      else if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
                      {
                         /*char name[4096];
@@ -360,7 +362,7 @@ static void WriteMain(const char * fileName)
                         */
                         //f.Printf("void * __ecereMethod_%s_%s;\n", className, method.name);
 
-                        f.Printf("__attribute__((__common__)) int (*__ecereMethod_%s_%s)();\n", className, method.name);
+                        f.Printf("%sint (*__ecereMethod_%s_%s)();\n", attributeCommon, className, method.name);
                      }
 
                      anyMethod = true;
@@ -376,11 +378,11 @@ static void WriteMain(const char * fileName)
                   if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
                      if(prop.hasSet)
-                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Set_%s;\n", className, propName);
+                        f.Printf("%svoid * __ecereProp_%s_Set_%s;\n", attributeCommon, className, propName);
                      if(prop.hasGet)
-                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Get_%s;\n", className, propName);
+                        f.Printf("%svoid * __ecereProp_%s_Get_%s;\n", attributeCommon, className, propName);
                   }
-                  f.Printf("__attribute__((__common__)) Property __ecereProp_%s_%s;\n", className, propName);
+                  f.Printf("%sProperty __ecereProp_%s_%s;\n", attributeCommon, className, propName);
                   anyProp = true;
                }
             }
@@ -396,7 +398,7 @@ static void WriteMain(const char * fileName)
                char functionName[1024];
                functionName[0] = 0;
                FullClassNameCat(functionName, function.name, false);
-               f.Printf("__attribute__((__common__)) void * __ecereFunction_%s;\n", functionName);
+               f.Printf("%svoid * __ecereFunction_%s;\n", attributeCommon, functionName);
                anyFunction = true;
             }
          }
@@ -1741,6 +1743,8 @@ class SymbolgenApp : Application
                else
                   valid = false;
             }
+            else if(!strcmp(arg, "-no-attribute-common"))
+               attributeCommon = "";
          }
       }
       if(!output)
@@ -1748,7 +1752,7 @@ class SymbolgenApp : Application
 
       if(!valid)
       {
-         printf("%s", $"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+         printf("%s", $"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-no-attribute-common]\n");
       }
       else
       {
