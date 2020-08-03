@@ -290,7 +290,7 @@ static void WriteMain(const char * fileName)
       f.Puts("static Module __currentModule;\n\n");
 
       if(!isStaticLibrary)
-         f.Puts("__attribute__((__common__)) Module __thisModule;\n\n");
+         f.Printf("%sModule __thisModule;\n\n", attributeCommon);
 
       // TOCHECK: Problem compiling Scrabble.main.ec when binding Client first
       BindDCOMServer();
@@ -326,7 +326,7 @@ static void WriteMain(const char * fileName)
             FullClassNameCat(className, _class.name, true);
 
             if(_class.itself)
-               f.Printf("__attribute__((__common__)) Class __ecereClass_%s;\n", className);
+               f.Printf("%sClass __ecereClass_%s;\n", attributeCommon, className);
             /*else
                nonInst = true;*/
             //if(!_class.isRemote)
@@ -344,11 +344,7 @@ static void WriteMain(const char * fileName)
                      }
 
                      if(method.isVirtual)
-<<<<<<< HEAD
                         f.Printf("%sint __ecereVMethodID_%s_%s;\n", attributeCommon, className, method.name);
-=======
-                        f.Printf("__attribute__((__common__)) int __ecereVMethodID_%s_%s;\n", className, method.name);
->>>>>>> 6e770f4fe (compiler/libec; bgen: Fixed multiple definitions issues breaking on GCC 10 without -fcommon)
                      else if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
                      {
                         /*char name[4096];
@@ -366,11 +362,7 @@ static void WriteMain(const char * fileName)
                         */
                         //f.Printf("void * __ecereMethod_%s_%s;\n", className, method.name);
 
-<<<<<<< HEAD
                         f.Printf("%sint (*__ecereMethod_%s_%s)();\n", attributeCommon, className, method.name);
-=======
-                        f.Printf("__attribute__((__common__)) int (*__ecereMethod_%s_%s)();\n", className, method.name);
->>>>>>> 6e770f4fe (compiler/libec; bgen: Fixed multiple definitions issues breaking on GCC 10 without -fcommon)
                      }
 
                      anyMethod = true;
@@ -386,19 +378,11 @@ static void WriteMain(const char * fileName)
                   if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
                      if(prop.hasSet)
-<<<<<<< HEAD
                         f.Printf("%svoid * __ecereProp_%s_Set_%s;\n", attributeCommon, className, propName);
                      if(prop.hasGet)
                         f.Printf("%svoid * __ecereProp_%s_Get_%s;\n", attributeCommon, className, propName);
                   }
                   f.Printf("%sProperty __ecereProp_%s_%s;\n", attributeCommon, className, propName);
-=======
-                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Set_%s;\n", className, propName);
-                     if(prop.hasGet)
-                        f.Printf("__attribute__((__common__)) void * __ecereProp_%s_Get_%s;\n", className, propName);
-                  }
-                  f.Printf("__attribute__((__common__)) Property __ecereProp_%s_%s;\n", className, propName);
->>>>>>> 6e770f4fe (compiler/libec; bgen: Fixed multiple definitions issues breaking on GCC 10 without -fcommon)
                   anyProp = true;
                }
             }
@@ -414,11 +398,7 @@ static void WriteMain(const char * fileName)
                char functionName[1024];
                functionName[0] = 0;
                FullClassNameCat(functionName, function.name, false);
-<<<<<<< HEAD
                f.Printf("%svoid * __ecereFunction_%s;\n", attributeCommon, functionName);
-=======
-               f.Printf("__attribute__((__common__)) void * __ecereFunction_%s;\n", functionName);
->>>>>>> 6e770f4fe (compiler/libec; bgen: Fixed multiple definitions issues breaking on GCC 10 without -fcommon)
                anyFunction = true;
             }
          }
