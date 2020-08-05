@@ -4713,7 +4713,14 @@ static bool ConstructInstance(void * instance, Class _class, Class from, bool bi
          return false;
       }
    }
+
+#if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
+   memMutex.Wait();
+#endif
    (_class.templateClass ? _class.templateClass : _class).count++;
+#if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
+   memMutex.Release();
+#endif
    return true;
 }
 
@@ -4989,7 +4996,13 @@ public dllexport void eInstance_Delete(Instance instance)
          if(_class.templateClass) _class = _class.templateClass;
 
          base = _class.base;
+#if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
+         memMutex.Wait();
+#endif
          (_class.templateClass ? _class.templateClass : _class).count--;
+#if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
+         memMutex.Release();
+#endif
          if(_class.type == normalClass && !_class.count && !_class.module)
          {
 #ifdef MEMINFO
