@@ -20,7 +20,7 @@ public class GEFont : struct   // NOTE: This will likely be renamed to simply Fo
    {
       GEFont font
       {
-         face = CopyString(src.face);
+         face = src.face;
          outline = src.outline;
          bold = src.bold;
          color = src.color;

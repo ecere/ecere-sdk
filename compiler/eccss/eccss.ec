@@ -550,6 +550,12 @@ public class StylingRuleSelector : CMSSNode
 {
 public:
    CMSSExpression exp;
+
+   ~StylingRuleSelector()
+   {
+      delete exp;
+   }
+
    StylingRuleSelector ::parse(CMSSLexer lexer)
    {
       StylingRuleSelector selector = null;
@@ -761,15 +767,27 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if(destType == class(String))
                      {
                         void (* setString)(void * o, String v) = (void *)prop.Set;
-                        setString(object,
+                        String s =
                            (val.type.type == text)    ? CopyString(val.s)  :
                            (val.type.type == real)    ? PrintString(val.r) :
-                           (val.type.type == integer) ? PrintString(val.i) : null);
+                           (val.type.type == integer) ? PrintString(val.i) : null;
+                        setString(object, s);
+                        delete s;
                      }
                      else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance))
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
                         setInstance(object,  (Instance)(uintptr)val.i);
+
+                        if(destType.type == normalClass)
+                           eInstance_DecRef((Instance)(uintptr)val.i);
+                        else if(destType.type == noHeadClass)
+                        {
+                           // TODO: base classes destructors?
+                           if(destType.Destructor)
+                              destType.Destructor((void *)(uintptr)val.i);
+                           eSystem_Delete((void *)(uintptr)val.i);
+                        }
 
                         //if we're freeing these Instances later, is it then the case that
                         //we give CMSSExpInstance this instData member and free it in destructor
