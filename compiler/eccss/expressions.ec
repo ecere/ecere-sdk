@@ -1349,7 +1349,7 @@ public:
             if(expType && expType.type != structClass)
             {
                if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
-                  eInstance_Delete(instData);
+                  eInstance_DecRef(instData);
             }
             else
                delete instData;
@@ -1476,7 +1476,7 @@ public:
          if(expType && expType.type != structClass)
          {
             if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
-               eInstance_Delete(instData);
+               eInstance_DecRef(instData);
          }
          else
             delete instData;
