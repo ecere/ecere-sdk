@@ -840,7 +840,7 @@ public char * RSearchString(const char * buffer, const char * subStr, int maxLen
    {
       int subLen = strlen(subStr);
       const char * ptr1 = buffer + maxLen - subLen;
-      const char * ptr2 = buffer + maxLen - subLen - 1;
+      const char * ptr2 = ptr1 - 1;
       int (*strcompare)(const char *, const char *, uintsize) = matchCase ? strncmp : strnicmp;
       for(; ptr1 >=buffer; ptr1--, ptr2--)
       {
