@@ -198,12 +198,14 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
    void Free()
    {
       IteratorPointer it = GetFirst();
+      eSystem_LockMem();
       while(it)
       {
          VT d = GetData(it);
          delete d;
          it = GetNext(it);
       }
+      eSystem_UnlockMem();
       if(tbl)
          mmHashReset(tbl, &hashAccess);
    }

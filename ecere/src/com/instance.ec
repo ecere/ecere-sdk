@@ -7587,3 +7587,17 @@ public void queryMemInfo(char * string)
 #endif
 #endif
 }
+
+public void eSystem_LockMem()
+{
+#if !defined(_NOMUTEX)
+   memMutex.Wait();
+#endif
+}
+
+public void eSystem_UnlockMem()
+{
+#if !defined(_NOMUTEX)
+   memMutex.Release();
+#endif
+}
