@@ -1170,7 +1170,8 @@ void dmEnd( dmContext *dm )
   for( drawbufferindex = 0 ; drawbufferindex < DM_CONTEXT_DRAW_BUFFER_COUNT ; drawbufferindex++ )
   {
     drawbuffer = &dm->drawbuffer[drawbufferindex];
-    glDeleteBuffers( 1, &drawbuffer->vbo );
+    if(drawbuffer->vbo)
+      glDeleteBuffers( 1, &drawbuffer->vbo );
   }
 
   /* TODO: Destroy the shaders! */
