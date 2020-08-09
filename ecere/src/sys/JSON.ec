@@ -321,7 +321,7 @@ private:
                result = success;
                delete string;
             }
-            else if(type && eClass_IsDerived(type, class(ColorAlpha)))
+            else if(type && (eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
             {
                result = GetColorAlpha(string, value);
                delete string;
@@ -1767,6 +1767,12 @@ private:
       {
          if(string[0] == '0' && string[1] == 'x')
             color = (uint)strtoul(string, null, 0);
+         else if(string[0] == '#')
+            color = (uint)strtoul(string+1, null, 16);
+         else if((strlen(string) == 6 || strlen(string) == 8) && ishexdigit(string[0]))
+         {
+            color = (Color)strtoul(string, null, 16);
+         }
          else
          {
             char *d;
