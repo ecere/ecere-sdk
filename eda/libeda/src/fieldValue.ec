@@ -198,6 +198,18 @@ public struct FieldValue
          s = null;
          return true;
       }
+      else if(!strcmpi(string, "false"))
+      {
+         type = { integer };
+         i = 0;
+         return true;
+      }
+      else if(!strcmpi(string, "true"))
+      {
+         type = { integer };
+         i = 1;
+         return true;
+      }
       else if(strchr(string, '.') || strchr(string, 'E'))
       {
          type = { real };
