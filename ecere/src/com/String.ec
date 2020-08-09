@@ -797,6 +797,11 @@ public void PrintBigSize(char * string, double size, int prec)
       sprintf(string, "%.0f B", size);
 }
 
+public bool ishexdigit(char x)
+{
+   return (isdigit(x) || (x >= 'a' && x<='f') || (x >= 'A' && x <= 'F'));
+}
+
 public char * SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)
 {
    if(buffer && subStr)
