@@ -111,6 +111,16 @@ public:
       if(!atoi(string) && (((DefinedColor)this).class::OnGetDataFromString(string) ||
          ((SystemColor)this).class::OnGetDataFromString(string)))
          return true;
+      else if(string[0] == '#')
+      {
+         this = (Color)strtoul(string+1, null, 16);
+         return true;
+      }
+      else if((strlen(string) == 6 || strlen(string) == 8) && ishexdigit(string[0]))
+      {
+         this = (Color)strtoul(string, null, 16);
+         return true;
+      }
       else
          return class::OnGetDataFromString(string);
    }
