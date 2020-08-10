@@ -431,8 +431,9 @@ public struct GLMultiDraw
    {
       idsAB.free();
       commandsB.free();
-      delete indexGLMB;
-      delete vertexGLMB;
+
+      if(indexGLMB) indexGLMB.free(), delete indexGLMB;
+      if(vertexGLMB) vertexGLMB.free(), delete vertexGLMB;
       delete drawIDs;
       delete commands;
       if(vao && glCaps_vao)

@@ -316,6 +316,14 @@ public:
       ab.free();
       totalSize = 0;
    }
+
+   ~GLMB()
+   {
+#ifdef _DEBUG
+      if(count) PrintLn("Warning: GLMB destructed without calling free()");
+#endif
+      free();
+   }
 };
 
 #ifdef _DEBUG
