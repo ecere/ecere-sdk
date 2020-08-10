@@ -1259,7 +1259,7 @@ public:
             ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
 
-            if(sFlags == ExpFlags { resolved = true } && !value.i)
+            if(sFlags.resolved /* == ExpFlags { resolved = true }*/ && !value.i)
                neverHappening = true;
 
             if(!sFlags.resolved || !value.i)
