@@ -135,12 +135,22 @@ public struct GLArrayTexture
 
    void init(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, GL_RGBA8, false);
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+      int internalFormat = GL_RGBA8;
+#else
+      int internalFormat = GL_RGBA;
+#endif
+      _init(levels, w, h, count, internalFormat, false);
    }
 
    void initMaxLevel(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, GL_RGBA8, true);
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+      int internalFormat = GL_RGBA8;
+#else
+      int internalFormat = GL_RGBA;
+#endif
+      _init(levels, w, h, count, internalFormat, true);
    }
 
    void initUShort(int levels, int w, int h, int count)
