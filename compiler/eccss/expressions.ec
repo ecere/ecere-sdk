@@ -1350,6 +1350,13 @@ public:
             {
                if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
                   eInstance_DecRef(instData);
+               else
+               {
+                  if(expType.Destructor)
+                     expType.Destructor(instData);
+                  eSystem_Delete(instData);
+               }
+               instData = null;
             }
             else
                delete instData;
@@ -1477,6 +1484,12 @@ public:
          {
             if(expType.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
                eInstance_DecRef(instData);
+            else
+            {
+               if(expType.Destructor)
+                  expType.Destructor(instData);
+               eSystem_Delete(instData);
+            }
          }
          else
             delete instData;
