@@ -784,9 +784,11 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                         else if(destType.type == noHeadClass)
                         {
                            // TODO: base classes destructors?
+                           /*
                            if(destType.Destructor)
                               destType.Destructor((void *)(uintptr)val.i);
                            eSystem_Delete((void *)(uintptr)val.i);
+                           */
                         }
 
                         //if we're freeing these Instances later, is it then the case that
