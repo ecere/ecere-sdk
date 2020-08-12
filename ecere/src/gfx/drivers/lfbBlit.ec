@@ -526,6 +526,81 @@ static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, i
    }
 }
 
+static void FILTER_A16T(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
+{
+   uint dstStride = dst.stride, srcStride = src.stride;
+   uint16 * source = ((uint16 *)src.picture) + sy * srcStride + sx;
+   uint16 * dest   = ((uint16 *)dst.picture) + dy * dstStride + dx;
+   uint addDest = dstStride - w;
+
+   if (w > sw && h > sh)
+   {
+      float scaleX = (float)sw / w;
+      float scaleY = (float)sh / h;
+      int y;
+      for (y = 0; y < h; y++)
+      {
+         int y0 = y * sh / h;
+         int y1 = Min(y0 + 1, sh - 1);
+         float alpha = y * scaleY - y0;
+         int x;
+         for (x = 0; x < w; x++, dest += 1)
+         {
+            int x0 = x * sw / w;
+            int x1 = Min(x0 + 1, sw - 1);
+            float beta = x * scaleX - x0;
+            uint16 src00 = source[y0 * srcStride + x0];
+            uint16 src01 = source[y0 * srcStride + x1];
+            uint16 src10 = source[y1 * srcStride + x0];
+            uint16 src11 = source[y1 * srcStride + x1];
+            uint16 v00 = src00, v01 = src01, v10 = src10, v11 = src11;
+            float v1 = v00 && v01 ? (v00)   * (1.0f - beta) + (v01)   * beta : v00 ? v00 : v01;
+            float v2 = v10 && v11 ? (v10)   * (1.0f - beta) + (v11)   * beta : v10 ? v10 : v11;
+            float v = v1 && v2 ? v1 * (1.0f - alpha) + v2 * alpha : v1 ? v1 : v2;
+            *dest = (uint16)v;
+         }
+         dest += addDest;
+      }
+   }
+   else
+   {
+      int y;
+      float scaleX = (float)sw / w;
+      float scaleY = (float)sh / h;
+
+      for(y = 0; y < h; y++)
+      {
+         int y0 = (int)(y * scaleY);
+         int yc = Min(y0 + 2, sh) - y0;
+         int x;
+         for(x = 0; x < w; x++, dest += 1)
+         {
+            int x0 = (int)(x * scaleX);
+            int xc = Min(x0 + 2, sw) - x0;
+            uint addSrc = srcStride - xc;
+            uint64 v = 0;
+            int i, j, numPixels = yc * xc;
+            uint16 * src = source + y0 * srcStride + x0;
+
+            for(i = y0; i < y0 + yc; i++, src += addSrc)
+            {
+               for(j = 0; j < xc; j++)
+               {
+                  uint16 pixel = *(src++);
+                  if(pixel)
+                     v += pixel;
+                  else
+                     numPixels--;
+               }
+            }
+            if(numPixels) v /= numPixels;
+            *dest = (uint16)v;
+         }
+         dest += addDest;
+      }
+   }
+}
+
 
 FILTER(888TF, ColorAlpha, ColorAlpha,-1, 0, color, color)
 FILTER(888T,  ColorAlpha, ColorAlpha, 1, 1, color, color)
@@ -537,6 +612,7 @@ FILTER(AT,  byte, byte, 1, 1, color, (byte)color)
 FILTER(AF,  byte, byte,-1, 1, color, (byte)color)
 
 FILTER(A16, uint16, uint16, 1, 0, color, (uint16)color)
+//FILTER(A16T, uint16, uint16, 1, 1, color, (uint16)color)
 
 void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
 {
@@ -549,5 +625,5 @@ void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
    { { FILTER_A, FILTER_AF },     { FILTER_AT, FILTER_ATF } }, // Alpha
    { { null, null },              { null, null} }, // Text
    { { FILTER_888, FILTER_888F }, { FILTER_888T, FILTER_888TF } }, // RGBA
-   { { FILTER_A16, null },              { null, null} } // A16
+   { { FILTER_A16, null },              { FILTER_A16T, null} } // A16
 };
