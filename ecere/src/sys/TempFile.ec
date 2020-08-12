@@ -158,7 +158,11 @@ public class TempFile : File
       if(increase)
       {
          this.size += increase;
-         this.buffer = renew this.buffer byte[this.size];
+         if(this.size > this.allocated)
+         {
+            this.allocated = this.size;
+            this.buffer = renew this.buffer byte[this.size];
+         }
       }
       return result;
    }
