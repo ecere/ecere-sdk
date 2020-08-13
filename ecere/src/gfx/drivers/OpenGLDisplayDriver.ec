@@ -2173,15 +2173,15 @@ class OpenGLDisplayDriver : DisplayDriver
          convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
       if(convBitmap)
       {
-         bool sRGB2Linear = bitmap.sRGB2Linear;
-         int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
          // TODO: Proper _GLES3 setup...
 #if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+         bool sRGB2Linear = bitmap.sRGB2Linear;
+         int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
             (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+            (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
 #else
-            0 :
+         int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
 #endif
-            (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA);
          int minFilter = oglSystem.loadingFont ? GL_NEAREST : mipMaps ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
          int maxFilter = oglSystem.loadingFont ? GL_NEAREST : GL_LINEAR;
          int face = (cubeMapFace & 7) - 1;
