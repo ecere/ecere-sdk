@@ -380,6 +380,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                {
                   Bitmap * bPtr = data;
                   *bPtr = ctx.texturesByID ? ctx.texturesByID[id] : null;
+                  if(*bPtr) incref (*bPtr);
                }
                texMutex.Release();
                break;
