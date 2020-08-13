@@ -1029,14 +1029,14 @@ public:
                      {
                         if(!at->texture)
                         {
-                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
-                           // TODO: Proper _GLES3 setup...
 #if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
-                              (/*sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : */GL_COMPRESSED_RGBA8_ETC2_EAC) :
-#else
-                              0 :
+                           bool sRGB2Linear = bitmap.sRGB2Linear;
+                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+                              (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+                              (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
+                  #else
+                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA8;
 #endif
-                              (/*sRGB2Linear ? GL_SRGB8_ALPHA8 : */GL_RGBA); // TOCHECK: Should this be GL_RGBA8 for non-ES?
 
                            // TOCHECK: Shouldn't the overall bitmap width be set?
                            // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
