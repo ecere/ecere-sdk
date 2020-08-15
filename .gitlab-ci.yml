@@ -28,6 +28,8 @@ ecere-sdk:
     # Build the application
     stage: build
     script:
+        - make troubleshoot
+        - make print-all-vars-stat
         - make
     artifacts:
         paths:

@@ -64,6 +64,8 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then wget http://www.ecere.com/tmp/avx512fintrin.h; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp avx512dqintrin.h "C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/" ; fi
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then cp avx512fintrin.h "C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0/include/" ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then mingw32-make MSYSCON=defined OPENSSL_CONF="C:\Program Files\OpenSSL-Win64\bin\openssl.cfg" -j1 V=1 ENABLE_SSL=y troubleshoot; else make -j1 V=1 ENABLE_SSL=y troubleshoot; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then mingw32-make MSYSCON=defined OPENSSL_CONF="C:\Program Files\OpenSSL-Win64\bin\openssl.cfg" -j1 V=1 ENABLE_SSL=y print-all-vars-stat; else make -j1 V=1 ENABLE_SSL=y print-all-vars-stat; fi
 
 script:
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then mingw32-make MSYSCON=defined OPENSSL_CONF="C:\Program Files\OpenSSL-Win64\bin\openssl.cfg" -j1 V=1 ENABLE_SSL=y; else make -j1 V=1 ENABLE_SSL=y; fi
