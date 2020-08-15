@@ -133,13 +133,9 @@ class PNGFormat : BitmapFormat
                               png_read_rows(png_ptr, &rowPtr, null, 1);
                               if(bit_depth == 16)
                               {
-                                 // We have pixelFormatA16 format for this now...
-                                 /*
-                                 for(x = 0; x<width; x++)
-                                    destPtr[x] = ColorRGBA { rowPtr[x*2+0], rowPtr[x*2+0], rowPtr[x*2+0], 255 };
-                                 */
                                  uint16 * destPtr = ((uint16 *)bitmap.picture) + y * bitmap.stride;
-                                 memcpy(destPtr, rowPtr, width*2);
+                                 for(x = 0; x<width; x++)
+                                    destPtr[x] = (rowPtr[x*2+0] << 8) | rowPtr[x*2+1];
                               }
                               else if(bit_depth == 8)
                               {
@@ -296,6 +292,12 @@ class PNGFormat : BitmapFormat
                      uint bytesPerRow = bitmap.stride * (bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
                      int colorType = bitmap.pixelFormat == pixelFormatA16 ? PNG_COLOR_TYPE_GRAY : PNG_COLOR_TYPE_RGBA;
                      int bitsPerPixel = bitmap.pixelFormat == pixelFormatA16 ? 16 : 8;
+                     byte * rowPtr = null;
+                     uint width = bitmap.width;
+
+                     // pixelFormatA16 is represented in native 16-bit uint16
+                     if(bitmap.pixelFormat == pixelFormatA16)
+                        rowPtr = new byte[width * 2];
 
                      png_set_write_fn(png_ptr, f, WriteData, null);
 
@@ -310,9 +312,26 @@ class PNGFormat : BitmapFormat
 
                      for(y = 0; y < bitmap.height; y++)
                      {
-                        byte * rowPtr = ((byte *)bitmap.picture) + y * bytesPerRow;
-                        png_write_rows(png_ptr, &rowPtr, 1);
+                        byte * ptr;
+
+                        if(rowPtr)
+                        {
+                           uint16 * src = ((uint16 *)bitmap.picture) + y * width;
+                           int x;
+                           for(x = 0; x < width; x++)
+                           {
+                              uint16 v = src[x];
+                              rowPtr[2 * x + 0] = (v & 0xFF00) >> 8;
+                              rowPtr[2 * x + 1] = v & 0xFF;
+                           }
+                           ptr = rowPtr;
+                        }
+                        else
+                           ptr = ((byte *)bitmap.picture) + y * bytesPerRow;
+                        png_write_rows(png_ptr, &ptr, 1);
                      }
+
+                     delete rowPtr;
 
                      png_write_end(png_ptr, info_ptr);
 
