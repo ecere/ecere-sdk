@@ -470,6 +470,78 @@ ifdef WINDOWS_TARGET
  endif
 endif
 
+_example_space = $(space)$(space)$(space)
+_mkcmd_example = $(space)$(space)$(space)$(MAKE_COMMAND)
+
+NOT_PARALLEL_TARGETS += help
+.PHONY: help
+help:
+	@$(info Ecere SDK Make Help)
+	@$(info )
+	@$(info help consists of command examples. try them!)
+	@$(info )
+	@$(info $(_mkcmd_example) help                                          -- this)
+	@$(info $(_mkcmd_example) help-advanced                                 -- advanced build commands)
+	@$(info $(_mkcmd_example) help-troubleshoot                             -- troubleshooting commands)
+	@$(info )
+	@$(info $(_mkcmd_example)                                               -- build ecere-sdk)
+	@$(info $(_mkcmd_example) all                                           -- same)
+	@$(info $(_mkcmd_example) -j1                                           -- build 1 step at a time)
+	@$(info $(_mkcmd_example) -j8                                           -- build with 8 parallel jobs)
+	@$(info $(_mkcmd_example) V=1                                           -- verbose build)
+	@$(info $(_mkcmd_example) wipeclean all                                 -- fully rebuild)
+	@$(info $(_mkcmd_example) ARCH=x32                                      -- build 32-bit binaries)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y                                  -- enable OpenSSL in Ecere library)
+	@$(info $(_mkcmd_example) EDASQLite=y                                   -- build SQLite driver for EDA)
+	@$(info $(_mkcmd_example) EDASQLiteCipher=y                             -- build SQLiteCipher driver for EDA)
+	@$(info $(_mkcmd_example) EDAdBASE=y                                    -- build dBASE driver for EDA)
+	@$(info $(_mkcmd_example) DISABLE_BINARY_COMPRESSION=y                  -- disable use of binary compression)
+	@$(info )
+	@$(info $(_mkcmd_example) ENABLE_SSL=y EDASQLite=y all -j9              -- common build)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y ARCH=x32 all -j9                 -- common 32-bit build)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y EDASQLite=y wipeclean all -j9    -- common full rebuild)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y ARCH=x32 wipeclean all -j9       -- common 32-bit full rebuild)
+	@$(info )
+	@$(info $(_mkcmd_example) clean                                         -- delete all intermediate object files)
+	@$(info $(_mkcmd_example) realclean                                     -- remove all release intermediate object directories)
+	@$(info $(_mkcmd_example) wipeclean                                     -- remove all intermediate object directories)
+	@$(info )
+
+NOT_PARALLEL_TARGETS += help-advanced
+.PHONY: help-advanced
+help-advanced:
+	@$(info advanced commands:)
+	@$(info )
+	@$(info $(_mkcmd_example) distclean                                     -- remove all workspaces, generated makefiles and intermediate object directories)
+	@$(info )
+	@$(info $(_mkcmd_example) wipeclean all c_bindings cxx_bindings_gen     -- combine all these targets)
+	@$(info )
+	@$(info linux only commands:)
+	@$(info )
+	@$(info $(_example_space)time sh -c '$(MAKE_COMMAND) wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make RENAME_B32=1 ARCH=x32 all -j9')
+	@$(info )
+
+NOT_PARALLEL_TARGETS += help-troubleshoot
+.PHONY: help-troubleshoot
+help-troubleshoot:
+	@$(info troubleshooting commands:)
+	@$(info )
+	@$(info $(_mkcmd_example) troubleshoot                                  -- print the definition for all prepackaged list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-core                             -- print the definition for the core list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-toolchain                        -- print the definition for the toolchain list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-openssl                          -- print the definition for the openssl list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-version                          -- print the definition for the version list of variables)
+	@$(info )
+	@$(info $(_mkcmd_example) print-all-vars-info                           -- print the definition for all variables)
+	@$(info $(_mkcmd_example) print-all-vars-stat                           -- print the definition, origin and flavor for all variables)
+	@$(info $(_mkcmd_example) print-var-info-PLATFORM                       -- print the definition for the PLATFORM variable)
+	@$(info $(_mkcmd_example) print-substr-vars-full-DIR                    -- print all information for all variables containing the DIR string)
+	@$(info )
+	@$(info available modes for print-var-<mode>-<name> and print-substr-vars-<mode>-<substring> targets:)
+	@$(info $(_example_space)info (definition only)$(comma) eval (value only)$(comma) both (definition and value)$(comma))
+	@$(info $(_example_space)stat (definition$(comma) origin and flavor) and full (definition$(comma) value$(comma) origin and flavor))
+	@$(info )
+
 var_info = $(if $(value $1),$1 = $(value $1),$1 is defined as an empty value)
 var_eval = $(if $(value $1),$(if $($1),$1 = $($1),$1 evaluates to an empty value),$1 is defined as an empty value)
 var_both = $(if $(value $1),$1 = $(value $1) $(if $($1),$(if $(call str_is,$($1),$(value $1)),(equal to definition),= $($1)),= (empty value)),$1 is defined as an empty value)
