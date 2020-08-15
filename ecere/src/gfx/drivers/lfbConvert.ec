@@ -423,6 +423,13 @@ static void BMPRGBA_A(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    CONVERT(pixel.a, ColorRGBA, byte)
 }
 
+static void BMPA16_888(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
+{
+   uint c;
+   uint16 pixel;
+   CONVERT((ColorAlpha { (byte)(pixel * 255 / 65535), white }), uint16, ColorAlpha)
+}
+
 void (* converters_table[PixelFormat][PixelFormat]) (LFBSystem, Bitmap src, Bitmap dst) =
 {
    { null,null,null,null,null,null,null, null, null },
@@ -433,5 +440,6 @@ void (* converters_table[PixelFormat][PixelFormat]) (LFBSystem, Bitmap src, Bitm
    { null, BMP888_8, BMP888_444, BMP888_555, BMP888_565, null, BMP888_A, null, BMP888_RGBA, null },
    { null, null, null, null, null, BMPA_888, null, null, null },
    { null,null,null,null,null,null,null, null, null },
-   { null,BMPRGBA_8,null,BMPRGBA_555,BMPRGBA_565,BMPRGBA_888,BMPRGBA_A, null, null }
+   { null,BMPRGBA_8,null,BMPRGBA_555,BMPRGBA_565,BMPRGBA_888,BMPRGBA_A, null, null },
+   { null,null,null,null,null,BMPA16_888,null, null, null }
 };
