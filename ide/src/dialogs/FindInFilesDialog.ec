@@ -786,6 +786,8 @@ private:
             if(stack[frame].fileList.Find())
             {
                bool match = true;
+               const char * name = stack[frame].fileList.name;
+               int len = strlen(name);
                if(nameCriteria[0])
                {
                   char name[MAX_LOCATION];
@@ -797,7 +799,7 @@ private:
                {
                   bool relative = false;
                   char fileRelative[MAX_LOCATION];
-                  if(filter.ValidateFileName(stack[frame].fileList.name))
+                  if(filter.ValidateFileName(name))
                   {
                      MakePathRelative(stack[frame].fileList.path, dir, fileRelative);
                      relative = true;
@@ -853,8 +855,8 @@ private:
                }
 
                if(subDirs && stack[frame].fileList.stats.attribs.isDirectory &&
-                     (objDirs || strcmp(stack[frame].fileList.name, "obj")) &&
-                     (gitDirs || strcmp(stack[frame].fileList.name, ".git")))
+                     (objDirs || !(len >= 4 && !strcmp(name, "obj"))) &&
+                     (gitDirs || !(len >= 4 && (!strcmp(name, ".git") || !strcmp(name + len - 4, ".git")))))
                {
                   int lastFrame = frame;
                   /*double thisTime = GetTime();
