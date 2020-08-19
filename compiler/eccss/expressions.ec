@@ -2040,6 +2040,11 @@ public:
 
    CMSSExpression getMemberByIDs(Container<const String> ids)
    {
+      return getMemberByIDs2(ids, null);
+   }
+
+   CMSSExpression getMemberByIDs2(Container<const String> ids, CMSSMemberInit * initPtr)
+   {
       CMSSExpression result = null;
       // TODO: Recognize default initializers
       for(mi : this)
@@ -2067,7 +2072,10 @@ public:
                }
             }
             if(same)
+            {
                result = e;
+               if(initPtr) *initPtr = init;
+            }
          }
       }
       return result;
@@ -2077,6 +2085,7 @@ public:
       CMSSMemberInit * mInitPtr, ECCSSEvaluator evaluator, Class stylesClass)
    {
       CMSSMemberInit mInit = null;
+      CMSSMemberInit mInit2 = null;
       bool setSubInstance = false;
 
       if(idsString && idsString[0])
@@ -2095,7 +2104,7 @@ public:
 
             if(this)
             {
-               e = getMemberByIDs([ member ]); // TOCHECK: Is this still needed?
+               e = getMemberByIDs2([ member ], &mInit2); // TOCHECK: Is this still needed?
                if(!e && mask)
                {
                   // This will recognize default initializers...
@@ -2155,6 +2164,9 @@ public:
             {
                ((CMSSExpInstance)e).setMember(dot+1, mask, createSubInstance, expression);
                setSubInstance = true;
+
+               if(mInit2)
+                  mInit2.stylesMask |= mask;
             }
          }
 
