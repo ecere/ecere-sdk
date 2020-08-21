@@ -44,7 +44,7 @@ public class TempFile : File
             this.allocated *= 2;
             if(this.allocated < this.size)
                this.allocated = this.size * 2;
-            this.buffer = renew this.buffer byte[this.allocated];
+            this.buffer = renew0 this.buffer byte[this.allocated];
          }
       }
       memcpy(this.buffer + position, buffer, writeSize);
@@ -161,7 +161,7 @@ public class TempFile : File
          if(this.size > this.allocated)
          {
             this.allocated = this.size;
-            this.buffer = renew this.buffer byte[this.size];
+            this.buffer = renew0 this.buffer byte[this.size];
          }
       }
       return result;
