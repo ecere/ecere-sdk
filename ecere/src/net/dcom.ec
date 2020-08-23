@@ -251,7 +251,7 @@ public:
    unsigned int id;
    SerialBuffer argsBuffer { };
    SerialBuffer returnBuffer { };
-   List<VirtualCallAck> acks { };
+   private List<VirtualCallAck> acks { };
    Mutex mutex { };
    int nextCallID;
 
@@ -610,7 +610,7 @@ public:
    unsigned int objectID;
    bool answered;
    SerialBuffer __ecereBuffer { };
-   List<CallAck> acks { };
+   private List<CallAck> acks { };
    int nextCallID;
 
    nextCallID = GetRandom(1, 999999);
