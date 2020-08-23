@@ -134,6 +134,28 @@ bool openModule(const char * filePath)
    return true;
 }
 
+// todo: review all other direct use of ProcessTypeString and make them verified correct uses
+Type processTypeStringOk(const char * dataTypeString)
+{
+   // tocheck: does staticMethod ever need to be true?
+   bool dtsHasTemplateArgs = strchr(dataTypeString, '<') && strchr(dataTypeString, '>');
+   if(dtsHasTemplateArgs)
+      debugBreakpoint();
+   return ProcessTypeString(dataTypeString, false);
+}
+
+Type resolveDataTypeStringInTemplatesContext(Class cl, const char * dataTypeString, bool debug)
+{
+   Type type;
+   Context context = SetupTemplatesContext(cl); // TOCHECK: Should we do this only once while we process the whole class?
+   // PrintLn("SetupTemplatesContext(", cl.name, ")");
+   // if(debug && !strcmp(cl.name, "BinaryTree")) debugBreakpoint();
+   type = ProcessTypeString(dataTypeString, false);
+   FinishTemplatesContext(context);
+   return type;
+}
+
+/*
 Type typeDataMember(DataMember dm, Class cl)
 {
    if(!dm.dataType)
@@ -144,6 +166,7 @@ Type typeDataMember(DataMember dm, Class cl)
    }
    return dm.dataType;
 }
+*/
 
 void printDependencies(Module start)
 {

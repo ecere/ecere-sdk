@@ -384,9 +384,9 @@ struct IterClassHierarchyMemberOrPropertyPlus
       if(typing)
       {
          if(dm && dm.type == normalMember)
-            dm.dataType = typeDataMember(dm, cl);
+            dm.dataType = resolveDataTypeStringInTemplatesContext(cl, dm.dataTypeString, false); // typeDataMember(dm, cl);
          else if(pt)
-            pt.dataType = typeDataMember((DataMember)pt, cl);
+            pt.dataType = resolveDataTypeStringInTemplatesContext(cl, pt.dataTypeString, false); // typeDataMember((DataMember)pt, cl);
          type = pt ? pt.dataType : dm ? dm.dataType : null;
       }
       return mp;
