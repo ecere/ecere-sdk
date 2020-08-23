@@ -711,7 +711,7 @@ class CGen : Gen
       }
    }
 
-   Class getClassFromType(Type type, bool reduceUnits)
+   Class getClassFromType(Type type, bool reduceUnits/*, bool swapTemplateClass*/)
    {
       Class cl = null;
       const char * name = type._class.string;
@@ -747,6 +747,10 @@ class CGen : Gen
       else conmsg("check");
       if(reduceUnits && cl)
          cl = reduceUnitClass(cl);
+      /*
+      if(swapTemplateClass && cl.templateClass)
+         cl = cl.templateClass;
+      */
       return cl;
    }
 
@@ -1695,8 +1699,14 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
    else if(t.kind == classType || t.kind == subClassType)
    {
       _class = g_.getClassFromType(t, /*true*/!opt.cpp);
-      if(_class && _class.templateClass)
-         _class = _class.templateClass;
+      if(_class)
+      {
+         BClass c = _class;
+         if(opt.cpp && c.cl.templateArgs && !c.cpp.isClassTemplatable/*c.cpp.completeTemplate*/)
+            ; // PrintLn(c.cpp.dataTypeString);
+         else if(_class.templateClass)
+            _class = _class.templateClass;
+      }
    }
    if(_class)
       c = _class;
@@ -1731,7 +1741,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       if(!name)
       {
          if(_class && opt.cpp)
-            name = CopyString(c.cpp_name);
+            name = CopyString(c.cpp.dataTypeString ? c.cpp.dataTypeString : c.cpp.name);
          else
             name = _class ? getClassTypeName(_class) : oldGetClassTypeName(t._class.string);
          if(!strcmp(name, "unichar") || !strcmp(name, "any_object")) // hack
@@ -2428,11 +2438,7 @@ ASTRawString astBitTool(Class cl, BClass c)
    {
       BitMember bm = (BitMember)dm;
       if(!dm.dataType)
-      {
-         Context context = SetupTemplatesContext(cl);
-         dm.dataType = ProcessTypeString(dm.dataTypeString, false);
-         FinishTemplatesContext(context);
-      }
+         dm.dataType = resolveDataTypeStringInTemplatesContext(cl, dm.dataTypeString, false);
       if(bm.type == normalMember)
       {
          String n_ = PrintString(c.upper, "_", bm.name, "_");

@@ -107,7 +107,7 @@ public char * copySpecialSingleCharName(const char * name)
    return s;
 }
 
-char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
+char * getNoNamespaceString(const char * str, char * buffer, bool camelCase, bool noTemplateSyntax)
 {
    uint len = strlen(str);
    char * output = buffer ? buffer : new char[len+1];
@@ -159,6 +159,11 @@ char * getNoNamespaceString(const char * str, char * buffer, bool camelCase)
          break;
    }
    *o = 0;
+   if(noTemplateSyntax)
+   {
+      char * cut = strchr(output, '<');
+      if(cut) *cut = '\0';
+   }
    if(camelCase)
       *output = (char)tolower(*output);
    return output;

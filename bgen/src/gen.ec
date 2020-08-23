@@ -1491,9 +1491,9 @@ class BFunction : struct
       nspace = (NameSpacePtr)fn.nameSpace;
       name = strptrNoNamespace(fn.name);
       isDllExport = strstr(fn.dataTypeString, "dllexport") == fn.dataTypeString;
-      fname = getNoNamespaceString(fn.name, null, false);
+      fname = getNoNamespaceString(fn.name, null, false, false);
       skip = (skipFunctionTree.Find(fname) || (python && skipPyFunctionTree.Find(fname))) ? true : false;
-      ccfname = getNoNamespaceString(fn.name, null, true);
+      ccfname = getNoNamespaceString(fn.name, null, true, false);
       gname = getMangledFunctionName(fn.name);
       easy = easyFuncNames[gname];
       mapName = null;
@@ -1606,7 +1606,7 @@ class BClass : struct
    bool noMacro, noSpecMacro, nativeSpec;
    bool cleanDataType;
    // input names:
-   const char * name; char * base;
+   char * name; char * base;
    // generated names:
    char * upper; char * spec;
    char * cname;
@@ -1615,24 +1615,38 @@ class BClass : struct
    char * baseSymbolName;
    char * py_initializer;
    char * simplestIdentName;
-   char * cpp_name;
-   char * tcpp_name;
+   bool hasTemplateArgsInName;
    struct
    {
+      char * name;
+      char * tname;
       int templParamsCount; // the C++ template parameters count
       char * template;
       char * templatem;
       char * tprototype;
       char * targs;
       char * targsm;
+      bool isTemplate;
+      bool completeTemplate;
+      int typedTArgsCount;
+      char * dataTypeString;
+      bool classTypeIsTemplatable;
+      bool isClassTemplatable;
+
    } cpp;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
       bool ecere = gen.lib.ecere;
+      // char * namex;
       this.cl = cl;
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
-      name = strptrNoNamespace(cl.name);
+      // name = strptrNoNamespace(cl.name);
+      hasTemplateArgsInName = strchr(cl.name, '<') && strchr(cl.name, '>');
+      name = getNoNamespaceString(cl.name, null, false, true);
+      if(strchr(name, '>')) debugBreakpoint(); // todo this should be fixed
+      if(strchr(name, ':')) debugBreakpoint(); // todo this should be fixed
+      // if(strchr(namex, ':')) debugBreakpoint(); // todo this should be fixed
       simplestIdentName = new char[2];
       simplestIdentName[0] = (char)tolower(name[0]);
       simplestIdentName[1] = '\0';
@@ -1698,29 +1712,7 @@ class BClass : struct
          cSymbol = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
 
       if(gen.lang == CPlusPlus)
-      {
-         bool templatePrefix = (cl.type == noHeadClass || ((cl.type == normalClass || cl.type == structClass) && cl.templateArgs));
-         MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
-         const char * n = isString ? cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(name, false) ? iNameSwaps.data : name;
-         /*
-         const char * typeStr =
-               cl.type == bitClass ? "BIT" :
-               cl.type == enumClass ? "ENUM" :
-               cl.type == noHeadClass ? "NOHEAD" :
-               cl.type == normalClass ? "NORMAL" :
-               cl.type == structClass ? "STRUCT" :
-               cl.type == systemClass ? "SYSTEM" :
-               cl.type == unionClass ? "UNION" :
-               cl.type == unitClass ? "UNIT" :
-               "ERROR";
-         */
-         // todo: fix symbol construction issues before we can use this: ex: 'cn, "_get_", mn' where cn is not meant to be cpp_name
-         // cpp_name = PrintString(n, "/*cpp_name_", typeStr, "*/");
-         // tcpp_name = templatePrefix ? PrintString(cpptemplatePrefix, n, "/*tcpp_name_", typeStr, "*/") : PrintString(n, "/*tcpp_name_", typeStr, "*/");
-         cpp_name = CopyString(n);
-         tcpp_name = templatePrefix ? PrintString(cpptemplatePrefix, n) : CopyString(n);
-         cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &cpp.tprototype, &cpp.template, &cpp.targs, &cpp.templatem, &cpp.targsm);
-      }
+         cppGenClassDetails(this, cl, gen);
 
       if(python && py && isBool)
          cSymbol[0] = (char)toupper(cSymbol[0]); // Bool
@@ -1807,16 +1799,18 @@ class BClass : struct
    }
    void free()
    {
+      delete name;
       delete base; delete upper; delete spec; delete cname; delete cSymbol; delete baseSymbolName;
       delete coSymbol;
       delete py_initializer;
-      delete cpp_name;
-      delete tcpp_name;
+      delete cpp.name;
+      delete cpp.tname;
       delete cpp.template;
       delete cpp.templatem;
       delete cpp.tprototype;
       delete cpp.targs;
       delete cpp.targsm;
+      delete cpp.dataTypeString;
       if(cleanDataType)
       {
          FreeType(cl.dataType);
@@ -2127,11 +2121,7 @@ class BProperty : struct
          otherParamName[1] = 0; // temporary
       p = gen.allocMacroSymbolName(false, PROPERTY, { }, c.cname, name, 0);
       if(!pt.dataType)
-      {
-         Context context = SetupTemplatesContext(c.cl);
-         pt.dataType = ProcessTypeString(pt.dataTypeString, false);
-         FinishTemplatesContext(context);
-      }
+         pt.dataType = resolveDataTypeStringInTemplatesContext(c.cl, pt.dataTypeString, gen.lang == CPlusPlus);
 
       t = strTypeName("", { type = pt.dataType, pt = pt, cl = c.cl }, { anonymous = true }, null);
       //else t = null;
