@@ -289,7 +289,7 @@ struct FMGlyph
 
 public class FMFont : struct
 {
-   public LinkElement link;
+   public LinkElement<FMFont> link;
    FMFreeTypeFont ftFont;
    void *fontdata;
    float ascender;
