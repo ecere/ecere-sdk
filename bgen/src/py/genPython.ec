@@ -147,7 +147,7 @@ class PythonGen : CGen
                   Array<Class> additions { };
                   Array<Class> swap;
                   char * s = null;
-                  char * val = getNoNamespaceString(df.value, null, false);
+                  char * val = getNoNamespaceString(df.value, null, false, false);
                   batch.Add(clDep);
                   visited.Add((UIntPtr)clDep);
                   while(batch.count)
@@ -848,7 +848,7 @@ void processPyClass(PythonGen g, BClass c)
                   if(c.cl.base.templateClass)
                   {
                      const char * tp = strchr(c.cl.base.name, '<');
-                     char * tp2 = getNoNamespaceString(tp, null, false);
+                     char * tp2 = getNoNamespaceString(tp, null, false, false);
                      out.z.concatx(sk, "      kwArgs['templateParams'] = \"", tp2, "\"", ln);
                      delete tp2;
                   }
@@ -1795,7 +1795,7 @@ void processPyClass(PythonGen g, BClass c)
                                     {
                                        if(!dm.isProperty)
                                        {
-                                          typeDataMember(dm, itmp.cl);
+                                          dm.dataType = resolveDataTypeStringInTemplatesContext(itmp.cl, dm.dataTypeString, false); // typeDataMember(dm, itmp.cl);
                                           conassert(dm.type == normalMember && dm.itmppname, "?");
                                           out.z.concatx(comma, dm.itmppname, "=value[", i++, "] if len(value) >= ", i, " else 0");
                                           comma = ", ";
@@ -1806,7 +1806,7 @@ void processPyClass(PythonGen g, BClass c)
                                     if(clType.templateClass && !strcmp(clType.templateClass.name, "Container"))
                                     {
                                        const char * tp = strchr(clType.name, '<');
-                                       char * tp2 = getNoNamespaceString(tp, null, false);
+                                       char * tp2 = getNoNamespaceString(tp, null, false, false);
                                        out.z.concatx("      if not isinstance(value, Container):", ln);
                                        out.z.concatx("         value = Array(\"", tp2, "\", value)", ln); //<GeoPoint>
                                        delete tp2;
@@ -2024,6 +2024,8 @@ void processPyClass(PythonGen g, BClass c)
          out.z.concatx(sk, c.cSymbol, ".buc = ", cBase.cl.type == unitClass ? cBase.cSymbol : c.cSymbol, ln);
       }
       // end of class
+      delete lineage;
+      delete classOnly;
       delete selfimpl;
    }
 }
@@ -2300,7 +2302,7 @@ void theCallbacks(PythonGen g, BClass c, BOutput out, const char * sk, BProperty
                {
                   bool first = thisClass && itr.pm == m.md.dataType.params.first;
                   char * _type = printType(itr.pm, false, false, false);
-                  char * type = getNoNamespaceString(_type, null, false);
+                  char * type = getNoNamespaceString(_type, null, false, false);
                   if(thisTemplate && itr.pm == m.md.dataType.params.first)
                      out.z.concatx(", ", iname);
                   else if(itr.pm.kind == ellipsisType)
@@ -2456,7 +2458,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
             else if(itr.isReturnValue)
             {
                char * _type = printType(itr.pm, false, false, true);
-               char * type = getNoNamespaceString(_type, null, false);
+               char * type = getNoNamespaceString(_type, null, false, false);
                if(itr.isNoHead)
                   out.z.concatx(sk, spaces(ind, 0), pn, " = ffi.cast(\"", type, " *\", lib.Instance_new(lib.class_", type, "))", ln); //int *
                else
@@ -2554,7 +2556,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
          while(itr.next(paramFilter/*tofix: { all = true, ellipsisOn = false }*/))
          {
             char * _type = printType(itr.pm, false, false, true);
-            char * type = getNoNamespaceString(_type, null, false);
+            char * type = getNoNamespaceString(_type, null, false, false);
             if(itr.pm.kind == ellipsisType)
                out.z.concatx(comma, "*ellipsisArgs(args)");
             else
@@ -2572,7 +2574,7 @@ static void tmp_merge_FuncMethOutput(BOutput out, BFunction f, BMethod m, BClass
          if(clRT.templateClass)
          {
             const char * tp = strchr(clRT.name, '<');
-            char * tp2 = getNoNamespaceString(tp, null, false);
+            char * tp2 = getNoNamespaceString(tp, null, false, false);
             out.z.concatx(", \"", tp2, "\")");
             delete tp2;
          }

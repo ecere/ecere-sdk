@@ -133,6 +133,19 @@ List<Class> getClassLineage(Class c)
    return lineage;
 }
 
+List<Class> getCorrectClassLineage(Class c) // todo: review getClassLineage usage and replace with this implementation
+{
+   List<Class> lineage { };
+   Class cl;
+   for(cl = c; cl; cl = cl.templateClass ? cl.templateClass : cl.base)
+   {
+      lineage.Insert(null, cl);
+      if(cl.inheritanceAccess == privateAccess)
+         break;
+   }
+   return lineage;
+}
+
 public struct IterNamespace
 {
 public:
@@ -577,3 +590,37 @@ public:
       return cn;
    }
 };
+
+bool getClassIsTemplate(Class cl)
+{
+   Class c;
+   for(c = cl; c; c = c.base)
+   {
+      if(classTypeIsTemplatable(c.type))
+      {
+         if(c.templateParams.count)
+            return true;
+         if(c.base && c.base.templateClass)
+            break;
+      }
+      else
+         break;
+   }
+   return false;
+}
+
+bool classTypeIsTemplatable(ClassType ct)
+{
+   return ct == normalClass || ct == noHeadClass || ct == structClass;
+}
+
+bool isClassTemplatable(Class cl)
+{
+   Class c;
+   for(c = cl; c; c = c.base)
+      if(c.templateParams.count)
+         return c.templateClass ? false : true;
+      else if(c.templateClass)
+         return false;
+   return false;
+}

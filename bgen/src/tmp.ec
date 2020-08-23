@@ -522,7 +522,7 @@ char * getClassTypeName(Class c)
    char * name = null;
    char * a = oldGetClassTypeName(cl.name);
    char buf[1024];
-   char * b = getNoNamespaceString(cl.name, buf, false);
+   char * b = getNoNamespaceString(cl.name, buf, false, false);
    conassert(cl != null, "?");
    if(cl.templateClass)
    {
@@ -531,7 +531,7 @@ char * getClassTypeName(Class c)
       int tCount = cl.templateParams.count;
       int baseParam = cl.numParams - tCount;
       int n;
-      //name = getNoNamespaceString(t.cl.string, null, false);
+      //name = getNoNamespaceString(t.cl.string, null, false, false);
       if(tArgs)
       {
          for(n = baseParam; n < tCount; n++)
@@ -589,7 +589,7 @@ char * getTemplateClassSymbol(const char * className, bool preexpanded)
       if(*s == '<') count++;
    if(count)
    {
-      char * result = getNoNamespaceString(className, null, false);
+      char * result = getNoNamespaceString(className, null, false, false);
       int len = strlen(result);
       char * s;
       char * output = new char[len + count * (preexpanded ? 9 : 3) + 1];
@@ -641,7 +641,7 @@ char * oldGetClassTypeName(const char * className)
    char * name;//, * s1, * s2;
    bool template, pluriparams;
    template = pluriparams = false;
-   name = getNoNamespaceString(className, null, false);
+   name = getNoNamespaceString(className, null, false, false);
    if(!strcmp(name, "const String"))
       name = CopyString("constString");
    else
@@ -712,7 +712,7 @@ char * getSymbolNameStringFromTypeString(const char * typeString, const char * s
    if(special)
       template = true;
    else
-      name = getNoNamespaceString(typeString, null, false);
+      name = getNoNamespaceString(typeString, null, false, false);
    if(name && !strcmp(name, "const String"))
       name = CopyString("constString");
    else
