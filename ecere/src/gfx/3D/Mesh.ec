@@ -1035,7 +1035,7 @@ public:
                               (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
                               (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
                   #else
-                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA8;
+                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
 #endif
 
                            // TOCHECK: Shouldn't the overall bitmap width be set?
