@@ -585,6 +585,7 @@ char * getTemplateClassSymbol(const char * className, bool preexpanded)
 {
    int count = 0;
    const char * s;
+   if(!strcmp(className, "MapNode<String, ecere::gfx::FontInfo, T = String>")) debugBreakpoint();
    for(s = className; *s; s++)
       if(*s == '<') count++;
    if(count)
