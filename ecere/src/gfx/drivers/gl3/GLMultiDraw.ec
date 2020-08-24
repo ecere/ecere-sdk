@@ -560,7 +560,7 @@ public struct GLMultiDraw
       GLFlushMatrices();
 
       // Then render:
-#if defined(__UWP__)     // ******* Basic Draw Elements *******
+#if defined(__UWP__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))    // ******* Basic Draw Elements *******
       {
          int n;
          uint ixSize = type == GL_UNSIGNED_INT ? 4 : 2;
@@ -592,6 +592,7 @@ public struct GLMultiDraw
             glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, (void *)(uintptr)(baseInstance * sizeof(uint)));
             GLABBindBuffer(GL_ARRAY_BUFFER, 0);
 
+            // OpenGL ES 3.2 has this
             glDrawElementsInstancedBaseVertex(
                drawMode, cmd->count, type,
                (void *)(uintptr)(cmd->firstIndex * ixSize),

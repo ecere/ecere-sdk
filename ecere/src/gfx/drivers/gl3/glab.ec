@@ -17,12 +17,17 @@ public void GLABBindBuffer(int target, uint buffer)
          glabCurArrayBuffer = buffer;
       else if(target == GL_ELEMENT_ARRAY_BUFFER)
          glabCurElementBuffer = buffer;
+// NOTE: Actually ES 3.1 is required, separate define?
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
       else if(target == GL_DRAW_INDIRECT_BUFFER)
          glabCurDrawIndirectBuffer = buffer;
+#endif
    }
 }
 
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
 uint glabCurDrawIndirectBuffer;
+#endif
 
 public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector };
 
@@ -389,7 +394,11 @@ public struct GLB
       {
          if(glCaps_vertexBuffer)
          {
-            int glBufferType = type == commands ? GL_DRAW_INDIRECT_BUFFER : type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+            int glBufferType =
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+               type == commands ? GL_DRAW_INDIRECT_BUFFER :
+#endif
+               type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
 
             if(!buffer)
                glGenBuffers(1, &buffer);
@@ -412,7 +421,11 @@ public struct GLB
    {
       if(this != null && glCaps_vertexBuffer)
       {
-         int glBufferType = type == commands ? GL_DRAW_INDIRECT_BUFFER : type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+         int glBufferType =
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+            type == commands ? GL_DRAW_INDIRECT_BUFFER :
+#endif
+            type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
          GLABBindBuffer(glBufferType, buffer);
          glBufferSubData(glBufferType, offset, size, data);
       }
@@ -442,8 +455,10 @@ public struct GLB
                   GLABBindBuffer(GL_ARRAY_BUFFER, 0);
                else if(buffer == glabCurElementBuffer)
                   GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
                else if(buffer == glabCurDrawIndirectBuffer)
-                  GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                  GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+#endif
             }
          }
          if(count && buffers[0].buffer)
