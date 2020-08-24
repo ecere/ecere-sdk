@@ -3,7 +3,7 @@
 
 #define ENABLE_GEN_LOC
 #ifdef ENABLE_GEN_LOC
-#if 1
+#if 0
 #define genidx(id, x) "/*", #id, x, "*/"
 #else
 #define genidx(id, x) ""

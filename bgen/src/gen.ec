@@ -1706,10 +1706,12 @@ class BClass : struct
       noMacro = cl.type == systemClass || isUnichar;
       noSpecMacro = noMacro || cl.type == enumClass || isString;
 
+      // if(!strcmp(cl.name, "MapNode<String, ecere::gfx::FontInfo, T = String>")) debugBreakpoint();
       if(cl.templateClass)
          cSymbol = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
       else
          cSymbol = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
+      // if(!strcmp(cSymbol, "T(MapNode, String, FontInfo, T = String)")) debugBreakpoint();
 
       if(gen.lang == CPlusPlus)
          cppGenClassDetails(this, cl, gen);
