@@ -679,10 +679,12 @@ static void generateCPP(CPPGen g, File f)
       while((c = itacl.next(all)))
       {
          bool skip = c.isBool || c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class || c.isString;
-         bool template = hasTemplateClass(c.cl);
+         // bool template = hasTemplateClass(c.cl);
+         // if(!strcmp(c.cl.name, "Array")) debugBreakpoint();
+         // if(!strcmp(c.cl.name, "AVLTree")) debugBreakpoint();
          if(/*g_.lib.ecereCOM && */skipClasses.Find({ g_.lib.bindingName, c.cl.name }))
             skip = true;
-         if(!skip && !template && c.cl.type == normalClass && !c.cl.templateArgs)
+         if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.hasTemplateArgsInName)
          {
             firstClass = c.cl;
             f.PrintLn(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_cpp_class;");
@@ -1262,9 +1264,9 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                // Class Registration
                // o.z.concatx("   REGISTER() { ", cn, "_class_registration(", cn, ");", " }", ln);
                cppMacroClassRegister(g, o.z, mode, true/*mode == expansion*/,
-                     c && c.cl.type == normalClass && c.cpp.isTemplate/*c.cl.templateArgs*/, false, 1, c.name,
-                     mode == expansion ? c.cpp.template : c.cpp.templatem,
-                     mode == expansion ? c.cpp.targs : c.cpp.targsm, 0);
+                     c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs*/, false, 1, c.cpp.name,
+                     /*c.hasTemplateArgsInName ? */mode == expansion ? c.cpp.template : c.cpp.templatem/* : ""*/,
+                     /*c.hasTemplateArgsInName ? */mode == expansion ? c.cpp.targs : c.cpp.targsm/* : ""*/, 0);
                //o.z.concatx("      { ", cn, "_class_registration(", cn, ");", " }", ln);
                /*if(mode == expansion)
                   ; // o.z.concatx(genloc__, indents(1), "{", ln);
@@ -1321,8 +1323,10 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
       {
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
+            bool template = c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs*/;
             BOutput o { vclass, c = c, z = { allocType = heap } };
             BOutput o2 { vclass, c = c, z = { allocType = heap } };
+            BOutput  oT = template ? o : o2;
             c.outSplit = o;
             n.splitContents.Add(v);
             c.outImplementation = o2;
@@ -1336,14 +1340,38 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             if(c.cl.type == normalClass && !c.isInstance && !c.isModule)
             {
                // if(mode == expansion)
+               if(template)
                {
+                  bool skip = c.isBool || c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class || c.isString;
+                  if(/*g_.lib.ecereCOM && */skipClasses.Find({ g_.lib.bindingName, c.cl.name }))
+                     skip = true;
+                  if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.hasTemplateArgsInName)
+                  {
+                  // o.z.concatx(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_cpp_class;");
+                     o.z.concatx(genloc__, mode == expansion ? c.cpp.tprototype : c.cpp.tprototype/*m*/,
+                           " TCPPClass<", c.cpp.tname, mode == expansion ? c.cpp.targs : c.cpp.targsm, "> ",
+                           c.cpp.tname, mode == expansion ? c.cpp.targs : c.cpp.targsm, "::_cpp_class;", ln, ln);
+                     // template <typename TP_T> TCPPClass<TArray<TP_T>> TArray<TP_T>::_cpp_class;
+                     // debugBreakpoint();
+                  }
+
                   cppMacroClassRegister(g, o2.z, mode, false,
-                        c && c.cl.type == normalClass && c.cpp.isTemplate/*c.cl.templateArgs*/, false, 0, c.name,
-                        mode == expansion ? c.cpp.tprototype : c.cpp.tprototype/*m*/,
-                        mode == expansion ? c.cpp.targs : c.cpp.targsm, 0);
+                        false, false, 0, c.cpp.name,
+                        "",
+                        "", 0);
                   o2.z.concatx(genloc__, "{", ln);
-                  cppMacroClassRegistration(g, o2.z, configuration, 2, c, cBase, c, 0);
+                  // cppMacroClassRegistration(g, o2.z, configuration, 2, c, cBase, c, 0);
                   o2.z.concatx(genloc__, "}", ln);
+               }
+
+               {
+                  cppMacroClassRegister(g, oT.z, mode, false,
+                        template, false, 0, c.cpp.name,
+                        template ? mode == expansion ? c.cpp.tprototype : c.cpp.tprototype/*m*/ : "",
+                        template ? mode == expansion ? c.cpp.targs : c.cpp.targsm : "", 0);
+                  oT.z.concatx(genloc__, "{", ln);
+                  cppMacroClassRegistration(g, oT.z, configuration, 2, c, cBase, c, 0);
+                  oT.z.concatx(genloc__, "}", ln);
                }
             }
 
@@ -4158,11 +4186,12 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                            else
                               skipSep = true;
                         }
+                        // if(typeString && !strcmp(typeString, "TArray<C(TouchPointerInfo) _ARG int _ARG C(TouchPointerInfo)>")) debugBreakpoint();
                         if((param.kind == classType && ((ct == noHeadClass && !cpp) || (ct == structClass && (!cpp || v2)))) ||
                            (firstParam && t.classObjectType == typedObject && t.byReference))
                            z.concatx(" *");
                         else if(param.kind == classType &&
-                              ((ct == normalClass && !isString)/* || (cpp && ct == noHeadClass)*/ || (cpp && !v2 && ct == structClass)) && (cpp || (cParam && cParam.isString)))
+                              ((ct == normalClass && !isString)/* || (cpp && ct == noHeadClass)*/ || (cpp && !v2 && ct == structClass)) && (cpp || (cParam && cParam.isString) || (cParamT && cParamT.cpp.dataTypeString)))
                            z.concatx(" &");
                         if(prmIsFn)
                            z.concatx(paramString);
@@ -5294,6 +5323,8 @@ static void cppMacroClassRegister(
             o.concatx(t, " ");
          o.concatx("void ");
          // if(!pe && strstr(c, "=")) debugBreakpoint();
+         // if(strstr(c, "template")) debugBreakpoint();
+         // if(!strcmp(c, "AVLTree")) debugBreakpoint();
          if(!pe && !ol)
             o.concatx(te ? cpptemplatePrefix : "", te ? sc : "", c, te ? /*prototype ? */a/* : t*//*"<TPT>"*/ : "", "::");
          o.concatx("class_registration(CPPClass & _cpp_class)", lt, pt);
@@ -5351,7 +5382,7 @@ static void cppMacroClassRegistration(
       case expansion:
       {
          bool content = false;
-         bool template = c.cl.type == normalClass && c.cpp.isTemplate/*c.cl.templateArgs != null*/;
+         bool template = c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs != null*/;
          BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
          while((m = itm.next(publicVirtual)))
          {
