@@ -6,8 +6,11 @@ import "OpenGLDisplayDriver"
 
 #if defined(_GLES3)
 #include <GLES3/gl32.h>
+#endif
 
+#if defined(_GLES2) || defined(_GLES3)
 #define GL_R16 GL_LUMINANCE
+#define GL_RED GL_LUMINANCE   // Should this be GL_ALPHA ? Swizzle mode needed?
 #endif
 
 public define drawIDAttribute = 7;
@@ -160,6 +163,9 @@ public struct GLArrayTexture
 
    void _init(int levels, int w, int h, int count, int format, bool setMaxLevel)
    {
+      // TODO: How to replace texture arrays in OpenGL ES 2? They are supported in ES 3 / WebGL 2.
+      // Easy way to alternatively use a list of different textures?
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       int target = GL_TEXTURE_2D_ARRAY;
       /*if(texture)
       {
@@ -185,8 +191,10 @@ public struct GLArrayTexture
 
       glBindTexture(target, texture);
 
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(setMaxLevel)
          glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, levels-1);
+#endif
 
 #ifdef _DEBUG
       CheckGLErrors(__FILE__,__LINE__);
@@ -219,10 +227,12 @@ public struct GLArrayTexture
          glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
       }
       glBindTexture(target, 0);
+#endif
    }
 
    void resize(uint numLayers, uint targetFBO)
    {
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       GLArrayTexture tmp { };
       tmp._init(numLevels, width, height, numLayers, format, maxLevel);
       tmp.copy(this, targetFBO);
@@ -236,10 +246,12 @@ public struct GLArrayTexture
       this.numLayers = numLayers;
       if(spots.spots)
          spots.resize(numLayers);
+#endif
    }
 
    void copy(GLArrayTexture src, uint targetFBO)
    {
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       int target = GL_TEXTURE_2D_ARRAY;
       // 4.3+
 #if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__)
@@ -274,6 +286,7 @@ public struct GLArrayTexture
       glBindTexture(target, 0);
       glBindFramebuffer(GL_FRAMEBUFFER, targetFBO);
 #endif
+#endif
    }
 
    void setLayer(int level, int x, int y, int layer, byte * c, uint targetFBO)
@@ -288,6 +301,7 @@ public struct GLArrayTexture
 
    void setLayerFormat(int level, int x, int y, int layer, byte * c, uint targetFBO, int format, int type)
    {
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       int target = GL_TEXTURE_2D_ARRAY;
 
       if(layer >= numLayers)
@@ -297,10 +311,12 @@ public struct GLArrayTexture
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glTexSubImage3D(target, level, x, y, layer, width >> level, height >> level, 1, format, type, c);
       glBindTexture(target, 0);
+#endif
    }
 
    void setLayerCompressed(int level, int x, int y, int layer, byte * c, uintsize sizeBytes, uint targetFBO)
    {
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       int target = GL_TEXTURE_2D_ARRAY;
 
       if(layer >= numLayers)
@@ -311,6 +327,7 @@ public struct GLArrayTexture
       glCompressedTexSubImage3D(target, level, x, y, layer, width >> level, height >> level, 1,
          format, sizeBytes, c);
       glBindTexture(target, 0);
+#endif
    }
 
    void set1x1Layer(int layer, ColorAlpha color, uint targetFBO)
@@ -321,7 +338,9 @@ public struct GLArrayTexture
 
    void bind()
    {
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+#endif
    }
 
    int allocateLayer(uint targetFBO)
@@ -403,8 +422,10 @@ public struct GLMultiDraw
          vertexGLMB = {};
       if(!indexGLMB)
          indexGLMB = {};
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(minAlloc && !vao && glCaps_vao)
          glGenVertexArrays(1, &vao);
+#endif
       if(minAlloc > commandsCount)
          resize(minAlloc);
    }
@@ -446,11 +467,13 @@ public struct GLMultiDraw
       if(vertexGLMB) vertexGLMB.free(), delete vertexGLMB;
       delete drawIDs;
       delete commands;
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(vao && glCaps_vao)
       {
          glDeleteVertexArrays(1, &vao);
          vao = 0;
       }
+#endif
       commandsAlloced = 0;
       idsAlloced = 0;
 
@@ -524,8 +547,12 @@ public struct GLMultiDraw
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
 #endif
 
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(vao);
+#endif
 
+      // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       // Draw IDs
       if(!glCaps_vao || lastIDAB != idsAB.buffer)
       {
@@ -535,6 +562,7 @@ public struct GLMultiDraw
          glEnableVertexAttribArray(drawIDAttribute);
          lastIDAB = idsAB.buffer;
       }
+#endif
       if(!glCaps_vao || lastVBO != vertexGLMB.ab.buffer)
       {
          if(vertNCoords)
@@ -556,7 +584,9 @@ public struct GLMultiDraw
    {
       if(!commandsCount) return;
 
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(vao);
+#endif
       GLFlushMatrices();
 
       // Then render:
@@ -637,7 +667,9 @@ public struct GLMultiDraw
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
       }
 #endif
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(0);
+#endif
    }
 };
 
