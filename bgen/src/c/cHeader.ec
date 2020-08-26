@@ -63,6 +63,8 @@ static void cInHeaderTypes(AST out, CGen g)
          for(optr : n.orderedBackwardsOutputs)
          {
             BOutput o = (BOutput)optr;
+            // if((o.kind == vtemplaton && !strcmp(o.t.c.cl.name, "StylingRuleBlockList")) || (o.kind == vclass && !strcmp(o.c.cl.name, "StylingRuleBlockList"))) debugBreakpoint();
+            // if((o.kind == vtemplaton && !strcmp(o.t.c.cl.name, "CMSSList<StylingRuleBlock>")) || (o.kind == vclass && !strcmp(o.c.cl.name, "CMSSList<StylingRuleBlock>"))) debugBreakpoint();
             for(node : o.output)
             {
                if(!nodes.Find((UIntPtr)node)) // damn it! why is this needed? :S
@@ -78,6 +80,8 @@ static void cInHeaderTypes(AST out, CGen g)
       for(optr : n.orderedOutputs)
       {
          BOutput o = (BOutput)optr;
+         // if((o.kind == vtemplaton && !strcmp(o.t.c.cl.name, "StylingRuleBlockList")) || (o.kind == vclass && !strcmp(o.c.cl.name, "StylingRuleBlockList"))) debugBreakpoint();
+         // if((o.kind == vtemplaton && !strcmp(o.t.c.cl.name, "CMSSList<StylingRuleBlock>")) || (o.kind == vclass && !strcmp(o.c.cl.name, "CMSSList<StylingRuleBlock>"))) debugBreakpoint();
          if(o.kind == vmanual || o.kind == vdefine || o.kind == vfunction ||
                o.kind == vclass || o.kind == vtemplaton || o.kind == vmethod || o.kind == vproperty)
          {
