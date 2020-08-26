@@ -639,7 +639,9 @@ public:
             case vdefine:     return d.name;
             case vmethod:     return m.m;
             case vproperty:   return p.name;
-            case vtemplaton:  return t.c.name;
+            // this should be just t.c.name but see "name should keep template stuff" note
+            // tocheck: how does this name property impact declaration ordering via dependencies
+            case vtemplaton:  return t.c.cl.name;
          }
          return "<<<<unknown>>>>";
       }
@@ -1632,7 +1634,6 @@ class BClass : struct
       char * dataTypeString;
       bool classTypeIsTemplatable;
       bool isClassTemplatable;
-
    } cpp;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
@@ -1643,8 +1644,10 @@ class BClass : struct
       first = true;
       // name = strptrNoNamespace(cl.name);
       hasTemplateArgsInName = strchr(cl.name, '<') && strchr(cl.name, '>');
+      // todo: name should keep template stuff (eg <int, String>)but everywhere else it's needed without template stuff should be fixed
+      //       related: see "this should be just t.c.name"
       name = getNoNamespaceString(cl.name, null, false, true);
-      if(strchr(name, '>')) debugBreakpoint(); // todo this should be fixed
+      // if(strchr(name, '>')) debugBreakpoint(); // todo this should be fixed
       if(strchr(name, ':')) debugBreakpoint(); // todo this should be fixed
       // if(strchr(namex, ':')) debugBreakpoint(); // todo this should be fixed
       simplestIdentName = new char[2];
