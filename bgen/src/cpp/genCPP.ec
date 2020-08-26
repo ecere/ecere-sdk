@@ -5414,10 +5414,11 @@ static void cppMacroClassRegistration(
                int ptrRTGood = 0;
                Class clRegRTGood;
                BClass cRTGood;
+               BClass cRTGoodT;
                bool hackRTGood;
                bool isStringRTGood;
                bool isConstRTGood;
-               Type typeRTGood = unwrapPtrTypeGetClassInfo(m.md.dataType.returnType, true, &clRegRTGood, &cRTGood, null, &ptrRTGood, &hackRTGood, &isStringRTGood, &isConstRTGood);
+               Type typeRTGood = unwrapPtrTypeGetClassInfo(m.md.dataType.returnType, true, &clRegRTGood, &cRTGood, &cRTGoodT, &ptrRTGood, &hackRTGood, &isStringRTGood, &isConstRTGood);
                ClassType ctRT = cppGetClassInfoFromType(m.md.dataType.returnType, true, &clRegRT, &cRT, &hackRT, &isString, &isConst);
                ClassType ctRTGood = clRegRTGood ? clRegRTGood.type : systemClass;
                char * args = null;
@@ -5581,7 +5582,9 @@ static void cppMacroClassRegistration(
                      else if(ctRT == noHeadClass)
                         code.concatx(cRT.cSymbol, " *");   */
 
-                     if(ctRT == normalClass)
+                     if(cRTGoodT && cRT.cpp.isTemplate)
+                        code.concatx(cRTGoodT.cpp.dataTypeString, " *");
+                     else if(ctRT == normalClass)
                      {
                         if(cRT.isString)
                         {
@@ -5932,10 +5935,11 @@ static void cppMacroClassVirtualMethods(
                int ptrRTGood = 0;
                Class clRegRTGood;
                BClass cRTGood;
+               BClass cRTGoodT;
                bool hackRTGood;
                bool isStringRTGood;
                bool isConstRTGood;
-               Type typeRTGood = unwrapPtrTypeGetClassInfo(t.returnType, true, &clRegRTGood, &cRTGood, null, &ptrRTGood, &hackRTGood, &isStringRTGood, &isConstRTGood);
+               Type typeRTGood = unwrapPtrTypeGetClassInfo(t.returnType, true, &clRegRTGood, &cRTGood, &cRTGoodT, &ptrRTGood, &hackRTGood, &isStringRTGood, &isConstRTGood);
                ClassType ctRTGood = clRegRTGood ? clRegRTGood.type : systemClass;
 
                bool noRet = t.returnType.kind == voidType;
@@ -6002,6 +6006,8 @@ static void cppMacroClassVirtualMethods(
                         s3z.concatx("ret", cRT.name, ";");
                      else if(!strcmp(cRT.name, "Instance"))
                         s3z.concatx("*(", cRT.name, " *)INSTANCEL(ret", cRT.name, ", ret", cRT.name, "->_class);");
+                     else if(cRTGoodT && cRT.cpp.isTemplate)
+                        s3z.concatx("BINDINGS_CLASS(ret", cRT.name, ") ? (", cRTGoodT.cpp.dataTypeString, " *)INSTANCEL(ret", cRT.name, ", ret", cRT.name, "->_class) : (", cRTGoodT.cpp.dataTypeString, " *)0;");
                      else if(ctRT == normalClass && !cRT.isString)
                         s3z.concatx("BINDINGS_CLASS(ret", cRT.name, ") ? (", cRT.name, " *)INSTANCEL(ret", cRT.name, ", ret", cRT.name, "->_class) : (", cRT.name, " *)0;");
                      else
