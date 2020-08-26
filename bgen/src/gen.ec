@@ -672,6 +672,7 @@ private:
    {
       BNamespace nDep = vDep.nspace;
       BNamespace n = nspace;
+      // if(this.kind == vclass && !strcmp(this.c.cl.name, "StylingRuleBlockList")) debugBreakpoint();
       if(from == nil) conmsg("check");
       if(from == ostruct && to == ostruct && kind == vclass && c.cl.type == normalClass && vDep.kind == vclass && vDep.c.cl.type == normalClass)
          return;
@@ -685,19 +686,22 @@ private:
          else
          {
 #ifdef _DEBUG
-            if(g.lang == CPlusPlus && !strcmp(g.lib.name, "ecere"))
+            if(g.lang == CPlusPlus)
             {
-               // PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
-               Print("");
+               if(!strcmp(g.lib.name, "ecere"))
+               {
+                  // PrintLn("adding ", vDep.kind, ":", vDep.name, " dependency to ", kind, ":", name);
+                  Print("");
+               }
+               if(!strcmp(vDep.name, "bool"))
+                  Print("");
+               if(!strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
+                  Print("");
+               if(!strcmp(vDep.name, name))
+                  Print("");
+               if(!(from == otypedef && to == otypedef))
+                  Print("");
             }
-            if(g.lang == CPlusPlus && !strcmp(vDep.name, "bool"))
-               Print("");
-            if(g.lang == CPlusPlus && !strcmp(vDep.name, "Window") && !strcmp(name, "Instance"))
-               Print("");
-            if(g.lang == CPlusPlus && !strcmp(vDep.name, name))
-               Print("");
-            if(g.lang == CPlusPlus && !(from == otypedef && to == otypedef))
-               Print("");
 #endif // _DEBUG
             dependencies.Add(d);
          }
@@ -738,6 +742,7 @@ enum BOutputType
          else if(kind == vfunction) return ofunction;
          else if(kind == vproperty) return oproperty;
          else if(kind == vclass)    return ostruct;
+         // else if(kind == vtemplaton)return otypedef;
          return nil;
    }
 
@@ -877,6 +882,8 @@ bool checkForDependency(BOutput a, BOutputPtr b, AVLTree<BVariantPtr> visited, L
          //else if(kind == vdefine && to.kind == vclass);
          else conmsg("check");*/
       }
+      // if(!strcmp(name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+      // if(!strcmp(to.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
       outputDependencies.Add((BVariantPtr)to);
       // dependencies outside current module already filtered out by BClass::processDependency()
       if(b != a)
@@ -976,6 +983,7 @@ public:
          {
             if(to == otypedef)
             {
+               // if(vDep.kind == vtemplaton && !strcmp(vDep.t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
                if(!vDep.t.outTypedef)
                {
                   BVariant vD = vDep.t.c.cl.templateClass ? vDep.t.c.cl.templateClass : vDep.t.c.cl;
@@ -1184,6 +1192,18 @@ class BModule : struct
                BDependency d = di;
                BOutput from = d.fromOutput;
                BOutput to = d.toOutput;
+               // if(from && from.kind == vtemplaton) debugBreakpoint();
+               // if(to && to.kind == vtemplaton) debugBreakpoint();
+               // if(d.v.kind == vtemplaton && !strcmp(d.v.t.c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+               // if(d.vDep.kind == vtemplaton && !strcmp(d.vDep.t.c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+
+               // if(d.v.kind == vtemplaton && !strcmp(d.v.t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
+               // if(d.vDep.kind == vtemplaton && !strcmp(d.vDep.t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
+
+               // if(!from || from.kind == vclass || from.kind == vtemplaton)
+               // if((from && from.kind == vclass && strstr(from.c.cl.name, "CMSS")) || (to && to.kind == vclass && strstr(to.c.cl.name, "CMSS")) ||
+               //       (from && from.kind == vtemplaton && strstr(from.t.c.cl.name, "CMSS")) || (to && to.kind == vtemplaton && strstr(to.t.c.cl.name, "CMSS")))
+               //    PrintLn("BModule::applyDependencies() -- from depends on to -- ", from ? from.name : "null", " depends on ", to ? to.name : "null");
                if(from && to)
                   from.processOutputDependency(to);
             }
@@ -1208,6 +1228,11 @@ class BModule : struct
          {
             BOutputPtr dependency = (BOutputPtr)d;
             BNamespace dn = d.nspace;
+            // if((d.kind == vclass && strstr(d.c.cl.name, "CMSS")) || (d.kind == vtemplaton && strstr(d.t.c.cl.name, "CMSS")))
+            // ?{
+            //    PrintLn("BModule::moveBackwardsDependencies() -- moving -- ", d.name, " from ns:", dn.name, " to ns:", n.name);
+            //    // if(!strcmp(d.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+            // }
             if(dn.orderedOutputs.Find(dependency))
             {
                dn.orderedOutputs.Remove(dn.orderedOutputs.Find(dependency));
@@ -1284,6 +1309,7 @@ class BNamespace : struct
       for(vv : contents/*; (vv.kind == vclass && vv.c.outTypedef) || (vv.kind == vtemplaton && vv.t.outTypedef)*/)
       {
          BVariant v = vv;
+         // if(v.kind == vtemplaton && !strcmp(v.t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
          if(/*(v.kind == vmanual && v.x.out) || */(v.kind == vclass && v.c.outTypedef) || (v.kind == vtemplaton && v.t.outTypedef))
          {
             BOutput o = /*v.kind == vmanual ? v.x.out : */v.kind == vclass ? v.c.outTypedef : v.t.outTypedef;
@@ -1382,12 +1408,23 @@ class BNamespace : struct
                BOutput a = (BOutput)orderedBackwardsOutputs[x];
                BOutput b = (BOutput)orderedBackwardsOutputs[d];
                conassertctx(d > x, "?");
+               // if(!strcmp(a.name, "CMSSList<StylingRuleBlock>"))
+               //    PrintLn("checking dependsOn of ", a.name);
+               // if(!strcmp(b.name, "CMSSList<StylingRuleBlock>"))
+               //    PrintLn("checking is dependency of ", b.name);
+
                if(/*a.nspace == b.nspace && */a.dependsOn(b))
                {
+                  // if((a.kind == vclass && strstr(a.c.cl.name, "CMSS")) || (b.kind == vclass && strstr(b.c.cl.name, "CMSS")) ||
+                  //       (a.kind == vtemplaton && strstr(a.t.c.cl.name, "CMSS")) || (b.kind == vtemplaton && strstr(b.t.c.cl.name, "CMSS")))
+                  //    PrintLn("BNamespace::sort() -- ", "a depends on b -- ", a.name, " depends on ", b.name);
                   if(b.indirectlyDependsOn((BOutputPtr)a))
                   {
                      //PrintLn("a: ", a.kind, " ", a.c.name, "  ", "b: ", b.kind, " ", b.c.name);
                      // conmsg("check");
+                  // if((a.kind == vclass && strstr(a.c.cl.name, "CMSS")) || (b.kind == vclass && strstr(b.c.cl.name, "CMSS")) ||
+                  //       (a.kind == vtemplaton && strstr(a.t.c.cl.name, "CMSS")) || (b.kind == vtemplaton && strstr(b.t.c.cl.name, "CMSS")))
+                  //    PrintLn("BNamespace::sort() -- ", "b indirectly depends on a -- ", b.name, " indirectly depends on ", a.name);
                   }
                   //else
                   {
@@ -2321,6 +2358,7 @@ void collectBackwardsDependencies(AVLTree<BOutputPtr> in, AVLTree<BNamespacePtr>
    for(e : in)
    {
       BOutput d = (BOutput)e;
+      // if(d.kind == vtemplaton && !strcmp(d.t.c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
       if(!deps.Find(d))
       {
          BNamespace n = d.nspace;

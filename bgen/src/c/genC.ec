@@ -586,6 +586,7 @@ class CGen : Gen
                BClass c = t.c;
                Class cl = c.cl;
                BNamespace nspace = t.nspace;
+               // if(!strcmp(t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
                if(!cl.templateClass) conmsg("check");
                processClass(c, v, nspace);
             }
@@ -604,9 +605,14 @@ class CGen : Gen
          Class clDep = null;
          BTemplaton tDep = null;
          nspace.addContent(v);
+         // if(!strcmp(c.cl.name, "StylingRuleBlockList")) debugBreakpoint();
+         // if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+         // if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
          if(!c.nativeSpec && !c.skipTypeDef)
          {
             conassertctx(c.clBase != null, " for c.name == \"", c.name, "\"?");
+
+            // if(c.cl.templateClass) debugBreakpoint();
 
             if(c.clBase.templateClass)
             {
@@ -620,7 +626,10 @@ class CGen : Gen
                conassertctx(clDep != null, "(bgen?) eSystem_FindClass(mod, \"", c.base, "\") is returning null?");
             }
             if(tDep)
+            {
                v.processDependency(this, otypedef, otypedef, tDep);
+               // v.processDependency(this, otypedef, otypedef, clDep);
+            }
             else if(clDep && clDep != cl)
                v.processDependency(this, otypedef, otypedef, clDep);
          }
@@ -639,10 +648,12 @@ class CGen : Gen
             BVariant v = t;
             BNamespace n = v.nspace;
             BOutput o = t.outTypedef = bmod.getTypedefOutput((UIntPtr)t, &init);
+            // if(!strcmp(t.cname, "T(CMSSList, StylingRuleBlock)")) debugBreakpoint();
             // conassertctx(init, "(bgen?) getTypedefOutput did not init? -- basicaly not typedef output was found for this templaton so it was created");
             o.kind = vtemplaton, o.t = t, o.type = otypedef;
             n.addContent(v);
             o.output.Add(astDeclInit(t.cname, emptyTypedef, null, null, { t = t }, null, null/*, ast*/));
+            // v.processDependency(this, otypedef, otypedef, t.c.cl.templateClass ? t.c.cl.templateClass : t.c.cl.base);
          }
       }
    }
@@ -771,6 +782,7 @@ class CGen : Gen
          }
          else if(v.kind == vtemplaton)
          {
+            // if(!strcmp(v.t.c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
             o = v.t.outTypedef = bmod.getTypedefOutput((UIntPtr)v.t, &init);
             conassertctx(init, "(bgen?) getTypedefOutput did not init? -- templaton: ", v.t.cname);
             o.kind = vtemplaton, o.t = v.t, o.type = otypedef;
