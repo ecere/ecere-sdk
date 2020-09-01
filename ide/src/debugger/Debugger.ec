@@ -539,6 +539,15 @@ class Debugger
                break;
             case signal:
                signalThread = stopItem.threadid;
+               if(!strcmp(stopItem.name, "SIGPIPE"))
+               {
+                  GdbExecContinue(false);
+                  monitor = false;
+               }
+               else
+                  monitor = true;
+               ignoreBreakpoints = false;
+               break;
             case breakEvent:
             case stepEnd:
             case functionEnd:
