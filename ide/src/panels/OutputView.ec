@@ -180,6 +180,8 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
+         if(mods.alt)
+            return true;
          OnGotoError(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
