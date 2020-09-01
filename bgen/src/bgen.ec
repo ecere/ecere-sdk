@@ -1,3 +1,4 @@
+define genfn = "";
 define genidx = "";
 
 define genloc__ = "";

@@ -109,7 +109,7 @@ char * Gen::allocMacroSymbolNameC(const bool noMacro, const MacroType type, cons
       case CO:          return PrintString(       "CO(", name, ")");
       case SUBCLASS:    return PrintString( "subclass(", name, ")");
       case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
-      case T:           return getTemplateClassSymbol(   name, false);
+      case T:           return ti.c ? cGetTemplatedClassSymbolName(ti.c, ti.c.cTArgs, macro) : getTemplateClassSymbol(name, false);
       case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
       case F:           return PrintString(        "F(", name, ")");
       case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
@@ -131,7 +131,7 @@ char * Gen::allocMacroSymbolNameExpandedC(const bool noMacro, const MacroType ty
       case CO:          return PrintString(        "class_", name);
       case SUBCLASS:    return PrintString(cPrefix, "Class *");
       case THISCLASS:   return PrintString(         cPrefix, name, ptr ? " *" : "");
-      case T:           return getTemplateClassSymbol(       name, true);
+      case T:           return ti.c ? cGetTemplatedClassSymbolName(ti.c, ti.c.cTArgs, expanded) : getTemplateClassSymbol(name, true);
       case TP:          return PrintString(       "tparam_", name, "_", name2);
       case F:           return PrintString(         cPrefix, name);
       case METHOD:      return PrintString(       "method_", name, "_", name2);
@@ -607,7 +607,8 @@ class CGen : Gen
          nspace.addContent(v);
          // if(!strcmp(c.cl.name, "StylingRuleBlockList")) debugBreakpoint();
          // if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
-         // if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
+         // if(!strcmp(c.cl.name, "FreeBlockMap")) debugBreakpoint();
+         // if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
          if(!c.nativeSpec && !c.skipTypeDef)
          {
             conassertctx(c.clBase != null, " for c.name == \"", c.name, "\"?");
@@ -858,6 +859,7 @@ class CGen : Gen
             o.output.Add(ASTRawString { string = s });
          }
       }
+      // if(!strcmp(cl.name, "AttributeStore")) debugBreakpoint();
       if(!cl.templateClass/* && (!lib.ecereCOM || !c.is_class)*/)
       {
          bool instanceClass = false;
@@ -873,6 +875,8 @@ class CGen : Gen
          {
             BMethod m = md;
             BVariant v = m;
+            // if(!strcmp(cl.name, "AttributeStore") && !strcmp(md.name, "getMultiValues")) debugBreakpoint();
+            // if(!strcmp(cl.name, "AttributeStore") && !strcmp(md.name, "retrieveMultiValues")) debugBreakpoint();
             if(brokenMethodsC.Find({ cl.name, md.name }))
                continue;
             conassertctx(m != null, "?");
@@ -880,6 +884,7 @@ class CGen : Gen
             o.output.Add(astMethod(this, md, cl, c, methodFlag, instanceClass, &haveContent, v));
             c.outMethods.Add(o);
             c.nspace.addContent(v);
+            processTypeDependency(this, md.dataType.returnType, omethod, v);
             if(lib.ecereCOM)
                v.processDependency(this, omethod, otypedef, clDepMethod);
          }
@@ -916,14 +921,13 @@ class CGen : Gen
             o.output.Add(astProperty(pt, c, _import, false, &c.first, &haveContent));
             c.outProperties.Add(o);
             c.nspace.addContent(v);
-            processTypeDependency(this, pt.dataType, pt.dataTypeString, oproperty, v);
+            processTypeDependency(this, pt.dataType, oproperty, v);
             if(lib.ecereCOM)
                v.processDependency(this, oproperty, otypedef, clDepProperty);
          }
       }
-      if(c.cl.templateArgs)
-      {
-      }
+      // if(c.cl.templateArgs)
+      //    processTemplateArgs(this, c);
    }
 }
 
@@ -1717,7 +1721,7 @@ SpecsList astTypeSpec(TypeInfo ti, int * indirection, Type * resume, SpecsList t
       if(_class)
       {
          BClass c = _class;
-         if(opt.cpp && c.cl.templateArgs && !c.cpp.isClassTemplatable/*c.cpp.completeTemplate*/)
+         if(opt.cpp && c.cl.templateArgs && !c.isClassTemplatable/*c.completeTemplate*/)
             ; // PrintLn(c.cpp.dataTypeString);
          else if(_class.templateClass)
             _class = _class.templateClass;
@@ -2597,7 +2601,7 @@ static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, O
                   if(!dm.dataType)
                      dm.dataType = ProcessTypeString(dm.dataTypeString, false);
                   if(local)
-                     processTypeDependency(g, dm.dataType, dm.dataTypeString, ostruct, topClass);
+                     processTypeDependency(g, dm.dataType, ostruct, topClass);
 
                   def = astClassDefDecl(dm.name, { type = dm.dataType, dm = dm, cl = cl }, topClass);
                   if(!def) conmsg("check");
@@ -2678,7 +2682,7 @@ static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, O
       FinishTemplatesContext(context);
 }
 
-void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOutputType from, BVariant vTop)
+void processTypeDependency(CGen g, Type _type, BOutputType from, BVariant vTop)
 {
    bool native;
    bool pointer;
@@ -2693,7 +2697,7 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
          {
             Type param;
             for(param = t.params.first; param; param = param.next)
-               processTypeDependency(g, param, null, from, vTop);
+               processTypeDependency(g, param, from, vTop);
             break;
          }
          case templateType:
@@ -2706,7 +2710,7 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
                ClassTemplateParameter ctp = findClassTemplateParameter(tp.identifier.string, _class, &cl);
                if(tp.type == type && tp.identifier && tp.identifier.string && cl)
                {
-                  BTemplaton t = g_.bmod.addTempleton(ctp, cl.templateClass ? cl.templateClass : cl);
+                  BTemplaton t = g.bmod.addTempleton(ctp, cl.templateClass ? cl.templateClass : cl);
                   if(vTop && vTop.kind == vclass)
                      vTop.processDependency(g_, ostruct, otypedef, t);
                }
@@ -2714,8 +2718,16 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
             break;
          }
          case classType:
+         {
             clDep = g.getClassFromType(t, true);
+            if(clDep)
+            {
+               BClass cDep = clDep;
+               recurseAddTemplatedClasses(g, cDep);
+               // if(!strcmp(cDep.cl.name, "Map<int, FieldValue>")) debugBreakpoint();
+            }
             break;
+         }
          // tocheck: todo: are there more missing dependencies?
          case structType:
          case subClassType:
@@ -2732,6 +2744,23 @@ void processTypeDependency(CGen g, Type _type, const char * dataTypeString, BOut
          _processTypeDependency(g, from, vTop, pointer, clDep);
    }
    if(_type.bitMemberSize) conmsg("check");
+}
+
+static void recurseAddTemplatedClasses(CGen g, BClass c)
+{
+   // if(c && !strcmp(c.cl.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+   // if(c && !strcmp(c.cl.name, "Map<int, FieldValue>")) debugBreakpoint();
+   // if(c && !strcmp(c.cl.name, "Map<int, eda::FieldValue>")) debugBreakpoint();
+   if(c && c.numTemplateArgsInName && !c.isClassTemplatable && c.completeTemplate)
+   {
+      BTemplaton tDep = g.bmod.addTemplateType(c, g.bmod.root_nspace);
+      g.addOptionalClass(tDep);
+      if(c.cTArgs)
+      {
+         for(cArg : c.cTArgs)
+            recurseAddTemplatedClasses(g, cArg);
+      }
+   }
 }
 
 void _processTypeDependency(CGen g, BOutputType from, BVariant vTop, bool pointer, Class clDep)
@@ -2761,335 +2790,147 @@ void _processTypeDependency(CGen g, BOutputType from, BVariant vTop, bool pointe
    }
 }
 
-void processTemplateArgs(CGen g, BClass c, Class cl)
+void processTemplateArgs(CGen g, BClass c)
 {
-#if 0
-   int callCount;
-   MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
-   const char * n = c.isString ? c.cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(c.name, false) ? iNameSwaps.data : c.name;
-   Context context = SetupTemplatesContext(cl); // TOCHECK: Should we do this only once while we process the whole class?
-   // if(!strcmp(cl.name, "AVLTree")) debugBreakpoint();
+   Context context = SetupTemplatesContext(c.cl); // TOCHECK: Should we do this only once while we process the whole class?
    // Class startClass = getTemplateStartBaseClass(cl);
-   // if(!strcmp(cl.name, "GLMB")) debugBreakpoint();
-   // if(!strcmp(cl.name, "ListItem")) debugBreakpoint();
-   // cpp.isTemplate = (cl.type == noHeadClass || ((cl.type == normalClass || cl.type == structClass) && (cl.templateParams.count || (cl.templateArgs && !cl.base.templateClass))));
-   c.cpp.classTypeIsTemplatable = classTypeIsTemplatable(cl.type);
-   if(!strcmp(cl.name, "ecere::com::LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
-   // if(!strcmp(cl.name, "MapNode<int, eda::FieldValue, T = int>")) debugBreakpoint();
-   // if(!strcmp(cl.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
-   // if(!strcmp(cl.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
-   c.cpp.isClassTemplatable = /*c.cpp.classTypeIsTemplatable && c.cl.templateArgs && */isClassTemplatable(cl);
-   if(!c.cpp.classTypeIsTemplatable && c.cpp.isClassTemplatable) debugBreakpoint();
-   if(!c.cl.templateArgs && c.cpp.isClassTemplatable) debugBreakpoint();
-
-   c.cpp.isTemplate = cl.type == noHeadClass || getClassIsTemplate(cl);
-   // if(!strcmp(cl.name, "FreeBlockMap")) debugBreakpoint();
-   /*
-   const char * typeStr =
-         cl.type == bitClass ? "BIT" :
-         cl.type == enumClass ? "ENUM" :
-         cl.type == noHeadClass ? "NOHEAD" :
-         cl.type == normalClass ? "NORMAL" :
-         cl.type == structClass ? "STRUCT" :
-         cl.type == systemClass ? "SYSTEM" :
-         cl.type == unionClass ? "UNION" :
-         cl.type == unitClass ? "UNIT" :
-         "ERROR";
-   */
-   // todo: fix symbol construction issues before we can use this: ex: 'cn, "_get_", mn' where cn is not meant to be cpp.name
-   // cpp_name = PrintString(n, "/*cpp_name_", typeStr, "*/");
-   // tcpp_name = cpp.isTemplate ? PrintString(cpptemplatePrefix, n, "/*tcpp_name_", typeStr, "*/") : PrintString(n, "/*tcpp_name_", typeStr, "*/");
-   c.cpp.name = CopyString(n);
-   c.cpp.tname = c.cpp.isTemplate ? PrintString(cpptemplatePrefix, n) : CopyString(n);
-   c.cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &c.cpp.tprototype, &c.cpp.template, &c.cpp.targs, &c.cpp.templatem, &c.cpp.targsm);
-
-   // if(!strcmp(cl.name, "GLMB")) debugBreakpoint();
-   if(cl.templateArgs)
+   // c.cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &c.cpp.tprototype, &c.cpp.template, &c.cpp.targs, &c.cpp.templatem, &c.cpp.targsm);
+   Array<Class> cTArgs { };
+   if(!c.isClassTemplatable && c.numTemplateArgsInName) // tocheck: hackish
    {
-      Array<String> cSymbolTArgs { };
-      // if(!strcmp(cl.name, "HashMap")) debugBreakpoint();
-      // if(!strcmp(cl.name, "HashMap<KT, VT>")) debugBreakpoint();
-      // if(!strcmp(cl.name, "HashMap<KT, VT>")) debugBreakpoint();
-      // if(!strcmp(cl.name, "List<ecere::net::CallAck>")) debugBreakpoint();
-      // if(!strcmp(cl.name, "Array<String>")) debugBreakpoint();
-      // if(cl.templateClass && templateClass.templateParams.count == 0) debugBreakpoint();
-      // if(!strcmp(cl.name, "Array<ecere::gfx3D::MeshPart>")) debugBreakpoint();
-      // if(!strcmp(cl.name, "HashTable")) debugBreakpoint();
-      if(!c.cpp.isClassTemplatable/*c.cpp.completeTemplate*/)
+      bool complete = getSpecifiedTemplateArgs(c.cl, cTArgs);
+      if(cTArgs.count && complete)
       {
-         if(c.hasTemplateArgsInName) // tocheck: hackish
+         // todo: the thing -- c.cpp.dataTypeString = cppGetTemplateDataTypeString(cl, cSymbolTArgs);
+         for(_class : cTArgs)
          {
-            // if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
-            // if(!strcmp(cl.name, "Container<KT, I = KT>")) debugBreakpoint();
-            // if(!strcmp(cl.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
-            // if(!strcmp(c.cl.name, "List<CMSSNode>")) debugBreakpoint();
-            // if(!strcmp(c.cl.name, "List<CMSSIdentifier>")) debugBreakpoint();
-            c.cpp.completeTemplate = getSpecifiedTemplateArgs(cl, cSymbolTArgs, true, &callCount);
-         }
-         // /*c.cpp.completeTemplate = */isTemplateClassTypeComplete(cl, cSymbolTArgs, true);
-         c.cpp.typedTArgsCount = cSymbolTArgs.count;
-         if(cSymbolTArgs.count && c.cpp.completeTemplate)
-         {
-#if 0
-            if(false) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(BlockEntry)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(BlockEntry)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(BlockEntry)")) ;
-            else if(!strcmp(c.cl.name, "LinkElement<ecere::gfx::FMFont>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(FMFont)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, ecere::gfx::FontInfo, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FontInfo)")) ;// else if(!strcmp(c.cl.name, "MapNode<String, ecere::gfx::FontInfo, T = String>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(FontInfo)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, ecere::gfx::FontInfo>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(FontInfo)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gfx::FaceInfo>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(FaceInfo)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(FaceInfo)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::gfx::FaceInfo>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(FaceInfo)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gfx3D::MeshPart>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(MeshPart)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(MeshPart)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::gfx3D::MeshPart>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(MeshPart)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gui::TouchPointerInfo>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(TouchPointerInfo)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(TouchPointerInfo)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::gui::TouchPointerInfo>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(TouchPointerInfo)")) ;
-            else if(!strcmp(c.cl.name, "Array<String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(String)")) ; // else if(!strcmp(c.cl.name, "Array<String>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(String)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gui::Window>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Window)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Window)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::gui::Window>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Window)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::Grouping>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Grouping)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Grouping)")) ; // else if(!strcmp(c.cl.name, "Array<eda::Grouping>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Grouping)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::IdFilter>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(IdFilter)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(IdFilter)")) ; // else if(!strcmp(c.cl.name, "Array<eda::IdFilter>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(IdFilter)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::com::Class>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Class)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Class)")) ; // else if(!strcmp(c.cl.name, "Array<ecere::com::Class>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Class)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::SQLiteSearchField>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(SQLiteSearchField)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(SQLiteSearchField)")) ; // else if(!strcmp(c.cl.name, "Array<eda::SQLiteSearchField>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(SQLiteSearchField)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::StringSearchField>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StringSearchField)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StringSearchField)")) ; // else if(!strcmp(c.cl.name, "Array<eda::StringSearchField>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(StringSearchField)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::StringSearchTable>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StringSearchTable)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StringSearchTable)")) ;
-            else if(!strcmp(c.cl.name, "Container<eda::Field>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Field)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Field)")) ; // else if(!strcmp(c.cl.name, "Container<eda::Field>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Field)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::Id>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Id)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Id)")) ; // else if(!strcmp(c.cl.name, "Array<eda::Id>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Id)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::ListField>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(ListField)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(ListField)")) ; // else if(!strcmp(c.cl.name, "Array<eda::ListField>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(ListField)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::SQLiteSearchTable>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(SQLiteSearchTable)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(SQLiteSearchTable)")) ; // else if(!strcmp(c.cl.name, "Array<eda::SQLiteSearchTable>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(SQLiteSearchTable)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::LookupEditor>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(LookupEditor)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(LookupEditor)")) ; // else if(!strcmp(c.cl.name, "Array<eda::LookupEditor>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(LookupEditor)")) ;
-            else if(!strcmp(c.cl.name, "CMSSList<CMSSExpression>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(CMSSExpression)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(CMSSExpression)")) ; // else if(!strcmp(c.cl.name, "CMSSList<CMSSExpression>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(CMSSExpression)")) ;
-            else if(!strcmp(c.cl.name, "CMSSList<CMSSMemberInitList>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(CMSSMemberInitList)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(CMSSMemberInitList)")) ; // else if(!strcmp(c.cl.name, "CMSSList<CMSSMemberInitList>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(CMSSMemberInitList)")) ;
-            else if(!strcmp(c.cl.name, "CMSSList<CMSSMemberInit>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(CMSSMemberInit)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(CMSSMemberInit)")) ; // else if(!strcmp(c.cl.name, "CMSSList<CMSSMemberInit>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(CMSSMemberInit)")) ;
-            else if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StylingRuleBlock)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StylingRuleBlock)")) ; // else if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(StylingRuleBlock)")) ;
-            else if(!strcmp(c.cl.name, "CMSSList<StylingRuleSelector>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StylingRuleSelector)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StylingRuleSelector)")) ; // else if(!strcmp(c.cl.name, "CMSSList<StylingRuleSelector>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(StylingRuleSelector)")) ;
-            else if(!strcmp(c.cl.name, "Array<int>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "int") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "int")) ; // else if(!strcmp(c.cl.name, "Array<int>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "int")) ;
-            else if(!strcmp(c.cl.name, "Container<LineString>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(LineString)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(LineString)")) ; // else if(!strcmp(c.cl.name, "Container<LineString>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(LineString)")) ;
-            else if(!strcmp(c.cl.name, "Container<Polygon>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Polygon)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Polygon)")) ; // else if(!strcmp(c.cl.name, "Container<Polygon>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Polygon)")) ;
-            else if(!strcmp(c.cl.name, "Container<PolygonContour>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(PolygonContour)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(PolygonContour)")) ; // else if(!strcmp(c.cl.name, "Container<PolygonContour>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(PolygonContour)")) ;
-            else if(!strcmp(c.cl.name, "Array<int64>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "int64") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "int64")) ; // else if(!strcmp(c.cl.name, "Array<int64>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "int64")) ;
-            else if(!strcmp(c.cl.name, "Array<RecordField>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(RecordField)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(RecordField)")) ; // else if(!strcmp(c.cl.name, "Array<RecordField>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(RecordField)")) ;
-            else if(!strcmp(c.cl.name, "Array<eda::FieldValue>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(FieldValue)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(FieldValue)")) ; // else if(!strcmp(c.cl.name, "Array<eda::FieldValue>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "Array<AttributesKey>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(AttributesKey)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(AttributesKey)")) ; // else if(!strcmp(c.cl.name, "Array<AttributesKey>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(AttributesKey)")) ;
-            else if(!strcmp(c.cl.name, "Array<double>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "double") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "double")) ; // else if(!strcmp(c.cl.name, "Array<double>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "double")) ;
-            else if(false) ;
-            else if(!strcmp(c.cl.name, "Array<const String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(String)")) ; // else if(!strcmp(c.cl.name, "Array<const String>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(String)")) ; // totweak me? use constString type?
-            else if(false) ;
-            else if(!strcmp(c.cl.name, "Container<BT, I = KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(LinkElement)")) ;
-            else if(!strcmp(c.cl.name, "Container<KT, I = KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(BinaryTree)")) ; // very odd
-            else if(!strcmp(c.cl.name, "Container<LT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(Link)")) ;
-            else if(!strcmp(c.cl.name, "Container<VT, I = KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "T(Container, KT, I = KT)")) ;
-            else if(!strcmp(c.cl.name, "Iterator<VT, IT = KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "T(Container, VT, I = KT)")) ;
-            // else if(!strcmp(c.cl.name, "MapNode<MT, V>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "T(Iterator, VT, IT = KT)") && !strcmp(cSymbolTArgs[1], "T(Iterator, VT, IT = KT)")) ;
-            // else if(!strcmp(c.cl.name, "CustomAVLTree<ecere::com::MapNode<MT, V>, I = MT, D = V, KT = MT>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "T(MapNode, MT, V)") && !strcmp(cSymbolTArgs[1], "T(MapNode, MT, V)")) ;
-            // else if(!strcmp(c.cl.name, "Iterator<V, IT = KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "T(CustomAVLTree, MapNode<MT, V>, I = MT, D = V, KT = MT)")) ;
-            // else if(!strcmp(c.cl.name, "AVLNode<KT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "T(Iterator, V, IT = KT)")) ;
-            // else if(!strcmp(c.cl.name, "LinkList<ecere::com::Link, T = LLT, D = LLT>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "T(AVLNode, KT)")) ;
-            // else if(!strcmp(c.cl.name, "MapNode<String, ecere::gfx::FontInfo, T = String>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)")) ; // looks bad
-            else if(!strcmp(c.cl.name, "MapNode<int, eda::FieldValue, T = int>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "int") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(FieldValue)")) ; // else if(!strcmp(c.cl.name, "MapNode<int, eda::FieldValue, T = int>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "int") && !strcmp(cSymbolTArgs[1], "C(FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "Map<int, eda::FieldValue>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "int") && !strcmp(cSymbolTArgs[1], "C(FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "int64") && !strcmp(cSymbolTArgs[1], "T(Map, int, FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<ecere::com::Array<int>, ecere::com::Array<int64>, T = ecere::com::Array<int> >") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "T(Array, int)") && !strcmp(cSymbolTArgs[1], "T(Array, int)") && !strcmp(cSymbolTArgs[2], "T(Array, int64)")) ; // else if(!strcmp(c.cl.name, "MapNode<ecere::com::Array<int>, ecere::com::Array<int64>, T = ecere::com::Array<int> >") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "T(Array, int)") && !strcmp(cSymbolTArgs[1], "T(Array, int)")) ;
-            else if(!strcmp(c.cl.name, "Map<ecere::com::Array<int>, ecere::com::Array<int64> >") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "T(Array, int)") && !strcmp(cSymbolTArgs[1], "T(Array, int64)")) ; // else if(!strcmp(c.cl.name, "Map<ecere::com::Array<int>, ecere::com::Array<int64> >") && cSymbolTArgs.count == 4 && !strcmp(cSymbolTArgs[0], "T(MapNode, Array<int>, Array<int64>, T = Array<int> )") && !strcmp(cSymbolTArgs[1], "T(MapNode, Array<int>, Array<int64>, T = Array<int> )") && !strcmp(cSymbolTArgs[2], "T(Array, int)") && !strcmp(cSymbolTArgs[3], "T(Array, int64)")) ;
-            else if(!strcmp(c.cl.name, "List<CMSSNode>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(CMSSNode)")) ; // else if(!strcmp(c.cl.name, "List<CMSSNode>") && cSymbolTArgs.count == 5 && !strcmp(cSymbolTArgs[0], "C(CMSSNode)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(CMSSNode)") && !strcmp(cSymbolTArgs[3], "C(Link)") && !strcmp(cSymbolTArgs[4], "C(CMSSNode)")) ;
-            else if(!strcmp(c.cl.name, "List<CMSSIdentifier>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(CMSSIdentifier)")) ; // else if(!strcmp(c.cl.name, "List<CMSSIdentifier>") && cSymbolTArgs.count == 5 && !strcmp(cSymbolTArgs[0], "C(CMSSIdentifier)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(CMSSIdentifier)") && !strcmp(cSymbolTArgs[3], "C(Link)") && !strcmp(cSymbolTArgs[4], "C(CMSSIdentifier)")) ;
-            else if(!strcmp(c.cl.name, "Array<ValueColor>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(ValueColor)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(ValueColor)")) ;
-            else if(!strcmp(c.cl.name, "Array<ValueOpacity>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(ValueOpacity)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(ValueOpacity)")) ;
-            else if(!strcmp(c.cl.name, "FeatureCollection<VectorFeature>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(VectorFeature)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(VectorFeature)")) ;
-            else if(!strcmp(c.cl.name, "Array<GraphicalElement>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GraphicalElement)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GraphicalElement)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::gfx::ColorKey>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(ColorKey)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(ColorKey)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, FeatureDataType, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FeatureDataType)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, FeatureDataType>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(FeatureDataType)")) ; // else if(!strcmp(c.cl.name, "Map<String, FeatureDataType>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, FeatureDataType, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FeatureDataType)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, FeatureDataType, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(FeatureDataType)")) ;
-            else if(!strcmp(c.cl.name, "Array<GeoData>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GeoData)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoData)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, eda::FieldValue, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, eda::FieldValue>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(FieldValue)")) ; // else if(!strcmp(c.cl.name, "Map<String, eda::FieldValue>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, FieldValue, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FieldValue)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, FieldValue, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(FieldValue)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, GeoJSONValue, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(GeoJSONValue)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, GeoJSONValue>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(GeoJSONValue)")) ; // else if(!strcmp(c.cl.name, "Map<String, GeoJSONValue>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, GeoJSONValue, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(GeoJSONValue)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, GeoJSONValue, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(GeoJSONValue)")) ;
-            else if(!strcmp(c.cl.name, "Array<GeoJSONFeature>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GeoJSONFeature)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoJSONFeature)")) ;
-            else if(!strcmp(c.cl.name, "Array<GeoJSONSegment>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GeoJSONSegment)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoJSONSegment)")) ;
-            else if(!strcmp(c.cl.name, "List<GeoLayer>") && cSymbolTArgs.count == 1 && !strcmp(cSymbolTArgs[0], "C(GeoLayer)")) ; // else if(!strcmp(c.cl.name, "List<GeoLayer>") && cSymbolTArgs.count == 5 && !strcmp(cSymbolTArgs[0], "C(GeoLayer)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoLayer)") && !strcmp(cSymbolTArgs[3], "C(Link)") && !strcmp(cSymbolTArgs[4], "C(GeoLayer)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, CMSSStyleSheet, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(CMSSStyleSheet)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, CMSSStyleSheet>") && cSymbolTArgs.count == 2 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(CMSSStyleSheet)")) ; // else if(!strcmp(c.cl.name, "Map<String, CMSSStyleSheet>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, CMSSStyleSheet, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(CMSSStyleSheet)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, CMSSStyleSheet, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(CMSSStyleSheet)")) ;
-            else if(!strcmp(c.cl.name, "List<Presentation>") && cSymbolTArgs.count == 5 && !strcmp(cSymbolTArgs[0], "C(Presentation)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Presentation)") && !strcmp(cSymbolTArgs[3], "C(Link)") && !strcmp(cSymbolTArgs[4], "C(Presentation)")) ;
-            else if(!strcmp(c.cl.name, "Array<uint64>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "uint64") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "uint64")) ;
-            else if(!strcmp(c.cl.name, "MapNode<ecere::gfx::Color, ecere::com::Array<uint64>, T = ecere::gfx::Color>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Color)") && !strcmp(cSymbolTArgs[1], "C(Color)") && !strcmp(cSymbolTArgs[2], "T(Array, uint64)")) ;
-            else if(!strcmp(c.cl.name, "Map<ecere::gfx::Color, ecere::com::Array<uint64> >") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, Color, Array<uint64>, T = Color)") && !strcmp(cSymbolTArgs[1], "C(Color)") && !strcmp(cSymbolTArgs[2], "T(Array, uint64)") && !strcmp(cSymbolTArgs[3], "T(MapNode, Color, Array<uint64>, T = Color)") && !strcmp(cSymbolTArgs[4], "C(Color)") && !strcmp(cSymbolTArgs[5], "C(Color)") && !strcmp(cSymbolTArgs[6], "T(Array, uint64)")) ;
-            else if(!strcmp(c.cl.name, "Container<GeoPoint>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GeoPoint)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoPoint)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, MBGLSpriteSymbol, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(MBGLSpriteSymbol)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, MBGLSpriteSymbol>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, MBGLSpriteSymbol, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(MBGLSpriteSymbol)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, MBGLSpriteSymbol, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(MBGLSpriteSymbol)")) ;
-            else if(!strcmp(c.cl.name, "List<GeoExtent>") && cSymbolTArgs.count == 5 && !strcmp(cSymbolTArgs[0], "C(GeoExtent)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GeoExtent)") && !strcmp(cSymbolTArgs[3], "C(Link)") && !strcmp(cSymbolTArgs[4], "C(GeoExtent)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, MapboxGLSourceData, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(MapboxGLSourceData)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, MapboxGLSourceData>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, MapboxGLSourceData, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(MapboxGLSourceData)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, MapboxGLSourceData, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(MapboxGLSourceData)")) ;
-            else if(!strcmp(c.cl.name, "Array<MBGLLayersJSONData>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(MBGLLayersJSONData)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(MBGLLayersJSONData)")) ;
-            else if(!strcmp(c.cl.name, "Container<GraphicalElement>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(GraphicalElement)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(GraphicalElement)")) ;
-            else if(!strcmp(c.cl.name, "Array<PickResult>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(PickResult)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(PickResult)")) ;
-            else if(!strcmp(c.cl.name, "Array<StackFrame>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StackFrame)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StackFrame)")) ;
-            else if(!strcmp(c.cl.name, "Container<ecere::sys::Pointf>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Pointf)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Pointf)")) ;
-            else if(!strcmp(c.cl.name, "Container<ecere::gfx3D::Vector3Df>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Vector3Df)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Vector3Df)")) ;
-            else if(!strcmp(c.cl.name, "Array<PolygonContour>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(PolygonContour)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(PolygonContour)")) ;
-            else if(!strcmp(c.cl.name, "Container<StartEndPair>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(StartEndPair)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(StartEndPair)")) ;
-            else if(!strcmp(c.cl.name, "Array<ProcessInvocation>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(ProcessInvocation)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(ProcessInvocation)")) ;
-            else if(!strcmp(c.cl.name, "Array<TSRow>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(TSRow)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(TSRow)")) ;
-            else if(!strcmp(c.cl.name, "Array<Tile>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(Tile)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(Tile)")) ;
-            else if(!strcmp(c.cl.name, "Array<TSZoomLevel>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(TSZoomLevel)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(TSZoomLevel)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3IdentifierAndLinks>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3IdentifierAndLinks)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3IdentifierAndLinks)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3Link>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3Link)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3Link)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3Collection>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3Collection)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3Collection)")) ;
-            else if(!strcmp(c.cl.name, "Array<ecere::com::Array<String> >") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "T(Array, String)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "T(Array, String)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3Queryable>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3Queryable)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3Queryable)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3VariableWidth>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3VariableWidth)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3VariableWidth)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3TileMatrixSetLimit>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3TileMatrixSetLimit)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3TileMatrixSetLimit)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3TileMatrixSetLink>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3TileMatrixSetLink)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3TileMatrixSetLink)")) ;
-            else if(!strcmp(c.cl.name, "Array<WFS3TileMatrix>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(WFS3TileMatrix)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(WFS3TileMatrix)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFAccessor, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAccessor)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFAccessor>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFAccessor, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAccessor)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFAccessor, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFAccessor)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFAnimation, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAnimation)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFAnimation>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFAnimation, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAnimation)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFAnimation, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFAnimation)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFBufferView, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFBufferView)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFBufferView>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFBufferView, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFBufferView)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFBufferView, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFBufferView)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFBuffer, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFBuffer)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFBuffer>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFBuffer, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFBuffer)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFBuffer, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFBuffer)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFImage, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFImage)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFImage>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFImage, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFImage)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFImage, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFImage)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFMaterial, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFMaterial)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFMaterial>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFMaterial, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFMaterial)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFMaterial, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFMaterial)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFMesh, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFMesh)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFMesh>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFMesh, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFMesh)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFMesh, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFMesh)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFNode, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFNode)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFNode>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFNode, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFNode)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFNode, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFNode)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFProgram, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFProgram)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFProgram>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFProgram, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFProgram)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFProgram, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFProgram)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFSampler, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFSampler)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFSampler>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFSampler, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFSampler)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFSampler, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFSampler)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFScene, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFScene)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFScene>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFScene, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFScene)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFScene, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFScene)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFShader, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFShader)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFShader>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFShader, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFShader)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFShader, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFShader)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFSkin, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFSkin)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFSkin>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFSkin, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFSkin)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFSkin, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFSkin)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFTechnique, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTechnique)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFTechnique>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFTechnique, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTechnique)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFTechnique, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFTechnique)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFTexture, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTexture)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFTexture>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFTexture, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTexture)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFTexture, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFTexture)")) ;
-            else if(!strcmp(c.cl.name, "Array<glTFAnimationChannel>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(glTFAnimationChannel)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(glTFAnimationChannel)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFAnimationSampler, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAnimationSampler)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFAnimationSampler>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFAnimationSampler, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFAnimationSampler)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFAnimationSampler, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFAnimationSampler)")) ;
-            else if(!strcmp(c.cl.name, "Array<glTFPrimitive>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(glTFPrimitive)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(glTFPrimitive)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, String, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(String)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, String>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, String, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(String)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, String, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(String)")) ;
-            else if(!strcmp(c.cl.name, "Array<uint>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "uint") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "uint")) ;
-            else if(!strcmp(c.cl.name, "Array<bool>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(bool)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(bool)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, glTFTechniqueParameter, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTechniqueParameter)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, glTFTechniqueParameter>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, glTFTechniqueParameter, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(glTFTechniqueParameter)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, glTFTechniqueParameter, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(glTFTechniqueParameter)")) ;
-            else if(!strcmp(c.cl.name, "Array<uint64> >") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "uint64") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "uint64")) ;
-            else if(!strcmp(c.cl.name, "FeatureCollection<PolygonFeature>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(PolygonFeature)") && !strcmp(cSymbolTArgs[1], "int") && !strcmp(cSymbolTArgs[2], "C(PolygonFeature)")) ;
-            else if(!strcmp(c.cl.name, "MapNode<String, FeatureCollection, T = String>") && cSymbolTArgs.count == 3 && !strcmp(cSymbolTArgs[0], "C(String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FeatureCollection)")) ;
-            else if(!strcmp(c.cl.name, "Map<String, FeatureCollection>") && cSymbolTArgs.count == 7 && !strcmp(cSymbolTArgs[0], "T(MapNode, String, FeatureCollection, T = String)") && !strcmp(cSymbolTArgs[1], "C(String)") && !strcmp(cSymbolTArgs[2], "C(FeatureCollection)") && !strcmp(cSymbolTArgs[3], "T(MapNode, String, FeatureCollection, T = String)") && !strcmp(cSymbolTArgs[4], "C(String)") && !strcmp(cSymbolTArgs[5], "C(String)") && !strcmp(cSymbolTArgs[6], "C(FeatureCollection)")) ;
-            else if(false) ;
-            else if(false) ;
-            else if(false) ;
-            else if(false) ;
-            else if(false) ;
-            else if(false) ;
-            else
+            BClass cType = _class;
+            if(_class != c.cl && cType.numTemplateArgsInName && !c.isClassTemplatable)
             {
-               int i = 0;
-               Print("            else if(!strcmp(c.cl.name, \"", c.cl.name, "\") && cSymbolTArgs.count == ", cSymbolTArgs.count);
-               for(i = 0; i < cSymbolTArgs.count; i++)
-               {
-                  Print(" && !strcmp(cSymbolTArgs[", i, "], \"", cSymbolTArgs[i], "\")");
-               }
-               PrintLn(") ;");
-               debugBreakpoint();
-            }
-#endif // 0
-            if(c.cpp.completeTemplate)
-               c.cpp.dataTypeString = cppGetTemplateDataTypeString(cl, cSymbolTArgs);
-            else
-               debugBreakpoint();
-         }
-         else
-         {
-            if(c.hasTemplateArgsInName)
-            {
-               if(false) ;
-               else if(!strcmp(c.cl.name, "AVLNode<AT>")) ;
-               else if(!strcmp(c.cl.name, "AVLNode<KT>")) ;
-               else if(!strcmp(c.cl.name, "CustomAVLTree<BT = ecere::com::AVLNode<AT>, KT = AT, T = AT, D = AT>")) ;
-               else if(!strcmp(c.cl.name, "Container<BT, I = KT>")) ;
-               else if(!strcmp(c.cl.name, "Container<KT, I = KT>")) ;
-               else if(!strcmp(c.cl.name, "Container<LT>")) ;
-               else if(!strcmp(c.cl.name, "Container<VT, I = KT>")) ;
-               else if(!strcmp(c.cl.name, "CustomAVLTree<ecere::com::MapNode<MT, V>, I = MT, D = V, KT = MT>")) ;
-               else if(!strcmp(c.cl.name, "Iterator<V, IT = KT>")) ;
-               else if(!strcmp(c.cl.name, "Iterator<VT, IT = KT>")) ;
-               else if(!strcmp(c.cl.name, "LinkList<ecere::com::Link, T = LLT, D = LLT>")) ;
-               else if(!strcmp(c.cl.name, "MapNode<MT, V>")) ;
-               else if(!strcmp(c.cl.name, "Container<T>")) ;
-               else if(!strcmp(c.cl.name, "Iterator<T>")) ;
-               else if(!strcmp(c.cl.name, "HashMap<KT, VT>")) ;
-               else if(!strcmp(c.cl.name, "Container<T, IT>")) ;
-               else if(!strcmp(c.cl.name, "Map<KT, V>")) ;
-               else if(!strcmp(c.cl.name, "MapNode<KT, V, T = KT>")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else
-               {
-                  debugBreakpoint();
-                  c.cpp.isClassTemplatable = /*c.cpp.classTypeIsTemplatable && c.cl.templateArgs && */isClassTemplatable(cl);
-                  // c.cpp.dataTypeString = CopyString(c.cpp.name);
-               }
-            }
-            else
-            {
-                    if(!strcmp(c.cl.name, "FreeBlockMap")) ;
-               else if(!strcmp(c.cl.name, "GLMB")) ;
-               else if(!strcmp(c.cl.name, "CMSSExpList")) ;
-               else if(!strcmp(c.cl.name, "CMSSMemberInitList")) ;
-               else if(!strcmp(c.cl.name, "CMSSInstInitList")) ;
-               else if(!strcmp(c.cl.name, "EndOccurrence2")) ;
-               else if(!strcmp(c.cl.name, "SelectorList")) ;
-               else if(!strcmp(c.cl.name, "StylesList")) ;
-               else if(!strcmp(c.cl.name, "StylingRuleBlockList")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else if(!strcmp(c.cl.name, "")) ;
-               else
-                  debugBreakpoint();
-               c.cpp.dataTypeString = CopyString(c.cpp.name);
+               // processTemplateArgs(g, cType);
+               // this is one that we need to add
+               // PrintLn("deep class: ", _class.name);
             }
          }
       }
-      delete cSymbolTArgs;
    }
-   else
-   {
-      if(cl.type == normalClass)
-         c.cpp.dataTypeString = CopyString(c.cpp.name);
-   }
+   delete cTArgs;
    FinishTemplatesContext(context);
-#endif
+}
+
+static bool getSpecifiedTemplateArgs(Class templateClass, Array<Class> cTArgs)
+{
+   bool complete = true;
+   int i = 0;
+   Class templateClassBase = null;
+   List<Class> lineage = getCorrectLineage(templateClass, &templateClassBase);
+   complete = checkCorrectLineageHasFullySpecifiedTemplateArgs(lineage, templateClass);
+   if(complete)
+   {
+      if(templateClass.templateClass)
+      {
+         ClassTemplateParameter ctp1;
+         ClassTemplateParameter ctp2;
+         if(templateClass.templateParams.count != templateClass.templateClass.templateParams.count) debugBreakpoint();
+         for(ctp1 = templateClass.templateParams.first, ctp2 = templateClass.templateClass.templateParams.first; ctp1 && ctp2; ctp1 = ctp1.next, ctp2 = ctp2.next)
+            if(ctp1 != ctp2) debugBreakpoint();
+         if(!(ctp1 == null && ctp2 == null)) debugBreakpoint();
+      }
+
+      for(_class : lineage)
+      {
+         Class cl = _class;
+         if(i >= templateClass.numParams)
+         {
+            if(i > templateClass.numParams) debugBreakpoint();
+            if(cl != templateClass && cl != templateClass.templateClass && cl != templateClass.templateClass.base) debugBreakpoint();
+            break;
+         }
+         if(cl.templateParams.count)
+         {
+            ClassTemplateParameter ctp;
+            for(ctp = cl.templateParams.first; ctp && complete; ctp = ctp.next)
+            {
+               switch(ctp.type)
+               {
+                  case type:
+                  {
+                     ClassTemplateArgument * a = &templateClass.templateArgs[i];
+                     Class clType = null;
+                     // if(!ctp.defaultArg.dataTypeString || (a->dataTypeString && strcmp(ctp.defaultArg.dataTypeString, a->dataTypeString)))
+                     {
+                        if(!(a->dataTypeString && (clType = eSystem_FindClass(templateClass.module, a->dataTypeString))))
+                        {
+                           if(!(ctp.defaultArg.dataTypeString && (clType = eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString))))
+                           // if(!(ctp.defaultArg.dataTypeString && eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString)))
+                              complete = false;
+                        }
+                        if(cTArgs && clType && !templateClassBase)
+                           cTArgs.Add(clType);
+                     }
+                     break;
+                  }
+                  case expression: break; // expressions are ignored here
+                  case identifier: break; // identifiers are ignored here
+                  default: debugBreakpoint(); break;
+               }
+               i++;
+            }
+         }
+         if(templateClassBase && templateClassBase == cl)
+            templateClassBase = null;
+      }
+   }
+   delete lineage;
+   return complete;
+}
+
+enum TemplatedClassSymbolNameMode { bare, expanded, macro };
+char * cGetTemplatedClassSymbolName(BClass c, Array<BClass> cTArgs, TemplatedClassSymbolNameMode mode)
+{
+   char * symbol = null;
+   char * d;
+   const char * templateClassName = c.cl.templateClass.name;
+   // const char * prefix = mode == bare ? "" : mode == expanded ? "template" : "T(";
+   const char * prefix = mode == macro ? "T(" : mode == bare ? "tenplate_" : "template";
+   const char * sep = mode == macro ? ", " : "_";
+   int sepLen = strlen(sep);
+   int len = 0;
+   int hackLimit; // todo: find better way
+   // if(!strcmp(c.cl.name, "Array<BlockEntry>")) debugBreakpoint();
+   // if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
+   // if(mode != bare)
+      // len += strlen(mode == expanded ? "template" : "T()");
+      // len += strlen(mode == macro ? "T()" : "template");
+   len += strlen(prefix);
+   len += strlen(templateClassName);
+   if(mode == macro)
+      len += 1;
+   hackLimit = c.numTemplateArgsInName;
+   for(e : cTArgs)
+   {
+      BClass c = (Class)e;
+      len += strlen(c.bareSymbol) + sepLen;
+      if(--hackLimit == 0) break;
+   }
+   symbol = new char[len + 1];
+   d = symbol;
+   strcpy(d, prefix);
+   d += strlen(prefix);
+   strcpy(d, templateClassName);
+   d += strlen(templateClassName);
+   hackLimit = c.numTemplateArgsInName;
+   for(e : cTArgs)
+   {
+      BClass c = (Class)e;
+      strcpy(d, sep);
+      d += sepLen;
+      strcpy(d, c.bareSymbol);
+      d += strlen(c.bareSymbol);
+      if(--hackLimit == 0) break;
+   }
+   if(mode == macro)
+      strcpy(d++, ")");
+   if(len != d - symbol) debugBreakpoint();
+   return symbol;
 }
