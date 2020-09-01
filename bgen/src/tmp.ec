@@ -578,14 +578,37 @@ char * getClassTypeName(Class c)
       PrintLn("yo ", b);
    }
    delete a;
+   // if(!strcmp(name, "T(Map, int, FieldValue)")) debugBreakpoint();
    return name;
+}
+
+int getTemplateArgsCount(const char * className)
+{
+   int count = 0;
+   int depth = 0;
+   char ch;
+   const char * s = className;
+   while((ch = *s++))
+   {
+      if(ch == '<')
+      {
+         if(!depth)
+            ++count;
+         ++depth;
+      }
+      else if(ch == '>')
+         --depth;
+      else if(ch == ',' && depth == 1)
+         ++count;
+   }
+   return count;
 }
 
 char * getTemplateClassSymbol(const char * className, bool preexpanded)
 {
    int count = 0;
    const char * s;
-   if(!strcmp(className, "MapNode<String, ecere::gfx::FontInfo, T = String>")) debugBreakpoint();
+   // if(!strcmp(className, "MapNode<String, ecere::gfx::FontInfo, T = String>")) debugBreakpoint();
    for(s = className; *s; s++)
       if(*s == '<') count++;
    if(count)
@@ -628,6 +651,8 @@ char * getTemplateClassSymbol(const char * className, bool preexpanded)
       }
       delete result;
       result = output;
+      // if(!strcmp(result, "T(Map, int, FieldValue)")) debugBreakpoint();
+      // if(!strcmp(result, "T(Map, Color, Array<uint64> )")) debugBreakpoint();
       return result;
    }
    return null;

@@ -4,6 +4,11 @@
 #define ENABLE_GEN_LOC
 #ifdef ENABLE_GEN_LOC
 #if 1
+#define genfn(fn) "/*", #fn, "*/"
+#else
+#define genfn(fn) ""
+#endif
+#if 0
 #define genidx(id, x) "/*", #id, x, "*/"
 #else
 #define genidx(id, x) ""

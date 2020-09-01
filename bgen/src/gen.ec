@@ -1651,10 +1651,14 @@ class BClass : struct
    char * cname;
    char * coSymbol;
    char * cSymbol;
+   char * bareSymbol;
    char * baseSymbolName;
    char * py_initializer;
    char * simplestIdentName;
-   bool hasTemplateArgsInName;
+   bool isClassTemplatable;
+   bool completeTemplate;
+   int numTemplateArgsInName;
+   Array<BClass> cTArgs { };
    struct
    {
       char * name;
@@ -1666,11 +1670,9 @@ class BClass : struct
       char * targs;
       char * targsm;
       bool isTemplate;
-      bool completeTemplate;
       int typedTArgsCount;
       char * dataTypeString;
       bool classTypeIsTemplatable;
-      bool isClassTemplatable;
    } cpp;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
@@ -1680,10 +1682,14 @@ class BClass : struct
       nspace = (NameSpacePtr)cl.nameSpace;
       first = true;
       // name = strptrNoNamespace(cl.name);
-      hasTemplateArgsInName = strchr(cl.name, '<') && strchr(cl.name, '>');
+      numTemplateArgsInName = getTemplateArgsCount(cl.name);
       // todo: name should keep template stuff (eg <int, String>)but everywhere else it's needed without template stuff should be fixed
       //       related: see "this should be just t.c.name"
       name = getNoNamespaceString(cl.name, null, false, true);
+      if(numTemplateArgsInName)
+         ; // see below where bareSymbol is also set
+      else
+         bareSymbol = CopyString(name);
       // if(strchr(name, '>')) debugBreakpoint(); // todo this should be fixed
       if(strchr(name, ':')) debugBreakpoint(); // todo this should be fixed
       // if(strchr(namex, ':')) debugBreakpoint(); // todo this should be fixed
@@ -1746,9 +1752,26 @@ class BClass : struct
       noMacro = cl.type == systemClass || isUnichar;
       noSpecMacro = noMacro || cl.type == enumClass || isString;
 
+      // if(!strcmp(cl.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+      isClassTemplatable = classIsTemplatable(cl);
+      if(numTemplateArgsInName && !isClassTemplatable)
+         completeTemplate = checkCompleteSpecifiedTemplateArgs(cl, cTArgs);
       // if(!strcmp(cl.name, "MapNode<String, ecere::gfx::FontInfo, T = String>")) debugBreakpoint();
       if(cl.templateClass)
-         cSymbol = g_.allocMacroSymbolName(false, T, { }, cl.name, null, 0);
+      {
+         if(completeTemplate)
+         {
+            bareSymbol = cGetTemplatedClassSymbolName(this, cTArgs, bare);
+            cSymbol = cGetTemplatedClassSymbolName(this, cTArgs, noMacro ? expanded : macro); // g_.allocMacroSymbolName(noMacro/*false*/, T, { }, cl.name, null, 0);
+            if(!cSymbol)
+            {
+               debugBreakpoint();
+               cSymbol = cGetTemplatedClassSymbolName(this, cTArgs, noMacro ? expanded : macro); // debug recall
+            }
+         }
+         else
+            cSymbol = g_.allocMacroSymbolName(noMacro/*false*/, T, { }, cl.name, null, 0);
+      }
       else
          cSymbol = g_.allocMacroSymbolName(noMacro, C, { }, name, null, 0);
       // if(!strcmp(cSymbol, "T(MapNode, String, FontInfo, T = String)")) debugBreakpoint();
@@ -1853,6 +1876,7 @@ class BClass : struct
       delete cpp.targs;
       delete cpp.targsm;
       delete cpp.dataTypeString;
+      delete cTArgs;
       if(cleanDataType)
       {
          FreeType(cl.dataType);
@@ -1862,26 +1886,221 @@ class BClass : struct
    void OnFree() { free(); };
 };
 
+bool checkCorrectLineageHasFullySpecifiedTemplateArgs(List<Class> lineage, Class templateClass)
+{
+   bool complete = true;
+   int i = 0;
+   // Class templateClass = lineage.lastIterator.data;
+   for(_class : lineage)
+   {
+      Class cl = _class;
+      if(i >= templateClass.numParams)
+      {
+         if(i > templateClass.numParams) debugBreakpoint();
+         if(cl != templateClass && cl != templateClass.templateClass && cl != templateClass.templateClass.base) debugBreakpoint();
+         break;
+      }
+      if(cl.templateParams.count)
+      {
+         ClassTemplateParameter ctp;
+         for(ctp = cl.templateParams.first; ctp && complete; ctp = ctp.next)
+         {
+            switch(ctp.type)
+            {
+               case type:
+               {
+                  ClassTemplateArgument * a = &templateClass.templateArgs[i];
+                  if(!ctp.defaultArg.dataTypeString)
+                  {
+                     if(a->dataTypeClass == null || a->dataTypeString == null)
+                        complete = false;
+                  }
+                  break;
+               }
+               case expression: break; // expressions are ignored here
+               case identifier: break; // identifiers are ignored here
+               default: debugBreakpoint(); break;
+            }
+            i++;
+         }
+         if(!complete)
+            break;
+      }
+   }
+   return complete;
+}
+
+static bool checkCompleteSpecifiedTemplateArgs(Class templateClass, Array<BClass> cTArgs)
+{
+   bool complete = true;
+   int i = 0;
+   Class templateClassBase = null;
+   // List<Class> correctLineage = getCorrectLineage(templateClass);
+   // List<Class> lineage = getTemplateLineage(templateClass, &complete);
+   // List<Class> lineage = getCorrectLineage(templateClass, null);
+   List<Class> lineage = getCorrectLineage(templateClass, &templateClassBase);
+   // bool correctComplete = checkCorrectLineageHasFullySpecifiedTemplateArgs(correctLineage);
+   // if(!strcmp(templateClass.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
+   // if(!strcmp(templateClass.name, "MapNode<int, eda::FieldValue, T = int>")) debugBreakpoint();
+   // if(!strcmp(templateClass.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
+   // if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+   complete = checkCorrectLineageHasFullySpecifiedTemplateArgs(lineage, templateClass);
+   // if(!strcmp(templateClass.name, "Map<String, ecere::gfx::FontInfo>")) debugBreakpoint();
+   // if(correctComplete)
+   //    ;
+   if(complete)
+   {
+      // Class templateClassBase = null;
+      // Class templateClassBase = templateClass.base.templateClass ? templateClass.base.templateClass : null;
+      // Class templateClassBase = templateClass.templateClass ? templateClass.templateClass : null;
+      // List<Class> baseLineage = getClassLineage(lineage.firstIterator.data.base); // getCorrectClassLineage
+      // Class startBaseClass = getTemplateStartBaseClass(templateClass.templateParams.count == 0 ? templateClass : templateClass.base);
+      // Class clStart = startBaseClass;
+      // startBaseClass = getTemplateStartBaseClass(templateClass.templateParams.count == 0 ? templateClass : templateClass.base);
+      // if(clStart)
+      //    ;
+      /*
+      for(_class : baseLineage)
+      {
+         Class cl = _class;
+         i += cl.templateParams.count;
+      }
+      */
+
+      if(templateClass.templateClass)
+      {
+         ClassTemplateParameter ctp1;
+         ClassTemplateParameter ctp2;
+         if(templateClass.templateParams.count != templateClass.templateClass.templateParams.count) debugBreakpoint();
+         for(ctp1 = templateClass.templateParams.first, ctp2 = templateClass.templateClass.templateParams.first; ctp1 && ctp2; ctp1 = ctp1.next, ctp2 = ctp2.next)
+            if(ctp1 != ctp2) debugBreakpoint();
+         if(!(ctp1 == null && ctp2 == null)) debugBreakpoint();
+      }
+
+      for(_class : lineage)
+      {
+         Class cl = _class;
+         // if(startBaseClass && /*(*/startBaseClass == cl/* || startBaseClass.templateClass == cl)*/)
+         //    startBaseClass = null;
+         if(i >= templateClass.numParams)
+         {
+            if(i > templateClass.numParams) debugBreakpoint();
+            if(cl != templateClass && cl != templateClass.templateClass && cl != templateClass.templateClass.base) debugBreakpoint();
+            break;
+         }
+         // if(!strcmp(cl.name, "HashMap") && !strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+         // if(/*!strcmp(cl.name, "HashMap") && */!strcmp(templateClass.name, "Container<KT, I = KT>")) debugBreakpoint();
+         if(cl.templateParams.count)
+         {
+            // if(!startBaseClass)
+            // {
+               ClassTemplateParameter ctp;
+               for(ctp = cl.templateParams.first; ctp && complete; ctp = ctp.next)
+               {
+                  switch(ctp.type)
+                  {
+                     case type:
+                     {
+                        ClassTemplateArgument * a = &templateClass.templateArgs[i];
+                        // if(!strcmp(templateClass.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
+                        /*
+                        if(!ctp.defaultArg.dataTypeString)
+                        {
+                           // ClassTemplateArgument * a = &templateClass.templateArgs[i];
+                           // if(!a->dataTypeClass && !a->dataTypeString) debugBreakpoint();
+                           if(a->dataTypeClass)
+                           {
+                              BClass dtc = a->dataTypeClass;
+                              if(a->dataTypeClass.templateClass || a->dataTypeClass.templateParams.count)
+                              {
+                                 if(!checkCompleteSpecifiedTemplateArgs(a->dataTypeClass, null))
+                                 {
+                                    if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+                                    complete = false;
+                                    break;
+                                 }
+                              }
+                              else if(dtc.numTemplateArgsInName) debugBreakpoint();
+                              // if(!strcmp(templateClass.name, "List<ecere::net::CallAck>")) debugBreakpoint();
+                              if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+                           }
+                           else if(a->dataTypeString)
+                           {
+                              Class dtscl = eSystem_FindClass(templateClass.module, a->dataTypeString);
+                              if(!dtscl)
+                                 complete = false;
+                           }
+                           else
+                              complete = false;
+                        }
+                        */
+                        Class clType = null;
+                        // if(!ctp.defaultArg.dataTypeString || (a->dataTypeString && strcmp(ctp.defaultArg.dataTypeString, a->dataTypeString)))
+                        // todo: call itself :P
+                        {
+                           if(!(a->dataTypeString && (clType = eSystem_FindClass(templateClass.module, a->dataTypeString))))
+                           {
+                              if(!(ctp.defaultArg.dataTypeString && (clType = eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString))))
+                              // if(!(ctp.defaultArg.dataTypeString && eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString)))
+                                 complete = false;
+                           }
+                           if(clType && !templateClassBase)
+                           {
+                              BClass cType = clType;
+                              // if(!strcmp(templateClass.name, "Map<String, ecere::gfx::FontInfo>")) debugBreakpoint();
+                              cTArgs.Add(cType);
+                           }
+                        }
+                        break;
+                     }
+                     case expression: break; // expressions are ignored here
+                     case identifier: break; // identifiers are ignored here
+                     default: debugBreakpoint(); break;
+                  }
+                  i++;
+               }
+            //}
+            // else
+            //    i += cl.templateParams.count;
+         }
+         // if(startBaseClass && startBaseClass.templateClass == cl)
+         //    startBaseClass = null;
+         if(templateClassBase && templateClassBase == cl)
+            templateClassBase = null;
+      }
+      // delete baseLineage;
+   }
+   delete lineage;
+   // if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
+   if(complete && cTArgs.count == 0)
+      complete = false;
+   return complete;
+}
+
 bool normalClassMacroOverride;
 const char * bgenSymbolSwap(const char * symbol, bool reduce, bool macro)
 {
+   const char * result = symbol;
    Class cl = eSystem_FindClass(g_.mod, strptrNoNamespace(symbol));
    if(!cl && g_.lib.ecereCOM && g_.lang == CPlusPlus)
    {
       if(!strcmp(symbol, "Surface") || !strcmp(symbol, "DataBox"))
-         return (!normalClassMacroOverride) ? g_.sym.instance : "Instance";
+         result = (!normalClassMacroOverride) ? g_.sym.instance : "Instance";
       else if(!strcmp(symbol, "Alignment"))
-         return g_.sym.alignment;
+         result = g_.sym.alignment;
       else if(!strcmp(symbol, "DataDisplayFlags"))
-         return g_.sym.dataDisplayFlags;
+         result = g_.sym.dataDisplayFlags;
+      if(result != symbol && !result) debugBreakpoint();
    }
-   if(cl)
+   if(cl && result == symbol)
    {
       Class cl2 = reduce ? reduceUnitClass(cl) : cl;
       BClass c = cl2;
-      return macro && !normalClassMacroOverride ? c.cSymbol : c.name;
+      result = macro && !normalClassMacroOverride ? c.cSymbol : c.name;
+      if(!result) debugBreakpoint();
+
    }
-   return symbol;
+   return result;
 }
 
 #if 0

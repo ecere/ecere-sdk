@@ -112,6 +112,51 @@ uint classTypeLen(ClassType ct)
    return 0;
 }
 
+const char * fixedLengthNamesOfClassTypes[9 * 5] = {
+      "er",    "nm",       "st",       "bt",    "ut",    "en",    "nh",       "un",    "st",
+      "err",   "nor",      "str",      "bit",   "unt",   "enm",   "nhd",      "uni",   "sys",
+      "eror",  "norm",     "strc",     "bitc",  "unit",  "enum",  "nohd",     "unio",  "syst",
+      "error", "norml",    "struc",    "bitcl", "unitc", "enumc", "nohed",    "union", "systm",
+      "error", "normal",   "struct",   "bits",  "unit",  "enum",  "nohead",   "union", "system"
+};
+
+const char * classTypeFixedLengthString(ClassType ct, int len)
+{
+   if(len >= 2 && len <= 5)
+   {
+      int n = len - 2;
+      switch(ct)
+      {
+         case normalClass: return fixedLengthNamesOfClassTypes[1 + n * 9];
+         case structClass: return fixedLengthNamesOfClassTypes[2 + n * 9];
+         case bitClass:    return fixedLengthNamesOfClassTypes[3 + n * 9];
+         case unitClass:   return fixedLengthNamesOfClassTypes[4 + n * 9];
+         case enumClass:   return fixedLengthNamesOfClassTypes[5 + n * 9];
+         case noHeadClass: return fixedLengthNamesOfClassTypes[6 + n * 9];
+         case unionClass:  return fixedLengthNamesOfClassTypes[7 + n * 9];
+         case systemClass: return fixedLengthNamesOfClassTypes[8 + n * 9];
+      }
+      return fixedLengthNamesOfClassTypes[0 + n * 9];
+   }
+   return null;
+}
+
+const char * classTypeToSimpleString(ClassType ct)
+{
+   switch(ct)
+   {
+      case normalClass: return fixedLengthNamesOfClassTypes[4 * 9 + 1];
+      case structClass: return fixedLengthNamesOfClassTypes[4 * 9 + 2];
+      case bitClass:    return fixedLengthNamesOfClassTypes[4 * 9 + 3];
+      case unitClass:   return fixedLengthNamesOfClassTypes[4 * 9 + 4];
+      case enumClass:   return fixedLengthNamesOfClassTypes[4 * 9 + 5];
+      case noHeadClass: return fixedLengthNamesOfClassTypes[4 * 9 + 6];
+      case unionClass:  return fixedLengthNamesOfClassTypes[4 * 9 + 7];
+      case systemClass: return fixedLengthNamesOfClassTypes[4 * 9 + 8];
+   }
+   return fixedLengthNamesOfClassTypes[4 * 9];
+}
+
 bool classIsFromModule(Class c, Module m, Application a)
 {
    bool ecereCOM = false;
@@ -139,6 +184,21 @@ List<Class> getCorrectClassLineage(Class c) // todo: review getClassLineage usag
    Class cl;
    for(cl = c; cl; cl = cl.templateClass ? cl.templateClass : cl.base)
    {
+      lineage.Insert(null, cl);
+      if(cl.inheritanceAccess == privateAccess)
+         break;
+   }
+   return lineage;
+}
+
+List<Class> getFilteredClassLineage(Class c, ClassFilter filter)
+{
+   List<Class> lineage { };
+   Class cl;
+   for(cl = c; cl; cl = cl.templateClass ? cl.templateClass : cl.base)
+   {
+      if(!filter.match(cl.type))
+         break;
       lineage.Insert(null, cl);
       if(cl.inheritanceAccess == privateAccess)
          break;
@@ -614,7 +674,23 @@ bool classTypeIsTemplatable(ClassType ct)
    return ct == normalClass || ct == noHeadClass || ct == structClass;
 }
 
-bool isClassTemplatable(Class cl)
+bool classTypeHasNativeSubType(ClassType ct)
+{
+   switch(ct)
+   {
+      case normalClass: return false;
+      case structClass: return false;
+      case bitClass:    return true;
+      case unitClass:   return true;
+      case enumClass:   return true;
+      case noHeadClass: return false;
+      case unionClass:  return false;
+      case systemClass: return false;
+   }
+   return false; // error
+}
+
+bool classIsTemplatable(Class cl)
 {
    Class c;
    for(c = cl; c; c = c.base)
