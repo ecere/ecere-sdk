@@ -344,7 +344,7 @@ class CPPGen : CGen
             TypeInfo ti { type = fn.dataType, typeString = fn.dataTypeString };
             n.splitContents.Add(v);
             f.out = out;
-            out.z.concatx("// function: ", f.oname, ln); // todo: remove line
+            out.z.concatx(genspc__, "// function: ", f.oname, ln); // todo: remove line
             genGenGlobalFunctionOrMethod(this, null, null, f, ti, v, 0, null, f.oname, false, out);
          }
       }
@@ -433,7 +433,7 @@ class CPPGen : CGen
          case CO:          return PrintString(       "CO(", name, ")");
          case SUBCLASS:    return PrintString( "subclass(", name, ")");
          case THISCLASS:   return PrintString("thisclass(", name, ptr ? " *" : "", ")");
-         case T:           return getTemplateClassSymbol(   name, false);
+         case T:           return ti.c ? cGetTemplatedClassSymbolName(ti.c, ti.c.cTArgs, macro) : getTemplateClassSymbol(name, false);
          case TP:          return PrintString(       "TP(", name, ", ", name2, ")");
          case METHOD:      return PrintString(   "METHOD(", name, ", ", name2, ")");
          case PROPERTY:    return PrintString( "PROPERTY(", name, ", ", name2, ")");
@@ -684,7 +684,7 @@ static void generateCPP(CPPGen g, File f)
          // if(!strcmp(c.cl.name, "AVLTree")) debugBreakpoint();
          if(/*g_.lib.ecereCOM && */skipClasses.Find({ g_.lib.bindingName, c.cl.name }))
             skip = true;
-         if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.hasTemplateArgsInName)
+         if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.numTemplateArgsInName)
          {
             firstClass = c.cl;
             f.PrintLn(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_cpp_class;");
@@ -809,7 +809,7 @@ static AVLTree<const String> brokenOrderedPublicMembersInitializers { [
    "Detail",
 
    // gis
-   "ECCSSEvaluator",
+   // "ECCSSEvaluator",
    "Point3DFeature",
    "CompactModelData",
    "CenterLine",
@@ -1193,12 +1193,13 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                      //   o.z.concatx(genloc__, "      ecere_cpp_init(*this);", ln);
                      o.z.concatx(genloc__, "      INSTANCEL(impl, impl->_class) = this;", ln);
                      o.z.concatx(genloc__, "      mustFree = true;", ln);
+                     o.z.concatx(genloc__, "      incref(impl);", ln);
                      o.z.concatx(genloc__, "      vTbl = _cpp_class.vTbl;", ln);
                      o.z.concatx(genloc__, "      __thisModule = impl;", ln);
                      o.z.concatx(genloc__, "   }", ln);
                      o.z.concatx(genloc__, "   ~Application()", ln);
                      o.z.concatx(genloc__, "   {", ln);
-                     o.z.concatx(genloc__, "      Instance_decRef(impl);  // Extra ref count?", ln);
+                     o.z.concatx(genloc__, "      Instance_decRef(impl);", ln);
                      o.z.concatx(genloc__, "   }", ln);
                   }
                   else if(c.isGuiApplication)
@@ -1264,9 +1265,9 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                // Class Registration
                // o.z.concatx("   REGISTER() { ", cn, "_class_registration(", cn, ");", " }", ln);
                cppMacroClassRegister(g, o.z, mode, true/*mode == expansion*/,
-                     c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs*/, false, 1, c.cpp.name,
-                     /*c.hasTemplateArgsInName ? */mode == expansion ? c.cpp.template : c.cpp.templatem/* : ""*/,
-                     /*c.hasTemplateArgsInName ? */mode == expansion ? c.cpp.targs : c.cpp.targsm/* : ""*/, 0);
+                     c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.numTemplateArgsInName*//*c.cl.templateArgs*/, false, 1, c.cpp.name,
+                     /*c.numTemplateArgsInName ? */mode == expansion ? c.cpp.template : c.cpp.templatem/* : ""*/,
+                     /*c.numTemplateArgsInName ? */mode == expansion ? c.cpp.targs : c.cpp.targsm/* : ""*/, 0);
                //o.z.concatx("      { ", cn, "_class_registration(", cn, ");", " }", ln);
                /*if(mode == expansion)
                   ; // o.z.concatx(genloc__, indents(1), "{", ln);
@@ -1323,7 +1324,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
       {
          if(!(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
          {
-            bool template = c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs*/;
+            bool template = c && c.cl.type == normalClass && c.cpp.isTemplate/* && c.numTemplateArgsInName*//*c.cl.templateArgs*/;
             BOutput o { vclass, c = c, z = { allocType = heap } };
             BOutput o2 { vclass, c = c, z = { allocType = heap } };
             BOutput  oT = template ? o : o2;
@@ -1345,7 +1346,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                   bool skip = c.isBool || c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class || c.isString;
                   if(/*g_.lib.ecereCOM && */skipClasses.Find({ g_.lib.bindingName, c.cl.name }))
                      skip = true;
-                  if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.hasTemplateArgsInName)
+                  if(!skip/* && !template*/ && c.cl.type == normalClass/* && !c.cl.templateArgs*/ && !c.numTemplateArgsInName)
                   {
                   // o.z.concatx(genloc__, "TCPPClass<", c.cl.name, "> ", c.cl.name, "::_cpp_class;");
                      o.z.concatx(genloc__, mode == expansion ? c.cpp.tprototype : c.cpp.tprototype/*m*/,
@@ -1677,7 +1678,16 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
    {
       if(ctRT == normalClass)
       {
+         bool cantHaveThat = cRT && cRT.cl.templateArgs/*cRT.cpp.isTemplate*//* && cRT.cl != c.cl && (!cRT.cl.templateClass || cRT.cl.templateClass != c.cl)*/;
+         // bool instCast = !prototype && cRT.cl.type == normalClass && cRT.cl.templateArgs;
+         bool special = cRT.cl.type == normalClass && cRT.cl.templateArgs && cantHaveThat;
+         // const char * tweak = !special && instCast ? "&" : "";
+         // if(instCast || special || tweak)
+         //    ;
+         // if(cn && !strcmp(cn, "CMSSStyleSheet") && !strcmp(xn, "findRule")) debugBreakpoint();
          if(cRT.isInstance)   // Exception
+            o.z.concatx(cRT.name, " *");
+         else if(special)   // Exception
             o.z.concatx(cRT.name, " *");
 #ifdef NORMAL_CLASS_RETURN_METHOD_TIH
          else if(!cRT.isString)
@@ -1746,6 +1756,12 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
    {
       // bool hasVarArgs = false;
       bool comma = false;
+      bool cantHaveThat = cRT && cRT.cl.templateArgs/*cRT.cpp.isTemplate*//* && cRT.cl != c.cl && (!cRT.cl.templateClass || cRT.cl.templateClass != c.cl)*/;
+      // bool instCast = !prototype && cRT.cl.type == normalClass && cRT.cl.templateArgs;
+      bool special = cantHaveThat && cRT.cl.type == normalClass && cRT.cl.templateArgs;
+      // const char * tweak = !special && instCast ? "&" : "";
+      // if(instCast || special || tweak)
+      //    ;
       if(returnAddress)
          Print("");
       o.z.concatx(genloc__, indents(ind), "{", ln);
@@ -1787,13 +1803,18 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
             o.z.concatx(genloc__, indents(ind + 1), "va_start(args, format);", ln);
          }
          */
-         o.z.concatx(genloc__, indents(ind + 1),    noRet ? "" : "return ");
+         o.z.concatx(genloc__, indents(ind + 1),    (noRet || special) ? "" : "return ");
 #ifdef NORMAL_CLASS_RETURN_METHOD_TIH
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
             o.z.concatx("TIH<", cRT.cpp.name, ">(");
 #else
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
-            o.z.concatx(cXT && cXT.cpp.dataTypeString ? cXT.cpp.dataTypeString : cRT.cpp.name, "(");
+         {
+            if(special)
+               o.z.concatx("C(Instance) i = ");
+            else
+               o.z.concatx(cXT && cXT.cpp.dataTypeString ? cXT.cpp.dataTypeString : cRT.cpp.name, "(");
+         }
 #endif
 
          if(typedVarArgs)
@@ -1845,7 +1866,12 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
          o.z.concatx((args = cppParams(c, argsInfo, regMethodArgsPassing2, v, null, false, comma, null, configuration, null, null, null, null, { })));
          o.z.concatx(")");
          if(ctRT == normalClass && !cRT.isString && !cRT.isInstance)
-            o.z.concatx(")");
+         {
+            if(special)
+               o.z.concatx(";", ln, genloc__, indents(ind + 1), "return BINDINGS_CLASS(i) ? (", cRT.cpp.name, " *)INSTANCEL(i, i->_class) : (", cRT.cpp.name, " *)0;");
+            else
+               o.z.concatx(")");
+         }
          if(typedVarArgs)
          {
             o.z.concatx("; },", ln);
@@ -1866,7 +1892,7 @@ static void genGenGlobalFunctionOrMethod(CPPGen g, BClass c, BMethod m, BFunctio
       first = null;
       o.z.concatx(genloc__, indents(ind));
       if(!prototype)
-         o.z.concatx(noHead ? cpptemplateNoHeadDef : template ? c.cpp.templatem : "", " ");
+         o.z.concatx(noHead ? cpptemplateNoHeadDef : template ? c.cpp.tprototype : "", noHead || template ? " " : "");
       o.z.concat("inline ");
       if(returnType.kind == templateType)
       {
@@ -1976,74 +2002,38 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
    bool skip;
    bool normal = c.cl.type == normalClass;
    int count = 0;
-   IterMemberOrPropertyPlus itmpp { cl = c.cl };
+   int basesCount = 0;
    AVLTree<const String> memberNames { };
+   IterMemberOrPropertyPlus itmpp { cl = c.cl };
+   List<Class> lineage = getFilteredClassLineage(c.cl, structOnly);
+   if(lineage.count == 0)
+      lineage.Add(c.cl);
+   // if(!strcmp(c.cl.name, "GeoPoint3D")) debugBreakpoint();
+   // if(!strcmp(c.cl.name, "ECCSSEvaluator")) debugBreakpoint();
+   // if(!strcmp(c.cl.name, "GraphicalStyleEvaluator")) debugBreakpoint();
+   if(c.cl.type == structClass && lineage.count == 0) debugBreakpoint();
+   // if(lineage.count == 2) debugBreakpoint();
+   // if(lineage.count == 3) debugBreakpoint();
+   // if(lineage.count == 4) debugBreakpoint();
+   // if(lineage.count >= 5) debugBreakpoint();
    skip = false;
-   while(itmpp.next(publicOnly))
+   for(e : lineage)
    {
-      Type t;
-      if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
-         continue;
-      if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
-         continue;
-
-      if(itmpp.pt && !itmpp.pt.dataType)
-         itmpp.pt.dataType = resolveDataTypeStringInTemplatesContext(c, itmpp.pt.dataTypeString, true);
-      else if(itmpp.dm && !itmpp.dm.dataType)
-         itmpp.dm.dataType = resolveDataTypeStringInTemplatesContext(c, itmpp.dm.dataTypeString, true);
-
-      t = itmpp.pt ? itmpp.pt.dataType : itmpp.dm ? itmpp.dm.dataType : null;
-
-      if(t.kind == pointerType && t.type.kind == classType &&
-            t.type._class.registered &&
-            (t.type._class.registered.type == normalClass ||
-            t.type._class.registered.type == noHeadClass))
-         continue;
-
-      if(skipPointerToStructClass) continue;
-
-      memberNames.Add(itmpp.mp.name);
-
-      {
-         bool isString = false;
-         Class clDataType = null;
-         ClassType ct = cppGetClassInfoFromType(t, false, &clDataType, null, null, &isString, null);
-         if(clDataType && clDataType.type == structClass) continue;
-         // if(brokenOrderedPublicMembersInitializersTypes.Find()) continue;
-         if(/*(!first && */((ct == normalClass && !isString) || ct == noHeadClass)/*)*/ ||
-               ct == bitClass ||
-               (clDataType && hasOrBaseHasTemplateClass(clDataType)) || t.kind == templateType)
-            skip = true;
-         else if(t.kind != functionType && t.kind != arrayType)
-         {
-            ClassType ct2 = t.kind == pointerType && t.type.kind == classType ?
-                  cppGetClassInfoFromType(t.type, false, null/*&clDataType*/, null/*&cDataType*/, null, &isString, null) : ct;
-            bool ptr = t.kind == pointerType && t.type.kind == classType &&
-                  ct2 == structClass;
-            if((clDataType && (clDataType.type == unitClass || clDataType.type == bitClass))/* ||
-               (ptr && t.type._class && t.type._class.registered && t.type._class.registered != c.cl)*/)
-               v.processDependency(g, otypedef, otypedef, ptr ? t.type._class.registered : clDataType);
-            count++;
-         }
-      }
-   }
-   memberNames.Free();
-   if(count)
-   {
-      bool first;
-      const String comma = "";
-      bool sfx = c.cl.type == normalClass && c.cl.templateArgs;
-      o.z.concatx(ln, genloc__, indents(1), "inline ", cn, sfx ? c.cpp.targs : "", "(");
-      skip = false;
-      first = true;
+      Class cl = e;
+      IterMemberOrPropertyPlus itmpp { cl = cl };
+      basesCount = count;
       while(itmpp.next(publicOnly))
       {
          Type t;
-
          if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
             continue;
          if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
             continue;
+
+         if(itmpp.pt && !itmpp.pt.dataType)
+            itmpp.pt.dataType = resolveDataTypeStringInTemplatesContext(c, itmpp.pt.dataTypeString, true);
+         else if(itmpp.dm && !itmpp.dm.dataType)
+            itmpp.dm.dataType = resolveDataTypeStringInTemplatesContext(c, itmpp.dm.dataTypeString, true);
 
          t = itmpp.pt ? itmpp.pt.dataType : itmpp.dm ? itmpp.dm.dataType : null;
 
@@ -2056,39 +2046,149 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
          if(skipPointerToStructClass) continue;
 
          memberNames.Add(itmpp.mp.name);
+
          {
             bool isString = false;
-            const String dataTypeString = itmpp.pt ? itmpp.pt.dataTypeString : itmpp.dm ? itmpp.dm.dataTypeString : null;
             Class clDataType = null;
             ClassType ct = cppGetClassInfoFromType(t, false, &clDataType, null, null, &isString, null);
             if(clDataType && clDataType.type == structClass) continue;
+            // if(brokenOrderedPublicMembersInitializersTypes.Find()) continue;
             if(/*(!first && */((ct == normalClass && !isString) || ct == noHeadClass)/*)*/ ||
                   ct == bitClass ||
                   (clDataType && hasOrBaseHasTemplateClass(clDataType)) || t.kind == templateType)
                skip = true;
-            else if(t.kind != functionType && t.kind != arrayType) // broken inititializers
+            else if(t.kind != functionType && t.kind != arrayType)
             {
-               const char * mn = itmpp.mp.name;
-               String tz = null;
-               TypeInfo ti { type = t, typeString = dataTypeString, cl = c.cl };
-               String tnp2 = null;
-               String tn = cppTypeName(ti, false/*(*//*ct == normalClass && !isString*//*) || ct == unitClass*/, &tz, &tnp2);
-               bool ref = (ct == normalClass && !isString) || ct == noHeadClass;
-               // bool u = ct == unitClass;
-               o.z.concatx(comma, ref ? "const " : "", tn, ref ? "&" : "", " ", mn, tnp2 ? tnp2 : "");
-               if(!first)
-                  o.z.concatx(" = ", tz);
-               if(first)
+               ClassType ct2 = t.kind == pointerType && t.type.kind == classType ?
+                     cppGetClassInfoFromType(t.type, false, null/*&clDataType*/, null/*&cDataType*/, null, &isString, null) : ct;
+               bool ptr = t.kind == pointerType && t.type.kind == classType &&
+                     ct2 == structClass;
+               if((clDataType && (clDataType.type == unitClass || clDataType.type == bitClass))/* ||
+                  (ptr && t.type._class && t.type._class.registered && t.type._class.registered != c.cl)*/)
+                  v.processDependency(g, otypedef, otypedef, ptr ? t.type._class.registered : clDataType);
+               count++;
+            }
+         }
+      }
+   }
+   memberNames.Free();
+   if(count)
+   {
+      bool first;
+      const String comma = "";
+      bool sfx = c.cl.type == normalClass && c.cl.templateArgs;
+      o.z.concatx(ln, genloc__, indents(1), "inline ", cn, sfx ? c.cpp.targs : "", "(");
+      skip = false;
+      first = true;
+      for(e : lineage)
+      {
+         Class cl = e;
+         IterMemberOrPropertyPlus itmpp { cl = cl };
+         while(itmpp.next(publicOnly))
+         {
+            Type t;
+
+            if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+               continue;
+            if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
+               continue;
+
+            t = itmpp.pt ? itmpp.pt.dataType : itmpp.dm ? itmpp.dm.dataType : null;
+
+            if(t.kind == pointerType && t.type.kind == classType &&
+                  t.type._class.registered &&
+                  (t.type._class.registered.type == normalClass ||
+                  t.type._class.registered.type == noHeadClass))
+               continue;
+
+            if(skipPointerToStructClass) continue;
+
+            memberNames.Add(itmpp.mp.name);
+            {
+               bool isString = false;
+               const String dataTypeString = itmpp.pt ? itmpp.pt.dataTypeString : itmpp.dm ? itmpp.dm.dataTypeString : null;
+               Class clDataType = null;
+               ClassType ct = cppGetClassInfoFromType(t, false, &clDataType, null, null, &isString, null);
+               if(clDataType && clDataType.type == structClass) continue;
+               if(/*(!first && */((ct == normalClass && !isString) || ct == noHeadClass)/*)*/ ||
+                     ct == bitClass ||
+                     (clDataType && hasOrBaseHasTemplateClass(clDataType)) || t.kind == templateType)
+                  skip = true;
+               else if(t.kind != functionType && t.kind != arrayType) // broken inititializers
                {
-                  comma = ", ";
-                  first = false;
+                  const char * mn = itmpp.mp.name;
+                  String tz = null;
+                  TypeInfo ti { type = t, typeString = dataTypeString, cl = c.cl };
+                  String tnp2 = null;
+                  String tn = cppTypeName(ti, false/*(*//*ct == normalClass && !isString*//*) || ct == unitClass*/, &tz, &tnp2);
+                  bool ref = (ct == normalClass && !isString) || ct == noHeadClass;
+                  // bool u = ct == unitClass;
+                  o.z.concatx(comma, ref ? "const " : "", tn, ref ? "&" : "", " ", mn, tnp2 ? tnp2 : "");
+                  if(!first)
+                     o.z.concatx(" = ", tz);
+                  if(first)
+                  {
+                     comma = ", ";
+                     first = false;
+                  }
                }
             }
          }
       }
       memberNames.Free();
       o.z.concat(")");
-      if(!(c.cl.type == structClass && true/* todo: allMembersInitializedViaOptionalParamsToThisInitializingConstructor() */))
+      if(c.cl.type == structClass && lineage.count > 1 && basesCount > 0)
+      {
+         BClass cBase = c.cl.base;
+         IterMemberOrPropertyPlus itmpp { cl = cBase.cl };
+         o.z.concatx(" : ", cBase.cpp.name, "(");
+         skip = false;
+         first = true;
+         comma = "";
+         while(itmpp.next(publicOnly))
+         {
+            Type t;
+
+            if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+               continue;
+            if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
+               continue;
+
+            t = itmpp.pt ? itmpp.pt.dataType : itmpp.dm ? itmpp.dm.dataType : null;
+
+            if(t.kind == pointerType && t.type.kind == classType &&
+                  t.type._class.registered &&
+                  (t.type._class.registered.type == normalClass ||
+                  t.type._class.registered.type == noHeadClass))
+               continue;
+
+            if(skipPointerToStructClass) continue;
+
+            memberNames.Add(itmpp.mp.name);
+            {
+               bool isString = false;
+               Class clDataType = null;
+               ClassType ct = cppGetClassInfoFromType(t, false, &clDataType, null, null, &isString, null);
+               if(clDataType && clDataType.type == structClass) continue;
+               if(/*(!first && */((ct == normalClass && !isString) || ct == noHeadClass)/*)*/ ||
+                     ct == bitClass ||
+                     (clDataType && hasOrBaseHasTemplateClass(clDataType)) || t.kind == templateType)
+                  skip = true;
+               else if(t.kind != functionType && t.kind != arrayType) // broken inititializers
+               {
+                  const char * mn = itmpp.mp.name;
+                  o.z.concatx(comma, mn);
+                  if(first)
+                  {
+                     comma = ", ";
+                     first = false;
+                  }
+               }
+            }
+         }
+         o.z.concatx(")");
+      }
+      else if(!(c.cl.type == structClass && true/* todo: allMembersInitializedViaOptionalParamsToThisInitializingConstructor() */))
          o.z.concatx(" : ", cn, sfx ? c.cpp.targs : "", "()");
       o.z.concatx(ln);
       o.z.concatx(genloc__, indents(1), "{", ln);
@@ -2144,6 +2244,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
       o.z.concatx(genloc__, indents(1), "}", ln);
    }
    delete memberNames;
+   delete lineage;
 }
 
 static void processProperties(CPPGen g, BClass c, const char * cn, const char * tcn, bool prototype, BOutput o)
@@ -2330,50 +2431,6 @@ List<Class> getCorrectLineage(Class cl, Class * templateClass)
    return lineage;
 }
 
-bool checkCorrectLineageHasFullySpecifiedTemplateArgs(List<Class> lineage, Class templateClass)
-{
-   bool complete = true;
-   int i = 0;
-   // Class templateClass = lineage.lastIterator.data;
-   for(_class : lineage)
-   {
-      Class cl = _class;
-      if(i >= templateClass.numParams)
-      {
-         if(i > templateClass.numParams) debugBreakpoint();
-         if(cl != templateClass && cl != templateClass.templateClass && cl != templateClass.templateClass.base) debugBreakpoint();
-         break;
-      }
-      if(cl.templateParams.count)
-      {
-         ClassTemplateParameter ctp;
-         for(ctp = cl.templateParams.first; ctp && complete; ctp = ctp.next)
-         {
-            switch(ctp.type)
-            {
-               case type:
-               {
-                  ClassTemplateArgument * a = &templateClass.templateArgs[i];
-                  if(!ctp.defaultArg.dataTypeString)
-                  {
-                     if(a->dataTypeClass == null || a->dataTypeString == null)
-                        complete = false;
-                  }
-                  break;
-               }
-               case expression: break; // expressions are ignored here
-               case identifier: break; // identifiers are ignored here
-               default: debugBreakpoint(); break;
-            }
-            i++;
-         }
-         if(!complete)
-            break;
-      }
-   }
-   return complete;
-}
-
 int countTemplateParamsCorrect(Class cl)
 {
    int count = 0;
@@ -2474,19 +2531,16 @@ bool checkTemplateLineageHasFullySpecifiedTemplateArgs(List<Class> lineage)
    return complete;
 }
 
-static bool getSpecifiedTemplateArgs(Class templateClass, Array<String> cSymbolTArgs, bool cName, int * goodCalls)
+static bool getSpecifiedTemplateArgsSymbols(Class templateClass, Array<String> cSymbolTArgs, bool cName)
 {
    bool complete = true;
    int i = 0;
-   static int callCount = 0;
    Class templateClassBase = null;
    // List<Class> correctLineage = getCorrectLineage(templateClass);
    // List<Class> lineage = getTemplateLineage(templateClass, &complete);
    // List<Class> lineage = getCorrectLineage(templateClass, null);
    List<Class> lineage = getCorrectLineage(templateClass, &templateClassBase);
    // bool correctComplete = checkCorrectLineageHasFullySpecifiedTemplateArgs(correctLineage);
-   callCount++;
-   if(goodCalls) *goodCalls = callCount;
    // if(!strcmp(templateClass.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
    // if(!strcmp(templateClass.name, "MapNode<int, eda::FieldValue, T = int>")) debugBreakpoint();
    // if(!strcmp(templateClass.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
@@ -2560,14 +2614,14 @@ static bool getSpecifiedTemplateArgs(Class templateClass, Array<String> cSymbolT
                               BClass dtc = a->dataTypeClass;
                               if(a->dataTypeClass.templateClass || a->dataTypeClass.templateParams.count)
                               {
-                                 if(!getSpecifiedTemplateArgs(a->dataTypeClass, null, cName, null))
+                                 if(!getSpecifiedTemplateArgsSymbols(a->dataTypeClass, null, cName))
                                  {
                                     if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
                                     complete = false;
                                     break;
                                  }
                               }
-                              else if(dtc.hasTemplateArgsInName) debugBreakpoint();
+                              else if(dtc.numTemplateArgsInName) debugBreakpoint();
                               // if(!strcmp(templateClass.name, "List<ecere::net::CallAck>")) debugBreakpoint();
                               if(!strcmp(templateClass.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
                               if(cSymbolTArgs && !templateClassBase)
@@ -2591,27 +2645,23 @@ static bool getSpecifiedTemplateArgs(Class templateClass, Array<String> cSymbolT
                               complete = false;
                         }
                         */
-
-                        //
+                        Class clType = null;
+                        // if(!ctp.defaultArg.dataTypeString || (a->dataTypeString && strcmp(ctp.defaultArg.dataTypeString, a->dataTypeString)))
+                        // todo: call itself :P
                         {
-                           Class clType = null;
-                           // if(!ctp.defaultArg.dataTypeString || (a->dataTypeString && strcmp(ctp.defaultArg.dataTypeString, a->dataTypeString)))
+                           if(!(a->dataTypeString && (clType = eSystem_FindClass(templateClass.module, a->dataTypeString))))
                            {
-                              if(!(a->dataTypeString && (clType = eSystem_FindClass(templateClass.module, a->dataTypeString))))
-                              {
-                                 if(!(ctp.defaultArg.dataTypeString && (clType = eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString))))
-                                 // if(!(ctp.defaultArg.dataTypeString && eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString)))
-                                    complete = false;
-                              }
-                              if(cSymbolTArgs && clType && !templateClassBase)
-                              {
-                                 BClass cType = clType;
-                                 // if(!strcmp(templateClass.name, "Map<String, ecere::gfx::FontInfo>")) debugBreakpoint();
-                                 cSymbolTArgs.Add(cName ? cType.cSymbol : cType.cpp.name);
-                              }
+                              if(!(ctp.defaultArg.dataTypeString && (clType = eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString))))
+                              // if(!(ctp.defaultArg.dataTypeString && eSystem_FindClass(templateClass.module, ctp.defaultArg.dataTypeString)))
+                                 complete = false;
+                           }
+                           if(cSymbolTArgs && clType && !templateClassBase)
+                           {
+                              BClass cType = clType;
+                              // if(!strcmp(templateClass.name, "Map<String, ecere::gfx::FontInfo>")) debugBreakpoint();
+                              cSymbolTArgs.Add(cName ? cType.cSymbol : cType.cpp.name);
                            }
                         }
-                        //
                         break;
                      }
                      case expression: break; // expressions are ignored here
@@ -2774,8 +2824,9 @@ static void commonMemberHandling(
    bool cast = ct == enumClass;
    bool cnst = ct == bitClass; // construct
    bool newTemplateType = false;
-   BClass cW = cXT ? cXT : cX;
-   bool cantHaveThat = cW && cW.cpp.isTemplate && cW.cl != c.cl;
+   BClass cZ = cXT ? cXT : cX;
+   bool cantHaveThat = cZ && cZ.cl.templateArgs/*cZ.cpp.isTemplate*/ && cZ.cl != c.cl && (!cZ.cl.templateClass || cZ.cl.templateClass != c.cl);
+   // if(c.isContainer && !strcmp(mn, "copySrc")) debugBreakpoint(); // todo: check why we get no copySrc
    /*
    bool oneOfThese = cX && (
          !strcmp(cX.cl.name, "bool") ||
@@ -2850,7 +2901,7 @@ static void commonMemberHandling(
    if(cXT && cXT.cl.templateArgs)
    {
       char * x = null;
-      if(cXT.cl.templateArgs && !cXT.cpp.isClassTemplatable/*cXT.cpp.completeTemplate*/)
+      if(cXT.cl.templateArgs && !cXT.isClassTemplatable/*cXT.completeTemplate*/)
          cantHaveThat = false;
       if(cXT.cpp.dataTypeString)
          x = cXT.cpp.dataTypeString;
@@ -3341,22 +3392,20 @@ static void commonMemberHandling(
       Print("");
    */
 
+   // if(!prototype && !strcmp(cn, "Window") && !strcmp(mn, "controller")) debugBreakpoint();
    if(isProp && ct == normalClass && !isString)
    {
-      if(hasSet && hasGet)
+      if(hasSet&& hasGet)
       {
          bool instCast = !prototype && ctX == normalClass && cX.cl.templateArgs;
-         bool special = instCast && cantHaveThat && !strcmp(cn, "Window") && !strcmp(mn, "controller");
+         bool special = instCast && cantHaveThat; // && !strcmp(cn, "Window") && !strcmp(mn, "controller");
          const char * tweak = !special && instCast ? "&" : "";
          // if(!strcmp(cn, "DirectoriesBox") && !strcmp(mn, "strings")) debugBreakpoint();
          //
          if(special)
          {
             component = { macroIntPropSet, mn, PrintString(genidx(0, "A"), "const ", tn, " &") };
-            if(special)
-            {
-               component.dontNest = true;
-            }
+            // component.dontNest = true;
             // if(!prototype && !strcmp(cn, "Window") && !strcmp(mn, "controller")) debugBreakpoint();
             if(!prototype) component.code =
                   { [ // PrintString(lc, ln, genloc__, indents(ind), "printf(\"calling ", cn, "_set_", mn, "(", implStringThis, ", v.impl)", "\\n\");"),
@@ -3366,10 +3415,18 @@ static void commonMemberHandling(
          component = { macroPropSet, mn, PrintString(genidx(0, "A"), "const ", tn, " ", special ? "*" : "&") };
          if(special)
             component.dontNest = true;
-         // if(!prototype && !strcmp(cn, "Window") && !strcmp(mn, "controller")) debugBreakpoint();
          if(!prototype) component.code =
                { [ // PrintString(lc, ln, genloc__, indents(ind), "printf(\"calling ", cn, "_set_", mn, "(", implStringThis, ", v.impl)", "\\n\");"),
                    PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", ", instCast ? "((Instance *)" : "", tweak, "v", instCast ? ")->" : ".", "impl);") ] };
+         components.Add(component);
+      }
+      if(hasSet/* && hasGet*/)
+      {
+         bool t = cX && cX.cl.type == normalClass && cX.cl.templateArgs != null;
+         component = { macroIntPropSet, mn, PrintString(genidx(0, "C"), "const ", tn, " *") };
+         if(!prototype) component.code =
+               { [ // PrintString(lc, ln, genloc__, indents(ind), "printf(\"calling ", cn, "_set_", mn, "(", implStringThis, ", v ? v->impl : null)", "\\n\");"),
+                   PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", v ? ", t ? "((Instance *)" : "", "v", t ? ")" :"", "->impl : null);") ] };
          components.Add(component);
       }
       if(hasGet && !cantHaveThat)
@@ -3379,15 +3436,6 @@ static void commonMemberHandling(
                { [ PrintString(lc, ln, genloc__, indents(ind), "C(Instance) i = ", cn, "_get_", mn, "(", implStringThis, ");"),
                    PrintString(lc, ln, genloc__, indents(ind), "TIH<", tn, "> cppi(i);"),
                    PrintString(lc, ln, genloc__, indents(ind), "return *cppi;") ] };
-         components.Add(component);
-      }
-      if(hasSet && hasGet)
-      {
-         bool t = cX && cX.cl.type == normalClass && cX.cl.templateArgs != null;
-         component = { macroIntPropSet, mn, PrintString(genidx(0, "C"), "const ", tn, " *") };
-         if(!prototype) component.code =
-               { [ PrintString(lc, ln, genloc__, indents(ind), "printf(\"calling ", cn, "_set_", mn, "(", implStringThis, ", v ? v->impl : null)", "\\n\");"),
-                   PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", v ? ", t ? "((Instance*)" : "", "v", t ? ")" :"", "->impl : null);") ] };
          components.Add(component);
       }
       if(hasGet)
@@ -3417,10 +3465,16 @@ static void commonMemberHandling(
    }
    else
    {
+      bool valAmp = cZ && cZ.cl.type == normalClass && !cZ.isString && !ptrX && !cZ.cpp.isTemplate;
       bool needAmp = c.cl.type == structClass;
       bool addAmp = ct == structClass;
       bool addImpl = bareStyle; // ct == normalClass && !isString)/* || ct == structClass*/; // && strcmp(tn, "constString")
       bool nc = ct == unitClass || ct == structClass || ct == noHeadClass; // nc: (n)o (c)lass in constructor
+      bool instCast = !prototype && ctX == normalClass && cX.cl.templateArgs;
+      bool special = ctX == normalClass && cX.cl.templateArgs && cantHaveThat; // && !strcmp(cn, "Window") && !strcmp(mn, "controller");
+      const char * tweak = !special && instCast ? "&" : "";
+      // if(!strcmp(cn, "GlobalSettings") && !strcmp(mn, "data")) debugBreakpoint();
+      // if(!strcmp(cn, "GLMultiDraw") && !strcmp(mn, "indexGLMB")) debugBreakpoint();
       /*
       if(isProp)
       {
@@ -3466,7 +3520,7 @@ static void commonMemberHandling(
       */
       if(genSet && singleSet)
       {
-         component = { macroIntPropSet, mn, PrintString("/*G*/", tn), tnp2 ? CopyString(tnp2) : null };
+         component = { macroIntPropSet, mn, PrintString(genidx(0, "G"), tn, valAmp ? " &" : ""), tnp2 ? CopyString(tnp2) : null };
          if(!prototype)
          {
             if(different)
@@ -3495,7 +3549,75 @@ static void commonMemberHandling(
       }
       else if(genSet)
       {
-         component = { macroPropSet, mn, PrintString(genidx(0, "H"), tn), tnp2 ? CopyString(tnp2) : null };
+#if 0
+         if(special)
+         {
+            if(isProp) debugBreakpoint();
+            if(c.cl.type != normalClass) debugBreakpoint();
+         }
+         if(!prototype && !strcmp(cn, "CMSSMemberInit") && !strcmp(mn, "initializer")) debugBreakpoint();
+#endif // 0
+
+         if(special)
+         {
+            component = { macroIntPropSet, mn, PrintString(genidx(0, "Z"), "const ", tn, " &") };
+            if(!prototype)
+            {
+               ClassType ct2 = ti.type.kind == pointerType && ti.type.type.kind == classType ?
+                     cppGetClassInfoFromType(ti.type.type, false, null/*&clDataType*/, null/*&cDataType*/, null, &isString, null) : ct;
+               bool ptr = ti.type.kind == pointerType && ti.type.type.kind == classType && ct2 == structClass;
+               if(isProp)
+                  component.code = { [
+                     // PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", v);") ] };
+                        PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", addAmp ? "&" : "", "v", addImpl ? ".impl" : "", ");") ] };
+               else if(c.cl.type == normalClass)
+               {
+                  if(ctX == unitClass || ctX == bitClass)
+                  {
+                     const char * castSymbol = ctX == unitClass && cX.cl.base.type == unitClass ? cX.baseSymbolName : cX.cSymbol;
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", castX ? "(" : "", castX ? castSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", "v", addImpl ? ".impl" : "", ";") ] };
+                  }
+                  else if(instCast && !cast && !ptr)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", instCast ? "((Instance *)&" : "", "v", instCast ? ")->" : ".", "impl", ";") ] };
+                  else
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", "v", addImpl ? ".impl" : "", ";") ] };
+               }
+               else if(c.cl.type == noHeadClass)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)self->impl)->", mn, " = v", addImpl ? ".impl" : "", ";") ] };
+               else if(c.cl.type == bitClass)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), c.upper, "_SET_", mn, "(self->impl, v", addImpl ? ".impl" : "", ");") ] };
+               else
+               {
+                  bool instCast = !prototype && ctX == normalClass && cX.cl.templateArgs;
+                  // if(!prototype && !strcmp(cn, "GLMultiDraw") && !strcmp(mn, "indexGLMB")) debugBreakpoint();
+            /*
+            if(!prototype) component.code =
+                  { [ PrintString(lc, ln, genloc__, indents(ind), "printf(\"calling ", cn, "_set_", mn, "(", implStringThis, ", v.impl)", "\\n\");"),
+                      PrintString(lc, ln, genloc__, indents(ind), cn, "_set_", mn, "(", implStringThis, ", ", instCast ? "((Instance *)&" : "", "v", instCast ? ")->" : ".", "impl);") ] };
+                      */
+                  if(ctX == unitClass || ctX == bitClass)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", castX ? "(" : "", castX ? ctX == unitClass ? cX.spec : cX.cSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
+                  else if(instCast && !cast && !ptr)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", instCast ? "((Instance *)&" : "", "v", instCast ? ")->" : ".", "impl;") ] };
+                  else
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
+               }
+            }
+            components.Add(component);
+         }
+
+         component = { macroPropSet, mn, PrintString(genidx(0, "H"), tn, special ? " *" : /*valAmp ? " &" : */""), tnp2 ? CopyString(tnp2) : null };
+      // component = { macroPropSet, mn, PrintString(genidx(0, "H"), tn, " ", special ? "*" : "&"), tnp2 ? CopyString(tnp2) : null };
+         if(special)
+            component.dontNest = true;
          if(!prototype)
          {
             ClassType ct2 = ti.type.kind == pointerType && ti.type.type.kind == classType ?
@@ -3513,6 +3635,9 @@ static void commonMemberHandling(
                component.code = { [
                      PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", castX ? "(" : "", castX ? castSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", "v", addImpl ? ".impl" : "", ";") ] };
                }
+               else if(instCast && !cast && !ptr)
+               component.code = { [
+                     PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", instCast ? "((Instance *)&" : "", "v", instCast ? ")->" : ".", "impl", ";") ] };
                else
                component.code = { [
                      PrintString(lc, ln, genloc__, indents(ind), "IPTR(self->impl, ", cn, ")->", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", "v", addImpl ? ".impl" : "", ";") ] };
@@ -3537,7 +3662,7 @@ static void commonMemberHandling(
                      PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", castX ? "(" : "", castX ? ctX == unitClass ? cX.spec : cX.cSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
                else if(instCast && !cast && !ptr)
                component.code = { [
-                     PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", instCast ? "((Instance *)&" : "", "v", instCast ? ")->" : ".", "impl;") ] };
+                     PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", instCast ? "((Instance *)" : "", tweak, "v", instCast ? ")->" : ".", "impl;") ] };
                else
                component.code = { [
                      PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
@@ -3545,6 +3670,7 @@ static void commonMemberHandling(
          }
          components.Add(component);
       }
+      // if(!strcmp(cn, "CMSSStyleSheet") && !strcmp(mn, "list")) debugBreakpoint();
       if(genGet)
       {
          String valDecl;
@@ -3554,7 +3680,7 @@ static void commonMemberHandling(
          else
             valDecl = PrintString("TIH<", tn, tnp2 ? tnp2 : "", ">"); // ', tnp2 ? tnp2 : ""' is probably an issue
          // if(!strcmp(cn, "Container") && !strcmp(mn, "firstIterator")) debugBreakpoint();
-         component = { macroPropGet, mn, PrintString(genidx(0, "I"), tn), tnp2 ? CopyString(tnp2) : null };
+         component = { macroPropGet, mn, PrintString(genidx(0, "I"), tn, special ? " *" : /*valAmp ? " &" : */""), tnp2 ? CopyString(tnp2) : null };
          if(!prototype)
          {
             // notes for possible get of array type member / property
@@ -3578,6 +3704,12 @@ static void commonMemberHandling(
             else if(c.cl.type == normalClass)
             {
                if(addImpl)
+               {
+                  if(special)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "C(Instance) i = IPTR(self->impl, ", cn, ")->", mn, ";"),
+                        PrintString(lc, ln, genloc__, indents(ind), "return BINDINGS_CLASS(i) ? (", cZ.cpp.name, " *)INSTANCEL(i, i->_class) : (", cZ.cpp.name, " *)0;") ] };
+                  else
                   component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value(IPTR(self->impl, ", cn, ")->", mn, nc ? "" : ", ", nc ? "" : cn, nc ? "" : "::_cpp_class", ");"),
                   // Container value(((C(Iterator))self->impl).container, Iterator::_cpp_class); return value;
@@ -3588,6 +3720,7 @@ static void commonMemberHandling(
           // note: this is apparently missing a self check for when different == true ... but that seems broken...  ? : syntax spanning
           //       two lines of code...
                         PrintString(lc, ln, genloc__, indents(ind), "return value;") ] };
+               }
                else
                {
                   if(ctX == unitClass || ctX == bitClass)
@@ -3620,13 +3753,20 @@ static void commonMemberHandling(
             else
             {
                if(addImpl)
+               {
                   // component.code = { [
                   //       PrintString(tn, tnp2 ? tnp2 : "", " value(((", c.cSymbol, ")self->impl).", mn, ", ", cn, "::_cpp_class);"),
                   // Container value(((C(Iterator))self->impl).container, Iterator::_cpp_class); return value;
                   //  TIH<Container> value((C(Iterator))self->impl).container); return value;
+                  if(special)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "C(Instance) i = ((", c.cSymbol, " *)&self->impl)->", mn, ";"),
+                        PrintString(lc, ln, genloc__, indents(ind), "return BINDINGS_CLASS(i) ? (", cZ.cpp.name, " *)INSTANCEL(i, i->_class) : (", cZ.cpp.name, " *)0;") ] };
+                  else
                   component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), valDecl, " value(((", c.cSymbol, " *)&self->impl)->", mn, ");"),
                         PrintString(lc, ln, genloc__, indents(ind), "return ", bareStyle ? "" : "*", "value;") ] };
+               }
                else
                {
                   if(ctX == unitClass || ctX == bitClass)
@@ -3658,6 +3798,19 @@ static void commonMemberHandling(
    // opts.type == template
    {
       bool is = opts.type == template;
+      bool only = isProp && !(hasGet && hasSet);
+      const char * which = only ? hasGet ? "get" : "set" : "";
+      // if(!isProp) debugBreakpoint();
+      if(!opts.prototype)
+      {
+         const char * subType = cZ && classTypeHasNativeSubType(cZ.cl.type) ? cZ.cl.dataTypeString ? cZ.cl.dataTypeString : "?" : "";
+         o.z.concatx(ln, "// ", isProp ? "property callers" : "member accessors", ": ", cn, "::", mn, only ? "   // " : "", which, only ? " only" : "", ln);
+         o.z.concatx("// (", classTypeToSimpleString(c.cl.type), "::", cZ ? classTypeToSimpleString(cZ.cl.type) : ti.typeString, subType[0] ? "|" : "", subType, ")");
+      // if(c.isClassTemplatable || cXT)
+      //    outputClassView(o.z, genspc__, cXT ? cXT : c);
+      //    o.z.concatx("(", c.simpleTemplateClassKind, "::", cXT ? cXT.simpleTemplateClassKind : cX.simpleTemplateClassKind, ")");
+         o.z.concatx(ln, ln);
+      }
       cppMacroProperty(g, o.z, g.expansionOrUse, opts, ti, prototype ? 1 : 0, components, mn, tn, cn, "sg", is ? c.cpp.targsm : "", is ? c.cpp.templatem : "", 0); // todo: why 2... aka <TPT> vs <class TPT>
    }
 
@@ -3665,6 +3818,19 @@ static void commonMemberHandling(
    components.Free();
    delete components;
 }
+
+/*
+static void outputClassView(ZString o, const char * str, Class cl)
+{
+   BClass c;
+   o.concatx(str, "// ");
+   for(c = cl; c; c = c.cl.base)
+   {
+      o.concatx("", ln);
+   }
+   o.concat(ln);
+}
+*/
 
 static bool hasTemplateClass(Class cl)
 {
@@ -3719,6 +3885,8 @@ char * cppTypeName(TypeInfo ti, bool bare, char ** typeZero, char ** typeNameSec
       if(ti.type.templateParameter.type != type) debugBreakpoint();
       z.concatx("TP_", ti.type.templateParameter.identifier.string);
    }
+   else if(ti.type.kind == subClassType)
+      z.concatx(g_.sym.__class, " *");
    else
       zTypeName(z, null, ti, { anonymous = true, bare = /*cRegRet && cRegRet.isBool ? true : */bare/**/, cpp = true/**/ }, null);
    //cppTypeNameCall = false;
@@ -4303,7 +4471,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                               else if(param.kind == classType &&
                                     ((ct == normalClass && !isString)/* || (cpp && ct == noHeadClass)*/ || (cpp && !v2 && ct == structClass)) && (cpp || (cParam && cParam.isString)))
                                  usingRef = true;
-                              z.concatx(genidx(5D, x), ct == structClass ? "&" : "", tt ? "((Instance" : "", tt && usingPtr ? "*" : tt && usingRef ? "&" : "", tt ? ")" : "", name, tt ? ")" : "", ".impl");
+                              z.concatx(genidx(5D, x), ct == structClass ? "&" : "", tt ? "((Instance&" : "", tt && usingPtr ? "*" : tt && usingRef ? "&" : "", tt ? ")" : "", name, tt ? ")" : "", ".impl");
                            }
                         }
                         // else if(ct == enumClass)
@@ -5382,7 +5550,7 @@ static void cppMacroClassRegistration(
       case expansion:
       {
          bool content = false;
-         bool template = c.cl.type == normalClass && c.cpp.isTemplate/* && c.hasTemplateArgsInName*//*c.cl.templateArgs != null*/;
+         bool template = c.cl.type == normalClass && c.cpp.isTemplate/* && c.numTemplateArgsInName*//*c.cl.templateArgs != null*/;
          BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
          while((m = itm.next(publicVirtual)))
          {
@@ -5563,12 +5731,13 @@ static void cppMacroClassRegistration(
                   bool comma = false;
                   bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
                   char * args = cppParams(c, argsInfo, regMethodLocalConvEcToCppVarsForArgsPassing, vClass, cn, !ptrI, comma, null, mode, null, null, null, null, { });
-                  code.concatx(genspc__, args);
+                  code.concatx(genloc__, args);
                   delete args;
                }
                if(!noRet)
                {
                   bool cast = ctRT == enumClass || (ctRTGood == structClass && ptrRTGood);
+                  // if(cRT && !strcmp(cRT.name, "FeatureCollection")) debugBreakpoint();
                   if(returnType.kind == templateType)
                   {
                      // code.concatx("TP(", c.name, ", ", returnType.templateParameter.identifier.string, ")");
@@ -5618,6 +5787,8 @@ static void cppMacroClassRegistration(
                   bool ptrI = !t.thisClass || (t.thisClass.string && !strcmp(t.thisClass.string, "class"));
                   bool scptr = ctRTGood == structClass && !ptrRTGood;
                   bool impl = ctRTGood == noHeadClass && !ptrRTGood;
+                  bool normImpl = ctRT == normalClass && !cRT.isString;
+                  bool instCast = cRTGood && ctRTGood == normalClass/* && !cRTGood.cpp.isTemplate*/ && cRTGood.cl.templateArgs;
                   code.concatx(scptr ? "&" : "", "fn(");
                   if(ptrI)
                   {
@@ -5626,17 +5797,17 @@ static void cppMacroClassRegistration(
                   }
                   code.concat((args = cppParams(c, argsInfo, regMethodArgsPassingEcToCpp, vClass, cn, !ptrI, comma, null, mode, null, null, null, null, { })));
                   code.concatx(")", scptr ? "->impl" : impl ? ".impl" : "");
-               }
-               if(!noRet)
-               {
-                  code.concat("; return ");
-                  if(returnAddress)
-                     code.concat("ret ? ret->impl : null;");
-                  else
+                  if(!noRet)
                   {
-                     code.concat("ret");
-                     if(ctRT == normalClass && !cRT.isString)
-                        code.concat("->impl");
+                     code.concat("; return ");
+                     if(returnAddress)
+                        code.concat("ret ? ret->impl : null;");
+                     else
+                     {
+                        code.concatx(instCast ? "((Instance *)" : "", "ret", instCast ? ")" : "");
+                        if(normImpl || instCast)
+                           code.concat("->impl");
+                     }
                   }
                }
                delete args;
@@ -6331,7 +6502,7 @@ static void cppMacroIntRegisterMethod(
                o.concatx(genloc__, indents(ind + 1), "if(i && i->vTbl && i->vTbl[vid])", lc, ln);
                o.concatx(genloc__, indents(ind + 1), "{", lc, ln);
                   o.concatx(genloc__, indents(ind + 2), "fn = (", te ? "typename " : "", bc, sc, "_", sc, n, sc, "_Functor::FunctionType) i->vTbl[vid];", lc, ln);
-                  o.concatx(genloc__, indents(ind + 2), "", code, ";", lc, ln);
+                  o.concatx(/*genloc__, */indents(ind + 2), "", code, ";", lc, ln);
                o.concatx(genloc__, indents(ind + 1), "}", lc, ln);
                if(smod != definition)
                   o.concatx(genloc__, indents(ind + 1), "", "// 'cp2' is ", cp2[0] ? "present" : "empty", lc, ln);
@@ -6727,11 +6898,11 @@ static void cppMacroIntPropSet(
          char * cx = te ? PrintString(cpptemplatePrefix, sc, c, te && !ex ? " UNPACK " : "", te ? tp : "", te ? " " : "") : CopyString(c);
          //
          if(opts.prototype)
-            o.concatx(genloc__, commented ? "// " : "", indents(ind), "inline ", t, sc, t2 ? t2 : "", " operator= (", t, " v", t2 ? t2 : "", ");", ln);
+            o.concatx(genloc__, commented ? "// " : "", indents(ind), genfn(nstSet), "inline ", t, sc, t2 ? t2 : "", " operator= (", t, " v", t2 ? t2 : "", ");", ln);
          else
          {
             char * upkpastp = te && !ex ? PrintString(" (UNPACK ", tp, ")") : PrintString("(", tp, ")"); // upkpaso: unpack passing tp
-            o.concatx(genloc__, commented ? "// " : "", indents(ind));
+            o.concatx(genloc__, commented ? "// " : "", indents(ind), genfn(nstSet));
             if(opts.type == nohead)
                o.concatx(cpptemplateNoHeadDef, " ");
             else if(opts.type == template)
@@ -6887,9 +7058,9 @@ static void cppMacroPropSet(
                tp2,
                d,
                0);
-            o.concatx(lc, ln);
+            // o.concatx(lc, ln);
          }
-         o.concatx(genloc__, commented ? "// " : "", indents(ind));
+         o.concatx(genloc__, commented ? "// " : "", indents(ind), genfn(regSet));
          if(!opts.prototype && opts.type == nohead)
             o.concatx(cpptemplateNoHeadDef, " ");
          else if(!opts.prototype && opts.type == template)
@@ -7019,7 +7190,7 @@ static void cppMacroPropGet(
       case expansion:
       {
          char * cx = te ? PrintString(cpptemplatePrefix, sc, c, (te && !ex) ? " UNPACK " : "", te ? tp : "", te ? " " : ""/*pp ? tp2 : tp*/) : CopyString(c);
-         o.concatx(genloc__, commented ? "// " : "", indents(ind));
+         o.concatx(genloc__, commented ? "// " : "", indents(ind), genfn(regGet));
          if(!opts.prototype && opts.type == nohead)
             o.concatx(cpptemplateNoHeadDef, " ");
          else if(!opts.prototype && opts.type == template)
@@ -7395,7 +7566,6 @@ char * cppGetTemplateDataTypeString(Class cl, Array<String> cSymbolTArgs)
 
 void cppGenClassDetails(BClass c, Class cl, Gen gen)
 {
-   int callCount;
    MapIterator<const String, const String> iNameSwaps { map = gen.cpp_classNameSwaps };
    const char * n = c.isString ? c.cSymbol : gen.cpp_classNameSwaps && iNameSwaps.Index(c.name, false) ? iNameSwaps.data : c.name;
    Context context = SetupTemplatesContext(cl); // TOCHECK: Should we do this only once while we process the whole class?
@@ -7409,24 +7579,12 @@ void cppGenClassDetails(BClass c, Class cl, Gen gen)
    // if(!strcmp(cl.name, "MapNode<int, eda::FieldValue, T = int>")) debugBreakpoint();
    // if(!strcmp(cl.name, "HashMap<int64, ecere::com::Map<int, eda::FieldValue> >")) debugBreakpoint();
    // if(!strcmp(cl.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
-   c.cpp.isClassTemplatable = /*c.cpp.classTypeIsTemplatable && c.cl.templateArgs && */isClassTemplatable(cl);
-   if(!c.cpp.classTypeIsTemplatable && c.cpp.isClassTemplatable) debugBreakpoint();
-   if(!c.cl.templateArgs && c.cpp.isClassTemplatable) debugBreakpoint();
+   // these have been asserted, can remove
+   if(!c.cpp.classTypeIsTemplatable && c.isClassTemplatable) debugBreakpoint();
+   if(!c.cl.templateArgs && c.isClassTemplatable) debugBreakpoint();
 
    c.cpp.isTemplate = cl.type == noHeadClass || getClassIsTemplate(cl);
    // if(!strcmp(cl.name, "FreeBlockMap")) debugBreakpoint();
-   /*
-   const char * typeStr =
-         cl.type == bitClass ? "BIT" :
-         cl.type == enumClass ? "ENUM" :
-         cl.type == noHeadClass ? "NOHEAD" :
-         cl.type == normalClass ? "NORMAL" :
-         cl.type == structClass ? "STRUCT" :
-         cl.type == systemClass ? "SYSTEM" :
-         cl.type == unionClass ? "UNION" :
-         cl.type == unitClass ? "UNIT" :
-         "ERROR";
-   */
    // todo: fix symbol construction issues before we can use this: ex: 'cn, "_get_", mn' where cn is not meant to be cpp.name
    // cpp_name = PrintString(n, "/*cpp_name_", typeStr, "*/");
    // tcpp_name = cpp.isTemplate ? PrintString(cpptemplatePrefix, n, "/*tcpp_name_", typeStr, "*/") : PrintString(n, "/*tcpp_name_", typeStr, "*/");
@@ -7446,20 +7604,20 @@ void cppGenClassDetails(BClass c, Class cl, Gen gen)
       // if(cl.templateClass && templateClass.templateParams.count == 0) debugBreakpoint();
       // if(!strcmp(cl.name, "Array<ecere::gfx3D::MeshPart>")) debugBreakpoint();
       // if(!strcmp(cl.name, "HashTable")) debugBreakpoint();
-      if(!c.cpp.isClassTemplatable/*c.cpp.completeTemplate*/)
+      if(!c.isClassTemplatable/*c.completeTemplate*/)
       {
-         if(c.hasTemplateArgsInName) // tocheck: hackish
+         if(c.numTemplateArgsInName) // tocheck: hackish
          {
             // if(!strcmp(c.cl.name, "Array<ecere::gfx::drivers::BlockEntry>")) debugBreakpoint();
             // if(!strcmp(cl.name, "Container<KT, I = KT>")) debugBreakpoint();
             // if(!strcmp(cl.name, "LinkElement<ecere::gfx::FMFont>")) debugBreakpoint();
             // if(!strcmp(c.cl.name, "List<CMSSNode>")) debugBreakpoint();
             // if(!strcmp(c.cl.name, "List<CMSSIdentifier>")) debugBreakpoint();
-            c.cpp.completeTemplate = getSpecifiedTemplateArgs(cl, cSymbolTArgs, true, &callCount);
+            c.completeTemplate = getSpecifiedTemplateArgsSymbols(cl, cSymbolTArgs, true);
          }
-         // /*c.cpp.completeTemplate = */isTemplateClassTypeComplete(cl, cSymbolTArgs, true);
+         // /*c.completeTemplate = */isTemplateClassTypeComplete(cl, cSymbolTArgs, true);
          c.cpp.typedTArgsCount = cSymbolTArgs.count;
-         if(cSymbolTArgs.count && c.cpp.completeTemplate)
+         if(cSymbolTArgs.count && c.completeTemplate)
          {
 #if 0
             if(false) ;
@@ -7628,14 +7786,11 @@ void cppGenClassDetails(BClass c, Class cl, Gen gen)
                debugBreakpoint();
             }
 #endif // 0
-            if(c.cpp.completeTemplate)
-               c.cpp.dataTypeString = cppGetTemplateDataTypeString(cl, cSymbolTArgs);
-            else
-               debugBreakpoint();
+            c.cpp.dataTypeString = cppGetTemplateDataTypeString(cl, cSymbolTArgs);
          }
          else
          {
-            if(c.hasTemplateArgsInName)
+            if(c.numTemplateArgsInName)
             {
                if(false) ;
                else if(!strcmp(c.cl.name, "AVLNode<AT>")) ;
@@ -7679,7 +7834,7 @@ void cppGenClassDetails(BClass c, Class cl, Gen gen)
                else
                {
                   debugBreakpoint();
-                  c.cpp.isClassTemplatable = /*c.cpp.classTypeIsTemplatable && c.cl.templateArgs && */isClassTemplatable(cl);
+                  // c.isClassTemplatable = /*c.cpp.classTypeIsTemplatable && c.cl.templateArgs && */classIsTemplatable(cl);
                   // c.cpp.dataTypeString = CopyString(c.cpp.name);
                }
             }

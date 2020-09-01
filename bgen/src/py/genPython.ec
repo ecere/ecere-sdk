@@ -12,7 +12,7 @@ char * Gen::allocMacroSymbolNamePy(const bool noMacro, const MacroType type, con
       case CO:          return PrintString(        "class_", name);
       case SUBCLASS:    return PrintString("Class *");
       case THISCLASS:   return PrintString(                  name, ptr ? " *" : "");
-      case T:           return getTemplateClassSymbol(       name, true);
+      case T:           return ti.c ? cGetTemplatedClassSymbolName(ti.c, ti.c.cTArgs, expanded) : getTemplateClassSymbol(name, true);
       case TP:          return PrintString(       "tparam_", name, "_", name2);
       case F:           return                    CopyString(name);
       case METHOD:      return PrintString(       "method_", name, "_", name2);
