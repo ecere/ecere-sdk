@@ -1659,6 +1659,8 @@ class BClass : struct
    bool completeTemplate;
    int numTemplateArgsInName;
    Array<BClass> cTArgs { };
+   List<Class> cumulationLineage;
+   AVLTree<const String> memberNames;
    struct
    {
       char * name;
@@ -1669,6 +1671,8 @@ class BClass : struct
       char * tprototype;
       char * targs;
       char * targsm;
+      char * targsb; // w/ <>
+      char * targsbm; // w/ <>
       bool isTemplate;
       int typedTArgsCount;
       char * dataTypeString;
@@ -1799,6 +1803,41 @@ class BClass : struct
          }
       }
 
+      if(cl.type == structClass && !cl.templateArgs)
+         cumulationLineage = getFilteredClassLineage(cl, structOnly);
+      else
+      {
+         cumulationLineage = { };
+         cumulationLineage.Add(cl);
+      }
+
+      memberNames = { };
+      {
+         List<Class> lineage = getFilteredClassLineage(cl, all);
+         for(e : lineage)
+         {
+            Class cl = e;
+            DataMember dm; IterDataMember dat { cl };
+            while((dm = dat.next(publicOnly)))
+            {
+               if(dm.name)
+                  memberNames.Add(dm.name);
+            }
+         }
+         for(e : lineage)
+         {
+            Class cl = e;
+            Property pt; IterProperty prop { cl };
+            while((pt = prop.next(publicOnly)))
+            {
+               if(pt.conversion)
+                  continue;
+               if(pt.name)
+                  memberNames.Add(pt.name);
+            }
+         }
+      }
+
       if(cl.type != bitClass && !cl.templateClass)
       {
          DataMember dm; IterDataMember dat { cl };
@@ -1875,8 +1914,12 @@ class BClass : struct
       delete cpp.tprototype;
       delete cpp.targs;
       delete cpp.targsm;
+      delete cpp.targsb;
+      delete cpp.targsbm;
       delete cpp.dataTypeString;
       delete cTArgs;
+      delete cumulationLineage;
+      delete memberNames;
       if(cleanDataType)
       {
          FreeType(cl.dataType);

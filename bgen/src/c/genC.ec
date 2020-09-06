@@ -2794,7 +2794,7 @@ void processTemplateArgs(CGen g, BClass c)
 {
    Context context = SetupTemplatesContext(c.cl); // TOCHECK: Should we do this only once while we process the whole class?
    // Class startClass = getTemplateStartBaseClass(cl);
-   // c.cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &c.cpp.tprototype, &c.cpp.template, &c.cpp.targs, &c.cpp.templatem, &c.cpp.targsm);
+   // c.cpp.templParamsCount = getClassTemplateParamsStringsCPP(cl, &c.cpp.tprototype, &c.cpp.template, &c.cpp.targs, &c.cpp.targsb, &c.cpp.templatem, &c.cpp.targsm, &c.cpp.targsbm);
    Array<Class> cTArgs { };
    if(!c.isClassTemplatable && c.numTemplateArgsInName) // tocheck: hackish
    {
