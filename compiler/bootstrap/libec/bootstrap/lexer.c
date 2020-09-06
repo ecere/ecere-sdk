@@ -884,7 +884,7 @@ int yy_start;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 int preprocessor()
 {

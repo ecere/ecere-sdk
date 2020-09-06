@@ -208,7 +208,7 @@ struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-int __ecereVMethodID_class_OnGetString;
+extern int __ecereVMethodID_class_OnGetString;
 
 void SetBuildingEcereCom(unsigned int b)
 {
@@ -374,9 +374,9 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 } ecere_gcc_struct;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

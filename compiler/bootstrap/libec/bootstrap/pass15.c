@@ -336,7 +336,7 @@ extern double (* __ecereMethod_double_inf)(void);
 
 extern double (* __ecereMethod_double_nan)(void);
 
-int __ecereVMethodID_class_OnGetString;
+extern int __ecereVMethodID_class_OnGetString;
 
 void SetYydebug(unsigned int b)
 {
@@ -728,13 +728,13 @@ extern void OutputExpression(struct Expression * exp, struct __ecereNameSpace__e
 
 extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 void SetThisClass(struct __ecereNameSpace__ecere__com__Class * c)
 {
@@ -9675,6 +9675,8 @@ else if(method->_class->symbol && ((struct Symbol *)method->_class->symbol)->isS
 ListAdd(specifiers, MkSpecifier(STATIC));
 if(method->type == 1)
 {
+if(!dllImport && !(*specifiers).count)
+ListAdd(specifiers, MkSpecifier(EXTERN));
 ListAdd(specifiers, MkSpecifier(INT));
 d = MkDeclaratorIdentifier(MkIdentifier(name));
 }

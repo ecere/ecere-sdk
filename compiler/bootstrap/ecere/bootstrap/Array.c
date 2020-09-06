@@ -123,7 +123,7 @@ extern void *  memset(void *  area, int value, size_t count);
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 static inline int __ecereNameSpace__ecere__com__compareDeref(struct __ecereNameSpace__ecere__com__SortRData * cs, const void ** a, const void ** b)
 {
@@ -332,15 +332,15 @@ void __ecereProp___ecereNameSpace__ecere__com__Array_Set_minAllocSize(struct __e
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * *  data);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

@@ -563,11 +563,11 @@ extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 void SetSourceDirs(struct __ecereNameSpace__ecere__com__Instance * list)
 {

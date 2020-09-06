@@ -340,7 +340,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
 
 struct __ecereNameSpace__ecere__com__Property;
 

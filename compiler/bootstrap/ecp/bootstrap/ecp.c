@@ -381,19 +381,19 @@ extern void SetFileInput(struct __ecereNameSpace__ecere__com__Instance * file);
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode();
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 struct __ecereNameSpace__ecere__com__Property;
 

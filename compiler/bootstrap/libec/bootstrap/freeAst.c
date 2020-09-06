@@ -231,9 +231,9 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 

@@ -120,9 +120,9 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
-int __ecereVMethodID_class_OnCompare;
+extern int __ecereVMethodID_class_OnCompare;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 struct __ecereNameSpace__ecere__com__AVLNode
 {
@@ -533,7 +533,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereN
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

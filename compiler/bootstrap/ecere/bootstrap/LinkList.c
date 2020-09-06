@@ -115,7 +115,7 @@ extern unsigned int __ecereNameSpace__ecere__com__log2i(unsigned int number);
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 struct __ecereNameSpace__ecere__com__Class;
 
@@ -138,13 +138,13 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

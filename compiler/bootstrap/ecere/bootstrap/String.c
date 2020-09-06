@@ -67,7 +67,7 @@ unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
 typedef __builtin_va_list va_list;
 
-extern __declspec(dllexport) unsigned int ccUtf8ToUnicode(unsigned int b, unsigned int * state, unsigned int * retunicode)
+extern __attribute__ ((visibility("default"))) unsigned int ccUtf8ToUnicode(unsigned int b, unsigned int * state, unsigned int * retunicode)
 {
 unsigned int type;
 static const unsigned char utf8d[] =

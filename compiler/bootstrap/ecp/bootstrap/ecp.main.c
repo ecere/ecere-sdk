@@ -49,15 +49,15 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 void __ecereCreateModuleInstances_ecp();
 
@@ -129,23 +129,23 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__DualPipe;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__DualPipe;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
@@ -191,7 +191,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, stru
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
@@ -226,7 +226,7 @@ struct __ecereNameSpace__ecere__com__Module;
 
 static struct __ecereNameSpace__ecere__com__Instance * __currentModule;
 
-struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 unsigned int __ecereDll_Load_ec(struct __ecereNameSpace__ecere__com__Instance * module);
 

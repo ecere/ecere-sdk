@@ -173,9 +173,9 @@ int __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_openMode(struct __ece
 
 void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_openMode(struct __ecereNameSpace__ecere__com__Instance * this, int value);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

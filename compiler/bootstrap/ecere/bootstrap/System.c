@@ -402,7 +402,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpa
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

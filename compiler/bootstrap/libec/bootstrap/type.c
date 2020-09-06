@@ -387,7 +387,7 @@ extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpa
 
 extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 struct __ecereNameSpace__ecere__com__Property;
 

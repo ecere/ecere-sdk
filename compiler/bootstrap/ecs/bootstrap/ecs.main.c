@@ -49,21 +49,21 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+__attribute__((__common__)) int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 void __ecereCreateModuleInstances_ecs();
 
@@ -135,37 +135,37 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_String_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_String_;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyImport;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyImport;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
 
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
@@ -211,17 +211,17 @@ extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, stru
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
-struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
@@ -256,7 +256,7 @@ struct __ecereNameSpace__ecere__com__Module;
 
 static struct __ecereNameSpace__ecere__com__Instance * __currentModule;
 
-struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 unsigned int __ecereDll_Load_ec(struct __ecereNameSpace__ecere__com__Instance * module);
 

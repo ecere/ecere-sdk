@@ -249,17 +249,17 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

@@ -72,6 +72,8 @@ static char mainModuleName[797];
 
 static char projectName[797];
 
+static const char * attributeCommon = "__attribute__((__common__)) ";
+
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
@@ -349,23 +351,23 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __e
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
+extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
@@ -1952,16 +1954,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(f, "static Module __currentModule;\n\n") : (unsigned int)1;
 }));
 if(!isStaticLibrary)
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "Module __thisModule;\n\n") : (unsigned int)1;
-}));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sModule __thisModule;\n\n", attributeCommon);
 BindDCOMServer();
 BindDCOMClient();
 if(dcomSymbols)
@@ -1987,7 +1980,7 @@ struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere_
 
 FullClassNameCat(className, _class->name, 1);
 if(_class->itself)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Class __ecereClass_%s;\n", className);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sClass __ecereClass_%s;\n", attributeCommon, className);
 {
 {
 for(method = _class->methods.first; method; method = method->next)
@@ -2002,10 +1995,10 @@ meth->dataType = ProcessTypeString(meth->dataTypeString, 0);
 FinishTemplatesContext(context);
 }
 if(method->isVirtual)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int __ecereVMethodID_%s_%s;\n", className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sint __ecereVMethodID_%s_%s;\n", attributeCommon, className, method->name);
 else if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1 && (!meth || !meth->dataType->dllExport))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int (*__ecereMethod_%s_%s)();\n", className, method->name);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sint (*__ecereMethod_%s_%s)();\n", attributeCommon, className, method->name);
 }
 anyMethod = 1;
 }
@@ -2019,11 +2012,11 @@ FullClassNameCat(propName, prop->name, 1);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Set_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereProp_%s_Set_%s;\n", attributeCommon, className, propName);
 if(prop->hasGet)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Get_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereProp_%s_Get_%s;\n", attributeCommon, className, propName);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Property __ecereProp_%s_%s;\n", className, propName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%sProperty __ecereProp_%s_%s;\n", attributeCommon, className, propName);
 anyProp = 1;
 }
 }
@@ -2040,7 +2033,7 @@ char functionName[1024];
 
 functionName[0] = 0;
 FullClassNameCat(functionName, function->name, 0);
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereFunction_%s;\n", functionName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%svoid * __ecereFunction_%s;\n", attributeCommon, functionName);
 anyFunction = 1;
 }
 }
@@ -2879,13 +2872,15 @@ c++;
 else
 valid = 0;
 }
+else if(!strcmp(arg, "-no-attribute-common"))
+attributeCommon = "";
 }
 }
 if(!output)
 valid = 0;
 if(!valid)
 {
-printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
+printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-no-attribute-common]\n", (((void *)0))));
 }
 else
 {

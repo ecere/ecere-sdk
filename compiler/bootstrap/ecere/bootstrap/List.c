@@ -115,7 +115,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
 struct __ecereNameSpace__ecere__com__Class;
 
@@ -136,13 +136,13 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
 
 struct __ecereNameSpace__ecere__com__Property;
 

@@ -270,15 +270,15 @@ struct __ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-int __ecereVMethodID_class_OnGetString;
+extern int __ecereVMethodID_class_OnGetString;
 
-int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnFree;
 
-int __ecereVMethodID_class_OnCopy;
+extern int __ecereVMethodID_class_OnCopy;
 
-int __ecereVMethodID_class_OnCompare;
+extern int __ecereVMethodID_class_OnCompare;
 
-int __ecereVMethodID_class_OnGetDataFromString;
+extern int __ecereVMethodID_class_OnGetDataFromString;
 
 extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
 
@@ -908,9 +908,9 @@ __ecereNameSpace__ecere__com__eSystem_Delete(string);
 }
 }
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
 
-int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData;
+extern int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData;
 
 struct __ecereNameSpace__ecere__com__Property
 {
@@ -958,13 +958,13 @@ void __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size(struct __ec
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-int __ecereVMethodID_class_OnSaveEdit;
+extern int __ecereVMethodID_class_OnSaveEdit;
 
-int __ecereVMethodID_class_OnEdit;
+extern int __ecereVMethodID_class_OnEdit;
 
-int __ecereVMethodID_class_OnSerialize;
+extern int __ecereVMethodID_class_OnSerialize;
 
-int __ecereVMethodID_class_OnUnserialize;
+extern int __ecereVMethodID_class_OnUnserialize;
 
 static const char * __ecereNameSpace__ecere__com__IntPtr32_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int data, char * string, void * fieldData, unsigned int * needClass)
 {
