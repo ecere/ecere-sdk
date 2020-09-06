@@ -24,7 +24,7 @@ void cppHardcodedInstancePart1(BOutput o)
 
    o.z.concatx(genloc__, "   static C(bool) constructor(C(Instance) i, C(bool) alloc)", ln,
                genloc__, "   {", ln,
-               genloc__, "      if(alloc && !INSTANCEL(i, _cpp_class.impl))", ln,
+               genloc__, "      if(alloc && !INSTANCEL(i, i->_class))", ln,
                genloc__, "      {", ln);
    o.z.concatx(genloc__, "         Instance * inst = new Instance(i, _cpp_class);", ln,
                genloc__, "         if(inst)", ln,
@@ -71,21 +71,26 @@ void cppHardcodedInstancePart2(BOutput o)
    o.z.concatx(genloc__, "#ifdef _DEBUG", ln,
                genloc__, "         isApp = Class_isDerived(impl->_class, eC_findClass(__thisModule, \"Application\"));", ln,
                genloc__, "#endif", ln);
-   o.z.concatx(genloc__, "         //C(Instance) impl = this->impl;", ln,
-               genloc__, "         //this->impl = null;", ln);
-   o.z.concatx(genloc__, "         if(impl->_class->bindingsClass)", ln,
+// o.z.concatx(genloc__, "         // C(Instance) impl = this->impl;", ln,
+//             genloc__, "         // this->impl = null;", ln);
+   o.z.concatx(genloc__, "         int refCount = impl->_refCount;", ln,
+               genloc__, "         if(impl->_class->bindingsClass)", ln,
+               genloc__, "         {", ln,
+               genloc__, "            Instance ** i = (Instance **)&INSTANCEL(impl, impl->_class);", ln);
+   o.z.concatx(genloc__, "            if(i && *i == this && vTbl)", ln,
+               genloc__, "            {", ln,
+               genloc__, "               CPPClass * cl = (CPPClass *)impl->_class->bindingsClass;", ln);
+   o.z.concatx(genloc__, "               if(cl && vTbl != cl->vTbl)", ln,
+               genloc__, "                  eC_delete(vTbl);", ln,
+               genloc__, "            }", ln);
+   o.z.concatx(genloc__, "         }", ln,
+               genloc__, "         Instance_decRef(impl);", ln);
+   o.z.concatx(genloc__, "         if(refCount > 1)", ln,
                genloc__, "         {", ln,
                genloc__, "            Instance ** i = (Instance **)&INSTANCEL(impl, impl->_class);", ln,
                genloc__, "            if(i && *i == this)", ln,
-               genloc__, "               *i = null;", ln);
-   o.z.concatx(genloc__, "            if(vTbl)", ln,
-               genloc__, "            {", ln,
-               genloc__, "               CPPClass * cl = (CPPClass *)impl->_class->bindingsClass;", ln,
-               genloc__, "               if(cl && vTbl != cl->vTbl)", ln);
-   o.z.concatx(genloc__, "                  eC_delete(vTbl);", ln,
-               genloc__, "            }", ln,
-               genloc__, "         }", ln,
-               genloc__, "         Instance_decRef(impl);", ln);
+               genloc__, "               *i = null;", ln,
+               genloc__, "         }", ln);
    o.z.concatx(genloc__, "#ifdef _DEBUG", ln,
                genloc__, "         if(isApp)", ln,
                genloc__, "         {", ln,
@@ -111,8 +116,25 @@ void cppHardcodedInstancePart2(BOutput o)
                genloc__, "      i.impl = null;", ln,
                genloc__, "      i.vTbl = null;", ln,
                genloc__, "      return *this;", ln,
-               genloc__, "   }", ln,
-               genloc__, "   // end of hardcoded content", ln);
+               genloc__, "   }", ln);
+#if 0
+   o.z.concatx(genloc__, "   inline void moveAssignHandleRefCount()", ln,
+               genloc__, "   {", ln,
+               genloc__, "      if(self->impl)", ln,
+               genloc__, "      {", ln,
+               genloc__, "         C(Instance) impl = self->impl;", ln,
+               genloc__, "         int refCount = impl->_refCount;", ln,
+               genloc__, "         Instance_decRef(impl);", ln);
+   o.z.concatx(genloc__, "         if(refCount > 1)", ln,
+               genloc__, "         {", ln,
+               genloc__, "            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);", ln,
+               genloc__, "            if(inst && *inst == self)", ln,
+               genloc__, "               *inst = null;", ln,
+               genloc__, "         }", ln,
+               genloc__, "      }", ln,
+               genloc__, "   }", ln);
+#endif // 0
+   o.z.concatx(genloc__, "   // end of hardcoded content", ln);
 }
 
 void cppHardcodedContainer(BOutput o, BClass c)
@@ -138,14 +160,14 @@ void cppHardcodedContainer(BOutput o, BClass c)
 void cppHardcodedArray(BOutput o, BClass c)
 {
    o.z.concatx(ln); // TP_D is not available here
-   o.z.concatx(genloc__, "   TArray", c.cpp.targs, " (std::initializer_list<TP_T> list) : TArray", c.cpp.targs, " ()", ln);
+   o.z.concatx(genloc__, "   TArray", c.cpp.targsb, " (std::initializer_list<TP_T> list) : TArray", c.cpp.targsb, " ()", ln);
    o.z.concatx(genloc__, "   {", ln);
    o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
    o.z.concatx(genloc__, "         this->add(*it);", ln);
    o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "   TArray", c.cpp.targs, " & operator =(std::initializer_list<TP_T> list)", ln);
+   o.z.concatx(genloc__, "   TArray", c.cpp.targsb, " & operator =(std::initializer_list<TP_T> list)", ln);
    o.z.concatx(genloc__, "   {", ln);
    o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
@@ -393,6 +415,9 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "    if(!eqTypes<decltype(&m), decltype(&b::n)>()) \\");
    f.PrintLn(genloc__, "       ((b::b ## _ ## n ## _Functor::FunctionType *)_cpp_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
 
+   f.PrintLn(genloc__, "#define TREGVMETHOD(tl, b, n, m, p, t, a) \\");
+   f.PrintLn(genloc__, "    if(!eqTypes<decltype(&m), decltype(&tl::n)>()) \\");
+   f.PrintLn(genloc__, "       ((tl::b ## _ ## n ## _Functor::FunctionType *)_cpp_class.vTbl)[M_VTBLID(b, n)] = +[]p { return ((t &)self).m a; };", ln);
    // bring back BIND_* and / or register_* ?
    // f.PrintLn("#define SETVMETHOD(n, m, p, t, a) \\");
    // f.PrintLn("    if(!eqTypes<typeof(&m), typeof(&n)>()) \\");
