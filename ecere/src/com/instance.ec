@@ -5796,7 +5796,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
    }
    if(ensureCOM && !strcmp(name, "ecere") && module)
    {
-      name = !strcmp(module.name, "ecereCOM") ? "ecereCOM" : "ecere";
+      name = !strcmp(module.name, "ecereCOM") ? "ecere" : "ecereCOM";
       if((!Load && !strcmp(module.name, "ecereCOM")) ||
          (Load && (!__thisModule || !__thisModule.name || !strcmp(__thisModule.name, "ecereCOM")) && Load != (void *)COM_LOAD_FUNCTION))
       {
