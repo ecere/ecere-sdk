@@ -69,6 +69,8 @@ class PictureEdit : Window
                   OnLoadGraphics();
                   displaySystem.Unlock();
 
+                  imageModeRGBItem.disabled = false;
+                  imageModeIndexedItem.disabled = true;
                   imageModeColorTableItem.disabled = false;
                   Update(null);
                   modifiedDocument = true;
@@ -89,6 +91,8 @@ class PictureEdit : Window
                   OnLoadGraphics();
                   displaySystem.Unlock();
 
+                  imageModeRGBItem.disabled = true;
+                  imageModeIndexedItem.disabled = false;
                   imageModeColorTableItem.disabled = true;
                   Update(null);
                   modifiedDocument = true;
@@ -179,11 +183,11 @@ class PictureEdit : Window
             {
                case pixelFormat8:
                   imageModeIndexedItem.checked = true;
-                  imageModeRGBItem.disabled = true;
+                  imageModeIndexedItem.disabled = true;
                   break;
                case pixelFormat888:
                   imageModeRGBItem.checked = true;
-                  imageModeColorTableItem.disabled = true;
+                  imageModeRGBItem.disabled = true;
                   break;
             }
          }
@@ -299,8 +303,9 @@ class PictureEdit : Window
       bool result = false;
       if(bitmap)
       {
+         int compression = 100; // TODO: Clarify whether options are driver specific or not
          if(bitmap.Save(fileName,
-            ((FileType *)pictureEditFileDialog.types)[pictureEditFileDialog.fileType].typeExtension, (void *) bool::true))
+            ((FileType *)pictureEditFileDialog.types)[pictureEditFileDialog.fileType].typeExtension, &compression))
          {
             modifiedDocument = false;
             result = true;
