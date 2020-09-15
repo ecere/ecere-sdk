@@ -1312,13 +1312,13 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(pt.Get)
             {
                if(*p.v)
-                  z.concatx(port, "void (* ", p.fpnGet, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);", ln);
+                  z.concatx(port, "void (* ", p.fpnGet, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", p.t, p.v, " value);", ln);
                else
-                  z.concatx(port, p.t,  " (* ", p.fpnGet, ")(", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
+                  z.concatx(port, p.t,  " (* ", p.fpnGet, ")(const ", p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             }
 
             if(pt.IsSet)
-               z.concatx(port, "C(bool) (* ", p.fpnIst, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
+               z.concatx(port, "C(bool) (* ", p.fpnIst, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             delete port;
             //z.concatx(ln);
          }
