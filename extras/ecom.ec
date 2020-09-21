@@ -564,6 +564,66 @@ public:
    }
 };
 
+public struct IterDataMemberProper
+{
+   Class cl;
+   DataMember dm;
+   bool unionFirstsFirstAndFollowingsLast;
+   property DataMember { get { return dm; } }
+   void reset() { dm = null; it = null; cleanup();}
+   List<DataMember> parents;
+   DataMember next(AccessModeFilter filter)
+   {
+      while(_next() && (it.isProperty || !filter.match(it.memberAccess)));
+      dm = (DataMember)it;
+      if(dm && (dm.type == unionMember || dm.type == structMember))
+         stack.Add(dm.members.first);
+      return dm;
+   }
+   void cleanup()
+   {
+      delete parents;
+      delete stack;
+   }
+private:
+   MemberOrProperty it;
+   List<MemberOrProperty> stack;
+   bool _next()
+   {
+      if(!stack) stack = { };
+      if(!it)
+      {
+         it = (MemberOrProperty)cl.membersAndProperties.first;
+         if(it) stack.Add(it);
+      }
+      else
+      {
+         bool first = dm && (dm.type == unionMember || dm.type == structMember) && dm.members.first;
+         if(first)
+         {
+            if(!parents)
+               parents = { };
+            parents.Add(dm);
+         }
+         while(stack.count)
+         {
+            it = first ? stack.lastIterator.data : stack.lastIterator.data.next;
+            if(!first && it) stack.lastIterator.data = it;
+            if(it)
+               break;
+            else if(stack.count)
+            {
+               stack.lastIterator.Remove();
+               if(parents && parents.count)
+                  parents.lastIterator.Remove();
+               first = false;
+            }
+         }
+      }
+      return it != null;
+   }
+};
+
 public enum MemberOrPropertyFilter
 {
    all, privateOnly, publicOnly, privateAndPublic, normalOnly, unionOnly, structOnly, publicNormal, privateNormal;
@@ -595,7 +655,7 @@ public struct IterMemberOrPropertyPlus
    MemberOrProperty mp;
    bool unionFirstsFirstAndFollowingsLast;
    property MemberOrProperty { get { return mp; } }
-   void reset() { mp = null; }
+   void reset() { pt = null; dm = null; mp = null; cleanup(); }
    MemberOrProperty next(MemberOrPropertyFilter filter)
    {
       while(_next() && !filter.match(mp.memberAccess, mp.isProperty ? normalMember : ((DataMember)mp).type));
@@ -626,9 +686,13 @@ private:
          {
             mp = first ? stack.lastIterator.data : stack.lastIterator.data.next;
             if(!first && mp) stack.lastIterator.data = mp;
-            if(mp) break;
+            if(mp)
+               break;
             else if(stack.count)
+            {
                stack.lastIterator.Remove();
+               first = false;
+            }
          }
       }
       return mp != null;
