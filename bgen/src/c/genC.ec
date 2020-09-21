@@ -1305,9 +1305,9 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(pt.Set)
             {
                if(pt.conversion && /*cl.type != normalClass && */cl.type != structClass && cl.type != noHeadClass)
-                  z.concatx(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol,  " (* ", p.fpnSet, ")(", p.ptTypeUse, p.v, " ", p.paramName, ");", ln);
+                  z.concatx(port, p.cUse.cl.type == unitClass ? p.cUse.spec : p.cUse.cSymbol,  " (* ", p.fpnSet, ")(const ", p.ptTypeUse, p.v, " ", p.paramName, ");", ln);
                else
-                  z.concatx(port, "void (* ", p.fpnSet, ")(", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);", ln);
+                  z.concatx(port, "void (* ", p.fpnSet, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ", ", *p.v ? "const " : "", p.t, p.v, " value);", ln);
             }
             if(pt.Get)
             {
