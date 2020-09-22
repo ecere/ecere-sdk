@@ -12,25 +12,40 @@ struct E3DBlockHeader
    uint32 size       __attribute__((packed));
 };
 
-bool externalTextures = true; //false;
-int JPEG_QUALITY = 75;
-bool compressed = true;
+static bool externalTextures = true; //false;
+static int JPEG_QUALITY = 75;
+static bool compressed = true;
 
 #define Bool __Bool
 #include <LzmaLib.h>
 #undef Bool
 
-Map<uintptr, int> texturesToID { };
-Map<uintptr, Array<FacesMaterial>> meshFaceMaterials { };
-Array<Material> materials { };
-Array<Mesh> allMeshes { };
-Map<uintptr, int> meshToID { };
-Array<Bitmap> textures { };
-Array<bool> texUsePNG { };
-int firstTexture;
-AVLTree<int> texUsed { };
+class E3DWriteContext : struct
+{
+   char path[MAX_LOCATION];
+   Map<uintptr, int> texturesToID { };
+   Map<uintptr, Array<FacesMaterial>> meshFaceMaterials { };
+   Array<Material> materials { };
+   Array<Mesh> allMeshes { };
+   Map<uintptr, int> meshToID { };
+   Array<Bitmap> textures { };
+   Array<bool> texUsePNG { };
+   int firstTexture;
+   AVLTree<int> texUsed { };
 
-char e3dModelsPath[MAX_LOCATION];
+   ~E3DWriteContext()
+   {
+      materials.RemoveAll();
+      allMeshes.RemoveAll();
+      meshFaceMaterials.Free();
+      meshToID.Free();
+
+      // NOTE: These may have been kept around to re-use textures...
+      textures.RemoveAll();
+      texturesToID.Free();
+      texUsePNG.Free();
+   }
+};
 
 static byte * encodeLZMA(byte * data, uint size, uint * encodedSize, void * options)
 {
@@ -46,46 +61,43 @@ static byte * encodeLZMA(byte * data, uint size, uint * encodedSize, void * opti
    return compressed;
 }
 
-void writeE3D(File f, Object object)
+void writeE3D(File f, Object object, E3DWriteContext ctx)
 {
    Array<BlockInfo> mainBlocks { };
-   calculateMeshes(object);
-   writeE3DBlock(f, version,   object, writeVersion);
-   if(textures.count)
+
+   calculateMeshes(ctx, object);
+   writeE3DBlock(ctx, f, version,   object, writeVersion);
+   if(ctx.textures.count)
       mainBlocks.Add({ textures,  object, writeTextures });
-   if(materials.count)
+   if(ctx.materials.count)
       mainBlocks.Add({ materials,  object, writeMaterials });
-   if(allMeshes.count)
+   if(ctx.allMeshes.count)
       mainBlocks.Add({ meshes,  object, writeMeshes });
    mainBlocks.Add({ nodes,  object, writeObjects });
 
    if(!compressed)
       for(b : mainBlocks)
-         writeE3DBlock(f, b.type, b.data, b.fn);
+         writeE3DBlock(ctx, f, b.type, b.data, b.fn);
    else
-      writeLZMA(f, mainBlocks);
+      writeLZMA(ctx, f, mainBlocks);
 
    delete mainBlocks;
 
-   materials.RemoveAll();
-   allMeshes.RemoveAll();
-   //textures.RemoveAll();
+   ctx.materials.RemoveAll();
+   ctx.allMeshes.RemoveAll();
+   ctx.meshFaceMaterials.Free();
+   ctx.meshToID.Free();
 
-   // texturesToID.Free();
-   meshFaceMaterials.Free();
-   meshToID.Free();
-   //texUsePNG.Free();
-
-   firstTexture = textures.count;
-   texUsed.Free();
+   ctx.firstTexture = ctx.textures.count;
+   ctx.texUsed.Free();
 }
 
-static void writeE3DBlock(File f, E3DBlockType type, void * data, void (* fn)(File f, void * data))
+static void writeE3DBlock(E3DWriteContext ctx, File f, E3DBlockType type, void * data, void (* fn)(E3DWriteContext ctx, File f, void * data))
 {
    uint64 pos = f.Tell();
    E3DBlockHeader header { type = type };
    f.Write(&header, sizeof(header), 1);
-   fn(f, data);
+   fn(ctx, f, data);
    header.size = (uint)(f.Tell() - pos);
    f.Seek(pos, start);
    f.Write(&header, sizeof(header), 1);
@@ -96,17 +108,17 @@ struct BlockInfo
 {
    E3DBlockType type;
    void * data;
-   void (* fn)(File f, void * data);
+   void (* fn)(E3DWriteContext ctx, File f, void * data);
 };
 
-static void writeLZMA(File f, Container<BlockInfo> infos)
+static void writeLZMA(E3DWriteContext ctx, File f, Container<BlockInfo> infos)
 {
    TempFile tmp { };
    E3DBlockHeader header { type = lzma };
    byte * cData;
    uint size = 0, cSize = 0;
    for(i : infos)
-      writeE3DBlock(tmp, i.type, i.data, i.fn);
+      writeE3DBlock(ctx, tmp, i.type, i.data, i.fn);
    size = tmp.size;
    cData = encodeLZMA(tmp.buffer, size, &cSize, null);
    delete tmp;
@@ -117,14 +129,14 @@ static void writeLZMA(File f, Container<BlockInfo> infos)
    delete cData;
 }
 
-static void writeAttributes(File f, Mesh mesh)
+static void writeAttributes(E3DWriteContext ctx, File f, Mesh mesh)
 {
    int nVertices = mesh.nVertices;
    f.Write(&nVertices, sizeof(nVertices), 1);
-   writeE3DBlock(f, attrInterleaved, mesh, writeInterleaved);
+   writeE3DBlock(ctx, f, attrInterleaved, mesh, writeInterleaved);
 }
 
-static void writeColor(File f, ColorRGBAf c)
+static void writeColor(E3DWriteContext ctx, File f, ColorRGBAf c)
 {
    struct { byte r, g, b, a; } color;
    color.r = (byte)Max(0, Min(255, (int)(c.r * 255)));
@@ -134,12 +146,12 @@ static void writeColor(File f, ColorRGBAf c)
    f.Write(&color, sizeof(color), 1);
 }
 
-static void writeColorRGB(File f, ColorRGB c)
+static void writeColorRGB(E3DWriteContext ctx, File f, ColorRGB c)
 {
    f.Write(c, sizeof(ColorRGB), 1);
 }
 
-static void writeInterleaved(File f, Mesh mesh)
+static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)
 {
    MeshFeatures features = mesh.flags & ~MeshFeatures { tangents = true, colors = true };   // TWEAKED: Don't write tangents, colors for FLT's
    E3DBlockType type;
@@ -223,7 +235,7 @@ static void writeInterleaved(File f, Mesh mesh)
       if(texCoords)
          f.Write((byte *)texCoords + tStride * i, sizeof(Pointf), 1);
       if(features.colors)
-         writeColor(f, (ColorRGBAf *)((byte *)colors + i * cStride));
+         writeColor(ctx, f, (ColorRGBAf *)((byte *)colors + i * cStride));
       if(features.tangents)
       {
          /*
@@ -254,7 +266,7 @@ static int getFacesCount(PrimitiveGroup g)
    return nFaces;
 }
 
-static void writeTriFaces16(File f, Mesh mesh)
+static void writeTriFaces16(E3DWriteContext ctx, File f, Mesh mesh)
 {
    int nFaces = 0;
    PrimitiveGroup g;
@@ -315,7 +327,7 @@ static void writeTriFaces16(File f, Mesh mesh)
    }
 }
 
-static void writeTriFaces32(File f, Mesh mesh)
+static void writeTriFaces32(E3DWriteContext ctx, File f, Mesh mesh)
 {
    int nFaces = 0;
    PrimitiveGroup g;
@@ -351,31 +363,31 @@ static void writeTriFaces32(File f, Mesh mesh)
    }
 }
 
-static void prepareTexture(Bitmap tex, bool usePNG)
+static void prepareTexture(E3DWriteContext ctx, Bitmap tex, bool usePNG)
 {
    if(tex)
    {
-      int texID = texturesToID[(uintptr)tex];
+      int texID = ctx.texturesToID[(uintptr)tex];
       if(!texID)
       {
-         texID = textures.count+1;
-         textures.size++;
-         texUsePNG.size++;
-         texUsePNG[textures.count-1] = usePNG;
-         textures[textures.count-1] = tex;
-         texturesToID[(uintptr)tex] = texID;
+         texID = ctx.textures.count+1;
+         ctx.textures.size++;
+         ctx.texUsePNG.size++;
+         ctx.texUsePNG[ctx.textures.count-1] = usePNG;
+         ctx.textures[ctx.textures.count-1] = tex;
+         ctx.texturesToID[(uintptr)tex] = texID;
       }
-      texUsed.Add(texID);
+      ctx.texUsed.Add(texID);
    }
 }
 
-static void computeFacesMaterials(Mesh mesh)
+static void computeFacesMaterials(E3DWriteContext ctx, Mesh mesh)
 {
    int nFaces = 0;
    int start = 0;
    PrimitiveGroup g;
    Array<FacesMaterial> faceMaterials { };
-   meshFaceMaterials[(uintptr)mesh] = faceMaterials;
+   ctx.meshFaceMaterials[(uintptr)mesh] = faceMaterials;
 
    mesh.UnapplyTranslucency(null);
 
@@ -390,24 +402,21 @@ static void computeFacesMaterials(Mesh mesh)
       Material mat = g.material;
       if(mat)
       {
-         for(i = 0; i < materials.count; i++)
-            if(materials[i] == mat)
+         for(i = 0; i < ctx.materials.count; i++)
+            if(ctx.materials[i] == mat)
                break;
-         if(i < materials.count)
+         if(i < ctx.materials.count)
             materialID = i + 1;
          else
          {
-            materials.size++;
-            materialID = materials.count;
-            materials[materialID-1] = mat;
+            ctx.materials.size++;
+            materialID = ctx.materials.count;
+            ctx.materials[materialID-1] = mat;
 
-            if(g.material)
-            {
-               prepareTexture(mat.baseMap, mat.flags.translucent | mat.flags.partlyTransparent);
-               prepareTexture(mat.bumpMap, false);
-               prepareTexture(mat.specularMap, false);
-               prepareTexture(mat.reflectMap, false);
-            }
+            prepareTexture(ctx, mat.baseMap, mat.flags.translucent | mat.flags.partlyTransparent);
+            prepareTexture(ctx, mat.bumpMap, false);
+            prepareTexture(ctx, mat.specularMap, false);
+            prepareTexture(ctx, mat.reflectMap, false);
          }
       }
       if(faceMaterials.count && materialID == faceMaterials[faceMaterials.count-1].material)
@@ -426,100 +435,100 @@ struct FacesMaterial
    int start, count, material;
 };
 
-static void writeFaceMaterials(File f, Mesh mesh)
+static void writeFaceMaterials(E3DWriteContext ctx, File f, Mesh mesh)
 {
-   Array<FacesMaterial> faceMaterials = meshFaceMaterials[(uintptr)mesh];
+   Array<FacesMaterial> faceMaterials = ctx.meshFaceMaterials[(uintptr)mesh];
    //PrimitiveGroup g;
    //for(g = mesh.groups.first; g; g = g.next)
    f.Write(faceMaterials.array, sizeof(FacesMaterial), faceMaterials.count);
 }
 
-static void writeParts(File f, Mesh mesh)
+static void writeParts(E3DWriteContext ctx, File f, Mesh mesh)
 {
    Array<MeshPart> parts = mesh.parts;
    f.Write(parts.array, sizeof(MeshPart), parts.count);
 }
 
-static void writeMesh(File f, Mesh mesh)
+static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
 {
    if(mesh)
    {
-      int id = meshToID[(uintptr)mesh];
-      writeE3DBlock(f, meshID,         &id,  writeInt);
-      writeE3DBlock(f, attributes,     mesh, writeAttributes);
+      int id = ctx.meshToID[(uintptr)mesh];
+      writeE3DBlock(ctx, f, meshID,         &id,  writeInt);
+      writeE3DBlock(ctx, f, attributes,     mesh, writeAttributes);
       if(mesh.nVertices > 65536)
-         writeE3DBlock(f, triFaces32,     mesh, writeTriFaces32);
+         writeE3DBlock(ctx, f, triFaces32,     mesh, writeTriFaces32);
       else
-         writeE3DBlock(f, triFaces16,     mesh, writeTriFaces16);
-      writeE3DBlock(f, facesMaterials, mesh, writeFaceMaterials);
+         writeE3DBlock(ctx, f, triFaces16,     mesh, writeTriFaces16);
+      writeE3DBlock(ctx, f, facesMaterials, mesh, writeFaceMaterials);
       if(mesh.parts)
-         writeE3DBlock(f, parts,          mesh, writeParts);
+         writeE3DBlock(ctx, f, parts,          mesh, writeParts);
    }
 }
 
-void calculateMeshes(Object object)
+void calculateMeshes(E3DWriteContext ctx, Object object)
 {
    Object c;
    if(object.flags.mesh && object.mesh)
    {
       Mesh mesh = object.mesh;
-      if(!meshToID[(uintptr)mesh])
+      if(!ctx.meshToID[(uintptr)mesh])
       {
-         meshToID[(uintptr)mesh] = allMeshes.count+1;
-         allMeshes.size++;
-         allMeshes[allMeshes.count-1] = mesh;
-         computeFacesMaterials(mesh);
+         ctx.meshToID[(uintptr)mesh] = ctx.allMeshes.count+1;
+         ctx.allMeshes.size++;
+         ctx.allMeshes[ctx.allMeshes.count-1] = mesh;
+         computeFacesMaterials(ctx, mesh);
       }
    }
    for(c = object.firstChild; c; c = c.next)
-      calculateMeshes(c);
+      calculateMeshes(ctx, c);
 }
 
-static void writeMeshes(File f, Object object)
+static void writeMeshes(E3DWriteContext ctx, File f, Object object)
 {
-   for(m : allMeshes)
-      writeE3DBlock(f, mesh, m, writeMesh);
+   for(m : ctx.allMeshes)
+      writeE3DBlock(ctx, f, mesh, m, writeMesh);
 }
 
-static void writeVector3D(File f, Vector3D v)
+static void writeVector3D(E3DWriteContext ctx, File f, Vector3D v)
 {
    f.Write(v, sizeof(Vector3D), 1);
 }
 
-static void writeVector3Df(File f, Vector3Df v)
+static void writeVector3Df(E3DWriteContext ctx, File f, Vector3Df v)
 {
    f.Write(v, sizeof(Vector3Df), 1);
 }
 
-static void writeQuaternion(File f, Quaternion v)
+static void writeQuaternion(E3DWriteContext ctx, File f, Quaternion v)
 {
    f.Write(v, sizeof(Quaternion), 1);
 }
 
-static void writeObject(File f, Object object)
+static void writeObject(E3DWriteContext ctx, File f, Object object)
 {
    if(object.mesh)
    {
-      int id = meshToID[(uintptr)object.mesh];
-      writeE3DBlock(f, meshID, &id, writeInt);
+      int id = ctx.meshToID[(uintptr)object.mesh];
+      writeE3DBlock(ctx, f, meshID, &id, writeInt);
    }
    if(object.transform.scaling.x != 1 || object.transform.scaling.y != 1 || object.transform.scaling.z != 1)
-      writeE3DBlock(f, scaling,     object.transform.scaling,     writeVector3Df);
+      writeE3DBlock(ctx, f, scaling,     object.transform.scaling,     writeVector3Df);
    if(object.transform.orientation.w != 1 || object.transform.orientation.x || object.transform.orientation.y || object.transform.orientation.z)
-      writeE3DBlock(f, orientation, object.transform.orientation, writeQuaternion);
+      writeE3DBlock(ctx, f, orientation, object.transform.orientation, writeQuaternion);
    if(object.transform.position.x || object.transform.position.y || object.transform.position.z)
-      writeE3DBlock(f, position,    object.transform.position,    writeVector3D);
+      writeE3DBlock(ctx, f, position,    object.transform.position,    writeVector3D);
    if(object.firstChild)
    {
       Object o;
       for(o = object.firstChild; o; o = o.next)
-         writeE3DBlock(f, meshNode, o, writeObject);
+         writeE3DBlock(ctx, f, meshNode, o, writeObject);
    }
 }
 
-static void writeObjects(File f, Object object)
+static void writeObjects(E3DWriteContext ctx, File f, Object object)
 {
-   writeE3DBlock(f, meshNode, object, writeObject);
+   writeE3DBlock(ctx, f, meshNode, object, writeObject);
 }
 
 struct MaterialInfo
@@ -528,67 +537,67 @@ struct MaterialInfo
    int id;
 };
 
-static void writeMaterials(File f, Object object)
+static void writeMaterials(E3DWriteContext ctx, File f, Object object)
 {
    // Write Groups (number of layers, map sizes)
 
    // Write Material Descriptions
    int id = 1;
-   for(m : materials)
+   for(m : ctx.materials)
    {
       MaterialInfo info { m, id++ };
-      writeE3DBlock(f, material, info, writeMaterial);
+      writeE3DBlock(ctx, f, material, info, writeMaterial);
    }
 }
 
-static void writeInt(File f, int * data)
+static void writeInt(E3DWriteContext ctx, File f, int * data)
 {
    f.Write(data, sizeof(int), 1);
 }
 
-static void writeTextureID(File f, int * data)
+static void writeTextureID(E3DWriteContext ctx, File f, int * data)
 {
-   writeE3DBlock(f, textureID, data, writeInt);
+   writeE3DBlock(ctx, f, textureID, data, writeInt);
 }
 
-static void writeMaterial(File f, MaterialInfo info)
+static void writeMaterial(E3DWriteContext ctx, File f, MaterialInfo info)
 {
    Material material = info.material;
    int group = 0;
    MaterialFlags flags = material.flags;
    E3DMaterialFlags mFlags { flags.doubleSided, flags.partlyTransparent, flags.translucent, flags.tile, flags.tile };
-   writeE3DBlock(f, materialID,  &info.id, writeInt);
+   writeE3DBlock(ctx, f, materialID,  &info.id, writeInt);
    if(group)
-      writeE3DBlock(f, materialGroup, &group, writeInt);
-   writeE3DBlock(f, materialFlags, &mFlags, writeInt);
+      writeE3DBlock(ctx, f, materialGroup, &group, writeInt);
+   writeE3DBlock(ctx, f, materialFlags, &mFlags, writeInt);
    if(material.opacity < 1)
-      writeE3DBlock(f, opacity, &material.opacity, writeInt);
+      writeE3DBlock(ctx, f, opacity, &material.opacity, writeInt);
    if(material.emissive.r != 1 || material.emissive.g != 1 || material.emissive.b != 1)
-      writeE3DBlock(f, emissive, &material.emissive, writeColorRGB);
+      writeE3DBlock(ctx, f, emissive, &material.emissive, writeColorRGB);
    if(material.bumpMap)
    {
-      int bumpMapID = texturesToID[(uintptr)material.bumpMap];
-      writeE3DBlock(f, normalMap, &bumpMapID, writeTextureID);
+      int bumpMapID = ctx.texturesToID[(uintptr)material.bumpMap];
+      writeE3DBlock(ctx, f, normalMap, &bumpMapID, writeTextureID);
    }
 
-   if(material.power) writeE3DBlock(f, phongShininess, &material.power, writeInt);
+   if(material.power) writeE3DBlock(ctx, f, phongShininess, &material.power, writeInt);
    if(material.diffuse.r != 1 || material.diffuse.g != 1 || material.diffuse.b != 1)
-      writeE3DBlock(f, diffuse, &material.diffuse, writeColorRGB);
+      writeE3DBlock(ctx, f, diffuse, &material.diffuse, writeColorRGB);
    if(material.specular.r != 0 || material.specular.g != 0 || material.specular.b != 0)
-      writeE3DBlock(f, specular, &material.specular, writeColorRGB);
+      writeE3DBlock(ctx, f, specular, &material.specular, writeColorRGB);
    if(material.ambient.r != material.diffuse.r ||
       material.ambient.g != material.diffuse.g ||
       material.ambient.b != material.diffuse.b)
-      writeE3DBlock(f, ambient, &material.ambient, writeColorRGB);
+      writeE3DBlock(ctx, f, ambient, &material.ambient, writeColorRGB);
    if(material.baseMap)
    {
-      int diffuseID = texturesToID[(uintptr)material.baseMap];
-      writeE3DBlock(f, phongDiffuseMap, &diffuseID, writeTextureID);
+      int diffuseID = ctx.texturesToID[(uintptr)material.baseMap];
+      writeE3DBlock(ctx, f, phongDiffuseMap, &diffuseID, writeTextureID);
    }
    if(material.specularMap)
    {
-      int specularID = texturesToID[(uintptr)material.specularMap];
-      writeE3DBlock(f, phongSpecularMap, &specularID, writeTextureID);
+      int specularID = ctx.texturesToID[(uintptr)material.specularMap];
+      writeE3DBlock(ctx, f, phongSpecularMap, &specularID, writeTextureID);
    }
 }
 
@@ -599,7 +608,7 @@ static struct TextureInfo
    bool usePNG;
 };
 
-static void writeJPG(File f, Bitmap texture)
+static void writeJPG(E3DWriteContext ctx, File f, Bitmap texture)
 {
    TempFile tmp { };
    char fn[100];
@@ -618,7 +627,7 @@ static void writeJPG(File f, Bitmap texture)
    delete tmp;
 }
 
-static void writePNG(File f, Bitmap texture)
+static void writePNG(E3DWriteContext ctx, File f, Bitmap texture)
 {
    TempFile tmp { };
    char fn[100];
@@ -636,20 +645,18 @@ static void writePNG(File f, Bitmap texture)
    delete tmp;
 }
 
-static void writeString(File f, const String s)
+static void writeString(E3DWriteContext ctx, File f, const String s)
 {
    uint16 len = s ? (uint16)strlen(s) : 0;
    f.Write(&len, sizeof(uint16), 1);
    f.Write(s, 1, len);
 }
 
-// char e3dModelsPath[MAX_LOCATION];
+static int maxTexSize;
 
-int maxTexSize;
-
-static void writeTexture(File f, TextureInfo info)
+static void writeTexture(E3DWriteContext ctx, File f, TextureInfo info)
 {
-   writeE3DBlock(f, textureID, &info.id, writeInt);
+   writeE3DBlock(ctx, f, textureID, &info.id, writeInt);
    if(externalTextures)
    {
       char name[256];
@@ -659,9 +666,9 @@ static void writeTexture(File f, TextureInfo info)
          sprintf(name, "textures/%d-%d.%s", info.id, maxTexSize, ext);
       else
          sprintf(name, "textures/%d.%s", info.id, ext);
-      writeE3DBlock(f, textureName, name, writeString);
+      writeE3DBlock(ctx,f, textureName, name, writeString);
 
-      if(info.id - 1 >= firstTexture)
+      if(info.id - 1 >= ctx.firstTexture)
       {
          for(maxTexSize : [0, 512, 256])
          {
@@ -669,7 +676,7 @@ static void writeTexture(File f, TextureInfo info)
             PixelFormat wantedFormat = info.usePNG ? pixelFormatRGBA : pixelFormat888;
             char path[MAX_LOCATION];
 
-            strcpy(path, e3dModelsPath);
+            strcpy(path, ctx.path);
             PathCat(path, "textures");
             if(maxTexSize && info.texture.width > maxTexSize && info.texture.height > maxTexSize)
                sprintf(name, "%d-%d.%s", info.id, maxTexSize, ext);
@@ -695,33 +702,33 @@ static void writeTexture(File f, TextureInfo info)
       }
    }
    else
-      writeE3DBlock(f, info.usePNG ? texturePNG : textureJPG, info.texture, info.usePNG ? writePNG : writeJPG);
+      writeE3DBlock(ctx, f, info.usePNG ? texturePNG : textureJPG, info.texture, info.usePNG ? writePNG : writeJPG);
 }
 
-static void writeTextures(File f, Object object)
+static void writeTextures(E3DWriteContext ctx, File f, Object object)
 {
    int id = 1;
    int i;
-   for(i = 0; i < textures.count; i++)
+   for(i = 0; i < ctx.textures.count; i++)
    {
-      if(texUsed.Find(id))
+      if(ctx.texUsed.Find(id))
       {
-         bool usePNG = texUsePNG[id-1];
-         TextureInfo info { textures[i], id, usePNG };
-         writeE3DBlock(f, texture, info, writeTexture);
+         bool usePNG = ctx.texUsePNG[id-1];
+         TextureInfo info { ctx.textures[i], id, usePNG };
+         writeE3DBlock(ctx, f, texture, info, writeTexture);
       }
       id++;
    }
 }
 
-static void writeVersion(File f, Object object)
+static void writeVersion(E3DWriteContext ctx, File f, Object object)
 {
    uint16 version = 0x0100;
    f.Write("E3DF", 1, 4);
    f.Write(&version, sizeof(uint16), 1);
 }
 
-Bitmap resizeTexture(Bitmap bitmap, int size)
+static Bitmap resizeTexture(Bitmap bitmap, int size)
 {
    // Pre process the bitmap... First make it 32 bit
    if((bitmap.width > size && bitmap.height > size) && bitmap.Convert(null, pixelFormat888, null))

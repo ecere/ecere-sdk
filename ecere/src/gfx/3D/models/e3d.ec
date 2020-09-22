@@ -22,11 +22,13 @@ public class E3DFormat : ObjectFormat
       File f = FileOpen(fileName, write);
       if(f)
       {
-         //char path[MAX_LOCATION];
-         // E3DContext ctx { path = path, texturesByID = options.texturesByID };
-         StripLastDirectory(fileName, e3dModelsPath);
+         E3DWriteContext ctx { }; //, texturesByID = options.texturesByID };
 
-         writeE3D(f, /*fileName, */object/*, options*/);
+         StripLastDirectory(fileName, ctx.path);
+
+         writeE3D(f, object, ctx);
+
+         delete ctx;
          delete f;
          return true;
       }
