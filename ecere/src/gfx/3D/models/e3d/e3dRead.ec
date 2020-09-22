@@ -51,6 +51,49 @@ TempFile downloadFile(const String url)
 #endif
 ;
 
+// TODO: Review how to handle all this properly...
+void freeE3DMaterial(Material material)
+{
+   // TOCHECK: Are we somehow holding on to textures to re-use them?
+   if(material.baseMap)
+      delete material.baseMap;
+   if(material.envMap)
+      delete material.envMap;
+   if(material.bumpMap)
+      delete material.bumpMap;
+   if(material.specularMap)
+      delete material.specularMap;
+   if(material.reflectMap)
+      delete material.reflectMap;
+}
+
+void freeE3DMeshMaterials(Mesh mesh)
+{
+   PrimitiveGroup group;
+
+   for(group = mesh.groups.first; group; group = group.next)
+   {
+      if(group.material)
+      {
+         freeE3DMaterial(group.material);
+         group.material = null;
+         // We are freeing materials separately?
+         //delete group.material;
+      }
+   }
+}
+
+void freeE3DObjectMaterials(Object object)
+{
+   Object o;
+
+   if(object.mesh)
+      freeE3DMeshMaterials(object.mesh);
+
+   for(o = object.firstChild; o; o = o.next)
+      freeE3DObjectMaterials(o);
+}
+
 // Right now this is global and requires a lock... Support supplying optional textures ID map ?
 static Mutex texMutex { };
 
@@ -697,7 +740,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                texMutex.Wait();
                if(m.Find(mat))
                {
-                  //theM = m.data;
+                  if(mat)
+                     freeE3DMaterial(mat);
+
                   ctx.materialsByID.SetData(it.pointer, m.data);
                }
                else
