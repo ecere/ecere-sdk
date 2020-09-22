@@ -151,6 +151,12 @@ static void writeInterleaved(File f, Mesh mesh)
    ColorRGBAf * colors = null;
    Pointf * texCoords = null;
    uint16 vSize = 0;
+   uint vStride = sizeof(Vector3Df);
+   uint nStride = sizeof(Vector3Df);
+   uint cStride = sizeof(ColorRGBAf);
+   uint tStride = sizeof(Pointf);
+   uint gStride = 2*sizeof(Vector3Df);
+
    if(features.vertices)
    {
       vertices = mesh.vertices;
@@ -158,22 +164,28 @@ static void writeInterleaved(File f, Mesh mesh)
       f.Write(&type, sizeof(E3DBlockType), 1);
       f.Write(&vSize, sizeof(uint16), 1);
       vSize += 12;
+      if(mesh.flags.interleaved)
+         vStride = sizeof(float) * 8;
    }
    if(features.normals)
    {
-      normals = mesh.normals;
+      normals = mesh.flags.interleaved ? (Vector3Df *)((byte *)mesh.vertices + 3*sizeof(float)) : mesh.normals;
       type = attrNormals;
       f.Write(&type, sizeof(E3DBlockType), 1);
       f.Write(&vSize, sizeof(uint16), 1);
       vSize += 4;
+      if(mesh.flags.interleaved)
+         nStride = sizeof(float) * 8;
    }
    if(features.texCoords1)
    {
-      texCoords = mesh.texCoords;
+      texCoords = mesh.flags.interleaved ? (Pointf *)((byte *)mesh.vertices + 6*sizeof(float)) : mesh.texCoords;
       type = attrTexCoords;
       f.Write(&type, sizeof(E3DBlockType), 1);
       f.Write(&vSize, sizeof(uint16), 1);
       vSize += 8;
+      if(mesh.flags.interleaved)
+         tStride = sizeof(float) * 8;
    }
    if(features.colors)
    {
@@ -182,6 +194,7 @@ static void writeInterleaved(File f, Mesh mesh)
       f.Write(&type, sizeof(E3DBlockType), 1);
       f.Write(&vSize, sizeof(uint16), 1);
       vSize += 4;
+      // if(mesh.flags.interleaved) tStride = sizeof(float) * 8;
    }
    if(features.tangents)
    {
@@ -192,6 +205,7 @@ static void writeInterleaved(File f, Mesh mesh)
       f.Write(&vSize, sizeof(uint16), 1);
       // vSize += 4;
       vSize += 8;
+      // if(mesh.flags.interleaved) gStride = sizeof(float) * 8;
    }
    type = 0;
    f.Write(&type, sizeof(E3DBlockType), 1);
@@ -200,24 +214,25 @@ static void writeInterleaved(File f, Mesh mesh)
    for(i = 0; i < nVertices; i++)
    {
       if(vertices)
-         f.Write(&vertices[i], sizeof(Vector3Df), 1);
+         f.Write((byte *)vertices + vStride * i, sizeof(Vector3Df), 1);
       if(normals)
       {
-         uint32 n = vecfPack10i(normals[i], null);
+         uint32 n = vecfPack10i((Vector3Df *)((byte *)normals + nStride * i), null);
          f.Write(&n, sizeof(uint), 1);
       }
       if(texCoords)
-         f.Write(&texCoords[i], sizeof(Pointf), 1);
+         f.Write((byte *)texCoords + tStride * i, sizeof(Pointf), 1);
       if(features.colors)
-         writeColor(f, colors[i]);
+         writeColor(f, (ColorRGBAf *)((byte *)colors + i * cStride));
       if(features.tangents)
       {
          /*
-         uint32 n = vecfPack10i(tangents[2*i], tangents[2*i+1]);
+         uint32 n = vecfPack10i(tangent0, tangent0 + 1;
          f.Write(&n, sizeof(uint), 1);
          */
-         uint32 n = vecfPack10i(tangents[2*i+0], null);
-         uint32 b = vecfPack10i(tangents[2*i+1], null);
+         Vector3Df * tangent0 = (Vector3Df *)((byte *)tangents + gStride * i);
+         uint32 n = vecfPack10i(tangent0, null);
+         uint32 b = vecfPack10i(tangent0 + 1, null);
          f.Write(&n, sizeof(uint), 1);
          f.Write(&b, sizeof(uint), 1);
       }
@@ -254,6 +269,9 @@ static void writeTriFaces16(File f, Mesh mesh)
       if(g.type.indices32bit)
       {
          uint32 * indices = g.indices32;
+         if(g.type.sharedIndices)
+            indices = mesh.indices + g.baseIndex;
+
          for(i = 0; i < gn; i++)
          {
             uint16 ix = (uint16)indices[i];
@@ -265,6 +283,9 @@ static void writeTriFaces16(File f, Mesh mesh)
       else
       {
          uint16 * indices = g.indices;
+         if(g.type.sharedIndices)
+            indices = ((uint16 *)mesh.indices) + g.baseIndex;
+
          if(g.type == quads)
          {
             for(i = 0; i < gn; i+=4)
