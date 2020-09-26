@@ -338,15 +338,19 @@ class CPPGen : CGen
             {
                BOutput out { vdefine, d = d, z = { allocType = heap } };
                BVariant v = d;
+               BClass cType = eSystem_FindClass(mod, exp.instance._class.name);
                char expString[1024];
                expString[0] = '\0';
 
                PrintExpression(exp, expString);
-               n.splitContents.Add(v);
+               if(cType && cType.cl.type == unitClass)
+                  n.splitContents.Add(v);
+               else
+                  n.implementationsContents.Add(v);
                d.out = out;
                out.z.concatx(ln);
                out.z.concatx(genspc__, "#undef ", d.name, " // ", d.name, "(", exp.type, ")", " -- ", expString, ln);
-               cppPrintDefineExp(this, df, d, exp, v, out);
+               cppPrintDefineExp(this, df, d, cType, exp, v, out.z);
             }
             FreeExpression(exp);
          }
@@ -479,25 +483,39 @@ class CPPGen : CGen
    }
 }
 
-static void cppPrintDefineExp(CPPGen g, DefinedExpression df, BDefine d, Expression e, BVariant v, BOutput o)
+static void cppPrintDefineExp(CPPGen g, DefinedExpression df, BDefine d, BClass cType, Expression e, BVariant v, ZString o)
 {
-   BClass cType = eSystem_FindClass(g.mod, e.instance._class.name);
    char * val = getNoNamespaceString(df.value, null, false, false);
+   const char * name = strstr(val, cType.cl.name);
+   const char * inst = strstr(val, "{");
    ChangeCh(val, '{', '(');
    ChangeCh(val, '}', ')');
-   if(cType && cType.cl.type == unitClass)
+   if(name && inst && name + strlen(cType.cl.name) <= inst)
    {
-      const char * name = strstr(val, cType.cl.name);
-      const char * inst = strstr(val, "(");
-      if(name && inst && name + strlen(cType.cl.name) <= inst)
-         o.z.concatx(genspc__, "static constexpr ", cType.cpp.name, " ", d.name, " ", inst, ";", ln);
+      if(cType && cType.cl.type == unitClass)
+         o.concatx(genspc__, "static constexpr ", cType.cpp.name, " ", d.name, " ", inst, ";", ln);
+      else if(!strcmp(d.name, "wholeWorld") || !strcmp(d.name, "AnyFileChange")) // broken
+         o.concatx(genspc__, "/* todo: fix this. */ // ", cType.cpp.name, " ", d.name, " ", inst, ";", ln, ln); // todo: fix this. see below.
       else
-         debugBreakpoint();
+      {
+         /*if(!strcmp(df.name, "wholeWorld"))
+         {
+            char expString[1024];
+            expString[0] = '\0';
+
+            debugBreakpoint();
+            PrintExpression(e, expString);
+         }*/
+         // todo: find a way to output
+         //       'GeoExtent wholeWorld ( GeoPoint ( -90, -180 ),  GeoPoint ( 90, 180 ) );'
+         //       for wholeWorld's val: 'GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )'
+         //       this works in .cpp file, not in .hpp
+         //       find a way to make friendly constructors into constexpr constructors?
+         o.concatx(genspc__, cType.cpp.name, " ", d.name, " ", inst, ";", ln, ln);
+      }
    }
    else
-   {
-      o.z.concatx(genspc__, "// define-instance-not-a-unit ?? ", d.name, " ", val, ln);
-   }
+      debugBreakpoint();
 }
 
 static void generateHPP(CPPGen g, File f)
@@ -673,7 +691,9 @@ bool prototypeClasses(CPPGen g, File f)
                f.Print(" : ", typeString); // "std::underlying_type_t<", c.cSymbol, ">"
                if(!contents) contents = true;
             }
-            f.PrintLn("; // ", classTypeToSimpleString(c.cl.type));
+            f.Print(";");
+            // f.Print(" // ", classTypeToSimpleString(c.cl.type));
+            f.Print(ln);
             switch(c.cl.type)
             {
                case normalClass:
@@ -1123,7 +1143,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                if(cBase.cl.type != systemClass)
                   v.processDependency(g, otypedef, otypedef, cBase.cl);
             }
-            o.z.concatx(" // ", classTypeToSimpleString(c.cl.type));
+            // o.z.concatx(" // ", classTypeToSimpleString(c.cl.type));
             o.z.concatx(ln, genloc__, "{");
             if(c.cl.type != enumClass)
                o.z.concatx(ln, genloc__, "public:", ln);
@@ -3925,13 +3945,13 @@ static void commonMemberHandling(
                    */
                if(ctX == unitClass || ctX == bitClass)
                   component.code = { [
-                     PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", castX ? "(" : "", castX ? ctX == unitClass ? cX.spec : cX.cSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
+                     PrintString(lc, ln, genloc__, indents(ind), "self->impl.", mn, " = ", castX ? "(" : "", castX ? ctX == unitClass ? cX.spec : cX.cSymbol : "", castX && ptrX ? stars(ptrX, 0) : "", castX ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
                else if(instCast && !cast && !ptr)
                   component.code = { [
-                     PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", instCast ? "((Instance *)" : "", tweak, "v", instCast ? ")->" : ".", "impl;") ] };
+                     PrintString(lc, ln, genloc__, indents(ind), "self->impl.", mn, " = ", instCast ? "((Instance *)" : "", tweak, "v", instCast ? ")->" : ".", "impl;") ] };
                else
                   component.code = { [
-                     PrintString(lc, ln, genloc__, indents(ind), "((", c.cSymbol, " *)&self->impl)->", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
+                     PrintString(lc, ln, genloc__, indents(ind), "self->impl.", mn, " = ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", ptr ? "&" : "", "v", ptr ? "->" : "", addImpl ? "." : "", ptr || addImpl ? "impl" : "", ";") ] };
             }
          }
          components.Add(component);
@@ -4027,6 +4047,12 @@ static void commonMemberHandling(
                      component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), "C(Instance) i = ((", c.cSymbol, " *)&self->impl)->", mn, ";"),
                         PrintString(lc, ln, genloc__, indents(ind), "return BINDINGS_CLASS(i) ? (", cZ.cpp.name, " *)INSTANCEL(i, i->_class) : (", cZ.cpp.name, " *)0;") ] };
+                  else if(ctX == unitClass)
+                  {
+                     bool baseUnit = cType != cType.cUse;
+                     component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "return ", cType.cpp.name, baseUnit ? "(" : "", baseUnit ? cType.cUse.cpp.name : "", "(self->impl.", mn, ")", baseUnit ? ")" : "", ";") ] };
+                  }
                   else
                      component.code = { [
                         PrintString(lc, ln, genloc__, indents(ind), valDecl, " value(((", c.cSymbol, " *)&self->impl)->", mn, ");"),
@@ -5058,6 +5084,12 @@ static void outputImplementationsContents(CPPGen g, File f)
                f.Puts(c.outImplementation.z._string);
             // else
             //    locprintxln("why is this c.outImplementation.z._string null for this v(", v.kind, ":", v.name, ")");
+         }
+         else if(v.kind == vdefine)
+         {
+            BDefine d = v;
+            if(d.out.z._string)
+               f.Puts(d.out.z._string);
          }
          else
             locprintxln("error: unexpected kind (", v.kind, ") of implementationsContents");
