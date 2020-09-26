@@ -1661,6 +1661,7 @@ class BClass : struct
    Array<BClass> cTArgs { };
    List<Class> cumulationLineage;
    AVLTree<const String> memberNames;
+   BClass cUse;
    struct
    {
       char * name;
@@ -1749,6 +1750,8 @@ class BClass : struct
             }
          }
       }
+      else if(cl.type == unitClass)
+         cUse = reduceUnitClass(cl);
 
       if(is_class)
          clAlt = eSystem_FindClass(g_.mod, "Class");
