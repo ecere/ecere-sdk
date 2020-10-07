@@ -182,9 +182,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Free()
    {
       MapNode<MT, V> node = root;
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
-      memMutex.Wait();
-#endif
+      eSystem_LockMem();
       while(node)
       {
          if(node.left)
@@ -210,9 +208,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             node = parent;
          }
       }
-#if !defined(ECERE_BOOTSTRAP) && !defined(__EMSCRIPTEN__)
-      memMutex.Release();
-#endif
+      eSystem_UnlockMem();
       root = null;
       count = 0;
    }
