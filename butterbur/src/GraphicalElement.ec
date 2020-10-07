@@ -46,7 +46,7 @@ public class GEFont : struct   // NOTE: This will likely be renamed to simply Fo
 public:
    // const String face;
    // FIXME: Offset problems if set directly as data members by eccss
-   property String face { set { delete face; face = CopyString(value); } get { return face; } }
+   property const String face { set { delete face; face = CopyString(value); } get { return face; } }
    property float size { set { size = value; } get { return size; } }
    property bool bold { set { bold = value; } get { return bold; } }
    property bool italic { set { italic = value; } get { return italic; } }
