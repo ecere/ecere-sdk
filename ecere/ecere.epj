@@ -32,6 +32,9 @@
       {
          "Name" : "Linux",
          "Options" : {
+            "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS"
+            ],
             "IncludeDirs" : [
                "/usr/include/freetype2"
             ],
@@ -48,10 +51,11 @@
                "GL",
                "ssl",
                "crypto",
-               "curl"
+               "etc"
             ],
             "LibraryDirs" : [
-               "/usr/X11R6/lib"
+               "/usr/X11R6/lib",
+               "../deps/etc2comp/EtcLib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }
       },
@@ -143,7 +147,29 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ]
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "ncurses",
+                     "pthread",
+                     "m",
+                     "dl",
+                     "fontconfig",
+                     "gif",
+                     "X11",
+                     "Xext",
+                     "Xrender",
+                     "GL",
+                     "ssl",
+                     "crypto",
+                     "etc"
+                  ]
+               }
+            }
+         ]
       },
       {
          "Name" : "MemoryGuard",

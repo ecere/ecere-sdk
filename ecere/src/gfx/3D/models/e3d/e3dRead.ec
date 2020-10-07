@@ -283,12 +283,13 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         {
                            memcpy(path, ctx.texturesQuery, l);
                            path[l] = 0;
-                           sprintf(path + l, "%d.%s?resolution=256", id, ext);
+                           sprintf(path + l, "%d.%s?resolution=%d", id, ext, ctx.resolution);
                            if(authKey)
                               strcatf(path, "&%s", authKey + 1);
                         }
                         else
-                           sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
+                           sprintf(path, "%s%d&outputFormat=%s&resolution=%d",
+                              ctx.texturesQuery, id, ext, ctx.resolution); // TODO: jpg option...
                      }
                      else
                      {
@@ -314,32 +315,43 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      strcpy(path, ctx.path);
                      PathCat(path, name);
                      StripExtension(path);
-                     strcat(path, "-256");
-                     ChangeExtension(path, "etc2", path);
-                     f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                     if(f)
-                        format = "etc2";
-                     else
+
+                     if(ctx.resolution)
                      {
-                        ChangeExtension(path, ext, path);
-                        f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                        if(f)
-                           format = ext;
-                        else
+                        strcat(path, "-256");
+                        if(ctx.compressedTextures)
                         {
-                           strcpy(path, ctx.path);
-                           PathCat(path, name);
                            ChangeExtension(path, "etc2", path);
                            f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                            if(f)
                               format = "etc2";
-                           else
-                           {
-                              ChangeExtension(path, ext, path);
-                              f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                              if(f)
-                                 format = ext;
-                           }
+                        }
+                        if(!f)
+                        {
+                           ChangeExtension(path, ext, path);
+                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
+                           if(f)
+                              format = ext;
+                        }
+                     }
+
+                     if(!f)
+                     {
+                        strcpy(path, ctx.path);
+                        PathCat(path, name);
+                        if(ctx.compressedTextures)
+                        {
+                           ChangeExtension(path, "etc2", path);
+                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
+                           if(f)
+                              format = "etc2";
+                        }
+                        if(!f)
+                        {
+                           ChangeExtension(path, ext, path);
+                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
+                           if(f)
+                              format = ext;
                         }
                      }
                   }
@@ -347,13 +359,15 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
-                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, false /*true*/, 16384, true);
+                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
-                        #if 0
-                        ChangeExtension(path, "etc2", path);
-                        bitmap.Save(path, null, null);
-                        #endif
+
+                        if(ctx.compressedTextures)
+                        {
+                           ChangeExtension(path, "etc2", path);
+                           bitmap.Save(path, null, null);
+                        }
                      }
                      bitmap.MakeMipMaps(displaySystem);
                   }
@@ -907,12 +921,13 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
                         {
                            memcpy(path, ctx.texturesQuery, l);
                            path[l] = 0;
-                           sprintf(path + l, "%d.%s?resolution=256", id, ext);
+                           sprintf(path + l, "%d.%s?resolution=%d", id, ext, ctx.resolution);
                            if(authKey)
                               strcatf(path, "&%s", authKey + 1);
                         }
                         else
-                           sprintf(path, "%s%d&outputFormat=%s&resolution=256", ctx.texturesQuery, id, ext); // TODO: jpg option...
+                           sprintf(path, "%s%d&outputFormat=%s&resolution=%d",
+                              ctx.texturesQuery, id, ext, ctx.resolution); // TODO: jpg option...
                      }
                      else
                      {

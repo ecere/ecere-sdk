@@ -1,5 +1,7 @@
 namespace gfx;
 
+define MODELS_TEXTUREARRAY_SIZE = 2048; // 512;
+
 import "Display"
 
 #ifdef ETC2_COMPRESS
@@ -1067,8 +1069,8 @@ public:
          {
             if((int)mipMaps == 2)
             {
-               w = 512;
-               h = 512;
+               w = MODELS_TEXTUREARRAY_SIZE; //512;
+               h = MODELS_TEXTUREARRAY_SIZE; //512;
             }
             else
             {
@@ -1195,7 +1197,7 @@ public:
 
                delete pixelData;
                mipMap.picture = etc2Compress(fData, width, height, &size, &width, &height);
-               mipMap.sizeBytes = size;
+               mipMap.sizeBytes = size; mipMap.pixelFormat = pixelFormatETC2RGBA8;
                delete fData;
             }
          }

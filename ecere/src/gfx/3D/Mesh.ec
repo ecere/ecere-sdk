@@ -6,6 +6,10 @@ import "GLMultiDraw"
 
 #include "gl123es.h"
 
+#ifdef ETC2_COMPRESS
+default extern void etc2Free(void * data);
+#endif
+
 public class MeshFeatures
 {
 public:
@@ -1040,7 +1044,8 @@ public:
 
                            // TOCHECK: Shouldn't the overall bitmap width be set?
                            // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
-                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1, 512 /*bmp.width*/, 512 /*bmp.height*/, 256,
+                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
+                              MODELS_TEXTUREARRAY_SIZE /*512 /*bmp.width*/, MODELS_TEXTUREARRAY_SIZE /*512 /*bmp.height*/, 70 /*256*/,
                               internalFormat,
                               false);
                         }
@@ -1061,12 +1066,20 @@ public:
                                     int level = j - skipLevel;
                                     if(level >= 0)
                                     {
-                                       if(bmp.pixelFormat == pixelFormatETC2RGBA8)
+                                       if(convBitmap /*bmp*/.pixelFormat == pixelFormatETC2RGBA8)
                                           at->setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
                                        else
                                           at->setLayer(level, 0, 0, layer, bmp.picture, 0);
                                     }
-                                    delete bmp.picture;
+#ifdef ETC2_COMPRESS
+                                    if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
+                                    {
+                                       etc2Free(bmp.picture);
+                                       bmp.picture = null;
+                                    }
+                                    else
+#endif
+                                       delete bmp.picture;
                                     delete bmp;
                                     convBitmap.bitmaps[j] = null; // TOCHECK: ?
                                  }
