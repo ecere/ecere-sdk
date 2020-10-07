@@ -18,6 +18,9 @@
                "pthread",
                "m",
                "stdc++"
+            ],
+            "LibraryDirs" : [
+               "../deps/etc2comp/EtcLib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }
       }
