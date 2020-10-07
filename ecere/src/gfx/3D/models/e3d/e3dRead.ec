@@ -1021,13 +1021,14 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
 
    if(options != null)
    {
-      ctx.texturesByID = options.texturesByID;
+      ctx.texturesByID = options.texturesByID ? options.texturesByID : { };
       ctx.materials = options.materials;
       ctx.texturesQuery = options.texturesQuery;
       ctx.positiveYUp = options.positiveYUp;
       ctx.resolution = options.resolution;
       ctx.compressedTextures = options.compressedTextures;
       ctx.skipTexturesProcessing = options.skipTexturesProcessing;
+      freeTexturesByID = !options.texturesByID;
    }
    else
       ctx.texturesByID = { }, freeTexturesByID = true;
