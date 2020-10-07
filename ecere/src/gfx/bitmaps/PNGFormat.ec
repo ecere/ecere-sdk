@@ -266,7 +266,8 @@ class PNGFormat : BitmapFormat
    {
       bool result = false;
       Bitmap tempBitmap = null;
-      if(bitmap && bitmap.pixelFormat != pixelFormatRGBA && bitmap.pixelFormat != pixelFormatA16)
+      if(bitmap && bitmap.pixelFormat != pixelFormatRGBA &&
+         bitmap.pixelFormat != pixelFormatA16 && bitmap.pixelFormat != pixelFormatAlpha)
       {
          tempBitmap = Bitmap { };
          if(tempBitmap.Copy(bitmap) && tempBitmap.Convert(null, pixelFormatRGBA, null))
@@ -289,8 +290,10 @@ class PNGFormat : BitmapFormat
                   if(!setjmp(png_jmpbuf(png_ptr)))
                   {
                      uint y;
-                     uint bytesPerRow = bitmap.stride * (bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
-                     int colorType = bitmap.pixelFormat == pixelFormatA16 ? PNG_COLOR_TYPE_GRAY : PNG_COLOR_TYPE_RGBA;
+                     uint bytesPerRow = bitmap.stride *
+                        (bitmap.pixelFormat == pixelFormatAlpha ? 1 : bitmap.pixelFormat == pixelFormatA16 ? 2 : 4);
+                     int colorType = bitmap.pixelFormat == pixelFormatA16 || bitmap.pixelFormat == pixelFormatAlpha ?
+                        PNG_COLOR_TYPE_GRAY : PNG_COLOR_TYPE_RGBA;
                      int bitsPerPixel = bitmap.pixelFormat == pixelFormatA16 ? 16 : 8;
                      byte * rowPtr = null;
                      uint width = bitmap.width;
