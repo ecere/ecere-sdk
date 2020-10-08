@@ -856,7 +856,8 @@ private:
 
                if(subDirs && stack[frame].fileList.stats.attribs.isDirectory &&
                      (objDirs || !(len >= 4 && !strcmp(name, "obj"))) &&
-                     (gitDirs || !(len >= 4 && (!strcmp(name, ".git") || !strcmp(name + len - 4, ".git") || strstr(name, ".git.") == name))))
+                     (gitDirs || !(len >= 4 && (!strcmp(name, ".git") || !strcmp(name + len - 4, ".git") || strstr(name, ".git.") == name))) &&
+                     !(len == 5 && !strcmp(name, ".wine")))
                {
                   int lastFrame = frame;
                   /*double thisTime = GetTime();
