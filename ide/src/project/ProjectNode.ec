@@ -77,7 +77,7 @@ enum NodeIcons
             else if(!strcmpi(extension, "eh"))
                icon = ehFile;
             else if(!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
-                  !strcmpi(extension, "cxx"))
+                  !strcmpi(extension, "cxx") || !strcmpi(extension, "inl"))
                icon = cppFile;
             else if(!strcmpi(extension, "hpp") || !strcmpi(extension, "hh") ||
                   !strcmpi(extension, "hxx"))
@@ -1604,7 +1604,7 @@ private:
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec") || !strcmpi(extension, "s") || !strcmpi(extension, "c") ||
                !strcmpi(extension, "rc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") ||
-               !strcmpi(extension, "cxx") || !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
+               !strcmpi(extension, "cxx") || !strcmpi(extension, "inl") || !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             char moduleName[MAX_FILENAME];
             NameCollisionInfo info;
@@ -1622,6 +1622,8 @@ private:
                info.c = true;
             else if(!strcmpi(extension, "rc"))
                info.rc = true;
+            else if(!strcmpi(extension, "inl"))
+               info.inl = true;
             else if(!strcmpi(extension, "cpp"))
                info.cpp = true;
             else if(!strcmpi(extension, "cc"))
@@ -1685,7 +1687,7 @@ private:
          else if(printType == sources)
          {
             if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
-                  !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+                  !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "inl") ||
                   !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
             {
                char modulePath[MAX_LOCATION];
@@ -1734,7 +1736,7 @@ private:
             }
          }
          else if(!strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
-               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "inl") ||
                !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             if(printType == objects)
@@ -1752,7 +1754,7 @@ private:
                items.Add(CopyString(s));
             }
             else if(printType == noPrint && containsCXX &&
-                  (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
+                  (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") || !strcmpi(extension, "inl")))
                *containsCXX = true;
          }
          delete ts;
@@ -2157,7 +2159,7 @@ private:
          if(ec ||
                !strcmpi(extension, "s") || !strcmpi(extension, "c") || !strcmpi(extension, "rc") ||
                !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
-               !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
+               !strcmpi(extension, "inl") || !strcmpi(extension, "m") || !strcmpi(extension, "mm"))
          {
             //DualPipe dep;
             //char command[2048];
@@ -2282,7 +2284,7 @@ private:
                OpenRulesPlatformExclusionIfs(f, &ifCount, platforms);
 
             f.Printf("%s: %s\n", target, prereq);
-            if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
+            if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx") || !strcmpi(extension, "inl"))
                f.Printf("\t$(CXX) $(CXXFLAGS)");
             else if(!strcmpi(extension, "rc"))
             {
@@ -3434,6 +3436,7 @@ class NameCollisionInfo
    bool s;
    bool c;
    bool rc;
+   bool inl;
    bool cpp;
    bool cc;
    bool cxx;
@@ -3448,10 +3451,11 @@ class NameCollisionInfo
             ((!strcmpi(extension, "c")   && ec) ||
              (!strcmpi(extension, "rc")  && (ec || c)) ||
              (!strcmpi(extension, "s")   && (ec || c || rc)) ||
-             (!strcmpi(extension, "cpp") && (ec || c || rc || s)) ||
-             (!strcmpi(extension, "cc")  && (ec || c || rc || s || cpp)) ||
-             (!strcmpi(extension, "cxx") && (ec || c || rc || s || cpp || cc)) ||
-             (!strcmpi(extension, "m")   && (ec || c || rc || s || cpp || cc || m)) ||
+             (!strcmpi(extension, "inl") && (ec || c || rc || s)) ||
+             (!strcmpi(extension, "cpp") && (ec || c || rc || s || inl)) ||
+             (!strcmpi(extension, "cc")  && (ec || c || rc || s || inl || cpp)) ||
+             (!strcmpi(extension, "cxx") && (ec || c || rc || s || inl || cpp || cc)) ||
+             (!strcmpi(extension, "m")   && (ec || c || rc || s || inl || cpp || cc || m)) ||
               !strcmpi(extension, "mm")))
          colliding = true;
       else

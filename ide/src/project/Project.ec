@@ -1862,7 +1862,7 @@ private:
                                  mName[len] = '\0';
                                  GetLastDirectory(mName, temp);
                                  GetExtension(temp, ext);
-                                 if(!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "cxx") || !strcmp(ext, "ec"))
+                                 if(!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "cxx") || !strcmp(ext, "cc") || !strcmp(ext, "inl") || !strcmp(ext, "ec"))
                                  {
                                     colon = cColon;
                                     strcpy(moduleName, mName);

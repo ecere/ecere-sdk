@@ -586,7 +586,7 @@ class CSHL : SyntaxHighlighting
    allowHashInKeyword = true;
 }
 
-static const char * cxxExtensions[] = { "cxx", "hxx", "cpp", "hpp", "cc", "hh", null };
+static const char * cxxExtensions[] = { "cxx", "hxx", "cpp", "hpp", "cc", "hh", "inl", null };
 class CXXSHL : CSHL
 {
    class_property(extensions) = cxxExtensions;

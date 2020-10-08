@@ -583,8 +583,9 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<CIString, NameCollisi
       GetExtension(node.name, extension);
       if(filter == source)
       {
-         if(!strcmpi(extension, "cpp") || !strcmpi(extension, "c") ||
-               !strcmpi(extension, "cxx") || !strcmpi(extension, "def") ||
+         if(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+               !strcmpi(extension, "inl") || !strcmpi(extension, "def") ||
                !strcmpi(extension, "odl") || !strcmpi(extension, "idl") ||
                !strcmpi(extension, "hpj") || !strcmpi(extension, "bat") ||
                !strcmpi(extension, "asm") || !strcmpi(extension, "asmx"))
@@ -597,9 +598,9 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<CIString, NameCollisi
       else if(filter == header)
       {
          if(!strcmpi(extension, "h") || !strcmpi(extension, "hpp") ||
-               !strcmpi(extension, "hxx") || !strcmpi(extension, "hm") ||
-               !strcmpi(extension, "inl") || !strcmpi(extension, "inc") ||
-               !strcmpi(extension, "xsd"))
+               !strcmpi(extension, "hh") || !strcmpi(extension, "hxx") ||
+               !strcmpi(extension, "hm") || !strcmpi(extension, "inl") ||
+               !strcmpi(extension, "inc") || !strcmpi(extension, "xsd"))
          {
             if(justHasChild)
                return true;
@@ -625,8 +626,9 @@ bool PrintNodes(File f, Project prj, ProjectNode node, Map<CIString, NameCollisi
       }
       else if(filter == other)
       {
-         if(!(!strcmpi(extension, "cpp") || !strcmpi(extension, "c") ||
-               !strcmpi(extension, "cxx") || !strcmpi(extension, "def") ||
+         if(!(!strcmpi(extension, "c") || !strcmpi(extension, "cpp") ||
+               !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
+               !strcmpi(extension, "inl") || !strcmpi(extension, "def") ||
                !strcmpi(extension, "odl") || !strcmpi(extension, "idl") ||
                !strcmpi(extension, "hpj") || !strcmpi(extension, "bat") ||
                !strcmpi(extension, "asm") || !strcmpi(extension, "asmx") ||
