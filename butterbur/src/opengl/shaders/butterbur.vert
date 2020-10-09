@@ -109,15 +109,32 @@ void main(void)
    #endif
 
 #if NORMALS_INV_SCALE
+
+#if MULTI_DRAW && FULL_3D_TRANSFORM
+   // TODO: Review this
+   mat3 m = mat3(modelview_matrix) * mat3(transform0, transform1, transform2);
+   mat3 normals_matrix = mat3(
+      normals_inv_scale2.x * m[0][0], normals_inv_scale2.x * m[0][1], normals_inv_scale2.x * m[0][2],
+      normals_inv_scale2.y * m[1][0], normals_inv_scale2.y * m[1][1], normals_inv_scale2.y * m[1][2],
+      normals_inv_scale2.z * m[2][0], normals_inv_scale2.z * m[2][1], normals_inv_scale2.z * m[2][2]);
+#else
    mat3 normals_matrix = mat3(
       normals_inv_scale2.x * modelview_matrix[0][0], normals_inv_scale2.x * modelview_matrix[0][1], normals_inv_scale2.x * modelview_matrix[0][2],
       normals_inv_scale2.y * modelview_matrix[1][0], normals_inv_scale2.y * modelview_matrix[1][1], normals_inv_scale2.y * modelview_matrix[1][2],
       normals_inv_scale2.z * modelview_matrix[2][0], normals_inv_scale2.z * modelview_matrix[2][1], normals_inv_scale2.z * modelview_matrix[2][2]);
+#endif
+
+#else
+
+#if MULTI_DRAW && FULL_3D_TRANSFORM
+   mat3 normals_matrix = mat3(modelview_matrix) * mat3(transform0, transform1, transform2);
 #else
    mat3 normals_matrix = mat3(
       modelview_matrix[0][0], modelview_matrix[0][1], modelview_matrix[0][2],
       modelview_matrix[1][0], modelview_matrix[1][1], modelview_matrix[1][2],
       modelview_matrix[2][0], modelview_matrix[2][1], modelview_matrix[2][2]);
+#endif
+
 #endif
 
       tNormal = normals_matrix * normal;
