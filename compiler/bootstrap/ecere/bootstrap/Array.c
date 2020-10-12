@@ -578,11 +578,6 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePoin
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(__ecerePointer___ecereNameSpace__ecere__com__Array->count ? __ecerePointer___ecereNameSpace__ecere__com__Array->array : (((void *)0)));
 }
 
-void __ecereMethod___ecereNameSpace__ecere__com__Array_Move(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * ip, struct __ecereNameSpace__ecere__com__IteratorPointer * afterIp)
-{
-__attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
-}
-
 int __ecereMethod___ecereNameSpace__ecere__com__Array_GetCount(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
@@ -713,6 +708,23 @@ if(__ecerePointer___ecereNameSpace__ecere__com__Array->count + 1 > __ecerePointe
 __ecerePointer___ecereNameSpace__ecere__com__Array->array = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__com__Array->array, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize * (__ecerePointer___ecereNameSpace__ecere__com__Array->count));
 }
 
+void __ecereMethod___ecereNameSpace__ecere__com__Array_Move(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * ip, struct __ecereNameSpace__ecere__com__IteratorPointer * afterIp)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+uint64 * it = (uint64 *)ip;
+uint64 * after = (uint64 *)afterIp;
+size_t size = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize;
+unsigned char * temp = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (size));
+
+memcpy(temp, it, size);
+if((void *)(it) < (void *)(after))
+memmove(it, ((unsigned char *)it) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), (unsigned char *)after - (unsigned char *)it);
+else
+memmove(((unsigned char *)after) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), after, (unsigned char *)it - (unsigned char *)after);
+memcpy(after, temp, size);
+(__ecereNameSpace__ecere__com__eSystem_Delete(temp), temp = 0);
+}
+
 void __ecereMethod___ecereNameSpace__ecere__com__Array_RemoveAll(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
@@ -736,7 +748,7 @@ else if(value > __ecerePointer___ecereNameSpace__ecere__com__Array->count)
 memset((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array + __ecerePointer___ecereNameSpace__ecere__com__Array->count * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize, 0, (value - __ecerePointer___ecereNameSpace__ecere__com__Array->count) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize);
 __ecerePointer___ecereNameSpace__ecere__com__Array->count = value;
 }
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Array_size), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Array_size);
+__ecereProp___ecereNameSpace__ecere__com__Array_size && __ecereProp___ecereNameSpace__ecere__com__Array_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Array_size) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__Array_size && __ecerePropM___ecereNameSpace__ecere__com__Array_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Array_size) : (void)0;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__Array_Set_minAllocSize(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
@@ -749,7 +761,7 @@ if(value > __ecerePointer___ecereNameSpace__ecere__com__Array->count)
 __ecerePointer___ecereNameSpace__ecere__com__Array->array = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__com__Array->array, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize * (value));
 __ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize = value;
 }
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Array_minAllocSize), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize);
+__ecereProp___ecereNameSpace__ecere__com__Array_minAllocSize && __ecereProp___ecereNameSpace__ecere__com__Array_minAllocSize->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Array_minAllocSize) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize && __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Array_minAllocSize) : (void)0;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Array_Free(struct __ecereNameSpace__ecere__com__Instance * this)

@@ -12281,12 +12281,28 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
       args = MkList();
       ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
       ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
-      ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
+      ListAdd(stmt.expressions,
+         MkExpCondition(
+            MkExpOp(
+               MkExpIdentifier(MkIdentifier(propName)), AND_OP, MkExpMember(MkExpIdentifier(MkIdentifier(propName)), MkIdentifier("selfWatchable"))),
+               MkListOne(
+                  MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args)),
+               MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), null), MkExpConstant("0"))
+         ));
+      ProcessExpressionType(stmt.expressions->last);
 
       args = MkList();
       ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
       ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
-      ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
+      ListAdd(stmt.expressions,
+         MkExpCondition(
+            MkExpOp(
+               MkExpIdentifier(MkIdentifier(propNameM)), AND_OP, MkExpMember(MkExpIdentifier(MkIdentifier(propNameM)), MkIdentifier("selfWatchable"))),
+               MkListOne(
+                  MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args)),
+               MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), null), MkExpConstant("0"))
+         ));
+      ProcessExpressionType(stmt.expressions->last);
 
       DeclareFunctionUtil(curExternal, "eInstance_FireSelfWatchers");
    }

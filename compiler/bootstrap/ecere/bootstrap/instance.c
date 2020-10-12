@@ -631,6 +631,14 @@ void __ecereNameSpace__ecere__com__queryMemInfo(char * string)
 {
 }
 
+void __ecereNameSpace__ecere__com__eSystem_LockMem()
+{
+}
+
+void __ecereNameSpace__ecere__com__eSystem_UnlockMem()
+{
+}
+
 struct __ecereNameSpace__ecere__sys__OldList
 {
 void *  first;
@@ -3647,7 +3655,7 @@ void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_classDesigner(st
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->classDesigner = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner);
+__ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner && __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner && __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner) : (void)0;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_objectClass(struct __ecereNameSpace__ecere__com__Instance * this, const char *  value)
@@ -3655,7 +3663,7 @@ void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_objectClass(stru
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->objectClass = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass);
+__ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass && __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass && __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass) : (void)0;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_isDragging(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
@@ -3663,7 +3671,7 @@ void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_isDragging(struc
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->isDragging = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging);
+__ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging && __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging && __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging) : (void)0;
 }
 
 struct __ecereNameSpace__ecere__com__SubModule;
@@ -7001,5 +7009,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16B
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF32toUTF8Len", "int ecere::sys::UTF32toUTF8Len(const unichar * source, int count, char * dest, int max)", __ecereNameSpace__ecere__sys__UTF32toUTF8Len, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16", "uint16 * ecere::sys::UTF8toUTF16(const char * source, int * wordCount)", __ecereNameSpace__ecere__sys__UTF8toUTF16, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::queryMemInfo", "void ecere::com::queryMemInfo(char * string)", __ecereNameSpace__ecere__com__queryMemInfo, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_LockMem", "void ecere::com::eSystem_LockMem(void)", __ecereNameSpace__ecere__com__eSystem_LockMem, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_UnlockMem", "void ecere::com::eSystem_UnlockMem(void)", __ecereNameSpace__ecere__com__eSystem_UnlockMem, module, 4);
 }
 
