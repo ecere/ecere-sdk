@@ -1179,7 +1179,7 @@ private:
    Pointf * texCoords;
    ColorRGBAf * colors;
    ColorRGB * lightVectors;
-   OldList groups;
+   public OldList groups;  // To be accessible faster...
    int nPrimitives;
    PrimitiveSingle * primitives;
    Vector3Df min, max;
