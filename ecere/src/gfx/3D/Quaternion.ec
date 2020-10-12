@@ -61,14 +61,17 @@ public struct Quaternion
 
    void RotationYawPitchRoll(const Euler euler)
    {
-      Quaternion rotation, result;
+      double cy = cos(euler.yaw   * 0.5);
+      double sy = sin(euler.yaw   * 0.5);
+      double cp = cos(euler.pitch * 0.5);
+      double sp = sin(euler.pitch * 0.5);
+      double cr = cos(euler.roll  * 0.5);
+      double sr = sin(euler.roll  * 0.5);
 
-      result.Yaw(euler.yaw);
-      rotation.Pitch(euler.pitch);
-      Multiply(rotation, result);
-      rotation.Roll(euler.roll);
-      result.Multiply(rotation, this);
-      Normalize(result);
+      w = cr * cp * cy - sr * sp * sy;
+      x = cr * sp * cy - sr * cp * sy;
+      y = cr * cp * sy + sr * sp * cy;
+      z = cr * sp * sy + sr * cp * cy;
    }
 
    void RotationEuler(Euler euler, EulerRotationOrder rotationOrder)
