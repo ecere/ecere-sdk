@@ -439,7 +439,7 @@ if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated < __ecerePoi
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated *= 2;
 if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated < __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size)
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size * 2;
-__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated));
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew0(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated));
 }
 }
 memcpy(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, buffer, writeSize);
@@ -585,7 +585,11 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 0;
 if(increase)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size += increase;
-__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->size));
+if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->size > __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated)
+{
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew0(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->size));
+}
 }
 return result;
 }
@@ -635,7 +639,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_openMode(struct __ec
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->openMode = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode);
+__ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode && __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode && __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode) : (void)0;
 }
 
 unsigned char *  __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_buffer(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -651,7 +655,7 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecereP
 
 (__ecereNameSpace__ecere__com__eSystem_Delete(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer), __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = 0);
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer);
+__ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer && __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer && __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer) : (void)0;
 }
 
 size_t __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_size(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -666,7 +670,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_size(struct __ecereN
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_size), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size);
+__ecereProp___ecereNameSpace__ecere__sys__TempFile_size && __ecereProp___ecereNameSpace__ecere__sys__TempFile_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_size) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size && __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size) : (void)0;
 }
 
 unsigned char * __ecereMethod___ecereNameSpace__ecere__sys__TempFile_StealBuffer(struct __ecereNameSpace__ecere__com__Instance * this)

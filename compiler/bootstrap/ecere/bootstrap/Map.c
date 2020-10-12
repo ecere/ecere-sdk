@@ -141,6 +141,10 @@ struct __ecereNameSpace__ecere__com__AVLNode * root;
 int count;
 } ecere_gcc_struct;
 
+extern void __ecereNameSpace__ecere__com__eSystem_LockMem(void);
+
+extern void __ecereNameSpace__ecere__com__eSystem_UnlockMem(void);
+
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
 extern int __ecereVMethodID_class_OnFree;
@@ -733,7 +737,7 @@ __internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(srcNode)) : (
 }));
 }
 }
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Map_mapSrc), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc);
+__ecereProp___ecereNameSpace__ecere__com__Map_mapSrc && __ecereProp___ecereNameSpace__ecere__com__Map_mapSrc->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Map_mapSrc) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc && __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc) : (void)0;
 }
 
 struct __ecereNameSpace__ecere__com__MapNode * __ecereMethod___ecereNameSpace__ecere__com__Map_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create, unsigned int * justAdded)
@@ -1108,6 +1112,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__Map_Free(struct __ecereNameSpac
 {
 struct __ecereNameSpace__ecere__com__MapNode * node = (void *)(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root);
 
+__ecereNameSpace__ecere__com__eSystem_LockMem();
 while(node)
 {
 if(node->left)
@@ -1148,6 +1153,7 @@ __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___
 node = parent;
 }
 }
+__ecereNameSpace__ecere__com__eSystem_UnlockMem();
 ((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root = (((void *)0));
 ((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count = 0;
 }
