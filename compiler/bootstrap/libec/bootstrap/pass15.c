@@ -66,7 +66,7 @@ extern int yydebug;
 
 enum yytokentype
 {
-IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375, PRAGMA = 376
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, INT128 = 294, FLOAT128 = 295, LONG = 296, SIGNED = 297, UNSIGNED = 298, FLOAT = 299, DOUBLE = 300, CONST = 301, VOLATILE = 302, VOID = 303, VALIST = 304, STRUCT = 305, UNION = 306, ENUM = 307, ELLIPSIS = 308, CASE = 309, DEFAULT = 310, IF = 311, SWITCH = 312, WHILE = 313, DO = 314, FOR = 315, GOTO = 316, CONTINUE = 317, BREAK = 318, RETURN = 319, IFX = 320, ELSE = 321, CLASS = 322, THISCLASS = 323, PROPERTY = 324, SETPROP = 325, GETPROP = 326, NEWOP = 327, RENEW = 328, DELETE = 329, EXT_DECL = 330, EXT_STORAGE = 331, IMPORT = 332, DEFINE = 333, VIRTUAL = 334, ATTRIB = 335, PUBLIC = 336, PRIVATE = 337, TYPED_OBJECT = 338, ANY_OBJECT = 339, _INCREF = 340, EXTENSION = 341, ASM = 342, TYPEOF = 343, WATCH = 344, STOPWATCHING = 345, FIREWATCHERS = 346, WATCHABLE = 347, CLASS_DESIGNER = 348, CLASS_NO_EXPANSION = 349, CLASS_FIXED = 350, ISPROPSET = 351, CLASS_DEFAULT_PROPERTY = 352, PROPERTY_CATEGORY = 353, CLASS_DATA = 354, CLASS_PROPERTY = 355, SUBCLASS = 356, NAMESPACE = 357, NEW0OP = 358, RENEW0 = 359, VAARG = 360, DBTABLE = 361, DBFIELD = 362, DBINDEX = 363, DATABASE_OPEN = 364, ALIGNOF = 365, ATTRIB_DEP = 366, __ATTRIB = 367, BOOL = 368, _BOOL = 369, _COMPLEX = 370, _IMAGINARY = 371, RESTRICT = 372, THREAD = 373, WIDE_STRING_LITERAL = 374, BUILTIN_OFFSETOF = 375, PRAGMA = 376, STATIC_ASSERT = 377
 };
 
 int yyparse(void);
@@ -9924,48 +9924,6 @@ else if(neededBy)
 FindSymbol(s, globalContext, globalContext, 0, 0);
 }
 
-static void CreateFireWatcher(struct __ecereNameSpace__ecere__com__Property * prop, struct Expression * object, struct Statement * stmt)
-{
-char propName[1024], propNameM[1024];
-char getName[1024], setName[1024];
-struct __ecereNameSpace__ecere__sys__OldList * args;
-
-DeclareProperty(curExternal, prop, setName, getName);
-strcpy(propName, "__ecereProp_");
-FullClassNameCat(propName, prop->_class->fullName, 0);
-strcat(propName, "_");
-FullClassNameCat(propName, prop->name, 1);
-strcpy(propNameM, "__ecerePropM_");
-FullClassNameCat(propNameM, prop->_class->fullName, 0);
-strcat(propNameM, "_");
-FullClassNameCat(propNameM, prop->name, 1);
-if(prop->isWatchable)
-{
-args = MkList();
-ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
-ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
-ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
-args = MkList();
-ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
-ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
-ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
-DeclareFunctionUtil(curExternal, "eInstance_FireWatchers");
-}
-{
-args = MkList();
-ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
-ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
-ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
-args = MkList();
-ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
-ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
-ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
-DeclareFunctionUtil(curExternal, "eInstance_FireSelfWatchers");
-}
-if(curFunction->propSet && !strcmp(curFunction->propSet->string, prop->name) && (!object || (object->type == 0 && !strcmp(object->__anon1.__anon1.identifier->string, "this"))))
-curFunction->propSet->fireWatchersDone = 1;
-}
-
 struct __ecereNameSpace__ecere__com__SubModule;
 
 struct __ecereNameSpace__ecere__com__SubModule
@@ -12864,6 +12822,50 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Assigning lis
 break;
 }
 }
+}
+
+static void CreateFireWatcher(struct __ecereNameSpace__ecere__com__Property * prop, struct Expression * object, struct Statement * stmt)
+{
+char propName[1024], propNameM[1024];
+char getName[1024], setName[1024];
+struct __ecereNameSpace__ecere__sys__OldList * args;
+
+DeclareProperty(curExternal, prop, setName, getName);
+strcpy(propName, "__ecereProp_");
+FullClassNameCat(propName, prop->_class->fullName, 0);
+strcat(propName, "_");
+FullClassNameCat(propName, prop->name, 1);
+strcpy(propNameM, "__ecerePropM_");
+FullClassNameCat(propNameM, prop->_class->fullName, 0);
+strcat(propNameM, "_");
+FullClassNameCat(propNameM, prop->name, 1);
+if(prop->isWatchable)
+{
+args = MkList();
+ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
+ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
+ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
+args = MkList();
+ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
+ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
+ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
+DeclareFunctionUtil(curExternal, "eInstance_FireWatchers");
+}
+{
+args = MkList();
+ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
+ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
+ListAdd(stmt->__anon1.expressions, MkExpCondition(MkExpOp(MkExpIdentifier(MkIdentifier(propName)), AND_OP, MkExpMember(MkExpIdentifier(MkIdentifier(propName)), MkIdentifier("selfWatchable"))), MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args)), MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))), MkExpConstant("0"))));
+ProcessExpressionType((*stmt->__anon1.expressions).last);
+args = MkList();
+ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
+ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
+ListAdd(stmt->__anon1.expressions, MkExpCondition(MkExpOp(MkExpIdentifier(MkIdentifier(propNameM)), AND_OP, MkExpMember(MkExpIdentifier(MkIdentifier(propNameM)), MkIdentifier("selfWatchable"))), MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args)), MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))), MkExpConstant("0"))));
+ProcessExpressionType((*stmt->__anon1.expressions).last);
+DeclareFunctionUtil(curExternal, "eInstance_FireSelfWatchers");
+}
+if(curFunction->propSet && !strcmp(curFunction->propSet->string, prop->name) && (!object || (object->type == 0 && !strcmp(object->__anon1.__anon1.identifier->string, "this"))))
+curFunction->propSet->fireWatchersDone = 1;
 }
 
 static unsigned int CheckExpressionType(struct Expression * exp, struct Type * destType, unsigned int skipUnitBla, unsigned int warnConst)

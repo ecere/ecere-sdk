@@ -1180,7 +1180,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(struct __ecereName
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__File->input = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_input), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_input);
+__ecereProp___ecereNameSpace__ecere__sys__File_input && __ecereProp___ecereNameSpace__ecere__sys__File_input->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_input) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__File_input && __ecerePropM___ecereNameSpace__ecere__sys__File_input->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_input) : (void)0;
 }
 
 void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -1195,7 +1195,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(struct __ecereNam
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__File->output = value;
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_output), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_output);
+__ecereProp___ecereNameSpace__ecere__sys__File_output && __ecereProp___ecereNameSpace__ecere__sys__File_output->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_output) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__File_output && __ecerePropM___ecereNameSpace__ecere__sys__File_output->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_output) : (void)0;
 }
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
@@ -1203,7 +1203,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereN
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
 FILE_set_buffered(__ecerePointer___ecereNameSpace__ecere__sys__File->input, __ecerePointer___ecereNameSpace__ecere__sys__File->output, value);
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_buffered), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_buffered);
+__ecereProp___ecereNameSpace__ecere__sys__File_buffered && __ecereProp___ecereNameSpace__ecere__sys__File_buffered->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__File_buffered) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__File_buffered && __ecerePropM___ecereNameSpace__ecere__sys__File_buffered->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__File_buffered) : (void)0;
 }
 
 unsigned int __ecereProp___ecereNameSpace__ecere__sys__File_Get_eof(struct __ecereNameSpace__ecere__com__Instance * this)

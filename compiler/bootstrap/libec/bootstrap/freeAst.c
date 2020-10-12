@@ -3009,6 +3009,8 @@ void FreeExternal(struct External * external)
 {
 struct TopoEdge * e;
 
+if(external->incoming)
+{
 while((e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
 (__extension__ ({
@@ -3037,6 +3039,9 @@ void * __ecerePtrToDelete = (e);
 __ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), e = 0);
 }
+}
+if(external->outgoing)
+{
 while((e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
 (__extension__ ({
@@ -3066,6 +3071,7 @@ void * __ecerePtrToDelete = (e);
 
 __ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), e = 0);
+}
 }
 switch(external->type)
 {

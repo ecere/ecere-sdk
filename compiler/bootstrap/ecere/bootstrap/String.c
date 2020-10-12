@@ -249,6 +249,8 @@ extern int sprintf(char * , const char * , ...);
 
 extern int strcasecmp(const char * , const char * );
 
+extern unsigned int isdigit(int);
+
 extern int strncmp(const char * , const char * , size_t n);
 
 extern int strncasecmp(const char * , const char * , size_t n);
@@ -262,8 +264,6 @@ extern char *  strchr(const char * , int);
 extern int atoi(const char * );
 
 extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
-
-extern unsigned int isdigit(int);
 
 extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 
@@ -546,6 +546,48 @@ else
 sprintf(string, "%.0f B", size);
 }
 
+unsigned int __ecereNameSpace__ecere__sys__ishexdigit(char x)
+{
+return (isdigit(x) || (x >= 'a' && x <= 'f') || (x >= 'A' && x <= 'F'));
+}
+
+double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)
+{
+int c, dig;
+double dec = 0, res = 0;
+int neg = 1;
+char ch;
+
+for(c = 0; string[c]; c++)
+{
+ch = string[c];
+if(ch == ' ')
+continue;
+if(ch == '-')
+{
+if(neg == -1)
+break;
+neg = -1;
+}
+else if((ch == '.') && !dec)
+dec = 10;
+else if(isdigit(ch))
+{
+dig = ch - '0';
+if(dec)
+{
+res += (double)dig / dec;
+dec *= 10;
+}
+else
+res = res * (double)10 + (double)dig;
+}
+else
+break;
+}
+return (double)neg * res;
+}
+
 char * __ecereNameSpace__ecere__sys__SearchString(const char * buffer, int start, const char * subStr, unsigned int matchCase, unsigned int matchWord)
 {
 if(buffer && subStr)
@@ -583,7 +625,7 @@ if(buffer && subStr)
 {
 int subLen = strlen(subStr);
 const char * ptr1 = buffer + maxLen - subLen;
-const char * ptr2 = buffer + maxLen - subLen - 1;
+const char * ptr2 = ptr1 - 1;
 int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
 
 for(; ptr1 >= buffer; ptr1--, ptr2--)
@@ -761,43 +803,6 @@ char string[20];
 
 __ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
 return (unsigned int)strtoul(string, (((void *)0)), 16);
-}
-
-double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)
-{
-int c, dig;
-double dec = 0, res = 0;
-int neg = 1;
-char ch;
-
-for(c = 0; string[c]; c++)
-{
-ch = string[c];
-if(ch == ' ')
-continue;
-if(ch == '-')
-{
-if(neg == -1)
-break;
-neg = -1;
-}
-else if((ch == '.') && !dec)
-dec = 10;
-else if(isdigit(ch))
-{
-dig = ch - '0';
-if(dec)
-{
-res += (double)dig / dec;
-dec *= 10;
-}
-else
-res = res * (double)10 + (double)dig;
-}
-else
-break;
-}
-return (double)neg * res;
 }
 
 char * __ecereNameSpace__ecere__sys__ChangeExtension(const char * string, const char * ext, char * output)
@@ -1823,7 +1828,7 @@ void __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string(struct __ecere
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
 __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(this, value, value ? strlen(value) : 0);
-__ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__ZString_string), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string);
+__ecereProp___ecereNameSpace__ecere__sys__ZString_string && __ecereProp___ecereNameSpace__ecere__sys__ZString_string->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__ZString_string) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string && __ecerePropM___ecereNameSpace__ecere__sys__ZString_string->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string) : (void)0;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * s)
@@ -1872,6 +1877,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripExtensi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeExtension", "char * ecere::sys::ChangeExtension(const char * string, const char * ext, char * output)", __ecereNameSpace__ecere__sys__ChangeExtension, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintSize", "void ecere::sys::PrintSize(char * string, uint64 size, int prec)", __ecereNameSpace__ecere__sys__PrintSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize", "void ecere::sys::PrintBigSize(char * string, double size, int prec)", __ecereNameSpace__ecere__sys__PrintBigSize, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ishexdigit", "bool ecere::sys::ishexdigit(char x)", __ecereNameSpace__ecere__sys__ishexdigit, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
