@@ -4,6 +4,10 @@ import "OpenGLDisplayDriver"
 
 #include "gl123es.h"
 
+#ifdef _DEBUG
+#define GLSTATS
+#endif
+
 #if defined(_GLES3)
 #include <GLES3/gl32.h>
 #endif
@@ -127,7 +131,7 @@ public struct GLArrayTexture
 
    void free()
    {
-#ifdef _DEBUG
+#ifdef GLSTATS
       GLStats::freeTextures(1, &texture);
 #endif
       if(texture)
@@ -167,12 +171,15 @@ public struct GLArrayTexture
       // Easy way to alternatively use a list of different textures?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       int target = GL_TEXTURE_2D_ARRAY;
-      /*if(texture)
+      if(texture)
       {
-         // TOCHECK: Why is calling glTexStorage3D a second time causing GL_INVALID_VALUE errors?
+         // glTexStorage* immutable-format textures need to be deleted before invoking it again
+#ifdef GLSTATS
+         GLStats::freeTextures(1, &texture);
+#endif
          glDeleteTextures(1, &texture);
          texture = 0;
-      }*/
+      }
 
 #if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
       if(!glVersion)
@@ -187,7 +194,8 @@ public struct GLArrayTexture
       numLevels = levels;
       width = w;
       height = h;
-      numLayers = count;
+      if(count)
+         numLayers = count;
 
       glBindTexture(target, texture);
 
@@ -199,10 +207,10 @@ public struct GLArrayTexture
 #ifdef _DEBUG
       CheckGLErrors(__FILE__,__LINE__);
 #endif
-      glTexStorage3D(target, levels, format, w, h, count);
+      glTexStorage3D(target, levels, format, w, h, numLayers);
 
-#ifdef _DEBUG
-      GLStats::allocTexture(texture, w, h * count, levels > 1);
+#ifdef GLSTATS
+      GLStats::allocTexture(texture, w, h * numLayers, levels > 1);
 #endif
 
 #ifdef _DEBUG
@@ -234,10 +242,11 @@ public struct GLArrayTexture
    {
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       GLArrayTexture tmp { };
+
       tmp._init(numLevels, width, height, numLayers, format, maxLevel);
       tmp.copy(this, targetFBO);
       glBindTexture(GL_TEXTURE_2D_ARRAY, 0); // TOCHECK:
-#ifdef _DEBUG
+#ifdef GLSTATS
       GLStats::freeTextures(1, &texture);
 #endif
       glDeleteTextures(1, &texture);
@@ -257,17 +266,19 @@ public struct GLArrayTexture
 #if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__)
       int level = 0;
       int w = width, h = height;
-      glBindTexture(target, src.texture);
+
+      // glCopyImageSubData doesn't use bound texture... glBindTexture(target, src.texture);
       for(level = 0; level < numLevels; level++)
       {
-         glCopyImageSubData(src.texture,
-            target, level, 0, 0, 0,
-            texture, target, level, 0, 0, 0,
+         // NOTE: On nVidia 455 linux drivers, copying lower mipmaps for compressed texture is not working
+         glCopyImageSubData(
+            src.texture, target, level, 0, 0, 0,
+            texture,     target, level, 0, 0, 0,
             w, h, src.numLayers);
-         w >>= 1;
-         h >>= 1;
+         if(w > 1) w >>= 1;
+         if(w > 1) h >>= 1;
       }
-      glBindTexture(target, 0);
+      // glBindTexture(target, 0);
 #else
       // FALLBACK for 3.0->4.2:
       int i;
@@ -280,6 +291,8 @@ public struct GLArrayTexture
       glBindTexture(target, texture);
       for(i = 0; i < src.numLayers; i++)
       {
+         /* FIXME: binding a compressed texture as a color attachment won't work
+                   Without ARB_copy_image, probably need to use PBO (glGetCompressedTexImage) */
          glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, src.texture, 0, i);
          glCopyTexSubImage3D(target, 0, 0, 0, i, 0, 0, width, height);
       }

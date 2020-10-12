@@ -2100,7 +2100,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(bitmap.driverData)
       {
          GLuint tex = (GLuint)(uintptr)bitmap.driverData;
-#ifdef _DEBUG
+#ifdef GLSTATS
          GLStats::freeTextures(1, &tex);
 #endif
          glDeleteTextures(1, &tex);

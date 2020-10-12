@@ -648,14 +648,14 @@ public struct GLFB
       }
       if(color)
       {
-#ifdef _DEBUG
+#ifdef GLSTATS
          GLStats::freeTextures(1, &color);
 #endif
          glDeleteTextures(1, &color);
       }
       if(depth)
       {
-#ifdef _DEBUG
+#ifdef GLSTATS
          GLStats::freeTextures(1, &depth);
 #endif
          glDeleteTextures(1, &depth);
