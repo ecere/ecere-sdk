@@ -1045,7 +1045,9 @@ public:
                            // TOCHECK: Shouldn't the overall bitmap width be set?
                            // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
                            at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
-                              MODELS_TEXTUREARRAY_SIZE /*512 /*bmp.width*/, MODELS_TEXTUREARRAY_SIZE /*512 /*bmp.height*/, 70 /*256*/,
+                              at->width  ? at->width  : MODELS_TEXTUREARRAY_SIZE,
+                              at->height ? at->height : MODELS_TEXTUREARRAY_SIZE,
+                              at->numLayers ? at->numLayers : 64,
                               internalFormat,
                               false);
                         }
