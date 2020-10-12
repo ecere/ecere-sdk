@@ -37,6 +37,31 @@ public struct Transform
    Quaternion orientation;
    Vector3Df scaling;
 
+   void getMatrix3x4f(float m[12])
+   {
+      Quaternion q = orientation;
+      Vector3Df s = scaling;
+      double xx = q.x*q.x, yy = q.y*q.y, zz = q.z*q.z;
+      double xy = q.x*q.y, xz = q.x*q.z, yz = q.y*q.z;
+      double wx = q.w*q.x, wy = q.w*q.y, wz = q.w*q.z;
+
+      m[ 0] = (float)(s.x * (1 - 2 * ( yy + zz )));
+      m[ 1] = (float)(s.x * (    2 * ( xy - wz )));
+      m[ 2] = (float)(s.x * (    2 * ( xz + wy )));
+
+      m[ 3] = (float)(s.y * (    2 * ( xy + wz )));
+      m[ 4] = (float)(s.y * (1 - 2 * ( xx + zz )));
+      m[ 5] = (float)(s.y * (    2 * ( yz - wx )));
+
+      m[ 6] = (float)(s.z * (    2 * ( xz - wy )));
+      m[ 7] = (float)(s.z * (    2 * ( yz + wx )));
+      m[ 8] = (float)(s.z * (1 - 2 * ( xx + yy )));
+
+      m[ 9] = (float)position.x;
+      m[10] = (float)position.y;
+      m[11] = (float)position.z;
+   }
+
    property Matrix
    {
       set
@@ -51,10 +76,32 @@ public struct Transform
       }
       get
       {
-         value.Identity();
-         value.Scale(scaling.x, scaling.y, scaling.z);
-         value.Rotate(orientation);
-         value.Translate(position.x, position.y, position.z);
+         double * m = value.array;
+         Quaternion q = orientation;
+         Vector3Df s = scaling;
+         double xx = q.x*q.x, yy = q.y*q.y, zz = q.z*q.z;
+         double xy = q.x*q.y, xz = q.x*q.z, yz = q.y*q.z;
+         double wx = q.w*q.x, wy = q.w*q.y, wz = q.w*q.z;
+
+         m[ 0] = s.x * (1 - 2 * ( yy + zz ));
+         m[ 1] = s.x * (    2 * ( xy - wz ));
+         m[ 2] = s.x * (    2 * ( xz + wy ));
+         m[ 3] = 0;
+
+         m[ 4] = s.y * (    2 * ( xy + wz ));
+         m[ 5] = s.y * (1 - 2 * ( xx + zz ));
+         m[ 6] = s.y * (    2 * ( yz - wx ));
+         m[ 7] = 0;
+
+         m[ 8] = s.z * (    2 * ( xz - wy ));
+         m[ 9] = s.z * (    2 * ( yz + wx ));
+         m[10] = s.z * (1 - 2 * ( xx + yy ));
+         m[11] = 0;
+
+         m[12] = position.x;
+         m[13] = position.y;
+         m[14] = position.z;
+         m[15] = 1;
       }
    }
 };
