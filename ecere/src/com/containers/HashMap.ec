@@ -96,14 +96,6 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
    void *tbl;
    public bool noRemResize; //noRemResize = 1;
 
-   HashMap()
-   {
-      int bits = 8;
-      uintsize size = mmHashRequiredSize(sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT);
-      tbl = malloc(size);
-      mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT, 0);
-   }
-
    KT GetKey(IteratorPointer pointer)
    {
       return (KT)(pointer ? ((HashMapEntry*)pointer)->key : 0);
@@ -154,10 +146,10 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    private static inline void resizeEx(IteratorPointer * movedEntry, bool forceResize)
    {
-      int bits, status = mmHashGetStatus(tbl, &bits);
+      int bits, status = tbl ? mmHashGetStatus(tbl, &bits) : MM_HASH_STATUS_NORMAL;
       if(status == MM_HASH_STATUS_MUSTGROW) bits++;
       else if(status == MM_HASH_STATUS_MUSTSHRINK && bits > 12) bits--;
-      else if(!forceResize || !noRemResize) return; // Must re-pack if we were not doing mem resize
+      else if(!forceResize || !noRemResize || !tbl) return; // Must re-pack if we were not doing mem resize
       {
          uint pageShift = 4;
          uintsize memSize = mmHashRequiredSize(sizeof(HashMapEntry), bits, pageShift);
@@ -173,8 +165,8 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
       resizeEx(movedEntry, true);
    }
 
-   IteratorPointer GetFirst() { return mmHashGetNext(tbl, null, &hashAccess); }
-   IteratorPointer GetLast()  { return mmHashGetPrev(tbl, null, &hashAccess); }
+   IteratorPointer GetFirst() { return tbl ? mmHashGetNext(tbl, null, &hashAccess) : null; }
+   IteratorPointer GetLast()  { return tbl ? mmHashGetPrev(tbl, null, &hashAccess) : null; }
    IteratorPointer GetPrev(IteratorPointer pointer) { return mmHashGetPrev(tbl, pointer, &hashAccess); }
    IteratorPointer GetNext(IteratorPointer pointer) { return mmHashGetNext(tbl, pointer, &hashAccess); }
 
@@ -184,7 +176,16 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
       {
          HashMapEntry * entry = null;
          HashMapEntry newEntry { pos, 0 };
-         int r = mmHashDirectAddEntry2(tbl, &hashAccess, &newEntry, bool::true, &entry);
+         int r;
+
+         if(!tbl)
+         {
+            int bits = 8;
+            uintsize size = mmHashRequiredSize(sizeof(HashMapEntry), bits, bits-1);
+            tbl = malloc(size);
+            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), bits, bits-1, 0);
+         }
+         r = mmHashDirectAddEntry2(tbl, &hashAccess, &newEntry, bool::true, &entry);
          if(r != MM_HASH_FOUND)
          {
             resizeEx((IteratorPointer *)&entry, false);
@@ -192,7 +193,7 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
          }
          return (IteratorPointer)entry;
       }
-      return mmHashDirectFindEntry(tbl, &hashAccess, &pos);
+      return tbl ? mmHashDirectFindEntry(tbl, &hashAccess, &pos) : null;
    }
 
    void Free()
@@ -218,12 +219,24 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    ~HashMap()
    {
-      free(tbl);
+      if(tbl) free(tbl);
       tbl = null;
    }
 
    public property int count
    {
       get { return tbl ? mmHashGetCount(tbl) : 0; }
+   }
+   public property int initSize
+   {
+      set
+      {
+         int bits = Max(8, log2i(value));  // size == 1, 1 bit causes crashes...
+         uintsize s = mmHashRequiredSize(sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT);
+         if(tbl) free(tbl);
+         tbl = malloc(s);
+         if(tbl)
+            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT, 0);
+      }
    }
 }
