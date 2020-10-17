@@ -1638,7 +1638,7 @@ class BClass : struct
    bool is_enum;
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
    bool isBaseString;
-   bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isAnchor;
+   bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isList, isAnchor;
    bool isSurface, isIOChannel, isWindow, isDataBox;
 
    bool hasPublicMembers;
@@ -1675,9 +1675,12 @@ class BClass : struct
       char * targsb; // w/ <>
       char * targsbm; // w/ <>
       bool isTemplate;
+      bool setTemplateComplete;
+      bool templateComplete;
       int typedTArgsCount;
       char * dataTypeString;
       bool classTypeIsTemplatable;
+      Array<String> templateParamNames;
    } cpp;
    void init(Class cl, Gen gen, AVLTree<String> allSpecs)
    {
@@ -1730,6 +1733,7 @@ class BClass : struct
       isGuiApplication  = cl.type == normalClass   && !strcmp(name, "GuiApplication");
       isContainer       = cl.type == normalClass   && !strcmp(name, "Container");
       isArray           = cl.type == normalClass   && !strcmp(name, "Array");
+      isList            = cl.type == normalClass   && !strcmp(name, "List");
       isAnchor          = cl.type == structClass   && !strcmp(name, "Anchor");
       isSurface         = cl.type == normalClass   && !strcmp(name, "Surface");
       isIOChannel       = cl.type == normalClass   && !strcmp(name, "IOChannel");
@@ -1920,6 +1924,9 @@ class BClass : struct
       delete cpp.targsb;
       delete cpp.targsbm;
       delete cpp.dataTypeString;
+      if(cpp.templateParamNames)
+         cpp.templateParamNames.Free();
+      delete cpp.templateParamNames;
       delete cTArgs;
       delete cumulationLineage;
       delete memberNames;
@@ -2381,7 +2388,7 @@ class BProperty : struct
    BClass c;
    BClass cUse;
    bool convNative;
-   bool convPointer;
+   int convPointer;
    BClass cConv;
    BClass cConvUse;
    BOutput outInHeader;
@@ -2403,6 +2410,7 @@ class BProperty : struct
    char * fpnSet;
    char * fpnGet;
    char * fpnIst; // IsSet
+   Type typeConv;
    void init(Property pt, BClass c, Gen gen)
    {
       this.pt = pt;
@@ -2411,13 +2419,15 @@ class BProperty : struct
       if(pt.conversion)
       {
          Type convType = ProcessTypeString(pt.name, false);
-         Type t = unwrapType(convType, &convNative, &convPointer);
-         if(!convNative)
+         Type t = unwrapPointerTypeNative(convType, &convPointer, &convNative);
+         if(convNative)
+            typeConv = convType;
+         else
          {
             cConv = ((CGen)gen).getClassFromType(t, false);
             cConvUse = reduceUnitClass(cConv.cl);
+            FreeType(convType);
          }
-         FreeType(convType);
          paramName = copyCamelCaseString(name);
       }
       cUse = reduceUnitClass(c.cl);
@@ -2472,6 +2482,7 @@ class BProperty : struct
    }
    void free()
    {
+      FreeType(typeConv);
       delete p; delete t;
       delete ptType;
       delete ptTypeUse;
@@ -2786,4 +2797,11 @@ bool checkLinearMapping(DataValueType type, void * fn, double * m, double * b)
       }
    }
    return result;
+}
+
+const char * bclassToSimpleClassTypeString(BClass c)
+{
+   if(c.isString)
+      return "string";
+   return classTypeToSimpleString(c.cl.type);
 }

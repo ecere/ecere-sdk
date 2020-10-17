@@ -171,11 +171,8 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(bitOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
-         {
-            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-         }
+         bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+         z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
       }
    }
    z.concatx("// enumClass", ln);
@@ -186,11 +183,8 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(enumOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
-         {
-            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-         }
+         bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+         z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
       }
    }
    z.concatx("// unitClass", ln);
@@ -201,11 +195,8 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(unitOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
-         {
-            bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
-            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-         }
+         bool skip = c.skipTypeDef/* || c.isUnichar*/ || c.isBool;
+         z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
       }
    }
    z.concatx("// systemClass", ln);
@@ -216,13 +207,10 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(systemOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
+         if(!c.isUnInt) // hack?
          {
-            if(!c.isUnInt) // hack?
-            {
-               bool skip = /*c.skipTypeDef || *//*c.isUnichar || */c.isBool;
-               z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-            }
+            bool skip = /*c.skipTypeDef || *//*c.isUnichar || */c.isBool;
+            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
          }
       }
    }
@@ -234,11 +222,8 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(structOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
-         {
-            bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-         }
+         bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+         z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
       }
    }
    z.concatx("// noHeadClass", ln);
@@ -249,11 +234,8 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(noHeadOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
-         {
-            bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-         }
+         bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+         z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
       }
    }
    z.concatx("// normalClass", ln);
@@ -264,14 +246,11 @@ static void cInCodeClassPointers(AST out, CGen g)
       while((cl = cla.next(normalOnly)))
       {
          BClass c = cl;
-         if(!c.skip && !cl.templateClass)
+         if(!c.isCharPtr)
          {
-            if(!c.isCharPtr)
-            {
-               bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
-               if(g_.lib.ecere && c.isWindow) skip = true;
-               z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
-            }
+            bool skip = c.skipTypeDef || c.isUnichar || c.isBool;
+            if(g_.lib.ecere && c.isWindow) skip = true;
+            z.concatx(skip ? "// " : "", "LIB_EXPORT ", g_.sym.__class, " * ", c.coSymbol, ";", ln);
          }
       }
    }
@@ -348,8 +327,7 @@ static void cInCodeInitClasses(AST out, CGen g)
       {
          bool content = false;
          BClass c = cl;
-         if(!cl.templateClass && !c.skip &&
-               !c.isBool && !c.isByte && !c.isCharPtr && !c.isUnInt) //!c.is_class) // !c.isString?
+         if(!cl.templateClass && !c.isBool && !c.isByte && !c.isCharPtr && !c.isUnInt) //!c.is_class) // !c.isString?
          {
             IterMethod met { cl };
             z.concatx(indent, c.coSymbol, " = eC_findClass(", findin, ", \"", cl.name, "\");", ln);

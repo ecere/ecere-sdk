@@ -163,29 +163,10 @@ void cppHardcodedContainer(BOutput o, BClass c)
    o.z.concatx(genloc__, "   inline C(bool) takeOut(TP_D d);", ln, ln);
 }
 
-void cppHardcodedArray(BOutput o, BClass c)
-{
-   o.z.concatx(ln); // TP_D is not available here
-   o.z.concatx(genloc__, "   TArray", c.cpp.targsb, " (std::initializer_list<TP_T> list) : TArray", c.cpp.targsb, " ()", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
-   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
-   o.z.concatx(genloc__, "         this->add(*it);", ln);
-   o.z.concatx(genloc__, "   }", ln, ln);
-
-   o.z.concatx(genloc__, "   TArray", c.cpp.targsb, " & operator =(std::initializer_list<TP_T> list)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      typename std::initializer_list<TP_T>::iterator it;", ln);
-   o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
-   o.z.concatx(genloc__, "         this->add(*it);", ln);
-   o.z.concatx(genloc__, "      return *this;", ln);
-   o.z.concatx(genloc__, "   }", ln);
-}
-
 void cppTmpDefineVirtualMethod      (CPPGen g, File f, bool prototype, bool template)
 {
    ZString z { allocType = heap };
-   cppMacroVirtualMethod(g, z, definition, prototype, template, 0, "n", "ncpp", "c", "t", "t2", "b", "r", "p0", "ep", "p", "d", 0);
+   cppMacroVirtualMethod(g, z, definition, prototype, template, false, 0, "n", "ncpp", "c", "t", "t2", "b", "r", "p0", "ep", "p", "d", 0);
    f.Puts(z._string);
    delete z;
    f.Print(ln);
@@ -410,7 +391,8 @@ void cppHardcodedCorePart1(CPPGen g, File f)
 
    f.PrintLn(genloc__, "template <typename T> struct TypeName  { static constexpr const char* get() { return \"int\";    } };");
    f.PrintLn(genloc__, "template <> struct TypeName<int>       { static constexpr const char* get() { return \"int\";    } };");
-   f.PrintLn(genloc__, "template <> struct TypeName<double>    { static constexpr const char* get() { return \"double\"; } };", ln);
+   f.PrintLn(genloc__, "template <> struct TypeName<double>    { static constexpr const char* get() { return \"double\"; } };");
+   f.PrintLn(genloc__, "template <> struct TypeName<const char *>    { static constexpr const char* get() { return \"const char *\"; } };", ln);
 
    f.PrintLn(genloc__, "template <typename T> static constexpr std::string_view stringifyConst = isConst<T>();");
    f.PrintLn(genloc__, "template <typename T> static constexpr std::string_view stringifyTypeName = TypeName<T>::get();");
@@ -454,7 +436,16 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    cppTmpDefinePropGet(g, f, { false, template });
 }
 
-void cppHardcodedCorePart2(CPPGen g, File f)
+void cppHardcodedCorePart2(CPPGen g, File f,
+      MacroMode mode,
+      bool prototype,
+      bool template,
+      const char * un,     // uppercase name
+      const char * cn,     // class
+      BClass c,
+      BClass cBase,
+      BVariant vClass
+)
 {
    f.PrintLn(genloc__, "extern \"C\" ", g_.sym.module, " ecere_init(", g_.sym.module, " fromModule);", ln);
 
@@ -545,6 +536,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "   return _class;");
    f.PrintLn(genloc__, "}", ln);
 
+/*
    f.PrintLn(genloc__, cpptemplateNoHeadDef);
    f.PrintLn(genloc__, "class TNHInstance");
    f.PrintLn(genloc__, "{");
@@ -553,6 +545,12 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }");
    f.PrintLn(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }");
    f.PrintLn(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }");
+   {
+      ZString z { allocType = heap };
+      cppMacroClassVirtualMethods(g, z, mode, true, template, true, 1, un, "NHInstance", c, cBase, vClass, 0);
+      f.Puts(z._string);
+      delete z;
+   }
    f.PrintLn(genloc__, "   TC * impl;");
    f.PrintLn(genloc__, "   TNHInstance() { impl = (TC*)Instance_new(*TCO); }");
    f.PrintLn(genloc__, "   TNHInstance(TC * _impl) { impl = _impl; }");
@@ -561,6 +559,7 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "      eC_delete(impl);");
    f.PrintLn(genloc__, "   }");
    f.PrintLn(genloc__, "};", ln);
+*/
 
    // TIH: Template Instance Holder
    f.PrintLn(genloc__, cpptemplateCPPClassDef);
@@ -626,92 +625,164 @@ void cppHardcodedCorePart2(CPPGen g, File f)
    f.PrintLn(genloc__, "};", ln);
 }
 
-void cppHardcodedCoreAfterInstancePart(BOutput o)
+void cppHardcodedCoreAfterInstancePart(CPPGen g, BOutput o,
+      MacroMode mode,
+      bool prototype,
+      bool template,
+      const char * un,     // uppercase name // TODOGDFOJDFGOIJDFG
+      const char * cn,     // class
+      BClass c,
+      BClass cBase,
+      BVariant vClass
+)
 {
-   o.z.concatx(genloc__, "struct Struct", ln);
-   o.z.concatx(genloc__, "{", ln);
-   o.z.concatx(genloc__, "   [[no_unique_address]] int _[0];", ln);
-   o.z.concatx(genloc__, "};", ln, ln);
+   if(prototype)
+   {
+      o.z.concatx(genloc__, cpptemplateNoHeadDef, ln);
+      o.z.concatx(genloc__, "class TNHInstance", ln);
+      o.z.concatx(genloc__, "{", ln);
+      o.z.concatx(genloc__, "public:", ln);
+      o.z.concatx(genloc__, "   void * operator new   (uintsize count) { return eC_new(count); }", ln);
+      o.z.concatx(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }", ln);
+      o.z.concatx(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }", ln);
+      o.z.concatx(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }", ln);
+   }
+      // todo: NHInstance_onFree_Functor + 9 other base class virtual methods
+      // eventual: do same thing for bit and unit class types
+      cppMacroClassVirtualMethods(g, o.z, mode, prototype, template, nohead, 1, un, "NHInstance", c, cBase, vClass, 0);
+   if(prototype)
+   {
+      o.z.concatx(genloc__, "   TC * impl;", ln);
+      o.z.concatx(genloc__, "   TNHInstance() { impl = (TC*)Instance_new(*TCO); }", ln);
+      o.z.concatx(genloc__, "   TNHInstance(TC * _impl) { impl = _impl; }", ln);
+      o.z.concatx(genloc__, "   ~TNHInstance()", ln);
+      o.z.concatx(genloc__, "   {", ln);
+      o.z.concatx(genloc__, "      eC_delete(impl);", ln);
+      o.z.concatx(genloc__, "   }", ln);
+      o.z.concatx(genloc__, "};", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Instance, TTT>::value, uint64>::type", ln);
-   o.z.concatx(genloc__, "  toTA(TTT & x) { C(DataValue) p = { }; p.p = x.impl; return p.ui64; }", ln, ln);
+      o.z.concatx(genloc__, "struct Struct", ln);
+      o.z.concatx(genloc__, "{", ln);
+      o.z.concatx(genloc__, "   [[no_unique_address]] int _[0];", ln);
+      o.z.concatx(genloc__, "   void * operator new   (uintsize count) { return eC_new(count); }", ln);
+      o.z.concatx(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }", ln);
+      o.z.concatx(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }", ln);
+      o.z.concatx(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }", ln);
+      o.z.concatx(genloc__, "};", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Instance, TTT>::value, uint64>::type", ln);
-   o.z.concatx(genloc__, "  toTA(TTT * x) { C(DataValue) p = { }; p.p = x ? x->impl : null; return p.ui64; }", ln, ln);
+      o.z.concatx(genloc__, "template <typename TSC>", ln);
+      o.z.concatx(genloc__, "struct TStruct : public Struct", ln);
+      o.z.concatx(genloc__, "{", ln);
+      o.z.concatx(genloc__, "   static C(Class) * _class;", ln);
+   }
+   // todo: Struct_onFree_Functor + 9 other base class virtual methods
+   // eventual: do same thing for bit and unit class types
+   cppMacroClassVirtualMethods(g, o.z, mode, prototype, template, _struct, 1, un, "Struct", c, cBase, vClass, 0);
+   /*
+   {
+      BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
+      while((m = itm.next(publicVirtual)))
+      {
+         m.init(itm.md, c.isInstance ? cBase : c, g);
+      }
+   }
+   */
+   if(prototype)
+   {
+      o.z.concatx(genloc__, "};", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Struct, TTT>::value, uint64>::type", ln);
-   o.z.concatx(genloc__, "  toTA(TTT x) { C(DataValue) p = { }; p.p = (void *)&x; return p.ui64; }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TSC> C(Class) * TStruct<TSC>::_class;", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_base_of<Instance, TTT>::value && !std::is_base_of<Struct, TTT>::value, uint64>::type", ln);
-   o.z.concatx(genloc__, "  toTA(TTT x) { C(DataValue) p = { }; p.p = (void *)x; return p.ui64; }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Instance, TTT>::value, uint64>::type", ln);
+      o.z.concatx(genloc__, "  toTA(TTT & x) { C(DataValue) p = { }; p.p = x.impl; return p.ui64; }", ln, ln);
 
-   o.z.concatx(genloc__, "template<> inline uint64 toTA(double x) { C(DataValue) p = { }; p.d = x; return p.ui64; }", ln);
-   o.z.concatx(genloc__, "template<> inline uint64 toTA(float x)  { C(DataValue) p = { }; p.f = x; return p.ui64; }", ln);
-   o.z.concatx(genloc__, "template<> inline uint64 toTA(int x)    { C(DataValue) p = { }; p.i = x; return p.ui64; }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Instance, TTT>::value, uint64>::type", ln);
+      o.z.concatx(genloc__, "  toTA(TTT * x) { C(DataValue) p = { }; p.p = x ? x->impl : null; return p.ui64; }", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename", ln);
-   o.z.concatx(genloc__, "   std::enable_if<std::is_pointer<TTT>::value &&", ln);
-   o.z.concatx(genloc__, "      std::is_base_of<Instance, typename std::remove_pointer<TTT>::type>::value, TTT>::type", ln);
-   o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
-   o.z.concatx(genloc__, "      p.ui64 = x;", ln);
-   o.z.concatx(genloc__, "      C(Instance) i = (C(Instance))p.p;", ln);
-   o.z.concatx(genloc__, "      return BINDINGS_CLASS(i) ? (TTT)INSTANCEL(i, i->_class) : (TTT)0;", ln);
-   o.z.concatx(genloc__, "   }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Struct, TTT>::value, uint64>::type", ln);
+      o.z.concatx(genloc__, "  toTA(TTT x) { C(DataValue) p = { }; p.p = (void *)&x; return p.ui64; }", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_pointer<TTT>::value &&", ln);
-   o.z.concatx(genloc__, "      std::is_base_of<Instance, TTT>::value, TTT>::type", ln);
-   o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
-   o.z.concatx(genloc__, "      p.ui64 = x;", ln);
-   o.z.concatx(genloc__, "      return TTT((C(Instance))p.p);", ln);
-   o.z.concatx(genloc__, "   }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_base_of<Instance, TTT>::value && !std::is_base_of<Struct, TTT>::value, uint64>::type", ln);
+      o.z.concatx(genloc__, "  toTA(TTT x) { C(DataValue) p = { }; p.p = (void *)x; return p.ui64; }", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_pointer<TTT>::value &&", ln);
-   o.z.concatx(genloc__, "      std::is_base_of<Struct, TTT>::value, TTT>::type", ln);
-   o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
-   o.z.concatx(genloc__, "      p.ui64 = x;", ln);
-   o.z.concatx(genloc__, "      return *(TTT *)p.p;", ln);
-   o.z.concatx(genloc__, "   }", ln, ln);
+      o.z.concatx(genloc__, "template<> inline uint64 toTA(double x) { C(DataValue) p = { }; p.d = x; return p.ui64; }", ln);
+      o.z.concatx(genloc__, "template<> inline uint64 toTA(float x)  { C(DataValue) p = { }; p.f = x; return p.ui64; }", ln);
+      o.z.concatx(genloc__, "template<> inline uint64 toTA(int x)    { C(DataValue) p = { }; p.i = x; return p.ui64; }", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_pointer<TTT>::value &&", ln);
-   o.z.concatx(genloc__, "      std::is_base_of<Struct, typename std::remove_pointer<TTT>::type>::value, TTT>::type", ln);
-   o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
-   o.z.concatx(genloc__, "   {", ln);
-   o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
-   o.z.concatx(genloc__, "      p.ui64 = x;", ln);
-   o.z.concatx(genloc__, "      return (TTT *)p.p;", ln);
-   o.z.concatx(genloc__, "   }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename", ln);
+      o.z.concatx(genloc__, "   std::enable_if<std::is_pointer<TTT>::value &&", ln);
+      o.z.concatx(genloc__, "      std::is_base_of<Instance, typename std::remove_pointer<TTT>::type>::value, TTT>::type", ln);
+      o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
+      o.z.concatx(genloc__, "   {", ln);
+      o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
+      o.z.concatx(genloc__, "      p.ui64 = x;", ln);
+      o.z.concatx(genloc__, "      C(Instance) i = (C(Instance))p.p;", ln);
+      o.z.concatx(genloc__, "      return BINDINGS_CLASS(i) ? (TTT)INSTANCEL(i, i->_class) : (TTT)0;", ln);
+      o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "template<typename TTT> inline", ln);
-   o.z.concatx(genloc__, "   typename std::enable_if<", ln);
-// o.z.concatx(genloc__, "      // std::is_pointer<TTT>::value &&", ln);
-   o.z.concatx(genloc__, "      !std::is_base_of<Instance, typename std::remove_pointer<TTT>::type>::value &&", ln);
-   o.z.concatx(genloc__, "      !std::is_base_of<Struct,   typename std::remove_pointer<TTT>::type>::value,", ln);
-   o.z.concatx(genloc__, "      TTT>::type", ln);
-   o.z.concatx(genloc__, "   fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return (TTT)p.p; }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_pointer<TTT>::value &&", ln);
+      o.z.concatx(genloc__, "      std::is_base_of<Instance, TTT>::value, TTT>::type", ln);
+      o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
+      o.z.concatx(genloc__, "   {", ln);
+      o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
+      o.z.concatx(genloc__, "      p.ui64 = x;", ln);
+      o.z.concatx(genloc__, "      return TTT((C(Instance))p.p);", ln);
+      o.z.concatx(genloc__, "   }", ln, ln);
 
-   o.z.concatx(genloc__, "template<> inline double fromTA<double>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.d; }", ln);
-   o.z.concatx(genloc__, "template<> inline float  fromTA<float>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.f; }", ln);
-   o.z.concatx(genloc__, "template<> inline int    fromTA<int>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.i; }", ln, ln);
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<!std::is_pointer<TTT>::value &&", ln);
+      o.z.concatx(genloc__, "      std::is_base_of<Struct, TTT>::value, TTT>::type", ln);
+      o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
+      o.z.concatx(genloc__, "   {", ln);
+      o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
+      o.z.concatx(genloc__, "      p.ui64 = x;", ln);
+      o.z.concatx(genloc__, "      return *(TTT *)p.p;", ln);
+      o.z.concatx(genloc__, "   }", ln, ln);
+
+      o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_pointer<TTT>::value &&", ln);
+      o.z.concatx(genloc__, "      std::is_base_of<Struct, typename std::remove_pointer<TTT>::type>::value, TTT>::type", ln);
+      o.z.concatx(genloc__, "   fromTA(uint64 x)", ln);
+      o.z.concatx(genloc__, "   {", ln);
+      o.z.concatx(genloc__, "      C(DataValue) p = { };", ln);
+      o.z.concatx(genloc__, "      p.ui64 = x;", ln);
+      o.z.concatx(genloc__, "      return (TTT *)p.p;", ln);
+      o.z.concatx(genloc__, "   }", ln, ln);
+
+      o.z.concatx(genloc__, "template<typename TTT> inline", ln);
+      o.z.concatx(genloc__, "   typename std::enable_if<", ln);
+   // o.z.concatx(genloc__, "      // std::is_pointer<TTT>::value &&", ln);
+      o.z.concatx(genloc__, "      !std::is_base_of<Instance, typename std::remove_pointer<TTT>::type>::value &&", ln);
+      o.z.concatx(genloc__, "      !std::is_base_of<Struct,   typename std::remove_pointer<TTT>::type>::value,", ln);
+      o.z.concatx(genloc__, "      TTT>::type", ln);
+      o.z.concatx(genloc__, "   fromTA(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return (TTT)p.p; }", ln, ln);
+
+      o.z.concatx(genloc__, "template<> inline double fromTA<double>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.d; }", ln);
+      o.z.concatx(genloc__, "template<> inline float  fromTA<float>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.f; }", ln);
+      o.z.concatx(genloc__, "template<> inline int    fromTA<int>(uint64 x) { C(DataValue) p = { }; p.ui64 = x; return p.i; }", ln, ln);
+   }
 }
 
 void cppHardcodedNativeTypeTemplates(CPPGen g, File f)
 {
    Array<const char *> natives { [ "char", "short", "int", "int64", "uint", "uint64", "float", "double" ] };
+   f.Print(ln);
+
    for(type : natives)
       f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(", type, " v) { return CO(", type, "); };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const char * v) { return CO(String); };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(char * v) { return CO(String); };");
    f.PrintLn(genloc__, "template<typename TTT> C(Class) * class_of(const Instance & v) { return v.impl ? v.impl->_class : v._cpp_class.impl; };", ln);
 
+   f.PrintLn(genloc__, "template<typename TTT> inline typename std::enable_if<");
+   f.PrintLn(genloc__, "   std::is_base_of<Struct, typename std::remove_reference<TTT>::type>::value, C(Class) *>::type");
+   f.PrintLn(genloc__, "   class_of(const TTT & v)");
+   f.PrintLn(genloc__, "{");
+   f.PrintLn(genloc__, "    return std::remove_reference_t<TTT>::_class;");
+   f.PrintLn(genloc__, "};", ln);
+
    f.PrintLn(genloc__, "#define classof(x) class_of<decltype(x)>((x))", ln);
 
-   f.PrintLn(genloc__, "template <typename TTT, C(Class) ** TCO> inline const void * vapass(TNHInstance<TTT, TCO> & f) { return f.impl; }");
+   f.PrintLn(genloc__, "template <typename TTT, C(Class) ** TCO> inline const void * vapass(TNHInstance<TTT, TCO> & f) { return f.impl; }", ln);
+
    {
       char ch = '*';
       for(type : natives)
@@ -721,8 +792,9 @@ void cppHardcodedNativeTypeTemplates(CPPGen g, File f)
             ch = '&';
       }
    }
+   f.PrintLn(genloc__, "inline const void * vapass(const Instance & f) { return f.impl; }");
+   f.PrintLn(genloc__, "inline const void * vapass(const Struct & f) { return &f; }", ln);
 
-   f.PrintLn(genloc__, "inline const void * vapass(const Instance & f) { return f.impl; }", ln);
    delete natives;
 }
 
