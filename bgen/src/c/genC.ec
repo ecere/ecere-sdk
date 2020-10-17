@@ -600,11 +600,11 @@ class CGen : Gen
    {
       Class cl = c.cl;
       bool created;
+      nspace.addContent(v);
       if(!c.skip)
       {
          Class clDep = null;
          BTemplaton tDep = null;
-         nspace.addContent(v);
          // if(!strcmp(c.cl.name, "StylingRuleBlockList")) debugBreakpoint();
          // if(!strcmp(c.cl.name, "CMSSList<StylingRuleBlock>")) debugBreakpoint();
          // if(!strcmp(c.cl.name, "FreeBlockMap")) debugBreakpoint();
@@ -634,8 +634,8 @@ class CGen : Gen
             else if(clDep && clDep != cl)
                v.processDependency(this, otypedef, otypedef, clDep);
          }
-         aClass(c, v, &created);
       }
+      aClass(c, v, &created);
    }
 
    void processTemplatons()
@@ -771,7 +771,7 @@ class CGen : Gen
       Class cl = c.cl;
       bool init;
       BOutput o = null;
-      if(!c.skipTypeDef && cl.type != unionClass) // wth is a union class anyway
+      if(!c.skip && !c.skipTypeDef && cl.type != unionClass)
       {
          DeclarationInit declStruct = null;
          Class clReduce = getUnitClassReducedToBase(cl);
@@ -860,7 +860,7 @@ class CGen : Gen
          }
       }
       // if(!strcmp(cl.name, "AttributeStore")) debugBreakpoint();
-      if(!cl.templateClass/* && (!lib.ecereCOM || !c.is_class)*/)
+      if(!c.skip && !cl.templateClass/* && (!lib.ecereCOM || !c.is_class)*/)
       {
          bool instanceClass = false;
          MethodGenFlag methodFlag = all;
@@ -2685,9 +2685,9 @@ static void addMembers(CGen g, Class cl, Class topClass, DataMember topMember, O
 void processTypeDependency(CGen g, Type _type, BOutputType from, BVariant vTop)
 {
    bool native;
-   bool pointer;
+   int pointer = 0;
    const char * n = null;
-   Type t = unwrapType(_type, &native, &pointer);
+   Type t = unwrapPointerTypeNative(_type, &pointer, &native);
    if(!native || (!t.isSigned && (n = nonTokenUnsignedTypeName(t, { }))))
    {
       Class clDep = null;
@@ -2741,7 +2741,7 @@ void processTypeDependency(CGen g, Type _type, BOutputType from, BVariant vTop)
       }
 
       if(clDep && classIsFromModule(clDep, g.mod, ec1ComponentsApp))
-         _processTypeDependency(g, from, vTop, pointer, clDep);
+         _processTypeDependency(g, from, vTop, pointer != 0, clDep);
    }
    if(_type.bitMemberSize) conmsg("check");
 }

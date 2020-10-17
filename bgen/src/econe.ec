@@ -243,14 +243,11 @@ Type unwrapPointerType(Type type, int * ptr)
    return t;
 }
 
-Type unwrapType(Type type, bool * isNative, bool *isPointer)
+Type unwrapPointerTypeNative(Type type, int * ptr, bool * isNative)
 {
-   bool native = false;
-   bool pointer = false;
    Type t = type;
-   while(t.kind == pointerType || t.kind == arrayType)
+   while((t.kind == pointerType && (!ptr || ++(*ptr) < 256)) || t.kind == arrayType)
    {
-      if(t.kind == pointerType) pointer = true;
       if(!t.type) conmsgs("check");
       if(t.kind == arrayType)
       {
@@ -263,11 +260,12 @@ Type unwrapType(Type type, bool * isNative, bool *isPointer)
       case voidType: case charType: case shortType: case intType:
       case int64Type: case longType: case floatType: case doubleType:
       case intPtrType: case intSizeType: case int128Type:
-         native = true;
+         if(isNative) *isNative = true;
          break;
       case structType: case classType: case subClassType: case thisClassType:
       case templateType:
       case functionType:
+         if(isNative) *isNative = false;
          break;
       case pointerType: case arrayType:
       case _BoolType:
@@ -277,8 +275,7 @@ Type unwrapType(Type type, bool * isNative, bool *isPointer)
       case methodType:
       case dummyType:
       default: conmsgs("check");
+         if(isNative) *isNative = false;
    }
-   if(isNative) *isNative = native;
-   if(isPointer) *isPointer = pointer;
    return t;
 }
