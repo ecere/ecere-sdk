@@ -33,14 +33,13 @@ public:
       TList<double> a;
       b = { 5.0, 3.2, 1.5 };
 
-      // todo:
-      // TList<const char *> c { "bgen: ", "Hello", "C++" };
-      // printLn(c);
+      TList<const char *> c { "bgen: ", "Hello", "C++" };
+      printLn(c);
 
       a.add(3.0);
       a.add(4.2);
       a.add(9.5);
-      // todo:
+
       printLn(a);
       // t_args_x<printLn>(a);
       {
@@ -65,9 +64,9 @@ public:
       light.diffuse = DefinedColor::lightCoral;
 
       if(sizeof(Point) == sizeof(C(Point)))
-         eC_printLn(CO(String), "sizeof(Point) == sizeof(C(Point))", null);
+         printLn("sizeof(Point) == sizeof(C(Point))");
       else
-         eC_printLn(CO(String), "no", null);
+         printLn("no");
 
    }
 
@@ -79,7 +78,8 @@ public:
       transform.scaling = { 100, 100, 100 };
       transform.orientation = Euler(50, 30, 50);
       cube.transform = transform;
-      eC_printLn(CO(Transform), &transform, null);
+
+      printLn(transform);
       cube.updateTransform();
       return true;
    }
@@ -91,14 +91,14 @@ public:
 
    void onResize(int w, int h)
    {
-      // eC_printLn(CO(String), "onResize", null);
+      // printLn("onResize");
       camera.setup(w, h, null);
       camera.update();
    }
 
    void onRedraw(Surface & surface)
    {
-      // eC_printLn(CO(String), "onRedraw", null);
+      // printLn("onRedraw");
       surface.clear(ClearType::depthBuffer);
       display->setLight(0, light);
       display->setCamera(surface, camera);
@@ -108,8 +108,7 @@ public:
 
    bool onKeyDown(Key key, unichar ch)
    {
-      // todo?: key == KeyCode::escape
-      if(key.code == KeyCode::escape)
+      if(key == KeyCode::escape)
          destroy(0);
       return true;
    }
