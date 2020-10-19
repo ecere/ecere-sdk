@@ -107,7 +107,7 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall
 
 ECFLAGS += -module $(MODULE)
 ECFLAGS += \
