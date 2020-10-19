@@ -2187,6 +2187,7 @@ class IDEWorkSpace : Window
    bool ProjectClose()
    {
       ideMainFrame.holdGuiConfigDataSaving();
+      projectView.holdGuiConfigDataSaving();
       projectView.visible = false;
       if((!projectView || projectView.created == false || projectView.Destroy(0)) && MenuWindowCloseAll(null, 0))
       {
@@ -2204,6 +2205,7 @@ class IDEWorkSpace : Window
          ide.AdjustMenus();
          ide.updateRecentMenus();
          ideMainFrame.resumeGuiConfigDataSaving();
+         projectView.resumeGuiConfigDataSaving();
          return true;
       }
       ideMainFrame.resumeGuiConfigDataSaving();

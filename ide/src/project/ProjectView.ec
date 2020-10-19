@@ -2755,4 +2755,48 @@ class ProjectView : Window
       }
       selection.Free(null);
    }
+
+   bool holding;
+
+   void holdGuiConfigDataSaving()
+   {
+      GuiConfigData gcd = ide.workspace ? ide.workspace.guiConfigData : null;
+      if(gcd)
+      {
+         holding = true;
+         gcd.controlSaving(false);
+         if(gcd.modified)
+         {
+            ide.workspace.Save();
+            gcd.modified = false;
+         }
+      }
+   }
+
+   void resumeGuiConfigDataSaving()
+   {
+      GuiConfigData gcd = ide.workspace ? ide.workspace.guiConfigData : null;
+      if(gcd)
+      {
+         gcd.applyWindowConfig(((GuiDataSavingController)controller).name, this);
+         gcd.controlSaving(true);
+         holding = false;
+      }
+   }
+
+   //   ec compilation issue: moving this assignment above any of the methods causes the following error:
+   //                               error: couldn't find member <method name> in class ProjectView
+   //                         this has happened for holdGuiConfigDataSaving and CreateNew methods
+   controller = GuiDataSavingController
+   {
+      controlled = this;
+      name = "projectView";
+
+      GuiConfigData getGuiConfigData()
+      {
+         if(ide.workspace && !ideMainFrame.holding)
+            return ide.workspace.guiConfigData;
+         return null;
+      }
+   };
 }

@@ -1080,6 +1080,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
    Workspace workspace = null;
 
    ideMainFrame.holdGuiConfigDataSaving();
+   ide.projectView.holdGuiConfigDataSaving();
 
    f = FileOpen(filePath, read);
    if(f)
@@ -1214,6 +1215,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
                MessageBox { type = ok, master = ide, contents = $"Workspace load file failed", text = $"Workspace Load File Error" }.Modal();
                delete workspace;
                ideMainFrame.resumeGuiConfigDataSaving();
+               ide.projectView.resumeGuiConfigDataSaving();
                return null;
             }
          }
@@ -1287,6 +1289,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
    }
 
    ideMainFrame.resumeGuiConfigDataSaving();
+   ide.projectView.resumeGuiConfigDataSaving();
 
    return workspace;
 }
