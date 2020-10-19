@@ -2234,7 +2234,7 @@ class IDEWorkSpace : Window
                anchor.bottom = bottomDistance;
                if(child._class == class(CodeEditor) || child._class == class(Designer))
                {
-                  anchor.left = (sheet.visible || (projectView && projectView.visible)) ? 300 : 0;
+                  anchor.left = (sheet.visible || (projectView && projectView.visible)) ? projectView.size.w : 0;
                   anchor.right = toolBoxVisible ? 150 : 0;
                }
                if(ide.projectView)

@@ -2606,6 +2606,9 @@ class CodeEditor : Window
          designer.fileName = title;
       }
 
+      if(ide.projectView)
+         anchor.left = ide.projectView.size.w;
+
       AdjustDebugMenus();
 
       for(c = 0; c < CodeObjectType::enumSize; c++)

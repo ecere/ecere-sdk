@@ -609,6 +609,16 @@ class ProjectView : Window
    MenuItem { fileMenu, $"Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
    // MenuItem { fileMenu, "Save As...", a, NotifySelect = MenuFileSaveAs };
 
+   void OnResize(int width, int height)
+   {
+      Window document;
+      for(document = ide.firstChild; document; document = document.next)
+      {
+         if(document.isDocument && document.anchor.left.distance && document.anchor.left.distance != size.w)
+            document.anchor.left = size.w;
+      }
+   }
+
    bool OnClose(bool parentClosing)
    {
       if(!parentClosing && visible)
