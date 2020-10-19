@@ -5763,7 +5763,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -Os -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+	 $(if $(DEBUG), -g, -Os -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DECERE_STATIC
 
 ECFLAGS += -module $(MODULE)

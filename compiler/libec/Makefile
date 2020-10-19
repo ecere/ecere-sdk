@@ -109,7 +109,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall
 
 CUSTOM1_PRJ_CFLAGS = \
 			 -I../bootstrap/include \
