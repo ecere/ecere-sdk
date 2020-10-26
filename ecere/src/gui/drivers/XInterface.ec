@@ -1952,6 +1952,13 @@ class XInterface : Interface
                   box.top = event->y;
                   box.right = box.left + event->width - 1;
                   box.bottom = box.top + event->height - 1;
+                  while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, EventChecker, (void *)Expose))
+                  {
+                     box.left = Min(box.left, event->x);
+                     box.top = Min(box.top, event->y);
+                     box.right = Max(box.right, event->x + event->width - 1);
+                     box.bottom = Max(box.bottom, event->y + event->height - 1);
+                  }
                   window.UpdateDirty(box);
                   break;
                }
