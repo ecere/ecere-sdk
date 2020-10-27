@@ -221,17 +221,18 @@ private:
       SkipEmpty();
 
       // TODO: Offer more flexible mechanism to customize JSON representation...
-      if(ch != '{' && type && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
+      if( type && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
       {
          if(type.type == structClass)
          {
-            customValuefication = true;
-            specialValuefication =
+            customValuefication = ch != '{' || strstr(type.name, "ProcessInputValue");
+            specialValuefication = customValuefication && (
                strstr(type.name, "FieldValue") ||
                strstr(type.name, "GeoJSONValue") ||
-               strstr(type.name, "MBGLFilterValue");
+               strstr(type.name, "MBGLFilterValue") ||
+               strstr(type.name, "ProcessInputValue") );
          }
-         else if(type.type == normalClass)
+         else if(type.type == normalClass && ch !='{')
          {
             if(strstr(type.name, "WFS3SpatialExtent") ||
                strstr(type.name, "WFS3MultiBoundingBox") ||
