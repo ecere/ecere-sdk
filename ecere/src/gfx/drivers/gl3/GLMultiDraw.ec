@@ -164,6 +164,10 @@ public struct GLArrayTexture
    {
       _init(levels, w, h, count, GL_R16, false);
    }
+   void initRGBUShort(int levels, int w, int h, int count)
+   {
+      _init(levels, w, h, count, GL_RGB16 /*UI*/, false);
+   }
 
    void _init(int levels, int w, int h, int count, int format, bool setMaxLevel)
    {
@@ -310,6 +314,11 @@ public struct GLArrayTexture
    void setLayerUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
    {
       setLayerFormat(level, x, y, layer, c, targetFBO, GL_RED, GL_UNSIGNED_SHORT);
+   }
+
+   void setLayerRGBUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
+   {
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGB, GL_UNSIGNED_SHORT);
    }
 
    void setLayerFormat(int level, int x, int y, int layer, byte * c, uint targetFBO, int format, int type)
