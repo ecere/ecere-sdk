@@ -1078,6 +1078,10 @@ private:
       {
          return GetJSONMap(objectType, (Map *)object);
       }
+      else if(!eCON && objectType && objectType.type == normalClass && eClass_IsDerived(objectType, class(Array)))
+      {
+         return GetArray(objectType, (Array *)object);
+      }
       else if(objectType && objectType.type == structClass)
       {
          memset(object, 0, objectType.structSize);
