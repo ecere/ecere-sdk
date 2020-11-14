@@ -1034,6 +1034,8 @@ struct TypeInfo
    BMethod m;     Method md;
    BClass c;      Class cl;
    BTemplaton t;
+
+   BProperty userDataProp;
 };
 
 struct NamespaceDependencyInfo

@@ -228,6 +228,6 @@ bool sourceFileProcessToFile(File out, File in, const char * pathToFile, Map<Str
       return true;
    }
    else if(!quiet)
-      Print("warning: sourceFileProcessToFile was unable to open ", pathToFile);
+      PrintLn("warning: sourceFileProcessToFile was unable to open ", pathToFile);
    return false;
 }
