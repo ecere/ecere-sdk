@@ -119,9 +119,7 @@ RESOURCES = \
 	src/c/c_header_ec_hardcoded.src \
 	src/c/c_header_ec_hardcoded_after.src \
 	src/c/c_make.src \
-	src/cpp/cpp_header_open.src \
-	src/cpp/cpp_header_close.src \
-	src/cpp/cpp_header_ec_macros.src \
+	src/cpp/cpp_makefile.src \
 	src/py/cffi_hardcode_ec_begin.src \
 	src/py/cffi_hardcode_ec_end.src \
 	src/py/py_functions_ec_begin.src \
@@ -192,7 +190,7 @@ ifndef NOSTRIP
 endif
 ifndef USE_RESOURCES_EAR
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/c/c_header_open.src src/c/c_header_close.src src/c/c_header_ec_macros.src src/c/c_header_ec_hardcoded.src src/c/c_header_ec_hardcoded_after.src src/c/c_make.src "src/c"
-	$(EAR) aw$(EARFLAGS) $(TARGET) src/cpp/cpp_header_open.src src/cpp/cpp_header_close.src src/cpp/cpp_header_ec_macros.src "src/cpp"
+	$(EAR) aw$(EARFLAGS) $(TARGET) src/cpp/cpp_makefile.src "src/cpp"
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/py/cffi_hardcode_ec_begin.src src/py/cffi_hardcode_ec_end.src src/py/py_functions_ec_begin.src src/py/py_functions_ec_end.src src/py/py_hardcode_application.src src/py/py_hardcode_array.src src/py/py_hardcode_container.src src/py/py_hardcode_guiapplication.src src/py/py_hardcode_module.src "src/py"
 endif
 else

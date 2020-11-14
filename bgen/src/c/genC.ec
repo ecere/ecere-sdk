@@ -278,16 +278,7 @@ class CGen : Gen
             sourceProcessorVars["DEP_LIBS"] = (lib.ecere || lib.ecereCOM) ? CopyString("") : CopyString(
                "	$(call _L,ecere) \\\n"
             );
-            if(!strcmp(lib.moduleName, "gnosis3")) // hack, todo
-            {
-               sourceProcessorVars["DEP_INCLUDES"] = CopyString(
-                  "PRJ_CFLAGS += \\\n"
-                  "   $(if $(ROUTING_INCLUDE), \\\n" // $(GNOSIS_SDK_SRC)/src/routing
-                  "      -I$(ROUTING_INCLUDE),) \\\n"
-                  "   $(if $(FONTMAN_INCLUDE), \\\n" // $(ECERE_SDK_SRC)/butterbur/src/imagesAndText
-                  "      -I$(FONTMAN_INCLUDE),) \\\n"
-               );
-            }
+            sourceProcessorVars["DEP_INCLUDES"] = CopyString("");
             sourceFileProcessToFile(o, null, ":src/c/c_make.src", sourceProcessorVars, false, false);
             delete o;
          }

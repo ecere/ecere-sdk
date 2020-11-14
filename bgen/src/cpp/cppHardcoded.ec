@@ -180,7 +180,7 @@ void cppTmpDefineIntRegisterMethod  (CPPGen g, File f, bool template)
 void cppTmpDefineRegisterMethod     (CPPGen g, File f, bool template)
 {
    ZString z { allocType = heap };
-   cppMacroRegisterMethod(g, z, definition, template, 0, "ns", "n", "bc", "c", "t", "r", "p", "ocl", "oi", "code", "ea", "rv", 0);
+   cppMacroRegisterMethod(g, z, definition, template, 0, "ns", "n", "bc", "c", "t", "r", "p", "ocl", "oi", "code", "ea", "rv", null, 0);
    f.Puts(z._string);
    delete z;
    f.Print(ln);
