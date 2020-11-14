@@ -386,26 +386,64 @@ class CPPGen : CGen
          generateHPP(this, f);
          delete f;
       }
-      f = FileOpen(cppFilePath, write);
-      if(f)
+      if(!options.headerOnly)
       {
-         generateCPP(this, f);
-         delete f;
+         f = FileOpen(cppFilePath, write);
+         if(f)
+         {
+            generateCPP(this, f);
+            delete f;
+         }
+         f = FileOpen(makefilePath, write);
+         if(f)
+         {
+            // hardcoded -- todo -- see if we can generate from dependencies :P
+            sourceProcessorVars["DEP_FILE_LISTS"] = !lib.ecere ? CopyString("") : CopyString(
+               "_DEP_OBJECTS = \\\n"
+               "	$(OBJ)eC$(O)\n"
+               "\n"
+               "_DEP_SOURCES = \\\n"
+               "	eC.cpp\n"
+               "\n"
+            );
+            sourceProcessorVars["DEP_RULES"] = !lib.ecere ? CopyString("") : CopyString(
+               "$(OBJ)eC$(O): eC.cpp\n"
+               "	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
+               "\n"
+            );
+            sourceProcessorVars["DEP_LIBS"] = CopyString("");
+            // sourceProcessorVars["DEP_INCLUDES"] = CopyString("");
+            sourceProcessorVars["DEP_INCLUDES"] = CopyString(
+               "PRJ_CFLAGS += \\\n"
+               "      -I../c \\\n"
+            );
+            sourceFileProcessToFile(f, null, ":src/cpp/cpp_makefile.src", sourceProcessorVars, false, false);
+            delete f;
+         }
       }
       {
-         char * cppFilePathTmp = cppFilePath;
          char * hppFilePathTmp = hppFilePath;
-         cppFilePath = null;
+         char * cppFilePathTmp = cppFilePath;
+         char * makefileNameTmp = makefilePath;
          hppFilePath = null;
+         cppFilePath = null;
+         makefilePath = null;
          prepPaths(false);
-         if(FileExists(cppFilePath))
-            DeleteFile(cppFilePath);
          if(FileExists(hppFilePath))
             DeleteFile(hppFilePath);
-         MoveFile(cppFilePathTmp, cppFilePath);
          MoveFile(hppFilePathTmp, hppFilePath);
-         delete cppFilePathTmp;
+         if(!options.headerOnly)
+         {
+            if(FileExists(cppFilePath))
+               DeleteFile(cppFilePath);
+            MoveFile(cppFilePathTmp, cppFilePath);
+            if(FileExists(makefilePath))
+               DeleteFile(makefilePath);
+            MoveFile(makefileNameTmp, makefilePath);
+         }
          delete hppFilePathTmp;
+         delete cppFilePathTmp;
+         delete makefileNameTmp;
       }
    }
 
@@ -413,8 +451,12 @@ class CPPGen : CGen
    {
       if(!quiet)
       {
-         PrintLn(lib.verbose > 1 ? "    " : "", cppFileName);
          PrintLn(lib.verbose > 1 ? "    " : "", hppFileName);
+         if(!options.headerOnly)
+         {
+            PrintLn(lib.verbose > 1 ? "    " : "", cppFileName);
+            PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
+         }
       }
    }
 
@@ -426,17 +468,29 @@ class CPPGen : CGen
       strcpy(path, dir);
       len = strlen(path);
       strcpy(name, lib.bindingName);
-      ChangeExtension(name, "cpp", name);
-      PathCatSlash(path, name);
-      if(tmp) strcat(path, ".tmp");
-      delete cppFileName; cppFileName = CopyString(name);
-      delete cppFilePath; cppFilePath = CopyString(path);
       ChangeExtension(name, "hpp", name);
-      path[len] = 0;
       PathCatSlash(path, name);
       if(tmp) strcat(path, ".tmp");
       delete hppFileName; hppFileName = CopyString(name);
       delete hppFilePath; hppFilePath = CopyString(path);
+      if(!options.headerOnly)
+      {
+         path[len] = 0;
+         ChangeExtension(name, "cpp", name);
+         PathCatSlash(path, name);
+         if(tmp) strcat(path, ".tmp");
+         delete cppFileName; cppFileName = CopyString(name);
+         delete cppFilePath; cppFilePath = CopyString(path);
+
+         path[len] = 0;
+         name[strlen(lib.bindingName)] = 0;
+         strcat(name, "_cpp");
+         ChangeExtension(name, "Makefile", name);
+         PathCatSlash(path, name);
+         if(tmp) strcat(path, ".tmp");
+         delete makefileName; makefileName = CopyString(name);
+         delete makefilePath; makefilePath = CopyString(path);
+      }
       delete name;
       delete path;
    }
@@ -852,7 +906,7 @@ static void generateCPP(CPPGen g, File f)
       if(g.options.expandMacros)
       {
          ZString z { allocType = heap };
-         cppMacroClassRegistration(g, z, expansion, 2, g.cInstance, g.cclass, g.cInstance, 0);
+         cppMacroClassRegistration(g, z, expansion, 2, g.cInstance, g.cclass, g.cInstance, null, 0);
          f.PrintLn(ln, "{");
          f.Puts(z._string);
          f.PrintLn("}");
@@ -977,6 +1031,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
       BOutput o2 = null;
       BOutput o3 = null;
       BOutput oT = null;
+      BProperty userDataProp = null;
       if((c.cl.type == normalClass || c.cl.type == noHeadClass || c.cl.type == structClass || c.cl.type == bitClass || c.cl.type == unitClass || c.cl.type == enumClass) &&
             !(g.lib.ecereCOM && (c.isSurface || /*c.isIOChannel || */c.isWindow || c.isDataBox)))
       {
@@ -1017,6 +1072,39 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             case noHeadClass:
             case systemClass:
          }*/
+
+         if(!c.isInstance) // temporary if
+         { // copied from genPython.ec -- have a common function?
+            bool check1 = false;
+            IterMethod itm { c.cl };
+            // debugBreakpoint();
+            while(itm.next(publicVirtual))
+            {
+               if(!itm.md.dataType) ProcessMethodType(itm.md);
+               if(itm.md.dataType)
+               {
+                  bool thisClass = itm.md.dataType.thisClass && itm.md.dataType.thisClass.string;
+                  bool anyObject = thisClass && !strcmp(itm.md.dataType.thisClass.string, "class");
+                  if(anyObject)
+                  {
+                     check1 = true; // has a method who's this-type is any_object. ex.: virtual bool any_object::DelayExpired(void);
+                     break;
+                  }
+               }
+            }
+            if(check1)
+            {
+               BProperty p; IterProperty itp { c.cl };
+               while((p = itp.next(publicOnly)))
+               {
+                  if(p.pt.dataType.kind == pointerType && p.pt.dataType.type.kind == voidType)
+                  {
+                     userDataProp = p; // select the first void * type property
+                     break;
+                  }
+               }
+            }
+         }
 
          while((m = itm.next(publicVirtual))) { m.init(itm.md, c.isInstance ? cBase : c, g); if((l = strlen(m.mname)) > maxLen) maxLen = l;}
 
@@ -1255,7 +1343,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             }
             else if(c.cl.type == normalClass)
             {
-               cppMacroConstructClass(g, o.z, mode, template, 1, c.name, /*baseClass*/gbaseClassString, t, 0);
+               cppMacroConstructClass(g, o.z, mode, template, 1, c.name, /*baseClass*/gbaseClassString, t, userDataProp, 0);
                // if(mode != expansion)
                {
                   if(c.isApplication)
@@ -1370,16 +1458,24 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                true)
                genOrderedPublicMembersInitializers(g, c, v, cn, o, o2);
 
+            if(userDataProp)
+            {
+               o.z.concatx(ln);
+               o.z.concatx(genloc__, "private:", ln);
+               o.z.concatx(genloc__, indents(1), "void * _", userDataProp.name, ";", ln);
+               o.z.concatx(genloc__, "public:", ln);
+            }
+
             if(c.cl.type == noHeadClass)
             {
                String tn = PrintString(tcn, "<TC, TCO>");
-               processProperties(g, c, c.cpp.name, tn, true, o);
+               processProperties(g, c, null, c.cpp.name, tn, true, o);
                processDataMembers(g, c, v, c.cpp.name, true, o);
                delete tn;
             }
             else if(!c.isInstance && !c.isModule && c.cl.type != enumClass)
             {
-               processProperties(g, c, c.cpp.name, cn, true, o);
+               processProperties(g, c, null, c.cpp.name, cn, true, o);
                processDataMembers(g, c, v, c.cpp.name, true, o);
             }
 
@@ -1449,7 +1545,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                         template ? mode == expansion ? c.cpp.tprototype : c.cpp.tprototype/*m*/ : "",
                         template ? mode == expansion ? c.cpp.targsb : c.cpp.targsbm : "", 0);
                   oT.z.concatx(genloc__, "{", ln);
-                  cppMacroClassRegistration(g, oT.z, configuration, 2, c, cBase, c, 0);
+                  cppMacroClassRegistration(g, oT.z, configuration, 2, c, cBase, c, userDataProp, 0);
                   oT.z.concatx(genloc__, "}", ln);
                }
             }
@@ -1469,13 +1565,13 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
             else if(c.cl.type == noHeadClass)
             {
                String tn = PrintString(tcn, "<TC, TCO>");
-               processProperties(g, c, c.cpp.name, tn, false, o2);
+               processProperties(g, c, userDataProp, c.cpp.name, tn, false, o2);
                processDataMembers(g, c, v, c.cpp.name, false, o2);
                delete tn;
             }
             else if(!c.isModule && c.cl.type != enumClass)
             {
-               processProperties(g, c, c.cpp.name, cn, false, o2);
+               processProperties(g, c, userDataProp, c.cpp.name, cn, false, o2);
                processDataMembers(g, c, v, c.cpp.name, false, o2);
             }
          }
@@ -2720,7 +2816,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
    // delete lineage;
 }
 
-static void processProperties(CPPGen g, BClass c, const char * cn, const char * tcn, bool prototype, BOutput o)
+static void processProperties(CPPGen g, BClass c, BProperty userDataProp, const char * cn, const char * tcn, bool prototype, BOutput o)
 {
    bool content = false;
    for(e : c.cumulationLineage)
@@ -2731,7 +2827,7 @@ static void processProperties(CPPGen g, BClass c, const char * cn, const char * 
       {
          const char * mn = pt.name; // member name
          Type t = pt.dataType ? pt.dataType : (pt.dataType = resolveDataTypeStringInTemplatesContext(c2, pt.dataTypeString, true));
-         TypeInfo ti { type = t, typeString = pt.dataTypeString, c = c2, cl = c2.cl, pt = pt };
+         TypeInfo ti { type = t, typeString = pt.dataTypeString, c = c2, cl = c2.cl, pt = pt, userDataProp = userDataProp };
          if(skipPointerToStructClass) continue;
          if(!content)
          {
@@ -4095,9 +4191,16 @@ static void commonMemberHandling(
                   cppGetClassInfoFromType(ti.type.type, false, null/*&clDataType*/, null/*&cDataType*/, null, &isString, null) : ct;
             bool ptr = ti.type.kind == pointerType && ti.type.type.kind == classType && ct2 == structClass;
             if(isProp)
-               component.code = { [
-                  // PrintString(lc, ln, genloc__, indents(ind), ocn, "_set_", mn, "(", implStringThis, ", v);") ] };
-                     PrintString(lc, ln, genloc__, indents(ind), ocn, "_set_", mn, "(", implStringThis, ", ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", addAmp ? "&" : "", toTA ? toTA : "", "v", toTA ? ")" : "", addImpl ? ".impl" : "", ");") ] };
+            {
+               if(ti.userDataProp && ti.userDataProp.pt == ti.pt)
+                  component.code = { [
+                        PrintString(lc, ln, genloc__, indents(ind), "if(self)"),
+                        PrintString(lc, ln, genloc__, indents(ind + 1), "self->_", ti.userDataProp.name, " = v;") ] };
+               else
+                  component.code = { [
+                     // PrintString(lc, ln, genloc__, indents(ind), ocn, "_set_", mn, "(", implStringThis, ", v);") ] };
+                        PrintString(lc, ln, genloc__, indents(ind), ocn, "_set_", mn, "(", implStringThis, ", ", cast ? "(" : "", cast ? cType.cSymbol : "", cast ? ")" : "", addAmp ? "&" : "", toTA ? toTA : "", "v", toTA ? ")" : "", addImpl ? ".impl" : "", ");") ] };
+            }
             else if(c.cl.type == normalClass)
             {
                if(ctX == unitClass || ctX == bitClass)
@@ -4158,7 +4261,10 @@ static void commonMemberHandling(
             if(isProp && !different) // when different == true we access the data member directly instead of using the property?
             {
                if(fromTA && (addAmp || addImpl)) debugBreakpoint();
-               if(addAmp)
+               if(ti.userDataProp && ti.userDataProp.pt == ti.pt)
+                  component.code = { [
+                     PrintString(lc, ln, genloc__, indents(ind), "return self ? self->_", ti.userDataProp.name, " : null;") ] };
+               else if(addAmp)
                   component.code = { [
                      PrintString(lc, ln, genloc__, indents(ind), tn, tnp2 ? tnp2 : "", " value;", ocn, "_get_", mn, "(", baseCast ? baseCast : "", needAmp ? "&" : "", "self->impl", ", ", vAmp ? "&" : "", "value", addImpl ? ".impl" : "", ");"),
                      PrintString(lc, ln, genloc__, indents(ind), "return value;") ] };
@@ -4689,7 +4795,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                if(t.thisClass && t.thisClass.string)
                {
                   if(!strcmp(t.thisClass.string, "class"))
-                     firstParam = processTypeStringOk("Instance"); // processTypeStringOk("any_object");
+                     firstParam = processTypeStringOk("any_object");
                   else
                      firstParam = processTypeStringOk(t.thisClass.string);
                }
@@ -5772,6 +5878,7 @@ static void cppMacroIntConstructClass(
    cppMacroMoveConstructors(g, o, definition, template, ind,
          "c",
          "t",
+         null,
          0); }
 
 static void cppMacroMoveConstructors(
@@ -5782,6 +5889,7 @@ static void cppMacroMoveConstructors(
       uint ind,            // indentation
       const char * c,      // class name
       const char * t,      // template params
+      BProperty userDataProp,
       void * unused)
 {
    // todo: switch to own instead of intConstructClass
@@ -5808,6 +5916,9 @@ static void cppMacroMoveConstructors(
             o.concatx(genloc__, indents(ind), "   self->mustFree = i.mustFree; /* checking: should this be in all these instances? */", lc, ln);
             o.concatx(genloc__, indents(ind), "   i.impl = null;", lc, ln);
             o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
+            // tocheck: is this needed?
+            // if(userDataProp)
+            //    o.concatx(genloc__, indents(ind), "   ", userDataProp.fpnSet, "(self->impl, self);", lc, ln);
             o.concatx(genloc__, indents(ind), "}", lc, ln/*, lc, ln*/);
             o.concatx(genloc__, indents(ind), "inline ", c, unpk, te ? t : "", " & operator= (", c, unpk, te ? t : "", " && i)", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
@@ -5830,6 +5941,9 @@ static void cppMacroMoveConstructors(
             o.concatx(genloc__, indents(ind), "   self->mustFree = i.mustFree; /* checking: should this be in all these instances? */", lc, ln);
             o.concatx(genloc__, indents(ind), "   i.impl = null;", lc, ln);
             o.concatx(genloc__, indents(ind), "   i.vTbl = null;", lc, ln);
+            // tocheck: is this needed?
+            // if(userDataProp)
+            //    o.concatx(genloc__, indents(ind), "   ", userDataProp.fpnSet, "(self->impl, self);", lc, ln);
             o.concatx(genloc__, indents(ind), "   return *this;", lc, ln);
             o.concatx(genloc__, indents(ind), "}");
             if(smod != expansion) o.concatx(ln);
@@ -5852,6 +5966,7 @@ static void cppMacroMoveConstructors(
          "c",
          "b",
          "t",
+         null,
          0); }
 
 static void cppMacroConstructClass(
@@ -5863,6 +5978,7 @@ static void cppMacroConstructClass(
       const char * c,      // c?
       const char * b,      // b?
       const char * t,      // t?
+      BProperty userDataProp,
       void * unused)
 {
    // todo?: own bit for template vs normal
@@ -5883,7 +5999,7 @@ static void cppMacroConstructClass(
             char * tc = PrintString("T", sc, c);
             char * tt = smod == expansion ? CopyString(t) : PrintString(" UNPACK ", t, " ");
             // todo: expansion
-            cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, te, ind, /*c*/tc, t, 0);
+            cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, te, ind, /*c*/tc, t, userDataProp, 0);
             o.concatx(lc, ln);
             o.concatx(genloc__, indents(ind), tc, " ", tt, "() : ", tc, "((C(Instance))Instance_newEx(ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ").impl, false), ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ")) { }", lc, ln);
             o.concatx(genloc__, indents(ind), "INSTANCE_VIRTUAL_METHODS_PROTO(", tc, ")", lc, ln);
@@ -5917,12 +6033,17 @@ static void cppMacroConstructClass(
          }
          else
          {
-            cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, te, ind, c, t, 0);
+            cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, te, ind, c, t, userDataProp, 0);
             o.concatx(lc, ln);
             if(!strcmp(c, "Application") || !strcmp(c, "GuiApplication"))
                o.concatx(genloc__, indents(ind), "inline ", c, "() : ", c, "(eC_init_CALL(__LINK_ECERE__)) { }", ln);
             else
-               o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_cpp_class.impl, false), _cpp_class) { }", lc, ln);
+            {
+               o.concatx(genloc__, indents(ind), c, "() : ", c, "((", g_.sym.instance, ")Instance_newEx(_cpp_class.impl, false), _cpp_class) { ");
+               if(userDataProp)
+                  o.concat("Timer_set_userData(this->impl, this); ");
+               o.concatx("}", lc, ln);
+            }
             //o.concatx(genloc__, indents(ind + 1), "_CONSTRUCT(", c, ", ", b, ")", ln);
             cppMacroIntConstructClass(g, o, smod == definition ? encapsulation : configuration, template, ind, c, b, 0);
             if(smod != expansion) o.concatx(ln);
@@ -6061,6 +6182,7 @@ static void cppMacroClassRegister(
          c,
          cBase,
          vClass,
+         null,
          0); }
 
 static void cppMacroClassRegistration(
@@ -6071,6 +6193,7 @@ static void cppMacroClassRegistration(
       BClass c,
       BClass cBase,
       BVariant vClass,
+      BProperty userDataProp,
       void * unused)
 {
    MacroMode smod = mode == configuration ? g.macroModeBits.classRegistration ? expansion : use : mode; // selected mode
@@ -6195,21 +6318,25 @@ static void cppMacroClassRegistration(
                   switch(t.classObjectType)
                   {
                      case none:
-                        /*if(t.thisClass && t.thisClass.registered)
+                     {
+                        /*BClass cReg = null;
+                        if(t.thisClass && t.thisClass.registered)
                         {
-                           Class clReg = t.thisClass.registered;
-                           BClass cReg = clReg;
-                           p.concatx("C(", cReg.is_class ? "Instance" : clReg.name, ")");
-                        }
-                        else if(!strcmp(cn, "Application"))
+                           cReg = t.thisClass.registered;
+                           if(cReg.is_class)
+                              nthis = "anyObject";
+                        }*/
+                        /*else if(!strcmp(cn, "Application"))
                            p.concatx("C(Instance)");
                         else
                            p.concatx("C(", cn, ")");
                         */
+                        // if(!nthis)
                         nthis = "o_";
                         // p.concatx(" ", nthis);
                         // comma = true;
                         break;
+                     }
                      //case classPointer: conmsg("ClassObjectType::", t.classObjectType, " is not handled here. todo?"); break;
                      case typedObject:
                      {
@@ -6326,7 +6453,7 @@ static void cppMacroClassRegistration(
                   code.concatx(scptr ? "&" : "", "fn(");
                   if(ptrI)
                   {
-                     code.concat("*i");
+                     code.concatx(userDataProp ? "i->_" : "*i", userDataProp ? userDataProp.name : "");
                      comma = true;
                   }
                   code.concat((args = cppParams(c, argsInfo, regMethodArgsPassingEcToCpp, vClass, cn, !ptrI, comma, null, mode, null, null, null, null, { })));
@@ -6403,6 +6530,7 @@ static void cppMacroClassRegistration(
                         code,
                         ea,
                         rv,
+                        userDataProp,
                         0);
                else
                   cppMacroRegisterMethod(g, o, smod == definition ? encapsulation : /*configuration*/smod, template, ind,
@@ -6418,6 +6546,7 @@ static void cppMacroClassRegistration(
                         code,
                         ea,
                         rv,
+                        userDataProp,
                         0);
 
                delete r;
@@ -6503,7 +6632,7 @@ static void cppMacroRegVirtualMethods(
                //       REGVMETHOD($(classname), $(methodname), c::m,
                //       (Window & self),                    c, ())
                // These macros will have variable number of args based on template...
-               o.concatx(genloc__, "#define REG_", cn, "_", mn, "(m, c", c.cpp.isTemplate ? ", " : "", c.cpp.isTemplate ? c.cpp.targs : "", ")", spaces(maxNameLen, lenName),
+               o.concatx(genloc__, "#define REG_", cn, "_", mn, "(m, c", c.cpp.isTemplate ? ", " : "", c.cpp.isTemplate ? c.cpp.targs : "", ")", spaces(maxNameLen + 1, lenName),
                      c.cpp.isTemplate ? "T" : "", "REGVMETHOD(", c.cpp.isTemplate ? c.cpp.tname : "", c.cpp.isTemplate ? c.cpp.targsb : "", c.cpp.isTemplate ? ", " : "", cn, ", ", mn, ", ", spaces(maxNameLen, lenName), "c::m, ",
                      "(", paramsDef, "), ", spaces(maxDefLen, lenDef), "c, ",
                      "(", paramsPassing, "))", ln);
@@ -6755,6 +6884,7 @@ enum StructOrNoheadMode { false, _struct, nohead };
                         fromTA = PrintString("fromTA<TP_", t.returnType.templateParameter.identifier.string, ">(");
                      }
 
+                     // if(userDataProp) debugBreakpoint();
                      s3z.concatx("return ", fromTA ? fromTA : "", cnst ? cRTGood.cpp.name : "", (cast || cnst) ? "(" : "", cast ? cRTGood.cpp.name : "", cast && ptrRTGood ? stars(ptrRTGood, 0) : "", cast ? ")" : "");
                      if(c.isInstance) s3z.concatx("Instance"); // Instance_* prefix for base instance methods
                      s3z.concatx(tn, "(");
@@ -6773,7 +6903,7 @@ enum StructOrNoheadMode { false, _struct, nohead };
                      if(!(c.isInstance || c.cl.type != normalClass) && !itm.md.dataType.staticMethod && !c.is_class && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
                      {
                         s3z.concatx(", ");
-                        s3z.concatx("o_", /*anyObject ? "" : */".impl"/*" : (", cThis ? cThis.name : sn, ")null"*/);
+                        s3z.concatx("o_", anyObject ? "" : ".impl"/*" : (", cThis ? cThis.name : sn, ")null"*/);
                      }
                      s3z.concatx((args = cppParams(c, argsInfo, passing, vClass, null, false, false, null, mode, null, null, null, null, { })));
                      s3z.concatx(")", cnst ? ")" : "", fromTA ? ")" : "", ";");
@@ -6806,13 +6936,8 @@ enum StructOrNoheadMode { false, _struct, nohead };
                   else*/
                   // if(cThis)
                   {
-                     if(hasArgs)
-                     {
-                        // char x = mode;
-                        s2 = PrintString(cThis ? cThis.name : cn, " &"/*, " o_"*/, !mode ? " ," : " _ARG");
-                     }
-                     else
-                        s2 = PrintString(cThis ? cThis.name : cn, " &"/*, " o_"*/);
+                     bool any = anyObject && !c.isInstance;
+                     s2 = PrintString(any ? "any_object" : cThis ? cThis.name : cn, any ? "" : " &"/*, " o_"*/, hasArgs ? !mode ? " ," : " _ARG" : "");
                   }
                   // else
                   //    s2 = CopyString("");
@@ -7034,6 +7159,7 @@ enum StructOrNoheadMode { false, _struct, nohead };
          "code",
          "ea",
          "rv",
+         null,
          0); }
 
 // bindoc: _REGISTER_METHOD and related macros use eC style parameters. aka C bindings style parameters
@@ -7058,6 +7184,7 @@ static void cppMacroIntRegisterMethod(
       const char * code,   // code?
       const char * ea,     // ea?
       const char * rv,     // return value
+      BProperty userDataProp,
       void * unused)
 {
    MacroMode smod = /*mode == configuration ? g.macroModeBits.propSet ? expansion : use : */mode; // selected mode
@@ -7078,12 +7205,16 @@ static void cppMacroIntRegisterMethod(
       case expansion:
             o.concatx(genloc__, indents(ind), "addMethod(_cpp_class.impl, ", edq, ns, edq, ", (void *) +[]", eop, p, ecp, lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
-               o.concatx(genloc__, indents(ind + 1), "XClass * cl = (", ocl, ") ? (XClass *)(", ocl, ")->_class : null;", lc, ln);
+               if(userDataProp)
+                  o.concatx(genloc__, indents(ind + 1), cx, " * i = (", cx, " *)", ocl, ";", lc, ln);
+               else
+                  o.concatx(genloc__, indents(ind + 1), "XClass * cl = (", ocl, ") ? (XClass *)(", ocl, ")->_class : null;", lc, ln);
                if(smod != definition)
                   o.concatx(genloc__, indents(ind + 1), "", "// 'cp1' is ", cp1[0] ? "present" : "empty", lc, ln);
                if(cp1[0])
                   o.concatx(/*genloc__, indents(ind + 1), "", */cp1, lc, ln);
-               o.concatx(genloc__, indents(ind + 1), cx, " * i = (", oi, ") ? (", cx, " *)INSTANCEL(", oi, ", cl) : null;", lc, ln);
+               if(!userDataProp)
+                  o.concatx(genloc__, indents(ind + 1), cx, " * i = (", oi, ") ? (", cx, " *)INSTANCEL(", oi, ", cl) : null;", lc, ln);
                o.concatx(genloc__, indents(ind + 1), "int vid = M_VTBLID(", bc, ", ", n, ");", lc, ln);
                o.concatx(genloc__, indents(ind + 1), te ? "typename " : "", bc, sc, "_", sc, n, sc, "_Functor::FunctionType fn;", lc, ln);
                o.concatx(genloc__, indents(ind + 1), "if(i && i->vTbl && i->vTbl[vid])", lc, ln);
@@ -7145,6 +7276,7 @@ static void cppMacroIntRegisterMethod(
       const char * code,   // code?
       const char * ea,     // ea?
       const char * rv,     // return value
+      BProperty userDataProp,
       void * unused)
 {
    MacroMode smod = /*mode == configuration ? g.macroModeBits.propSet ? expansion : use : */mode; // selected mode
@@ -7173,6 +7305,7 @@ static void cppMacroIntRegisterMethod(
                code,
                ea,
                rv,
+               userDataProp,
                0);
          o.concatx(ln);
          break;
@@ -7214,6 +7347,7 @@ static void cppMacroIntRegisterMethod(
          "code",
          "ea",
          "rv",
+         null,
          0); }
 
 static void cppMacroRegisterTypedMethod(
@@ -7234,6 +7368,7 @@ static void cppMacroRegisterTypedMethod(
       const char * code,   // code?
       const char * ea,     // ea?
       const char * rv,     // return value
+      BProperty userDataProp,
       void * unused)
 {
    MacroMode smod = /*mode == configuration ? g.macroModeBits.propSet ? expansion : use : */mode; // selected mode
@@ -7273,6 +7408,7 @@ static void cppMacroRegisterTypedMethod(
                code,
                ea,
                rv,
+               userDataProp,
                0);
          delete s1;
          delete s2;
