@@ -1,0 +1,49 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "GameingTime",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "TilesRPG",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "tiles",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/extras/tiles/astar.ec",
+            "$(ECERE_SDK_SRC)/extras/tiles/sequence.ec",
+            "$(ECERE_SDK_SRC)/extras/tiles/sprite.ec",
+            "$(ECERE_SDK_SRC)/extras/tiles/tiles.ec"
+         ]
+      },
+      "tilesRPG.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
