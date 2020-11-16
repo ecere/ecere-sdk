@@ -2590,14 +2590,28 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(h < 0)
       {
-         GLTexCoord2f((float)sx/ bitmap.width, (float)(sy-h)/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-         GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy-h)/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-         GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
-         GLVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
-         GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
-         GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+         if(w < 0)
+         {
+            GLTexCoord2f((float)(sx-w) / bitmap.width, (float)(sy-h)/ bitmap.height);
+            GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+            GLTexCoord2f((float)sx/ bitmap.width, (float)(sy-h)/ bitmap.height);
+            GLVertex2i(dx-w+surface.offset.x, dy+surface.offset.y);
+            GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2i(dx-w+surface.offset.x, dy-h+surface.offset.y);
+            GLTexCoord2f((float)(sx-w)/ bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+         }
+         else
+         {
+            GLTexCoord2f((float)sx/ bitmap.width, (float)(sy-h)/ bitmap.height);
+            GLVertex2i(dx+surface.offset.x, dy+surface.offset.y);
+            GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy-h)/ bitmap.height);
+            GLVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
+            GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
+            GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
+         }
       }
       else
       {
@@ -2612,14 +2626,29 @@ class OpenGLDisplayDriver : DisplayDriver
          GLVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
          */
 
-         GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
-         GLVertex2f((float)dx+surface.offset.x, (float)dy+surface.offset.y);
-         GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
-         GLVertex2f((float)dx+w+surface.offset.x, (float)dy+surface.offset.y);
-         GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
-         GLVertex2f((float)dx+w+surface.offset.x, (float)dy+h+surface.offset.y);
-         GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
-         GLVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
+         if(w < 0)
+         {
+            GLTexCoord2f((float)(sx-w)/ bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2f((float)dx+surface.offset.x, (float)dy+surface.offset.y);
+            GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2f((float)dx-w+surface.offset.x, (float)dy+surface.offset.y);
+
+            GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
+            GLVertex2f((float)dx-w+surface.offset.x, (float)dy+h+surface.offset.y);
+            GLTexCoord2f((float)(sx-w) / bitmap.width, (float)(sy+h)/ bitmap.height);
+            GLVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
+         }
+         else
+         {
+            GLTexCoord2f((float)sx / bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2f((float)dx+surface.offset.x, (float)dy+surface.offset.y);
+            GLTexCoord2f((float)(sx+w)/ bitmap.width, (float)sy/ bitmap.height);
+            GLVertex2f((float)dx+w+surface.offset.x, (float)dy+surface.offset.y);
+            GLTexCoord2f((float)(sx+w) / bitmap.width, (float)(sy+h)/ bitmap.height);
+            GLVertex2f((float)dx+w+surface.offset.x, (float)dy+h+surface.offset.y);
+            GLTexCoord2f((float)sx/ bitmap.width, (float)(sy+h)/ bitmap.height);
+            GLVertex2f((float)dx+surface.offset.x, (float)dy+h+surface.offset.y);
+         }
       }
       if(!oglSurface.writingText)
       {
