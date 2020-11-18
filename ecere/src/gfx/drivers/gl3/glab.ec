@@ -489,8 +489,8 @@ public struct GLAB : GLB
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #if ENABLE_GL_SHADERS
-      if(glCaps_shaders)
-         glVertexAttribPointer(contents, n, type, GL_FALSE, stride, pointer);
+      if(glCaps_shaders)                          // TODO: Review control over normalization?
+         glVertexAttribPointer(contents, n, type, type == GL_UNSIGNED_BYTE ? GL_TRUE : GL_FALSE, stride, pointer);
 #endif
 
 #if ENABLE_GL_FFP
