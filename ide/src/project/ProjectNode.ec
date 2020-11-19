@@ -549,12 +549,14 @@ private:
                delete compiler;
                delete pathExp;
             }
-            PathCatSlash(buffer, name);
+            if(type == file)
+               PathCatSlash(buffer, name);
          }
          else
          {
             PathCatSlash(buffer, path);
-            PathCatSlash(buffer, name);
+            if(type == file)
+               PathCatSlash(buffer, name);
          }
       }
       return buffer;
@@ -1230,9 +1232,10 @@ private:
             {
                char path[MAX_LOCATION];
                strcpy(path, child.path);
-               if(child.type != folder && child.name)
+               if(child.name)
                {
-                  PathCatSlash(path, child.name);
+                  if(child.type == file)
+                     PathCatSlash(path, child.name);
                   if(!strcmpi(path, name))
                   {
                      result = child;
@@ -1268,9 +1271,7 @@ private:
          {
             if(includeResources || child.type != resources)
             {
-               if(child.type != file)
-                  result = child.InternalFindByFullPath(path, includeResources, lastDirName);
-               else if(child.name && !fstrcmp(lastDirName, child.name))
+               if(child.name && !fstrcmp(lastDirName, child.name))
                {
                   char p[MAX_LOCATION];
                   child.GetFullFilePath(p, true, true);
@@ -1280,8 +1281,12 @@ private:
                      break;
                   }
                }
-               if(result)
-                  break;
+               if(child.type != file)
+               {
+                  result = child.InternalFindByFullPath(path, includeResources, lastDirName);
+                  if(result)
+                     break;
+               }
             }
          }
       }

@@ -48,6 +48,8 @@ struct BuildOutputLineMark
    int lineNumber;
 };
 
+enum CodeLocationAction { gotoLocation, removeFromProject };
+
 class OutputView : Window
 {
    visible = false;
@@ -61,7 +63,7 @@ class OutputView : Window
    background = formColor;
 
    virtual void OnGotoError(const char * line, bool openAsText, bool noParsing);
-   virtual void OnCodeLocationParseAndGoTo(const char * line, bool openAsText, bool noParsing);
+   virtual void OnCodeLocationParseAndDo(const char * line, CodeLocationAction action, bool openAsText, bool noParsing);
 
    FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = $"Find" };
 
@@ -287,7 +289,7 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnCodeLocationParseAndGoTo(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+         OnCodeLocationParseAndDo(editBox.line.text, gotoLocation, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
 
@@ -295,7 +297,7 @@ class OutputView : Window
       {
          if(key.code == enter || key.code == keyPadEnter)
          {
-            OnCodeLocationParseAndGoTo(editBox.line.text, key.ctrl && key.shift, key.ctrl && !key.shift);
+            OnCodeLocationParseAndDo(editBox.line.text, gotoLocation, key.ctrl && key.shift, key.ctrl && !key.shift);
             return false;
          }
          return true;
@@ -317,7 +319,7 @@ class OutputView : Window
 
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
-         OnCodeLocationParseAndGoTo(editBox.line.text, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
+         OnCodeLocationParseAndDo(editBox.line.text, gotoLocation, mods.ctrl && mods.shift, mods.ctrl && !mods.shift);
          return false;
       }
 
@@ -325,7 +327,12 @@ class OutputView : Window
       {
          if(key.code == enter || key.code == keyPadEnter)
          {
-            OnCodeLocationParseAndGoTo(editBox.line.text, key.ctrl && key.shift, key.ctrl && !key.shift);
+            OnCodeLocationParseAndDo(editBox.line.text, gotoLocation, key.ctrl && key.shift, key.ctrl && !key.shift);
+            return false;
+         }
+         else if(key.code == del && key.ctrl == true)
+         {
+            OnCodeLocationParseAndDo(editBox.line.text, removeFromProject, key.ctrl && key.shift, key.ctrl && !key.shift);
             return false;
          }
          return true;
