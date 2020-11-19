@@ -197,6 +197,7 @@ static Array<FileFilter> fileFilters
    { $"Swift Source Files (*.swift)", "swift" },
    { $"Text Files (*.txt, *.text, *.nfo, *.info)", "txt, text, nfo, info" },
    { $"Web Files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)", "html, htm, xhtml, css, php, js, jsi, rb, xml" },
+   { $"Difference Files (*.diff)", "diff" },
    { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
    { $"3D Studio Model Files (*.3ds)", "3ds" },
    { $"All Files", null }
