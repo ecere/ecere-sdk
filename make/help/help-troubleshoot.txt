@@ -1,0 +1,17 @@
+troubleshooting commands:
+
+   make troubleshoot                                  -- print the definition for all prepackaged list of variables
+   make troubleshoot-core                             -- print the definition for the core list of variables
+   make troubleshoot-toolchain                        -- print the definition for the toolchain list of variables
+   make troubleshoot-openssl                          -- print the definition for the openssl list of variables
+   make troubleshoot-version                          -- print the definition for the version list of variables
+
+   make print-all-vars-info                           -- print the definition for all variables
+   make print-all-vars-stat                           -- print the definition, origin and flavor for all variables
+   make print-var-info-PLATFORM                       -- print the definition for the PLATFORM variable
+   make print-substr-vars-full-DIR                    -- print all information for all variables containing the DIR string
+
+available modes for print-var-<mode>-<name> and print-substr-vars-<mode>-<substring> targets:
+   info (definition only), eval (value only), both (definition and value),
+   stat (definition, origin and flavor) and full (definition, value, origin and flavor)
+

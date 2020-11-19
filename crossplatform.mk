@@ -374,6 +374,7 @@ ifdef WIN_SHELL_COMMANDS
    cd = @cd
    nullerror = 2>NUL
    echo = $(if $(1),echo $(1))
+   cat = $(if $(wildcard $(1)),type $(1))
    touch = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do @(cd %%~pI && type nul >> %%~nxI && copy /by %%~nxI+,, > nul 2>&1 && cd %%cd%%)")
    cp = $(if $(1),@cmd /c "for %%I in ($(call sys_path,$(1))) do copy /by %%I $(call sys_path,$(2))"$(if $(SILENT_IS_ON), > nul,))
    cpr = $(if $(1),xcopy /y /i /e$(if $(SILENT_IS_ON), /q,) $(call sys_path,$(call sys_path_list,$(1))) $(call sys_path,$(2))$(if $(SILENT_IS_ON), > nul,))
@@ -386,6 +387,7 @@ else
    cd = cd
    nullerror = 2>/dev/null
    echo = $(if $(1),echo "$(1)")
+   cat = $(if $(wildcard $(1)),cat $(1),)
    touch = $(if $(1),touch $(1))
    cp = $(if $(1),cp -P$(if $(SILENT_IS_ON),,v) $(1) $(2))
    cpr = $(if $(1),cp -PR$(if $(SILENT_IS_ON),,v) $(1) $(2))
@@ -505,6 +507,28 @@ _mkcmd_example = $(space)$(space)$(space)$(MAKE_COMMAND)
 NOT_PARALLEL_TARGETS += help
 .PHONY: help
 help:
+	@$(call cat,make/help/help.txt)
+
+NOT_PARALLEL_TARGETS += help-%
+.PHONY: help-%
+help-%:
+	@$(call cat-help,$*,make/help/help-$*.txt)
+	@$(if $(wildcard make/help/help-$*.txt),,$(info warning: unknown help section: help-$*))
+
+ALLOWED_HELP_SUBSECTIONS := install dependencies advanced troubleshoot
+cat-help = $(if $(findstring $1,$(ALLOWED_HELP_SUBSECTIONS)),$(call cat,$(2)),)
+
+NOT_PARALLEL_TARGETS += print-var-info-% print-var-eval-% print-var-both-% print-var-stat-% print-var-full-%
+.PHONY: print-var-info-% print-var-eval-% print-var-both-% print-var-stat-% print-var-full-%
+print-var-info-%: ; @$(call info_check_var_defined,$*)
+print-var-eval-%: ; @$(call info_check_var_defined,$*,var_eval)
+print-var-both-%: ; @$(call info_check_var_defined,$*,var_both)
+print-var-stat-%: ; @$(call info_check_var_defined,$*,var_stat)
+print-var-full-%: ; @$(call info_check_var_defined,$*,var_full)
+
+NOT_PARALLEL_TARGETS += hlp
+.PHONY: hlp
+hlp:
 	@$(info Ecere SDK Make Help)
 	@$(info )
 	@$(info help consists of command examples. try them!)
@@ -540,17 +564,17 @@ help:
 	@$(info $(_mkcmd_example) wipeclean                                     -- remove all intermediate object directories)
 	@$(info )
 
-NOT_PARALLEL_TARGETS += help-install
-.PHONY: help-install
-help-install:
+NOT_PARALLEL_TARGETS += hlp-install
+.PHONY: hlp-install
+hlp-install:
 	@$(info install instructions:)
 	@$(info )
 	@$(info $(_example_space)sudo make install                              -- classic linux install)
 	@$(info )
 
-NOT_PARALLEL_TARGETS += help-bindings
-.PHONY: help-bindings
-help-bindings:
+NOT_PARALLEL_TARGETS += hlp-bindings
+.PHONY: hlp-bindings
+hlp-bindings:
 	@$(info targets for generating and building all bindings:)
 	@$(info )
 	@$(info $(_mkcmd_example) bindings                                      -- x. )
@@ -595,9 +619,9 @@ help-bindings:
 #	@$(info $(_mkcmd_example) py_bindings_wipeclean                         -- x. )
 	@$(info )
 
-NOT_PARALLEL_TARGETS += help-dependencies
-.PHONY: help-dependencies
-help-dependencies:
+NOT_PARALLEL_TARGETS += hlp-dependencies
+.PHONY: hlp-dependencies
+hlp-dependencies:
 	@$(info dependencies assistance:)
 	@$(info )
 	@$(info $(_example_space)sudo apt install xxxx                          -- debian dependencies installation command)
@@ -619,9 +643,9 @@ help-dependencies:
 	@$(info $(_example_space)UPX)
 	@$(info )
 
-NOT_PARALLEL_TARGETS += help-advanced
-.PHONY: help-advanced
-help-advanced:
+NOT_PARALLEL_TARGETS += hlp-advanced
+.PHONY: hlp-advanced
+hlp-advanced:
 	@$(info advanced commands:)
 	@$(info )
 	@$(info $(_mkcmd_example) distclean                                     -- remove all workspaces, generated makefiles and intermediate object directories)
@@ -633,9 +657,9 @@ help-advanced:
 	@$(info $(_example_space)time sh -c '$(MAKE_COMMAND) wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make RENAME_B32=1 ARCH=x32 all -j9')
 	@$(info )
 
-NOT_PARALLEL_TARGETS += help-troubleshoot
-.PHONY: help-troubleshoot
-help-troubleshoot:
+NOT_PARALLEL_TARGETS += hlp-troubleshoot
+.PHONY: hlp-troubleshoot
+hlp-troubleshoot:
 	@$(info troubleshooting commands:)
 	@$(info )
 	@$(info $(_mkcmd_example) troubleshoot                                  -- print the definition for all prepackaged list of variables)

@@ -1,0 +1,34 @@
+Ecere SDK Make Help
+
+help consists of command examples. try them!
+
+   make help                                          -- this
+   make help-install                                  -- install instructions
+   make hlp-bindings                                  -- bindings instructions
+   make help-dependencies                             -- dependencies assistance
+   make help-advanced                                 -- advanced build commands
+   make help-troubleshoot                             -- troubleshooting commands
+
+   make                                               -- build ecere-sdk
+   make all                                           -- same
+   make -j1                                           -- build 1 step at a time
+   make -j8                                           -- build with 8 parallel jobs
+   make V=1                                           -- verbose build
+   make wipeclean all                                 -- fully rebuild
+   make ARCH=x32                                      -- build 32-bit binaries
+   make ENABLE_SSL=y                                  -- enable OpenSSL in Ecere library
+   make DISABLE_EDA_SQLITE=y                          -- don't build SQLite driver for EDA, builds by default
+   make DISABLE_EDA_dBASE=y                           -- don't build dBASE driver for EDA, builds by default
+   make EDASQLiteCipher=y                             -- build SQLiteCipher driver for EDA
+   make ECERE_AUDIO=n                                 -- don't build Ecere Audio
+   make DISABLE_BINARY_COMPRESSION=y                  -- disable use of binary compression
+
+   make ENABLE_SSL=y EDASQLite=y all -j9              -- common build
+   make ENABLE_SSL=y ARCH=x32 all -j9                 -- common 32-bit build
+   make ENABLE_SSL=y EDASQLite=y wipeclean all -j9    -- common full rebuild
+   make ENABLE_SSL=y ARCH=x32 wipeclean all -j9       -- common 32-bit full rebuild
+
+   make clean                                         -- delete all intermediate object files
+   make realclean                                     -- remove all release intermediate object directories
+   make wipeclean                                     -- remove all intermediate object directories
+

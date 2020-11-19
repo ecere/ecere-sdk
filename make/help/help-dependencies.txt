@@ -1,0 +1,20 @@
+dependencies assistance:
+
+   sudo apt install xxxx                          -- debian dependencies installation command
+
+dependencies of ecere library:
+   zlib, NCurses, X11, X extensions (Shm, Shaping, Render), OpenGL / GLX (Mesa),
+   FontConfig, FreeType, GifLib, LibJPEG, LibPNG, ALSA
+
+optional dependencies of ecere library:
+   OpenSSL
+
+dependencies of EDA library:
+   libFFI
+
+dependencies of SQLite EDA driver:
+   SQLite
+
+optional toolchain dependencies:
+   UPX
+

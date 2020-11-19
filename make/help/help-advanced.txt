@@ -1,0 +1,10 @@
+advanced commands:
+
+   make distclean                                     -- remove all workspaces, generated makefiles and intermediate object directories
+
+   make wipeclean all c_bindings cxx_bindings_gen     -- combine all these targets
+
+linux only commands:
+
+   time sh -c 'make wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make RENAME_B32=1 ARCH=x32 all -j9'
+

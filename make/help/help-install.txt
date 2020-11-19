@@ -1,0 +1,4 @@
+install instructions:
+
+   sudo make install                              -- classic linux install
+
