@@ -1524,17 +1524,6 @@
                                        }
                                     }
                                  ]
-                              },
-                              {
-                                 "Name" : "Debug",
-                                 "Platforms" : [
-                                    {
-                                       "Name" : "win32",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
                               }
                            ]
                         },
@@ -1628,17 +1617,6 @@
                               },
                               {
                                  "Name" : "UWP",
-                                 "Platforms" : [
-                                    {
-                                       "Name" : "win32",
-                                       "Options" : {
-                                          "ExcludeFromBuild" : true
-                                       }
-                                    }
-                                 ]
-                              },
-                              {
-                                 "Name" : "Debug",
                                  "Platforms" : [
                                     {
                                        "Name" : "win32",
