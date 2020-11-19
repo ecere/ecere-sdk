@@ -20,7 +20,7 @@
 #define _CONCAT(a, b)                  a ## b
 #define CONCATI(a, b)                  _CONCAT(a, b)
 
-// Apply the ECPRX to an eC class/type
+// Apply the ECPRFX to an eC class/type
 #define C(x)                           CONCATI(ECPRFX, x)
 
 // CONCATU(): Concatenate with underscores
@@ -128,7 +128,7 @@
 #define thisclass(x)                   C(x)
 #define subclass(x)                    C(Class) *
 
-// ECPRX for eC global functions
+// ECPRFX for eC global functions
 #define F(x)                           CONCATI(ECPRFX, x)
 
 // prefixes/suffices for reflection objects/values
