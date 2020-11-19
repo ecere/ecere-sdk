@@ -125,7 +125,7 @@ endif
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	SO_LIB_LINKS := defined
+   SO_LIB_LINKS := defined
 endif
 endif
 endif
@@ -202,7 +202,7 @@ ifdef RENAME_B32
  # note: arch stuff is missing on windows
   ifeq ($(HOST_ARCH),x86_64)
    ifeq ($(TARGET_ARCH),i386)
-	 B32_SFX := 32
+    B32_SFX := 32
    endif
   endif
  endif
