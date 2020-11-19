@@ -250,6 +250,33 @@
                ]
             },
             {
+               "Folder" : "plugins",
+               "Files" : [
+                  {
+                     "Folder" : "git",
+                     "Files" : [
+                        "gidisum.ec",
+                        {
+                           "FileName" : "../../../r/dev-tools/codehix/src/codehix.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        "../../../r/dev-tools/codehix/src/Lexer.ec",
+                        "../../../r/dev-tools/codehix/src/Parser.ec",
+                        {
+                           "FileName" : "../../../r/redj-extras/FileSystemAPI.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        "../../../r/redj-extras/lexers.ec",
+                        "../../../r/redj-extras/parsers.ec"
+                     ]
+                  }
+               ]
+            },
+            {
                "FileName" : "about.ec",
                "Configurations" : [
                   {

@@ -46,6 +46,14 @@ import "about"
 
 import "FileSystemIterator"
 
+#ifdef _DEBUG
+// #define DEV_GIDISUM
+#endif
+
+#ifdef DEV_GIDISUM
+import "gidisum" // this is supposed to be a plugin
+#endif
+
 GuiConfigData dummyGuiConfigData; // compiling Workspace.ec fails without this as it somehow fails at getting the symbols from this (ide.ec) file
 
 class ImportFolderProjectsFSI : NormalFileSystemIterator
@@ -338,6 +346,8 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
 
 class IDEToolbar : ToolBar
 {
+   flipSpring = true;
+   flipper = spacer7;
    // File options
    // New
    ToolButton buttonNewFile { this, toolTip = $"New file", menuItemPtr = IDEItem(fileNewItem) };
@@ -481,6 +491,70 @@ class IDEToolbar : ToolBar
    Button forceSingleJob { this, text = $"Force Single Job Compiling", isCheckbox = true; };
 
    Window spacer7 { this, size = { 4 } };
+
+#ifdef DEV_GIDISUM
+   ToolButton buttonPluginGidisum
+   {
+      this, toolTip = $"Gidisum", menuItemPtr = IDEItem(projectRegenerateItem);
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         int previousFilter = ideFileDialog.filter;
+         // select diff filter
+         {
+            int diffFilter;
+            for(diffFilter = 0; diffFilter < fileFilters.count; diffFilter++)
+            {
+               FileFilter filter = fileFilters[diffFilter];
+               if(!strcmp(filter.extensions, "diff"))
+               {
+                  ideFileDialog.filter = diffFilter;
+                  break;
+               }
+            }
+         }
+         if(!ide.projectView && ideSettings.ideFileDialogLocation)
+            ideFileDialog.currentDirectory = ideSettings.ideFileDialogLocation;
+         for(;;)
+         {
+            if(ideFileDialog.Modal() == ok)
+            {
+               bool gotWhatWeWant = false;
+               int c;
+               int numSelections = ideFileDialog.numSelections;
+               const char * const * multiFilePaths = ideFileDialog.multiFilePaths;
+               if(numSelections == 1) // ugly single file forcing
+               {
+                  for(c = 0; c < numSelections; c++)
+                  {
+                     if(ide.OpenFile(multiFilePaths[c], false, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift))
+                        gotWhatWeWant = true;
+                  }
+               }
+               if(gotWhatWeWant ||
+                  MessageBox { type = yesNo, master = this, text = $"Error opening file",
+                  contents = $"Open a different file?" }.Modal() == no)
+               {
+                  if(!ide.projectView && gotWhatWeWant)
+                     ide.ChangeFileDialogsDirectory(ideFileDialog.currentDirectory, true);
+                  ide.RepositionWindows(false);
+                  if(gotWhatWeWant)
+                  {
+                     const char * path = multiFilePaths[0];
+                     summarizeGitDiff(path);
+                  }
+                  break;
+               }
+            }
+            else
+               break;
+         }
+         if(ideFileDialog.filter != previousFilter)
+            ideFileDialog.filter = previousFilter;
+         return true;
+      }
+   };
+#endif // DEV_GIDISUM
 
    void IDEToolbar()
    {
@@ -3815,6 +3889,14 @@ class IDEWorkSpace : Window
          workspace.debugDir = passDebugWorkDir;
          delete passDebugWorkDir;
       }
+
+#ifdef DEV_GIDISUM
+      if(app.argc == 1)
+      {
+         ide.OpenFile("/a/sd/d/c/e/e/misc/diff-summary-001-38ad2d5fc.diff", true, true, null, no, normal, false);
+         summarizeGitDiff("/a/sd/d/c/e/e/misc/diff-summary-001-38ad2d5fc.diff");
+      }
+#endif
 
       UpdateToolBarActiveConfigs(false);
       UpdateToolBarActiveCompilers();
