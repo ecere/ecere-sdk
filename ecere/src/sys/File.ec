@@ -786,6 +786,7 @@ public:
                result = false;
                break;
             }
+            if(!count) break;
          }
          delete f;
       }
