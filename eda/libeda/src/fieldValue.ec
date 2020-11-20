@@ -185,7 +185,7 @@ public struct FieldValue
       if(string[0] == '\"')
       {
          int len = strlen(string + 1);
-         if(len > 1) len--;
+         if(len > 0) len--;
          s = new char[len + 1];
          memcpy(s, string+1, len);
          s[len] = 0;
