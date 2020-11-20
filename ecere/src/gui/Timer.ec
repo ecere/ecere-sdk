@@ -40,7 +40,7 @@ private:
    Timer prev, next;
    public Seconds _delay;  // NOTE: Made public for Emscripten alignment issues
    Time lastTime;
-   Window window;
+   void * window;
    bool dispatched;
    bool started;
 };
