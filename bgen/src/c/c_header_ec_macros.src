@@ -1,5 +1,10 @@
-#ifndef ECPRFX
+#ifdef DISABLE_EC_PREFIX
+#undef ECPRFX
 #define ECPRFX
+#else
+#ifndef ECPRFX
+#define ECPRFX eC_
+#endif
 #endif
 
 #if defined(_WIN32)
