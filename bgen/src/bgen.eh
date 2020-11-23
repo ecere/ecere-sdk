@@ -8,7 +8,7 @@
 #else
 #define genfn(fn) ""
 #endif
-#if 0
+#if 1
 #define genidx(id, x) "/*", #id, x, "*/"
 #else
 #define genidx(id, x) ""
