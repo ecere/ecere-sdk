@@ -12,9 +12,13 @@
          "ecereCOM",
          "ecereCOM_c"
       ],
+      "LinkerOptions" : [
+         "--no-undefined"
+      ],
       "LibraryDirs" : [
          "$(ECERE_SDK_BINDINGS)/c/ecereCOM/obj/ecereCOM.release.win32",
-         "$(ECERE_SDK_SRC)/obj/win32/bin"
+         "$(ECERE_SDK_SRC)/obj/$(PLATFORM)/bin",
+         "$(ECERE_SDK_SRC)/obj/$(PLATFORM)/lib"
       ],
       "Console" : true
    },
