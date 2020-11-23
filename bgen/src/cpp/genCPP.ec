@@ -969,8 +969,9 @@ static AVLTree<const String> brokenOrderedPublicMembersInitializers { [
    // eda
    "Detail",
 
-   // gis
-   // "ECCSSEvaluator",
+
+   // gis -- stuff like pointer to unit class? -- ModelID * ids
+   "ECCSSEvaluator",
    "Point3DFeature",
    "CompactModelData",
    "CenterLine",
@@ -2026,6 +2027,7 @@ static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool protot
                case charType:
                   if(!strcmp(dm.dataTypeString, "byte"))
                      bitMembers.Add({ bm, "unsigned char", " = 0" });
+                  else debugBreakpoint();
                   break;
                case intType:
                   bitMembers.Add({ bm, dm.dataTypeString, " = 0" });
@@ -2038,8 +2040,13 @@ static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool protot
                      bitMembers.Add({ bm, dm.dataType._class.registered.name/*, " = { }"*/ });
                      split = true;
                   }
+                  else debugBreakpoint();
                   break;
                }
+               default:
+                  PrintLn("genBitMembersConstructor for ", c.cl.name, " doesn't support ", dm.dataTypeString, " data type of kind ", dm.dataType.kind);
+                  debugBreakpoint();
+                  break;
             }
          }
       }

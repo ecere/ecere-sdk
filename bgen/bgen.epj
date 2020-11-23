@@ -146,7 +146,8 @@
                   "c_header_ec_macros.src",
                   "c_header_ec_hardcoded.src",
                   "c_header_ec_hardcoded_after.src",
-                  "c_make.src"
+                  "c_make.src",
+                  "c_test_makefile.src"
                ]
             },
             {
