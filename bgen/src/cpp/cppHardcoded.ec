@@ -9,6 +9,41 @@ define cpptemplateCPPClassDef = "template <class TC>";
 define cpptemplateNoHeadDef = "template <class TC, C(Class) ** TCO>";
 define cpptemplateNoHeadParams = "<TC, TCO>";
 
+void cppHardcodedStructBase(CPPGen g, File f, bool prototype, BClass c, BClass cBase)
+{
+   f.Print(ln);
+   if(prototype)
+   {
+      f.Print(genloc__, "struct Struct", ln);
+      f.Print(genloc__, "{", ln);
+      f.Print(genloc__, "   [[no_unique_address]] int _[0];", ln);
+      f.Print(genloc__, "   void * operator new   (uintsize count) { return eC_new(count); }", ln);
+      f.Print(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }", ln);
+      f.Print(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }", ln);
+      f.Print(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }", ln);
+      f.Print(genloc__, "};", ln, ln);
+
+      f.Print(genloc__, "template <typename TSC>", ln);
+      f.Print(genloc__, "struct TStruct : public Struct", ln);
+      f.Print(genloc__, "{", ln);
+      f.Print(genloc__, "   static C(Class) * _class;", ln);
+   }
+   // todo: Struct_onFree_Functor + 9 other base class virtual methods
+   // eventual: do same thing for bit and unit class types
+   {
+      ZString z { allocType = heap };
+      cppMacroClassVirtualMethods(g, z, configuration, prototype, false, _struct, 1, "INSTANCE", "Struct", c, cBase, null, 0);
+      f.Puts(z._string);
+      delete z;
+   }
+   if(prototype)
+   {
+      f.Print(genloc__, "};", ln, ln);
+
+      f.Print(genloc__, "template<typename TSC> C(Class) * TStruct<TSC>::_class;", ln, ln);
+   }
+}
+
 void cppHardcodedInstancePart1(BOutput o)
 {
    o.z.concatx(genloc__, "   // hardcoded content start", ln,
@@ -660,39 +695,10 @@ void cppHardcodedCoreAfterInstancePart(CPPGen g, BOutput o,
       o.z.concatx(genloc__, "      eC_delete(impl);", ln);
       o.z.concatx(genloc__, "   }", ln);
       o.z.concatx(genloc__, "};", ln, ln);
-
-      o.z.concatx(genloc__, "struct Struct", ln);
-      o.z.concatx(genloc__, "{", ln);
-      o.z.concatx(genloc__, "   [[no_unique_address]] int _[0];", ln);
-      o.z.concatx(genloc__, "   void * operator new   (uintsize count) { return eC_new(count); }", ln);
-      o.z.concatx(genloc__, "   void * operator new [](uintsize count) { return eC_new(count); }", ln);
-      o.z.concatx(genloc__, "   void operator delete   (void * ptr) { eC_delete(ptr); }", ln);
-      o.z.concatx(genloc__, "   void operator delete [](void * ptr) { eC_delete(ptr); }", ln);
-      o.z.concatx(genloc__, "};", ln, ln);
-
-      o.z.concatx(genloc__, "template <typename TSC>", ln);
-      o.z.concatx(genloc__, "struct TStruct : public Struct", ln);
-      o.z.concatx(genloc__, "{", ln);
-      o.z.concatx(genloc__, "   static C(Class) * _class;", ln);
    }
-   // todo: Struct_onFree_Functor + 9 other base class virtual methods
-   // eventual: do same thing for bit and unit class types
-   cppMacroClassVirtualMethods(g, o.z, mode, prototype, template, _struct, 1, un, "Struct", c, cBase, vClass, 0);
-   /*
-   {
-      BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
-      while((m = itm.next(publicVirtual)))
-      {
-         m.init(itm.md, c.isInstance ? cBase : c, g);
-      }
-   }
-   */
+
    if(prototype)
    {
-      o.z.concatx(genloc__, "};", ln, ln);
-
-      o.z.concatx(genloc__, "template<typename TSC> C(Class) * TStruct<TSC>::_class;", ln, ln);
-
       o.z.concatx(genloc__, "template<typename TTT> inline typename std::enable_if<std::is_base_of<Instance, TTT>::value, uint64>::type", ln);
       o.z.concatx(genloc__, "  toTA(TTT & x) { C(DataValue) p = { }; p.p = x.impl; return p.ui64; }", ln, ln);
 
