@@ -408,11 +408,20 @@ class CPPGen : CGen
             );
             sourceProcessorVars["DEP_RULES"] = !lib.ecere ? CopyString("") : CopyString(
                "$(OBJ)eC$(O): eC.cpp\n"
-               "	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
+               "	$(CXX) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
                "\n"
             );
-            sourceProcessorVars["DEP_LIBS"] = CopyString("");
+            // hardcoded -- todo -- this can be generated from dependencies -- do it!
+            sourceProcessorVars["DEP_LIBS"] = CopyString((lib.ecere || lib.ecereCOM) ? "" :
+               "	$(call _L,ecere) \\\n"
+               "	$(call _L,ecere_c) \\\n"
+               "	$(call _L,ecere_cpp) \\\n"
+            );
+
+            sourceProcessorVars["SPECIFIC_FLAGS"] = CopyString(!lib.ecereCOM ? "" : "PRJ_CFLAGS += -DECERECOM_ONLY\n\n");
+
             // sourceProcessorVars["DEP_INCLUDES"] = CopyString("");
+
             sourceProcessorVars["DEP_INCLUDES"] = CopyString(
                "PRJ_CFLAGS += \\\n"
                "      -I../c \\\n"
