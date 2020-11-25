@@ -4,6 +4,6 @@
 APP_INTRO(0)
 {
 // printLn(CO(String), __STDC_VERSION__, null);
-   printLn(CO(String), "C: Hello, eC!", null);
+   F(printLn)(CO(String), "C: Hello, eC!", null);
 }
 APP_OUTRO
