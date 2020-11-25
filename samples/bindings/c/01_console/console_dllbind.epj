@@ -10,7 +10,7 @@
       "TargetFileName" : "console",
       "Libraries" : [
          "ecereCOM",
-         "ecereCOM_c"
+         "eC_c"
       ],
       "LinkerOptions" : [
          "--no-undefined"
