@@ -304,7 +304,6 @@ class CPPGen : CGen
       {
          bool skip = c.isBool || c.isByte || c.isCharPtr || c.isUnInt || c.isUnichar || c.is_class || c.isString;
          bool template = hasTemplateClass(c.cl);
-         BClass cBase = c.cl.base;
          if(/*g_.lib.ecereCOM && */skipClasses.Find({ g_.lib.bindingName, c.cl.name }))
             skip = true;
          if(c.cl.type == noHeadClass && hasOrBaseHasTemplateAnything(c.cl))
@@ -313,15 +312,12 @@ class CPPGen : CGen
          if(!skip &&
                c.cl.type != systemClass &&
                c.cl.type != unionClass &&
-               c.cl.type != enumClass &&  // temporary
                !template)
-            processCppClass(this, c, cBase);
-         // else { typedef C(Modifiers) Modifiers; }
-         if(c.cl.type == enumClass && !c.isBool) // temporary
          {
-            if(!(cBase && cBase.isBool))
+            BClass cBase = c.cl.base;
+            if(c.cl.type != enumClass || !(cBase && cBase.isBool)) // note: only one level of overriding checked?
                processCppClass(this, c, cBase);
-         } // end of temporary
+         }
       }
    }
 
@@ -953,33 +949,32 @@ Map<consttstr, const String> methodParamNameSwap { [
    { { null, null }, null }
 ] };
 
+/*
 Map<const String, const String> methodTypedObjectThisNameSwap { [
 // { "onCopy", "dest" },
    { null, null }
 ] };
+*/
 
+/*
 static AVLTree<consttstr> brokenRegs { [
-   { "Window", "NotifyActivate" },
-   { "Window", "NotifyDestroyed" },
-   { "Window", "NotifySaved" },
    // { "Window", "M" },
    { null, null }
 ] };
+*/
 
+/*
 static AVLTree<consttstr> brokenMethods { [
-   // ecere stuff in eC.hpp
-   // error: 'Alignment' has not been declared
-   // error: 'DataDisplayFlags' has not been declared
-   { "Instance", "OnDisplay" },
-
    { null, null }
 ] };
+*/
 
+/*
 static AVLTree<const String> brokenBitMembersConstructor { [
-   "PVFlags",
 
    null
 ] };
+*/
 
 static AVLTree<const String> brokenOrderedPublicMembersInitializers { [
    // broken members initializing constructors
@@ -1016,10 +1011,12 @@ static AVLTree<const String> brokenOrderedPublicMembersInitializersTypes { [
 ] };
 */
 
+/*
 static AVLTree<consttstr> brokenMembers { [
    // { "C", "M" },
    { null, null }
 ] };
+*/
 
 struct BitMemberTypeStringZero
 {
@@ -2025,7 +2022,7 @@ static void cppGenEnumClassValues(CPPGen g, BOutput o, BClass c)
 
 static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool prototype, BOutput hppOut, BOutput cppOut)
 {
-   bool doBitMembers = c.cl.members.count <= 5 && !brokenBitMembersConstructor.Find(c.cl.name);
+   bool doBitMembers = c.cl.members.count <= 5;
    bool split = false;
    BOutput o;
    Array<BitMemberTypeStringZero> bitMembers = doBitMembers ? { } : null;
@@ -2125,7 +2122,6 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
             char * dmn = null;
             if(mncpp)
                ; // warning supression
-            if(brokenMethods.Find({ c.cl.name, m.md.name })) continue;
             if(m.hasTemplateAnything())
                continue;
             if(!strcmp(mn, "delete") || !strcmp(mn, "union") || !strcmp(mn, "printf"))
@@ -2176,7 +2172,6 @@ static void genMethodCallers(CPPGen g, BClass c, BVariant v, const char * cn, bo
          // Type param;
          TypeInfo ti { type = m.md.dataType, typeString = m.md.dataTypeString, cl = c ? c.cl : null };
 
-         if(brokenMethods.Find({ c.cl.name, m.md.name })) continue;
          if(m.hasTemplateAnything())
             continue;
 
@@ -2605,7 +2600,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
       while(itmpp.next(publicOnly))
       {
          Type t;
-         if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+         if(skip || memberNames.Find(itmpp.mp.name))
             continue;
          if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
             continue;
@@ -2660,7 +2655,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
          {
             Type t;
 
-            if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+            if(skip || memberNames.Find(itmpp.mp.name))
                continue;
             if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
                continue;
@@ -2722,7 +2717,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
          {
             Type t;
 
-            if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+            if(skip || memberNames.Find(itmpp.mp.name))
                continue;
             if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
                continue;
@@ -2775,7 +2770,7 @@ static void genOrderedPublicMembersInitializers(CPPGen g, BClass c, BVariant v, 
          {
             Type t;
 
-            if(skip || memberNames.Find(itmpp.mp.name) || brokenMembers.Find({ c.cl.name, itmpp.mp.name }))
+            if(skip || memberNames.Find(itmpp.mp.name))
                continue;
             if((itmpp.pt && (itmpp.pt.conversion || !itmpp.pt.Set)) || (c.cl.type == structClass && !itmpp.dm))
                continue;
@@ -3883,7 +3878,6 @@ static void commonMemberHandling(
    // if(ti.type.kind == templateType && strcmp(mn, "controlled")) return;
 
    // todo: remove when done solving all the cases
-   if(brokenMembers.Find({ c.cl.name, mn })) return;
 
    // if(ti.type.kind != templateType)      // todo
    // ti.type.kind != arrayType)         // todo (broken stuff that's not generated)
@@ -6236,8 +6230,6 @@ static void cppMacroClassRegistration(
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c.isInstance ? cBase : c, g);
-            if(brokenMethods.Find({ c.name, itm.md.name }))
-               continue;
             if(m.hasTemplateAnything())
                continue;
 
@@ -6621,8 +6613,6 @@ static void cppMacroRegVirtualMethods(
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c, g);
-            if(brokenMethods.Find({ c.name, itm.md.name }))
-               continue;
             if(m.hasTemplateAnything())
                continue;
             if((len = strlen(m.mname)) > maxNameLen)
@@ -6639,8 +6629,6 @@ static void cppMacroRegVirtualMethods(
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c.isInstance ? cBase : c, g);
-            if(brokenMethods.Find({ c.name, itm.md.name }))
-               continue;
             if(m.hasTemplateAnything())
                continue;
             {
@@ -6700,7 +6688,6 @@ static void cppMacroRegVirtualMethods(
                m.init(itm.md, c, g);
                {
                   const char * mn = m.mname;
-                  if(brokenMethods.Find({ c.name, itm.md.name }) || brokenRegs.Find({ c.name, itm.md.name })) continue;
                   if(m.hasTemplateAnything()) continue;
                   if(mn)
                      o.concatx(lc, ln, genloc__, indents(2), "REG_", c.name, "_", mn, "(", mn, ", c", c.cpp.isTemplate ? ", " : "", c.cpp.isTemplate ? c.cpp.targs : "", ");");
@@ -6780,7 +6767,6 @@ enum StructOrNoheadMode { false, _struct, nohead };
          while((m = itm.next(publicVirtual)))
          {
             m.init(itm.md, c.isInstance ? cBase : c, g);
-            if(brokenMethods.Find({ c.name, itm.md.name })) continue;
             // if(m.hasTemplateAnything()) continue;
             // if(!itm.md.dataType.thisClass.type && itm.md.dataType.thisClass && itm.md.dataType.thisClass.string)
             //    itm.md.dataType.thisClass.type = processTypeStringOk(itm.md.dataType.thisClass.string);
