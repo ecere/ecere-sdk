@@ -834,7 +834,10 @@ class CGen : Gen
             delete ident;
          }
       }
-      else if(!c.skipTypeDef) conmsg("check");
+#ifdef _DEBUG
+      else if(!c.skipTypeDef)
+         conmsg("check");
+#endif
       if(!cl.templateClass)
       {
          bool skip = /*c.skip || */c.isUnInt || c.isCharPtr || c.isUnichar || c.isBool;
