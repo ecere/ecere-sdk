@@ -2070,7 +2070,7 @@ static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool protot
       bool pt = prototype && split;
       int e;
       const char * comma;
-      o.z.concatx(genloc__, indents(1), split && !pt ? c.name : "", split && !pt ? "::" : "", c.name, "(");
+      o.z.concatx(genloc__, indents(1), split && !pt ? c.cpp.name : "", split && !pt ? "::" : "", c.cpp.name, "(");
       comma = "";
       for(e = 0; e < bitMembers.count; e++)
       {
