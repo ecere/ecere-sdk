@@ -926,7 +926,8 @@ static void generateCPP(CPPGen g, File f)
          ZString z { allocType = heap };
          cppMacroClassRegistration(g, z, expansion, 2, g.cInstance, g.cclass, g.cInstance, null, 0);
          f.PrintLn(ln, "{");
-         f.Puts(z._string);
+         if(z._string)
+            f.Puts(z._string);
          f.PrintLn("}");
          delete z;
       }
@@ -1064,6 +1065,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
       }
 
       // definitions:
+      if(!(g.lib.ecere && c.isDataDisplayFlags))
       {
          // todo tofix tocheck tmp? skip to template class name for derrivation
          BMethod m; IterMethod itm { c.isInstance ? cBase.cl : c.cl };
@@ -4858,6 +4860,8 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                   // ClassType ct = cppGetClassInfoFromType(param, true, &clReg, &cParam, &hack, &isString, &isConst);
                   char * typeString = null; // will have the name in if dealing with an arrayType
                   char * paramString = null;
+                  if(g_.lib.ecereCOM && param.kind == classType && !clReg && !strcmp(param._class.string, "Alignment")) // hack
+                     ct = enumClass;
                   // if(param == templateParam && mode == _argParamList) debugBreakpoint();
                   if(hasVarArgs && param.kind == ellipsisType)
                      *hasVarArgs = true;
@@ -5043,7 +5047,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         // else if(ct == enumClass)
                         //    z.concatx("(", cParam.name, ")", name);
                         else if(ct == bitClass || ct == enumClass || (ct == structClass && ptr) || (ct == unitClass && !cParam.isUnichar))
-                           z.concatx(genidx(3H, x), "(", cParam.name, ptr ? " " : "", ptr ? stars(ptr, 0): "", ")", name);
+                           z.concatx(genidx(3H, x), "(", cParam ? cParam.name : "Alignment", ptr ? " " : "", ptr ? stars(ptr, 0): "", ")", name); // hack
                         else if(ct == structClass)
                            z.concatx(genidx(3I, x), "*(", cParam.cpp.name, " *)", name);
                         else if(param.kind == classType && param.classObjectType == typedObject)
@@ -5067,7 +5071,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                         // else if(ct == enumClass)
                         //    z.concatx("(", cParam.name, ")", name);
                         else if(ct == bitClass || ct == enumClass || (ct == structClass && ptr) || (ct == unitClass && !cParam.isUnichar))
-                           z.concatx(genidx(4H, x), "(", ptr && cParam.isBool ? cParam.cSymbol : cParam.name, ptr ? " " : "", ptr ? stars(ptr, 0): "", ")", name);
+                           z.concatx(genidx(4H, x), "(", cParam ? ptr && cParam.isBool ? cParam.cSymbol : cParam.name : "Alignment", ptr ? " " : "", ptr ? stars(ptr, 0): "", ")", name); // hack
                         else if(c && cParam && cParam.cl == c.cl && c.cpp.isTemplate)
                            z.concatx(genidx(4I, x), "(c &)", name);
                         else
@@ -5208,7 +5212,7 @@ char * cppParams(BClass c, TypeInfo ti, CPPParamsOutputMode mode, BVariant vTop,
                            if(addr)
                               z.concatx("&");
                            if(cast)
-                              z.concatx(ct == unitClass ? "/*CTUC-x*/" : "", "(", cParam.cSymbol, ptr2 ? " " : "", ptr2 ? stars(ptr2, 0) : "", ")");
+                              z.concatx(ct == unitClass ? "/*CTUC-x*/" : "", "(", cParam ? cParam.cSymbol : "C(Alignment)", ptr2 ? " " : "", ptr2 ? stars(ptr2, 0) : "", ")"); // hack
                         }
                         if(impl && t)
                         {
@@ -6644,7 +6648,7 @@ static void cppMacroRegVirtualMethods(
                char * paramsDef = paramsDefs.firstIterator.data;
                Type t = m.md.dataType;
                TypeInfo argsInfo { type = t, m = m, md = m.md, cl = c.cl, c = c };
-               char * paramsPassing = cppParams(c, argsInfo, regMethodArgsPassingCppToEc, vClass, null, false, false, null, mode, null, null, null, null, { cppDirectObjects = true });
+               char * paramsPassing = cppParams(c, argsInfo, regMethodArgsPassingCppToEc, vClass, null, t.thisClass != null, false, null, mode, null, null, null, null, { cppDirectObjects = true, utilStr1 = "self" });
                int lenName = strlen(mn);
                int lenDef = strlen(paramsDef);
                // #define REG_$(classname)_$(methodname)(m,c)

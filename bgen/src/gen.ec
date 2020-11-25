@@ -1643,7 +1643,7 @@ class BClass : struct
    bool isBool; bool isByte; bool isUnichar; bool isUnInt; bool isCharPtr; bool isString;
    bool isBaseString;
    bool isInstance, isClass, isModule, isApplication, isGuiApplication, isContainer, isArray, isList, isAnchor;
-   bool isSurface, isIOChannel, isWindow, isDataBox;
+   bool isSurface, isIOChannel, isWindow, isDataBox, isDataDisplayFlags;
 
    bool hasPublicMembers;
    bool noMacro, noSpecMacro, nativeSpec;
@@ -1721,28 +1721,29 @@ class BClass : struct
 
       isFromCurrentModule = classIsFromModule(cl, gen.mod, ec1ComponentsApp);
 
-      is_class          = cl.type == systemClass   && !strcmp(name, "class");
-      is_struct         = cl.type == systemClass   && !strcmp(name, "struct");
-      is_enum           = cl.type == systemClass   && !strcmp(name, "enum");
-      isBool            = cl.type == enumClass     && !strcmp(name, "bool");
-      isString          = cl.type == normalClass   && !strcmp(name, "String");
-      isUnichar         = cl.type == unitClass     && !strcmp(name, "unichar");
-      isUnInt           = cl.type == systemClass   && !strcmp(name, "unsigned int");
-      isByte            = cl.type == systemClass   && !strcmp(name, "byte");
-      isCharPtr         = cl.type == normalClass   && !strcmp(name, "char *");
-      isInstance        = cl.type == normalClass   && !strcmp(name, "Instance");
-      isClass           = cl.type == noHeadClass   && !strcmp(name, "Class");
-      isModule          = cl.type == normalClass   && !strcmp(name, "Module");
-      isApplication     = cl.type == normalClass   && !strcmp(name, "Application");
-      isGuiApplication  = cl.type == normalClass   && !strcmp(name, "GuiApplication");
-      isContainer       = cl.type == normalClass   && !strcmp(name, "Container");
-      isArray           = cl.type == normalClass   && !strcmp(name, "Array");
-      isList            = cl.type == normalClass   && !strcmp(name, "List");
-      isAnchor          = cl.type == structClass   && !strcmp(name, "Anchor");
-      isSurface         = cl.type == normalClass   && !strcmp(name, "Surface");
-      isIOChannel       = cl.type == normalClass   && !strcmp(name, "IOChannel");
-      isWindow          = cl.type == normalClass   && !strcmp(name, "Window");
-      isDataBox         = cl.type == normalClass   && !strcmp(name, "DataBox");
+      is_class             = cl.type == systemClass   && !strcmp(name, "class");
+      is_struct            = cl.type == systemClass   && !strcmp(name, "struct");
+      is_enum              = cl.type == systemClass   && !strcmp(name, "enum");
+      isBool               = cl.type == enumClass     && !strcmp(name, "bool");
+      isString             = cl.type == normalClass   && !strcmp(name, "String");
+      isUnichar            = cl.type == unitClass     && !strcmp(name, "unichar");
+      isUnInt              = cl.type == systemClass   && !strcmp(name, "unsigned int");
+      isByte               = cl.type == systemClass   && !strcmp(name, "byte");
+      isCharPtr            = cl.type == normalClass   && !strcmp(name, "char *");
+      isInstance           = cl.type == normalClass   && !strcmp(name, "Instance");
+      isClass              = cl.type == noHeadClass   && !strcmp(name, "Class");
+      isModule             = cl.type == normalClass   && !strcmp(name, "Module");
+      isApplication        = cl.type == normalClass   && !strcmp(name, "Application");
+      isGuiApplication     = cl.type == normalClass   && !strcmp(name, "GuiApplication");
+      isContainer          = cl.type == normalClass   && !strcmp(name, "Container");
+      isArray              = cl.type == normalClass   && !strcmp(name, "Array");
+      isList               = cl.type == normalClass   && !strcmp(name, "List");
+      isAnchor             = cl.type == structClass   && !strcmp(name, "Anchor");
+      isSurface            = cl.type == normalClass   && !strcmp(name, "Surface");
+      isIOChannel          = cl.type == normalClass   && !strcmp(name, "IOChannel");
+      isWindow             = cl.type == normalClass   && !strcmp(name, "Window");
+      isDataBox            = cl.type == normalClass   && !strcmp(name, "DataBox");
+      isDataDisplayFlags   = cl.type == bitClass      && !strcmp(name, "DataDisplayFlags"); // in support of hack
 
       if(cl.type == normalClass)
       {
