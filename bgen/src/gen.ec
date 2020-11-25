@@ -126,7 +126,7 @@ private:
       // prepareVars
       sourceProcessorVars.Free();
       sourceProcessorVars["MODULE_LOCATION"] = CopyString(lib.loadModuleLocation);
-      sourceProcessorVars["MODULE_NAME"] = CopyString(lib.moduleName);
+      sourceProcessorVars["BINDING_MODULE"] = CopyString(lib.moduleName);
       sourceProcessorVars["LIB_DEF_NAME"] = CopyString(lib.defineName);
       sourceProcessorVars["BINDING_NAME"] = CopyString(lib.bindingName);
       sourceProcessorVars["C_PREPRO_LIMITTER"] = CopyString(preprocess ? "//##" : "");

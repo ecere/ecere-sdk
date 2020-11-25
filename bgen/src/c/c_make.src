@@ -2,9 +2,9 @@
 # CORE VARIABLES
 
 BINDMODLOC := #(MODULE_LOCATION)#
-BINDMOD := #(MODULE_NAME)#
-BINDNAME := #(BINDING_NAME)#
-MODULE := $(BINDMOD)_c
+BINDING_MODULE := #(BINDING_MODULE)#
+BINDING_NAME := #(BINDING_NAME)#
+MODULE := $(BINDING_NAME)_c
 VERSION := 0.44
 CONFIG := release
 ifndef COMPILER
@@ -54,7 +54,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(BINDMOD).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OBJ = obj/$(BINDING_NAME).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
@@ -67,18 +67,18 @@ SONAME =
 endif
 
 #(DEP_FILE_LISTS)#_OBJECTS = $(_DEP_OBJECTS) \
-	$(OBJ)$(BINDNAME)$(O)
+	$(OBJ)$(BINDING_NAME)$(O)
 
 OBJECTS = $(_OBJECTS)
 
 SOURCES = $(_DEP_SOURCES) \
-	$(BINDNAME).c
+	$(BINDING_NAME).c
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-#(DEP_LIBS)#	$(call _L,$(BINDMOD))
+#(DEP_LIBS)#	$(call _L,$(BINDING_MODULE))
 endif
 
 PRJ_CFLAGS += \
@@ -134,7 +134,7 @@ endif
 
 # OBJECT RULES
 
-#(DEP_RULES)#$(OBJ)$(BINDNAME)$(O): $(BINDNAME).c
+#(DEP_RULES)#$(OBJ)$(BINDING_NAME)$(O): $(BINDING_NAME).c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 .PHONY: cleantarget
@@ -165,6 +165,6 @@ wipeclean:
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
-Makefile: ;
-$(_CF_DIR)crossplatform.mk: ;
-$(_CF_DIR)default.cf: ;
+$(MAKEFILE_LIST): ;
+$(SOURCES): ;
+$(RESOURCES): ;
