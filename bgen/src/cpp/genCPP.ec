@@ -583,6 +583,9 @@ static void cppPrintDefineExp(CPPGen g, DefinedExpression df, BDefine d, BClass 
 
 static void generateHPP(CPPGen g, File f)
 {
+   BClass c = eSystem_FindClass(g_.mod, "Instance");
+   BClass cBase = c.cl.base;
+
    cppHeaderStart(g, f);
    if(g.lib.ecereCOM)
    {
@@ -608,10 +611,16 @@ static void generateHPP(CPPGen g, File f)
 
    f.PrintLn(genloc__, "int ", g.lib.bindingName, "_cpp_init(const Module & module);", ln); // todo? back to void returning?
 
+   if(g.lib.ecereCOM)
+      cppHardcodedStructBase(g, f, true, c, cBase);
+
    outputContents(g, f);
 
    if(g.lib.ecereCOM)
       cppHardcodedNativeTypeTemplates(g, f);
+
+   if(g.lib.ecereCOM)
+      cppHardcodedStructBase(g, f, false, c, cBase);
 
    outputSplitContents(g, f);
 
@@ -6957,7 +6966,7 @@ enum StructOrNoheadMode { false, _struct, nohead };
                   else
                      s3 = cppParams(c, argsInfo, _argSpecialThisParamList, vClass, cn, true, false, null, mode, null, null, null, null, { });
 
-                  if(cRT && !cRT.isBool && !ptrRTGood && !(vClass.kind == vclass && cRT == vClass.c))
+                  if(vClass && cRT && !cRT.isBool && !ptrRTGood && !(vClass.kind == vclass && cRT == vClass.c))
                      vClass.processDependency(g, otypedef, otypedef, cRT.cl);
 
                   {
