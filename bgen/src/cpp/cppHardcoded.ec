@@ -14,6 +14,80 @@ void cppHardcodedStructBase(CPPGen g, File f, bool prototype, BClass c, BClass c
    f.Print(ln);
    if(prototype)
    {
+      f.Print(genloc__, "enum class Alignment : int;", ln, ln); // hack -- Alignment in eC for OnDisplay
+
+      // hack -- DataDisplayFlags in eC for OnDisplay
+      {
+         f.Print(genloc__, "class DataDisplayFlags", ln);
+         f.Print(genloc__, "{", ln);
+         f.Print(genloc__, "public:", ln);
+         f.Print(genloc__, "   C(DataDisplayFlags) impl;", ln);
+         f.Print(genloc__, "   constexpr DataDisplayFlags() : impl(0) { }", ln);
+         f.Print(genloc__, "   constexpr DataDisplayFlags(C(DataDisplayFlags) impl) : impl(impl) { }", ln);
+         f.Print(genloc__, "   operator C(DataDisplayFlags)() { return impl; }", ln);
+         f.Print(genloc__, "   DataDisplayFlags & operator =(C(DataDisplayFlags) impl) { impl = impl; return *this; }", ln);
+         f.Print(genloc__, "   bool operator ==(const DataDisplayFlags & value) const { return impl == value.impl; }", ln);
+         f.Print(genloc__, "   bool operator !=(const DataDisplayFlags & value) const { return impl != value.impl; }", ln, ln);
+
+         f.Print(genloc__, "   struct selected_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr selected_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::selected_Prop & operator= (DataDisplayFlags::selected_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } selected;", ln);
+         f.Print(genloc__, "   struct fullRow_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr fullRow_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::fullRow_Prop & operator= (DataDisplayFlags::fullRow_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } fullRow;", ln);
+         f.Print(genloc__, "   struct current_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr current_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::current_Prop & operator= (DataDisplayFlags::current_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } current;", ln);
+         f.Print(genloc__, "   struct active_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr active_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::active_Prop & operator= (DataDisplayFlags::active_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } active;", ln);
+         f.Print(genloc__, "   struct dropBox_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr dropBox_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::dropBox_Prop & operator= (DataDisplayFlags::dropBox_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } dropBox;", ln);
+         f.Print(genloc__, "   struct header_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr header_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::header_Prop & operator= (DataDisplayFlags::header_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } header;", ln);
+         f.Print(genloc__, "   struct firstField_Prop", ln);
+         f.Print(genloc__, "   {", ln);
+         f.Print(genloc__, "      constexpr firstField_Prop() { };", ln);
+         f.Print(genloc__, "      [[no_unique_address]] int _[0];", ln);
+         f.Print(genloc__, "      inline bool operator= (bool v);", ln);
+         f.Print(genloc__, "      inline DataDisplayFlags::firstField_Prop & operator= (DataDisplayFlags::firstField_Prop & prop);", ln);
+         f.Print(genloc__, "      inline operator bool () const;", ln);
+         f.Print(genloc__, "   } firstField;", ln);
+         f.Print(genloc__, "};", ln, ln);
+      }
+
       f.Print(genloc__, "struct Struct", ln);
       f.Print(genloc__, "{", ln);
       f.Print(genloc__, "   [[no_unique_address]] int _[0];", ln);
