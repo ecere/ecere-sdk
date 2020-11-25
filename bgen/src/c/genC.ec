@@ -2446,7 +2446,7 @@ ASTRawString astBitTool(Class cl, BClass c)
    Array<const String> bitMembers = null;
    bool haveContent = false;
    DataMember dm; IterDataMember dat { cl };
-   if(!python && cl.members.count <= 4) bitMembers = { };
+   if(!python && cl.members.count <= 5) bitMembers = { };
    while((dm = dat.next(all)))
    {
       BitMember bm = (BitMember)dm;
