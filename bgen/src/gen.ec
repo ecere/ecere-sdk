@@ -1443,7 +1443,9 @@ class BNamespace : struct
          }
          if(fix > 128)
          {
+#ifdef _DEBUG
             PrintLn("we were trying to sort ", name, " for ", g_.lang);
+#endif
             break;
          }
       }

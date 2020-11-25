@@ -1210,14 +1210,21 @@ void processPyClass(PythonGen g, BClass c)
                                     break;
                                  //case :
                                  default:
+#ifdef _DEBUG
                                     locprintxln("------- ", itmpp.name, " ", itmpp.type.kind, " -- ", itmpp.type._class.registered.name, " ", itmpp.type._class.registered.type);
+#endif
+                                    break;
                               }
                            }
+#ifdef _DEBUG
                            else
                               locprintxln("------- ", itmpp.name, " ", itmpp.type.kind, " -- class not registered!");
+#endif
                         }
+#ifdef _DEBUG
                         else
                            locprintxln("------- ", itmpp.name, " ", itmpp.type.kind);
+#endif
                      }
                   }
                }
