@@ -2014,7 +2014,7 @@ static void cppGenEnumClassValues(CPPGen g, BOutput o, BClass c)
 
 static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool prototype, BOutput hppOut, BOutput cppOut)
 {
-   bool doBitMembers = c.cl.members.count <= 4 && !brokenBitMembersConstructor.Find(c.cl.name);
+   bool doBitMembers = c.cl.members.count <= 5 && !brokenBitMembersConstructor.Find(c.cl.name);
    bool split = false;
    BOutput o;
    Array<BitMemberTypeStringZero> bitMembers = doBitMembers ? { } : null;
@@ -2035,17 +2035,18 @@ static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool protot
                case charType:
                   if(!strcmp(dm.dataTypeString, "byte"))
                      bitMembers.Add({ bm, "unsigned char", " = 0" });
-                  // else debugBreakpoint();
+                  break;
+               case intType:
+                  bitMembers.Add({ bm, dm.dataTypeString, " = 0" });
                   break;
                case classType:
                {
                   ClassType ct = dm.dataType._class && dm.dataType._class.registered ? dm.dataType._class.registered.type : systemClass;
-                  if(ct == bitClass/* || ct == enumClass || ct == unitClass*/) // todo: enable these others?
+                  if(ct == bitClass || ct == enumClass || ct == unitClass)
                   {
                      bitMembers.Add({ bm, dm.dataType._class.registered.name/*, " = { }"*/ });
                      split = true;
                   }
-                  // else debugBreakpoint();
                   break;
                }
             }
@@ -2064,7 +2065,7 @@ static void genBitMembersConstructor(CPPGen g, BClass c, BVariant v, bool protot
       {
          BitMemberTypeStringZero item = bitMembers[e];
          ClassType ct = item.bm.dataType.kind == classType ? item.bm.dataType._class.registered.type : systemClass;
-         bool ref/*shouldUseRefToPreventCompleteTypeDependency*/ = ct == bitClass || ct == enumClass || ct == structClass || ct == unionClass;
+         bool ref/*shouldUseRefToPreventCompleteTypeDependency*/ = ct == bitClass || ct == structClass || ct == unionClass;
          o.z.concatx(comma, item.typeString, ref ? " &" : "", " ", item.bm.name);
          if(comma[0] == '\0')
             comma = ", ";
