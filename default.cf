@@ -33,7 +33,7 @@ export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)$(
 export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
 endif
 export AS      = $(GCC_PREFIX)as
-export LD      = $(GCC_PREFIX)ld
+export LD      = $(if $(CONTAINS_CXX),$(CXX),$(CC)) # $(GCC_PREFIX)ld
 export AR      = $(GCC_PREFIX)ar
 export STRIP   = $(GCC_PREFIX)strip
 ifdef WINDOWS_TARGET
