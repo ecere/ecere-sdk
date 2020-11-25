@@ -332,6 +332,7 @@ class CPPGen : CGen
             Expression exp = ParseExpressionString((char *)df.value);
             if(exp.type == instanceExp)
             {
+               const bool debugDefines = false;
                BOutput out { vdefine, d = d, z = { allocType = heap } };
                BVariant v = d;
                BClass cType = eSystem_FindClass(mod, exp.instance._class.name);
@@ -345,8 +346,25 @@ class CPPGen : CGen
                   n.implementationsContents.Add(v);
                d.out = out;
                out.z.concatx(ln);
-               out.z.concatx(genspc__, "#undef ", d.name, " // ", d.name, "(", exp.type, ")", " -- ", expString, ln);
-               cppPrintDefineExp(this, df, d, cType, exp, v, out.z);
+               out.z.concatx(genspc__, "#undef ", d.name);
+               if(debugDefines)
+                  out.z.concatx(" // ", d.name, "(", exp.type, ")", " -- ", expString);
+               out.z.concatx(ln);
+
+               {
+                  char * val = getNoNamespaceString(df.value, null, false, false);
+                  const char * name = strstr(val, cType.cl.name);
+                  const char * inst = strstr(val, "{");
+                  if(name && inst && name + strlen(cType.cl.name) <= inst)
+                  {
+                     if(cType && cType.cl.type == unitClass)
+                        out.z.concatx(genspc__, "static constexpr ", cType.cpp.name, " ", d.name, " ", inst, ";", ln);
+                     else
+                        out.z.concatx(genspc__, cType.cpp.name, " ", d.name, " = ", val, ";", ln, ln);
+                  }
+                  else
+                     debugBreakpoint();
+               }
             }
             FreeExpression(exp);
          }
@@ -540,41 +558,6 @@ class CPPGen : CGen
       delete hppFileName;
       delete cpp_classNameSwaps;
    }
-}
-
-static void cppPrintDefineExp(CPPGen g, DefinedExpression df, BDefine d, BClass cType, Expression e, BVariant v, ZString o)
-{
-   char * val = getNoNamespaceString(df.value, null, false, false);
-   const char * name = strstr(val, cType.cl.name);
-   const char * inst = strstr(val, "{");
-   ChangeCh(val, '{', '(');
-   ChangeCh(val, '}', ')');
-   if(name && inst && name + strlen(cType.cl.name) <= inst)
-   {
-      if(cType && cType.cl.type == unitClass)
-         o.concatx(genspc__, "static constexpr ", cType.cpp.name, " ", d.name, " ", inst, ";", ln);
-      else if(!strcmp(d.name, "wholeWorld") || !strcmp(d.name, "AnyFileChange")) // broken
-         o.concatx(genspc__, "/* todo: fix this. */ // ", cType.cpp.name, " ", d.name, " ", inst, ";", ln, ln); // todo: fix this. see below.
-      else
-      {
-         /*if(!strcmp(df.name, "wholeWorld"))
-         {
-            char expString[1024];
-            expString[0] = '\0';
-
-            debugBreakpoint();
-            PrintExpression(e, expString);
-         }*/
-         // todo: find a way to output
-         //       'GeoExtent wholeWorld ( GeoPoint ( -90, -180 ),  GeoPoint ( 90, 180 ) );'
-         //       for wholeWorld's val: 'GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )'
-         //       this works in .cpp file, not in .hpp
-         //       find a way to make friendly constructors into constexpr constructors?
-         o.concatx(genspc__, cType.cpp.name, " ", d.name, " ", inst, ";", ln, ln);
-      }
-   }
-   else
-      debugBreakpoint();
 }
 
 static void generateHPP(CPPGen g, File f)
