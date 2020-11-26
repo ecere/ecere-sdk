@@ -1,43 +1,43 @@
 #include "ecere.h"
 
-Class * CO(Array, ColorAlpha);
-Class * CO(Array, double);
-Class * CO(Foo);
-Class * CO(Foo, double);
-Class * CO(Foo, String);
-typedef Array T(Array, ColorAlpha);
-typedef Array T(Array, double);
-typedef Map T(Map, String, ColorAlpha);
-typedef Instance Foo;
+eC_Class * class_Array_ColorAlpha;
+eC_Class * class_Array_double;
+eC_Class * class_Foo;
+eC_Class * class_Foo_double;
+eC_Class * class_Foo_String;
+typedef eC_Array T(Array, ColorAlpha);
+typedef eC_Array T(Array, double);
+typedef eC_Map T(Map, String, ColorAlpha);
+typedef eC_Instance eC_Foo;
 typedef uint64_t TP(Foo, A);
 
-struct CM(Foo) { int foo; };
-bool Foo_constructor(Foo this)
+struct class_members_Foo { int foo; };
+eC_bool Foo_constructor(eC_Foo this)
 {
-   struct CM(Foo) * self = IPTR(this, Foo);
+   struct class_members_Foo * self = IPTR(this, Foo);
    self->foo = 5;
    return true;
 }
-void Foo_destructor(Foo this) { }
+void Foo_destructor(eC_Foo this) { }
 
 #define FOO_TP_A_INDEX 0
 
-void Foo_add(Foo this, TP(Foo, A) value)
+void Foo_add(eC_Foo this, TP(Foo, A) value)
 {
-   ClassTemplateArgument * tArgs = this->_class->templateArgs;
+   eC_ClassTemplateArgument * tArgs = this->_class->templateArgs;
    int tCount = this->_class->templateParams.count;
    int baseParam = this->_class->numParams - tCount;
-   ClassTemplateArgument * tArg = tArgs ? &tArgs[baseParam + FOO_TP_A_INDEX] : null;
-   Class * c = null;
+   eC_ClassTemplateArgument * tArg = tArgs ? &tArgs[baseParam + FOO_TP_A_INDEX] : null;
+   eC_Class * c = null;
    void * p;
-   DataValue dv;
+   eC_DataValue dv;
    if(tArg)
    {
       if(!tArg->dataTypeClass)
          tArg->dataTypeClass = eC_findClass(this->_class->module, tArg->dataTypeString);
       c = tArg->dataTypeClass;
    }
-   if(!c) c = CO(int);
+   if(!c) c = class_int;
    switch(c->type)
    {
       case ClassType_noHeadClass: case ClassType_normalClass:
@@ -47,36 +47,36 @@ void Foo_add(Foo this, TP(Foo, A) value)
       case ClassType_bitClass: case ClassType_unitClass:
       case ClassType_enumClass: case ClassType_systemClass:
       {
-         Class * dc = c;
+         eC_Class * dc = c;
          if(c->type != ClassType_systemClass)
          {
             // NOTE: Storing Class in dataType here because we don't have a 'dataTypeClass', since Type is only used by eC compiler
             if(!c->dataType)
-               c->dataType = (Type *) eC_findClass(c->module, c->dataTypeString);
+               c->dataType = (eC_Type *) eC_findClass(c->module, c->dataTypeString);
             if(c->dataType)
-               dc = (Class *)c->dataType;
+               dc = (eC_Class *)c->dataType;
          }
-              if(dc == CO(double))     dv.d =       dTA(value), p = &dv.d;
-         else if(dc == CO(float))      dv.f =       fTA(value), p = &dv.f;
-         else if(dc == CO(char))       dv.c =       cTA(value), p = &dv.c;
-         else if(dc == CO(byte))       dv.uc =      bTA(value), p = &dv.uc;
-         else if(dc == CO(short))      dv.s =       sTA(value), p = &dv.s;
-         else if(dc == CO(uint16))     dv.us =     usTA(value), p = &dv.us;
-         else if(dc == CO(int))        dv.i =       iTA(value), p = &dv.i;
-         else if(dc == CO(uint))       dv.ui =     uiTA(value), p = &dv.ui;
-         else /* if(c == CO(int64)) */ dv.ui64 = ui64TA(value), p = &dv.ui64;
+              if(dc == class_double)      dv.d =       dTA(value), p = &dv.d;
+         else if(dc == class_float)       dv.f =       fTA(value), p = &dv.f;
+         else if(dc == class_char)        dv.c =       cTA(value), p = &dv.c;
+         else if(dc == class_byte)        dv.uc =      bTA(value), p = &dv.uc;
+         else if(dc == class_short)       dv.s =       sTA(value), p = &dv.s;
+         else if(dc == class_uint16)      dv.us =     usTA(value), p = &dv.us;
+         else if(dc == class_int)         dv.i =       iTA(value), p = &dv.i;
+         else if(dc == class_uint)        dv.ui =     uiTA(value), p = &dv.ui;
+         else /* if(c == class_int64) */  dv.ui64 = ui64TA(value), p = &dv.ui64;
          break;
       }
    }
-   printLn(c, p, null);
+   eC_printLn(c, p, null);
 }
 
 int main(int argc, char *argv[])
 {
-   Application module = eC_init(null, true, false, argc, argv);
+   eC_Application module = eC_init(null, true, false, argc, argv);
    //C(Window) win = newi(Window);
    double d;
-   Foo foo;
+   eC_Foo foo;
 
    ecere_init(module);
 
@@ -84,36 +84,36 @@ int main(int argc, char *argv[])
    T(Array, double) ad;
    //T(Map, String, ColorAlpha) m;
 
-   CO(Array, ColorAlpha) = eC_findClass(module, "Array<ColorAlpha>");
+   class_Array_ColorAlpha = eC_findClass(module, "Array<ColorAlpha>");
    a = newi(Array, ColorAlpha);
    Container_add(a, ColorAlpha_from_Color(DefinedColor_red));
    Container_add(a, ColorAlpha_from_Color(DefinedColor_blue));
    //Container_add(a, COLORALPHA(255, red));
-   printLn(a->_class, a, null);
+   eC_printLn(a->_class, a, null);
 
-   CO(Array, double) = eC_findClass(module, "Array<double>");
+   class_Array_double = eC_findClass(module, "Array<double>");
    ad = newi(Array, double);
    Container_add(ad, TAd(3.14159));
-   printLn(ad->_class, ad, null);
+   eC_printLn(ad->_class, ad, null);
 
    d = ((double *)IPTR(ad, Array)->array)[0];
-   printLn(CO(double), &d, null);
+   eC_printLn(class_double, &d, null);
 
-   // CO(Foo) = registerClass(module, Foo, Instance);
-   CO(Foo) = registerClass(module, Foo, Map<String, int>); // why is this not in double quote?
-   Class_addTemplateParameter(CO(Foo), "A", TemplateParameterType_type, null, null);
-   Class_doneAddingTemplateParameters(CO(Foo));
-   addMethod(CO(Foo), "add", Foo_add);
+   // class_Foo = registerClass(module, Foo, Instance);
+   class_Foo = registerClass(module, Foo, Map<String, int>); // why is this not in double quote?
+   Class_addTemplateParameter(class_Foo, "A", TemplateParameterType_type, null, null);
+   Class_doneAddingTemplateParameters(class_Foo);
+   addMethod(class_Foo, "add", Foo_add);
 
-   CO(Foo, double) = eC_findClass(module, "Foo<A = double>");
+   class_Foo_double = eC_findClass(module, "Foo<A = double>");
    foo = newi(Foo, double);
    Foo_add(foo, TAd(3.14159));
 
-   CO(Foo, String) = eC_findClass(module, "Foo<String>");
+   class_Foo_String = eC_findClass(module, "Foo<String>");
    foo = newi(Foo, String);
    Foo_add(foo, TAp("Hello, Templates in C!"));
    Foo_add(foo, TAp("Hello Again!"));
 
-   printLn(foo->_class, foo, null); // todo, need a OnGetString for this to work?
+   eC_printLn(foo->_class, foo, null); // todo, need a OnGetString for this to work?
    return 0;
 }
