@@ -1778,7 +1778,7 @@ class BClass : struct
          if(completeTemplate)
          {
             bareSymbol = cGetTemplatedClassSymbolName(this, cTArgs, bare);
-            cSymbol = cGetTemplatedClassSymbolName(this, cTArgs, noMacro ? expanded : macro); // g_.allocMacroSymbolName(noMacro/*false*/, T, { }, cl.name, null, 0);
+            cSymbol = cGetTemplatedClassSymbolName(this, cTArgs, (noMacro || python) ? expanded : macro); // g_.allocMacroSymbolName(noMacro/*false*/, T, { }, cl.name, null, 0);
             if(!cSymbol)
             {
                debugBreakpoint();
