@@ -1314,7 +1314,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             }
 
             if(pt.IsSet)
-               z.concatx(port, "C(bool) (* ", p.fpnIst, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
+               z.concatx(port, python ? "bool" : "C(bool)", " (* ", p.fpnIst, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             delete port;
             //z.concatx(ln);
          }
@@ -1947,9 +1947,11 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
       if(!opt.notype)
       {
          quals = { };
+         /*
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
-         quals.Add(SpecName { name = PrintString(python ? "void *" : typed_object_class_ptr) });
+         */
+         quals.Add(SpecName { name = PrintString(/*"const ", */python ? "Class *" : typed_object_class_ptr) });
          if(!opt.cpp)
          {
             Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
@@ -2288,7 +2290,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
    for(s = val; *s; s++) if(*s == '\n') *s = ' ';
 
    if(!python)
-      z.concatx(g_.preproLimiter, "#define ", d.name, " (", val, ")", ln);
+      z.concatx(g_.preproLimiter, "#define ", d.name, !strcmp(d.name, "MAXFLOAT") ? "_CLASH" : "", " (", val, ")", ln); // hack / tofix
    else if(simple)
       z.concatx(g_.preproLimiter, "#define ", d.name, " ", simple ? val : "...", ln);
    else
@@ -2888,7 +2890,7 @@ char * cGetTemplatedClassSymbolName(BClass c, Array<BClass> cTArgs, TemplatedCla
    char * d;
    const char * templateClassName = c.cl.templateClass.name;
    // const char * prefix = mode == bare ? "" : mode == expanded ? "template" : "T(";
-   const char * prefix = mode == macro ? "T(" : mode == bare ? "tenplate_" : "template";
+   const char * prefix = mode == macro ? "T(" : /*mode == bare ? */"template_"/* : "template"*/;
    const char * sep = mode == macro ? ", " : "_";
    int sepLen = strlen(sep);
    int len = 0;
