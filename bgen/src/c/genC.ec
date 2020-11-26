@@ -400,6 +400,8 @@ class CGen : Gen
       delete hFileName; hFileName = CopyString(name);
       delete hFilePath; hFilePath = CopyString(path);
       path[len] = 0;
+      name[strlen(lib.bindingName)] = 0;
+      strcat(name, "_c");
       ChangeExtension(name, "Makefile", name);
       PathCatSlash(path, name);
       if(tmp) strcat(path, ".tmp");
