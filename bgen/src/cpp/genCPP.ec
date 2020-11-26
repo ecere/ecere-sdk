@@ -5410,7 +5410,9 @@ static void cppHeaderStart(CPPGen g, File f)
    f.PrintLn(genloc__, "#define __", g.lib.defineName, "_HPP__", ln);
 
    if(g.lib.ecereCOM)
-      f.PrintLn(genloc__, "#define ECPRFX eC_", ln);
+   {
+      // f.PrintLn(genloc__, "#define ECPRFX eC_", ln); // no longer needed since it is now the C bindings default
+   }
    else
    {
       // f.PrintLn(genloc__, "#include \"eC.hpp\"");
