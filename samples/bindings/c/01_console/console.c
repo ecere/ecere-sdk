@@ -3,7 +3,7 @@
 
 APP_INTRO(0)
 {
-// printLn(CO(String), __STDC_VERSION__, null);
-   F(printLn)(CO(String), "C: Hello, eC!", null);
+// eC_printLn(class_String, __STDC_VERSION__, null);
+   eC_printLn(class_String, "C: Hello, eC!", null);
 }
 APP_OUTRO
