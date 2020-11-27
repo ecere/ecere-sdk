@@ -1360,7 +1360,9 @@ private:
                      }
 
                      itemResult = GetValue(type, value);
-                     if(itemResult != syntaxError)
+                     if(itemResult == syntaxError)
+                        result = syntaxError;
+                     else
                      {
                         if(prop || member)
                         {
