@@ -253,6 +253,8 @@ private:
             bool escaped = false, quoted = ch == '\"', done = false;
             int size = 32, len = 0;
             char * s = new char[size];
+            uint64 openSquar = 0; // track up to 63
+            uint64 openCurly = 0; // nesting levels
             int level = 0;
             while(ch && !done)
             {
@@ -265,12 +267,36 @@ private:
                {
                   if(!quoted)
                   {
-                     if(level <= 0 && (ch == ',' || ch == '}' || ch == ']'))
+                     if(level <= 0 && (ch == ',' || ch == '}' || ch == ']'))  // Completed correctly
                         break;
-                     else if(ch == '{') level++;
-                     else if(ch == '}') level--;
-                     else if(ch == '[') level++;
-                     else if(ch == ']') level--;
+                     else if(ch == '{')
+                     {
+                        level++;
+                        openCurly = (openCurly << 1) | 1;
+                        openSquar = openSquar << 1;
+                     }
+                     else if(ch == '[')
+                     {
+                        level++;
+                        openCurly = openCurly << 1;
+                        openSquar = (openSquar << 1) | 1;
+                     }
+                     else if(ch == '}')
+                     {
+                        level--;  // let level free to become negative
+                        if (openSquar & 1 )
+                           break;  // openSquar will certainly be > 0
+                        openCurly >>= 1;
+                        openSquar >>= 1;
+                     }
+                     else if(ch == ']')
+                     {
+                        level--;  // let level free to become negative
+                        if (openCurly & 1)
+                           break;  // openCurly will certainly be > 0
+                        openCurly >>= 1;
+                        openSquar >>= 1;
+                     }
                   }
                   else if(quoted)
                   {
@@ -285,14 +311,14 @@ private:
 
                s[len++] = ch;
                if(!ReadChar(&ch))
-                  ; //ch = 0;
+                  break;  // Get next ch and stop on failure to do so
             }
             s[len] = 0;
             while(len > 0 && isspace(s[len-1]))
                s[--len] = 0;
             s = renew s char[len + 1];
-            string = s;
-            result = (len > 0) ? success : syntaxError;
+            string = s;  //     | open braces match closed one   | no extra closing
+            result = (len > 0 && openSquar == 0 && openCurly == 0 && level > -1) ? success : syntaxError;
          }
          else
          {
