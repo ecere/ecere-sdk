@@ -1333,7 +1333,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             if(!pt.Get && !pt.Set)
             {
                const char * dataType = tokenTypeString(cl.dataType);
-               z.concatx(g_.preproLimiter, "#define ", c.name, " ", c.upper, ln);
+               z.concatx(g_.preproLimiter, "#define ", c.name, "(x) ", c.upper, "(x)", ln);
                z.concatx(g_.preproLimiter, "#define ", c.upper, "(x)  ((", p.cConvUse.cSymbol, ")(x))", ln);
                z.concatx(g_.preproLimiter, "#define ", p.name, "_in_", c.name, "(x)  ((", dataType, ")(x))", ln);
                if(haveContent) *haveContent = true;
@@ -1354,7 +1354,7 @@ void genPropertyConversion(ZString z, BClass c, BProperty p, DataValueType type,
       double m = 1, b = 0;
       bool forSet = fn == p.pt.Set;
       if(!forSet)
-         z.concatx(g_.preproLimiter, "#define ", c.name, " ", c.upper, ln);
+         z.concatx(g_.preproLimiter, "#define ", c.name, "(x) ", c.upper, "(x)", ln);
       z.concatx(g_.preproLimiter, "#define ", forSet ? p.cConvUse.name : "", forSet ? "_in_" : "", forSet ? c.name : c.upper, "(x)  ");
       if(checkLinearMapping(type, fn, &m, &b))
       {
