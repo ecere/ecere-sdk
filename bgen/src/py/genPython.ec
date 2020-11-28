@@ -3055,8 +3055,10 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("sysdir = 'win32' if sys.platform == 'win32' else 'linux'");
    out.PrintLn("syslibdir = 'bin' if sys.platform == 'win32' else 'lib'");
    out.PrintLn("if rel == '':");
+   out.PrintLn("   incdir = path.join('..', 'c')");
    out.PrintLn("   libdir = path.join('..', '..', 'obj', sysdir, syslibdir)");
    out.PrintLn("else:");
+   out.PrintLn("   incdir = path.join('bindings', 'c')");
    out.PrintLn("   libdir = path.join('obj', sysdir, syslibdir)");
    //out.PrintLn("print('info -- owd:', owd, ' rel:', rel, ' libdir:', libdir)");
 
@@ -3139,7 +3141,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("               extra_compile_args=['-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],");
    //out.PrintLn("               include_dirs=[path.join(owd, rel, '", cpath, "')],"); // todo
    //out.PrintLn("               include_dirs=[path.join(owd, rel), path.join(owd, 'bindings/py')],"); // todo
-   out.PrintLn("               include_dirs=[path.join(owd, rel)],"); // todo
+   out.PrintLn("               include_dirs=[path.join(owd, rel), incdir],");
    /*out.Print("                 libraries=['", g.lib.moduleName, "'", "'", g.lib.moduleName, "_c'");
    for(libDep : g.libDeps)
       out.Print(", '_py", libDep.bindingName, "' + ext");
