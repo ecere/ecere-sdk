@@ -3135,7 +3135,7 @@ static void generateBUILD(File out, PythonGen g)
    else*/
       //out.PrintLn("               sources=[path.join(owd, rel, '", cpath, "', '", g.lib.bindingName, ".c')],"); // todo
       //out.PrintLn("               sources=[path.join(owd, rel, '", g.lib.bindingName, ".c')],"); // todo
-   out.PrintLn("               define_macros=[('BINDINGS_SHARED', None), ('", g.lib.defineName, "_EXPORT', None)],");
+   out.PrintLn("               define_macros=[('DISABLE_EC_PREFIX', None), ('BINDINGS_SHARED', None), ('", g.lib.defineName, "_EXPORT', None)],");
    out.PrintLn("               extra_compile_args=['-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],");
    //out.PrintLn("               include_dirs=[path.join(owd, rel, '", cpath, "')],"); // todo
    //out.PrintLn("               include_dirs=[path.join(owd, rel), path.join(owd, 'bindings/py')],"); // todo
