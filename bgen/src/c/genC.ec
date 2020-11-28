@@ -1146,7 +1146,7 @@ void cgenPrintVirtualMethodDefs(ZString z, BClass c, BMethod m, bool assumeTyped
 
    z.concatx(")");
    {
-      z.concatx(g_.linejoinLimiter, "\n   VMETHOD(");
+      z.concatx(g_.linejoinLimiter, "\n   ", c.cl.type == normalClass ? "" : "S", "VMETHOD(");
       if(c.is_class/* && !forInstance*/)
       {
          if(forInstance)
