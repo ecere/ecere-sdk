@@ -478,7 +478,7 @@ class CPPGen : CGen
          if(!options.headerOnly)
          {
             PrintLn(lib.verbose > 1 ? "    " : "", cppFileName);
-            PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
+         // PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
          }
       }
    }

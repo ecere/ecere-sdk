@@ -374,7 +374,7 @@ class CGen : Gen
          if(!options.headerOnly)
          {
             PrintLn(lib.verbose > 1 ? "    " : "", cFileName);
-            PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
+         // PrintLn(lib.verbose > 1 ? "    " : "", makefileName);
          }
       }
    }
