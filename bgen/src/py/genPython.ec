@@ -3007,11 +3007,11 @@ static void generateBUILD(File out, PythonGen g)
    //out.PrintLn("import posixpath");
    out.PrintLn("from os import path");
 
-   out.PrintLn("print(' -- before ", g.lib.bindingName, " extension build -- ')");
+   out.PrintLn("# print(' -- before ", g.lib.bindingName, " extension build -- ')");
    out.PrintLn("pver = platform.python_version()");
-   out.PrintLn("print('arg zero: ', sys.argv[0])");
-   out.PrintLn("print('count: ', len(sys.argv))");
-   out.PrintLn("print('args: ', str(sys.argv))");
+   out.PrintLn("# print('arg zero: ', sys.argv[0])");
+   out.PrintLn("# print('count: ', len(sys.argv))");
+   out.PrintLn("# print('args: ', str(sys.argv))");
    //out.PrintLn("sv = v[0:v.rfind('.')]");
    //out.PrintLn("p = get_platform()");
    //out.PrintLn("fp = p + '-' + sv");
