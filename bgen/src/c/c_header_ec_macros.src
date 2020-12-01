@@ -186,10 +186,10 @@
 #endif
 
 #define BIC(c, d) \
-   ({ struct BuiltInContainer src = { \
+   ({ struct C(BuiltInContainer) src = { \
       CO(BuiltInContainer)->_vTbl, CO(BuiltInContainer), 0, \
       d, sizeof(d) / sizeof((d)[0]), CO(c) }; \
-   (Container)&src; })
+   (C(Container))&src; })
 
 #//#if CPP11
 #//#define ENUM(name, type) enum name : type
@@ -201,6 +201,9 @@
    #define registerClass(a, n, b...)  \
       eC_registerClass(ClassType_normalClass, #n, #b, sizeof(struct CM(n)), 0, \
          (void *)n ## _constructor, (void *)n ## _destructor, a, AccessMode_publicAccess, AccessMode_publicAccess)
+   #define registerClassEx(a, constructor, destructor, n, b...)  \
+      eC_registerClass(ClassType_normalClass, #n, #b, sizeof(struct CM(n)), 0, \
+         (void *)constructor, (void *)destructor, a, AccessMode_publicAccess, AccessMode_publicAccess)
 #endif
 
 #define addMethod(c, n, m) \
