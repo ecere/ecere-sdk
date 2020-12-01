@@ -1314,7 +1314,7 @@ ASTRawString astProperty(Property pt, BClass c, GenPropertyMode mode, bool conve
             }
 
             if(pt.IsSet)
-               z.concatx(port, python ? "bool" : "C(bool)", " (* ", p.fpnIst, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
+               z.concatx(port, python ? "eC_bool" : "C(bool)", " (* ", p.fpnIst, ")(const ", p.cUse.cSymbol, p.r, " ", p.otherParamName, ");", ln);
             delete port;
             //z.concatx(ln);
          }
@@ -1695,6 +1695,8 @@ static inline bool bareSymbolName(Class cl, OptBits opt)
       }
       return false;
    }
+   if(python)
+      return false;
    return opt.bare;
 }
 
@@ -1951,7 +1953,7 @@ void astTypeName(const char * ident, TypeInfo ti, OptBits opt, BVariant vTop, Ty
          if(ti.type.constant)
             quals.Add(SpecBase { specifier = _const });
          */
-         quals.Add(SpecName { name = PrintString(/*"const ", */python ? "Class *" : typed_object_class_ptr) });
+         quals.Add(SpecName { name = PrintString(/*"const ", */python ? "eC_Class *" : typed_object_class_ptr) });
          if(!opt.cpp)
          {
             Class clDep = vTop ? eSystem_FindClass(g_.mod, "Class") : null;
@@ -2327,7 +2329,8 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          char * type;
          Type t = unwrapPointerType(e.expType, null);
          char * depType = printType(t, true, false, true);
-         Class clDep = eSystem_FindClass(g_.mod, depType);
+         char * depType2 = python && strstr(depType, "eC_") == depType ? depType + 3 : depType;
+         Class clDep = eSystem_FindClass(g_.mod, depType2);
          if(e.expType.kind == pointerType)
             e.expType.constant = true;
          type = printType(e.expType, true, false, true);
@@ -2341,7 +2344,7 @@ ASTRawString astDefine(DefinedExpression df, BDefine d, Expression e, BVariant v
          else*/
          {
             z.concatx("static ", e.expType.constant ? "" : "const ", type, " ", d.name, ";", ln);
-            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"", depType, "\") is returning null?");
+            conassertctx(clDep != null, "(bgen?) eSystem_FindClass(g_.mod, \"", depType2, "\") is returning null?");
             if(clDep)
                v.processDependency(g_, oother, otypedef, clDep);
          }

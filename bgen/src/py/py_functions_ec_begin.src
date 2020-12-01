@@ -60,7 +60,7 @@ def pyAddrTypedObject(t):
    if t == str:            cargs += (lib.class_String, ffi.new("char[]"))
    elif t == int:          cargs += (lib.class_int,    ffi.new("int *"))
    elif t == float:        cargs += (lib.class_double, ffi.new("double *"))
-   elif issubclass(t, Instance): cargs += (lib.eC_findClass(app.impl, t.__name__.encode('u8')), ffi.new("Instance *"))
+   elif issubclass(t, Instance): cargs += (lib.eC_findClass(app.impl, t.__name__.encode('u8')), ffi.new("eC_Instance *"))
    else:
       # TODO: Improve on this
       c = lib.eC_findClass(app.impl, t.__name__.encode('u8'))
@@ -110,7 +110,7 @@ def IPTR(lib, ffi, self, c):
    s = ffi.cast("struct class_members_" + cn + " *", bp)
    return s
 
-@ffi.callback("void(Instance)")
+@ffi.callback("void(eC_Instance)")
 def cb_Instance_destructor(i):
    instance = pyObject(i)
    if instance is not None:
@@ -119,7 +119,7 @@ def cb_Instance_destructor(i):
    else:
       _print("No matching instance! for ", ffi.string(i._class.name).decode('u8'))
 
-@ffi.callback("bool(Instance, bool)")
+@ffi.callback("eC_bool(eC_Instance, eC_bool)")
 def cb_Instance_constructor(i, a):
    s = (ffi.string(i._class.name).decode('u8'))[2:]
    if a:
@@ -380,9 +380,9 @@ class Instance:
             else:
                template = lib.eC_findClass(pyClass.module, templateName.encode('u8'))
                setattr(c, templateName, template)
-            self.impl = ffi.cast("Instance", lib.Instance_newEx(template, False))
+            self.impl = ffi.cast("eC_Instance", lib.Instance_newEx(template, False))
          else:
-            self.impl = ffi.cast("Instance", lib.Instance_newEx(pyClass, False))
+            self.impl = ffi.cast("eC_Instance", lib.Instance_newEx(pyClass, False))
       else:
          self.impl = impl
       self.impl._refCount += 1

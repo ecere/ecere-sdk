@@ -3,32 +3,32 @@ typedef const void * any_object;
 typedef const char * constString;
 
 // libecere stuff that bleeds into ecereCOM
-typedef int Alignment;
+typedef int eC_Alignment;
 enum
 {
    Alignment_left = 0x0,
    Alignment_right = 0x1,
    Alignment_center = 0x2
 };
-typedef uint32_t DataDisplayFlags;
+typedef uint32_t eC_DataDisplayFlags;
 
 // libec stuff
-typedef void Type;
-typedef void Instantiation;
-typedef void ClassDefinition;
+typedef void eC_Type;
+typedef void eC_Instantiation;
+typedef void eC_ClassDefinition;
 
 // more ecere stuff that bleeds into ecereCOM
-typedef struct class_members_Instance * Instance;
-typedef Instance Surface;
-typedef Instance Window;
-typedef Window CommonControl;
-typedef CommonControl DataBox;
-typedef CommonControl EditBox;
+typedef struct class_members_Instance * eC_Instance;
+typedef eC_Instance eC_Surface;
+typedef eC_Instance eC_Window;
+typedef eC_Window eC_CommonControl;
+typedef eC_CommonControl eC_DataBox;
+typedef eC_CommonControl eC_EditBox;
 
-typedef int MinMaxValue;
-struct Size
+typedef int eC_MinMaxValue;
+struct eC_Size
 {
-   MinMaxValue w;
-   MinMaxValue h;
+   eC_MinMaxValue w;
+   eC_MinMaxValue h;
 };
-typedef struct Size Size;
+typedef struct eC_Size eC_Size;
