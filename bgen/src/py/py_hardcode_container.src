@@ -79,7 +79,7 @@
          else:
             data = ffi.NULL
 
-         bic = ffi.new("BuiltInContainer *", {
+         bic = ffi.new("eC_BuiltInContainer *", {
                '_vTbl'     : lib.class_BuiltInContainer._vTbl,
                '_class'    : lib.class_BuiltInContainer,
                'data'      : data,
@@ -88,5 +88,5 @@
                'type'      : co
                })
 
-         lib.Container_set_copySrc(self.impl, ffi.cast("Container", bic))
+         lib.Container_set_copySrc(self.impl, ffi.cast("eC_Container", bic))
    # hack: end of hardcoded content

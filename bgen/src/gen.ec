@@ -1795,8 +1795,6 @@ class BClass : struct
       if(gen.lang == CPlusPlus)
          cppGenClassDetails(this, cl, gen);
 
-      if(python && py && isBool)
-         cSymbol[0] = (char)toupper(cSymbol[0]); // Bool
 
       clBase = getClassBaseAndProcessTemplateDataType(cl, &cleanDataType);
 
@@ -2208,9 +2206,13 @@ char * cPrintType(Type t, bool printName, bool fullName, bool noTemplateArgs, bo
 {
    char * d;
    char type[8192];
+   BClass c = t.kind == classType && t._class.registered ? t._class.registered : null;
    type[0] = 0;
    //SetInBGen(true);
-   PrintType(t, type, printName, fullName);
+   if(c)
+      strcpy(type, c.cSymbol);
+   else
+      PrintType(t, type, printName, fullName);
    //SetInBGen(false);
    if(noTemplateArgs && (d = strchr(type, '<')))
    {

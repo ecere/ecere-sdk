@@ -11,7 +11,7 @@
             b = b.__bases__[0]
          bn = b.__name__
       pyClass = lib.eC_registerClass(lib.ClassType_normalClass, cn.encode('u8'), bn.encode('u8'), 8, 0,
-         ffi.cast("bool(*)(void *)", cb_Instance_constructor),
+         ffi.cast("eC_bool(*)(void *)", cb_Instance_constructor),
          ffi.cast("void(*)(void *)", cb_Instance_destructor),
          self.impl, lib.AccessMode_publicAccess, lib.AccessMode_publicAccess)
       setattr(n, 'pyClass_' + n.__name__, pyClass)

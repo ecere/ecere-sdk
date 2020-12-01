@@ -4,6 +4,7 @@
 #//typedef Instance Surface;
 #//
 // stuff
+/*
 uint64 TAc(char x);
 uint64 TAb(byte x);
 uint64 TAs(short x);
@@ -17,6 +18,7 @@ uint64 TAd(double x);
 uint64 TAp(void * x);
 // uint64 TAst(void * x);
 uint64 TAo(Instance x);
+*/
 
 void * pTAvoid(uint64 x);
-Instance oTAInstance(uint64 x);
+eC_Instance oTAInstance(uint64 x);
