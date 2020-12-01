@@ -182,6 +182,16 @@ c_bindings_build: c_bindings_gen
 	$(call bg_bind_____echo,9,c)
 	$(call bg_bind_cd_build,9,c,all)
 
+.PHONY: c_bindings_install
+.NOTPARALLEL: c_bindings_install
+c_bindings_install:
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere_c$(SOV) $(DESTLIBDIR)/$(LP)ecere_c$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)eC_c$(SOV) $(DESTLIBDIR)/$(LP)eC_c$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA_c$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA_c$(SOV)
+	ln -sf $(LP)ecere_c$(SOV) $(DESTLIBDIR)/$(LP)ecere_c$(SO).0
+	ln -sf $(LP)eC_c$(SOV) $(DESTLIBDIR)/$(LP)eC_c$(SO).0
+	ln -sf $(LP)EDA_c$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA_c$(SO).0
+
 .PHONY: c_bindings_clean
 .NOTPARALLEL: c_bindings_clean
 c_bindings_clean:

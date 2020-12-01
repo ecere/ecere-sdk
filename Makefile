@@ -576,6 +576,14 @@ ifdef EDASQLiteCipher
 BINARIES += eda/drivers/sqliteCipher/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SOV)
 endif
 
+OBJPYDIR := $(OBJDIR)$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/py
+
+.PHONY: py_prepinstall
+py_prepinstall: prepinstall
+	$(call mkdir,$(call path,$(OBJPYDIR)/))
+	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV),$(OBJPYDIR)/$(LP)ecereCOM$(SO))
+	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJPYDIR)/$(LP)ecere$(SO))
+
 # Making sure everything is in $(OBJBINDIR) and $(OBJLIBDIR)
 # Shared Libraries (in $(OBJBINDIR) on Windows and $(OBJLIBDIR) otherwise)
 # Symlinks for libs on Linux
