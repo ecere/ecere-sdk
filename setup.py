@@ -53,7 +53,7 @@ def buildEcereSDK():
 def buildPrepInstall():
    print('buildPrepInstall')
    call(['echo', 'buildPrepInstall'], shell=True)
-   proc = subprocess.Popen(['make', 'prepinstall'], shell=False)
+   proc = subprocess.Popen(['make', 'py_prepinstall'], shell=False)
    proc.communicate()
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
@@ -61,7 +61,7 @@ def buildPrepInstall():
 def buildBindingsC():
    print('buildBindingsC')
    call(['echo', 'buildBindingsC'], shell=True)
-   proc = subprocess.Popen(['make', 'bindingsc'], shell=False)
+   proc = subprocess.Popen(['make', 'c_bindings'], shell=False)
    proc.communicate()
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
@@ -69,7 +69,7 @@ def buildBindingsC():
 def buildBindingsGenPy():
    print('buildBindingsGenPy')
    call(['echo', 'buildBindingsGenPy'], shell=True)
-   proc = subprocess.Popen(['make', 'bindingsgenpy'], shell=False)
+   proc = subprocess.Popen(['make', 'py_bindings_gen'], shell=False)
    proc.communicate()
    return proc.returncode == 0
 
