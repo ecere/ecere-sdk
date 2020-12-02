@@ -2210,7 +2210,10 @@ char * cPrintType(Type t, bool printName, bool fullName, bool noTemplateArgs, bo
 {
    char * d;
    char type[8192];
-   BClass c = t.kind == classType && t._class.registered ? t._class.registered : null;
+   int ptr = 0;
+   bool native;
+   Type t2 = unwrapPointerTypeNative(t, &ptr, &native);
+   BClass c = t2.kind == classType && t2._class.registered ? t2._class.registered : null;
    type[0] = 0;
    //SetInBGen(true);
    if(c)
@@ -2229,6 +2232,11 @@ char * cPrintType(Type t, bool printName, bool fullName, bool noTemplateArgs, bo
    if(additionalPointer && t.kind == classType && t._class.registered &&
          (t._class.registered.type == structClass || t._class.registered.type == noHeadClass))
       strcat(type, " *");
+   while(ptr)
+   {
+      strcat(type, " *");
+      ptr--;
+   }
    return CopyString(type);
 }
 
