@@ -163,7 +163,7 @@ else:
    if sys.platform == 'win32':
       #libdir = path.join('..', '..', 'obj', 'win32', 'bin')
       #bindir = path.join('..', '..', 'obj', 'win32', 'bin')
-      libdir = path.join('obj', 'win32', 'bin')
+      libdir = path.join('obj', 'win32', 'py')
       bindir = path.join('obj', 'win32', 'bin')
       libpfx = ''
       libext = '.dll'
@@ -171,13 +171,13 @@ else:
    elif sys.platform == 'linux' or sys.platform == 'linux2':
       #libdir = path.join('..', '..', 'obj', 'linux', 'lib')
       #bindir = path.join('..', '..', 'obj', 'linux', 'bin')
-      libdir = path.join(rwd, 'obj', 'linux', 'lib')
+      libdir = path.join(rwd, 'obj', 'linux', 'py')
       bindir = path.join(rwd, 'obj', 'linux', 'bin')
       libpfx = 'lib'
       libext = '.so'
       exeext = ''
    elif sys.platform == 'darwin':
-      libdir = path.join(rwd, 'obj', 'apple', 'lib')
+      libdir = path.join(rwd, 'obj', 'apple', 'py')
       bindir = path.join(rwd, 'obj', 'apple', 'bin')
       libpfx = 'lib'
       libext = '.dylib'
@@ -319,29 +319,29 @@ else:
       package_data={
       #    'sample': ['package_data.dat'],
       },
-      data_files=[
-         ('', [
-            os.path.join(libdir, libpfx + 'ecereCOM' + libext),
-            os.path.join(libdir, libpfx + 'ecereCOM_c' + libext),
-            os.path.join(libdir, libpfx + 'ecere' + libext),
-            os.path.join(libdir, libpfx + 'ecere_c' + libext),
-            os.path.join(libdir, libpfx + 'ec' + libext),
-            os.path.join(libdir, libpfx + 'ec2' + libext),
-            os.path.join(libdir, libpfx + 'EcereAudio' + libext),
-            os.path.join(libdir, libpfx + 'EDA' + libext),
-            os.path.join(libdir, libpfx + 'EDA_c' + libext),
-            os.path.join(libdir, libpfx + 'EDASQLite' + libext),
-            #os.path.join(libdir, libpfx + 'EDASQLiteCipher' + libext),
-            os.path.join(bindir, 'ecp' + exeext),
-            os.path.join(bindir, 'ecc' + exeext),
-            os.path.join(bindir, 'ecs' + exeext),
-            os.path.join(bindir, 'ear' + exeext),
-            os.path.join(bindir, 'epj2make' + exeext),
-            os.path.join(bindir, 'bgen' + exeext),
-            os.path.join(bindir, 'documentor' + exeext),
-            os.path.join(bindir, 'ecere-ide' + exeext),
-         ])
-      ],
+      #data_files=[
+      #   ('', [
+      #      os.path.join(libdir, libpfx + 'ecereCOM' + libext),
+      #      os.path.join(libdir, libpfx + 'ecereCOM_c' + libext),
+      #      os.path.join(libdir, libpfx + 'ecere' + libext),
+      #      os.path.join(libdir, libpfx + 'ecere_c' + libext),
+      #      os.path.join(libdir, libpfx + 'ec' + libext),
+      #      os.path.join(libdir, libpfx + 'ec2' + libext),
+      #      os.path.join(libdir, libpfx + 'EcereAudio' + libext),
+      #      os.path.join(libdir, libpfx + 'EDA' + libext),
+      #      os.path.join(libdir, libpfx + 'EDA_c' + libext),
+      #      os.path.join(libdir, libpfx + 'EDASQLite' + libext),
+      #      #os.path.join(libdir, libpfx + 'EDASQLiteCipher' + libext),
+      #     os.path.join(bindir, 'ecp' + exeext),
+      #      os.path.join(bindir, 'ecc' + exeext),
+      #      os.path.join(bindir, 'ecs' + exeext),
+      #      os.path.join(bindir, 'ear' + exeext),
+      #      os.path.join(bindir, 'epj2make' + exeext),
+      #      os.path.join(bindir, 'bgen' + exeext),
+      #      os.path.join(bindir, 'documentor' + exeext),
+      #      os.path.join(bindir, 'ecere-ide' + exeext),
+      #   ])
+      #],
       #entry_points={
       #   'console_scripts': [
       #      #'build_eC=build_eC:compile_eC',
