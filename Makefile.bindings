@@ -187,7 +187,7 @@ c_bindings_build: c_bindings_gen
 c_bindings_install:
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere_c$(SOV) $(DESTLIBDIR)/$(LP)ecere_c$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)eC_c$(SOV) $(DESTLIBDIR)/$(LP)eC_c$(SOV)
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA_c$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA_c$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA_c$(SOV) $(DESTLIBDIR)/$(LP)EDA_c$(SOV)
 	ln -sf $(LP)ecere_c$(SOV) $(DESTLIBDIR)/$(LP)ecere_c$(SO).0
 	ln -sf $(LP)eC_c$(SOV) $(DESTLIBDIR)/$(LP)eC_c$(SO).0
 	ln -sf $(LP)EDA_c$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA_c$(SO).0
