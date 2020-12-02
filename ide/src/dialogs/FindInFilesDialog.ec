@@ -916,25 +916,14 @@ private:
             {
                bool relative = true; // would be option
                char fileRelative[MAX_LOCATION];
-               char testRelative[MAX_LOCATION];
                char filePath[MAX_LOCATION];
                filePath[0] = '\0';
-               fileRelative[0] = '\0';// if(!strcmp(stack[frame].name, "src")) debugBreakpoint();
-               testRelative[0] = '\0';
-               switch(stack[frame].type)
+               fileRelative[0] = '\0';
+               if(stack[frame].type == file || stack[frame].type == folder || stack[frame].type == folderOpen)
                {
-                  case file:
-                  case folder:
-                  case folderOpen:
-                     stack[frame].GetFullFilePath(filePath, true, true);
-                     MakePathRelative(filePath, prj.topNode.path, fileRelative);
-                     // test:
-                     stack[frame].GetFullFilePath(testRelative, false, true);
-                     if(strcmp(fileRelative, testRelative)) debugBreakpoint();
-                     break;
-                  case project:
-                  case resources:
-                     break;
+                  stack[frame].GetFullFilePath(filePath, true, true);
+                  //MakePathRelative(filePath, prj.topNode.path, fileRelative);
+                  MakePathRelative(filePath, prj.topNode.path, fileRelative);
                }
                switch(stack[frame].type)
                {

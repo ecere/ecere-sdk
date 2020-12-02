@@ -875,23 +875,15 @@ class IDEWorkSpace : Window
          delete compiler;
       }
 
-      void OnCodeLocationParseAndDo(const char * line, CodeLocationAction action, bool openAsText, bool noParsing)
+      void OnCodeLocationParseAndGoTo(const char * line, bool openAsText, bool noParsing)
       {
          CompilerConfig compiler = ide.workspace ? ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler) : null;
          const char * objectFileExt = compiler ? compiler.objectFileExt : objectDefaultFileExt;
          bool inFind = ide.outputView.activeBox == ide.outputView.findBox;
-         if(action == removeFromProject)
-         {
-            if(ide.CodeLocationParseAndDo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, action, openAsText, noParsing, objectFileExt))
-            {
-               ide.outputView.findBox.SetCaret(ide.outputView.findBox.charPos, ide.outputView.findBox.lineNumber + 1, 0);
-               ide.outputView.Activate();
-            }
-         }
-         else if(inFind)
-            ide.CodeLocationParseAndDo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, action, openAsText, noParsing, objectFileExt);
+         if(inFind)
+            ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir, openAsText, noParsing, objectFileExt);
          else
-            ide.CodeLocationParseAndDo(line, null, null, action, openAsText, noParsing, objectFileExt);
+            ide.CodeLocationParseAndGoTo(line, null, null, openAsText, noParsing, objectFileExt);
          delete compiler;
       }
 
@@ -3251,107 +3243,27 @@ class IDEWorkSpace : Window
          projectView.GoToError(line, openAsText, noParsing, objectFileExt);
    }
 
-   FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, ProjectNode * node, char * selectedPath, const char * objectFileExt)
+   FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, Project prj, ProjectNode * node, char * selectedPath, const char * objectFileExt)
    {
       FileAttribs result { };
       FileAttribs fileAttribs;
       if(filePath[0])
       {
          bool done = false;
-         /*
-         if((fileAttribs = FileExists(selectedPath)))
+         if(prj)
+            strcpy(selectedPath, prj.topNode.path);
+         else if(dir && dir[0])
+            strcpy(selectedPath, dir);
+         else
+            selectedPath[0] = '\0';
+         PathCat(selectedPath, filePath);
+
+         if((fileAttribs = FileExists(selectedPath)).isFile)
          {
-            if(node)
-            {
-               ProjectNode n = null;
-               if((n = prj.topNode.Find(filePath, false)))
-            }
             result = fileAttribs;
             done = true;
          }
-         */
-
-         if(workspace)
-         {
-            Project project = null;
-            ProjectNode n = null;
-            for(prj : workspace.projects)
-            {
-               Project p = prj;
-               if((n = p.topNode.FindByFullPath(filePath, false)))
-               {
-                  n.GetFullFilePath(selectedPath, true, true);
-                  if((fileAttribs = FileExists(selectedPath)))
-                  {
-                     if(node) *node = n;
-                     result = fileAttribs;
-                     break;
-                  }
-                  n = null;
-               }
-            }
-            for(prj : workspace.projects)
-            {
-               Project p = prj;
-               if((n = p.topNode.FindWithPath(filePath, false)))
-               {
-                  n.GetFullFilePath(selectedPath, true, true);
-                  if((fileAttribs = FileExists(selectedPath)))
-                  {
-                     if(node) *node = n;
-                     result = fileAttribs;
-                     break;
-                  }
-                  n = null;
-               }
-            }
-            for(prj : workspace.projects)
-            {
-               Project p = prj;
-               if((n = p.topNode.Find(filePath, false)))
-               {
-                  n.GetFullFilePath(selectedPath, true, true);
-                  if((fileAttribs = FileExists(selectedPath)))
-                  {
-                     if(node) *node = n;
-                     result = fileAttribs;
-                     break;
-                  }
-                  n = null;
-               }
-            }
-            if(!n && (n = workspace.GetObjectFileNode(filePath, &project, selectedPath, objectFileExt)) && project &&
-                  (fileAttribs = FileExists(selectedPath)))
-            {
-               if(node) *node = n;
-               result = fileAttribs;
-            }
-            if(!n)
-            {
-               for(p : workspace.projects)
-               {
-                  strcpy(selectedPath, p.topNode.path);
-                  PathCat(selectedPath, filePath);
-                  if((fileAttribs = FileExists(selectedPath)))
-                  {
-                     done = true;
-                     result = fileAttribs;
-                     break;
-                  }
-               }
-            }
-            if(n)
-               done = true;
-         }
          else
-         {
-            if(dir && dir[0])
-               strcpy(selectedPath, dir);
-            else
-               selectedPath[0] = '\0';
-            PathCat(selectedPath, filePath);
-         }
-         if(!done)
          {
             char * path = CopyString(selectedPath);
             StripLastDirectory(path, path);
@@ -3369,7 +3281,7 @@ class IDEWorkSpace : Window
                      if(!isspace(*d)) break;
                      *d = 0;
                   }
-                  if((fileAttribs = FileExists(selectedPath)))
+                  if((fileAttribs = FileExists(selectedPath)).isFile)
                   {
                      result = fileAttribs;
                      done = true;
@@ -3379,13 +3291,50 @@ class IDEWorkSpace : Window
             }
             delete path;
          }
+         if(!done && workspace)
+         {
+            for(p : workspace.projects)
+            {
+               strcpy(selectedPath, p.topNode.path);
+               PathCat(selectedPath, filePath);
+               if((fileAttribs = FileExists(selectedPath)).isFile)
+               {
+                  done = true;
+                  result = fileAttribs;
+                  break;
+               }
+            }
+            if(!done)
+            {
+               Project project;
+               ProjectNode n = null;
+               for(p : workspace.projects)
+               {
+                  if((n = p.topNode.Find(filePath, false)))
+                  {
+                     n.GetFullFilePath(selectedPath, true, true);
+                     if((fileAttribs = FileExists(selectedPath)).isFile)
+                     {
+                        if(node) *node = n;
+                        result = fileAttribs;
+                        break;
+                     }
+                  }
+               }
+               if(!n && (n = workspace.GetObjectFileNode(filePath, &project, selectedPath, objectFileExt)) && project &&
+                     (fileAttribs = FileExists(selectedPath)).isFile)
+               {
+                  if(node) *node = n;
+                  result = fileAttribs;
+               }
+            }
+         }
       }
       return result;
    }
 
-   bool CodeLocationParseAndDo(const char * text, Project project, const char * dir, CodeLocationAction action, bool openAsText, bool noParsing, const char * objectFileExt)
+   void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir, bool openAsText, bool noParsing, const char * objectFileExt)
    {
-      bool result = false;
       char *s = null;
       const char *path = text;
       char *colon = strchr(text, ':');
@@ -3394,7 +3343,6 @@ class IDEWorkSpace : Window
       int line = 0, col = 0;
       int len = strlen(text);
       Project prj = null;
-      ProjectNode node = null;
       FileAttribs fileAttribs;
 
       // support for valgrind output
@@ -3492,33 +3440,8 @@ class IDEWorkSpace : Window
          delete pathExp;
       }
 
-      if((fileAttribs = GoToCodeSelectFile(filePath, dir, &node, completePath, objectFileExt)))
-      {
-         switch(action)
-         {
-            case gotoLocation:
-               if(node)
-               {
-                  node.EnsureVisible();
-                  projectView.fileList.SelectRow(node.row);
-                  projectView.Activate();
-               }
-               if(fileAttribs.isFile)
-                  CodeLocationGoTo(completePath, fileAttribs, line, col, openAsText, noParsing);
-               break;
-            case removeFromProject:
-               if(node)
-               {
-                  node.EnsureVisible();
-                  projectView.fileList.SelectRow(node.row);
-                  projectView.Activate();
-                  if(projectView.RemoveSelectedNodes())
-                     result = true;
-               }
-               break;
-         }
-      }
-      return result;
+      if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath, objectFileExt)))
+         CodeLocationGoTo(completePath, fileAttribs, line, col, openAsText, noParsing);
    }
 
    void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col, bool openAsText, bool noParsing)

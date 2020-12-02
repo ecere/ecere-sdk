@@ -2029,9 +2029,8 @@ class ProjectView : Window
             if(moduleName[0])
             {
                CodeEditor codeEditor = null;
-               FileAttribs attribs;
 
-               if((attribs = ide.GoToCodeSelectFile(moduleName, null, null, filePath, objectFileExt)) && attribs.isFile)
+               if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath, objectFileExt))
                {
                   codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, openAsText ? "txt" : null, no, normal, noParsing);
                   ide.RepositionWindows(false);
@@ -2666,9 +2665,8 @@ class ProjectView : Window
       return result;
    }
 
-   bool RemoveSelectedNodes()
+   void RemoveSelectedNodes()
    {
-      bool result = false;
       OldList selection;
       OldLink item, next;
 
@@ -2710,7 +2708,6 @@ class ProjectView : Window
          if(node.type == file)
          {
             Project prj = node.project;
-            result = true;
             DeleteNode(node);
             modifiedDocument = true;
             prj.topNode.modified = true;
@@ -2727,7 +2724,6 @@ class ProjectView : Window
                Project prj = node.project;
                if(node.containsFile)
                   prj.ModifiedAllConfigs(true, false, true, true);
-               result = true;
                DeleteNode(node);
                modifiedDocument = true;
                prj.topNode.modified = true;
@@ -2749,10 +2745,8 @@ class ProjectView : Window
             sprintf(message, $"Are you sure you want to remove the \"%s\" project\n" "from this workspace?", node.name);
             if(MessageBox { master = ide, type = yesNo, text = $"Remove Project", contents = message }.Modal() == yes)
             {
-               result = true;
                // THIS GOES FIRST!
                DeleteNode(node);
-
                if(prj)
                   workspace.RemoveProject(prj);
                //modifiedDocument = true; // when project view is a workspace view
@@ -2760,7 +2754,6 @@ class ProjectView : Window
          }
       }
       selection.Free(null);
-      return result;
    }
 
    bool holding;
