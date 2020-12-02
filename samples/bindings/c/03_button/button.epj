@@ -62,7 +62,25 @@
             }
          ]
       },
-      "button.c"
+      "button.c",
+      {
+         "FileName" : "button_bare.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "button_explicit.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "button_macros.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [
