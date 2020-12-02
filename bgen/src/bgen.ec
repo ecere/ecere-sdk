@@ -912,7 +912,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       if(task == about)
       {
          PrintLn("Language Binding Generator for eC Libraries (bgen)");
-         PrintLn("Copyright (C) 2016-2018 Ecere Corporation");
+         PrintLn("Copyright (C) 2016-2020 Ecere Corporation");
          PrintLn("This software is distributed under a BSD 3-Clause (Revised) license.");
          return true;
       }
@@ -923,7 +923,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       }
       else if(task == version)
       {
-         PrintLn("0.1 alpha");
+         PrintLn("0.2 beta");
          return true;
       }
       else if(task == examples)
@@ -944,58 +944,41 @@ public class BGen : ConsoleApplication // <ArgSym>
             "        [<library> [library-options] [<language> [library-language-options]]*]+\n"
             "\n"
             "   library:   library for which bindings will be generated\n"
-            "              examples: foo, foo.dll, libfoo.so, /path/to/libfoo.so\n"
+            "              examples: foo, libfoo.so, foo.dll, /path/to/libfoo.so\n"
             "\n"
-            "   languages: language for which to output bindings (case insensitive) any of:\n"
-            "      C      (c, c89)                       (default) \n"
-            "      C++    (cxx, cpp, cplusplus, c++)\n"
-            "      C#     (c#, cs, csharp)\n"
-            "      Java   (java)\n"
-            "      Python (py, python)\n"
+            "   languages: language for which to output bindings\n"
+            "\n"
+            "      C        c, c89 (default)\n"
+            "      C++      c++, cpp, cplusplus, cxx\n"
+         // "      C#       c#, cs, csharp\n"
+         // "      Java     java\n"
+            "      Python   py, python\n"
+            "\n"
+            "   Help and Information: help examples about license version\n"
+            "\n"
+            "      Note that all switches are case insensitive. The use of - or -- is\n"
+            "      optional and all non-ambiguous truncated shorthands are accepted.\n"
             "\n"
             "   Options:\n"
-            "     -h                Shows this syntax help\n"
-            "\n"
-            "     -e                Shows some examples\n"
-            "\n"
-            "     -a                Shows program information\n"
-            "\n"
-            "     -v                Shows version information\n"
             "\n"
             "     -d <directory>    Specify output directory (default: current directory)\n"
-            "\n"
             "     -q                Force bgen to execute silently\n"
+         // "     --enum-prefix <prefix><string> Prefix enumeration types by 'prefix'\n"
+         // "\n"
+            "     -fren <key>=<value>[,<key>=<value>]* Rename a function\n"
+            "     --bypass-macros   Bypass macros option (limited support for C++ only)\n"
             "\n"
-            //"   --enum-prefix <prefix><string>        Prefix enumeration types by 'prefix'\n"
-            //"\n"
-            "     -fren <key>=<value>[,<key>=<value>]*     Rename a function\n"
+         // "     -tell <telltype>  Tell you something where telltype is something\n"
+         // "\n"
+            "     --black-list      Create a filtering list of library content\n"
+            "                       saved to ./<libname>.bgen.econ if file doesn't exist\n"
+            "     --force-list      Same as --black-list but an existing file will be overwriting\n"
             "\n"
-            //"   -tell <telltype>                     Tell you something\n"
-            //"                        where telltype is something\n"
-            //"\n"
-            "     --black-list      Output all constructs within library for a blacklist\n"
-            "                       (or whitelist) to ./<libname>.bgen.econ,\n"
-            "                       only if file doesn't exist\n"
-            "\n"
-            "     --force-list      Output all constructs within library for a blacklist\n"
-            "                       (or whitelist) to ./<libname>.bgen.econ,\n"
-            "                       overwriting an existing file\n"
-            "\n"
-            "     --clear-all       Clear all options\n"
-            "                       (e.g. to generate again with different options)\n"
-            "\n"
+            "     --clear-all       Clear all options (to generate for other libs with different options)\n"
             "     --clear-languages Clear all languages options\n"
-            "\n"
             "     --clear-libraries Clear all libraries options\n"
+            "     --clear-matrix    Clear all libraries and languages options\n"
             "\n"
-            "     --clear-matrix    Clear all libraries & languages options\n"
-            "\n"
-            "     --bypass-macros   Bypass macros option (used by bgen/cpp)\n"
-            "\n"
-            "   Notes:\n"
-            "      All switches are case insensitive.\n"
-            "      The use of - or -- is optional for all switches.\n"
-            "      All non-ambiguous truncated shorthands are accepted for all switches.\n"
          );
 
 #if 0
