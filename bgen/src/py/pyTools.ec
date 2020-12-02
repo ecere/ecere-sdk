@@ -188,6 +188,7 @@ AVLTree<const char *> pySymbolNameConflicts { [
    "or",
    "pass",
    "print",
+   "in",
 //   "type", // FIX #01
    null
 ] };
