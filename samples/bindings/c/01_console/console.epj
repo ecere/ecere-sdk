@@ -60,7 +60,25 @@
             }
          ]
       },
-      "console.c"
+      "console.c",
+      {
+         "FileName" : "console_bare.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "console_explicit.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "console_macros.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [

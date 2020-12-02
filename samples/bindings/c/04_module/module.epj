@@ -61,7 +61,25 @@
             }
          ]
       },
-      "module.c"
+      "module.c",
+      {
+         "FileName" : "module_bare.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "module_explicit.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "module_macros.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [

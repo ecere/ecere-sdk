@@ -62,7 +62,25 @@
             }
          ]
       },
-      "cube.c"
+      "cube.c",
+      {
+         "FileName" : "cube_bare.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "cube_explicit.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      },
+      {
+         "FileName" : "cube_macros.c",
+         "Options" : {
+            "ExcludeFromBuild" : true
+         }
+      }
    ],
    "ResourcesPath" : "",
    "Resources" : [
