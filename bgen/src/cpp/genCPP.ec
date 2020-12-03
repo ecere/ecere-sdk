@@ -5418,7 +5418,7 @@ static void cppHeaderStart(CPPGen g, File f)
 
    if(g.lib.ecereCOM)
    {
-      // f.PrintLn(genloc__, "#define ECPRFX eC_", ln); // no longer needed since it is now the C bindings default
+      f.PrintLn(genloc__, "#define ECPRFX eC_", ln);
    }
    else
    {
