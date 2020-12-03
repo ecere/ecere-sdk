@@ -2,9 +2,9 @@
 
 #include "ecere.h"
 
-static Class * class_HelloWindow;
+static Class * CO(HelloWindow);
 
-struct class_members_HelloWindow { Button button; };
+struct CM(HelloWindow) { Button button; };
 
 typedef Instance HelloWindow;
 
@@ -20,7 +20,7 @@ static bool HelloWindow_button_notifyClicked(HelloWindow this, Button button, in
    double i = 3.14159265;
    char tmp[256];
    const char * s = _onGetString(class_double, &i, tmp, null, null);
-   printLn(class_String, "Hello! -- ", class_String, s, null);
+   printLn(CO(String), "Hello! -- ", CO(String), s, null);
    Window_set_caption(msgBox, $("Hello!"));
    MessageBox_set_contents(msgBox, $("C Bindings!"));
    Window_modal(msgBox);
@@ -29,7 +29,7 @@ static bool HelloWindow_button_notifyClicked(HelloWindow this, Button button, in
 
 static bool HelloWindow_constructor(HelloWindow this)
 {
-   struct class_members_HelloWindow * self = IPTR(this, HelloWindow);
+   struct CM(HelloWindow) * self = IPTR(this, HelloWindow);
    Window_set_caption(this, $("My Second Ecere/C Bindings App"));
    Window_set_borderStyle(this, BorderStyle_sizable);
    Window_set_clientSize(this, &(Size){ 640, 480 });
@@ -48,14 +48,14 @@ static bool HelloWindow_constructor(HelloWindow this)
 
 static void HelloWindow_destructor(HelloWindow this)
 {
-   struct class_members_HelloWindow * self = IPTR(this, HelloWindow);
+   struct CM(HelloWindow) * self = IPTR(this, HelloWindow);
    deletei(self->button);
 }
 
 GUIAPP_INTRO
 {
-   class_HelloWindow = registerClass(app, HelloWindow, Window);
-   addMethod(class_HelloWindow, "OnRedraw", HelloWindow_onRedraw);
+   CO(HelloWindow) = registerClass(app, HelloWindow, Window);
+   addMethod(CO(HelloWindow), "OnRedraw", HelloWindow_onRedraw);
 
    HelloWindow hello = newi(HelloWindow);
 
