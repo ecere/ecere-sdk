@@ -1,20 +1,20 @@
 #include "ecere.h"
 
-Class * class_Array, ColorAlpha);
-Class * class_Array, double);
+Class * class_Array_ColorAlpha;
+Class * class_Array_double;
 Class * class_Foo;
-Class * class_Foo, double);
-Class * class_Foo, String);
+Class * class_Foo_double;
+Class * class_Foo_String;
 typedef Array T(Array, ColorAlpha);
 typedef Array T(Array, double);
 typedef Map T(Map, String, ColorAlpha);
 typedef Instance Foo;
 typedef uint64_t TP(Foo, A);
 
-struct class_members_Foo) { int foo; };
+struct class_members_Foo { int foo; };
 bool Foo_constructor(Foo this)
 {
-   struct class_members_Foo) * self = IPTR(this, Foo);
+   struct class_members_Foo * self = IPTR(this, Foo);
    self->foo = 5;
    return true;
 }
@@ -57,14 +57,14 @@ void Foo_add(Foo this, TP(Foo, A) value)
                dc = (Class *)c->dataType;
          }
               if(dc == class_double)     dv.d =       dTA(value), p = &dv.d;
-         else if(dc == class_float))      dv.f =       fTA(value), p = &dv.f;
-         else if(dc == class_char))       dv.c =       cTA(value), p = &dv.c;
-         else if(dc == class_byte))       dv.uc =      bTA(value), p = &dv.uc;
-         else if(dc == class_short))      dv.s =       sTA(value), p = &dv.s;
-         else if(dc == class_uint16))     dv.us =     usTA(value), p = &dv.us;
-         else if(dc == class_int))        dv.i =       iTA(value), p = &dv.i;
-         else if(dc == class_uint))       dv.ui =     uiTA(value), p = &dv.ui;
-         else /* if(c == class_int64)) */ dv.ui64 = ui64TA(value), p = &dv.ui64;
+         else if(dc == class_float)      dv.f =       fTA(value), p = &dv.f;
+         else if(dc == class_char)       dv.c =       cTA(value), p = &dv.c;
+         else if(dc == class_byte)       dv.uc =      bTA(value), p = &dv.uc;
+         else if(dc == class_short)      dv.s =       sTA(value), p = &dv.s;
+         else if(dc == class_uint16)     dv.us =     usTA(value), p = &dv.us;
+         else if(dc == class_int)        dv.i =       iTA(value), p = &dv.i;
+         else if(dc == class_uint)       dv.ui =     uiTA(value), p = &dv.ui;
+         else /* if(c == class_int64) */ dv.ui64 = ui64TA(value), p = &dv.ui64;
          break;
       }
    }
@@ -84,14 +84,14 @@ int main(int argc, char *argv[])
    T(Array, double) ad;
    //T(Map, String, ColorAlpha) m;
 
-   class_Array, ColorAlpha) = eC_findClass(module, "Array<ColorAlpha>");
+   class_Array_ColorAlpha = eC_findClass(module, "Array<ColorAlpha>");
    a = newi(Array, ColorAlpha);
    Container_add(a, ColorAlpha_from_Color(DefinedColor_red));
    Container_add(a, ColorAlpha_from_Color(DefinedColor_blue));
    //Container_add(a, COLORALPHA(255, red));
    printLn(a->_class, a, null);
 
-   class_Array, double) = eC_findClass(module, "Array<double>");
+   class_Array_double = eC_findClass(module, "Array<double>");
    ad = newi(Array, double);
    Container_add(ad, TAd(3.14159));
    printLn(ad->_class, ad, null);
@@ -99,17 +99,17 @@ int main(int argc, char *argv[])
    d = ((double *)IPTR(ad, Array)->array)[0];
    printLn(class_double, &d, null);
 
-   // class_Foo) = registerClass(module, Foo, Instance);
-   class_Foo) = registerClass(module, Foo, Map<String, int>); // why is this not in double quote?
-   Class_addTemplateParameter(class_Foo), "A", TemplateParameterType_type, null, null);
-   Class_doneAddingTemplateParameters(class_Foo));
-   addMethod(class_Foo), "add", Foo_add);
+   // class_Foo = registerClass(module, Foo, Instance);
+   class_Foo = registerClass(module, Foo, Map<String, int>); // why is this not in double quote?
+   Class_addTemplateParameter(class_Foo, "A", TemplateParameterType_type, null, null);
+   Class_doneAddingTemplateParameters(class_Foo);
+   addMethod(class_Foo, "add", Foo_add);
 
-   class_Foo, double) = eC_findClass(module, "Foo<A = double>");
+   class_Foo_double = eC_findClass(module, "Foo<A = double>");
    foo = newi(Foo, double);
    Foo_add(foo, TAd(3.14159));
 
-   class_Foo, String) = eC_findClass(module, "Foo<String>");
+   class_Foo_String = eC_findClass(module, "Foo<String>");
    foo = newi(Foo, String);
    Foo_add(foo, TAp("Hello, Templates in C!"));
    Foo_add(foo, TAp("Hello Again!"));
