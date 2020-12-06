@@ -265,7 +265,10 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
+      bool quote = isdigit(string[0]) || strchr(string, ' ');
+      if(quote) out.Print('`');
       out.Print(string);
+      if(quote) out.Print('`');
    }
 
    CMSSIdentifier ::parse(CMSSLexer lexer)
@@ -1619,7 +1622,10 @@ public:
 
    void setMember(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression)
    {
-      setMember2(c, idString, msk, createSubInstance, expression, null, null);
+      if(expression)
+         setMember2(c, idString, msk, createSubInstance, expression, null, null);
+      else
+         removeStyle(msk); // TOCHECK: Should the style be removed if attempting to set a null expression?
    }
 
    void setMember2(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
