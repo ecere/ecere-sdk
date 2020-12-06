@@ -939,6 +939,7 @@ class GLSLSHL : SyntaxHighlighting
    cMultiLine = true;
    cPrep = true;
    singleQuotes = true;
+   allowHashInKeyword = true;
 }
 
 static const char * cssExtensions[] = { "css", null };
