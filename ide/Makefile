@@ -72,6 +72,7 @@ _ECSOURCES = \
 	src/designer/CodeObject.ec \
 	src/designer/Designer.ec \
 	src/designer/SyntaxHighlighting.ec \
+	src/designer/SyntaxColorScheme.ec \
 	src/designer/findCtx.ec \
 	src/designer/findExp.ec \
 	src/designer/findParams.ec \
@@ -373,6 +374,9 @@ $(OBJ)Designer.sym: src/designer/Designer.ec
 $(OBJ)SyntaxHighlighting.sym: src/designer/SyntaxHighlighting.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.sym
 
+$(OBJ)SyntaxColorScheme.sym: src/designer/SyntaxColorScheme.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.sym
+
 $(OBJ)findCtx.sym: src/designer/findCtx.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/findCtx.ec -o $(OBJ)findCtx.sym
 
@@ -517,6 +521,9 @@ $(OBJ)Designer.c: src/designer/Designer.ec $(OBJ)Designer.sym | $(SYMBOLS)
 $(OBJ)SyntaxHighlighting.c: src/designer/SyntaxHighlighting.ec $(OBJ)SyntaxHighlighting.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.c -symbols $(OBJ)
 
+$(OBJ)SyntaxColorScheme.c: src/designer/SyntaxColorScheme.ec $(OBJ)SyntaxColorScheme.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.c -symbols $(OBJ)
+
 $(OBJ)findCtx.c: src/designer/findCtx.ec $(OBJ)findCtx.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/findCtx.ec -o $(OBJ)findCtx.c -symbols $(OBJ)
 
@@ -656,6 +663,9 @@ $(OBJ)Designer.o: $(OBJ)Designer.c
 
 $(OBJ)SyntaxHighlighting.o: $(OBJ)SyntaxHighlighting.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SyntaxHighlighting.c -o $(OBJ)SyntaxHighlighting.o
+
+$(OBJ)SyntaxColorScheme.o: $(OBJ)SyntaxColorScheme.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SyntaxColorScheme.c -o $(OBJ)SyntaxColorScheme.o
 
 $(OBJ)findCtx.o: $(OBJ)findCtx.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)findCtx.c -o $(OBJ)findCtx.o
