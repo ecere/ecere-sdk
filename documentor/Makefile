@@ -53,6 +53,7 @@ _ECSOURCES = \
 	../extras/html/lines.ec \
 	../extras/html/tables.ec \
 	../ide/src/IDESettings.ec \
+	../ide/src/designer/SyntaxColorScheme.ec \
 	../ide/src/OldIDESettings.ec \
 	../extras/gui/controls/StringsBox.ec \
 	src/Documentor.ec \
@@ -151,6 +152,9 @@ $(OBJ)tables.sym: ../extras/html/tables.ec
 $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.sym
 
+$(OBJ)SyntaxColorScheme.sym: ../ide/src/designer/SyntaxColorScheme.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.sym
+
 $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.sym
 
@@ -183,6 +187,9 @@ $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
 
+$(OBJ)SyntaxColorScheme.c: ../ide/src/designer/SyntaxColorScheme.ec $(OBJ)SyntaxColorScheme.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.c -symbols $(OBJ)
+
 $(OBJ)StringsBox.c: ../extras/gui/controls/StringsBox.ec $(OBJ)StringsBox.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../extras/gui/controls/StringsBox.ec -o $(OBJ)StringsBox.c -symbols $(OBJ)
 
@@ -208,6 +215,9 @@ $(OBJ)tables.o: $(OBJ)tables.c
 
 $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+
+$(OBJ)SyntaxColorScheme.o: $(OBJ)SyntaxColorScheme.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)SyntaxColorScheme.c -o $(OBJ)SyntaxColorScheme.o
 
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
