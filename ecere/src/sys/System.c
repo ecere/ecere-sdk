@@ -375,9 +375,9 @@ bool System_ShellOpen(const char * fileName, va_list args)
       {
          __ecereNameSpace__ecere__sys__GetEnvironment("DESKTOP_SESSION", desktop, sizeof(desktop));
          if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "gnome", false, false))
-            sprintf(command, "gnome-open \"%s\" &", filePath);
+            sprintf(command, "$(which gnome-open || which gvfs-open || which xdg-open) \"%s\" &", filePath);
          else if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "kde", false, false))
-            sprintf(command, "kde-open \"%s\" &", filePath);
+            sprintf(command, "$(which kde-open || which xdg-open) \"%s\" &", filePath);
          else
             sprintf(command, "xdg-open \"%s\" &", filePath);
       }
