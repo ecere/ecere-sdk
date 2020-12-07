@@ -6,7 +6,7 @@ public import "ecere"
 
 import "StringsBox"
 import "OldIDESettings"
-import "SyntaxColorScheme"
+import "SyntaxHighlighting"
 import "GuiConfigData"
 
 // *** Color Schemes ***
