@@ -53,7 +53,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E)
 
@@ -63,6 +63,7 @@ _ECSOURCES = \
 	../ide/src/project/ProjectNode.ec \
 	../ide/src/IDESettings.ec \
 	../ide/src/OldIDESettings.ec \
+	../ide/src/designer/SyntaxColorScheme.ec \
 	../extras/gui/controls/StringsBox.ec \
 	../extras/types/DynamicString.ec \
 	epj2make.ec
@@ -159,6 +160,9 @@ $(OBJ)ProjectConfig.sym: ../ide/src/project/ProjectConfig.ec
 $(OBJ)ProjectNode.sym: ../ide/src/project/ProjectNode.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/project/ProjectNode.ec -o $(OBJ)ProjectNode.sym
 
+$(OBJ)SyntaxColorScheme.sym: ../ide/src/designer/SyntaxColorScheme.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.sym
+
 $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.sym
 
@@ -188,6 +192,9 @@ $(OBJ)ProjectNode.c: ../ide/src/project/ProjectNode.ec $(OBJ)ProjectNode.sym | $
 $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/IDESettings.ec -o $(OBJ)IDESettings.c -symbols $(OBJ)
 
+$(OBJ)SyntaxColorScheme.c: ../ide/src/designer/SyntaxColorScheme.ec $(OBJ)SyntaxColorScheme.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/designer/SyntaxColorScheme.ec -o $(OBJ)SyntaxColorScheme.c -symbols $(OBJ)
+
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c ../ide/src/OldIDESettings.ec -o $(OBJ)OldIDESettings.c -symbols $(OBJ)
 
@@ -213,6 +220,9 @@ $(OBJ)ProjectNode.o: $(OBJ)ProjectNode.c
 
 $(OBJ)IDESettings.o: $(OBJ)IDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)IDESettings.c -o $(OBJ)IDESettings.o
+
+$(OBJ)SyntaxColorScheme.o: $(OBJ)SyntaxColorScheme.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)SyntaxColorScheme.c -o $(OBJ)SyntaxColorScheme.o
 
 $(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)OldIDESettings.c -o $(OBJ)OldIDESettings.o
