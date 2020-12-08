@@ -86,7 +86,8 @@
                   "../ide/src/project/ProjectConfig.ec",
                   "../ide/src/project/ProjectNode.ec",
                   "../ide/src/IDESettings.ec",
-                  "../ide/src/OldIDESettings.ec"
+                  "../ide/src/OldIDESettings.ec",
+                  "../ide/src/designer/SyntaxColorScheme.ec"
                ]
             },
             "../extras/gui/controls/StringsBox.ec",
