@@ -73,7 +73,8 @@
                "Folder" : "ide",
                "Files" : [
                   "../ide/src/IDESettings.ec",
-                  "../ide/src/OldIDESettings.ec"
+                  "../ide/src/OldIDESettings.ec",
+                  "../ide/src/designer/SyntaxColorScheme.ec"
                ]
             },
             "../extras/gui/controls/StringsBox.ec"
