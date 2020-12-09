@@ -6028,7 +6028,7 @@ if(inCompiler && force32Bits)
 applicationClass->offset = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4 * 16) + (16 + 4 + 4 + 4 * 16);
 applicationClass->structSize = applicationClass->offset + (4 + 4 + 4 + 4 + 20 + 4 + 88);
 }
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(applicationClass, "Main", "void()", (((void *)0)), 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(applicationClass, "Main", "void()", __ecereNameSpace__ecere__com__DefaultFunction, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argc", "int", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "argv", "const char **", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "exitCode", "int", sizeof(int), 4, 1);

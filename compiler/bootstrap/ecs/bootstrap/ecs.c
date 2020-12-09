@@ -2464,7 +2464,7 @@ struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere_
 {
 struct MethodImport * method;
 struct PropertyImport * prop;
-char classID[1024];
+char classID[1040];
 char className[1024] = "";
 
 FullClassNameCat(className, _class->name, 1);
