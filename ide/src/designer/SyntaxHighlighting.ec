@@ -6,16 +6,6 @@ public import "ecere"
 
 import "SyntaxColorScheme"
 
-char * strchrmax(const char * s, int c, int max)
-{
-   int i;
-   char ch;
-   for(i = 0; i < max && (ch = s[i]); i++)
-      if(ch == c)
-         return (char *)s + i;
-   return null;
-}
-
 class SyntaxState : int
 {
    bool inMultiLineComment:1;
