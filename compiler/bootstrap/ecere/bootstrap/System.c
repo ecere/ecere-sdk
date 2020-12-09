@@ -163,6 +163,10 @@ unsigned int lastErrorCode;
 int errorLevel;
 } ecere_gcc_struct;
 
+void __ecereNameSpace__ecere__sys__debugBreakpoint()
+{
+}
+
 struct __ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__OldList
@@ -910,5 +914,6 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorBufferSize", "in
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "logFile", "char[MAX_LOCATION]", 797, 1, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "lastErrorCode", "ecere::sys::ErrorCode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorLevel", "ecere::sys::ErrorLevel", 4, 4, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::debugBreakpoint", "void ecere::sys::debugBreakpoint(void)", __ecereNameSpace__ecere__sys__debugBreakpoint, module, 1);
 }
 

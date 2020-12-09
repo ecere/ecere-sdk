@@ -1386,10 +1386,10 @@ static void ProcessDBTable(struct DBTableDef * table)
 {
 struct __ecereNameSpace__ecere__sys__OldList * rowClassDefs = MkList(), * idClassDefs = (((void *)0));
 char tableName[1024];
-char rowClassName[1024];
+char rowClassName[1027];
 int len = strlen(table->name);
 unsigned int indexed = 0;
-char tableID[1024];
+char tableID[1039];
 char nameField[1024];
 struct __ecereNameSpace__ecere__sys__OldList * args;
 struct __ecereNameSpace__ecere__sys__OldList * members;
@@ -1452,7 +1452,7 @@ switch(entry->type)
 case 0:
 {
 unsigned int isIndex = 0;
-char fieldID[1024];
+char fieldID[2064];
 struct __ecereNameSpace__ecere__sys__OldList * args;
 struct Specifier * spec = entry->__anon1.__anon1.dataType->qualifiers ? (struct Specifier *)(*entry->__anon1.__anon1.dataType->qualifiers).first : (((void *)0));
 
@@ -1601,7 +1601,7 @@ switch(entry->type)
 {
 case 0:
 {
-char fieldID[1024];
+char fieldID[2064];
 struct __ecereNameSpace__ecere__sys__OldList * args;
 struct Specifier * spec = entry->__anon1.__anon1.dataType->qualifiers ? (struct Specifier *)(*entry->__anon1.__anon1.dataType->qualifiers).first : (((void *)0));
 
@@ -1664,7 +1664,7 @@ case 1:
 {
 if(entry->__anon1.items && (*entry->__anon1.items).count)
 {
-char indexID[1024];
+char indexID[2064];
 struct DBIndexItem * item;
 int c;
 unsigned int needTable = 0;
@@ -1693,7 +1693,7 @@ strcpy(indexID, tableID);
 }
 for(c = 0, item = (*entry->__anon1.items).first; item; item = item->next, c++)
 {
-char fieldID[1024];
+char fieldID[2064];
 
 sprintf(num, "%d", c);
 sprintf(fieldID, "__ecereDBField_%s_%s", tableName, item->id->string);
@@ -1841,7 +1841,7 @@ break;
 case 29:
 {
 char tableName[1024];
-char name[1024];
+char name[2064];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
@@ -1856,7 +1856,7 @@ break;
 case 30:
 {
 char tableName[1024];
-char name[1024];
+char name[1039];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
@@ -1871,7 +1871,7 @@ break;
 case 31:
 {
 char tableName[1024];
-char name[1024];
+char name[2064];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
