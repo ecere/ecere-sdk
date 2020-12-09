@@ -180,6 +180,17 @@ int minSize;
 int maxSize;
 } ecere_gcc_struct;
 
+char * __ecereNameSpace__ecere__sys__strchrmax(const char * s, int c, int max)
+{
+int i;
+char ch;
+
+for(i = 0; i < max && (ch = s[i]); i++)
+if(ch == c)
+return (char *)s + i;
+return (((void *)0));
+}
+
 struct __ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__OldList
@@ -1926,5 +1937,6 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "maxSize", "int", 4, 4
 __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "string", "const char *", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_string, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_string, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__ZString_string = __ecerePropM___ecereNameSpace__ecere__sys__ZString_string, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = (void *)0;
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::strchrmax", "char * ecere::sys::strchrmax(const char * s, int c, int max)", __ecereNameSpace__ecere__sys__strchrmax, module, 4);
 }
 

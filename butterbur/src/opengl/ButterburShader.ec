@@ -17,11 +17,14 @@ Size displaySize;
 DisplaySystem displaySystem;
 Display glDisplay;
 
+#ifndef ECERE_STATIC
 GLCapabilities glCaps;
 bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
 bool glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
 
 int glVersion;
+#endif
+
 int glMinorVersion;
 
 uint defaultVAO;

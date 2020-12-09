@@ -32,9 +32,6 @@
       {
          "Name" : "Linux",
          "Options" : {
-            "PreprocessorDefinitions" : [
-               "ETC2_COMPRESS"
-            ],
             "IncludeDirs" : [
                "/usr/include/freetype2"
             ],
@@ -152,6 +149,9 @@
             {
                "Name" : "linux",
                "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ETC2_COMPRESS"
+                  ],
                   "Libraries" : [
                      "ncurses",
                      "pthread",
@@ -238,7 +238,17 @@
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO).0)",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO))"
             ]
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ETC2_COMPRESS"
+                  ]
+               }
+            }
+         ]
       },
       {
          "Name" : "Static",
