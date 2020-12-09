@@ -1928,8 +1928,8 @@ if(addedLen > 0)
 {
 memcpy(__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string + __ecerePointer___ecereNameSpace__ecere__sys__ZString->len, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->_string, addedLen);
 __ecerePointer___ecereNameSpace__ecere__sys__ZString->len += addedLen;
-__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string[__ecerePointer___ecereNameSpace__ecere__sys__ZString->len] = 0;
 }
+__ecerePointer___ecereNameSpace__ecere__sys__ZString->_string[__ecerePointer___ecereNameSpace__ecere__sys__ZString->len] = 0;
 if(((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->allocType == 0)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(s), s = 0);
 }
@@ -2059,7 +2059,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, 
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "concat", "void concat(ecere::sys::ZString s)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concat, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatf", "void concatf(const char * format, ...)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatf, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatn", "void concatn(ecere::sys::ZString s, int l)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatn, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatx", "void concatx(typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "concatx", "void concatx(const typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "copy", "void copy(ecere::sys::ZString s)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "copyString", "void copyString(const char * value, int newLen)", __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString, 1);
 __ecereProp___ecereNameSpace__ecere__sys__ZString_char__PTR_ = __ecereNameSpace__ecere__com__eClass_AddProperty(class, 0, "const char *", __ecereProp___ecereNameSpace__ecere__sys__ZString_Set_char__PTR_, __ecereProp___ecereNameSpace__ecere__sys__ZString_Get_char__PTR_, 1);

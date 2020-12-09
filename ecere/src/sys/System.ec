@@ -26,6 +26,7 @@ default:
 
 #include <sys/time.h>
 #include <unistd.h>
+#include <signal.h>
 
 #endif
 
@@ -517,3 +518,17 @@ private struct System
 };
 
 System globalSystem;
+
+public void debugBreakpoint()
+{
+#if !defined(ECERE_BOOTSTRAP)
+
+#if defined(__WIN32__)
+   DebugBreak();
+#else
+   raise(SIGTRAP);
+   // asm("int $3");
+#endif
+
+#endif
+}

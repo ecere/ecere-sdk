@@ -1633,6 +1633,8 @@ __internal_VirtualMethod ? __internal_VirtualMethod(f, buffer, 1, count) : (size
 result = 0;
 break;
 }
+if(!count)
+break;
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -1731,8 +1733,8 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetLine", "bool GetLine(c
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetLineEx", "int GetLineEx(char * s, int max, bool * hasNewLineChar)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetLineEx, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetString", "bool GetString(char * string, int max)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetValue", "int GetValue(void)", __ecereMethod___ecereNameSpace__ecere__sys__File_GetValue, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "void Print(typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_Print, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "PrintLn", "void PrintLn(typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_PrintLn, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "void Print(const typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_Print, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "PrintLn", "void PrintLn(const typed_object object, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_PrintLn, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Printf", "int Printf(const char * format, ...)", __ecereMethod___ecereNameSpace__ecere__sys__File_Printf, 1);
 __ecerePropM___ecereNameSpace__ecere__sys__File_input = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "input", "void *", __ecereProp___ecereNameSpace__ecere__sys__File_Set_input, __ecereProp___ecereNameSpace__ecere__sys__File_Get_input, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
