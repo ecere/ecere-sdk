@@ -319,8 +319,6 @@ private:
             s = renew s char[len + 1];
             string = s;  //     | open braces match closed one   | no extra closing
             result = (len > 0 && openSquar == 0 && openCurly == 0 && level > -1) ? success : syntaxError;
-            if (result == syntaxError)
-               delete string;
          }
          else
          {
@@ -1362,9 +1360,7 @@ private:
                      }
 
                      itemResult = GetValue(type, value);
-                     if(itemResult == syntaxError)
-                        result = syntaxError;
-                     else
+                     if(itemResult != syntaxError)
                      {
                         if(prop || member)
                         {
@@ -1636,9 +1632,6 @@ private:
          }
       }
       ch = 0;
-      if(*object && objectType && result == syntaxError)
-            ((void (*)(void *, void *))(void *)objectType._vTbl[__ecereVMethodID_class_OnFree])(objectType, *object);
-
       return result;
    }
 
