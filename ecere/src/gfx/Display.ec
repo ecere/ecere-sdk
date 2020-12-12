@@ -69,6 +69,8 @@ public:
    // bool mapBuffer       :1;
 
    bool debug           :1;
+   bool gpuCommands     :1;
+   bool mdei            :1;
 
    GLSamplesCount samples:3;
 };
@@ -1524,7 +1526,7 @@ private:
    void * windowDriverData;
    bool useSharedMemory;
    GLCapabilities glCapabilities;
-   glCapabilities = { true, true, true, true, true, true, true, true };
+   glCapabilities = { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, ms16 };
 };
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)

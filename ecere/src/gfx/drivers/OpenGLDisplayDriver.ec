@@ -193,6 +193,8 @@ GLCapabilities glCaps;
 bool glCaps_nonPow2Textures, glCaps_vertexBuffer, glCaps_quads, glCaps_intAndDouble, glCaps_legacyFormats, glCaps_compatible, glCaps_vertexPointer;
 // Might toggle without Reload:
 bool glCaps_core, glCaps_shaders, glCaps_fixedFunction, glCaps_immediate, glCaps_legacy, glCaps_pointSize, glCaps_frameBuffer, glCaps_vao, glCaps_select;
+bool glCaps_gpuCommands;
+bool glCaps_mdei;
 // bool mapBuffer;
 private:
 
@@ -813,13 +815,13 @@ class OpenGLDisplayDriver : DisplayDriver
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
 
 #if defined(__LUMIN__)
-      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES3)
-      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES)
-      capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
+      capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object"), mdei = true, gpuCommands = true };
 #elif defined(_GLES2)
-      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, mdei = true, gpuCommands = true };
 #else
       capabilities =
       {
@@ -852,8 +854,14 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
          vertexBuffer = glBindBuffer != null;
          // mapBuffer = glMapBuffer != null;
+         mdei = true;
+         gpuCommands = true;
       };
 #endif
+
+      #if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
+      capabilities.mdei = false;
+      #endif
 
 #ifdef DIAGNOSTICS
       PrintLn("max texture size: ", oglSystem.maxTextureSize);
@@ -869,16 +877,20 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
 
 #if defined(__LUMIN__)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true };
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES3)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true };
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES)
-      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
+      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES2)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, mdei = true, gpuCommands = true };
 #else
-      oglSystem.capabilities = { compatible = glCaps_compatible, shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, vao = true, nonPow2Textures = true };
+      oglSystem.capabilities = { compatible = glCaps_compatible, shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, vao = true, nonPow2Textures = true, mdei = true, gpuCommands = true };
 #endif
+
+      #if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
+      oglSystem.capabilities.mdei = false;
+      #endif
 
 #ifdef DIAGNOSTICS
       PrintLn("OpenGL driver's CreateDisplaySystem()");
