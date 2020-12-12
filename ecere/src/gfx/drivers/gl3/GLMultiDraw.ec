@@ -27,7 +27,8 @@ public define transform3Attribute = 12;
 
 private:
 
-// #define CLIENT_MEM_COMMANDS  // Defined as a work-around for Intel driver that does not seem to support indirect commands buffers?
+// Set glCapabilities.gpuCommands = false as a work-around for Intel driver that does not seem to support
+// indirect commands buffers, and/or glCapabilities.mdei = false
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -468,18 +469,16 @@ public struct GLMultiDraw
       commandsAlloced = size;
       idsAlloced = size;
       idsAB.allocate(size * sizeof(uint), null, streamDraw);
-#ifndef CLIENT_MEM_COMMANDS
-      commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
-#endif
+      if(glCaps_gpuCommands)
+         commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
    }
 
    void resizeCommands(uint size)
    {
       commands = renew0 commands GLDrawCommand[size];
       commandsAlloced = size;
-#ifndef CLIENT_MEM_COMMANDS
-      commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
-#endif
+      if(glCaps_gpuCommands)
+         commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
    }
 
    void resizeIDs(uint size)
@@ -574,9 +573,8 @@ public struct GLMultiDraw
    void prepare(int vertNCoords, int verticesStride)
    {
       idsAB.upload(0, totalInstances * sizeof(uint), drawIDs);
-#ifndef CLIENT_MEM_COMMANDS
-      commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
-#endif
+      if(glCaps_gpuCommands)
+         commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
 
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(vao);
@@ -635,12 +633,15 @@ public struct GLMultiDraw
             glDrawElements(drawMode, cmd->count, type, (void *)(uintptr)(cmd->firstIndex * ixSize));
          }
       }
-#elif (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)     // ******* Instanced Draws with Base Vertex *******
+#else //if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)     // ******* Instanced Draws with Base Vertex *******
       //This path that isn't taken here is the fallback for when MDEI is not available.  TODO: proper condition
+      if(!glCaps_mdei)
       {
          int n;
          uint ixSize = type == GL_UNSIGNED_INT ? 4 : 2;
+#if defined(__ANDROID__) || defined(__UWP__)
          uint transformSize = this.transformSize;
+#endif
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
@@ -669,13 +670,10 @@ public struct GLMultiDraw
          CheckGLErrors(__FILE__,__LINE__);
    #endif
       }
-#else // ******* Indirect Multi Draw *******
+      else
+//#else // ******* Indirect Multi Draw *******
       {
-#ifdef CLIENT_MEM_COMMANDS
-         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
-#else
-         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, commandsB.buffer);
-#endif
+         GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, glCaps_gpuCommands ? commandsB.buffer : 0);
 
    #ifdef _DEBUG
          CheckGLErrors(__FILE__,__LINE__);
@@ -684,11 +682,7 @@ public struct GLMultiDraw
          glMultiDrawElementsIndirect(
             drawMode,
             type,
-#ifdef CLIENT_MEM_COMMANDS
-            commands,
-#else
-            0,
-#endif
+            glCaps_gpuCommands ? 0 : commands,
             commandsCount, 0);
 
    #ifdef _DEBUG
