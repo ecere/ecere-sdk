@@ -1167,8 +1167,9 @@ public:
                }
                else
                {
-                  retValue = convBitmap;
-                  freeConvBitmap = false;
+                  retValue = mipMap;
+                  if(mipMap == convBitmap)
+                     freeConvBitmap = false;
                   retValue.pixelFormat = compress ? pixelFormatETC2RGBA8 : pixelFormatRGBAGL;
                }
             }
