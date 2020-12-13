@@ -88,7 +88,6 @@ _ECSOURCES = \
 	src/designer/findParams.ec \
 	src/designer/Sheet.ec \
 	src/designer/ToolBox.ec \
-	src/designer/SyntaxHighlighting.ec \
 	src/debugger/debugFindCtx.ec \
 	src/debugger/Debugger.ec \
 	src/debugger/debugTools.ec \
@@ -409,9 +408,6 @@ $(OBJ)Sheet.sym: src/designer/Sheet.ec
 $(OBJ)ToolBox.sym: src/designer/ToolBox.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/ToolBox.ec -o $(OBJ)ToolBox.sym
 
-$(OBJ)SyntaxHighlighting.sym: src/designer/SyntaxHighlighting.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.sym
-
 $(OBJ)debugFindCtx.sym: src/debugger/debugFindCtx.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/debugger/debugFindCtx.ec -o $(OBJ)debugFindCtx.sym
 
@@ -560,9 +556,6 @@ $(OBJ)Sheet.c: src/designer/Sheet.ec $(OBJ)Sheet.sym | $(SYMBOLS)
 $(OBJ)ToolBox.c: src/designer/ToolBox.ec $(OBJ)ToolBox.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/ToolBox.ec -o $(OBJ)ToolBox.c -symbols $(OBJ)
 
-$(OBJ)SyntaxHighlighting.c: src/designer/SyntaxHighlighting.ec $(OBJ)SyntaxHighlighting.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/designer/SyntaxHighlighting.ec -o $(OBJ)SyntaxHighlighting.c -symbols $(OBJ)
-
 $(OBJ)debugFindCtx.c: src/debugger/debugFindCtx.ec $(OBJ)debugFindCtx.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/debugger/debugFindCtx.ec -o $(OBJ)debugFindCtx.c -symbols $(OBJ)
 
@@ -710,9 +703,6 @@ $(OBJ)Sheet.o: $(OBJ)Sheet.c
 
 $(OBJ)ToolBox.o: $(OBJ)ToolBox.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)ToolBox.c -o $(OBJ)ToolBox.o
-
-$(OBJ)SyntaxHighlighting.o: $(OBJ)SyntaxHighlighting.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SyntaxHighlighting.c -o $(OBJ)SyntaxHighlighting.o
 
 $(OBJ)debugFindCtx.o: $(OBJ)debugFindCtx.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)debugFindCtx.c -o $(OBJ)debugFindCtx.o
