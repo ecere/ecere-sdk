@@ -54,15 +54,18 @@ public class TIManager : DrawingManager
    void prepareDraw(Presentation presentation)
    {
       float transform[2] = { originOffset.x, originOffset.y };
-      drawManager.ready(width, height);
+      if(drawManager)
+         drawManager.ready(width, height);
       if(glCaps_vao) glBindVertexArray(defaultVAO);
       presentation.prepareDraw(renderFlags, this, transform);
    }
 
    void draw()
    {
-      drawManager.flushImages();
-      glEnableVertexAttribArray(GLBufferContents::vertex);
+      if(drawManager)
+         drawManager.flushImages();
+      if(glCaps_shaders)
+         glEnableVertexAttribArray(GLBufferContents::vertex);
       if(glCaps_vao) glBindVertexArray(0);
    }
 
@@ -517,7 +520,8 @@ class LWDrawManager
 
    void flushImages( )
    {
-      dmFlushImages( dm );
+      if(glCaps_vertexBuffer)
+         dmFlushImages( dm );
    }
 
    void end()

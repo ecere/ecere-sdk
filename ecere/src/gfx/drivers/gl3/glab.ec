@@ -382,9 +382,12 @@ public struct GLB
    {
       // TODO: Additional version check for full GL?
 #if defined(__LUMIN__) || defined(_GLES3) || (!defined(__ANDROID__) && !defined(__EMSCRIPTEN__)) // TODO:
-      glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
-      glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
-      glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
+      if(glCaps_vertexBuffer)
+      {
+         glBindBuffer(GL_COPY_READ_BUFFER, src.buffer);
+         glBindBuffer(GL_COPY_WRITE_BUFFER, buffer);
+         glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, srcStart, dstStart, size);
+      }
 #endif
    }
 
