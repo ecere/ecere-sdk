@@ -310,6 +310,8 @@ public:
 #if ENABLE_GL_SHADERS
       CompiledShader shader = this.shader;
 
+      if(!glCaps_shaders) return false;
+
       if(activeShader != this)
          activeShader = this;
 

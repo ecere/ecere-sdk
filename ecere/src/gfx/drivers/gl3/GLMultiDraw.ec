@@ -216,7 +216,16 @@ public struct GLArrayTexture
 #ifdef _DEBUG
       CheckGLErrors(__FILE__,__LINE__);
 #endif
-      glTexStorage3D(target, levels, format, w, h, numLayers);
+      if(glVersion) // >= 4) // && glMinorVersion >= 2)
+         glTexStorage3D(target, levels, format, w, h, numLayers);
+      else
+      {
+         // TODO: Review for GL 3 support?
+         /*if(numLayers > 1 && glVersion)
+            glTexImage3D(target, levels, format, w, h, numLayers, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+         else*/
+            glTexImage2D(target, levels, format, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, null);
+      }
 
 #ifdef GLSTATS
       GLStats::allocTexture(texture, w, h * numLayers, levels > 1);
@@ -583,7 +592,7 @@ public struct GLMultiDraw
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       // Draw IDs
-      if(!glCaps_vao || lastIDAB != idsAB.buffer)
+      if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
       {
          GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
          glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
@@ -592,7 +601,7 @@ public struct GLMultiDraw
          lastIDAB = idsAB.buffer;
       }
 #endif
-      if(!glCaps_vao || lastVBO != vertexGLMB.ab.buffer)
+      if(glCaps_shaders && (!glCaps_vao || lastVBO != vertexGLMB.ab.buffer))
       {
          if(vertNCoords)
          {
@@ -602,7 +611,7 @@ public struct GLMultiDraw
          }
          lastVBO = vertexGLMB.ab.buffer;
       }
-      if(!glCaps_vao || lastIBO != indexGLMB.ab.buffer)
+      if(glCaps_vertexBuffer && (!glCaps_vao || lastIBO != indexGLMB.ab.buffer))
       {
          GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
          lastIBO = indexGLMB.ab.buffer;
@@ -642,6 +651,7 @@ public struct GLMultiDraw
 #if defined(__ANDROID__) || defined(__UWP__)
          uint transformSize = this.transformSize;
 #endif
+         if(glCaps_shaders)
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
