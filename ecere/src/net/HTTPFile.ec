@@ -88,6 +88,7 @@ public:
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
       curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+      SetCurlEmbeddedCA(curl_handle);
       res = curl_easy_perform(curl_handle);
       if(res != CURLE_OK)
          fprintf(stderr, "curl_easy_perform() failed (%s): %s\n", curl_easy_strerror(res), name);
@@ -199,6 +200,95 @@ public HTTPFile FileOpenURL(const char * name)
       return null;
    }
 }
+
+
+#define _Noreturn
+
+#ifndef ECERE_NOSSL
+#define byte _byte
+#define int64 _int64
+#define uint _uint
+#define set _set
+#include <openssl/ssl.h>
+#if defined(__WIN32__) && OPENSSL_VERSION_NUMBER < 0x1010006fL
+#include <openssl/applink.c>
+#endif
+#undef byte
+#undef int64
+#undef uint
+#undef set
+
+static CURLcode sslctx_function(CURL *curl, void *sslctx, void *certdata)
+{
+   BIO * bio = BIO_new_mem_buf((char *)certdata, -1);
+   if(!bio)
+      PrintLn("Error: BIO_new_mem_buf()");
+   else
+   {
+      X509_STORE * store = SSL_CTX_get_cert_store((SSL_CTX *)sslctx);
+      STACK_OF(X509_INFO) * certStack = PEM_X509_INFO_read_bio(bio, NULL, NULL, NULL);
+      if(!certStack)
+         PrintLn("Error: PEM_X509_INFO_read_bio()");
+      else
+      {
+         int i;
+
+         for(i = 0; i < sk_X509_INFO_num(certStack); i++)
+         {
+            X509_INFO *itmp = sk_X509_INFO_value(certStack, i);
+            if(itmp->x509)
+               if(!X509_STORE_add_cert(store, itmp->x509))
+                  PrintLn("Error: X509_STORE_add_cert()");
+            if(itmp->crl)
+               X509_STORE_add_crl(store, itmp->crl);
+         }
+         sk_X509_INFO_pop_free(certStack, X509_INFO_free);
+      }
+   }
+   BIO_free(bio);
+   return CURLE_OK;
+}
+
+static char * sslCACert;
+
+public bool SetCurlEmbeddedCA(void * curlHandle)
+{
+   bool result = false;
+   // Things work out of the box on Linux...
+#if defined(__WIN32__)
+   if(!sslCACert)
+   {
+      const String fn = "<:ecere>mozilla-cacert.pem";
+      if(FileExists(fn))
+      {
+         File f = FileOpen(fn, read);
+         if(f)
+         {
+            int len = (int)f.GetSize();
+            sslCACert = new char[len+1];
+
+            f.Read(sslCACert, 1, len);
+            sslCACert[len] = 0;
+            delete f;
+         }
+      }
+   }
+   if(sslCACert)
+   {
+      curl_easy_setopt(curlHandle, CURLOPT_CAINFO, null);
+      curl_easy_setopt(curlHandle, CURLOPT_CAPATH, null);
+      curl_easy_setopt(curlHandle, CURLOPT_SSLCERTTYPE, "PEM");
+      curl_easy_setopt(curlHandle, CURLOPT_SSL_VERIFYPEER, 1L);
+      curl_easy_setopt(curlHandle, CURLOPT_SSL_CTX_FUNCTION, sslctx_function);
+      curl_easy_setopt(curlHandle, CURLOPT_SSL_CTX_DATA, sslCACert);
+
+      result = true;
+   }
+#endif
+   return result;
+}
+#endif
+
 #else
 
 namespace net;

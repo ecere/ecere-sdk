@@ -255,8 +255,7 @@
          "Options" : {
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "ECERE_STATIC",
-               "ECERE_NOSSL"
+               "ECERE_STATIC"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",
@@ -3640,6 +3639,7 @@
                }
             }
          ]
-      }
+      },
+      "mozilla-cacert.pem"
    ]
 }
