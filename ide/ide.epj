@@ -217,7 +217,8 @@
                   "findParams.ec",
                   "Sheet.ec",
                   "ToolBox.ec",
-                  "SyntaxHighlighting.ec"
+                  "SyntaxHighlighting.ec",
+                  "SyntaxColorScheme.ec"
                ]
             },
             {
