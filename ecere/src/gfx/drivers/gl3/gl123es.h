@@ -400,7 +400,7 @@
    glCaps_select              = glCaps.select; \
    glCaps_vertexPointer       = glCaps.vertexPointer; \
    glCaps_gpuCommands         = glCaps.gpuCommands; \
-   glCaps_mdei                = glCaps_mdei
+   glCaps_mdei                = glCaps.mdei
 
 extern int glVersion;
 extern GLCapabilities glCaps;
