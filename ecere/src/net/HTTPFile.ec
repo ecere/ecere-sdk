@@ -201,10 +201,12 @@ public HTTPFile FileOpenURL(const char * name)
    }
 }
 
-
 #define _Noreturn
 
 #ifndef ECERE_NOSSL
+
+#if defined(__WIN32__)
+
 #define byte _byte
 #define int64 _int64
 #define uint _uint
@@ -251,6 +253,8 @@ static CURLcode sslctx_function(CURL *curl, void *sslctx, void *certdata)
 
 static char * sslCACert;
 
+#endif
+
 public bool SetCurlEmbeddedCA(void * curlHandle)
 {
    bool result = false;
@@ -296,6 +300,11 @@ namespace net;
 public HTTPFile FileOpenURL(const char * name)
 {
    return null;
+}
+
+public bool SetCurlEmbeddedCA(void * curlHandle)
+{
+   return false;
 }
 
 #endif
