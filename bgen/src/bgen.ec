@@ -500,6 +500,7 @@ public class BGen : ConsoleApplication // <ArgSym>
       PrintLn($"Please follow appropriate syntax.");
       PrintLn("");
       idnt = "  ";
+      exitCode = 1;
    }
 
    void parseArgs()
