@@ -707,7 +707,7 @@ endif
 	$(call cp,ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A),$(OBJLIBDIR))
 
 #TODO: Samples?
-install: prepinstall actualinstall
+install: actualinstall
 	@$(call echo,The Ecere SDK has been installed.)
 
 copyonlyinstall: actualinstall
