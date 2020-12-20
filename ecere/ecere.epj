@@ -149,9 +149,6 @@
             {
                "Name" : "linux",
                "Options" : {
-                  "PreprocessorDefinitions" : [
-                     "ETC2_COMPRESS"
-                  ],
                   "Libraries" : [
                      "ncurses",
                      "pthread",
@@ -164,8 +161,7 @@
                      "Xrender",
                      "GL",
                      "ssl",
-                     "crypto",
-                     "etc"
+                     "crypto"
                   ]
                }
             }
