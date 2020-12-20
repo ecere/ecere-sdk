@@ -277,8 +277,6 @@ struct LWFontKey
    float outlineSize;
 };
 
-Map<LWFontKey, LWFMFont> loadedFonts { };
-
 public class TmpFaceInfo : struct
 {
 public:
@@ -290,6 +288,8 @@ public:
 class LWFontManager
 {
    fmManager * fm;
+
+   Map<LWFontKey, LWFMFont> loadedFonts { };
 
    // TOCHECK: Will we need user flexibility to override this?
    void ::fontAtlasFullCallback( fmManager * fm, LWFontManager fontManager )
@@ -317,6 +317,8 @@ class LWFontManager
    ~LWFontManager()
    {
       fmDestroyManager(fm);
+
+      loadedFonts.Free();
    }
 
    LWFMFont addFont(const String path, int glyphPaddingWidth )
@@ -393,6 +395,12 @@ class LWFontManager
          }
          else
             PrintLn("Error loading font ", font.face);
+
+         if(infos)
+         {
+            infos.Free();
+            delete infos;
+         }
       }
       if(freeFont) delete font;
       return result;
