@@ -2,33 +2,362 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
+# temp: for $(SOV) to work
+VERSION := 0.44
+
 ifndef CROSSPLATFORM_MK
-include crossplatform.mk
-include default.cf
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
 endif
+
+# naming conventions
+#
+# _bg_name_of_an_internal_bindings_generation_related_variable
+# _bgNameOfAnInternalBindingsGenerationRelatedFunction
+# _internalNameOfAFunctionThatIsOnlyUsedByOneOtherFunction
+#
+# _bg_rule_template_nameOfABindingsGenerationRelatedRuleTemplate
+# _bg_rule_guard_nameOfABindingsGenerationRelatedRuleTemplate_$(...)
+#
+# USER_FACING_OR_CROSSPLATFORM_MK_OR_DEFAULT_CF_VARIABLE_NAME
+#
+
+# bgen output rule templates and supporting variables
+################################################################################################################################
+
+# user options
+
+# most important user options
+#
+#   todo: find better names?
+#   BG_ADD_LIB_GOALS or BG_LIB_GOALS
+#   BG_ADD_LIB_SEARCH_LOCATIONS or BG_LIB_SEARCH_LOCATIONS
+
+ifndef BG_LIB_GOALS
+_bg_input_lib_names := eC ecere EDA $(BG_ADD_LIB_GOALS)
+else
+_bg_input_lib_names := $(BG_LIB_GOALS)
+endif
+
+ifndef BG_LIB_SEARCH_LOCATIONS
+_bg_lib_search_paths := obj/$(PLATFORM)/lib $(BG_ADD_LIB_SEARCH_LOCATIONS)
+else
+_bg_lib_search_paths := $(BG_LIB_SEARCH_LOCATIONS)
+endif
+
+# general user options
+#
+#   BINDINGS_DIR
+
+ifndef BINDINGS_DIR
+_bg_dir := bindings
+else
+_bg_dir := $(BINDINGS_DIR)
+endif
+
+# more obscure user options
+#
+#   BGEN_NO_SELF_DEPENDENCY
+
+ifdef BGEN_NO_SELF_DEPENDENCY
+_bg_no_self_dep := 1
+endif
+
+# internal variables
+
+_bg_lang_c := C
+_bg_lang_cpp := C++
+
+_bg_header_c := h
+_bg_header_cpp := hpp
+
+_bg_bypass_c :=
+_bg_bypass_cpp := -bypassmacros
+
+_bg_dep_ec := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ec$(SO)
+_bg_dep_ec2 := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ec2$(SO)
+_bg_dep_ecere := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ecere$(SO)
+_bg_deps := $(_bg_dep_ec) $(_bg_dep_ec2) $(_bg_dep_ecere)
+
+_bg_quiet := $(if $(SILENT_IS_ON),-quiet,)
+
+# note: this is rather hard coded
+# todo: need some kind of user options
+_bg_args := -fren Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
+
+_bg_dir_c := $(_bg_dir)/c
+_bg_dir_cpp := $(_bg_dir)/cpp
+
+# hard coded library names
+
+_bg_eC := eC
+_bg_ecere := ecere
+_bg_ecereCOM := ecereCOM
+
+# functions
+
+# note: _eCToEcereCOM is an accepted exception to the naming convention
+_eCToEcereCOM = $(if $(subst $(_bg_eC),,$(1)),,$(_bg_ecereCOM))
+_bgCorrectLibName = $(if $(call _eCToEcereCOM,$(1)),$(call _eCToEcereCOM,$(1)),$(1))
+# note: _bgGetLibFileNameFromBindingName only used here? should be _internalSomething
+_bgGetLibFileNameFromBindingName = $(LP)$(call _bgCorrectLibName,$(1))$(SO)
+_internalFindLib = $(firstword $(foreach _search_loc,$(_bg_lib_search_paths),$(if $(wildcard $(_search_loc)/$(call _bgGetLibFileNameFromBindingName,$(1))),$(_search_loc)/$(call _bgGetLibFileNameFromBindingName,$(1)),)))
+# todo: see what to do with this warning or error message instead of $(empty) in the following function: $(info unable to find $(1) library.)
+_bgFindLibPathByBindingName = $(if $(call _internalFindLib,$1),$(call _internalFindLib,$1),$(empty))
+
+# rule templates
+
+define _bg_rule_template_bgenOutput
+# info: this rule template will become the rules that will call bgen to generate either:
+#       libraryName.c and libraryName.h or libraryName.cpp and libraryName.hpp; or:
+#       libraryName.h or libraryName.hpp when only a header is needed
+# note: python too? not tested yet!
+$(_bg_dir)/$(2)/$(1).$(3): $(call _bgFindLibPathByBindingName,$(1)) $(if $(_bg_no_self_dep),,$(BGEN) $(_bg_deps))
+	$(BGEN) $(strip -dir $(_bg_dir)/$(2) $(_bg_args) $(4) $(_bg_quiet) -$(2) $(_bg_bypass_$(2)) $$<)
+#	@$(call echo,Generated $(_bg_lang_$(2)) bindings for $$<)
+endef
+
+# bindings (c, cpp) building rule templates and supporting variables
+################################################################################################################################
+
+_BG_VERSION := 0.44
+_BG_VER := $(if $(LINUX_TARGET),$(if $(LINUX_HOST),$(if $(_BG_VERSION),.$(_BG_VERSION),),),)
+_BG_SOV := $(SO)$(_BG_VER)
+_BG_CONFIG := release
+
+_BG_CFLAGS_c = $(CFLAGS)
+_BG_CFLAGS_cpp = $(CFLAGS)
+_BG_LDFLAGS_c = $(LDFLAGS)
+_BG_LDFLAGS_cpp = $(LDFLAGS)
+_BG_OFLAGS = $(OFLAGS)
+_BG_LIBS =
+
+_BG_OBJ_DIR_SUFFIX := .$(_BG_CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
+
+# todo: fix crossplatform.mk' SHAREDLIB by removing the $(if $(SHARED_LIBRARY_TARGET),,)
+SHAREDLIB := $(if $(OSX_TARGET),-dynamiclib -single_module -multiply_defined suppress,-shared)
+
+_BG_LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+_BG_CFLAGS_cpp += -std=c++17 -fno-exceptions -fno-rtti -Wcomment
+
+ifndef STATIC_LIBRARY_TARGET
+_BG_OFLAGS += \
+	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+    $(foreach _search_loc,$(_bg_lib_search_paths),-L$(_search_loc))
+endif
+
+_BG_LDFLAGS_cpp += -Wl,-nostdlib
+
+ifndef CPP_BINDINGS_EMBEDDED_C_DISABLE
+_embedded_c := 1
+endif
+
+# current working deps:
+define _bg_rule_template_bindingSourceObject =
+$(_BG_OBJ_$(3)_$(1))$(1).$(2)$(O): $(strip $(_bg_dir)/$(2)/$(1).$(2) $(if $(subst cpp,,$(2)),,$(_bg_dir)/c/$(1).h $(_bg_dir_c)/$(_bg_eC).c $(if $(subst $(_bg_eC),,$(1)),$(if $(subst $(_bg_ecere),,$(1)),$(_bg_dir_c)/$(_bg_ecere).c,),)) $(if $(subst $(_bg_eC),,$(1)),$(_bg_dir)/$(2)/$(_bg_eC).$(_bg_header_$(2)) $(if $(subst $(_bg_ecere),,$(1)),$(_bg_dir)/$(2)/ecere.$(_bg_header_$(2)),),) $(if $(subst gnosis3,,$(1)),,$(_bg_dir)/c/EDA.h))
+	$(CC) $(strip $(_BG_CFLAGS_$(2)) $(_BG_PRJ_CFLAGS_$(2)_$(1)) -c $(call quote_path,$$<) -o $(call quote_path,$$@))
+endef
+
+define _bg_rule_template_bindingLibAll =
+.PHONY: internal_bg_lib_all_$(2)_$(1)
+internal_bg_lib_all_$(2)_$(1): internal_bg_lib_objdir_$(2)_$(1) $(_BG_TARGET_$(2)_$(1));
+
+.PHONY: internal_bg_lib_objdir_$(2)_$(1)
+internal_bg_lib_objdir_$(2)_$(1):
+	$(call mkdir,$(_BG_OBJ_$(2)_$(1)))
+
+$(_BG_OBJECTS_$(2)_$(1)): | internal_bg_lib_objdir_$(2)_$(1)
+$(_BG_TARGET_$(2)_$(1)): $(strip $(_BG_SOURCES_$(2)_$(1)) $(_BG_OBJECTS_$(2)_$(1))) | internal_bg_lib_objdir_$(2)_$(1)
+	$(CC) $(strip $(_BG_LDFLAGS_$(2)) $(_BG_OFLAGS) $(_BG_OBJECTS_$(2)_$(1)) $(_BG_LIBS_$(2)_$(1)) -o $$@ $(INSTALLNAME))
+ifndef NOSTRIP
+	$(STRIP) $(strip $(STRIPOPT) $$@)
+endif
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(_BG_VER)),ln -sf $(LP)$(_BG_MODULE_$(2)_$(1))$(SO)$(_BG_VER) $(_BG_OBJ_$(2)_$(1))$(LP)$(_BG_MODULE_$(2)_$(1))$(SO)$(basename $(_BG_VER)),)
+	$(if $(_BG_VER),ln -sf $(LP)$(_BG_MODULE_$(2)_$(1))$(SO)$(_BG_VER) $(_BG_OBJ_$(2)_$(1))$(LP)$(_BG_MODULE_$(1))$(SO),)
+endif
+endif
+	$(call cp,$$@,$(_CF_DIR)$(HOST_SODESTDIR))
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(_BG_VER)),ln -sf $(LP)$(_BG_MODULE_$(2)_$(1))$(SO)$(_BG_VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(_BG_MODULE_$(1))$(SO)$(basename $(_BG_VER)),)
+	$(if $(_BG_VER),ln -sf $(LP)$(_BG_MODULE_$(2)_$(1))$(SO)$(_BG_VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(_BG_MODULE_$(2)_$(1))$(SO),)
+endif
+endif
+
+# note: we need a bgen feature to ask for dependencies and then generate the rules for dependencies
+# we're doing this for now:
+endef
+
+define _bg_rule_template_lib_vars_and_rules =
+$(eval _BG_MODULE_$(2)_$(1) := $(1)_$(2))
+$(eval _BG_BINDING_MODULE_$(1) := $(call _bgCorrectLibName,$(1)))
+$(eval _BG_OBJ_$(2)_$(1) := $(_bg_dir)/$(2)/obj/$(1)$(_BG_OBJ_DIR_SUFFIX)/)
+$(eval _BG_TARGET_$(2)_$(1) := $(_BG_OBJ_$(2)_$(1))$(LP)$(_BG_MODULE_$(2)_$(1))$(_BG_SOV))
+$(eval _BG_SONAME_$(2)_$(1) := $(if $(LINUX_TARGET),-Wl,-soname,$(LP)$(MODULE)$(SO).0,))
+$(eval _BG_SOURCES_$(2)_$(1) := $(_bg_dir)/$(2)/$(1).$(2))
+$(eval _BG_OBJECTS_$(2)_$(1) := $(_BG_OBJ_$(2)_$(1))$(1).$(2)$(O) $(if $(subst cpp,,$(2)),,$(_BG_OBJ_$(2)_$(1))$(1).c$(O)))
+$(eval _BG_LIBS_$(2)_$(1) := $(_BG_LIBS))
+
+ifdef STATIC_LIBRARY_TARGET
+$(eval _BG_LIBS_$(2)_$(1) += $(strip $(call _L,$(_BG_BINDING_MODULE_$(1)))))
+# note: we need a bgen feature to ask for dependencies and then generate the rules for dependencies
+# we're doing this for now:
+$(eval _BG_LIBS_$(2)_$(1) += $(strip $(if $(subst $(_bg_eC),,$(1)),$(call _L,$(_bg_eC)_$(2)),)))
+$(eval _BG_LIBS_$(2)_$(1) += $(strip $(if $(subst $(_bg_eC),,$(1)),$(if $(subst ecere,,$(1)),$(call _L,$(_bg_ecere)) $(call _L,$(_bg_ecere)_$(2)),),)))
+ifeq ($(2),cpp)
+ $(eval _BG_LIBS_$(2)_$(1) += $(strip $(if $(subst $(_bg_eC),,$(1)),$(call _L,$(_bg_ecere)) $(call _L,$(_bg_ecere)_c),$(call _L,$(_bg_ecereCOM)) $(call _L,$(_bg_eC)_c))))
+endif
+
+ifeq ($(2),c)
+$(eval _BG_PRJ_CFLAGS_$(2)_$(1) := $(strip $(if $(DEBUG),-g,-O2 -ffast-math) $(FPIC) -w $(if $(_CF_DIR),-I$(_CF_DIR)bindings/c,)))
+ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
+$(eval _BG_PRJ_CFLAGS_$(2)_$(1) += -DECPRFX=eC_)
+endif
+else
+ifeq ($(2),cpp)
+$(eval _BG_PRJ_CFLAGS_$(2)_$(1) := $(strip $(if $(DEBUG),-g,-O2 -ffast-math) $(FPIC) -w $(if $(_CF_DIR),-I$(_CF_DIR)bindings/c,) $(if $(_CF_DIR),-I$(_CF_DIR)bindings/cpp,)))
+$(eval _BG_PRJ_CFLAGS_$(2)_$(1) += $(strip -DECPRFX=eC_ $(if $(subst eC,,$(1)),,-DECERECOM_ONLY)))
+endif
+endif
+endif
+
+$(call _bg_rule_template_bgenOutput,$(1),$(2),$(2))
+$(call _bg_rule_template_bgenOutput,$(1),$(2),$(_bg_header_$(2)),--header-only)
+$(call _bg_rule_template_bindingLibAll,$1,$(2))
+
+$(call _bg_rule_template_bindingSourceObject,$(1),$(2),$(2))
+ifeq ($(2),cpp)
+$(call _bg_rule_template_bindingSourceObject,$(1),c,$(2))
+endif
+endef
+#$(call _bg_rule_template_bindingSourceObject,$(_bg_eC),c,2)
+#$(call _bg_rule_template_bindingSourceObject,$(_bg_ecere),cpp,3)
+
+ifneq ($(_bg_input_lib_names),)
+# $(foreach _goal,$(_bg_input_lib_names),$(info $(_goal))$(call echo $(call _bg_rule_template_lib_vars_and_rules,$(_goal),c))$(eval $(call _bg_rule_template_lib_vars_and_rules,$(_goal),c)))
+$(foreach _goal,$(_bg_input_lib_names),$(eval $(call _bg_rule_template_lib_vars_and_rules,$(_goal),c)))
+$(foreach _goal,$(_bg_input_lib_names),$(eval $(call _bg_rule_template_lib_vars_and_rules,$(_goal),cpp)))
+# $(eval $(call _bg_rule_template_bindingSourceObject,c))
+# $(eval $(call _bg_rule_template_bindingSourceObject,cpp))
+endif
+
+_bg_all_outputs_sources_c := $(foreach _goal,$(_bg_input_lib_names),$(_bg_dir_c)/$(_goal).c)
+
+.PHONY: c-bindings-gen
+c-bindings-gen: $(_bg_all_outputs_sources_c) ;
+#	@$(call echo,All C bindings ($(strip $(_bg_input_lib_names))) are ready.)
+
+.PHONY: c-bindings-gen-%
+c-bindings-gen-%: $(_bg_dir_c)/%.c ;
+#	@$(call echo,C bindings for $* are ready.)
+
+_bg_all_outputs_libs_c := $(foreach _goal,$(_bg_input_lib_names),$(_bg_dir_c)/obj/$(_goal)$(_BG_OBJ_DIR_SUFFIX)/$(LP)$(_goal)_c$(SOV))
+
+.PHONY: c-bindings-lib
+c-bindings-lib: $(_bg_all_outputs_libs_c) ;
+
+# why is this broken?
+.PHONY: c-bindings-lib-%
+c-bindings-lib-%: $(_bg_dir_c)/obj/%$(_BG_OBJ_DIR_SUFFIX)/$(LP)%_c$(SOV)
+	@$(call echo,dep: $(_bg_dir_c)/obj/$*$(_BG_OBJ_DIR_SUFFIX)/$(LP)$*_c$(SOV))
+
+#.PHONY: c-bindings-lib-%
+#c-bindings-lib-%: ;
+#	@$(call echo,dep: $(_bg_dir_c)/obj/$*$(_BG_OBJ_DIR_SUFFIX)/$(LP)$*_c$(SOV))
+
+_bg_all_outputs_sources_cpp := $(foreach _goal,$(_bg_input_lib_names),$(_bg_dir_cpp)/$(_goal).cpp)
+
+.PHONY: cpp-bindings-gen
+cpp-bindings-gen: $(_bg_all_outputs_sources_cpp) ;
+#	@$(call echo,All C bindings ($(strip $(_bg_input_lib_names))) are ready.)
+
+.PHONY: cpp-bindings-gen-%
+cpp-bindings-gen-%: $(_bg_dir_cpp)/%.cpp ;
+#	@$(call echo,C bindings for $* are ready.)
+
+_bg_all_outputs_libs_cpp := $(foreach _goal,$(_bg_input_lib_names),$(_bg_dir_cpp)/obj/$(_goal)$(_BG_OBJ_DIR_SUFFIX)/$(LP)$(_goal)_cpp$(SOV))
+
+.PHONY: cpp-bindings-lib
+cpp-bindings-lib: $(_bg_all_outputs_libs_cpp) ;
+
+# why is this broken?
+.PHONY: cpp-bindings-lib-%
+cpp-bindings-lib-%: $(_bg_dir_cpp)/obj/%$(_BG_OBJ_DIR_SUFFIX)/$(LP)%_cpp$(SOV) ;
+
+
+# tests
+
+.PHONY: test-new-bindings-stuff
+test-new-bindings-stuff: test-new-c-bindings-stuff test-new-cpp-bindings-stuff
+
+.PHONY: test-new-%-bindings-stuff
+test-new-%-bindings-stuff:
+	@$(call echo,"")
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/eC.$(_bg_header_$*)
+	$(MAKE) V=1 $(_bg_dir_$*)/eC.$*
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/eC.$*
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/eC.$*
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/eC$(_BG_OBJ_DIR_SUFFIX)/eC.$*.o
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/eC$(_BG_OBJ_DIR_SUFFIX)/eC.$*.o
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/eC$(_BG_OBJ_DIR_SUFFIX)/$(LP)eC_$*$(SOV)
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/eC$(_BG_OBJ_DIR_SUFFIX)/$(LP)eC_$*$(SOV)
+	$(call rmr,$(_bg_dir))
+	@$(call echo,"")
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/ecere.$(_bg_header_$*)
+	$(MAKE) V=1 $(_bg_dir_$*)/ecere.$*
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/ecere.$*
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/ecere.$*
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/ecere$(_BG_OBJ_DIR_SUFFIX)/ecere.$*.o
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/ecere$(_BG_OBJ_DIR_SUFFIX)/ecere.$*.o
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/ecere$(_BG_OBJ_DIR_SUFFIX)/$(LP)ecere_$*$(SOV)
+	$(call rmr,$(_bg_dir))
+	$(MAKE) V=1 $(_bg_dir_$*)/obj/ecere$(_BG_OBJ_DIR_SUFFIX)/$(LP)ecere_$*$(SOV)
+	$(call rmr,$(_bg_dir))
+
+
+# End of New Stuff
+################################################################################################################################
+
+
+################################################################################################################################
+
+
+
+
+# Old Stuff -- All
+################################################################################################################################
+
 
 renameEcereCOM = $(subst ecereCOM,eC,$(1))
 #$(call renameEcereCOM,$(word $(1),$(BGEN_LIBS)))  $(call selectLib,$(1))
 selectLib = $(word $(1),$(BGEN_LIBS))
 
-ifndef BINDINGS_DIR
-BINDINGS_DIR := bindings
-endif
 ifndef C_BINDINGS_DIR
-C_BINDINGS_DIR := $(BINDINGS_DIR)/c
+C_BINDINGS_DIR := $(_bg_dir)/c
 endif
 ifndef CPP_BINDINGS_DIR
-CPP_BINDINGS_DIR := $(BINDINGS_DIR)/cpp
+CPP_BINDINGS_DIR := $(_bg_dir)/cpp
 endif
 ifndef PY_BINDINGS_DIR
-PY_BINDINGS_DIR := $(BINDINGS_DIR)/py
+PY_BINDINGS_DIR := $(_bg_dir)/py
 endif
 
 ifndef BGEN_LIBS
 BGEN_LIBS := obj/linux/lib/$(LP)ecereCOM$(SO) obj/linux/lib/$(LP)ecere$(SO) obj/linux/lib/$(LP)EDA$(SO) $(ADDITIONAL_BGEN_LIBS)
 endif
-BGEN_ARGS := -fren Log=__e_log,Logf=__e_logf,Sleep=__sleep,Print=printx
-BGEN_QUIET := $(if $(SILENT_IS_ON),-quiet,)
 
 _BGEN_OUTS := $(foreach _lib,$(BGEN_LIBS),$(call renameEcereCOM,$(call lib_path_to_name,$(_lib))))
 _BGEN_C_OUTPUT := $(addsuffix .h,$(_BGEN_OUTS)) $(addsuffix .c,$(_BGEN_OUTS)) $(addsuffix _c.Makefile,$(_BGEN_OUTS))
@@ -37,7 +366,7 @@ _BGEN_PY_OUTPUT := $(addprefix cffi-,$(addsuffix .h,$(_BGEN_OUTS))) $(addsuffix 
 
 # note: this is needed because we chdir without the use of a makefile specifying a different _CF_DIR
 #       and cannot call bgen with the usual relative path specified by $(BGEN)
-#          i.e.: 	+cd $(C_BINDINGS_DIR) && $(BGEN) $(BGEN_ARGS) $(BGEN_QUIET) -c $(BGEN_LIBS)
+#          i.e.: 	+cd $(C_BINDINGS_DIR) && $(BGEN) $(_bg_args) $(_bg_quiet) -c $(BGEN_LIBS)
 #ROOT_ABSPATH = $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 #BGEN := $(call sys_path,$(ROOT_ABSPATH)$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/bgen$(HOST_E))
 
@@ -48,9 +377,7 @@ PYTHON := python3
 endif
 PY_VER := 3
 
-BG_LANG_c := C
-BG_LANG_cpp := C++
-BG_LANG_py := Python $(PY_VER)
+_bg_lang_py := Python $(PY_VER)
 
 lib_path_to_name = $(basename $(if $(LP),$(patsubst $(LP)%$(SO),%$(SO),$(notdir $(1))),$(notdir $(1))))
 get_binding_name = $(call renameEcereCOM,$(call lib_path_to_name,$(call selectLib,$(1))))
@@ -78,16 +405,15 @@ bg_bld_cmd_py = $(PYTHON) $(call bg_mak_file_$(2),$(1))
 bg_print_lib_name = $(call echo,$(call get_binding_name,$(1)))
 
 bg_bind_____echo = $(call bg_bind_echo_,$(1),$(2))
-bg_bind_echo_ = $(if $(call selectLib,$(1)),$(if $(wildcard $(call bg_file_path_$(2),$(1),$(2),mak)),@$(call echo,Building $(BG_LANG_$(2)) bindings for $(call get_binding_name,$(1)) ($(call selectLib,$(1)))...),),)
+bg_bind_echo_ = $(if $(call selectLib,$(1)),$(if $(wildcard $(call bg_file_path_$(2),$(1),$(2),mak)),@$(call echo,Building $(_bg_lang_$(2)) bindings for $(call get_binding_name,$(1)) ($(call selectLib,$(1)))...),),)
 
 bg_bind_cd_build = $(if $(call selectLib,$(1)),$(if $(wildcard $(call bg_file_path_$(2),$(1),$(2),mak)),$(call _bg_bind_cd_build,$(1),$(2),$(3)),$(call echo,Error: $(call bg_file_path_$(2),$(1),$(2),mak) not found!)),)
-_bg_bind_cd_build = +cd $(BINDINGS_DIR)/$(2) && $(call bg_bld_cmd_$(2),$(1),$(2),$(3))
+_bg_bind_cd_build = +cd $(_bg_dir)/$(2) && $(call bg_bld_cmd_$(2),$(1),$(2),$(3))
 # todo: make this an actual error?
 
 bg_bind_any_gened_exists = $(wildcard $(call bg_file_path_$(2),$(1),$(2),src))$(wildcard $(call bg_file_path_$(2),$(1),$(2),hdr))$(wildcard $(call bg_file_path_$(2),$(1),$(2),mak))
 bg_bind_rmr_gened = $(if $(call selectLib,$(1)),$(if $(2),$(if $(call bg_bind_any_gened_exists,$(1),$(2)),$(call rmr,$(call bg_file_path_$(2),$(1),$(2),src) $(call bg_file_path_$(2),$(1),$(2),hdr) $(call bg_file_path_$(2),$(1),$(2),mak)),),),)
 
-# All
 ################################################################################################################################
 
 .PHONY: bgentalk
@@ -139,7 +465,7 @@ bindings_wipeclean: c_bindings_wipeclean cpp_bindings_wipeclean py_bindings_wipe
 .PHONY: bindings_distclean
 .NOTPARALLEL: bindings_distclean
 bindings_distclean:
-	$(call rmr,$(BINDINGS_DIR)/)
+	$(call rmr,$(_bg_dir)/)
 
 # C
 ################################################################################################################################
@@ -149,11 +475,11 @@ c_bindings: c_bindings_build
 
 .PHONY: c_bindings_gen
 .NOTPARALLEL: c_bindings_gen
-c_bindings_gen: $(BINARIES)
+c_bindings_gen: $(if $(ASSUME_BGEN_UNCHANGED),,$(BGEN)) $(BGEN_LIBS) #$(BINARIES)
 	@$(call echo,Generating C bindings...)
-	$(call mkdir,$(BINDINGS_DIR))
+	$(call mkdir,$(_bg_dir))
 	$(call mkdir,$(C_BINDINGS_DIR))
-	$(if $(BGEN_SKIP),,$(BGEN) -dir $(C_BINDINGS_DIR) $(BGEN_ARGS) $(BGEN_QUIET) -c $(BGEN_LIBS))
+	$(if $(BGEN_SKIP),,$(BGEN) -dir $(C_BINDINGS_DIR) $(_bg_args) $(_bg_quiet) -c $(BGEN_LIBS))
 
 .PHONY: c_bindings_build
 .NOTPARALLEL: c_bindings_build
@@ -252,9 +578,9 @@ cpp_bindings: cpp_bindings_build
 .NOTPARALLEL: cpp_bindings_gen
 cpp_bindings_gen: $(BINARIES)
 	@$(call echo,Generating C++ bindings...)
-	$(call mkdir,$(BINDINGS_DIR))
+	$(call mkdir,$(_bg_dir))
 	$(call mkdir,$(CPP_BINDINGS_DIR))
-	$(if $(BGEN_SKIP),,$(BGEN) -dir $(CPP_BINDINGS_DIR) $(BGEN_ARGS) $(BGEN_QUIET) -cpp -bypassmacros $(BGEN_LIBS))
+	$(if $(BGEN_SKIP),,$(BGEN) -dir $(CPP_BINDINGS_DIR) $(_bg_args) $(_bg_quiet) -cpp -bypassmacros $(BGEN_LIBS))
 
 .PHONY: cpp_bindings_build
 .NOTPARALLEL: cpp_bindings_build
@@ -344,9 +670,9 @@ py_bindings: py_bindings_build
 .NOTPARALLEL: py_bindings_gen
 py_bindings_gen: $(BINARIES)
 	@$(call echo,Generating Python bindings...)
-	$(call mkdir,$(BINDINGS_DIR))
+	$(call mkdir,$(_bg_dir))
 	$(call mkdir,$(PY_BINDINGS_DIR))
-	$(if $(BGEN_SKIP),,$(BGEN) -dir $(PY_BINDINGS_DIR) $(BGEN_ARGS) $(BGEN_QUIET) -py $(BGEN_LIBS))
+	$(if $(BGEN_SKIP),,$(BGEN) -dir $(PY_BINDINGS_DIR) $(_bg_args) $(_bg_quiet) -py $(BGEN_LIBS))
 
 OBJLIBDIR := $(OBJDIR)$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/
 
@@ -398,3 +724,8 @@ py_bindings_realclean:
 .NOTPARALLEL: py_bindings_wipeclean
 py_bindings_wipeclean:
 	$(call rmr,$(PY_BINDINGS_DIR))
+
+# why is this MAKEFILE_LIST empty recipe causing warnings? :/
+#$(MAKEFILE_LIST): ;
+#$(SOURCES): ;
+#$(RESOURCES): ;
