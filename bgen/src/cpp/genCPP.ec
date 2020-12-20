@@ -192,12 +192,12 @@ class CPPGen : CGen
       {
          prepPaths(true);
 
-         if(FileExists(cppFilePath))
+         if(!options.headerOnly && FileExists(cppFilePath))
             DeleteFile(cppFilePath);
          if(FileExists(hppFilePath))
             DeleteFile(hppFilePath);
 
-         if(!FileExists(cppFilePath) && !FileExists(hppFilePath))
+         if((options.headerOnly || !FileExists(cppFilePath)) && !FileExists(hppFilePath))
          {
             reset();
 
@@ -414,22 +414,29 @@ class CPPGen : CGen
             // hardcoded -- todo -- see if we can generate from dependencies :P
             sourceProcessorVars["DEP_FILE_LISTS"] = !lib.ecere ? CopyString("") : CopyString(
                "_DEP_OBJECTS = \\\n"
+               "	$(if $(_embedded_c),$(OBJ)eC.c$(O),) \\\n"
                "	$(OBJ)eC$(O)\n"
                "\n"
                "_DEP_SOURCES = \\\n"
+               "	$(if $(_embedded_c),../c/eC.c,) \\\n"
                "	eC.cpp\n"
                "\n"
             );
             sourceProcessorVars["DEP_RULES"] = !lib.ecere ? CopyString("") : CopyString(
+               "ifdef _embedded_c\n"
+               "$(OBJ)eC.c$(O): ../c/eC.c\n"
+               "	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
+               "endif\n"
+               "\n"
                "$(OBJ)eC$(O): eC.cpp\n"
-               "	$(CXX) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
+               "	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)\n"
                "\n"
             );
             // hardcoded -- todo -- this can be generated from dependencies -- do it!
             sourceProcessorVars["DEP_LIBS"] = CopyString((lib.ecere || lib.ecereCOM) ? "" :
                "	$(call _L,ecere) \\\n"
-               "	$(call _L,ecere_c) \\\n"
-               "	$(call _L,ecere_cpp) \\\n"
+               "	$(if $(_embedded_c),,$(call _L,ecere_c)) \\\n"
+               "	$(call _L,ecere_cpp) \\\n" // line continuation for some makefiles have stuff following this? :S
             );
 
             sourceProcessorVars["SPECIFIC_FLAGS"] = CopyString(!lib.ecereCOM ? "" : "PRJ_CFLAGS += -DECERECOM_ONLY\n\n");

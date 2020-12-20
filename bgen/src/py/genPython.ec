@@ -3011,6 +3011,30 @@ static void generateBUILD(File out, PythonGen g)
    //out.PrintLn("import posixpath");
    out.PrintLn("from os import path");
 
+   out.PrintLn("");
+   out.PrintLn("def isDirESDK(testpath):");
+   out.PrintLn("   print('isDirESDK: ', testpath)");
+   out.PrintLn("   print('path.basename(testpath): ', path.basename(testpath))");
+   out.PrintLn("   if path.isfile(path.join(testpath, 'crossplatform.mk')):");
+   out.PrintLn("      if path.isfile(path.join(testpath, 'default.cf')):");
+   out.PrintLn("         return True");
+   out.PrintLn("   return False");
+   out.PrintLn("");
+   out.PrintLn("def getDirESDK(startpath):");
+   out.PrintLn("   itpath = startpath");
+   out.PrintLn("   while 1:");
+   out.PrintLn("      if isDirESDK(itpath) == True:");
+   out.PrintLn("         return itpath");
+   out.PrintLn("      itpath, removed = path.split(itpath)");
+   out.PrintLn("      if removed == '':");
+   out.PrintLn("         break");
+   out.PrintLn("   return 'badpath'");
+   out.PrintLn("");
+   out.PrintLn("print('getDirESDK: ', getDirESDK(os.getcwd()))");
+   out.PrintLn("esdkDir = getDirESDK(os.getcwd())");
+   out.PrintLn("inPipInstallBuild = False if esdkDir.find('pip-req-build-') == -1 else True");
+   out.PrintLn("");
+
    out.PrintLn("# print(' -- before ", g.lib.bindingName, " extension build -- ')");
    out.PrintLn("pver = platform.python_version()");
    out.PrintLn("# print('arg zero: ', sys.argv[0])");
@@ -3020,11 +3044,13 @@ static void generateBUILD(File out, PythonGen g)
    //out.PrintLn("p = get_platform()");
    //out.PrintLn("fp = p + '-' + sv");
    //ddd 'build\\lib.' + fp
-   out.PrintLn("if sys.argv[0] == 'setup.py':");
-   out.PrintLn("   blddir = 'bindings/py'");
-// out.PrintLn("   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])");
+   out.PrintLn("if inPipInstallBuild == True:");
+   out.PrintLn("   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])");
    out.PrintLn("else:");
-   out.PrintLn("   blddir = ''");
+   out.PrintLn("   if sys.argv[0] == 'setup.py':");
+   out.PrintLn("      blddir = 'bindings/py'");
+   out.PrintLn("   else:");
+   out.PrintLn("      blddir = ''");
    if(g.libDeps.count == 0)
       out.PrintLn("from cffi import FFI");
    else
@@ -3056,15 +3082,22 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("   libdir = '../../obj/linux/lib'");
 #endif // 0
 
+   out.PrintLn("cpath = path.join('..', 'c')");
+   out.PrintLn("if os.path.isdir(cpath) != True:");
+   out.PrintLn("   cpath = path.join(esdkDir, 'bindings', 'c')");
+   out.PrintLn("   if os.path.isdir(cpath) != True:");
+   out.PrintLn("      print('error: unable to find path to C bindings!')");
    out.PrintLn("rel = '' if os.path.isfile(os.path.join(owd, 'build_", g.lib.bindingName, ".py')) == True else path.join('bindings', 'py')");
    out.PrintLn("sysdir = 'win32' if sys.platform == 'win32' else 'linux'");
    out.PrintLn("syslibdir = 'bin' if sys.platform == 'win32' else 'lib'");
+   out.PrintLn("incdir = path.join(esdkDir, 'bindings', 'c')");
    out.PrintLn("if rel == '':");
-   out.PrintLn("   incdir = path.join('..', 'c')");
+// out.PrintLn("   incdir = path.join('..', 'c')");
    out.PrintLn("   libdir = path.join('..', '..', 'obj', sysdir, syslibdir)");
    out.PrintLn("else:");
-   out.PrintLn("   incdir = path.join('bindings', 'c')");
+// out.PrintLn("   incdir = path.join('bindings', 'c')");
    out.PrintLn("   libdir = path.join('obj', sysdir, syslibdir)");
+   out.PrintLn("");
    //out.PrintLn("print('info -- owd:', owd, ' rel:', rel, ' libdir:', libdir)");
 
    out.PrintLn("if os.path.isfile(path.join(rel, 'cffi-", g.lib.bindingName, ".h')) != True:");
@@ -3077,19 +3110,60 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("   os.chdir(dir)");
    //out.PrintLn("   ");
    out.PrintLn("");
-#if 0
+// #if 0
+// out.PrintLn("if __name__ == '__main__':");
    out.PrintLn("print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')");
+   out.PrintLn("print('__name__:', __name__)");
    out.PrintLn("print('__file__:', __file__)");
    out.PrintLn("print('dnf:', dnf)");
    out.PrintLn("print('dir:', dir)");
    out.PrintLn("print('owd:', owd)");
    out.PrintLn("print('rel:', rel)");
    out.PrintLn("");
+// #endif // 0
+
+#if 0
+   out.PrintLn("if __name__ == '__main__':");
+   out.PrintLn("   print('dir: ', dir)");
+   out.PrintLn("   print(sys.path)");
+   out.PrintLn("   sys.path.append(dir)");
+   out.PrintLn("   print(sys.path)");
 #endif // 0
+
+   out.PrintLn("_CF_DIR = str(os.getenv('_CF_DIR'))");
+   out.PrintLn("_cf_dir = False if _CF_DIR == '' else True");
+   out.PrintLn("if _cf_dir == True:");
+   out.PrintLn("   print(' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ')");
+   out.PrintLn("   _c_bindings_path, _ = os.path.split(dir)");
+   out.PrintLn("   print('_c_bindings_path: ', _c_bindings_path)");
+   out.PrintLn("   _c_bindings_path, _ = os.path.split(_c_bindings_path)");
+   out.PrintLn("   print('_c_bindings_path: ', _c_bindings_path)");
+// out.PrintLn("   ");
+// out.PrintLn("   sys.path.append(path.realpath(path.join(dir, rel, '../../', _CF_DIR)))");
+   out.PrintLn("   sys.path.append(path.realpath(path.join(dir, '../../', _CF_DIR, 'bindings/py')))");
+   out.PrintLn("   print(' ----> (sys.path with _CF_DIR)', sys.path)");
+   out.PrintLn("if rel != '':");
+   out.PrintLn("   sys.path.append(dir)");
+// out.PrintLn("   print(' -- ', dir)");
+
+   out.PrintLn("");
+   out.PrintLn("def cdefpath(filename):");
+   out.PrintLn("   fullpath = path.realpath(path.join(owd, rel, filename))");
+   out.PrintLn("   if path.isfile(fullpath):");
+   out.PrintLn("      return fullpath");
+   out.PrintLn("   if _cf_dir == True:");
+   out.PrintLn("      fullpath = path.join(dir, _CF_DIR, 'bindings/py', filename)");
+   out.PrintLn("      print('fullpath (raw): ', fullpath)");
+   out.PrintLn("      fullpath = path.realpath(fullpath)");
+   out.PrintLn("      print('fullpath: ', fullpath)");
+   out.PrintLn("      if path.isfile(fullpath):");
+   out.PrintLn("         return fullpath");
+   out.PrintLn("   return 'badpath'");
+   out.PrintLn("");
+// out.PrintLn("");
 
    if(g.libDeps.count != 0)
    {
-      out.PrintLn("sys.path.append(dir)");
       out.Print("from build_", libDep.bindingName, " import FFI");
       if(!hasEC)
          out.Print(", ffi_eC");
@@ -3132,18 +3206,49 @@ static void generateBUILD(File out, PythonGen g)
 #endif // 0
    for(libDep : g.libDeps)
       out.PrintLn("ffi_", g.lib.bindingName, ".include(ffi_", libDep.bindingName, ")");
-   out.PrintLn("ffi_", g.lib.bindingName, ".cdef(open(path.join(owd, rel, 'cffi-", g.lib.bindingName, ".h')).read())");
+   out.PrintLn("ffi_", g.lib.bindingName, ".cdef(open(cdefpath('cffi-", g.lib.bindingName, ".h')).read())");
    //out.PrintLn("print('os.getcwd(): ', os.getcwd())");
+   out.PrintLn("PY_BINDINGS_EMBEDDED_C_DISABLE = os.getenv('PY_BINDINGS_EMBEDDED_C_DISABLE')");
+   out.PrintLn("_embedded_c = False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True");
+   out.PrintLn("");
+
+   out.PrintLn("srcs = []");
+   out.PrintLn("if _embedded_c == True:");
+   // if(!g.lib.ecereCOM)
+   out.PrintLn("   srcs.append(path.join(cpath, 'eC.c'))");
+   if(!g.lib.ecereCOM)
+      out.PrintLn("   srcs.append(path.join(cpath, 'ecere.c'))");
+   if(!(g.lib.ecereCOM || g.lib.ecere))
+      out.PrintLn("   srcs.append(path.join(cpath, '", g.lib.bindingName, ".c'))");
+   out.PrintLn("");
+   out.PrintLn("libs = []");
+   out.PrintLn("");
+   if(!(g.lib.ecereCOM || g.lib.ecere))
+      out.PrintLn("libs.append('ecere')");
+   out.PrintLn("libs.append('", moduleName, "')");
+   out.PrintLn("if _embedded_c == False:");
+   if(!(g.lib.ecereCOM || g.lib.ecere))
+      out.PrintLn("   libs.append('ecere_c')");
+   out.PrintLn("   libs.append('", moduleName, "_c')");
+
    out.PrintLn("ffi_", g.lib.bindingName, ".set_source('_py", g.lib.bindingName, "',"); // Ecere
    out.PrintLn("               '#include \"", g.lib.bindingName, ".h\"',");
-   //out.PrintLn("               sources=['../c/", g.lib.bindingName, ".c', '../c/ecere.c'],"); // todo
-   /*if(g.lib.ecere)
-      out.PrintLn("               sources=['../c/eC.c', '../c/", g.lib.bindingName, ".c'],"); // todo
-   else*/
-      //out.PrintLn("               sources=[path.join(owd, rel, '", cpath, "', '", g.lib.bindingName, ".c')],"); // todo
-      //out.PrintLn("               sources=[path.join(owd, rel, '", g.lib.bindingName, ".c')],"); // todo
+#define _EMBEDDED_C
+#ifdef _EMBEDDED_C
+#if 1
+   out.PrintLn("               sources=srcs,");
+#else
+   if(g.lib.ecereCOM)
+      out.PrintLn("               sources=['../c/", g.lib.bindingName, ".c'],");
+   // out.PrintLn("               sources=[path.join(owd, rel, '", cpath, "', '", g.lib.bindingName, ".c')],"); // todo
+   else if(g.lib.ecere)
+      out.PrintLn("               sources=['../c/eC.c', '../c/", g.lib.bindingName, ".c'],");
+   else
+      out.PrintLn("               sources=['../c/eC.c', '../c/ecere.c', '../c/", g.lib.bindingName, ".c'],");
+#endif
+#endif
    out.PrintLn("               define_macros=[('BINDINGS_SHARED', None), ('", g.lib.defineName, "_EXPORT', None)],");
-   out.PrintLn("               extra_compile_args=['-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],");
+   out.PrintLn("               extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],");
    //out.PrintLn("               include_dirs=[path.join(owd, rel, '", cpath, "')],"); // todo
    //out.PrintLn("               include_dirs=[path.join(owd, rel), path.join(owd, 'bindings/py')],"); // todo
    out.PrintLn("               include_dirs=[path.join(owd, rel), incdir],");
@@ -3151,7 +3256,14 @@ static void generateBUILD(File out, PythonGen g)
    for(libDep : g.libDeps)
       out.Print(", '_py", libDep.bindingName, "' + ext");
    //out.PrintLn("],");*/
+   out.PrintLn("               libraries=libs,");
+#if 0
+#ifdef _EMBEDDED_C
+   out.PrintLn("               libraries=['", moduleName, "'],");
+#else
    out.PrintLn("               libraries=['", moduleName, "', '", moduleName, "_c'],");
+#endif
+#endif // 0
    if(g.libDeps.count)
    {
       bool first = true;
@@ -3172,14 +3284,16 @@ static void generateBUILD(File out, PythonGen g)
 
    //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin'),'C:/Program Files/Ecere SDK/bin'"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
    //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin')"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
-   out.PrintLn("               library_dirs=[path.join(owd, libdir)"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
+   out.Print("               library_dirs=[path.join(owd, libdir)"/*, g.libDeps.count ? ", '.'" : ""*/, "]");
+   out.Print(",", ln, indents(5), "py_limited_api=False");
+   out.Print(")"); // todo
    out.PrintLn("");
    out.PrintLn("if __name__ == '__main__':");
    out.PrintLn("   V = os.getenv('V')");
    out.PrintLn("   v = True if V == '1' or V == 'y' else False");
    //out.PrintLn("   owd = os.getcwd()");
    //out.PrintLn("   os.chdir(dir)");
-   out.PrintLn("   ffi_", g.lib.bindingName, ".compile(verbose=v)");
+   out.PrintLn("   ffi_", g.lib.bindingName, ".compile(verbose=v,tmpdir='.',debug=True)");
    //out.PrintLn("   os.chdir(owd)");
 
    out.PrintLn("");
