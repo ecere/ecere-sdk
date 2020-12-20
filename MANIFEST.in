@@ -16,12 +16,12 @@ recursive-exclude installer *
 recursive-exclude obj *
 recursive-exclude samples *
 recursive-exclude share *
-#include bindings/py/build_eC.py
-#include bindings/py/build_ecere.py
-#include bindings/py/build_EDA.py
-#include bindings/py/cffi-eC.h
-#include bindings/py/cffi-ecere.h
-#include bindings/py/cffi-EDA.h
+include bindings/py/build_eC.py
+include bindings/py/build_ecere.py
+include bindings/py/build_EDA.py
+include bindings/py/cffi-eC.h
+include bindings/py/cffi-ecere.h
+include bindings/py/cffi-EDA.h
 #include bindings/py/eC.h
 #include bindings/py/ecere.h
 #include bindings/py/EDA.h
