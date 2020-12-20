@@ -36,10 +36,8 @@ CONSOLE = -mwindows
 
 # INCLUDES
 
-_CF_DIR = ../../
-
-include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)default.cf
+include ../../$(_CF_DIR)crossplatform.mk
+include ../../$(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
@@ -71,14 +69,18 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w $(if $(_CF_DIR),-I../../$(_CF_DIR)bindings/c,)
+
+ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
+PRJ_CFLAGS += -DECPRFX=eC_
+endif
 
 #(DEP_INCLUDES)#
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+	 -L../../$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../../$(_CF_DIR)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
     -L$(BINDMODLOC)
 endif
 
@@ -96,6 +98,9 @@ $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(_OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
+	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
@@ -111,12 +116,12 @@ ifdef LINUX_HOST
 endif
 endif
 endif
-	$(call cp,$(TARGET),$(_CF_DIR)$(HOST_SODESTDIR))
+	$(call cp,$(TARGET),../../$(_CF_DIR)$(HOST_SODESTDIR))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../../$(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../../$(_CF_DIR)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
 endif
 endif
 endif
@@ -152,7 +157,7 @@ wipeclean:
 
 .PHONY: distclean
 distclean:
-	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
+	$(_MAKE) -f ../../$(_CF_DIR)Cleanfile distclean distclean_all_subdirs
 
 $(MAKEFILE_LIST): ;
 $(SOURCES): ;
