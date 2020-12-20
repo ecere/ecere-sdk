@@ -53,10 +53,18 @@ def buildEcereSDK():
 def buildPrepInstall():
    print('buildPrepInstall')
    call(['echo', 'buildPrepInstall'], shell=True)
-   proc = subprocess.Popen(['make', 'py_prepinstall'], shell=False)
+   proc = subprocess.Popen(['make', 'prepinstall'], shell=False)
    proc.communicate()
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
+
+# def buildPyPrepInstall():
+#   print('buildPyPrepInstall')
+#   call(['echo', 'buildPyPrepInstall'], shell=True)
+#   proc = subprocess.Popen(['make', 'py_prepinstall'], shell=False)
+#   proc.communicate()
+#   call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
+#   return proc.returncode == 0
 
 def buildBindingsC():
    print('buildBindingsC')
@@ -77,8 +85,9 @@ def buildAll():
    print('buildAll')
    call(['echo', 'buildAll'], shell=True)
    if buildEcereSDK():
-      if buildPrepInstall():
-         if buildBindingsC():
+      if buildBindingsC():
+         if buildPrepInstall():
+            #if buildPyPrepInstall():
             if buildBindingsGenPy():
                return True
    return False
@@ -150,7 +159,7 @@ print('version: ', str(sys.version))
 
 # ['-c', 'install', '--record', '~/install-record.txt', '--single-version-externally-managed', '--compile']
 
-if 'sdist' in sys.argv or 'build' in sys.argv or 'install' in sys.argv:
+if 'sdist' in sys.argv or 'build' in sys.argv or 'install' in sys.argv or 'bdist_wheel' in sys.argv:
    print('buildOk = buildAll()')
    buildOk = buildAll()
 else:
@@ -190,15 +199,15 @@ else:
    #pyDir = path.join(rwd, 'bindings', 'py')
    pyDir = path.join('bindings', 'py')
 
-   from shutil import copyfile
-   if sys.argv[0] == 'setup.py':
-      if not 'install' in sys.argv:
+   #from shutil import copyfile
+   #if sys.argv[0] == 'setup.py':
+   #   if not 'install' in sys.argv:
          #copyfile(path.join(pyDir, 'eC.py'), path.join('EcereSDK', 'eC.py'))
          #copyfile(path.join(pyDir, 'ecere.py'), path.join('EcereSDK', 'ecere.py'))
          #copyfile(path.join(pyDir, 'EDA.py'), path.join('EcereSDK', 'EDA.py'))
-         copyfile(path.join(pyDir, 'eC.py'), 'eC.py')
-         copyfile(path.join(pyDir, 'ecere.py'), 'ecere.py')
-         copyfile(path.join(pyDir, 'EDA.py'), 'EDA.py')
+   #      copyfile(path.join(pyDir, 'eC.py'), 'eC.py')
+   #      copyfile(path.join(pyDir, 'ecere.py'), 'ecere.py')
+   #      copyfile(path.join(pyDir, 'EDA.py'), 'EDA.py')
 
    bld_eC = path.join(pyDir, 'build_eC.py')
    bld_ecere = path.join(pyDir, 'build_ecere.py')
@@ -290,8 +299,8 @@ else:
       #py_modules = [mod_eC, mod_ecere, mod_EDA],
       #py_modules = ['_pyeC', '_pyecere', '_pyEDA'],
       py_modules = ['eC', 'ecere', 'EDA'],
-      #package_dir={'':pyDir},
-      package_dir={'':'.'},
+      package_dir={'':pyDir},
+      #package_dir={'':'.'},
       #cmdclass={'install': CustomInstallCommand},
       #cmdclass={
          #'pylint': PylintCommand,

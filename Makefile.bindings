@@ -109,19 +109,15 @@ list_bindings_name:
 	$(call bg_print_lib_name,9)
 
 .PHONY: bindings
-.NOTPARALLEL: bindings
 bindings: bgentalk
 
 .PHONY: bindingsgen
-.NOTPARALLEL: bindingsgen
 bindingsgen: bindings_gen
 
 .PHONY: bindings_gen
-.NOTPARALLEL: bindings_gen
 bindings_gen: c_bindings_gen cpp_bindings_gen py_bindings_gen
 
 .PHONY: bindings_build
-.NOTPARALLEL: bindings_build
 bindings_build: c_bindings_build cpp_bindings_build py_bindings_build
 
 .PHONY: bindings_clean
@@ -149,7 +145,6 @@ bindings_distclean:
 ################################################################################################################################
 
 .PHONY: c_bindings
-.NOTPARALLEL: c_bindings
 c_bindings: c_bindings_build
 
 .PHONY: c_bindings_gen
