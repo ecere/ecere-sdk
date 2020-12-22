@@ -16,6 +16,10 @@ recursive-exclude installer *
 recursive-exclude obj *
 recursive-exclude samples *
 recursive-exclude share *
+
+include samples/eC/HelloWorld/HelloWorld.ec
+include samples/eC/HelloWorld/HelloWorld.epj
+
 include bindings/py/build_eC.py
 include bindings/py/build_ecere.py
 include bindings/py/build_EDA.py
