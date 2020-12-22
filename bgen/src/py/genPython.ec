@@ -3032,7 +3032,10 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("");
    out.PrintLn("print('getDirESDK: ', getDirESDK(os.getcwd()))");
    out.PrintLn("esdkDir = getDirESDK(os.getcwd())");
-   out.PrintLn("inPipInstallBuild = False if esdkDir.find('pip-req-build-') == -1 else True");
+   out.PrintLn("if esdkDir.find('pip-req-build-') == -1 or esdkDir.find('pip-install-of') == -1:");
+   out.PrintLn("   inPipInstallBuild = True");
+   out.PrintLn("else:");
+   out.PrintLn("   inPipInstallBuild = False");
    out.PrintLn("");
 
    out.PrintLn("# print(' -- before ", g.lib.bindingName, " extension build -- ')");
@@ -3046,6 +3049,8 @@ static void generateBUILD(File out, PythonGen g)
    //ddd 'build\\lib.' + fp
    out.PrintLn("if inPipInstallBuild == True:");
    out.PrintLn("   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])");
+   out.PrintLn("elif sys.argv[0] == 'setup.py':");
+   out.PrintLn("   blddir = 'bindings/py'");
    out.PrintLn("else:");
    out.PrintLn("   if sys.argv[0] == 'setup.py':");
    out.PrintLn("      blddir = 'bindings/py'");
@@ -3264,23 +3269,24 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("               libraries=['", moduleName, "', '", moduleName, "_c'],");
 #endif
 #endif // 0
+   out.Print("               extra_link_args=[\"-Wl,-rpath,'$HOME/.local/lib/'\",");
    if(g.libDeps.count)
    {
       bool first = true;
       bool ecere = false;
       bool ecereCOM = false;
-      out.Print("               extra_link_args=[");
       for(libDep : g.libDeps/*; !libDep.ecereCOM*/)
       {
          if(libDep.ecereCOM) ecereCOM = true;
          if(libDep.ecere) ecere = true;
-         out.Print(!first ? ", " : "", "path.join(owd, blddir, '_py", libDep.bindingName, "' + ext)");
+         out.Print(!first ? ", " : "", "path.join(esdkDir, blddir, '_py", libDep.bindingName, "' + ext)");
          first = false;
       }
       if(ecere && !ecereCOM)
-         out.Print(!first ? ", " : "", "path.join(owd, blddir, '_pyeC' + ext)");
-      out.PrintLn(", '-DMS_WIN64', '-O2'],");
+         out.Print(!first ? ", " : "", "path.join(esdkDir, blddir, '_pyeC' + ext)");
+      out.Print(", '-DMS_WIN64', '-O2'");
    }
+   out.PrintLn("],");
 
    //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin'),'C:/Program Files/Ecere SDK/bin'"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo
    //out.PrintLn("               library_dirs=[path.join(owd, rel, '../../obj/win32/bin')"/*, g.libDeps.count ? ", '.'" : ""*/, "])"); // todo

@@ -2,6 +2,10 @@
 
 """The setuptools based Ecere SDK setup module."""
 import os
+# import platform
+from platform import python_version
+pyver = python_version()
+
 from os import path
 
 dir = path.dirname(__file__)
@@ -42,10 +46,13 @@ with open(path.join(rwd, 'README.md'), encoding='u8') as f:
 
 from subprocess import call
 
+import multiprocessing
+numJobs = '-j' + str(multiprocessing.cpu_count())
+
 def buildEcereSDK():
    print('buildEcereSDK')
    call(['echo', 'buildEcereSDK'], shell=True)
-   proc = subprocess.Popen(['make', 'ECERE_AUDIO=y', '-j4'], shell=False)
+   proc = subprocess.Popen(['make', 'ECERE_AUDIO=y', numJobs], shell=False)
    proc.communicate()
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
@@ -58,13 +65,13 @@ def buildPrepInstall():
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
 
-# def buildPyPrepInstall():
-#   print('buildPyPrepInstall')
-#   call(['echo', 'buildPyPrepInstall'], shell=True)
-#   proc = subprocess.Popen(['make', 'py_prepinstall'], shell=False)
-#   proc.communicate()
-#   call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
-#   return proc.returncode == 0
+def buildPyPrepInstall():
+   print('buildPyPrepInstall')
+   call(['echo', 'buildPyPrepInstall'], shell=True)
+   proc = subprocess.Popen(['make', 'py_prepinstall'], shell=False)
+   proc.communicate()
+   call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
+   return proc.returncode == 0
 
 def buildBindingsC():
    print('buildBindingsC')
@@ -87,9 +94,9 @@ def buildAll():
    if buildEcereSDK():
       if buildBindingsC():
          if buildPrepInstall():
-            #if buildPyPrepInstall():
-            if buildBindingsGenPy():
-               return True
+            if buildPyPrepInstall():
+               if buildBindingsGenPy():
+                  return True
    return False
 
 #class BuildCommand(distutils.command.build.build):
@@ -135,7 +142,7 @@ class CustomInstallCommand(install):
    """Customized setuptools install command."""
    def run(self):
       print('error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-      proc = subprocess.Popen(['make', 'V=1', 'ECERE_AUDIO=y', '-j4'], shell=False)
+      proc = subprocess.Popen(['make', 'V=1', 'ECERE_AUDIO=y', numJobs], shell=False)
       proc.communicate()
       if proc.returncode == 0:
          install.run(self)
@@ -183,7 +190,7 @@ else:
       libdir = path.join(rwd, 'obj', 'linux', 'py')
       bindir = path.join(rwd, 'obj', 'linux', 'bin')
       libpfx = 'lib'
-      libext = '.so'
+      libext = '.so.0' # hardcoded marjor version number
       exeext = ''
    elif sys.platform == 'darwin':
       libdir = path.join(rwd, 'obj', 'apple', 'py')
@@ -213,17 +220,15 @@ else:
    bld_ecere = path.join(pyDir, 'build_ecere.py')
    bld_EDA = path.join(pyDir, 'build_EDA.py')
    mods = [bld_eC + ':ffi_eC', bld_ecere + ':ffi_ecere', bld_EDA + ':ffi_EDA']
-   #foundPackages = find_packages()
    #foundPackages = []
    #mod_eC = path.join(pyDir, 'eC')
    #mod_ecere = path.join(pyDir, 'ecere')
    #mod_EDA = path.join(pyDir, 'EDA')
 
-   #print('foundPackages:', foundPackages)
 
    setup(
       name='EcereSDK',
-      version=version_from_git + '.dev17',
+      version=version_from_git + '.dev31',
       description='The Ecere Software Development Kit (SDK)',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -299,7 +304,7 @@ else:
       #py_modules = [mod_eC, mod_ecere, mod_EDA],
       #py_modules = ['_pyeC', '_pyecere', '_pyEDA'],
       py_modules = ['eC', 'ecere', 'EDA'],
-      package_dir={'':pyDir},
+      package_dir={'':pyDir},  # required to find eC.py, ecere.py and EDA.py
       #package_dir={'':'.'},
       #cmdclass={'install': CustomInstallCommand},
       #cmdclass={
@@ -328,29 +333,21 @@ else:
       package_data={
       #    'sample': ['package_data.dat'],
       },
-      #data_files=[
-      #   ('', [
-      #      os.path.join(libdir, libpfx + 'ecereCOM' + libext),
-      #      os.path.join(libdir, libpfx + 'ecereCOM_c' + libext),
-      #      os.path.join(libdir, libpfx + 'ecere' + libext),
-      #      os.path.join(libdir, libpfx + 'ecere_c' + libext),
-      #      os.path.join(libdir, libpfx + 'ec' + libext),
-      #      os.path.join(libdir, libpfx + 'ec2' + libext),
-      #      os.path.join(libdir, libpfx + 'EcereAudio' + libext),
-      #      os.path.join(libdir, libpfx + 'EDA' + libext),
-      #      os.path.join(libdir, libpfx + 'EDA_c' + libext),
-      #      os.path.join(libdir, libpfx + 'EDASQLite' + libext),
-      #      #os.path.join(libdir, libpfx + 'EDASQLiteCipher' + libext),
-      #     os.path.join(bindir, 'ecp' + exeext),
-      #      os.path.join(bindir, 'ecc' + exeext),
-      #      os.path.join(bindir, 'ecs' + exeext),
-      #      os.path.join(bindir, 'ear' + exeext),
-      #      os.path.join(bindir, 'epj2make' + exeext),
-      #      os.path.join(bindir, 'bgen' + exeext),
-      #      os.path.join(bindir, 'documentor' + exeext),
-      #      os.path.join(bindir, 'ecere-ide' + exeext),
-      #   ])
-      #],
+      data_files=[
+         ('lib', [
+            os.path.join(libdir, libpfx + 'ecereCOM' + libext),
+            os.path.join(libdir, libpfx + 'ecere' + libext),
+            os.path.join(libdir, libpfx + 'EDA' + libext),
+
+            #os.path.join(libdir, libpfx + 'eC_c' + libext),
+            #os.path.join(libdir, libpfx + 'ecere_c' + libext),
+            #os.path.join(libdir, libpfx + 'EDA_c' + libext),
+         ]),
+         ('share/EcereSDK/samples/eC/HelloWorld', [
+            'samples/eC/HelloWorld/HelloWorld.ec',
+            'samples/eC/HelloWorld/HelloWorld.epj',
+         ])
+      ],
       #entry_points={
       #   'console_scripts': [
       #      #'build_eC=build_eC:compile_eC',
