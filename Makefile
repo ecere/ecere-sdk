@@ -585,10 +585,9 @@ OBJPYDIR := $(OBJDIR)$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/py
 .PHONY: py_prepinstall
 py_prepinstall: prepinstall
 	$(call mkdir,$(call path,$(OBJPYDIR)/))
-	$(call cp,ecere/obj/ecereCOM.release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereCOM$(SOV),$(OBJPYDIR)/$(LP)ecereCOM$(SO))
-	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJPYDIR)/$(LP)ecere$(SO))
-	$(call cp,$(OBJLIBDIR)$(LP)ecere_c$(SOV),$(OBJPYDIR)/$(LP)ecere_c$(SO))
-	$(call cp,$(OBJLIBDIR)$(LP)eC_c$(SOV),$(OBJPYDIR)/$(LP)eC_c$(SO))
+	$(call cp,$(OBJLIBDIR)$(LP)ecereCOM$(SOV),$(OBJPYDIR)/$(LP)ecereCOM$(SO).0)
+	$(call cp,$(OBJLIBDIR)$(LP)ecere$(SOV),$(OBJPYDIR)/$(LP)ecere$(SO).0)
+	$(call cp,$(OBJLIBDIR)$(LP)EDA$(SOV),$(OBJPYDIR)/$(LP)EDA$(SO).0)
 
 # Making sure everything is in $(OBJBINDIR) and $(OBJLIBDIR)
 # Shared Libraries (in $(OBJBINDIR) on Windows and $(OBJLIBDIR) otherwise)
