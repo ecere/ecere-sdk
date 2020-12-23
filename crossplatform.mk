@@ -1,7 +1,23 @@
+empty :=
+space := $(empty) $(empty)
+str_is = $(if $(subst $2,,$1),,true)
+single_goal = $(if $(word 2,$(MAKECMDGOALS)),,$(word 1,$(MAKECMDGOALS)))
+single_goal_split = $(subst -,$(space),$1)
+goals_is_single_print_target = $(if $(single_goal),$(if $(call str_is,$(word 1,$(single_goal_split)),print),$(if $(call str_is,$(word 2,$(single_goal_split)),var),true,$(if $(call str_is,$(word 2,$(single_goal_split)),substr),$(if $(call str_is,$(word 3,$(single_goal_split)),vars),true,),)),),)
 ifneq ($(wildcard config.mk),)
+ifeq ($(goals_is_single_print_target),)
 $(info Using config.mk configuration file.)
+endif
 include config.mk
 endif
+
+CROSSPLATFORM_MK := defined
+
+ifndef VERBOSE
+MAKEFLAGS += --no-print-directory
+endif
+
+NOT_PARALLEL_TARGETS += clean realclean wipeclean distclean install
 
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
@@ -328,7 +344,7 @@ endif
 ifeq ($(D),1)
    DEBUG_IS_ON := defined
 endif
-addtolistfile = $(if $(1),@$(call echo,$(1)) >> $(2),)
+addtolistfile = $(if $(1),@$(call echo,$(1))>> $(2),)
 ifdef WIN_SHELL_COMMANDS
    cd = @cd
    nullerror = 2>NUL
@@ -453,3 +469,191 @@ ifdef WINDOWS_TARGET
   endif
  endif
 endif
+
+_example_space = $(space)$(space)$(space)
+_mkcmd_example = $(space)$(space)$(space)$(MAKE_COMMAND)
+
+NOT_PARALLEL_TARGETS += help
+.PHONY: help
+help:
+	@$(info Ecere SDK Make Help)
+	@$(info )
+	@$(info help consists of command examples. try them!)
+	@$(info )
+	@$(info $(_mkcmd_example) help                                          -- this)
+	@$(info $(_mkcmd_example) help-advanced                                 -- advanced build commands)
+	@$(info $(_mkcmd_example) help-troubleshoot                             -- troubleshooting commands)
+	@$(info )
+	@$(info $(_mkcmd_example)                                               -- build ecere-sdk)
+	@$(info $(_mkcmd_example) all                                           -- same)
+	@$(info $(_mkcmd_example) -j1                                           -- build 1 step at a time)
+	@$(info $(_mkcmd_example) -j8                                           -- build with 8 parallel jobs)
+	@$(info $(_mkcmd_example) V=1                                           -- verbose build)
+	@$(info $(_mkcmd_example) wipeclean all                                 -- fully rebuild)
+	@$(info $(_mkcmd_example) ARCH=x32                                      -- build 32-bit binaries)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y                                  -- enable OpenSSL in Ecere library)
+	@$(info $(_mkcmd_example) EDASQLite=y                                   -- build SQLite driver for EDA)
+	@$(info $(_mkcmd_example) EDASQLiteCipher=y                             -- build SQLiteCipher driver for EDA)
+	@$(info $(_mkcmd_example) EDAdBASE=y                                    -- build dBASE driver for EDA)
+	@$(info $(_mkcmd_example) DISABLE_BINARY_COMPRESSION=y                  -- disable use of binary compression)
+	@$(info )
+	@$(info $(_mkcmd_example) ENABLE_SSL=y EDASQLite=y all -j9              -- common build)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y ARCH=x32 all -j9                 -- common 32-bit build)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y EDASQLite=y wipeclean all -j9    -- common full rebuild)
+	@$(info $(_mkcmd_example) ENABLE_SSL=y ARCH=x32 wipeclean all -j9       -- common 32-bit full rebuild)
+	@$(info )
+	@$(info $(_mkcmd_example) clean                                         -- delete all intermediate object files)
+	@$(info $(_mkcmd_example) realclean                                     -- remove all release intermediate object directories)
+	@$(info $(_mkcmd_example) wipeclean                                     -- remove all intermediate object directories)
+	@$(info )
+
+NOT_PARALLEL_TARGETS += help-advanced
+.PHONY: help-advanced
+help-advanced:
+	@$(info advanced commands:)
+	@$(info )
+	@$(info $(_mkcmd_example) distclean                                     -- remove all workspaces, generated makefiles and intermediate object directories)
+	@$(info )
+	@$(info $(_mkcmd_example) wipeclean all c_bindings cxx_bindings_gen     -- combine all these targets)
+	@$(info )
+	@$(info linux only commands:)
+	@$(info )
+	@$(info $(_example_space)time sh -c '$(MAKE_COMMAND) wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make RENAME_B32=1 ARCH=x32 all -j9')
+	@$(info )
+
+NOT_PARALLEL_TARGETS += help-troubleshoot
+.PHONY: help-troubleshoot
+help-troubleshoot:
+	@$(info troubleshooting commands:)
+	@$(info )
+	@$(info $(_mkcmd_example) troubleshoot                                  -- print the definition for all prepackaged list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-core                             -- print the definition for the core list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-toolchain                        -- print the definition for the toolchain list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-openssl                          -- print the definition for the openssl list of variables)
+	@$(info $(_mkcmd_example) troubleshoot-version                          -- print the definition for the version list of variables)
+	@$(info )
+	@$(info $(_mkcmd_example) print-all-vars-info                           -- print the definition for all variables)
+	@$(info $(_mkcmd_example) print-all-vars-stat                           -- print the definition, origin and flavor for all variables)
+	@$(info $(_mkcmd_example) print-var-info-PLATFORM                       -- print the definition for the PLATFORM variable)
+	@$(info $(_mkcmd_example) print-substr-vars-full-DIR                    -- print all information for all variables containing the DIR string)
+	@$(info )
+	@$(info available modes for print-var-<mode>-<name> and print-substr-vars-<mode>-<substring> targets:)
+	@$(info $(_example_space)info (definition only)$(comma) eval (value only)$(comma) both (definition and value)$(comma))
+	@$(info $(_example_space)stat (definition$(comma) origin and flavor) and full (definition$(comma) value$(comma) origin and flavor))
+	@$(info )
+
+var_info = $(if $(value $1),$1 = $(value $1),$1 is defined as an empty value)
+var_eval = $(if $(value $1),$(if $($1),$1 = $($1),$1 evaluates to an empty value),$1 is defined as an empty value)
+var_both = $(if $(value $1),$1 = $(value $1) $(if $($1),$(if $(call str_is,$($1),$(value $1)),(equal to definition),= $($1)),= (empty value)),$1 is defined as an empty value)
+var_stat = $(call var_info,$1) [$(origin $1) $(flavor $1)]
+var_full = $(call var_both,$1) [$(origin $1) $(flavor $1)]
+info_var = $(info $(call $(if $2,$2,var_info),$1))
+info_check_var_defined = $(info $(if $(subst $(space),,$(foreach var,$(.VARIABLES),$(if $(subst $1,,$(var)),,1))),$(call $(if $2,$2,var_info),$1),$1 is not defined))
+info_all_vars = $(foreach var,$(sort $(.VARIABLES)),$(call info_var,$(var),$2))
+info_all_substr_vars = $(foreach var,$(sort $(.VARIABLES)),$(if $(findstring $1,$(var)),$(call info_var,$(var),$2),))
+msg_var_eval_crash = is not provided since evaluating variables that use control flow functions will crash
+
+NOT_PARALLEL_TARGETS += print-all-vars-info print-all-vars-eval print-all-vars-both print-all-vars-stat print-all-vars-full
+.PHONY: print-all-vars-info print-all-vars-eval print-all-vars-both print-all-vars-stat print-all-vars-full
+print-all-vars-info: ; @$(call info_all_vars)
+print-all-vars-eval: ; @$(info note: print-all-vars-eval $(msg_var_eval_crash))
+print-all-vars-both: ; @$(info note: print-all-vars-both $(msg_var_eval_crash))
+print-all-vars-stat: ; @$(if $(subst all,,$*),$(call info_check_var_defined,$*,var_stat),$(call info_all_vars,var_stat))
+print-all-vars-full: ; @$(info note: print-all-vars-full $(msg_var_eval_crash))
+
+NOT_PARALLEL_TARGETS += print-var-info-% print-var-eval-% print-var-both-% print-var-stat-% print-var-full-%
+.PHONY: print-var-info-% print-var-eval-% print-var-both-% print-var-stat-% print-var-full-%
+print-var-info-%: ; @$(call info_check_var_defined,$*)
+print-var-eval-%: ; @$(call info_check_var_defined,$*,var_eval)
+print-var-both-%: ; @$(call info_check_var_defined,$*,var_both)
+print-var-stat-%: ; @$(call info_check_var_defined,$*,var_stat)
+print-var-full-%: ; @$(call info_check_var_defined,$*,var_full)
+
+NOT_PARALLEL_TARGETS += print-substr-vars-info-% print-substr-vars-eval-% print-substr-vars-both-% print-substr-vars-stat-% print-substr-vars-full-%
+.PHONY: print-substr-vars-info-% print-substr-vars-eval-% print-substr-vars-both-% print-substr-vars-stat-% print-substr-vars-full-%
+print-substr-vars-info-%: ; @$(call info_all_substr_vars,$*)
+print-substr-vars-eval-%: ; @$(call info_all_substr_vars,$*,var_eval)
+print-substr-vars-both-%: ; @$(call info_all_substr_vars,$*,var_both)
+print-substr-vars-stat-%: ; @$(call info_all_substr_vars,$*,var_stat)
+print-substr-vars-full-%: ; @$(call info_all_substr_vars,$*,var_full)
+
+NOT_PARALLEL_TARGETS += troubleshoot
+.PHONY: troubleshoot
+troubleshoot: troubleshoot-core troubleshoot-toolchain troubleshoot-openssl troubleshoot-version
+
+NOT_PARALLEL_TARGETS += troubleshoot-core
+.PHONY: troubleshoot-core
+troubleshoot-core:
+	@$(info -- core variables --)
+	@$(call info_check_var_defined,_CF_DIR,var_full)
+	@$(call info_check_var_defined,WIN_SHELL_COMMANDS,var_full)
+	@$(call info_check_var_defined,WIN_PS_TOOLS,var_full)
+	@$(info -- important environtment variables --)
+	@$(call info_check_var_defined,OS,var_full)
+	@$(call info_check_var_defined,OSTYPE,var_full)
+	@$(call info_check_var_defined,BASH,var_full)
+	@$(call info_check_var_defined,TERM,var_full)
+	@$(call info_check_var_defined,SHELL,var_full)
+	@$(info -- host and target variables --)
+	@$(call info_check_var_defined,HOST_PLATFORM,var_full)
+	@$(call info_check_var_defined,TARGET_PLATFORM,var_full)
+	@$(call info_check_var_defined,PLATFORM,var_full)
+	@$(call info_check_var_defined,LINUX_HOST,var_full)
+	@$(call info_check_var_defined,LINUX_TARGET,var_full)
+	@$(call info_check_var_defined,OSX_HOST,var_full)
+	@$(call info_check_var_defined,OSX_TARGET,var_full)
+	@$(call info_check_var_defined,WINDOWS_HOST,var_full)
+	@$(call info_check_var_defined,WINDOWS_TARGET,var_full)
+	@$(call info_check_var_defined,BSD_HOST,var_full)
+	@$(call info_check_var_defined,BSD_TARGET,var_full)
+	@$(call info_check_var_defined,TARGET_ARCH,var_full)
+	@$(info -- arch variables --)
+	@$(call info_check_var_defined,ARCH,var_full)
+	@$(call info_check_var_defined,ARCH_FLAGS,var_full)
+
+NOT_PARALLEL_TARGETS += troubleshoot-toolchain
+.PHONY: troubleshoot-toolchain
+troubleshoot-toolchain:
+	@$(info -- toolchain variables --)
+	@$(call info_check_var_defined,GCC_PREFIX,var_full)
+	@$(call info_check_var_defined,CC,var_full)
+	@$(call info_check_var_defined,CPP,var_full)
+	@$(call info_check_var_defined,ECP,var_full)
+	@$(call info_check_var_defined,ECC,var_full)
+	@$(call info_check_var_defined,ECS,var_full)
+	@$(call info_check_var_defined,EAR,var_full)
+	@$(call info_check_var_defined,AS,var_full)
+	@$(call info_check_var_defined,LD,var_full)
+	@$(call info_check_var_defined,AR,var_full)
+	@$(call info_check_var_defined,STRIP,var_full)
+	@$(info -- related variables --)
+	@$(call info_check_var_defined,UPX,var_full)
+	@$(call info_check_var_defined,CCACHE,var_full)
+	@$(call info_check_var_defined,CCACHE_COMPILE,var_full)
+	@$(call info_check_var_defined,CCACHE_PREFIX,var_full)
+	@$(call info_check_var_defined,DISTCC,var_full)
+	@$(info -- more related variables --)
+	@$(call info_check_var_defined,DESTDIR,var_full)
+	@$(call info_check_var_defined,PREFIXLIBDIR,var_full)
+	@$(call info_check_var_defined,CPPFLAGS,var_full)
+	@$(call info_check_var_defined,ROOT_ABSPATH,var_full)
+	@$(call info_check_var_defined,DYLD_LIBRARY_PATH,var_full)
+
+NOT_PARALLEL_TARGETS += troubleshoot-openssl
+.PHONY: troubleshoot-openssl
+troubleshoot-openssl:
+	@$(info -- toolchain variables --)
+	@$(call info_check_var_defined,OPENSSL_CONF,var_full)
+	@$(call info_check_var_defined,OPENSSL_INCLUDE_DIR,var_full)
+	@$(call info_check_var_defined,OPENSSL_LIB_DIR,var_full)
+	@$(call info_check_var_defined,OPENSSL_BIN_DIR,var_full)
+
+NOT_PARALLEL_TARGETS += troubleshoot-version
+.PHONY: troubleshoot-version
+troubleshoot-version:
+	@$(info -- version variables --)
+	@$(call info_check_var_defined,GIT_REPOSITORY,var_full)
+	@$(call info_check_var_defined,DIR_VER,var_full)
+	@$(call info_check_var_defined,REPOSITORY_VER,var_full)
+
+.DEFAULT_GOAL =
