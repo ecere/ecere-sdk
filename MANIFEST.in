@@ -17,8 +17,9 @@ recursive-exclude obj *
 recursive-exclude samples *
 recursive-exclude share *
 
-include samples/eC/HelloWorld/HelloWorld.ec
-include samples/eC/HelloWorld/HelloWorld.epj
+include samples/bindings/py/hello3D.py
+include samples/bindings/py/helloWorld.py
+include samples/bindings/py/helloForm.py
 
 include bindings/py/build_eC.py
 include bindings/py/build_ecere.py

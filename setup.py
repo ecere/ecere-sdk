@@ -52,7 +52,7 @@ numJobs = '-j' + str(multiprocessing.cpu_count())
 def buildEcereSDK():
    print('buildEcereSDK')
    call(['echo', 'buildEcereSDK'], shell=True)
-   proc = subprocess.Popen(['make', 'ECERE_AUDIO=y', numJobs], shell=False)
+   proc = subprocess.Popen(['make', 'ENABLE_PYTHON_RPATHS=1', 'ECERE_AUDIO=y', numJobs], shell=False)
    proc.communicate()
    call(['dir', path.join('obj', 'win32', 'bin')], shell=True)
    return proc.returncode == 0
@@ -299,12 +299,11 @@ else:
          'Topic :: Software Development :: User Interfaces',
       ],
       keywords='cross-platform gui 2D 3D development',
+      packages=['EcereSDK'],
       #packages=['eceresdk'],
       #packages=foundPackages,
       #py_modules = [mod_eC, mod_ecere, mod_EDA],
-      #py_modules = ['_pyeC', '_pyecere', '_pyEDA'],
-      py_modules = ['eC', 'ecere', 'EDA'],
-      package_dir={'':pyDir},  # required to find eC.py, ecere.py and EDA.py
+      package_dir={'EcereSDK':pyDir},  # required to find eC.py, ecere.py and EDA.py
       #package_dir={'':'.'},
       #cmdclass={'install': CustomInstallCommand},
       #cmdclass={
@@ -334,18 +333,32 @@ else:
       #    'sample': ['package_data.dat'],
       },
       data_files=[
-         ('lib', [
+         ('lib/python%s/site-packages/EcereSDK/lib' % (pyver[0:pyver.rfind('.')]), [
             os.path.join(libdir, libpfx + 'ecereCOM' + libext),
             os.path.join(libdir, libpfx + 'ecere' + libext),
             os.path.join(libdir, libpfx + 'EDA' + libext),
+            os.path.join(libdir, libpfx + 'EcereAudio' + libext),
+            os.path.join(libdir, libpfx + 'ec' + libext),
+            os.path.join(libdir, libpfx + 'ec2' + libext),
 
             #os.path.join(libdir, libpfx + 'eC_c' + libext),
             #os.path.join(libdir, libpfx + 'ecere_c' + libext),
             #os.path.join(libdir, libpfx + 'EDA_c' + libext),
          ]),
-         ('share/EcereSDK/samples/eC/HelloWorld', [
-            'samples/eC/HelloWorld/HelloWorld.ec',
-            'samples/eC/HelloWorld/HelloWorld.epj',
+         ('lib/python%s/site-packages/EcereSDK/bin' % (pyver[0:pyver.rfind('.')]), [
+            os.path.join(bindir, 'ecp' + exeext),
+            os.path.join(bindir, 'ecc' + exeext),
+            os.path.join(bindir, 'ecs' + exeext),
+            os.path.join(bindir, 'ear' + exeext),
+            os.path.join(bindir, 'epj2make' + exeext),
+            os.path.join(bindir, 'bgen' + exeext),
+            os.path.join(bindir, 'documentor' + exeext),
+            os.path.join(bindir, 'ecere-ide' + exeext),
+         ]),
+         ('lib/python%s/site-packages/EcereSDK/samples' % (pyver[0:pyver.rfind('.')]), [
+            'samples/bindings/py/helloWorld.py',
+            'samples/bindings/py/helloForm.py',
+            'samples/bindings/py/hello3D.py',
          ])
       ],
       #entry_points={
