@@ -2891,7 +2891,7 @@ static const char * getTypeZeroValuePy(PythonGen g, Type t, BVariant v)
 static void generatePY(File out, PythonGen g)
 {
    for(libDep : g.libDeps)
-      out.PrintLn("from ", libDep.bindingName, " import *");
+      out.PrintLn("from ", (libDep.ecereCOM || libDep.ecere || libDep.eda) ? "EcereSDK" : libDep.bindingName, ".", libDep.bindingName, " import *");
    out.PrintLn("from _py", g.lib.bindingName, " import *");
    if(g.lib.ecereCOM)
    {
@@ -3269,7 +3269,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("               libraries=['", moduleName, "', '", moduleName, "_c'],");
 #endif
 #endif // 0
-   out.Print("               extra_link_args=[\"-Wl,-rpath,'$HOME/.local/lib/'\",");
+   out.Print("               extra_link_args=[\"-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/EcereSDK/lib\","); //,-rpath,$ORIGIN
    if(g.libDeps.count)
    {
       bool first = true;

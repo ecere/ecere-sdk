@@ -105,6 +105,7 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS +=
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
 endif
 
 PRJ_CFLAGS += \

@@ -473,7 +473,14 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    void * library = null;
 #if defined(__unix__) || defined(__APPLE__)
    int attempts = 0;
-   char * paths[] = { null, "/usr/lib/ec/lib", "/usr/lib32/ec/lib" };
+   char * paths[] = { null, "/usr/lib/ec/lib", "/usr/lib32/ec/lib", null };
+   char * env;
+   char dlopenpath[MAX_LOCATION];
+   if((env = getenv("ECERESDK_LIB_PATH")))
+   {
+      strcpy(dlopenpath, env);
+      paths[2] = dlopenpath;
+   }
 #endif
 
    *Load = null;
@@ -548,7 +555,11 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
    while(!library && attempts < sizeof(paths)/sizeof(paths[0]))
    {
       if(paths[attempts])
+      {
+         if(strcmp(paths[attempts], "/usr/lib/ec/lib") && strcmp(paths[attempts], "/usr/lib32/ec/lib"))
+            printf("attempting lib path: %s\n", paths[attempts]);
          strcpy(fileName, paths[attempts++]);
+      }
       else
       {
          attempts++;

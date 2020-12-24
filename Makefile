@@ -588,6 +588,11 @@ py_prepinstall: prepinstall
 	$(call cp,$(OBJLIBDIR)$(LP)ecereCOM$(SOV),$(OBJPYDIR)/$(LP)ecereCOM$(SO).0)
 	$(call cp,$(OBJLIBDIR)$(LP)ecere$(SOV),$(OBJPYDIR)/$(LP)ecere$(SO).0)
 	$(call cp,$(OBJLIBDIR)$(LP)EDA$(SOV),$(OBJPYDIR)/$(LP)EDA$(SO).0)
+	$(call cp,$(OBJLIBDIR)$(LP)ec$(SOV),$(OBJPYDIR)/$(LP)ec$(SO).0)
+	$(call cp,$(OBJLIBDIR)$(LP)ec2$(SOV),$(OBJPYDIR)/$(LP)ec2$(SO).0)
+ifneq ($(ECERE_AUDIO),n)
+	$(call cp,$(OBJLIBDIR)$(LP)EcereAudio$(SOV),$(OBJPYDIR)/$(LP)EcereAudio$(SO).0)
+endif
 
 # Making sure everything is in $(OBJBINDIR) and $(OBJLIBDIR)
 # Shared Libraries (in $(OBJBINDIR) on Windows and $(OBJLIBDIR) otherwise)
