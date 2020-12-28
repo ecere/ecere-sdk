@@ -2775,10 +2775,7 @@ private:
             f.Puts("\n");
 
             f.Puts("# EXTENSIONS\n");
-            if(compiler.outputFileExt)
-               f.Printf("OUT := %s\n", compiler.outputFileExt);
-            else
-               f.Puts("OUT := $(if $(STATIC_LIBRARY_TARGET),$(A),$(if $(SHARED_LIBRARY_TARGET),$(SO)$(VER),$(if $(EXECUTABLE_TARGET),$(E),.x)))\n");
+            f.Puts("OUT := $(if $(STATIC_LIBRARY_TARGET),$(A),$(if $(SHARED_LIBRARY_TARGET),$(SO)$(VER),$(if $(EXECUTABLE_TARGET),$(E),.x)))\n");
 
             if(gnuToolchainPrefix && gnuToolchainPrefix[0])
             {
