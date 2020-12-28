@@ -223,6 +223,7 @@ static void LoadImports(const char * fileName)
 // static Class applicationClass;
 static Class thisAppClass;
 
+static bool wasm = false;
 static const char * attributeCommon = "__attribute__((__common__)) ";
 
 class ModuleInfo : struct
@@ -1744,8 +1745,11 @@ class SymbolgenApp : Application
                else
                   valid = false;
             }
-            else if(!strcmp(arg, "-no-attribute-common"))
+            else if(!strcmp(arg, "-wasm"))
+            {
+               wasm = true;
                attributeCommon = "";
+            }
          }
       }
       if(!output)
@@ -1753,7 +1757,7 @@ class SymbolgenApp : Application
 
       if(!valid)
       {
-         printf("%s", $"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-no-attribute-common]\n");
+         printf("%s", $"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-wasm]\n");
       }
       else
       {
