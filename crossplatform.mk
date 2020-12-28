@@ -100,6 +100,10 @@ endif
 # CROSS_TARGET
 ifneq ($(TARGET_PLATFORM),$(HOST_PLATFORM))
    CROSS_TARGET := defined
+else
+ifneq ($(TARGET_ARCH),$(HOST_ARCH))
+   CROSS_BITDEPTH := defined
+endif
 endif
 
 # CROSS_TARGET_WIN_BOOTSTRAP
@@ -197,13 +201,11 @@ ifndef ARCH
  endif
 endif
 
-ifdef RENAME_B32
- ifeq ($(HOST_PLATFORM),$(TARGET_PLATFORM))
+ifdef CROSS_BITDEPTH
  # note: arch stuff is missing on windows
-  ifeq ($(HOST_ARCH),x86_64)
-   ifeq ($(TARGET_ARCH),i386)
-    B32_SFX := 32
-   endif
+ ifeq ($(HOST_ARCH),x86_64)
+  ifeq ($(TARGET_ARCH),i386)
+   B32_SFX := 32
   endif
  endif
 endif
