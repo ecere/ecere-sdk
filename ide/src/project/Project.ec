@@ -3359,7 +3359,10 @@ private:
          if(!opt.noResourcesEAR)
          {
             f.Puts("ifdef USE_RESOURCES_EAR\n");
-            f.Puts("RESOURCES_EAR = $(OBJ)resources.ear\n");
+            f.Puts("RESOURCES_EAR =");
+            if(listItems.count)
+               f.Puts(" $(OBJ)resources.ear");
+            f.Puts("\n");
             f.Puts("else\n");
             f.Puts("RESOURCES_EAR = $(RESOURCES)\n");
             f.Puts("endif\n");
