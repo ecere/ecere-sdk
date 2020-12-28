@@ -758,9 +758,6 @@ endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(E) $(BINDIR)/ecs$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
-ifdef CodeGuard
-	install $(INSTALL_FLAGS) $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
-endif
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
 ifdef BSD_HOST
 	install $(INSTALL_FLAGS) -d $(DOCDIR)
