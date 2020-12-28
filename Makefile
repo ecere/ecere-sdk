@@ -145,8 +145,8 @@ else
  ifeq ($(wildcard $(prefix)/lib/$(TARGET_ARCH) ),)
   export PREFIXLIBDIR=$(prefix)/lib
 
-  ifeq ($(TARGET_ARCH),i386-linux-gnu)
-   ifneq ($(wildcard $(prefix)/lib32 ),)
+  ifeq ($(TARGET_TRIPLE),i386-linux-gnu)
+   ifneq ($(wildcard $(prefix)/lib32),)
     export PREFIXLIBDIR=$(prefix)/lib32
    endif
   endif
