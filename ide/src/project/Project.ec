@@ -2598,8 +2598,7 @@ private:
       fileName[0] = '\0';
       if(targetType == staticLibrary || targetType == sharedLibrary)
          strcat(fileName, "$(LP)");
-      strcat(fileName, GetTargetFileName(config));
-      strcat(fileName, "$(OUT)");
+      strcat(fileName, "$(TARGET_NAME)$(OUT)");
    }
 
    bool GenerateCrossPlatformMk(File altCrossPlatformMk)
@@ -3096,6 +3095,9 @@ private:
          f.Puts("\n");
 
          f.Printf("RES = %s%s\n", resDirNoSpaces, resDirNoSpaces[0] ? "/" : "");
+         f.Puts("\n");
+
+         f.Printf("TARGET_NAME := %s\n", GetTargetFileName(config));
          f.Puts("\n");
 
          // test = GetTargetTypeIsSetByPlatform(config);
