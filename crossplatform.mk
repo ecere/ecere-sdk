@@ -520,7 +520,7 @@ help-advanced:
 	@$(info )
 	@$(info linux only commands:)
 	@$(info )
-	@$(info $(_example_space)time sh -c '$(MAKE_COMMAND) wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make RENAME_B32=1 ARCH=x32 all -j9')
+	@$(info $(_example_space)time sh -c '$(MAKE_COMMAND) wipeclean all c_bindings cxx_bindings_gen -j9 && echo && make ARCH=x32 all -j9')
 	@$(info )
 
 NOT_PARALLEL_TARGETS += help-troubleshoot
