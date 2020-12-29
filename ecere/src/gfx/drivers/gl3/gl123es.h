@@ -23,6 +23,11 @@
 #if defined(_GLES2) || defined(_GLES3)
 #if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__UWP__)
 
+#if defined(__EMSCRIPTEN__)
+#define GL_RGB16 0x8054
+#define GL_RGBA16 0x805B
+#endif
+
 #if defined(__LUMIN__)
    #include <GLES3/gl32.h>
 
