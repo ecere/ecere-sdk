@@ -227,12 +227,13 @@ private:
       {
          if(type.type == structClass)
          {
-            customValuefication = ch != '{' || strstr(type.name, "ProcessInputValue");
+            customValuefication = ch != '{' || strstr(type.name, "FlexyField") || strstr(type.name, "ProcessInputValue");
             specialValuefication = customValuefication && (
-               strstr(type.name, "FieldValue") ||
-               strstr(type.name, "GeoJSONValue") ||
-               strstr(type.name, "MBGLFilterValue") ||
-               strstr(type.name, "ProcessInputValue") );
+                  strstr(type.name, "FieldValue") ||
+                  strstr(type.name, "FlexyField") ||
+                  strstr(type.name, "GeoJSONValue") ||
+                  strstr(type.name, "MBGLFilterValue") ||
+                  strstr(type.name, "ProcessInputValue") );
          }
          else if(type.type == normalClass && ch !='{')
          {
