@@ -126,6 +126,8 @@ public struct FieldValue
 
    void OnCopy(FieldValue b)
    {
+      // Free any allocated memory first.
+      this.OnFree();
       this = b;
       if(type.type == text && type.mustFree)
          s = CopyString(b.s);
