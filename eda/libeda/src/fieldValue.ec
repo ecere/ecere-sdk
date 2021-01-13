@@ -227,3 +227,20 @@ public struct FieldValue
       return false;
    }
 };
+
+// Add array and map to the enumeration of known field types.
+// Note that the new values are not compatible with SQLiteType objects.
+public enum FlexyType : FieldType {
+   array, // The blob points to an Array<FlexyField> object
+   map    // the blob points to a Map<String, FlexyField> object
+};
+
+
+public class FlexyTypeEx : FlexyType
+{
+public:
+   FlexyType type:3;
+   bool mustFree:1;
+   FieldValueFormat format:3;
+   bool isUnsigned:1;
+};
