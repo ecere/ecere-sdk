@@ -244,6 +244,18 @@ public:
    FieldValueFormat format:3;
    bool isUnsigned:1;
 };
+
+
+class MapGetHelper {
+   // Little helper class to read a Map object from string in
+   // FlexyField OnGetDataFromString.
+public:
+   property Map<String, FlexyField> M {get{return M;} set{M = value;}};
+private:
+   Map<String, FlexyField> M ;
+}
+
+
 public struct FlexyField
 {
    FlexyTypeEx type;
@@ -625,5 +637,94 @@ public:
             }
       }
       return null;
+   }
+
+   bool OnGetDataFromString(const char * string)
+   {
+      bool result = false;
+
+      if(string[0] == '{')
+      {
+         MapGetHelper  tempMap = null;
+         String working = new char[strlen(string)+9];
+         sprintf(working, "{ M = %s }", string);
+
+         result = getArrayOrMap(working, class(MapGetHelper), (void*)&tempMap);
+         delete working;
+         if(result)
+         {
+            property::m = tempMap.M;
+            tempMap.M = null;
+         }
+         delete tempMap;
+         return result;
+      }
+      if(string[0] == '[')
+      {
+         Array<FlexyField> tempArray = null;
+         result = getArrayOrMap(string, class(Array<FlexyField>), (void*)&tempArray);
+         if(!result)
+            delete tempArray;
+         property::a = tempArray;
+         return result;
+      }
+      else if(string[0] == '\"')
+      {
+         int len = strlen(string + 1);
+         if(len > 0) len--;
+         property::s = new char[len + 1];
+         memcpy(s, string+1, len);
+         s[len] = 0;
+         return true;
+      }
+      else if(!strcmpi(string, "null"))
+      {
+         s = null;
+         type = {nil, false};
+         return true;
+      }
+      else if(!strcmpi(string, "false"))
+      {
+         property::i = 0;
+         return true;
+      }
+      else if(!strcmpi(string, "true"))
+      {
+         property::i = 1;
+         return true;
+      }
+      else{
+         // Attempt to treat the string as a number
+         char * rest;
+         if(strchr(string, '.') || strchr(string, 'E') || strchr(string, 'e') )
+         {
+            property::r = strtod(string, &rest);
+         }
+         else
+         {
+            property::i = (int64) strtoll(string, &rest, 0);
+         }
+
+         // If rest points to the start of string,
+         // this was not a number, so it is a blob.
+         if((rest == string))
+            property::b = CopyString(string);
+         return true;
+      }
+
+   }
+
+   bool getArrayOrMap(const char * string, Class destClass, void **destination)
+   {
+      bool result = false;
+         TempFile tmp {buffer = (byte *)string, size = strlen(string)};
+         ECONParser parser {tmp};
+         result = parser.GetObject(destClass, destination) == success;
+         delete parser;
+         // It is the caller's responsibility to delete or keep
+         // the input string as needed, so we steal it back from tmp.
+         tmp.StealBuffer();
+         delete tmp;
+         return result;
    }
 };
