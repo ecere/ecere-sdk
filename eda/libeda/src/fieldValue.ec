@@ -80,23 +80,13 @@ public struct FieldValue
       switch(type.type)
       {
          case integer:
-            switch(type.format)
-            {
-               // case binary: sprintf(temp, "%b", i); break;  // TODO: proper binary support
-               case octal:  sprintf(temp, "%o", (uint)i); break;
-               case hex:    sprintf(temp, FORMAT64HEX, i); break;
-               default:     sprintf(temp, type.isUnsigned ? FORMAT64U : FORMAT64D, i); break;
-            }
+            formatInteger(temp, i, type.format, type.isUnsigned);
             return CopyString(temp);
          case real:
-            if(type.format == exponential)
-            {
-               sprintf(temp, "%e", r);
-               return CopyString(temp);
-            }
-            else
-               return CopyString(r.OnGetString(temp, null, null));
-         case text:    return s;
+            formatFloat(temp, r, type.format, false);
+            return CopyString(temp);
+         case text:
+            return s;
       }
       return null;
    }
@@ -144,36 +134,14 @@ public struct FieldValue
       switch(type.type)
       {
          case integer:
-            switch(type.format)
-            {
-               // case binary: sprintf(stringOutput, "%b", i); break;  // TODO: proper binary support
-               case octal:  sprintf(stringOutput, "%o", (uint)i); break;
-               case hex:    sprintf(stringOutput, FORMAT64HEX, i); break;
-               default:     sprintf(stringOutput, type.isUnsigned ? FORMAT64U : FORMAT64D, i); break;
-            }
-            return stringOutput;
+            return formatInteger(stringOutput, i, type.format, type.isUnsigned);
          case real:
          {
-            if(type.format == exponential)
-            {
-               sprintf(stringOutput, "%e", r);
-               return stringOutput;
-            }
-            else
-            {
-               String s = (String)r.OnGetString(stringOutput, null, null);
-               if(!strchr(s, '.') && !strchr(s, 'E') && !strchr(s, 'e'))
-                  strcat(s, ".0");
-               return s;
-            }
+            return formatFloat(stringOutput, r, type.format, true);
          }
          case text:
          {
-            int len = s ? strlen(s) : 0;
-            stringOutput[0] = '\"';
-            memcpy(stringOutput + 1, s, len);
-            stringOutput[len + 1] = '\"';
-            stringOutput[len + 2] = 0;
+            sprintf(stringOutput, "\"%s\"", s);
             return stringOutput;
          }
          case nil: return "null";
@@ -227,6 +195,38 @@ public struct FieldValue
       return false;
    }
 };
+
+// BEGIN ::: Formating functions shared between FieldValue and FlexyField
+
+String formatFloat(char * stringOutput, double r, FieldValueFormat format, bool fixDot)
+{
+   if(format == exponential)
+   {
+      sprintf(stringOutput, "%e", r);
+      return stringOutput;
+   }
+   else
+   {
+      String st = (String)r.OnGetString(stringOutput, null, null);
+      if(fixDot && !strchr(st, '.') && !strchr(st, 'E') && !strchr(st, 'e'))
+         strcat(st, ".0");
+      return st;
+   }
+}
+
+String formatInteger(char * stringOutput, int64 i, FieldValueFormat format, bool isUnsigned)
+{
+   switch(format)
+   {
+      // case binary: sprintf(stringOutput, "%b", i); break;  // TODO: proper binary support
+      case octal:  sprintf(stringOutput, "%o", (uint)i); break;
+      case hex:    sprintf(stringOutput, FORMAT64HEX, i); break;
+      default:     sprintf(stringOutput, isUnsigned ? FORMAT64U : FORMAT64D, i); break;
+   }
+   return stringOutput;
+}
+
+// END ::: Formating functions shared between FieldValue and FlexyField
 
 // Add array and map to the enumeration of known field types.
 // Note that the new values are not compatible with SQLiteType objects.
