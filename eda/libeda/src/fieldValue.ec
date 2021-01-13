@@ -327,4 +327,41 @@ public:
        set{ m = value; type = {map, true};}
       isset { return type.type == map && m != null;}
    }
+
+   int OnCompare(FlexyField other)
+   {
+      // Return -1, 0, 1 if this is respectively smaller equal or larger than other.
+
+      if(type.type < other.type.type) return -1;
+      if(type.type > other.type.type) return  1;
+      switch(type.type)
+      {
+         case integer:
+            return ((i > other.i) - (i < other.i));
+         case real:
+            return ((r > other.r) - (r < other.r));
+         case text:
+            return compareText(other);
+         case blob:
+            // At the moment, we assume that all blobs
+            // are actually text that must be stored verbatim,
+            // we do not treat bynary data here.
+            return compareText(other);
+         case array:
+         case map:
+         default:
+            // We consider arrays and maps to compare equal
+            // until a sensible ordering is devised.
+            return 0;
+      }
+      return 0;
+   }
+
+   int compareText(FlexyField other)
+   {
+      if(!s && other.s) return -1;
+      if(s && !other.s) return 1;
+      if(!s && !other.s) return 0;
+      return strcmp(s, other.s);
+   }
 };
