@@ -389,4 +389,52 @@ public:
          }
       }
    }
+
+   void OnCopy(FlexyField other)
+   {
+      // Free any allocated memory first.
+      this.OnFree();
+      this = other;
+      if(type.mustFree)
+      {
+         switch (type.type)
+         {
+            case text:
+               s = CopyString(other.s);
+               break;
+            case blob:
+               // At the moment, we assume that all raw  blobs
+               // are actually text that must be stored verbatim,
+               // we do not treat binary data here.
+               s = CopyString((String)other.b);
+               break;
+            case array :
+               {
+                  Array<FlexyField> at {};
+                  int n;
+                  for ( n=0; n< a.count; n++ )
+                  {
+                     at.Add({});
+                     at[n].OnCopy(a[n]);
+                  }
+                  a = at;
+                  break;
+               }
+            case map:
+               {
+                  Map<String, FlexyField> mt {};
+                  MapIterator<String, FlexyField> iter {map = other.m};
+                  for (iter.Next(); iter.pointer; iter.Next())
+                  {
+                     const String key = iter.key;
+                     FlexyField val = iter.value;
+                     mt[key] = {};
+                     mt[key].OnCopy(val);
+                  }
+                  m = mt;
+                  break;
+               }
+         }
+      }
+   }
 };
