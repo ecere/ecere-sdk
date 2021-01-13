@@ -593,4 +593,37 @@ public:
       }
       return tempString;
    }
+
+   String stringify()
+   {
+      // Return a string representation of the value:
+      // A new String is allocated and must be deleted by the caller.
+      // The resulting string may not be suitable for json/econ files.
+
+      char temp[MAX_LOCATION];
+      switch(type.type)
+      {
+         case integer:
+            formatInteger(temp, i, type.format, type.isUnsigned);
+            return CopyString(temp);
+         case real:
+            formatFloat(temp, r, type.format, false);
+            return CopyString(temp);
+         case text:
+            return CopyString(s);
+         case blob:
+            // At the moment, we assume that all blobs
+            // are actually text that must be stored verbatim,
+            // we do not treat binary data here.
+            return CopyString((String)b);
+         case array:
+         case map:
+            {
+               ObjectNotationType on = econ;
+               this.OnGetString(temp, null, &on);
+               return CopyString(temp);
+            }
+      }
+      return null;
+   }
 };
