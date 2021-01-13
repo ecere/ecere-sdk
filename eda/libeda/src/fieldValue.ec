@@ -364,4 +364,29 @@ public:
       if(!s && !other.s) return 0;
       return strcmp(s, other.s);
    }
+
+   void OnFree()
+   {
+      if(type.mustFree)
+      {
+         if(type.type == text && s)
+         {
+            delete s;
+         }
+         else if(type.type == blob)
+         {
+            delete b;
+         }
+         else if (type.type == array && a)
+         {
+            a.OnFree();
+            a = null;
+         }
+         else if (type.type == map && m)
+         {
+            m.OnFree();
+            m = null;
+         }
+      }
+   }
 };
