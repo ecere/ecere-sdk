@@ -437,4 +437,68 @@ public:
          }
       }
    }
+
+   void OnSerialize(IOChannel f)
+   {
+      f.Put(type);
+      switch(type.type)
+      {
+         case integer:
+            f.Put(i); break;
+         case real:
+            f.Put(r); break;
+         case text:
+            f.Put(s); break;
+         case blob:
+            // At the moment, we assume that all blobs
+            // are actually text that must be stored verbatim,
+            // we do not treat binary data here.
+            f.Put((String)b); break;
+         case array:
+            a.OnSerialize(f); break;
+         case map:
+            m.OnSerialize(f); break;
+      }
+   }
+
+   void OnUnserialize(IOChannel f)
+   {
+      // First free any allocated space.
+      this.OnFree();
+      f.Get(type);
+      switch(type.type)
+      {
+         case integer:
+            f.Get(i);
+            break;
+         case real:
+            f.Get(r);
+            break;
+         case text:
+            f.Get(s);
+         case blob:
+            // At the moment, we assume that all blobs
+            // are actually text that must be stored verbatim,
+            // we do not treat binary data here.
+            f.Get(s);
+            break;
+         case array:
+            {
+               Array<FlexyField> at {};
+               at.OnUnserialize(f);
+               a = at;
+               break;
+            }
+         case map:
+            {
+               Map<String, FlexyField> mt {};
+               mt.OnUnserialize(f);
+               m = mt;
+               break;
+            }
+         default:
+            r = 0;
+            break;
+      }
+   }
 };
