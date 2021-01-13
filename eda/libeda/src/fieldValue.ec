@@ -244,3 +244,87 @@ public:
    FieldValueFormat format:3;
    bool isUnsigned:1;
 };
+public struct FlexyField
+{
+   FlexyTypeEx type;
+   union
+   {
+      int64 i;
+      double r;
+      String s;
+      void * b;
+      Array<FlexyField> a;
+      Map<String, FlexyField> m;
+   };
+public:
+
+   // Access to the union members, will be hndled via via properties.
+   // The setter can help to ensure that the value of type.type and type.mustFree are consistent.
+   //   Setting a new value for one of the pointer union members [s,m,b,a] does
+   //   not delete the previous from memory, since it could well be referenced
+   //   elsewhere.
+   //
+   // Note: be careful when adding a FlexyField to the m attribute of another FlexyField, as in:
+   //
+   //       Array<FlexyField> an_array {}
+   //       FlexyField a {a=an_array};
+   //       Map<String, FlexyField> a_map {};
+   //       a_map["key"] = a;
+   //       FlexyField b {m=a_map};
+   //       delete a; // deallocates an_array, but b.m["key"] still points at it.
+   //       delete b; // attempts to call OnFree() with the deleted b.m["key"].
+   //
+   // Since "OnCopy" calls "OnDelete", it requires attention too, in a set-up like this.
+   //
+   // The values of type can be altered after assignment if necessary (eg: set
+   //   type = {nil, false}, since there is no property for nil values, or  set
+   //   mustFree to false for a string that we know is referenced elsewhere):
+   //
+   //       FlexyField f {s=aString};
+   //       f.type.mustFree = false
+   //       FlexyField n {b=null, {nil, false}};
+   //
+   // Trying to get data using the wrong property (eg: using s when
+   //   type.type==array) should return 0, 0.0 or null, according to the property type.
+
+   // Property to access data as pointer to void:
+   property void * b {
+      get{ return (type.type == blob) ? b : null;}
+      set{b = value; type = {blob, true};}
+      isset { return type.type == blob && b != null;}
+   }
+
+   // Property to access data as String (aka char *):
+   property String s {
+      get{ return (type.type == text) ? s : null;}
+      set{ s = value; type = {text, true};}
+      isset { return type.type == text && s != null;}
+   }
+   // Property to access data as integer:
+   property int64 i {
+      get{ return (type.type == integer) ? i : 0;}
+      set{ i = value; type = {integer, false};}
+      isset { return type.type == integer;}
+   }
+
+   // Property to access data as real:
+   property double r {
+      get{ return (type.type == real) ? r : 0.0;}
+      set{ r = value; type = {real, false};}
+      isset { return type.type == real;}
+   }
+
+   // Property to access data as array:
+   property Array<FlexyField> a {
+      get{ return (type.type == array) ? a : null;}
+      set{ a = value; type = {array, true};}
+      isset { return type.type == array && a != null;}
+   }
+
+   // Property to access the data as map:
+   property Map<String, FlexyField> m {
+      get{ return (type.type == map) ? m : null;}
+       set{ m = value; type = {map, true};}
+      isset { return type.type == map && m != null;}
+   }
+};
