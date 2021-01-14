@@ -116,8 +116,6 @@ public struct FieldValue
 
    void OnCopy(FieldValue b)
    {
-      // Free any allocated memory first.
-      this.OnFree();
       this = b;
       if(type.type == text && type.mustFree)
          s = CopyString(b.s);
@@ -286,8 +284,6 @@ public:
    //       delete a; // deallocates an_array, but b.m["key"] still points at it.
    //       delete b; // attempts to call OnFree() with the deleted b.m["key"].
    //
-   // Since "OnCopy" calls "OnDelete", it requires attention too, in a set-up like this.
-   //
    // The values of type can be altered after assignment if necessary (eg: set
    //   type = {nil, false}, since there is no property for nil values, or  set
    //   mustFree to false for a string that we know is referenced elsewhere):
@@ -404,8 +400,6 @@ public:
 
    void OnCopy(FlexyField other)
    {
-      // Free any allocated memory first.
-      this.OnFree();
       this = other;
       if(type.mustFree)
       {
