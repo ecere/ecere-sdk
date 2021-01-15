@@ -79,6 +79,8 @@ FreeingAVLTree<const String> compactArrays
 ] };
 
 public enum JSONResult { syntaxError, success, typeMismatch, noItem };
+public enum JSONFirstLetterCapitalization { keepCase, upperCase, lowerCase };
+
 
 public enum SetBool : uint
 {
@@ -1829,7 +1831,7 @@ private:
    }
 }
 
-static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<String, const String> stringMap, bool capitalize)
+static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<String, const String> stringMap, JSONFirstLetterCapitalization capitalize)
 {
    if(map)
    {
@@ -1887,7 +1889,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
    return true;
 }
 
-static bool WriteArray(File f, Class type, Container array, int indent, bool eCON, Map<String, const String> stringMap, bool capitalize)
+static bool WriteArray(File f, Class type, Container array, int indent, bool eCON, Map<String, const String> stringMap, JSONFirstLetterCapitalization capitalize)
 {
    if(array)
    {
@@ -2127,7 +2129,7 @@ public bool WriteONString(File f, const String s, bool eCON, int indent)
    return true;
 }
 
-static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, Map<String, const String> stringMap, bool forceQuotes, bool capitalize)
+static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCON, Map<String, const String> stringMap, bool forceQuotes, JSONFirstLetterCapitalization capitalize)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
       WriteONString(f, value.p, eCON, indent);
@@ -2165,13 +2167,13 @@ public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, false, null, false, true, null);
+      result = WriteONObject(f, objectType, object, indent, false, null, false, upperCase, null);
       f.Puts("\n");
    }
    return result;
 }
 
-public bool WriteJSONObject2(File f, Class objectType, void * object, int indent, bool capitalize)
+public bool WriteJSONObject2(File f, Class objectType, void * object, int indent, JSONFirstLetterCapitalization capitalize)
 {
    bool result = false;
    if(object)
@@ -2187,7 +2189,7 @@ public bool WriteECONObject(File f, Class objectType, void * object, int indent)
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, true, null, false, true, null);
+      result = WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null);
       f.Puts("\n");
    }
    return result;
@@ -2198,7 +2200,7 @@ public bool WriteJSONObjectMapped(File f, Class objectType, void * object, int i
    bool result = false;
    if(object)
    {
-      result = WriteONObject(f, objectType, object, indent, false, stringMap, false, true, null);
+      result = WriteONObject(f, objectType, object, indent, false, stringMap, false, upperCase, null);
       f.Puts("\n");
    }
    return result;
@@ -2210,7 +2212,7 @@ public String PrintECONObject(Class objectType, void * object, int indent)
    if(object)
    {
       TempFile f { };
-      if(WriteONObject(f, objectType, object, indent, true, null, false, true, null))
+      if(WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null))
       {
          f.Putc(0);
          result = (String)f.StealBuffer();
@@ -2221,7 +2223,7 @@ public String PrintECONObject(Class objectType, void * object, int indent)
 }
 
 
-static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, Map<String, const String> stringMap, bool omitDefaultIdentifier, bool capitalize, Container forMap)
+static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, Map<String, const String> stringMap, bool omitDefaultIdentifier, JSONFirstLetterCapitalization capitalize, Container forMap)
 {
    const String tName = objectType.templateClass ? objectType.templateClass.name : objectType.name;
    bool spacing = compactTypes.Find(tName) == null;
@@ -2405,7 +2407,18 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                               }
                               else
                               {
-                                 f.Putc(capitalize ? (char)toupper(prop.name[0]) : prop.name[0]);
+                                 if (capitalize == upperCase)
+                                 {
+                                    f.Putc((char)toupper(prop.name[0]));
+                                 }
+                                 else if (capitalize == lowerCase)
+                                 {
+                                    f.Putc((char)tolower(prop.name[0]));
+                                 }
+                                 else
+                                 {
+                                    f.Putc(prop.name[0]);
+                                 }
                                  f.Puts(prop.name+1);
                               }
                               f.Puts("\" : ");
@@ -2531,7 +2544,18 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         }
                         else
                         {
-                           f.Putc(capitalize ? (char)toupper(member.name[0]) : member.name[0]);
+                           if (capitalize == upperCase)
+                           {
+                              f.Putc((char)toupper(member.name[0]));
+                           }
+                           else if (capitalize == lowerCase)
+                           {
+                              f.Putc((char)tolower(member.name[0]));
+                           }
+                           else
+                           {
+                              f.Putc(member.name[0]);
+                           }
                            f.Puts(member.name+1);
                         }
                         f.Puts("\" : ");
