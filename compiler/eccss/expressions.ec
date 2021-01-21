@@ -265,7 +265,7 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      bool quote = isdigit(string[0]) || strchr(string, ' ');
+      bool quote = isdigit(string[0]) || strchr(string, ' ') || strchr(string, ':');
       if(quote) out.Print('`');
       out.Print(string);
       if(quote) out.Print('`');
