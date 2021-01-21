@@ -56,7 +56,7 @@ FreeingAVLTree<const String> compactTypes
    "CI_Telephone",
    "MD_Resolution",
    "UMSFormat",
-   "WFS3TileMatrixSetLimit"
+   "OGCAPITileMatrixSetLimit"
 ] };
 
 FreeingAVLTree<const String> compactArrays
@@ -237,10 +237,10 @@ private:
          }
          else if(type.type == normalClass && ch !='{')
          {
-            if(strstr(type.name, "WFS3SpatialExtent") ||
-               strstr(type.name, "WFS3MultiBoundingBox") ||
-               strstr(type.name, "WFS3TemporalExtent") ||
-               strstr(type.name, "WFS3MultiInterval"))
+            if(strstr(type.name, "OGCAPISpatialExtent") ||
+               strstr(type.name, "OGCAPIMultiBoundingBox") ||
+               strstr(type.name, "OGCAPITemporalExtent") ||
+               strstr(type.name, "OGCAPIMultiInterval"))
             {
                customValuefication = true;
                specialValuefication = true;
