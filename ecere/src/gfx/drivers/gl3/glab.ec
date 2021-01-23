@@ -165,6 +165,8 @@ public:
       uint chosenAvailable = MAXDWORD;
       // if(size == 1) PrintLn("single byte block?");
 
+      if(!size) return 0;  // 0 size did not properly result in 0 result?
+
       for(ix = 0; ix < count; ix++)
       {
          BlockEntry * block = array + ix;
