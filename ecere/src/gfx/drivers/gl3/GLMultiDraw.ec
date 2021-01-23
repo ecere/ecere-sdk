@@ -525,7 +525,7 @@ public struct GLMultiDraw
    int allocateVbo(uint nVertices, uint vertexSize, const void *data)
    {
       uint size = nVertices * vertexSize;
-      BlockEntry block = vertexGLMB.allocate(attributes, size);
+      BlockEntry block = size ? vertexGLMB.allocate(attributes, size) : 0;
       int baseVertex = block ? block.start / vertexSize : -1;
       if(data && baseVertex != -1)
          vertexGLMB.ab.upload(block.start, size, data);
@@ -541,7 +541,7 @@ public struct GLMultiDraw
    int allocateIx(uint nIndices, uint indexSize, const void *data)
    {
       uint size = nIndices * indexSize;
-      BlockEntry block = indexGLMB.allocate(elements, size);
+      BlockEntry block = size ? indexGLMB.allocate(elements, size) : 0;
       int baseIndex = block ? block.start / indexSize : -1;
       if(data && baseIndex != -1)
          indexGLMB.ab.upload(block.start, size, data);
