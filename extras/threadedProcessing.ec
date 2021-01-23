@@ -404,13 +404,23 @@ class ProcessingStage
 
          if(task.status.ready)
          {
-            if(task.prev || task == readyTasks.first)
-               readyTasks.Move(task, null);
+            if(priority < MAXINT)
+            {
+               if(task.prev || task == readyTasks.first)
+                  readyTasks.Move(task, null);
+            }
+            else if(task.next)
+               readyTasks.Move(task, readyTasks.last);
          }
          else
          {
-            if(task.prev || task == tasks.first)
-               tasks.Move(task, null);
+            if(priority < MAXINT)
+            {
+               if(task.prev || task == tasks.first)   // What's with that extra == first check?
+                  tasks.Move(task, null);
+            }
+            else if(task.next)
+               tasks.Move(task, tasks.last);
          }
       }
       mutex.Release();
