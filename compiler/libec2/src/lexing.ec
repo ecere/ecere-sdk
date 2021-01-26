@@ -2,38 +2,9 @@ public import "ecere"
 
 // String Unescape Copy
 
-// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
 public int unescapeString(String d, const String s, int len)
-{
-   int j = 0, k = 0;
-   char ch;
-   while(j < len && (ch = s[j]))
-   {
-      switch(ch)
-      {
-         case '\\':
-            switch((ch = s[++j]))
-            {
-               case 'n': d[k] = '\n'; break;
-               case 't': d[k] = '\t'; break;
-               case 'a': d[k] = '\a'; break;
-               case 'b': d[k] = '\b'; break;
-               case 'f': d[k] = '\f'; break;
-               case 'r': d[k] = '\r'; break;
-               case 'v': d[k] = '\v'; break;
-               case '\\': d[k] = '\\'; break;
-               case '\"': d[k] = '\"'; break;
-               case '\'': d[k] = '\''; break;
-               default: d[k] = '\\'; d[++k] = ch;
-            }
-            break;
-         default:
-            d[k] = ch;
-      }
-      j++, k++;
-   }
-   d[k] = '\0';
-   return k;
+{  // Preserves the escape character in non-standard sequences : \z => \z
+   return UnescapeCStringLoose(d, s, len) ;
 }
 
 public enum TokenType2

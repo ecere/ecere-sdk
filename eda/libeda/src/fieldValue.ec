@@ -155,8 +155,7 @@ public struct FieldValue
          int len = strlen(string + 1);
          if(len > 0) len--;
          s = new char[len + 1];
-         memcpy(s, string+1, len);
-         s[len] = 0;
+         UnescapeCString(s, string+1, len);
          type = { text, true };
          return true;
       }
@@ -667,8 +666,7 @@ public:
          int len = strlen(string + 1);
          if(len > 0) len--;
          property::s = new char[len + 1];
-         memcpy(s, string+1, len);
-         s[len] = 0;
+         UnescapeCString(s, string+1, len);
          return true;
       }
       else if(!strcmpi(string, "null"))

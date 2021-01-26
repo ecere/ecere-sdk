@@ -117,62 +117,6 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSp
 
 extern unsigned int inBGen;
 
-int UnescapeString(char * d, char * s, int len)
-{
-int j = 0, k = 0;
-char ch;
-
-while(j < len && (ch = s[j]))
-{
-switch(ch)
-{
-case '\\':
-switch((ch = s[++j]))
-{
-case 'n':
-d[k] = '\n';
-break;
-case 't':
-d[k] = '\t';
-break;
-case 'a':
-d[k] = '\a';
-break;
-case 'b':
-d[k] = '\b';
-break;
-case 'f':
-d[k] = '\f';
-break;
-case 'r':
-d[k] = '\r';
-break;
-case 'v':
-d[k] = '\v';
-break;
-case '\\':
-d[k] = '\\';
-break;
-case '\"':
-d[k] = '\"';
-break;
-case '\'':
-d[k] = '\'';
-break;
-default:
-d[k] = '\\';
-d[k] = ch;
-}
-break;
-default:
-d[k] = ch;
-}
-j++, k++;
-}
-d[k] = '\0';
-return k;
-}
-
 char * OffsetEscapedString(char * s, int len, int offset)
 {
 char ch;
@@ -314,6 +258,8 @@ extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 extern long long strtoll(const char *  nptr, char * *  endptr, int base);
 
 extern uint64 strtoull(const char *  nptr, char * *  endptr, int base);
+
+extern int __ecereNameSpace__ecere__sys__UnescapeCString(char *  d, const char *  s, int len);
 
 extern int strtol(const char * , char * * , int base);
 
@@ -587,6 +533,11 @@ sprintf(temp, "%d", (int)result);
 else
 sprintf(temp, "0x%X", (unsigned char)result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
+}
+
+int UnescapeString(char * d, char * s, int len)
+{
+return __ecereNameSpace__ecere__sys__UnescapeCString(d, s, len);
 }
 
 char * PrintFloat(float result)
