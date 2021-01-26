@@ -103,6 +103,62 @@ extern int runtimePlatform;
 
 
 
+static inline int __ecereNameSpace__ecere__sys___UnescapeCString(char * d, const char * s, int len, unsigned int keepBS)
+{
+int j = 0, k = 0;
+char ch;
+
+while(j < len && (ch = s[j]))
+{
+switch(ch)
+{
+case '\\':
+switch((ch = s[++j]))
+{
+case 'n':
+d[k] = '\n';
+break;
+case 't':
+d[k] = '\t';
+break;
+case 'a':
+d[k] = '\a';
+break;
+case 'b':
+d[k] = '\b';
+break;
+case 'f':
+d[k] = '\f';
+break;
+case 'r':
+d[k] = '\r';
+break;
+case 'v':
+d[k] = '\v';
+break;
+case '\\':
+d[k] = '\\';
+break;
+case '\"':
+d[k] = '\"';
+break;
+case '\'':
+d[k] = '\'';
+break;
+default:
+d[k] = '\\';
+d[k + (int)keepBS] = ch;
+}
+break;
+default:
+d[k] = ch;
+}
+j++, k++;
+}
+d[k] = '\0';
+return k;
+}
+
 void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2)
 {
 int c;
@@ -281,6 +337,16 @@ extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 struct __ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
+
+int __ecereNameSpace__ecere__sys__UnescapeCString(char * d, const char * s, int len)
+{
+return __ecereNameSpace__ecere__sys___UnescapeCString(d, s, len, 0);
+}
+
+int __ecereNameSpace__ecere__sys__UnescapeCStringLoose(char * d, const char * s, int len)
+{
+return __ecereNameSpace__ecere__sys___UnescapeCString(d, s, len, 1);
+}
 
 unsigned int __ecereNameSpace__ecere__sys__StripExtension(char * string)
 {
@@ -1886,11 +1952,14 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PathCat", "c
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MakePathRelative", "char * ecere::sys::MakePathRelative(const char * path, const char * to, char * destination)", __ecereNameSpace__ecere__sys__MakePathRelative, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripExtension", "bool ecere::sys::StripExtension(char * string)", __ecereNameSpace__ecere__sys__StripExtension, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeExtension", "char * ecere::sys::ChangeExtension(const char * string, const char * ext, char * output)", __ecereNameSpace__ecere__sys__ChangeExtension, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::IsPathInsideOf", "bool ecere::sys::IsPathInsideOf(const char * path, const char * of)", __ecereNameSpace__ecere__sys__IsPathInsideOf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintSize", "void ecere::sys::PrintSize(char * string, uint64 size, int prec)", __ecereNameSpace__ecere__sys__PrintSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize", "void ecere::sys::PrintBigSize(char * string, double size, int prec)", __ecereNameSpace__ecere__sys__PrintBigSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ishexdigit", "bool ecere::sys::ishexdigit(char x)", __ecereNameSpace__ecere__sys__ishexdigit, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnescapeCString", "int ecere::sys::UnescapeCString(char * d, const char * s, int len)", __ecereNameSpace__ecere__sys__UnescapeCString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnescapeCStringLoose", "int ecere::sys::UnescapeCStringLoose(char * d, const char * s, int len)", __ecereNameSpace__ecere__sys__UnescapeCStringLoose, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping = class;
@@ -1908,7 +1977,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetValue", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue", "uint ecere::sys::GetHexValue(const char * * buffer)", __ecereNameSpace__ecere__sys__GetHexValue, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripQuotes", "char * ecere::sys::StripQuotes(const char * string, char * output)", __ecereNameSpace__ecere__sys__StripQuotes, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FloatFromString", "double ecere::sys::FloatFromString(const char * string)", __ecereNameSpace__ecere__sys__FloatFromString, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::IsPathInsideOf", "bool ecere::sys::IsPathInsideOf(const char * path, const char * of)", __ecereNameSpace__ecere__sys__IsPathInsideOf, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::StringAllocType", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__StringAllocType = class;
