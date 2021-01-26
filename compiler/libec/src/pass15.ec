@@ -4336,6 +4336,7 @@ OPERATOR_TABLE_ALL(uchar, UChar)
 //OpTable charOps =   {   CharAdd,   CharSub,   CharMul,   CharDiv,   CharMod,   CharExp,   CharNot,   CharBwn,   CharOr,   CharAnd,   CharEqu,   CharNqu,   CharGrt,   CharSma,   CharGrtEqu,   CharSmaEqu,   CharNeg,   CharLBitSft,   CharRBitSft };
 //OpTable ucharOps =  {  UCharAdd,  UCharSub,  UCharMul,  UCharDiv,  UCharMod,  UCharExp,  UCharNot,  UCharBwn,  UCharOr,  UCharAnd,  UCharEqu,  UCharNqu,  UCharGrt,  UCharSma,  UCharGrtEqu,  UCharSmaEqu,  UCharNeg,  UCharLBitSft,  UCharRBitSft };
 
+// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
 public void ReadString(char * output,  char * string)
 {
    int len = strlen(string);
@@ -4381,39 +4382,10 @@ public void ReadString(char * output,  char * string)
 
 // String Unescape Copy
 
-// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
-// This is the same as ReadString above (which also misses numeric escape codes) except it doesn't handle external quotes
+// This started as the same as ReadString above (which misses numeric escape codes) except it doesn't handle external quotes
 public int UnescapeString(char * d, char * s, int len)
-{
-   int j = 0, k = 0;
-   char ch;
-   while(j < len && (ch = s[j]))
-   {
-      switch(ch)
-      {
-         case '\\':
-            switch((ch = s[++j]))
-            {
-               case 'n': d[k] = '\n'; break;
-               case 't': d[k] = '\t'; break;
-               case 'a': d[k] = '\a'; break;
-               case 'b': d[k] = '\b'; break;
-               case 'f': d[k] = '\f'; break;
-               case 'r': d[k] = '\r'; break;
-               case 'v': d[k] = '\v'; break;
-               case '\\': d[k] = '\\'; break;
-               case '\"': d[k] = '\"'; break;
-               case '\'': d[k] = '\''; break;
-               default: d[k] = '\\'; d[k] = ch;
-            }
-            break;
-         default:
-            d[k] = ch;
-      }
-      j++, k++;
-   }
-   d[k] = '\0';
-   return k;
+{  // Does not preserve the escape character in non-standard sequences : \z => z
+   return UnescapeCString(d, s, len);
 }
 
 public char * OffsetEscapedString(char * s, int len, int offset)

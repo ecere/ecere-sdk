@@ -739,6 +739,31 @@ public char * ChangeExtension(const char * string, const char * ext, char * outp
    return output;
 }
 
+public bool IsPathInsideOf(const char * path, const char * of)
+{
+   if(!path[0] || !of[0])
+      return false;  // What to do here? Ever used?
+   else
+   {
+      char ofPart[MAX_FILENAME], ofRest[MAX_LOCATION];
+      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION];
+      strcpy(ofRest, of);
+      strcpy(pathRest, path);
+      for(; ofRest[0] && pathRest[0];)
+      {
+         SplitDirectory(ofRest, ofPart, ofRest);
+         SplitDirectory(pathRest, pathPart, pathRest);
+         if(fstrcmp(pathPart, ofPart))
+            return false;
+      }
+      if(!ofRest[0] && !pathRest[0])  // paths are identical - should return false or true? (changed to false)
+         return false;
+      else if(!pathRest[0])           // not inside of, it's the other way around
+         return false;
+      return true;
+   }
+}
+
 // --- String Stuff (Temporarily outside String class) ---
 public void PrintSize(char * string, uint64 size, int prec)
 {
@@ -871,6 +896,64 @@ public char * RSearchString(const char * buffer, const char * subStr, int maxLen
    return null;
 }
 
+public int UnescapeCString(char * d, const char * s, int len)
+{
+   /*
+    * Remove c escape sequences from a string:
+    * if non-standard sequences are present, (eg: "\z"),
+    * the leading backslash is __removed__.
+    * */
+   return _UnescapeCString(d, s, len, false);}
+
+public int UnescapeCStringLoose(char * d, const char * s, int len)
+{
+   /*
+    * Remove c escape sequences from a string:
+    * if non-standard sequences are present, (eg: "\z"),
+    * the leading backslash is __kept__.
+    * */
+   return _UnescapeCString(d, s, len, true);
+}
+
+// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
+static inline int _UnescapeCString(char * d, const char * s, int len, bool keepBS)
+{
+   /*
+    * Remove c escape sequences from a string:
+    * if non-standard sequences are present, (eg: "\z", the leading backslash
+    * is removed or kept depending to the value of the boolean parameter
+    * keepBS with obvious meaning.
+    **/
+   int j = 0, k = 0;
+   char ch;
+   while(j < len && (ch = s[j]))
+   {
+      switch(ch)
+      {
+         case '\\':
+            switch((ch = s[++j]))
+            {
+               case 'n': d[k] = '\n'; break;
+               case 't': d[k] = '\t'; break;
+               case 'a': d[k] = '\a'; break;
+               case 'b': d[k] = '\b'; break;
+               case 'f': d[k] = '\f'; break;
+               case 'r': d[k] = '\r'; break;
+               case 'v': d[k] = '\v'; break;
+               case '\\': d[k] = '\\'; break;
+               case '\"': d[k] = '\"'; break;
+               case '\'': d[k] = '\''; break;
+               default: d[k] = '\\'; d[k+(int)keepBS] = ch;
+            }
+            break;
+         default:
+            d[k] = ch;
+      }
+      j++, k++;
+   }
+   d[k] = '\0';
+   return k;
+}
 //public define gnuMakeCharsNeedEscaping = "$%";
 //public define windowsFileNameCharsNotAllowed = "*/:<>?\\\"|";
 //public define linuxFileNameCharsNotAllowed = "/";
@@ -1176,31 +1259,6 @@ public double FloatFromString(const char * string)
          break;
    }
    return neg * res;
-}
-
-public bool IsPathInsideOf(const char * path, const char * of)
-{
-   if(!path[0] || !of[0])
-      return false;  // What to do here? Ever used?
-   else
-   {
-      char ofPart[MAX_FILENAME], ofRest[MAX_LOCATION];
-      char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION];
-      strcpy(ofRest, of);
-      strcpy(pathRest, path);
-      for(; ofRest[0] && pathRest[0];)
-      {
-         SplitDirectory(ofRest, ofPart, ofRest);
-         SplitDirectory(pathRest, pathPart, pathRest);
-         if(fstrcmp(pathPart, ofPart))
-            return false;
-      }
-      if(!ofRest[0] && !pathRest[0])  // paths are identical - should return false or true? (changed to false)
-         return false;
-      else if(!pathRest[0])           // not inside of, it's the other way around
-         return false;
-      return true;
-   }
 }
 
 public enum StringAllocType { pointer, stack, heap };
