@@ -3,6 +3,14 @@ $(info Using config.mk configuration file.)
 include config.mk
 endif
 
+CROSSPLATFORM_MK := defined
+
+ifndef VERBOSE
+MAKEFLAGS += --no-print-directory
+endif
+
+NOT_PARALLEL_TARGETS += clean realclean wipeclean distclean install
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
@@ -328,7 +336,7 @@ endif
 ifeq ($(D),1)
    DEBUG_IS_ON := defined
 endif
-addtolistfile = $(if $(1),@$(call echo,$(1)) >> $(2),)
+addtolistfile = $(if $(1),@$(call echo,$(1))>> $(2),)
 ifdef WIN_SHELL_COMMANDS
    cd = @cd
    nullerror = 2>NUL
