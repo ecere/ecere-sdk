@@ -21,9 +21,6 @@ ifeq ($(wildcard $(_SDK_SRC_ROOT)Cleanfile),)
    _SDK_SRC_ROOT = $(find_sdk_src_root)
 endif
 
-$(_SDK_SRC_ROOT)Cleanfile: ;
-$(_SDK_SRC_ROOT)crossplatform.mk: ;
-
 include $(_SDK_SRC_ROOT)crossplatform.mk
 
 subdirs := $(sort $(filter-out .configs obj __pycache__,$(hs_ls_dir)))
@@ -64,5 +61,3 @@ ifdef _SDK_SRC_ROOT
 endif
 
 $(MAKEFILE_LIST): ;
-$(SOURCES): ;
-$(RESOURCES): ;
