@@ -199,5 +199,6 @@ public:
    }
    property byte * buffer { get { return buffer; } set { delete buffer; buffer = value; } };
    property uintsize size { get { return size; } set { size = value; } }
+   property uintsize allocated { get { return allocated; } set { allocated = value; } }
    byte * StealBuffer() { byte * result = buffer; buffer = null; return result; }
 };
