@@ -149,6 +149,7 @@ default:
 "_Nonnull"           { return(EXT_DECL); }
 "__ptr32"            { return(EXT_DECL); }
 "__ptr64"            { return(EXT_DECL); }
+"_Atomic"            { return(EXT_DECL); }
 "__forceinline"      { return(EXT_DECL); }
 "__unaligned"        { return(EXT_DECL); }
 "_Alignof"           { return(ALIGNOF); }

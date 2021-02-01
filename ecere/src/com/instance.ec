@@ -4,6 +4,7 @@ namespace com;
 
 #if defined(__ANDROID__)
  #define DISABLE_MEMMGR
+ // #define USE_ATOMICS
 #endif
 
 #if defined(__EMSCRIPTEN__)
@@ -114,6 +115,14 @@ uintsize malloc_usable_size(void * p);
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef USE_ATOMICS
+#include <stdatomic.h>
+
+void __atomic_fetch_add( volatile int* obj, int arg, int order);
+void __atomic_fetch_sub( volatile int* obj, int arg, int order);
+
+#endif
 
 private:
 
@@ -383,7 +392,12 @@ public:
    const char * defaultProperty;
    bool comRedefinition;
 
-   int count;     // DEBUGGING
+   // Number of instances of this class alive
+   #ifdef USE_ATOMICS
+   atomic_int count;    // TOCHECK: Verify handling of sizeof(atomic_int) != sizeof(int)
+   #else
+   int count;
+   #endif
 
    int isRemote;  // TODO: Convert to an enum, can have values 0..3
    bool internalDecl;
@@ -4714,6 +4728,9 @@ static bool ConstructInstance(void * instance, Class _class, Class from, bool bi
       }
    }
 
+   #ifdef USE_ATOMICS
+   atomic_fetch_add(&(_class.templateClass ? _class.templateClass : _class).count, 1);
+   #else
 #if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
    memMutex.Wait();
 #endif
@@ -4721,6 +4738,7 @@ static bool ConstructInstance(void * instance, Class _class, Class from, bool bi
 #if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
    memMutex.Release();
 #endif
+   #endif
    return true;
 }
 
@@ -4993,17 +5011,24 @@ public dllexport void eInstance_Delete(Instance instance)
 
       for(_class = instance._class; _class; _class = base)
       {
+         int cCount;
+
          if(_class.templateClass) _class = _class.templateClass;
 
          base = _class.base;
+
+   #ifdef USE_ATOMICS
+         cCount = (int)atomic_fetch_sub(&(_class.templateClass ? _class.templateClass : _class).count, 1);
+   #else
 #if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
          memMutex.Wait();
 #endif
-         (_class.templateClass ? _class.templateClass : _class).count--;
+         cCount = --(_class.templateClass ? _class.templateClass : _class).count;
 #if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
          memMutex.Release();
 #endif
-         if(_class.type == normalClass && !_class.count && !_class.module)
+   #endif
+         if(!cCount && _class.type == normalClass && !_class.module)
          {
 #ifdef MEMINFO
             // printf("Now Destructing class %s\n", _class.name);
@@ -7589,14 +7614,14 @@ public void queryMemInfo(char * string)
 
 public void eSystem_LockMem()
 {
-#if !defined(_NOMUTEX)
+#if !defined(_NOMUTEX) && (!defined(DISABLE_MEMMGR) || !defined(USE_ATOMICS))
    memMutex.Wait();
 #endif
 }
 
 public void eSystem_UnlockMem()
 {
-#if !defined(_NOMUTEX)
+#if !defined(_NOMUTEX) && (!defined(DISABLE_MEMMGR) || !defined(USE_ATOMICS))
    memMutex.Release();
 #endif
 }
