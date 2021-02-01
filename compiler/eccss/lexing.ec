@@ -181,6 +181,8 @@ public:
    int included;
 };
 
+#define LEXER_TEXT_BUFFER_SIZE   4096
+
 public class CMSSLexer
 {
    /*const */String input;
@@ -190,7 +192,7 @@ public class CMSSLexer
    Array<CMSSToken> tokenStack { minAllocSize = 256 };
    int ambiguous, stackPos;
    CMSSCodePosition pos;
-   char text[1024]; // FIXME: dynamic size
+   char text[LEXER_TEXT_BUFFER_SIZE]; // FIXME: dynamic size
 
    ~CMSSLexer()
    {
@@ -337,8 +339,9 @@ public class CMSSLexer
                      }
                      if(!isContinued)
                      {
-                        strncpy(text, input + start-1, pos.pos - start+2);
-                        text[pos.pos-start+2] = 0;
+                        int copySize = Min(pos.pos - start+2, LEXER_TEXT_BUFFER_SIZE-1);
+                        strncpy(text, input + start-1, copySize);
+                        text[copySize] = 0;
                         type = isChar ? constant : stringLiteral;
                      }
                   }
