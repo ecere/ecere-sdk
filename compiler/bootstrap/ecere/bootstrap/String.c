@@ -159,6 +159,58 @@ d[k] = '\0';
 return k;
 }
 
+int __ecereNameSpace__ecere__sys__EscapeCString(char * outString, int bufferLen, const char * s, unsigned int options)
+{
+int d = 0, c = 0;
+const char * string = s;
+char ch;
+
+if(((unsigned int)((options & 0x4) >> 2)))
+outString[d++] = '\"';
+while(d + 2 < bufferLen)
+{
+ch = string[c++];
+if(ch == '\"' && ((unsigned int)((options & 0x2) >> 1)))
+outString[d++] = '\\', outString[d++] = '\"';
+else if(ch == '\'' && ((unsigned int)((options & 0x1) >> 0)))
+outString[d++] = '\\', outString[d++] = '\'';
+else if(ch == '\\')
+outString[d++] = '\\', outString[d++] = '\\';
+else if(ch == '\t')
+outString[d++] = '\\', outString[d++] = '\t';
+else if(ch == '\b')
+outString[d++] = '\\', outString[d++] = '\b';
+else if(ch == '\r')
+outString[d++] = '\\', outString[d++] = '\r';
+else if(ch == '\f')
+outString[d++] = '\\', outString[d++] = '\f';
+else if(ch == '\n')
+{
+int i;
+
+if(((unsigned int)((options & 0x8) >> 3)) && ((unsigned int)((options & 0x4) >> 2)))
+{
+outString[d++] = '\\', outString[d++] = 'n';
+outString[d++] = '\"';
+outString[d++] = '\n';
+for(i = 0; i <= ((int)((options & 0xFFFF0) >> 4)); i++)
+outString[d++] = ' ', outString[d++] = ' ', outString[d++] = ' ';
+outString[d++] = '\"';
+}
+else
+outString[d++] = '\\', outString[d++] = 'n';
+}
+else if(ch)
+outString[d++] = ch;
+else
+break;
+}
+if(((unsigned int)((options & 0x4) >> 2)))
+outString[d++] = '\"';
+outString[d] = 0;
+return d;
+}
+
 void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2)
 {
 int c;
@@ -337,6 +389,8 @@ extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 struct __ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
+
+struct __ecereNameSpace__ecere__com__BitMember;
 
 int __ecereNameSpace__ecere__sys__UnescapeCString(char * d, const char * s, int len)
 {
@@ -1406,6 +1460,8 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
+extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, int bitSize, int bitPos, int declMode);
+
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
@@ -1636,6 +1692,8 @@ struct __ecereNameSpace__ecere__sys__OldList allModules;
 char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } ecere_gcc_struct;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__EscapeCStringOptions;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping;
 
@@ -1960,6 +2018,15 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnescapeCString", "int ecere::sys::UnescapeCString(char * d, const char * s, int len)", __ecereNameSpace__ecere__sys__UnescapeCString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnescapeCStringLoose", "int ecere::sys::UnescapeCStringLoose(char * d, const char * s, int len)", __ecereNameSpace__ecere__sys__UnescapeCStringLoose, module, 4);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::EscapeCStringOptions", "uint", 0, 0, (void *)0, (void *)0, module, 4, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__sys__EscapeCStringOptions = class;
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "escapeSingleQuote", "bool", 1, 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "escapeDoubleQuotes", "bool", 1, 1, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "writeQuotes", "bool", 1, 2, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "multiLine", "bool", 1, 3, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "indent", "int", 16, 4, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::EscapeCString", "int ecere::sys::EscapeCString(String outString, int bufferLen, const String s, ecere::sys::EscapeCStringOptions options)", __ecereNameSpace__ecere__sys__EscapeCString, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping = class;
