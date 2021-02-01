@@ -969,9 +969,14 @@ public:
 // TODO: Review... See also copyEscapeString() and strescpy() extras/stringTools.ec, WriteONString() in JSON.ec
 public int EscapeCString(String outString, int bufferLen, const String s, EscapeCStringOptions options)
 {
+   uintsize actualIndent = 3 * options.indent;
    int d = 0, c = 0;
    const char * string = s;
    char ch;
+
+   if(!options)
+      options.escapeDoubleQuotes = true; // default to double quotes if nothing is specified
+
    if(options.writeQuotes)
       outString[d++] = '\"';
    while(d + 2 < bufferLen)
@@ -981,24 +986,21 @@ public int EscapeCString(String outString, int bufferLen, const String s, Escape
            if(ch == '\"' && options.escapeDoubleQuotes) outString[d++] = '\\', outString[d++] = '\"';
       else if(ch == '\'' && options.escapeSingleQuote)  outString[d++] = '\\', outString[d++] = '\'';
       else if(ch == '\\') outString[d++] = '\\', outString[d++] = '\\';
-      else if(ch == '\t') outString[d++] = '\\', outString[d++] = '\t';
-      else if(ch == '\b') outString[d++] = '\\', outString[d++] = '\b';
-      else if(ch == '\r') outString[d++] = '\\', outString[d++] = '\r';
-      else if(ch == '\f') outString[d++] = '\\', outString[d++] = '\f';
+      else if(ch == '\t') outString[d++] = '\\', outString[d++] = 't';
+      else if(ch == '\b') outString[d++] = '\\', outString[d++] = 'b';
+      else if(ch == '\r') outString[d++] = '\\', outString[d++] = 'r';
+      else if(ch == '\f') outString[d++] = '\\', outString[d++] = 'f';
       else if(ch == '\n')
       {
-         int i;
+         outString[d++] = '\\', outString[d++] = 'n';
          if(options.multiLine && options.writeQuotes)
          {
-            outString[d++] = '\\', outString[d++] = 'n';
             outString[d++] = '\"';
             outString[d++] = '\n';
-            for(i = 0; i <= options.indent; i++)
-               outString[d++] = ' ', outString[d++] = ' ', outString[d++] = ' ';
+            memset(outString+d, ' ', actualIndent);
+            d += actualIndent;
             outString[d++] = '\"';
          }
-         else
-            outString[d++] = '\\', outString[d++] = 'n';
       }
       /*
       // Special code for JSON writer to add an automatic newline for <br> as this is how we imported documentor data...
