@@ -2250,7 +2250,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 
       if(objectType._vTbl[__ecereVMethodID_class_OnGetString] != objectType.base._vTbl[__ecereVMethodID_class_OnGetString])
       {
-         char buffer[1024];
+         char buffer[16384]; // TODO: Improve OnGetString() to support returning dynamic memory that must be freed
          buffer[0] = 0;
          string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, &onType);
          quote = false;
