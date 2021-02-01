@@ -2087,6 +2087,20 @@ public bool WriteONString(File f, const String s, bool eCON, int indent)
                f.Puts("\\t");
                b = 0;
             }
+            else if(ch == '\r')
+            {
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\r");
+               b = 0;
+            }
+            else if(ch == '\f')
+            {
+               buffer[b] = 0;
+               f.Puts(buffer);
+               f.Puts("\\f");
+               b = 0;
+            }
             else if(ch == '\n')
             {
                int i;

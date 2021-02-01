@@ -530,10 +530,12 @@ public:
       int len;
       String s;
       lexer.readToken();
-      len = strlen(lexer.token.text)-2;
+      len = strlen(lexer.token.text)-2;  // len source string length for UnescapeCString()
       s = new char[len+1];
-      memcpy(s, lexer.token.text+1, len);
-      s[len] = 0;
+      len = UnescapeCString(s, lexer.token.text+1, len);
+      s = renew s char[len+1];
+      // memcpy(s, lexer.token.text+1, len);
+      // s[len] = 0;
       return { string = s };
    }
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
