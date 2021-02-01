@@ -128,6 +128,8 @@ static void strescpy(char * output, char * string)
    *d = '\0';
 }
 
+       // NOTE: This only escapes single quotes?
+       // TODO: Use new String.ec EscapeCString() instead?
 String copyEscapeString(String string)
 {
    String result = null;

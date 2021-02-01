@@ -896,6 +896,7 @@ public char * RSearchString(const char * buffer, const char * subStr, int maxLen
    return null;
 }
 
+// NOTE: The 'len' is a stop on the SOURCE string, and these functions are missing a stop on the destination string
 public int UnescapeCString(char * d, const char * s, int len)
 {
    /*
@@ -954,6 +955,75 @@ static inline int _UnescapeCString(char * d, const char * s, int len, bool keepB
    d[k] = '\0';
    return k;
 }
+
+public class EscapeCStringOptions : uint32
+{
+public:
+   bool escapeSingleQuote:1;
+   bool escapeDoubleQuotes:1;
+   bool writeQuotes:1;
+   bool multiLine:1;
+   int indent:16;
+};
+
+// TODO: Review... See also copyEscapeString() and strescpy() extras/stringTools.ec, WriteONString() in JSON.ec
+public int EscapeCString(String outString, int bufferLen, const String s, EscapeCStringOptions options)
+{
+   int d = 0, c = 0;
+   const char * string = s;
+   char ch;
+   if(options.writeQuotes)
+      outString[d++] = '\"';
+   while(d + 2 < bufferLen)
+   {
+      ch = string[c++];
+      // TODO: Properly handle all necessary escapes
+           if(ch == '\"' && options.escapeDoubleQuotes) outString[d++] = '\\', outString[d++] = '\"';
+      else if(ch == '\'' && options.escapeSingleQuote)  outString[d++] = '\\', outString[d++] = '\'';
+      else if(ch == '\\') outString[d++] = '\\', outString[d++] = '\\';
+      else if(ch == '\t') outString[d++] = '\\', outString[d++] = '\t';
+      else if(ch == '\b') outString[d++] = '\\', outString[d++] = '\b';
+      else if(ch == '\r') outString[d++] = '\\', outString[d++] = '\r';
+      else if(ch == '\f') outString[d++] = '\\', outString[d++] = '\f';
+      else if(ch == '\n')
+      {
+         int i;
+         if(options.multiLine && options.writeQuotes)
+         {
+            outString[d++] = '\\', outString[d++] = 'n';
+            outString[d++] = '\"';
+            outString[d++] = '\n';
+            for(i = 0; i <= options.indent; i++)
+               outString[d++] = ' ', outString[d++] = ' ', outString[d++] = ' ';
+            outString[d++] = '\"';
+         }
+         else
+            outString[d++] = '\\', outString[d++] = 'n';
+      }
+      /*
+      // Special code for JSON writer to add an automatic newline for <br> as this is how we imported documentor data...
+      else if(c >= 4 && ch == '>' && string[c-2] == 'r' && string[c-3] == 'b' && string[c-4] == '<' &&
+             options.multiLine && options.writeQuotes)
+      {
+         int i;
+         outString[d++] = '>';
+         outString[d++] = '\"', outString[d++] = '\n';
+         for(i = 0; i <= options.indent; i++)
+            outString[d++] = ' ', outString[d++] = ' ', outString[d++] = ' ';
+         outString[d++] = '\"';
+      }
+      */
+      else if(ch)
+         outString[d++] = ch;
+      else
+         break;
+   }
+   if(options.writeQuotes)
+      outString[d++] = '\"';
+   outString[d] = 0;
+   return d;
+}
+
 //public define gnuMakeCharsNeedEscaping = "$%";
 //public define windowsFileNameCharsNotAllowed = "*/:<>?\\\"|";
 //public define linuxFileNameCharsNotAllowed = "/";
