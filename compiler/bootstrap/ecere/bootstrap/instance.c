@@ -4341,11 +4341,13 @@ _class->Destructor(instance);
 }
 for(_class = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class; _class; _class = base)
 {
+int cCount;
+
 if(_class->templateClass)
 _class = _class->templateClass;
 base = _class->base;
-(_class->templateClass ? _class->templateClass : _class)->count--;
-if(_class->type == 0 && !_class->count && !_class->module)
+cCount = --(_class->templateClass ? _class->templateClass : _class)->count;
+if(!cCount && _class->type == 0 && !_class->module)
 {
 __ecereNameSpace__ecere__com__eClass_Unregister(_class);
 }

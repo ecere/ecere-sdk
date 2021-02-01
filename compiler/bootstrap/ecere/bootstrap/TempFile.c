@@ -131,6 +131,8 @@ static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * _
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_size, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size;
 
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated;
+
 struct __ecereNameSpace__ecere__com__Class;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -195,6 +197,10 @@ void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_buffer(struct __ecer
 size_t __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_size(struct __ecereNameSpace__ecere__com__Instance * this);
 
 void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_size(struct __ecereNameSpace__ecere__com__Instance * this, size_t value);
+
+size_t __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_allocated(struct __ecereNameSpace__ecere__com__Instance * this);
+
+void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_allocated(struct __ecereNameSpace__ecere__com__Instance * this, size_t value);
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
@@ -673,6 +679,21 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size = value;
 __ecereProp___ecereNameSpace__ecere__sys__TempFile_size && __ecereProp___ecereNameSpace__ecere__sys__TempFile_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_size) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size && __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size) : (void)0;
 }
 
+size_t __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_allocated(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+
+return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated;
+}
+
+void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_allocated(struct __ecereNameSpace__ecere__com__Instance * this, size_t value)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = value;
+__ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated && __ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated) : (void)0, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated && __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated) : (void)0;
+}
+
 unsigned char * __ecereMethod___ecereNameSpace__ecere__sys__TempFile_StealBuffer(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
@@ -688,6 +709,7 @@ void __ecereUnregisterModule_TempFile(struct __ecereNameSpace__ecere__com__Insta
 __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size = (void *)0;
+__ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated = (void *)0;
 }
 
 void __ecereRegisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -717,5 +739,8 @@ __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer = __ecerePropM___ecere
 __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uintsize", __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_size, __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__TempFile_size = __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_size = (void *)0;
+__ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "allocated", "uintsize", __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_allocated, __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_allocated, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
+__ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated = __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated = (void *)0;
 }
 
