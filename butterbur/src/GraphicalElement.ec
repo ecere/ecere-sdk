@@ -90,6 +90,13 @@ public class Fill : struct
       };
       this = fill;
    }
+
+   ~Fill()
+   {
+      if(pattern) pattern.Free(), delete pattern;
+      delete gradient;
+   }
+
 public:
    Color color;
    Array<GraphicalElement> pattern;
@@ -122,6 +129,13 @@ public class Stroke : struct
       };
       this = stroke;
    }
+
+   ~Stroke()
+   {
+      if(pattern) pattern.Free(), delete pattern;
+      delete dashes;
+   }
+
 public:
    Color color;
    Array<GraphicalElement> pattern;
