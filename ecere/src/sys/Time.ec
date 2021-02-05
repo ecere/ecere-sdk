@@ -732,10 +732,12 @@ public struct DateTime
 
          if(strchr(tokens[c], ':'))
          {
-            char * subTokens[20];
-            int sCount = TokenizeWith(tokens[c], 20, subTokens, " :", false);
             int t;
             bool pm = false, am = false;
+            char * subTokens[20];
+            char * timeAfterDate =  strchr(tokens[c], 'T');
+            // If there is a 'T' the time string starts after its position
+            int sCount = TokenizeWith( (timeAfterDate)?timeAfterDate+1:tokens[c], 20, subTokens, " :", false);
             for(t = 0; t<sCount; t++)
             {
                if(!strcmpi(subTokens[t], "am")) am = true;
@@ -754,7 +756,13 @@ public struct DateTime
             if(am && hour == 12) hour = 0;
             else if(pm && hour < 12) hour += 12;
 
-            continue;
+            if(timeAfterDate)
+               // If there was a 'T' the charactes before it contain the date:
+               // do not interrupt the iteration now so that the followong if
+               // clause will pick it up.
+               timeAfterDate[0] = '\0';
+            else
+               continue;
          }
 
          if(!foundDate)
