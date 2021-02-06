@@ -531,6 +531,7 @@ public:
             // we do not treat binary data here.
             strcat(tempString, (String)b);
             break;
+         case 0: // Handle  zero values as 'nil'
          case nil:
             strcat(tempString, "null");
             break;
