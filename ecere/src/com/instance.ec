@@ -1495,6 +1495,12 @@ static void * _mycrealloc(void * pointer, unsigned int size)
 #define calloc _mycalloc
 #endif
 
+#if defined(__EMSCRIPTEN__) && defined(DISABLE_MEMMGR) && !defined(MEMINFO) && !defined(msize)
+   const uintsize allocSizePrefixLen = sizeof(size_t) % 8 ? 8 : sizeof(size_t);
+#else
+   const uintsize allocSizePrefixLen = sizeof(size_t);
+#endif
+
 static void * _malloc(unsigned int size)
 {
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
@@ -1502,9 +1508,10 @@ static void * _malloc(unsigned int size)
 #if defined(msize)
    return size ? malloc(size) : null;
 #else
-   byte * p = size ? malloc(size + sizeof(size_t)) : null;
+   byte * p;
+   p = size ? malloc(size + allocSizePrefixLen) : null;
    if(p) *(size_t *)p = size;
-   return p ? p + sizeof(size_t) : null;
+   return p ? p + allocSizePrefixLen : null;
 #endif
 
 #else
@@ -1577,9 +1584,10 @@ static void * _calloc(int n, unsigned int size)
 #if defined(msize)
    return n && size ? calloc(n, size) : null;
 #else
-   byte * p = n && size ? calloc(n, size + sizeof(size_t)) : null;
+   byte * p;
+   p = n && size ? calloc(n, size + allocSizePrefixLen) : null;
    if(p) *(size_t *)p = size;
-   return p ? p + sizeof(size_t) : null;
+   return p ? p + allocSizePrefixLen : null;
 #endif
 
 #else
@@ -1653,10 +1661,10 @@ static void * _realloc(void * pointer, unsigned int size)
    return realloc(pointer, size);
 #else
    byte * p;
-   if(!size) { if(pointer) free((byte *)pointer - sizeof(size_t)); return null; }
-   p = realloc(pointer ? (byte *)pointer - sizeof(size_t) : null, size + sizeof(size_t));
+   if(!size) { if(pointer) free((byte *)pointer - allocSizePrefixLen); return null; }
+   p = realloc(pointer ? (byte *)pointer - allocSizePrefixLen : null, size + allocSizePrefixLen);
    if(p) *(size_t *)p = size;
-   if(p) p += sizeof(size_t);
+   if(p) p += allocSizePrefixLen;
    return p;
 #endif
 
@@ -1772,11 +1780,12 @@ static void * _crealloc(void * pointer, unsigned int size)
    if(!size) { free(pointer); return null; }
    p = realloc(pointer, size);
 #else
-   uintsize s = pointer ? *(size_t *)((byte *)pointer - sizeof(size_t)) : 0;
-   if(!size) { free((byte *)pointer - sizeof(size_t)); return null; }
-   p = realloc(pointer ? (byte *)pointer - sizeof(size_t) : null, size + sizeof(size_t));
+   uintsize s;
+   s = pointer ? *(size_t *)((byte *)pointer - allocSizePrefixLen) : 0;
+   if(!size) { free((byte *)pointer - allocSizePrefixLen); return null; }
+   p = realloc(pointer ? (byte *)pointer - allocSizePrefixLen : null, size + allocSizePrefixLen);
    if(p) *(size_t *)p = size;
-   if(p) p += sizeof(size_t);
+   if(p) p += allocSizePrefixLen;
 #endif
    if(size > s && p)
       memset((byte *)p + s, 0, size - s);
@@ -1894,7 +1903,7 @@ static void _free(void * pointer)
 #if defined(msize)
       free(pointer);
 #else
-      free((byte *)pointer - sizeof(size_t));
+      free((byte *)pointer - allocSizePrefixLen);
 #endif
 
 #else
