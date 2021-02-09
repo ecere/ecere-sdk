@@ -63,7 +63,7 @@
                "ECERE_STATIC",
                "CHESS_NONET"
             ],
-            "TargetFileName" : "chess.html",
+            "TargetFileName" : "chess",
             "Libraries" : [
                "ecereStatic",
                "z",
