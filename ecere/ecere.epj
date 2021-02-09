@@ -504,11 +504,14 @@
       {
          "Name" : "Emscripten",
          "Options" : {
+            "Warnings" : "Normal",
+            "Debug" : true,
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
                "NOBLENDING",
                "ECERE_NOSSL",
-               "ECERE_NONET"
+               "ECERE_NONET",
+               "_DEBUG"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",
