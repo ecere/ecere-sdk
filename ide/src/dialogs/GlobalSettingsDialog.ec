@@ -251,6 +251,17 @@ class GlobalSettingsDialog : Window
    }
 
    virtual void OnGlobalSettingChange(GlobalSettingsChange globalSettingsChange);
+
+   controller = GuiDataSavingController
+   {
+      controlled = this;
+      name = "globalSettings";
+
+      GuiConfigData getGuiConfigData()
+      {
+         return ideSettings.guiConfigData;
+      }
+   };
 }
 
 import "FontPicker"

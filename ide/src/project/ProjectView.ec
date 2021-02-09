@@ -2787,6 +2787,7 @@ class ProjectView : Window
    //   ec compilation issue: moving this assignment above any of the methods causes the following error:
    //                               error: couldn't find member <method name> in class ProjectView
    //                         this has happened for holdGuiConfigDataSaving and CreateNew methods
+   // see other instances of controller = GuiDataSavingController
    controller = GuiDataSavingController
    {
       controlled = this;

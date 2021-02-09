@@ -283,6 +283,17 @@ class ProjectSettings : Window
          return project; // unreachable
       }
    };
+
+   controller = GuiDataSavingController
+   {
+      controlled = this;
+      name = "projectSettings";
+
+      GuiConfigData getGuiConfigData()
+      {
+         return ideSettings.guiConfigData;
+      }
+   };
 }
 
 #define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
