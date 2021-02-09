@@ -6,6 +6,8 @@ public import "ecere"
 public import "ec"
 #endif
 
+import "FontPicker" // to get rid of "warning: Undeclared class FontPicker" @ GlobalSettingsDialog globalSettingsDialog { } instantiation
+
 import "GlobalSettingsDialog"
 import "NewProjectDialog"
 import "FindInFilesDialog"
