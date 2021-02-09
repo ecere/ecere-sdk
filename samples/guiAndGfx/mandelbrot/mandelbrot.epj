@@ -42,9 +42,9 @@
             "PreprocessorDefinitions" : [
                "ECERE_STATIC"
             ],
-            "TargetFileName" : "mandelbrot.html",
+            "TargetFileName" : "mandelbrot",
             "Libraries" : [
-               "ecereStatic",
+               "ecereStaticMin",
                "z"
             ],
             "LibraryDirs" : [
