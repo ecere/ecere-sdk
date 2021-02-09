@@ -2959,6 +2959,7 @@ private:
          int numCObjects = 0;
          int numObjects = 0;
          int numRCObjects = 0;
+         int numRes = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool relObjDir, sameOrRelObjTargetDirs;
          const String objDirExp = GetObjDirExpression(config);
@@ -3258,11 +3259,14 @@ private:
          }
 
          if(!noResources)
-            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
+            numRes = resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
          f.Puts("ifdef USE_RESOURCES_EAR\n");
-         f.Puts("RESOURCES_EAR = $(OBJ)resources.ear\n");
+         f.Puts("RESOURCES_EAR =");
+         if(numRes)
+            f.Puts(" $(OBJ)resources.ear");
+         f.Puts("\n");
          f.Puts("else\n");
          f.Puts("RESOURCES_EAR = $(RESOURCES)\n");
          f.Puts("endif\n");
