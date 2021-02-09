@@ -502,7 +502,7 @@
                "ECERE_NOTRUETYPE"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereStatic",
+            "TargetFileName" : "ecereStaticMin",
             "FastMath" : true
          }
       },
@@ -1289,7 +1289,7 @@
                                     {
                                        "Name" : "MinEmscripten",
                                        "Options" : {
-                                          "ExcludeFromBuild" : false
+                                          "ExcludeFromBuild" : true
                                        }
                                     },
                                     {
