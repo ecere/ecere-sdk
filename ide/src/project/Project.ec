@@ -3000,6 +3000,7 @@ private:
          int numCObjects = topNode.GenMakefilePrintNode(f, this, eC_noPrint, null/*namesInfo*/, null/*listItems*/, config, null, null, opt);
          int numObjects = 0;
          int numRCObjects = 0;
+         int numRes = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool containsCPLMK = false;
          bool relObjDir, sameOrRelObjTargetDirs;
@@ -3352,14 +3353,14 @@ private:
          }
 
          if(!noResources)
-            resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null, &containsCPLMK, opt);
+            numRes = resNode.GenMakefilePrintNode(f, this, resources, null, listItems, config, null, &containsCPLMK, opt);
          OutputFileList(f, "RESOURCES", listItems, varStringLenDiffs, null);
 
          if(!opt.noResourcesEAR)
          {
             f.Puts("ifdef USE_RESOURCES_EAR\n");
             f.Puts("RESOURCES_EAR =");
-            if(listItems.count)
+            if(numRes)
                f.Puts(" $(OBJ)resources.ear");
             f.Puts("\n");
             f.Puts("else\n");

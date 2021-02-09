@@ -1683,6 +1683,7 @@ private:
             items.Add(CopyString(s));
             if(containsCPLMK && !strcmp(name, "crossplatform.mk"))
                *containsCPLMK = true;
+            count++;
          }
          else if(printType == sources)
          {
