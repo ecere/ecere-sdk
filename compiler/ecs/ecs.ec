@@ -1748,7 +1748,7 @@ class SymbolgenApp : Application
             else if(!strcmp(arg, "-wasm"))
             {
                wasm = true;
-               attributeCommon = "";
+               attributeCommon = "__attribute__((__weak__)) ";
             }
          }
       }
