@@ -25,6 +25,21 @@
             ],
             "FastMath" : false
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=static"
+            ],
+            "Libraries" : [
+               "ecereCOMStatic"
+            ],
+            "LibraryDirs" : [
+               "../../../ecere/obj/emscripten.linux.emscripten"
+            ]
+         }
       }
    ],
    "Files" : [
