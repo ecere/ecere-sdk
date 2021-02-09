@@ -58,6 +58,28 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-
+      {
+         "Folder" : "ecere",
+         "Files" : [
+            {
+               "Folder" : "shaders",
+               "Files" : [
+                  "../../../ecere/src/gfx/drivers/gl3/default.frag",
+                  "../../../ecere/src/gfx/drivers/gl3/default.vert"
+               ]
+            }
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Emscripten",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
+         ]
+      }
    ]
 }
