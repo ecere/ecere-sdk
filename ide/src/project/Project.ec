@@ -2409,7 +2409,7 @@ private:
                compilerName,
                compiler.noStripTarget ? " NOSTRIP=y" : "",
                eC_Debug ? "--always-make " : "",
-               ccVersion == post4_8 ? "GCC_CC_FLAGS=-fno-diagnostics-show-caret " : "",
+               ccVersion == post4_8 ? "GCC_CC_FLAGS=-fno-diagnostics-show-caret " : "", // todo: clang support? -fno-caret-diagnostics
                cxxVersion == post4_8 ? "GCC_CXX_FLAGS=-fno-diagnostics-show-caret " : "",
                numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
