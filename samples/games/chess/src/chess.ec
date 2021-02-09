@@ -251,7 +251,7 @@ class Chess : Window
    // View Menu
    MenuItem fullScreenItem
    {
-      //viewMenu, "Full Screen", f, checkable = true;
+      viewMenu, "Full Screen", f, checkable = true;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          app.fullScreen ^= true;
