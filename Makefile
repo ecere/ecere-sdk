@@ -195,7 +195,7 @@ ifndef ECERE_PYTHON_PACKAGE
 all: epj2make ide documentor
 endif
 all: eda codeguard ecereaudio
-	@$(call echo,The Ecere SDK is fully built.)
+	@$(call echo,The Ecere SDK$(if $(CROSS_BIT32), (32-bit),) is fully built.)
 
 include Makefile.bindings
 
@@ -708,7 +708,7 @@ endif
 
 #TODO: Samples?
 install: actualinstall
-	@$(call echo,The Ecere SDK has been installed.)
+	@$(call echo,The Ecere SDK$(if $(CROSS_BIT32), (32-bit),) has been installed.)
 
 copyonlyinstall: actualinstall
 	@$(call echo,The Ecere SDK has been installed. copyonlyinstall.)
