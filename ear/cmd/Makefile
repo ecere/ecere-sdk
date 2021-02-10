@@ -44,9 +44,9 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(E)
+TARGET = $(OBJ)ear$(OUT)
 
 _ECSOURCES = \
 	ear.ec
