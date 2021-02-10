@@ -430,10 +430,10 @@ endif
 	$(call rm,$(OBJBINDIR)ecc$(B32_SFX)$(E))
 	$(call rm,$(OBJBINDIR)ecp$(B32_SFX)$(E))
 	$(call rm,$(OBJBINDIR)ecs$(B32_SFX)$(E))
-	$(call rm,$(OBJBINDIR)epj2make$(E))
-	$(call rm,$(OBJBINDIR)bgen$(E))
-	$(call rm,$(OBJBINDIR)ecere-ide$(E))
-	$(call rm,$(OBJBINDIR)documentor$(E))
+	$(call rm,$(OBJBINDIR)epj2make$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)bgen$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)ecere-ide$(B32_SFX)$(E))
+	$(call rm,$(OBJBINDIR)documentor$(B32_SFX)$(E))
 ifdef CodeGuard
 	$(call rm,$(OBJBINDIR)CodeGuard$(E))
 endif
@@ -546,7 +546,7 @@ BINARIES = \
 	compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E) \
 	compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E) \
 	ear/cmd/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(E) \
-	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E) \
+	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(B32_SFX)$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
 
 ifdef EDAdBASE
@@ -559,9 +559,9 @@ endif
 
 ifndef ECERE_PYTHON_PACKAGE
 BINARIES += \
-	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E) \
-	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E) \
-	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E)
+	epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(B32_SFX)$(E) \
+	documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(B32_SFX)$(E) \
+	ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(B32_SFX)$(E)
 endif
 
 ifneq ($(ECERE_AUDIO),n)
@@ -695,11 +695,11 @@ endif
 	$(call cp,compiler/ecc/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecp/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(E),$(OBJBINDIR))
 	$(call cp,compiler/ecs/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(E),$(OBJBINDIR))
-	$(call cp,bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E),$(OBJBINDIR))
+	$(call cp,bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(B32_SFX)$(E),$(OBJBINDIR))
 ifndef ECERE_PYTHON_PACKAGE
-	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E),$(OBJBINDIR))
-	$(call cp,epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E),$(OBJBINDIR))
-	$(call cp,documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E),$(OBJBINDIR))
+	$(call cp,ide/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,epj2make/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(B32_SFX)$(E),$(OBJBINDIR))
+	$(call cp,documentor/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(B32_SFX)$(E),$(OBJBINDIR))
 endif
 ifdef CodeGuard
 	$(call cp,codeGuard/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/CodeGuard$(E),$(OBJBINDIR))
@@ -735,15 +735,15 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,$(OBJBINDIR)$(LP)EcereAudio$(SO),"$(DESTLIBDIR)/")
 endif
-	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/ide$(E)")
-	$(call cp,$(OBJBINDIR)ecere-ide$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)ecere-ide$(B32_SFX)$(E),"$(BINDIR)/ide$(B32_SFX)$(E)")
+	$(call cp,$(OBJBINDIR)ecere-ide$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ear$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecc$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecp$(B32_SFX)$(E),"$(BINDIR)/")
 	$(call cp,$(OBJBINDIR)ecs$(B32_SFX)$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)epj2make$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)bgen$(E),"$(BINDIR)/")
-	$(call cp,$(OBJBINDIR)documentor$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)epj2make$(B32_SFX)$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)bgen$(B32_SFX)$(E),"$(BINDIR)/")
+	$(call cp,$(OBJBINDIR)documentor$(B32_SFX)$(E),"$(BINDIR)/")
 ifdef CodeGuard
 	$(call cp,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
@@ -776,14 +776,14 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	install $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/
 endif
-	install $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/
+	install $(OBJBINDIR)ecere-ide$(B32_SFX)$(E) $(BINDIR)/
 	install $(OBJBINDIR)ear$(B32_SFX)$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecc$(B32_SFX)$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecp$(B32_SFX)$(E) $(BINDIR)/
 	install $(OBJBINDIR)ecs$(B32_SFX)$(E) $(BINDIR)/
-	install $(OBJBINDIR)epj2make$(E) $(BINDIR)/
-	install $(OBJBINDIR)bgen$(E) $(BINDIR)/
-	install $(OBJBINDIR)documentor$(E) $(BINDIR)/
+	install $(OBJBINDIR)epj2make$(B32_SFX)$(E) $(BINDIR)/
+	install $(OBJBINDIR)bgen$(B32_SFX)$(E) $(BINDIR)/
+	install $(OBJBINDIR)documentor$(B32_SFX)$(E) $(BINDIR)/
 ifdef CodeGuard
 	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
 endif
@@ -873,14 +873,14 @@ else
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
 endif
-	install $(INSTALL_FLAGS) $(OBJBINDIR)ecere-ide$(E) $(BINDIR)/ecere-ide$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)ecere-ide$(B32_SFX)$(E) $(BINDIR)/ecere-ide$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(B32_SFX)$(E) $(BINDIR)/ear$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(B32_SFX)$(E) $(BINDIR)/ecc$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(B32_SFX)$(E) $(BINDIR)/ecp$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(B32_SFX)$(E) $(BINDIR)/ecs$(B32_SFX)$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(E) $(BINDIR)/bgen$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(B32_SFX)$(E) $(BINDIR)/epj2make$(B32_SFX)$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(B32_SFX)$(E) $(BINDIR)/bgen$(B32_SFX)$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(B32_SFX)$(E) $(BINDIR)/documentor$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
 ifndef SKIP_ADDITIONAL_FILES
 ifndef BSD_HOST
@@ -972,14 +972,14 @@ ifneq ($(ECERE_AUDIO),n)
 	$(call rm,"$(DESTLIBDIR)/$(LP)EcereAudio$(SO)")
 endif
 endif
-	$(call rm,"$(BINDIR)/ecere-ide$(E)")
+	$(call rm,"$(BINDIR)/ecere-ide$(B32_SFX)$(E)")
 	$(call rm,"$(BINDIR)/ear$(B32_SFX)$(E)")
 	$(call rm,"$(BINDIR)/ecc$(B32_SFX)$(E)")
 	$(call rm,"$(BINDIR)/ecp$(B32_SFX)$(E)")
 	$(call rm,"$(BINDIR)/ecs$(B32_SFX)$(E)")
-	$(call rm,"$(BINDIR)/epj2make$(E)")
-	$(call rm,"$(BINDIR)/bgen$(E)")
-	$(call rm,"$(BINDIR)/documentor$(E)")
+	$(call rm,"$(BINDIR)/epj2make$(B32_SFX)$(E)")
+	$(call rm,"$(BINDIR)/bgen$(B32_SFX)$(E)")
+	$(call rm,"$(BINDIR)/documentor$(B32_SFX)$(E)")
 ifdef CodeGuard
 	$(call rm,"$(BINDIR)/CodeGuard$(E)")
 endif
