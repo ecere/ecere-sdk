@@ -99,6 +99,19 @@ ifneq ($(TARGET_ARCH),$(HOST_ARCH))
 endif
 endif
 
+ifeq ($(HOST_ARCH),x86_64)
+ifeq ($(ARCH),x32)
+   CROSS_BIT32 := defined
+endif
+endif
+
+# CROSS_TARGET_WIN_BOOTSTRAP
+ifdef WINDOWS_TARGET
+ifndef CROSS_TARGET
+   CROSS_TARGET_WIN_BOOTSTRAP := defined
+endif
+endif
+
 # TARGET_TYPE
 ifeq ($(TARGET_TYPE),staticlib)
    STATIC_LIBRARY_TARGET := defined
