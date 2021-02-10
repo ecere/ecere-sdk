@@ -688,9 +688,13 @@ hlp-troubleshoot:
 	@$(info $(_example_space)stat (definition$(comma) origin and flavor) and full (definition$(comma) value$(comma) origin and flavor))
 	@$(info )
 
+# todo: rework this:
+#       $(call str_is,$($1),$(value $1)),<this is a value>,<is function>)
+#   or
+#       $(call str_is,$($1),$1,<this is a function>,<is value>)
 var_info = $(if $(value $1),$1 = $(value $1),$1 is defined as an empty value)
 var_eval = $(if $(value $1),$(if $($1),$1 = $($1),$1 evaluates to an empty value),$1 is defined as an empty value)
-var_both = $(if $(value $1),$1 = $(value $1) $(if $($1),$(if $(call str_is,$($1),$(value $1)),(equal to definition),= $($1)),= (empty value)),$1 is defined as an empty value)
+var_both = $(if $(value $1),$1 = $(value $1)$(if $($1),$(if $(call str_is,$($1),$(value $1)),$(empty), = $($1)), = (empty value)),$1 is defined as an empty value)
 var_stat = $(call var_info,$1) [$(origin $1) $(flavor $1)]
 var_full = $(call var_both,$1) [$(origin $1) $(flavor $1)]
 info_var = $(info $(call $(if $2,$2,var_info),$1))
