@@ -696,16 +696,52 @@ public:
       Window window;
 
 #ifdef __EMSCRIPTEN__
+#ifdef _DEBUG
+      emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main\n");
+      {
+         bool found = false;
+         const char * resourcesFile = "resources.ear";
+         FileListing listing { "/" };
+         // emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main -- listing files @/:\n");
+         // while(listing.Find())
+         //    emscripten_log(EM_LOG_CONSOLE, "      %s\n", listing.name);
+         while(listing.Find())
+         {
+            if(!strcmp(listing.name, resourcesFile))
+            {
+               found = true;
+               break;
+            }
+         }
+         if(!found)
+            emscripten_log(EM_LOG_CONSOLE, "warning: %s not found!\n", resourcesFile);
+      }
+#endif
       {
          int w = 0, h = 0;
          double dw = 0, dh = 0;
+         /*
+         emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main -- sizeof(size_t): %d\n", sizeof(size_t));
+         emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main -- sizeof(void *): %d\n", sizeof(void *));
+         emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main -- sizeof(double): %d\n", sizeof(double));
+         emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main -- sizeof(unsigned int): %d\n", sizeof(unsigned int));
+         */
 
-         emscripten_get_element_css_size(0, &dw, &dh);
+         emscripten_get_element_css_size(target, &dw, &dh);
          w = (int)dw, h = (int)dh;
+#ifdef _DEBUG
+         printf("getElementCssSize  %4dx%-4d\n", w, h);
+         {
+            int w, h;
+            w = h = 0;
+            emscripten_get_screen_size(&w, &h);
+            printf("getScreenSize      %4dx%-4d\n", w, h);
+         }
+#endif
          if(w && h)
          {
-            emscripten_set_canvas_size(w, h);
-            guiApp.desktop.ExternalPosition(0,0, w, h);
+            emscripten_set_canvas_element_size(target, w, h);
+            guiApp.desktop.ExternalPosition(0, 0, w, h);
             if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
                guiApp.desktop.display.Resize(w, h);
          }
@@ -732,7 +768,7 @@ public:
          }
 
 #ifdef __EMSCRIPTEN__
-      emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
+         emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
 #endif
 
          if(desktop)
@@ -1619,6 +1655,26 @@ public:
 #ifdef __EMSCRIPTEN__
 private void emscripten_main_loop_callback()
 {
+   static bool init = true;
+   if(init)
+   {
+      int w = 0, h = 0;
+      double dw = 0, dh = 0;
+      emscripten_get_element_css_size(target, &dw, &dh);
+      w = (int)dw, h = (int)dh;
+#ifdef _DEBUG
+      printf("emscripten_main_loop_callback/init\n");
+      printf("getElementCssSize  %4dx%-4d\n", w, h);
+#endif
+      if(w && h)
+      {
+         emscripten_set_canvas_element_size(target, 0, 0); // w, h
+         guiApp.desktop.ExternalPosition(0, 0, w, h);
+         if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
+            guiApp.desktop.display.Resize(w, h);
+         init = false;
+      }
+   }
    guiApp.ProcessInput(false);
    guiApp.Cycle(false);
    guiApp.UpdateDisplay();

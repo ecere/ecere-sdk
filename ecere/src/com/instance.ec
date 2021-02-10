@@ -10,6 +10,8 @@ namespace com;
 #if defined(__EMSCRIPTEN__)
  #define DISABLE_MEMMGR
  #define _NOMUTEX
+#include <emscripten.h>
+#define OFFSET(s, m) ((uint)(uintptr) (&((s *) 0)->m))
 #endif
 
 import "BinaryTree"
@@ -2477,6 +2479,11 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
    bool inCompiler = (module.application.isGUIApp & 8) ? true : false;
    bool crossBits = force32Bits || force64Bits;
    bool fixed = false;
+
+#if defined(__EMSCRIPTEN__)
+   // emscripten_log(EM_LOG_CONSOLE, "eSystem_RegisterClass(%s)\n", name);
+#endif
+
    if(inCompiler && crossBits)
    {
       Class c = eSystem_FindClass(__thisModule.application, name);
@@ -2819,6 +2826,18 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
             memset((byte *)_class.data + offsetClass, 0, sizeClass);
          }
 
+         if(type == enumClass)
+         {
+               EnumClassData data = (EnumClassData)_class.data;
+               // TOCHECK: Trying this (if specifiers specified, no class found...)
+               // What about bit classes, unit classes...
+               if(base && base.type != enumClass)
+               {
+                  data.values.count = 0;
+                  data.largest = 0;
+               }
+         }
+
          delete (void *)_class.dataTypeString;
          _class.dataTypeString = CopyString(dataTypeString);
          _class.defaultAlignment = base ? base.defaultAlignment : 0;
@@ -3002,6 +3021,9 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
                EnumClassData data = (EnumClassData)_class.data;
                // TOCHECK: Trying this (if specifiers specified, no class found...)
                // What about bit classes, unit classes...
+#if defined(__EMSCRIPTEN__)
+   // emscripten_log(EM_LOG_CONSOLE, "setting data.largest: _class: %p -- _class.data: %p\n", _class, data);
+#endif
                if(base && base.type != enumClass)
                   data.largest = -1;//_class.base = null;
                else
@@ -6786,6 +6808,10 @@ static void LoadCOM(Module module)
 public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char * argv[])
 {
    Application app;
+
+#if defined(__EMSCRIPTEN__)
+   emscripten_log(EM_LOG_CONSOLE, "__ecere_COM_Initialize\n");
+#endif
 
 #ifdef __ANDROID__
    // Clean up global variables

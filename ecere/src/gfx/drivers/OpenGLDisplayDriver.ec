@@ -1128,9 +1128,32 @@ class OpenGLDisplayDriver : DisplayDriver
 
             emscripten_webgl_init_context_attributes(&attribs);
             oglSystem.maxTextureSize = 16384;
+#ifdef _DEBUG
+            printf("emscripten_webgl_create_context\n");
+#endif
             oglSystem.glc = emscripten_webgl_create_context("canvas", &attribs);
             if(emscripten_webgl_make_context_current(oglSystem.glc) == EMSCRIPTEN_RESULT_SUCCESS)
+            {
                result = true;
+
+               {
+                  int w = 0, h = 0;
+                  double dw = 0, dh = 0;
+                  emscripten_get_element_css_size(target, &dw, &dh);
+                  w = (int)dw, h = (int)dh;
+            #ifdef _DEBUG
+                  printf("CreateDisplaySystem\n");
+                  printf("getElementCssSize  %4dx%-4d\n", w, h);
+            #endif
+                  if(w && h)
+                  {
+                     emscripten_set_canvas_element_size(target, 0, 0); // w, h
+                     guiApp.desktop.ExternalPosition(0, 0, w, h);
+                     if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
+                        guiApp.desktop.display.Resize(w, h);
+                  }
+               }
+            }
 
             /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);*/

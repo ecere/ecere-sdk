@@ -1,5 +1,10 @@
 namespace sys;
 
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+// #include <html5.h>
+#endif
+
 #define uint _uint
 #include "zlib.h"
 #undef uint
