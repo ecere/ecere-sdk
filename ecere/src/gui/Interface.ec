@@ -1,5 +1,9 @@
 namespace gui;
 
+#if defined(__EMSCRIPTEN__)
+define target = "#canvas";
+#endif
+
 import "Window"
 
 // Key to character mapping

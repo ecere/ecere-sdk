@@ -47,6 +47,20 @@ private:
 
 static Point lastMouse;
 
+const char *emscripten_result_to_string(EMSCRIPTEN_RESULT result)
+{
+   if(result == EMSCRIPTEN_RESULT_SUCCESS)             return "success";
+   if(result == EMSCRIPTEN_RESULT_DEFERRED)            return "deferred";
+   if(result == EMSCRIPTEN_RESULT_NOT_SUPPORTED)       return "not supported";
+   if(result == EMSCRIPTEN_RESULT_FAILED_NOT_DEFERRED) return "failed not deferred";
+   if(result == EMSCRIPTEN_RESULT_INVALID_TARGET)      return "invalid target";
+   if(result == EMSCRIPTEN_RESULT_UNKNOWN_TARGET)      return "unknown target";
+   if(result == EMSCRIPTEN_RESULT_INVALID_PARAM)       return "invalid param";
+   if(result == EMSCRIPTEN_RESULT_FAILED)              return "failed";
+   if(result == EMSCRIPTEN_RESULT_NO_DATA)             return "no data";
+   return "unknown";
+}
+
 static __attribute__((unused)) inline const char *emscripten_event_type_to_string(int eventType) {
   const char *events[] = { "(invalid)", "(none)", "keypress", "keydown", "keyup", "click", "mousedown", "mouseup", "dblclick", "mousemove", "wheel", "resize",
     "scroll", "blur", "focus", "focusin", "focusout", "deviceorientation", "devicemotion", "orientationchange", "fullscreenchange", "pointerlockchange",
@@ -81,19 +95,18 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
    switch(eventType)
    {
       case EMSCRIPTEN_EVENT_MOUSEMOVE:
-         lastMouse = { e->canvasX, e->canvasY };
+         lastMouse = { e->targetX, e->targetY };
          window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove,
-            e->canvasX, e->canvasY, &mods, false, true);
+            e->targetX, e->targetY, &mods, false, true);
          movementX += e->movementX;
          movementY += e->movementY;
          break;
       case EMSCRIPTEN_EVENT_MOUSEDOWN:
-         // PrintLn("EMSCRIPTEN_EVENT_MOUSEDOWN!");
          methodID =
             e->button == 0 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown :
             e->button == 2 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown :
                              __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown;
-         window.MouseMessage(methodID, e->canvasX, e->canvasY, &mods, false, true);
+         window.MouseMessage(methodID, e->targetX, e->targetY, &mods, false, true);
          if(e->button == 0)
             mouseButtons |= 1;
          else if(e->button == 2)
@@ -106,7 +119,7 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
             e->button == 0 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp :
             e->button == 2 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp :
                              __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonUp;
-         window.MouseMessage(methodID, e->canvasX, e->canvasY, &mods, false, true);
+         window.MouseMessage(methodID, e->targetX, e->targetY, &mods, false, true);
          if(e->button == 0)
             mouseButtons &= ~1;
          else if(e->button == 2)
@@ -119,15 +132,15 @@ static EM_BOOL mouse_callback(int eventType, const EmscriptenMouseEvent *e, void
             e->button == 0 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick :
             e->button == 2 ? __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick :
                              __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick;
-         window.MouseMessage(methodID, e->canvasX, e->canvasY, &mods, false, true);
+         window.MouseMessage(methodID, e->targetX, e->targetY, &mods, false, true);
          break;
    }
 
 /*
-   printf("%s, screen: (%ld,%ld), client: (%ld,%ld),%s%s%s%s button: %hu, buttons: %hu, movement: (%ld,%ld), canvas: (%ld,%ld)\n",
+   printf("~ %s, screen: (%ld,%ld), client: (%ld,%ld),%s%s%s%s button: %hu, buttons: %hu, movement: (%ld,%ld), target: (%ld,%ld)\n",
       emscripten_event_type_to_string(eventType), e->screenX, e->screenY, e->clientX, e->clientY,
       e->ctrlKey ? " CTRL" : "", e->shiftKey ? " SHIFT" : "", e->altKey ? " ALT" : "", e->metaKey ? " META" : "",
-      e->button, e->buttons, e->movementX, e->movementY, e->canvasX, e->canvasY);
+      e->button, e->buttons, e->movementX, e->movementY, e->targetX, e->targetY);
 */
    result = false;
    return !result;
@@ -140,7 +153,7 @@ static Array<TouchPointerInfo> buildPointerInfo(const EmscriptenTouchEvent * eve
    int i;
    for(i = 0; i < count; i++)
    {
-      infos[i].point = { event->touches[i].canvasX, event->touches[i].canvasY };
+      infos[i].point = { event->touches[i].targetX, event->touches[i].targetY };
       infos[i].id = i;
       infos[i].pressure = 0;
       infos[i].size = 0;
@@ -166,9 +179,9 @@ static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void
       case EMSCRIPTEN_EVENT_TOUCHMOVE:
       {
          Array<TouchPointerInfo> infos = buildPointerInfo(e);
-         lastMouse = { t1->canvasX, t1->canvasY };
+         lastMouse = { t1->targetX, t1->targetY };
          if(window.MultiTouchMessage(move, infos, &mods, false, true))
-            window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, t1->canvasX, t1->canvasY, &mods, false, true);
+            window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, t1->targetX, t1->targetY, &mods, false, true);
          delete infos;
          break;
       }
@@ -180,19 +193,19 @@ static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void
             static int mouseX, mouseY;
             static Time lastTime = 0;
             Time time = GetTime();
-            if(Abs(t1->canvasX - mouseX) < 40 && Abs(t1->canvasY - mouseY) < 40 && time - lastTime < 0.3)
+            if(Abs(t1->targetX - mouseX) < 40 && Abs(t1->targetY - mouseY) < 40 && time - lastTime < 0.3)
             {
                methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick;
-               if(!window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true))
+               if(!window.MouseMessage(methodID, t1->targetX, t1->targetY, &mods, false, true))
                   result = false;
             }
             lastTime = time;
-            mouseX = t1->canvasX, mouseY = t1->canvasY;
+            mouseX = t1->targetX, mouseY = t1->targetY;
             if(result)
             {
                methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown;
                // result = ?
-               window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true);
+               window.MouseMessage(methodID, t1->targetX, t1->targetY, &mods, false, true);
             }
             mouseButtons |= 1;
          }
@@ -207,7 +220,7 @@ static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void
       case EMSCRIPTEN_EVENT_TOUCHCANCEL:
       case EMSCRIPTEN_EVENT_TOUCHEND:
          methodID = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
-         if(window.MouseMessage(methodID, t1->canvasX, t1->canvasY, &mods, false, true))
+         if(window.MouseMessage(methodID, t1->targetX, t1->targetY, &mods, false, true))
          {
             Array<TouchPointerInfo> infos = buildPointerInfo(e);
             window.MultiTouchMessage(e->numTouches > 1 ? pointerUp : up, infos, &mods, false, true);
@@ -223,6 +236,7 @@ static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void
 
 static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void *userData)
 {
+   printf("wheel_callback\n");
    Window window = guiApp.desktop;
    Key key = (e->deltaY < 0 || e->deltaX < 0) ? wheelUp : wheelDown;
 
@@ -231,10 +245,10 @@ static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void
    key.ctrl = e->mouse.ctrlKey ? true : false;
 
    /*
-   printf("%s, screen: (%ld,%ld), client: (%ld,%ld),%s%s%s%s button: %hu, buttons: %hu, canvas: (%ld,%ld), delta:(%g,%g,%g), deltaMode:%lu\n",
+   printf("%s, screen: (%ld,%ld), client: (%ld,%ld),%s%s%s%s button: %hu, buttons: %hu, target: (%ld,%ld), delta:(%g,%g,%g), deltaMode:%lu\n",
     emscripten_event_type_to_string(eventType), e->mouse.screenX, e->mouse.screenY, e->mouse.clientX, e->mouse.clientY,
     e->mouse.ctrlKey ? " CTRL" : "", e->mouse.shiftKey ? " SHIFT" : "", e->mouse.altKey ? " ALT" : "", e->mouse.metaKey ? " META" : "",
-    e->mouse.button, e->mouse.buttons, e->mouse.canvasX, e->mouse.canvasY,
+    e->mouse.button, e->mouse.buttons, e->mouse.targetX, e->mouse.targetY,
     (float)e->deltaX, (float)e->deltaY, (float)e->deltaZ, e->deltaMode);
    */
 
@@ -242,54 +256,8 @@ static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void
 
    return 1;
 }
+
 static bool keyStatus[KeyCode];
-
-EM_BOOL pointerlockchange_callback(int eventType, const EmscriptenPointerlockChangeEvent *e, void *userData)
-{
-   if(!e->isActive)
-   {
-      if(guiApp.acquiredWindow)
-      {
-         guiApp.acquiredWindow.acquiredInput = false;
-         guiApp.acquiredWindow = null;
-      }
-   }
-   else
-   {
-      Window w = guiApp.desktop;
-      if(w && w.children.first) w = w.children.first;
-      guiApp.acquiredWindow = w;
-      guiApp.acquiredWindow.acquiredInput = true;
-   }
-/*
-  printf("%s, isActive: %d, pointerlock element nodeName: \"%s\", id: \"%s\"\n",
-    emscripten_event_type_to_string(eventType), e->isActive, e->nodeName, e->id);
-*/
-   movementX = 0;
-   movementY = 0;
-   return 0;
-}
-
-EM_BOOL fullscreenchange_callback(int eventType, const EmscriptenFullscreenChangeEvent *e, void *userData)
-{
-   int w = 0, h = 0;
-   double dw = 0, dh = 0;
-   isFullScreen = (bool)e->isFullscreen;
-   *&guiApp.fullScreen = isFullScreen;
-
-   emscripten_get_element_css_size(0, &dw, &dh);
-   w = (int)dw, h = (int)dh;
-   if(w && h)
-   {
-      emscripten_set_canvas_size(w, h);
-      guiApp.desktop.ExternalPosition(0,0, w, h);
-      if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
-         guiApp.desktop.display.Resize(w, h);
-   }
-   movementX = 0;
-   movementY = 0;
-   return 0;
-}
 
 // The event handler functions can return 1 to suppress the event and disable the default action. That calls event.preventDefault();
 // Returning 0 signals that the event was not consumed by the code, and will allow the event to pass on and bubble up normally.
@@ -298,6 +266,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
    Window window = guiApp.desktop;
    Key key = 0;
    bool result = 0;
+   printf("key_callback\n");
    switch(e->keyCode)
    {
       case 8: key = backSpace; break;
@@ -427,6 +396,12 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
       //case 46: key = keyPadDelete; break;
 
       case 11: key = keyPadSlash; break;
+
+      default:
+         printf("%s, key: \"%s\", code: \"%s\", location: %lu,%s%s%s%s repeat: %d, locale: \"%s\", char: \"%s\", charCode: %lu, keyCode: %lu, which: %lu\n",
+               emscripten_event_type_to_string(eventType), e->key, e->code, e->location,
+               e->ctrlKey ? " CTRL" : "", e->shiftKey ? " SHIFT" : "", e->altKey ? " ALT" : "", e->metaKey ? " META" : "",
+               e->repeat, e->locale, e->charValue, e->charCode, e->keyCode, e->which);
    }
 
    key.alt = e->altKey ? true : false;
@@ -508,34 +483,248 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
   return !result;
 }
 
+EM_BOOL pointerlockchange_callback(int eventType, const EmscriptenPointerlockChangeEvent *e, void *userData)
+{
+   printf("pointerlockchange_callback\n");
+   if(!e->isActive)
+   {
+      if(guiApp.acquiredWindow)
+      {
+         guiApp.acquiredWindow.acquiredInput = false;
+         guiApp.acquiredWindow = null;
+      }
+   }
+   else
+   {
+      Window w = guiApp.desktop;
+      if(w && w.children.first) w = w.children.first;
+      guiApp.acquiredWindow = w;
+      guiApp.acquiredWindow.acquiredInput = true;
+   }
+  printf("%s, isActive: %d, pointerlock element nodeName: \"%s\", id: \"%s\"\n",
+    emscripten_event_type_to_string(eventType), e->isActive, e->nodeName, e->id);
+/*
+*/
+   movementX = 0;
+   movementY = 0;
+   return 0;
+}
+
+EM_BOOL fullscreenchange_callback(int eventType, const EmscriptenFullscreenChangeEvent *e, void *userData)
+{
+/*
+   EM_BOOL isFullscreen;
+   EM_BOOL fullscreenEnabled;
+   EM_UTF8 nodeName[EM_HTML5_LONG_STRING_LEN_BYTES];
+   EM_UTF8 id[EM_HTML5_LONG_STRING_LEN_BYTES];
+   int elementWidth;
+   int elementHeight;
+   int screenWidth;
+   int screenHeight;
+*/
+
+   int w = 0, h = 0;
+   double dw = 0, dh = 0;
+   printf("fullscreenchange_callback\n");
+   isFullScreen = (bool)e->isFullscreen;
+   *&guiApp.fullScreen = isFullScreen;
+
+   emscripten_get_element_css_size(target, &dw, &dh);
+   w = (int)dw, h = (int)dh;
+   if(w && h)
+   {
+      // emscripten_set_canvas_size(w, h);
+      emscripten_set_canvas_element_size(target, w, h);
+      guiApp.desktop.ExternalPosition(0,0, w, h);
+      if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
+         guiApp.desktop.display.Resize(w, h);
+   }
+   movementX = 0;
+   movementY = 0;
+   return 0;
+}
+
+EM_BOOL deviceorientation_callback(int eventType, const EmscriptenDeviceOrientationEvent *e, void *userData)
+{
+/*
+  double alpha;
+  double beta;
+  double gamma;
+  EM_BOOL absolute;
+*/
+#ifdef _DEBUG
+   printf("%s, (%g, %g, %g)\n", emscripten_event_type_to_string(eventType), e->alpha, e->beta, e->gamma);
+#endif
+   return 0;
+}
+
+EM_BOOL devicemotion_callback(int eventType, const EmscriptenDeviceMotionEvent *e, void *userData)
+{
+/*
+  double accelerationX;
+  double accelerationY;
+  double accelerationZ;
+  double accelerationIncludingGravityX;
+  double accelerationIncludingGravityY;
+  double accelerationIncludingGravityZ;
+  double rotationRateAlpha;
+  double rotationRateBeta;
+  double rotationRateGamma;
+  int supportedFields;
+*/
+#ifdef _DEBUG
+   printf("%s, accel: (%g, %g, %g), accelInclGravity: (%g, %g, %g), rotationRate: (%g, %g, %g), supportedFields: %s %s %s\n",
+   emscripten_event_type_to_string(eventType),
+   e->accelerationX, e->accelerationY, e->accelerationZ,
+   e->accelerationIncludingGravityX, e->accelerationIncludingGravityY, e->accelerationIncludingGravityZ,
+   e->rotationRateAlpha, e->rotationRateBeta, e->rotationRateGamma,
+   (e->supportedFields & EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ACCELERATION) ? "EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ACCELERATION" : "",
+   (e->supportedFields & EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ACCELERATION_INCLUDING_GRAVITY) ? "EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ACCELERATION_INCLUDING_GRAVITY" : "",
+   (e->supportedFields & EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ROTATION_RATE) ? "EMSCRIPTEN_DEVICE_MOTION_EVENT_SUPPORTS_ROTATION_RATE" : "");
+#endif
+   return 0;
+}
+
+EM_BOOL orientationchange_callback(int eventType, const EmscriptenOrientationChangeEvent *e, void *userData)
+{
+/*
+  int orientationIndex;
+  int orientationAngle;
+*/
+#ifdef _DEBUG
+   printf("%s, orientationAngle: %d, orientationIndex: %d\n", emscripten_event_type_to_string(eventType), e->orientationAngle, e->orientationIndex);
+#endif
+   return 0;
+}
+
+EM_BOOL visibilitychange_callback(int eventType, const EmscriptenVisibilityChangeEvent *e, void *userData)
+{
+/*
+  EM_BOOL hidden;
+  int visibilityState;
+*/
+#ifdef _DEBUG
+   printf("%s, hidden: %d, visibilityState: %d\n", emscripten_event_type_to_string(eventType), e->hidden, e->visibilityState);
+#endif
+   return 0;
+}
+
+EM_BOOL webglcontext_callback(int eventType, const void *reserved, void *userData)
+{
+#ifdef _DEBUG
+   printf("%s.\n", emscripten_event_type_to_string(eventType));
+#endif
+   return 0;
+}
+
 static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void *userData)
 {
+/*
+  long detail;
+  int documentBodyClientWidth;
+  int documentBodyClientHeight;
+  int windowInnerWidth;
+  int windowInnerHeight;
+  int windowOuterWidth;
+  int windowOuterHeight;
+  int scrollTop;
+  int scrollLeft;
+*/
+
+   // emscripten_log(EM_LOG_CONSOLE, "uievent_callback\n");
    switch(eventType)
    {
+      /*
+      EMSCRIPTEN_EVENT_KEYPRESS
+      EMSCRIPTEN_EVENT_KEYDOWN
+      EMSCRIPTEN_EVENT_KEYUP
+      EMSCRIPTEN_EVENT_CLICK
+      EMSCRIPTEN_EVENT_MOUSEDOWN
+      EMSCRIPTEN_EVENT_MOUSEUP
+      EMSCRIPTEN_EVENT_DBLCLICK
+      EMSCRIPTEN_EVENT_MOUSEMOVE
+      EMSCRIPTEN_EVENT_WHEEL
+      EMSCRIPTEN_EVENT_RESIZE
+      EMSCRIPTEN_EVENT_SCROLL
+      EMSCRIPTEN_EVENT_BLUR
+      EMSCRIPTEN_EVENT_FOCUS
+      EMSCRIPTEN_EVENT_FOCUSIN
+      EMSCRIPTEN_EVENT_FOCUSOUT
+      EMSCRIPTEN_EVENT_DEVICEORIENTATION
+      EMSCRIPTEN_EVENT_DEVICEMOTION
+      EMSCRIPTEN_EVENT_ORIENTATIONCHANGE
+      EMSCRIPTEN_EVENT_FULLSCREENCHANGE
+      EMSCRIPTEN_EVENT_POINTERLOCKCHANGE
+      EMSCRIPTEN_EVENT_VISIBILITYCHANGE
+      EMSCRIPTEN_EVENT_TOUCHSTART
+      EMSCRIPTEN_EVENT_TOUCHEND
+      EMSCRIPTEN_EVENT_TOUCHMOVE
+      EMSCRIPTEN_EVENT_TOUCHCANCEL
+      EMSCRIPTEN_EVENT_GAMEPADCONNECTED
+      EMSCRIPTEN_EVENT_GAMEPADDISCONNECTED
+      EMSCRIPTEN_EVENT_BEFOREUNLOAD
+      EMSCRIPTEN_EVENT_BATTERYCHARGINGCHANGE
+      EMSCRIPTEN_EVENT_BATTERYLEVELCHANGE
+      EMSCRIPTEN_EVENT_WEBGLCONTEXTLOST
+      EMSCRIPTEN_EVENT_WEBGLCONTEXTRESTORED
+      EMSCRIPTEN_EVENT_MOUSEENTER
+      EMSCRIPTEN_EVENT_MOUSELEAVE
+      EMSCRIPTEN_EVENT_MOUSEOVER
+      EMSCRIPTEN_EVENT_MOUSEOUT
+      EMSCRIPTEN_EVENT_CANVASRESIZED
+      EMSCRIPTEN_EVENT_POINTERLOCKERROR
+      */
+
       case EMSCRIPTEN_EVENT_RESIZE:
       //case EMSCRIPTEN_EVENT_SCROLL:
       {
          int w = 0, h = 0;
          double dw = 0, dh = 0;
-         emscripten_get_element_css_size(0, &dw, &dh);
+         printf("uievent/resize\n");
+         printf("documentBodyClient %4dx%-4d\n", e->documentBodyClientWidth, e->documentBodyClientHeight);
+         printf("windowInner        %4dx%-4d\n", e->windowInnerWidth, e->windowInnerHeight);
+         printf("windowOuter        %4dx%-4d\n", e->windowOuterWidth, e->windowOuterHeight);
+
+         emscripten_get_element_css_size(target, &dw, &dh);
          w = (int)dw, h = (int)dh;
+         printf("getElementCssSize  %4dx%-4d\n", w, h);
          if(w && h)
          {
-            emscripten_set_canvas_size(w, h);
+            emscripten_set_canvas_element_size(target, w, h);
             guiApp.desktop.ExternalPosition(0,0, w, h);
             if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
                guiApp.desktop.display.Resize(w, h);
          }
          //PrintLn("EMSCRIPTEN_EVENT_RESIZE: ", w, " x ", h);
+         printf("scroll             %4dx%-4d\n", e->scrollTop, e->scrollLeft);
          break;
       }
+      default:
+         printf("%s, detail: %ld, document.body.client size: (%d,%d), window.inner size: (%d,%d), scrollPos: (%d, %d)\n",
+               emscripten_event_type_to_string(eventType), e->detail, e->documentBodyClientWidth, e->documentBodyClientHeight,
+               e->windowInnerWidth, e->windowInnerHeight, e->scrollTop, e->scrollLeft);
    }
+   return EM_FALSE;
+}
+
+EM_BOOL focusevent_callback(int eventType, const EmscriptenFocusEvent *e, void *userData)
+{
    /*
-   printf("%s, detail: %ld, document.body.client size: (%d,%d), window.inner size: (%d,%d), scrollPos: (%d, %d)\n",
-      emscripten_event_type_to_string(eventType), e->detail, e->documentBodyClientWidth, e->documentBodyClientHeight,
-      e->windowInnerWidth, e->windowInnerHeight, e->scrollTop, e->scrollLeft);
+   EM_UTF8 nodeName[EM_HTML5_LONG_STRING_LEN_BYTES];
+   EM_UTF8 id[EM_HTML5_LONG_STRING_LEN_BYTES];
    */
+#ifdef _DEBUG
+   printf("%s, nodeName: \"%s\", id: \"%s\"\n", emscripten_event_type_to_string(eventType), e->nodeName, e->id[0] == '\0' ? "(empty string)" : e->id);
+#endif
    return 0;
+}
+
+static inline void emReturnTest(const char * name, EMSCRIPTEN_RESULT ret, int * okCount)
+{
+   if(ret == EMSCRIPTEN_RESULT_SUCCESS)
+      ++(*okCount);
+   else
+      printf("error: %s call failure: %s\n", name, emscripten_result_to_string(ret));
 }
 
 class EmscriptenInterface : Interface
@@ -546,31 +735,55 @@ class EmscriptenInterface : Interface
 
    bool ::Initialize()
    {
-      emscripten_set_resize_callback(0, 0, 1, uievent_callback);
-      //emscripten_set_scroll_callback(0, 0, 1, uievent_callback);
+      int okCount = 0;
+      // EMSCRIPTEN_RESULT ret;
+      // The event listener is applied to the JavaScript:
+      const char * invalid = EMSCRIPTEN_EVENT_TARGET_INVALID;     // 0
+      const char * document = EMSCRIPTEN_EVENT_TARGET_DOCUMENT;   // 'document' object.
+      const char * window = EMSCRIPTEN_EVENT_TARGET_WINDOW;       // 'window' object.
+      const char * screen = EMSCRIPTEN_EVENT_TARGET_SCREEN;       // 'window.screen' object.
+      const char * canvas = target;                               // #canvas
 
-      emscripten_set_click_callback(0, 0, 1, mouse_callback);
-      emscripten_set_mousedown_callback(0, 0, 1, mouse_callback);
-      emscripten_set_mouseup_callback(0, 0, 1, mouse_callback);
-      emscripten_set_dblclick_callback(0, 0, 1, mouse_callback);
-      emscripten_set_mousemove_callback(0, 0, 1, mouse_callback);
-      /*emscripten_set_mouseenter_callback(0, 0, 1, mouse_callback);
-      emscripten_set_mouseleave_callback(0, 0, 1, mouse_callback);*/
+      emReturnTest("emscripten_set_resize_callback",              emscripten_set_resize_callback(window, null, 0, uievent_callback), &okCount);
+   // emReturnTest("emscripten_set_scroll_callback",              emscripten_set_scroll_callback(document, null, 1, uievent_callback), &okCount);
 
-      emscripten_set_wheel_callback(0, 0, 1, wheel_callback);
+      emReturnTest("emscripten_set_click_callback",               emscripten_set_click_callback(window, null, 1, mouse_callback), &okCount);
+      emReturnTest("emscripten_set_mousedown_callback",           emscripten_set_mousedown_callback(window, null, 1, mouse_callback), &okCount);
+      emReturnTest("emscripten_set_mouseup_callback",             emscripten_set_mouseup_callback(window, null, 1, mouse_callback), &okCount);
+      emReturnTest("emscripten_set_dblclick_callback",            emscripten_set_dblclick_callback(window, null, 1, mouse_callback), &okCount);
+      emReturnTest("emscripten_set_mousemove_callback",           emscripten_set_mousemove_callback(window, null, 1, mouse_callback), &okCount);
+   // emReturnTest("emscripten_set_mouseenter_callback",          emscripten_set_mouseenter_callback(canvas, null, 1, mouse_callback), &okCount);
+   // emReturnTest("emscripten_set_mouseleave_callback",          emscripten_set_mouseleave_callback(canvas, null, 1, mouse_callback), &okCount);
 
-      emscripten_set_keypress_callback(0, 0, 1, key_callback);
-      emscripten_set_keydown_callback(0, 0, 1, key_callback);
-      emscripten_set_keyup_callback(0, 0, 1, key_callback);
+      emReturnTest("emscripten_set_wheel_callback",               emscripten_set_wheel_callback(canvas, null, 1, wheel_callback), &okCount);
 
-      emscripten_set_pointerlockchange_callback(0, 0, 1, pointerlockchange_callback);
-      emscripten_set_fullscreenchange_callback(0, 0, 1, fullscreenchange_callback);
+      emReturnTest("emscripten_set_keypress_callback",            emscripten_set_keypress_callback(window, null, 1, key_callback), &okCount);
+      emReturnTest("emscripten_set_keydown_callback",             emscripten_set_keydown_callback(window, null, 1, key_callback), &okCount);
+      emReturnTest("emscripten_set_keyup_callback",               emscripten_set_keyup_callback(window, null, 1, key_callback), &okCount);
 
-      emscripten_set_touchstart_callback(0, 0, 1, touch_callback);
-      emscripten_set_touchend_callback(0, 0, 1, touch_callback);
-      emscripten_set_touchmove_callback(0, 0, 1, touch_callback);
-      emscripten_set_touchcancel_callback(0, 0, 1, touch_callback);
+      emReturnTest("emscripten_set_pointerlockchange_callback",   emscripten_set_pointerlockchange_callback(document, null, 1, pointerlockchange_callback), &okCount);
+      emReturnTest("emscripten_set_fullscreenchange_callback",    emscripten_set_fullscreenchange_callback(document, null, 1, fullscreenchange_callback), &okCount);
 
+   // emReturnTest("emscripten_set_blur_callback",                emscripten_set_blur_callback(window, null, 1, focusevent_callback), &okCount);
+   // emReturnTest("emscripten_set_focus_callback",               emscripten_set_focus_callback(window, null, 1, focusevent_callback), &okCount);
+   // emReturnTest("emscripten_set_focusin_callback",             emscripten_set_focusin_callback(window, null, 1, focusevent_callback), &okCount);
+   // emReturnTest("emscripten_set_focusout_callback",            emscripten_set_focusout_callback(window, null, 1, focusevent_callback), &okCount);
+
+      emReturnTest("emscripten_set_deviceorientation_callback",   emscripten_set_deviceorientation_callback(null, 1, deviceorientation_callback), &okCount);
+      emReturnTest("emscripten_set_devicemotion_callback",        emscripten_set_devicemotion_callback(null, 1, devicemotion_callback), &okCount);
+
+      emReturnTest("emscripten_set_orientationchange_callback",   emscripten_set_orientationchange_callback(null, 1, orientationchange_callback), &okCount);
+
+      emReturnTest("emscripten_set_touchstart_callback",          emscripten_set_touchstart_callback(window, null, 1, touch_callback), &okCount);
+      emReturnTest("emscripten_set_touchend_callback",            emscripten_set_touchend_callback(window, null, 1, touch_callback), &okCount);
+      emReturnTest("emscripten_set_touchmove_callback",           emscripten_set_touchmove_callback(window, null, 1, touch_callback), &okCount);
+      emReturnTest("emscripten_set_touchcancel_callback",         emscripten_set_touchcancel_callback(window, null, 1, touch_callback), &okCount);
+
+      emReturnTest("emscripten_set_webglcontextlost_callback",    emscripten_set_webglcontextlost_callback(canvas, null, 1, webglcontext_callback), &okCount);
+      emReturnTest("emscripten_set_webglcontextrestored_callback",emscripten_set_webglcontextrestored_callback(canvas, null, 1, webglcontext_callback), &okCount);
+
+      // emscripten_log(EM_LOG_CONSOLE, "EmscriptenInterface::Initialize OK\n");
+      printf("AAA EmscriptenInterface::Initialize -- %dxOk\n", okCount);
       return true;
    }
 
@@ -626,7 +839,7 @@ class EmscriptenInterface : Interface
    bool ::ScreenMode(bool fullScreen, Resolution resolution, PixelFormat colorDepth, int refreshRate, bool * textMode)
    {
       if(fullScreen)
-         emscripten_request_fullscreen(0, 1);
+         emscripten_request_fullscreen(target, 1);
       else
          emscripten_exit_fullscreen();
       return true;
@@ -784,7 +997,7 @@ class EmscriptenInterface : Interface
    bool ::AcquireInput(Window window, bool state)
    {
       if(state)
-         emscripten_request_pointerlock(0, 1);
+         emscripten_request_pointerlock(target, 1);
       else
          emscripten_exit_pointerlock();
 
