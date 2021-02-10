@@ -628,6 +628,7 @@ troubleshoot-core:
 	@$(call info_check_var_defined,WINDOWS_TARGET,var_full)
 	@$(call info_check_var_defined,BSD_HOST,var_full)
 	@$(call info_check_var_defined,BSD_TARGET,var_full)
+	@$(call info_check_var_defined,HOST_ARCH,var_full)
 	@$(call info_check_var_defined,TARGET_ARCH,var_full)
 	@$(info -- arch variables --)
 	@$(call info_check_var_defined,ARCH,var_full)
