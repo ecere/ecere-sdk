@@ -199,6 +199,14 @@ all: eda codeguard ecereaudio
 
 include Makefile.bindings
 
+.PHONY: all32
+all32:
+ifeq ($(HOST_ARCH),x86_64)
+	+$(_MAKE) ARCH=x32 all
+else
+	$(error bad use: host must be 64-bit for 'all32' target to be valid)
+endif
+
 outputdirs:
 	$(call mkdir,$(OBJDIR))
 	$(call mkdir,$(OBJBINDIR))
@@ -706,9 +714,25 @@ ifdef CodeGuard
 endif
 	$(call cp,ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A),$(OBJLIBDIR))
 
+.PHONY: prepinstall32
+prepinstall32:
+ifeq ($(HOST_ARCH),x86_64)
+	+$(_MAKE) ARCH=x32 prepinstall
+else
+	$(error bad use: host must be 64-bit for 'prepinstall32' target to be valid)
+endif
+
 #TODO: Samples?
 install: actualinstall
 	@$(call echo,The Ecere SDK$(if $(CROSS_BIT32), (32-bit),) has been installed.)
+
+.PHONY: install32
+install32:
+ifeq ($(HOST_ARCH),x86_64)
+	+$(_MAKE) ARCH=x32 SKIP_ADDITIONAL_FILES=x install
+else
+	$(error bad use: host must be 64-bit for 'all32' target to be valid)
+endif
 
 copyonlyinstall: actualinstall
 	@$(call echo,The Ecere SDK has been installed. copyonlyinstall.)
