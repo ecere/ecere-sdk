@@ -56,7 +56,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereBootstrap$(A)
+TARGET = $(OBJ)$(LP)ecereBootstrap$(A)
 
 OBJECTS = \
 	$(OBJ)Array.o \
