@@ -199,6 +199,7 @@ all: eda codeguard ecereaudio
 
 include Makefile.bindings
 
+DOCUMENTED_TARGETS += all32
 .PHONY: all32
 all32:
 ifeq ($(HOST_ARCH),x86_64)
@@ -714,6 +715,7 @@ ifdef CodeGuard
 endif
 	$(call cp,ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A),$(OBJLIBDIR))
 
+DOCUMENTED_TARGETS += prepinstall32
 .PHONY: prepinstall32
 prepinstall32:
 ifeq ($(HOST_ARCH),x86_64)
@@ -726,6 +728,7 @@ endif
 install: actualinstall
 	@$(call echo,The Ecere SDK$(if $(CROSS_BIT32), (32-bit),) has been installed.)
 
+DOCUMENTED_TARGETS += install32
 .PHONY: install32
 install32:
 ifeq ($(HOST_ARCH),x86_64)
