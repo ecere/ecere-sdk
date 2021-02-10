@@ -2,6 +2,9 @@ import IMPORT_STATIC "ecere"
 
 class HelloForm : Window
 {
+   size = { 280, 100 };
+   background = green;
+#if 0
    text = "My First eC Application";
 #if 0
    borderStyle = sizable;
@@ -31,6 +34,7 @@ class HelloForm : Window
          return true;
       }
    };
+#endif // 0
 #endif // 0
 };
 
