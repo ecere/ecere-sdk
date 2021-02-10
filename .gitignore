@@ -88,3 +88,24 @@ _py*.c
 helloController.*
 helloGnosIS.*
 helloGnosIS_template.*
+
+# unused temporary ignores
+#misc/
+
+# temporary ignores
+bindings-delete-this/
+bindings-odd/
+bgen/src/c/c_test_makefile.src
+bgentestlib/bgenSupportLevel1.ec
+delete.git/
+ecere/src/gfx/newFonts/cc-tilesAPI/
+ecere/src/gfx/newFonts/nr/
+samples/bindings/c-pfx/
+samples/bindings/cpp/11_guiWindowWithCube/iterations/
+samples/bindings/cpp/900_series/
+samples/bindings/cpp/test-simulaneus-simulated-sample-compilation.bat
+samples/bindings/java/
+samples/bindings/py/helper-py.epj
+samples/guiAndGfx/HelloForm/wasm-template-from-ecere-chess.html
+samples/misc/c/
+setup.cfg
