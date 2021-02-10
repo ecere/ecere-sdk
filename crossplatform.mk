@@ -197,7 +197,9 @@ ifdef CROSS_BITDEPTH
  # note: arch stuff is missing on windows
  ifeq ($(HOST_ARCH),x86_64)
   ifeq ($(TARGET_ARCH),i386)
-   B32_SFX := 32
+   ifeq ($(NO_B32_SFX),)
+    B32_SFX := 32
+   endif
   endif
  endif
 endif
