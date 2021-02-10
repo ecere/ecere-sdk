@@ -679,4 +679,17 @@ troubleshoot-version:
 	@$(call info_check_var_defined,DIR_VER,var_full)
 	@$(call info_check_var_defined,REPOSITORY_VER,var_full)
 
+NOT_PARALLEL_TARGETS += troubleshoot-vartypes-examples
+.PHONY: troubleshoot-vartypes-examples
+troubleshoot-vartypes-examples:
+	@$(info -- variable types examples --)
+	@$(call info_check_var_defined,empty,var_full)
+	@$(call info_check_var_defined,space,var_full)
+	@$(call info_check_var_defined,backslash,var_full)
+	@$(call info_check_var_defined,hidspace,var_full)
+	@$(call info_check_var_defined,OS,var_full)
+	@$(call info_check_var_defined,OSTYPE,var_full)
+	@$(call info_check_var_defined,TERM,var_full)
+	@$(call info_check_var_defined,SHELL,var_full)
+
 .DEFAULT_GOAL =
