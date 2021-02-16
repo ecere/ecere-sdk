@@ -29,6 +29,142 @@ private:
    }
 }
 
+public class OptionsMap : Map<String, JSONTypeOptions>
+{
+   ~OptionsMap()
+   {
+      Free();
+   }
+}
+
+public class JSONTypeOptions : uint
+{
+   /*
+    * bit class to hold flags tht apply to a specific class when
+    * (de)serialized (from)to JSON
+    */
+
+   // Options to force use of OnGetDataFromString for a specific JSON type
+
+public:
+   // Numeric values: (hexa)decimal int, double (allows exponent notation).
+   bool numbersUseOGDFS:1;
+   // JSON booleans: unquoted true or false.
+   bool boolUseOGDFS:1;
+   // JSON null value: unquoted null.
+   bool nullUseOGDFS:1;
+   // Values enclosed in '"double quotes"'
+   bool stringUseOGDFS:1;
+   // Values enclosed in '[brackets]'
+   bool arrayUseOGDFS:1;
+   // Values enclosed in '{braces}'
+   bool objectUseOGDFS:1;
+   // Set this to remove surrounding quotes before calling OGDFS: kept by default;
+   bool stripQuotesForOGDFS:1;
+   // If the current JSON type is not among those that should ude OGDFS, fail immediatelyu.
+   bool strictOGDFS:1;
+   // Options to control the writing of an object to JSON/eCON.
+   //   bool boolUseOGDFS:1;
+   //   bool nullUseOGDFS:1;
+}
+
+
+OptionsMap defaultJsonOptions{[
+   {
+      "FieldValue", {
+         // Without the type part, the value is read and set, but
+         // the type remains 0 and teh bject is unusable.
+         // sonething like { "d" : 1.2, "type" : {"type" : 2}} would be
+         // interpreted corectly, but do we want to expose so
+         // much implementataion in JSON files? FieldValue is
+         // not meant to read arrays, maps or anything else anways.
+         numbersUseOGDFS = true,
+         boolUseOGDFS = true,
+         nullUseOGDFS = true,
+         stringUseOGDFS = true,
+         strictOGDFS = true
+      }
+   },
+   {
+      "FlexyField" , {
+         numbersUseOGDFS = true,
+         boolUseOGDFS = true,
+         nullUseOGDFS = true,
+         stringUseOGDFS = true,
+         arrayUseOGDFS = true,
+         objectUseOGDFS = true
+      }
+   },
+   { // from here on the classes are from gnosis3
+      "ProcessInputValue", {
+         // Derives from FieldValue, adds [] and {} suport.
+         numbersUseOGDFS = true,
+         boolUseOGDFS = true,
+         nullUseOGDFS = true,
+         stringUseOGDFS = true,
+         arrayUseOGDFS = true,
+         objectUseOGDFS = true
+      }
+   },
+   {
+      "GeoJSONValue", {
+         // Derives from FieldValue, adds [] suport.
+         numbersUseOGDFS = true,
+         boolUseOGDFS = true,
+         nullUseOGDFS = true,
+         stringUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   },
+   {
+      "MBGLFilterValue", {
+         // Derives from FieldValue : adds [] support.
+         numbersUseOGDFS = true,
+         boolUseOGDFS = true,
+         nullUseOGDFS = true,
+         stringUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   },
+   {
+      "OGCAPIMultiBoundingBox", {
+         // Seems to only work with [] and null.
+         strictOGDFS = true,
+         nullUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   },
+   {
+      "OGCAPIMultiInterval", {
+         // Seems to only work with [] and null.
+         strictOGDFS = true,
+         nullUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   },
+   {
+      // Not sure which options to activate:
+      // I could not find Instance::OnGetDataFromString
+      // but it contains aa OGCAPIMultiBoundingBox
+      "OGCAPISpatialExtent", {
+         strictOGDFS = true,
+         nullUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   },
+   {
+      // Not sure which options to activate:
+      // I could not find Instance::OnGetDataFromString
+      // but it contains a OGCAPIMultiInterval
+      "OGCAPITemporalExtent", {
+         strictOGDFS = true,
+         nullUseOGDFS = true,
+         arrayUseOGDFS = true
+      }
+   }
+   ]};
+
+
 FreeingAVLTree<const String> compactTypes
 { [
    "GeoPoint",
@@ -111,6 +247,13 @@ public class JSONParser
 {
 public:
    File f;
+   // A parser instance can register additional options sets for selected
+   // classes by setting the OptionsMAp customJsonOptions member to non-null
+   // and filling it with {class names, JSONTypeOptions) key-value pairs.
+   // Note that   customJsonOptions is checked before the global OptionsMAp
+   // defaultJsonOptions, so it is possible to overrule th options for a class
+   // that is already registered there.
+   OptionsMap customJsonOptions;
 private:
    char ch;
    bool eCON;
@@ -124,6 +267,25 @@ private:
 
    public property bool debug { set { debug = value; } get { return debug; } }
    public property bool warnings { set { warnings = value; } get { return warnings; } }
+
+   ~JSONParser()
+   {
+      if(customJsonOptions)
+      {
+         customJsonOptions.Free();
+         delete customJsonOptions;
+      }
+   }
+
+   static inline JSONTypeOptions getTypeOptions(Class type)
+   {
+      JSONTypeOptions retrieved {};
+      if(customJsonOptions)
+         retrieved = customJsonOptions[type.name];
+       if(!retrieved)
+         retrieved = defaultJsonOptions[type.name];
+      return retrieved;
+   }
 
    bool ReadChar(char * ch)
    {
@@ -216,395 +378,289 @@ private:
       JSONResult result = syntaxError;
       bool (* onGetDataFromString)(void *, void *, const char *) = type ? (void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString] : null;
       JSONParserState backState;
-      bool customValuefication = false;
-      bool specialValuefication = false;
+      JSONTypeOptions typeOptions {};
 
       BackUpState(backState);
       SkipEmpty();
-
       // TODO: Offer more flexible mechanism to customize JSON representation...
       if( type && onGetDataFromString != type.base._vTbl[__ecereVMethodID_class_OnGetDataFromString])
       {
-         if(type.type == structClass)
-         {
-            customValuefication = ch != '{' || strstr(type.name, "FlexyField") || strstr(type.name, "ProcessInputValue");
-            specialValuefication = customValuefication && (
-                  strstr(type.name, "FieldValue") ||
-                  strstr(type.name, "FlexyField") ||
-                  strstr(type.name, "GeoJSONValue") ||
-                  strstr(type.name, "MBGLFilterValue") ||
-                  strstr(type.name, "ProcessInputValue") );
-         }
-         else if(type.type == normalClass && ch !='{')
-         {
-            if(strstr(type.name, "OGCAPISpatialExtent") ||
-               strstr(type.name, "OGCAPIMultiBoundingBox") ||
-               strstr(type.name, "OGCAPITemporalExtent") ||
-               strstr(type.name, "OGCAPIMultiInterval"))
-            {
-               customValuefication = true;
-               specialValuefication = true;
-            }
-         }
+         // Avoid unnecessary map lookup
+         typeOptions = getTypeOptions(type);
       }
 
-      if(ch == '\"' || customValuefication)
-      {
-         String string;
-         if(ch != '\"' || specialValuefication)
-         {
-            bool escaped = false, quoted = ch == '\"', done = false;
-            int size = 32, len = 0;
-            char * s = new char[size];
-            uint64 openSquar = 0; // track up to 63
-            uint64 openCurly = 0; // nesting levels
-            int level = 0;
-            while(ch && !done)
-            {
-               if(len + 1 >= size)
-               {
-                  size += size >> 1;
-                  s = renew s char[size];
-               }
-               if(ch != '\n' && ch != 32)
-               {
-                  if(!quoted)
-                  {
-                     if(level <= 0 && (ch == ',' || ch == '}' || ch == ']'))  // Completed correctly
-                        break;
-                     else if(ch == '{')
-                     {
-                        level++;
-                        openCurly = (openCurly << 1) | 1;
-                        openSquar = openSquar << 1;
-                     }
-                     else if(ch == '[')
-                     {
-                        level++;
-                        openCurly = openCurly << 1;
-                        openSquar = (openSquar << 1) | 1;
-                     }
-                     else if(ch == '}')
-                     {
-                        level--;  // let level free to become negative
-                        if (openSquar & 1 )
-                           break;  // openSquar will certainly be > 0
-                        openCurly >>= 1;
-                        openSquar >>= 1;
-                     }
-                     else if(ch == ']')
-                     {
-                        level--;  // let level free to become negative
-                        if (openCurly & 1)
-                           break;  // openCurly will certainly be > 0
-                        openCurly >>= 1;
-                        openSquar >>= 1;
-                     }
-                  }
-                  else if(quoted)
-                  {
-                     if(escaped)
-                        escaped = false;
-                     else if(ch == '\\')
-                        escaped = true;
-                     else if(ch == '\"' && len > 0)
-                        done = true;
-                  }
-               }
-
-               s[len++] = ch;
-               if(!ReadChar(&ch))
-                  break;  // Get next ch and stop on failure to do so
-            }
-            s[len] = 0;
-            while(len > 0 && isspace(s[len-1]))
-               s[--len] = 0;
-            s = renew s char[len + 1];
-            string = s;  //     | open braces match closed one   | no extra closing
-            result = (len > 0 && openSquar == 0 && openCurly == 0 && level > -1) ? success : syntaxError;
-         }
+      if(ch == '\"')
+      { //  Quoted Strings and special cases for selected classes
+         if (typeOptions.stringUseOGDFS || typeOptions.strictOGDFS)
+            result = useOGDFS(type, value, typeOptions, !typeOptions.stringUseOGDFS);
          else
          {
+            String normalStr;
             if(!type && rType) type = class(String);
-            result = GetString(&string);
-            if(!type) delete string, string = null, result = typeMismatch;
-         }
-         if(result)
-         {
-            Property prop;
-            if(type && (!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *")))
+            result = GetString(&normalStr);  // Checked: this removes the quotes
+            if(!type) delete normalStr, normalStr = null, result = typeMismatch;
+
+            if(result)
             {
-               value.p = string;
+               result = ConvertStringToValue(type, normalStr, value);
             }
-            else if(type && (type.type == enumClass || type.type == unitClass))
-            {
-               if(onGetDataFromString(type, &value.i, string))
-                  result = success;
-               else
-                  result = typeMismatch;
-               delete string;
-            }
-            else if(type && (prop = eClass_FindProperty(type, "String", type.module)))
-            {
-               // TOFIX: Add more conversion property support... Expecting void * compatible here
-               value.p = ((void *(*)())(void *)prop.Set)(string);
-               result = success;
-               delete string;
-            }
-            else if(type && (eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
-            {
-               result = GetColorAlpha(string, value);
-               delete string;
-            }
-            else if(type && (type.type == structClass))
-            {
-               if(onGetDataFromString(type, value.p, string))
-                  result = success;
-               else
-                  result = typeMismatch;
-               delete string;
-            }
-            else if(type && (type.type == normalClass))
-            {
-               if(onGetDataFromString(type, &value.p, string))
-                  result = success;
-               else
-               {
-                  if(type)
-                     ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, value.p);
-                  result = typeMismatch;
-               }
-               delete string;
-            }
-            else
-            {
-               delete string;
-               result = typeMismatch;
-            }
+            delete normalStr;
          }
       }
       else if(ch == '[')
       {
-         Container array = null;
-         if(type && eClass_IsDerived(type, class(Map)))
-         {
-            result = GetMap(type, (Map *)&array);
-         }
-         else if(!type || eClass_IsDerived(type, class(Container)))
-         {
-            result = GetArray(type ? type : class(Array), &array);
-            if(!type && array)
-            {
-               array.Free();
-               delete array;
-            }
-         }
+         // Normal array of objects (but could be a map).
+
+         if (typeOptions.arrayUseOGDFS || typeOptions.strictOGDFS)
+            result = useOGDFS(type, value, typeOptions, !typeOptions.arrayUseOGDFS);
          else
-            result = typeMismatch;
+         {
+            Container array = null;
+            if(type && eClass_IsDerived(type, class(Map)))
+            {
+               result = GetMap(type, (Map *)&array);
+            }
+            else if(!type || eClass_IsDerived(type, class(Container)))
+            {
+               result = GetArray(type ? type : class(Array), &array);
+               if(!type && array)
+               {
+                  array.Free();
+                  delete array;
+               }
+            }
+            else
+               result = typeMismatch;
 
-         if(array) type = array._class;
+            if(array) type = array._class;
 
-         if(result == success && type && eClass_IsDerived(type, class(Container)))
-         {
-            value.p = array;
-         }
-         else if(array && type && (type.type == normalClass || type.type == noHeadClass))
-         {
-            if(type.type == normalClass && eClass_IsDerived(type, class(Container)))
-               array.Free();
-            delete array;
-         }
-      }
-      else if(ch == '-' || isdigit(ch))
-      {
-         if(!type) type = class(double);
-         result = GetNumber(type, value);
-      }
-      else if(ch == '{')
-      {
-         if(type && eClass_IsDerived(type, class(Map)))
-         {
-            Container array;
-            result = GetJSONMap(type, (Map *)&array);
             if(result == success && type && eClass_IsDerived(type, class(Container)))
             {
                value.p = array;
             }
-            else
+            else if(array && type && (type.type == normalClass || type.type == noHeadClass))
             {
-               if(array)
+               if(type.type == normalClass && eClass_IsDerived(type, class(Container)))
                   array.Free();
                delete array;
             }
          }
-         else if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
-         {
-            void * object = value.p;
-            result = _GetObject(type, &object, forMap);
-            if(result)
-            {
-               if(type && type.type == structClass);
-               else
-                  value.p = object;
-            }
-         }
-         else if(type && type.type == bitClass)
-         {
-            uint64 object = 0;
-            result = _GetObject(type, (void **)&object, null);
-            if(result)
-               value.ui64 = object;
-         }
+      }
+      else if(ch == '-' || isdigit(ch))
+      {
+         //Numeric Value
+
+         if (typeOptions.numbersUseOGDFS || typeOptions.strictOGDFS)
+            result = useOGDFS(type, value, typeOptions, !typeOptions.numbersUseOGDFS);
          else
          {
-            void * object = value.p;
-            result = _GetObject(type, &object, null);
-            if(result)
+            if(!type) type = class(double);
+            result = GetNumber(type, value);
+         }
+      }
+      else if(ch == '{')
+      {
+         // Normal Object: does different things if derived from Map or according to the type.type
+
+         if (typeOptions.objectUseOGDFS || typeOptions.strictOGDFS)
+            result = useOGDFS(type, value, typeOptions, !typeOptions.objectUseOGDFS);
+         else
+         {
+            if(type && eClass_IsDerived(type, class(Map)))
             {
-               result = typeMismatch;
-               if(type)
-                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, object);
+               Container array;
+               result = GetJSONMap(type, (Map *)&array);
+               if(result == success && type && eClass_IsDerived(type, class(Container)))
+               {
+                  value.p = array;
+               }
+               else
+               {
+                  if(array)
+                     array.Free();
+                  delete array;
+               }
+            }
+            else if(type && (type.type == structClass || type.type == normalClass || type.type == noHeadClass))
+            {
+               void * object = value.p;
+               result = _GetObject(type, &object, forMap);
+               if(result)
+               {
+                  if(type && type.type == structClass);
+                  else
+                     value.p = object;
+               }
+            }
+            else if(type && type.type == bitClass)
+            {
+               uint64 object = 0;
+               result = _GetObject(type, (void **)&object, null);
+               if(result)
+                  value.ui64 = object;
+            }
+            else
+            {
+               void * object = value.p;
+               result = _GetObject(type, &object, null);
+               if(result)
+               {
+                  result = typeMismatch;
+                  if(type)
+                     ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, object);
+               }
             }
          }
       }
       else if(isalpha(ch) || ch == '_')
       {
-         if(eCON)
-         {
-            String string;
-            if(GetIdentifier(&string, null))
-            {
+         // Unquoted string values like true false null and some special cases understood by eCON
+
+         String unqStr;
+         if (eCON)
+         {  // Get the string the right way for eCON
+            if(GetIdentifier(&unqStr, null))
                result = success;
-               if(eCON && type && (type.type == enumClass || type.type == unitClass || eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
+         }
+         else
+         {  // Get the string the right way for JSON
+            int c = 0;
+            unqStr = new char[256];
+            while(c < sizeof(unqStr)-1 && (isalpha(ch) || isdigit(ch) || ch == '_'))
+            {
+               unqStr[c++] = ch;
+               if(!ReadChar(&ch)) break;
+            }
+            unqStr[c] = 0;
+            result = success;
+         }
+
+         if (result && type)
+         {
+            if( eCON & (type.type == enumClass || type.type == unitClass || eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
+            {
+               bool isColorAlpha = type.type != enumClass && type.type != unitClass &&
+                  eClass_IsDerived(type, class(ColorAlpha)); // how to handle classes that derive from a special one in general?
+               if(isColorAlpha)
+                  type = class(Color);
+               // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
+               if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, unqStr))
                {
-                  bool isColorAlpha = type.type != enumClass && type.type != unitClass && eClass_IsDerived(type, class(ColorAlpha));
                   if(isColorAlpha)
-                     type = class(Color);
-                  // should this be set by calling __ecereVMethodID_class_OnGetDataFromString ?
-                  if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
-                  {
-                     if(isColorAlpha)
-                        value.ui |= 0xFF000000;
-                     result = success;
-                  }
+                     value.ui |= 0xFF000000;
+                  result = success;
+               }
+               else
+                  result = typeMismatch;
+            }
+            // Start of normal JSON cases
+            else if(!strcmp(type.name, "bool"))
+            {
+               if(!strcmpi(unqStr, "false")) value.i = 0;
+               else if(!strcmpi(unqStr, "true")) value.i = 1;
+               else
+                  result = typeMismatch;
+            }
+            else if(!strcmp(type.name, "SetBool"))
+            {
+               if(!strcmpi(unqStr, "false")) value.i = SetBool::false;
+               else if(!strcmpi(unqStr, "true")) value.i = SetBool::true;
+               else
+                  result = typeMismatch;
+            }
+            else if(!strcmpi(unqStr, "false") || !strcmpi(unqStr, "true"))
+            {
+               // Some classes 'can'/'need to' handle booleans on their own.
+               // and in this position they are neither bool or SetBool, that
+               // do not need OGDFS and are already treated.
+
+               if (typeOptions.boolUseOGDFS || typeOptions.strictOGDFS)
+               {
+                  if (typeOptions.boolUseOGDFS)
+                     result = ConvertStringToValue(type, unqStr, value);
                   else
                      result = typeMismatch;
                }
-               else if(type && !strcmp(type.name, "bool"))
+            }
+            else if(!strcmpi(unqStr, "null"))
+            {
+               // Some classes 'can'/'need to' handle null values on their own.
+
+               if (typeOptions.nullUseOGDFS || typeOptions.strictOGDFS)
                {
-                  if(!strcmpi(string, "false")) value.i = 0;
-                  else if(!strcmpi(string, "true")) value.i = 1;
+                  if (typeOptions.nullUseOGDFS)
+                     result = ConvertStringToValue(type, unqStr, value);
                   else
                      result = typeMismatch;
                }
-               else if(type && !strcmp(type.name, "SetBool"))
-               {
-                  if(!strcmpi(string, "false")) value.i = SetBool::false;
-                  else if(!strcmpi(string, "true")) value.i = SetBool::true;
-                  else
-                     result = typeMismatch;
-               }
-               else if(type && !strcmpi(string, "null"))
-               {
-                  if(type.type != structClass)
-                     value.p = 0;
-               }
-               else if(type && isSubclass(type, string))
+               else if(type.type != structClass)
+                  value.p = 0;
+            }
+            // End of normal JSON cases
+            else if(eCON)
+            {
+               Class cType = superFindClass(unqStr, type.module);
+               if(cType && eClass_IsDerived(cType, type))
                {
                   void * object = value.p;
-                  Class subtype = superFindClass(string, type.module);
                   SkipEmpty();
-                  result = _GetObject(subtype, &object, null);  // TO REVIEW: Is this a problem with bitClass here, in 32 bit?
+                  result = _GetObject(cType, &object, null);  // TO REVIEW: Is this a problem with bitClass here, in 32 bit?
                   if(result)
                   {
-                     if(subtype && subtype.type == structClass);
-                     else if(subtype && (subtype.type == normalClass || subtype.type == noHeadClass || subtype.type == bitClass))
+                     if(cType && cType.type == structClass);
+                     else if(cType && (cType.type == normalClass || cType.type == noHeadClass || cType.type == bitClass))
                      {
                         value.p = object;
                      }
                      else
                      {
                         result = typeMismatch;
-                        if(subtype)
-                           ((void (*)(void *, void *))(void *)subtype._vTbl[__ecereVMethodID_class_OnFree])(subtype, object);
+                        if(cType)
+                           ((void (*)(void *, void *))(void *)cType._vTbl[__ecereVMethodID_class_OnFree])(cType, object);
                      }
                   }
                }
-               else if(ch != '=' && type)
+               else if(ch != '=')
                {
-                  Property convProp;
-                  Class cType = superFindClass(string, type.module);
-                  for(convProp = type.conversions.first; convProp && cType; convProp = convProp.next)
-                  {
-                     if(!strcmp(convProp.name, cType.fullName))
-                        break;
-                  }
-                  if(convProp && cType)
-                  {
-                     if(cType.type == unitClass)
+                  Property convProp = null;
+                  if (cType)  // avoid being left with the first conversion property if cType is null
+                     for(convProp = type.conversions.first; convProp; convProp = convProp.next)
                      {
-                        // TODO: Improve on this...
-                        DataValue v;
-                        SkipEmpty();
-                        if(ch == '{')
-                           ch = 0;
-                        SkipEmpty();
-                        result = GetNumber(cType, v);
-                        SkipEmpty();
-                        if(ch == '}')
-                           ch = 0;
-                        if(result)
-                        {
-                           if(type && (type.type == normalClass || type.type == noHeadClass))
-                           {
-                              if(!strcmp(cType.dataTypeString, "double"))
-                              {
-                                 value.p = ((void *(*)(double))(void *)convProp.Set)(v.d);
-                              }
-                           }
-                           else
-                              result = typeMismatch;
-                        }
+                        if(!strcmp(convProp.name, cType.fullName))
+                           break;
                      }
+
+                  // At this point, convProp != null guarantees cType != null
+
+                  if(convProp && cType.type == unitClass)
+                  {
+                     // TODO: Improve on this...
+                     DataValue v;
+                     SkipEmpty();
+                     if(ch == '{')
+                        ch = 0;
+                     SkipEmpty();
+                     result = GetNumber(cType, v);
+                     SkipEmpty();
+                     if(ch == '}')
+                        ch = 0;
+                     if(result)
+                     {
+                        if(type && (type.type == normalClass || type.type == noHeadClass))
+                        {
+                           if(!strcmp(cType.dataTypeString, "double"))
+                           {
+                              value.p = ((void *(*)(double))(void *)convProp.Set)(v.d);
+                           }
+                        }
+                        else
+                           result = typeMismatch;
+                     }
+                     else
+                        result = typeMismatch;
                   }
                   else
                      result = typeMismatch;
-               }
-            }
-            delete string;
-         }
-         else
-         {
-            char buffer[256];
-            int c = 0;
-            while(c < sizeof(buffer)-1 && (isalpha(ch) || isdigit(ch) || ch == '_'))
-            {
-               buffer[c++] = ch;
-               if(!ReadChar(&ch)) break;
-            }
-            buffer[c] = 0;
-            result = success;
-
-            if(type)
-            {
-               if(!strcmp(type.name, "bool"))
-               {
-                  if(!strcmpi(buffer, "false")) value.i = 0;
-                  else if(!strcmpi(buffer, "true")) value.i = 1;
-                  else
-                     result = typeMismatch;
-               }
-               else if(!strcmp(type.name, "SetBool"))
-               {
-                  if(!strcmpi(buffer, "false")) value.i = SetBool::false;
-                  else if(!strcmpi(buffer, "true")) value.i = SetBool::true;
-                  else
-                     result = typeMismatch;
-               }
-               else if(!strcmpi(buffer, "null"))
-               {
-                  if(type.type != structClass)
-                     value.p = 0;
                }
                else
                   result = typeMismatch;
@@ -612,6 +668,7 @@ private:
             else
                result = typeMismatch;
          }
+         delete unqStr;
       }
       else if(ch == '}' || ch == ']')
          result = noItem;
@@ -993,6 +1050,159 @@ private:
       if(ch != ']' && ch != ',' && ch != '}' && ch != ';' && ch != '/' && ch != '=' && ch != ':')
          ch = 0;
       return result;
+   }
+
+   JSONResult ConvertStringToValue(Class type, const String string, DataValue value)
+   {
+      // Assign the proper value obtained from the special String to the
+      // DataValue object scording to type.
+      // The string should be disposed of appropriately in the caller.
+
+      Property prop;
+      JSONResult result;
+      bool (* onGetDataFromString)(void *, void *, const char *) = type ? (void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString] : null;
+
+      if(!type) // Fail if no type is given and guarantee type != null afterwards.
+         result = typeMismatch;
+      else if((!strcmp(type.name, "String") ||
+               !strcmp(type.dataTypeString, "char *")))
+      {
+         value.p = CopyString(string);
+         result = success;
+      }
+      else if((type.type == enumClass || type.type == unitClass) && onGetDataFromString &&
+            onGetDataFromString(type, &value.i, string))
+         result = success;
+      else if((prop = eClass_FindProperty(type, "String", type.module)))
+      {
+         // TOFIX: Add more conversion property support... Expecting void * compatible here
+         value.p = ((void *(*)())(void *)prop.Set)(string);
+         result = success;
+      }
+      else if((eClass_IsDerived(type, class(ColorAlpha)) ||
+               eClass_IsDerived(type, class(Color))))
+         result = GetColorAlpha(string, value);
+      else if((type.type == structClass) && onGetDataFromString &&
+            onGetDataFromString(type, value.p, string))
+         result = success;
+      else if((type.type == normalClass) && onGetDataFromString &&
+            onGetDataFromString(type, &value.p, string))
+         result = success;
+      else
+      {
+         result = typeMismatch;
+         //  The catch-all takes care of objects created
+         //  in the normalClass check if any:
+         // the case of type == null is treated in the first if
+         if(type.type == normalClass)
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, value.p);
+      }
+      return result;
+   }
+
+   static inline JSONResult useOGDFS(Class type,  DataValue value, JSONTypeOptions typeOptions, bool discard)
+   {
+      String special = null;
+      JSONResult result = GetSpecialValueString(&special);
+      if(result)
+      {
+         if (discard)
+            result = typeMismatch;
+         else
+         {
+            if (special[0] == '\"' && typeOptions.stripQuotesForOGDFS)
+            {
+               int len = strlen(special) -2;
+               memmove(special, special+1, len);
+               special[len] = '\0';
+            }
+            result = ConvertStringToValue(type, special, value);
+         }
+      }
+      delete special;
+      return result;
+   }
+
+   JSONResult GetSpecialValueString(String * string)
+   {
+      // Get verbatim all text enclosed in double quotes ("text") square
+      // brackets ([text]) or curly braces ({text}), including the delimiters.
+      // In the case of brackets and braces it also enforces proper nesting of
+      // the two types of delimiters.
+
+      bool done = false, escaped = false, quoted = ch == '\"';
+      int size = 32, len = 0;
+      char * s = new char[size];
+
+      int nestLevel = 0;
+      uint64 openSquar = 0; // track up to 63
+      uint64 openCurly = 0; // nesting levels
+      char oC = '{',  cC = '}', oS = '[', cS = ']';
+
+      while(ch && !done)
+      {
+         if(len + 1 >= size)
+         {
+            size += size >> 1;
+            s = renew s char[size];
+         }
+         if(ch != '\n' && ch != 32)
+         {
+            if(!quoted)
+            {
+               if(nestLevel <= 0 && (ch == ',' || ch == cC || ch == cS))  // Completed correctly
+                  break;
+               else if(ch == oC)
+               {
+                  nestLevel++;
+                  openCurly = (openCurly << 1) | 1;
+                  openSquar = openSquar << 1;
+               }
+               else if(ch == oS)
+               {
+                  nestLevel++;
+                  openCurly = openCurly << 1;
+                  openSquar = (openSquar << 1) | 1;
+               }
+               else if(ch == cC)
+               {
+                  nestLevel--;  // let nestLevel free to become negative
+                  if (openSquar & 1 )
+                     break;  // openSquar will certainly be > 0
+                  openCurly >>= 1;
+                  openSquar >>= 1;
+               }
+               else if(ch == cS)
+               {
+                  nestLevel--;  // let nestLevel free to become negative
+                  if (openCurly & 1)
+                     break;  // openCurly will certainly be > 0
+                  openCurly >>= 1;
+                  openSquar >>= 1;
+               }
+            }
+            else if(quoted)
+            {
+               if(escaped)
+                  escaped = false;
+               else if(ch == '\\')
+                  escaped = true;
+               else if(ch == '\"' && len > 0)
+                  done = true;
+            }
+         }
+
+         s[len++] = ch;
+         if(!ReadChar(&ch))
+            break;  // Get next ch and stop on failure to do so
+      }
+      s[len] = 0;
+      while(len > 0 && isspace(s[len-1]))
+         s[--len] = 0;
+      s = renew s char[len + 1];
+      *string = s;  //     | open braces match closed one   | no extra closing
+
+      return (len > 0 && openSquar == 0 && openCurly == 0 && nestLevel > -1) ? success : syntaxError;
    }
 
    JSONResult GetString(String * string)
@@ -1793,7 +2003,7 @@ private:
       return result;
    }
 
-   JSONResult GetColorAlpha(String string, DataValue value)
+   JSONResult GetColorAlpha(const String string, DataValue value)
    {
       ColorAlpha color = 0;
       DefinedColor c = 0;
@@ -1809,7 +2019,7 @@ private:
          }
          else
          {
-            char *d;
+            const char *d;
             byte a = 255;
             if((d = strchr(string, ',')))
             {
@@ -1848,12 +2058,15 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       {
          Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
          Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
-         if(!eCON && // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
-            (!strcmp(mapKeyClass.name, "UMSFormatType") ||
-             strstr(mapDataClass.name, "UMSFieldValue") ||
-             (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String") ) ||
-             strstr(mapDataClass.name, "MapboxGLSourceData")))
-            jsonDicMap = true;
+         // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
+         jsonDicMap  = (!eCON && (
+                  !strcmp(mapKeyClass.name, "UMSFormatType") ||
+                  strstr(mapDataClass.name, "UMSFieldValue") ||
+                  (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
+                  strstr(mapDataClass.name, "MapboxGLSourceData") ||
+                  strstr(mapDataClass.name, "ProcessingInput")
+                  )
+               );
       }
 
       if(jsonDicMap)
@@ -2281,12 +2494,15 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          {
             mapKeyClass = objectType.templateArgs[0].dataTypeClass;
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
-            if(!eCON &&
-               (!strcmp(mapKeyClass.name, "UMSFormatType") ||
-               strstr(mapDataClass.name, "UMSFieldValue") ||
-               (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
-               strstr(mapDataClass.name, "MapboxGLSourceData")))
-               jsonDicMap = true;
+            // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
+            jsonDicMap  = (!eCON && (
+                     !strcmp(mapKeyClass.name, "UMSFormatType") ||
+                     strstr(mapDataClass.name, "UMSFieldValue") ||
+                     (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
+                     strstr(mapDataClass.name, "MapboxGLSourceData") ||
+                     strstr(mapDataClass.name, "ProcessingInput")
+                     )
+                  );
          }
 
          if(_class && _class.bindingsClass) _class = _class.base;
@@ -2617,14 +2833,6 @@ static Class superFindClass(const String name, Module alternativeModule)
       _class = eSystem_FindClass(__thisModule.application, name);
    mutexTemplateInstanceFix.Release();
    return _class;
-}
-
-static bool isSubclass(Class type, const String name)
-{
-   Class _class = superFindClass(name, type.module);
-   if(eClass_IsDerived(_class, type))
-      return true;
-   return false;
 }
 
 static void removeDashes(String string)
