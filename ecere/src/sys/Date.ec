@@ -360,14 +360,17 @@ public struct Date
    Window OnEdit(DataBox dataBox, Window obsolete, int x, int y, int w, int h, void * fieldData)
    {
       const char * string = "";
-      DateDropBox comboBox
-      {
-         dataBox,
-         editText = true;
-         anchor = { 0, 0, 0, 0 };
-         borderStyle = 0;
-         hotKey = f2;
-      };
+      DateDropBox comboBox = (DateDropBox)dataBox.editor;
+
+      if(!comboBox || comboBox._class != class(DateDropBox))
+         comboBox =
+         {
+            dataBox,
+            editText = true;
+            anchor = { 0, 0, 0, 0 };
+            borderStyle = 0;
+            hotKey = f2;
+         };
 
       if(day || year || month)
       {
