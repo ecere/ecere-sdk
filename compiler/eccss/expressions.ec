@@ -1850,7 +1850,7 @@ public:
       ExpFlags flags = 0;
       // NOTE: We need a separate Class for the styling object within which a sub-instance would be
       //       vs. the current instance level class (current c)
-      String identifierStr = targetStylesMask ? evaluator.evaluatorClass.stringFromMask(targetStylesMask, stylesClass) : null;
+      String identifierStr = targetStylesMask ? CopyString(evaluator.evaluatorClass.stringFromMask(targetStylesMask, stylesClass)) : null;
       Class type = c;
 
       dataMember = null;
