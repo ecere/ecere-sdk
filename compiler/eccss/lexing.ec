@@ -361,7 +361,6 @@ public class CMSSLexer
                      this.text[len] = 0;
                      type = matchToken(text);
                      backQuotedID = false;
-                     break;
                   }
                   break;
                }
@@ -512,6 +511,7 @@ public class CMSSLexer
                }
             }
             if(advanceChar) pos.col++, pos.pos++;
+            if(!ch) break;
          }
          this.pos = pos;
          this.type = type;
