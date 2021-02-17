@@ -366,7 +366,7 @@ public struct ECCSSEvaluator
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
-   virtual String ::stringFromMask(StylesMask mask, Class c) { return null; }
+   virtual const String ::stringFromMask(StylesMask mask, Class c) { return null; }
    virtual StylesMask ::maskFromString(const String s, Class c) { return 0; }
    virtual Array<Instance> ::accessSubArray(void * obj, StylesMask mask) { return null; }
 };
