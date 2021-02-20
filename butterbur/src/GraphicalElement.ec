@@ -683,13 +683,12 @@ public struct ImageResource
 
    void OnCopy(ImageResource src)
    {
-         //String path, id, url, ext, type, sprite;
-      if(src.path) path = CopyString(src.path);
-      if(src.id) id = CopyString(src.id);
-      if(src.url) url = CopyString(src.url);
-      if(src.ext) ext = CopyString(src.ext);
-      if(src.type) type = CopyString(src.type);
-      if(src.sprite) sprite = CopyString(src.sprite);
+      path = CopyString(src.path);
+      id = CopyString(src.id);
+      url = CopyString(src.url);
+      ext = CopyString(src.ext);
+      type = CopyString(src.type);
+      sprite = CopyString(src.sprite);
    }
 /*
    property const String path
@@ -713,13 +712,14 @@ public class Image : GraphicalElement
 
       if(i)
       {
-         ImageResource imageResource;
+         ImageResource imageResource { };
          i.type = src.type;
          i.unit = src.unit;
          i.tint = src.tint;
          i.hotSpot = src.hotSpot;
          i.blackTint = src.blackTint;
-         imageResource.OnCopy(src.image);     i.image = imageResource;
+         imageResource.OnCopy(src.image);
+         i.image = imageResource;
       }
    }
 public:
