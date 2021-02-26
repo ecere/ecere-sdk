@@ -2390,67 +2390,6 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    return true;
 }
 
-public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
-{
-   bool result = false;
-   if(object)
-   {
-      result = WriteONObject(f, objectType, object, indent, false, null, false, upperCase, null);
-      f.Puts("\n");
-   }
-   return result;
-}
-
-public bool WriteJSONObject2(File f, Class objectType, void * object, int indent, JSONFirstLetterCapitalization capitalize)
-{
-   bool result = false;
-   if(object)
-   {
-      result = WriteONObject(f, objectType, object, indent, false, null, false, capitalize, null);
-      f.Puts("\n");
-   }
-   return result;
-}
-
-public bool WriteECONObject(File f, Class objectType, void * object, int indent)
-{
-   bool result = false;
-   if(object)
-   {
-      result = WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null);
-      f.Puts("\n");
-   }
-   return result;
-}
-
-public bool WriteJSONObjectMapped(File f, Class objectType, void * object, int indent, Map<String, const String> stringMap)
-{
-   bool result = false;
-   if(object)
-   {
-      result = WriteONObject(f, objectType, object, indent, false, stringMap, false, upperCase, null);
-      f.Puts("\n");
-   }
-   return result;
-}
-
-public String PrintECONObject(Class objectType, void * object, int indent)
-{
-   String result = null;
-   if(object)
-   {
-      TempFile f { };
-      if(WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null))
-      {
-         f.Putc(0);
-         result = (String)f.StealBuffer();
-      }
-      delete f;
-   }
-   return result;
-}
-
-
 static bool WriteONObject(File f, Class objectType, void * object, int indent, bool eCON, Map<String, const String> stringMap, bool omitDefaultIdentifier, JSONFirstLetterCapitalization capitalize, Container forMap)
 {
    const String tName = objectType.templateClass ? objectType.templateClass.name : objectType.name;
@@ -2849,3 +2788,166 @@ static void removeDashes(String string)
       }
    }
 }
+
+// User-Facing functions
+public bool WriteJSONObject(File f, Class objectType, void * object, int indent)
+{
+   /*
+    * Print the ECON representation of an object a file, forcing upperCase.
+    * NOTE: The 'indent' parameter is kept for backwards compatibiity reasons, but
+    * it shouild always be passed as 0 (zero).
+    * */
+   bool result = false;
+   if(object)
+   {
+      result = WriteONObject(f, objectType, object, indent, false, null, false, upperCase, null);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+public bool WriteJSONObject2(File f, Class objectType, void * object, int indent, JSONFirstLetterCapitalization capitalize)
+{
+   /*
+    * Print the ECON representation of an object a file ,w ith contorl over capitalization.
+    * NOTE: The 'indent' parameter is kept for backwards compatibiity reasons, but
+    * it shouild always be passed as 0 (zero).
+    * */
+   bool result = false;
+   if(object)
+   {
+      result = WriteONObject(f, objectType, object, indent, false, null, false, capitalize, null);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+public bool WriteECONObject(File f, Class objectType, void * object, int indent)
+{
+   /*
+    * Print the ECON representation of an object to a file, forcing upperCase.
+    * NOTE: The 'indent' parameter is kept for backwards compatibiity reasons, but
+    * it shouild always be passed as 0 (zero).
+    * */
+   bool result = false;
+   if(object)
+   {
+      result = WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+public bool WriteJSONObjectMapped(File f, Class objectType, void * object, int indent, Map<String, const String> stringMap)
+{
+   /*
+    * Print the JSON representation of an object to a file.
+    * NOTE: The 'indent' parameter is kept for backwards compatibiity reasons, but
+    * it shouild always be passed as 0 (zero).
+    * */
+   bool result = false;
+   if(object)
+   {
+      result = WriteONObject(f, objectType, object, indent, false, stringMap, false, upperCase, null);
+      f.Puts("\n");
+   }
+   return result;
+}
+
+public String PrintECONObject(Class objectType, void * object, int indent)
+{
+   /*
+    * Print the ECON representation of an object to a string.
+    * NOTE: This function allocates memory for the output String
+    * NOTE: The 'indent' parameter is kept for backwards compatibiity reasons, but
+    * it shouild always be passed as 0 (zero).
+    * */
+   String result = null;
+   if(object)
+   {
+      TempFile f { };
+      if(WriteONObject(f, objectType, object, indent, true, null, false, upperCase, null))
+      {
+         f.Putc(0);
+         result = (String)f.StealBuffer();
+      }
+      delete f;
+   }
+   return result;
+}
+
+public String PrintObjectNotationString(Class objectType, void * object, ObjectNotationType onType, int indent, bool indentFirst, JSONFirstLetterCapitalization capitalize)
+{
+   /*
+    * Print the ECON or JSON representation of an object to a string.
+    * An mount of (indent *  jsonIndentWidth) whitespaces are inserted after each '\n',
+    * if 'indentFirst' is true, the same amount is prepended to the first character of the object representation.
+    * NOTE: This function allocates memory for the output String, tha must be managed in the caller.
+    * */
+   String result = null;
+   if(object)
+   {
+      TempFile f { };
+      if(WriteONObject(f, objectType, object, 0, onType == econ, null, false, 0, null))
+      {
+         f.Putc(0);
+         if(indent>0)
+           result =  StringIndent((String)f.buffer, indent * jsonIndentWidth, indentFirst);
+         else
+            result = (String)f.StealBuffer();
+      }
+      delete f;
+   }
+   return result;
+}
+
+public String StringIndent(const String base, int nSpaces, bool indentFirst)
+{
+/*
+ * Allocate a new String and fill it with a copy of the 'base', with 'nSpaces' of
+ * indentation added after each '\n' character.
+ *
+ * If 'indentfirst' is true, the indentation is also added before the first char of 'base'.
+ * If 'base' points to null, act as if it were the empty string "".
+ *
+ * Return a pointer to the newly allocated String.
+ * */
+   String target = null;
+   if(base)
+   {
+      int basePos = 0;
+      int targetPos = 0;
+      int targetLen = (strlen(base) + nSpaces) * 2;
+
+      char * indent = new char[nSpaces + 1];
+      memset(indent, ' ', nSpaces), indent[nSpaces] = '\0';
+      target = new char[targetLen + 1];
+
+      if(indentFirst)
+      {
+         strcpy(target, indent);
+         targetPos += nSpaces;
+      }
+      for(basePos = 0; base[basePos]; ++basePos, ++targetPos)
+      {
+         if(targetLen - targetPos <= nSpaces)
+         {
+            targetLen *= 2;
+            target = renew target char[targetLen + 1];
+         }
+         target[targetPos] = base[basePos];
+         if(base[basePos] == '\n')
+         {
+            strcpy(target + targetPos + 1, indent);
+            targetPos += nSpaces;
+         }
+      }
+      delete indent;
+   }
+   else
+   {
+      target = StringIndent("", nSpaces, indentFirst);
+   }
+   return target;
+}
+
