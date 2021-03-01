@@ -2421,6 +2421,17 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             if(quote) f.Puts("\"");
          }
       }
+      else if (eClass_IsDerived(objectType,class(Array)))
+      {
+         // A file containing only [ 1, 2, 3 ] is supported by the parser so the writer should too.
+         //  Why would we want a (JS|eC)ON file with the array internals rather than its contents?
+         WriteArray(f, objectType, (Container)object, indent, eCON, stringMap, capitalize);
+      }
+      else if (eClass_IsDerived(objectType,class(Map)))
+      {
+         // If it is a Map, cut to the right call
+         WriteMap(f, objectType, (Map)object,  indent,  eCON, stringMap,  capitalize);
+      }
       else
       {
          Class _class = (objectType.type == normalClass) ? ((Instance)object)._class : objectType;
