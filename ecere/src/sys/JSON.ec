@@ -842,9 +842,14 @@ private:
             if(itemResult == success)
             {
                String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
-               ((void *(*)(void *, uint64))(void *)map->Add)(*map, (uint64)(uintptr)value.p);
-               // Must free String keys here
-               delete s;
+               if(s)
+               {
+                  ((void *(*)(void *, uint64))(void *)map->Add)(*map, (uint64)(uintptr)value.p);
+                  // Must free String keys here
+                  delete s;
+               }
+               else
+                  result = syntaxError;
             }
             else
             {
