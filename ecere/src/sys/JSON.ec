@@ -18,6 +18,11 @@ extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnFree;
+
+
+public define jsonIndentWidth = 3;
+const String indentModule = "   ";
+
 private:
 
 // TOFIX: How should this be handled?
@@ -2082,14 +2087,14 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
             f.Puts(spacing ? ",\n" : ", ");
          else
             isFirst = false;
-         if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
+         if(spacing) for(i = 0; i<indent; i++) f.Puts(indentModule);
          WriteONObject(f, mapNodeClass, n, indent, eCON, stringMap, false, capitalize, map);
       }
       if(spacing)
       {
          f.Puts("\n");
          indent--;
-         for(i = 0; i<indent; i++) f.Puts("   ");
+         for(i = 0; i<indent; i++) f.Puts(indentModule);
       }
       else
          f.Puts(" ");
@@ -2167,14 +2172,14 @@ static bool WriteArray(File f, Class type, Container array, int indent, bool eCO
          {
             value.p = (void *)(uintptr)t;
          }
-         if(spacing) for(i = 0; i<indent; i++) f.Puts("   ");
+         if(spacing) for(i = 0; i<indent; i++) f.Puts(indentModule);
          WriteValue(f, arrayType, value, indent, eCON, stringMap, false, capitalize);
       }
       if(spacing)
       {
          f.Puts("\n");
          indent--;
-         for(i = 0; i<indent; i++) f.Puts("   ");
+         for(i = 0; i<indent; i++) f.Puts(indentModule);
       }
       else
          f.Puts(" ");
@@ -2322,8 +2327,8 @@ public bool WriteONString(File f, const String s, bool eCON, int indent)
                if(eCON)
                {
                   f.Puts("\\n\"\n");
-                  for(i = 0; i<indent; i++) f.Puts("   ");
-                  f.Puts("   \"");
+                  for(i = 0; i<indent; i++) f.Puts(indentModule);
+                  f.Printf("%s\"", indentModule);
                }
                else
                   f.Puts("\\n");
@@ -2336,8 +2341,8 @@ public bool WriteONString(File f, const String s, bool eCON, int indent)
                buffer[b] = 0;
                f.Puts(buffer);
                f.Puts(">\"\n");
-               for(i = 0; i<indent; i++) f.Puts("   ");
-               f.Puts("   \"");
+               for(i = 0; i<indent; i++) f.Puts(indentModule);
+               f.Printf("%s\"", indentModule);
                b = 0;
             }
             else if(b == sizeof(buffer)-2 || !ch)
@@ -2462,7 +2467,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 
          if(jsonClass)
          {
-            if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
+            if(spacing) for(c = 0; c<indent; c++) f.Puts(indentModule);
             f.Print("\"JSONType\" : \"", jsonClass.name, "\"");
             isFirst = false;
          }
@@ -2560,7 +2565,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         }
 
                         if(!isFirst) f.Puts(spacing ? ",\n" : ", ");
-                        if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
+                        if(spacing) for(c = 0; c<indent; c++) f.Puts(indentModule);
 
                         if(!jsonDicMap)
                         {
@@ -2698,7 +2703,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      }
 
                      if(!isFirst) f.Puts(spacing ? ",\n" : ", ");
-                     if(spacing) for(c = 0; c<indent; c++) f.Puts("   ");
+                     if(spacing) for(c = 0; c<indent; c++) f.Puts(indentModule);
 
                      if(!eCON)
                      {
@@ -2748,7 +2753,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          {
             indent--;
             f.Puts("\n");
-            for(c = 0; c<indent; c++) f.Puts("   ");
+            for(c = 0; c<indent; c++) f.Puts(indentModule);
          }
          else if(!omitDefaultIdentifier && !jsonDicMap)
             f.Puts(" ");
