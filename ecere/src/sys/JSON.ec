@@ -148,21 +148,13 @@ OptionsMap defaultJsonOptions{[
       }
    },
    {
-      // Not sure which options to activate:
-      // I could not find Instance::OnGetDataFromString
-      // but it contains aa OGCAPIMultiBoundingBox
       "OGCAPISpatialExtent", {
-         strictOGDFS = true,
          nullUseOGDFS = true,
          arrayUseOGDFS = true
       }
    },
    {
-      // Not sure which options to activate:
-      // I could not find Instance::OnGetDataFromString
-      // but it contains a OGCAPIMultiInterval
       "OGCAPITemporalExtent", {
-         strictOGDFS = true,
          nullUseOGDFS = true,
          arrayUseOGDFS = true
       }
