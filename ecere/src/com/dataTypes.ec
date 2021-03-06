@@ -2123,6 +2123,8 @@ static char * Float_OnGetString(Class _class, float * data, char * string, void 
       else
          strcpy(string, "nan");
    }
+   else if(f && (Abs(f) > 1E20 || Abs(f) < 1E-20))
+      sprintf(string, "%.15e", f);
    else
    {
       int c;
@@ -2271,6 +2273,8 @@ static char * Double_OnGetString(Class _class, double * data, char * string, voi
       else
          strcpy(string, "nan");
    }
+   else if(f && (Abs(f) > 1E20 || Abs(f) < 1E-20))
+      sprintf(string, "%.15e", f);
    else
    {
       int c;
