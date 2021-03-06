@@ -2895,7 +2895,7 @@ public String PrintObjectNotationString(Class objectType, void * object, ObjectN
     * Print the ECON or JSON representation of an object to a string.
     * An mount of (indent *  jsonIndentWidth) whitespaces are inserted after each '\n',
     * if 'indentFirst' is true, the same amount is prepended to the first character of the object representation.
-    * NOTE: This function allocates memory for the output String, tha must be managed in the caller.
+    * NOTE: This function allocates memory for the output String, that must be managed in the caller.
     * */
    String result = null;
    if(object)
@@ -2903,7 +2903,6 @@ public String PrintObjectNotationString(Class objectType, void * object, ObjectN
       TempFile f { };
       if(WriteONObject(f, objectType, object, 0, onType == econ, null, false, 0, null))
       {
-         f.Putc(0);
          if(indent>0)
            result =  StringIndent((String)f.buffer, indent * jsonIndentWidth, indentFirst);
          else
@@ -2955,6 +2954,7 @@ public String StringIndent(const String base, int nSpaces, bool indentFirst)
             targetPos += nSpaces;
          }
       }
+      target[targetPos] = '\0';
       delete indent;
    }
    else
