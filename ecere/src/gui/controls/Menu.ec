@@ -652,10 +652,29 @@ public class PopupMenu : Window
 
    void (* FontExtent)(Display display, Font font, const char * text, int len, int * width, int * height);
 
-   FontResource boldFont { faceName = font.faceName, font.size, bold = true, window = this };
+   FontResource boldFont { faceName = font.faceName, font.size, bold = true, font.italic, font.underline, window = this };
    BitmapResource subArrow { fileName = "<:ecere>elements/arrowRight.png", window = this };
    BitmapResource whiteSubArrow { fileName = "<:ecere>elements/arrowRight.png", monochrome = true, window = this };
    BitmapResource disabledSubArrow { fileName = "<:ecere>elements/arrowRight.png", grayed = true, window = this };
+
+   // todo: fix this -- we need it but it's causing crashes
+   /*
+   watch(font)
+   {
+      FontResource font = this.font;
+      FontResource boldFont
+      {
+         faceName = font.faceName, size = font.size, bold = true
+      };
+      AddResource(boldFont);
+      RemoveResource(this.boldFont);
+      this.boldFont = boldFont;
+
+      OnLoadGraphics();
+
+      SetInitSize(initSize);
+   };
+   */
 
    borderStyle = bevel;
    interim = true;
@@ -733,7 +752,7 @@ public class PopupMenu : Window
          RestoreCaret();
          if(childMenu.itemCount)
          {
-            PopupMenu child { master = this, menu = childMenu };
+            PopupMenu child { master = this, menu = childMenu, font = { font.faceName, font.size, font.bold, font.italic, font.underline } };
 
             if(INTERIM_MENU)
             {
