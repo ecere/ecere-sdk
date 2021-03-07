@@ -16,7 +16,9 @@ public enum FieldType   // Note: these match SQLiteType
 // TOCHECK: Move this into FieldTypeEx ?
 public enum FieldValueFormat
 {
-   decimal, hex, octal, binary, exponential
+   // boolean allows treating a value as a boolean, writing  it as either true or false
+   // each type is allowed to disregard this and use a default format instead
+   decimal, hex, octal, binary, exponential, boolean
 };
 
 public class FieldTypeEx : FieldType
@@ -167,13 +169,13 @@ public struct FieldValue
       }
       else if(!strcmpi(string, "false"))
       {
-         type = { integer };
+         type = { type=integer, format = boolean};
          i = 0;
          return true;
       }
       else if(!strcmpi(string, "true"))
       {
-         type = { integer };
+         type = { type=integer, format = boolean};
          i = 1;
          return true;
       }
@@ -197,17 +199,19 @@ public struct FieldValue
 
 String formatFloat(char * stringOutput, double r, FieldValueFormat format, bool fixDot)
 {
-   if(format == exponential)
-   {
-      sprintf(stringOutput, "%e", r);
-      return stringOutput;
-   }
-   else
-   {
-      String st = (String)r.OnGetString(stringOutput, null, null);
-      if(fixDot && !strchr(st, '.') && !strchr(st, 'E') && !strchr(st, 'e'))
-         strcat(st, ".0");
-      return st;
+   switch (format){
+      // For now boolean is not active for float numbers, and uses the default
+      /* case boolean: sprintf(stringOutput, "%s", (r)?"true":"false"); break; */
+      case exponential:
+            sprintf(stringOutput, "%e", r);
+            return stringOutput;
+      default:
+            {
+               String st = (String)r.OnGetString(stringOutput, null, null);
+               if(fixDot && !strchr(st, '.') && !strchr(st, 'E') && !strchr(st, 'e'))
+                  strcat(st, ".0");
+               return st;
+            }
    }
 }
 
@@ -216,9 +220,10 @@ String formatInteger(char * stringOutput, int64 i, FieldValueFormat format, bool
    switch(format)
    {
       // case binary: sprintf(stringOutput, "%b", i); break;  // TODO: proper binary support
-      case octal:  sprintf(stringOutput, "%o", (uint)i); break;
-      case hex:    sprintf(stringOutput, FORMAT64HEX, i); break;
-      default:     sprintf(stringOutput, isUnsigned ? FORMAT64U : FORMAT64D, i); break;
+      case octal:   sprintf(stringOutput, "%o", (uint)i); break;
+      case hex:     sprintf(stringOutput, FORMAT64HEX, i); break;
+      case boolean: sprintf(stringOutput, "%s", (i)?"true":"false"); break;
+      default:      sprintf(stringOutput, isUnsigned ? FORMAT64U : FORMAT64D, i); break;
    }
    return stringOutput;
 }
@@ -679,11 +684,13 @@ public:
       else if(!strcmpi(string, "false"))
       {
          property::i = 0;
+         type.format = boolean;
          return true;
       }
       else if(!strcmpi(string, "true"))
       {
          property::i = 1;
+         type.format = boolean;
          return true;
       }
       else{
