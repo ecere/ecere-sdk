@@ -281,11 +281,24 @@ public:
       uintsize size = class(T).typeSize;
       byte * temp = new byte[size];
       memcpy(temp, it, size);
-      if(it < after)
-         memmove(it,        it + 1, (byte *)after - (byte *)it);
+      if(!after)
+      {
+         memmove(array+1, array, (byte*)it - (byte *)array);
+         memcpy(array, temp, size);
+      }
       else
-         memmove(after + 1, after,  (byte *)it - (byte *)after);
-      memcpy(after, temp, size);
+      {
+         if(it < after)
+         {
+            memmove(it,        it + 1, (byte *)after - (byte *)it);
+            memcpy(after, temp, size);
+         }
+         else if(it > after)
+         {
+            memmove(after + 2, after + 1,  (byte *)it - (byte *)(after + 1));
+            memcpy(after + 1, temp, size);
+         }
+      }
       delete temp;
    }
 
