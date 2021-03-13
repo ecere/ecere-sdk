@@ -534,6 +534,11 @@ public struct GLMultiDraw
 
    void freeVbo(int baseVertex, uint vertexSize, uint count)
    {
+#ifdef _DEBUG
+      if(!vertexGLMB)
+         PrintLn("WARNING: null vertexGLMB calling freeVbo()");
+#endif
+
       if(baseVertex != -1)
          vertexGLMB.freeBlock(BlockEntry { baseVertex * vertexSize, (baseVertex+count) * vertexSize-1 });
    }
