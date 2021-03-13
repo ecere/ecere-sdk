@@ -2763,7 +2763,10 @@ class Debugger
                   {
                      char tmp[4096];
                      bool needClass = false;
-                     char * s = ((char * (*)(void *, void *, void *, void *, void *))(void *)c._vTbl[__ecereVMethodID_class_OnGetString])(c, data, tmp, null, &needClass);
+                     char * s =
+                        c._vTbl[__ecereVMethodID_class_OnGetString] ?
+                        ((char * (*)(void *, void *, void *, void *, void *))(void *)c._vTbl[__ecereVMethodID_class_OnGetString])(c, data, tmp, null, &needClass)
+                        : null;
                      if(s)
                      {
                         FreeExpContents(exp);
