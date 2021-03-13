@@ -208,7 +208,8 @@ FreeingAVLTree<const String> compactArrays
    "CI_ResponsibleParty",
    "MD_CharacterSetCode",
    "MD_Keywords",
-   "EX_Extent"
+   "EX_Extent",
+   "FieldValue"
 ] };
 
 public enum JSONResult { syntaxError, success, typeMismatch, noItem };
@@ -2061,10 +2062,12 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
          Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
          Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
          // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
+         // TODO: Reverse the default behavior and identify any case where we do not want this.
          jsonDicMap  = (!eCON && (
                   !strcmp(mapKeyClass.name, "UMSFormatType") ||
                   strstr(mapDataClass.name, "UMSFieldValue") ||
                   (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
+                  strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                   strstr(mapDataClass.name, "MapboxGLSourceData") ||
                   strstr(mapDataClass.name, "ProcessingInput")
                   )
@@ -2451,6 +2454,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      !strcmp(mapKeyClass.name, "UMSFormatType") ||
                      strstr(mapDataClass.name, "UMSFieldValue") ||
                      (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
+                     strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                      strstr(mapDataClass.name, "MapboxGLSourceData") ||
                      strstr(mapDataClass.name, "ProcessingInput")
                      )
