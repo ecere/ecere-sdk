@@ -296,22 +296,31 @@ public struct Date
       }
       else if(count >= 2 && !gotAlphaMonth)
       {
-         // No Year Specified
-         year = time.year;
-         if(numerics[0] >= 1 && numerics[0] <= 12 &&
-            numerics[1] >= 1 && numerics[1] <= 31)
+         if(numerics[0] > 100 && numerics[1] <= 12)
          {
-            month = (Month)(numerics[0] - 1);
-            day = numerics[1];
-         }
-         else if(numerics[0] >= 1 && numerics[0] <= 31 &&
-                 numerics[1] >= 1 && numerics[1] <= 12)
-         {
-            day = numerics[0];
+            year = numerics[0];
             month = (Month)(numerics[1] - 1);
+            day = 0;
          }
          else
-            return false;
+         {
+            // No Year Specified
+            year = time.year;
+            if(numerics[0] >= 1 && numerics[0] <= 12 &&
+               numerics[1] >= 1 && numerics[1] <= 31)
+            {
+               month = (Month)(numerics[0] - 1);
+               day = numerics[1];
+            }
+            else if(numerics[0] >= 1 && numerics[0] <= 31 &&
+                    numerics[1] >= 1 && numerics[1] <= 12)
+            {
+               day = numerics[0];
+               month = (Month)(numerics[1] - 1);
+            }
+            else
+               return false;
+         }
       }
       else if(count >= 1 && gotAlphaMonth)
       {
