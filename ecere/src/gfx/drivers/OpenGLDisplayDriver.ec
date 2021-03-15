@@ -567,7 +567,8 @@ static int ctxErrorHandler( void *dpy, XErrorEvent *ev )
     return 0;
 }
 
-GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig config, XVisualInfo * visualInfo)
+GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig config, XVisualInfo * visualInfo,
+   OGLDisplay oglDisplay, bool compatible)
 {
    GLXContext ctx = 0;
    const String glxExts = glXQueryExtensionsString( display, DefaultScreen( display ) );
@@ -582,6 +583,8 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
          ctx = glXCreateNewContext( display, config, GLX_RGBA_TYPE, oglSystem ? oglSystem.glContext : 0, True );
       else
          ctx = glXCreateContext(display, visualInfo, oglSystem ? oglSystem.glContext : 0, True);
+      if(oglDisplay)
+         oglDisplay.compat = true;
    }
    else
    {
@@ -613,14 +616,14 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
          ctx = glXCreateContextAttribsARB( display, config, 0, True, context_attribs );
       }
 #endif // 0
-      bool tryingCompat = false;// compatible;
+      bool tryingCompat = compatible;
       int v = 0;
       while(!ctx)
       {
          for(v = 0; !ctx && v < sizeof(versions) / sizeof(versions[0]); v++)
          {
             int v0 = versions[v][0], v1 = versions[v][1];
-            if(!tryingCompat || v0 >= 3)
+            if(!tryingCompat || v0 < 3)
             {
                //bool coreNotion = v0 > 3 || (v0 == 3 && v1 >= 3);
                /*int attribs[] =
@@ -636,12 +639,15 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
                {
                   GLX_CONTEXT_MAJOR_VERSION_ARB, v0,
                   GLX_CONTEXT_MINOR_VERSION_ARB, v1,
-                  GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+                  //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
                   None
                };
                ctx = glXCreateContextAttribsARB( display, config, oglSystem ? oglSystem.glContext : 0, True, context_attribs );
                if(ctx)
                {
+                  if(oglDisplay)
+                     oglDisplay.compat = false; //tryingCompat; // FIXME: Some things don't work now with compat set to true?
+
                   //if(contextVersion) *contextVersion = v0;
                   //if(isCompatible)   *isCompatible = tryingCompat || !coreNotion;
 #ifdef _DEBUG
@@ -1164,8 +1170,8 @@ class OpenGLDisplayDriver : DisplayDriver
          PrintLn("got visual info!");
          PrintLn("GLX_CreateContext()");
 #endif
-         oglSystem.glContext = GLX_CreateContext(null, xGlobalDisplay, null, oglSystem.visualInfo);
-         oglSystem.compat = false; // TODO: Have GLX_CreateContext set that up
+         oglSystem.glContext = GLX_CreateContext(null, xGlobalDisplay, null, oglSystem.visualInfo, null,
+            (*&oglSystem.capabilities).compatible);
          if(oglSystem.glContext)
          {
 #ifdef DIAGNOSTICS
@@ -1500,8 +1506,9 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             //printf("visualInfo is not null\n");
             // printf("Creating Display Context, sharing with %x!\n", oglSystem.glContext);
-            oglDisplay.glContext = GLX_CreateContext(oglSystem, xGlobalDisplay, fbConfig, visualInfo);
-            oglDisplay.compat = false; // TODO: Have GLX_CreateContext set that up
+            GLCapabilities caps = *&display.glCapabilities;
+            oglDisplay.glContext = GLX_CreateContext(oglSystem, xGlobalDisplay, fbConfig, visualInfo, oglDisplay,
+               caps.compatible);
             //XFree(visualInfo);
          }
 
