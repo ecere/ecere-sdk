@@ -199,19 +199,20 @@ public struct FieldValue
 
 String formatFloat(char * stringOutput, double r, FieldValueFormat format, bool fixDot)
 {
-   switch (format){
+   switch (format)
+   {
       // For now boolean is not active for float numbers, and uses the default
       /* case boolean: sprintf(stringOutput, "%s", (r)?"true":"false"); break; */
       case exponential:
             sprintf(stringOutput, "%e", r);
             return stringOutput;
       default:
-            {
-               String st = (String)r.OnGetString(stringOutput, null, null);
-               if(fixDot && !strchr(st, '.') && !strchr(st, 'E') && !strchr(st, 'e'))
-                  strcat(st, ".0");
-               return st;
-            }
+      {
+         String st = (String)r.OnGetString(stringOutput, null, null);
+         if(fixDot && !strchr(st, '.') && !strchr(st, 'E') && !strchr(st, 'e'))
+            strcat(st, ".0");
+         return st;
+      }
    }
 }
 

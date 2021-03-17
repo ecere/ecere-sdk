@@ -66,7 +66,7 @@ public:
    bool objectUseOGDFS:1;
    // Set this to remove surrounding quotes before calling OGDFS: kept by default;
    bool stripQuotesForOGDFS:1;
-   // If the current JSON type is not among those that should ude OGDFS, fail immediatelyu.
+   // If the current JSON type is not among those that should use OGDFS, fail immediately.
    bool strictOGDFS:1;
    // Options to control the writing of an object to JSON/eCON.
    //   bool boolUseOGDFS:1;
@@ -2083,12 +2083,14 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       while(it.Next())
       {
          MapNode n = (MapNode)it.pointer;
+         Class ot = n && mapNodeClass.type == normalClass ? ((Instance)n)._class : mapNodeClass;
          if(!isFirst)
             f.Puts(spacing ? ",\n" : ", ");
          else
             isFirst = false;
          if(spacing) for(i = 0; i<indent; i++) f.Puts(indentModule);
-         WriteONObject(f, mapNodeClass, n, indent, eCON, stringMap, false, capitalize, map);
+
+         WriteONObject(f, ot, n, indent, eCON, stringMap, false, capitalize, map);
       }
       if(spacing)
       {
@@ -2379,7 +2381,8 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
       bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPoint") || !strcmp(type.name, "UMSRowsSpecs"));
-      WriteONObject(f, type, value.p, indent, eCON, stringMap, eCON && omitNames, capitalize, null);
+      Class ot = value.p && type.type == normalClass ? ((Instance)value.p)._class : type;
+      WriteONObject(f, ot, value.p, indent, eCON, stringMap, eCON && omitNames, capitalize, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
