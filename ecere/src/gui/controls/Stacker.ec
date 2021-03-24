@@ -612,4 +612,21 @@ private:
          result = next;
       return result;
    }
+
+   public void MoveControl(IteratorPointer ctrl, IteratorPointer after, bool fixCycle)
+   {
+      /*
+       * Facility to reorder the controls in the stacker:
+       * input 'ctrl' will become the successor in the list of input 'after'.
+       * If input 'fixCycle' is true, the cycling order is updated to match,
+       * otherwise it is left unchanged.
+       * */
+      if(ctrl)
+      {
+         if(fixCycle)
+            // Fix the cycle first to avoid messing with containers pointers.
+            childrenCycle.Move((*((Window*)ctrl)).cycle, after ? (*((Window*)after)).cycle.prev : null);
+         controls.Move(ctrl, after);
+      }
+   }
 }
