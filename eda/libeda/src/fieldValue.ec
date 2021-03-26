@@ -553,56 +553,20 @@ public:
 
    String formatArray(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
-      uint end;
-      tempString[0]='[';
+      String temp = PrintObjectNotationString( a._class, a, *onType, 0, false, keepCase);
+      strcat(tempString, temp);
+      delete temp;
 
-      if (a)
-         a.OnGetString(tempString+1, fieldData, onType);
-      else
-         strcat(tempString, " ");
-
-      end = strlen(tempString);
-      strcat(tempString+end,"]");
       return tempString;
    }
 
    String formatMap(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       // Depending on the object notation and number of elements:
+      String temp = PrintObjectNotationString( m._class, m, *onType, 0, false, keepCase);
+      strcat(tempString, temp);
+      delete temp;
 
-      // Choose key string delimiter
-      const String quote = (*onType==json)?"\"" : "";
-      // Choose keyval separator
-      const String sep = (*onType==json)?":" : "=";
-      //Decide if newline is \n or empty
-      const String newline = (m.count > 3)?"\n" : " ";
-
-      // Format for the first element
-      char fmt0[16];
-      // Format for subsequent elements
-      char fmt[18];
-
-      // Insert string delimiter and separator
-      sprintf(fmt0, "%s%%s%s %s ", quote, quote, sep);
-      // Add a comma after each key value pair and newline
-      sprintf(fmt, ",%s%s",newline,  fmt0);
-      { // Do the formatting
-         MapIterator<String, FlexyField> iter {map = m};
-         int advance = 0;
-
-         advance += sprintf(tempString, "{%s", newline);
-         iter.Next(); // At least one field exists.
-         advance += sprintf(tempString+advance, fmt0, iter.key);
-         iter.value.OnGetString(tempString+advance, fieldData, onType);
-         advance += strlen(tempString+advance);
-         for (iter.Next(); iter.pointer; iter.Next())
-         {
-            advance += sprintf(tempString+advance, fmt, iter.key);
-            iter.value.OnGetString(tempString+advance, fieldData, onType);
-            advance += strlen(tempString+advance);
-         }
-         sprintf(tempString+advance, "%s}", newline);
-      }
       return tempString;
    }
 

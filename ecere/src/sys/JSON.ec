@@ -2053,7 +2053,8 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       bool isFirst = true;
       Class arrayType = (type = map._class, type.templateArgs[0].dataTypeClass);
       const String tArg = strchr(arrayType.name, '<');
-      bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue"));
+      bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue") ||
+            strstr(tArg + 1, "FlexyField"));
       MapIterator it { map = (void*)map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
       bool jsonDicMap = false;
@@ -2069,7 +2070,8 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
                   (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
                   strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                   strstr(mapDataClass.name, "MapboxGLSourceData") ||
-                  strstr(mapDataClass.name, "ProcessingInput")
+                  strstr(mapDataClass.name, "ProcessingInput") ||
+                  strstr(mapDataClass.name, "FlexyField")
                   )
                );
       }
@@ -2459,6 +2461,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
                      strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                      strstr(mapDataClass.name, "MapboxGLSourceData") ||
+                     strstr(mapDataClass.name, "FlexyField") ||
                      strstr(mapDataClass.name, "ProcessingInput")
                      )
                   );
