@@ -238,7 +238,7 @@ public class Time : double
       }
 
       value = (int)(time / 60);
-      sprintf(temp, "%d:", value);
+      sprintf(temp, "%02d:", value);
       strcat(tempString, temp);
       time -= value * 60;
 
@@ -253,6 +253,29 @@ public class Time : double
          strcat(tempString, temp+1);
       }*/
       return tempString;
+   }
+
+   bool OnGetDataFromString(const char * string)
+   {
+      bool result = false;
+      char s[100], * tokens[20];
+      int count, i, multiplier = 1;
+      Time t = 0;
+
+      strncpy(s, string ? string : "", sizeof(s));
+      s[99] = 0;
+      count = TokenizeWith(s, 20, tokens, ":", false);
+
+      // handles d:h:m:s, h:m:s, m:s, or s
+      for(i = count-1; i >= 0; i--)
+      {
+         result = true;
+         t += multiplier * strtol(tokens[i], null, 10);
+         if(multiplier == 60 * 60 * 24) break;
+         multiplier *= (multiplier == 60 * 60) ? 24 : 60;
+      }
+      this = t;
+      return result;
    }
 }
 
