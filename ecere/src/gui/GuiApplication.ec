@@ -814,6 +814,17 @@ public:
 
    void Wait(void)
    {
+      static Time lastTime = 0;
+
+      Time time = GetTime();
+      if(!lastTime) lastTime = time;
+
+      if((double)(time - lastTime) > 1.0 / Max(18.2, (double)timerResolution))
+      {
+         lastTime = time;
+         return;
+      }
+
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
       if(xGlobalDisplay)
          XUnlockDisplay(xGlobalDisplay);
@@ -838,6 +849,7 @@ public:
       if(xGlobalDisplay)
          XLockDisplay(xGlobalDisplay);
 #endif
+      lastTime = time;
    }
 
    bool ProcessInput(bool useProcessAll)
