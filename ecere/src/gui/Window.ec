@@ -1695,8 +1695,8 @@ private:
       }
 
       // Adjust all children
-      for(child = children.first; child; child = child.next)
-         child.SetPosition(child.position.x, child.position.y, child.size.w, child.size.h, false, true, true);
+      for(child = *&children.first; child; child = *&child.next)
+         child.SetPosition((&child.position)->x, (&child.position)->y, (&child.size)->w, (&child.size)->h, false, true, true);
 
       UpdateCaret(false, false);
    }
