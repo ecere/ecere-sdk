@@ -757,13 +757,13 @@ public:
                   }
                }
 
-               for(child = desktop.children.first; child; child = child.next)
-                  if(child.created && child.visible && !child.interim)
+               for(child = *&desktop.children.first; child; child = *&child.next)
+                  if(*&child.created && *&child.visible && !(*&child.style).interim)
                      break;
                if(!child) break;
 
 #if !defined(__EMSCRIPTEN__)
-               for(window = desktop.children.first; window; window = window.next)
+               for(window = *&desktop.children.first; window; window = *&window.next)
                   if(window.mutex) window.mutex.Wait();
 #endif
                UpdateDisplay();
@@ -933,7 +933,7 @@ public:
          {
             Window window;
 
-            for(window = desktop.children.first; window; window = window.next)
+            for(window = *&desktop.children.first; window; window = *&window.next)
             {
 #if !defined(__EMSCRIPTEN__)
                if(window.mutex) window.mutex.Wait();
