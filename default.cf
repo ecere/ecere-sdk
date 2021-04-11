@@ -87,12 +87,12 @@ LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL -L/usr/local/op
 
 ifdef BSD_TARGET
 EXCLUDED_LIBS += $(space)dl
-CFLAGS += -isystem /usr/local/include -isystem /usr/local/include/freetype2
+override CFLAGS += -isystem /usr/local/include -isystem /usr/local/include/freetype2
 LDFLAGS += -L/usr/local/lib
 endif
 
 ifdef OSX_TARGET
-CFLAGS += -I$(SYSROOT)/usr/include/ffi -I$(SYSROOT)/usr/local/opt/openssl/include
+override CFLAGS += -I$(SYSROOT)/usr/include/ffi -I$(SYSROOT)/usr/local/opt/openssl/include
 else
 # OFLAGS += -L/usr/lib/$(TARGET_ARCH)/ec
 endif
@@ -104,18 +104,18 @@ OFLAGS += $(LDFLAGS)
 UPXFLAGS = -9 -q
 
 ifdef ARCH_FLAGS
-CFLAGS += $(ARCH_FLAGS)
+override CFLAGS += $(ARCH_FLAGS)
 OFLAGS += $(ARCH_FLAGS)
 endif
 
-CFLAGS += -fmessage-length=0
+override CFLAGS += -fmessage-length=0
 
 EARFLAGS = q
 
 ifdef DISABLE_GL
-CFLAGS += -DECERE_NOGL
+override CFLAGS += -DECERE_NOGL
 endif
 
 ifndef ENABLE_SSL
-CFLAGS += -DECERE_NOSSL
+override CFLAGS += -DECERE_NOSSL
 endif
