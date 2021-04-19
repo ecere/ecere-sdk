@@ -3071,7 +3071,7 @@ class CodeEditor : Window
                   Class regClass = eSystem_FindClass(this.privateModule, ((Specifier)_class.baseSpecs->first).name);
                   if(regClass)
                   {
-                     if(eClass_GetDesigner(regClass) && !GetBuildingEcereComModule())
+                     if(eClass_GetDesigner(regClass) && !GetBuildingEcereComModule() && regClass.structSize)
                      {
                         Instance instance = eInstance_New(regClass);
                         ObjectInfo classObject

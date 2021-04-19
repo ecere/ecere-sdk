@@ -321,6 +321,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       char baseName[1024] = "";
       bool unitType = false;
       bool wouldBeEnum = false;
+      bool canBeBits = true;
       AccessMode inheritanceAccess = publicAccess;
 
       if(baseSpecs != null)
@@ -342,6 +343,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   wouldBeEnum = true;
                   //classType = enumClass;
                }
+               else if(baseType._class.registered.type == normalClass)
+                  canBeBits = false;
             }
          }
          else if(baseType.kind == structType || baseType.kind == unionType)
@@ -361,7 +364,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       if(classType == normalClass)
       {
          if(unitType) classType = unitClass;
-         if(definitions != null)
+         if(definitions != null && canBeBits)
          {
             for(def = definitions.first; def; def = def.next)
             {
@@ -383,7 +386,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         {
                            if(d.type != structDeclarator)
                               continue; // This should always be a structDeclarator (There's a bug somewhere else if it's not)
-                           if(d.structDecl.exp)
+                           if(d.structDecl.exp && d.structDecl.exp.type == constantExp)  // TODO: Parser error if e.g. an instance expression
                            {
                               classType = bitClass;
                               break;
