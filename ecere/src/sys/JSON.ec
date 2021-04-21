@@ -2071,7 +2071,8 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
                   strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                   strstr(mapDataClass.name, "MapboxGLSourceData") ||
                   strstr(mapDataClass.name, "ProcessingInput") ||
-                  strstr(mapDataClass.name, "FlexyField")
+                  strstr(mapDataClass.name, "FlexyField") ||
+                  strstr(mapDataClass.name, "JSONSchema")
                   )
                );
       }
@@ -2462,7 +2463,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                      strstr(mapDataClass.name, "MapboxGLSourceData") ||
                      strstr(mapDataClass.name, "FlexyField") ||
-                     strstr(mapDataClass.name, "ProcessingInput")
+                     strstr(mapDataClass.name, "ProcessingInput") ||
+                     strstr(mapDataClass.name, "JSONSchema")
                      )
                   );
          }
