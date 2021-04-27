@@ -521,7 +521,7 @@ System globalSystem;
 
 public void debugBreakpoint()
 {
-#if !defined(ECERE_BOOTSTRAP)
+#if !defined(ECERE_BOOTSTRAP) && defined(_DEBUG)
 
 #if defined(__WIN32__)
    DebugBreak();
