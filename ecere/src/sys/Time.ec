@@ -1,3 +1,9 @@
+default:
+extern char *tzname[2];
+extern long timezone;
+extern int daylight;
+
+private:
 namespace sys;
 
 #define _Noreturn
@@ -282,8 +288,10 @@ public class Time : double
 public class Seconds : Time { public property Time {} };
 
 #if !defined(__WIN32__)
-static time_t MakeTimeT(SecSince1970 t)
+
+static time_t MakeTimeTfromLocal(SecSince1970 t, int isDST)
 {
+   // mktime() takes time expressed in *local* time
    struct tm tm = { 0 };
    time_t result;
    DateTime dt = t;
@@ -295,12 +303,14 @@ static time_t MakeTimeT(SecSince1970 t)
    tm.tm_sec = dt.second;
    tm.tm_yday = dt.dayInTheYear;
    tm.tm_wday = dt.dayOfTheWeek;
+   tm.tm_isdst = isDST;
    result = mktime(&tm);
    return result;
 }
 
-static time_t MakeTimeTfromDT(DateTime dt)
+static time_t MakeTimeTfromLocalDT(DateTime dt, int isDST)
 {
+   // mktime() takes time expressed in *local* time
    struct tm tm = { 0 };
    time_t result;
    tm.tm_year = dt.year - 1900;
@@ -311,8 +321,19 @@ static time_t MakeTimeTfromDT(DateTime dt)
    tm.tm_sec = dt.second;
    tm.tm_yday = dt.dayInTheYear;
    tm.tm_wday = dt.dayOfTheWeek;
+   tm.tm_isdst = isDST;
    result = mktime(&tm);
    return result;
+}
+
+static time_t MakeTimeTfromGlobal(SecSince1970 t, bool isDST)
+{
+   return t - isDST * 3600;
+}
+
+static time_t MakeTimeTfromGlobalDT(DateTime dt, bool isDST)
+{
+   return (SecSince1970)dt - isDST * 3600;
 }
 
 #endif
@@ -387,8 +408,7 @@ public:
       #else
          struct tm tm = { 0 };
          DateTime global;
-         time_t t = MakeTimeT(this);
-         // gmtime_r((time_t *)&this, &tm);
+         time_t t = MakeTimeTfromLocal(this, -1);
          gmtime_r(&t, &tm);
          global.year = tm.tm_year + 1900;
          global.month = (Month)tm.tm_mon;
@@ -435,7 +455,7 @@ public:
 #else
          DateTime local;
          struct tm tm = { 0 };
-         time_t t = MakeTimeT(this);
+         time_t t = MakeTimeTfromGlobal(this, false);
          //localtime_r((time_t *)&this, &tm);
          localtime_r(&t, &tm);
          local.year = tm.tm_year + 1900;
@@ -560,7 +580,7 @@ public struct DateTime
       #else
          struct tm tm = { 0 };
          //time_t t = (time_t)(SecSince1970)this;
-         time_t t = MakeTimeTfromDT(this);
+         time_t t = MakeTimeTfromLocalDT(this, -1);
          gmtime_r(&t, &tm);
          value.year = tm.tm_year + 1900;
          value.month = (Month)tm.tm_mon;
@@ -603,7 +623,7 @@ public struct DateTime
       #else
          struct tm tm = { 0 };
          // time_t t = (time_t)(SecSince1970)this;
-         time_t t = MakeTimeTfromDT(this);
+         time_t t = MakeTimeTfromGlobalDT(this, false);
          localtime_r(&t, &tm);
          value.year = tm.tm_year + 1900;
          value.month = (Month)tm.tm_mon;
