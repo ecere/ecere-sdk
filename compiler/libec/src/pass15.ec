@@ -476,6 +476,15 @@ void ComputeClassMembers(Class _class, bool isMember)
                         mask <<= 1;
                      mask |= 1;
                   }
+                  if(bitMember.pos + bitMember.size > _class.typeSize * 8 || bitMember.pos == 64)
+                  {
+                     if(inCompiler)
+                        Compiler_Error("overflowing bits in %s: bit class member %s at position %d\n",
+                           _class.name, bitMember.name,bitMember.pos, "\n");
+                     else
+                        PrintLn("overflowing bits in ", _class.name, ": bit class member ",
+                           bitMember.name, " at position ", bitMember.pos);
+                  }
                   bitMember.mask = mask << bitMember.pos;
                }
                else if(dataMember.type == normalMember && dataMember.dataType)
@@ -757,7 +766,8 @@ public int ComputeTypeSize(Type type)
             }
             else if(_class && (_class.type == unitClass ||
                    _class.type == enumClass ||
-                   _class.type == bitClass))
+                   _class.type == bitClass ||
+                   _class.type == systemClass))
             {
                if(!_class.dataType)
                   _class.dataType = ProcessTypeString(_class.dataTypeString, false);

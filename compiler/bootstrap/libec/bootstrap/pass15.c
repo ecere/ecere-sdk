@@ -7963,6 +7963,8 @@ c2 = c2->base;
 return c1 == c2;
 }
 
+extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
+
 extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
@@ -7993,11 +7995,11 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
@@ -10072,6 +10074,13 @@ if(d)
 mask <<= 1;
 mask |= 1;
 }
+if(bitMember->pos + bitMember->size > _class->typeSize * 8 || bitMember->pos == 64)
+{
+if(inCompiler)
+Compiler_Error("overflowing bits in %s: bit class member %s at position %d\n", _class->name, bitMember->name, bitMember->pos, "\n");
+else
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "overflowing bits in ", __ecereClass_char__PTR_, _class->name, __ecereClass_char__PTR_, ": bit class member ", __ecereClass_char__PTR_, bitMember->name, __ecereClass_char__PTR_, " at position ", __ecereClass_int, (void *)&bitMember->pos, (void *)0);
+}
 bitMember->mask = mask << bitMember->pos;
 }
 else if(dataMember->type == 0 && dataMember->dataType)
@@ -11624,7 +11633,7 @@ size = _class->structSize;
 if(type->alignment && size % type->alignment)
 size += type->alignment - (size % type->alignment);
 }
-else if(_class && (_class->type == 3 || _class->type == 4 || _class->type == 2))
+else if(_class && (_class->type == 3 || _class->type == 4 || _class->type == 2 || _class->type == 1000))
 {
 if(!_class->dataType)
 _class->dataType = ProcessTypeString(_class->dataTypeString, 0);
