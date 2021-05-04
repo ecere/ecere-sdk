@@ -2995,7 +2995,6 @@
                               }
                            ]
                         },
-                        "test_html5.c",
                         {
                            "FileName" : "UWPInterface.ec",
                            "Configurations" : [
