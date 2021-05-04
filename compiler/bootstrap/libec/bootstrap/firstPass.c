@@ -1498,6 +1498,7 @@ else
 char baseName[1024] = "";
 unsigned int unitType = 0;
 unsigned int wouldBeEnum = 0;
+unsigned int canBeBits = 1;
 int inheritanceAccess = 1;
 
 if(baseSpecs != (((void *)0)))
@@ -1519,6 +1520,8 @@ else if(baseType->__anon1._class->__anon1.registered->type == 4)
 {
 wouldBeEnum = 1;
 }
+else if(baseType->__anon1._class->__anon1.registered->type == 0)
+canBeBits = 0;
 }
 }
 else if(baseType->kind == 9 || baseType->kind == 10)
@@ -1536,7 +1539,7 @@ if(classType == 0)
 {
 if(unitType)
 classType = 3;
-if(definitions != (((void *)0)))
+if(definitions != (((void *)0)) && canBeBits)
 {
 for(def = definitions->first; def; def = def->next)
 {
@@ -1559,7 +1562,7 @@ for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 {
 if(d->type != 0)
 continue;
-if(d->__anon1.structDecl.exp)
+if(d->__anon1.structDecl.exp && d->__anon1.structDecl.exp->type == 2)
 {
 classType = 2;
 break;

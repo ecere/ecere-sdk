@@ -701,6 +701,8 @@ strcpy(string, "-nan");
 else
 strcpy(string, "nan");
 }
+else if(f && (((f < 0) ? -f : f) > 1E20 || ((f < 0) ? -f : f) < 1E-20))
+sprintf(string, "%.15e", f);
 else
 {
 int c;
@@ -819,6 +821,8 @@ strcpy(string, "-nan");
 else
 strcpy(string, "nan");
 }
+else if(f && (((f < 0) ? -f : f) > 1E20 || ((f < 0) ? -f : f) < 1E-20))
+sprintf(string, "%.15e", f);
 else
 {
 int c;

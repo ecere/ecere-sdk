@@ -608,7 +608,34 @@ extern void DeclareMethod(struct External * neededFor, struct __ecereNameSpace__
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
+struct __ecereNameSpace__ecere__com__DataMember;
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
 struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} ecere_gcc_struct __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Property
 {
@@ -745,109 +772,6 @@ int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uint
 void (*  FreeKey)(void *  key);
 } ecere_gcc_struct;
 
-struct __ecereNameSpace__ecere__com__NameSpace
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
-struct __ecereNameSpace__ecere__com__NameSpace *  left;
-struct __ecereNameSpace__ecere__com__NameSpace *  right;
-int depth;
-struct __ecereNameSpace__ecere__com__NameSpace *  parent;
-struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
-struct __ecereNameSpace__ecere__sys__BinaryTree classes;
-struct __ecereNameSpace__ecere__sys__BinaryTree defines;
-struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
-
-int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  a, const char *  b);
-
-struct __ecereNameSpace__ecere__com__Application
-{
-int argc;
-const char * *  argv;
-int exitCode;
-unsigned int isGUIApp;
-struct __ecereNameSpace__ecere__sys__OldList allModules;
-char *  parsedCommand;
-struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} ecere_gcc_struct;
-
-static struct __ecereNameSpace__ecere__com__NameSpace globalData;
-
-extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
-
-void __ecereUnregisterModule_ecs(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
-}
-
-struct __ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} ecere_gcc_struct __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct __anon2;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__DataMember
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-short structAlignment;
-short pointerAlignment;
-} ecere_gcc_struct;
-
 struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
@@ -908,37 +832,49 @@ unsigned int byValueSystemClass;
 void *  bindingsClass;
 } ecere_gcc_struct;
 
+struct __ecereNameSpace__ecere__com__NameSpace
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
+struct __ecereNameSpace__ecere__com__NameSpace *  left;
+struct __ecereNameSpace__ecere__com__NameSpace *  right;
+int depth;
+struct __ecereNameSpace__ecere__com__NameSpace *  parent;
+struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
+struct __ecereNameSpace__ecere__sys__BinaryTree classes;
+struct __ecereNameSpace__ecere__sys__BinaryTree defines;
+struct __ecereNameSpace__ecere__sys__BinaryTree functions;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
+
+int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  a, const char *  b);
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleInfo;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_SymbolgenApp;
-
-static struct __ecereNameSpace__ecere__com__Class * FindAppClass(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, unsigned int thisModule)
-{
-struct __ecereNameSpace__ecere__com__BTNamedLink * link;
-struct __ecereNameSpace__ecere__com__NameSpace * ns;
-
-for(link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*nameSpace).classes); link; link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)link)))
-{
-struct __ecereNameSpace__ecere__com__Class * _class = link->data;
-
-if(strcmp(_class->fullName, "ecere::com::Application") && (!thisModule || _class->module == privateModule))
-{
-struct __ecereNameSpace__ecere__com__Class * base;
-
-for(base = _class->base; base && base->type != 1000; base = base->base)
-if(!strcmp(base->fullName, "ecere::com::Application"))
-return _class;
-}
-}
-for(ns = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*nameSpace).nameSpaces); ns; ns = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)ns)))
-{
-struct __ecereNameSpace__ecere__com__Class * _class = FindAppClass(ns, thisModule);
-
-if(_class)
-return _class;
-}
-return (((void *)0));
-}
 
 extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
@@ -975,6 +911,67 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
+} ecere_gcc_struct;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} ecere_gcc_struct;
+
+static struct __ecereNameSpace__ecere__com__NameSpace globalData;
+
+extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
+
+static struct __ecereNameSpace__ecere__com__Class * FindAppClass(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, unsigned int thisModule)
+{
+struct __ecereNameSpace__ecere__com__BTNamedLink * link;
+struct __ecereNameSpace__ecere__com__NameSpace * ns;
+
+for(link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*nameSpace).classes); link; link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)link)))
+{
+struct __ecereNameSpace__ecere__com__Class * _class = link->data;
+
+if(strcmp(_class->fullName, "ecere::com::Application") && (!thisModule || _class->module == privateModule))
+{
+struct __ecereNameSpace__ecere__com__Class * base;
+
+for(base = _class->base; base && base->type != 1000; base = base->base)
+if(!strcmp(base->fullName, "ecere::com::Application"))
+return _class;
+}
+}
+for(ns = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&(*nameSpace).nameSpaces); ns; ns = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)ns)))
+{
+struct __ecereNameSpace__ecere__com__Class * _class = FindAppClass(ns, thisModule);
+
+if(_class)
+return _class;
+}
+return (((void *)0));
+}
 
 static void LoadImports(const char * fileName)
 {
@@ -1189,21 +1186,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_imports, module);
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
-}
-
-void __ecereCreateModuleInstances_ecs()
-{
-(globalData.classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.defines.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.functions.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.nameSpaces.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString);
-theGlobalContext = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
-}
-
-void __ecereDestroyModuleInstances_ecs()
-{
-((theGlobalContext ? __extension__ ({
-void * __ecerePtrToDelete = (theGlobalContext);
-
-__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
-}) : 0), theGlobalContext = 0);
 }
 
 static void BindDCOMClient()
@@ -1562,6 +1544,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 }
 
+void __ecereUnregisterModule_ecs(struct __ecereNameSpace__ecere__com__Instance * module)
+{
+
+}
+
 static void BindDCOMServer()
 {
 unsigned int mutexDeclared = 0;
@@ -1891,6 +1878,21 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "}\n");
 }
 }
 }
+}
+
+void __ecereCreateModuleInstances_ecs()
+{
+(globalData.classes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.defines.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.functions.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, globalData.nameSpaces.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString);
+theGlobalContext = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+}
+
+void __ecereDestroyModuleInstances_ecs()
+{
+((theGlobalContext ? __extension__ ({
+void * __ecerePtrToDelete = (theGlobalContext);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), theGlobalContext = 0);
 }
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
@@ -3553,6 +3555,7 @@ struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleInfo", 0, sizeof(struct ModuleInfo), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ModuleInfo = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "SymbolgenApp", "ecere::com::Application", 0, 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_SymbolgenApp = class;

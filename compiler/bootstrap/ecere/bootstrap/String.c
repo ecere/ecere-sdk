@@ -159,58 +159,6 @@ d[k] = '\0';
 return k;
 }
 
-int __ecereNameSpace__ecere__sys__EscapeCString(char * outString, int bufferLen, const char * s, unsigned int options)
-{
-int d = 0, c = 0;
-const char * string = s;
-char ch;
-
-if(((unsigned int)((options & 0x4) >> 2)))
-outString[d++] = '\"';
-while(d + 2 < bufferLen)
-{
-ch = string[c++];
-if(ch == '\"' && ((unsigned int)((options & 0x2) >> 1)))
-outString[d++] = '\\', outString[d++] = '\"';
-else if(ch == '\'' && ((unsigned int)((options & 0x1) >> 0)))
-outString[d++] = '\\', outString[d++] = '\'';
-else if(ch == '\\')
-outString[d++] = '\\', outString[d++] = '\\';
-else if(ch == '\t')
-outString[d++] = '\\', outString[d++] = '\t';
-else if(ch == '\b')
-outString[d++] = '\\', outString[d++] = '\b';
-else if(ch == '\r')
-outString[d++] = '\\', outString[d++] = '\r';
-else if(ch == '\f')
-outString[d++] = '\\', outString[d++] = '\f';
-else if(ch == '\n')
-{
-int i;
-
-if(((unsigned int)((options & 0x8) >> 3)) && ((unsigned int)((options & 0x4) >> 2)))
-{
-outString[d++] = '\\', outString[d++] = 'n';
-outString[d++] = '\"';
-outString[d++] = '\n';
-for(i = 0; i <= ((int)((options & 0xFFFF0) >> 4)); i++)
-outString[d++] = ' ', outString[d++] = ' ', outString[d++] = ' ';
-outString[d++] = '\"';
-}
-else
-outString[d++] = '\\', outString[d++] = 'n';
-}
-else if(ch)
-outString[d++] = ch;
-else
-break;
-}
-if(((unsigned int)((options & 0x4) >> 2)))
-outString[d++] = '\"';
-outString[d] = 0;
-return d;
-}
-
 void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2)
 {
 int c;
@@ -377,6 +325,8 @@ extern int strncasecmp(const char * , const char * , size_t n);
 extern int tolower(int);
 
 extern int isalnum(int c);
+
+extern void *  memset(void *  area, int value, size_t count);
 
 extern char *  strchr(const char * , int);
 
@@ -777,6 +727,57 @@ return (char *)ptr1;
 }
 }
 return (((void *)0));
+}
+
+int __ecereNameSpace__ecere__sys__EscapeCString(char * outString, int bufferLen, const char * s, unsigned int options)
+{
+size_t actualIndent = 3 * ((int)((options & 0xFFFF0) >> 4));
+int d = 0, c = 0;
+const char * string = s;
+char ch;
+
+if(!options)
+options = (options & ~0x2) | (((unsigned int)(1)) << 1);
+if(((unsigned int)((options & 0x4) >> 2)))
+outString[d++] = '\"';
+while(d + 2 < bufferLen)
+{
+ch = string[c++];
+if(ch == '\"' && ((unsigned int)((options & 0x2) >> 1)))
+outString[d++] = '\\', outString[d++] = '\"';
+else if(ch == '\'' && ((unsigned int)((options & 0x1) >> 0)))
+outString[d++] = '\\', outString[d++] = '\'';
+else if(ch == '\\')
+outString[d++] = '\\', outString[d++] = '\\';
+else if(ch == '\t')
+outString[d++] = '\\', outString[d++] = 't';
+else if(ch == '\b')
+outString[d++] = '\\', outString[d++] = 'b';
+else if(ch == '\r')
+outString[d++] = '\\', outString[d++] = 'r';
+else if(ch == '\f')
+outString[d++] = '\\', outString[d++] = 'f';
+else if(ch == '\n')
+{
+outString[d++] = '\\', outString[d++] = 'n';
+if(((unsigned int)((options & 0x8) >> 3)) && ((unsigned int)((options & 0x4) >> 2)))
+{
+outString[d++] = '\"';
+outString[d++] = '\n';
+memset(outString + d, ' ', actualIndent);
+d += actualIndent;
+outString[d++] = '\"';
+}
+}
+else if(ch)
+outString[d++] = ch;
+else
+break;
+}
+if(((unsigned int)((options & 0x4) >> 2)))
+outString[d++] = '\"';
+outString[d] = 0;
+return d;
 }
 
 int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int esc)
