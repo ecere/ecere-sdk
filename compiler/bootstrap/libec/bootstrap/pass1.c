@@ -1104,7 +1104,56 @@ unsigned int __ecereProp_Type_Get_isPointerTypeSize(struct Type * this);
 
 unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this);
 
+struct __ecereNameSpace__ecere__com__DataMember;
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} ecere_gcc_struct;
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
 struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} ecere_gcc_struct __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Property
 {
@@ -1203,6 +1252,8 @@ int isIterator;
 struct Expression * propCategory;
 unsigned int mustRegister;
 } ecere_gcc_struct;
+
+extern struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  FindTemplateArg(struct __ecereNameSpace__ecere__com__Class * _class, struct TemplateParameter * param);
 
 struct __ecereNameSpace__ecere__com__Module;
 
@@ -1447,98 +1498,6 @@ struct __ecereNameSpace__ecere__sys__BinaryTree defines;
 struct __ecereNameSpace__ecere__sys__BinaryTree functions;
 } ecere_gcc_struct;
 
-struct __ecereNameSpace__ecere__com__Application
-{
-int argc;
-const char * *  argv;
-int exitCode;
-unsigned int isGUIApp;
-struct __ecereNameSpace__ecere__sys__OldList allModules;
-char *  parsedCommand;
-struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} ecere_gcc_struct;
-
-void GetNameSpaceString(struct __ecereNameSpace__ecere__com__NameSpace * ns, char * string)
-{
-if(ns->parent)
-GetNameSpaceString(ns->parent, string);
-if(ns->name)
-{
-strcat(string, ns->name);
-strcat(string, "::");
-}
-}
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} ecere_gcc_struct;
-
-void __ecereUnregisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
-}
-
-struct __ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} ecere_gcc_struct __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct __anon2;
-} ecere_gcc_struct __anon1;
-} ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__DataMember
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-short structAlignment;
-short pointerAlignment;
-} ecere_gcc_struct;
-
 struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
@@ -1599,9 +1558,224 @@ unsigned int byValueSystemClass;
 void *  bindingsClass;
 } ecere_gcc_struct;
 
-extern struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  FindTemplateArg(struct __ecereNameSpace__ecere__com__Class * _class, struct TemplateParameter * param);
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
+} ecere_gcc_struct;
+
+void GetNameSpaceString(struct __ecereNameSpace__ecere__com__NameSpace * ns, char * string)
+{
+if(ns->parent)
+GetNameSpaceString(ns->parent, string);
+if(ns->name)
+{
+strcat(string, ns->name);
+strcat(string, "::");
+}
+}
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassPropertyValue;
+
+struct External * ProcessClassFunction(struct __ecereNameSpace__ecere__com__Class * owningClass, struct ClassFunction * func, struct __ecereNameSpace__ecere__sys__OldList * defs, struct External * after, unsigned int makeStatic)
+{
+struct Type * type = (((void *)0));
+struct Symbol * symbol;
+struct External * external = (((void *)0));
+
+if(defs && func->declarator)
+{
+struct FunctionDefinition * function = (((void *)0));
+struct Symbol * propSymbol;
+
+if(inCompiler)
+{
+if(!func->specifiers)
+func->specifiers = MkList();
+if(makeStatic)
+{
+struct Specifier * s;
+
+for(s = (*func->specifiers).first; s; s = s->next)
+if(s->type == 0 && s->__anon1.specifier == STATIC)
+break;
+if(!s)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*func->specifiers), (((void *)0)), MkSpecifier(STATIC));
+}
+}
+propSymbol = func->declarator->symbol;
+ReplaceThisClassSpecifiers(func->specifiers, owningClass);
+if(propSymbol->__anon2.__anon2.externalGet == (struct External *)func)
+func->declarator->symbol = (((void *)0));
+else if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func)
+func->declarator->symbol = (((void *)0));
+else if(propSymbol->__anon2.__anon2.externalIsSet == (struct External *)func)
+func->declarator->symbol = (((void *)0));
+{
+function = _MkFunction(func->specifiers, func->declarator, (((void *)0)), 0);
+function->propSet = func->propSet;
+function->type = func->type;
+if(func->type)
+func->type->refCount++;
+ProcessFunctionBody(function, func->body);
+external = MkExternalFunction(function);
+external->symbol = func->declarator->symbol;
+external->__anon1.function->_class = func->_class;
+}
+symbol = func->declarator->symbol;
+if(!func->dontMangle)
+{
+struct __ecereNameSpace__ecere__com__Method * method = func->declarator->symbol->__anon1.method;
+
+func->declarator->symbol->__anon2.__anon3.methodExternal = external;
+if(method && method->symbol)
+((struct Symbol *)method->symbol)->__anon2.__anon3.methodCodeExternal = external;
+if(method && method->type == 1)
+{
+struct Type * methodDataType;
+
+ProcessMethodType(method);
+methodDataType = method->dataType;
+type = symbol->type;
+if(!type->__anon1.__anon2.staticMethod && !type->__anon1.__anon2.thisClass && !type->__anon1.__anon2.thisClassTemplate)
+{
+if(method->dataType->__anon1.__anon2.thisClassTemplate)
+{
+if(owningClass->templateArgs)
+{
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = FindTemplateArg(owningClass, method->dataType->__anon1.__anon2.thisClassTemplate);
+
+type->byReference = method->dataType->byReference;
+methodDataType = ProcessTypeString(method->dataTypeString, 0);
+type->__anon1.__anon2.thisClass = methodDataType->__anon1.__anon2.thisClass = (arg && (*arg).__anon1.__anon1.dataTypeString) ? FindClass((*arg).__anon1.__anon1.dataTypeString) : (((void *)0));
+}
+}
+else if(method->dataType->__anon1.__anon2.staticMethod)
+type->__anon1.__anon2.staticMethod = 1;
+else if(method->dataType->__anon1.__anon2.thisClass)
+{
+type->__anon1.__anon2.thisClass = method->dataType->__anon1.__anon2.thisClass;
+type->byReference = method->dataType->byReference;
+}
+else
+{
+if(!owningClass->symbol)
+owningClass->symbol = FindClass(owningClass->fullName);
+type->__anon1.__anon2.thisClass = owningClass->symbol;
+type->extraParam = 1;
+}
+}
+yylloc = func->loc;
+if(!MatchTypes(type, methodDataType, (((void *)0)), owningClass, method->_class, 1, 1, 1, 0, 1))
+{
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Incompatible virtual function %s\n", (((void *)0))), method->name);
+}
+else
+{
+struct Type * typeParam;
+struct Declarator * funcDecl = GetFuncDecl(func->declarator);
+
+if(funcDecl->__anon1.function.parameters && (*funcDecl->__anon1.function.parameters).first)
+{
+struct TypeName * param = (*funcDecl->__anon1.function.parameters).first;
+
+for(typeParam = methodDataType->__anon1.__anon2.params.first; typeParam && param; typeParam = typeParam->next)
+{
+if(typeParam->classObjectType)
+{
+param->classObjectType = typeParam->classObjectType;
+if(param->declarator && param->declarator->symbol)
+param->declarator->symbol->type->classObjectType = typeParam->classObjectType;
+}
+param = param ? param->next : (((void *)0));
+}
+}
+}
+if(methodDataType != method->dataType)
+FreeType(methodDataType);
+}
+else
+{
+type = symbol->type;
+if(!type->__anon1.__anon2.staticMethod && !type->__anon1.__anon2.thisClass)
+{
+if(owningClass && !owningClass->symbol)
+owningClass->symbol = FindClass(owningClass->fullName);
+type->__anon1.__anon2.thisClass = owningClass ? FindClass(owningClass->fullName) : (((void *)0));
+}
+}
+}
+else
+{
+if(symbol->type && !symbol->type->__anon1.__anon2.staticMethod && !symbol->type->__anon1.__anon2.thisClass)
+{
+if(!owningClass->symbol)
+owningClass->symbol = FindClass(owningClass->fullName);
+symbol->type->__anon1.__anon2.thisClass = owningClass->symbol;
+}
+if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func && propSymbol->__anon1._property && propSymbol->__anon1._property->conversion)
+{
+if(symbol->type->__anon1.__anon2.thisClass && symbol->type->classObjectType != 1)
+{
+if(owningClass->type != 1)
+symbol->type->__anon1.__anon2.thisClass = (((void *)0));
+}
+}
+if(propSymbol->__anon2.__anon2.externalGet == (struct External *)func)
+{
+propSymbol->__anon2.__anon2.externalGet = external;
+}
+else if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func)
+{
+propSymbol->__anon2.__anon2.externalSet = external;
+}
+else if(propSymbol->__anon2.__anon2.externalIsSet == (struct External *)func)
+{
+propSymbol->__anon2.__anon2.externalIsSet = external;
+}
+else
+{
+}
+}
+if(inCompiler)
+{
+if(func->body)
+{
+func->declarator = (((void *)0));
+func->specifiers = (((void *)0));
+func->body = (((void *)0));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);
+}
+else
+{
+struct __ecereNameSpace__ecere__com__Method * method = func->declarator->symbol->__anon1.method;
+
+if(method && method->symbol)
+((struct Symbol *)method->symbol)->__anon2.__anon3.methodCodeExternal = (((void *)0));
+if(func->declarator->symbol && func->declarator->symbol->__anon2.__anon3.methodExternal == external)
+func->declarator->symbol->__anon2.__anon3.methodExternal = (((void *)0));
+func->declarator = (((void *)0));
+func->specifiers = (((void *)0));
+FreeExternal(external);
+}
+}
+else
+{
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);
+external->__anon1.function->declarator = CopyDeclarator(external->__anon1.function->declarator);
+external->__anon1.function->specifiers = CopyList(external->__anon1.function->specifiers, (void *)(CopySpecifier));
+external->__anon1.function->body = (((void *)0));
+}
+}
+return external;
+}
 
 void RegisterMembersAndProperties(struct __ecereNameSpace__ecere__com__Class * regClass, unsigned int isMember, const char * className, struct Statement * statement)
 {
@@ -1614,6 +1788,7 @@ char dataMemberSize[16];
 unsigned int lastOffset = 0;
 int privateID = 0;
 unsigned int privateMembers = 0;
+unsigned int privateAlignment = 0;
 
 sprintf(dataMemberSize, "%d", (int)sizeof(struct __ecereNameSpace__ecere__com__DataMember *));
 if(!isMember)
@@ -1962,7 +2137,49 @@ lastOffset = member->offset + member->memberOffset;
 }
 }
 else
+{
+unsigned int __simpleStruct0;
+
 privateMembers = 1;
+if(member->type == 0)
+{
+unsigned int alignment;
+
+if(!member->dataType)
+member->dataType = ProcessTypeString(member->dataTypeString, 0);
+ComputeTypeSize(member->dataType);
+if(__ecereProp_Type_Get_isPointerTypeSize(member->dataType))
+alignment = 8;
+else
+{
+if(member->dataType->pointerAlignment)
+alignment = 8;
+else
+alignment = member->dataType->alignment;
+}
+privateAlignment = ((privateAlignment > alignment) ? privateAlignment : alignment);
+}
+else
+privateAlignment = (__simpleStruct0 = member->structAlignment, (privateAlignment > __simpleStruct0) ? privateAlignment : __simpleStruct0);
+}
+}
+if(privateAlignment)
+{
+struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
+
+ListAdd(args, MkExpIdentifier(MkIdentifier(className)));
+ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
+ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
+ListAdd(args, MkExpConstant("0"));
+{
+char string[256];
+
+sprintf(string, "%d", privateAlignment);
+ListAdd(args, MkExpConstant(string));
+}
+ListAdd(args, MkExpIdentifier(MkIdentifier("privateAccess")));
+stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier(isMember ? "eMember_AddDataMember" : "eClass_AddDataMember")), args)));
+ListAdd(statement->__anon1.compound.statements, stmt);
 }
 if(!isMember)
 {
@@ -2043,200 +2260,23 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-struct External * ProcessClassFunction(struct __ecereNameSpace__ecere__com__Class * owningClass, struct ClassFunction * func, struct __ecereNameSpace__ecere__sys__OldList * defs, struct External * after, unsigned int makeStatic)
+struct __ecereNameSpace__ecere__com__Module
 {
-struct Type * type = (((void *)0));
-struct Symbol * symbol;
-struct External * external = (((void *)0));
-
-if(defs && func->declarator)
-{
-struct FunctionDefinition * function = (((void *)0));
-struct Symbol * propSymbol;
-
-if(inCompiler)
-{
-if(!func->specifiers)
-func->specifiers = MkList();
-if(makeStatic)
-{
-struct Specifier * s;
-
-for(s = (*func->specifiers).first; s; s = s->next)
-if(s->type == 0 && s->__anon1.specifier == STATIC)
-break;
-if(!s)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*func->specifiers), (((void *)0)), MkSpecifier(STATIC));
-}
-}
-propSymbol = func->declarator->symbol;
-ReplaceThisClassSpecifiers(func->specifiers, owningClass);
-if(propSymbol->__anon2.__anon2.externalGet == (struct External *)func)
-func->declarator->symbol = (((void *)0));
-else if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func)
-func->declarator->symbol = (((void *)0));
-else if(propSymbol->__anon2.__anon2.externalIsSet == (struct External *)func)
-func->declarator->symbol = (((void *)0));
-{
-function = _MkFunction(func->specifiers, func->declarator, (((void *)0)), 0);
-function->propSet = func->propSet;
-function->type = func->type;
-if(func->type)
-func->type->refCount++;
-ProcessFunctionBody(function, func->body);
-external = MkExternalFunction(function);
-external->symbol = func->declarator->symbol;
-external->__anon1.function->_class = func->_class;
-}
-symbol = func->declarator->symbol;
-if(!func->dontMangle)
-{
-struct __ecereNameSpace__ecere__com__Method * method = func->declarator->symbol->__anon1.method;
-
-func->declarator->symbol->__anon2.__anon3.methodExternal = external;
-if(method && method->symbol)
-((struct Symbol *)method->symbol)->__anon2.__anon3.methodCodeExternal = external;
-if(method && method->type == 1)
-{
-struct Type * methodDataType;
-
-ProcessMethodType(method);
-methodDataType = method->dataType;
-type = symbol->type;
-if(!type->__anon1.__anon2.staticMethod && !type->__anon1.__anon2.thisClass && !type->__anon1.__anon2.thisClassTemplate)
-{
-if(method->dataType->__anon1.__anon2.thisClassTemplate)
-{
-if(owningClass->templateArgs)
-{
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument * arg = FindTemplateArg(owningClass, method->dataType->__anon1.__anon2.thisClassTemplate);
-
-type->byReference = method->dataType->byReference;
-methodDataType = ProcessTypeString(method->dataTypeString, 0);
-type->__anon1.__anon2.thisClass = methodDataType->__anon1.__anon2.thisClass = (arg && (*arg).__anon1.__anon1.dataTypeString) ? FindClass((*arg).__anon1.__anon1.dataTypeString) : (((void *)0));
-}
-}
-else if(method->dataType->__anon1.__anon2.staticMethod)
-type->__anon1.__anon2.staticMethod = 1;
-else if(method->dataType->__anon1.__anon2.thisClass)
-{
-type->__anon1.__anon2.thisClass = method->dataType->__anon1.__anon2.thisClass;
-type->byReference = method->dataType->byReference;
-}
-else
-{
-if(!owningClass->symbol)
-owningClass->symbol = FindClass(owningClass->fullName);
-type->__anon1.__anon2.thisClass = owningClass->symbol;
-type->extraParam = 1;
-}
-}
-yylloc = func->loc;
-if(!MatchTypes(type, methodDataType, (((void *)0)), owningClass, method->_class, 1, 1, 1, 0, 1))
-{
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Incompatible virtual function %s\n", (((void *)0))), method->name);
-}
-else
-{
-struct Type * typeParam;
-struct Declarator * funcDecl = GetFuncDecl(func->declarator);
-
-if(funcDecl->__anon1.function.parameters && (*funcDecl->__anon1.function.parameters).first)
-{
-struct TypeName * param = (*funcDecl->__anon1.function.parameters).first;
-
-for(typeParam = methodDataType->__anon1.__anon2.params.first; typeParam && param; typeParam = typeParam->next)
-{
-if(typeParam->classObjectType)
-{
-param->classObjectType = typeParam->classObjectType;
-if(param->declarator && param->declarator->symbol)
-param->declarator->symbol->type->classObjectType = typeParam->classObjectType;
-}
-param = param ? param->next : (((void *)0));
-}
-}
-}
-if(methodDataType != method->dataType)
-FreeType(methodDataType);
-}
-else
-{
-type = symbol->type;
-if(!type->__anon1.__anon2.staticMethod && !type->__anon1.__anon2.thisClass)
-{
-if(owningClass && !owningClass->symbol)
-owningClass->symbol = FindClass(owningClass->fullName);
-type->__anon1.__anon2.thisClass = owningClass ? FindClass(owningClass->fullName) : (((void *)0));
-}
-}
-}
-else
-{
-if(symbol->type && !symbol->type->__anon1.__anon2.staticMethod && !symbol->type->__anon1.__anon2.thisClass)
-{
-if(!owningClass->symbol)
-owningClass->symbol = FindClass(owningClass->fullName);
-symbol->type->__anon1.__anon2.thisClass = owningClass->symbol;
-}
-if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func && propSymbol->__anon1._property && propSymbol->__anon1._property->conversion)
-{
-if(symbol->type->__anon1.__anon2.thisClass && symbol->type->classObjectType != 1)
-{
-if(owningClass->type != 1)
-symbol->type->__anon1.__anon2.thisClass = (((void *)0));
-}
-}
-if(propSymbol->__anon2.__anon2.externalGet == (struct External *)func)
-{
-propSymbol->__anon2.__anon2.externalGet = external;
-}
-else if(propSymbol->__anon2.__anon2.externalSet == (struct External *)func)
-{
-propSymbol->__anon2.__anon2.externalSet = external;
-}
-else if(propSymbol->__anon2.__anon2.externalIsSet == (struct External *)func)
-{
-propSymbol->__anon2.__anon2.externalIsSet = external;
-}
-else
-{
-}
-}
-if(inCompiler)
-{
-if(func->body)
-{
-func->declarator = (((void *)0));
-func->specifiers = (((void *)0));
-func->body = (((void *)0));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);
-}
-else
-{
-struct __ecereNameSpace__ecere__com__Method * method = func->declarator->symbol->__anon1.method;
-
-if(method && method->symbol)
-((struct Symbol *)method->symbol)->__anon2.__anon3.methodCodeExternal = (((void *)0));
-if(func->declarator->symbol && func->declarator->symbol->__anon2.__anon3.methodExternal == external)
-func->declarator->symbol->__anon2.__anon3.methodExternal = (((void *)0));
-func->declarator = (((void *)0));
-func->specifiers = (((void *)0));
-FreeExternal(external);
-}
-}
-else
-{
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);
-external->__anon1.function->declarator = CopyDeclarator(external->__anon1.function->declarator);
-external->__anon1.function->specifiers = CopyList(external->__anon1.function->specifiers, (void *)(CopySpecifier));
-external->__anon1.function->body = (((void *)0));
-}
-}
-return external;
-}
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} ecere_gcc_struct;
 
 void __ecereDestructor_ClassPropertyValue(struct __ecereNameSpace__ecere__com__Instance * this)
 {
@@ -2323,6 +2363,11 @@ void __ecereCreateModuleInstances_pass1()
 {
 classPropValues = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_);
 __ecereNameSpace__ecere__com__eInstance_IncRef(classPropValues);
+}
+
+void __ecereUnregisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module)
+{
+
 }
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct __ecereNameSpace__ecere__sys__OldList * defs, struct External * external, int declMode)
@@ -3326,6 +3371,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNameSpaceString", "vo
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ClassPropertyValue", 0, sizeof(struct ClassPropertyValue), 0, (void *)0, (void *)__ecereDestructor_ClassPropertyValue, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ClassPropertyValue = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessClassDefinitions", "void ProcessClassDefinitions(void)", ProcessClassDefinitions, module, 1);
 }
 

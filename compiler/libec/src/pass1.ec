@@ -355,6 +355,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
    uint lastOffset = 0;
    int privateID = 0;
    bool privateMembers = false;
+   uint privateAlignment = 0;
 
    sprintf(dataMemberSize, "%d", (int)sizeof(DataMember));
    if(!isMember)
@@ -400,7 +401,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
          }
          else
             ListAdd(args, MkExpConstant("0"));
-
 
          // Declaration Mode
          switch(prop.memberAccess)
@@ -796,7 +796,56 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
          }
       }
       else
+      {
          privateMembers = true;
+         if(member.type == normalMember)
+         {
+            uint alignment;
+            if(!member.dataType)
+               member.dataType = ProcessTypeString(member.dataTypeString, false);
+
+            ComputeTypeSize(member.dataType);
+
+            if(member.dataType.isPointerTypeSize)
+               alignment = 8; // TO REVIEW: Assuming 64-bit for private pointers for now,
+                         //  otherwise we would need to generate Max(ptrAlignment, alignment)
+            else
+            {
+               if(member.dataType.pointerAlignment)
+                  alignment = 8;
+               else
+                  alignment = member.dataType.alignment;
+            }
+            privateAlignment = Max(privateAlignment, alignment);
+         }
+         else
+            privateAlignment = Max(privateAlignment, member.structAlignment);
+      }
+   }
+
+   if(privateAlignment) // TOCHECK: For sub-members/unions as well (isMember == false)?
+   {
+      OldList * args = MkList();
+
+      // Class class
+      ListAdd(args, MkExpIdentifier(MkIdentifier(className)));
+      // char * name
+      ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
+      // char * type
+      ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
+      // int size
+      ListAdd(args, MkExpConstant("0"));
+      // int alignment
+      {
+         char string[256];
+         sprintf(string, "%d", privateAlignment);
+         ListAdd(args, MkExpConstant(string));
+      }
+      // Declaration Mode
+      ListAdd(args, MkExpIdentifier(MkIdentifier("privateAccess")));
+      stmt = MkExpressionStmt(MkListOne(
+         MkExpCall(MkExpIdentifier(MkIdentifier(isMember ? "eMember_AddDataMember" : "eClass_AddDataMember")), args)));
+      ListAdd(statement.compound.statements, stmt);
    }
 
    if(!isMember)
