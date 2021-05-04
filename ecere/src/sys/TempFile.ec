@@ -24,7 +24,7 @@ public class TempFile : File
       uintsize read = Min(readSize, this.size - position);
 
       if(position >= this.size) eof = true;
-      if(buffer) memcpy(buffer, this.buffer + position, read);
+      if(buffer && read) memcpy(buffer, this.buffer + position, read);
 
       position += read;
 
@@ -47,7 +47,7 @@ public class TempFile : File
             this.buffer = renew0 this.buffer byte[this.allocated];
          }
       }
-      memcpy(this.buffer + position, buffer, writeSize);
+      if(writeSize) memcpy(this.buffer + position, buffer, writeSize);
 
       position += written;
 
