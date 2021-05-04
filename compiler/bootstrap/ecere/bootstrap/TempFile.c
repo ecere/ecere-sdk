@@ -427,7 +427,7 @@ size_t read = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__Te
 
 if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position >= __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size)
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 1;
-if(buffer)
+if(buffer && read)
 memcpy(buffer, __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, read);
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position += read;
 return read / size;
@@ -450,6 +450,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = __ecerePointe
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew0(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated));
 }
 }
+if(writeSize)
 memcpy(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, buffer, writeSize);
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position += written;
 return written / size;
