@@ -5437,12 +5437,10 @@ public dllexport void eClass_Resize(Class _class, int newSize)
                                                                                                                         // F000F000 will mean a pointer size alignment
 public dllexport DataMember eClass_AddDataMember(Class _class, const char * name, const char * type, unsigned int size, unsigned int alignment, AccessMode declMode)
 {
-   if(_class && name)
+   if(_class && (name || (!name && !size && !type && alignment)))
    {
-      if(!_class.members.FindString(name))
+      if(!name || !_class.members.FindString(name))
       {
-         DataMember dataMember;
-
          if(alignment)
          {
             bool pointerAlignment = alignment == 0xF000F000;
@@ -5480,21 +5478,24 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
                _class.memberOffset += alignment - (_class.memberOffset % alignment);
          }
 
-         dataMember = DataMember {
-            name = CopyString(name);
-            dataTypeString = CopyString(type);
-            id = _class.memberID++;
-            _class = _class;
-            offset = _class.memberOffset;
-            memberOffset = size;
-            memberAccess = declMode;
-            membersAlpha.CompareKey = (void *)BinaryTree::CompareString;
-         };
-         _class.membersAndProperties.Add(dataMember);
-         _class.memberOffset += size;
-
-         _class.members.Add((BTNode)BTNamedLink { name = dataMember.name, data = dataMember });
-         return dataMember;
+         if(name)
+         {
+            DataMember dataMember
+            {
+               name = CopyString(name);
+               dataTypeString = CopyString(type);
+               id = _class.memberID++;
+               _class = _class;
+               offset = _class.memberOffset;
+               memberOffset = size;
+               memberAccess = declMode;
+               membersAlpha.CompareKey = (void *)BinaryTree::CompareString;
+            };
+            _class.membersAndProperties.Add(dataMember);
+            _class.memberOffset += size;
+            _class.members.Add((BTNode)BTNamedLink { name = dataMember.name, data = dataMember });
+            return dataMember;
+         }
       }
    }
    return null;
@@ -5502,10 +5503,8 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
                                                                                                                               // F000F000 will mean a pointer size alignment
 public dllexport DataMember eMember_AddDataMember(DataMember member, const char * name, const char * type, unsigned int size, unsigned int alignment, AccessMode declMode)
 {
-   if(name && !member.membersAlpha.FindString(name))
+   if((name && !member.membersAlpha.FindString(name)) || (!name && !type && !size && alignment))
    {
-      DataMember dataMember;
-
       if(alignment)
       {
          bool pointerAlignment = alignment == 0xF000F000;
@@ -5523,25 +5522,29 @@ public dllexport DataMember eMember_AddDataMember(DataMember member, const char 
          if(member.memberOffset % alignment)
             member.memberOffset += alignment - (member.memberOffset % alignment);
       }
-      dataMember = DataMember {
-         name = CopyString(name);
-         _class = member._class;
-         dataTypeString = CopyString(type);
-         id = member.memberID++;
-         offset = (member.type == unionMember) ? 0 : member.memberOffset;
-         memberAccess = declMode;
-         membersAlpha.CompareKey = (void *)BinaryTree::CompareString;
-      };
-      member.members.Add(dataMember);
-      if(member.type == unionMember)
+      if(name)
       {
-         if(size > member.memberOffset)
-            member.memberOffset = size;
+         DataMember dataMember
+         {
+            name = CopyString(name);
+            _class = member._class;
+            dataTypeString = CopyString(type);
+            id = member.memberID++;
+            offset = (member.type == unionMember) ? 0 : member.memberOffset;
+            memberAccess = declMode;
+            membersAlpha.CompareKey = (void *)BinaryTree::CompareString;
+         };
+         member.members.Add(dataMember);
+         if(member.type == unionMember)
+         {
+            if(size > member.memberOffset)
+               member.memberOffset = size;
+         }
+         else
+            member.memberOffset += size;
+         member.membersAlpha.Add((BTNode)BTNamedLink { name = dataMember.name, data = dataMember });
+         return dataMember;
       }
-      else
-         member.memberOffset += size;
-      member.membersAlpha.Add((BTNode)BTNamedLink { name = dataMember.name, data = dataMember });
-      return dataMember;
    }
    return null;
 }

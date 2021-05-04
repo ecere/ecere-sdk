@@ -2087,52 +2087,6 @@ if(subMemberStackPos)
 return (((void *)0));
 }
 
-struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_AddDataMember(struct __ecereNameSpace__ecere__com__DataMember * member, const char * name, const char * type, unsigned int size, unsigned int alignment, int declMode)
-{
-if(name && !__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&member->membersAlpha, name))
-{
-struct __ecereNameSpace__ecere__com__DataMember * dataMember;
-
-if(alignment)
-{
-short __simpleStruct0;
-unsigned int pointerAlignment = alignment == 0xF000F000;
-unsigned int force64Bits = 0;
-unsigned int force32Bits = 0;
-
-if(pointerAlignment)
-alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
-if(pointerAlignment && member->structAlignment <= 4)
-member->pointerAlignment = 1;
-else if(!pointerAlignment && alignment >= 8)
-member->pointerAlignment = 0;
-member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
-if(member->memberOffset % alignment)
-member->memberOffset += alignment - (member->memberOffset % alignment);
-}
-dataMember = __extension__ ({
-struct __ecereNameSpace__ecere__com__DataMember * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember));
-
-__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->_class = member->_class, __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), __ecereInstance1->id = member->memberID++, __ecereInstance1->offset = (member->type == 1) ? 0 : member->memberOffset, __ecereInstance1->memberAccess = declMode, __ecereInstance1->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, __ecereInstance1;
-});
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&member->members, dataMember);
-if(member->type == 1)
-{
-if(size > member->memberOffset)
-member->memberOffset = size;
-}
-else
-member->memberOffset += size;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&member->membersAlpha, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
-
-__ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, __ecereInstance1;
-}));
-return dataMember;
-}
-return (((void *)0));
-}
-
 static void __ecereNameSpace__ecere__com__SetMemberClass(struct __ecereNameSpace__ecere__com__DataMember * member, struct __ecereNameSpace__ecere__com__Class * _class)
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
@@ -2871,6 +2825,50 @@ return method;
 return (((void *)0));
 }
 
+struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_AddDataMember(struct __ecereNameSpace__ecere__com__DataMember * member, const char * name, const char * type, unsigned int size, unsigned int alignment, int declMode)
+{
+if((name && !__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&member->membersAlpha, name)) || (!name && !type && !size && alignment))
+{
+if(alignment)
+{
+short __simpleStruct0;
+unsigned int pointerAlignment = alignment == 0xF000F000;
+unsigned int force64Bits = 0;
+unsigned int force32Bits = 0;
+
+if(pointerAlignment)
+alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
+if(pointerAlignment && member->structAlignment <= 4)
+member->pointerAlignment = 1;
+else if(!pointerAlignment && alignment >= 8)
+member->pointerAlignment = 0;
+member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(member->memberOffset % alignment)
+member->memberOffset += alignment - (member->memberOffset % alignment);
+}
+if(name)
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember = (dataMember = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember)), dataMember->name = __ecereNameSpace__ecere__sys__CopyString(name), dataMember->_class = member->_class, dataMember->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), dataMember->id = member->memberID++, dataMember->offset = (member->type == 1) ? 0 : member->memberOffset, dataMember->memberAccess = declMode, dataMember->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, dataMember);
+
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&member->members, dataMember);
+if(member->type == 1)
+{
+if(size > member->memberOffset)
+member->memberOffset = size;
+}
+else
+member->memberOffset += size;
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&member->membersAlpha, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
+
+__ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, __ecereInstance1;
+}));
+return dataMember;
+}
+}
+return (((void *)0));
+}
+
 unsigned int __ecereNameSpace__ecere__com__eMember_AddMember(struct __ecereNameSpace__ecere__com__DataMember * addTo, struct __ecereNameSpace__ecere__com__DataMember * dataMember)
 {
 short __simpleStruct0, __simpleStruct1;
@@ -3300,12 +3298,10 @@ theClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameS
 
 struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, const char * type, unsigned int size, unsigned int alignment, int declMode)
 {
-if(_class && name)
+if(_class && (name || (!name && !size && !type && alignment)))
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, name))
+if(!name || !__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, name))
 {
-struct __ecereNameSpace__ecere__com__DataMember * dataMember;
-
 if(alignment)
 {
 short __simpleStruct0;
@@ -3341,11 +3337,10 @@ _class->offset += alignment - (_class->offset % alignment);
 if(_class->memberOffset % alignment)
 _class->memberOffset += alignment - (_class->memberOffset % alignment);
 }
-dataMember = __extension__ ({
-struct __ecereNameSpace__ecere__com__DataMember * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember));
+if(name)
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember = (dataMember = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember)), dataMember->name = __ecereNameSpace__ecere__sys__CopyString(name), dataMember->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), dataMember->id = _class->memberID++, dataMember->_class = _class, dataMember->offset = _class->memberOffset, dataMember->memberOffset = size, dataMember->memberAccess = declMode, dataMember->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, dataMember);
 
-__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), __ecereInstance1->id = _class->memberID++, __ecereInstance1->_class = _class, __ecereInstance1->offset = _class->memberOffset, __ecereInstance1->memberOffset = size, __ecereInstance1->memberAccess = declMode, __ecereInstance1->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, __ecereInstance1;
-});
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
 _class->memberOffset += size;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
@@ -3354,6 +3349,7 @@ struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNam
 __ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, __ecereInstance1;
 }));
 return dataMember;
+}
 }
 }
 return (((void *)0));
@@ -6521,6 +6517,7 @@ class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::SelfWatcher", 0, sizeof(struct __ecereNameSpace__ecere__com__SelfWatcher), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__SelfWatcher = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::com::AccessMode", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
@@ -6838,14 +6835,17 @@ class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::Watcher", 0, sizeof(struct __ecereNameSpace__ecere__com__Watcher), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Watcher = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::MemBlock", 0, sizeof(struct __ecereNameSpace__ecere__com__MemBlock), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__MemBlock = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::MemPart", 0, sizeof(struct __ecereNameSpace__ecere__com__MemPart), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__MemPart = class;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::BlockPool", 0, sizeof(struct __ecereNameSpace__ecere__com__BlockPool), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__BlockPool = class;

@@ -240,6 +240,8 @@ short structAlignment;
 short pointerAlignment;
 } ecere_gcc_struct;
 
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument
@@ -742,5 +744,6 @@ __ecereProp___ecereNameSpace__ecere__sys__TempFile_size = __ecerePropM___ecereNa
 __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "allocated", "uintsize", __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_allocated, __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_allocated, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__TempFile_allocated = __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_allocated = (void *)0;
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 }
 

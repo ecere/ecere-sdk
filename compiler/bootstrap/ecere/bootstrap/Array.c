@@ -717,11 +717,24 @@ size_t size = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_
 unsigned char * temp = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (size));
 
 memcpy(temp, it, size);
-if((void *)(it) < (void *)(after))
-memmove(it, ((unsigned char *)it) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), (unsigned char *)after - (unsigned char *)it);
+if(!after)
+{
+memmove(((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), __ecerePointer___ecereNameSpace__ecere__com__Array->array, (unsigned char *)it - (unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array);
+memcpy(__ecerePointer___ecereNameSpace__ecere__com__Array->array, temp, size);
+}
 else
-memmove(((unsigned char *)after) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), after, (unsigned char *)it - (unsigned char *)after);
+{
+if((void *)(it) < (void *)(after))
+{
+memmove(it, ((unsigned char *)it) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), (unsigned char *)after - (unsigned char *)it);
 memcpy(after, temp, size);
+}
+else if((void *)(it) > (void *)(after))
+{
+memmove(((unsigned char *)after) + (2 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), ((unsigned char *)after) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), (unsigned char *)it - (unsigned char *)(((unsigned char *)after) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize)));
+memcpy(((unsigned char *)after) + (1 * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].__anon1.__anon1.dataTypeClass->typeSize), temp, size);
+}
+}
 (__ecereNameSpace__ecere__com__eSystem_Delete(temp), temp = 0);
 }
 
