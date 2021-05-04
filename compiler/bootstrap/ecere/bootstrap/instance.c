@@ -5011,10 +5011,13 @@ _class->internalDecl = 0;
 if(totalSizeClass)
 {
 _class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
+if(offsetClass)
+{
 if(base && base->type != 1000 && base->type != 4)
 memcpy(_class->data, base->data, offsetClass);
 else
 memset(_class->data, 0, offsetClass);
+}
 memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);

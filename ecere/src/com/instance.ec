@@ -2794,10 +2794,13 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
             _class.data = renew _class.data byte[totalSizeClass];
             // Class Data is often not inherited... e.g. Window::pureVtbl problem
             // memset(_class.data, 0, totalSizeClass);
-            if(base && base.type != systemClass && base.type != enumClass)
-               memcpy(_class.data, base.data, offsetClass);
-            else
-               memset(_class.data, 0, offsetClass);
+            if(offsetClass)
+            {
+               if(base && base.type != systemClass && base.type != enumClass)
+                  memcpy(_class.data, base.data, offsetClass);
+               else
+                  memset(_class.data, 0, offsetClass);
+            }
             memset((byte *)_class.data + offsetClass, 0, sizeClass);
          }
 
