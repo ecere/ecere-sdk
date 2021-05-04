@@ -1763,7 +1763,7 @@ private:
       // windowResized = realResized || force;
       windowResized = size.w != w || size.h != h || force;
 
-      if(rootWindow != this && display && !display.flags.flipping && scrolledPos.x != MININT)
+      if(rootWindow != this && display && !display.flags.flipping && scrolledPos.x != MININT && this.box.left != MAXINT)
       {
          if(style.nonClient)
          {
