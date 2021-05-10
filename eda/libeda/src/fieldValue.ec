@@ -141,7 +141,15 @@ public struct FieldValue
          }
          case text:
          {
-            sprintf(stringOutput, "\"%s\"", s);
+            if(onType && *onType != none)
+            {
+               TempFile f { };
+               WriteONString(f, s, *onType == econ, 0);
+               strcpy(stringOutput, (const char *)f.buffer);
+               delete f;
+            }
+            else
+               sprintf(stringOutput, "\"%s\"", s);
             return stringOutput;
          }
          case nil: return "null";
