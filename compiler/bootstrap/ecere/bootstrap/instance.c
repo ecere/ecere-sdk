@@ -3309,7 +3309,7 @@ unsigned int pointerAlignment = alignment == 0xF000F000;
 unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 2) ? 1 : 0;
 unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 4) ? 1 : 0;
 
-if((force32Bits || force64Bits) && !strcmp(_class->name, "AVLNode") && !strcmp(name, "__ecerePrivateData0"))
+if((force32Bits || force64Bits) && name && !strcmp(_class->name, "AVLNode") && !strcmp(name, "__ecerePrivateData0"))
 {
 if(force64Bits)
 {
