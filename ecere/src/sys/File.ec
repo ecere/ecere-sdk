@@ -41,6 +41,15 @@ default:
 #include <dirent.h>
 #endif
 
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
+
+asm(".symver __xstat,__xstat@GLIBC_2.2.5");
+
+int stat_glibcwrapper(const char *fn, struct stat * buf);
+#define stat(a, b) stat_glibcwrapper(a, b)
+
+#endif
+
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define String String_

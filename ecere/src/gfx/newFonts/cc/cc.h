@@ -13,6 +13,12 @@
 
 #include "cpuconfig.h"
 
+#if defined(__linux__) && !defined(__ANDROID__)
+asm(".symver pow,pow@GLIBC_2.2.5");
+asm(".symver log,log@GLIBC_2.2.5");
+asm(".symver exp,exp@GLIBC_2.2.5");
+#endif
+
 #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
  #define CC_LINUX (1)
  #define CC_UNIX (1)
