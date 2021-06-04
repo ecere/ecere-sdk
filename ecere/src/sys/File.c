@@ -20,7 +20,23 @@
 
 // From https://stackoverflow.com/questions/58472958/how-to-force-linkage-to-older-libc-fcntl-instead-of-fcntl64
 
-asm(".symver fcntl64, fcntl@GLIBC_2.2.5");
+asm(".symver fcntl64,fcntl@GLIBC_2.2.5");
+asm(".symver __xstat,__xstat@GLIBC_2.2.5");
+asm(".symver __fxstat,__fxstat@GLIBC_2.2.5");
+
+int __xstat (int __ver, const char *__filename, struct stat *__stat_buf);
+int __fxstat (int __ver, int fd, struct stat *__stat_buf);
+#define stat(a, b)  stat_glibcwrapper(a, b)
+#define fstat(a, b) fstat_glibcwrapper(a, b)
+int stat_glibcwrapper(const char *fn, struct stat * buf)
+{                 // 1 for 64 bit, 3 for 32 bit
+   return __xstat(1, fn, buf);
+}
+
+int fstat_glibcwrapper(int fd, struct stat * buf)
+{                 // 1 for 64 bit, 3 for 32 bit
+   return __fxstat(1, fd, buf);
+}
 
 int __wrap_fcntl64(int fd, int cmd, ...)
 {
