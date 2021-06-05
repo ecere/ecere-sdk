@@ -125,6 +125,7 @@ static Point lastMouse;
 static MouseButtons buttonsState;
 
 static bool keyStates[KeyCode];
+static bool ctrlClick = false;
 
 static enum NETWMStateAction { remove = 0, add = 1, toggle = 2 };
 
@@ -880,7 +881,11 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
       int numBytes;
 
       if(key < KeyCode::enumSize)
+      {
          keyStates[key] = false;
+         if(key == leftControl || key == rightControl)
+            ctrlClick = false;
+      }
       if(windowData && windowData.ic) ch = buflength ? UTF8GetChar(buf, &numBytes) : 0;
       if(ch == 127) ch = 0;
       // printf("Release! %d %d %d\n", keysym, code, ch);
@@ -1834,7 +1839,7 @@ class XInterface : Interface
                   }
 
                   if(event->state & ShiftMask)     keyFlags.shift = true;
-                  if(event->state & ControlMask)   keyFlags.ctrl = true;
+                  if(event->state & ControlMask)   keyFlags.ctrl = true, ctrlClick = true;
                   if(event->state & Mod1Mask)      keyFlags.alt = true;
                   if(event->state & Button1Mask)   keyFlags.left = true;
                   if(event->state & Button2Mask)   keyFlags.middle = true;
@@ -3572,7 +3577,7 @@ class XInterface : Interface
          else if(key == shift)
             return keyStates[leftShift] || keyStates[rightShift];
          else if(key == control)
-            return keyStates[leftControl] || keyStates[rightControl];
+            return keyStates[leftControl] || keyStates[rightControl] || ctrlClick;
          else
             return keyStates[key.code];
       }
