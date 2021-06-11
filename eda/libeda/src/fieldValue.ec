@@ -145,6 +145,7 @@ public struct FieldValue
             {
                TempFile f { };
                WriteONString(f, s, *onType == econ, 0);
+               f.Putc('\0'); // make f.buffer into a null-terminated string
                strcpy(stringOutput, (const char *)f.buffer);
                delete f;
             }
