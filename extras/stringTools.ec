@@ -142,3 +142,18 @@ String copyEscapeString(String string)
    }
    return result;
 }
+
+// replace characters for cached name not permitted on Windows systems
+void replaceInvalidFileNameChars(char *cachedName)
+{
+   int i = 0;
+   if(strchr(cachedName, ':') || strchr(cachedName, '*'))
+   {
+      while(cachedName[i] != '\0')
+      {
+         if(cachedName[i] == ':' || cachedName[i] == '*') //|| cachedName[i] == '*' || cachedName[i] == '?'
+            cachedName[i] = '_';
+         i++;
+      }
+   }
+}
