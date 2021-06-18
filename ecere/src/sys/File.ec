@@ -777,6 +777,30 @@ public:
       return c;
    }
 
+   bool CopyToFile(File f)
+   {
+      bool result = false;
+      if(f)
+      {
+         byte buffer[65536];
+
+         result = true;
+         Seek(0, start);
+         while(!Eof())
+         {
+            uintsize count = Read(buffer, 1, sizeof(buffer));
+            if(count && !f.Write(buffer, 1, count))
+            {
+               result = false;
+               break;
+            }
+            if(!count) break;
+         }
+      }
+      Seek(0, start);
+      return result;
+   }
+
    bool CopyTo(const char * outputFileName)
    {
       bool result = false;
