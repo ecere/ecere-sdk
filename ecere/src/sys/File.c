@@ -28,17 +28,17 @@ int __xstat (int __ver, const char *__filename, struct stat *__stat_buf);
 int __fxstat (int __ver, int fd, struct stat *__stat_buf);
 #define stat(a, b)  stat_glibcwrapper(a, b)
 #define fstat(a, b) fstat_glibcwrapper(a, b)
-int stat_glibcwrapper(const char *fn, struct stat * buf)
+__attribute__((visibility("default"))) int stat_glibcwrapper(const char *fn, struct stat * buf)
 {                 // 1 for 64 bit, 3 for 32 bit
    return __xstat(1, fn, buf);
 }
 
-int fstat_glibcwrapper(int fd, struct stat * buf)
+__attribute__((visibility("default"))) int fstat_glibcwrapper(int fd, struct stat * buf)
 {                 // 1 for 64 bit, 3 for 32 bit
    return __fxstat(1, fd, buf);
 }
 
-int __wrap_fcntl64(int fd, int cmd, ...)
+__attribute__((visibility("default"))) int __wrap_fcntl64(int fd, int cmd, ...)
 {
     int result;
     va_list va;
