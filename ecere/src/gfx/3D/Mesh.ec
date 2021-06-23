@@ -855,20 +855,21 @@ public:
                         }
                         else
                         {
+                           uint32 * indices32 = group.type.sharedIndices ? indices + group.baseIndex : group.indices32;
                            if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
-                              CopyBytesBy4(primitive->indices32, group.indices32 + c, nIndex);
+                              CopyBytesBy4(primitive->indices32, indices32 + c, nIndex);
 
                            if(group.type.primitiveType == triFan)
                            {
-                              primitive->indices32[0] = group.indices32[0];
-                              primitive->indices32[1] = group.indices32[c-1];
-                              primitive->indices32[2] = group.indices32[c];
+                              primitive->indices32[0] = indices32[0];
+                              primitive->indices32[1] = indices32[c-1];
+                              primitive->indices32[2] = indices32[c];
                            }
                            else if(group.type.primitiveType == triStrip)
                            {
-                              primitive->indices32[0] = group.indices32[c-1-strip];
-                              primitive->indices32[1] = group.indices32[c-2+strip];
-                              primitive->indices32[2] = group.indices32[c];
+                              primitive->indices32[0] = indices32[c-1-strip];
+                              primitive->indices32[1] = indices32[c-2+strip];
+                              primitive->indices32[2] = indices32[c];
                               strip ^= 1;
                            }
                         }
