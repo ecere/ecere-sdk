@@ -189,7 +189,8 @@ FreeingAVLTree<const String> compactTypes
    "CI_Telephone",
    "MD_Resolution",
    "UMSFormat",
-   "OGCAPITileMatrixSetLimit"
+   "OGCAPITileMatrixSetLimit",
+   "OGCAPIVariableWidth"
 ] };
 
 FreeingAVLTree<const String> compactArrays
@@ -209,7 +210,8 @@ FreeingAVLTree<const String> compactArrays
    "MD_CharacterSetCode",
    "MD_Keywords",
    "EX_Extent",
-   "FieldValue"
+   "FieldValue",
+   "double"
 ] };
 
 public enum JSONResult { syntaxError, success, typeMismatch, noItem };
@@ -671,7 +673,8 @@ private:
       else if(ch == '}' || ch == ']')
          result = noItem;
       if(result == typeMismatch && warnings)
-         PrintLn("Warning: Value type mismatch (", line, ":", col, ")");
+         if(type)
+            PrintLn("Warning: Value type mismatch (", line, ":", col, ")");
       if(rType)
          *rType = type;
       return result;
@@ -1456,7 +1459,10 @@ private:
                   else
                   {
                      if((ch == '=' || ch == ':') && warnings)
-                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                     {
+                        if(string[0] != '@')
+                           PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                     }
                      else if(warnings)
                         PrintLn("Warning: default member assignment: no more members (", line, ":", col, ")");
                   }
@@ -1514,7 +1520,10 @@ private:
                            {
                               string[0] = (char)tolower(string[0]);
                               if(warnings)
-                                 PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                              {
+                                 if(string[0] != '@')
+                                    PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                              }
                            }
                         }
                      }
@@ -1525,7 +1534,10 @@ private:
                if(objectType && !member && !prop)
                {
                   if(warnings)
-                     PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                  {
+                     if(string[0] != '@')
+                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
+                  }
                }
 #endif
 
