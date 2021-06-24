@@ -611,7 +611,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   BlockEntry block;
 
                   if(!mesh.meab)
-                     mesh.meab = { }; // FIXME:
+                  {
+                     mesh.meab = { };
+                     mesh.flags.ownMEAB = true;
+                  }
                   block = mesh.meab.allocate(elements, size);
                   mesh.baseIndex = block ? block.start / indexSize : -1;
                   if(mesh.baseIndex != -1)
@@ -656,7 +659,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   BlockEntry block;
 
                   if(!mesh.meab)
-                     mesh.meab = { }; // FIXME:
+                  {
+                     mesh.meab = { };
+                     mesh.flags.ownMEAB = true;
+                  }
                   block = mesh.meab.allocate(elements, size);
                   mesh.baseIndex = block ? block.start / indexSize : -1;
                   if(mesh.baseIndex != -1)

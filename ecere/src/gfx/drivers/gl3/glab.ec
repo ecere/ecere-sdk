@@ -327,7 +327,8 @@ public:
    ~GLMB()
    {
 #ifdef _DEBUG
-      if(count) PrintLn("Warning: GLMB destructed without calling free()");
+      if(count)
+         PrintLn("Warning: GLMB destructed without calling free()");
 #endif
       free();
    }
