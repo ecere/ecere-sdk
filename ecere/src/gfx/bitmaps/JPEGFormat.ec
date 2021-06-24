@@ -246,7 +246,7 @@ class JPGFormat : BitmapFormat
    bool Save(Bitmap bitmap, const char *filename, void * options)
    {
       bool result = false;
-      if(bitmap.pixelFormat == pixelFormat888)
+      if(bitmap.pixelFormat == pixelFormat888 && bitmap.picture)
       {
          File f = FileOpen(filename, write);
          if(f)
