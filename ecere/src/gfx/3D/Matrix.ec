@@ -254,7 +254,7 @@ private:
       {
          x = sqrt(x.x * x.x + x.y * x.y + x.z * x.z),
          y = sqrt(y.x * y.x + y.y * y.y + y.z * y.z),
-         z = sqrt(z.x * z.x + z.y * z.y + z.z * z.z)
+         z =-sqrt(z.x * z.x + z.y * z.y + z.z * z.z)
       };
       Vector3D orth;
 
@@ -296,7 +296,7 @@ private:
          r.m[0][0] = x.x, r.m[0][1] = x.y, r.m[0][2] = x.z, r.m[0][3] = 0;
          r.m[1][0] = y.x, r.m[1][1] = y.y, r.m[1][2] = y.z, r.m[1][3] = 0;
          r.m[2][0] = z.x, r.m[2][1] = z.y, r.m[2][2] = z.z, r.m[2][3] = 0;
-         r.m[3][0] = 0, r.m[3][1] = 0, r.m[3][2] = 0, r.m[3][3] = 1;
+         r.m[3][0] =   0, r.m[3][1] =    0, r.m[3][2] =  0, r.m[3][3] = 1;
       }
    }
    property Vector3D scaling
