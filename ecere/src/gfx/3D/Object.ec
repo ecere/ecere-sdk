@@ -941,6 +941,7 @@ public:
          if(result)
             object.parent = this;
          object.flags.transform = true;
+         object.flags.root = false;
       }
       return result;
    }
