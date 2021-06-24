@@ -14,8 +14,9 @@ public class MeshFeatures
 {
 public:
    bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1, lightVectors:1, tangents:1, intVertices:1;
-   // NOTE: neither of these are currently kept in Mesh's flags member
+   // NOTE: neither of these two are currently kept in Mesh's flags member:
    bool memAllocOnly:1, interleaved:1;
+   bool ownMEAB:1;
 };
 
 public class PrimitiveGroupType : uint32
@@ -211,8 +212,9 @@ public:
          if(!what)
          {
             int c;
+            bool ownMEAB = flags.ownMEAB;
 
-            flags = 0;
+            flags = 0;  // Drivers relied on this being set to 0 before freeing
             if(driver)
                driver.FreeMesh(displaySystem, this);
             for(;(group = groups.first);)
@@ -239,6 +241,9 @@ public:
                if(!prim->type.vertexRange)
                   delete prim->indices;
             }
+
+            // Free MEAB if it was allocated specifically for this mesh
+            if(ownMEAB) meab.Free(), delete meab;
 
             delete indices;
             delete primitives;
