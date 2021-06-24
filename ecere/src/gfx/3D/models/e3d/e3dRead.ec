@@ -52,6 +52,8 @@ File downloadFile(const String url) { return FileOpen(url, read); }
 #endif
 
 // TODO: Review how to handle all this properly...
+// Now relying entirely on displaySystem or texturesById map / materials AVLTree to manage materials
+/*
 void freeE3DMaterial(Material material)
 {
    // TOCHECK: Are we somehow holding on to textures to re-use them?
@@ -93,6 +95,7 @@ void freeE3DObjectMaterials(Object object)
    for(o = object.firstChild; o; o = o.next)
       freeE3DObjectMaterials(o);
 }
+*/
 
 // Right now this is global and requires a lock... Support supplying optional textures ID map ?
 static Mutex texMutex { };
@@ -390,6 +393,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      if(ctx.texturesByID[id])
                      {
                         delete bitmap;
+                        data = null;
                         readSubBlocks = false;
                      }
                      else
@@ -778,9 +782,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                texMutex.Wait();
                if(m.Find(mat))
                {
-                  if(mat)
-                     freeE3DMaterial(mat);
-
+                  // if(mat) freeE3DMaterial(mat);
                   ctx.materialsByID.SetData(it.pointer, m.data);
                }
                else
