@@ -262,7 +262,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                {
                   *(Bitmap *)data = bitmap = { };
                }
-               if(bitmap)
+               if(bitmap && !ctx.skipTexturesProcessing)
                {
                   char ext[MAX_EXTENSION];
                   char path[MAX_LOCATION];
