@@ -10,6 +10,7 @@ public enum FrustumPlacement { outside, inside, intersecting };
 
 public class ObjectFormat
 {
+public:  // Lack of public here causes strange errors defining multiple foramts in same file and invoking Load
    class_data const char * extension;
    class_property const char * extension
    {
