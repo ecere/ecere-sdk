@@ -815,6 +815,9 @@ struct E3DOptions
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
+
+   void * lookupTextureContext;
+   uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
 };
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
