@@ -901,7 +901,7 @@ public:
       if(this && pixelFormat == pixelFormatETC2RGBA8)
       {
 #ifdef ETC2_COMPRESS
-         etc2Free(picture);
+         if(picture) etc2Free(picture);
          picture = null;
 #else
          delete picture;
