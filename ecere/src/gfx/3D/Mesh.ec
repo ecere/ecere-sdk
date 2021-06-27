@@ -715,7 +715,9 @@ public:
                      primitive = &primitives[t];
                      if(group.type == primitive->type && group.material == primitive->material)
                      {
-                        if(use32)
+                        if(group.type.sharedIndices)
+                           CopyBytesBy4(indices + group.baseIndex + nIndices, primitive->indices32, primitive->nIndices);
+                        else if(use32)
                            CopyBytesBy4(group.indices32 + nIndices, primitive->indices32, primitive->nIndices);
                         else
                            CopyBytesBy2(group.indices + nIndices, primitive->indices, primitive->nIndices);
