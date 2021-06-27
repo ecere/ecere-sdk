@@ -506,7 +506,7 @@ public:
          while(!done && !task.status.cancel)
          {
             int s = task.status.stage;
-            ProcessingStage stage = stages[s-1];
+            ProcessingStage stage = s ? stages[s-1] : null;
             if(stage)
             {
                stage.mutex.Wait();
@@ -535,6 +535,10 @@ public:
 
    void prioritizeTask(ProcessingTask task, int priority)
    {
+#ifdef _DEBUG
+      if(task.status.stage > 10)
+         PrintLn("WARNING: Likely invalid task!!");
+#endif
       if(task.status.stage)
          stages[task.status.stage-1].prioritizeTask(task, priority);
    }
