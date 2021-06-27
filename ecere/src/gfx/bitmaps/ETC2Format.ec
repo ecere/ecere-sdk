@@ -15,12 +15,16 @@ class ETCFormat : BitmapFormat
    bool Load(Bitmap bitmap, File f)
    {
       bool result = false;
-      int count;
+      int count = 0;
       int i;
 
-      f.Read(&count, sizeof(count), 1);
-      if(count > 16)
+      if(!f.Read(&count, sizeof(count), 1) || count > 16)
+      {
+#ifdef _DEBUG
+         PrintLn("WARNING: Invalid ETC2 file");
+#endif
          return false;
+      }
       bitmap.pixelFormat = pixelFormatETC2RGBA8;
       bitmap.numMipMaps = count > 1 ? count : 0;
       if(bitmap.numMipMaps)
@@ -36,6 +40,12 @@ class ETCFormat : BitmapFormat
          f.Read(&mipMap.width, sizeof(mipMap.width), 1);
          f.Read(&mipMap.height, sizeof(mipMap.height), 1);
          f.Read(&mipMap.sizeBytes, sizeof(mipMap.sizeBytes), 1);
+
+#ifdef _DEBUG
+         if(!mipMap.sizeBytes)
+            PrintLn("WARNING: Invalid ETC2 file");
+#endif
+
 #ifdef ETC2_COMPRESS
          mipMap.picture = etc2Alloc(mipMap.sizeBytes);
 #else
