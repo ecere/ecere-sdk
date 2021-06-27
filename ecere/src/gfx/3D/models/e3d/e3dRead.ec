@@ -110,6 +110,7 @@ class E3DContext : struct
    Map<uint, Mesh> meshesByID { };
    Map<uint, bool> meshOwned { };
    const String texturesQuery;
+   Mutex saveCompressedMutex;
 
    int curTextureID;
    bool positiveYUp;
@@ -308,6 +309,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                            sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
                      }
 
+                     if(ctx.saveCompressedMutex)
+                        ctx.saveCompressedMutex.Wait();
                      f = FileOpen(path, read);
                      if(f)
                         format = ext;
@@ -318,6 +321,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      strcpy(path, ctx.path);
                      PathCat(path, name);
                      StripExtension(path);
+
+                     if(!isHTTP && ctx.saveCompressedMutex)
+                        ctx.saveCompressedMutex.Wait();
 
                      if(ctx.resolution)
                      {
@@ -357,23 +363,38 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                               format = ext;
                         }
                      }
+                     if(isHTTP && ctx.saveCompressedMutex)
+                        ctx.saveCompressedMutex.Wait();
                   }
-                  if(f && bitmap.LoadFromFile(f, format, null))
+                  if(f)
                   {
-                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
+                     if(bitmap.LoadFromFile(f, format, null))
                      {
-                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
-                        bitmap.Copy2(bmp, true);
-                        delete bmp;
-
-                        if(ctx.compressedTextures)
+                        if(ctx.saveCompressedMutex)
+                           ctx.saveCompressedMutex.Release();
+                        if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                         {
-                           ChangeExtension(path, "etc2", path);
-                           bitmap.Save(path, null, null);
+                           Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
+                           bitmap.Copy2(bmp, true);
+                           delete bmp;
+
+                           if(ctx.compressedTextures)
+                           {
+                              ChangeExtension(path, "etc2", path);
+                              if(ctx.saveCompressedMutex)
+                                 ctx.saveCompressedMutex.Wait();
+                              bitmap.Save(path, null, null);
+                              if(ctx.saveCompressedMutex)
+                                 ctx.saveCompressedMutex.Release();
+                           }
                         }
+                        bitmap.MakeMipMaps(displaySystem);
                      }
-                     bitmap.MakeMipMaps(displaySystem);
+                     else if(ctx.saveCompressedMutex)
+                        ctx.saveCompressedMutex.Release();
                   }
+                  else if(ctx.saveCompressedMutex)
+                     ctx.saveCompressedMutex.Release();
                   delete f;
                }
                delete name;
@@ -841,6 +862,7 @@ struct E3DOptions
 
    void * lookupTextureContext;
    uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
+   Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
 };
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
@@ -1061,6 +1083,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.resolution = options.resolution;
       ctx.compressedTextures = options.compressedTextures;
       ctx.skipTexturesProcessing = options.skipTexturesProcessing;
+      ctx.saveCompressedMutex = options.saveCompressedMutex;
    }
    else
    {
