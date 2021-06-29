@@ -265,10 +265,16 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      bool quote = isdigit(string[0]) || strchr(string, ' ') || strchr(string, ':');
+      bool quote = needsQuotes(string);
       if(quote) out.Print('`');
       out.Print(string);
       if(quote) out.Print('`');
+   }
+
+   bool ::needsQuotes(const String string)
+   {
+      bool quote = isdigit(string[0]) || strchr(string, ' ') || strchr(string, ':');
+      return quote;
    }
 
    CMSSIdentifier ::parse(CMSSLexer lexer)
