@@ -2,9 +2,10 @@ namespace gfx3D;
 
 import "Display"
 
+#if !defined(ECERE_NOGL)
 import "GLMultiDraw"
-
 #include "gl123es.h"
+#endif
 
 #ifdef ETC2_COMPRESS
 default extern void etc2Free(void * data);
@@ -83,7 +84,13 @@ public:
 
    MaterialFlags flags;
    float uScale, vScale;
+#if !defined(ECERE_NOGL)
    Shader shader;
+
+   #define LAST_MEMBER shader
+#else
+   #define LAST_MEMBER vScale
+#endif
 
    Material()
    {
@@ -112,7 +119,7 @@ public:
 
    int OnCompare(Material b)
    {
-      return memcmp(&opacity, &b.opacity, (byte *)((&shader) + 1) - (byte *)&opacity);
+      return memcmp(&opacity, &b.opacity, (byte *)((&LAST_MEMBER) + 1) - (byte *)&opacity);
    }
 };
 
@@ -189,7 +196,9 @@ public:
    property int nVertices { get { return nVertices; } set { nVertices = value; } };
    property Vector3Df * vertices { get { return vertices; } set { vertices = value; } };
    property int nIndices { get { return nIndices; } set { nIndices = value; } };
+#if !defined(ECERE_NOGL)
    property GLMB meab { get { return meab; } set { meab = value; } };
+#endif
    property int baseIndex { get { return baseIndex; } set { baseIndex = value; } };
    property int baseVertex { get { return baseVertex; } set { baseVertex = value; } };
    property uint32 * indices { get { return indices; } set { indices = value; } };
@@ -225,6 +234,7 @@ public:
                PrimitiveSingle * prim = &primitives[c];
                if(prim->data)
                {
+#if !defined(ECERE_NOGL)
                   if(meab)
                   {
                      int baseIndex = prim->baseIndex;
@@ -236,6 +246,7 @@ public:
                         prim->baseIndex = -1;
                      }
                   }
+#endif
                   driver.FreeIndices(displaySystem, primitives[c]);
                }
                if(!prim->type.vertexRange)
@@ -243,8 +254,9 @@ public:
             }
 
             // Free MEAB if it was allocated specifically for this mesh
+#if !defined(ECERE_NOGL)
             if(ownMEAB) meab.Free(), delete meab;
-
+#endif
             delete indices;
             delete primitives;
             nPrimitives = 0;
@@ -309,6 +321,7 @@ public:
       {
          if(group.data)
          {
+#if !defined(ECERE_NOGL)
             if(meab)
             {
                int baseIndex = group.baseIndex;
@@ -320,6 +333,7 @@ public:
                   group.baseIndex = -1;
                }
             }
+#endif
             driver.FreeIndices(displaySystem, (PrimitiveSingle *)&group.type);
          }
          if(!group.type.vertexRange)
@@ -383,7 +397,11 @@ public:
             shareIndicesTweak = true;
             group.indices = (uint16 *)((byte *)indices + (group.baseIndex * (group.type.indices32bit ? 4 : 2)));
          }
+#if !defined(ECERE_NOGL)
          driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, meab);
+#else
+         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, null);
+#endif
          if(shareIndicesTweak)
             group.indices = null;
       }
@@ -428,7 +446,11 @@ public:
    {
       if(this && primitive)
       {
+#if !defined(ECERE_NOGL)
          driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, meab);
+#else
+         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, null);
+#endif
       }
    }
 
@@ -991,6 +1013,7 @@ public:
       data = value;
    }
 
+#if !defined(ECERE_NOGL)
    bool Upload(DisplaySystem displaySystem, bool uploadTextures, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       bool result = false;
@@ -1116,6 +1139,7 @@ public:
       result = true;
       return result;
    }
+#endif
 
 private:
 
@@ -1198,7 +1222,9 @@ private:
    DisplaySystem displaySystem;
    subclass(DisplayDriver) driver;
    void * data;
+#if !defined(ECERE_NOGL)
    GLMB mab, meab;
+#endif
    uint baseVertex;
    Array<MeshPart> parts;
 
