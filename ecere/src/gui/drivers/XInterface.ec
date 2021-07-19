@@ -45,6 +45,7 @@ default:
 #define KeyCode   X11KeyCode
 #define Picture   X11Picture
 #define Bool      X11Bool
+#define Glyph     X11Glyph
 
 #define _XTYPEDEF_BOOL
 typedef int X11Bool;
@@ -79,6 +80,7 @@ typedef int X11Bool;
 #undef Display
 #undef Time
 #undef KeyCode
+#undef Glyph
 #undef uint
 
 #undef new
