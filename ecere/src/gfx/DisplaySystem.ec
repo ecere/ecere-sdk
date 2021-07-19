@@ -39,7 +39,7 @@ public:
    class_no_expansion;
    ~DisplaySystem()
    {
-#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
       OldLink mesh;
 
       materials.Free(Material::Free);
@@ -162,7 +162,7 @@ public:
          resources.Add(res);
 
          // This will load e.g. the Bitmap *
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
          if(fm)
          {
             ((FontResource)res.resource).LoadFM((FontResource)resource, this, fm);
@@ -171,7 +171,7 @@ public:
 #endif
             res.resource.Load(resource, this);
       }
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
       else if(fm)
       {
          FontResource fr = (FontResource)res.resource;
@@ -200,7 +200,7 @@ public:
       return _LoadResource(resource, null);
    }
 
-#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
+#if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
    void * LoadResourceFM(Resource resource, FontManager fm)
    {
       return _LoadResource(resource, fm);

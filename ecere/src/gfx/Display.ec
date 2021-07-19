@@ -31,7 +31,7 @@ import "Quaternion"
 import "Vector3D"
 #endif
 
-#if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D))
+#if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL))
 import "OpenGLDisplayDriver"
 
 #define Size Size_
@@ -857,7 +857,7 @@ public:
 
             if(display3D.mesh != mesh)
             {
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(ECERE_NOGL)
                if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
 #endif
                   driver.SelectMesh(this, mesh);
@@ -933,7 +933,11 @@ public:
             int c;
             PrimitiveSingle * primitives = mesh.primitives;
 
-            if(!group && display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
+            if(!group && display3D.mesh != mesh
+#if !defined(ECERE_NOGL)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+#endif
+               )
                displaySystem.driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
@@ -1208,7 +1212,11 @@ public:
          if(group)
          {
             subclass(DisplayDriver) driver = displaySystem.driver;
-            if(display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab))
+            if(display3D.mesh != mesh
+#if !defined(ECERE_NOGL)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+#endif
+               )
                driver.SelectMesh(this, mesh);
             display3D.mesh = mesh;
 
@@ -1245,7 +1253,9 @@ public:
             int c;
             int toFlush = 0;
             #define NUM_ROTATE_BUFS 40
+#if !defined(ECERE_NOGL)
             static GLEAB transBuffer[NUM_ROTATE_BUFS];
+#endif
             static int bufSizes[NUM_ROTATE_BUFS];
             static int bufID = 0;
             Object * partlyTransparentObjects = display3D.partlyTransparentObjects.array;
@@ -1275,7 +1285,9 @@ public:
                Object o = partlyTransparentObjects[i];
                if(o.mvMatrix[0])
                {
+#if !defined(ECERE_NOGL)
                   glmsLoadMatrixf(o.mvMatrix);   // TODO: Handle this properly...
+#endif
                   DrawPartlyTransparentMesh(o);
                }
                else
@@ -1299,11 +1311,17 @@ public:
                bool newMatrix, newMesh, newMaterial;
                if(!material) material = defaultMaterial;
                newMatrix   = past ? false : &sort->object.matrix != matrix;
-               newMesh     = past ? false : (display3D.mesh != mesh && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab));
+               newMesh     = past ? false : (display3D.mesh != mesh
+#if !defined(ECERE_NOGL)
+                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+#endif
+                  );
                newMaterial = past ? false : material != display3D.material;
 
                if(past || newMatrix || newMesh || newMaterial)
                {
+                  // TODO: Was translucency support for Direct3D broken?
+#if !defined(ECERE_NOGL)
                   if(!transBuffer[bufID].buffer || toFlush > bufSizes[bufID])
                   {
                      transBuffer[bufID].allocate(toFlush * sizeof(uint32), null, streamDraw);
@@ -1319,7 +1337,7 @@ public:
                      if(bufID >= NUM_ROTATE_BUFS)
                         bufID = 0;
                   }
-
+#endif
                   if(past)
                      break;
                }
@@ -1394,7 +1412,9 @@ public:
                }
             }
 
+#if !defined(ECERE_NOGL)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+#endif
 
             driver.PopMatrix(this, true);
 
@@ -1474,10 +1494,18 @@ public:
 #if !defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D)
    property GLCapabilities glCapabilities
    {
-      get { return ((OGLDisplay)driverData).capabilities; }
+      get
+      {
+#if !defined(ECERE_NOGL)
+         return ((OGLDisplay)driverData).capabilities;
+#else
+         return 0;
+#endif
+      }
       set
       {
          glCapabilities = value;
+#if !defined(ECERE_NOGL)
          if(driverData && displaySystem.driver == class(OpenGLDisplayDriver))
          {
             OGLDisplay oglDisplay = driverData;
@@ -1498,11 +1526,19 @@ public:
             OpenGLDisplayDriver::initialDisplaySetup(this, true, false);
             Unlock();
          }
+#endif
       }
    };
    property int glVersion
    {
-      get { return ((OGLDisplay)driverData).version; }
+      get
+      {
+#if !defined(ECERE_NOGL)
+         return ((OGLDisplay)driverData).version;
+#else
+         return 0;
+#endif
+      }
    }
 #endif
 
@@ -2421,21 +2457,27 @@ public:
    {
       int i, count = this.slots.count;
       DrawSlot * slots = this.slots.array;
+#if !defined(ECERE_NOGL)
       Shader shader = DefaultShader::shader();
       glmsFlushMatrices();
       glEnable(GL_CULL_FACE);
+#endif
       for(i = 0; i < count; i++)
       {
          Object object = slots[i].object;
+#if !defined(ECERE_NOGL)
          if(glCaps_shaders)
             shader.updateMatrix(modelView, object.mvMatrix, /*object.mvs,*/ false);
 #if ENABLE_GL_FFP
          else
             glLoadMatrixf(object.mvMatrix);  // GLLoadMatrixf
 #endif
+#endif
          display.DrawMesh(object);
       }
+#if !defined(ECERE_NOGL)
       GLLoadMatrixd((double *)&svm);
+#endif
    }
 }
 #endif

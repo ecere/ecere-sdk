@@ -99,11 +99,11 @@ _ECSOURCES1 = \
 	src/gfx/bitmaps/PNGFormat.ec \
 	src/gfx/bitmaps/RGBFormat.ec \
 	src/gfx/bitmaps/ETC2Format.ec \
-	src/gfx/drivers/gl3/glab.ec \
-	src/gfx/drivers/gl3/immediate.ec \
-	src/gfx/drivers/gl3/matrixStack.ec \
-	src/gfx/drivers/gl3/shaders.ec \
-	src/gfx/drivers/gl3/defaultShader.ec \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/glab.ec) \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/immediate.ec) \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/matrixStack.ec) \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/shaders.ec) \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/defaultShader.ec) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D8DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Direct3D9DisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/DirectDrawDisplayDriver.ec,) \
@@ -266,7 +266,7 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-tibetan.o \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
-	$(OBJ)gl_compat_4_4.o \
+	$(if $(DISABLE_GL),,$(OBJ)gl_compat_4_4.o) \
 	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
@@ -300,7 +300,7 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
-	src/gfx/drivers/gl3/gl_compat_4_4.c \
+	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/gl_compat_4_4.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
@@ -438,6 +438,8 @@ endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
 PRJ_CFLAGS += \
+	 $(if $(DISABLE_GL), \
+			 -DECERE_NOGL,) \
 	 $(if $(WINDOWS_TARGET), \
 			 -isystem ../deps/glext \
 			 -I../deps/jpeg-9a \
