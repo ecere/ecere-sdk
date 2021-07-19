@@ -1047,8 +1047,10 @@ public:
                         if(!(group.type.vertexRange))
                         {
                            // FIXME: GL driver specifics -- Should no longer need this; Should be able to merge now with baseVertex
+#if !defined(ECERE_NOGL)
                            OGLIndices oglIndices { nIndices = group.nIndices };
                            group.data = oglIndices;
+#endif
                         }
                         mesh.UnlockPrimitiveGroup(group);
                      }
@@ -1952,10 +1954,13 @@ private:
 
    public property DisplaySystem displaySystem
    {
+#if !defined(ECERE_NOGL)
       set { Upload(value, null, null, 0, null); }
+#endif
       get { return displaySystem; }
    }
 
+#if !defined(ECERE_NOGL)
    public void Upload(DisplaySystem displaySystem, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       Object o;
@@ -1966,6 +1971,7 @@ private:
       for(o = children.first; o; o = o.next)
          o.Upload(displaySystem, mab, meab, nAT, mAT);
    }
+#endif
 
    void setTransform(Matrix sm, Matrix svm, Vector3D cp) // Start-up matrix, Start-up X View Matrix, Camera Position
    {
