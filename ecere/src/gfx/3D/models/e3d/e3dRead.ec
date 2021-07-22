@@ -45,11 +45,11 @@ static String readString(File f)
    return s;
 }
 
-TempFile downloadFile(const String url)
-#if !defined(__GNOSIS3__)
-{ return FileOpen(url, read); }
+#if defined(__GNOSIS3__)
+TempFile downloadFile(const String url);
+#else
+File downloadFile(const String url) { return FileOpen(url, read); }
 #endif
-;
 
 // TODO: Review how to handle all this properly...
 void freeE3DMaterial(Material material)
