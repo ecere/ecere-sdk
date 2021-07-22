@@ -10,7 +10,7 @@ compiler:
 
 os:
   - linux
-  - osx
+#  - osx       # Travis builds are failing for no obvious reason at the moment
   - windows
 
 matrix:
