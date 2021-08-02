@@ -375,6 +375,7 @@ public class GraphicalPresentation : Presentation
 
    Map<Color, Array<uint64>> modelColorMap;
    bool updateModelColorMap;
+   bool freeModel;
 
    // REVIEW: Should we allocate separate side data for specific implementations?
   // union  // REVIEW: image is non-null with the union?
@@ -419,7 +420,7 @@ public:
 
    property Object modelObject
    {
-      set { model = value; geType = model; }
+      set { model = value; freeModel = false; geType = model; }
       get { return model; }
    }
 
@@ -501,6 +502,16 @@ public:
       set { transform.scaling = value; }
       get { value = transform.scaling; }
    };
+
+   void unloadGraphics(bool shutDown)
+   {
+      if(freeModel && model)
+      {
+         model.Free(displaySystem);
+         delete model;
+         freeModel = false;
+      }
+   }
 
    void calculate(Presentation topPres, PresentationManager mgr)
    {
@@ -608,6 +619,7 @@ public:
                      mat.shader = butterburShader;
                      object.mesh.ApplyMaterial(mat);
                      model = object;
+                     freeModel = true;
                   }
                   else
                      delete object;
