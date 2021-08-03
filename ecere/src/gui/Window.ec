@@ -9782,6 +9782,7 @@ public:
    property int documentID { get { return documentID; } };
    property Window previous { get { return prev; } }
    property Window next { get { return next; } }
+   // NOTE: This property is really slow and should not be used in iteration, iteration should be done with link
    property Window nextSlave { get { OldLink link = master ? master.slaves.FindLink(this) : null; return (link && link.next) ? link.next.data : null; } }
    property PopupMenu menuBar { get { return menuBar; } }
    property ScrollBar sbv { get { return sbv; } }
