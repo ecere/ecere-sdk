@@ -171,13 +171,16 @@ public class ToolTip : Window
 
    ToolTip ::Find(Window window)
    {
-      Window w;
-      for(w = window.firstSlave; w; w = w.nextSlave)
+      OldLink link;
+
+      // NOTE: Window::nextSlave is slow and not suitable for iteration
+      for(link = window.slaves.first; link; link = link.next)
       {
+         Window w = link.data;
          if(eClass_IsDerived(w._class, class(ToolTip)))
-            break;
+            return (ToolTip)w;
       }
-      return (ToolTip)w;
+      return null;
    }
 
    bool Window::OnMouseOverHandler(int x, int y, Modifiers mods)
