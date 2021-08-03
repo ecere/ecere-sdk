@@ -5897,7 +5897,7 @@ private:
          ReleaseCapture();
          //guiApp.windowCaptured = null;
 
-      if(rootWindow != this && rootWindow)
+      if(rootWindow != this && rootWindow && !noConsequential)
          rootWindow.ConsequentialMouseMove(false);
 
       rootWindow = null;
@@ -9440,7 +9440,8 @@ public:
                Update(null);
 
                // rootWindow.
-               ConsequentialMouseMove(false);
+               if(!noConsequential)
+                  ConsequentialMouseMove(false);
             }
 
             firewatchers;
