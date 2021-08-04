@@ -651,10 +651,14 @@ ifdef CodeGuard
 	$(call cp,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
 	$(call cp,$(OBJLIBDIR)libecereVanilla$(A),"$(DESTSLIBDIR)/")
+ifndef SKIP_ADDITIONAL_FILES
+ifndef SKIP_DOC
 	$(call cp,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
 	$(call cpr,$(DOC)/ecere,"$(DOCDIR)/ecere")
 	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
+endif
+endif
 endif
 
 ifdef OSX_TARGET
@@ -682,6 +686,8 @@ ifdef CodeGuard
 	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
 endif
 	install $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/
+ifndef SKIP_ADDITIONAL_FILES
+ifndef SKIP_DOCS
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
@@ -689,13 +695,19 @@ endif
 	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
 	mkdir -p $(MANDIR)/man1
 	$(call cpr,share/man/man1,$(MANDIR)/man1)
+	find $(DOCDIR) -type d -exec chmod 755 {} \;
+	find $(DOCDIR) -type f -exec chmod 644 {} \;
+endif
+ifndef SKIP_SAMPLES
 	mkdir -p $(SAMPLESDIR)
 	$(call cpr,samples,$(SAMPLESDIR))
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
-	find $(DOCDIR) -type d -exec chmod 755 {} \;
-	find $(DOCDIR) -type f -exec chmod 644 {} \;
+endif
+ifndef SKIP_EXTRAS
 	mkdir -p $(EXTRASDIR)
 	$(call cpr,extras,$(EXTRASDIR))
+endif
+endif
 endif
 
 ifndef OSX_TARGET
@@ -743,10 +755,6 @@ endif
 ifneq ($(ECERE_AUDIO),n)
 	ln -sf $(LP)EcereAudio$(SOV) $(DESTLIBDIR)/ec/$(LP)EcereAudio$(SO)
 endif
-ifndef BSD_HOST
-	install $(INSTALL_FLAGS) -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
-	install $(INSTALL_FLAGS) -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
-endif
 else
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
@@ -759,6 +767,12 @@ endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
+ifndef SKIP_ADDITIONAL_FILES
+ifndef BSD_HOST
+	install $(INSTALL_FLAGS) -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
+	install $(INSTALL_FLAGS) -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
+endif
+ifndef SKIP_DOCS
 ifdef BSD_HOST
 	install $(INSTALL_FLAGS) -d $(DOCDIR)
 endif
@@ -768,13 +782,19 @@ endif
 	$(call cpr,$(DOC)/EDA,"$(DOCDIR)/EDA")
 	mkdir -p $(MANDIR)/man1
 	cp -pRf share/man/man1/* $(MANDIR)/man1
+	find $(DOCDIR) -type d -exec chmod 755 {} \;
+	find $(DOCDIR) -type f -exec chmod 644 {} \;
+endif
+ifndef SKIP_SAMPLES
 	mkdir -p $(SAMPLESDIR)
 	cp -pRf samples/* $(SAMPLESDIR)
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
-	find $(DOCDIR) -type d -exec chmod 755 {} \;
-	find $(DOCDIR) -type f -exec chmod 644 {} \;
+endif
+ifndef SKIP_EXTRAS
 	mkdir -p $(EXTRASDIR)
 	cp $(CPFLAGS) extras/* $(EXTRASDIR)
+endif
+endif
 ifdef DEBIAN_PACKAGE
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecere0
 	install $(INSTALL_FLAG) -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
