@@ -7,7 +7,7 @@ endif
 # CORE VARIABLES
 
 MODULE := bgen
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -44,7 +44,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E)
 
@@ -131,6 +131,8 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,ecere)
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN/../lib',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 PRJ_CFLAGS += \
