@@ -6,6 +6,7 @@ XSBC-Original-Maintainer: Jerome St-Louis <jerome@ecere.com>
 Build-Depends: debhelper (>= 7.0.50~),
                dpkg-dev (>= 1.16.1~),
                libasound2-dev,
+               libcurl4-openssl-dev,
                libffi-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
