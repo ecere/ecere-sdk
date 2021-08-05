@@ -488,6 +488,17 @@ ifdef DEBUG
 override CFLAGS += -D_DEBUG
 endif
 
+# PORTABLE BINARIES ON LINUX
+ifdef LINUX_TARGET
+ ifneq ($(ENABLE_PORTABLE_RPATHS),)
+  RPATHS_FOR_PORTABLE_BINARIES := -Wl$(comma)-rpath='$$ORIGIN'
+  ifneq ($(LIB32_SFX),)
+   RPATHS_FOR_PORTABLE_BINARIES += -Wl$(comma)-rpath='$$ORIGIN/../lib$(LIB32_SFX)'$(comma)-rpath='$$ORIGIN/../lib$(LIB32_SFX)/ec'
+  endif
+  RPATHS_FOR_PORTABLE_BINARIES += -Wl$(comma)-rpath='$$ORIGIN/../lib'$(comma)-rpath='$$ORIGIN/../lib/ec'
+ endif
+endif
+
 # COMMON LIBRARIES DETECTION
 ifdef WINDOWS_TARGET
  ifdef OPENSSL_DIR

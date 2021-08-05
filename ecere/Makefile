@@ -470,6 +470,7 @@ LIBS += \
 	$(call _L,freetype) \
 	$(call _L,curl)
 OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
