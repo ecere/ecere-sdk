@@ -440,6 +440,8 @@ LIBS += \
 	$(call _L,z) \
 	$(call _L,freetype) \
 	$(call _L,curl)
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 # Careful to keep ../deps/glext as -isystem instead of generated -I
@@ -687,7 +689,7 @@ ifdef LINUX_HOST
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),)
-endif	
+endif
 endif
 endif
 

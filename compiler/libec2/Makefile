@@ -90,6 +90,8 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,ecere)
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 PRJ_CFLAGS += \

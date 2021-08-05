@@ -44,7 +44,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO).0.44
@@ -106,6 +106,8 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,ecere)
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 PRJ_CFLAGS += \
@@ -159,7 +161,7 @@ ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO)
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
-endif	
+endif
 ifdef WINDOWS_TARGET
 ifndef CROSS_TARGET
 	$(call cp,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
