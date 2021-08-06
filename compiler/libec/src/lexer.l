@@ -441,10 +441,20 @@ int preprocessor()
          if(last != '\\')
          {
             const char * pointer = line + 1;
+            bool hasLineNumber = false;
             int lineNumber;
+            char numberString[20];
+
             line[count] = 0;
-            lineNumber = GetValue(&pointer);
-            if(lineNumber)
+            if(GetString(&pointer, numberString, sizeof(numberString)))
+            {
+               char * ptr = null;
+               lineNumber = (int)strtol(numberString, &ptr, 10);
+               if(ptr && ptr > numberString)
+                  hasLineNumber = true;
+            }
+
+            if(hasLineNumber)
             {
                char fileName[MAX_LOCATION];
 
