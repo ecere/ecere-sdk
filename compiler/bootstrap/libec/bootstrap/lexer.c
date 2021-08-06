@@ -394,9 +394,9 @@ extern int printf(const char * , ...);
 
 extern int yyerror(void);
 
-extern int __ecereNameSpace__ecere__sys__GetValue(const char * *  buffer);
-
 extern unsigned int __ecereNameSpace__ecere__sys__GetString(const char * *  buffer, char *  string, int max);
+
+extern int __ecereNameSpace__ecere__sys__GetValue(const char * *  buffer);
 
 extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
 
@@ -923,11 +923,20 @@ yylloc.end.line++;
 if(last != '\\')
 {
 const char * pointer = line + 1;
+unsigned int hasLineNumber = 0;
 int lineNumber;
+char numberString[20];
 
 line[count] = 0;
-lineNumber = __ecereNameSpace__ecere__sys__GetValue(&pointer);
-if(lineNumber)
+if(__ecereNameSpace__ecere__sys__GetString(&pointer, numberString, sizeof (numberString)))
+{
+char * ptr = (((void *)0));
+
+lineNumber = (int)strtol(numberString, &ptr, 10);
+if(ptr && ptr > numberString)
+hasLineNumber = 1;
+}
+if(hasLineNumber)
 {
 char fileName[797];
 int inOut;
