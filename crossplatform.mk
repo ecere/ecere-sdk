@@ -1,3 +1,11 @@
+ifneq ($(V),9)
+ifeq ($(V),1)
+MAKEFLAGS += --no-print-directory
+else
+MAKEFLAGS += --no-print-directory --silent
+endif
+endif
+
 # HOST PLATFORM DETECTION
 ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
