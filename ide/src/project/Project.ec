@@ -27,7 +27,7 @@ default:
 
 static __attribute__((unused)) void DummyFunction()
 {
-int a;
+int a = 0;
 a.OnFree();
 }
 

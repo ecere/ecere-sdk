@@ -8391,7 +8391,7 @@ __ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ec
 
 static __attribute__((unused)) void UnusedFunction()
 {
-int a;
+int a = 0;
 
 (__extension__ ({
 const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  reserved, unsigned int *  onType);
