@@ -8,7 +8,7 @@ import "AVLTree"
 default:
 __attribute__((unused)) static void UnusedFunction()
 {
-   int a;
+   int a = 0;
    a.OnGetDataFromString(null);
    a.OnGetString(null, 0, 0);
    a.OnCopy(0);

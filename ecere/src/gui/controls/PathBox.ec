@@ -5,7 +5,7 @@ import "Array"
 default extern int __ecereVMethodID_class_OnGetDataFromString;
 default __attribute__((unused)) static void _workAround()
 {
-   int a;
+   int a = 0;
    a.OnGetDataFromString(0);
 }
 

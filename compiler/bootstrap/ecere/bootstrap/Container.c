@@ -1104,7 +1104,7 @@ return 0;
 
 static __attribute__((unused)) void UnusedFunction()
 {
-int a;
+int a = 0;
 
 (__extension__ ({
 int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const void * object);

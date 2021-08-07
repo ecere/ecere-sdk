@@ -6,7 +6,7 @@ default:
 
 static __attribute__((unused)) void UnusedFunction()
 {
-   int a;
+   int a = 0;
    a.OnCompare(null);
    a.OnCopy(null);
    a.OnGetString(null, null, null);

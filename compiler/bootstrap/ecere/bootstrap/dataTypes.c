@@ -2396,7 +2396,7 @@ __attribute__((unused)) static void __ecereNameSpace__ecere__com__UnusedFunction
 {
 int __internalValue001;
 int __internalValue000;
-int a;
+int a = 0;
 
 (__extension__ ({
 const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  reserved, unsigned int *  onType);
