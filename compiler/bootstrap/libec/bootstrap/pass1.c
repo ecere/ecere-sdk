@@ -335,6 +335,8 @@ extern struct Expression * MkExpCall(struct Expression * expression, struct __ec
 
 extern struct Expression * CopyExpression(struct Expression * exp);
 
+extern struct Expression * ParseExpressionString(char *  expression);
+
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
 extern void ProcessExpressionType(struct Expression * exp);
@@ -1777,6 +1779,131 @@ external->__anon1.function->body = (((void *)0));
 return external;
 }
 
+extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__TemplateMemberType;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} ecere_gcc_struct;
+
+void __ecereDestructor_ClassPropertyValue(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+__attribute__((unused)) struct ClassPropertyValue * __ecerePointer_ClassPropertyValue = (struct ClassPropertyValue *)(this ? (((char *)this) + __ecereClass_ClassPropertyValue->offset) : 0);
+
+{
+FreeIdentifier(__ecerePointer_ClassPropertyValue->id);
+}
+}
+
+void CreateRegisterModuleBody()
+{
+if(!registerModuleBody && inCompiler)
+{
+char registerName[1024], moduleName[274];
+struct __ecereNameSpace__ecere__sys__OldList * specifiers;
+struct Declarator * declarator;
+struct TypeName * moduleParam;
+
+registerModuleBody = MkCompoundStmt(MkList(), MkList());
+registerModuleBody->__anon1.compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
+ListAdd(registerModuleBody->__anon1.compound.declarations, MkDeclaration((specifiers = MkListOne(MkSpecifierName("ecere::com::Class"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*specifiers), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
+specifiers = MkList();
+ListAdd(specifiers, MkSpecifier(VOID));
+moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
+__ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
+__ecereNameSpace__ecere__sys__StripExtension(moduleName);
+FixModuleName(moduleName);
+sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
+declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
+{
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0);
+
+ProcessFunctionBody(function, registerModuleBody);
+function->declMode = 0;
+if(!ast)
+ast = MkList();
+ListAdd(ast, (registerModuleExternal = MkExternalFunction(function)));
+DeclareStruct(registerModuleExternal, "ecere::com::Instance", 0, 1);
+DeclareStruct(registerModuleExternal, "ecere::com::Module", 0, 1);
+}
+}
+if(!unregisterModuleBody && inCompiler)
+{
+char registerName[1024], moduleName[274];
+struct __ecereNameSpace__ecere__sys__OldList * specifiers;
+struct Declarator * declarator;
+struct TypeName * moduleParam;
+
+unregisterModuleBody = MkCompoundStmt(MkList(), MkList());
+unregisterModuleBody->__anon1.compound.context = __extension__ ({
+struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
+
+__ecereInstance1->parent = globalContext, __ecereInstance1;
+});
+specifiers = MkList();
+ListAdd(specifiers, MkSpecifier(VOID));
+moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
+__ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
+__ecereNameSpace__ecere__sys__StripExtension(moduleName);
+FixModuleName(moduleName);
+sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
+declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
+{
+struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0);
+
+ProcessFunctionBody(function, unregisterModuleBody);
+function->declMode = 0;
+if(!ast)
+ast = MkList();
+ListAdd(ast, (unregisterModuleExternal = MkExternalFunction(function)));
+DeclareStruct(unregisterModuleExternal, "ecere::com::Instance", 0, 1);
+DeclareStruct(unregisterModuleExternal, "ecere::com::Module", 0, 1);
+}
+}
+}
+
+void __ecereCreateModuleInstances_pass1()
+{
+classPropValues = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_);
+__ecereNameSpace__ecere__com__eInstance_IncRef(classPropValues);
+}
+
 void RegisterMembersAndProperties(struct __ecereNameSpace__ecere__com__Class * regClass, unsigned int isMember, const char * className, struct Statement * statement)
 {
 struct __ecereNameSpace__ecere__com__DataMember * dataMember = isMember ? (struct __ecereNameSpace__ecere__com__DataMember *)regClass : (((void *)0));
@@ -1789,6 +1916,7 @@ unsigned int lastOffset = 0;
 int privateID = 0;
 unsigned int privateMembers = 0;
 unsigned int privateAlignment = 0;
+unsigned int privateAlignmentPtr = 0;
 
 sprintf(dataMemberSize, "%d", (int)sizeof(struct __ecereNameSpace__ecere__com__DataMember *));
 if(!isMember)
@@ -2138,29 +2266,27 @@ lastOffset = member->offset + member->memberOffset;
 }
 else
 {
-unsigned int __simpleStruct0;
-
 privateMembers = 1;
 if(member->type == 0)
 {
-unsigned int alignment;
+unsigned int __simpleStruct0;
 
 if(!member->dataType)
 member->dataType = ProcessTypeString(member->dataTypeString, 0);
 ComputeTypeSize(member->dataType);
-if(__ecereProp_Type_Get_isPointerTypeSize(member->dataType))
-alignment = 8;
+if(__ecereProp_Type_Get_isPointerTypeSize(member->dataType) || member->dataType->pointerAlignment)
+privateAlignmentPtr = 1;
+else
+privateAlignment = (__simpleStruct0 = member->dataType->alignment, (privateAlignment > __simpleStruct0) ? privateAlignment : __simpleStruct0);
+}
 else
 {
-if(member->dataType->pointerAlignment)
-alignment = 8;
-else
-alignment = member->dataType->alignment;
-}
-privateAlignment = ((privateAlignment > alignment) ? privateAlignment : alignment);
-}
-else
+unsigned int __simpleStruct0;
+
+if(member->pointerAlignment)
+privateAlignmentPtr = 1;
 privateAlignment = (__simpleStruct0 = member->structAlignment, (privateAlignment > __simpleStruct0) ? privateAlignment : __simpleStruct0);
+}
 }
 }
 if(privateAlignment)
@@ -2171,6 +2297,14 @@ ListAdd(args, MkExpIdentifier(MkIdentifier(className)));
 ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
 ListAdd(args, MkExpIdentifier(MkIdentifier("null")));
 ListAdd(args, MkExpConstant("0"));
+if(privateAlignmentPtr)
+{
+char * s = __ecereNameSpace__ecere__com__PrintString(__ecereClass_char__PTR_, "sizeof(void *) > ", __ecereClass_uint, (void *)&privateAlignment, __ecereClass_char__PTR_, " ? sizeof(void *) : ", __ecereClass_uint, (void *)&privateAlignment, (void *)0);
+
+ListAdd(args, ParseExpressionString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
+}
+else
 {
 char string[256];
 
@@ -2244,125 +2378,6 @@ stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("eClass
 ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
 }
 }
-}
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__TemplateMemberType;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} ecere_gcc_struct;
-
-void __ecereDestructor_ClassPropertyValue(struct __ecereNameSpace__ecere__com__Instance * this)
-{
-__attribute__((unused)) struct ClassPropertyValue * __ecerePointer_ClassPropertyValue = (struct ClassPropertyValue *)(this ? (((char *)this) + __ecereClass_ClassPropertyValue->offset) : 0);
-
-{
-FreeIdentifier(__ecerePointer_ClassPropertyValue->id);
-}
-}
-
-void CreateRegisterModuleBody()
-{
-if(!registerModuleBody && inCompiler)
-{
-char registerName[1024], moduleName[274];
-struct __ecereNameSpace__ecere__sys__OldList * specifiers;
-struct Declarator * declarator;
-struct TypeName * moduleParam;
-
-registerModuleBody = MkCompoundStmt(MkList(), MkList());
-registerModuleBody->__anon1.compound.context = __extension__ ({
-struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
-
-__ecereInstance1->parent = globalContext, __ecereInstance1;
-});
-ListAdd(registerModuleBody->__anon1.compound.declarations, MkDeclaration((specifiers = MkListOne(MkSpecifierName("ecere::com::Class"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*specifiers), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
-specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(VOID));
-moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
-__ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
-__ecereNameSpace__ecere__sys__StripExtension(moduleName);
-FixModuleName(moduleName);
-sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
-declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
-{
-struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0);
-
-ProcessFunctionBody(function, registerModuleBody);
-function->declMode = 0;
-if(!ast)
-ast = MkList();
-ListAdd(ast, (registerModuleExternal = MkExternalFunction(function)));
-DeclareStruct(registerModuleExternal, "ecere::com::Instance", 0, 1);
-DeclareStruct(registerModuleExternal, "ecere::com::Module", 0, 1);
-}
-}
-if(!unregisterModuleBody && inCompiler)
-{
-char registerName[1024], moduleName[274];
-struct __ecereNameSpace__ecere__sys__OldList * specifiers;
-struct Declarator * declarator;
-struct TypeName * moduleParam;
-
-unregisterModuleBody = MkCompoundStmt(MkList(), MkList());
-unregisterModuleBody->__anon1.compound.context = __extension__ ({
-struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
-
-__ecereInstance1->parent = globalContext, __ecereInstance1;
-});
-specifiers = MkList();
-ListAdd(specifiers, MkSpecifier(VOID));
-moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
-__ecereNameSpace__ecere__sys__GetLastDirectory(outputFile, moduleName);
-__ecereNameSpace__ecere__sys__StripExtension(moduleName);
-FixModuleName(moduleName);
-sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
-declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)), MkListOne(moduleParam));
-{
-struct FunctionDefinition * function = _MkFunction(specifiers, declarator, (((void *)0)), 0);
-
-ProcessFunctionBody(function, unregisterModuleBody);
-function->declMode = 0;
-if(!ast)
-ast = MkList();
-ListAdd(ast, (unregisterModuleExternal = MkExternalFunction(function)));
-DeclareStruct(unregisterModuleExternal, "ecere::com::Instance", 0, 1);
-DeclareStruct(unregisterModuleExternal, "ecere::com::Module", 0, 1);
-}
-}
-}
-
-void __ecereCreateModuleInstances_pass1()
-{
-classPropValues = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_);
-__ecereNameSpace__ecere__com__eInstance_IncRef(classPropValues);
 }
 
 void __ecereUnregisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -3371,7 +3386,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNameSpaceString", "vo
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ClassPropertyValue", 0, sizeof(struct ClassPropertyValue), 0, (void *)0, (void *)__ecereDestructor_ClassPropertyValue, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ClassPropertyValue = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessClassDefinitions", "void ProcessClassDefinitions(void)", ProcessClassDefinitions, module, 1);
 }
 

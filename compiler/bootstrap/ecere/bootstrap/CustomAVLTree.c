@@ -1503,7 +1503,7 @@ __ecereProp___ecereNameSpace__ecere__com__AVLNode_depthProp = __ecerePropM___ece
 __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "balanceFactor", "int", 0, __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor, 2);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__com__AVLNode_balanceFactor = __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor, __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor = (void *)0;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 if(class)

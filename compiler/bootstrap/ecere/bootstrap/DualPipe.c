@@ -277,8 +277,6 @@ short structAlignment;
 short pointerAlignment;
 } ecere_gcc_struct;
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
-
 struct __ecereNameSpace__ecere__com__Method;
 
 struct __ecereNameSpace__ecere__com__Method
@@ -742,7 +740,6 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetProcessID", "int GetPr
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Peek", "bool Peek()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Terminate", "void Terminate()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Terminate, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Wait", "void Wait()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenf(ecere::sys::PipeOpenMode mode, const char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenf, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpen", "ecere::sys::DualPipe ecere::sys::DualPipeOpen(ecere::sys::PipeOpenMode mode, const char * commandLine)", __ecereNameSpace__ecere__sys__DualPipeOpen, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenEnvf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenEnvf(ecere::sys::PipeOpenMode mode, const char * env, const char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenEnvf, module, 1);
