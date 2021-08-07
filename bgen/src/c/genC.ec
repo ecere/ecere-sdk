@@ -2411,10 +2411,10 @@ ASTRawString astEnum(Class cl, BClass c)
       {
          char b[1024];
          b[0] = 0;
-         if((int64)item.data >= 0)
+         if((int64)(intptr)item.data >= 0)
             PrintBuf(b, sizeof(b) - 1, item.data);
          else
-            PrintBuf(b, sizeof(b) - 1, (int64)item.data);
+            PrintBuf(b, sizeof(b) - 1, (int64)(intptr)item.data);
          if(!b[0])
             strcpy(b, "0x0");
          if(c.isBool)
