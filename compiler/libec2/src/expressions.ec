@@ -960,7 +960,7 @@ public:
                   out.Print(";");
                if(nextLink)
                {
-                  InstanceInit next = nextLink ? (InstanceInit)nextLink.data : null;
+                  InstanceInit next = nextLink ? (InstanceInit)(uintptr)nextLink.data : null;
                   out.PrintLn("");
                   if(next._class == class(InstInitFunction))
                      out.PrintLn("");

@@ -460,7 +460,7 @@ private:
                   {
                      if(entering)
                      {
-                        DataMember dm = (DataMember)stack.last.prev.data;
+                        DataMember dm = (DataMember)(uint32)stack.last.prev.data;
                         mp = stack.lastIterator.data;
                         if(!unionFirstsOnly && dm.type == unionMember && mp.next)
                         {
