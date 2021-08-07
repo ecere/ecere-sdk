@@ -395,7 +395,7 @@ private:
          funcRename = { }; // buggy copySrc? -- funcRename.copySrc = opt.funcRename;
          for(r : opt.funcRename)
          {
-            funcRename[(char *)&r] = CopyString(r);
+            funcRename[(char *)(uintptr)&r] = CopyString(r);
          }
       }
    }
