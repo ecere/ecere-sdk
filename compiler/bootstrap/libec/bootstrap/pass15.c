@@ -19849,7 +19849,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareGlobalData", "voi
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Conversion", 0, sizeof(struct Conversion), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Conversion = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypes", "bool MatchTypes(Type source, Type dest, ecere::sys::OldList conversions, ecere::com::Class owningClassSource, ecere::com::Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration, bool warnConst)", MatchTypes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_NameSpace", "bool MatchWithEnums_NameSpace(ecere::com::NameSpace nameSpace, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_NameSpace, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleVisibility", "bool ModuleVisibility(ecere::com::Module searchIn, ecere::com::Module searchFor)", ModuleVisibility, module, 1);

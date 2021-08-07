@@ -2597,11 +2597,11 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "indexEntry", 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBTableEntry", 0, sizeof(struct DBTableEntry), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_DBTableEntry = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 8 ? sizeof(void *) : 8, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBIndexItem", 0, sizeof(struct DBIndexItem), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_DBIndexItem = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInCompiler", "void SetInCompiler(bool b)", SetInCompiler, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInDebugger", "void SetInDebugger(bool b)", SetInDebugger, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInBGen", "void SetInBGen(bool b)", SetInBGen, module, 1);
@@ -2646,7 +2646,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "param", "TemplatePara
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataRedefinition", 0, sizeof(struct DataRedefinition), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_DataRedefinition = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 1 ? sizeof(void *) : 1, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "CodePosition", 0, sizeof(struct CodePosition), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_CodePosition = class;
@@ -2964,7 +2964,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Pointer", 0, sizeof(struct Pointer), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Pointer = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DeclaratorType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_DeclaratorType = class;
@@ -3045,7 +3045,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "bitCount", "Expressio
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "AsmField", 0, sizeof(struct AsmField), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_AsmField = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "StmtType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_StmtType = class;
@@ -3311,7 +3311,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(str
 __ecereClass_TopoEdge = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "in", "ecere::com::LinkElement<TopoEdge>", sizeof(struct __ecereNameSpace__ecere__com__LinkElement), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "out", "ecere::com::LinkElement<TopoEdge>", sizeof(struct __ecereNameSpace__ecere__com__LinkElement), 0xF000F000, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 4 ? sizeof(void *) : 4, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExternalType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ExternalType = class;

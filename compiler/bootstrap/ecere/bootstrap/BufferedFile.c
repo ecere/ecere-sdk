@@ -1005,7 +1005,7 @@ __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_bufferSize = __ecerePropM
 __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "bufferRead", "uintsize", __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Set_bufferRead, __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_bufferRead, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead, __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = (void *)0;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, sizeof(void *) > 8 ? sizeof(void *) : 8, 2);
 if(class)
 class->fixed = (unsigned int)1;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileOpenBuffered", "ecere::sys::BufferedFile ecere::sys::FileOpenBuffered(const char * fileName, ecere::sys::FileOpenMode mode)", __ecereNameSpace__ecere__sys__FileOpenBuffered, module, 1);
