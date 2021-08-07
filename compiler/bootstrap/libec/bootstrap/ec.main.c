@@ -304,6 +304,8 @@ __attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecere
 
 __attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
+__attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
+
 __attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
 __attribute__((__common__)) struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
@@ -674,6 +676,7 @@ __ecereProp_float_signBit = _property = __ecereNameSpace__ecere__com__eClass_Fin
 if(_property)
 __ecereProp_float_Get_signBit = _property->Get;
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
+__ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Container");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Add", module);
 if(method)

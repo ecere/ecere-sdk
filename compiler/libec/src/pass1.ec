@@ -356,6 +356,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
    int privateID = 0;
    bool privateMembers = false;
    uint privateAlignment = 0;
+   bool privateAlignmentPtr = false;
 
    sprintf(dataMemberSize, "%d", (int)sizeof(DataMember));
    if(!isMember)
@@ -800,26 +801,22 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
          privateMembers = true;
          if(member.type == normalMember)
          {
-            uint alignment;
             if(!member.dataType)
                member.dataType = ProcessTypeString(member.dataTypeString, false);
 
             ComputeTypeSize(member.dataType);
 
-            if(member.dataType.isPointerTypeSize)
-               alignment = 8; // TO REVIEW: Assuming 64-bit for private pointers for now,
-                         //  otherwise we would need to generate Max(ptrAlignment, alignment)
+            if(member.dataType.isPointerTypeSize || member.dataType.pointerAlignment)
+               privateAlignmentPtr = true;
             else
-            {
-               if(member.dataType.pointerAlignment)
-                  alignment = 8;
-               else
-                  alignment = member.dataType.alignment;
-            }
-            privateAlignment = Max(privateAlignment, alignment);
+               privateAlignment = Max(privateAlignment, member.dataType.alignment);
          }
          else
+         {
+            if(member.pointerAlignment)
+               privateAlignmentPtr = true;
             privateAlignment = Max(privateAlignment, member.structAlignment);
+         }
       }
    }
 
@@ -836,6 +833,14 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
       // int size
       ListAdd(args, MkExpConstant("0"));
       // int alignment
+      if(privateAlignmentPtr)
+      {
+         // Building expressions is too cumbersome right now, doing it the lazy way. Hopefully easier in libec2!
+         String s = PrintString("sizeof(void *) > ", privateAlignment, " ? sizeof(void *) : ", privateAlignment);
+         ListAdd(args, ParseExpressionString(s));
+         delete s;
+      }
+      else
       {
          char string[256];
          sprintf(string, "%d", privateAlignment);

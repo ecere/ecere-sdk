@@ -1748,7 +1748,6 @@ __ecereProp___ecereNameSpace__ecere__sys__File_buffered = __ecerePropM___ecereNa
 __ecerePropM___ecereNameSpace__ecere__sys__File_eof = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "eof", "bool", 0, __ecereProp___ecereNameSpace__ecere__sys__File_Get_eof, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__File_eof = __ecerePropM___ecereNameSpace__ecere__sys__File_eof, __ecerePropM___ecereNameSpace__ecere__sys__File_eof = (void *)0;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, (((void *)0)), (((void *)0)), 0, 8, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::ConsoleFile", "ecere::sys::File", 0, 0, (void *)__ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile, (void *)__ecereDestructor___ecereNameSpace__ecere__sys__ConsoleFile, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ConsoleFile = class;
