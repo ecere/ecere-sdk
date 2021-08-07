@@ -328,12 +328,12 @@ static time_t MakeTimeTfromLocalDT(DateTime dt, int isDST)
 
 static time_t MakeTimeTfromGlobal(SecSince1970 t, bool isDST)
 {
-   return t - isDST * 3600;
+   return (time_t)(t - isDST * 3600);
 }
 
 static time_t MakeTimeTfromGlobalDT(DateTime dt, bool isDST)
 {
-   return (SecSince1970)dt - isDST * 3600;
+   return (time_t)((SecSince1970)dt - isDST * 3600);
 }
 
 #endif
