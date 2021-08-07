@@ -46,6 +46,7 @@ static File EAROpenArchive(const char * archive, EARHeader header)
    {
       char moduleName[MAX_LOCATION];
       const char * name = archive + 1;
+      moduleName[0] = 0;
 #if defined(__ANDROID__) && !defined(__LUMIN__)
       if(!name[0])
          name = ((SubModule)__thisModule.application.modules.first).next.module.name;

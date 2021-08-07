@@ -366,7 +366,7 @@ bool System_ShellOpen(const char * fileName, va_list args)
 
 #if !defined(__WIN32__)
    {
-      char command[MAX_LOCATION] = "";
+      char command[sizeof(filePath) + 61] = "";
       char desktop[MAX_F_STRING];
       __ecereNameSpace__ecere__sys__GetEnvironment("ECERE_DESKTOP", desktop, sizeof(desktop));
       if(__ecereNameSpace__ecere__sys__SearchString(desktop, 0, "ecere", false, false))

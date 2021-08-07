@@ -57,7 +57,7 @@ public define FORMAT64U      = (__runtimePlatform == win32) ? "%I64u" : "%llu";
 
 __attribute__((unused)) static void UnusedFunction()
 {
-   int a;
+   int a = 0;
    a.OnGetString(0,0,0);
    a.OnFree();
    a.OnCopy(0);

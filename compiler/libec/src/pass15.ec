@@ -4609,7 +4609,7 @@ static int64 GetEnumValue(Class _class, void * ptr)
 
 static __attribute__((unused)) void UnusedFunction()
 {
-   int a;
+   int a = 0;
    a.OnGetString(0,0,0);
 }
 default:
