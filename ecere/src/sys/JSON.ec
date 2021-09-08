@@ -118,7 +118,8 @@ OptionsMap defaultJsonOptions{[
          boolUseOGDFS = true,
          nullUseOGDFS = true,
          stringUseOGDFS = true,
-         arrayUseOGDFS = true
+         arrayUseOGDFS = true,
+         objectUseOGDFS = true
       }
    },
    {
