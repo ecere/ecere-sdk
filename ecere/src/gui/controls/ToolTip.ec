@@ -76,6 +76,16 @@ public class ToolTip : Window
       return true;
    }
 
+   bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
+   {
+      if(!active)
+      {
+         Destroy(0);
+         return false;
+      }
+      return true;
+   }
+
    bool OnMouseLeave(Modifiers mods)
    {
       closeTimer.Start();
