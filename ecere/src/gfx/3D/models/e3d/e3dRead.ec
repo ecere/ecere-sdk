@@ -106,20 +106,23 @@ static Mutex texMutex { };
 class E3DContext : struct
 {
    Map<uint, Bitmap> texturesByID;
-   const String path;
    AVLTree<Material> materials;
-
-   Map<uint, Material> materialsByID { };   // Right now this is per E3D... Support supplying optional materials map? Resolve later?
-   Map<uint, Mesh> meshesByID { };
-   Map<uint, bool> meshOwned { };
    const String texturesQuery;
-   Mutex saveCompressedMutex;
-
-   int curTextureID;
    bool positiveYUp;
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
+
+   Mutex saveCompressedMutex;
+   int curTextureID;
+   const String path;
+   void *getTextureContext;
+   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
+
+   Map<uint, Material> materialsByID { };   // Right now this is per E3D... Support supplying optional materials map? Resolve later?
+   Map<uint, Mesh> meshesByID { };
+   Map<uint, bool> meshOwned { };
+
 }
 
 static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data)
@@ -847,9 +850,10 @@ struct E3DOptions
    bool compressedTextures;
    bool skipTexturesProcessing;
 
+   Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
+
    void * lookupTextureContext;
    uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
-   Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
 };
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
