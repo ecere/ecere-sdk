@@ -44,7 +44,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO)$(VER)
 
@@ -171,6 +171,11 @@ ifdef LINUX_HOST
 endif
 endif
 endif
+	$(call cp,$(TARGET),../$(SODESTDIR))
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) ../$(SODESTDIR)$(LP)$(MODULE)$(SO),),)
+	$(if SO_LIB_LINKS,$(if $(VER_MAJ),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO)$(VER_MAJ),),)
+	$(if SO_LIB_LINKS,$(if $(VER),ln -sf $(LP)$(MODULE)$(OUT) $(OBJ)$(LP)$(MODULE)$(SO),),)
 
 # SYMBOL RULES
 
