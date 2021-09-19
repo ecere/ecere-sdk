@@ -57,7 +57,7 @@
             ],
             "FastMath" : true,
             "PostbuildCommands" : [
-               "$(call cp,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin/)"
+               "$(call cp,$(TARGET),../$(SODESTDIR))"
             ]
          }
       }
