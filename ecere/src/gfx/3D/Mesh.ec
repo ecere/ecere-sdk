@@ -541,6 +541,9 @@ public:
                   normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
                   normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
                   normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
+                  weightSum[ix0] += 1.0;  // TODO: Review weightSums
+                  weightSum[ix1] += 1.0;
+                  weightSum[ix2] += 1.0;
                }
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
@@ -553,6 +556,9 @@ public:
                   normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
                   normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
                   normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
+                  weightSum[ix0] += 1.0;  // TODO: Review weightSums
+                  weightSum[ix1] += 1.0;
+                  weightSum[ix2] += 1.0;
 
                   strip ^= 1;
                }
@@ -570,6 +576,10 @@ public:
                         uint ix = i;
                         normals[ix].Add(normals[ix], planeNormal);
                         numShared[ix]++;
+                        weightSum[ix] += 1.0;   // TODO: Review weightSums
+                        weightSum[ix] += 1.0;
+                        weightSum[ix] += 1.0;
+
                      }
                   }
                   else
