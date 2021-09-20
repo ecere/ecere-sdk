@@ -330,19 +330,19 @@ struct SortPrimitive
 
    private static inline bool ZOverlap(SortPrimitive poly2)
    {
-   	if(min.z > poly2.max.z - EPSILON || poly2.min.z > max.z - EPSILON)
+      if(min.z > poly2.max.z - EPSILON || poly2.min.z > max.z - EPSILON)
          return false;
-   	return true;
+      return true;
    }
 
    /*
    bool XYOverlap(SortPrimitive poly2)
    {
-   	if(min.x > poly2.max.x - EPSILON || poly2.min.x > max.x - EPSILON )
+      if(min.x > poly2.max.x - EPSILON || poly2.min.x > max.x - EPSILON )
          return false;
-   	if(min.y > poly2.max.y - EPSILON || poly2.min.y > max.y - EPSILON )
+      if(min.y > poly2.max.y - EPSILON || poly2.min.y > max.y - EPSILON )
          return false;
-   	return true;
+      return true;
    }
 
    bool SurfaceOutside(SortPrimitive poly2)
@@ -374,10 +374,10 @@ struct SortPrimitive
 
          if(surface < EPSILON)
          {
-   			result = false;
+            result = false;
             break;
          }
-   	}
+      }
 
       if(result == true)
          return true;
@@ -411,25 +411,25 @@ struct SortPrimitive
          vertex.MultMatrix(local, matrix);
 
          surface = a * vertex.x + b * vertex.y + c * vertex.z + d;
-   		if(surface > -EPSILON)
+         if(surface > -EPSILON)
          {
             result = false;
             break;
          }
-   	}
+      }
 
       if(result == true)
          return true;
       else
-      	return result;
+         return result;
    }
 
    bool ShouldBeSwapped(SortPrimitive poly2)
    {
-   	if (!XYOverlap(poly2)) return false;
-   	if (SurfaceOutside(poly2)) return false;
-   	if (SurfaceInside(poly2)) return false;
-   	return true;
+      if (!XYOverlap(poly2)) return false;
+      if (SurfaceOutside(poly2)) return false;
+      if (SurfaceInside(poly2)) return false;
+      return true;
    }
    */
 };
@@ -836,9 +836,14 @@ public:
 
    bool DrawMesh(Object object)
    {
+      return DrawMeshEx(object, null);
+   }
+
+   bool DrawMeshEx(Object object, uint64 * id)
+   {
       bool result = false;
       if(display3D.selection)
-         result = display3D.PickMesh(object, null);
+         result = display3D.PickMeshEx(object, null, id);
       else
       {
          Mesh mesh = *&object.mesh;
@@ -974,6 +979,11 @@ public:
    }
 
    bool DrawObject(Object object)
+   {
+      return DrawObjectEx(object, null);
+   }
+
+   bool DrawObjectEx(Object object, uint64 * id)
    {
       bool result = false;
       if(object && object.volume)
@@ -1148,7 +1158,7 @@ public:
                   if(visible == intersecting || display3D.intersecting)
                   {
                      Vector3D rayIntersect;
-                     if(display3D.PickMesh(object, rayIntersect))
+                     if(display3D.PickMeshEx(object, rayIntersect, id))
                      {
                         if(display3D.intersecting)
                         {
@@ -1197,7 +1207,7 @@ public:
             }
 
             for(child = object.children.first; child; child = child.next)
-               result |= DrawObject(child);
+               result |= DrawObjectEx(child, id);
 
             if(display3D.collectingHits && /*!flags.root && */object.tag)
                display3D.tagIndex--;
@@ -1625,10 +1635,15 @@ private class Display3D : struct
 
    bool PickPrimitives(Mesh mesh, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect)
    {
+      return PickPrimitivesEx(mesh, primitive, rayDiff, rayIntersect, 0, null);
+   }
+
+   bool PickPrimitivesEx(Mesh mesh, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect,
+      int groupIx, uint64 * id)
+   {
       Plane * planes = localPickingPlanes;
       int c = 0;
       int nIndex = 1, nPoints = 1;
-      int offset = 0;
       bool result = false;
       Vector3D * points = this.points;
       Vector3D * newPoints = this.newPoints;
@@ -1639,219 +1654,267 @@ private class Display3D : struct
       bool i32bit = primitive.type.indices32bit;
       uint32 * indices32 = primitive.indices32;
       uint16 * indices16 = primitive.indices;
+      Array<MeshPart> parts = mesh.parts;
+      int pi;
+      int firstPart = 0, lastPart = 1;
 
-      switch(primitive.type.primitiveType)
+      if(!mesh.vertices) return false; // Need vertices here...
+
+      // Parts are currently in the Mesh rather than the PrimitiveGroup, assuming the group order (restarting at ix 0)
+      // However picking currently does not seem to support groups with shared indices (baseIndex)
+      if(parts && id)
       {
-         case triangles: nIndex = 3; nPoints = 3; break;
-         case quads: nIndex = 4; nPoints = 4; break;
-         case triStrip:
-         case triFan:
-            nIndex = 1; nPoints = 3;
-            offset = 2;
-            tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first] : mesh.vertices[(i32bit ? indices32[0] : indices16[0])];
-            points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-            tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first+1] : mesh.vertices[(i32bit ? indices32[1] : indices16[1])];
-            points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-            break;
+         int gix = -1;
+         for(pi = 0; pi < parts.count; pi++)
+         {
+            MeshPart * part = parts && id ? &parts[pi] : null;
+            if(part->start == 0)
+            {
+               if(++gix == groupIx)
+                  lastPart = firstPart = pi;
+               if(gix > groupIx)
+                  break;
+            }
+            else if(gix == groupIx)
+               lastPart = pi;
+         }
       }
 
-      for(c = offset; c<nVertices; c += nIndex)
+      for(pi = firstPart; pi <= lastPart; pi++)
       {
-         bool outside = false;
-         if(!pickingPlanes)
+         MeshPart * part = parts && id ? &parts[pi] : null;
+         int offset = 0;
+         int start = part ? part->start : 0;
+         int end = start + (part ? part->count : nVertices);   // TOCHECK: Fix part to be indices, rather than tris?
+         bool done = false;
+
+         switch(primitive.type.primitiveType)
          {
-            int p;
-            int n = nPoints;
-            int i;
-
-            if(primitive.type.vertexRange)
-            {
-               if(primitive.type.primitiveType == triStrip)
-               {
-                  tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 1) : (c - 2)];
-                  points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                  tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 2) : (c - 1)];
-                  points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-               else if(primitive.type.primitiveType == triFan)
-               {
-                  tmp = mesh.vertices[primitive.first + 0];
-                  points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                  tmp = mesh.vertices[primitive.first + c - 1];
-                  points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-               for(i = 0; i<nIndex; i++)
-               {
-                  tmp = mesh.vertices[primitive.first + c+i];
-                  points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-            }
-            else
-            {
-               if(primitive.type.primitiveType == triStrip)
-               {
-                  i = (c & 1) ? (c - 1) : (c - 2);
-                  tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
-                  points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-
-                  i = (c & 1) ? (c - 2) : (c - 1);
-                  tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
-                  points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-               else if(primitive.type.primitiveType == triFan)
-               {
-                  tmp = mesh.vertices[(i32bit ? indices32[0] : indices16[0])];
-                  points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                  tmp = mesh.vertices[(i32bit ? indices32[c-1] : indices16[c-1])];
-                  points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-               for(i = 0; i<nIndex; i++)
-               {
-                  tmp = mesh.vertices[(i32bit ? indices32[c+i] : indices16[c+i])];
-                  points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               }
-            }
-
-            for(p = 0; p < 6; p++)
-            {
-               Plane * plane = &planes[p];
-               int i;
-               int numGoodPoints = 0;
-
-               memset(goodPoints, 0, n);
-               for(i = 0; i < n; i++)
-               {
-                  double dot = plane->normal.DotProduct(points[i]);
-                  double distance = dot + plane->d;
-   			      if(distance > TRESHOLD)
-                  {
-                     numGoodPoints++;
-                     goodPoints[i] = 1;
-                  }
-   		      }
-               if(!numGoodPoints)
-               {
-                  outside = true;
-                  break;
-               }
-               if(numGoodPoints < n)
-               {
-                  // Clip the polygon
-                  int newN = 0;
-                  int lastGood = -1;
-                  int j;
-
-                  for(j = 0; j<n; )
-                  {
-                     if(goodPoints[j])
-                     {
-                        newPoints[newN++] = points[j];
-                        lastGood = j++;
-                     }
-                     else
-                     {
-                        Line edge;
-                        int next;
-
-                        if(lastGood == -1)
-                           for(lastGood = n-1; !goodPoints[lastGood]; lastGood--);
-
-                        edge.p0 = points[lastGood];
-                        edge.delta.Subtract(points[j], edge.p0);
-                        plane->IntersectLine(edge, newPoints[newN++]);
-
-                        for(next = j+1; next != j; next++)
-                        {
-                           if(next == n) next = 0;
-                           if(goodPoints[next])
-                           {
-                              int prev = next - 1;
-                              if(prev < 0) prev = n-1;
-
-                              edge.p0 = points[prev];
-                              edge.delta.Subtract(points[next], edge.p0);
-                              plane->IntersectLine(edge, newPoints[newN++]);
-                              break;
-                           }
-                        }
-                        if(next <= j)
-                           break;
-                        else
-                           j = next;
-                     }
-                  }
-                  // Use the new points
-                  memcpy(points, newPoints, newN * sizeof(Vector3D));
-                  n = newN;
-               }
-   	      }
+            case triangles: nIndex = 3; nPoints = 3; break;
+            case quads: nIndex = 4; nPoints = 4; break;
+            case triStrip:
+            case triFan:
+               nIndex = 1; nPoints = 3;
+               offset = 2;
+               tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first] : mesh.vertices[(i32bit ? indices32[start + 0] : indices16[start + 0])];
+               points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+               tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first+1] : mesh.vertices[(i32bit ? indices32[start + 1] : indices16[start + 1])];
+               points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+               break;
          }
-         if(!outside)
+
+         for(c = start + offset; c < end; c += nIndex)
          {
-   		   result = true;
-
-            // TODO: Implement intersection with TriStrip, TriFan...
-            if(intersecting)
+            bool outside = false;
+            if(!pickingPlanes)
             {
-               // Intersect primitives
-               Plane plane;
-               Vector3D intersect, diff;
-               int i0 = c, i1 = c+1, i2 = c+2;
-
-               if(primitive.type.primitiveType == triStrip)
-               {
-                  i0 = (c & 1) ? (c - 1) : (c - 2);
-                  i1 = (c & 1) ? (c - 2) : (c - 1);
-                  i2 = c;
-               }
-               else if(primitive.type.primitiveType == triFan)
-               {
-                  i0 = 0;
-                  i1 = c - 1;
-                  i2 = c;
-               }
+               int p;
+               int n = nPoints;
+               int i;
 
                if(primitive.type.vertexRange)
-                  plane.FromPointsf(
-                     mesh.vertices[primitive.first + i0],
-                     mesh.vertices[primitive.first + i1],
-                     mesh.vertices[primitive.first + i2]);
-               else
-                  plane.FromPointsf(
-                     mesh.vertices[(i32bit ? indices32[i0] : indices16[i0])],
-                     mesh.vertices[(i32bit ? indices32[i1] : indices16[i1])],
-                     mesh.vertices[(i32bit ? indices32[i2] : indices16[i2])]);
-
-               plane.IntersectLine(rayLocal, intersect);
-               diff.Subtract(intersect, rayLocal.p0);
-               diff.x /= rayLocal.delta.x;
-               diff.y /= rayLocal.delta.y;
-               diff.z /= rayLocal.delta.z;
-               if(diff.x < rayDiff.x || diff.y < rayDiff.y || diff.z < rayDiff.z)
                {
-                  rayDiff = diff;
-                  rayIntersect = intersect;
+                  if(primitive.type.primitiveType == triStrip)
+                  {
+                     tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 1) : (c - 2)];
+                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 2) : (c - 1)];
+                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+                  else if(primitive.type.primitiveType == triFan)
+                  {
+                     tmp = mesh.vertices[primitive.first + 0];
+                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     tmp = mesh.vertices[primitive.first + c - 1];
+                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+                  for(i = 0; i<nIndex; i++)
+                  {
+                     tmp = mesh.vertices[primitive.first + c+i];
+                     points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+               }
+               else
+               {
+                  if(primitive.type.primitiveType == triStrip)
+                  {
+                     i = (c & 1) ? (c - 1) : (c - 2);
+                     tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
+                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+
+                     i = (c & 1) ? (c - 2) : (c - 1);
+                     tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
+                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+                  else if(primitive.type.primitiveType == triFan)
+                  {
+                     tmp = mesh.vertices[(i32bit ? indices32[start] : indices16[start])];
+                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     tmp = mesh.vertices[(i32bit ? indices32[c-1] : indices16[c-1])];
+                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+                  for(i = 0; i<nIndex; i++)
+                  {
+                     tmp = mesh.vertices[(i32bit ? indices32[c+i] : indices16[c+i])];
+                     points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                  }
+               }
+
+               for(p = 0; p < 6; p++)
+               {
+                  Plane * plane = &planes[p];
+                  int i;
+                  int numGoodPoints = 0;
+
+                  memset(goodPoints, 0, n);
+                  for(i = 0; i < n; i++)
+                  {
+                     double dot = plane->normal.DotProduct(points[i]);
+                     double distance = dot + plane->d;
+                     if(distance > TRESHOLD)
+                     {
+                        numGoodPoints++;
+                        goodPoints[i] = 1;
+                     }
+                  }
+                  if(!numGoodPoints)
+                  {
+                     outside = true;
+                     break;
+                  }
+                  if(numGoodPoints < n)
+                  {
+                     // Clip the polygon
+                     int newN = 0;
+                     int lastGood = -1;
+                     int j;
+
+                     for(j = 0; j<n; )
+                     {
+                        if(goodPoints[j])
+                        {
+                           newPoints[newN++] = points[j];
+                           lastGood = j++;
+                        }
+                        else
+                        {
+                           Line edge;
+                           int next;
+
+                           if(lastGood == -1)
+                              for(lastGood = n-1; !goodPoints[lastGood]; lastGood--);
+
+                           edge.p0 = points[lastGood];
+                           edge.delta.Subtract(points[j], edge.p0);
+                           plane->IntersectLine(edge, newPoints[newN++]);
+
+                           for(next = j+1; next != j; next++)
+                           {
+                              if(next == n) next = 0;
+                              if(goodPoints[next])
+                              {
+                                 int prev = next - 1;
+                                 if(prev < 0) prev = n-1;
+
+                                 edge.p0 = points[prev];
+                                 edge.delta.Subtract(points[next], edge.p0);
+                                 plane->IntersectLine(edge, newPoints[newN++]);
+                                 break;
+                              }
+                           }
+                           if(next <= j)
+                              break;
+                           else
+                              j = next;
+                        }
+                     }
+                     // Use the new points for the next planes...
+                     memcpy(points, newPoints, newN * sizeof(Vector3D));
+                     n = newN;
+                  }
                }
             }
-            else
-               break;
-         }
+            if(!outside)
+            {
+               result = true;
 
-         switch(primitive.type)
-         {
-            case triStrip:
-               points[strip] = points[2];
-               strip ^= 1;
-               break;
-            case triFan:
-               points[1] = points[2];
-               break;
+               // TODO: Implement intersection with TriStrip, TriFan...
+               if(intersecting)
+               {
+                  // Intersect primitives
+                  Plane plane;
+                  Vector3D intersect, diff;
+                  int i0 = c, i1 = c+1, i2 = c+2;
+
+                  if(primitive.type.primitiveType == triStrip)
+                  {
+                     i0 = (c & 1) ? (c - 1) : (c - 2);
+                     i1 = (c & 1) ? (c - 2) : (c - 1);
+                     i2 = c;
+                  }
+                  else if(primitive.type.primitiveType == triFan)
+                  {
+                     i0 = start;
+                     i1 = c - 1;
+                     i2 = c;
+                  }
+
+                  if(primitive.type.vertexRange)
+                     plane.FromPointsf(
+                        mesh.vertices[primitive.first + i0],
+                        mesh.vertices[primitive.first + i1],
+                        mesh.vertices[primitive.first + i2]);
+                  else
+                     plane.FromPointsf(
+                        mesh.vertices[(i32bit ? indices32[i0] : indices16[i0])],
+                        mesh.vertices[(i32bit ? indices32[i1] : indices16[i1])],
+                        mesh.vertices[(i32bit ? indices32[i2] : indices16[i2])]);
+
+                  plane.IntersectLine(rayLocal, intersect);
+                  diff.Subtract(intersect, rayLocal.p0);
+                  diff.x /= rayLocal.delta.x;
+                  diff.y /= rayLocal.delta.y;
+                  diff.z /= rayLocal.delta.z;
+                  if(diff.x < rayDiff.x || diff.y < rayDiff.y || diff.z < rayDiff.z)
+                  {
+                     if(part && id)
+                        *id = part->id;
+
+                     rayDiff = diff;
+                     rayIntersect = intersect;
+                  }
+               }
+               else
+               {
+                  done = true;
+                  break;
+               }
+            }
+
+            switch(primitive.type)
+            {
+               case triStrip:
+                  points[strip] = points[2];
+                  strip ^= 1;
+                  break;
+               case triFan:
+                  points[1] = points[2];
+                  break;
+            }
          }
+         if(done)
+            break;
       }
       return result;
    }
 
+
    bool PickMesh(Object object, Vector3D rayIntersect)
+   {
+      return PickMeshEx(object, rayIntersect, null);
+   }
+
+   bool PickMeshEx(Object object, Vector3D rayIntersect, uint64 * id)
    {
       Mesh mesh = object.mesh;
       bool result = false;
@@ -1862,15 +1925,17 @@ private class Display3D : struct
       if(mesh.groups.first)
       {
          PrimitiveGroup group;
+         int groupIX = 0;
 
          for(group = mesh.groups.first; group; group = group.next)
          {
-            if(PickPrimitives(mesh, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect))
+            if(PickPrimitivesEx(mesh, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect, groupIX, id))
             {
                result = true;
                if(!intersecting)
                   break;
             }
+            groupIX++;
          }
       }
       else
@@ -1899,7 +1964,7 @@ private class Display3D : struct
          SortPrimitive * sort = &triangles[c];
          Mesh mesh = sort->object.mesh;
          PrimitiveSingle * primitive = sort->triangle;
-   		Vector3Df min { MAXFLOAT, MAXFLOAT, MAXFLOAT };
+         Vector3Df min { MAXFLOAT, MAXFLOAT, MAXFLOAT };
          Vector3Df max { -MAXFLOAT, -MAXFLOAT, -MAXFLOAT };
          int v;
          bool ix32 = primitive->type.indices32bit;
@@ -1926,19 +1991,19 @@ private class Display3D : struct
 
             vertex.MultMatrix(local, &matrix);
 
-   			if(vertex.x > max.x) max.x = vertex.x;
+            if(vertex.x > max.x) max.x = vertex.x;
             if(vertex.y > max.y) max.y = vertex.y;
             if(vertex.z > max.z) max.z = vertex.z;
-   			if(vertex.x < min.x) min.x = vertex.x;
+            if(vertex.x < min.x) min.x = vertex.x;
             if(vertex.y < min.y) min.y = vertex.y;
             if(vertex.z < min.z) min.z = vertex.z;
-   		}
+         }
 
          sort->min = min;
          sort->max = max;
 
          sort->marked = false;
-   	}
+      }
 
    /*
       Logf("========= Before Sort ==========\n");
@@ -1964,7 +2029,7 @@ private class Display3D : struct
             // Logf("   Local %f, %f, %f:\n", local->x, local->y, local->z);
             Logf("   View  %f, %f, %f:\n", vertex.x, vertex.y, vertex.z);
 
-   		}
+         }
 
          Logf("Min %f, %f, %f:\n", sort->min.x, sort->min.y, sort->min.z);
          Logf("Max %f, %f, %f:\n", sort->max.x, sort->max.y, sort->max.z);
@@ -1997,7 +2062,7 @@ private class Display3D : struct
             // Logf("   Local %f, %f, %f:\n", local->x, local->y, local->z);
             Logf("   View  %f, %f, %f:\n", vertex.x, vertex.y, vertex.z);
 
-   		}
+         }
 
          Logf("Min %f, %f, %f:\n", sort->min.x, sort->min.y, sort->min.z);
          Logf("Max %f, %f, %f:\n", sort->max.x, sort->max.y, sort->max.z);
@@ -2139,7 +2204,7 @@ private class Display3D : struct
                   *poly2 = temp;
                }
             }
-   	   }
+         }
       }
       */
 

@@ -61,15 +61,14 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
          case triFan:
             nIndex = 1; nPoints = 3;
             offset = 2;
-            start = 2;
-            tmp = primType.vertexRange ? mesh.vertices[primitive.first] : mesh.vertices[(i32bit ? indices32[0] : indices16[0])];
+            tmp = primType.vertexRange ? mesh.vertices[primitive.first] : mesh.vertices[(i32bit ? indices32[start + 0] : indices16[start + 0])];
             points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-            tmp = primType.vertexRange ? mesh.vertices[primitive.first+1] : mesh.vertices[(i32bit ? indices32[1] : indices16[1])];
+            tmp = primType.vertexRange ? mesh.vertices[primitive.first+1] : mesh.vertices[(i32bit ? indices32[start + 1] : indices16[start + 1])];
             points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
             break;
       }
 
-      for(c = start; c < end; c += nIndex)
+      for(c = start + offset; c < end; c += nIndex)
       {
          bool outside = false;
 
@@ -113,7 +112,7 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
                }
                else if(primType.primitiveType == triFan)
                {
-                  tmp = mesh.vertices[(i32bit ? indices32[0] : indices16[0])];
+                  tmp = mesh.vertices[(i32bit ? indices32[start] : indices16[start])];
                   points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
                   tmp = mesh.vertices[(i32bit ? indices32[c-1] : indices16[c-1])];
                   points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
@@ -245,7 +244,7 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
                }
                else if(primType == triFan)
                {
-                  i0 = 0;
+                  i0 = start;
                   i1 = c - 1;
                   i2 = c;
                }
