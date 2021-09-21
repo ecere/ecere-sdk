@@ -281,6 +281,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
 
                   GetExtension(name, ext);
 
+                  // Only used for OGCAPIStore
                   if(ctx.texturesQuery && ctx.curTextureID)
                   {
                      int id = ctx.curTextureID;
@@ -326,54 +327,39 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   }
                   else // what of this section?
                   {
+                     // this becomes the call to getTextureCallback
+                     int attempt;
                      bool isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
+                     String nameNoExt = CopyString(name);
                      strcpy(path, ctx.path);
                      PathCat(path, name);
                      StripExtension(path);
+                     StripExtension(nameNoExt);
+
 
                      if(!isHTTP && ctx.saveCompressedMutex)
                         ctx.saveCompressedMutex.Wait();
 
-                     if(ctx.resolution)
+                     for(attempt = 1; !f && attempt >= 0; --attempt)
                      {
-                        strcat(path, "-256");
-                        if(ctx.compressedTextures)
+                        format = attempt ? "etc2" : ext;
+                        if(ctx.getTextureCallback != null)
                         {
+                           // resolution should be addressed inside each getTextureCallback implementation: GeoPackage could need separated x and y values.
+                           PrintLn("calling back");
+                           f = ctx.getTextureCallback(ctx.getTextureContext, nameNoExt, ctx.resolution, ctx.resolution, format);
+                        }
+                        else
+                        {
+                           // this is a fallback in case no callback is given, however this should never actually happen.
                            ChangeExtension(path, "etc2", path);
                            f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                           if(f)
-                              format = "etc2";
-                        }
-                        if(!f)
-                        {
-                           ChangeExtension(path, ext, path);
-                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                           if(f)
-                              format = ext;
                         }
                      }
 
-                     if(!f)
-                     {
-                        strcpy(path, ctx.path);
-                        PathCat(path, name);
-                        if(ctx.compressedTextures)
-                        {
-                           ChangeExtension(path, "etc2", path);
-                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                           if(f)
-                              format = "etc2";
-                        }
-                        if(!f)
-                        {
-                           ChangeExtension(path, ext, path);
-                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                           if(f)
-                              format = ext;
-                        }
-                     }
                      if(isHTTP && ctx.saveCompressedMutex)
                         ctx.saveCompressedMutex.Wait();
+                     delete nameNoExt;
                   }
                   if(f)
                   {
@@ -851,6 +837,8 @@ struct E3DOptions
    bool skipTexturesProcessing;
 
    Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
+   void *getTextureContext;
+   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
 
    void * lookupTextureContext;
    uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
@@ -1076,6 +1064,8 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.compressedTextures = options.compressedTextures;
       ctx.skipTexturesProcessing = options.skipTexturesProcessing;
       ctx.saveCompressedMutex = options.saveCompressedMutex;
+      ctx.getTextureContext = options.getTextureContext;
+      ctx.getTextureCallback = options.getTextureCallback;
    }
    else
       ctx.texturesByID = { }, freeTexturesByID = true;
