@@ -123,6 +123,7 @@ class E3DContext : struct
    Map<uint, Mesh> meshesByID { };
    Map<uint, bool> meshOwned { };
 
+   void (*saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
 }
 
 static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data)
@@ -346,7 +347,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         if(ctx.getTextureCallback != null)
                         {
                            // resolution should be addressed inside each getTextureCallback implementation: GeoPackage could need separated x and y values.
-                           PrintLn("calling back");
                            f = ctx.getTextureCallback(ctx.getTextureContext, nameNoExt, ctx.resolution, ctx.resolution, format);
                         }
                         else
@@ -375,10 +375,11 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
 
                            if(ctx.compressedTextures)
                            {
-                              ChangeExtension(path, "etc2", path);
                               if(ctx.saveCompressedMutex)
                                  ctx.saveCompressedMutex.Wait();
-                              bitmap.Save(path, null, null);
+                              if(ctx.saveCompressedCallback)
+                                 ctx.saveCompressedCallback(ctx.getTextureContext,
+                                    name, ctx.resolution, ctx.resolution, bitmap);
                               if(ctx.saveCompressedMutex)
                                  ctx.saveCompressedMutex.Release();
                            }
@@ -842,6 +843,8 @@ struct E3DOptions
 
    void * lookupTextureContext;
    uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
+
+   void (* saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
 };
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
@@ -1066,6 +1069,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.saveCompressedMutex = options.saveCompressedMutex;
       ctx.getTextureContext = options.getTextureContext;
       ctx.getTextureCallback = options.getTextureCallback;
+      ctx.saveCompressedCallback = options.saveCompressedCallback;
    }
    else
       ctx.texturesByID = { }, freeTexturesByID = true;
