@@ -279,118 +279,78 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   char path[MAX_LOCATION];
                   File f = null;
                   const String format = null;
-
+                  String nameNoExt = CopyString(name);
+                  StripExtension(nameNoExt);
                   GetExtension(name, ext);
 
-                  // Only used for OGCAPIStore
-                  if(ctx.texturesQuery && ctx.curTextureID)
+                  // this becomes the call to getTextureCallback
+                  int attempt;
+                  bool isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
+                  strcpy(path, ctx.path);
+                  PathCat(path, name);
+                  StripExtension(path);
+
+                  // if isHTTP we do not want to wait for the download
+                  if(!isHTTP && ctx.saveCompressedMutex)
                   {
-                     int id = ctx.curTextureID;
-                     const String authKey = strstr(ctx.texturesQuery, "?authKey=");
-                     int l = authKey ? (int)(authKey - ctx.texturesQuery) : strlen(ctx.texturesQuery);
-                     bool rest = strstr(ctx.texturesQuery, "/textures") ? true : false;
+#ifdef _DEBUG
+                     PrintLn(" DEBUG INFO: ctx.path was a url in File ", __FILE__," at Line ", __LINE__);
+#endif
+                     ctx.saveCompressedMutex.Wait();
+                  }
 
-                     if(ctx.compressedTextures) strcpy(ext, "etc2");
-
-                     if(ctx.resolution > 0)
+                  for(attempt = !strcmpi(ext,"etc2") ?0 : 1; !f && attempt >= 0; --attempt)
+                  {
+                     format = attempt ? "etc2" : ext;
+                     if(ctx.getTextureCallback != null)
                      {
-                        if(rest)
-                        {
-                           memcpy(path, ctx.texturesQuery, l);
-                           path[l] = 0;
-                           sprintf(path + l, "%d.%s?resolution=%d", id, ext, ctx.resolution);
-                           if(authKey)
-                              strcatf(path, "&%s", authKey + 1);
-                        }
-                        else
-                           sprintf(path, "%s%d&outputFormat=%s&resolution=%d",
-                              ctx.texturesQuery, id, ext, ctx.resolution); // TODO: jpg option...
+                        // resolution should be addressed inside each getTextureCallback implementation: GeoPackage could need separated x and y values.
+                        f = ctx.getTextureCallback(ctx.getTextureContext, nameNoExt, ctx.resolution, ctx.resolution, format);
                      }
                      else
                      {
-                        if(rest)
-                        {
-                           memcpy(path, ctx.texturesQuery, l);
-                           path[l] = 0;
-                           sprintf(path + l, "%d.%s", id, ext);
-                           if(authKey)
-                              strcat(path, authKey);
-                        }
-                        else
-                           sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
+                        // this is a fallback in case no callback is given, however this should never actually happen.
+                        ChangeExtension(path, "etc2", path);
+                        f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                      }
+                  }
 
+                  // if isHTTP we want to wait after the download
+                  if(isHTTP && ctx.saveCompressedMutex)
+                     ctx.saveCompressedMutex.Wait();
+
+                  delete nameNoExt;
+
+                  if(!f || !bitmap.LoadFromFile(f, format, null))
+                  {
                      if(ctx.saveCompressedMutex)
-                        ctx.saveCompressedMutex.Wait();
-                     f = FileOpen(path, read);
-                     if(f)
-                        format = ext;
-                  }
-                  else // what of this section?
-                  {
-                     // this becomes the call to getTextureCallback
-                     int attempt;
-                     bool isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
-                     String nameNoExt = CopyString(name);
-                     strcpy(path, ctx.path);
-                     PathCat(path, name);
-                     StripExtension(path);
-                     StripExtension(nameNoExt);
-
-
-                     if(!isHTTP && ctx.saveCompressedMutex)
-                        ctx.saveCompressedMutex.Wait();
-
-                     for(attempt = 1; !f && attempt >= 0; --attempt)
-                     {
-                        format = attempt ? "etc2" : ext;
-                        if(ctx.getTextureCallback != null)
-                        {
-                           // resolution should be addressed inside each getTextureCallback implementation: GeoPackage could need separated x and y values.
-                           f = ctx.getTextureCallback(ctx.getTextureContext, nameNoExt, ctx.resolution, ctx.resolution, format);
-                        }
-                        else
-                        {
-                           // this is a fallback in case no callback is given, however this should never actually happen.
-                           ChangeExtension(path, "etc2", path);
-                           f = isHTTP ? downloadFile(path) : FileOpen(path, read);
-                        }
-                     }
-
-                     if(isHTTP && ctx.saveCompressedMutex)
-                        ctx.saveCompressedMutex.Wait();
-                     delete nameNoExt;
-                  }
-                  if(f)
-                  {
-                     if(bitmap.LoadFromFile(f, format, null))
-                     {
-                        if(ctx.saveCompressedMutex)
-                           ctx.saveCompressedMutex.Release();
-                        if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
-                        {
-                           Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
-                           bitmap.Copy2(bmp, true);
-                           delete bmp;
-
-                           if(ctx.compressedTextures)
-                           {
-                              if(ctx.saveCompressedMutex)
-                                 ctx.saveCompressedMutex.Wait();
-                              if(ctx.saveCompressedCallback)
-                                 ctx.saveCompressedCallback(ctx.getTextureContext,
-                                    name, ctx.resolution, ctx.resolution, bitmap);
-                              if(ctx.saveCompressedMutex)
-                                 ctx.saveCompressedMutex.Release();
-                           }
-                        }
-                        bitmap.MakeMipMaps(displaySystem);
-                     }
-                     else if(ctx.saveCompressedMutex)
                         ctx.saveCompressedMutex.Release();
                   }
-                  else if(ctx.saveCompressedMutex)
-                     ctx.saveCompressedMutex.Release();
+                  else
+                  {
+                     if(ctx.saveCompressedMutex)
+                        ctx.saveCompressedMutex.Release();
+                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
+                     {
+                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
+                        bitmap.Copy2(bmp, true);
+                        delete bmp;
+
+                        if(ctx.compressedTextures)
+                        {
+                           if(ctx.saveCompressedMutex)
+                              ctx.saveCompressedMutex.Wait();
+                           if(ctx.saveCompressedCallback)
+                              ctx.saveCompressedCallback(ctx.getTextureContext,
+                                    name, ctx.resolution, ctx.resolution, bitmap);
+                           if(ctx.saveCompressedMutex)
+                              ctx.saveCompressedMutex.Release();
+                        }
+                     }
+                     bitmap.MakeMipMaps(displaySystem);
+                  }
+
+
                   delete f;
                }
                delete name;
