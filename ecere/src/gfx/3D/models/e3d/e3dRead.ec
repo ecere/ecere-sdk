@@ -299,8 +299,13 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      ctx.saveCompressedMutex.Wait();
                   }
 
-                  for(attempt = !strcmpi(ext,"etc2") ?0 : 1; !f && attempt >= 0; --attempt)
+                  for(attempt = ( !strcmpi(ext,"etc2") || ctx.compressedTextures ) ? 0 : 1; !f && attempt >= 0; --attempt)
                   {
+                     // This will first try to get compressed textures, then
+                     // fallback to the extension found in the model file
+                     // (variable exe), however, if exe is already "etc2" or we
+                     // do not want texture compression (ctx.compressedTextures == false),
+                     // we can skip the first attempt
                      format = attempt ? "etc2" : ext;
                      if(ctx.getTextureCallback != null)
                      {
