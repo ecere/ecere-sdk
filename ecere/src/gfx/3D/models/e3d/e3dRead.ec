@@ -909,45 +909,10 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
 
                   GetExtension(name, ext);
 
+                  /// OGCAPISTORE
                   if(ctx.texturesQuery && ctx.curTextureID)
                   {
-                     int id = ctx.curTextureID;
-                     const String authKey = strstr(ctx.texturesQuery, "?authKey=");
-                     int l = authKey ? (int)(authKey - ctx.texturesQuery) : strlen(ctx.texturesQuery);
-                     bool rest = strstr(ctx.texturesQuery, "/textures") ? true : false;
-
-                     if(ctx.compressedTextures) strcpy(ext, "etc2");
-
-                     if(ctx.resolution > 0)
-                     {
-                        if(rest)
-                        {
-                           memcpy(path, ctx.texturesQuery, l);
-                           path[l] = 0;
-                           sprintf(path + l, "%d.%s?resolution=%d", id, ext, ctx.resolution);
-                           if(authKey)
-                              strcatf(path, "&%s", authKey + 1);
-                        }
-                        else
-                           sprintf(path, "%s%d&outputFormat=%s&resolution=%d",
-                              ctx.texturesQuery, id, ext, ctx.resolution); // TODO: jpg option...
-                     }
-                     else
-                     {
-                        if(rest)
-                        {
-                           memcpy(path, ctx.texturesQuery, l);
-                           path[l] = 0;
-                           sprintf(path + l, "%d.%s", id, ext);
-                           if(authKey)
-                              strcat(path, authKey);
-                        }
-                        else
-                           sprintf(path, "%s%d&outputFormat=%s", ctx.texturesQuery, id, ext);
-                     }
-
-                     //if(!textureList) textureList = { };
-                     textureList.Add(CopyString(path));
+                     textureList.Add(CopyString(name));
                   }
                }
                delete name;
