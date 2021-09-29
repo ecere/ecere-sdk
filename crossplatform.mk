@@ -199,7 +199,8 @@ ifdef CROSS_BITDEPTH
   ifeq ($(TARGET_ARCH),i386)
    ifeq ($(NO_B32_SFX),)
     B32_SFX := 32
-   endif
+	 LIB32_SFX := 32
+	endif
   endif
  endif
 endif
