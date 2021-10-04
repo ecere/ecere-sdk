@@ -3806,10 +3806,7 @@ private:
          // note: target type is possible to change based on platform or other so this logic would need to be in the makefile
          if(targetType == executable || !opt.noOptionalStaticLibrarySupport)
          {
-            if(!opt.noAddToListFile)
-               f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", containsCXX ? "CXX" : "CC"); // issue with CC -> LD
-            else                                                                                  // note soname expects cc passes -Wl,ddd
-               f.Printf("\t$(%s) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", containsCXX ? "CXX" : "CC"); // issue with CC -> LD
+            f.Printf("\t$(LD) $(OFLAGS) %s $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n", !opt.noAddToListFile ? "@$(OBJ)objects.lst" : "$(OBJECTS)");
             if(!GetDebug(config))
             {
                f.Puts("ifndef NOSTRIP\n");
