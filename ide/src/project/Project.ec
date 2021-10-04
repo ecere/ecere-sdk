@@ -3646,7 +3646,7 @@ private:
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
 
-         f.Puts("\t$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n");
+         f.Puts("\t$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)\n");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
