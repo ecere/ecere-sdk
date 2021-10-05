@@ -15,23 +15,8 @@ TARGET_TYPE = sharedlib
 
 ECFLAGS =
 ifndef DEBIAN_PACKAGE
-
-_CPPFLAGS := $(CPPFLAGS)
-override CPPFLAGS = $(_CPPFLAGS)
-
-_CFLAGS := $(CFLAGS)
-override CFLAGS = $(_CFLAGS)
-
-_CXXFLAGS := $(CXXFLAGS)
-override CXXFLAGS = $(_CXXFLAGS)
-
-_LDFLAGS := $(LDFLAGS)
-override LDFLAGS = $(_LDFLAGS)
-
-
-_OWFLAGS := $(OWFLAGS)
-override OWFLAGS = $(_OWFLAGS)
-
+CFLAGS =
+LDFLAGS =
 endif
 PRJ_CFLAGS =
 CECFLAGS =
