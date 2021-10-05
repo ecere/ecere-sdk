@@ -177,7 +177,7 @@ public:
    {
       set
       {
-         if(this)
+         if(this && (!colorSet || color != value))
          {
             color = value;
             colorSet = true;
@@ -190,7 +190,7 @@ public:
    {
       set
       {
-         if(this)
+         if(this && (!colorSet || backColor != value))
          {
             backColor = value;
             colorSet = true;
@@ -203,7 +203,8 @@ public:
    {
       set
       {
-         if(this) this.bold = value;
+         if(this && bold != value)
+            bold = value;
       }
    }
 
