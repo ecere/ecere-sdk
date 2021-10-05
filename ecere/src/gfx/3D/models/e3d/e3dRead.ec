@@ -291,7 +291,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   StripExtension(path);
 
                   // if isHTTP we do not want to wait for the download
-                  if(!isHTTP && ctx.saveCompressedMutex)
+                  if(isHTTP && ctx.saveCompressedMutex)
                   {
 #ifdef _DEBUG
                      PrintLn(" DEBUG INFO: ctx.path was a url in File ", __FILE__," at Line ", __LINE__);
@@ -299,7 +299,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      ctx.saveCompressedMutex.Wait();
                   }
 
-                  for(attempt = ( !strcmpi(ext,"etc2") || ctx.compressedTextures ) ? 0 : 1; !f && attempt >= 0; --attempt)
+                  for(attempt = ( !strcmpi(ext,"etc2") || !ctx.compressedTextures ) ? 0 : 1; !f && attempt >= 0; --attempt)
                   {
                      // This will first try to get compressed textures, then
                      // fallback to the extension found in the model file
@@ -315,7 +315,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      else
                      {
                         // this is a fallback in case no callback is given, however this should never actually happen.
-                        ChangeExtension(path, "etc2", path);
+                        ChangeExtension(path, format, path);
                         f = isHTTP ? downloadFile(path) : FileOpen(path, read);
                      }
                   }
@@ -893,28 +893,10 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
             case textureName:
             {
                char * name = readString(f);
-               /*Bitmap bitmap;
 
-               if(containerType == texture)
-                  bitmap = data;
-               else
-               {
-                  *(Bitmap *)data = bitmap = { };
-               }
-               if(bitmap)*/
-               {
-                  char ext[MAX_EXTENSION];
-                  char path[MAX_LOCATION];
-                  //const String format = null;
+               if(ctx.curTextureID)
+                  textureList.Add(CopyString(name));
 
-                  GetExtension(name, ext);
-
-                  /// OGCAPISTORE
-                  if(ctx.texturesQuery && ctx.curTextureID)
-                  {
-                     textureList.Add(CopyString(name));
-                  }
-               }
                delete name;
                break;
             }
