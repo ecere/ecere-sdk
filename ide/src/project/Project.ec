@@ -3109,16 +3109,9 @@ private:
          if(numCObjects)
             f.Puts("ECFLAGS =\n");
 
-         f.Puts("ifndef DEBIAN_PACKAGE\n");
-         {
-            const char * s = null;
-            s = "CPPFLAGS";   f.Printf("_%s := $(%s)\n" "override %s = $(_%s)\n", s, s, s, s);
-            s = "CFLAGS";     f.Printf("_%s := $(%s)\n" "override %s = $(_%s)\n", s, s, s, s);
-            s = "CXXFLAGS";   f.Printf("_%s := $(%s)\n" "override %s = $(_%s)\n", s, s, s, s);
-            s = "LDFLAGS";    f.Printf("_%s := $(%s)\n" "override %s = $(_%s)\n", s, s, s, s);
-            s = "OWFLAGS";    f.Printf("_%s := $(%s)\n" "override %s = $(_%s)\n", s, s, s, s);
-         }
-         f.Puts("endif\n");
+         f.Puts("ECFLAGS =\n");
+         f.Puts("ifndef DEBIAN_PACKAGE\n" "CFLAGS =\n" "LDFLAGS =\n" "endif\n");
+
          f.Puts("PRJ_CFLAGS =\n");
          f.Puts("CECFLAGS =\n");
          f.Puts("OFLAGS =\n");
