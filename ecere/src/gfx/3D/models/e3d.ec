@@ -22,9 +22,23 @@ public class E3DFormat : ObjectFormat
       File f = FileOpen(fileName, write);
       if(f)
       {
-         E3DWriteContext ctx { }; //, texturesByID = options.texturesByID };
+         E3DWriteContext ctx { texturesByID = ((E3DOptions *)options)->texturesByID };
 
          StripLastDirectory(fileName, ctx.path);
+         if(ctx.texturesByID && ctx.texturesByID.count)
+         {
+            // here we pre-fill textures containers to use the previously found IDs
+            MapIterator<uint, Bitmap> it { map=ctx.texturesByID };
+            ctx.textures.size = ctx.texturesByID.count;
+            ctx.texUsePNG.size = ctx.texturesByID.count;
+            while(it.Next())
+            {
+               uint idn = it.key;
+               Bitmap btp = it.value;
+               ctx.texturesToID[(uintptr)btp] = idn;
+               ctx.textures[idn-1] = btp;
+            }
+         }
 
          writeE3D(f, object, ctx);
 
