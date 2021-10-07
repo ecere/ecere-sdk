@@ -33,6 +33,9 @@ class E3DWriteContext : struct
    int firstTexture;
    AVLTree<int> texUsed { };
 
+   // To keep IDs consistent between models.
+   Map<uint, Bitmap> texturesByID;
+
    ~E3DWriteContext()
    {
       materials.RemoveAll();
@@ -377,6 +380,13 @@ static void prepareTexture(E3DWriteContext ctx, Bitmap tex, bool usePNG)
          ctx.textures[ctx.textures.count-1] = tex;
          ctx.texturesToID[(uintptr)tex] = texID;
       }
+      else
+         // If the textures and texturesToID containers have
+         // been prefilled, texUsePNG was not, so we do this here,
+         // even thou, in case they were not prefilled, we end up setting
+         // values multiple times. TODO: find a better way.
+         ctx.texUsePNG[texID-1] = usePNG;
+
       ctx.texUsed.Add(texID);
    }
 }
