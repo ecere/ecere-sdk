@@ -253,6 +253,10 @@ extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, cha
 
 extern void Compiler_Warning(const char *  format, ...);
 
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(const char *  buffer, const char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+
+extern int strncmp(const char * , const char * , size_t n);
+
 extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 
 extern long long strtoll(const char *  nptr, char * *  endptr, int base);
@@ -270,10 +274,6 @@ extern uint64 __ecereNameSpace__ecere__com___strtoui64(const char *  string, con
 extern double strtod(const char * , char * * );
 
 extern int strcasecmp(const char * , const char * );
-
-extern int strncmp(const char * , const char * , size_t n);
-
-extern char *  __ecereNameSpace__ecere__sys__RSearchString(const char *  buffer, const char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
 
 extern char *  QMkString(const char *  source);
 
@@ -10513,8 +10513,16 @@ return 1;
 }
 else if(dest->__anon1._class && dest->__anon1._class->__anon1.registered && source->__anon1._class && source->__anon1._class->__anon1.registered && dest->__anon1._class->__anon1.registered->templateClass && source->__anon1._class->__anon1.registered->templateClass)
 {
-if(__ecereNameSpace__ecere__com__eClass_IsDerived(dest->__anon1._class->__anon1.registered->templateClass, source->__anon1._class->__anon1.registered->templateClass))
+if(!strcmp(dest->__anon1._class->__anon1.registered->templateClass->name, "Map") && __ecereNameSpace__ecere__com__eClass_IsDerived(dest->__anon1._class->__anon1.registered->templateClass, source->__anon1._class->__anon1.registered->templateClass))
+{
+const char * sourceName = source->__anon1._class->__anon1.registered->name;
+const char * destName = dest->__anon1._class->__anon1.registered->name;
+char * sb = __ecereNameSpace__ecere__sys__RSearchString(sourceName, ">", strlen(sourceName), 0, 0);
+char * db = __ecereNameSpace__ecere__sys__RSearchString(destName, ">", strlen(destName), 0, 0);
+
+if(sb && strncmp(destName, sb, (int)(sb - sourceName)))
 return 1;
+}
 }
 }
 }
