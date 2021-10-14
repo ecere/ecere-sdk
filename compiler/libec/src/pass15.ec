@@ -3015,8 +3015,16 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                // testing this work around warnings
                // source: Map<eda::Table, eda::Lookup>
                //   dest: Map<eda::Table, eda::Lookup, BT = ecere::com::MapNode<KT, V, T = KT>, eda::Table, T = ecere::com::MapNode<KT, V, T = KT>, eda::Table, eda::Lookup>
-               if(eClass_IsDerived(dest._class.registered.templateClass, source._class.registered.templateClass))
-                  return true;
+               if(!strcmp(dest._class.registered.templateClass.name, "Map") &&
+                  eClass_IsDerived(dest._class.registered.templateClass, source._class.registered.templateClass))
+               {
+                  const String sourceName = source._class.registered.name;
+                  const String destName = dest._class.registered.name;
+                  char * sb = RSearchString(sourceName, ">", strlen(sourceName), false, false);
+
+                  if(sb && strncmp(destName, sb, (int)(sb - sourceName)))
+                     return true;
+               }
             }
          }
       }
