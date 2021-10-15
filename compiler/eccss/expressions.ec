@@ -9,7 +9,7 @@ public import "eccss"
 default:
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnGetString;
-static __attribute__((unused)) void dummy() { int a; a.OnGetDataFromString(null); a.OnGetString(0,0,0); }
+static __attribute__((unused)) void dummy() { int a = 0; a.OnGetDataFromString(null); a.OnGetString(0,0,0); }
 private:
 
 #define BINARY(o, name, m, t)                                        \

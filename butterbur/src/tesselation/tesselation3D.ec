@@ -27,7 +27,7 @@ static double ccw(Vector3Df a, Vector3Df b, Vector3Df c)
    return (((double)b.x - (double)a.x) * ((double)c.y - (double)a.y) - ((double)c.x - (double)a.x) * ((double)b.y - (double)a.y));
 }
 
-static bool selfIntersects(Array<Vector3Df> points)
+__attribute__((unused)) static bool selfIntersects(Array<Vector3Df> points)
 {
    int i, j;
    for(i = 0; i < points.count; i++)
