@@ -280,12 +280,14 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   File f = null;
                   const String format = null;
                   String nameNoExt = CopyString(name);
+                  int attempt;
+                  bool isHTTP;
+
                   StripExtension(nameNoExt);
                   GetExtension(name, ext);
 
                   // this becomes the call to getTextureCallback
-                  int attempt;
-                  bool isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
+                  isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
                   strcpy(path, ctx.path);
                   PathCat(path, name);
                   StripExtension(path);
