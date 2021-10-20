@@ -27,8 +27,10 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
    int strip = 1;
    Vector3Df tmp;
    bool i32bit = primitive != null ? primType.indices32bit : true;
-   uint32 * indices32 = primitive != null ? primitive.indices32 : mesh.indices;
-   uint16 * indices16 = primitive != null ? primitive.indices : null;
+   uint32 * indices32 = !i32bit ? null :
+      primitive && primitive.indices32 != null ? primitive.indices32 : mesh.indices ?
+      mesh.indices + (primitive != null ? primitive.baseIndex : 0) : null;
+   uint16 * indices16 = !i32bit && primitive && primitive.indices != null ? primitive.indices : null;
    bool usePickingPlanes = false; // TODO: Review this... was only set to true in 'orbitWithMouse' sample?
    bool intersecting = true;
    Vector3D points[50];

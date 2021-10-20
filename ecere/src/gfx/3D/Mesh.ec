@@ -210,6 +210,7 @@ public:
    property MeshFeatures flags { get { return flags; } set { flags = value; } };
 
    // For intra-model attribution; in groups order, assuming triangles
+   // REVIEW: Should parts be in PrimitiveGroup instead? Picking and 'baseIndex' not currently supported?
    property Array<MeshPart> parts { get { return parts; } set { parts = value; } };
 
    void Free(MeshFeatures what)

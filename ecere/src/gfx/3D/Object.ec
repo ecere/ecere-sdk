@@ -1244,6 +1244,7 @@ public:
                // Merge with all similar groups
                if(foundGroup)
                {
+                  // FIXME: This doesn't work with sharedIndices
                   PrimitiveGroup newGroup = mesh.AddPrimitiveGroup(type, nIndices);
                   MapIterator<MaterialAndType, PrimitiveGroup> it { map = map };
                   if(newGroup)
