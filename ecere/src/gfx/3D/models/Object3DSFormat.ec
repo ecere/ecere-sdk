@@ -950,6 +950,9 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             info->matFaces.Free();
             delete info->matFaces;
          }
+
+         // TODO: Make this an option
+         // mesh.ComputeNormals();
          break;
       }
       case TRI_LOCAL:
