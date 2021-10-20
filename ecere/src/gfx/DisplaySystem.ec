@@ -306,14 +306,14 @@ public:
          incref bitmap;
          item.name = new char[strlen(name) + 1];
          strcpy(item.name, name);
-         textures.AddName(item);
+         if(this) textures.AddName(item);
       }
       return item;
    }
 
    Bitmap GetTexture(const char * name)
    {
-      return textures.FindNamedLink(name, false);
+      return this ? textures.FindNamedLink(name, false) : null;
    }
 
    bool RemoveTexture(const char * name)
