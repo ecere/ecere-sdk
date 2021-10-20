@@ -234,7 +234,7 @@ public bool ExecuteEnv(const char * env, const char * command, ...)
    va_end(args);
    return result;
 }
-
+// WARNING: This takes a printf format string! Document this properly.
 public bool ShellOpen(const char * fileName, ...)
 {
    bool result;

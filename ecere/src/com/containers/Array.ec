@@ -357,7 +357,7 @@ public:
       }
    }
 
-   virtual void Copy(Container source)
+   virtual void Copy(Container source) // FIXME: Document that this never does a deep copy
    {
       count = source.GetCount();
       if(count > minAllocSize)

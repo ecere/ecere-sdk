@@ -44,6 +44,7 @@ static int hashEntryValid(const HashMapEntry entry)
    return entry.key != NULL_KEY;
 }
 
+// TOCHECK: we're hashing to 32-bit but storing 64 bit key, is it to avoid conflict with the -1 NULL key?
 static uint32_t hashEntryKey(const HashMapEntry entry)
 {
    uint32 hashkey;
