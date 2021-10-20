@@ -10518,7 +10518,6 @@ if(!strcmp(dest->__anon1._class->__anon1.registered->templateClass->name, "Map")
 const char * sourceName = source->__anon1._class->__anon1.registered->name;
 const char * destName = dest->__anon1._class->__anon1.registered->name;
 char * sb = __ecereNameSpace__ecere__sys__RSearchString(sourceName, ">", strlen(sourceName), 0, 0);
-char * db = __ecereNameSpace__ecere__sys__RSearchString(destName, ">", strlen(destName), 0, 0);
 
 if(sb && strncmp(destName, sb, (int)(sb - sourceName)))
 return 1;
