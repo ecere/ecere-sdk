@@ -1600,11 +1600,20 @@ static bool ReadEditChunks(FileInfo * info, void * data)
          if(mat)
          {
             if(material.baseMap)
+            {
+               material.baseMap.keepData = true; // WARNING: Texture will not save properly without this if DS used
                material.baseMap.MakeMipMaps(info->displaySystem);
+            }
             if(material.bumpMap)
+            {
+               material.bumpMap.keepData = true; // WARNING: Texture will not save properly without this if DS used
                material.bumpMap.MakeMipMaps(info->displaySystem);
+            }
             if(material.specularMap)
+            {
+               material.specularMap.keepData = true; // WARNING: Texture will not save properly without this if DS used
                material.specularMap.MakeMipMaps(info->displaySystem);
+            }
 
             // COPY_NITEM(mat, material);
             CopyBytes(((byte *)(mat)) + sizeof(class NamedItem), ((byte *)(material)) + sizeof(class NamedItem), sizeof(class Material) - sizeof(class NamedItem));
