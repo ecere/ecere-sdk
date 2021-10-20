@@ -2913,6 +2913,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData;
       oglSystem.loadingFont = true;
       font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags, outlineSize, outlineFade);
+      oglSystem.loadingFont = false;
       return font;
    }
 
