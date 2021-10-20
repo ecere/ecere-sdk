@@ -2217,10 +2217,14 @@ static void FixDerivativesBase(Class base, Class mod)
 
       if(type == normalClass || type == noHeadClass)
       {
-         // Use 'memberOffset' for nohead class as the members get added without padding
-         _class.offset = (base && (base.templateClass ? (type == normalClass ? base.templateClass.structSize : base.templateClass.memberOffset) : (type == normalClass ? base.structSize : base.memberOffset)) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
-         if(_class.structAlignment && (_class.offset % _class.structAlignment))
-            _class.offset += _class.structAlignment - _class.offset % _class.structAlignment;
+         // TOCHECK: base.memberOffset might not properly set at this stage
+         if(type != noHeadClass || base.memberOffset)
+         {
+            // Use 'memberOffset' for nohead class as the members get added without padding
+            _class.offset = (base && (base.templateClass ? (type == normalClass ? base.templateClass.structSize : base.templateClass.memberOffset) : (type == normalClass ? base.structSize : base.memberOffset)) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
+            if(_class.structAlignment && (_class.offset % _class.structAlignment))
+               _class.offset += _class.structAlignment - _class.offset % _class.structAlignment;
+         }
       }
       else
          _class.offset = 0; // Force set to 0
@@ -2240,6 +2244,8 @@ static void FixDerivativesBase(Class base, Class mod)
       }
       else if(type == normalClass || type == noHeadClass)
       {
+         if(type == noHeadClass && _class.structSize != _class.offset + size)
+            printf("ERROR: inconsistent nohead class struct size\n");
          _class.structSize = _class.offset + size;
           _class.typeSize = sizeof(void *);
       }
@@ -2960,7 +2966,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          else if(type == normalClass || type == noHeadClass)
          {
-            _class.structSize = _class.offset + size;
+            // REVIEW: This was wrongly set for NoHead classes -- the sizeof() of the struct passed includes all bases
+            _class.structSize = type == normalClass ? _class.offset + size : size;
             _class.typeSize = sizeof(void *);
          }
          _class.offsetClass = offsetClass;
@@ -3532,6 +3539,16 @@ Class System_FindClass(Module module, const char * name, bool registerTemplatesI
 
             if(_class && templateParams)
             {
+               Class b;
+               bool isAVLNode = false, isMapNode = false;
+
+               for(b = _class; b; b = b.base)
+               {
+                  while(b.templateClass) b = b.templateClass;
+                  if(!strcmp(b.fullName, "ecere::com::MapNode")) isMapNode = true;
+                  else if(!strcmp(b.fullName, "ecere::com::AVLNode")) isAVLNode = true;
+               }
+
                // if(!numParams) return null;
 
                templatedClass = Class { };
@@ -3555,6 +3572,25 @@ Class System_FindClass(Module module, const char * name, bool registerTemplatesI
 
                ComputeClassParameters(templatedClass, templateParams, module, registerTemplatesInternalDecl);
 
+               if(isAVLNode && templatedClass.templateArgs)
+               {
+                  // Current work-around for correcting variable size of AVLNodes
+                  Class keyClass = templatedClass.templateArgs[0].dataTypeClass;
+                  int keySize = (keyClass && keyClass.type == structClass) ? keyClass.typeSize : sizeof(uint64);
+
+                  if(keySize != sizeof(uint64))
+                     templatedClass.structSize += keySize - sizeof(uint64);
+
+                  if(isMapNode)
+                  {
+                     // NOTE: the value member will still have incorrect offset in members shared with base class
+                     Class valClass = templatedClass.templateArgs[2].dataTypeClass;
+                     int valSize = (valClass && valClass.type == structClass) ? valClass.typeSize : sizeof(uint64);
+
+                     if(valSize != sizeof(uint64))
+                        templatedClass.structSize += valSize - sizeof(uint64);
+                  }
+               }
                _class.templatized.Add(OldLink { data = templatedClass });
             }
             return templatedClass;
