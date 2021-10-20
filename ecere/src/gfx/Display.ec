@@ -1007,6 +1007,8 @@ public:
 
             if(flags.mesh && object.mesh)
             {
+               Vector3D wresult, vresult;
+
                if(!display3D.selection && displaySystem.driver.PushMatrix)
                   displaySystem.driver.PushMatrix(this);
 
@@ -1150,7 +1152,7 @@ public:
                      {
                         if(display3D.intersecting)
                         {
-                           Vector3D wresult, vresult;
+                           // Vector3D wresult, vresult;
                            wresult.MultMatrix(rayIntersect, object.matrix);
                            if(!viewSpace)
                               camera.TransformPoint(vresult, wresult);
@@ -1185,7 +1187,9 @@ public:
                      hit.tags[c] = display3D.tags[c];
                   }
 
-                  if(!viewSpace)
+                  if(display3D.intersecting)
+                     hit.center = vresult;
+                  else if(!viewSpace)
                      camera.TransformPoint(hit.center, object.wcenter);
                   else
                      hit.center = object.wcenter;
