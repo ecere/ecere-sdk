@@ -368,14 +368,25 @@ public struct Euler
          }
          else
          {
-            // 90 degrees pitch case
-            double sin45 = sin(Pi/4);
-            double yawW = sin45 * value.w + sin45 * value.x;
-            double yawY = sin45 * value.y + sin45 * value.z;
-
-            this.yaw = atan2(yawY, yawW) * 2;
-            this.pitch = Pi/2;
+            this.pitch = Sgn(y) * Pi/2;
             this.roll = 0;
+
+            // 90 degrees pitch case
+            if(y < 0)
+            {
+               double sin45 = sin(Pi/4);
+               double yawW = sin45 * value.w - sin45 * value.x;
+               double yawY = sin45 * value.y - sin45 * value.z;
+               this.yaw = atan2(yawY, yawW) * 2;
+            }
+            else
+            {
+               double sin45 = sin(Pi/4);
+               double yawW = sin45 * value.w + sin45 * value.x;
+               double yawY = sin45 * value.y + sin45 * value.z;
+               this.yaw = atan2(yawY, yawW) * 2;
+            }
+
          }
       }
       get
