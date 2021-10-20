@@ -1652,8 +1652,8 @@ private class Display3D : struct
       int strip = 1;
       Vector3Df tmp;
       bool i32bit = primitive.type.indices32bit;
-      uint32 * indices32 = primitive.indices32;
-      uint16 * indices16 = primitive.indices;
+      uint32 * indices32 = primitive.indices32 != null ? primitive.indices32 : mesh.indices;
+      uint16 * indices16 = primitive.indices != null ? primitive.indices : null;
       Array<MeshPart> parts = mesh.parts;
       int pi;
       int firstPart = 0, lastPart = 1;
