@@ -647,12 +647,15 @@ return (uint64)0;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Map_SetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__MapNode * node, uint64 value)
 {
+if(node)
+{
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
 node = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof node->key);
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1)
 memcpy((void *)&node->value, (void *)(uintptr_t)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->structSize);
 else
 __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(node, value);
+}
 return 1;
 }
 
@@ -797,6 +800,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode), 1, (((void *)0))) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
 }));
 
+if(realNode)
+{
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1)
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
@@ -819,7 +824,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(realNode), __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(newNode)) : (unsigned int)1;
 }));
-return newNode;
+}
+return realNode;
 }
 else
 {

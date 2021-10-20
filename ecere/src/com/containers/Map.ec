@@ -83,14 +83,17 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
 
    bool SetData(MapNode<MT, V> node, V value)
    {
-      // Adjust node pointer for non-standard AVLNode
-      if(class(MT).type == structClass)
-         node = (MapNode<MT, V>)(((byte *) node) + class(MT).structSize - sizeof(node.AVLNode::key));
+      if(node)
+      {
+         // Adjust node pointer for non-standard AVLNode
+         if(class(MT).type == structClass)
+            node = (MapNode<MT, V>)(((byte *) node) + class(MT).structSize - sizeof(node.AVLNode::key));
 
-      if(class(V).type == structClass)
-         memcpy((void *)&node.value, (void *)value, class(V).structSize);
-      else
-         node.value = value;
+         if(class(V).type == structClass)
+            memcpy((void *)&node.value, (void *)value, class(V).structSize);
+         else
+            node.value = value;
+      }
       return true;
    }
 
@@ -99,12 +102,17 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       MapNode<MT, V> newNode = (MapNode<MT, V>) _newNode;
       if(class(MT).type == structClass || class(V).type == structClass)
       {
+         // REVIEW: This assumes that the added node is temporary storage when either they key or value is a struct?
+         //         The "added" node is not actually the node added to the map in this case.
          MapNode<MT, V> realNode = (MapNode<MT, V>)GetAtPosition(newNode.key, true, null);
-         if(class(V).type == structClass)
-            SetData(realNode, (V)&newNode.value);
-         else
-            SetData(realNode, newNode.value);
-         return newNode;
+         if(realNode)
+         {
+            if(class(V).type == structClass)
+               SetData(realNode, (V)&newNode.value);
+            else
+               SetData(realNode, newNode.value);
+         }
+         return realNode;
       }
       else
       {
