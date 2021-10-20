@@ -662,6 +662,8 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 extern char *  strchr(const char * , int);
 
+extern int printf(const char * , ...);
+
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
 extern void *  memmove(void * , const void * , size_t size);
@@ -673,8 +675,6 @@ extern char *  strncpy(char * , const char * , size_t n);
 extern char *  __ecereNameSpace__ecere__sys__RSearchString(const char *  buffer, const char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
 
 extern size_t strlen(const char * );
-
-extern int printf(const char * , ...);
 
 extern char *  strcpy(char * , const char * );
 
@@ -5169,7 +5169,7 @@ _class->structSize = 0;
 }
 else if(type == 0 || type == 5)
 {
-_class->structSize = _class->offset + size;
+_class->structSize = type == 0 ? _class->offset + size : size;
 _class->typeSize = sizeof(void *);
 }
 _class->offsetClass = offsetClass;
@@ -6160,9 +6160,12 @@ offsetClass = base ? (base->templateClass ? base->templateClass->sizeClass : bas
 totalSizeClass = offsetClass + sizeClass;
 if(type == 0 || type == 5)
 {
+if(type != 5 || base->memberOffset)
+{
 _class->offset = (base && (base->templateClass ? (type == 0 ? base->templateClass->structSize : base->templateClass->memberOffset) : (type == 0 ? base->structSize : base->memberOffset)) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
 if(_class->structAlignment && (_class->offset % _class->structAlignment))
 _class->offset += _class->structAlignment - _class->offset % _class->structAlignment;
+}
 }
 else
 _class->offset = 0;
@@ -6181,6 +6184,8 @@ _class->structSize = 0;
 }
 else if(type == 0 || type == 5)
 {
+if(type == 5 && _class->structSize != _class->offset + size)
+printf("ERROR: inconsistent nohead class struct size\n");
 _class->structSize = _class->offset + size;
 _class->typeSize = sizeof(void *);
 }
@@ -6408,7 +6413,18 @@ struct __ecereNameSpace__ecere__sys__OldList __simpleStruct0 =
 {
 0, 0, 0, 0, 0
 };
+struct __ecereNameSpace__ecere__com__Class * b;
+unsigned int isAVLNode = 0, isMapNode = 0;
 
+for(b = _class; b; b = b->base)
+{
+while(b->templateClass)
+b = b->templateClass;
+if(!strcmp(b->fullName, "ecere::com::MapNode"))
+isMapNode = 1;
+else if(!strcmp(b->fullName, "ecere::com::AVLNode"))
+isAVLNode = 1;
+}
 templatedClass = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__Class));
 *templatedClass = *_class;
 templatedClass->templateClass = _class;
@@ -6430,6 +6446,22 @@ templatedClass->prev = (((void *)0));
 templatedClass->next = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->classes, templatedClass);
 __ecereNameSpace__ecere__com__ComputeClassParameters(templatedClass, templateParams, module, registerTemplatesInternalDecl);
+if(isAVLNode && templatedClass->templateArgs)
+{
+struct __ecereNameSpace__ecere__com__Class * keyClass = templatedClass->templateArgs[0].__anon1.__anon1.dataTypeClass;
+int keySize = (keyClass && keyClass->type == 1) ? keyClass->typeSize : sizeof(uint64);
+
+if(keySize != sizeof(uint64))
+templatedClass->structSize += keySize - sizeof(uint64);
+if(isMapNode)
+{
+struct __ecereNameSpace__ecere__com__Class * valClass = templatedClass->templateArgs[2].__anon1.__anon1.dataTypeClass;
+int valSize = (valClass && valClass->type == 1) ? valClass->typeSize : sizeof(uint64);
+
+if(valSize != sizeof(uint64))
+templatedClass->structSize += valSize - sizeof(uint64);
+}
+}
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->templatized, __extension__ ({
 struct __ecereNameSpace__ecere__sys__OldLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__OldLink));
 

@@ -761,7 +761,7 @@ if(first9 < c)
 string[c - 1] = '1';
 first9 = c;
 }
-string[first9] = 0;
+string[first9 + 1] = 0;
 }
 }
 break;
