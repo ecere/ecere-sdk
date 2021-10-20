@@ -465,7 +465,8 @@ public:
       return result;
    }
 
-   //#define NORMALS_MERGE_VERTICES
+   // TODO: Make this a runtime option to force smoothing!
+   // #define NORMALS_MERGE_VERTICES
 
    void ComputeNormals(void)
    {
