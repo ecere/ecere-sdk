@@ -2178,12 +2178,12 @@ static char * Float_OnGetString(Class _class, float * data, char * string, void 
                            break;
                         }
                   }
-                  if(first9 < c)
+                  if(first9 < c) // TOCHECK: How is this code reachable?
                   {
                      string[c-1] = '1';
                      first9 = c;
                   }
-                  string[first9] = 0;
+                  string[first9+1] = 0;
                }
             }
             break;
