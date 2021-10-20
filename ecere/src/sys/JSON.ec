@@ -1567,8 +1567,8 @@ private:
                      {
                         value.p = new0 byte[type.structSize];
                      }
-                  }
-                  if((ch == ':' || (eCON && ch == '=')) || (eCON && type && (prop || member)))
+                  }                                              // Need to pass over unknowns to avoid syntax errors
+                  if((ch == ':' || (eCON && ch == '=')) || (eCON /*&& type && (prop || member)*/))
                   {
                      JSONResult itemResult;
                      if(ch == ':' || ch == '=')
