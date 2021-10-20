@@ -22,7 +22,7 @@ public class E3DFormat : ObjectFormat
       File f = FileOpen(fileName, write);
       if(f)
       {
-         E3DWriteContext ctx { texturesByID = ((E3DOptions *)options)->texturesByID };
+         E3DWriteContext ctx { texturesByID = options ? ((E3DOptions *)options)->texturesByID : null };
 
          StripLastDirectory(fileName, ctx.path);
          if(ctx.texturesByID && ctx.texturesByID.count)
