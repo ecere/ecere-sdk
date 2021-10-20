@@ -190,7 +190,11 @@ FreeingAVLTree<const String> compactTypes
    "MD_Resolution",
    "UMSFormat",
    "OGCAPITileMatrixSetLimit",
-   "OGCAPIVariableWidth"
+   "OGCAPIVariableWidth",
+   "Vector3D",
+   "Vector3Df",
+   "Quaternion",
+   "Euler"
 ] };
 
 FreeingAVLTree<const String> compactArrays
@@ -535,8 +539,9 @@ private:
             result = success;
          }
 
-         if (result && type)
+         if(result && type)
          {
+            // TODO: Make this configurable as well for new types?
             if( eCON & (type.type == enumClass || type.type == unitClass || eClass_IsDerived(type, class(ColorAlpha)) || eClass_IsDerived(type, class(Color))))
             {
                bool isColorAlpha = type.type != enumClass && type.type != unitClass &&
@@ -2065,8 +2070,8 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       bool isFirst = true;
       Class arrayType = (type = map._class, type.templateArgs[0].dataTypeClass);
       const String tArg = strchr(arrayType.name, '<');
-      bool spacing = tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue") ||
-            strstr(tArg + 1, "FlexyField"));
+      bool spacing = eCON || (tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue") ||
+            strstr(tArg + 1, "FlexyField")));
       MapIterator it { map = (void*)map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
       bool jsonDicMap = false;
@@ -2105,7 +2110,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
             isFirst = false;
          if(spacing) for(i = 0; i<indent; i++) f.Puts(indentModule);
 
-         WriteONObject(f, ot, n, indent, eCON, stringMap, false, capitalize, map);
+         WriteONObject(f, ot, n, indent, eCON, stringMap, true, capitalize, map);
       }
       if(spacing)
       {
@@ -2395,9 +2400,17 @@ static bool WriteValue(File f, Class type, DataValue value, int indent, bool eCO
       WriteArray(f, type, value.p, indent, eCON, stringMap, capitalize);
    else if(type.type == normalClass || type.type == noHeadClass || type.type == structClass)
    {
-      bool omitNames = type.type == structClass && type.members.count < 5 && !strstr(type.name, "GeometryData") && (type.members.count == type.membersAndProperties.count || !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPoint") || !strcmp(type.name, "UMSRowsSpecs"));
       Class ot = value.p && type.type == normalClass ? ((Instance)value.p)._class : type;
-      WriteONObject(f, ot, value.p, indent, eCON, stringMap, eCON && omitNames, capitalize, null);
+      bool omitNames = false;
+      if(eCON)
+      {
+         omitNames = type.type == structClass && type.members.count < 5 &&
+         !strstr(type.name, "GeometryData") && !strstr(type.name, "Transform") && !strstr(type.name, "Euler") &&
+         (type.members.count == type.membersAndProperties.count ||
+            !strcmp(type.name, "GeoExtent") || !strcmp(type.name, "GeoPoint") || !strcmp(type.name, "UMSRowsSpecs") ||
+            !strcmp(type.name, "Vector3D") || !strcmp(type.name, "Vector3Df"));
+      }
+      WriteONObject(f, ot, value.p, indent, eCON, stringMap, omitNames, capitalize, null);
    }
    else if(eClass_IsDerived(type, class(ColorAlpha)))
       WriteColorAlpha(f, type, value, indent, eCON);
