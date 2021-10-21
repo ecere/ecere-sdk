@@ -7,7 +7,7 @@
 [![Ecere web](https://img.shields.io/badge/web-ec--lang.org-9DA1CA.svg)](http://ec-lang.org)
 [![Ecere forum](https://img.shields.io/badge/forum-ecere.org%2Fforums-9DA1CA.svg)](http://ecere.org/forums)
 [![Ecere tracker](https://img.shields.io/badge/tracker-ecere.org%2Fmantis-9DA1CA.svg)](http://ecere.org/mantis)
-[![Freenode chat](https://img.shields.io/badge/irc-%20Freenode_%23ecere-9DA1CA.svg)](http://webchat.freenode.net/?channels=ecere)<br>
+[![Libera chat](https://img.shields.io/badge/irc-%20Libera_%23ecere-9DA1CA.svg)](https://web.libera.chat/?theme=cli#ecere)<br>
 [![Meetup group](https://img.shields.io/badge/meetup-Ottawa-88B094.svg)](http://www.meetup.com/eC-Programming-Language-Meetup)
 
 # Ecere SDK
@@ -109,4 +109,4 @@ descriptive info has been added yet.
 [Git Repository](http://github.com/ecere/ecere-sdk) ( git://github.com/ecere/ecere-sdk.git )<br>
 [Support forums](http://ecere.org/forums)<br>
 [Bug tracker](http://ecere.org/mantis)<br>
-[IRC](http://webchat.freenode.net/?channels=ecere) - **#ecere** on irc.freenode.net<br>
+[IRC](https://web.libera.chat/?theme=cli#ecere) - **#ecere** on irc.libera.chat<br>
