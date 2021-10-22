@@ -57,7 +57,7 @@ public:
     bool cubeMap:1;
     bool noLighting:1;
     bool partlyTransparent:1;
-    bool setupTextures:1;
+    bool setupTextures:1;     // NOTE: This is a status flag and should probably be elsewhere...
     bool update:1;
     bool constantColor:1;
 };
