@@ -129,18 +129,19 @@ public enum FrameTrackType : uint16 { position = 1, rotation, scaling, fov, roll
 
 public class FrameTrackBits
 {
+public:
    FrameTrackType type;
    bool loop:1;
 };
 
 public struct FrameKey
 {
-   unsigned int frame;
+   uint frame;
    float tension, continuity, bias;
    float easeFrom, easeTo;
    union
    {
-      Vector3Df position;
+      Vector3Df position;        // TOCHECK: Should this be made a Vector3D?
       Quaternion orientation;
       Vector3Df scaling;
       float roll;
@@ -156,10 +157,12 @@ enum SplinePart { splinePoint, splineA, splineB };
 public class FrameTrack : struct
 {
    FrameTrack prev, next;
+public:
    FrameTrackBits type;
-   unsigned int numKeys;
+   uint numKeys;
    FrameKey * keys;
 
+private:
    void Free(void)
    {
       delete keys;
@@ -956,6 +959,11 @@ public:
          object.flags.transform = true;
          object.flags.root = false;
       }
+   }
+
+   void AddFrameTrack(FrameTrack track)
+   {
+      tracks.Add(track);
    }
 
    void Remove(Object child)
