@@ -87,69 +87,27 @@ public struct Vector3D
       z = (float)(2 * dotVS * v.z + a * s.z + 2 * w * cross.z);
    }
 
-   void DivideMatrix(const Vector3D source, const Matrix matrix)
+   void DivideMatrix(const Vector3D v, const Matrix m)
    {
-      /*
-      solve(
-      {
-         vectorX=sourceX*m00+sourceY*m10+sourceZ*m20+m30,
-         vectorY=sourceZ*m01+sourceY*m11+sourceZ*m21+m31,
-         vectorZ=sourceX*m02+sourceY*m12+sourceZ*m22+m32
-      }, { sourceX, sourceY, sourceZ });
+      /* v be x,y,z; m be { { e,f,g,...}, {h,i,j,...}, {k,l,m,...}, {...} }; this be a,b,c; solve for a,b,c:
+         x=a*e+b*h+c*k
+         y=a*f+b*i+c*l
+         z=a*g+b*j+c*m
       */
+      double vx = v.x - m.m[3][0];
+      double vy = v.y - m.m[3][1];
+      double vz = v.z - m.m[3][2];
+      double fm_gl = m.m[0][1] * m.m[2][2] - m.m[0][2] * m.m[2][1];
+      double fz_gy = m.m[0][1] * vz        - m.m[0][2] * vy;
+      double gi_fj = m.m[0][2] * m.m[1][1] - m.m[0][1] * m.m[1][2];
+      double iz_jy = m.m[1][1] * vz        - m.m[1][2] * vy;
+      double jl_im = m.m[1][2] * m.m[2][1] - m.m[1][1] * m.m[2][2];
+      double my_lz = m.m[2][2] * vy        - m.m[2][1] * vz;
+      double invDiv = 1.0 / (m.m[0][0] * jl_im + m.m[1][0] * fm_gl + m.m[2][0] * gi_fj);
 
-      double var1 =
-         matrix.m[2][0] * matrix.m[0][2] * matrix.m[1][1]
-       - matrix.m[0][2] * matrix.m[2][1] * matrix.m[1][0]
-       - matrix.m[2][2] * matrix.m[0][0] * matrix.m[1][1]
-       - matrix.m[0][2] * matrix.m[0][1] * matrix.m[1][0]
-       + matrix.m[2][1] * matrix.m[0][0] * matrix.m[1][2]
-       + matrix.m[0][1] * matrix.m[0][0] * matrix.m[1][2];
-
-      x = (
-         - matrix.m[2][2] * source.x * matrix.m[1][1]
-         + matrix.m[2][2] * matrix.m[1][0] * source.y
-         - matrix.m[2][2] * matrix.m[1][0] * matrix.m[3][1]
-         + matrix.m[2][2] * matrix.m[3][0] * matrix.m[1][1]
-         - matrix.m[2][0] * matrix.m[3][2] * matrix.m[1][1]
-         + source.x * matrix.m[2][1] * matrix.m[1][2]
-         + source.x * matrix.m[0][1] * matrix.m[1][2]
-         - matrix.m[1][0] * matrix.m[0][1] * source.z
-         + matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][2]
-         + matrix.m[1][0] * matrix.m[0][1] * matrix.m[3][2]
-         - matrix.m[1][0] * matrix.m[2][1] * source.z
-         - matrix.m[3][0] * matrix.m[2][1] * matrix.m[1][2]
-         - matrix.m[2][0] * matrix.m[1][2] * source.y
-         + matrix.m[2][0] * matrix.m[1][2] * matrix.m[3][1]
-         + matrix.m[2][0] * source.z * matrix.m[1][1]
-         - matrix.m[3][0] * matrix.m[0][1] * matrix.m[1][2]
-         ) / var1;
-
-      y = - (
-         - matrix.m[2][0] * matrix.m[0][2] * source.y
-         + matrix.m[2][1] * matrix.m[0][0] * matrix.m[3][2]
-         + matrix.m[2][0] * matrix.m[0][2] * matrix.m[3][1]
-         + matrix.m[0][1] * matrix.m[0][0] * matrix.m[3][2]
-         - matrix.m[2][1] * matrix.m[0][0] * source.z
-         - matrix.m[0][2] * matrix.m[2][1] * matrix.m[3][0]
-         + matrix.m[0][2] * matrix.m[0][1] * source.x
-         - matrix.m[0][2] * matrix.m[0][1] * matrix.m[3][0]
-         + matrix.m[0][2] * matrix.m[2][1] * source.x
-         + matrix.m[2][2] * matrix.m[0][0] * source.y
-         - matrix.m[0][1] * matrix.m[0][0] * source.z
-         - matrix.m[2][2] * matrix.m[0][0] * matrix.m[3][1]
-         ) / var1;
-
-      z = (
-         source.x * matrix.m[0][2] * matrix.m[1][1]
-         + matrix.m[0][0] * matrix.m[3][2] * matrix.m[1][1]
-         + matrix.m[0][0] * matrix.m[1][2] * source.y
-         - matrix.m[0][0] * matrix.m[1][2] * matrix.m[3][1]
-         - matrix.m[0][0] * source.z * matrix.m[1][1]
-         - matrix.m[1][0] * matrix.m[0][2] * source.y
-         + matrix.m[1][0] * matrix.m[0][2] * matrix.m[3][1]
-         - matrix.m[3][0] * matrix.m[0][2] * matrix.m[1][1]
-         ) / var1;
+      x =  invDiv * (m.m[1][0] * my_lz + m.m[2][0] * iz_jy + vx * jl_im);
+      y = -invDiv * (m.m[0][0] * my_lz + m.m[2][0] * fz_gy - vx * fm_gl);
+      z =  invDiv * (m.m[0][0] *-iz_jy + m.m[1][0] * fz_gy + vx * gi_fj);
    }
 
    property double length { get { return (double)sqrt(x * x + y * y + z * z); } };
