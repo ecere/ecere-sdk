@@ -1027,7 +1027,9 @@ public:
          if(!canMerge)
          {
             Object next;
-            //printf("More than 64k vertices -- not merging\n");
+#ifdef _DEBUG
+            printf("WARNING: More than 64k vertices or translation > 400 -- not merging\n");
+#endif
             for(child = children.first; child; child = next)
             {
                next = child.next;
@@ -1130,13 +1132,18 @@ public:
             if(objectMesh)
             {
                int mnVertices = objectMesh.nVertices;
-               memcpy(mesh.vertices, objectMesh.vertices, mnVertices * sizeof(Vector3Df));
-               if(objectMesh.normals)
-                  memcpy(mesh.normals, objectMesh.normals, mnVertices * sizeof(Vector3Df));
-               if(objectMesh.tangents)
-                  memcpy(mesh.tangents, objectMesh.tangents, 2* mnVertices * sizeof(Vector3Df));
-               if(objectMesh.texCoords)
-                  memcpy(mesh.texCoords, objectMesh.texCoords, mnVertices * sizeof(Pointf));
+               if(flags.interleaved)
+                  memcpy(mesh.vertices, objectMesh.vertices, mnVertices * 8 * sizeof(float));
+               else
+               {
+                  memcpy(mesh.vertices, objectMesh.vertices, mnVertices * sizeof(Vector3Df));
+                  if(objectMesh.normals)
+                     memcpy(mesh.normals, objectMesh.normals, mnVertices * sizeof(Vector3Df));
+                  if(objectMesh.tangents)
+                     memcpy(mesh.tangents, objectMesh.tangents, 2* mnVertices * sizeof(Vector3Df));
+                  if(objectMesh.texCoords)
+                     memcpy(mesh.texCoords, objectMesh.texCoords, mnVertices * sizeof(Pointf));
+               }
 
                nVertices += mnVertices;
             }
@@ -1163,29 +1170,50 @@ public:
                if(child.flags.mesh && child.mesh)
                {
                   Vector3Df * mVertices = mesh.vertices;
-                  Vector3Df * mNormals = mesh.normals;
-                  Pointf * mTexCoords = mesh.texCoords;
-                  Vector3Df * mTangents = mesh.tangents;
-
                   Vector3Df * cVertices = child.mesh.vertices;
-                  Vector3Df * cNormals = child.mesh.normals;
-                  Pointf * cTexCoords = child.mesh.texCoords;
+                  Vector3Df * mTangents = mesh.tangents;
                   Vector3Df * cTangents = child.mesh.tangents;
                   int cCount = child.mesh.nVertices;
 
-                  if(cTexCoords)
-                     memcpy(mTexCoords + nVertices, cTexCoords, sizeof(Pointf) * cCount);
-                  for(c = 0; c < cCount; c++)
+                  if(flags.interleaved)
                   {
-                     mVertices[nVertices].MultMatrix(cVertices[c], matrix);
-                     if(cNormals)
-                        mNormals[nVertices].MultMatrix(cNormals[c], normalMatrix);
-                     if(cTangents)
+                     for(c = 0; c < cCount; c++)
                      {
-                        mTangents[2*nVertices+0].MultMatrix(cTangents[2*c+0], normalMatrix);
-                        mTangents[2*nVertices+1].MultMatrix(cTangents[2*c+1], normalMatrix);
+                        float * mv = ((float *)mVertices) + nVertices * 8;
+                        float * cv = ((float *)cVertices) + c * 8;
+
+                        memcpy(mv + 6, cv + 6, sizeof(Pointf));
+                        ((Vector3Df *)mv)->MultMatrix((Vector3Df *)cv, matrix);
+                        ((Vector3Df *)(mv + 3))->MultMatrix((Vector3Df *)(cv + 3), matrix);
+                        if(cTangents)
+                        {
+                           mTangents[2*nVertices+0].MultMatrix(cTangents[2*c+0], normalMatrix);
+                           mTangents[2*nVertices+1].MultMatrix(cTangents[2*c+1], normalMatrix);
+                        }
+                        nVertices++;
                      }
-                     nVertices++;
+                  }
+                  else
+                  {
+                     Vector3Df * mNormals = mesh.normals;
+                     Pointf * mTexCoords = mesh.texCoords;
+                     Vector3Df * cNormals = child.mesh.normals;
+                     Pointf * cTexCoords = child.mesh.texCoords;
+
+                     if(cTexCoords)
+                        memcpy(mTexCoords + nVertices, cTexCoords, sizeof(Pointf) * cCount);
+                     for(c = 0; c < cCount; c++)
+                     {
+                        mVertices[nVertices].MultMatrix(cVertices[c], matrix);
+                        if(cNormals)
+                           mNormals[nVertices].MultMatrix(cNormals[c], normalMatrix);
+                        if(cTangents)
+                        {
+                           mTangents[2*nVertices+0].MultMatrix(cTangents[2*c+0], normalMatrix);
+                           mTangents[2*nVertices+1].MultMatrix(cTangents[2*c+1], normalMatrix);
+                        }
+                        nVertices++;
+                     }
                   }
                }
             }
@@ -1479,6 +1507,7 @@ public:
             delete objectMesh;
          }
 
+         // TOOD: Make this an option?
          if(lastLevel && displaySystem && mesh && !mesh.nPrimitives)
          {
             delete *&mesh.vertices;
