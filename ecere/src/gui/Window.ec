@@ -4932,7 +4932,7 @@ private:
                         case wheelUp: case wheelDown:
                            if(!key.shift && sbv && !guiApp.windowScrolling)
                            {
-                              result = sbv.Action((key == wheelUp) ? wheelUp : wheelDown, 0, key);
+                              result = sbv.Action((key.code == wheelUp) ? wheelUp : wheelDown, 0, key);
                               // Do we want to do a consequential move regardless of result in this case?
                               ConsequentialMouseMove(false);
                            }
