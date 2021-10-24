@@ -1162,7 +1162,6 @@ public:
                      {
                         if(display3D.intersecting)
                         {
-                           // Vector3D wresult, vresult;
                            wresult.MultMatrix(rayIntersect, object.matrix);
                            if(!viewSpace)
                               camera.TransformPoint(vresult, wresult);
@@ -1630,9 +1629,9 @@ private class Display3D : struct
       return id;
    }
 
-   //#define TRESHOLD           -1
-   //#define TRESHOLD           -0.25
-   #define TRESHOLD           -0.0025
+   //#define THRESHOLD           -1
+   //#define THRESHOLD           -0.25
+   #define THRESHOLD           -0.0025
 
    bool PickPrimitives(Mesh mesh, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect)
    {
@@ -1657,7 +1656,6 @@ private class Display3D : struct
       Array<MeshPart> parts = mesh.parts;
       int pi;
       int firstPart = 0, lastPart = 0;
-
       float * vertices = (float *)mesh.vertices;
       int vStride = mesh.flags.interleaved ? 8 : 3;
 
@@ -1763,7 +1761,7 @@ private class Display3D : struct
                   {
                      double dot = plane->normal.DotProduct(points[i]);
                      double distance = dot + plane->d;
-                     if(distance > TRESHOLD)
+                     if(distance > THRESHOLD)
                      {
                         numGoodPoints++;
                         goodPoints[i] = 1;
