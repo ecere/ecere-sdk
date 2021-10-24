@@ -740,7 +740,7 @@ public:
 
                // Convert ray to world space
                cam.Untransform(display3D.rayView.p0, display3D.rayWorld.p0);
-               cam.Untransform(display3D.rayView.delta, p);
+               cam.Untransform(display3D.rayView.delta, p);    // This is a point transform, and origin is 0,0,0
                display3D.rayWorld.delta.Subtract(p, display3D.rayWorld.p0);
             }
          }
@@ -1170,7 +1170,7 @@ public:
                               vresult = wresult;
 
                            if(vresult.z < display3D.rayIntersect.z)
-                              display3D.rayIntersect = vresult;
+                              display3D.rayIntersect = vresult;      // Returned ray intersect is in viewspace
                            display3D.intersected = true;
                         }
                         result = true;
@@ -1473,6 +1473,7 @@ public:
       display3D.intersecting = true;
    }
 
+   // Document that returned ray intersect is in viewspace
    bool GetIntersect(Vector3D intersect)
    {
       intersect = display3D.rayIntersect;
@@ -1655,7 +1656,7 @@ private class Display3D : struct
       uint16 * indices16 = !i32bit && primitive.indices != null ? primitive.indices : null;
       Array<MeshPart> parts = mesh.parts;
       int pi;
-      int firstPart = 0, lastPart = 1;
+      int firstPart = 0, lastPart = 0;
 
       float * vertices = (float *)mesh.vertices;
       int vStride = mesh.flags.interleaved ? 8 : 3;
@@ -1707,9 +1708,9 @@ private class Display3D : struct
          for(c = start + offset; c < end; c += nIndex)
          {
             bool outside = false;
-            if(!pickingPlanes)
+            if(!pickingPlanes)   // TODO: Review the meaning of this only set in orbitWithMouse
             {
-               int p;
+               ClippingPlane p;
                int n = nPoints;
                int i;
 
