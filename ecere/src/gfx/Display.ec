@@ -1907,7 +1907,8 @@ private class Display3D : struct
             groupIX++;
          }
       }
-      else
+
+      if(mesh.nPrimitives)
       {
          int c;
          for(c = 0; c < mesh.nPrimitives; c++)
