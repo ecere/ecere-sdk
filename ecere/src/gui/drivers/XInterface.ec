@@ -2047,7 +2047,12 @@ class XInterface : Interface
                         if(modalRoot)
                            modalRoot.ExternalActivate(true, true, window, null); // lastActive);
                         else
+                        {
+                           // FIXME: Temporary work around for alt state ?
+                           keyStates[leftAlt] = false;
+                           keyStates[rightAlt] = false;
                            window.ExternalActivate(true, true, window, null); // lastActive);
+                        }
                      }
                      windowData = modalRoot ? modalRoot.windowData : window.windowData;
                      if(windowData && windowData.ic)
