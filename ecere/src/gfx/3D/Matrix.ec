@@ -172,6 +172,7 @@ public union Matrix
          Identity();
       else
       {
+         double invDet = 1.0 / det;
          int i, j, sign;
          for ( i = 0; i < 4; i++ )
             for ( j = 0; j < 4; j++ )
@@ -195,7 +196,7 @@ public union Matrix
                      - msub3[0][1] * ( msub3[1][0]*msub3[2][2] - msub3[2][0]*msub3[1][2] )
                      + msub3[0][2] * ( msub3[1][0]*msub3[2][1] - msub3[2][0]*msub3[1][1] );
 
-               m[j][i] = m3det * sign / det;
+               m[j][i] = m3det * sign * invDet;
             }
       }
    }
