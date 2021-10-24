@@ -125,7 +125,7 @@ public struct Transform
    return 1.0f - (k/b)*t*t;
 }*/
 
-public enum FrameTrackType : uint16 { position = 1, rotation, scaling, fov, roll, colorChange, morph, hotSpot, fallOff, hide };
+public enum FrameTrackType : uint16 { position = 1, rotation, scaling, fov, roll, colorChange, morph, hotSpot, fallOff, hide, rYaw, rPitch, rRoll };
 
 public class FrameTrackBits
 {
@@ -171,6 +171,123 @@ private:
    ~FrameTrack()
    {
       Free();
+   }
+
+   // REVIEW: This method does not use the key setting for angles?
+   float GetAngle(SplinePart what, unsigned int n)
+   {
+      float value;
+      FrameKey *kn_1, *kn, *kn1;
+      float pn_1, pn, pn1;
+      int d1, d2;
+
+      kn = &keys[n];
+      pn = kn->roll;
+
+      if(what == splinePoint)
+         value = pn;
+      else
+      {
+         if(n == 0)
+         {
+            kn1 = &keys[1];
+            pn1 = kn1->roll;
+
+            if(numKeys == 2)
+            {
+               value = pn1 - pn;
+               //value *= 1.0f - kn->tension;
+               return value;
+            }
+            if(type.loop)
+            {
+               kn_1 = &keys[numKeys-2];
+               d1 = keys[numKeys-1].frame - kn_1->frame;
+               d2 = kn1->frame - kn->frame;
+            }
+            else
+            {
+               float a1;
+               value = pn1 - pn;
+               value *= 1.5f;
+
+               a1 = GetAngle(splineA, 1);
+               a1 *= 0.5f;
+
+               value -= a1;
+               value *= 1.0f;// - kn->tension;
+               return value;
+            }
+         }
+         else if(n == numKeys-1)
+         {
+            kn_1 = &keys[n-1];
+            pn_1 = kn_1->roll;
+
+            if(numKeys == 2)
+            {
+               value = pn - pn_1;
+               value *= 1.0f;// - kn->tension;
+               return value;
+            }
+            if(type.loop)
+            {
+               kn1 = &keys[1];
+               d1 = kn->frame - kn_1->frame;
+               d2 = kn1->frame - keys[0].frame;
+            }
+            else
+            {
+               float bn_1;
+               value = pn - pn_1;
+               value *= 1.5f;
+
+               bn_1 = GetFloat(splineB, n-1);
+               bn_1 *= 0.5f;
+
+               value -= bn_1;
+               value *= 1.0f;// - kn->tension;
+               return value;
+            }
+         }
+         else
+         {
+            kn_1 = &keys[n-1];
+            kn1 = &keys[n+1];
+            d1 = kn->frame - kn_1->frame;
+            d2 = kn1->frame - kn->frame;
+         }
+         {
+            float /*C, */adjust;
+            float part1, part2;
+
+            pn_1 = kn_1->roll;
+            pn1 = kn1->roll;
+
+            if(what == splineA)
+            {
+               //C = kn->continuity;
+               adjust = (float)d1;
+            }
+            else
+            {
+               //C = -kn->continuity;
+               adjust = (float)d2;
+            }
+            adjust /= d1 + d2;
+            adjust = 0.5f /*+ (1.0f - Abs(C))*/*(adjust - 0.5f);
+
+            part1 = pn - pn_1;
+            part1 *= (1.0f /*+ kn->bias*/)*(1.0f /*- C*/);
+
+            part2 = pn1 - pn;
+            part2 *= (1.0f /*- kn->bias*/)*(1.0f /*+ C*/);
+
+            value = part1 + part2;
+            value *= (1.0f/* - kn->tension*/)*adjust;
+         }
+      }
+      return value;
    }
 
    float GetFloat(SplinePart what, unsigned int n)
@@ -552,6 +669,38 @@ private:
          r2 *= t*t*t -   t*t;
 
          value = p1 + r1 + p2 + r2;
+      }
+      return value;
+   }
+
+   float InterpolateAngle(float prevValue, float nextValue, int prev, int next, float t)
+   {
+      float value;
+      if(!t)
+         value = prevValue;
+      else
+      {
+         float p1 = prevValue, p2 = nextValue;
+
+         float r1 = GetAngle(splineB, prev);
+         float r2 = GetAngle(splineA, next);
+
+
+         if(p2 - p1 > 180)
+            p2 -= 360;
+         else if(p2 - p1 < -180)
+            p2 += 360;
+
+         p1 *= 2*t*t*t - 3*t*t + 1;
+         p2 *= -2*t*t*t + 3*t*t;
+
+         r1 *= t*t*t - 2*t*t + t;
+         r2 *= t*t*t -   t*t;
+
+         value = p1 + r1 + p2 + r2;
+
+         //value = p1 * (1-t) + p2 * (t);
+         //value = p1 + (p2-p1) * t;
       }
       return value;
    }
@@ -1669,15 +1818,8 @@ public:
       return result;
    }
 
-   property Transform transform
-   {
-      set
-      {
-         transform = value;
-         eulerOrientation = value.orientation; //.FromQuaternion(value.orientation, yxz);
-      }
-      get { value = transform; }
-   };
+   property Transform transform { set { transform = value; if(rotationOrder == yxz) eulerOrientation = transform.orientation; } get { value = transform; } };
+   property Euler eulerOrientation { set { eulerOrientation = value; } get { value = eulerOrientation; } }
    property Material material { set { material = value; } get { return material; } };
    property Vector3Df max { get { value = max; } };
    property Vector3Df min { get { value = min; } };
@@ -1806,6 +1948,9 @@ private:
    {
       Object child;
       FrameTrack track;
+      Euler euler { };
+      bool eulerRotation = false;
+      bool hasPitch = false, hasRoll = false, hasYaw = false;
 
       for(track = tracks.first; track; track = track.next)
       {
@@ -1842,6 +1987,9 @@ private:
                case rotation:
                   track.InterpolateQuat(transform.orientation, prevKey->orientation, nextKey->orientation, prev, next, t);
                   break;
+               case rYaw:   eulerRotation = true; hasYaw = true; euler.yaw = track.InterpolateAngle(prevKey->roll, nextKey->roll, prev, next, t); break;
+               case rPitch: eulerRotation = true; hasPitch = true; euler.pitch = track.InterpolateAngle(prevKey->roll, nextKey->roll, prev, next, t); break;
+               case rRoll:  eulerRotation = true; hasRoll = true; euler.roll = track.InterpolateAngle(prevKey->roll, nextKey->roll, prev, next, t); break;
                // Cameras
                case roll:
                   roll = track.InterpolateFloat(prevKey->roll, nextKey->roll, prev, next, t);
@@ -1877,6 +2025,64 @@ private:
             }
          }
       }
+      if(eulerRotation)
+      {
+         Matrix a, b;
+         Matrix rYaw, rPitch, rRoll;
+         Quaternion q;
+
+         if(!hasYaw)
+            euler.yaw = eulerOrientation.yaw;
+         else
+            eulerOrientation.yaw = euler.yaw;
+         if(!hasPitch)
+            euler.pitch = eulerOrientation.pitch;
+         else
+            eulerOrientation.pitch = euler.pitch;
+         if(!hasRoll)
+            euler.roll = eulerOrientation.roll;
+         else
+            eulerOrientation.roll = euler.roll;
+
+         rYaw.RotationQuaternion(Euler { yaw = euler.yaw });
+         rPitch.RotationQuaternion(Euler { pitch = euler.pitch });
+         rRoll.RotationQuaternion(Euler { roll = euler.roll });
+
+         switch(rotationOrder)
+         {
+            case xyz:
+               a.Multiply(rYaw, rPitch);
+               b.Multiply(rRoll, a);
+               break;
+            case xzy:
+               a.Multiply(rRoll, rPitch);
+               b.Multiply(rYaw, a);
+               break;
+            case yxz:
+               a.Multiply(rPitch, rYaw);
+               b.Multiply(rRoll, a);
+               break;
+            case yzx:
+               a.Multiply(rRoll, rYaw);
+               b.Multiply(rPitch, a);
+               break;
+            case zyx:
+               a.Multiply(rYaw, rRoll);
+               b.Multiply(rPitch, a);
+               break;
+            case zxy:
+            default:
+               a.Multiply(rPitch, rRoll);
+               b.Multiply(rYaw, a);
+               break;
+         }
+
+         q.RotationMatrix(b);
+         transform.orientation = q;
+      }
+      flags.localMatrixSet = false;
+      flags.transform = true;
+      UpdateTransform();
 
       for(child = children.first; child; child = child.next)
          child._Animate(frame);
@@ -1996,17 +2202,19 @@ private:
 
    public property Light light
    {
-      set
-      {
-         light = value;
-      }
-      get
-      {
-         value = light;
-      }
+      set { light = value; }
+      get { value = light; }
    }
 
    Euler eulerOrientation;
+   EulerRotationOrder rotationOrder; rotationOrder = zxy;
+
+   public property EulerRotationOrder rotationOrder
+   {
+      set { rotationOrder = value; }
+      get { return rotationOrder; }
+   }
+
    DisplaySystem displaySystem;
    float mvMatrix[16]; // Model-view matrix
 
