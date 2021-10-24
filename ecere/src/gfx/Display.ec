@@ -788,6 +788,7 @@ public:
          if(display3D.intersecting)
          {
             Vector3D p2, tp2;
+
             if(viewSpace)
                p2.Add(display3D.rayView.p0, display3D.rayView.delta);
             else
@@ -796,6 +797,10 @@ public:
             display3D.rayLocal.p0.DivideMatrix(display3D.rayWorld.p0, matrix);
             tp2.DivideMatrix(p2, matrix);
             display3D.rayLocal.delta.Subtract(tp2, display3D.rayLocal.p0);
+
+            display3D.rlInvDelta.x = 1.0 / display3D.rayLocal.delta.x;
+            display3D.rlInvDelta.y = 1.0 / display3D.rayLocal.delta.y;
+            display3D.rlInvDelta.z = 1.0 / display3D.rayLocal.delta.z;
          }
       }
       else
@@ -1606,6 +1611,7 @@ private class Display3D : struct
    Line rayView, rayWorld, rayLocal;
    Vector3D rayIntersect;
    float light0Pos[4];
+   Vector3D rlInvDelta;
 
    ~Display3D()
    {
@@ -1833,23 +1839,38 @@ private class Display3D : struct
                {
                   // Intersect primitives
                   Plane plane;
-                  Vector3D intersect, diff;
+                  Vector3D intersect;
 
                   // not using 'points' as they are clipped and may all be the same here
                   plane.FromPointsf(vx[0], vx[1], vx[2]);
 
-                  plane.IntersectLine(rayLocal, intersect);
-                  diff.Subtract(intersect, rayLocal.p0);
-                  diff.x /= rayLocal.delta.x;
-                  diff.y /= rayLocal.delta.y;
-                  diff.z /= rayLocal.delta.z;
-                  if(diff.x < rayDiff.x || diff.y < rayDiff.y || diff.z < rayDiff.z)
+                  if(plane.a || plane.b || plane.c)   // Avoid bad colinear triangles...
                   {
-                     if(part && id)
-                        *id = part->id;
+                     Vector3D diff;
+                     double k;
 
-                     rayDiff = diff;
-                     rayIntersect = intersect;
+                     plane.IntersectLine(rayLocal, intersect);
+
+                     // In local space
+                     diff.Subtract(intersect, rayLocal.p0);
+                     diff.x = (intersect.x - rayLocal.p0.x) * rlInvDelta.x;   // These should be the k of p = p0 + k * delta
+                     diff.y = (intersect.y - rayLocal.p0.y) * rlInvDelta.y;   // but delta components may be 0 in local space
+                     diff.z = (intersect.z - rayLocal.p0.z) * rlInvDelta.z;
+                     k = Min(Min(diff.x, diff.y), diff.z);
+                     if(k < rayDiff.z)
+                     {
+                        if(part && id)
+                           *id = part->id;
+
+                        rayDiff.z = k;
+                        rayIntersect = intersect;
+                     }
+                  }
+                  else
+                  {
+#ifdef _DEBUG
+                     // PrintLn("WARNING: Colinear triangle");
+#endif
                   }
                }
                else
