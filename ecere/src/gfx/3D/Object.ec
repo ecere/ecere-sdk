@@ -1265,11 +1265,17 @@ public:
                            {
                               int c;
                               if(group.type.indices32bit)
+                              {
+                                 uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndex;
                                  for(c = 0; c<group.nIndices; c++)
-                                    newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
+                                    newGroup.indices32[nIndices++] = indices32[c] + vertexOffset;
+                              }
                               else
+                              {
+                                 uint16 * indices = group.indices;
                                  for(c = 0; c<group.nIndices; c++)
-                                    newGroup.indices[nIndices++] = (uint16)(group.indices[c] + vertexOffset);
+                                    newGroup.indices[nIndices++] = (uint16)(indices[c] + vertexOffset);
+                              }
                            }
                         }
                         vertexOffset += objectMesh.nVertices;
@@ -1286,11 +1292,17 @@ public:
                               {
                                  int c;
                                  if(group.type.indices32bit)
+                                 {
+                                    uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndex;
                                     for(c = 0; c<group.nIndices; c++)
-                                       newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
+                                       newGroup.indices32[nIndices++] = indices32[c] + vertexOffset;
+                                 }
                                  else
+                                 {
+                                    uint16 * indices = group.indices;
                                     for(c = 0; c<group.nIndices; c++)
-                                       newGroup.indices[nIndices++] = (uint16)(group.indices[c] + vertexOffset);
+                                       newGroup.indices[nIndices++] = (uint16)(indices[c] + vertexOffset);
+                                 }
                               }
                            }
                            vertexOffset += child.mesh.nVertices;
@@ -1377,11 +1389,17 @@ public:
                   //src->data = null;
 
                   if(triangle->type.indices32bit)
+                  {
+                     uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndex;
                      for(i = 0; i<triangle->nIndices; i++)
-                        triangle->indices32[i] = src->indices32[i] + vertexOffset;
+                        triangle->indices32[i] = indices32[i] + vertexOffset;
+                  }
                   else
+                  {
+                     uint16 * indices = src->indices;
                      for(i = 0; i<triangle->nIndices; i++)
-                        triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
+                        triangle->indices[i] = (uint16)(indices[i] + vertexOffset);
+                  }
                   if(lastLevel)
                      mesh.UnlockPrimitive(triangle);
                }
@@ -1409,13 +1427,15 @@ public:
 
                      if(triangle->type.indices32bit)
                      {
+                        uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndex;
                         for(i = 0; i<triangle->nIndices; i++)
-                           triangle->indices32[i] = src->indices32[i] + vertexOffset;
+                           triangle->indices32[i] = indices32[i] + vertexOffset;
                      }
                      else
                      {
+                        uint16 * indices = src->indices;
                         for(i = 0; i<triangle->nIndices; i++)
-                           triangle->indices[i] = (uint16)(src->indices[i] + vertexOffset);
+                           triangle->indices[i] = (uint16)(indices[i] + vertexOffset);
                      }
                      if(lastLevel)
                         mesh.UnlockPrimitive(triangle);
