@@ -1585,6 +1585,37 @@ private:
 };
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
+
+// Möller and Trumbore
+static inline bool intersectTriangle(const Vector3Df a, const Vector3Df b, const Vector3Df c, const Line r, double * kPtr)
+{
+   bool result = false;
+   Vector3D e1 { b.x - a.x, b.y - a.y, b.z - a.z };
+   Vector3D e2 { c.x - a.x, c.y - a.y, c.z - a.z };
+   Vector3D n;
+   double det;
+   const Vector3D * dir = &r.delta;
+
+   n.CrossProduct(e1, e2);
+   det = -dir->DotProduct(n);
+   if(Abs(det) >= 1e-6)
+   {
+      double invDet = 1.0 / det;
+      Vector3D ao { r.p0.x - a.x, r.p0.y - a.y, r.p0.z - a.z };
+      Vector3D dao;
+      double u, v, k;
+
+      dao.CrossProduct(ao, dir);
+      u =  dao.DotProduct(e2) * invDet;
+      v = -dao.DotProduct(e1) * invDet;
+      k =  ao.DotProduct(n)   * invDet;
+      result = k >= 0.0 && u >= 0.0 && v >= 0.0 && (u+v) <= 1.0;
+      if(kPtr)
+         *kPtr = k;
+   }
+   return result;
+}
+
 private class Display3D : struct
 {
    // 3D Display
@@ -1648,6 +1679,7 @@ private class Display3D : struct
       int groupIx, uint64 * id)
    {
       Plane * planes = localPickingPlanes;
+      bool useMollerTrumbore = !planes || (!pickWidth && !pickHeight);
       int c = 0;
       int nIndex = 1, nPoints = 1;
       bool result = false;
@@ -1712,129 +1744,169 @@ private class Display3D : struct
          for(c = start + offset; c < end; c += nIndex)
          {
             bool outside = false;
-            if(!pickingPlanes)   // TODO: Review the meaning of this only set in orbitWithMouse
-            {
-               ClippingPlane p;
-               int n = nPoints;
-               int i;
+            int i;
 
-               if(primitive.type.vertexRange)
+            if(primitive.type.vertexRange)
+            {
+               if(primitive.type.primitiveType == triStrip)
                {
-                  if(primitive.type.primitiveType == triStrip)
+                  vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 1) : (c - 2)));
+                  vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 2) : (c - 1)));
+               }
+               else if(primitive.type.primitiveType == triFan)
+               {
+                  vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + 0));
+                  vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + c - 1));
+               }
+               for(i = 0; i<nIndex; i++)
+                  vx[i + offset] = (Vector3Df *)(vertices + vStride * (primitive.first + c+i));
+            }
+            else
+            {
+               if(primitive.type.primitiveType == triStrip)
+               {
+                  i = (c & 1) ? (c - 1) : (c - 2);
+                  vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
+                  i = (c & 1) ? (c - 2) : (c - 1);
+                  vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
+               }
+               else if(primitive.type.primitiveType == triFan)
+               {
+                  vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[start] : indices16[start])));
+                  vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c-1] : indices16[c-1])));
+               }
+               for(i = 0; i<nIndex; i++)
+                  vx[i + offset] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c+i] : indices16[c+i])));
+            }
+
+            if(!pickingPlanes)   // TODO: Review the meaning of this only set in orbitWithMouse
+            {                    //       Calculate an intersect treating each triangles as an infinite planes?
+               if(!useMollerTrumbore)
+               {
+                  // Classic method clipping consecutively against 6 picking planes akin to a smaller view frustum
+                  ClippingPlane p;
+                  int n = nPoints;
+
+                  points[0] = { (double)vx[0]->x, (double)vx[0]->y, (double)vx[0]->z };
+                  points[1] = { (double)vx[1]->x, (double)vx[1]->y, (double)vx[1]->z };
+                  points[2] = { (double)vx[2]->x, (double)vx[2]->y, (double)vx[2]->z };
+                  if(nPoints > 3)
+                     points[3] = { (double)vx[3]->x, (double)vx[3]->y, (double)vx[3]->z };
+                  for(p = 0; p < 6; p++)
                   {
-                     vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 1) : (c - 2)));
-                     vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 2) : (c - 1)));
+                     const Plane * plane = &planes[p];
+                     int i;
+                     int numGoodPoints = 0;
+
+                     memset(goodPoints, 0, n);
+                     for(i = 0; i < n; i++)
+                     {
+                        double dot = plane->normal.DotProduct(points[i]);
+                        double distance = dot + plane->d;
+                        if(distance > THRESHOLD)
+                        {
+                           numGoodPoints++;
+                           goodPoints[i] = 1;
+                        }
+                     }
+                     if(!numGoodPoints)
+                     {
+                        outside = true;
+                        break;
+                     }
+                     if(numGoodPoints < n)
+                     {
+                        // Clip the polygon
+                        int newN = 0;
+                        int lastGood = -1;
+                        int j;
+
+                        for(j = 0; j<n; )
+                        {
+                           if(goodPoints[j])
+                           {
+                              newPoints[newN++] = points[j];
+                              lastGood = j++;
+                           }
+                           else
+                           {
+                              Line edge;
+                              int next;
+
+                              if(lastGood == -1)
+                                 for(lastGood = n-1; !goodPoints[lastGood]; lastGood--);
+
+                              edge.p0 = points[lastGood];
+                              edge.delta.Subtract(points[j], edge.p0);
+                              plane->IntersectLine(edge, newPoints[newN++]);
+
+                              for(next = j+1; next != j; next++)
+                              {
+                                 if(next == n) next = 0;
+                                 if(goodPoints[next])
+                                 {
+                                    int prev = next - 1;
+                                    if(prev < 0) prev = n-1;
+
+                                    edge.p0 = points[prev];
+                                    edge.delta.Subtract(points[next], edge.p0);
+                                    plane->IntersectLine(edge, newPoints[newN++]);
+                                    break;
+                                 }
+                              }
+                              if(next <= j)
+                                 break;
+                              else
+                                 j = next;
+                           }
+                        }
+                        // Use the new points for the next planes...
+                        memcpy(points, newPoints, newN * sizeof(Vector3D));
+                        n = newN;
+                     }
                   }
-                  else if(primitive.type.primitiveType == triFan)
-                  {
-                     vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + 0));
-                     vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + c - 1));
-                  }
-                  for(i = 0; i<nIndex; i++)
-                     vx[i + offset] = (Vector3Df *)(vertices + vStride * (primitive.first + c+i));
                }
                else
                {
-                  if(primitive.type.primitiveType == triStrip)
+                  // Möller and Trumbore supporting arbitrary ray used for a null pick aperture
+                  double k;
+                  bool doesIntersect = intersectTriangle(vx[0], vx[1], vx[2], rayLocal, &k);
+                  if(!doesIntersect && nPoints > 3)
+                     intersectTriangle(vx[1], vx[2], vx[3], rayLocal, &k);
+                  if(doesIntersect)
                   {
-                     i = (c & 1) ? (c - 1) : (c - 2);
-                     vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
-                     i = (c & 1) ? (c - 2) : (c - 1);
-                     vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
-                  }
-                  else if(primitive.type.primitiveType == triFan)
-                  {
-                     vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[start] : indices16[start])));
-                     vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c-1] : indices16[c-1])));
-                  }
-                  for(i = 0; i<nIndex; i++)
-                     vx[i + offset] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c+i] : indices16[c+i])));
-               }
-
-               points[0] = { (double)vx[0]->x, (double)vx[0]->y, (double)vx[0]->z };
-               points[1] = { (double)vx[1]->x, (double)vx[1]->y, (double)vx[1]->z };
-               points[2] = { (double)vx[2]->x, (double)vx[2]->y, (double)vx[2]->z };
-               if(nPoints > 3)
-                  points[3] = { (double)vx[3]->x, (double)vx[3]->y, (double)vx[3]->z };
-               for(p = 0; p < 6; p++)
-               {
-                  const Plane * plane = &planes[p];
-                  int i;
-                  int numGoodPoints = 0;
-
-                  memset(goodPoints, 0, n);
-                  for(i = 0; i < n; i++)
-                  {
-                     double dot = plane->normal.DotProduct(points[i]);
-                     double distance = dot + plane->d;
-                     if(distance > THRESHOLD)
+                     result = true;
+                     if(intersecting)
                      {
-                        numGoodPoints++;
-                        goodPoints[i] = 1;
+                        // TOCHECK: GetIntersect() currently returns view space intersect, but here we return local intersect
+                        Vector3D intersect = rayLocal.p0;
+                        intersect.x += k * rayLocal.delta.x;
+                        intersect.y += k * rayLocal.delta.y;
+                        intersect.z += k * rayLocal.delta.z;
+
+                        if(k < rayDiff.z)
+                        {
+                           if(part && id)
+                              *id = part->id;
+                           rayDiff.z = k;
+                           rayIntersect = intersect;
+                        }
+                     }
+                     else
+                     {
+                        done = true;
+                        break;
                      }
                   }
-                  if(!numGoodPoints)
-                  {
+                  else
                      outside = true;
-                     break;
-                  }
-                  if(numGoodPoints < n)
-                  {
-                     // Clip the polygon
-                     int newN = 0;
-                     int lastGood = -1;
-                     int j;
-
-                     for(j = 0; j<n; )
-                     {
-                        if(goodPoints[j])
-                        {
-                           newPoints[newN++] = points[j];
-                           lastGood = j++;
-                        }
-                        else
-                        {
-                           Line edge;
-                           int next;
-
-                           if(lastGood == -1)
-                              for(lastGood = n-1; !goodPoints[lastGood]; lastGood--);
-
-                           edge.p0 = points[lastGood];
-                           edge.delta.Subtract(points[j], edge.p0);
-                           plane->IntersectLine(edge, newPoints[newN++]);
-
-                           for(next = j+1; next != j; next++)
-                           {
-                              if(next == n) next = 0;
-                              if(goodPoints[next])
-                              {
-                                 int prev = next - 1;
-                                 if(prev < 0) prev = n-1;
-
-                                 edge.p0 = points[prev];
-                                 edge.delta.Subtract(points[next], edge.p0);
-                                 plane->IntersectLine(edge, newPoints[newN++]);
-                                 break;
-                              }
-                           }
-                           if(next <= j)
-                              break;
-                           else
-                              j = next;
-                        }
-                     }
-                     // Use the new points for the next planes...
-                     memcpy(points, newPoints, newN * sizeof(Vector3D));
-                     n = newN;
-                  }
                }
             }
-            if(!outside)
+
+            if(!outside && !useMollerTrumbore)
             {
                result = true;
 
-               // TODO: Implement intersection with TriStrip, TriFan...
                if(intersecting)
                {
                   // Intersect primitives
