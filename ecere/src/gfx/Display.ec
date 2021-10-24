@@ -1650,7 +1650,6 @@ private class Display3D : struct
       byte * goodPoints = this.goodPoints;
       int nVertices = primitive.type.vertexRange ? primitive.nVertices : primitive.nIndices;
       int strip = 1;
-      Vector3Df tmp;
       bool i32bit = primitive.type.indices32bit;
       uint32 * indices32 = primitive.indices32 != null ? primitive.indices32 : mesh.indices;
       uint16 * indices16 = primitive.indices != null ? primitive.indices : null;
@@ -1658,7 +1657,10 @@ private class Display3D : struct
       int pi;
       int firstPart = 0, lastPart = 1;
 
-      if(!mesh.vertices) return false; // Need vertices here...
+      float * vertices = (float *)mesh.vertices;
+      int vStride = mesh.flags.interleaved ? 8 : 3;
+
+      if(!vertices) return false; // Need vertices here...
 
       // Parts are currently in the Mesh rather than the PrimitiveGroup, assuming the group order (restarting at ix 0)
       // However picking currently does not seem to support groups with shared indices (baseIndex)
@@ -1687,6 +1689,7 @@ private class Display3D : struct
          int start = part ? part->start : 0;
          int end = start + (part ? part->count : nVertices);   // TOCHECK: Fix part to be indices, rather than tris?
          bool done = false;
+         const Vector3Df * vx[4];
 
          switch(primitive.type.primitiveType)
          {
@@ -1696,10 +1699,8 @@ private class Display3D : struct
             case triFan:
                nIndex = 1; nPoints = 3;
                offset = 2;
-               tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first] : mesh.vertices[(i32bit ? indices32[start + 0] : indices16[start + 0])];
-               points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-               tmp = primitive.type.vertexRange ? mesh.vertices[primitive.first+1] : mesh.vertices[(i32bit ? indices32[start + 1] : indices16[start + 1])];
-               points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+               vx[0] = (Vector3Df *)(vertices + vStride * (primitive.type.vertexRange ? primitive.first : (i32bit ? indices32[start + 0] : indices16[start + 0])));
+               vx[1] = (Vector3Df *)(vertices + vStride * (primitive.type.vertexRange ? primitive.first+1 : (i32bit ? indices32[start + 1] : indices16[start + 1])));
                break;
          }
 
@@ -1716,53 +1717,43 @@ private class Display3D : struct
                {
                   if(primitive.type.primitiveType == triStrip)
                   {
-                     tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 1) : (c - 2)];
-                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                     tmp = mesh.vertices[primitive.first + (c & 1) ? (c - 2) : (c - 1)];
-                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 1) : (c - 2)));
+                     vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + (c & 1) ? (c - 2) : (c - 1)));
                   }
                   else if(primitive.type.primitiveType == triFan)
                   {
-                     tmp = mesh.vertices[primitive.first + 0];
-                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                     tmp = mesh.vertices[primitive.first + c - 1];
-                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     vx[0] = (Vector3Df *)(vertices + vStride * (primitive.first + 0));
+                     vx[1] = (Vector3Df *)(vertices + vStride * (primitive.first + c - 1));
                   }
                   for(i = 0; i<nIndex; i++)
-                  {
-                     tmp = mesh.vertices[primitive.first + c+i];
-                     points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                  }
+                     vx[i + offset] = (Vector3Df *)(vertices + vStride * (primitive.first + c+i));
                }
                else
                {
                   if(primitive.type.primitiveType == triStrip)
                   {
                      i = (c & 1) ? (c - 1) : (c - 2);
-                     tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
-                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-
+                     vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
                      i = (c & 1) ? (c - 2) : (c - 1);
-                     tmp = mesh.vertices[(i32bit ? indices32[i] : indices16[i])];
-                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[i] : indices16[i])));
                   }
                   else if(primitive.type.primitiveType == triFan)
                   {
-                     tmp = mesh.vertices[(i32bit ? indices32[start] : indices16[start])];
-                     points[0] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                     tmp = mesh.vertices[(i32bit ? indices32[c-1] : indices16[c-1])];
-                     points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
+                     vx[0] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[start] : indices16[start])));
+                     vx[1] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c-1] : indices16[c-1])));
                   }
                   for(i = 0; i<nIndex; i++)
-                  {
-                     tmp = mesh.vertices[(i32bit ? indices32[c+i] : indices16[c+i])];
-                     points[i + offset] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
-                  }
+                     vx[i + offset] = (Vector3Df *)(vertices + vStride * ((i32bit ? indices32[c+i] : indices16[c+i])));
                }
 
+               points[0] = { (double)vx[0]->x, (double)vx[0]->y, (double)vx[0]->z };
+               points[1] = { (double)vx[1]->x, (double)vx[1]->y, (double)vx[1]->z };
+               points[2] = { (double)vx[2]->x, (double)vx[2]->y, (double)vx[2]->z };
+               if(nPoints > 3)
+                  points[3] = { (double)vx[3]->x, (double)vx[3]->y, (double)vx[3]->z };
                for(p = 0; p < 6; p++)
                {
-                  Plane * plane = &planes[p];
+                  const Plane * plane = &planes[p];
                   int i;
                   int numGoodPoints = 0;
 
@@ -1844,31 +1835,9 @@ private class Display3D : struct
                   // Intersect primitives
                   Plane plane;
                   Vector3D intersect, diff;
-                  int i0 = c, i1 = c+1, i2 = c+2;
 
-                  if(primitive.type.primitiveType == triStrip)
-                  {
-                     i0 = (c & 1) ? (c - 1) : (c - 2);
-                     i1 = (c & 1) ? (c - 2) : (c - 1);
-                     i2 = c;
-                  }
-                  else if(primitive.type.primitiveType == triFan)
-                  {
-                     i0 = start;
-                     i1 = c - 1;
-                     i2 = c;
-                  }
-
-                  if(primitive.type.vertexRange)
-                     plane.FromPointsf(
-                        mesh.vertices[primitive.first + i0],
-                        mesh.vertices[primitive.first + i1],
-                        mesh.vertices[primitive.first + i2]);
-                  else
-                     plane.FromPointsf(
-                        mesh.vertices[(i32bit ? indices32[i0] : indices16[i0])],
-                        mesh.vertices[(i32bit ? indices32[i1] : indices16[i1])],
-                        mesh.vertices[(i32bit ? indices32[i2] : indices16[i2])]);
+                  // not using 'points' as they are clipped and may all be the same here
+                  plane.FromPointsf(vx[0], vx[1], vx[2]);
 
                   plane.IntersectLine(rayLocal, intersect);
                   diff.Subtract(intersect, rayLocal.p0);
@@ -1894,11 +1863,11 @@ private class Display3D : struct
             switch(primitive.type)
             {
                case triStrip:
-                  points[strip] = points[2];
+                  vx[strip] = vx[2];
                   strip ^= 1;
                   break;
                case triFan:
-                  points[1] = points[2];
+                  vx[1] = vx[2];
                   break;
             }
          }
@@ -1907,7 +1876,6 @@ private class Display3D : struct
       }
       return result;
    }
-
 
    bool PickMesh(Object object, Vector3D rayIntersect)
    {
@@ -1968,6 +1936,8 @@ private class Display3D : struct
          Vector3Df max { -MAXFLOAT, -MAXFLOAT, -MAXFLOAT };
          int v;
          bool ix32 = primitive->type.indices32bit;
+         float * vertices = (float *)mesh.vertices;
+         uint vStride = mesh.flags.interleaved ? 8 : 3;
          if(object != sort->object)
          {
             object = sort->object;
@@ -1986,7 +1956,7 @@ private class Display3D : struct
 
          for(v = 0; v<primitive->nIndices; v++)
          {
-            Vector3Df * local = &mesh.vertices[ix32 ? primitive->indices32[v] : primitive->indices[v]];
+            Vector3Df * local = (Vector3Df *)(vertices + vStride * (ix32 ? primitive->indices32[v] : primitive->indices[v]));
             Vector3Df vertex;
 
             vertex.MultMatrix(local, &matrix);
