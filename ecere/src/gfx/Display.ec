@@ -1689,7 +1689,8 @@ private class Display3D : struct
       int nVertices = primitive.type.vertexRange ? primitive.nVertices : primitive.nIndices;
       int strip = 1;
       bool i32bit = primitive.type.indices32bit;
-      uint32 * indices32 = i32bit && primitive.indices32 != null ? primitive.indices32 : mesh.indices;
+      uint32 * indices32 = !i32bit ? null :
+         primitive.indices32 != null ? primitive.indices32 : mesh.indices ? mesh.indices + primitive.baseIndex : null;
       uint16 * indices16 = !i32bit && primitive.indices != null ? primitive.indices : null;
       Array<MeshPart> parts = mesh.parts;
       int pi;

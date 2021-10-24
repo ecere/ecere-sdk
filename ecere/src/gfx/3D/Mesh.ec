@@ -414,6 +414,19 @@ public:
       {
          if(primitive.data)
          {
+#if !defined(ECERE_NOGL)
+            if(meab)
+            {
+               int baseIndex = primitive.baseIndex;
+               ((OGLIndices)primitive.data).buffer.buffer = 0;
+               if(baseIndex != -1)
+               {
+                  uint iSize = primitive.type.indices32bit ? sizeof(uint) : sizeof(uint16);
+                  meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + primitive.nIndices) * iSize-1 });
+                  primitive.baseIndex = -1;
+               }
+            }
+#endif
             driver.FreeIndices(displaySystem, primitive);
             primitive.data = null;
          }
