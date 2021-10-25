@@ -402,7 +402,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
       Plane plane;
       uint * indices = face->indices;
       Vector3D edges[3], rEdges[3];
-      computeNormalWeights(3, mVertices, indices, true, 0, face->dots, edges, rEdges);
+      computeNormalWeights(3, (float *)mVertices, 3, indices, true, 0, face->dots, edges, rEdges);
 
       plane.FromPointsf(mVertices[indices[2]], mVertices[indices[1]], mVertices[indices[0]]);
       face->normal = { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z };

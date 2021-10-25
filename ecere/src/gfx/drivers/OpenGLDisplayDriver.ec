@@ -4236,7 +4236,9 @@ class OpenGLDisplayDriver : DisplayDriver
                delete buf;
             }
          }
-         else if(oglMesh.interleaved && !flags.doubleVertices && flags.vertices && flags.normals && flags.texCoords1)
+         else if(oglMesh.interleaved && !flags.doubleVertices &&
+            mesh.flags.vertices && mesh.flags.normals && mesh.flags.texCoords1 &&
+            flags & { vertices = true, normals = true, texCoords1 = true })
          {
             // temporary solution for interleaved attributes
             if(oglMesh.needAlloc)
@@ -4246,6 +4248,28 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
                oglMesh.vertices.upload(0, mesh.nVertices * 8 * sizeof(float), mesh.vertices);
+
+            if(!mab && oglMesh.needAlloc)
+            {
+               if(flags.colors)
+                  oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
+               if(flags.tangents)
+                  oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
+               if(flags.lightVectors)
+                  oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+               oglMesh.needAlloc = false;
+            }
+            else
+            {
+               if(flags.colors)
+                  oglMesh.colors.upload(0, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors);
+
+               if(flags.tangents)
+                  oglMesh.tangents.upload(0, mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents);
+
+               if(flags.lightVectors)
+                  oglMesh.lightVectors.upload(0, mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors);
+            }
          }
          else if(!mab && oglMesh.needAlloc)
          {
@@ -4407,7 +4431,7 @@ class OpenGLDisplayDriver : DisplayDriver
                GLDisableClientState(NORMALS);
 
 #if ENABLE_GL_SHADERS
-            if(glCaps_shaders && !oglMesh.interleaved)    // Currently not working for interleave...
+            if(glCaps_shaders/* && !oglMesh.interleaved*/)    // For now tangents are stored separately...
             {
                // *** Tangents Stream ***
                if(mesh.tangents || mesh.flags.tangents)
